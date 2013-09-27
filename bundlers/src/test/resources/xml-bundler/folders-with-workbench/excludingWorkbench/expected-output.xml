@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+	<resource name="deckDefinitions">
+			<deckDefinitions xmlns="http://schema.caplin.com/CaplinTrader/deckDefinitions">
+				<deckDefinition id="StandardDeck1">
+					<header title="Header Title">
+					 	<simpleComponent src="../resources/html-templates/DeckHeader.html" />
+					</header>
+					<cards>
+						<card title="Card Title 1"><simpleComponent src="../resources/html-templates/DeckHeader.html" /></card>
+						<card title="Card Title 2"><simpleComponent src="../resources/html-templates/DeckHeader.html" /></card>
+					</cards>
+				</deckDefinition>
+			</deckDefinitions>
+	</resource>
+</bundle> 

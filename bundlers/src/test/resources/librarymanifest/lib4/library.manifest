@@ -1,0 +1,3 @@
+depends : lib2,lib3
+js : lib4-1.js, lib4-2.js
+css : lib4-1.css, lib4-2.css

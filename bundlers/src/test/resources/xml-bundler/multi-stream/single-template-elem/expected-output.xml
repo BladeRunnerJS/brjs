@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<bundle>
+	<resource name="unitTest">
+		<unitTest>
+			<templateElem/>
+		</unitTest>
+	</resource>
+</bundle>

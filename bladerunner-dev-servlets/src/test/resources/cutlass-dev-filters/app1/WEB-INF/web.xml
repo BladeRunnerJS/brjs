@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+ 
+ <web-app>
+      <display-name>Cutlass Dev Filters Test</display-name>
+
+      <servlet>
+          <servlet-name>DefaultServlet</servlet-name> 
+          <servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class> 
+          <load-on-startup>1</load-on-startup> 
+      </servlet>
+      <!--  individual mappings are only needed for the test
+      so that *.bundle can be mapped to the echo servlet -->
+      <servlet-mapping>
+          <servlet-name>DefaultServlet</servlet-name> 
+          <url-pattern>/main-aspect/*</url-pattern> 
+      </servlet-mapping>
+      <servlet-mapping>
+          <servlet-name>DefaultServlet</servlet-name> 
+          <url-pattern>/servlet/*</url-pattern> 
+      </servlet-mapping>
+
+	<servlet>
+		<servlet-name>UrlEchoServlet</servlet-name>
+		<servlet-class>com.caplin.cutlass.util.UrlEchoServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UrlEchoServlet</servlet-name>
+		<url-pattern>*.bundle</url-pattern>
+	</servlet-mapping>
+
+      <filter>
+          <filter-name>BladerunnerFilters</filter-name> 
+          <filter-class>com.caplin.cutlass.filter.BladerunnerDevFilters</filter-class> 
+      </filter>
+      <filter-mapping>
+          <filter-name>BladerunnerFilters</filter-name> 
+          <url-pattern>/*</url-pattern> 
+          <dispatcher>REQUEST</dispatcher>
+          <dispatcher>FORWARD</dispatcher>
+      </filter-mapping>
+
+ <Configure class="org.eclipse.jetty.webapp.WebAppContext">
+ 
+   <!-- Add an EnvEntry only valid for this webapp               -->
+   <New id="test"  class="org.eclipse.jetty.plus.jndi.EnvEntry">
+     <Arg>test</Arg>
+     <Arg type="java.lang.Double">100</Arg>
+     <Arg type="boolean">true</Arg>
+   </New>
+   
+ </Configure>
+  </web-app>
+ 
+ 
+ 

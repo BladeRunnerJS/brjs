@@ -1,0 +1,40 @@
+
+apply plugin: 'java'
+apply plugin: com.caplin.gradle.plugins.CompileOnly
+
+sourceSets {
+	test {
+		java {
+			srcDirs = ["src/test/java", "src/test-integration/java"]
+		}
+		resources {
+			srcDirs = ["src/test/resources", "src/test-integration/resources"]
+		}
+	}
+}
+
+dependencies {
+	compile project(":brjs-logger")
+	compile dependency('commons-io')
+	compile dependency('commons-lang3')
+	compile dependency('guava')
+	compile dependency('slf4j-api')
+	compile dependency('gson')
+	compile dependency('yamlbeans')
+	compile dependency('validation-api')
+	compile dependency('bval-jsr303')
+	compile dependency('jsap')
+	compile dependency('jetty-all-server')
+	
+	compileOnly dependency('servlet-api')
+	compileOnly dependency('junit')
+	compileOnly dependency('httpclient')
+	compileOnly dependency('hamcrest-all')
+	
+	testCompile dependency('junit')
+	testCompile dependency('mockito-core')
+	testCompile dependency('httpclient')
+	testCompile dependency('hamcrest-all')
+	
+	testRuntime project(path: ':brjs-logger-binding')
+}

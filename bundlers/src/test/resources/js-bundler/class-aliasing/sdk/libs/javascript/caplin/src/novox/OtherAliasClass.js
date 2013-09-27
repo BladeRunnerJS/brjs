@@ -1,0 +1,3 @@
+novox.OtherAliasClass = function()
+{
+};

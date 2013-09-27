@@ -1,0 +1,124 @@
+table.vcenter{
+	height: 100%;
+	width:100%;
+}
+
+#result{
+	width:350px;
+	text-align: left;
+	padding:30px;
+	position: absolute;
+	left: 0px;
+	right: 0px;
+	top: 50px;
+	margin: auto;
+}
+
+#result * {
+	color:#000 !important;
+	font:12px arial,sans-serif !important;	
+}
+
+#result fieldset{
+	padding:5px;
+	margin:6px 0;
+}
+
+#result button{
+	padding:3px;
+}
+#result div div,
+#result div p {
+	margin:4px;
+	color: #BBB;
+}
+#result div.field label {
+	display: inline-block;
+}
+/* allow labels to have min width and move ":" to correct position */
+#result div.field label:after {
+	content: " :";
+}
+/* remove the original ":" now that its been moved */
+#result div.field {
+	font-size: 0px;
+}
+/* and then ensure that any tags inside the field are visible */
+#result div.field > * {
+	font-size: 12px;
+}
+
+.toggleSwitch{
+	float: left;
+	width: 70px;
+	position: relative;
+	top: -2px;
+	height: 20px;
+	background: url('images/toggle_gen.png') no-repeat;
+	background-position: 0px 0px;
+	color:black;
+	padding:3px;
+}
+
+.dealt-currency-selector.choiceASelected {
+	background-position: 3px -29px;
+}
+
+.dealt-currency-selector.choiceBSelected {
+	background-position: 3px 2px;
+}
+
+.dealt-currency-selector.choiceBSelected.disabled {
+	background-position: 3px -59px;
+}
+
+.dealt-currency-selector.choiceASelected.disabled {
+	background-position: 3px -89px;
+}
+
+.toggleSwitch .choiceA,
+.toggleSwitch .choiceB {
+	background:none;
+	margin:0px 2px 0px 2px;
+	padding:2px;
+}
+
+.ui-datepicker {
+	border: 1px solid gray;
+	background-color: white;
+}
+
+.renderer-plugin-demo {
+	background-color:red;
+	color:white;
+	padding:2px;
+}
+
+.flashing-up {
+	color:#286221;
+	background-color:#cdefbd;
+}
+
+.flashing-down {
+	color:#841819;
+	background-color:#feb3aa;
+}
+
+.calendar {
+	word-wrap: break-word;
+	width: 200px;
+	font-size: 30px;
+	height: 100%;
+}
+
+.ui-state-active {
+	font-weight:bold;
+	color:white;
+	background-color:red;
+}
+.ui-state-highlight {
+	font-weight:bold;
+	text-decoration:underline;
+	color:white;
+	background-color:pink;
+}

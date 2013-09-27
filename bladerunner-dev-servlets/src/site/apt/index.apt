@@ -1,0 +1,38 @@
+What is it for: overview
+
+  webcentric_servlet implements the HTTP GET, POST and PUT API used by webcentric to load and save application, theme and layout XML
+  (see {{{WebcentricServlet.html}WebcentricServlet}}).
+  
+  webcentric_servlet also provides a program that is used to populate the application, theme and layout XML from files
+  (see {{{DatabasePopulator.html}DatabasePopulator}})
+  
+Technical overview
+
+* Hibernate
+
+  webcentric_servlet uses hibernate to map data in a database into objects in Java.
+  The database tables and how they map to Java classes are defined in files linked to from hibernate.cfg.xml - for example:
+  
++--
+<mapping resource="com/caplin/webcentric_servlet/hibernate/Login.hbm.xml"/>
++--
+  
+  And then have a look at Login.hbm.xml and see:
+  
++--
+<class name="com.caplin.webcentric_servlet.hibernate.Login" table="logins">
+[...]
++--
+  
+  which shows that table "logins" gets mapped to Java object instances of Login in some way (details beyond the scope of this document).
+
+The webcentric_servlet database schema
+  
+[images/webcentric_schema.png] The database schema
+
+History
+
+  webcentric_servlet started life as a parallel implementation of "webcentric_rails" - using exactly the same database.
+  It has evolved slightly since then; there are things in the schema that could be improved now that it no longer has to
+  be compatible with webcentric_rails (on the database side - the HTTP "API" has to remain compatible unless we also
+  change webcentric).

@@ -1,0 +1,22 @@
+<p>
+	The
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.multiselectionfield.html">caplin.presenter.node.MultiSelectionField</a></code>
+	class is a control model that lets users choose multiple items from a list of options.
+</p>
+
+<p>
+	Internally, options are stored within a
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.optionsnodelist.html">caplin.presenter.node.OptionsNodeList</a></code>
+	object, which extends
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.nodelist.html">NodeList</a></code>.
+	This allows you to use sub-templates to render each option, while the view is automatically refreshed when the options are updated.
+</p>
+
+<p>
+	This example shows how a single
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.multiselectionfield.html">MultiSelectionField</a></code>
+	can be rendered concurrently, using both <code>&lt;select multiple="multiple"&gt;</code>
+	and <code>&lt;input type="checkbox" &gt;</code> elements. Additionally, we've added a check-box to show how the list of available options
+	can be dynamically modified.  To get multiple options selected initially, we have added the <code>pChosen</code> array to the as a second
+	argument to the <code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.multiselectionfield.html">MultiSelectionField</a></code>.
+</p>

@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	
+	<security-role>
+		<role-name>user</role-name>
+	</security-role>
+	
+	<!-- * uncomment this section to enable authentication *
+	<security-constraint>
+		<web-resource-collection>
+		<web-resource-name>Application</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Login Section</web-resource-name>
+			<url-pattern>/login/*</url-pattern>
+		</web-resource-collection>
+	</security-constraint>
+	-->
+	
+	<!-- This APP.VERSION entry will be enabled and defined after exporting to WAR. During development APP.VERSION 
+		 is automatically generated to avoid caching. Must be in the format v_1234 -->
+	<!-- start-env: prod
+	<env-entry>
+		<env-entry-name>APP.VERSION</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value>%@APP.VERSION@%</env-entry-value>
+	</env-entry>
+	end-env -->
+	
+	<!-- start-env: dev -->
+	<servlet>
+		<servlet-name>cutlass-bundlers</servlet-name>
+		<servlet-class>com.caplin.cutlass.servlet.BundlerServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>cutlass-bundlers</servlet-name>
+		<url-pattern>*.bundle</url-pattern>
+	</servlet-mapping>
+	
+	<filter>
+		<filter-name>cutlass-dev-filters</filter-name>
+		<filter-class>com.caplin.cutlass.filter.BladerunnerDevFilters
+		</filter-class>
+	</filter>
+    <filter-mapping>
+		<filter-name>cutlass-dev-filters</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	<!-- end-env -->
+	
+	<filter>
+		<filter-name>cutlass-filters</filter-name>
+		<filter-class>com.caplin.cutlass.filter.BladerunnerFilters</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>cutlass-filters</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	
+	<!-- start-env: prod
+	<filter>
+		<filter-name>cutlass-prod-filters</filter-name>
+		<filter-class>com.caplin.cutlass.filter.BladerunnerProdFilters
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>cutlass-prod-filters</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	end-env -->
+	
+	<servlet>
+		<servlet-name>webcentric</servlet-name>
+		<servlet-class>com.caplin.webcentric_servlet.WebcentricServlet</servlet-class>
+		<init-param>
+			<param-name>xss.strip.markup.expressions</param-name>
+			<param-value>&lt;/?script[^&gt;]*&gt;</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>webcentric</servlet-name>
+		<url-pattern>/servlet/webcentric/*</url-pattern>
+	</servlet-mapping>
+	
+</web-app>

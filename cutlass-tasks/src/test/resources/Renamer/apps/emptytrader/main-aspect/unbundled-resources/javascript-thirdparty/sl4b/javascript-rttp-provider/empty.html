@@ -1,0 +1,27 @@
+<html>
+
+<head>
+<script type="text/javascript">
+	function getParameter(l_sName)
+	{
+		//if IE then search contains space
+		if(window.location.search == ""){
+			return null;
+		}
+	
+	   var l_oMatch = window.location.search.match(new RegExp("[?&]" + l_sName + "=([^&]*)"));
+	   return l_oMatch[1] || null;
+	}
+	// get the domain from the query string
+	var l_sDomain = getParameter("domain");
+  if (l_sDomain)
+  {
+     document.domain = l_sDomain;
+  }
+</script>
+</head>
+
+<body>
+</body>
+
+</html>

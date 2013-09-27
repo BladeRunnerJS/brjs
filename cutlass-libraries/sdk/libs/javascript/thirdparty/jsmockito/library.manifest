@@ -1,0 +1,2 @@
+depends: jshamcrest
+js: jsmockito-1.0.4.js, jsmockito-caplin.js

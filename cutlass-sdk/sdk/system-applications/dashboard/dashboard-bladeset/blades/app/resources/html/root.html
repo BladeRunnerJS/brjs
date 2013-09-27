@@ -1,0 +1,46 @@
+<div id="caplinx.dashboard.app.root">
+	<div data-bind="attr:{'class':currentSection}">
+
+		<!-- TODO: convert back to nav -->
+		<div id="topnav">
+			<ul>
+				<li><a href="../#" data-bind="css:{selected:isSDKSectionSelected}">BladeRunner</a></li>
+				<li><a href="../#note/latest" class="noborder" data-bind="css:{selected:isSupportSectionSelected}">Release Notes</a></li>
+				<li><a href="/live-examples" class="popout" target="_blank">Live Examples</a></li>
+				<li><a href="http://www.caplin.com/developer" class="newsite" target="_blank">Developer Site</a></li>
+			</ul>
+		</div>
+		
+		<div class="subnav" data-bind="visible:crumbtrail.visible, template:{data:crumbtrail, name:'caplinx.dashboard.app.crumbtrail'}"></div>
+		
+		<div class="loadingIndicator" data-bind="text:loadingText, visible:isLoading"></div>
+		
+		<div id="screen">
+			<div id="appsScreen" data-bind="visible:appsScreen.visible, template:{data:appsScreen, name:'caplinx.dashboard.app.apps-screen'}"></div>
+			
+			<div id="appDetailScreen" data-bind="visible:appDetailScreen.visible, template:{data:appDetailScreen, name:'caplinx.dashboard.app.app-detail-screen'}"></div>
+			
+			<div id="workbenchScreen" data-bind="visible:workbenchScreen.visible, template:{data:workbenchScreen, name:'caplinx.dashboard.app.workbench-screen'}"></div>
+			
+			<div id="releaseNoteScreen" data-bind="visible:releaseNoteScreen.visible, template:{data:releaseNoteScreen, name:'caplinx.dashboard.app.release-note-screen'}"></div>
+		</div>
+		
+		<div id="modalDialogWrapper">
+			<div id="modalDialog" data-bind="template:{name:dialog.viewNode.getTemplateName, foreach:dialog.viewNode}"></div>
+		</div>
+		
+		<div class="footer-wrap">
+			<div id="footer-section">
+				<div id="botnav">
+					<ul>
+						<li><a href="http://www.caplin.com" target="_blank">www.caplin.com</a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="footer-logo">
+				<a href="../#note/latest">Version: <span data-bind="text:sdkVersion"></span></a>
+			</div>
+		</div>
+	</div>
+</div>

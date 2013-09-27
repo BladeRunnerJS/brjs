@@ -1,0 +1,2 @@
+depends : jquery
+js : lib1_1.js, lib1_2.js

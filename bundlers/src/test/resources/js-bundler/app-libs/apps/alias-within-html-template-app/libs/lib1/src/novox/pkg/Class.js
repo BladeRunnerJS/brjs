@@ -1,0 +1,3 @@
+novox.pkg.Class = function()
+{
+};

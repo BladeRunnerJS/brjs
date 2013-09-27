@@ -1,0 +1,230 @@
+<?xml version="1.0"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	
+	<security-role>
+		<role-name>user</role-name>
+	</security-role>
+	
+	<!-- * uncomment this section to enable authentication *
+	<security-constraint>
+		<web-resource-collection>
+		<web-resource-name>Application</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Login Section</web-resource-name>
+			<url-pattern>/login/*</url-pattern>
+		</web-resource-collection>
+	</security-constraint>
+	-->
+	
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>BladeRunnerLoginRealm</realm-name>
+		<form-login-config>
+			<!-- TODO: see if it's possible to have the same config for both Tomcat and Jetty -->
+			<!-- Tomcat does not 302 redirect to /APP_CONTEXT/login as search engines don't like 302's but Jetty does hence the two form-login-pages -->
+			<!-- start-env: prod
+			<form-login-page>/login/unbundled-resources/redirect.html</form-login-page>
+			end-env -->
+			<!-- start-env: dev -->
+			<form-login-page>/login/</form-login-page>
+			<!-- end-env -->
+			<form-error-page>/login/</form-error-page>
+		</form-login-config>
+	</login-config>
+	
+	<!-- This APP.VERSION entry will be enabled and defined after exporting to WAR. During development APP.VERSION 
+		 is automatically generated to avoid caching. Must be in the format v_1234 -->
+	<!-- start-env: prod
+	<env-entry>
+		<env-entry-name>APP.VERSION</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value>%@APP.VERSION@%</env-entry-value>
+	</env-entry>
+	end-env -->
+	
+	<resource-ref>
+		<description>Webcentric Database</description>
+		<res-ref-name>jdbc/webcentricdb</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Container</res-auth>
+	</resource-ref>
+	
+	<!-- start-env: dev -->
+	<servlet>
+		<servlet-name>cutlass-bundlers</servlet-name>
+		<servlet-class>com.caplin.cutlass.servlet.BundlerServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>cutlass-bundlers</servlet-name>
+		<url-pattern>*.bundle</url-pattern>
+	</servlet-mapping>
+	
+	<filter>
+		<filter-name>cutlass-dev-filters</filter-name>
+		<filter-class>com.caplin.cutlass.filter.BladerunnerDevFilters
+		</filter-class>
+	</filter>
+    <filter-mapping>
+		<filter-name>cutlass-dev-filters</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	<!-- end-env -->
+	
+	<filter>
+		<filter-name>cutlass-filters</filter-name>
+		<filter-class>com.caplin.cutlass.filter.BladerunnerFilters</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>cutlass-filters</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	
+	<!-- start-env: prod
+	<filter>
+		<filter-name>cutlass-prod-filters</filter-name>
+		<filter-class>com.caplin.cutlass.filter.BladerunnerProdFilters
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>cutlass-prod-filters</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	end-env -->
+	
+	<servlet>
+		<servlet-name>webcentric</servlet-name>
+		<servlet-class>com.caplin.webcentric_servlet.WebcentricServlet</servlet-class>
+		<init-param>
+			<param-name>xss.strip.markup.expressions</param-name>
+			<param-value>&lt;/?script[^&gt;]*&gt;</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>webcentric</servlet-name>
+		<url-pattern>/servlet/webcentric/*</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>keymaster-standard</servlet-name>
+		<servlet-class>com.caplin.keymaster.servlet.StandardKeyMaster</servlet-class>
+		
+		<init-param>
+			<param-name>formatter-type-javascript</param-name>
+			<param-value>com.caplin.keymaster.servlet.JavaScriptFormatter</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>formatter-type-html</param-name>
+			<param-value>com.caplin.keymaster.servlet.HTMLFormatter</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>encrypting.generator.key.identifier</param-name>
+			<param-value>Caplin</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>encrypting.generator.private.key.store.filename</param-name>
+			<param-value>../conf/keymaster/privatekey.store</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>encrypting.generator.security.provider.class.name</param-name>
+			<param-value>org.bouncycastle.jce.provider.BouncyCastleProvider</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>user.credential.provider</param-name>
+			<param-value>com.caplin.keymaster.servlet.UserCredentialsProvider</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>encrypting.generator.security.provider.name</param-name>
+			<param-value>BC</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>key.generator.Level</param-name>
+			<param-value>ALL</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>key.generator.FilenameAttribute</param-name>
+			<param-value>servlet.log</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>http.remote.user</param-name>
+			<param-value>enabled</param-value>
+		</init-param>
+		
+		<init-param>
+			<param-name>encrypting.encode.extra.data</param-name>
+			<param-value>enabled</param-value>
+		</init-param>
+		
+		<init-param>
+			<description>Optional parameter to set the algorithm used for signatures. Will default to MD5withRSA if this parameter is not present.</description>
+			<param-name>encrypting.generator.signature.algorithm</param-name>
+			<param-value>SHA256withRSA</param-value>
+		</init-param> 
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>keymaster-standard</servlet-name>
+		<url-pattern>/servlet/StandardKeyMaster</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>keymaster-xhr</servlet-name>
+		<servlet-class>com.caplin.keymaster.servlet.KeyMasterXHRFrame</servlet-class>
+		<init-param>
+			<description>The url to the standard key master page, for the XHR to attach to.</description>
+			<param-name>keymaster.url</param-name>
+			<param-value>StandardKeyMaster</param-value>
+		</init-param>
+		<init-param>
+			<description>The url to the key master polling page, for the XHR to attach to.</description>
+			<param-name>keymaster.poll.url</param-name>
+			<param-value>Poll</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>keymaster-xhr</servlet-name>
+		<url-pattern>/servlet/XHRKeymaster</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>keymaster-poll</servlet-name>
+		<servlet-class>com.caplin.keymaster.servlet.Poll</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>keymaster-poll</servlet-name>
+		<url-pattern>/servlet/Poll</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>keymaster-dependencies</servlet-name>
+		<servlet-class>com.caplin.keymaster.servlet.Dependencies</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>keymaster-dependencies</servlet-name>
+		<url-pattern>/servlet/dependencies/*</url-pattern>
+	</servlet-mapping>
+</web-app>

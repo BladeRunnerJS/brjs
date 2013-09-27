@@ -1,0 +1,59 @@
+br.thirdparty("jquery");
+
+/**
+ * @class
+ * <code>Blurred ViewFixtureHandler</code> can be used to trigger <code>blur</code> or <code>focus</code> events on the view element.
+ * Example usage:
+ * <p>
+ * <code>and("tile.view.([identifier=\'FxTileSpot\'] .fxtile_amount .fx_tile_amount_input input).blurred => true");</code>
+ * </p>
+ * 
+ * @constructor
+ * @implements br.test.viewhandler.ViewFixtureHandler
+ */
+br.test.viewhandler.Blurred = function()
+{
+};
+
+br.implement(br.test.viewhandler.Blurred, br.test.viewhandler.ViewFixtureHandler);
+
+br.test.viewhandler.Blurred.prototype.set = function(eElement, vValue)
+{
+	if( !br.test.viewhandler.Focused.isFocusableElement(eElement) || eElement.disabled )
+	{
+		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'blurred' property is not available on non-focusable or disabled elements.");
+	}
+	
+	if(vValue === true)
+	{
+		eElement.blur();
+		jQuery(eElement).trigger("blur");
+		
+		if(eElement.tagName.toLowerCase() == "input")
+		{
+			jQuery(eElement).trigger("change");
+		}
+	}
+	else if(vValue === false)
+	{
+		eElement.focus();
+	}
+	else
+	{
+		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'blurred' property only takes boolean values.");
+	}
+};
+
+br.test.viewhandler.Blurred.prototype.get = function(eElement)
+{
+	if(!br.test.viewhandler.Focused.isFocusableElement(eElement))
+	{
+		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'blurred' property is not available on non-focusable elements.");
+	}
+
+	if(eElement === document.activeElement)
+	{
+		return false;
+	}
+	return true;
+};

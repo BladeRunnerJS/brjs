@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<bundle>
+	<resource name="unitTest">
+		<unitTest>
+			<alternateMergeElem alternateId="id1" name="elem1"/>
+			<alternateMergeElem alternateId="id2" name="elem3"/>
+		</unitTest>
+	</resource>
+</bundle>

@@ -1,0 +1,20 @@
+<gridDefinitions>
+	
+	<dataProviderMappings>
+		<dataProviderMapping id="live.examples.presenter.syntheticGridDataProvider" className="caplin.grid.SyntheticGridDataProvider" />
+	</dataProviderMappings>
+	
+	<templates>	
+		<grid id="live.examples.presenter.MiniFX" displayedColumns="row, x, y">
+			<gridRowModel>
+			    <live.examples.presenter.syntheticGridDataProvider rowNames="A,B,C,D,E"/>
+			</gridRowModel>
+			<columnDefinitions>
+				<column id="row" fields="row" displayName="Row" width="100" />
+				<column id="x" fields="y" displayName="X" width="100" />
+				<column id="y" fields="y" displayName="Y" width="100" />
+				<column id="z" fields="z" displayName="Z" width="100" />
+			</columnDefinitions>
+		</grid>
+	</templates>
+</gridDefinitions>

@@ -1,0 +1,14 @@
+.browser-warning{
+	background: url(../img/dino-brwsr.png) no-repeat center center;
+	width: 822px;
+	height: 510px;
+	display: block;
+}
+
+.browser-warning:hover{
+	background: url(../img/dino-brwsr-hover.png) no-repeat center center;
+}
+
+.browser-warning *{
+	text-indent: -99999px;
+}

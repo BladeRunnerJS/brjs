@@ -1,0 +1,43 @@
+<p><i>Presenter's</i> localisation facilities let you configure your app to be displayed in multiple languages, with the correct content,
+numeric format and date format for the selected locale (which is usually determined by the locality settings on the user's browser).
+Each supported locale must have its own <b>.properties</b> file containing the translated versions of each localisation key.</p>
+
+<p>Presenter lets you localise your app in three ways:</p>
+
+
+<dl>
+	<dt>HTML Template Localisation Tokens:</dt>
+	<dd>
+		You place these tokens within the HTML View template, inside curly brackets and prefixed by @, and they are replaced by the localised
+		value for that token.<br />
+		For example: <code>@{tutorial.amount.instruction}</code>
+	</dd>
+
+	<dt>API Translation</dt>
+	<dd>
+		The Presentation Model calls the <code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.i18n.Translator.html#getMessage">ct.i18n()</a></code>
+		method of the <i>Caplin Localisation Library</i>, using the result to set the value of a property.  Note: <code>ct.i18n()</code> is a global function that provides a shortcut to the
+		<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.i18n.Translator.html#getMessage">caplin.i18n.translator.getMessage()</a></code> function.
+	</dd>
+
+	<dt>Validators That Support Localisation</dt>
+	<dd>
+		Some validators accept a localisation token in their constructor, which the Presentation Model can set to ensure
+		a localised version of the error message is displayed when an error occurs.
+	</dd>
+</dl>
+
+<h3>The Example</h3>
+<p>The code in this example can access two versions of each localisation token, from a properties file that we have created (see the I18N tab by the side).
+The standard versions are as they appear in the code, whereas the alternate versions can be accessed by adding <b>.alt</b> onto the end of each token.</p>
+
+<p class="info">
+In Real Life, the tokens would not change, and each localised version would have its own <b>.properties</b> file.
+For the purposes of the example, we've fudged things slightly, so that you can see how the Presenter syntax is
+used to display different versions of the localisation parameters.
+</p>
+
+<p>For more information about localisation, see the tutorials:
+<a href="http://www.caplin.com/developer/component/base-library/getting-started/base-library-internationalising-your-app" target="docs">Internationalising
+your app</a>, <a href="http://www.caplin.com/developer/component/base-library/how-can-i/base-library-localise-dates" target="docs">Localise
+dates</a> and <a href="http://www.caplin.com/developer/component/base-library/how-can-i/base-library-localise-numbers" target="docs">Localise numbers</a>.</p>

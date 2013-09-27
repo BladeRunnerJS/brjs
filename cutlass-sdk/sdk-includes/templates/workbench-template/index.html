@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Workbench</title>
+		
+		<@css.bundle theme="standard"@/>
+		<@js.bundle@/>
+		
+		<script type="text/javascript">
+			var oWorkbench;
+			
+			function initialize()
+			{
+				oWorkbench = new caplin.workbench.ui.Workbench(250, 310);
+				
+				var oApplication = new @appns.@bladeset.@blade.workbench.ExampleBladeApplication(200, 100);
+				var oPresentationModel = oApplication.getPresentationModel();
+				var oWorkbenchEventLogger = new caplin.workbench.ui.WorkbenchEventLogger([oPresentationModel]);
+				var oPresentationModelViewer = new caplin.presenter.workbench.ui.PresentationModelViewer(oPresentationModel);
+				
+				oWorkbench.addToLeftWing(oWorkbenchEventLogger, "Messages");
+				oWorkbench.addToRightWing(oPresentationModelViewer, "Visualise Presentation Model", true);
+				
+				document.body.appendChild(oApplication.getElement());
+				oWorkbench.center(oApplication.getElement());
+			}
+		</script>
+	</head>
+	<body onload="initialize()">
+	</body>
+</html>

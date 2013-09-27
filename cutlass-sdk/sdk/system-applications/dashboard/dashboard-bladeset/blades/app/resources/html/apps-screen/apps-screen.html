@@ -1,0 +1,18 @@
+<div id="caplinx.dashboard.app.apps-screen">
+	<div class="btns-area">
+		<ul>
+			<li>
+				<span class="newAppButton" data-bind="template:{name:'caplinx.dashboard.app.oval-button', data:newAppButton}"></span>
+			</li>
+			<li>
+				<span class="importMotifFromZipButton" data-bind="template:{name:'caplinx.dashboard.app.oval-button', data:importMotifFromZipButton}"></span>
+			</li>
+		</ul>
+	</div>
+	
+	<div class="horizontal_dotted_line"></div>
+	
+	<div class="apps-area" data-bind="template:{name:'caplinx.dashboard.app.app-summary', foreach:apps}"></div>
+	
+	<div data-bind="template:{name:'caplinx.dashboard.app.splash-screen', data:splashScreen}"></div>
+</div>

@@ -1,0 +1,34 @@
+	
+<div id="testWrapper">
+	
+	<p><a href="" id="defaultFocus" class="ignoreEvents" onclick="return false">default focus link</a></p>
+	<p><a href="" id="aLink" onclick="return false">a link</a></p>
+	<p><a href="" id="anotherLink" onclick="return false">another link</a></p>
+
+	<input id="nonFormSubmitButton" type="submit" name="submitButton" value="Submit" />
+	<button id="nonFormButton">my button</button>
+
+	<form id="testForm" action="./" method="post" onsubmit="return false">
+		<input id="textInput" type="text" name="textInput" />
+		<input type="text" id="anotherTextInput" />
+		<input id="submitButton" type="submit" name="submitButton" value="Submit" />
+		<button id="button">my button</button>
+		<input id="checkbox1" type="checkbox" name="checkbox" value="1" />
+		<input id="checkbox2" type="checkbox" name="checkbox" value="2" />
+		<input id="radioButton1" type="radio" name="radioButton" value="1" />
+		<input id="radioButton2" type="radio" name="radioButton" value="2" />
+		<select id="dropDown" name="dropDown">
+			<option id="dropDownItem1" value="1">1</option>
+			<option id="dropDownItem2" value="2">2</option>
+			<option id="dropDownItem3" value="3">3</option>
+		</select>
+		<select multiple id="dropDownMultipleSelect" name="dropDownMultipleSelect">
+			<option id="dropDownMultipleSelect1" value="1">1</option>
+			<option id="dropDownMultipleSelect2" value="2">2</option>
+			<option id="dropDownMultipleSelect3" value="3">3</option>
+		</select>
+		<textarea id="textArea" name="textArea" rows="5" cols="25"></textarea>
+	</form>
+
+</div>
+

@@ -1,0 +1,8 @@
+<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+	<alias 	name="novox.example.myAlias"
+			interface="myInterface">
+
+		<scenario name="test" class="myTestScenarioClass" />
+	</alias>
+	
+</aliasDefinitions>

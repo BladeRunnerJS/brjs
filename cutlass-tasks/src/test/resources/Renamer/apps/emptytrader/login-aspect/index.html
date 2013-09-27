@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<base href="@APP.VERSION@"/>
+	
+	<title>Login</title>
+	
+	<@css.bundle theme="blue"@ />
+	<@css.bundle alternateTheme="red"@ />
+	
+	<!-- TODO: js.bundle - wasnt working - looked like it was pulling in dependencies from main-aspect -->
+	<script src="unbundled-resources/js/login.js"></script>
+	<script src="unbundled-resources/js/CookieUtils.js"></script>
+	
+</head>
+<body>
+	<h1>Login</h1>
+	
+	<form method="post" action="j_security_check" onsubmit="emptycorp.emptytrader.login(this); return true;">	
+		Username: <input class='username' type="text" name="j_username" size="15" value="user1@caplin.com"/><br />
+		Password: <input class='password' type="password" name="j_password" size="15" value="password"/><br />
+		Locale: <select class='locale' name='locale'>
+			<option value="en_GB">English</option>
+			<option value="de_DE">German</option>
+		</select>
+		<div align="center">
+			<p><input type="submit" value="Login" name="submit" /></p>
+		</div>
+	</form>
+	
+</body>
+</html>

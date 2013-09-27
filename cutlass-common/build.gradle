@@ -1,0 +1,28 @@
+
+apply plugin: 'java'
+apply plugin: com.caplin.gradle.plugins.CompileOnly
+
+dependencies {
+	compile (project(":brjs-core")) {
+		exclude module: 'jetty-all-server'
+	}
+	compile dependency('commons-lang3')
+	compile dependency('commons-io')
+	compile dependency('yamlbeans')
+	compile dependency('xom')
+	compile dependency('gson')
+	compile dependency('json-simple')
+	compile dependency('guava')
+	
+	compileOnly dependency('selenium-java')
+	/* compile only so it isnt considered a transitive dependency - any projects that depend on this project and selenium-java will need to explicitly add it as a dependency */
+	compileOnly dependency('servlet-api')
+	
+	testCompile dependency('junit')
+	testCompile dependency('yamlbeans')
+	testCompile dependency('jmock')
+	testCompile dependency('mockito-core')
+	testCompile dependency('servlet-api')
+	
+	testRuntime project(path: ':brjs-logger-binding')
+}

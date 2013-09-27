@@ -1,0 +1,1 @@
+if(!bURLValid){SL4B_Accessor.getRttpProvider().urlCheckDownloadFailed();}

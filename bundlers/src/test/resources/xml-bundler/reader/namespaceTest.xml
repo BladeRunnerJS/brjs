@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="http://schema.caplin.com/defaultNamespace"
+	xmlns:ns1="http://schema.caplin.com/namespace1">
+	<elem1 p="v"/>
+	<ns1:elem2 p="v"/>
+	<elem3 xmlns="http://schema.caplin.com/namespace2">
+		<elem4/>
+		<ns1:elem5/>
+	</elem3>
+</root>

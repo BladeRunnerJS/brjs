@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<base href="@APP.VERSION@"/>
+		
+		<title>My Application</title>
+		
+		<@css.bundle theme="standard"@/>
+		<@js.bundle@/>
+		
+		<script>
+			var oApp = new @appns.App();
+		</script>
+	</head>
+	<body>
+		@SUCCESS.MESSAGE.JNDI.TOKEN@
+	</body>
+</html>

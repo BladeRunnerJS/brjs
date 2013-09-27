@@ -1,0 +1,11 @@
+.hello-world-logo {
+	width:48px;
+	height:48px;
+	background-image:url(cutlass.jpg);
+}
+
+.bladeset-logo {
+	width:48px;
+	height:48px;
+	background-image:url(../../../../themes/common/cutlass.jpg);
+}
