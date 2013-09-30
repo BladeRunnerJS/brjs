@@ -2,6 +2,8 @@ package com.caplin.cutlass.request;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -10,10 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import static org.mockito.Mockito.*;
 
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.caplin.cutlass.conf.AppConf;
+import com.esotericsoftware.yamlbeans.YamlException;
 
 public class LocaleHelperTest
 {
@@ -33,65 +37,65 @@ public class LocaleHelperTest
 	@Test
 	public void testGetLocaleFromRequestHeader() throws Exception
 	{
-		setSupportedLocales("en_GB");
+		givenSupportedLocales("en_GB");
 		addPreferedLocale("en_GB");
-		when(request.getLocales()).thenReturn( preferedLocales.elements() );
-		assertEquals("en_GB", LocaleHelper.getLocaleFromRequest(appConf, request));
+		whenRequestMade();
+		thenLocaleProvidedIs("en_GB");
 	}
 	
 	@Test
 	public void testGetLocaleFromRequestHeaderWithMultipleLocales() throws Exception
 	{
-		setSupportedLocales("en_GB");
+		givenSupportedLocales("en_GB");
 		addPreferedLocale("en_US");
 		addPreferedLocale("en_GB");
-		when(request.getLocales()).thenReturn( preferedLocales.elements() );
-		assertEquals("en_GB", LocaleHelper.getLocaleFromRequest(appConf, request));
+		whenRequestMade();
+		thenLocaleProvidedIs("en_GB");
 	}
 	
 	@Test
 	public void testGetLocaleFromRequestHeaderWithMultipleLocalesWhereLastLocaleMatches() throws Exception
 	{
-		setSupportedLocales("en_GB");
+		givenSupportedLocales("en_GB");
 		addPreferedLocale("en_GB");
 		addPreferedLocale("en_US");
-		when(request.getLocales()).thenReturn( preferedLocales.elements() );
-		assertEquals("en_GB", LocaleHelper.getLocaleFromRequest(appConf, request));
+		whenRequestMade();
+		thenLocaleProvidedIs("en_GB");
 	}
 	
 	@Test
 	public void testGetLocaleWhenLocaleDoesntMatchAnySupported() throws Exception
 	{
-		setSupportedLocales("en_GB");
+		givenSupportedLocales("en_GB");
 		addPreferedLocale("de_DE");
-		when(request.getLocales()).thenReturn( preferedLocales.elements() );
-		assertEquals("en_GB", LocaleHelper.getLocaleFromRequest(appConf, request));
+		whenRequestMade();
+		thenLocaleProvidedIs("en_GB");
 	}
 	
 	@Test
 	public void testMultipleSupportedLocalesAndMultipleRequestedLocales() throws Exception
 	{
-		setSupportedLocales("en_GB,de_DE,en,de");
+		givenSupportedLocales("en_GB,de_DE,en,de");
 		addPreferedLocale("de_DE");
 		addPreferedLocale("de");
-		when(request.getLocales()).thenReturn( preferedLocales.elements() );
-		assertEquals("de_DE", LocaleHelper.getLocaleFromRequest(appConf, request));
+		whenRequestMade();
+		thenLocaleProvidedIs("de_DE");
 	}
 	
 	@Test
 	public void testMultipleSupportedLocalesAndMultipleRequestedLocalesWithLanguageOnlyMatching() throws Exception
 	{
-		setSupportedLocales("en_GB,en,de");
+		givenSupportedLocales("en_GB,en,de");
 		addPreferedLocale("de_DE");
 		addPreferedLocale("de");
-		when(request.getLocales()).thenReturn( preferedLocales.elements() );
-		assertEquals("de", LocaleHelper.getLocaleFromRequest(appConf, request));
+		whenRequestMade();
+		thenLocaleProvidedIs("de");
 	}
 
 	@Test
 	public void testLocaleCanBeOverriddenByCookie() throws Exception
 	{
-		setSupportedLocales("en_GB,en,de_DE,de");
+		givenSupportedLocales("en_GB,en,de_DE,de");
 		addPreferedLocale("en_GB");
 		addPreferedLocale("en");
 		
@@ -101,14 +105,14 @@ public class LocaleHelperTest
 		cookies[2] = new Cookie(LocaleHelper.LOCALE_COOKIE_NAME, "de_DE");
 		
 		when(request.getCookies()).thenReturn( cookies );
-		when(request.getLocales()).thenReturn( preferedLocales.elements() );
-		assertEquals("de_DE", LocaleHelper.getLocaleFromRequest(appConf, request));
+		whenRequestMade();
+		thenLocaleProvidedIs("de_DE");
 	}
 	
 	@Test
 	public void testCookieLocaleCantForceAnUnsupportedLocale() throws Exception
 	{
-		setSupportedLocales("en_GB,en,de_DE,de");
+		givenSupportedLocales("en_GB,en,de_DE,de");
 		addPreferedLocale("de_DE");
 		addPreferedLocale("de");
 		
@@ -118,8 +122,8 @@ public class LocaleHelperTest
 		cookies[2] = new Cookie(LocaleHelper.LOCALE_COOKIE_NAME, "zh_CN");
 		
 		when(request.getCookies()).thenReturn( cookies );
-		when(request.getLocales()).thenReturn( preferedLocales.elements() );
-		assertEquals("de_DE", LocaleHelper.getLocaleFromRequest(appConf, request));
+		whenRequestMade();
+		thenLocaleProvidedIs("de_DE");
 	}
 	
 	@Test
@@ -129,8 +133,7 @@ public class LocaleHelperTest
 		assertEquals("en", language);
 	}
 	
-	
-	private void setSupportedLocales(String locales)
+	private void givenSupportedLocales(String locales)
 	{
 		appConf.locales = locales;
 	}
@@ -147,5 +150,12 @@ public class LocaleHelperTest
 			preferedLocales.add(new Locale(localeSplit[0],localeSplit[1]));
 		}
 	}
-
+	
+	private void whenRequestMade() {
+		when(request.getLocales()).thenReturn( preferedLocales.elements() );
+	}
+	
+	private void thenLocaleProvidedIs(String expectedLocale) throws Exception {
+		assertEquals(expectedLocale, LocaleHelper.getLocaleFromRequest(appConf, request));
+	}
 }
