@@ -31,90 +31,97 @@ public class LocaleHelperTest
 	}
 	
 	@Test
-	public void testGetLocaleFromRequestHeader() throws Exception
-	{
-		givenServerSupportsLocales("en_GB");
-			andBrowserPrefersLocales("en_GB");
-		whenRequestIsMade();
-		thenLocaleProvidedIs("en_GB");
-	}
-	
-	@Test
-	public void testGetLocaleFromRequestHeaderWithMultipleLocales() throws Exception
-	{
-		givenServerSupportsLocales("en_GB");
-			andBrowserPrefersLocales("en_US", "en_GB");
-		whenRequestIsMade();
-		thenLocaleProvidedIs("en_GB");
-	}
-	
-	@Test
-	public void testGetLocaleFromRequestHeaderWithMultipleLocalesWhereLastLocaleMatches() throws Exception
-	{
-		givenServerSupportsLocales("en_GB");
-			andBrowserPrefersLocales("en_GB", "en_US");
-		whenRequestIsMade();
-		thenLocaleProvidedIs("en_GB");
-	}
-	
-	@Test
-	public void testGetLocaleWhenLocaleDoesntMatchAnySupported() throws Exception
-	{
-		givenServerSupportsLocales("en_GB");
-			andBrowserPrefersLocales("de_DE");
-		whenRequestIsMade();
-		thenLocaleProvidedIs("en_GB");
-	}
-	
-	@Test
-	public void testMultipleSupportedLocalesAndMultipleRequestedLocales() throws Exception
-	{
-		givenServerSupportsLocales("en_GB", "de_DE", "en", "de");
-			andBrowserPrefersLocales("de_DE", "de");
-		whenRequestIsMade();
-		thenLocaleProvidedIs("de_DE");
-	}
-	
-	@Test
-	public void testMultipleSupportedLocalesAndMultipleRequestedLocalesWithLanguageOnlyMatching() throws Exception
-	{
-		givenServerSupportsLocales("en_GB", "en", "de");
-			andBrowserPrefersLocales("de_DE", "de");
-		whenRequestIsMade();
-		thenLocaleProvidedIs("de");
-	}
-
-	@Test
-	public void testLocaleCanBeOverriddenByCookie() throws Exception
-	{
-		givenServerSupportsLocales("en_GB", "en", "de_DE", "de");
-			andBrowserPrefersLocales("en_GB", "en");
-			andBrowserHasCookies(
-				new Cookie("some-cookie", "a-value"),
-				new Cookie("another-cookie", "a-value"),
-				new Cookie(LocaleHelper.LOCALE_COOKIE_NAME, "de_DE"));
-		whenRequestIsMade();
-		thenLocaleProvidedIs("de_DE");
-	}
-	
-	@Test
-	public void testCookieLocaleCantForceAnUnsupportedLocale() throws Exception
-	{
-		givenServerSupportsLocales("en_GB", "en", "de_DE", "de");
-			andBrowserPrefersLocales("de_DE", "de");
-			andBrowserHasCookies(
-				new Cookie("some-cookie", "a-value"),
-				new Cookie("another-cookie", "a-value"),
-				new Cookie(LocaleHelper.LOCALE_COOKIE_NAME, "zh_CN"));
-		whenRequestIsMade();
-		thenLocaleProvidedIs("de_DE");
-	}
-	
-	@Test
 	public void getLanguageFromLocale()
 	{
 		String language = LocaleHelper.getLanguageFromLocale("en_GB");
 		assertEquals("en", language);
+	}
+	
+	@Test
+	public void browserGetsTheDefaultLocaleIfNoneOfTheirPreferencesAreAvailable() throws Exception
+	{
+		givenServerSupportsLocales("en", "es");
+			andBrowserPrefersLocales("de_DE", "de");
+		whenRequestIsMade();
+		thenLocaleProvidedIs("en");
+	}
+	
+	@Test
+	public void browserAlsoGetsTheDefaultLocaleIfThisMatchesTheirPreference() throws Exception
+	{
+		givenServerSupportsLocales("en", "es");
+			andBrowserPrefersLocales("en_GB", "en");
+		whenRequestIsMade();
+		thenLocaleProvidedIs("en");
+	}
+	
+	@Test
+	public void browserGetsNonDefaultLocaleIfThisMatchesTheirPreference() throws Exception
+	{
+		givenServerSupportsLocales("en", "es");
+			andBrowserPrefersLocales("es_ES", "es");
+		whenRequestIsMade();
+		thenLocaleProvidedIs("es");
+	}
+	
+	@Test
+	public void browserGetsCountrySpecificLocale() throws Exception
+	{
+		givenServerSupportsLocales("en_GB", "en");
+			andBrowserPrefersLocales("en_GB", "en");
+		whenRequestIsMade();
+		thenLocaleProvidedIs("en_GB");
+	}
+	
+	@Test
+	public void browserGetsCountrySpecificLocaleEvenWhenThatAppearsSecondInTheListOfSupportedLocales() throws Exception
+	{
+		givenServerSupportsLocales("en", "en_GB");
+			andBrowserPrefersLocales("en_GB", "en");
+		whenRequestIsMade();
+		thenLocaleProvidedIs("en_GB");
+	}
+	
+	@Test
+	public void browserGetsGeneralLocaleIfTheirLanguageSpecificVariationMayNotBeAvailable() throws Exception
+	{
+		givenServerSupportsLocales("en", "en_GB");
+			andBrowserPrefersLocales("en_US", "en");
+		whenRequestIsMade();
+		thenLocaleProvidedIs("en");
+	}
+	
+	@Test
+	public void browserGetsFirstLanguageInTheirListEvenIfTheySupportTheDefault() throws Exception
+	{
+		givenServerSupportsLocales("en", "es");
+			andBrowserPrefersLocales("es_ES", "es", "en");
+		whenRequestIsMade();
+		thenLocaleProvidedIs("es");
+	}
+	
+	@Test
+	public void localeSpecifiedInCookieOverridesBrowserLocales() throws Exception
+	{
+		givenServerSupportsLocales("en", "de", "es");
+			andBrowserPrefersLocales("en_GB", "en");
+			andBrowserHasCookies(
+				new Cookie("some-cookie", "a-value"),
+				new Cookie("another-cookie", "a-value"),
+				new Cookie("CAPLIN.LOCALE", "de"));
+		whenRequestIsMade();
+		thenLocaleProvidedIs("de");
+	}
+	
+	@Test
+	public void browserFallsBackToNormalSelectionBehaviourIfTHeCookieSpecifiesAnUnsupportedLocale() throws Exception
+	{
+		givenServerSupportsLocales("en", "de", "es");
+			andBrowserPrefersLocales("es_ES", "es");
+			andBrowserHasCookies(
+				new Cookie("CAPLIN.LOCALE", "zh_CN"));
+		whenRequestIsMade();
+		thenLocaleProvidedIs("es");
 	}
 	
 	private void givenServerSupportsLocales(String... locales)
