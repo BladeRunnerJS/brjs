@@ -25,6 +25,7 @@ dependencies {
 	compile dependency('bval-jsr303')
 	compile dependency('jsap')
 	compile dependency('jetty-all-server')
+	compile dependency('jta')
 	
 	compileOnly dependency('servlet-api')
 	compileOnly dependency('junit')
