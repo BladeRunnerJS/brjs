@@ -19,8 +19,6 @@ import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.
 
 public class ApplicationServerUtils
 {	
-	static final String WEB_XML_PATH = "WEB-INF/web.xml";
-	
 	public class Messages {
 		public static final String DEPLOYING_APP_MSG = "Deploying new app to app server '%s'"; 
 	}
@@ -74,7 +72,7 @@ public class ApplicationServerUtils
 			"org.eclipse.jetty.plus.webapp.PlusConfiguration",
 			"org.eclipse.jetty.webapp.JettyWebXmlConfiguration"});
 		webappContext.setDefaultsDescriptor("org/bladerunnerjs/model/appserver/webdefault.xml");
-		webappContext.setDescriptor(app.dir().getAbsolutePath()+"/"+WEB_XML_PATH);
+		webappContext.setDescriptor(app.file("WEB-INF/web.xml").getAbsolutePath());
 		webappContext.setResourceBase(app.dir().getAbsolutePath());
 		webappContext.setContextPath("/"+app.getName());
 		webappContext.setServerClasses(new String[] {"org.slf4j."});
