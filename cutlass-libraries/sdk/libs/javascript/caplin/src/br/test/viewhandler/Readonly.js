@@ -6,7 +6,6 @@
  * <code>then("form.view.(.totalValue input).readonly = true");</code>
  * </p>
  * @constructor
- * @beta
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
 br.test.viewhandler.Readonly = function()
