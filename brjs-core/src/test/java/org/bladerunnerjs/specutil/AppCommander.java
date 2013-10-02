@@ -10,9 +10,9 @@ import org.bladerunnerjs.specutil.engine.ValueCommand;
 
 public class AppCommander extends NodeCommander<App> {
 	private final App app;
-
-	public AppCommander(SpecTest modelTest, App app) {
-		super(modelTest, app);
+	
+	public AppCommander(SpecTest specTest, App app) {
+		super(specTest, app);
 		this.app = app;
 	}
 	

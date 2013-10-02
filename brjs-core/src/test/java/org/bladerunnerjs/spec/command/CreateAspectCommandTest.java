@@ -24,11 +24,11 @@ public class CreateAspectCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		pluginLocator.pluginCommands.add( new CreateAspectCommand() );
-		given(brjs).hasBeenCreated();
-		app = brjs.app("app");
-		aspect = app.aspect("aspect");
-		badAspect = app.aspect("aspect#$@/");
+		given(pluginLocator).hasCommand(new CreateAspectCommand())
+			.and(brjs).hasBeenCreated();
+			app = brjs.app("app");
+			aspect = app.aspect("aspect");
+			badAspect = app.aspect("aspect#$@/");
 	}
 	
 	@Test
