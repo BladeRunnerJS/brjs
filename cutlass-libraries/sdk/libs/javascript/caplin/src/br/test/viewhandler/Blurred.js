@@ -5,7 +5,7 @@ br.thirdparty("jquery");
  * <code>Blurred ViewFixtureHandler</code> can be used to trigger <code>blur</code> or <code>focus</code> events on the view element.
  * Example usage:
  * <p>
- * <code>and("tile.view.([identifier=\'FxTileSpot\'] .fxtile_amount .fx_tile_amount_input input).blurred => true");</code>
+ * <code>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).blurred => true");</code>
  * </p>
  * 
  * @constructor
