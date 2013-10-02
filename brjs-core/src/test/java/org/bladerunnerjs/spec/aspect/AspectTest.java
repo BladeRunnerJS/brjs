@@ -20,10 +20,10 @@ public class AspectTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-		app = brjs.app("app1");
-		aspectTemplate = brjs.template("aspect");
-		aspect = app.aspect("default");
-		badAspect = app.aspect("!#*");
+			app = brjs.app("app1");
+			aspectTemplate = brjs.template("aspect");
+			aspect = app.aspect("default");
+			badAspect = app.aspect("!#*");
 	}
 	
 	@Test

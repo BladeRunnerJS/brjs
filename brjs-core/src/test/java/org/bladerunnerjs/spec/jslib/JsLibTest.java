@@ -20,13 +20,13 @@ public class JsLibTest extends SpecTest {
 	private NamedDirNode libTemplate;
 	
 	@Before
-	public void initTestObjects()
+	public void initTestObjects() throws Exception
 	{
-		brjs = createModel();
-		app = brjs.app("app");
-		lib = app.jsLib("lib1");
-		badLib = app.jsLib("%$&@");
-		libTemplate = brjs.template("jslib");
+		given(brjs).hasBeenCreated();
+			app = brjs.app("app");
+			lib = app.jsLib("lib1");
+			badLib = app.jsLib("%$&@");
+			libTemplate = brjs.template("jslib");
 	}
 	
 	@Test

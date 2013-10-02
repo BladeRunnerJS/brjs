@@ -27,10 +27,10 @@ public class AppTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-		app = brjs.app("app1");
-		appTemplate = brjs.template("app");
-		appJars = brjs.appJars();
-		aspect = app.aspect("default");
+			app = brjs.app("app1");
+			appTemplate = brjs.template("app");
+			appJars = brjs.appJars();
+			aspect = app.aspect("default");
 	}
 	
 	// TODO: does this add anything over the baselining test?

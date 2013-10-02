@@ -24,12 +24,12 @@ public class BladesetTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-		app = brjs.app("app");
-		bladesetTemplate = brjs.template("bladeset");
-		bladeset = app.bladeset("bs");
-		invalidBladesetName = app.bladeset("#Invalid");
-		JSKeywordBladesetName = app.bladeset("else");
-		invalidPackageName = app.bladeset("_invalid");
+			app = brjs.app("app");
+			bladesetTemplate = brjs.template("bladeset");
+			bladeset = app.bladeset("bs");
+			invalidBladesetName = app.bladeset("#Invalid");
+			JSKeywordBladesetName = app.bladeset("else");
+			invalidPackageName = app.bladeset("_invalid");
 	}
 	
 	@Test

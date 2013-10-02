@@ -20,9 +20,9 @@ public class AppConfTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-		app = brjs.app("app1");
-		JSKeyWordApp = brjs.app("if");
-		reseverWordApp = brjs.app("caplin");
+			app = brjs.app("app1");
+			JSKeyWordApp = brjs.app("if");
+			reseverWordApp = brjs.app("caplin");
 	}
 	
 	

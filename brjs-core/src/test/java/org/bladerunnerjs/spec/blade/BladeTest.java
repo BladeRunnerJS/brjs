@@ -28,14 +28,14 @@ public class BladeTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-		app = brjs.app("app");
-		aspect = app.aspect("default");
-		bladeset = app.bladeset("bs");
-		blade1 = bladeset.blade("b1");
-		blade2 = bladeset.blade("b2");
-		bladeWithInvalidName = bladeset.blade("_-=+");
-		bladeWithJSKeyWordName = bladeset.blade("export");
-		bladeTemplate = brjs.template("blade");
+			app = brjs.app("app");
+			aspect = app.aspect("default");
+			bladeset = app.bladeset("bs");
+			blade1 = bladeset.blade("b1");
+			blade2 = bladeset.blade("b2");
+			bladeWithInvalidName = bladeset.blade("_-=+");
+			bladeWithJSKeyWordName = bladeset.blade("export");
+			bladeTemplate = brjs.template("blade");
 	}
 	
 	@Test
