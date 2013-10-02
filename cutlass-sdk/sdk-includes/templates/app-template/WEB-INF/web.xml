@@ -85,17 +85,4 @@
 	</filter-mapping>
 	end-env -->
 	
-	<servlet>
-		<servlet-name>webcentric</servlet-name>
-		<servlet-class>com.caplin.webcentric_servlet.WebcentricServlet</servlet-class>
-		<init-param>
-			<param-name>xss.strip.markup.expressions</param-name>
-			<param-value>&lt;/?script[^&gt;]*&gt;</param-value>
-		</init-param>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>webcentric</servlet-name>
-		<url-pattern>/servlet/webcentric/*</url-pattern>
-	</servlet-mapping>
-	
 </web-app>
