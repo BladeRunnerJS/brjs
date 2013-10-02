@@ -131,6 +131,8 @@ public abstract class SpecTest
 	public NodeObserverBuilder given(EventObserver observer) { return new NodeObserverBuilder(this, observer); }
 	public NodeObserverVerifier then(EventObserver observer) { return new NodeObserverVerifier(this, observer); }
 	
+	public PluginLocatorBuilder given(MockPluginLocator pluginLocator) {return new PluginLocatorBuilder(this, pluginLocator); }
+	
 	// NamedDirNode
 	public NamedNodeBuilder given(NamedNode namedDirNode) { return new NamedNodeBuilder(this, namedDirNode); }
 	public NamedNodeCommander when(NamedNode namedDirNode) { return new NamedNodeCommander(this, namedDirNode); }

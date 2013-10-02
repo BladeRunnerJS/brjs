@@ -28,14 +28,17 @@ public class NamedNodeTest extends SpecTest {
 	private NamedDirNode nodeTemplate;
 	private NamedNodeFactory namedNodeFactory;
 	
+	private String getTemplateName() {
+		return (node instanceof TestPack) ? node.getName() : node.getClass().getSimpleName().toLowerCase();
+	}
+	
 	@Before
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-		node = namedNodeFactory.createNamedNode(brjs, "node");
-		badNode = namedNodeFactory.createNamedNode(brjs, "!$%&");
-		String templateName = (node instanceof TestPack) ? node.getName() : node.getClass().getSimpleName().toLowerCase();
-		nodeTemplate = brjs.template(templateName);
+			node = namedNodeFactory.createNamedNode(brjs, "node");
+			badNode = namedNodeFactory.createNamedNode(brjs, "!$%&");
+			nodeTemplate = brjs.template(getTemplateName());
 	}
 	
 	public NamedNodeTest(String testName, NamedNodeFactory namedNodeFactory) {

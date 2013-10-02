@@ -14,7 +14,7 @@ public class NodeTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-		nodeProperties = brjs.nodeProperties("plugin-name");
+			nodeProperties = brjs.nodeProperties("plugin-name");
 	}
 	
 	@Test

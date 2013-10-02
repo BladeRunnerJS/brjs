@@ -18,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-
 public class CreateLibraryCommandTest extends SpecTest {
 	App app;
 	JsLib lib;
@@ -27,11 +26,11 @@ public class CreateLibraryCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		pluginLocator.pluginCommands.add( new CreateLibraryCommand() );
-		given(brjs).hasBeenCreated();
-		app = brjs.app("app");
-		lib = app.jsLib("lib");
-		badLib = app.jsLib("lib#$@/");
+		given(pluginLocator).hasCommand(new CreateLibraryCommand())
+			.and(brjs).hasBeenCreated();
+			app = brjs.app("app");
+			lib = app.jsLib("lib");
+			badLib = app.jsLib("lib#$@/");
 	}
 	
 	@Test
