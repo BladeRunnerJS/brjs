@@ -191,6 +191,7 @@ public class WarCommand implements LegacyCommandPlugin
 		
 		try {
 			targetFile.getParentFile().mkdirs();
+			@SuppressWarnings("resource")
 			OutputStream fileStream = new BufferedOutputStream(new FileOutputStream(targetFile));
 			bundleStream = (validBundlerRequest.endsWith("image.bundle")) ? fileStream : new GZIPOutputStream(fileStream);
 		}
