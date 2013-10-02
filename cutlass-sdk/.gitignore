@@ -7,3 +7,5 @@ build
 sdk/libs
 test-results
 apps
+generated
+js-patches
