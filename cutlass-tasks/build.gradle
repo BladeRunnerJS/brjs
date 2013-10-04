@@ -20,6 +20,8 @@ dependencies {
 
 	testCompile dependency('junit')
 	testCompile dependency('mockito-core')
-
+	testCompile dependency('httpclient')
+	testCompile dependency('hamcrest-all')
+	
 	testRuntime project(path: ':brjs-logger-binding')
 }
