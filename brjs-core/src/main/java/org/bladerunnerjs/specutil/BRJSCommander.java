@@ -8,7 +8,7 @@ import org.bladerunnerjs.specutil.engine.CommanderChainer;
 import org.bladerunnerjs.specutil.engine.NodeCommander;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.bladerunnerjs.specutil.engine.ValueCommand;
-import org.bladerunnerjs.testing.utility.MockLogLevelAccessor;
+import org.bladerunnerjs.specutil.logging.MockLogLevelAccessor;
 
 
 public class BRJSCommander extends NodeCommander<BRJS> {

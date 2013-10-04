@@ -1,4 +1,4 @@
-package org.bladerunnerjs.specutiltest.logging;
+package org.bladerunnerjs.specutil.logging;
 
 import org.bladerunnerjs.specutil.engine.Command;
 import org.bladerunnerjs.specutil.engine.ModelCommander;

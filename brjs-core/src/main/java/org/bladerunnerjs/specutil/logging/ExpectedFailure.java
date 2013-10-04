@@ -1,4 +1,4 @@
-package org.bladerunnerjs.specutiltest.logging;
+package org.bladerunnerjs.specutil.logging;
 
 import java.lang.annotation.*;
 

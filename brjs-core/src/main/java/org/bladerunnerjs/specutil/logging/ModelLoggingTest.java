@@ -1,4 +1,4 @@
-package org.bladerunnerjs.specutiltest.logging;
+package org.bladerunnerjs.specutil.logging;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.specutil.LoggerVerifier;

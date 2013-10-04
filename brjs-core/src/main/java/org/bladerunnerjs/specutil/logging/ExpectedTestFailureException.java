@@ -1,4 +1,4 @@
-package org.bladerunnerjs.specutiltest.logging;
+package org.bladerunnerjs.specutil.logging;
 
 /* adapted from https://github.com/mike-ensor/expected-failure */
 public class ExpectedTestFailureException extends Throwable

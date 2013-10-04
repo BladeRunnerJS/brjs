@@ -1,4 +1,4 @@
-package org.bladerunnerjs.testing.utility;
+package org.bladerunnerjs.specutil.logging;
 
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.LogLevelAccessor;
