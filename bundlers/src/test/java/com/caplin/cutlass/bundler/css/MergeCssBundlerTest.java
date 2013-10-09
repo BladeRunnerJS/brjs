@@ -1,17 +1,19 @@
 package com.caplin.cutlass.bundler.css;
 
+import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+
 import java.io.File;
 
+import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import org.bladerunnerjs.specutil.logging.ExpectedFailure;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.MergeTestHelper;
-import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
-
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
 
 public class MergeCssBundlerTest {
 	
@@ -207,6 +209,15 @@ public class MergeCssBundlerTest {
 			APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/theme1/bladeset-url.css"
 		})
 		.thenBundleIsCreated("src/test/resources/css-bundler/output/external-url-tests/bladeset-url.css");
+	}
+	@Ignore
+	@Test
+	public void blade1CssCanReferToLibraryImage() throws Exception
+	{
+		test.givenInputFiles(new String[] {
+				APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/theme1/library-url.css"
+		})
+		.thenBundleIsCreated("src/test/resources/css-bundler/output/external-url-tests/library-url.css");
 	}
 	
 	@Test
