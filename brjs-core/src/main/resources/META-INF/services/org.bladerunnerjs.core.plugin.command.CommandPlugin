@@ -4,3 +4,4 @@ org.bladerunnerjs.core.plugin.command.standard.CreateAspectCommand
 org.bladerunnerjs.core.plugin.command.standard.CreateBladesetCommand
 org.bladerunnerjs.core.plugin.command.standard.CreateBladeCommand
 org.bladerunnerjs.core.plugin.command.standard.JsDocCommand
+org.bladerunnerjs.core.plugin.command.standard.BladerunnerCommand

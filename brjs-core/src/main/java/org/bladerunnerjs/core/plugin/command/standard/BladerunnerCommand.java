@@ -1,17 +1,16 @@
-package com.caplin.cutlass.command.bladerunner;
+package org.bladerunnerjs.core.plugin.command.standard;
 
 import java.io.IOException;
 
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
-import com.caplin.cutlass.command.LegacyCommandPlugin;
-
-public class BladerunnerCommand implements LegacyCommandPlugin
+public class BladerunnerCommand implements CommandPlugin
 {
 	public class Messages {
 		public static final String SERVER_STARTUP_MESSAGE = "Bladerunner server is now running and can be accessed at http://localhost:";
@@ -22,15 +21,14 @@ public class BladerunnerCommand implements LegacyCommandPlugin
 	private BRJS brjs;
 	private Logger logger;
 	
-	public BladerunnerCommand(BRJS brjs)
+	public BladerunnerCommand()
 	{
-		setBRJS(brjs);
 	}
 	
-	public BladerunnerCommand(BRJS brjs, ApplicationServer appServer)
+	/* this should only be used for testing */
+	public BladerunnerCommand(ApplicationServer appServer)
 	{
 		this.appServer = appServer;
-		setBRJS(brjs);
 	}
 	
 	@Override

@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.bladerunnerjs.core.plugin.command.standard.BladerunnerCommand;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import com.caplin.cutlass.command.CommandTaskTest;
@@ -28,7 +29,7 @@ public class BladerunnerCommandTest extends CommandTaskTest
 		File brjsDir = new File("src/test/resources/BladerunnerCommandTest");
 		brjs = BRJSTestFactory.createBRJS(brjsDir);
 		BRJSAccessor.initialize(brjs);
-		commandTask = new BladerunnerCommand(brjs, mockAppServer);
+		commandTask = new BladerunnerCommand(mockAppServer);
 		commandTask.setBRJS(brjs);
 		out = BRJSAccessor.root.getConsoleWriter();
 	}
