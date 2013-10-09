@@ -2,6 +2,8 @@ package org.bladerunnerjs.core.log;
 
 import static org.mockito.Mockito.*;
 
+import java.util.UnknownFormatConversionException;
+
 import org.bladerunnerjs.core.log.SLF4JLogger;
 import org.junit.Before;
 import org.junit.Rule;
@@ -63,5 +65,19 @@ public class SLF4JLoggerTest
 		verify(slf4jLogger).error(o.toString() + " " + this.toString());
 		
 	}
-
+	
+	@Test(expected=UnknownFormatConversionException.class)
+	public void anInvalidMessageFormatStringCausesAnExceptionWhenThereAreLogArguments() throws Exception
+	{
+		when(slf4jLogger.isDebugEnabled()).thenReturn(true);
+		logger.debug("%", "some-argument");
+	}
+	
+	@Test
+	public void percentageSymbolsCanBeLoggedWhenThereAreNoLogArguments() throws Exception
+	{
+		when(slf4jLogger.isDebugEnabled()).thenReturn(true);
+		logger.debug("%");
+		verify(slf4jLogger).debug("%");
+	}
 }

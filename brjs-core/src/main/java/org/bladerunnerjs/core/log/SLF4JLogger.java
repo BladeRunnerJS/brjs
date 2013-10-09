@@ -65,7 +65,7 @@ public class SLF4JLogger implements Logger
 	private String getFormattedString(String message, Object... params)
 	{
 		try {
-			return String.format(message, params);
+			return (params.length == 0) ? message : String.format(message, params);
 		}
 		catch (IllegalFormatException ex) /* IllegalFormatException is a runtime exception */
 		{
