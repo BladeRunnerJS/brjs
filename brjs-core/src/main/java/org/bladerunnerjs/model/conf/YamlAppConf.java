@@ -3,6 +3,8 @@ package org.bladerunnerjs.model.conf;
 import javax.validation.constraints.NotNull;
 
 import org.apache.bval.constraints.NotEmpty;
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.model.utility.ConfigValidationChecker;
@@ -20,8 +22,15 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	
 	@Override
 	public void initialize() {
-		appNamespace = "appns";
 		locales = "en";
+	}
+	
+	@Override
+	public void setNode(Node node) {
+		super.setNode(node);
+		
+		App app = (App) node;
+		appNamespace = app.getName();
 	}
 	
 	@Override
