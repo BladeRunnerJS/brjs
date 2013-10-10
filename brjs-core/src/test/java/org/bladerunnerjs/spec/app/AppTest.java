@@ -61,17 +61,9 @@ public class AppTest extends SpecTest {
 	}
 	
 	@Test
-	public void theAppConfIsNotWrittenOnZeroArgPopulate() throws Exception {
+	public void theAppConfIsAlsoWrittenOnZeroArgPopulate() throws Exception {
 		given(appTemplate).hasBeenCreated();
 		when(app).populate();
-		then(app).doesNotHaveFile("app.conf");
-	}
-	@Ignore
-	@Test
-	public void theAppConfCanBeManuallyWrittenOnZeroArgPopulate() throws Exception {
-		given(appTemplate).hasBeenCreated()
-			.and(app).hasBeenPopulated();
-		when(app).appConf().write();
 		then(app).fileHasContents("app.conf", "appNamespace: app1\nlocales: en");
 	}
 	
