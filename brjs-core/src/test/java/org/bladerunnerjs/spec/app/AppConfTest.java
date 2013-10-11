@@ -35,11 +35,9 @@ public class AppConfTest extends SpecTest {
 		then(app).fileHasContents("app.conf", "appNamespace: app1\nlocales: en");
 	}
 	
-	@Ignore
 	@Test
 	public void exceptionThrownWhenSettingInvalidAppNameAsDefaultNamespace() throws Exception {
-		given(JSKeyWordApp).hasBeenCreated();
-		when(JSKeyWordApp).appConf().write();
+		when(JSKeyWordApp).populate();
 		then(exceptions).verifyException(InvalidPackageNameException.class, "if", JSKeyWordApp.dir().getPath());
 	}
 	
