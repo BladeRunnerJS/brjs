@@ -65,7 +65,7 @@ public class BladeTest extends SpecTest {
 		when(bladeWithJSKeyWordName).populate();
 		then(exceptions).verifyException(InvalidPackageNameException.class, bladeWithJSKeyWordName.dir(), "export");
 	}
-	@Ignore //waiting for change to default appConf values, app namespace will be set to app name
+	
 	@Test
 	public void bladeIsBaselinedDuringPopulation() throws Exception {
 		given(bladeTemplate).containsFolder("@blade")

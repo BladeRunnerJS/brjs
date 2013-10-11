@@ -37,7 +37,7 @@ public class AspectTest extends SpecTest {
 		when(aspect).create();
 		then(app).hasDir("default-aspect");
 	}
-	@Ignore //waiting for change to default appConf values, app namespace will be set to app name
+	
 	@Test
 	public void aspectIsBaselinedDuringPopulation() throws Exception {
 		given(aspectTemplate).containsFolder("@appns")
