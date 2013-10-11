@@ -129,8 +129,19 @@ public class App extends AbstractBRJSNode implements NamedNode
 	@Override
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
-		super.populate();
-		aspect("default").populate();
+		try {
+			super.populate();
+			aspect("default").populate();
+			appConf().write();
+		}
+		catch (ConfigException e) {
+			if(e.getCause() instanceof InvalidNameException) {
+				throw (InvalidNameException) e.getCause();
+			}
+			else {
+				throw new ModelUpdateException(e);
+			}
+		}
 	};
 	
 	public void populate(String appNamespace) throws InvalidNameException, ModelUpdateException
@@ -140,7 +151,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		try {
 			appConf().setAppNamespace(appNamespace);
 			populate();
-			appConf().write();
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {

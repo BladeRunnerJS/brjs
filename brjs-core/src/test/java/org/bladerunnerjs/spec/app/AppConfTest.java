@@ -27,18 +27,17 @@ public class AppConfTest extends SpecTest {
 	
 	
 	// TODO: add a test that shows the object updates if the conf file is modified
-	@Ignore
+	
 	@Test
 	public void appConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(app).appConf().write();
 		then(app).fileHasContents("app.conf", "appNamespace: app1\nlocales: en");
 	}
-	@Ignore
+	
 	@Test
 	public void exceptionThrownWhenSettingInvalidAppNameAsDefaultNamespace() throws Exception {
-		given(JSKeyWordApp).hasBeenCreated();
-		when(JSKeyWordApp).appConf().write();
+		when(JSKeyWordApp).populate();
 		then(exceptions).verifyException(InvalidPackageNameException.class, "if", JSKeyWordApp.dir().getPath());
 	}
 	
@@ -80,8 +79,8 @@ public class AppConfTest extends SpecTest {
 	public void readingAnAppConfFileWithMissingAppNamespaceWillCauseAnException() throws Exception{
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "\nlocales: en");
-		when(app).appConf();
-		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'appNamespace' may not be null"));
+		when(app).appConf().write();
+		then(app).fileHasContents("app.conf", "appNamespace: app1\nlocales: en");
 	}
 	
 	@Test
@@ -93,11 +92,11 @@ public class AppConfTest extends SpecTest {
 	}
 	
 	@Test
-	public void readingAnAppConfFileWithEmptyAppNamespaceWillCauseAnException() throws Exception {
+	public void readingAnAppConfFileWithEmptyAppNamespaceCausesItToBeDefaultedToTheAppName() throws Exception {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "appNamespace: \nlocales: en");
-		when(app).appConf();
-		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'appNamespace' may not be empty"));
+		when(app).appConf().write();
+		then(app).fileHasContents("app.conf", "appNamespace: app1\nlocales: en");
 	}
 	
 	@Test
