@@ -35,8 +35,8 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void exceptionIsThrownIfThereAreTooFewArguments() throws Exception {
-		when(brjs).runCommand("create-app");
-		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'new-app-name' is required"))
+		when(brjs).runCommand("create-app", "a");
+		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'app-namespace' is required"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -79,23 +79,14 @@ public class CreateAppCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void appIsCreatedWhenAppNameAndAppNamespaceArgumentsAreProvided() throws Exception {
+	public void appIsCreatedWhenAllArgumentsAreValid() throws Exception {
 		given(appJars).hasBeenCreated()
 			.and(logging).enabled();
 		when(brjs).runCommand("create-app", "app", "appx");
 		then(app).dirExists()
-			.and(app).fileHasContents("app.conf", "appNamespace: appx\nlocales: en")
 			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, app.getName(), app.dir().getPath())
 			.and(output).containsLine(APP_CREATED_CONSOLE_MSG, app.getName())
 			.and(output).containsLine(APP_DEPLOYED_CONSOLE_MSG, app.getName());
-	}
-	
-	@Test
-	public void appIsCreatedWhenAppNameArgumentsIsProvided() throws Exception {
-		given(appJars).hasBeenCreated();
-		when(brjs).runCommand("create-app", "app");
-		then(app).dirExists()
-			.and(app).fileHasContents("app.conf", "appNamespace: app\nlocales: en");
 	}
 	
 	@Test

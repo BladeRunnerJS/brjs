@@ -31,7 +31,7 @@ public class CreateApplicationCommand extends ArgsParsingCommandPlugin
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("new-app-name").setRequired(true).setHelp("the name of the application that will be created"));
-		argsParser.registerParameter(new UnflaggedOption("app-namespace").setRequired(false).setHelp("the top-level namespace that all source code will reside within"));
+		argsParser.registerParameter(new UnflaggedOption("app-namespace").setRequired(true).setHelp("the top-level namespace that all source code will reside within"));
 	}
 	
 	@Override
@@ -62,13 +62,7 @@ public class CreateApplicationCommand extends ArgsParsingCommandPlugin
 		if(app.dirExists()) throw new NodeAlreadyExistsException(app, this);
 		
 		try {
-			if(appNamespace != null) {
-				app.populate(appNamespace);
-			}
-			else {
-				app.populate();
-			}
-			
+			app.populate(appNamespace);
 			out.println(Messages.APP_CREATED_CONSOLE_MSG, appName);
 			out.println(" " + app.dir().getPath());
 			
