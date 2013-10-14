@@ -52,8 +52,3 @@ subprojects {
 	}
 }
 
-
-task buildTestApps {
-	description "Assembles the sdk and uses it to build and test the test-apps."
-	dependsOn ':test-apps:build'
-}
