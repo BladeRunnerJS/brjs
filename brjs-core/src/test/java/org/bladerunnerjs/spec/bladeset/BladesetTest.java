@@ -43,7 +43,7 @@ public class BladesetTest extends SpecTest {
 		when(bladeset).create();
 		then(app).hasDir("bs-bladeset");
 	}
-	
+	@Ignore //waiting for change to default appConf values, app namespace will be set to app name
 	@Test
 	public void bladesetIsBaselinedDuringPopulation() throws Exception {
 		given(bladesetTemplate).containsFolder("@bladeset")
