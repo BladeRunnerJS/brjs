@@ -3,6 +3,7 @@ package com.caplin.cutlass.conf;
 import org.bladerunnerjs.model.conf.YamlAppConf;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.App;
+
 import com.caplin.cutlass.BRJSAccessor;
 import com.esotericsoftware.yamlbeans.YamlException;
 
@@ -29,23 +30,18 @@ public class AppConf
 	public static AppConf getConf(File applicationDirectory) throws FileNotFoundException, YamlException, IOException, ConfigException
 	{
 		App app = BRJSAccessor.root.locateAncestorNodeOfClass(applicationDirectory, App.class);
-		File appConfFile = app.file("app.conf");
 		
-		if(!appConfFile.isFile()) {
-			YamlAppConf exampleConf = new YamlAppConf();
-			exampleConf.setConfFile(appConfFile);
-			exampleConf.appNamespace = "<namespace>";
-			exampleConf.locales = "<locale1>,<locale2>";
+		if (app == null)
+		{
+			YamlAppConf appConf = new YamlAppConf();
+			appConf.setConfFile( new File(applicationDirectory, "app.conf") );
+			appConf.verify();
 			
-			throw new FileNotFoundException(
-				"No app config file found at " + appConfFile.getAbsolutePath() + ".\n" +
-				"Example content for 'app.conf':\n\n" +
-				exampleConf.getRenderedConfig());
+			return new AppConf(appConf.appNamespace, appConf.locales);
 		}
 		
-		org.bladerunnerjs.model.AppConf newAppConf = app.appConf();
-		
-		return new AppConf(newAppConf.getAppNamespace(), newAppConf.getLocales());
+		org.bladerunnerjs.model.AppConf appConf = app.appConf();
+		return new AppConf(appConf.getAppNamespace(), appConf.getLocales());
 	}
 	
 	public static void writeConf(File applicationDirectory, AppConf appConf) throws IOException, ConfigException

@@ -229,12 +229,6 @@ public class NamespaceCalculatorTest
 	}
 	
 	@Test(expected=NamespaceException.class)
-	public void testGettingNamespaceWhenConfDpesntExist() throws Exception
-	{
-		NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/no-app-conf"));
-	}
-	
-	@Test(expected=NamespaceException.class)
 	public void testGettingNamespaceWithInvalidConf() throws Exception
 	{
 		NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/no-namespace"));
