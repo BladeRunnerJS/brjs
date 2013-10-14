@@ -31,16 +31,21 @@ public class AppConf
 	{
 		App app = BRJSAccessor.root.locateAncestorNodeOfClass(applicationDirectory, App.class);
 		
+		org.bladerunnerjs.model.AppConf appConf;
 		if (app == null)
 		{
-			YamlAppConf appConf = new YamlAppConf();
-			appConf.setConfFile( new File(applicationDirectory, "app.conf") );
-			appConf.verify();
-			
-			return new AppConf(appConf.appNamespace, appConf.locales);
+//			YamlAppConf appConf = new YamlAppConf();
+//			appConf.setConfFile( new File(applicationDirectory, "app.conf") );
+//			
+//			appConf.verify();
+//			
+//			return new AppConf(appConf.appNamespace, appConf.locales);
+			appConf = new org.bladerunnerjs.model.AppConf( new File(applicationDirectory, "app.conf") );
 		}
-		
-		org.bladerunnerjs.model.AppConf appConf = app.appConf();
+		else
+		{
+			appConf = app.appConf();
+		}
 		return new AppConf(appConf.getAppNamespace(), appConf.getLocales());
 	}
 	
