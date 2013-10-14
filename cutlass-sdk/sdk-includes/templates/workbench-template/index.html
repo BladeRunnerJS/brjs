@@ -7,6 +7,12 @@
 		<@js.bundle@/>
 		
 		<script type="text/javascript">
+			caplin.thirdparty('br-caplin');
+
+			var ServiceRegistry = require( 'br/ServiceRegistry' );
+			var DemoEventHub = require( 'br/DemoEventHub' );
+			ServiceRegistry.registerService( 'demo-event-hub', new DemoEventHub() );
+
 			var oWorkbench;
 			
 			function initialize()
