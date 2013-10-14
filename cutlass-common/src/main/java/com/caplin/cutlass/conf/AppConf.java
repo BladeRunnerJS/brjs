@@ -34,12 +34,6 @@ public class AppConf
 		org.bladerunnerjs.model.AppConf appConf;
 		if (app == null)
 		{
-//			YamlAppConf appConf = new YamlAppConf();
-//			appConf.setConfFile( new File(applicationDirectory, "app.conf") );
-//			
-//			appConf.verify();
-//			
-//			return new AppConf(appConf.appNamespace, appConf.locales);
 			appConf = new org.bladerunnerjs.model.AppConf( new File(applicationDirectory, "app.conf") );
 		}
 		else
