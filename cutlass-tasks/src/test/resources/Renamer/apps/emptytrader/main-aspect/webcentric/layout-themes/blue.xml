@@ -1,0 +1,204 @@
+<Application xmlns:caplin="http://www.caplin.com">
+	<Declarations>
+		<!-- top layout tab bar -->
+		<Decorators id="layoutDecorator">
+			<Border style="layout" border_left_width="5" border_right_width="5" border_top_width="5" border_bottom_width="5" />
+		</Decorators>
+		
+		<Splitters>
+			<Splitter align="horizontal" fixed_size="true" height="5"/>
+			<Splitter align="vertical" fixed_size="true" width="5"/>
+		</Splitters>
+			
+		<!-- quick trade and blotter, basic panel -->
+		<Decorators id="basicDecorator" identifier="basicDecorator">
+			<Handle handle_height="22" drag_action="SNAP_FRAMEITEM" drop_target="SNAP_FRAMEITEM">
+				<!-- Button button_id="popout" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/pop_out.png" tooltip="@{theme.button.tooltip.launch_panel_in_new_browser_window}"/-->
+				
+				<Button button_id="maximize" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/maximize.png" state="{boolean(../../../@maximized='true')}" tooltips="@{theme.button.tooltip.maximize_restore}">
+					<setvalue state="on" ref="../../../@maximized" value="'false'"/>
+					<setvalue state="off" ref="../../../@maximized" value="'true'"/> 
+				</Button>
+				
+				<Button button_id="close" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/close.png" tooltip="@{theme.button.tooltip.close_panel}">
+					<close ref="../../.."/>
+				</Button>
+			</Handle>
+			<Border colored="true" border_bottom_width="1" border_left_width="1" border_right_width="1"/> 
+		</Decorators>		
+		
+		<!-- main grid panels -->
+		<Decorators id="stackDecorator">
+			<Tabstrip handle_height="22" drag_action="SNAP_FRAMEITEM" drop_target="SNAP_FRAMEITEM" colour="colour-1" tab_class="webcentric.ClosableHTMLTab">
+				<!-- Button button_id="popout" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/pop_out.png" tooltip="@{theme.button.tooltip.launch_panel_in_new_browser_window}"/-->
+				<Button button_id="maximize" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/maximize.png" state="{boolean(../../../@maximized='true')}" tooltips="@{theme.button.tooltip.maximize_restore}">
+					<setvalue state="on" ref="../../../@maximized" value="'false'"/>
+					<setvalue state="off" ref="../../../@maximized" value="'true'"/> 
+				</Button>
+
+				<Button button_id="close" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/close.png" tooltip="@{theme.button.tooltip.close_all_tabs}">
+					<confirm message="@{theme.confirmation.close_all_tabs}">
+						<close ref="../../../.." confirm="@{theme.confirmation.close_all_tabs_short}"/>
+					</confirm>
+				</Button>
+			</Tabstrip>
+			<Border colored="true" border_bottom_width="1" border_left_width="1" border_right_width="1"/>
+		</Decorators>
+
+		<Decorators id="drawerDecorator">
+			<Border style="padding" border_left_width="16" />
+			<Border style="dropshadow" border_right_width="16" />
+			<Border style="dialogouter" border_left_width="2" border_top_width="2" border_right_width="2"/>
+			<Tabstrip handle_height="22" colour="colour-1">
+				<Button button_id="close" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/close.png" tooltip="@{theme.button.tooltip.hide_panel}">
+					<eval content="caplinb.alerts.view.component.AlertsDrawer.hide();" defer="true"/>
+				</Button>
+			</Tabstrip>
+			<Border colored="true" border_bottom_width="1" border_left_width="1" border_right_width="1"/>
+		</Decorators>
+		
+		<!-- Dialogs e.g. FI Trade Ticket, Product Search-->
+		<Decorators id="dialogDecorator">
+			<Border style="dropshadow" border_right_width="16" border_bottom_width="18" />
+			<Border style="dialogouter" border_left_width="1" border_right_width="1" border_bottom_width="1" border_top_width="1" color="#000"/>
+			<Handle style="dialog" handle_height="31" align="top" drag_action="MDI_DRAG" drag_container="GUI">
+				<Button width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/close.png" tooltip="@{theme.button.tooltip.close_panel}" disabled="{boolean(../../../@stopClosure='true')}">
+					<close ref="../../.."/>
+				</Button>
+			</Handle>
+		</Decorators>
+		
+		<Decorators id="messageDecorator">
+			<!--<Border border_width="1" border_left_color="#00349A" border_top_color="#00349A" border_right_color="#000" border_bottom_color="#000"/>
+			<Border border_width="1" border_top_width="1" border_top_color="#fff" border_right_color="#8A929D" border_bottom_color="#8A929D" border_left_color="#fff"/>
+			<Border border_width="1" border_color="#fff"/>-->
+			<Border border_width="1" border_color="#504E4E"/>
+		</Decorators>
+		
+		<Decorators id="consoleDecorator">
+			<Border style="outer" border_width="1" />
+			<Handle handle_height="22">
+				<Button button_id="copy_email_log_console" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/mail.png" tooltip="@{theme.button.tooltip.copy_log_console_content_to_clipboard}">
+					<eval content="caplin.framework.ConsoleLogUploadService.displayUploadDialog()" defer="true"/>
+				</Button>
+				<Button button_id="maximize" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/maximize.png" state="{boolean(../../../@maximized='true')}" tooltips="@{theme.button.tooltip.maximize_restore}">
+					<setvalue state="on" ref="../../../@maximized" value="'false'"/>
+					<setvalue state="off" ref="../../../@maximized" value="'true'"/> 
+				</Button>
+				<Button button_id="close" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/close.png" tooltip="@{theme.button.tooltip.hide_panel}">
+					<hideComponent ref="../../.."/>
+				</Button>
+				
+			</Handle>
+		</Decorators>
+	
+		<Decorators id="dragDecorator" identifier="dragDecorator">
+			<Handle handle_height="22" drag_action="SNAP_FRAMEITEM" style="drag">
+			</Handle>
+			<Border style="dropshadow" border_right_width="16" border_bottom_width="17" />
+			<Border style="floatingPanel" border_width="1"/>
+		</Decorators>	
+	
+		<Decorators id="statusBarDecorator" identifier="statusBarDecorator">
+			<Border border_left_width="1" border_bottom_width="0" border_right_width="1"/>
+		</Decorators>		
+
+		<Decorators id="applicationDecorator">
+			<!-- Handle style="Header" handle_height="92" background="#fff"/-->
+			<!-- MenuBar handle_height="23" align="top">
+				<MenuButton menu_id="layout" caption="@{theme.menu.caption.file}"/>
+				<MenuButton menu_id="insert" caption="@{theme.menu.caption.insert}"/>
+				<MenuButton menu_id="option" caption="@{theme.menu.caption.tools}"/>
+			</MenuBar-->
+		</Decorators>
+		
+		<Decorators id="blankLayoutDecorator">
+			<Border border_width="1"/>
+		</Decorators>
+		
+		<Tabstrip id="defaultTabstrip">
+			<Tabstrip handle_height="22" drag_action="SNAP_FRAMEITEM" drop_target="SNAP_FRAMEITEM" colour="colour-1" tab_class="webcentric.ClosableHTMLTab">
+				<Button button_id="bond_selector" width="89" height="25" img="%theme%/images/handle/button_productsearch.gif">
+					<showDialog event="DOMActivate" xref="Declarations/showDialog[@id='bond-selector']" defer="true"/>
+				</Button>
+				<Button button_id="window" alt="restore" width="19" height="15" img="%theme%/packages/webcentric/decorator/images/button_window.gif"/>
+				<Button button_id="maximize" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/maximize.png" state="{boolean(../../../@maximized='true')}" tooltips="@{theme.button.tooltip.maximize_restore}">
+					<setvalue state="on" ref="../../../@maximized" value="'false'"/>
+					<setvalue state="off" ref="../../../@maximized" value="'true'"/> 
+				</Button>
+				<Button button_id="close" alt="restore" width="19" height="15" img="%theme%/packages/webcentric/decorator/images/buttons/close.gif">
+					<close ref="../../../FrameItems/*[../../@selected_ind]"/>
+				</Button>
+			</Tabstrip>
+		</Tabstrip>
+		<!--  The buttons in here can never be clicked, they're just for visual effect... -->
+		<Tabstrip id="hoverTabstrip" handle_height="22">
+			<!-- Button button_id="popout" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/pop_out.png" tooltip="@{theme.button.tooltip.launch_panel_in_new_browser_window}"/-->
+			<Button button_id="maximize" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/maximize.png" state="{boolean(../../../@maximized='true')}" tooltips="@{theme.button.tooltip.maximize_restore}"/>
+			<Button button_id="close" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/close.png" tooltip="@{theme.button.tooltip.close_panel}"/>
+		</Tabstrip>
+		
+		<HandleContribs id="hdcContribs">
+			<Button button_id="bmContextMenuDecorator" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/cog.png" tooltip="@{theme.button.tooltip.panel_options}">
+				<eval content="webcentric.callOnActiveComponent(\'callControllerMethod\', [\'toggleContextMenu\'])" defer="true"/>
+			</Button>
+		</HandleContribs>
+
+		<HandleContribs id="menuContribs">
+			<Button button_id="bmContextMenuDecorator" width="16" height="20" img="%theme%/packages/webcentric/decorator/images/buttons/cog.png" tooltip="@{theme.button.tooltip.panel_options}">
+				<toggleMenu ref="../.."/>
+			</Button>
+		</HandleContribs>
+		
+		<showDialog id="alert">	
+			<Alert 
+				identifier="alert" 
+				position="CENTER"
+				width="380"
+				caption="@{theme.alert.caption}"
+				modal="false">
+			
+				<model>	
+					<instance>
+						<state message=""/>
+					</instance>
+				</model>
+			
+				<property setter="setMessage" />
+				<property setter="setMessageId" />
+				<property setter="setClosingContinuation" />
+				<property setter="setCaption" />
+				<property setter="setModal" />
+			
+				<template>
+					<![CDATA[
+						<div id="dialog_alert" class="wc_dialog">
+							<div style="margin-top:10px;padding-left:10px;padding-right:10px">
+								<dl class="webcentric Label">
+									<dt>bind</dt><dd>./@message</dd>
+								</dl>
+							</div>
+							<div class="optional_check_box">
+							</div>
+							<div class="buttons">
+								<dl class="webcentric Button">
+									<dt>identifier</dt><dd>ok</dd>
+									<dt>caption</dt><dd>@{theme.alert.template.caption}</dd>
+									<dt>auto_size</dt><dd>true</dd>
+									<dt>height</dt><dd>22</dd>
+									<dt>tooltip</dt><dd>@{theme.alert.template.tooltip}</dd>
+									<dt>align</dt><dd>right</dd>
+									<dl class="methodCall">
+										<dt>method_name</dt><dd>close</dd>
+										<dt>target</dt><dd>%component%</dd>
+									</dl>
+								</dl>
+							</div>
+						</div>
+					]]>
+				</template>
+			
+			</Alert>
+		</showDialog>
+	</Declarations>
+</Application>

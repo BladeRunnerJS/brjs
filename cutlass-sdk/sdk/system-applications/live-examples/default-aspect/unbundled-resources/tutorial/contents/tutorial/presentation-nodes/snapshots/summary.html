@@ -1,0 +1,21 @@
+<p>
+	It's sometimes useful to be able to restore a user interface to a previous state, such as when you want a trade ticket to be reset
+	to its initial state when a trade completes. This can be achieved by creating a collection of all the properties that make up the
+	<i>Presentation Model</i>, and using the
+	<code><a href="/dashboard-services/jsdoc/caplin.presenter.property.snapshot.html" target="jsdoc">caplin.presenter.property.Snapshot</a></code>
+	class, to store the current values of each of them. Later the snapshot can be restored, using the <code>apply()</code> method.
+</p>
+
+<p>
+	Only <a href="/dashboard-services/jsdoc/caplin.presenter.property.writableproperty.html" target="jsdoc">writable</a>
+	(or <a href="/dashboard-services/jsdoc/caplin.presenter.property.editableproperty.html" target="jsdoc">editable</a>)
+	properties are stored within snapshots, since
+	<a href="/dashboard-services/jsdoc/caplin.presenter.property.property.html" target="jsdoc">simple properties</a>
+	can't be changed from their original values in any case.
+</p>
+
+<p>
+	In this example, the initial state of the ticket is saved at the end of the constructor. Note how the
+	<code><a href="/dashboard-services/jsdoc/caplin.presenter.property.properties.html" target="jsdoc">properties()</a></code>
+	method is invoked with no arguments, causing all descendent properties to be stored.
+</p>

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+SCRIPT_DIR=$(cd "$(dirname "$0")"; pwd)
+CUTLASS_CLASSPATH="$SCRIPT_DIR/../build/brjs-runner-deps/*"
+
+java -cp "$CUTLASS_CLASSPATH" org.bladerunnerjs.CommandRunner "$SCRIPT_DIR" test-server $@

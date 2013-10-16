@@ -1,0 +1,9 @@
+
+apply plugin: 'java'
+apply plugin: com.caplin.gradle.plugins.CompileOnly
+
+dependencies {
+	compile project(":brjs-logger")
+	compileOnly dependency('slf4j-api')
+	testCompile dependency('slf4j-api')
+}

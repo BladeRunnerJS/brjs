@@ -1,0 +1,15 @@
+<p>
+	Sometimes, you might want to apply the same setting to the values of several properties at once, such as disabling all input controls,
+	while a request is sent to the server. The <code><a target="jsdoc"
+	href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.PresentationNode.html#properties">PresentationNode.properties()</a></code>
+	method can be used to locate all properties that match given criteria, recursively. It returns a
+	<code><a target="jsdoc"
+	href="/dashboard-services/jsdoc/index.html#caplin.presenter.property.Properties.html">caplin.presenter.property.Properties</a></code>
+	object that contains all matching properties.
+	If you then call <code>setValue()</code> on this object, all the returned properties will be updated with the new value.
+</p>
+
+<p>
+	In this example, all of the fields within the <i>Presentation Model</i> can be enabled and disabled at the same time.
+</p>
+

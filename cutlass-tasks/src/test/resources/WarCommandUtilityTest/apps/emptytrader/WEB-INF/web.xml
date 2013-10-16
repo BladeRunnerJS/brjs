@@ -1,0 +1,15 @@
+<web-app>
+	<!-- start-env: prod
+	<env-entry-value>%@APP.VERSION@%</env-entry-value>
+	<prod>1</prod>
+	end-env -->
+	<echo msg="No comment."/>
+	<!-- start-env: dev -->
+	<dev>1</dev>
+	<!-- end-env -->
+	<!-- start-env: prod
+	<prod>2</prod>
+	end-env -->
+	
+	<echo msg="Further lack of comment."/>
+</web-app>

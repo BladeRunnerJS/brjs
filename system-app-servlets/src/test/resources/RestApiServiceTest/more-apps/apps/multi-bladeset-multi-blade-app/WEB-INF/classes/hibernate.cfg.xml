@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+ "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.connection.datasource">java:comp/env/jdbc/webcentricdb</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.H2Dialect</property>
+		<property name="hibernate.current_session_context_class">thread</property>
+		
+		<mapping resource="com/caplin/webcentric_servlet/hibernate/Login.hbm.xml" />
+		<mapping resource="com/caplin/webcentric_servlet/hibernate/Application.hbm.xml" />
+		<mapping resource="com/caplin/webcentric_servlet/hibernate/User.hbm.xml" />
+		<mapping resource="com/caplin/webcentric_servlet/hibernate/Page.hbm.xml" />
+		<mapping resource="com/caplin/webcentric_servlet/hibernate/Preference.hbm.xml" />
+		<mapping resource="com/caplin/webcentric_servlet/hibernate/Theme.hbm.xml" />
+		<mapping resource="com/caplin/webcentric_servlet/hibernate/Layout.hbm.xml" />
+		<mapping resource="com/caplin/webcentric_servlet/hibernate/PageType.hbm.xml" />
+		<mapping resource="com/caplin/webcentric_servlet/hibernate/ApplicationPreference.hbm.xml" />
+	</session-factory>
+</hibernate-configuration>

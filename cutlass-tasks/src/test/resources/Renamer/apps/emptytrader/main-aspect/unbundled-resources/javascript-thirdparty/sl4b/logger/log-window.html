@@ -1,0 +1,43 @@
+<html>
+
+<head>
+
+<script type="text/javascript" src="../utils/string-encoder.js"></script>
+
+<script type="text/javascript">
+function getParameter(l_sName)
+{
+	var l_oRegExp = new RegExp("[?&]" + l_sName + "=([^&]+)");
+	var l_oMatch = window.location.search.match(l_oRegExp);
+	return ((l_oMatch == null)?null:l_oMatch[1]);
+}
+
+document.write("<title>SL4B Debug Log [Debug level " + SL4B_StringEncoder.encodeValue(getParameter("level")) + "]</title>");
+</script>
+
+<script type="text/javascript" src="log-window.js"></script>
+
+<script type="text/javascript">
+var l_sDomain = getParameter("domain");
+if (l_sDomain != null)
+{
+	GF_ChangeDocumentDomain(l_sDomain);
+}
+</script>
+
+<style type="text/css">
+body {font-family:Verdana;background-color:Black;color:#00ff00;}
+table {font-size:10px;}
+</style>
+
+</head>
+
+<body leftmargin="1" topmargin="1" rightmargin="1" bottommargin="1">
+
+<table width="100%">
+<tbody id="tblMessageLog" cellpadding="0" cellspacing="0"></tbody>
+</table>
+		
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+
+apply plugin: 'java'
+apply plugin: com.caplin.gradle.plugins.CompileOnly
+
+dependencies {
+	compile project(":bundlers");
+	compile dependency('commons-lang3')
+	compile dependency('jsap')
+	compile dependency('junit')
+	compile dependency('ecj')
+	compile dependency('ant')
+	compile dependency('ant-junit')
+	compile dependency('xalan')
+
+	/* compile only so it isnt considered a transitive dependency - any projects that depend on this project and selenium-java will need to explicitly add it as a dependency */
+	compileOnly dependency('selenium-java')
+	compileOnly project(":brjs-logger-binding")
+
+	runtime dependency('saxon-dom')
+
+	testCompile dependency('junit')
+	testCompile dependency('mockito-core')
+	testCompile dependency('httpclient')
+	testCompile dependency('hamcrest-all')
+	
+	testRuntime project(path: ':brjs-logger-binding')
+}

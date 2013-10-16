@@ -1,0 +1,3 @@
+caplinx.MyClass = function()
+{
+};

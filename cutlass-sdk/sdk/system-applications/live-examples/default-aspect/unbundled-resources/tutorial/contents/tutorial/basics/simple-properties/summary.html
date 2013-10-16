@@ -1,0 +1,17 @@
+<p>A <b>Property</b> is a single named value, which is set up in the Presentation Model and tied to the View by using a <code>data-bind</code>
+attribute with the same name.  There are a few different property types, and you will have already seen the simplest one if you have read the
+<a target="website" href="http://www.caplin.com/developer/component/presenter/getting-started/presenter-hello-world">Hello World</a> example.</p>
+
+<p><code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.property.Property.html">caplin.presenter.property.<b>Property</b></a></code></p>
+
+<p>In this case, we have used exactly the same process to create a numerical value.</p>
+
+<p>You probably won't use the basic <i>Property</i> class much, as you won't be able to dynamically update it once it's been created.
+For that, you need to use a <i>Writable Property</i>:</p>
+
+<p><code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.property.WritableProperty.html">caplin.presenter.property.<b>WritableProperty</b></a></code></p>
+
+<p>... or, if you want end users to be able to modify it too, you would use an Editable Property:</p>
+
+<p><code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.property.EditableProperty.html">caplin.presenter.property.<b>EditableProperty</b></a></code></p>
+

@@ -1,0 +1,60 @@
+body {
+	background-color: #F2F3E4;
+	counter-reset: section;
+}
+#content {
+	margin: 0px auto;
+	max-width: 850px;
+	font-size: 14pt;
+	font-family: 'Bookman Old Style', Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
+	line-height: 1.6em;
+	text-align: justify;
+}
+
+blockquote {
+	border-left: 30px solid #C2ACAC;
+	padding-left:  30px;
+	font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+	margin-bottom: 10px;
+}
+
+blockquote p {
+	margin: 0;
+	padding: 0;
+}
+
+blockquote p:last-child {
+	text-align: right;
+}
+
+
+h1 {
+	margin-top: 120px;
+}
+h2 {
+	margin-top: 45px;
+	counter-reset: sub-section;
+}
+
+h1, h2, h3 {
+	text-align: left;
+}
+
+h3 {counter-reset: composite}
+h4 {counter-reset: detail}
+h2:before{
+	counter-increment: section;
+	content: counter(section) ". ";
+}
+h3:before{
+	counter-increment: sub-section;
+	content: counter(section) "." counter(sub-section) " ";
+}
+h4:before{
+	counter-increment: composite;
+	content: counter(section) "." counter(sub-section) "." counter(composite) " ";
+}
+h5:before{
+	counter-increment: detail;
+	content: counter(section) "." counter(sub-section) "." counter(composite) "." counter(detail) " ";
+}

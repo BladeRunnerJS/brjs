@@ -1,0 +1,15 @@
+<p>"Manual input" is of course a euphemism for "potential error", so the <i>Editable Properties</i> class comes complete with a number of <i>validators</i>,
+to allow you to check that what a user has just entered is valid input.</p>
+
+<p>Validators are classes that implement the
+<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.core.Validator.html">caplin.core.Validator</a></code> interface,
+and they can be added to an
+<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.property.EditableProperty.html">EditableProperty</a></code>,
+to  see if the input is valid.  In this example, a
+<code>NumericValidator</code>
+has been added to the amount property, to make sure that no non-numeric characters are entered.  The content of the error message (
+<code>tutorial.invalid.number</code>) is stored in a <i>.properties</i> file, see the tutorial on <a href="#tutorial/basics/localisation">Localisation</a>
+for further details.</p>
+
+<p class="warning">The value of the property changes, even if the validation fails. This is because a Presentation Model is a one-to-one mapping with the screen.
+Be careful not to propagate the error value into the Domain Model.</p>

@@ -1,0 +1,14 @@
+<Terrace splitters="true">
+	<FrameItems>
+		<caplin:Panel caption="Hello World Blade" drop_target="SNAP_FRAMEITEM" colour="colour-15" decorators="basicDecorator">
+			<state>
+				<presenter templateId="emptycorp.example.helloworld.view-template" presentationModel="emptycorp.example.helloworld.HelloWorldPresentationModel" />
+			</state>
+		</caplin:Panel>
+		<caplin:Panel caption="Grid Blade" drop_target="SNAP_FRAMEITEM" colour="colour-15" decorators="basicDecorator">
+			<state>
+				<grid baseGrid="emptycorp.example.grid.FX.Major" />
+			</state>
+		</caplin:Panel>
+	</FrameItems>
+</Terrace>

@@ -1,0 +1,25 @@
+<p>
+	The Node lists we've looked at so far are all well and good, but they are basically arrays, which is fine when you are using <code>foreach</code>
+	to iterate through them, but it does make referring to a specific item a bit of a chore.  Wouldn't it be nice if you had some way of
+	mapping a <code>NodeList</code> to a set of names, so that you could refer to an item by its name, rather than just a number in an array?
+</p>
+
+<p>
+	By a happy coincidence, the
+	<code><a href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.mappednodelist.html" target="jsdoc">caplin.presenter.node.MappedNodeList</a></code>
+	class allows you to do just that!  You just create a list of name/item
+	pairs as we've done with "<i><b>nearLeg</b></i>" and "<i><b>farLeg</b></i>", in the <i>Presentation Model</i> of this example, and then call <code>MappedNodeList</code> instead of
+	the standard <code>NodeList</code>.
+</p>
+
+<p>
+	In this example, most things work as they have done with earlier <code>NodeList</code> tutorials, except this time we have added a "Clear NearLeg"
+	button.  Notice how the <code>clearNearLegAmount()</code> function identifies the near leg as <code>this.legs.nearLeg</code>, which is a lot easier to understand
+	at a glance, than <code>this.legs[0]</code>.
+</p>
+
+<p class="warning">
+	Knockout doesn't have any concept of an "Observable Map", so you can't refer to list items by name directly from the View
+	template, and so (as in this case), you have to call a function in the <i>Presentation Model</i>, and do it from there.
+</p>
+

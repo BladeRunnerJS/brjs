@@ -1,0 +1,2 @@
+js : codemirror.js, runmode.js, mode/css.js, mode/htmlembedded.js, mode/htmlmixed.js, mode/javascript.js, mode/xml.js
+css: codemirror.css

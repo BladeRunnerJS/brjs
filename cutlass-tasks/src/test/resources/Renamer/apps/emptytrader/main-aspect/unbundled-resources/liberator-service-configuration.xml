@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rttpservice SYSTEM "rttpservice.dtd">
+<rttpservice>
+
+   <!-- optional name for the service -->
+   <name>Example RTTP Service</name>
+
+   <!-- optional specification of the failover algorithm to use; if this is
+        included the client cannot override it -->
+   <failoveralgorithm>U</failoveralgorithm>
+
+   <!-- definition of the Liberators that make up this service -->
+   <rttpsite>
+
+      <!-- first primary/backup Liberator pair -->
+      <serverpair>
+         <!-- primary Liberator -->
+         <primaryserver>
+            <address>libtrader2.caplin.com</address>
+            <connections>
+               <type5>http</type5>
+               <type4>http</type4>
+               <type3>http</type3>
+            </connections>
+            <ports>
+               <http>80</http>
+            </ports>
+         </primaryserver>
+
+         <!-- backup Liberator -->
+         <backupserver>
+            <address>libtrader3.caplin.com</address>
+            <connections>
+               <type5>http</type5>
+               <type4>http</type4>
+               <type3>http</type3>
+            </connections>
+            <ports>
+               <http>80</http>
+            </ports>
+         </backupserver>
+      </serverpair>
+
+   </rttpsite>
+
+</rttpservice>

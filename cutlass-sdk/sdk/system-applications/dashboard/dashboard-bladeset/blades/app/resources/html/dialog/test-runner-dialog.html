@@ -1,0 +1,11 @@
+<div id="caplinx.dashboard.app.test-runner-dialog">
+   <form data-bind="submit:closeDialog">
+      <div class="message">
+	      <div data-bind="visible: errorMessage.visible, text: errorMessage.value"></div>
+	      <div data-bind="visible: testResultsLink.visible">
+	         <div data-bind="visible: testsPassed">Tests passed.</div>
+	         <a data-bind="attr:{ href: testResultsLink.value }" target="_blank">Click to open test results</a>
+	      </div>
+      </div>
+   </form>
+</div>

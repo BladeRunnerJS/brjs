@@ -1,0 +1,88 @@
+.highlight {
+	padding: 4px;
+	margin-top: 6px;
+	overflow: auto;
+	border: 2px solid #ddd;
+	background-color: #f8f8f8;
+}
+
+.highlight pre {
+	line-height: normal;
+	background-color: #f8f8f8;
+	margin: 0;
+}
+
+code {
+	margin: 0;
+	border: 2px solid #ddd;
+	background-color: #f8f8f8;
+	font-size: 12pt;
+	font-family: "Deja Vu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", monospace;
+}
+
+.highlight code {
+	border: none;
+}
+
+.javascript .hll { background-color: #ffffcc }
+.javascript  { background: #f8f8f8; }
+.javascript .c { color: #408080; font-style: italic } /* Comment */
+.javascript .err { border: 1px solid #FF0000 } /* Error */
+.javascript .k { color: #008000; font-weight: bold } /* Keyword */
+.javascript .o { color: #666666 } /* Operator */
+.javascript .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.javascript .cp { color: #BC7A00 } /* Comment.Preproc */
+.javascript .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.javascript .cs { color: #408080; font-style: italic } /* Comment.Special */
+.javascript .gd { color: #A00000 } /* Generic.Deleted */
+.javascript .ge { font-style: italic } /* Generic.Emph */
+.javascript .gr { color: #FF0000 } /* Generic.Error */
+.javascript .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.javascript .gi { color: #00A000 } /* Generic.Inserted */
+.javascript .go { color: #888888 } /* Generic.Output */
+.javascript .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.javascript .gs { font-weight: bold } /* Generic.Strong */
+.javascript .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.javascript .gt { color: #0044DD } /* Generic.Traceback */
+.javascript .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.javascript .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.javascript .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.javascript .kp { color: #008000 } /* Keyword.Pseudo */
+.javascript .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.javascript .kt { color: #B00040 } /* Keyword.Type */
+.javascript .m { color: #666666 } /* Literal.Number */
+.javascript .s { color: #BA2121 } /* Literal.String */
+.javascript .na { color: #7D9029 } /* Name.Attribute */
+.javascript .nb { color: #008000 } /* Name.Builtin */
+.javascript .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.javascript .no { color: #880000 } /* Name.Constant */
+.javascript .nd { color: #AA22FF } /* Name.Decorator */
+.javascript .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.javascript .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.javascript .nf { color: #0000FF } /* Name.Function */
+.javascript .nl { color: #A0A000 } /* Name.Label */
+.javascript .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.javascript .nt { color: #008000; font-weight: bold } /* Name.Tag */
+.javascript .nv { color: #19177C } /* Name.Variable */
+.javascript .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.javascript .w { color: #bbbbbb } /* Text.Whitespace */
+.javascript .mf { color: #666666 } /* Literal.Number.Float */
+.javascript .mh { color: #666666 } /* Literal.Number.Hex */
+.javascript .mi { color: #666666 } /* Literal.Number.Integer */
+.javascript .mo { color: #666666 } /* Literal.Number.Oct */
+.javascript .sb { color: #BA2121 } /* Literal.String.Backtick */
+.javascript .sc { color: #BA2121 } /* Literal.String.Char */
+.javascript .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.javascript .s2 { color: #BA2121 } /* Literal.String.Double */
+.javascript .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.javascript .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.javascript .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.javascript .sx { color: #008000 } /* Literal.String.Other */
+.javascript .sr { color: #BB6688 } /* Literal.String.Regex */
+.javascript .s1 { color: #BA2121 } /* Literal.String.Single */
+.javascript .ss { color: #19177C } /* Literal.String.Symbol */
+.javascript .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.javascript .vc { color: #19177C } /* Name.Variable.Class */
+.javascript .vg { color: #19177C } /* Name.Variable.Global */
+.javascript .vi { color: #19177C } /* Name.Variable.Instance */
+.javascript .il { color: #666666 } /* Literal.Number.Integer.Long */

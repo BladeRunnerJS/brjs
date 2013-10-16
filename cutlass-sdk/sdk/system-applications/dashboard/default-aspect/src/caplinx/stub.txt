@@ -1,0 +1,1 @@
+This folder is needed because of a bug in the way the app namespace is determined.

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<base href="@APP.VERSION@"/>
+		
+		<title>Live Examples</title>
+		
+		<@css.bundle theme="standard"@ />
+		<@i18n.bundle@ />
+		<@js.bundle@ />
+
+		<link rel="stylesheet" media="screen" type="text/css" href="unbundled-resources/caplin-core-styles/fonts.css" />
+		<script>
+			/*
+				Live examples code gets pulled in with XHR, which means that any
+				references to controls/services/whatever aren't "seen" by the bundler.
+				This is why we reference them here so that the examples still work.
+			 */
+			'br.date-picker';
+			'br.select-box';
+			'br.combo-box';
+			'br.toggle-switch';
+			'br.tooltip-control';
+		</script>
+	</head>
+	<body onload="new live.examples.presenter.PresenterLiveExamplesApp();">
+	<!--[if lte IE 8]><div class="alert alert-error" id="oldbrowseralert"><div><strong>You are using an extremely old browser, and this site will not work properly in it. Please <a href="http://browsehappy.com/?locale=en">upgrade your browser</a> to improve your experience.</strong></div></div><![endif]-->
+		<div id="wrapper">
+			<div id="wrapper-inner">
+				<div id="pagetitle_wrapper">
+					<h2 id="pagetitle">LIVE EXAMPLES / Caplin Presenter</h2>
+				</div>
+				<div id="content">
+					<nav id="toc">					
+						<dl>
+							<dd></dd>
+						</dl>
+					</nav>
+
+					<div id="main">
+						<div id="mainInner">
+
+							<div id="tutorial">
+								<div id="tutorial_slider"></div>
+								<div id="controller">
+									<ul class="ctrl">
+										<li calls="toc">4</li>
+										<li calls="back"><</li>
+										<li calls="fwd">></li>
+									</ul>
+									<h3 id="title"> 1 Introduction </h3>
+									<div id="tooltip" style="display:none;"> tool tip </div>
+								</div>
+								<div id="tutorial_content">
+									&nbsp;
+								</div>
+							</div>
+
+							<div id="chapter-number">
+								<div class="inner">
+									<h2>- Chapter -</h2>
+									<h1>1</h1>
+								</div>
+							</div>
+							<div id="code">
+
+								<div id="code_tabs" class="model">
+									<div shows="model" class="tab active">
+										<div class="top"></div>
+										<span>PRESENTATION MODEL</span>
+									</div>
+									<div shows="view" class="tab">
+										<div class="top"></div>
+										<span>VIEW</span>
+									</div>
+									<div shows="i18n" class="tab">
+										<div class="top"></div>
+										<span>I18N</span>
+									</div>
+									<div class="bottom"></div>
+								</div>
+
+								<div id="model">
+									<div id="code_content">
+										<div id="code_controls">
+											<a id="reset-button"><b>R</b> Reset Code</a>
+										</div>
+										<div class="editor_container" id="view_editor_container"></div>
+										<div class="editor_container" id="model_editor_container"></div>
+										<div class="editor_container" id="i18n_editor_container"></div>
+										<div id="error">
+											<b>!</b> Error:
+											<span class="content"></span>
+										</div>
+									</div>
+									<div id="splitter"></div>
+								</div>
+
+								<div id="view">
+									<div id="error_cover"></div>
+									<div id="result_header"><h2>RESULT</h2></div>
+									<div id="result"></div>
+								</div>
+
+							</div><!-- code -->
+
+						</div><!-- mainInner -->
+					</div><!-- main -->
+
+				</div><!-- content -->
+
+			</div><!-- wrapper inner -->
+
+		</div><!-- wrapper -->
+	</body>
+</html>

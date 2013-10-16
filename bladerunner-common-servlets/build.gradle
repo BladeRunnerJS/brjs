@@ -1,0 +1,28 @@
+
+apply plugin: 'java'
+apply plugin: com.caplin.gradle.plugins.CompileOnly
+
+dependencies {
+	compile project(":cutlass-common");
+	compile dependency('commons-io')
+	compile dependency('commons-codec')
+	compile dependency('commons-lang3')
+	compile dependency('httpcore')
+	compile dependency('uadetector-core')
+	compile dependency('uadetector-resources')
+	
+	compileOnly dependency('servlet-api')
+	
+	testCompile dependency('junit')
+	testCompile dependency('xmlunit')
+	testCompile dependency('jmock')
+	testCompile dependency('mockito-core')
+	testCompile dependency('httpclient')
+	testCompile dependency('jetty-servlet-tester')
+	testCompile dependency('jetty-all-server')
+	testCompile dependency('hibernate-c3p0')
+	testCompile dependency('javassist')
+	testCompile dependency('hsqldb')
+	
+	testRuntime project(path: ':brjs-logger-binding')
+}

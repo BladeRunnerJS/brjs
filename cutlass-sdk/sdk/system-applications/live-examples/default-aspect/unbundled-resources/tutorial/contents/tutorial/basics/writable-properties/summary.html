@@ -1,0 +1,16 @@
+<p>
+	The <code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.property.WritableProperty.html">caplin.presenter.property.WritableProperty</a></code> class extends
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.property.Property.html">caplin.presenter.property.Property</a></code>, adding a <code>setValue(sValue)</code> method that can be called
+	from within the presentation model.
+</p>
+
+<p>
+	This example updates the <code>amount</code> property after construction.
+</p>
+
+
+<p>If you want to be able to use the <i>Presentation Model</i> to dynamically update the value of a property once it's been created, but don't need end users to be able to change it, you would use a <i>Writable Property</i>:</p>
+<p><code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.property.WritableProperty.html">caplin.presenter.property.WritableProperty</a></code></p>
+<p>A <i>Writable Property</i> is an extension of the basic <i>Property</i> class, that allows you to update its value using the <code>setValue()</code> method.</p>
+<p>In this example, we have made the <code>amount</code> property writable, and then used <code>this.amount.<b>setValue(42)</b></code> to change its value to 42.</p>
+<p>The HTML <i>View</i> has not changed at all.</p>

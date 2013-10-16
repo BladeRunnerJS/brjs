@@ -1,0 +1,20 @@
+
+apply plugin: 'java'
+
+dependencies {
+	testCompile (project(":brjs-core")) {
+		exclude module: 'jetty-all-server'
+	}
+	testCompile project(":bladerunner-common-servlets")
+	testCompile project(":bladerunner-dev-servlets")
+	testCompile project(":bladerunner-prod-servlets")
+	
+	testCompile dependency('jetty-all-server')
+	testCompile dependency('junit')
+	testCompile dependency('hamcrest-all')
+	testCompile dependency('bonecp')
+	testCompile dependency('servlet-api')
+	testCompile dependency('httpclient')
+	
+	testRuntime project(path: ':brjs-logger-binding')
+}

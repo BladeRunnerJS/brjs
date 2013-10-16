@@ -1,0 +1,2 @@
+depends : jquery
+css: resources/css/slider.css

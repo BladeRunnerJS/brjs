@@ -1,0 +1,2 @@
+GrandChildClass = function() {
+};

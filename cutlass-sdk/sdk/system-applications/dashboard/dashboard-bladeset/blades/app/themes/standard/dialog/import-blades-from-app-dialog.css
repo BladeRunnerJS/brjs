@@ -1,0 +1,28 @@
+
+
+.importBladesets {
+	white-space:nowrap;
+}
+
+.importBladesets .errorMessage{
+	white-space: normal;
+}
+.importBlades input[type="checkbox"] {
+	left:20px;
+}
+
+.importBladeset input[type="checkbox"] {
+	margin: -17px 0px 0px 20px !important;
+}
+.importBladesets{
+	text-align: left;
+}
+.selectedApp{
+	text-align: left;
+	margin: 4px;
+	padding: 5px 0;
+	border-bottom: 1px solid #ccc;
+}
+li.importBlade{
+	text-align: left;
+}

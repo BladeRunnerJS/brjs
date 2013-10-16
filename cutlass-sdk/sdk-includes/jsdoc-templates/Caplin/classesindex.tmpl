@@ -1,0 +1,40 @@
+
+{+include("template-includes/header.html")+}
+
+<div class="one-third">
+	{+publish.classesIndex+}
+</div>
+
+<div id="api_content_wrapper" class="two-thirds">
+	<div id="api_content">
+		<h1 class="classTitle">Class Index</h1>
+		{!
+			var prevMajorPackage = "";
+			var outputSeperator = false;
+		!}
+		<for each="thisClass" in="data">
+			{!
+				var currentMajorPackage = thisClass.alias.split(".")[1];
+				if (prevMajorPackage != "" && currentMajorPackage != prevMajorPackage)
+				{
+					outputSeperator = true;
+				}
+			!}
+			<if test="outputSeperator">
+				<div class="divider">
+					<span class='divider-image'></span>
+				</div>
+			</if>
+			<div class='features-wrapper'>
+				<h2 class='header'>{+(new Link().toSymbol(thisClass.alias))+}</h2>
+				{+resolveLinks(summarize(thisClass.classDesc))+}
+			</div>
+			{! 
+				prevMajorPackage = currentMajorPackage;
+				outputSeperator = false; 
+			!}
+		</for>
+	</div>
+</div>
+
+{+include("template-includes/footer.html")+}

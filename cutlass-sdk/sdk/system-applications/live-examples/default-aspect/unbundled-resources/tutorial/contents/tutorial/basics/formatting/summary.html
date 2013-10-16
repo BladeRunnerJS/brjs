@@ -1,0 +1,14 @@
+<p>
+	Formatters are added to a property to change the value as is rendered on screen.
+	Multiple formatters can be added to a single property,
+	in which case they are executed in the order in which they were added.
+	Note that formatters do not alter the actual value of the property, they just alter how it is displayed, such as by using a different
+	date format, or (as in this example) rounding off excess decimal places.
+</p>
+<p>
+	Caplin provides a set of common formatters
+	in the <code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.element.formatter_2.html">caplin.element.formatter</a></code> package.
+	However these are not supplied with BladeRunner, so custom formatters which implement the
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.core.formatter.html">caplin.core.Formatter</a></code>
+	interface must be created. This demo uses a <code>DecimalFormatter</code> which rounds the value to two decimal places.
+</p>

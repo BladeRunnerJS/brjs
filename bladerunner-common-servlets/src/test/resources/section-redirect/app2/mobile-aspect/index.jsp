@@ -1,0 +1,1 @@
+/app2/mobile-aspect/index.jsp
