@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model.utility;
 
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
@@ -155,4 +156,21 @@ public class NameValidator
 		
 		return message.toString();
 	}
+	
+	
+	public static String generateAppNamespaceFromApp(App app) throws InvalidRootPackageNameException
+	{
+		String appName = app.getName();
+		String appNamespace = appName;
+		appNamespace = appNamespace.replace("-", "");
+		appNamespace = appNamespace.replace("+", "");
+		appNamespace = appNamespace.replace("_", "");
+		appNamespace = appNamespace.toLowerCase();
+		if (isValidRootPackageName(appNamespace))
+		{
+			return appNamespace;
+		}
+		throw new InvalidRootPackageNameException("Unable to automatically calculate app namespace for app " + appName);
+	}
+	
 }

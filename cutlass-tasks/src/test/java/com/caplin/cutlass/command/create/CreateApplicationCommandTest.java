@@ -49,12 +49,6 @@ public class CreateApplicationCommandTest
 	}
 	
 	@Test (expected=CommandArgumentsException.class)
-	public void commandThrowsErrorIfIncorrectNumberArgumentsArePassedIn() throws Exception
-	{
-		createApplicationCommand.doCommand(new String[] { "application" });
-	}
-	
-	@Test (expected=CommandArgumentsException.class)
 	public void commandThrowsErrorIfApplicationAlreadyExists() throws Exception
 	{
 		createApplicationCommand.doCommand(new String[] { "fxtrader", "novox" });
@@ -96,6 +90,20 @@ public class CreateApplicationCommandTest
 		
 		List<String> appConfLines = FileUtils.readLines(appConf);
 		assertEquals("appNamespace: namespacex", appConfLines.get(0));
+	}
+
+	@Test
+	public void appnamespaceIsAutomaticallyGeneratedIfNotProvided() throws Exception
+	{
+		File appConf = new File(newApplicationToBeCreatedDirectory, "app.conf");
+		
+		createApplicationCommand.doCommand(new String[] { "newtrader" });
+		
+		assertTrue(newApplicationToBeCreatedDirectory.exists());
+		assertTrue(appConf.exists());
+		
+		List<String> appConfLines = FileUtils.readLines(appConf);
+		assertEquals("appNamespace: newtrader", appConfLines.get(0));
 	}
 	
 	@Test
