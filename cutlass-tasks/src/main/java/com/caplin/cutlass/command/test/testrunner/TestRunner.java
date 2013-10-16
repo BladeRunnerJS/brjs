@@ -338,7 +338,7 @@ public class TestRunner {
 			
 			String classPath = getClassPath(jsTestDriverJar.getParentFile());
 			String[] args = CmdCreator.cmd(baseCmd, classPath, configFile.getPath(), "../"+CutlassConfig.XML_TEST_RESULTS_DIR,
-				"--verbose", browserTimeout(), "DEBUG");
+				verboseFlag(), browserTimeout(), "INFO");
 			logger.debug("Running command: " + CmdCreator.printCmd(args));
 			Process process = runTime.exec(args);
 			childProcesses.add(process);
@@ -380,7 +380,7 @@ public class TestRunner {
 		logger.info("Starting server process...");
 		String classPath = getClassPath(jsTestDriverJar.getParentFile());
 		String[] args = CmdCreator.cmd("java$$-cp$$%s$$com.google.jstestdriver.JsTestDriver --config$$%s$$--port$$%s$$%s$$--browserTimeout$$%s$$--runnerMode$$%s",
-			classPath, jsTestDriverJar.getAbsolutePath().replaceAll("\\.jar$", ".conf"), portNumber, verboseFlag(), browserTimeout(), "DEBUG" );
+			classPath, jsTestDriverJar.getAbsolutePath().replaceAll("\\.jar$", ".conf"), portNumber, verboseFlag(), browserTimeout(), "INFO" );
 		logger.debug("Running command: " + CmdCreator.printCmd(args));
 		Process process = runTime.exec(args);
 		childLoggers.add(new ProcessLogger(brjs, process, "server"));
