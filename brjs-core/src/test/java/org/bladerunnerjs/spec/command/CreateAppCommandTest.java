@@ -34,13 +34,6 @@ public class CreateAppCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void exceptionIsThrownIfThereAreTooFewArguments() throws Exception {
-		when(brjs).runCommand("create-app", "a");
-		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'app-namespace' is required"))
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
-	}
-	
-	@Test
 	public void exceptionIsThrownIfThereAreTooManyArguments() throws Exception {
 		when(brjs).runCommand("create-app", "a", "b", "c");
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: c"))
@@ -87,6 +80,16 @@ public class CreateAppCommandTest extends SpecTest {
 			.and(logging).infoMessageReceived(APP_DEPLOYED_LOG_MSG, app.getName(), app.dir().getPath())
 			.and(output).containsLine(APP_CREATED_CONSOLE_MSG, app.getName())
 			.and(output).containsLine(APP_DEPLOYED_CONSOLE_MSG, app.getName());
+	}
+	
+	@Test
+	public void appNamespaceIsOptional() throws Exception {
+		App myApp = brjs.app("myApp");
+		
+		given(appJars).hasBeenCreated();
+		when(brjs).runCommand("create-app", "myApp");
+		then(myApp).dirExists()
+			.and(myApp.appConf()).namespaceIs("myapp");
 	}
 	
 	@Test
