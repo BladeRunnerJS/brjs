@@ -23,13 +23,14 @@ public class BladerunnerCommandTest extends SpecTest
 			.and(brjs).hasBeenCreated();	
 		appServer = brjs.applicationServer(appServerPort);
 	}
-	@Ignore
+	
 	@Test
 	public void exceptionIsThrownIfThereAreTooManyArguments() throws Exception {
 		when(brjs).runCommand("start", "a");
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: a"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
+	
 	@Ignore
 	@Test
 	public void exceptionIsThrownIfAppServerAlreadyStarted() throws Exception

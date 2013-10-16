@@ -4,13 +4,17 @@ import java.io.IOException;
 
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
+import org.bladerunnerjs.core.plugin.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
-public class BladerunnerCommand implements CommandPlugin
+import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPException;
+import com.martiansoftware.jsap.JSAPResult;
+
+public class BladerunnerCommand extends ArgsParsingCommandPlugin
 {
 	public class Messages {
 		public static final String SERVER_STARTUP_MESSAGE = "Bladerunner server is now running and can be accessed at http://localhost:";
@@ -50,28 +54,24 @@ public class BladerunnerCommand implements CommandPlugin
 		return "Start the embedded application server and database.";
 	}
 	
-	@Override
-	public String getCommandUsage()
-	{
-		return "";
-	}
 	
 	@Override
 	public String getCommandHelp() {
 		return getCommandUsage();
 	}
-	
+
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException
+	protected void configureArgsParser(JSAP argsParser) throws JSAPException
 	{
-		if (args.length > 0)
-		{
-			throw new CommandOperationException("This command does not take any arguments.");
-		}
-		
-		startAppServer();
 	}
 
+	@Override
+	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException
+	{
+		startAppServer();
+	}
+	
+	
 	private void startAppServer() throws CommandOperationException
 	{
 		try
@@ -95,4 +95,5 @@ public class BladerunnerCommand implements CommandPlugin
 			throw new CommandOperationException("Error creating application server.", ex);
 		}
 	}
+	
 }
