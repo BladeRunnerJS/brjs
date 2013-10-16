@@ -1,0 +1,1 @@
+nsx.a.patched.class

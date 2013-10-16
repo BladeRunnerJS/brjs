@@ -1,0 +1,10 @@
+<div id="caplinx.dashboard.app.field">
+	<div class="field">
+		<label data-bind="text:label"></label>
+		<div class="input">
+			<input class='fieldInput' type="text" data-bind="value:value, valueUpdate:'keyup', css:{error:hasError}, hasfocus:hasFocus, enable:enabled, attr:{placeholder:placeholder}"/>
+			<span class="errorMessage" data-bind="text:failureMessage, visible:hasError"></span>
+		</div>
+	</div>
+</div>
+	

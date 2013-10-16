@@ -1,0 +1,56 @@
+Technical overview: the servlet
+
+  The HTTP GET, POST and PUT API implemented for use by webcentric is implemented as a single servlet
+  (see {{{xref/com/caplin/webcentric_servlet/WebcentricServlet.html}com.caplin.webcentric_servlet.WebcentricServlet}}).
+  
+HTTP API
+
+  webcentric relies on the following API to work
+
+* GET
+
+---
+/logins/<some login name>
+---
+  
+  For example: {{http://localhost:8080/webcentric_servlet/logins/user1@caplin}}
+  
+---
+/logins/<some login>/pages/<some page id>
+---
+
+  For example: {{http://localhost:8080/webcentric_servlet/logins/user1@caplin/pages/1}}
+
+  with the "logins" bits unnecessary and ignored.
+  
+---
+/logins/<some login>/pages
+---
+
+  For example: {{http://localhost:8080/webcentric_servlet/logins/user1@caplin/pages}}
+
+** New for webcentric_serlvet - not in webcentric_rails
+
+---
+/logins/<some login>/pages/NewLayout
+---
+
+  For example: {{http://localhost:8080/webcentric_servlet/logins/user1@caplin/pages/NewLayout}}
+
+  in this case the "logins" value is necessary.
+  
+* POST
+
+  to be done
+
+* PUT
+
+  to be done
+
+Other usage - the "update" web pages
+
+  New for webcentric_serlvet - not in webcentric_rails
+
+  webcentric_servlet also provides direct user access - for allowing modification of xml "live" through a web browser. This is password protected for writing but not reading.
+  
+  See: {{http://localhost:8080/webcentric_servlet/update}} (or equivalent).

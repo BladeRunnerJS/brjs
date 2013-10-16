@@ -1,0 +1,12 @@
+<div id="caplinx.dashboard.app.new-app-dialog">
+	<h1> New App</h1><hr />
+	<form data-bind="submit:createApp">
+    	<div class="input-label"> App Name:</div>
+		<div data-bind="template:{name:'caplinx.dashboard.app.field', data:appName}"></div>
+        <div class="input-label">App Namespace:</div>
+		<div data-bind="template:{name:'caplinx.dashboard.app.field', data:appNamespace}"></div>
+        <div class="footer">
+			<div data-bind="template:{name:'caplinx.dashboard.app.submit-button', data:createAppButton}"></div>
+        </div>
+	</form>
+</div>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gridDefinitions xmlns="http://schema.caplin.com/CaplinTrader/gridDefinitions">
+	<dataProviderMappings>
+		<dataProviderMapping id="emptycorp.example.grid.rttpContainerGridDataProvider" className="caplin.grid.RttpContainerGridDataProvider"/>
+	</dataProviderMappings>
+	
+	<decoratorMappings>
+		<decoratorMapping id="emptycorp.example.grid.columnMenuDecorator" className="caplin.grid.decorator.ColumnHeaderMenuDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.columnSortDecorator" className="caplin.grid.decorator.ColumnSortDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.columnReorderingDecorator" className="caplin.grid.decorator.ColumnReorderingDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.loadingDataDecorator" className="caplin.grid.decorator.LoadingDataDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.dragDecorator" className="caplin.grid.decorator.DragDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.hoverDecorator" className="caplin.grid.decorator.HoverDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.selectionDecorator" className="caplin.grid.decorator.SelectionDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.scrollTipDecorator" className="caplin.grid.decorator.ScrollTipDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.columnResizingDecorator" className="caplin.grid.decorator.ColumnResizingDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.rowLoadingDecorator" className="caplin.grid.decorator.RowLoadingDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.noDataFoundBubble" className="caplin.grid.decorator.NoDataFoundBubbleMessageDecorator"/>
+		<decoratorMapping id="emptycorp.example.grid.rightClickDecorator" className="emptycorp.example.grid.RightClickMenuDecorator"/>
+	</decoratorMappings>
+	
+	<templates>
+		<gridTemplate id="emptycorp.example.grid.fxGrid" displayedColumns="description, bestbid, bestask">
+			<decorators>
+				<emptycorp.example.grid.loadingDataDecorator showInitialLoad="true"/>
+				<emptycorp.example.grid.hoverDecorator/>
+				<emptycorp.example.grid.scrollTipDecorator/>
+				<emptycorp.example.grid.selectionDecorator/>
+				<emptycorp.example.grid.noDataFoundBubble headerText="@{griddefinitions.data_unavailable}" bodyText="@{griddefinitions.no_data_received}" 
+					connectionLostHeaderText="@{griddefinitions.data_unavailable}" connectionLostBodyText="@{griddefinitions.no_data_received}"/>
+				<emptycorp.example.grid.columnMenuDecorator/>
+				<emptycorp.example.grid.columnReorderingDecorator/>
+				<emptycorp.example.grid.columnResizingDecorator/>
+				<emptycorp.example.grid.rowLoadingDecorator imagePath="source/theme/packages/grid/decorator/images/loading-row.gif"/>
+				<emptycorp.example.grid.columnSortDecorator/>
+				<emptycorp.example.grid.dragDecorator ddGroup="fxInstruments"/>
+				<emptycorp.example.grid.rightClickDecorator menuOption1Caption="@{cx.grid.decorator.right_click.context.menu.new_alert}" menuOption1Disabled="false" menuOption1Event="newAlertForm"/> 
+			</decorators>
+			<columnDefinitions>
+				<column id="description" fields="InstrumentDescription" displayName="@{griddefinitions.currency}" width="80" mandatory="true" primaryFieldType="text"/>
+				<column id="rate" cellRenderer="fx-spread" fields="BestBid,BestAsk" displayName="@{griddefinitions.rate}" width="115" cssClass="flashing-spread"/>
+				<column id="bestbid" cellRenderer="fx-price" fields="BestBid" displayName="@{griddefinitions.bid}" width="80" cssClass="flashing-price"/>
+				<column id="bestask" cellRenderer="fx-price" fields="BestAsk" displayName="@{griddefinitions.ask}" width="80" cssClass="flashing-price"/>
+			</columnDefinitions>
+		</gridTemplate>
+	</templates>
+	
+	<grids>
+		<grid id="emptycorp.example.grid.FX.Major" displayName="@{griddefinitions.major_fx}" baseTemplate="emptycorp.example.grid.fxGrid">
+			<gridRowModel>
+				<emptycorp.example.grid.rttpContainerGridDataProvider container="/CONTAINER/FX/Major"/>
+			</gridRowModel>
+		</grid>
+	</grids>
+</gridDefinitions>

@@ -1,0 +1,2 @@
+depends : lib1
+js : lib2_1.js, lib2_2.js, lib2_nonexistant.js

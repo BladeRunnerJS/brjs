@@ -1,0 +1,23 @@
+h1 {
+	background-image: url("../images/theme_theme1/img.png_image.bundle");
+}
+
+h2 {
+	background-image: url("../images/theme_theme1/child-dir/img.png_image.bundle");
+}
+
+h3 {
+	background-image: url("../images/theme_theme1/img.png_image.bundle");
+}
+
+h3.spaces {
+	background-image: url("../images/theme_theme1/img.png_image.bundle");
+}
+
+h3.noQuotes {
+	background-image: url("../images/theme_theme1/img.png_image.bundle");
+}
+
+h3.singleQuotes {
+	background-image: url("../images/theme_theme1/img.png_image.bundle");
+}

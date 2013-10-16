@@ -1,0 +1,191 @@
+
+.cpl-tooltip {
+	position: relative;
+	-webkit-transition:opacity ease 700ms;
+	-moz-transition:opacity ease 700ms;
+	transition:opacity ease 700ms;
+	opacity:0;
+	width: 141px;  
+	display: block;
+}
+
+.ui-tooltip-red .ui-tooltip-content {
+	border-color: #999;
+	font-size:13px;
+	font-family: arial;
+	font-weight: normal;
+	color: #333;
+}
+
+.ui-tooltip-red {
+	background: #fff2b6; /* Old browsers */
+	background: -moz-linear-gradient(top, #fae592 0%, #fff2b6 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fae592), color-stop(100%,#fff2b6)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #fae592 0%,#fff2b6 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #fae592 0%,#fff2b6 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #fae592 0%,#fff2b6 100%); /* IE10+ */
+	background: linear-gradient(top, #fae592 0%,#fff2b6 100%); /* W3C */
+}
+
+.ui-tooltip-red .ui-tooltip,
+.ui-tooltip-red .qtip,
+.ui-tooltip-red .ui-helper-reset,
+.ui-tooltip-red .ui-tooltip-default,
+.ui-tooltip-red .ui-toolt,
+.ui-tooltip-red .ip-shadow,
+.ui-tooltip-red {
+	-moz-border-radious:10px !important;
+	border-radius:10px !important;
+}
+
+.ui-tooltip-red .ui-tooltip-tip {
+    background-image: url('images/qtip-tip.png');
+    background-repeat: no-repeat;
+    height: 9px !important;
+    width: 19px !important;
+    z-index: 2;
+    bottom: -8px !important;
+	margin-left: -9px !important;
+}
+
+.ui-tooltip-tip
+{
+	width: 8px; 
+	height: 8px; 
+	background-color: transparent;
+	left: 50%; 
+	margin-left: -4px;
+	bottom: -7px;
+}
+
+.ui-tooltip-red .ui-tooltip-tip canvas {
+	width: 0;
+	height: 0;
+}
+
+.ui-tooltip-red .ui-tooltip-tip * {
+	display: none !important;
+}
+
+.tooltip-placeholder {
+	position:relative;
+	left:467px;
+	bottom:17px;
+	width:155px;
+}
+
+.ui-tooltip-validation {
+	width: 140px;
+}
+
+/*
+* qTip2 - Pretty powerful tooltips
+* http://craigsworks.com/projects/qtip2/
+*
+* Version: nightly
+* Copyright 2009-2010 Craig Michael Thompson - http://craigsworks.com
+*
+* Dual licensed under MIT or GPLv2 licenses
+*   http://en.wikipedia.org/wiki/MIT_License
+*   http://en.wikipedia.org/wiki/GNU_General_Public_License
+*
+* Date: Tue Aug  9 09:25:57 PDT 2011
+*/
+
+/* Core qTip styles */
+.ui-tooltip, .qtip {
+	position: absolute;
+	display: none;
+	max-width: 280px;
+	min-width: 50px;
+	font-size: 10.5px;
+	line-height: 12px;
+	z-index: 15000;
+}
+/* Fluid class for determining actual width in IE */
+.ui-tooltip-fluid {
+	display: block;
+	visibility: hidden;
+	position: static !important;
+	float: left !important;
+}
+.ui-tooltip-content {
+	border: solid 1px #CCC;
+	border-radius: 5px;	
+	overflow: hidden;
+	padding: 10px;
+	position: relative;
+	text-align: left;
+	word-wrap: break-word;
+}
+
+.ui-tooltip-titlebar {
+	border: solid #CCC;
+	border-radius: 5px 5px 0 0;
+	border-width: 1px 1px 0;
+	font-weight: bold;
+	min-height: 14px;
+	overflow: hidden;
+	padding: 5px 35px 5px 10px;
+	position: relative;
+	-moz-border-radius: 5px 5px 0 0;
+	-o-border-radius: 5px 5px 0 0;
+	-webkit-border-radius: 5px 5px 0 0;
+}
+.ui-tooltip-titlebar + .ui-tooltip-content {
+	border-top-width: 0px !important;
+}
+/* Default close button class */
+.ui-tooltip-titlebar .ui-state-default {
+	position: absolute;
+	right: 4px;
+	top: 50%;
+	margin-top: -9px;
+	cursor: pointer;
+	outline: medium none;
+	border-width: 1px;
+	border-style: solid;
+}
+* html .ui-tooltip-titlebar .ui-state-default {
+	top: 16px;
+} /* IE fix */
+.ui-tooltip-titlebar .ui-icon, .ui-tooltip-icon .ui-icon {
+	display: block;
+	text-indent: -1000em;
+}
+.ui-tooltip-icon, .ui-tooltip-icon .ui-icon {
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-o-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+.ui-tooltip-icon .ui-icon {
+	width: 18px;
+	height: 14px;
+	text-align: center;
+	text-indent: 0;
+	font: normal bold 10px/13px Tahoma, sans-serif;
+	color: inherit;
+	background: transparent none no-repeat -100em -100em;
+}
+/* Applied to 'focused' tooltips e.g. most recently displayed/interacted with */
+.ui-tooltip-focus {
+}
+/* Applied on hover of tooltips i.e. added/removed on mouseenter/mouseleave respectively */
+.ui-tooltip-hover {
+}
+.ui-tooltip-default .ui-tooltip-titlebar {
+}
+.ui-tooltip-default .ui-tooltip-icon {
+	/* border-color: #CCC; */
+	background: #F1F1F1;
+	color: #777;
+}
+.ui-tooltip-default .ui-tooltip-titlebar .ui-state-hover {
+	/* border-color: #AAA; */
+	color: #111;
+}
+
+.ui-tooltip .ui-tooltip-tip, .ui-tooltip .ui-tooltip-tip * {
+	position: absolute;
+}

@@ -1,0 +1,12 @@
+<p>
+	You can add parsers to a property in order to change its actual value before it is added to the
+	Presentation Model (as opposed to Formatters, which merely change the way the values are displayed).
+	Multiple parsers can be added to a single property,
+	in which case they are executed in the order in which they were added.
+</p>
+<p>
+	Caplin provides a set of common parsers in the Renderer library.
+	However these are not supplied with BladeRunner, so custom parsers which implement the
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.core.parser.html">caplin.core.Parser</a></code>
+	interface must be created. This demo uses an <code>UpperCaseParser</code> which converts all lower case letters to upper case.
+</p>

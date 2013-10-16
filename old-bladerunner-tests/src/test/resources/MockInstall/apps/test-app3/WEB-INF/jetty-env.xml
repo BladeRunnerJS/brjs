@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	<New class="org.eclipse.jetty.plus.jndi.EnvEntry">
+		<Arg>LIBERATOR.DOMAIN</Arg>
+		<Arg type="java.lang.String">caplin.com</Arg>
+		<Arg type="boolean">true</Arg>
+	</New>
+	
+</Configure>

@@ -1,0 +1,11 @@
+<div id="caplinx.dashboard.app.import-bladesets">
+	<li class="importBladeset">
+		<span class="bladesetName" data-bind="text:bladesetName"></span>
+		<input type="checkbox" data-bind="checked:isSelected, prop:{indeterminate:isIndeterminate}" />
+        
+		<ul class="importBlades" data-bind="template:{name:'caplinx.dashboard.app.import-blades', foreach:blades}"></ul>
+            <div class="input-label" data-bind="visible:displayNewBladesetField"> Rename Bladeset:</div>
+			<div class='new-bladeset-name' data-bind="visible:displayNewBladesetField, template:{name:'caplinx.dashboard.app.field', data:newBladesetName}"></div>
+	</li>
+    <hr />
+</div>

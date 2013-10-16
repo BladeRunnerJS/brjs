@@ -1,0 +1,28 @@
+<div id="view-template">
+	<div>Select multiple options in the Multi-Selection Field using either the drop-down list or check boxes:</div>
+	<fieldset>		
+		<legend>Select Control</legend>
+		<label data-bind="text:hobbies.label" for="hobbies"></label>
+		<select multiple="multiple" data-bind="options: hobbies.options, optionsValue: 'value', selectedOptions: hobbies.value, attr:{name:hobbies.controlName}"></select>
+	</fieldset>
+
+	<fieldset>
+		<legend>Checkboxes</legend>
+		<label data-bind="text:hobbies.label" for="hobbies"></label>
+		<div data-bind="template:{name:'checkbox-template', foreach:hobbies.options}"></div>
+	</fieldset>
+	
+	<fieldset>
+		<legend>Changing the Model</legend>
+		<label data-bind="text:noExtremeSports.label" for="noExtremeSports"></label>
+		<input type="checkbox" data-bind="checked:noExtremeSports.value, attr:{name:noExtremeSports.controlName}"/>
+	</fieldset>
+	
+	<span>You have selected: </span><span data-bind="text:hobbies.value"></span>
+</div>
+
+<div id="checkbox-template">
+	<input type="checkbox" data-bind="value:value, checked:$parent.hobbies.value, attr:{name:$parent.hobbies.controlName}"/>
+	<span data-bind="text:label"></span>
+	<br/>
+</div>

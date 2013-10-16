@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<unitTest>
+	<mergeElem id="id1" name="elem1"/>
+	<mergeElem id="id1" name="elem2"/>
+	<mergeElem id="id2" name="elem3"/>
+</unitTest>

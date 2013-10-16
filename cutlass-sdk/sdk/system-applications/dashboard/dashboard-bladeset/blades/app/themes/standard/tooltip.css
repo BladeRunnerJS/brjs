@@ -1,0 +1,89 @@
+.has-tooltip {
+    background: #ececec;
+    color: #555;
+    font-family: "HelveticaNeueW01-55Roma", Arial, sans-serif;
+    font-size: 16px;
+	font-weight:bold;
+    position: relative;
+    text-align: center;
+	width: auto;
+	z-index: 99;
+    -webkit-transform: translateZ(0); /* webkit flicker fix */
+    -webkit-font-smoothing: antialiased; /* webkit text rendering fix */
+	
+	
+}
+
+.has-tooltip .tooltip {
+    background: #d0ebf2;
+    bottom: 100%;
+    color: #424242;
+	line-height: 18px;
+    display: block;
+    left: -11px;
+    margin-bottom: -110px;
+    opacity: 0;
+    padding: 15px;
+    position: absolute;
+    visibility: hidden;
+    width: 100%;
+	
+	
+	
+	 -webkit-text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
+       -moz-text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
+        -ms-text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
+         -o-text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
+            text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.7);
+			
+    -webkit-transform: translateY(10px);
+       -moz-transform: translateY(10px);
+        -ms-transform: translateY(10px);
+         -o-transform: translateY(10px);
+            transform: translateY(10px);
+    -webkit-transition: all .25s ease-out;
+       -moz-transition: all .25s ease-out;
+        -ms-transition: all .25s ease-out;
+         -o-transition: all .25s ease-out;
+            transition: all .25s ease-out;
+    -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+       -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+        -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+         -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+
+/* This bridges the gap so you can mouse into the tooltip without it disappearing */
+.has-tooltip .tooltip:before {
+    bottom: -20px;
+    content: " ";
+    display: block;
+    height: 20px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
+
+/* CSS Triangles - see Trevor's post */
+.has-tooltip .tooltip:after {
+    border-left: solid transparent 10px;
+    border-right: solid transparent 10px;
+    border-bottom: solid #d0ebf2 10px;
+    top: -10px;
+    content: " ";
+    height: 0;
+    left: 50%;
+    margin-left: -13px;
+    position: absolute;
+    width: 0;
+}
+  
+.has-tooltip:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    -webkit-transform: translateY(0px);
+       -moz-transform: translateY(0px);
+        -ms-transform: translateY(0px);
+         -o-transform: translateY(0px);
+            transform: translateY(0px);
+}

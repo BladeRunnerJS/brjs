@@ -1,0 +1,5 @@
+<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+	<group name="novox.myGroup" > 
+		<alias name="novox.example.myAlias" class="novox.exampleClass" /> 
+	</group> 
+</aliasDefinitions>

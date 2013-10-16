@@ -1,0 +1,18 @@
+<p>
+	The <code>caplin.presenter.domain.property.TradeModelPropertyFactory</code> class is used to create properties that are
+	bound to trade model objects i.e. objects that subclass
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.trading.trademodel.trade.html">caplin.trading.trademodel.Trade</a></code>.
+	The factory is created with a trade instance. Property instances are created by calling the appropriate "getter" method:
+</p>
+
+<ul>
+	<li><code>factory.getEditableProperty(sPropertyName)</code></li>
+	<li><code>factory.getProperty(sPropertyName)</code></li>
+</ul>
+
+<p>
+	Use <code>getEditableProperty()</code> if you want the user to directly update the domain model. The Factory takes care of
+	setting up the necessary bindings, by attaching listeners to the trade model. When a trade has been completed and a new
+	trade created, calling <code>setTrade()</code> on the factory will unbind all previously created properties from the old trade, and
+	bind them to the new trade.
+</p>

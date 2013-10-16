@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+ 
+ <web-app>
+      <display-name>Cutlass Filters Test</display-name>
+
+      <servlet>
+          <servlet-name>DefaultServlet</servlet-name> 
+          <servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class> 
+          <load-on-startup>1</load-on-startup> 
+      </servlet>
+      <!--  individual mappings are only needed for the test
+      so that *.bundle can be mapped to the echo servlet -->
+      <servlet-mapping>
+          <servlet-name>DefaultServlet</servlet-name> 
+          <url-pattern>/default-aspect/*</url-pattern> 
+      </servlet-mapping>
+      <servlet-mapping>
+          <servlet-name>DefaultServlet</servlet-name> 
+          <url-pattern>/servlet/*</url-pattern> 
+      </servlet-mapping>
+
+	<servlet>
+		<servlet-name>UrlEchoServlet</servlet-name>
+		<servlet-class>com.caplin.cutlass.util.UrlEchoServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UrlEchoServlet</servlet-name>
+		<url-pattern>*.bundle</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>BladerunnerFilters</filter-name>
+		<filter-class>com.caplin.cutlass.filter.BladerunnerFilters</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>BladerunnerFilters</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+
+	<env-entry>
+		<description>A.TOKEN for testing</description>
+		<env-entry-name>A.TOKEN</env-entry-name>
+		<env-entry-type>java.lang.String</env-entry-type>
+		<env-entry-value>token replacement</env-entry-value>
+	</env-entry>
+	
+	 <mime-mapping> 
+		<extension>js</extension>
+		<mime-type>text/javascript</mime-type>
+	</mime-mapping>
+	<mime-mapping> 
+		<extension>xml</extension>
+		<mime-type>text/xml</mime-type>
+	</mime-mapping>
+
+</web-app>
+ 
+ 
+ 

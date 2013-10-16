@@ -1,0 +1,44 @@
+<p>
+	The <i>Control Plugin</I> allows custom JavaScript controls to be written and bound to a View template.
+	For information about the control implementations provided by Caplin see
+	the <a href="#tutorial/custom-controls">Custom Controls</a> section.
+</p>
+
+<p>
+	To add a custom control to the View template, use the <code>control</code> binding attribute, followed by the
+	logical alias name of the custom control, as shown below:
+</p>
+
+<pre>
+&lt;div data-bind="control:'my-control',controlNode:buysell"></div>
+</pre>
+<p>
+	Note that the <code class="cmd">value</code> binding for the control plugin has been deprecated, and the <code class="cmd">controlNode</code> binding will now be used instead.
+	The html element where the control plugin is defined is now reused by the control plugin avoiding nesting more elements. Therefore it is not recommended to use the <code class="cmd">value</code> binding, 
+	as it is a reserved knockout binding that can clash with other presentation node's bindings.
+</p>
+<p>
+	To create a custom control write a class that implements the
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.control.controladaptor.html">caplin.presenter.control.ControlAdaptor</a></code>
+	interface, and then create a <code class="cmd">aliasDefinitions.xml</code> in the same bladeset's resources directory. This will allow BladeRunner to automatically register your new control:
+</p>
+
+<pre>
+&lt;aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+    &lt;alias name="my-control" defaultClass="novobank.MyControl" />
+&lt;/aliasDefinitions>
+</pre>
+
+<p>To learn more about aliasing read the <a href="http://www.caplin.com/developer/product/caplin-trader-3/aliasing">Aliasing</a> documentation.</p>
+
+<p>
+	The custom control is passed an instance of
+	<code><a target="jsdoc" href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.presentationnode.html">PresentationNode</a></code>,
+	which is the "model" of the control. The control is responsible
+	for creating an HTML DOM element, and rendering itself appropriately. It creates whatever 2-way bindings are required. These bindings will...
+</p>
+
+<ul>
+	<li>Add DOM event listeners, to receive user gestures and update its model.</li>
+	<li>Add listeners to its model and update the HTML DOM elements.</li>
+</ul>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<bundleConfig xmlns="http://schema.caplin.com/CaplinTrader/bundleConfig">
+	<resource rootElement="gridDefinitions"
+		templateElements="dataProviderMappings, decoratorMappings, templates, grids"
+		mergeElements="dataProviderMapping, decoratorMapping, gridTemplate, folder@name, grid"/>
+
+	<resource rootElement="rendererDefinitions"
+		templateElements="renderer"
+		mergeElements="renderer@type"/>
+
+	<resource rootElement="chartDefinitions"
+		templateElements="dataProviderMappings, decoratorMappings, chartTemplates, charts"
+		mergeElements="dataProviderMapping, decoratorMapping, chartTemplate, chart"/>
+
+	<resource rootElement="tileViewDefinitions"
+		templateElements="headerMappings, decoratorMappings, templates"
+		mergeElements="headerMapping, decoratorMapping, tileViewTemplate"/>
+
+	<resource rootElement="compositeComponentDefinitions"
+		templateElements="controllerMappings, compositeComponents"
+		mergeElements="controllerMapping, compositeComponent"/>
+
+	<resource rootElement="treeViewDefinitions"
+		templateElements="treeNodeMappings, templates"
+		mergeElements="treeNodeMapping, treeViewTemplate"/>
+
+	<resource rootElement="deckDefinitions"
+		mergeElements="deckDefinition"/>
+
+	<resource rootElement="alertDefinitions"
+		mergeElements="alertProperty@name"/>
+
+	<resource rootElement="controlDefinitions"
+		mergeElements="control"/>
+		
+	<resource rootElement="tradeModels"
+		mergeElements="tradeModel"/>
+
+	<!-- this definition is only here to facilitate unit testing -->
+	<resource rootElement="unitTest"
+	 templateElements="templateElem, alternateTemplateElem"
+	 mergeElements="mergeElem, alternateMergeElem@alternateId"/>
+</bundleConfig>

@@ -1,0 +1,26 @@
+<rendererDefinitions>
+	
+	<renderer type="live.examples.presenter.renderer-plugin-demo">
+		<control name="caplin.control.basic.TextControl">
+		</control>
+		<downstream>
+			<transform className="caplin.element.styler.ClassStyler">
+				<attribute name="class" value="renderer-plugin-demo"/>
+				<attribute name="state" value="true"/>
+			</transform>
+		</downstream>
+	</renderer>
+	
+	<!-- N.B: remember to update demo/cookbook/flashing-prices/summary.html if this changes -->
+	<renderer type="live.examples.presenter.flashing-price">
+		<control name="caplin.control.basic.TextControl"></control>
+		<downstream>
+			<transform className="caplin.element.styler.ClassFlashStyler" >
+				<attribute name="duration" value="500"/>
+				<attribute name="flashing-up" value="flashing-up"/>
+				<attribute name="flashing-down" value="flashing-down"/>
+			</transform>
+		</downstream>
+	</renderer>
+	
+</rendererDefinitions>

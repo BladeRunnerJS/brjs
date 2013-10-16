@@ -1,0 +1,21 @@
+<p>
+	The Tooltip plugin is used to display error messages in a floating tooltip. In a data entry form
+	with limited screen real-estate it's often hard to find a convenient place to display messages,
+	when users enter invalid data.
+	The Tooltip plugin solves this problem by placing a message in a floating tooltip,
+	when the user gives focus to a data entry control. If a control contains invalid data, a visual cue
+	should make the user aware of the error; by surrounding it with a red border for instance. For a control
+	to use a floating tooltip, its control model must contain the following properties:
+</p>
+
+<ul>
+	<li><code>hasError:</code> true if there is a validation error, else false.</li>
+	<li><code>failureMessage:</code> message to be displayed.</li>
+</ul>
+
+<p>
+	In the example on this page a <code>NumericValidator</code> is added to the value of <code>amount</code> Field.
+	If a non-numeric value is entered, then when the focus is removed from the textbox (e.g. by pressing <i>Return</i>, or
+	by clicking elsewhere on the screen), a red border will be displayed. If you then focus (i.e. click) on the
+	input box, a tooltip with the error message appears.
+</p>

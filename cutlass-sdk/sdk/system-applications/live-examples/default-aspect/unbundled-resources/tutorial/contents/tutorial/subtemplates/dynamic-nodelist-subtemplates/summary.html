@@ -1,0 +1,13 @@
+<p>
+	Normally, you specify which sub-templates are to be used, from <code>data-bind</code> attributes in the main template. However,
+	a <code><a href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.presentationnode.html" target="jsdoc">PresentationNode</a></code>
+	may define which template is used to render it, by implementing the
+	<code><a href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.templateaware.html" target="jsdoc">caplin.presenter.node.TemplateAware</a></code>
+	interface. This defines a single method - <code>getTemplateName()</code> - which the
+	<code><a href="/dashboard-services/jsdoc/index.html#caplin.presenter.node.presentationnode.html" target="jsdoc">PresentationNode</a></code>
+	can then use to identify the name of a template in the <i>View</i>.
+</p>
+
+<p>
+	This example creates a node-list containing two legs, but where each leg dynamically specifies its own render template.
+</p>

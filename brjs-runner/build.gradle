@@ -1,0 +1,15 @@
+
+apply plugin: 'java'
+apply plugin: com.caplin.gradle.plugins.CompileOnly
+
+dependencies {
+	compile project(":brjs-core")
+	compile project(":brjs-logger-binding")
+	compile project(":cutlass-tasks");
+	
+	testCompile dependency('mockito-core')
+}
+
+jar {
+	manifest { attributes 'Main-Class': 'org.bladerunnerjs.CommandRunner' }
+}

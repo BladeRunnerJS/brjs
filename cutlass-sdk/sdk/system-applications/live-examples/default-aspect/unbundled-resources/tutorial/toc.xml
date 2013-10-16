@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<toc>
+
+	<section key="introduction" text="Introduction">
+		<section key="about" text="About Live Examples" nocontent="true">
+			<summary>Introducing Presenter Live Examples.</summary></section>
+		<section key="presenter-component" text="Presenter Component" nocontent="true">
+			<summary>Using Presenter within the Caplin Component framework.</summary></section>
+
+	</section>
+
+	<section key="tutorial" text="Tutorial">
+		<section key="basics" text="Basics" nocontent="true">
+			<summary>The most commonly used elements when creating a UI with Presenter.</summary>
+			<section key="simple-properties" text="Simple properties">
+				<summary>Defining a property to display data on the screen.</summary></section>
+			<section key="formatting" text="Formatting">
+				<summary>How to define the formatting View data in the presentation model.</summary></section>
+			<section key="writable-properties" text="Writable properties">
+				<summary>Updating displayed data from the presentation model.</summary></section>
+			<section key="editable-properties" text="Editable properties">
+				<summary>Allowing users to enter data.</summary></section>	
+			<section key="validating-user-input" text="Validating user input" localised="true">
+				<summary>Validating and processing user-entered data.</summary></section>
+			<section key="parsing" text="Parsing">
+				<summary>Defining parsers in the presentation model.</summary></section>
+			<section key="browser-events" text="Browser events">
+				<summary>Executing methods in the presentation model triggered by browser events.</summary></section>
+			<section key="localisation" text="Localisation" localised="true" >
+				<summary>Adding multi-language suport.</summary></section>
+			<section key="fields" text="Fields" localised="true">
+				<summary>Grouping the properties required by a form data entry field.</summary></section>
+		</section>
+
+		<section key="presentation-nodes" text="Presentation Nodes" nocontent="true">
+			<summary>Presentation nodes and the structure of the presentation model.</summary>
+			<section key="sets-of-properties" text="Sets of properties">
+				<summary>How to select and update large numbers of properties.</summary></section>
+			<section key="snapshots" text="Property Snapshots">
+				<summary>How to capture and restore the state of the GUI.</summary></section>
+		</section>
+
+		<section key="subtemplates" text="Sub-Templates " nocontent="true">
+			<summary>Breaking the HTML view into more manageable chunks.</summary>
+			<section key="simple-subtemplates" text="Simple Sub-Templates">
+				<summary>Splitting a view into multiple HTML chunks.</summary></section>
+			<section key="scoped-subtemplates" text="Scoped Sub-Templates">
+				<summary>Binding templates to parts of the presentation model.</summary></section>
+			<section key="nodelist-subtemplates" text="NodeList Sub-Templates">
+				<summary>Repeating templates for each item in a NodeList.</summary></section>
+			<section key="dynamic-nodelist-subtemplates" text="Dynamic NodeList Sub-Templates">
+				<summary>Letting the presentation model decide which template to use.</summary></section>
+			<section key="mapped-nodelist-subtemplates" text="Mapped NodeList Sub-Templates">
+				<summary>Referring to items in a NodeList with meaningful names.</summary></section>
+		</section>
+
+		<section key="control-models" text="Control Models" nocontent="true">
+			<summary>Logical models for discrete view controls.</summary>
+			<section key="button" text="Button">
+				<summary>Modelling a simple button.</summary></section>
+			<section key="display-field" text="Display Field">
+				<summary>Modelling a read-only form field.</summary></section>
+			<section key="field" text="Field">
+				<summary>Modelling a data entry control.</summary></section>
+			<section key="selection-field" text="Selection Field">
+				<summary>Choosing a item from a list of options.</summary></section>
+			<section key="multi-selection-field" text="Multi-Selection Field">
+				<summary>Choosing multiple item from a list of options.</summary></section>
+			<section key="date-field" text="Date Field">
+				<summary>Modelling a date field that falls within a range.</summary></section>
+			<section key="calendar-date-field" text="Calendar Date Field">
+				<summary>Supporting a month by month calendar control.</summary></section>
+		</section>
+
+		<section key="custom-controls" text="Custom Controls" nocontent="true">
+			<summary>Logical models for discrete view controls.</summary>
+			<section key="extjs-selectbox-control" text="ExtJs Select-Box">
+				<summary>The Presentation model explained.</summary></section>
+			<section key="extjs-combobox-control" text="ExtJs Combo-Box">
+				<summary>The Presentation model explained.</summary></section>
+			<section key="toggle-switch-control" text="Caplin Toggle Switch">
+				<summary>The Presentation model explained.</summary></section>
+			<section key="tooltip-control" text="Caplin Tooltip Control">
+				<summary>The Presentation model explained.</summary></section>
+		</section>
+
+		<section key="plugins" text="Plugins" nocontent="true">
+			<summary>Using and creating custom binding attributes.</summary>
+			<!--  CT3-only section
+			<section key="renderer-plugin" text="Renderer Plugin">
+				<summary>Using the Caplin renderer framework in a Presenter View.</summary></section> -->
+			<section key="control-plugin" text="Control Plugin" nocontent="true">
+				<summary>Writing your own control plugins</summary></section>
+			<section key="component-plugin" text="Component Plugin">
+				<summary>Embedding a Caplin component in an HTML View.</summary></section>
+			<section key="tooltip-plugin" text="Tooltip Plugin" localised="true">
+				<summary>Using tooltips to display user errors in a form.</summary></section>
+		</section>
+		
+		<!--  CT3-only section -->
+		<section key="property-factories" text="Property Factories " nocontent="true">
+			<summary>Automatically creating properties from the domain model.</summary>
+			<!--<section key="sl4b-property-factory" text="SL4B Record property factory" nocontent="true">
+				<summary>Integrating Presenter with data from Liberator.</summary></section>
+			<section key="trade-model-property-factory" text="Trade Model property factory" nocontent="true">
+				<summary>Integrating Presenter with the Caplin Trade model.</summary></section>-->
+			<section key="messageService-property-factory" text="Message Service Property Factory">
+				<summary>Integrating Presenter with data from Streamlink.</summary></section>
+		</section> 
+	</section>
+
+	<section key="cookbook" text="Cookbook">
+		<!--  CT3-only section
+		<section key="flashing-prices" text="Flashing Prices">
+			<summary>How to display flashing prices using Caplin renderers.</summary></section> -->
+		<section key="dates" text="Display and choose dates">
+			<summary>Examples of the user entering dates.</summary></section>
+		<section key="validation" text="Implement cross field error handling">
+			<summary>How to validate user data input across different fields.</summary></section>
+	</section>
+
+</toc>
+

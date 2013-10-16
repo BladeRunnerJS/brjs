@@ -1,0 +1,3 @@
+#NOTE: The knockout-2.2.1 version used is a modified version
+depends: jquery
+js: caplin-knockout-2.3.0.debug.js

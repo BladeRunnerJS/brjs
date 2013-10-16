@@ -1,0 +1,57 @@
+table#wsb{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: white;
+	background: rgba( 0,0,0,0.5 );
+	z-index: 99999;
+	display: none;
+	-webkit-transition: opacity 700ms ease;
+	-moz-transition: opacity 700ms ease;
+	-o-transition: opacity 700ms ease;
+	transition: opacity 700ms ease;
+}
+
+table#wsb.show{
+	display: table;
+}
+
+table#wsb.fadeIn{
+	opacity: 1;
+}
+
+table#wsb td.wsb{
+	text-align: center;
+	vertical-align: middle;
+}
+
+table#wsb .wsb_close{
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	top: -15px;
+	right: -15px;
+	cursor: pointer;
+	z-index: 2;
+	background: url(close.png) no-repeat center center;
+}
+
+table#wsb .wsb_container{
+	display: inline-block;
+	background: white;
+	position: relative;
+	padding: 3px;
+	box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.6);
+}
+table#wsb .wsb_container.noBg
+{
+	background: none;
+	box-shadow: none;
+}
+
+table#wsb .wsb_container .wsb_inner{
+	overflow: hidden;
+	position: relative;
+}

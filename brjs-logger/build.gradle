@@ -1,0 +1,6 @@
+
+apply plugin: 'java'
+
+dependencies {
+	compile dependency('slf4j-api')
+}

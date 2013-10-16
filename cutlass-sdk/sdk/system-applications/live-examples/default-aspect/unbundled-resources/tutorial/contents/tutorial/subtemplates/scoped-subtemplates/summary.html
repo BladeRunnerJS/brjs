@@ -1,0 +1,31 @@
+<p>
+	When you bind a sub-template to an inner
+	<code><a href="/dashboard-services/jsdoc/caplin.presenter.node.presentationnode.html">PresentationNode</a></code>,
+	you don't have to state the property bindings in full, each time; you can just refer to the properties within the template,
+	by identifying which higher-level template owns them. This makes
+	it easy to re-use the same sub-template for multiple instances of the same object, or for objects with the same properties.
+</p>
+
+<p class="info">
+	In earlier versions of <i>Presenter</i>, if you wanted a sub-template to use properties
+	from a higher level template, you had to declare each required property explicitly in the <code>template{}</code> binding, within
+	a set of "<code>templateOptions</code>".  Using the scoping tags below is easier and neater all round.
+</p>
+
+<p>
+	In this example, the <i>Presentation Model</i> contains an <i><b>account</b></i> field, as well as two child presentation nodes
+	(<i><b>leg1</b></i> and <i><b>leg2</b></i>,
+	which are instances of <code>TradeLegPresentationNode</code>, defined further down). The child nodes represent legs of a trade with
+	different <i><b>amount</b></i> fields. A sub-template is then used to render the contents of each child presentation node, with a
+	different scope each time.
+</p>
+
+<p>
+	You could also use the sub-template to refer to any of its ancestors' scopes using:
+</p>
+
+<ul>
+	<li><code>$parent</code> or <code>$parents[0]</code> to refer to the presentation node associated with the current template's parent</li>
+	<li><code>$parents[1]</code> to refer to the presentation node associated with the current template's grandparent, etc...</li>
+	<li><code>$root</code> to refer to the presentation node associated with the topmost template</li>
+</ul>

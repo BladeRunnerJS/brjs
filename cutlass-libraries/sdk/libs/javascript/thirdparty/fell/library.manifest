@@ -1,0 +1,2 @@
+depends: browser-modules
+js: target/define-single/fell.js

@@ -1,0 +1,3 @@
+@appns.@bladeset.ExampleClass = function()
+{
+};

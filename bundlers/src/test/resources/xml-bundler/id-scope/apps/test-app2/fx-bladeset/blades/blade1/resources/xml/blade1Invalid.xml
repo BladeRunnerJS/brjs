@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gridDefinitions xmlns="http://schema.caplin.com/CaplinTrader/gridDefinitions">
+	<dataProviderMappings>
+		<dataProviderMapping id="caplinx.fx.blade1.DP1" className="DP1"/>
+		</dataProviderMappings>
+	<templates>
+		<gridTemplate id="caplinx.fx.blade11.template1">
+			<decorators>
+				<loadingDataDecorator showInitialLoad="true"/>
+			</decorators>
+		</gridTemplate>
+	</templates>
+	
+	<grids>
+		<grid id="caplinx.fx.blade1.template2">
+			<decorators>
+				<loadingDataDecorator showInitialLoad="true"/>
+			</decorators>
+		</grid>
+	</grids>
+</gridDefinitions>

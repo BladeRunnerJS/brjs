@@ -1,0 +1,4 @@
+<aliases xmlns="http://schema.caplin.com/CaplinTrader/aliases">
+	<alias name="alias #1" class="novox.g1.AliasClass1"/>
+	<alias name="alias #2" class="novox.g1.AliasClass2"/>
+</aliases>

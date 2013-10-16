@@ -1,0 +1,3 @@
+caplin.component.ComponentInterface = function() 
+{
+};

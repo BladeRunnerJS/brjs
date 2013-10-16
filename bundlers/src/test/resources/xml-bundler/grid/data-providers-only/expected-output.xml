@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+	<resource name="gridDefinitions">
+		<gridDefinitions xmlns="http://schema.caplin.com/CaplinTrader/gridDefinitions">
+			<dataProviderMappings>
+				<dataProviderMapping id="DP1" className="DP1"/>
+				<dataProviderMapping id="gridDP-1A" className="GridDP1A"/>
+				<dataProviderMapping id="gridDP-1B" className="GridDP1B"/>
+				<dataProviderMapping id="gridDP-2A" className="GridDP2A"/>
+				<dataProviderMapping id="gridDP-2B" className="GridDP2B"/>
+			</dataProviderMappings>
+			
+			<grids/>
+		</gridDefinitions>
+	</resource>
+</bundle>

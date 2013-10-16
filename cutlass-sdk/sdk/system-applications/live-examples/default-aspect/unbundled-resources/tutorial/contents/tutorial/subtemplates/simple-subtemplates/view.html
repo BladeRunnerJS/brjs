@@ -1,0 +1,9 @@
+<div id="view-template">
+	<div><b>Main Template:</b></div>
+	<div data-bind="template:{name:'amount-template'}"></div>
+</div>
+
+<div id="amount-template">
+	<label>Sub-Template: Amount:</label>
+	<input type="text" name="amount" data-bind="value:amount.value"/>
+</div>

@@ -1,0 +1,20 @@
+<div id="view-template">
+	<div>Select one option in the Selection Field using either the drop-down list or radio buttons:</div>
+ 	<fieldset>
+ 		<legend>Select Box</legend>
+ 		<select name="buysell" data-bind="options:hobbies.options, value:hobbies.value, optionsValue:'value'"></select>
+ 	</fieldset>
+ 	
+ 	<fieldset>
+ 		<legend>Radio Buttons</legend>
+ 		<div data-bind="template:{name:'radio-button-template', foreach:hobbies.options}">
+		</div>
+ 	</fieldset>
+ 	
+</div>
+
+<div id="radio-button-template">
+	<input type="radio" data-bind="value:value, checked:$parent.hobbies.value, attr:{name:'hobbies'}"/>
+	<span data-bind="text:label"></span>
+	<br/>
+</div>

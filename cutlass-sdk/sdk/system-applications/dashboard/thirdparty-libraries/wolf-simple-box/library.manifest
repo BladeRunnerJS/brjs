@@ -1,0 +1,3 @@
+depends: jquery
+js: WolfSimpleBox.js
+css: WolfSimpleBox.css

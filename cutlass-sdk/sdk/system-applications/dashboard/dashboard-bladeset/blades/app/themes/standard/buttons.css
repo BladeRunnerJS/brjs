@@ -1,0 +1,387 @@
+button.oval-button {
+	position: relative;
+	clear:both;
+	float: left;
+	display: inline;
+	margin: 15px 0px 0px 10px;
+	border-style:none;
+	
+	-moz-transition: all 0.25s ease-out 0s;
+	-webkit-transition: all 0.25s ease-out 0s;
+	font-family: "HelveticaNeueW01-55Roma", Arial, sans-serif;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 14px;
+	color: #fff !important;
+	text-shadow: 0px 1px 0px rgba(52, 121, 141, 1);
+	text-decoration: none;
+	line-height:30px;
+	padding: 5px 20px 5px 10px;
+	background-color: #54b0cb;
+	-moz-border-radius: 30px;
+	-webkit-border-radius: 30px;
+	border-radius: 30px;
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#54b0cb', endColorstr = '#3f97b2');
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#54b0cb', endColorstr = '#3f97b2')";*/
+	background-image: -moz-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: -ms-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: -o-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#54b0cb), to(#3f97b2));
+	background-image: -webkit-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: linear-gradient(top, #54b0cb, #3f97b2);
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	cursor:pointer;
+	overflow: visible;
+}
+
+button.oval-button .button-text {
+	padding-left:38px;
+}
+
+button.oval-button:hover {
+	color: #fff;
+	text-shadow: 0px 1px 0px rgba(52, 121, 141, 1);
+	text-decoration: none;
+	padding: 5px 20px 5px 10px;
+	background-color: #226f86;
+	-moz-border-radius: 30px;
+	-webkit-border-radius: 30px;
+	border-radius: 30px;
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#328aa4', endColorstr = '#226f86');
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#328aa4', endColorstr = '#226f86')";*/
+	background-image: -moz-linear-gradient(top, #328aa4, #226f86);
+	background-image: -ms-linear-gradient(top, #328aa4, #226f86);
+	background-image: -o-linear-gradient(top, #328aa4, #226f86);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#328aa4), to(#226f86));
+	background-image: -webkit-linear-gradient(top, #328aa4, #226f86);
+	background-image: linear-gradient(top, #328aa4, #226f86);
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+button.oval-button[disabled] {
+	background-color: #aed1da;
+	color: #dae6e9;
+	background-image: none;
+	text-shadow: 0px 0px 0px rgba(255, 255, 255, 0);
+	cursor: default;
+}
+
+button.oval-button:active {
+ background-color:#1c596c;
+ background-image:none;
+ box-shadow:inset 0px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+button.oval-button .button-text {
+	display:inline-block;
+	background-repeat:no-repeat;
+}
+
+button.round-button {
+	float: right;
+	margin: 15px 10px 0px 0px;
+	border-width:0;
+	
+	-moz-transition: all 0.25s ease-out 0s;
+	-webkit-transition: all 0.25s ease-out 0s;
+	font-family: "HelveticaNeueW01-55Roma", Arial, sans-serif;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 14px;
+	color: #fff !important;
+	text-shadow: 0px 1px 0px rgba(52, 121, 141, 1);
+	text-decoration: none;
+	line-height:30px;
+	padding: 5px 5px 5px 5px;
+	background-color: #54b0cb;
+	-moz-border-radius: 30px;
+	-webkit-border-radius: 30px;
+	border-radius: 30px;
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#54b0cb', endColorstr = '#3f97b2');
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#54b0cb', endColorstr = '#3f97b2')";*/
+	background-image: -moz-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: -ms-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: -o-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#54b0cb), to(#3f97b2));
+	background-image: -webkit-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: linear-gradient(top, #54b0cb, #3f97b2);
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	overflow: visible;
+}
+
+button.round-button:hover {
+	color: #fff;
+	text-shadow: 0px 1px 0px rgba(52, 121, 141, 1);
+	text-decoration: none;
+	background-color: #226f86;
+	-moz-border-radius: 30px;
+	-webkit-border-radius: 30px;
+	border-radius: 30px;
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#328aa4', endColorstr = '#226f86');
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#328aa4', endColorstr = '#226f86')";*/
+	background-image: -moz-linear-gradient(top, #328aa4, #226f86);
+	background-image: -ms-linear-gradient(top, #328aa4, #226f86);
+	background-image: -o-linear-gradient(top, #328aa4, #226f86);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#328aa4), to(#226f86));
+	background-image: -webkit-linear-gradient(top, #328aa4, #226f86);
+	background-image: linear-gradient(top, #328aa4, #226f86);
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+
+button.round-button:active {
+ background-color:#1c596c;
+ background-image:none;
+ box-shadow:inset 0px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+button.round-button .button-image {
+	display:block;
+	background-repeat:no-repeat;
+	text-indent:28px;
+	padding:5px;
+	width:22px;
+	height:22px;
+}
+
+.topnav-area{
+	text-align: center;
+	height: 38px;
+	width: 100%;
+	margin: auto;
+
+}
+
+.topnav-reset-btn{
+	cursor:pointer;
+	display: inline-block;
+	position: relative;
+	top: 11px;
+
+	/*background-image:url(img/NewApp-up.png);*/
+	background-repeat: no-repeat;
+	background-position:left;
+	
+	margin-right: 33px;
+	font-family: 'NimbusSanCon-Bol', Arial, sans-serif;
+	color: inherit;
+	font-size: 14px;
+	font-weight: normal;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #999;
+	text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+				0px 1px 0px rgba(255, 255, 255, 0.7);
+	-webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+	
+}
+
+.topnav-reset-btn:hover{
+	top: 18px;
+	color: #54b0cb;
+	border-bottom-style:solid;
+	border-width:3px;
+	border-bottom-color:#54b0cb;
+	
+}
+
+.topnav-export-btn{
+	cursor:pointer;
+	display: inline-block;
+	position: relative;
+	top: 11px;
+
+	/*background-image:url(img/NewApp-up.png);*/
+	background-repeat: no-repeat;
+	background-position:left;
+
+	margin-right: 33px;
+	font-family: 'NimbusSanCon-Bol', Arial, sans-serif;
+	color: inherit;
+	font-size: 14px;
+	font-weight: normal;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #999;
+	text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+				0px 1px 0px rgba(255, 255, 255, 0.7);
+	-webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+	
+}
+
+.topnav-export-btn:hover{
+	top: 18px;
+	color: #54b0cb;
+	border-bottom-style:solid;
+	border-width:3px;
+	border-bottom-color:#54b0cb;
+}
+
+.topnav-launch-btn{
+	cursor:pointer;
+	display: inline-block;
+	position: relative;
+	top: 11px;
+
+	/*background-image:url(img/NewApp-up.png);*/
+	background-repeat: no-repeat;
+	background-position:left;
+
+	margin-right: 33px;
+	font-family: 'NimbusSanCon-Bol', Arial, sans-serif;
+	color: inherit;
+	font-size: 14px;
+	font-weight: normal;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #999;
+	text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+				0px 1px 0px rgba(255, 255, 255, 0.7);
+	-webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+	
+}
+
+.topnav-launch-btn:hover{
+	top: 18px;
+	color: #54b0cb;
+	border-bottom-style:solid;
+	border-width:3px;
+	border-bottom-color:#54b0cb;
+	
+}
+
+
+.btns-area{
+	text-align: center;
+	height: 75px;
+	width: 98%;
+
+	
+
+}
+
+
+.new-app-btn {
+	cursor:pointer;
+	display: inline-block;
+	position: relative;
+	
+	width: 100px;
+
+	background-image:url(img/NewApp-up.png);
+	background-repeat: no-repeat;
+	background-position:left;
+	padding-left: 14px;
+	margin-right: 33px;
+	font-family: 'NimbusSanCon-Bol', Arial, sans-serif;
+	color: inherit;
+	font-size: 24px;
+	color: #7c7c7c;
+	text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+				0px 1px 0px rgba(255, 255, 255, 0.7);
+	-webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+				
+} 
+
+.new-app-btn:hover {
+	background-image:url(img/NewApp-hover.png);
+	background-repeat: no-repeat;
+	background-position:left;
+	font-family: 'NimbusSanCon-Bol', Arial, sans-serif;
+	color: inherit;
+	font-size: 24px;
+	color: #333;
+	text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+				0px 1px 10px rgba(255, 255, 255, 0.9);
+				
+} 
+
+
+
+
+.new-bladeset-btn {
+	cursor:pointer;
+	display: inline-block;
+	position: relative;
+	
+
+	background-image:url(img/NewBladeset-up.png);
+	background-repeat: no-repeat;
+	background-position:left;
+	padding-left: 34px;
+	margin-right: 33px;
+	font-family: 'NimbusSanCon-Bol', Arial, sans-serif;
+	color: inherit;
+	font-size: 24px;
+	color: #7c7c7c;
+	text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+				0px 1px 0px rgba(255, 255, 255, 0.7);
+	-webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+				
+} 
+
+.new-bladeset-btn:hover {
+	background-image:url(img/NewBladeset-hover.png);
+	background-repeat: no-repeat;
+	background-position:left;
+	font-family: 'NimbusSanCon-Bol', Arial, sans-serif;
+	color: inherit;
+	font-size: 24px;
+	color: #333;
+	text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+				0px 1px 10px rgba(255, 255, 255, 0.9);
+				
+} 
+
+.import-app-btn {
+	cursor:pointer;
+	
+	display: inline-block;
+	
+	position: relative;
+	
+	/*width: 150px;*/
+	margin-left: 105px;
+	
+	background-image:url(img/importApp-up.png);
+	background-repeat: no-repeat;
+	background-position:left;
+	padding-left: 32px;
+	font-family: 'NimbusSanCon-Bol', Arial, sans-serif;
+	color: inherit;
+	font-size: 24px;
+	color: #7c7c7c;
+	text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+				0px 1px 0px rgba(255, 255, 255, 0.7);
+	-webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+				
+} 
+
+.import-app-btn:hover {
+	background-image:url(img/importApp-hover.png);
+	background-repeat: no-repeat;
+	background-position:left;
+	padding-left: 32px;
+	font-family: 'NimbusSanCon-Bol', Arial, sans-serif;
+	color: inherit;
+	font-size: 24px;
+	color: #333;
+	text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+				0px 1px 10px rgba(255, 255, 255, 0.9);
+				
+}
+

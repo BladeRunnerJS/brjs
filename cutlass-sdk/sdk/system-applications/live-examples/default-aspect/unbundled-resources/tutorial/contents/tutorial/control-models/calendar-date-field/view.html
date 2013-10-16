@@ -1,0 +1,7 @@
+<div id="view-template">
+	<label>Use the button to open the JQuery Calendar and choose a date between 1st Jan 2012 and 1st Jan 2022. Any date outside this range will bring up an error message.</label>
+	<div id='single-date'>
+		<div id="date" data-bind="control:'br.date-picker', controlNode:date, css:{error:date.hasError}"></div>
+		<div class="error_msg" data-bind="text:date.failureMessage"></div>
+	</div>
+</div>
