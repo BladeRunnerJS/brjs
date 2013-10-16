@@ -107,7 +107,7 @@ Dependencies.putAll([
 /* browsers are defined as browserName+version because we probably want to use multiple versions */
 def os = org.bladerunnerjs.OSCalculator.getOS()
 Dependencies.putAll([
-
+	'chromium25'				:	'browser:chrome-'+os+':25.0.1339.0@zip',
 	'chromium27'				:	'browser:chromium-'+os+':27.0.1453.0@zip',
 	'chrome27'					:	'browser:chromeportable-'+os+':27.0.1453.110@zip',
 	
@@ -122,7 +122,7 @@ Dependencies.putAll([
 Dependencies.put('firefox-stable', dependency('firefox21'));
 Dependencies.put('firefox-webdriver', dependency('firefox12'));
 if ( os == 'linux' ) {
-	Dependencies.put('chrome-stable', dependency('chromium27'));
+	Dependencies.put('chrome-stable', dependency('chromium25'));
 } else {
 	Dependencies.put('chrome-stable', dependency('chrome27'));
 }
