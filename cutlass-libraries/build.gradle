@@ -1,5 +1,5 @@
 import org.apache.commons.lang3.StringUtils
-import org.apache.tools.ant.filters.*;
+import org.apache.tools.ant.filters.*
 
 configurations {
 	brjsRunner
@@ -28,9 +28,7 @@ buildscript {
 	}
 }
 
-ext {
-	versionCalculator = new org.bladerunnerjs.BuildVersionCalculator(project)
-	
+ext {	
 	brjsRunnerDependenciesDir = "${buildDir}/brjs-runner-deps"
 	testRunnerDependenciesDir = "${buildDir}/testRunnerDependencies"
 	tempSdkWorkingDir = "${buildDir}/tempSdk"
@@ -132,9 +130,8 @@ task distZip, type:Zip, {
 		include("**/*html")
 		/* only copy the *html files here so we can filter them - copy the rest of the stuff in the next bit */
 		filter(ReplaceTokens, tokens: [
-			minorVersion: versionCalculator.calculateMinorVersion(), 
-			majorVersion: versionCalculator.calculateMajorVersion(), 
-			buildDate: versionCalculator.calculateBuildDate()
+			buildVersion: buildVersion,
+			buildDate: buildDate
 		] )
 	}
 	from (jsDoc) {
