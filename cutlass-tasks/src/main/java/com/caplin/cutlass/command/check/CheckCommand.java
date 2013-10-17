@@ -20,7 +20,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
 public class CheckCommand implements LegacyCommandPlugin
 {
-	private FileFilter CAPLIN_JAR_FILE_NAME_FILTER = new AndFileFilter(new PrefixFileFilter("caplin-"), new SuffixFileFilter(".jar"));
+	private FileFilter CAPLIN_JAR_FILE_NAME_FILTER = new AndFileFilter(new PrefixFileFilter("br-"), new SuffixFileFilter(".jar"));
 	private ConsoleWriter out;
 	
 	public CheckCommand()

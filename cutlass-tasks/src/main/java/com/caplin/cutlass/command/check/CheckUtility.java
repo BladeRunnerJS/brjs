@@ -29,7 +29,7 @@ import com.caplin.cutlass.structure.model.path.SdkPath;
 public class CheckUtility
 {
 
-	private FileFilter CAPLIN_JAR_FILE_NAME_FILTER = new AndFileFilter(new PrefixFileFilter("caplin-"), new SuffixFileFilter(".jar"));
+	private FileFilter CAPLIN_JAR_FILE_NAME_FILTER = new AndFileFilter(new PrefixFileFilter("br-"), new SuffixFileFilter(".jar"));
 	
 	private Map<String,String> environmentKeys = new LinkedHashMap<String,String>();
 	

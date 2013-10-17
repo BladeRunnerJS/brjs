@@ -60,8 +60,8 @@ public class ExportApplicationCommandTest
 		
 		// calplin jars are removed and the 'bundles' folder is excluded
 		assertTrue(new File(extractLocation, "example/WEB-INF/lib/app-1.jar").exists());
-		assertFalse(new File(extractLocation, "example/WEB-INF/lib/caplin-1.jar").exists());
-		assertFalse(new File(extractLocation, "example/WEB-INF/lib/caplin-2.jar").exists());
+		assertFalse(new File(extractLocation, "example/WEB-INF/lib/br-1.jar").exists());
+		assertFalse(new File(extractLocation, "example/WEB-INF/lib/br-2.jar").exists());
 		assertTrue(new File(extractLocation, "example/fx-bladeset/blades/grid/tests/test-acceptance/js-test-driver").exists());
 		assertFalse(new File(extractLocation, "example/fx-bladeset/blades/grid/tests/test-acceptance/js-test-driver/bundles").exists());
 		assertFalse(new File(extractLocation, "example/fx-bladeset/blades/grid/tests/test-acceptance/js-test-driver/bundles/js").exists());
