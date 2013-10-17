@@ -2,7 +2,7 @@
 	float: right;
 }
 
-.resetDatabaseBtn .button-image {
+.refreshBtn .button-image {
 	background-image: url(refresh-up.png);
 }
 

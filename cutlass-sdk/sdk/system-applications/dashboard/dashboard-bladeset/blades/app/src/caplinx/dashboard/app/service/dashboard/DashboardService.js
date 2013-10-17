@@ -32,11 +32,6 @@ caplinx.dashboard.app.service.dashboard.DashboardService.prototype.importMotif =
 	caplin.core.Utility.interfaceMethod("DashboardService", "importMotif");
 };
 
-caplinx.dashboard.app.service.dashboard.DashboardService.prototype.resetDatabase = function(sApp, fCallback, fErrorCallback)
-{
-	caplin.core.Utility.interfaceMethod("DashboardService", "resetDatabase");
-};
-
 caplinx.dashboard.app.service.dashboard.DashboardService.prototype.importBlades = function(sSourceApp, mBlades, sTargetApp, fCallback, fErrorCallback)
 {
 	caplin.core.Utility.interfaceMethod("DashboardService", "importBlades");

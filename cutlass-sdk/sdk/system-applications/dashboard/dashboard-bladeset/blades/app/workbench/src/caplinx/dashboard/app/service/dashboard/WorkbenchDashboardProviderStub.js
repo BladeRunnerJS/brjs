@@ -91,20 +91,6 @@ caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype
 	}
 };
 
-caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.resetDatabase = function(sApp, fCallback, fErrorCallback)
-{
-	if(!this.m_bSuccessMode)
-	{
-		this._invokeErrorCallback("resetDatabase", fErrorCallback);
-	}
-	else
-	{
-		window.setTimeout(function() {
-			fCallback();
-		}, this.RESPONSE_DELAY);
-	}
-};
-
 caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.importBlades = function(sSourceApp, mBlades, sTargetApp, fCallback, fErrorCallback)
 {
 	if(!this.m_bSuccessMode)
