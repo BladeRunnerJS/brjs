@@ -1,5 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
+import java.io.IOException;
+
 import org.bladerunnerjs.core.plugin.command.standard.BladerunnerCommand;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
@@ -32,12 +34,12 @@ public class BladerunnerCommandTest extends SpecTest
 	}
 	
 	@Ignore
-	@Test
+	@Test()
 	public void exceptionIsThrownIfAppServerAlreadyStarted() throws Exception
 	{
 		given(appServer).started();
 		when(brjs).runCommand("start");
-//		then(exceptions).verifyException(PortAlreadyInUseException.class, unquoted("'7070'"));
+		then(exceptions).verifyException(IOException.class, unquoted("'7070'"));
 	}
 
 	@Ignore
