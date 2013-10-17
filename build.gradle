@@ -1,3 +1,4 @@
+import static org.bladerunnerjs.BuildVersionCalculator.*
 
 apply from: 'composite-tasks.gradle'
 apply from: 'wrapper.gradle'
@@ -38,7 +39,13 @@ allprojects {
 }
 
 subprojects { p ->
-	version = new org.bladerunnerjs.BuildVersionCalculator(p).calculateVersion()
+	
+	ext {
+		buildVersion = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(project)
+		buildDate = org.bladerunnerjs.BuildVersionCalculator.calculateBuildDate()
+	}
+	
+	version = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(p)
 	group = 'org.bladerunnerjs'
 		
 	afterEvaluate { project ->

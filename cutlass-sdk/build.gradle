@@ -1,11 +1,7 @@
 import org.ho.yaml.Yaml
-import org.apache.tools.ant.filters.*;
+import org.apache.tools.ant.filters.*
 
 apply plugin: 'maven'
-
-ext {
-	versionCalculator = new org.bladerunnerjs.BuildVersionCalculator(project)	
-}
 
 configurations { 
 	system
@@ -154,9 +150,8 @@ task copyReleaseNote, type:Copy, {
 	into "sdk/docs/release-notes/"
 	include "bladerunner-*.*"
 	filter(ReplaceTokens, tokens: [
-		minorVersion: versionCalculator.calculateMinorVersion(),
-		majorVersion: versionCalculator.calculateMajorVersion(),
-		buildDate: versionCalculator.calculateBuildDate(),
+		buildVersion: buildVersion,
+		buildDate: buildDate,
 		productName: "BladeRunner"
 	] )
 	rename '([a-zA-Z0-9]+)-(.*)', '$2'
@@ -193,9 +188,8 @@ task distZip, type:Zip, dependsOn: [assemble], {
 		include("*.txt")
 		/* only copy the *html files here so we can filter them - copy the rest of the stuff in the next bit */
 		filter(ReplaceTokens, tokens: [
-			minorVersion: versionCalculator.calculateMinorVersion(), 
-			majorVersion: versionCalculator.calculateMajorVersion(), 
-			buildDate: versionCalculator.calculateBuildDate(), 
+			buildVersion: buildVersion,
+			buildDate: buildDate,
 			productName: "BladeRunner" 
 		])
 	}
@@ -208,9 +202,8 @@ task distZip, type:Zip, dependsOn: [assemble], {
 		into "BladeRunner/sdk/docs/release-notes"
 		include "bladerunner-*.*"
 		filter(ReplaceTokens, tokens: [
-			minorVersion: versionCalculator.calculateMinorVersion(), 
-			majorVersion: versionCalculator.calculateMajorVersion(), 
-			buildDate: versionCalculator.calculateBuildDate(), 
+			buildVersion: buildVersion,
+			buildDate: buildDate,
 			productName: "BladeRunner" 
 		] )
 		rename '([a-zA-Z0-9]+)-(.*)', '$2'
@@ -219,11 +212,10 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	{
 		into "BladeRunner/sdk"
 	
-    	def buildTimestamp = versionCalculator.calculateBuildTimestamp()
-    	if (buildTimestamp != "") { inputs.property "timestamp" , buildTimestamp }
-    	inputs.property "version" , versionCalculator.calculateVersion()
+    	if (buildDate != "") { inputs.property "buildDate" , buildDate }
+    	inputs.property "version" , buildVersion
     	
-    	filter( ReplaceTokens, tokens: [ sdkVersion:versionCalculator.calculateVersion(), buildDate:buildTimestamp, distType:"bladerunner" ] )
+    	filter( ReplaceTokens, tokens: [ sdkVersion:buildVersion, buildDate:buildDate, distType:"bladerunner" ] )
 	}
 	
 	exclude "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*"
