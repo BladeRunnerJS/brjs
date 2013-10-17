@@ -15,3 +15,4 @@ If you are interested in contributing to the BRJS core toolkit then the followin
 From the root `brjs` source directory:
 
     $ ./gradlew cutlass-sdk:distZip
+
