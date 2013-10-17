@@ -215,7 +215,7 @@ task distZip, type:Zip, dependsOn: [assemble], {
     	if (buildDate != "") { inputs.property "buildDate" , buildDate }
     	inputs.property "version" , buildVersion
     	
-    	filter( ReplaceTokens, tokens: [ sdkVersion:buildVersion, buildDate:buildDate, distType:"bladerunner" ] )
+    	filter( ReplaceTokens, tokens: [ sdkVersion:buildVersion, buildDate:buildDate, distType:"bladerunner", buildHostname:buildHostname ] )
 	}
 	
 	exclude "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*"

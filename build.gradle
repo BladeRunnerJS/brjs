@@ -38,14 +38,23 @@ allprojects {
 	
 }
 
+def projectBuildVersion = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(project)
+def projectBuildDate = org.bladerunnerjs.BuildVersionCalculator.calculateBuildDate(project)
+def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBuildHostname(project)
+
+logger.info "Build version calculated as: ${projectBuildVersion}"
+logger.info "Build date is: ${projectBuildDate}"
+logger.info "Build hostname is: ${projectBuildHostname}"
+
 subprojects { p ->
 	
 	ext {
-		buildVersion = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(project)
-		buildDate = org.bladerunnerjs.BuildVersionCalculator.calculateBuildDate()
+		buildVersion = projectBuildVersion
+		buildDate = projectBuildDate
+		buildHostname = projectBuildHostname
 	}
 	
-	version = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(p)
+	version = projectBuildVersion
 	group = 'org.bladerunnerjs'
 		
 	afterEvaluate { project ->
