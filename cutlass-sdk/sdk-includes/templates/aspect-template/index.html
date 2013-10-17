@@ -9,20 +9,16 @@
 		
 	</head>
 	<body>
-		@SUCCESS.MESSAGE.JNDI.TOKEN@
-
 		<@js.bundle@/>
 		<script>
 			( function() {
-
-				caplin.thirdparty('br-caplin');
-
+				br.thirdparty('br-caplin');
+				
 				var ServiceRegistry = require( 'br/ServiceRegistry' );
 				var DemoEventHub = require( 'br/DemoEventHub' );
 				ServiceRegistry.registerService( 'demo-event-hub', new DemoEventHub() );
-			
-				var oApp = new @appns.App();
 				
+				var oApp = new @appns.App();
 			} )();
 		</script>
 	</body>
