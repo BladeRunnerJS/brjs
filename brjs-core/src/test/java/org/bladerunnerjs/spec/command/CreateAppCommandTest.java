@@ -34,6 +34,13 @@ public class CreateAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void exceptionIsThrownIfThereAreTooFewArguments() throws Exception {
+		when(brjs).runCommand("create-app");
+		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'new-app-name' is required"))
+			.whereTopLevelExceptionIs(CommandArgumentsException.class);
+	}
+	
+	@Test
 	public void exceptionIsThrownIfThereAreTooManyArguments() throws Exception {
 		when(brjs).runCommand("create-app", "a", "b", "c");
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: c"))
@@ -60,6 +67,13 @@ public class CreateAppCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheAppNamespaceIsNotAValidRootPackageName() throws Exception {
 		when(brjs).runCommand("create-app", "app", "caplin");
 		then(exceptions).verifyException(InvalidRootPackageNameException.class, "caplin", app.dir().getPath())
+			.whereTopLevelExceptionIs(CommandArgumentsException.class);
+	}
+	
+	@Test
+	public void exceptionIsThrownWhenInvalidRootPackageAppNameIsUsedAsDefaultNamespace() throws Exception {
+		when(brjs).runCommand("create-app", "caplin");
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, "Unable to automatically calculate app namespace for app 'caplin'")
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	

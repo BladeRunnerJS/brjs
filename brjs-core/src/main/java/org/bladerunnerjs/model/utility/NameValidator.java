@@ -170,7 +170,7 @@ public class NameValidator
 		{
 			return appNamespace;
 		}
-		throw new InvalidRootPackageNameException("Unable to automatically calculate app namespace for app " + appName);
+		throw new InvalidRootPackageNameException("Unable to automatically calculate app namespace for app '" + appName + "'");
 	}
 	
 }
