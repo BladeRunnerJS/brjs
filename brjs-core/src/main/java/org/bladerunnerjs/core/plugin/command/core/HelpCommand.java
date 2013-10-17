@@ -90,7 +90,7 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 		out.println();
 		
 		out.println("Usage:");
-		out.println("  bladerunner " + command.getCommandName() + " " + command.getCommandUsage());
+		out.println("  brjs " + command.getCommandName() + " " + command.getCommandUsage());
 		out.println();
 		
 		out.println("Help:");
