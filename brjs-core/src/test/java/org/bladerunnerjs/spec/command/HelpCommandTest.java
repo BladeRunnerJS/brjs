@@ -73,7 +73,7 @@ public class HelpCommandTest extends SpecTest
 			"  Command #1 description.",
 			"",
 			"Usage:",
-			"  bladerunner command1 command-usage",
+			"  brjs command1 command-usage",
 			"",
 			"Help:",
 			"  Command #1 help.");
