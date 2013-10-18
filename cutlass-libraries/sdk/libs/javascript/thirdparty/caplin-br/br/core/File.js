@@ -1,9 +1,8 @@
 define('br/core/File', function(require, module, exports) {
-
 	var Errors = require('br/Errors');
-
+	
 	var HTTP_OK = 200;
-
+	
 	exports.readFileSync = function(url) {
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', url, false);
@@ -14,5 +13,4 @@ define('br/core/File', function(require, module, exports) {
 			throw new Errors.RequestFailedError("Unable to load file " + url + " (status " + xhr.status + ").");
 		}
 	};
-
 });

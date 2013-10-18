@@ -1,0 +1,18 @@
+# XSD versions of all RNC schemas are available within 'sdk/schema-catalog/catalog'. These can be rebuilt
+# using the 'schema-catalog' target. You can import all schemas into Eclipse, providing XML Validation and
+# Content Assist, by importing the 'sdk/schema-catalog/catalog/catalog.xml' file.
+
+default namespace = "http://schema.caplin.com/CaplinTrader/presenterComponent"
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+start = presenterDefinition
+
+## This is the outermost (and only) tag that defines a presenter component.
+presenterDefinition = element presenter
+{
+	## The template id value associated with the component's view.
+	attribute templateId {xsd:string},
+	
+	## The class associated with the parent presentation node for the presenter component.
+	attribute presentationModel {xsd:string}
+}

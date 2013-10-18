@@ -1,0 +1,572 @@
+
+<!-- File: tree-viewer.html -->
+<script id="tree-viewer" type="text/html">
+<div class="treel-viewer">
+	<input type="text" size="10" data-bind="value:searchText"/>
+	<button class="btn" data-bind="click:search">Find</button>
+</div>
+</script>
+<!-- File: ChartRequestEditor.html -->
+<div id='chart-request-editor' class='chart-request-editor'>
+
+	<dl>
+		<dt><label data-bind='text: seriesTypeLabel'></label></dt>
+		<dd><select data-bind='options: seriesType.options, value: seriesType.value, optionsText: "label", optionsValue: "value"'></select></dd>
+
+		<dt>
+			<label data-bind='text: instrument.label' for='instrument'></label>
+		</dt>
+		<dd>
+			<input type='text' id='instrument' data-bind='value: instrument.value, enable: instrument.enabled'/>
+		</dd>
+
+		<!--<dt><label data-bind='text: instrumentLabel'></label></dt>-->
+		<!--<dd><select data-bind='options: instrument.options, value: instrument.value, optionsText: "label", optionsValue: "value"'></select></dd>-->
+
+		<dt><label data-bind='text: intervalLabel'></label></dt>
+		<dd><select data-bind='options: interval.options, value: interval.value, optionsText: "label", optionsValue: "value"'></select></dd>
+
+		<dt><label data-bind='text: beginLabel'></label></dt>
+		<dd><select data-bind='options: begin.options, value: begin.value, optionsText: "label", optionsValue: "value"'></select></dd>
+
+		<dt><label data-bind='text: endLabel'></label></dt>
+		<dd><select data-bind='options: end.options, value: end.value, optionsText: "label", optionsValue: "value"'></select></dd>
+	</dl>
+
+	<dl>
+		<dt>
+			<label data-bind='text: subjectData.label' for='subjectData'></label>
+		</dt>
+		<dd>
+			<textarea id='subjectData' data-bind='value: subjectData.value, enable: subjectData.enabled'></textarea>
+		</dd>
+		<dt>
+			<label data-bind='text: useSubjectData.label' for='useSubjectData'></label> <input type="checkbox" id='useSubjectData' value='msg' data-bind='checked: useSubjectData.value, enable: useSubjectData.enabled' />
+		</dt>
+		<dd></dd>
+	</dl>
+	<button data-bind='text:addSeriesBtn.label, enable:addSeriesBtn.enabled, visible:addSeriesBtn.visible, click:onAddSeriesBtnClick'></button>
+
+	<hr/>
+	<strong>Add study</strong>
+	<dl>
+		<dt>
+			<label data-bind='text: studiesLabel'></label>
+		</dt>
+		<dd>
+			<select data-bind="options: studies.options, value: studies.value, optionsText: 'label', optionsValue: 'value'"></select>
+		</dd>
+
+		<dt>
+			<label data-bind='text: periodsLabel'></label>
+		</dt>
+		<dd>
+			<select data-bind="options: periods.options, value: periods.value, optionsText: 'label', optionsValue: 'value'"></select>
+		</dd>
+	</dl>
+	<button data-bind="click: onAddStudyBtnClick, enable: enableAddStudy">Add study</button>
+
+	<div data-bind="visible: showAddedStudies">
+		<hr/>
+		<strong>Added studies:</strong>
+		<div data-bind="foreach: addedStudies">
+			<div>
+				<span data-bind="text: displayName"></span> 
+				<button data-bind="click: $parent.onRemoveStudyBtnClick.bind($parent)">remove</button> 
+				<button data-bind="click: $parent.onShowStudyBtnClick.bind($parent), visible: isHidden">show</button> 
+				<button data-bind="click: $parent.onHideStudyBtnClick.bind($parent), visible: isShown">hide</button>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!-- File: quickform.html -->
+<div id="quickform" class="workbench-data-editor">
+   	<div class="quick-form" data-bind="template:{name:'quickform-field', foreach:fields}"></div>
+	<div data-bind="template:{name:'quickform-button', foreach:buttons}"></div>
+</div>
+
+<div id="quickform-field">
+	<dl>
+		<dt><label data-bind="text:label"></label></dt>
+		<dd><input type="text" data-bind="value:value"/></dd>
+	</dl>
+</div>
+
+<script id="quickform-button" type="text/html">
+	<button class="quickform-btn btn" data-bind="click:click, text:label, enable:enabled"></button>
+</script>
+
+
+<!-- File: workbench-event-logger.html -->
+<script id="workbench-event-logger" type="text/html">
+<div>
+	<button class="btn" data-bind="click:clear">Clear Log</button>
+	<div class="messagelog" data-bind="template:{name:'workbench-event-message', foreach:messages}"></div>
+</div>
+</script>
+
+
+<script id="workbench-event-message" type="text/html">
+<div>	
+	<div data-bind="css: {'expanded': visible}">
+		<div class="plus-minus">
+			<div class="icon" data-bind="click:toggleVisibility"></div>
+			<div data-bind="attr:{'class': titleCssClass}, html:title, click:toggleVisibility"></div>
+			<div class="trade-data-message-holder" data-bind="visible:visible, template:{name:'workbench-event-data', foreach:dataFields}"></div>
+		</div>
+	</div>
+</div>
+</script>
+
+
+<script id="workbench-event-data" type="text/html">
+<div class="event-message">
+  <span data-bind="text:label"></span>:<span data-bind="text:value"></span>
+</div>
+</script>
+
+<!-- File: workbench-mini-trade.html -->
+<div id="workbench-mini-trade">
+	<div>
+		<button class="execute-btn" data-bind="click:executeTrade">Execute</button>
+	</div>
+</div>
+<!-- File: workbench_connection_editor.html -->
+<div id="workbench-connection-editor">
+<div class="permission-editor-container">
+	<div data-bind="template: {name: 'workbench-connection-button', foreach:buttons }"></div>
+</div>
+</div>
+
+<div id="workbench-connection-button">
+	<button class="btn" data-bind="click:click, visible:visible, enable:enabled, text:label, css:{notClickable: notClickable, selected:selected}" ></button>
+</div>
+
+
+<!-- File: workbench_state_visualiser.html -->
+<div id="workbench-state-visualiser">
+
+	<div class="state_control">
+		<div data-bind="template:{ name: 'workbench-toggle-switch', data:autoEvents}"></div>
+		<div data-bind="template:{ name: 'workbench-toggle-switch', data:autoData}"></div>
+		
+		<hr/>
+		<div class="expansionToggle" data-bind="template:{ name: 'workbench-toggle-switch', data:allStates}"></div>
+		
+		
+		<div data-bind="template:{ name: 'workbench-single-state-visualiser', foreach:stateDiagrams}"></div>
+			
+		</div>
+	</div>
+
+</div>
+
+<div id="workbench-single-state-visualiser"> 
+	<div>
+		<div class="data-fields" data-bind="visible:dataFieldVisible">
+			<div data-bind="template:{ name: 'workbench-field-trade-section', foreach:tradeSections}"></div>
+			<button class="quickform-btn btn" data-bind="click:send">Send</button>
+			<button class="quickform-btn btn" data-bind="click:cancel">Cancel</button>
+		</div>
+	    <div data-bind="control:'StateVisualiserControl', value:stateDetails, visible:stateDiagramVisible"></div>
+	</div>
+</div>
+
+<div id="workbench-field-trade-section">
+	<div>
+		<label data-bind="text:sectionName"></label>
+		<div data-bind="template:{name:'quickform'}"></div>
+	</div>
+</div>
+
+<div id="workbench-toggle-switch"> 
+	<div>
+		<div class="toggle-switch" data-bind="css: value">
+			<div data-bind="click:click, template:{ name: 'workbench-toggle-switch-label', foreach:options}"></div>
+		</div>
+		
+		<label data-bind="text:label"></label>
+	</div>
+</div>
+
+<div id="workbench-toggle-switch-label">	
+	<span data-bind="text:label, attr: { title: label }"></span>
+</div>
+
+<!-- File: app-blade.html -->
+<div id="caplinx.dashboard.app.app-blade">
+	<li class="blade">
+		<span class="blade-title" data-bind="text:bladeName"></span>
+		<div class="blade-menu" data-bind="template:{name:'caplinx.dashboard.app.blade-menu'}"></div>
+	</li>
+</div>
+
+<!-- File: app-bladeset.html -->
+<div id="caplinx.dashboard.app.app-bladeset">
+	<li class="bladeset" data-bind="attr:{'class': bladeSetClasses}">
+		<div class='bladeset-title' data-bind='event:{ mouseover:onBladesetMouseOver, mouseout:onBladesetMouseOut}'>
+			<span class="bladeset-title-text" data-bind="text:bladesetName"></span>
+			<div class="bladeset-menu" data-bind="template:{name:'caplinx.dashboard.app.bladeset-menu'}"></div>
+		</div>
+		<ul class="blades" data-bind="template:{name:'caplinx.dashboard.app.app-blade', foreach:blades}">
+			<div class="bladePlaceHolder"> There are no Blades in this Bladeset </div>
+		</ul>
+	</li>
+</div>
+
+<!-- File: app-detail-screen.html -->
+<div id="caplinx.dashboard.app.app-detail-screen">
+	<div class="btns-area">
+		<ul>
+			<li>
+				<span class="newBladeSetBtn" data-bind="template:{name:'caplinx.dashboard.app.oval-button', data:newBladesetButton}"></span>
+			</li>
+			<li>
+				<span class="importBladesFromAppBtn" data-bind="template:{name:'caplinx.dashboard.app.oval-button', data:importBladesFromAppButton}"></span>
+			</li>
+			
+			<li class="right-align">
+				<span class="showJsDocsBtn" data-bind="template:{name:'caplinx.dashboard.app.round-button', data:launchJsDocButton}"></span>
+			</li>
+			<li class="right-align">
+				<span class="launchAppBtn" data-bind="template:{name:'caplinx.dashboard.app.round-button', data:launchAppButton}"></span>
+			</li>
+			<li class="right-align">
+				<span class="exportWarBtn" data-bind="template:{name:'caplinx.dashboard.app.round-button', data:exportWarButton}"></span>
+			</li>
+			<li class="right-align">
+				<span class="resetDatabaseBtn" data-bind="template:{name:'caplinx.dashboard.app.round-button', data:resetDatabaseButton}"></span>
+			</li>
+		</ul>
+	</div>
+	
+	<ul class="bladesets" data-bind="template:{name:'caplinx.dashboard.app.app-bladeset', foreach:bladesets}">
+		<div class="bladesetPlaceHolder">There are no Bladesets in this App</div>
+	</ul>
+</div>
+
+<!-- File: app-summary.html -->
+<div id="caplinx.dashboard.app.app-summary">
+	<a class="appbox" data-bind="attr:{href:appInfoUrl}">
+		<div class="appbox-title" data-bind="text:appName"></div>
+		<div class="app-btn">Open</div>
+		<div class="appbox-img" data-bind="style:{backgroundImage:imageUrl}"></div>
+	</a>
+</div>
+<!-- File: apps-screen.html -->
+<div id="caplinx.dashboard.app.apps-screen">
+	<div class="btns-area">
+		<ul>
+			<li>
+				<span class="newAppButton" data-bind="template:{name:'caplinx.dashboard.app.oval-button', data:newAppButton}"></span>
+			</li>
+			<li>
+				<span class="importMotifFromZipButton" data-bind="template:{name:'caplinx.dashboard.app.oval-button', data:importMotifFromZipButton}"></span>
+			</li>
+		</ul>
+	</div>
+	
+	<div class="horizontal_dotted_line"></div>
+	
+	<div class="apps-area" data-bind="template:{name:'caplinx.dashboard.app.app-summary', foreach:apps}"></div>
+	
+	<div data-bind="template:{name:'caplinx.dashboard.app.splash-screen', data:splashScreen}"></div>
+</div>
+
+<!-- File: splash-screen.html -->
+<div id="caplinx.dashboard.app.splash-screen">
+	<div class="tour" data-bind="visible:isVisible">
+		<div class="close-window" data-bind="click:_closeSplashScreen"></div>
+		<h1>Welcome to BladeRunner</h1>
+		<section id="section-left">
+			<div class="video-placeholder" data-bind="visible:videoPlacholderVisible">
+				<div>Video Not Available Offline</div>
+			</div>
+			<iframe class='video' onload="window.oApp.m_oPresentationModel.appsScreen.splashScreen._showVideo()" data-bind="visible:videoVisible" class="vimeo-vid" src="http://player.vimeo.com/video/51539915" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+		</section>
+		<section id="section-right">
+			<h2 id="learn">Learn</h2>
+			<ul>
+				<li><a href="http://www.caplin.com/developer/component/bladerunner/getting-started/bladerunner-bladerunner-architectural-overview" target="_blank">BladeRunner architectural overview</a></li>
+				<li><a href="http://www.caplin.com/developer/component/bladerunner/getting-started/bladerunner-creating-your-first-blade" target="_blank">Create your first Blade</a></li>
+				<li><a href="http://www.caplin.com/developer/component/base-library/getting-started/base-library-structured-services" target="_blank">Get data through Services</a></li>
+				<li><a href="http://www.caplin.com/developer/component/bladerunner/getting-started/bladerunner-exporting-a-war-ready-for-production" target="_blank">Export ready for production</a></li>
+			</ul>	
+			<h2 id="learn">Tutorial Worked Example</h2>
+			<ul>
+				<li><a href="http://www.caplin.com/developer/component/presenter/getting-started/presenter-worked-example" target="_blank">Using Presenter to Create a Simple Trade Tile</a></li>
+				<li><a href="http://www.caplin.com/developer/component/verifier/getting-started/verifier-worked-example" target="_blank">Using Verifier to write Acceptance Tests</a></li>
+				<li><a href="http://www.caplin.com/developer/component/base-library/getting-started/base-library-eventhub" target="_blank">Using the Event Hub</a></li>
+			</ul>	
+			<h2 id="whats-new">What's New?</h2>
+			<ul>
+				<li><a href="../#note/latest">See the latest release note</a></li>
+			</ul>
+		</section>
+		<div class="tour-dontshow">
+			<form action="">
+				<input type="checkbox" name="" value="" data-bind="checked:permanentlyHideSplashScreen" /> Don't show this again
+			</form>
+		</div>
+	</div>
+</div>
+<!-- File: blade-menu.html -->
+<div id="caplinx.dashboard.app.blade-menu">
+	<span class="test-item" data-bind="click:runTests">Run Tests</span>
+	<a class="workbench-item" data-bind="attr:{href:workbenchUrl}">Run in Workbench</a>
+</div>
+
+<!-- File: bladeset-menu.html -->
+<div id="caplinx.dashboard.app.bladeset-menu">
+	<span class="test-item" data-bind="click:runAllTests">Run Tests</span>
+	<span class="add-blade-item" data-bind="click:newBlade">Add Blade</span>
+</div>
+
+<!-- File: active-breadcrumb.html -->
+<div id="caplinx.dashboard.app.active-breadcrumb">
+	<li><div class="subnav-selected" data-bind="text:name"></div></li>
+</div>
+<!-- File: crumbtrail.html -->
+<div id="caplinx.dashboard.app.crumbtrail">
+	<ul data-bind="template:{foreach:crumbs, name:crumbs.getTemplateName}"></ul>
+</div>
+<!-- File: home-breadcrumb.html -->
+<div id="caplinx.dashboard.app.home-breadcrumb">
+	<li><a href="../#" class="subnav-extend-btn"></a></li>
+</div>
+<!-- File: link-breadcrumb.html -->
+<div id="caplinx.dashboard.app.link-breadcrumb">
+	<li><a data-bind="text:name, attr:{href:url}" class="subnav-btn"></a></li>
+</div>
+<!-- File: import-blades-from-app-dialog.html -->
+<div id="caplinx.dashboard.app.import-blades-from-app-dialog">
+<h1>Import Blades from App</h1><hr />
+	<form data-bind="submit:importBlades">
+		<div class="selectedApp">Import from: <span data-bind="template:{name:'caplinx.dashboard.app.drop-down', data:selectedApp}"></span></div>
+        <ul class="importBladesets" data-bind="template:{name:'caplinx.dashboard.app.import-bladesets', foreach:bladesets}"></ul>    
+        <div class="footer">
+			<div data-bind="template:{name:'caplinx.dashboard.app.submit-button', data:importBladesButton}"></div>
+        </div>
+	</form>
+</div>
+
+<!-- File: import-blades.html -->
+<div id="caplinx.dashboard.app.import-blades">
+	<li class="importBlade">
+		<span class="bladeName" data-bind="text:bladeName"> </span>    
+		<input type="checkbox" data-bind="checked:isSelected" />
+	</li>
+
+</div>
+
+<!-- File: import-bladesets.html -->
+<div id="caplinx.dashboard.app.import-bladesets">
+	<li class="importBladeset">
+		<span class="bladesetName" data-bind="text:bladesetName"></span>
+		<input type="checkbox" data-bind="checked:isSelected, prop:{indeterminate:isIndeterminate}" />
+        
+		<ul class="importBlades" data-bind="template:{name:'caplinx.dashboard.app.import-blades', foreach:blades}"></ul>
+            <div class="input-label" data-bind="visible:displayNewBladesetField"> Rename Bladeset:</div>
+			<div class='new-bladeset-name' data-bind="visible:displayNewBladesetField, template:{name:'caplinx.dashboard.app.field', data:newBladesetName}"></div>
+	</li>
+    <hr />
+</div>
+<!-- File: import-motif-dialog.html -->
+<div id="caplinx.dashboard.app.import-motif-dialog">
+<h1> Import Motif from ZIP</h1><hr />
+	<form data-bind="submit:importMotif, visible:formVisible">
+    	<div class="input-label"> Choose ZIP file:</div>
+		<div id="input_motif_button" data-bind="template:{name:'caplinx.dashboard.app.file-field', data:appZip}"></div>
+        <div class="input-label"> App Name:</div>
+		<div data-bind="template:{name:'caplinx.dashboard.app.field', data:appName}"></div>
+        <div class="input-label"> App Namespace:</div>
+		<div data-bind="template:{name:'caplinx.dashboard.app.field', data:appNamespace}"></div>
+        <div class="footer">
+		<div data-bind="template:{name:'caplinx.dashboard.app.submit-button', data:createAppButton}"></div>
+        </div>
+	</form>
+	<div class="dialog_processing" data-bind="visible:processingVisible">
+		<h3>Importing <span data-bind="text:appName.value"></span>...</h3>
+	</div>
+</div>
+
+<!-- File: new-app-dialog.html -->
+<div id="caplinx.dashboard.app.new-app-dialog">
+	<h1> New App</h1><hr />
+	<form data-bind="submit:createApp">
+    	<div class="input-label"> App Name:</div>
+		<div data-bind="template:{name:'caplinx.dashboard.app.field', data:appName}"></div>
+        <div class="input-label">App Namespace:</div>
+		<div data-bind="template:{name:'caplinx.dashboard.app.field', data:appNamespace}"></div>
+        <div class="footer">
+			<div data-bind="template:{name:'caplinx.dashboard.app.submit-button', data:createAppButton}"></div>
+        </div>
+	</form>
+</div>
+
+<!-- File: new-blade-dialog.html -->
+<div id="caplinx.dashboard.app.new-blade-dialog">
+<h1> New Blade</h1><hr />
+	<form data-bind="submit:createBlade">
+		<div data-bind="template:{name:'caplinx.dashboard.app.dummy-input'}"></div>
+		<div class="input-label"> Blade Name:</div>
+		<div data-bind="template:{name:'caplinx.dashboard.app.field', data:bladeName}"></div>
+        <div class="footer">
+			<div data-bind="template:{name:'caplinx.dashboard.app.submit-button', data:createBladeButton}"></div>
+        </div>
+	</form>
+</div>
+
+<!-- File: new-bladeset-dialog.html -->
+<div id="caplinx.dashboard.app.new-bladeset-dialog">
+  <h1> New Bladeset</h1><hr />
+	<form data-bind="submit:createBladeset">
+		<div data-bind="template:{name:'caplinx.dashboard.app.dummy-input'}"></div>
+        <div class="input-label">Bladeset Name:</div>
+        <div class="input" data-bind="template:{name:'caplinx.dashboard.app.field', data:bladesetName}"></div>
+        <div class="footer">
+			<div class="btn" data-bind="template:{name:'caplinx.dashboard.app.submit-button', data:createBladesetButton}"></div>
+        </div>
+	</form>
+    
+    
+</div>
+
+<!-- File: notification-dialog.html -->
+<div id="caplinx.dashboard.app.notification-dialog">
+	<div class="message" data-bind="html:message"></div>
+</div>
+
+<!-- File: test-runner-dialog.html -->
+<div id="caplinx.dashboard.app.test-runner-dialog">
+   <form data-bind="submit:closeDialog">
+      <div class="message">
+	      <div data-bind="visible: errorMessage.visible, text: errorMessage.value"></div>
+	      <div data-bind="visible: testResultsLink.visible">
+	         <div data-bind="visible: testsPassed">Tests passed.</div>
+	         <a data-bind="attr:{ href: testResultsLink.value }" target="_blank">Click to open test results</a>
+	      </div>
+      </div>
+   </form>
+</div>
+<!-- File: drop-down.html -->
+<div id="caplinx.dashboard.app.drop-down">
+	<select data-bind="options:options, value:value, optionsValue:'value', enable:enabled"></select>
+</div>
+
+<!-- File: dummy-input.html -->
+<div id="caplinx.dashboard.app.dummy-input">
+	<!-- forms with only a single field aren't ajax friendly -->
+	<!-- http://www.w3.org/MarkUp/html-spec/html-spec_8.html#SEC8.2 -->
+	<input style="display:none;" />
+</div>
+
+<!-- File: field.html -->
+<div id="caplinx.dashboard.app.field">
+	<div class="field">
+		<label data-bind="text:label"></label>
+		<div class="input">
+			<input class='fieldInput' type="text" data-bind="value:value, valueUpdate:'keyup', css:{error:hasError}, hasfocus:hasFocus, enable:enabled, attr:{placeholder:placeholder}"/>
+			<span class="errorMessage" data-bind="text:failureMessage, visible:hasError"></span>
+		</div>
+	</div>
+</div>
+	
+<!-- File: file-field.html -->
+<div id="caplinx.dashboard.app.file-field">
+	<input type="file" data-bind="attr:{accept:accepts}, event:{change:onChange}, enable:enabled, visible:fileInputVisible" />
+	<div class="file_info" data-bind="visible:fileInfoVisible">
+		<span class="file_name" data-bind="text:fileName"></span>
+		<span class="remove_file" data-bind="click:chooseDifferentFile">remove</span>
+	</div>
+</div>
+
+<!-- File: oval-button.html -->
+<div id="caplinx.dashboard.app.oval-button">
+	<button class="oval-button has-tooltip" data-bind="click:action, enable:enabled">
+		<span class="button-text" data-bind="text:label"></span>
+		<span class="tooltip" data-bind="text:tooltipLabel, visible:tooltipVisible"></span>
+	</button>
+</div>
+<!-- File: round-button.html -->
+<div id="caplinx.dashboard.app.round-button">
+	<button class="round-button has-tooltip" data-bind="click:action, enable:enabled">
+		<span class="button-image"></span>
+		<span class="tooltip" data-bind="text:label"></span>
+	</button>
+</div>
+
+<!-- File: submit-button.html -->
+<div id="caplinx.dashboard.app.submit-button">
+	<button type="submit" data-bind="text:label, enable:enabled"></button>
+</div>
+
+<!-- File: release-note-screen.html -->
+<div id="caplinx.dashboard.app.release-note-screen">
+	<h1>Release Note</h1>
+	<div class="content" data-bind="html:content"></div>
+</div>
+
+<!-- File: root.html -->
+<div id="caplinx.dashboard.app.root">
+	<div data-bind="attr:{'class':currentSection}">
+
+		<!-- TODO: convert back to nav -->
+		<div id="topnav">
+			<ul>
+				<li><a href="../#" data-bind="css:{selected:isSDKSectionSelected}">BladeRunner</a></li>
+				<li><a href="../#note/latest" class="noborder" data-bind="css:{selected:isSupportSectionSelected}">Release Notes</a></li>
+				<li><a href="/live-examples" class="popout" target="_blank">Live Examples</a></li>
+				<li><a href="http://www.caplin.com/developer" class="newsite" target="_blank">Developer Site</a></li>
+			</ul>
+		</div>
+		
+		<div class="subnav" data-bind="visible:crumbtrail.visible, template:{data:crumbtrail, name:'caplinx.dashboard.app.crumbtrail'}"></div>
+		
+		<div class="loadingIndicator" data-bind="text:loadingText, visible:isLoading"></div>
+		
+		<div id="screen">
+			<div id="appsScreen" data-bind="visible:appsScreen.visible, template:{data:appsScreen, name:'caplinx.dashboard.app.apps-screen'}"></div>
+			
+			<div id="appDetailScreen" data-bind="visible:appDetailScreen.visible, template:{data:appDetailScreen, name:'caplinx.dashboard.app.app-detail-screen'}"></div>
+			
+			<div id="workbenchScreen" data-bind="visible:workbenchScreen.visible, template:{data:workbenchScreen, name:'caplinx.dashboard.app.workbench-screen'}"></div>
+			
+			<div id="releaseNoteScreen" data-bind="visible:releaseNoteScreen.visible, template:{data:releaseNoteScreen, name:'caplinx.dashboard.app.release-note-screen'}"></div>
+		</div>
+		
+		<div id="modalDialogWrapper">
+			<div id="modalDialog" data-bind="template:{name:dialog.viewNode.getTemplateName, foreach:dialog.viewNode}"></div>
+		</div>
+		
+		<div class="footer-wrap">
+			<div id="footer-section">
+				<div id="botnav">
+					<ul>
+						<li><a href="http://www.caplin.com" target="_blank">www.caplin.com</a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<div class="footer-logo">
+				<a href="../#note/latest">Version: <span data-bind="text:sdkVersion"></span></a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- File: workbench-screen.html -->
+<div id="caplinx.dashboard.app.workbench-screen">
+	<div class="btns-area">
+		<ul>
+			<li class="right-align">
+				<button class="popoutWorkbenchBtn" data-bind="click:popoutWorkbench"><span></span>Pop out</button>
+			</li>
+		</ul>
+	</div>
+	<div id="workbench-iframe-container" data-bind="style:{height:iFrameHeight}">
+		<iframe class="workbench-frame" data-bind="attr:{src:workbenchUrl}"></iframe>
+	</div>
+	
+</div>

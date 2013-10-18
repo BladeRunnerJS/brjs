@@ -1,10 +1,9 @@
 define("br/Errors", /** @exports br/Errors */ function(require, module, exports) {
 	"use strict";
-
+	
 	var br = require('br');
-	
 	/** @module br/Errors */
-	
+
 	/**
 	 * Constructs a new <code>Error</code> of the provided type.
 	 * 
@@ -55,13 +54,14 @@ define("br/Errors", /** @exports br/Errors */ function(require, module, exports)
 	 * rather than a test 'failure'.
 	 */
 	exports.INVALID_TEST = "InvalidTestError";
+	exports.ILLEGAL_TEST_CLAUSE = "IllegalTestClauseError";
 	
 	/**
 	 * This error is thrown when an interface method is called that should have
 	 * been implemented in the interface implementor class.
 	 */
 	exports.UNIMPLEMENTED_INTERFACE = "UnimplementedInterfaceError";
-	
+
 	/**
 	 * This error is thrown when an abstract method is called that should have
 	 * been implemented in the extending class.
@@ -86,7 +86,6 @@ define("br/Errors", /** @exports br/Errors */ function(require, module, exports)
 	 * This error type indicates that a request for data has failed.
 	 */
 	exports.REQUEST_FAILED = "RequestFailedError";
-
 
 	/**
 	 * This error type indicates that some required data was invalid.
@@ -118,7 +117,7 @@ define("br/Errors", /** @exports br/Errors */ function(require, module, exports)
 	exports.SyntaxError = SyntaxError;
 	exports.TYPE = "TypeError";
 	exports.TypeError = TypeError;
-		
+
 	// static private methods /////////////////////////////////////////////////////
 	
 	function normaliseStack(stackString) {
@@ -137,7 +136,6 @@ define("br/Errors", /** @exports br/Errors */ function(require, module, exports)
 				}
 			}
 		}
-		
 		return stack;
 	}
 
@@ -154,5 +152,4 @@ define("br/Errors", /** @exports br/Errors */ function(require, module, exports)
 		}
 		return stack;
 	}
-
 });

@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 // Story 1 - DASHBOARD HOME PAGE
 describe("story #1", function()

@@ -1,0 +1,397 @@
+
+<!-- File: tree-viewer.html -->
+<script id="tree-viewer" type="text/html">
+<div class="treel-viewer">
+	<input type="text" size="10" data-bind="value:searchText"/>
+	<button class="btn" data-bind="click:search">Find</button>
+</div>
+</script>
+<!-- File: ChartRequestEditor.html -->
+<div id='chart-request-editor' class='chart-request-editor'>
+
+	<dl>
+		<dt><label data-bind='text: seriesTypeLabel'></label></dt>
+		<dd><select data-bind='options: seriesType.options, value: seriesType.value, optionsText: "label", optionsValue: "value"'></select></dd>
+
+		<dt>
+			<label data-bind='text: instrument.label' for='instrument'></label>
+		</dt>
+		<dd>
+			<input type='text' id='instrument' data-bind='value: instrument.value, enable: instrument.enabled'/>
+		</dd>
+
+		<!--<dt><label data-bind='text: instrumentLabel'></label></dt>-->
+		<!--<dd><select data-bind='options: instrument.options, value: instrument.value, optionsText: "label", optionsValue: "value"'></select></dd>-->
+
+		<dt><label data-bind='text: intervalLabel'></label></dt>
+		<dd><select data-bind='options: interval.options, value: interval.value, optionsText: "label", optionsValue: "value"'></select></dd>
+
+		<dt><label data-bind='text: beginLabel'></label></dt>
+		<dd><select data-bind='options: begin.options, value: begin.value, optionsText: "label", optionsValue: "value"'></select></dd>
+
+		<dt><label data-bind='text: endLabel'></label></dt>
+		<dd><select data-bind='options: end.options, value: end.value, optionsText: "label", optionsValue: "value"'></select></dd>
+	</dl>
+
+	<dl>
+		<dt>
+			<label data-bind='text: subjectData.label' for='subjectData'></label>
+		</dt>
+		<dd>
+			<textarea id='subjectData' data-bind='value: subjectData.value, enable: subjectData.enabled'></textarea>
+		</dd>
+		<dt>
+			<label data-bind='text: useSubjectData.label' for='useSubjectData'></label> <input type="checkbox" id='useSubjectData' value='msg' data-bind='checked: useSubjectData.value, enable: useSubjectData.enabled' />
+		</dt>
+		<dd></dd>
+	</dl>
+	<button data-bind='text:addSeriesBtn.label, enable:addSeriesBtn.enabled, visible:addSeriesBtn.visible, click:onAddSeriesBtnClick'></button>
+
+	<hr/>
+	<strong>Add study</strong>
+	<dl>
+		<dt>
+			<label data-bind='text: studiesLabel'></label>
+		</dt>
+		<dd>
+			<select data-bind="options: studies.options, value: studies.value, optionsText: 'label', optionsValue: 'value'"></select>
+		</dd>
+
+		<dt>
+			<label data-bind='text: periodsLabel'></label>
+		</dt>
+		<dd>
+			<select data-bind="options: periods.options, value: periods.value, optionsText: 'label', optionsValue: 'value'"></select>
+		</dd>
+	</dl>
+	<button data-bind="click: onAddStudyBtnClick, enable: enableAddStudy">Add study</button>
+
+	<div data-bind="visible: showAddedStudies">
+		<hr/>
+		<strong>Added studies:</strong>
+		<div data-bind="foreach: addedStudies">
+			<div>
+				<span data-bind="text: displayName"></span> 
+				<button data-bind="click: $parent.onRemoveStudyBtnClick.bind($parent)">remove</button> 
+				<button data-bind="click: $parent.onShowStudyBtnClick.bind($parent), visible: isHidden">show</button> 
+				<button data-bind="click: $parent.onHideStudyBtnClick.bind($parent), visible: isShown">hide</button>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!-- File: quickform.html -->
+<div id="quickform" class="workbench-data-editor">
+   	<div class="quick-form" data-bind="template:{name:'quickform-field', foreach:fields}"></div>
+	<div data-bind="template:{name:'quickform-button', foreach:buttons}"></div>
+</div>
+
+<div id="quickform-field">
+	<dl>
+		<dt><label data-bind="text:label"></label></dt>
+		<dd><input type="text" data-bind="value:value"/></dd>
+	</dl>
+</div>
+
+<script id="quickform-button" type="text/html">
+	<button class="quickform-btn btn" data-bind="click:click, text:label, enable:enabled"></button>
+</script>
+
+
+<!-- File: workbench-event-logger.html -->
+<script id="workbench-event-logger" type="text/html">
+<div>
+	<button class="btn" data-bind="click:clear">Clear Log</button>
+	<div class="messagelog" data-bind="template:{name:'workbench-event-message', foreach:messages}"></div>
+</div>
+</script>
+
+
+<script id="workbench-event-message" type="text/html">
+<div>	
+	<div data-bind="css: {'expanded': visible}">
+		<div class="plus-minus">
+			<div class="icon" data-bind="click:toggleVisibility"></div>
+			<div data-bind="attr:{'class': titleCssClass}, html:title, click:toggleVisibility"></div>
+			<div class="trade-data-message-holder" data-bind="visible:visible, template:{name:'workbench-event-data', foreach:dataFields}"></div>
+		</div>
+	</div>
+</div>
+</script>
+
+
+<script id="workbench-event-data" type="text/html">
+<div class="event-message">
+  <span data-bind="text:label"></span>:<span data-bind="text:value"></span>
+</div>
+</script>
+
+<!-- File: workbench-mini-trade.html -->
+<div id="workbench-mini-trade">
+	<div>
+		<button class="execute-btn" data-bind="click:executeTrade">Execute</button>
+	</div>
+</div>
+<!-- File: workbench_connection_editor.html -->
+<div id="workbench-connection-editor">
+<div class="permission-editor-container">
+	<div data-bind="template: {name: 'workbench-connection-button', foreach:buttons }"></div>
+</div>
+</div>
+
+<div id="workbench-connection-button">
+	<button class="btn" data-bind="click:click, visible:visible, enable:enabled, text:label, css:{notClickable: notClickable, selected:selected}" ></button>
+</div>
+
+
+<!-- File: workbench_state_visualiser.html -->
+<div id="workbench-state-visualiser">
+
+	<div class="state_control">
+		<div data-bind="template:{ name: 'workbench-toggle-switch', data:autoEvents}"></div>
+		<div data-bind="template:{ name: 'workbench-toggle-switch', data:autoData}"></div>
+		
+		<hr/>
+		<div class="expansionToggle" data-bind="template:{ name: 'workbench-toggle-switch', data:allStates}"></div>
+		
+		
+		<div data-bind="template:{ name: 'workbench-single-state-visualiser', foreach:stateDiagrams}"></div>
+			
+		</div>
+	</div>
+
+</div>
+
+<div id="workbench-single-state-visualiser"> 
+	<div>
+		<div class="data-fields" data-bind="visible:dataFieldVisible">
+			<div data-bind="template:{ name: 'workbench-field-trade-section', foreach:tradeSections}"></div>
+			<button class="quickform-btn btn" data-bind="click:send">Send</button>
+			<button class="quickform-btn btn" data-bind="click:cancel">Cancel</button>
+		</div>
+	    <div data-bind="control:'StateVisualiserControl', value:stateDetails, visible:stateDiagramVisible"></div>
+	</div>
+</div>
+
+<div id="workbench-field-trade-section">
+	<div>
+		<label data-bind="text:sectionName"></label>
+		<div data-bind="template:{name:'quickform'}"></div>
+	</div>
+</div>
+
+<div id="workbench-toggle-switch"> 
+	<div>
+		<div class="toggle-switch" data-bind="css: value">
+			<div data-bind="click:click, template:{ name: 'workbench-toggle-switch-label', foreach:options}"></div>
+		</div>
+		
+		<label data-bind="text:label"></label>
+	</div>
+</div>
+
+<div id="workbench-toggle-switch-label">	
+	<span data-bind="text:label, attr: { title: label }"></span>
+</div>
+
+<!-- File: alternate-node-list-item.html -->
+<div id="alternate-node-list-item">
+	<div class="alternateNodeListItem" data-bind="text:itemProperty"></div>
+</div>
+<!-- File: control-plugin-node-list-item.html -->
+<div id="control-plugin-node-list-item">
+	<div class="control nodeList" data-bind="control:'caplin-test-control', value:field"></div>
+</div>
+<!-- File: control-plugin.html -->
+<div id="control-plugin">
+	<div>
+		<div class="control body" data-bind="control:'caplin-test-control', value:field"></div>
+		<div class="nodeList" data-bind="template:{name:'control-plugin-node-list-item', foreach:nodeList}"></div>
+	</div>
+</div>
+<!-- File: currency-selector-control-form.html -->
+<div id='currency-selector-control-form'>
+	<div identifier="currencyPairComboBox" data-bind="control:'CurrencySelector',value:selectionField, controloptions:{width:110}"></div>
+	<!--<div identifier="currencyPairComboBox" data-bind="control:'CurrencySelector', controloptions:{width:110}"></div>-->
+</div>
+
+
+<!-- File: dynamic-component-form.html -->
+<div id="dynamic-component-form-id">
+	<div class="wrapper">
+		<fieldset>
+			<legend>Caplin Component plugin</legend>
+				<div data-bind="component:component, width:width, height:height"></div>
+		</fieldset>
+	</div>
+</div>
+
+<!-- File: fixed-component-form.html -->
+<div id="fixed-component-form-id">
+	<div class="wrapper">
+		<fieldset>
+			<legend>Caplin Component plugin</legend>
+				<div data-bind="component:component, width:75, height:40, className:'class1 class2'"></div>
+		</fieldset>
+	</div>
+</div>
+
+<!-- File: focus-view-form.html -->
+<div id="focus-view-form-id">
+	<h1>Focus Fields</h1><hr />
+	<form>
+    	<div class="input-label"> Input A:</div>
+		<div id="inputA" data-bind="template:{name:'focus.inputField', data:inputA}"></div>
+        <div class="input-label">Field B:</div>
+		<div id="inputB" data-bind="template:{name:'focus.inputField', data:inputB}"></div>
+	</form>
+</div>
+
+
+<div id="focus.inputField">
+	<div class="field">
+		<label data-bind="text:label"></label>
+		<div class="input">
+			<input class='fieldInput' type="text" data-bind="hasfocus:hasFocus, enable:enabled"/>
+		</div>
+	</div>
+</div>
+	
+
+<!-- File: multi-view-click.html -->
+<div id="multi-view-click">
+ 	<fieldset>
+ 		<legend>Select Box</legend>
+ 		<select id="selectBox" name="buysell" data-bind="options:hobbies.options, value:hobbies.value, optionsValue:'value'"></select>
+ 	</fieldset>
+ 	
+ 	<fieldset>
+ 		<legend>Radio Buttons</legend>
+ 		<div id="radioButtons" data-bind="foreach:hobbies.options">
+ 			<input type="radio" data-bind="value:value, attr:{name:$parent.hobbies}, checked:$parent.hobbies.value"/>
+			<span data-bind="text:label"></span>
+			<br/>
+		</div>
+ 	</fieldset>
+ 	
+</div>
+<!-- File: multiple-views-of-one-model.html -->
+<div id="multiple-views">
+	<select id="selectBox"  data-bind="options:selectionField.options, value:selectionField.value, enable:selectionField.enabled, visible:selectionField.visible, attr:{name: selectionField.controlName}, optionsValue: 'value'"></select>
+	<div id="alt-selectBox" data-bind="template:{name:'radio-button-template', foreach:selectionField.options, templateOptions:{controlName: selectionField.controlName, selectedValue:selectionField.value}}"></div>
+
+	<select id="multiSelectBox" multiple="multiple" data-bind="options:multiSelectField.options, optionsValue: 'value', optionsText: 'label', selectedOptions:multiSelectField.value, visible:multiSelectField.visible, enable:multiSelectField.enabled, attr:{name: multiSelectField.controlName}"></select>
+	<div id="alt-multiSelectBox" data-bind="template:{name:'checkbox-template', foreach:multiSelectField.options, templateOptions:{controlName:multiSelectField.controlName, selectedValue:multiSelectField.value}}"></div>
+</div>
+
+<div id="radio-button-template">
+	<input type="radio" data-bind="value:value, checked:$item.selectedValue, attr:{name:$item.controlName}"/>
+</div>
+
+<div id="checkbox-template">
+	<input type="checkbox" data-bind="value:value, checked:$item.selectedValue, attr:{name:$item.controlName}"/>
+</div>
+
+<!-- File: node-list-item.html -->
+<div id="node-list-item">
+	<div class="nodeListItem" data-bind="text:itemProperty"></div>
+</div>
+<!-- File: node-list.html -->
+<div id="node-list">
+	<div class="nodeList" data-bind="template:{name:'node-list-item', foreach:nodeList}"></div>
+</div>
+<!-- File: order-of-click-and-blur-form.html -->
+<script id="order-of-click-and-blur" type="text/html">
+	<div class="wrapper">
+		<input type="text" id="textInput" data-bind="value:textInput" onblur="console.log('onblur')" onchange="console.log('onchange')"/>
+		<button id="storeTextButton" data-bind="click:storeCurrentText">Store Current Text</button>
+	</div>
+</script>
+<!-- File: template-aware-node-list.html -->
+<div id="template-aware-node-list">
+	<div id="single-node-list" data-bind="template:{name:nodeList.getTemplateName, foreach:nodeList}"></div>
+
+	<div id="two-node-lists">
+		<div data-bind="template:{name:nodeList.getTemplateName, foreach:nodeList}"></div>
+		<div data-bind="template:{name:anotherNodeList.getTemplateName, foreach:anotherNodeList}"></div>
+	</div>
+</div>
+<!-- File: template-with-script-tag.html -->
+<script type="text/html" id="legacy">
+	<span id="prop-plain" data-bind="text:plainProperty"></span>
+	<span id="prop-formatted" data-bind="text:formattedProperty"></span>
+</script>
+
+<!-- File: test-form.html -->
+<div id="test">
+	<input type="text" id="fieldText" data-bind="value:field.value, enable:field.enabled, visible:field.visible, attr:{name: field.controlName}" />
+
+	<select id="selectBox"  data-bind="options:selectionField.options, value:selectionField.value, enable:selectionField.enabled, visible:selectionField.visible, attr:{name: selectionField.controlName}, optionsValue: 'value'"></select>
+
+	<select id="multiSelectBox" multiple="multiple" data-bind="options:multiSelectBox.options, optionsValue: 'value', optionsText: 'label', selectedOptions:multiSelectBox.value, visible:multiSelectBox.visible, enable:multiSelectBox.enabled, attr:{name: multiSelectBox.controlName}"></select>
+	<select id="multiSelectBoxMapped" multiple="multiple" data-bind="options:multiSelectBoxMapped.options, optionsValue: 'value', optionsText: 'label', selectedOptions:multiSelectBox.value, visible:multiSelectBox.visible, enable:multiSelectBox.enabled "></select>
+
+	<div id="toggleSwitch1" data-bind="control:'br.toggle-switch',value:selectionField" ></div>
+	<div id="toggleSwitch2" data-bind="control:'br.toggle-switch',value:selectionFieldDefaultedToSecondValue" ></div>
+	<div id="toggleSwitch3" data-bind="control:'br.toggle-switch',value:selectionFieldInitiallyDisabledAndHidden" ></div>
+
+	<div id="dropDownSelectBox"  data-bind="control:'br.select-box',controlOptions:{width:95},value:selectionField"></div>
+	<div id="dropDownSelectBox2"  data-bind="control:'br.select-box',controlOptions:{width:95},value:selectionFieldDefaultedToSecondValue"></div>
+	<div id="dropDownSelectBox3"  data-bind="control:'br.select-box',controlOptions:{width:95},value:selectionFieldInitiallyDisabledAndHidden"></div>
+	<div id="labelValueSelectBox"  data-bind="control:'br.select-box',controlOptions:{width:95},value:labelValueSelectionField"></div>
+
+	<div id="dropDownComboxBox"  data-bind="control:'br.combo-box',controlOptions:{AutoCompleteDataProvider:'getTest'},controlNode:selectionField"></div>
+	<div id="dropDownComboxBox2"  data-bind="control:'br.combo-box',controlOptions:{AutoCompleteDataProvider:'getTest'},controlNode:selectionFieldDefaultedToSecondValue"></div>
+	<input type="text" id="dropDownComboxBox3"  data-bind="control:'br.combo-box',controlOptions:{AutoCompleteDataProvider:'getTest'},controlNode:selectionFieldInitiallyDisabledAndHidden"/>
+
+	<input type="text" id="jqueryAutoCompleteBox" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container'}, controlNode:jquerySelectionField"/>
+	<input type="text" id="jqueryAutoCompleteBox2" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container2', minCharAmount: 2}, controlNode:jquerySelectionField"/>
+
+	<div id="datePicker" data-bind="control:'br.date-picker',value:date"></div>
+	<div id="datePicker2" data-bind="control:'br.date-picker',value:dateInitiallyDisabledAndHidden"></div>
+
+	<div id="prop-ct">
+		<span id="prop-plain" data-bind="text:plainProperty"></span>
+		<span id="prop-formatted" data-bind="text:formattedProperty"></span>
+	</div>
+	<div id="editable-prop-ct">
+		<input type="text" id="edProp-plain" data-bind="value:plainEditableProperty" />
+		<input type="text" id="edProp-formatted" data-bind="value:formattedEditableProperty" />
+		<input type="text" id="edProp-parsed" data-bind="value:parsedEditableProperty" />
+		<input type="text" id="edProp-parsed-formatted" data-bind="value:parsedFormattedEditableProperty" />
+	</div>
+	<div id="alias-ct">
+		<span id="alias-plain" data-bind="text:aliasPlain"></span>
+		<span id="alias-formatted" data-bind="text:aliasFormatted"></span>
+	</div>
+	<div id="autocomplete-container">
+	</div>
+	<div id="autocomplete-container2">
+	</div>
+	
+</div>
+
+<!-- File: timer-control.html -->
+<div id="timer-control">
+	<div>
+		<div class="counter" data-bind="value:counter"></div>
+	</div>
+</div>
+<!-- File: tooltip-control.html -->
+<div id="tooltip-control-test">
+   <div data-bind="control:'br.tooltip', value:tooltipNode" >
+   	<input class="input1" data-bind="value:tooltipField1.value, valueUpdate:'afterkeydown', css: tooltipField1.tooltipClassName" />
+   	<input class="input2" data-bind="value:tooltipField2.value, valueUpdate:'afterkeydown', css: tooltipField2.tooltipClassName" />
+   </div>
+</div>
+
+
+
+<!-- File: tooltip-template.html -->
+<div id='tooltip_plugin_test'>
+	
+	<input type='text' style='background-color:grey;font-size:14pt; padding:10px; border:1px solid black;' id='theField' 
+		data-bind='value:theField.value, tooltip:theField' />
+	
+</div>

@@ -7,7 +7,7 @@ BladesetNameValidatorTest.prototype.setUp = function()
 
 BladesetNameValidatorTest.prototype.isValid = function(sBladesetName)
 {
-	var oValidationResult = new caplin.core.ValidationResult();
+	var oValidationResult = new br.presenter.validator.ValidationResult();
 	this.m_oValidator.validate(sBladesetName, {}, oValidationResult);
 	
 	return oValidationResult.isValid();

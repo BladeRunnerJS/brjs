@@ -1,0 +1,196 @@
+
+<!-- File: tree-viewer.html -->
+<script id="tree-viewer" type="text/html">
+<div class="treel-viewer">
+	<input type="text" size="10" data-bind="value:searchText"/>
+	<button class="btn" data-bind="click:search">Find</button>
+</div>
+</script>
+<!-- File: ChartRequestEditor.html -->
+<div id='chart-request-editor' class='chart-request-editor'>
+
+	<dl>
+		<dt><label data-bind='text: seriesTypeLabel'></label></dt>
+		<dd><select data-bind='options: seriesType.options, value: seriesType.value, optionsText: "label", optionsValue: "value"'></select></dd>
+
+		<dt>
+			<label data-bind='text: instrument.label' for='instrument'></label>
+		</dt>
+		<dd>
+			<input type='text' id='instrument' data-bind='value: instrument.value, enable: instrument.enabled'/>
+		</dd>
+
+		<!--<dt><label data-bind='text: instrumentLabel'></label></dt>-->
+		<!--<dd><select data-bind='options: instrument.options, value: instrument.value, optionsText: "label", optionsValue: "value"'></select></dd>-->
+
+		<dt><label data-bind='text: intervalLabel'></label></dt>
+		<dd><select data-bind='options: interval.options, value: interval.value, optionsText: "label", optionsValue: "value"'></select></dd>
+
+		<dt><label data-bind='text: beginLabel'></label></dt>
+		<dd><select data-bind='options: begin.options, value: begin.value, optionsText: "label", optionsValue: "value"'></select></dd>
+
+		<dt><label data-bind='text: endLabel'></label></dt>
+		<dd><select data-bind='options: end.options, value: end.value, optionsText: "label", optionsValue: "value"'></select></dd>
+	</dl>
+
+	<dl>
+		<dt>
+			<label data-bind='text: subjectData.label' for='subjectData'></label>
+		</dt>
+		<dd>
+			<textarea id='subjectData' data-bind='value: subjectData.value, enable: subjectData.enabled'></textarea>
+		</dd>
+		<dt>
+			<label data-bind='text: useSubjectData.label' for='useSubjectData'></label> <input type="checkbox" id='useSubjectData' value='msg' data-bind='checked: useSubjectData.value, enable: useSubjectData.enabled' />
+		</dt>
+		<dd></dd>
+	</dl>
+	<button data-bind='text:addSeriesBtn.label, enable:addSeriesBtn.enabled, visible:addSeriesBtn.visible, click:onAddSeriesBtnClick'></button>
+
+	<hr/>
+	<strong>Add study</strong>
+	<dl>
+		<dt>
+			<label data-bind='text: studiesLabel'></label>
+		</dt>
+		<dd>
+			<select data-bind="options: studies.options, value: studies.value, optionsText: 'label', optionsValue: 'value'"></select>
+		</dd>
+
+		<dt>
+			<label data-bind='text: periodsLabel'></label>
+		</dt>
+		<dd>
+			<select data-bind="options: periods.options, value: periods.value, optionsText: 'label', optionsValue: 'value'"></select>
+		</dd>
+	</dl>
+	<button data-bind="click: onAddStudyBtnClick, enable: enableAddStudy">Add study</button>
+
+	<div data-bind="visible: showAddedStudies">
+		<hr/>
+		<strong>Added studies:</strong>
+		<div data-bind="foreach: addedStudies">
+			<div>
+				<span data-bind="text: displayName"></span> 
+				<button data-bind="click: $parent.onRemoveStudyBtnClick.bind($parent)">remove</button> 
+				<button data-bind="click: $parent.onShowStudyBtnClick.bind($parent), visible: isHidden">show</button> 
+				<button data-bind="click: $parent.onHideStudyBtnClick.bind($parent), visible: isShown">hide</button>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!-- File: quickform.html -->
+<div id="quickform" class="workbench-data-editor">
+   	<div class="quick-form" data-bind="template:{name:'quickform-field', foreach:fields}"></div>
+	<div data-bind="template:{name:'quickform-button', foreach:buttons}"></div>
+</div>
+
+<div id="quickform-field">
+	<dl>
+		<dt><label data-bind="text:label"></label></dt>
+		<dd><input type="text" data-bind="value:value"/></dd>
+	</dl>
+</div>
+
+<script id="quickform-button" type="text/html">
+	<button class="quickform-btn btn" data-bind="click:click, text:label, enable:enabled"></button>
+</script>
+
+
+<!-- File: workbench-event-logger.html -->
+<script id="workbench-event-logger" type="text/html">
+<div>
+	<button class="btn" data-bind="click:clear">Clear Log</button>
+	<div class="messagelog" data-bind="template:{name:'workbench-event-message', foreach:messages}"></div>
+</div>
+</script>
+
+
+<script id="workbench-event-message" type="text/html">
+<div>	
+	<div data-bind="css: {'expanded': visible}">
+		<div class="plus-minus">
+			<div class="icon" data-bind="click:toggleVisibility"></div>
+			<div data-bind="attr:{'class': titleCssClass}, html:title, click:toggleVisibility"></div>
+			<div class="trade-data-message-holder" data-bind="visible:visible, template:{name:'workbench-event-data', foreach:dataFields}"></div>
+		</div>
+	</div>
+</div>
+</script>
+
+
+<script id="workbench-event-data" type="text/html">
+<div class="event-message">
+  <span data-bind="text:label"></span>:<span data-bind="text:value"></span>
+</div>
+</script>
+
+<!-- File: workbench-mini-trade.html -->
+<div id="workbench-mini-trade">
+	<div>
+		<button class="execute-btn" data-bind="click:executeTrade">Execute</button>
+	</div>
+</div>
+<!-- File: workbench_connection_editor.html -->
+<div id="workbench-connection-editor">
+<div class="permission-editor-container">
+	<div data-bind="template: {name: 'workbench-connection-button', foreach:buttons }"></div>
+</div>
+</div>
+
+<div id="workbench-connection-button">
+	<button class="btn" data-bind="click:click, visible:visible, enable:enabled, text:label, css:{notClickable: notClickable, selected:selected}" ></button>
+</div>
+
+
+<!-- File: workbench_state_visualiser.html -->
+<div id="workbench-state-visualiser">
+
+	<div class="state_control">
+		<div data-bind="template:{ name: 'workbench-toggle-switch', data:autoEvents}"></div>
+		<div data-bind="template:{ name: 'workbench-toggle-switch', data:autoData}"></div>
+		
+		<hr/>
+		<div class="expansionToggle" data-bind="template:{ name: 'workbench-toggle-switch', data:allStates}"></div>
+		
+		
+		<div data-bind="template:{ name: 'workbench-single-state-visualiser', foreach:stateDiagrams}"></div>
+			
+		</div>
+	</div>
+
+</div>
+
+<div id="workbench-single-state-visualiser"> 
+	<div>
+		<div class="data-fields" data-bind="visible:dataFieldVisible">
+			<div data-bind="template:{ name: 'workbench-field-trade-section', foreach:tradeSections}"></div>
+			<button class="quickform-btn btn" data-bind="click:send">Send</button>
+			<button class="quickform-btn btn" data-bind="click:cancel">Cancel</button>
+		</div>
+	    <div data-bind="control:'StateVisualiserControl', value:stateDetails, visible:stateDiagramVisible"></div>
+	</div>
+</div>
+
+<div id="workbench-field-trade-section">
+	<div>
+		<label data-bind="text:sectionName"></label>
+		<div data-bind="template:{name:'quickform'}"></div>
+	</div>
+</div>
+
+<div id="workbench-toggle-switch"> 
+	<div>
+		<div class="toggle-switch" data-bind="css: value">
+			<div data-bind="click:click, template:{ name: 'workbench-toggle-switch-label', foreach:options}"></div>
+		</div>
+		
+		<label data-bind="text:label"></label>
+	</div>
+</div>
+
+<div id="workbench-toggle-switch-label">	
+	<span data-bind="text:label, attr: { title: label }"></span>
+</div>

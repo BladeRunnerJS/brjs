@@ -4,9 +4,9 @@ caplinx.dashboard.app.model.app.AppDetailScreen = function(oPresentationModel)
 	this.m_fOnDatabaseReset = this._onDatabaseReset.bind(this);
 	this.m_fOnServiceError = this._onServiceError.bind(this);
 	
-	this.visible = new caplin.presenter.property.WritableProperty(false);
-	this.appName = new caplin.presenter.property.WritableProperty();
-	this.bladesets = new caplin.presenter.node.NodeList([], caplinx.dashboard.app.model.app.BladesetPresentationNode);
+	this.visible = new br.presenter.property.WritableProperty(false);
+	this.appName = new br.presenter.property.WritableProperty();
+	this.bladesets = new br.presenter.node.NodeList([], caplinx.dashboard.app.model.app.BladesetPresentationNode);
 	
 	this.newBladesetButton = new caplinx.dashboard.app.model.form.Button("New Bladeset", this, "newBladeset");
 	this.importBladesFromAppButton = new caplinx.dashboard.app.model.form.Button("Import Blades from App", this, "importBladesFromApp");
@@ -18,7 +18,7 @@ caplinx.dashboard.app.model.app.AppDetailScreen = function(oPresentationModel)
 	oPresentationModel.appsScreen.apps.addListener(new caplinx.dashboard.app.model.ConditionalChangeListener(
 		this, "_updateImportBladesFromAppButton", this.visible, true), true);
 };
-caplin.extend(caplinx.dashboard.app.model.app.AppDetailScreen, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.app.AppDetailScreen, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.app.AppDetailScreen.prototype.displayApp = function(sApp)
 {

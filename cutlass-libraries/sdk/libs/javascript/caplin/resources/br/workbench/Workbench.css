@@ -1,0 +1,15 @@
+body {
+	background: white;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid #7e7e7e;
+	border-bottom: 1px solid #d1d1d1;
+}
+
+.workbench-centered {
+	display: table; 
+	margin: 0px auto;
+	padding-top: 20px;
+}

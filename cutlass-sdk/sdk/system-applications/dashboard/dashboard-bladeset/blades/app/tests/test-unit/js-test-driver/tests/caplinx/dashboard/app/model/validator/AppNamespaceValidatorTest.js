@@ -7,7 +7,7 @@ AppNamespaceValidatorTest.prototype.setUp = function()
 
 AppNamespaceValidatorTest.prototype.isValid = function(sNamespace)
 {
-	var oValidationResult = new caplin.core.ValidationResult();
+	var oValidationResult = new br.presenter.validator.ValidationResult();
 	this.m_oValidator.validate(sNamespace, {}, oValidationResult);
 	
 	return oValidationResult.isValid();

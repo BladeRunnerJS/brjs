@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 describe("App Detail Screen", function() {
 	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");

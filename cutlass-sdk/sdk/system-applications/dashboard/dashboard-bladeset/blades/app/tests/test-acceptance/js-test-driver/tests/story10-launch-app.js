@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 // Story 10 - LAUNCH APP
 describe("story #10", function() 

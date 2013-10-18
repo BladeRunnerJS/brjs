@@ -5,7 +5,7 @@ br.thirdparty("jquery");
  * <code>Value ViewFixtureHandler</code> can be used to set or get <code>value</code> property of a view element.
  * Example usage:
  * <p>
- * <code>then("form.view.(.orderSummary .orderAmount .native input).value = '50'");</code>
+ * <code>then("ticket.view.(.setupSpot .amountInput .native input).value = '50'");</code>
  * </p>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler

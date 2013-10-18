@@ -4,8 +4,8 @@ caplinx.dashboard.app.model.app.BladePresentationNode = function(sBladeName, oPa
 	this.m_oParentBladeset = oParentBladeset;
 	this.m_fOnTestProgress = this._onTestProgress.bind(this);
 	this.m_fOnTestError = this._onTestError.bind(this);
-	this.bladeName = new caplin.presenter.property.Property(sBladeName);
-	this.workbenchUrl = new caplin.presenter.property.WritableProperty();
+	this.bladeName = new br.presenter.property.Property(sBladeName);
+	this.workbenchUrl = new br.presenter.property.WritableProperty();
 	
 	if(this.m_oPresentationModel)
 	{
@@ -15,7 +15,7 @@ caplinx.dashboard.app.model.app.BladePresentationNode = function(sBladeName, oPa
 		this.workbenchUrl.setValue(sWorkbenchScreenUrl);
 	}
 };
-caplin.extend(caplinx.dashboard.app.model.app.BladePresentationNode, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.app.BladePresentationNode, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.app.BladePresentationNode.prototype.runTests = function()
 {

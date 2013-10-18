@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 // Story 5 - CREATE NEW BLADESET
 describe("story #5", function() 

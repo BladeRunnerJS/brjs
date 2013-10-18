@@ -1,0 +1,254 @@
+/*
+ * Ext JS Library 2.2
+ * Copyright(c) 2006-2008, Ext JS, LLC.
+ * licensing@extjs.com
+ * 
+ * http://extjs.com/license
+ */
+.workbench-component .x-tree .x-panel-body{
+    background-color:#fff;
+}
+.workbench-component .ext-strict .ext-ie .x-tree .x-panel-bwrap{
+    position:relative;
+    overflow:hidden;
+}
+.workbench-component .x-tree-icon, .workbench-component .x-tree-ec-icon, .workbench-component .x-tree-elbow-line, .workbench-component .x-tree-elbow, 
+.workbench-component .x-tree-elbow-end, .workbench-component .x-tree-elbow-plus, .workbench-component .x-tree-elbow-minus, .workbench-component .x-tree-elbow-end-plus, .workbench-component .x-tree-elbow-end-minus{
+	border: 0 none;
+	height: 18px;
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+	width: 16px;
+    background-repeat: no-repeat;
+}
+.workbench-component .x-tree-node-collapsed .x-tree-node-icon, .workbench-component .x-tree-node-expanded .x-tree-node-icon, .workbench-component .x-tree-node-leaf .x-tree-node-icon{
+	border: 0 none;
+	height: 18px;
+	margin: 0;
+	padding: 0;
+	vertical-align: top;
+	width: 16px;
+	background-position:center;
+    background-repeat: no-repeat;
+}
+.workbench-component .ext-ie .x-tree-node-indent img, .workbench-component .ext-ie .x-tree-node-icon, .workbench-component .ext-ie .x-tree-ec-icon {
+    vertical-align:middle !important;
+}
+/* some default icons for leaf/folder */
+.workbench-component .x-tree-node-expanded .x-tree-node-icon{
+	background-image:url(folder-open.gif);
+}
+.workbench-component .workbench-component .x-tree-node-leaf .x-tree-node-icon{
+	background-image:url(leaf.gif);
+}
+.x-tree-node-collapsed .x-tree-node-icon{
+	background-image:url(folder.gif);
+}
+/* checkboxes */
+.workbench-component .ext-ie input.x-tree-node-cb {
+    width:15px;
+    height:15px;
+}
+.workbench-component input.x-tree-node-cb {
+    margin-left:1px;
+}
+.workbench-component .ext-ie input.x-tree-node-cb {
+    margin-left:0;
+}
+
+.workbench-component .x-tree-noicon .x-tree-node-icon{
+	width:0; height:0;
+}
+/* loading icon */
+.workbench-component .x-tree-node-loading .x-tree-node-icon{
+	background-image:url(loading.gif) !important;
+}
+.workbench-component .x-tree-node-loading a span{
+	 font-style: italic;
+	 color:#444444;
+}
+.workbench-component .ext-ie .x-tree-node-el input {
+    width:15px;
+    height:15px;
+}
+/* Line styles */
+.workbench-component .x-tree-lines .x-tree-elbow{
+	background-image:url(elbow.gif);
+}
+.workbench-component .x-tree-lines .x-tree-elbow-plus{
+	background-image:url(elbow-plus.gif);
+}
+.workbench-component .x-tree-lines .x-tree-elbow-minus{
+	background-image:url(elbow-minus.gif);
+}
+.workbench-component .x-tree-lines .x-tree-elbow-end{
+	background-image:url(elbow-end.gif);
+}
+.workbench-component .x-tree-lines .x-tree-elbow-end-plus{
+	background-image:url(elbow-end-plus.gif);
+}
+.workbench-component .x-tree-lines .x-tree-elbow-end-minus{
+	background-image:url(elbow-end-minus.gif);
+}
+.workbench-component .x-tree-lines .x-tree-elbow-line{
+	background-image:url(elbow-line.gif);
+}
+
+/* No line styles */
+.workbench-component .x-tree-no-lines .x-tree-elbow{
+	background:transparent;
+}
+.workbench-component .x-tree-no-lines .x-tree-elbow-plus{
+	background-image:url(elbow-plus-nl.gif);
+}
+.workbench-component .x-tree-no-lines .x-tree-elbow-minus{
+	background-image:url(elbow-minus-nl.gif);
+}
+.workbench-component .x-tree-no-lines .x-tree-elbow-end{
+	background:transparent;
+}
+.workbench-component .x-tree-no-lines .x-tree-elbow-end-plus{
+	background-image:url(elbow-end-plus-nl.gif);
+}
+.workbench-component .x-tree-no-lines .x-tree-elbow-end-minus{
+	background-image:url(elbow-end-minus-nl.gif);
+}
+.workbench-component .x-tree-no-lines .x-tree-elbow-line{
+	background:transparent;
+}
+
+
+/* Arrows */
+.workbench-component .x-tree-arrows .x-tree-elbow{
+	background:transparent;
+}
+.workbench-component .x-tree-arrows .x-tree-elbow-plus{
+    background:transparent url(arrows.gif) no-repeat 0 0;
+}
+.workbench-component .x-tree-arrows .x-tree-elbow-minus{
+    background:transparent url(arrows.gif) no-repeat -16px 0;
+}
+.workbench-component .x-tree-arrows .x-tree-elbow-end{
+	background:transparent;
+}
+.workbench-component .x-tree-arrows .x-tree-elbow-end-plus{
+    background:transparent url(arrows.gif) no-repeat 0 0;
+}
+.workbench-component .x-tree-arrows .x-tree-elbow-end-minus{
+    background:transparent url(arrows.gif) no-repeat -16px 0;
+}
+.workbench-component .x-tree-arrows .x-tree-elbow-line{
+	background:transparent;
+}
+
+.workbench-component .x-tree-arrows .x-tree-ec-over .x-tree-elbow-plus{
+    background-position:-32px 0;
+}
+.workbench-component .x-tree-arrows .x-tree-ec-over .x-tree-elbow-minus{
+    background-position:-48px 0;
+}
+.workbench-component .x-tree-arrows .x-tree-ec-over .x-tree-elbow-end-plus{
+    background-position:-32px 0;
+}
+.workbench-component .x-tree-arrows .x-tree-ec-over .x-tree-elbow-end-minus{
+    background-position:-48px 0;
+}
+
+
+
+.workbench-component .x-tree-elbow-plus, .x-tree-elbow-minus, .workbench-component .x-tree-elbow-end-plus, .workbench-component .x-tree-elbow-end-minus{
+	cursor:pointer;
+}
+.workbench-component .ext-ie ul.x-tree-node-ct{
+    font-size:0;
+    line-height:0;
+    zoom:1;
+}
+.workbench-component .x-tree-node{
+	color: black;
+	font: normal 11px arial, tahoma, helvetica, sans-serif;
+	white-space: nowrap;
+}
+
+.workbench-component .x-tree-node-el {
+    line-height:18px;
+    cursor:pointer;
+}
+
+.workbench-component .x-tree-node a, .workbench-component .x-dd-drag-ghost a{
+	text-decoration:none;
+	color:black;
+	-khtml-user-select:none;
+	-moz-user-select:none;
+    -kthml-user-focus:normal;
+    -moz-user-focus:normal;
+    -moz-outline: 0 none;
+    outline:0 none;
+}
+.workbench-component .x-tree-node a span, .workbench-component .x-dd-drag-ghost a span{
+	text-decoration:none;
+	color:black;
+	padding:1px 3px 1px 2px;
+}
+.workbench-component .x-tree-node .x-tree-node-disabled a span{
+	color:gray !important;
+}
+.workbench-component .x-tree-node .x-tree-node-disabled .x-tree-node-icon{
+	-moz-opacity: 0.5;
+   opacity:.5;
+   filter: alpha(opacity=50);
+}
+.workbench-component .x-tree-node .x-tree-node-inline-icon{
+	background:transparent;
+}
+.workbench-component .x-tree-node a:hover, .x-dd-drag-ghost a:hover{
+	text-decoration:none;
+}
+.workbench-component .x-tree-node div.x-tree-drag-insert-below{
+ 	 border-bottom:1px dotted #3366cc;
+}
+.workbench-component .x-tree-node div.x-tree-drag-insert-above{
+	 border-top:1px dotted #3366cc;
+}
+.workbench-component .x-tree-dd-underline .x-tree-node div.x-tree-drag-insert-below{
+ 	 border-bottom:0 none;
+}
+.workbench-component .x-tree-dd-underline .x-tree-node div.x-tree-drag-insert-above{
+	 border-top:0 none;
+}
+.workbench-component .x-tree-dd-underline .x-tree-node div.x-tree-drag-insert-below a{
+ 	 border-bottom:2px solid #3366cc;
+}
+.workbench-component .x-tree-dd-underline .x-tree-node div.x-tree-drag-insert-above a{
+	 border-top:2px solid #3366cc;
+}
+.workbench-component .x-tree-node .x-tree-drag-append a span{
+	 background:#dddddd;
+	 border:1px dotted gray;
+}
+.workbench-component .x-tree-node .x-tree-node-over {
+	background-color: #eee;
+}
+.workbench-component .x-tree-node .x-tree-selected {
+	background-color: #d9e8fb;
+}
+.workbench-component .x-dd-drag-ghost .x-tree-node-indent, .workbench-component .x-dd-drag-ghost .x-tree-ec-icon{
+	display:none !important;
+}
+.workbench-component .x-tree-drop-ok-append .x-dd-drop-icon{
+  background-image: url(drop-add.gif);
+}
+.workbench-component .x-tree-drop-ok-above .x-dd-drop-icon{
+  background-image: url(drop-over.gif);
+}
+.workbench-component .x-tree-drop-ok-below .x-dd-drop-icon{
+  background-image: url(drop-under.gif);
+}
+.workbench-component .x-tree-drop-ok-between .x-dd-drop-icon{
+  background-image: url(drop-between.gif);
+}
+/* Fix for ie rootVisible:false issue */
+.workbench-component .x-tree-root-ct {
+    zoom:1;
+}

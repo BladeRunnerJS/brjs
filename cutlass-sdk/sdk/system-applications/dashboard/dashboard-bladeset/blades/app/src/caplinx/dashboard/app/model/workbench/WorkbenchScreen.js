@@ -2,13 +2,13 @@ caplinx.dashboard.app.model.workbench.WorkbenchScreen = function(oPresentationMo
 {
 	this.m_oPresentationModel = oPresentationModel;
 	
-	this.visible = new caplin.presenter.property.WritableProperty(false);
-	this.workbenchUrl = new caplin.presenter.property.WritableProperty();
-	this.iFrameHeight = new caplin.presenter.property.WritableProperty( "200px" );
+	this.visible = new br.presenter.property.WritableProperty(false);
+	this.workbenchUrl = new br.presenter.property.WritableProperty();
+	this.iFrameHeight = new br.presenter.property.WritableProperty( "200px" );
 	$(window).resize( this._setIframeSize.bind( this ) );
 	this._setIframeSize();
 };
-caplin.extend(caplinx.dashboard.app.model.app.AppDetailScreen, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.workbench.WorkbenchScreen, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.workbench.WorkbenchScreen.prototype.getWorkbenchScreenUrl = function(sAppName, sBladesetName, sBladeName)
 {
