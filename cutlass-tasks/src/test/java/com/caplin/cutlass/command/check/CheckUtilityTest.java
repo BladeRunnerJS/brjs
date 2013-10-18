@@ -17,16 +17,16 @@ public class CheckUtilityTest {
 
 	@Test
 	public void testFileContentsAreEqualCanFigureOutJarsAreTheSame() throws IOException {
-		File jarA = new File(parentTestFolder, "jars-are-same/jarA/br-same.jar");
-		File copyOfJarA = new File(parentTestFolder, "jars-are-same/jarA-copy-to-compare-with/br-same.jar");
+		File jarA = new File(parentTestFolder, "jars-are-same/jarA/brjs-same.jar");
+		File copyOfJarA = new File(parentTestFolder, "jars-are-same/jarA-copy-to-compare-with/brjs-same.jar");
 		assertTrue(FileUtils.contentEquals(jarA, copyOfJarA));		
 	}
 	
 	@Test
 	public void testFileContentsAreEqualCanTellJarsAreDifferent() throws IOException
 	{
-		File fileA = new File(parentTestFolder, "jars-are-same/jarA/br-same.jar");
-		File fileB = new File(parentTestFolder, "jars-are-same/jarB/br-different.jar");
+		File fileA = new File(parentTestFolder, "jars-are-same/jarA/brjs-same.jar");
+		File fileB = new File(parentTestFolder, "jars-are-same/jarB/brjs-different.jar");
 		assertFalse(FileUtils.contentEquals(fileA, fileB));		
 	}
 	
@@ -53,15 +53,15 @@ public class CheckUtilityTest {
 		List<File> list = checkUtility.getJarsFromApplication(applicationDir);
 		
 		assertEquals(list.size(), 2);
-		assertTrue(list.get(0).getName().equals("br-jar1.jar"));
-		assertTrue(list.get(1).getName().equals("br-jar2.jar"));
+		assertTrue(list.get(0).getName().equals("brjs-jar1.jar"));
+		assertTrue(list.get(1).getName().equals("brjs-jar2.jar"));
 	}
 	
 	@Test // Jar A = 27 bytes, Jar B = 0 bytes
 	public void testJarsHaveSameNameButSizeIsDifferent() throws IOException
 	{
-		File jarA = new File(parentTestFolder, "jars-have-same-name-but-different-size/jarA/br-same-name.jar");
-		File jarB = new File(parentTestFolder, "jars-have-same-name-but-different-size/jarB/br-same-name.jar");
+		File jarA = new File(parentTestFolder, "jars-have-same-name-but-different-size/jarA/brjs-same-name.jar");
+		File jarB = new File(parentTestFolder, "jars-have-same-name-but-different-size/jarB/brjs-same-name.jar");
 
 		assertFalse(FileUtils.contentEquals(jarA, jarB));
 	}

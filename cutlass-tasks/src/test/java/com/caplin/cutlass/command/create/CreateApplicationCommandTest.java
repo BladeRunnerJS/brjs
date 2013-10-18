@@ -109,7 +109,7 @@ public class CreateApplicationCommandTest
 	public void commandPopulatesWebInfLibWithSdkJars() throws Exception
 	{
 		createApplicationCommand.doCommand(new String[] { "newtrader", "novox" });
-		assertTrue(new File(newApplicationToBeCreatedDirectory, "WEB-INF/lib/br-test.jar").exists());
+		assertTrue(new File(newApplicationToBeCreatedDirectory, "WEB-INF/lib/brjs-test.jar").exists());
 	}
 	
 	@Test (expected=CommandArgumentsException.class)

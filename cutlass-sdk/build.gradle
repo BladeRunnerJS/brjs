@@ -62,7 +62,12 @@ task copySystemFiles(type: Copy, dependsOn: configurations.system) {
 task copyApplicationFiles(type: Copy, dependsOn: configurations.application) {
 	from configurations.application
 	into file("sdk/libs/java/application")
-	rename '(.*)', 'br-$0'
+	rename { String fileName ->
+		if ( !fileName.startsWith("brjs-") )
+		{
+			fileName = "brjs-"+fileName
+		}
+	}
 	exclude '*xom-*.jar'
 	doFirst {
 		delete file("sdk/libs/java/application")
@@ -75,17 +80,22 @@ task copySystemApplicationLibs(type:Copy, dependsOn:[configurations.application,
 		if (it.isDirectory()) {
 			into ("${it.name}/WEB-INF/lib") {
 				from configurations.application + configurations.systemApp				
-				rename '(.*)', 'br-$0'
+				rename { String fileName ->
+            		if ( !fileName.startsWith("brjs-") )
+            		{
+            			fileName = "brjs-"+fileName
+            		}
+            	}
 				exclude '*xom-*.jar'
 			}
 		}
 	}
 	doFirst {
-		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/br-*").each { delete it }
+		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
 		//TODO: find a better way to do this so we dont copy files and then immediately delete them
-		fileTree(dir:"sdk/system-applications/dashboard-services/WEB-INF/lib", include:"br-*", exclude:"*system-app-servlets*").each { delete it }
+		fileTree(dir:"sdk/system-applications/dashboard-services/WEB-INF/lib", include:"brjs-*", exclude:"*system-app-servlets*").each { delete it }
 	}
 }
 
@@ -335,7 +345,7 @@ clean {
     	delete "conf/test-runner.conf"
     	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore"]).each { delete it }
     	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
-    	fileTree(dir:"sdk/system-applications", include:"**/WEB-INF/lib/br-*.jar").each { delete it }
+    	fileTree(dir:"sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
 	}
 }
 
