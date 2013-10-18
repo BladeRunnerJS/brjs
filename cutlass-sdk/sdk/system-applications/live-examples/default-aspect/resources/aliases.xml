@@ -1,3 +1,0 @@
-<aliases xmlns="http://schema.caplin.com/CaplinTrader/aliases">
-	<alias name="caplin.message-service" class="live.examples.presenter.tutorial.MessageServiceStub"/>
-</aliases>
