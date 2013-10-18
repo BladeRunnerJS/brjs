@@ -46,7 +46,7 @@ public class JsLibTest extends SpecTest {
 	@Test
 	public void populateFailsIfTheLibraryNamespaceIsInvalid() throws Exception {
 		when(lib).populate("LIBX");
-		then(exceptions).verifyException(InvalidPackageNameException.class, "LIBX", lib.dir().getPath());
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, "LIBX", lib.dir().getPath());
 	}
 	
 	@Test

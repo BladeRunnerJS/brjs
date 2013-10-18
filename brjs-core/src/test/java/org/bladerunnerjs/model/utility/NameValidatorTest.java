@@ -3,10 +3,8 @@ package org.bladerunnerjs.model.utility;
 import static org.mockito.Mockito.*;
 
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
+import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppNamespaceException;
 import org.bladerunnerjs.model.utility.NameValidator;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -155,7 +153,7 @@ public class NameValidatorTest
 	}
 	
 	@Test
-	public void testGenerateAppNamespace() throws InvalidRootPackageNameException
+	public void testGenerateAppNamespace() throws UnableToAutomaticallyGenerateAppNamespaceException
 	{
 		App app = mock(App.class);
 		when(app.getName()).thenReturn("my-App");
@@ -163,7 +161,7 @@ public class NameValidatorTest
 	}
 	
 	@Test
-	public void testExceptionThrownIfNamespaceCantBeAutomaticallyDetirmined() throws InvalidRootPackageNameException
+	public void testExceptionThrownIfNamespaceCantBeAutomaticallyDetirmined() throws UnableToAutomaticallyGenerateAppNamespaceException
 	{
 		App app = mock(App.class);
 		when(app.getName()).thenReturn("my�App");

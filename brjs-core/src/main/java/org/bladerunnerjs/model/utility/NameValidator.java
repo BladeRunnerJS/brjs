@@ -6,6 +6,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
+import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppNamespaceException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
 public class NameValidator
@@ -65,7 +66,7 @@ public class NameValidator
 			}
 		}
 		
-		return true;
+		return isValidPackageName(rootPackageName);
 	}
 	
 	public static void assertValidRootPackageName(Node node, String rootPackageName) throws InvalidRootPackageNameException {
@@ -158,7 +159,7 @@ public class NameValidator
 	}
 	
 	
-	public static String generateAppNamespaceFromApp(App app) throws InvalidRootPackageNameException
+	public static String generateAppNamespaceFromApp(App app) throws UnableToAutomaticallyGenerateAppNamespaceException
 	{
 		String appName = app.getName();
 		String appNamespace = appName;
@@ -170,7 +171,7 @@ public class NameValidator
 		{
 			return appNamespace;
 		}
-		throw new InvalidRootPackageNameException("Unable to automatically calculate app namespace for app '" + appName + "'");
+		throw new UnableToAutomaticallyGenerateAppNamespaceException(app);
 	}
 	
 }
