@@ -35,8 +35,8 @@ public class CreateAppCommandTest extends SpecTest {
 	
 	@Test
 	public void exceptionIsThrownIfThereAreTooFewArguments() throws Exception {
-		when(brjs).runCommand("create-app", "a");
-		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'app-namespace' is required"))
+		when(brjs).runCommand("create-app");
+		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'new-app-name' is required"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -59,7 +59,7 @@ public class CreateAppCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfTheAppNamespaceIsNotAValidPackageName() throws Exception {
 		when(brjs).runCommand("create-app", "app", "app-x");
-		then(exceptions).verifyException(InvalidPackageNameException.class, "app-x", app.dir().getPath())
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, "app-x", app.dir().getPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
