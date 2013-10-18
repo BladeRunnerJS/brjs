@@ -32,7 +32,7 @@ public class UserCommandRunner {
 			out.println("  " + e.getMessage());
 			out.println("");
 			out.println("Usage:");
-			out.println("  bladerunner " + e.getCommand().getCommandName() + " " + e.getCommand().getCommandUsage());
+			out.println("  brjs " + e.getCommand().getCommandName() + " " + e.getCommand().getCommandUsage());
 		}
 		catch (CommandOperationException e) {
 			out.println("Error:");
