@@ -7,22 +7,14 @@
 		<@js.bundle@/>
 		
 		<script type="text/javascript">
-			br.thirdparty('br-caplin');
-			
-			var ServiceRegistry = require( 'br/ServiceRegistry' );
-			var DemoEventHub = require( 'br/DemoEventHub' );
-			ServiceRegistry.registerService( 'demo-event-hub', new DemoEventHub() );
-			
 			function initialize() {
-				var workbench = new br.workbench.Workbench(250, 310);
-				var workbenchController = new @appns.@bladeset.@blade.workbench.WorkbenchController(200, 100);
-				var presentationModel = workbenchController.getPresentationModel();
-				var presentationModelViewer = new br.presenter.workbench.PresentationModelViewer(presentationModel);
+				var workbench = new br.workbench.ui.Workbench(250, 310);
+				var model = new @appns.@bladeset.@blade.ExamplePresentationModel();
+				var component = new br.presenter.component.PresenterComponent("@appns.@bladeset.@blade.view-template", model);
+				var presentationModelViewer = new br.presenter.workbench.ui.PresentationModelViewer(model);
 				
 				workbench.addToRightWing(presentationModelViewer, "Visualise Presentation Model", true);
-				
-				document.body.appendChild(workbenchController.getElement());
-				workbench.center(workbenchController.getElement());
+				workbench.displayComponent(component, 200, 100);
 			}
 		</script>
 	</head>
