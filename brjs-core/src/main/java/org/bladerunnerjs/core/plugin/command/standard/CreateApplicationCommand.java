@@ -63,6 +63,7 @@ public class CreateApplicationCommand extends ArgsParsingCommandPlugin
 		if(app.dirExists()) throw new NodeAlreadyExistsException(app, this);
 		
 		try {
+			NameValidator.assertValidDirectoryName(app);
 			appNamespace = (appNamespace == null) ? NameValidator.generateAppNamespaceFromApp(app) : appNamespace;
 			
 			app.populate(appNamespace);
