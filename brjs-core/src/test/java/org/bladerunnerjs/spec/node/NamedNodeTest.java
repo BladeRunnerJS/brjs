@@ -6,8 +6,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsException;
@@ -29,7 +29,7 @@ public class NamedNodeTest extends SpecTest {
 	private NamedNodeFactory namedNodeFactory;
 	
 	private String getTemplateName() {
-		return (node instanceof TestPack) ? node.getName() : node.getClass().getSimpleName().toLowerCase();
+		return ((BRJSNode) node).getTemplateName();
 	}
 	
 	@Before

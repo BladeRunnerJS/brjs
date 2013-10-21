@@ -80,7 +80,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public String getTemplateName()
 	{
-		return name;
+		return parentNode().parentNode().getClass().getSimpleName().toLowerCase() + "-" + name;
 	}
 	
 	public AliasesFile aliases()
