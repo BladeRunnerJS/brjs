@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 describe("Import Blades Dialog", function() 
 {

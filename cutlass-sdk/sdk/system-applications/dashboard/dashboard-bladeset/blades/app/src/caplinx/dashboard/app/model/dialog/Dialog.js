@@ -1,18 +1,18 @@
-caplin.thirdparty("wolf-simple-box");
+br.thirdparty("wolf-simple-box");
 
 caplinx.dashboard.app.model.dialog.Dialog = function(oPresentationModel)
 {
-	this.visible = new caplin.presenter.property.WritableProperty(false);
+	this.visible = new br.presenter.property.WritableProperty(false);
 	this.visible.addChangeListener(this, "_onVisibilityChanged");
-	this.type = new caplin.presenter.property.Property(null);
-	this.isClosable = new caplin.presenter.property.EditableProperty(true);
-	this.viewNode = new caplin.presenter.node.MappedNodeList({}, caplinx.dashboard.app.model.dialog.DialogViewNode);
+	this.type = new br.presenter.property.Property(null);
+	this.isClosable = new br.presenter.property.EditableProperty(true);
+	this.viewNode = new br.presenter.node.MappedNodeList({}, caplinx.dashboard.app.model.dialog.DialogViewNode);
 	this.m_oModal = new WolfSimpleBox();
 	this.m_oModal.callOnClose( this._onClose.bind( this ) );
 	this.m_oPresentationModel = oPresentationModel;
 	this.m_sAppNamespace = "";
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.Dialog, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.dialog.Dialog, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.dialog.Dialog.prototype.initialize = function()
 {

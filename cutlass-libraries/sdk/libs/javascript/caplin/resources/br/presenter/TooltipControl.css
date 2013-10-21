@@ -1,0 +1,14 @@
+.tooltip-container{
+	position: relative;
+	width: auto;
+}
+
+.tooltip-content{
+	border-style:solid;
+	border-width:1px;
+}
+
+.tooltip-visible{
+	z-index: 1000;
+	position: absolute;	
+}

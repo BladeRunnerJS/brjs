@@ -2,9 +2,9 @@ ConditionalChangeListenerTest = TestCase("ConditionalChangeListenerTest");
 
 ConditionalChangeListenerTest.prototype.setUp = function()
 {
-	this.m_oChangeProperty = new caplin.presenter.property.WritableProperty(99);
-	this.m_oChangeNodeList = new caplin.presenter.node.NodeList([new caplin.presenter.node.PresentationNode()]);
-	this.m_oConditionProperty = new caplin.presenter.property.WritableProperty(true);
+	this.m_oChangeProperty = new br.presenter.property.WritableProperty(99);
+	this.m_oChangeNodeList = new br.presenter.node.NodeList([new br.presenter.node.PresentationNode()]);
+	this.m_oConditionProperty = new br.presenter.property.WritableProperty(true);
 	this.m_nChangeInvocationCount = 0;
 };
 

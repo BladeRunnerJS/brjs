@@ -4,7 +4,7 @@ caplinx.dashboard.app.service.dashboard.DashboardProvider = function(oXhrFactory
 	this.m_sRequestPrefix = requestPrefix;
 	this.m_bTestRunInProgress = false;
 };
-caplin.implement(caplinx.dashboard.app.service.dashboard.DashboardProvider, caplinx.dashboard.app.service.dashboard.DashboardService);
+br.inherit(caplinx.dashboard.app.service.dashboard.DashboardProvider, caplinx.dashboard.app.service.dashboard.DashboardService);
 
 caplinx.dashboard.app.service.dashboard.DashboardProvider.prototype.setIsLoadingProperty = function(oIsLoadingProperty) {
 

@@ -292,10 +292,6 @@ define("br/i18n/Translator", function(require, module, exports) {
 	 * @type Number
 	 */
 	Translator.prototype.parseNumber = function(number, thousandsSeparator) {
-		if (isNaN(number)) {
-			return null;
-		};
-
 		if (!thousandsSeparator) {
 			thousandsSeparator = this.localizationPrefs.thousandsSeparator ||
 					this._getTranslationForKey("ct.i18n.number.grouping.separator");

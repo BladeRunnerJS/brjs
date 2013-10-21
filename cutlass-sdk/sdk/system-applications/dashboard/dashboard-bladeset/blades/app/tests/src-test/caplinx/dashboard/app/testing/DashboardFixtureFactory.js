@@ -1,13 +1,11 @@
 caplinx.dashboard.app.testing.DashboardFixtureFactory = function ()
 {
 };
-caplin.implement(caplinx.dashboard.app.testing.DashboardFixtureFactory, caplin.testing.FixtureFactory);
+br.inherit(caplinx.dashboard.app.testing.DashboardFixtureFactory, br.test.FixtureFactory);
 
 caplinx.dashboard.app.testing.DashboardFixtureFactory.prototype.addFixtures = function(oTestRunner)
 {
-	caplin.onLoad();
-
-	var oViewFixture = new caplin.dom.testing.ViewFixture();
+	var oViewFixture = new br.test.ViewFixture();
 	var oPageUrlFixture = new caplinx.dashboard.app.testing.PageUrlFixture();
 	var oRequestUrlFixture = new caplinx.dashboard.app.testing.RequestUrlFixture();
 	var oLocalStorageFixture =  new caplinx.dashboard.app.testing.LocalStorageFixture();

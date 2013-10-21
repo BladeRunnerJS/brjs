@@ -3,9 +3,10 @@
  * <code>ReadOnly ViewFixtureHandler</code> can be used to set or get the <code>readonly</code> attribute of an input view element
  * Example usage:
  * <p>
- * <code>then("form.view.(.totalValue input).readonly = true");</code>
+ * <code>then("ticket.view.(.setupSpot .amountInput .native input).readonly = true");</code>
  * </p>
  * @constructor
+ * @beta
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
 br.test.viewhandler.Readonly = function()

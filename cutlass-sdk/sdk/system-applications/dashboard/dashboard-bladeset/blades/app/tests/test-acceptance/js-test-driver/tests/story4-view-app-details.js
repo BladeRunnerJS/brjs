@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 // Story 4 - VIEW APP DETAILS
 describe("story #4", function() 

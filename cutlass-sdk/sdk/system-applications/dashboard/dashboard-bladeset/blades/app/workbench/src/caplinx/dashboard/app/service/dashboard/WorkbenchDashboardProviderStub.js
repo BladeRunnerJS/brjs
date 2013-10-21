@@ -13,7 +13,7 @@ caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub = functio
 	this.RESPONSE_DELAY = 50;
 	this.TEST_CHUNK_DELAY = 2000;
 };
-caplin.implement(caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub, caplinx.dashboard.app.service.dashboard.DashboardService);
+br.inherit(caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub, caplinx.dashboard.app.service.dashboard.DashboardService);
 
 caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.setIsLoadingProperty = function() { }
 

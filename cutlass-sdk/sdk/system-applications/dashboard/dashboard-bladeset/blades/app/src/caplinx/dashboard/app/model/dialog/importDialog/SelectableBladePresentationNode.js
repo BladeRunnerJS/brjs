@@ -1,6 +1,6 @@
 caplinx.dashboard.app.model.dialog.importDialog.SelectableBladePresentationNode = function(sBlade)
 {
-	this.bladeName = new caplin.presenter.property.Property(sBlade);
-	this.isSelected = new caplin.presenter.property.EditableProperty(true);
+	this.bladeName = new br.presenter.property.Property(sBlade);
+	this.isSelected = new br.presenter.property.EditableProperty(true);
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladePresentationNode, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladePresentationNode, br.presenter.node.PresentationNode);

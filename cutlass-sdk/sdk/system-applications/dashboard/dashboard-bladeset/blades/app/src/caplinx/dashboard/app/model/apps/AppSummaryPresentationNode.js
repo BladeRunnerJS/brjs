@@ -1,7 +1,7 @@
 caplinx.dashboard.app.model.apps.AppSummaryPresentationNode = function(sAppName, sAppInfoUrl, sImageUrl)
 {
-	this.appName = new caplin.presenter.property.Property(sAppName);
-	this.appInfoUrl = new caplin.presenter.property.Property(sAppInfoUrl);
-	this.imageUrl = new caplin.presenter.property.Property(sImageUrl);
+	this.appName = new br.presenter.property.Property(sAppName);
+	this.appInfoUrl = new br.presenter.property.Property(sAppInfoUrl);
+	this.imageUrl = new br.presenter.property.Property(sImageUrl);
 };
-caplin.extend(caplinx.dashboard.app.model.apps.AppSummaryPresentationNode, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.apps.AppSummaryPresentationNode, br.presenter.node.PresentationNode);

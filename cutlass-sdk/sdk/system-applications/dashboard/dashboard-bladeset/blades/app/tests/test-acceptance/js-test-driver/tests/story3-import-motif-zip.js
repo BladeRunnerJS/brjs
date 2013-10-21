@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 // Story 3 - IMPORT MOTIF ZIP
 describe("story #3", function() 

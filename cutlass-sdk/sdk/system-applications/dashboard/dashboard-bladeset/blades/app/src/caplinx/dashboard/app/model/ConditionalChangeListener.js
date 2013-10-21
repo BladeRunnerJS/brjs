@@ -7,8 +7,8 @@ caplinx.dashboard.app.model.ConditionalChangeListener = function(oListener, sMet
 	
 	this.m_oConditionProperty.addChangeListener(this, "_onConditionPropertyChanged");
 };
-caplin.implement(caplinx.dashboard.app.model.ConditionalChangeListener, caplin.presenter.property.PropertyListener);
-caplin.implement(caplinx.dashboard.app.model.ConditionalChangeListener, caplin.presenter.node.NodeListListener);
+br.inherit(caplinx.dashboard.app.model.ConditionalChangeListener, br.presenter.property.PropertyListener);
+br.inherit(caplinx.dashboard.app.model.ConditionalChangeListener, br.presenter.node.NodeListListener);
 
 caplinx.dashboard.app.model.ConditionalChangeListener.prototype.onPropertyChanged = function()
 {

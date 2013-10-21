@@ -2,7 +2,7 @@ caplinx.dashboard.app.testing.BrowserDetectorFixture = function()
 {
 	this.m_oBrowserDetector = null;
 };
-caplin.implement(caplinx.dashboard.app.testing.BrowserDetectorFixture, caplin.testing.Fixture);
+br.inherit(caplinx.dashboard.app.testing.BrowserDetectorFixture, br.test.Fixture);
 
 caplinx.dashboard.app.testing.BrowserDetectorFixture.prototype.setBrowserDetector = function(oBrowserDetector) 
 {

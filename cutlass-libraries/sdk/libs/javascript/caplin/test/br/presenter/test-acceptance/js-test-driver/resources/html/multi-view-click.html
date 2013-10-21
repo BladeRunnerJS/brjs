@@ -1,0 +1,16 @@
+<div id="multi-view-click">
+ 	<fieldset>
+ 		<legend>Select Box</legend>
+ 		<select id="selectBox" name="buysell" data-bind="options:hobbies.options, value:hobbies.value, optionsValue:'value'"></select>
+ 	</fieldset>
+ 	
+ 	<fieldset>
+ 		<legend>Radio Buttons</legend>
+ 		<div id="radioButtons" data-bind="foreach:hobbies.options">
+ 			<input type="radio" data-bind="value:value, attr:{name:$parent.hobbies}, checked:$parent.hobbies.value"/>
+			<span data-bind="text:label"></span>
+			<br/>
+		</div>
+ 	</fieldset>
+ 	
+</div>

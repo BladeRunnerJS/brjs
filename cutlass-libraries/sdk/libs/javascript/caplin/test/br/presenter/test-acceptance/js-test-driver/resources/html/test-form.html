@@ -1,0 +1,47 @@
+<div id="test">
+	<input type="text" id="fieldText" data-bind="value:field.value, enable:field.enabled, visible:field.visible, attr:{name: field.controlName}" />
+
+	<select id="selectBox"  data-bind="options:selectionField.options, value:selectionField.value, enable:selectionField.enabled, visible:selectionField.visible, attr:{name: selectionField.controlName}, optionsValue: 'value'"></select>
+
+	<select id="multiSelectBox" multiple="multiple" data-bind="options:multiSelectBox.options, optionsValue: 'value', optionsText: 'label', selectedOptions:multiSelectBox.value, visible:multiSelectBox.visible, enable:multiSelectBox.enabled, attr:{name: multiSelectBox.controlName}"></select>
+	<select id="multiSelectBoxMapped" multiple="multiple" data-bind="options:multiSelectBoxMapped.options, optionsValue: 'value', optionsText: 'label', selectedOptions:multiSelectBox.value, visible:multiSelectBox.visible, enable:multiSelectBox.enabled "></select>
+
+	<div id="toggleSwitch1" data-bind="control:'br.toggle-switch',value:selectionField" ></div>
+	<div id="toggleSwitch2" data-bind="control:'br.toggle-switch',value:selectionFieldDefaultedToSecondValue" ></div>
+	<div id="toggleSwitch3" data-bind="control:'br.toggle-switch',value:selectionFieldInitiallyDisabledAndHidden" ></div>
+
+	<div id="dropDownSelectBox"  data-bind="control:'br.select-box',controlOptions:{width:95},value:selectionField"></div>
+	<div id="dropDownSelectBox2"  data-bind="control:'br.select-box',controlOptions:{width:95},value:selectionFieldDefaultedToSecondValue"></div>
+	<div id="dropDownSelectBox3"  data-bind="control:'br.select-box',controlOptions:{width:95},value:selectionFieldInitiallyDisabledAndHidden"></div>
+	<div id="labelValueSelectBox"  data-bind="control:'br.select-box',controlOptions:{width:95},value:labelValueSelectionField"></div>
+
+	<div id="dropDownComboxBox"  data-bind="control:'br.combo-box',controlOptions:{AutoCompleteDataProvider:'getTest'},controlNode:selectionField"></div>
+	<div id="dropDownComboxBox2"  data-bind="control:'br.combo-box',controlOptions:{AutoCompleteDataProvider:'getTest'},controlNode:selectionFieldDefaultedToSecondValue"></div>
+	<input type="text" id="dropDownComboxBox3"  data-bind="control:'br.combo-box',controlOptions:{AutoCompleteDataProvider:'getTest'},controlNode:selectionFieldInitiallyDisabledAndHidden"/>
+
+	<input type="text" id="jqueryAutoCompleteBox" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container'}, controlNode:jquerySelectionField"/>
+	<input type="text" id="jqueryAutoCompleteBox2" data-bind="control:'br.autocomplete-box',controlOptions:{appendTo: '#autocomplete-container2', minCharAmount: 2}, controlNode:jquerySelectionField"/>
+
+	<div id="datePicker" data-bind="control:'br.date-picker',value:date"></div>
+	<div id="datePicker2" data-bind="control:'br.date-picker',value:dateInitiallyDisabledAndHidden"></div>
+
+	<div id="prop-ct">
+		<span id="prop-plain" data-bind="text:plainProperty"></span>
+		<span id="prop-formatted" data-bind="text:formattedProperty"></span>
+	</div>
+	<div id="editable-prop-ct">
+		<input type="text" id="edProp-plain" data-bind="value:plainEditableProperty" />
+		<input type="text" id="edProp-formatted" data-bind="value:formattedEditableProperty" />
+		<input type="text" id="edProp-parsed" data-bind="value:parsedEditableProperty" />
+		<input type="text" id="edProp-parsed-formatted" data-bind="value:parsedFormattedEditableProperty" />
+	</div>
+	<div id="alias-ct">
+		<span id="alias-plain" data-bind="text:aliasPlain"></span>
+		<span id="alias-formatted" data-bind="text:aliasFormatted"></span>
+	</div>
+	<div id="autocomplete-container">
+	</div>
+	<div id="autocomplete-container2">
+	</div>
+	
+</div>

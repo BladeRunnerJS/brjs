@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 // Story 6 - CREATE NEW BLADE
 describe("story #6", function() 
