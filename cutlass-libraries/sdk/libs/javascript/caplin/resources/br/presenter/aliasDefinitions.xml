@@ -1,9 +1,9 @@
 <aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
-	
+	<!-- TODO: remove these aliases from presenter once the new style classes can be brought out of thirdparty -->
 	<alias 	name="br.html-service" defaultClass="br.services.BRHtmlResourceService">
 		<scenario name="dev" class="br.services.JSTDHtmlResourceService" />
 	</alias>
-	
+	<alias name="br.demo-event-hub" defaultClass="br.DemoEventHub"/>
 	
 	<alias name="br.presenter-component" defaultClass="br.presenter.PresenterComponentFactory" />
 	<alias name="br.date-picker" defaultClass="br.presenter.control.datefield.JQueryDatePickerControl" />
