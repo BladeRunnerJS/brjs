@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
@@ -44,4 +45,5 @@ public class VerifierChainer {
 	public LoggerVerifier and(LogMessageStore logStore) { return new LoggerVerifier(modelTest, logStore); }
 	public ConsoleWriterVerifier and(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(modelTest, consoleMessageStore); }
 	public AppServerVerifier and(ApplicationServer appServer) { return new AppServerVerifier(modelTest, appServer); }
+	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(appConf); }
 }

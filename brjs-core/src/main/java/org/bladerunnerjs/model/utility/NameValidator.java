@@ -1,10 +1,12 @@
 package org.bladerunnerjs.model.utility;
 
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
+import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppNamespaceException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
 public class NameValidator
@@ -64,7 +66,7 @@ public class NameValidator
 			}
 		}
 		
-		return true;
+		return isValidPackageName(rootPackageName);
 	}
 	
 	public static void assertValidRootPackageName(Node node, String rootPackageName) throws InvalidRootPackageNameException {
@@ -155,4 +157,21 @@ public class NameValidator
 		
 		return message.toString();
 	}
+	
+	
+	public static String generateAppNamespaceFromApp(App app) throws UnableToAutomaticallyGenerateAppNamespaceException
+	{
+		String appName = app.getName();
+		String appNamespace = appName;
+		appNamespace = appNamespace.replace("-", "");
+		appNamespace = appNamespace.replace("+", "");
+		appNamespace = appNamespace.replace("_", "");
+		appNamespace = appNamespace.toLowerCase();
+		if (isValidRootPackageName(appNamespace))
+		{
+			return appNamespace;
+		}
+		throw new UnableToAutomaticallyGenerateAppNamespaceException(app);
+	}
+	
 }
