@@ -73,16 +73,12 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 
 
 // TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
-createTestTask "testJsIE", "libs/javascript/caplin/test", "ALL", "ie"
-createTestTask "testJsChrome", "libs/javascript/caplin/test", "ALL", "chrome"
-createTestTask "testJsFirefox", "libs/javascript/caplin/test", "ALL", "firefox"
+createTestTask "testJsIE", "libs/javascript/", "ALL", "ie"
+createTestTask "testJsChrome", "libs/javascript/", "ALL", "chrome"
+createTestTask "testJsFirefox", "libs/javascript/", "ALL", "firefox"
 
-createTestTask "caplinBrTestsIE", "libs/javascript/thirdparty/caplin-br", "ALL", "chrome"
-createTestTask "caplinBrTestsChrome", "libs/javascript/thirdparty/caplin-br", "ALL", "chrome"
-createTestTask "caplinBrTestsFirefox", "libs/javascript/thirdparty/caplin-br", "ALL", "firefox"
-
-task test, dependsOn:[testJsChrome, testJsFirefox, caplinBrTestsChrome, caplinBrTestsFirefox]
-task testIE, dependsOn:[testJsIE, caplinBrTestsIE]
+task test, dependsOn:[testJsChrome, testJsFirefox]
+task testIE, dependsOn:testJsIE
 
 task beautifyLibs, type:com.caplin.gradle.tasks.ProcessJsLibs, {
 	dependsOn configurations.beautifier
@@ -127,6 +123,7 @@ task distZip, type:Zip, {
 	from (beautifyLibs) {
 		// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
 		into 'libs/javascript/caplin/src/'
+		exclude 'caplin-br/test-unit/*'
 	}
 	from ('sdk/libs/javascript/thirdparty') {
 		into 'libs/javascript/thirdparty'
