@@ -142,17 +142,27 @@ task copyTestRunnerConf, type:Copy, {
 	}
 }
 
-task jsTestDriverTests, type: com.caplin.gradle.tasks.RunJstdTests, {
-	dependsOn = [ assemble, project.getParent().tasks['copyBrowsers'], copyTestRunnerConf ]
-	inputs.dir file("apps/")
-	inputs.dir file("sdk/")
-	inputs.dir file("conf/")
-	testDir = "system-applications"
-}
-jsTestDriverTests.enabled = false
-//TODO: disabled until the required libs have been moved across
 
-task test(dependsOn:jsTestDriverTests) { }
+def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
+	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
+		description = "Run ${testType} for ${testDir}"
+		dependsOn = [assemble, project.parent.tasks['copyBrowsers'], copyTestRunnerConf]
+		inputs.dir file("apps/")
+    	inputs.dir file("sdk/")
+    	inputs.dir file("conf/")
+		testType = taskTestType
+		browsers = browser
+		testDir = taskTestDir
+		enabled = false //TODO: remove this once the presenter libs have been moved across
+	}
+}
+
+createTestTask "testJsIE", "system-applications", "ALL", "ie"
+createTestTask "testJsChrome", "system-applications", "ALL", "chrome"
+createTestTask "testJsFirefox", "system-applications", "ALL", "firefox"
+
+task test, dependsOn:[testJsChrome, testJsFirefox]
+task testIE, dependsOn:testJsIE
 
 
 task copyReleaseNote, type:Copy, {
