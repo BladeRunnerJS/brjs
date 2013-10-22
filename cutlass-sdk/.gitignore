@@ -4,7 +4,6 @@ bin
 build
 .classpath
 .project
-sdk/libs
 test-results
 apps
 generated

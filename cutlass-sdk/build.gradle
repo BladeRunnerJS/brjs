@@ -32,7 +32,7 @@ dependencies {
 	application dependency('javassist')
 	application dependency('jsp-2.1-glassfish')
 	
-	jsLibsAndDocs project(path: ':cutlass-libraries', configuration: 'libsAndDocsZip')
+//	jsLibsAndDocs project(path: ':cutlass-libraries', configuration: 'libsAndDocsZip')
 
 	testRunner dependency('JsTestDriver')
 	// Note: don't try to add support for transitive dependencies here as it will just fail
@@ -103,19 +103,21 @@ task copyTestRunnerJars(type:Copy, dependsOn: configurations.testRunner) {
 	from configurations.testRunner
 	into file("sdk/libs/java/testRunner")
 	rename 'js-test-driver-bundler-plugin-.*', 'js-test-driver-bundler-plugin.jar'
+	rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	doFirst {
 		delete file("sdk/libs/java/testRunner")
 	}
 }
 
-task copyJsLibsAndDocs(type: Copy, dependsOn: configurations.jsLibsAndDocs) {
-	from { configurations.jsLibsAndDocs.collect { it.isDirectory() ? it : zipTree(it) } }
-	into file("sdk")
-	doFirst {
-		delete 'sdk/docs/jsdoc'
-		delete 'sdk/libs/javascript'
-	}
-}
+//task copyJsLibsAndDocs(type: Copy, dependsOn: configurations.jsLibsAndDocs) {
+//	from { configurations.jsLibsAndDocs.collect { it.isDirectory() ? it : zipTree(it) } }
+//	into file("sdk")
+//	doFirst {
+//		delete 'sdk/docs/jsdoc'
+//		delete 'sdk/libs/javascript'
+//	}
+//}
+task copyJsLibsAndDocs {}
 
 
 task copySdkIncludes(type: Copy) {
@@ -352,9 +354,8 @@ clean {
     	delete "test-results"
     	delete "webcentric-db"
     	delete "test-results"
-    	delete "sdk/templates"
-    	delete "conf/test-runner.conf"
-    	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore", "**/*.gitignore"]).each { delete it }
+    	delete "${projectDir.path}/conf/test-runner.conf"
+    	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore", "**/*.gitignore", "libs/javascript", "jsdoc-*", "templates"]).each { delete it }
     	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
     	fileTree(dir:"sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
 	}
