@@ -1,23 +1,23 @@
-[✓] Logging - functionality provided by fell.
-
-[✓] br/services
-
-[✓] i18n
-
-[✓] Sort out br.implements so it happens later.
-
-[?]  switch strings/functions in Errors
-
-[✓] ModuleSystem should go out to a non conformant thirdparty library module-system
-
-[ ] i18n & aliases should get a json blob to configure them.
-
-[ ] Testing
-
-[ ] More Doc
-
- * backend needs to provide a way to get the i18n data blob
- 		i18n.initialise(pUnprocessedI18NMessages);
- * alias data blob should be provided too
- 		AliasRegistry.setAliasData(caplin.__aliasData);
-
+[✓] Logging - functionality provided by fell.
+
+[✓] br/services
+
+[✓] i18n
+
+[✓] Sort out br.implements so it happens later.
+
+[?]  switch strings/functions in Errors
+
+[✓] ModuleSystem should go out to a non conformant thirdparty library module-system
+
+[ ] i18n & aliases should get a json blob to configure them.
+
+[ ] Testing
+
+[ ] More Doc
+
+ * backend needs to provide a way to get the i18n data blob
+ 		i18n.initialise(pUnprocessedI18NMessages);
+ * alias data blob should be provided too
+ 		AliasRegistry.setAliasData(caplin.__aliasData);
+

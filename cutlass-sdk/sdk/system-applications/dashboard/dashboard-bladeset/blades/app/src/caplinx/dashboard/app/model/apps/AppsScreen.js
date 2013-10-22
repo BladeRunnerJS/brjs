@@ -7,8 +7,8 @@ caplinx.dashboard.app.model.apps.AppsScreen = function(oPresentationModel)
 	this.m_sImportingAppName = null;
 	
 	this.splashScreen = new caplinx.dashboard.app.model.apps.SplashScreen(oPresentationModel);
-	this.visible = new caplin.presenter.property.WritableProperty(false);
-	this.apps = new caplin.presenter.node.NodeList([], caplinx.dashboard.app.model.apps.AppSummaryPresentationNode);
+	this.visible = new br.presenter.property.WritableProperty(false);
+	this.apps = new br.presenter.node.NodeList([], caplinx.dashboard.app.model.apps.AppSummaryPresentationNode);
 	this.newAppButton = new caplinx.dashboard.app.model.form.Button("New App", this, "newApp");
 	this.importMotifFromZipButton = new caplinx.dashboard.app.model.form.Button("Import Motif from ZIP", this, "importMotifFromZip");
 	
@@ -20,7 +20,7 @@ caplinx.dashboard.app.model.apps.AppsScreen = function(oPresentationModel)
 		this.importMotifFromZipButton.enabled.setValue( false );
 	}
 };
-caplin.extend(caplinx.dashboard.app.model.apps.AppsScreen, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.apps.AppsScreen, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.apps.AppsScreen.prototype.displayApps = function()
 {

@@ -5,7 +5,7 @@ br.thirdparty("jquery");
  * <code>RightMarginWidth ViewFixtureHandler</code> can be used to test the right margin width of an element.
  * Example usage:
  * <p>
- * <code>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).rightMarginWidth = '10'");</code>
+ * <code>and("tile.view.([identifier=\'FxTileSpot\'] .fxtile_amount .fx_tile_amount_input input).rightMarginWidth = '10'");</code>
  * </p>
  * 
  * @constructor

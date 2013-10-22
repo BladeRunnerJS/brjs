@@ -1,0 +1,14 @@
+.quick-form {
+}
+
+.quick-form dt {
+	float: left;
+	width:50%;
+}
+
+.quick-form dd input {
+	width: 100px;
+}
+.quick-form dd {
+	margin-bottom: 4px;
+}

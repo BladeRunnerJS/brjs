@@ -1,13 +1,13 @@
 caplinx.dashboard.app.model.form.FileField = function(sAccepts)
 {
-	this.accepts = new caplin.presenter.property.WritableProperty(sAccepts);
-	this.fileSelected = new caplin.presenter.property.Property(false);
-	this.enabled = new caplin.presenter.property.WritableProperty(true);
-	this.fileName = new caplin.presenter.property.WritableProperty("");
-	this.fileInputVisible = new caplin.presenter.property.WritableProperty( true );
-	this.fileInfoVisible = new caplin.presenter.property.WritableProperty( false );
+	this.accepts = new br.presenter.property.WritableProperty(sAccepts);
+	this.fileSelected = new br.presenter.property.Property(false);
+	this.enabled = new br.presenter.property.WritableProperty(true);
+	this.fileName = new br.presenter.property.WritableProperty("");
+	this.fileInputVisible = new br.presenter.property.WritableProperty( true );
+	this.fileInfoVisible = new br.presenter.property.WritableProperty( false );
 };
-caplin.extend(caplinx.dashboard.app.model.form.FileField, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.form.FileField, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.form.FileField.prototype.onChange = function(oViewModel, oEvent)
 {

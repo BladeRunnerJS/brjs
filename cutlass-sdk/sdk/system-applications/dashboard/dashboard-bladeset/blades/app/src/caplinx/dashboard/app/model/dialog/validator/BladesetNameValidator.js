@@ -2,7 +2,7 @@ caplinx.dashboard.app.model.dialog.validator.BladesetNameValidator = function(oP
 {
 	this.m_oPresentationModel = oPresentationModel;
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.validator.BladesetNameValidator, caplin.core.Validator);
+br.extend(caplinx.dashboard.app.model.dialog.validator.BladesetNameValidator, br.presenter.validator.Validator);
 
 caplinx.dashboard.app.model.dialog.validator.BladesetNameValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {

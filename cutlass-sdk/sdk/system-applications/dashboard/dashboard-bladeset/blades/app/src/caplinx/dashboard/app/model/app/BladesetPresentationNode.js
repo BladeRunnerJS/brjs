@@ -5,12 +5,12 @@ caplinx.dashboard.app.model.app.BladesetPresentationNode = function(sBladesetNam
 	this.m_fOnTestError = this._onTestError.bind(this);
 	this.m_oHoverTimeout = null;
 	
-	this.bladesetName = new caplin.presenter.property.Property(sBladesetName);
-	this.bladeSetClasses = new caplin.presenter.property.EditableProperty("bladeset");
-	this.blades = new caplin.presenter.node.NodeList(this._getBladePresentationModels(pBlades || []),
+	this.bladesetName = new br.presenter.property.Property(sBladesetName);
+	this.bladeSetClasses = new br.presenter.property.EditableProperty("bladeset");
+	this.blades = new br.presenter.node.NodeList(this._getBladePresentationModels(pBlades || []),
 		caplinx.dashboard.app.model.app.BladePresentationNode);
 };
-caplin.extend(caplinx.dashboard.app.model.app.BladesetPresentationNode, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.app.BladesetPresentationNode, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.app.BladesetPresentationNode.prototype.getBlade = function(sBlade)
 {

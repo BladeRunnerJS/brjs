@@ -3,7 +3,7 @@
  * <code>HasClass ViewFixtureHandler</code> can be used to verify that a view element
  * has a particular class. Example usage:
  * <p>
- * <code>then("form.view.(.orderAmount .amountValue input).hasClass = 'has-error'");</code>
+ * <code>then("ticket.view.(.setupSwap .nearLeg .amountInput input).hasClass = 'has-error'");</code>
  * </p>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler

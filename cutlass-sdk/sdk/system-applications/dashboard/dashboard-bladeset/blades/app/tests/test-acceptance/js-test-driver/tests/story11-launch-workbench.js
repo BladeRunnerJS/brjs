@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 // Story 11 - LAUNCH WORKBENCH
 describe("story #11", function() 

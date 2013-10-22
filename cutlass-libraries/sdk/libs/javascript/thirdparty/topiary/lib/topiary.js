@@ -1,5 +1,4 @@
-/**
- * @namespace
+/** * @namespace
  * The topiary namespace contains a number of functions for
  * creating and querying a class hierarchy.
  * @name topiary

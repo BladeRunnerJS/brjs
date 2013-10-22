@@ -6,7 +6,7 @@ br.thirdparty("jquery");
  * for a SELECT view element.
  * Example usage:
  * <p>
- * <code>then("form.model.payment.options = ['credit','debit']");</code>
+ * <code>then("ticket.model.tradeType.options = ['Spot','Forward','Swap']");</code>
  * </p>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler

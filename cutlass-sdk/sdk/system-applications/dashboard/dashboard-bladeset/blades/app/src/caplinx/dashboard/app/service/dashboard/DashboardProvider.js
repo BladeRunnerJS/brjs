@@ -4,7 +4,7 @@ caplinx.dashboard.app.service.dashboard.DashboardProvider = function(oXhrFactory
 	this.m_sRequestPrefix = requestPrefix;
 	this.m_bTestRunInProgress = false;
 };
-caplin.implement(caplinx.dashboard.app.service.dashboard.DashboardProvider, caplinx.dashboard.app.service.dashboard.DashboardService);
+br.inherit(caplinx.dashboard.app.service.dashboard.DashboardProvider, caplinx.dashboard.app.service.dashboard.DashboardService);
 
 caplinx.dashboard.app.service.dashboard.DashboardProvider.prototype.setIsLoadingProperty = function(oIsLoadingProperty) {
 
@@ -115,14 +115,6 @@ caplinx.dashboard.app.service.dashboard.DashboardProvider.prototype.runBladeTest
 caplinx.dashboard.app.service.dashboard.DashboardProvider.prototype.getCurrentReleaseNote = function(fCallback, fErrorCallback)
 {
 	this._makeGetRequest(this.m_sRequestPrefix+"/note/latest", fCallback, fErrorCallback, false, "Retrieving Latest Release Notes");
-};
-
-caplinx.dashboard.app.service.dashboard.DashboardProvider.prototype.resetDatabase = function(sApp, fCallback, fErrorCallback)
-{
-	var oData = {
-		command:"reset-db"
-	};
-	this._makePostRequest(this.m_sRequestPrefix+"/apps/"+sApp, oData, fCallback, fErrorCallback, false, "Resetting database.");
 };
 
 caplinx.dashboard.app.service.dashboard.DashboardProvider.prototype.getSdkVersion = function(fCallback, fErrorCallback)

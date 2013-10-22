@@ -9,13 +9,13 @@ caplinx.dashboard.app.model.dialog.newDialog.NewBladeDialog = function(oPresenta
 	this.m_fOnFailure = this._onFailure.bind(this);
 	
 	this.bladeName = new caplinx.dashboard.app.model.form.Field("-- Please name your blade --");
-	this.createBladeButton = new caplin.presenter.node.Button("Create");
+	this.createBladeButton = new br.presenter.node.Button("Create");
 	
 	this.bladeName.value.addValidator(this.m_oBladeNameValidator);
 	
 	this.bladeName.value.addValidationCompleteListener(this, "_updateDialog");
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.newDialog.NewBladeDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.extend(caplinx.dashboard.app.model.dialog.newDialog.NewBladeDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.newDialog.NewBladeDialog.prototype.initializeForm = function()
 {

@@ -1,2 +1,2 @@
-depends: browser-modules
-js: lib/topiary.js
+depends: browser-modules
+js: lib/topiary.js

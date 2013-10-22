@@ -2,13 +2,13 @@ caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNo
 {
 	this.m_oPresentationModel = oPresentationModel;
 
-	this.bladesetName = new caplin.presenter.property.Property(sBladeset);
-	this.blades = new caplin.presenter.node.NodeList(pBladePresentationNodes,
+	this.bladesetName = new br.presenter.property.Property(sBladeset);
+	this.blades = new br.presenter.node.NodeList(pBladePresentationNodes,
 		caplinx.dashboard.app.model.dialog.importDialog.SelectableBladePresentationNode);
-	this.isSelected = new caplin.presenter.property.EditableProperty(true);
-	this.isIndeterminate = new caplin.presenter.property.WritableProperty(false);
+	this.isSelected = new br.presenter.property.EditableProperty(true);
+	this.isIndeterminate = new br.presenter.property.WritableProperty(false);
 	
-	this.displayNewBladesetField = new caplin.presenter.property.WritableProperty(true);
+	this.displayNewBladesetField = new br.presenter.property.WritableProperty(true);
 	this.newBladesetName = new caplinx.dashboard.app.model.form.Field("-- Please name your bladeset --", sBladeset);
 	this.newBladesetName.value.addValidator(new caplinx.dashboard.app.model.dialog.validator.BladesetNameValidator(oPresentationModel));
 	this.newBladesetName.value.addValidationCompleteListener(this, "_updateDialog");
@@ -19,7 +19,7 @@ caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNo
 
 	this.isSelected.setValue(false);
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNode, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNode, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNode.prototype._onSelectedChanged = function()
 {

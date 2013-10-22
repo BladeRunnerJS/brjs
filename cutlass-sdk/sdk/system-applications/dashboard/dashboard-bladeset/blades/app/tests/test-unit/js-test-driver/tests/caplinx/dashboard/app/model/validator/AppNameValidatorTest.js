@@ -7,7 +7,7 @@ AppNameValidatorTest.prototype.setUp = function()
 
 AppNameValidatorTest.prototype.isValid = function(sAppName)
 {
-	var oValidationResult = new caplin.core.ValidationResult();
+	var oValidationResult = new br.presenter.validator.ValidationResult();
 	this.m_oValidator.validate(sAppName, {}, oValidationResult);
 	
 	

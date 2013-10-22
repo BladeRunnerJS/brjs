@@ -10,9 +10,9 @@ caplinx.dashboard.app.model.dialog.importDialog.ImportMotifDialog = function(oPr
 	this.appZip = new caplinx.dashboard.app.model.form.FileField("application/zip");
 	this.appName = new caplinx.dashboard.app.model.form.Field("-- Please name your app --", "");
 	this.appNamespace = new caplinx.dashboard.app.model.form.Field("-- Please give a namespace --");
-	this.createAppButton = new caplin.presenter.node.Button("Create");
-	this.formVisible = new caplin.presenter.property.WritableProperty( true );
-	this.processingVisible = new caplin.presenter.property.WritableProperty( false );
+	this.createAppButton = new br.presenter.node.Button("Create");
+	this.formVisible = new br.presenter.property.WritableProperty( true );
+	this.processingVisible = new br.presenter.property.WritableProperty( false );
 	
 	this.appName.value.addValidator(new caplinx.dashboard.app.model.dialog.validator.AppNameValidator(oPresentationModel));
 	this.appNamespace.value.addValidator(new caplinx.dashboard.app.model.dialog.validator.AppNamespaceValidator());
@@ -22,7 +22,7 @@ caplinx.dashboard.app.model.dialog.importDialog.ImportMotifDialog = function(oPr
 	this.appNamespace.value.addValidationCompleteListener(this, "_updateDialog");
 	this.appNamespace.value.addChangeListener(this, "_onNamespaceChanged");
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.importDialog.ImportMotifDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.extend(caplinx.dashboard.app.model.dialog.importDialog.ImportMotifDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.importDialog.ImportMotifDialog.prototype.initializeForm = function()
 {
