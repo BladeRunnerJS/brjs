@@ -5,10 +5,11 @@ apply plugin: 'maven'
 
 configurations { 
 	system
+	application
 	systemApp {
 		exclude module: 'jetty-all-server'
+			extendsFrom application
 	}
-	application
 	jsLibsAndDocs
 	testRunner
 	ct3Zip
@@ -23,14 +24,14 @@ dependencies {
 	system project(":brjs-logger-binding")
 	system dependency('selenium-java')
 	
-	systemApp (project(path: ':system-app-servlets'))
-	
 	application project(path: ':bladerunner-dev-servlets')
 	application project(path: ':bladerunner-common-servlets')
 	application project(path: ':bladerunner-prod-servlets')
 	application dependency('h2')
 	application dependency('javassist')
 	application dependency('jsp-2.1-glassfish')
+	
+	systemApp (project(path: ':system-app-servlets'))
 	
 //	jsLibsAndDocs project(path: ':cutlass-libraries', configuration: 'libsAndDocsZip')
 
@@ -51,66 +52,7 @@ buildscript {
 	}
 }
 
-task copySystemFiles(type: Copy, dependsOn: configurations.system) {
-	from configurations.system
-	into file("sdk/libs/java/system")
-	doFirst {
-		delete file("sdk/libs/java/system")
-	}
-}
-
-task copyApplicationFiles(type: Copy, dependsOn: configurations.application) {
-	from configurations.application
-	into file("sdk/libs/java/application")
-	rename { String fileName ->
-		if ( !fileName.startsWith("brjs-") )
-		{
-			fileName = "brjs-"+fileName
-		}
-	}
-	exclude '*xom-*.jar'
-	doFirst {
-		delete file("sdk/libs/java/application")
-	}
-}
-
-task copySystemApplicationLibs(type:Copy, dependsOn:[configurations.application,configurations.systemApp]) {
-	destinationDir file("sdk/system-applications")
-	file("sdk/system-applications").listFiles().each {
-		if (it.isDirectory()) {
-			into ("${it.name}/WEB-INF/lib") {
-				from configurations.application + configurations.systemApp				
-				rename { String fileName ->
-            		if ( !fileName.startsWith("brjs-") )
-            		{
-            			fileName = "brjs-"+fileName
-            		}
-            	}
-				exclude '*xom-*.jar'
-			}
-		}
-	}
-	doFirst {
-		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
-	}
-	doLast {
-		//TODO: find a better way to do this so we dont copy files and then immediately delete them
-		fileTree(dir:"sdk/system-applications/dashboard-services/WEB-INF/lib", include:"brjs-*", exclude:"*system-app-servlets*").each { delete it }
-	}
-}
-
-task copyTestRunnerJars(type:Copy, dependsOn: configurations.testRunner) {
-	from configurations.testRunner
-	into file("sdk/libs/java/testRunner")
-	rename 'js-test-driver-bundler-plugin-.*', 'js-test-driver-bundler-plugin.jar'
-	rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
-	doFirst {
-		delete file("sdk/libs/java/testRunner")
-	}
-}
-
-
-task assembleSdk, type: Copy, {
+task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner], {
 	def includesDir = "build-resources/includes"
 	
 	destinationDir projectDir
@@ -164,11 +106,56 @@ task assembleSdk, type: Copy, {
 		] )
 	}
 	
+	from (configurations.system)
+	{
+		into "sdk/libs/java/system"
+	}
+	from (configurations.application)
+	{
+		into "sdk/libs/java/application"
+		rename { String fileName ->
+    		if ( !fileName.startsWith("brjs-") )
+    		{
+    			fileName = "brjs-"+fileName
+    		}
+		}
+		exclude '*xom-*.jar'
+	}
+	file("sdk/system-applications").listFiles().each {
+		if (it.isDirectory()) {
+			into ("sdk/${it.name}/WEB-INF/lib") {
+				from configurations.systemApp
+				rename { String fileName ->
+					if ( !fileName.startsWith("brjs-") )
+					{
+						fileName = "brjs-"+fileName
+					}
+				}
+				exclude '*xom-*.jar'
+			}
+		}
+	}
+	from (configurations.testRunner)
+	{
+		into "sdk/libs/java/testRunner"
+		rename 'js-test-driver-bundler-plugin-.*', 'js-test-driver-bundler-plugin.jar'
+		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
+	}
+	
 	from ("${includesDir}/licenses")
 	{
 		into "licenses"
 	}
 	
+	
+	doFirst {
+		delete file("sdk/libs/java")
+		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+	}
+	doLast {
+		//TODO: find a better way to do this so we dont copy files and then immediately delete them
+		fileTree(dir:"sdk/system-applications/dashboard-services/WEB-INF/lib", include:"brjs-*", exclude:"*system-app-servlets*").each { delete it }
+	}
 	doLast {
 		ant {
 			fixcrlf(srcdir:"sdk", includes:"brjs", eol:"lf" )
@@ -200,10 +187,8 @@ task test, dependsOn:[testJsChrome, testJsFirefox]
 task testIE, dependsOn:testJsIE
 
 
-assemble {
-	dependsOn = [copySystemFiles, copyApplicationFiles, assembleSdk, copyTestRunnerJars,
-			copySystemApplicationLibs]
-}
+assemble.dependsOn assembleSdk
+
 task check, dependsOn: assemble, {}
 task build, dependsOn: [assemble, check, test], {}
 
