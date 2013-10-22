@@ -19,12 +19,12 @@
  * @implements br.presenter.control.ControlAdaptor
  * @implements br.presenter.property.PropertyListener
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl = function()
+br.presenter.control.selectionfield.ToggleSwitchControl = function()
 {
 };
 
-br.provide(br.presenter.control.selectionfield.CaplinToggleSwitchControl, br.presenter.property.PropertyListener);
-br.provide(br.presenter.control.selectionfield.CaplinToggleSwitchControl, br.presenter.control.ControlAdaptor);
+br.provide(br.presenter.control.selectionfield.ToggleSwitchControl, br.presenter.property.PropertyListener);
+br.provide(br.presenter.control.selectionfield.ToggleSwitchControl, br.presenter.control.ControlAdaptor);
 
 // *********************** PropertyListener Interface ***********************
 
@@ -32,7 +32,7 @@ br.provide(br.presenter.control.selectionfield.CaplinToggleSwitchControl, br.pre
  * @private
  * @see br.presenter.property.PropertyListener#onPropertyChanged
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.onPropertyChanged = function()
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype.onPropertyChanged = function()
 {
 	this._refresh();
 };
@@ -44,7 +44,7 @@ br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.onProper
  * @private
  * @see br.presenter.control.ControlAdaptor#setElement
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.setElement = function(eElement)
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setElement = function(eElement)
 {
 	this.m_eElement = eElement;
 };
@@ -53,7 +53,7 @@ br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.setEleme
  * @private
  * @see br.presenter.control.ControlAdaptor#setOptions
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.setOptions = function(newValue)
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setOptions = function(newValue)
 {
 	// do nothing -- this control doesn't support options to change its behaviour
 };
@@ -62,7 +62,7 @@ br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.setOptio
  * @private
  * @see br.presenter.control.ControlAdaptor#setPresentationNode
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.setPresentationNode = function(oPresentationNode)
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setPresentationNode = function(oPresentationNode)
 {
 	if(!(oPresentationNode instanceof br.presenter.node.SelectionField)) {
 		throw new br.presenter.control.InvalidControlModelError("CaplinToggleSwitchControl", "SelectionField");
@@ -98,7 +98,7 @@ br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.setPrese
  * @private
  * @see br.presenter.control.ControlAdaptor#destroy
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.destroy = function()
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype.destroy = function()
 {
 	this.m_oPresentationNode.removeChildListeners();
 	br.util.ElementUtility.discardChild(this.m_eFirstElementContainer);
@@ -121,7 +121,7 @@ br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype.destroy 
 /**
  * @private
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype._updateOptions = function()
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateOptions = function()
 {
 	var oOptions = this.m_oPresentationNode.options;
 	var pNewOptions = oOptions.getOptions();
@@ -148,7 +148,7 @@ br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype._updateO
 /**
  * @private
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype._updateEnabled = function() {
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateEnabled = function() {
 	var bIsEnabled = this.m_oPresentationNode.enabled.getValue();
 	if(bIsEnabled) {
 		br.util.ElementUtility.removeClassName(this.m_eElement, "disabled");
@@ -164,7 +164,7 @@ br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype._updateE
 /**
  * @private
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype._updateVisible = function() {
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateVisible = function() {
 	var bIsVisible = this.m_oPresentationNode.visible.getValue();
 	this.m_eElement.style.display = (bIsVisible) ? "block" : "none";
 };
@@ -172,7 +172,7 @@ br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype._updateV
 /**
  * @private
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype._refresh = function()
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype._refresh = function()
 {
 	
 	if(this.m_oPresentationNode.value.getValue() === this.m_oPresentationNode.options.getOptions()[0].label.getValue())
@@ -190,7 +190,7 @@ br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype._refresh
 /**
  * @private
  */
-br.presenter.control.selectionfield.CaplinToggleSwitchControl.prototype._bindClickEventHandlers = function() {
+br.presenter.control.selectionfield.ToggleSwitchControl.prototype._bindClickEventHandlers = function() {
 	var oSelf = this;
 	
 	this.m_fFirstClick = function()

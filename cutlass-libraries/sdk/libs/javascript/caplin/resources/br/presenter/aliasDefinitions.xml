@@ -7,7 +7,7 @@
 	
 	<alias name="br.presenter-component" defaultClass="br.presenter.PresenterComponentFactory" />
 	<alias name="br.date-picker" defaultClass="br.presenter.control.datefield.JQueryDatePickerControl" />
-	<alias name="br.toggle-switch" defaultClass="br.presenter.control.selectionfield.CaplinToggleSwitchControl" />
+	<alias name="br.toggle-switch" defaultClass="br.presenter.control.selectionfield.ToggleSwitchControl" />
 	<alias name="br.combo-box" defaultClass="br.presenter.control.selectionfield.ExtJsComboBoxControl" />
 	<alias name="br.select-box" defaultClass="br.presenter.control.selectionfield.ExtJsSelectBoxControl" />
 	<alias name="br.autocomplete-box" defaultClass="br.presenter.control.selectionfield.JQueryAutoCompleteControl" />

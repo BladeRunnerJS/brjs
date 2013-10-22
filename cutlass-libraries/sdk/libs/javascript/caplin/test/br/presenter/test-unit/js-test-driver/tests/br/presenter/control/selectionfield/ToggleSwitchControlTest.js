@@ -1,17 +1,17 @@
-CaplinToggleSwitchControlTest = TestCase("CaplinToggleSwitchControlTest");
+ToggleSwitchControlTest = TestCase("ToggleSwitchControlTest");
 
-CaplinToggleSwitchControlTest.prototype.setUp = function()
+ToggleSwitchControlTest.prototype.setUp = function()
 {
-	this.m_oControlAdaptor = new br.presenter.control.selectionfield.CaplinToggleSwitchControl();
+	this.m_oControlAdaptor = new br.presenter.control.selectionfield.ToggleSwitchControl();
 };
 
-CaplinToggleSwitchControlTest.prototype.test_toggleSwitchCanBeBoundToSelectionField = function()
+ToggleSwitchControlTest.prototype.test_toggleSwitchCanBeBoundToSelectionField = function()
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option #1", "option #2"]);
 	this.m_oControlAdaptor.setPresentationNode(oSelectionField);
 };
 
-CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToVanillaPresentationNode = function()
+ToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToVanillaPresentationNode = function()
 {
 	var oPresentationNode = new br.presenter.node.PresentationNode();
 	var oThis = this;
@@ -21,7 +21,7 @@ CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundT
 	}, "InvalidControlModelError");
 };
 
-CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToMultiSelectionField = function()
+ToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToMultiSelectionField = function()
 {
 	var oMultiSelectionField = new br.presenter.node.MultiSelectionField(["option #1", "option #2"]);
 	var oThis = this;
@@ -31,7 +31,7 @@ CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundT
 	}, "InvalidControlModelError");
 };
 
-CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToSelectionFieldWithZeroOptions = function()
+ToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToSelectionFieldWithZeroOptions = function()
 {
 	var oSelectionField = new br.presenter.node.SelectionField([]);
 	var oThis = this;
@@ -41,7 +41,7 @@ CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundT
 	}, "InvalidControlModelError");
 };
 
-CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToSelectionFieldWithOneOption = function()
+ToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToSelectionFieldWithOneOption = function()
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option #1"]);
 	var oThis = this;
@@ -51,7 +51,7 @@ CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundT
 	}, "InvalidControlModelError");
 };
 
-CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToSelectionFieldWithMoreThanTwoOptions = function()
+ToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundToSelectionFieldWithMoreThanTwoOptions = function()
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option #1", "option #2", "option #3"]);
 	var oThis = this;
@@ -61,7 +61,7 @@ CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundT
 	}, "InvalidControlModelError");
 };
 
-CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundSelectionFieldIsChangedToHaveLessThanTwoOptions = function()
+ToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundSelectionFieldIsChangedToHaveLessThanTwoOptions = function()
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option #1", "option #2"]);
 
@@ -72,7 +72,7 @@ CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundS
 	}, "InvalidControlModelError");
 };
 
-CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundSelectionFieldIsChangedToHaveMoreThanTwoOptions = function()
+ToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundSelectionFieldIsChangedToHaveMoreThanTwoOptions = function()
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option #1", "option #2"]);
 	oSelectionField._$setPath("a", {});
@@ -84,7 +84,7 @@ CaplinToggleSwitchControlTest.prototype.test_toggleSwitchThrowsExceptionIfBoundS
 	}, "InvalidControlModelError");
 };
 
-CaplinToggleSwitchControlTest.prototype.test_callingDestroyMethodWorksAndreferenceToElementIsRemoved = function()
+ToggleSwitchControlTest.prototype.test_callingDestroyMethodWorksAndreferenceToElementIsRemoved = function()
 {
 	var oSelectionField = new br.presenter.node.SelectionField(["option #1", "option #2"]);
 	oSelectionField._$setPath("a", {});
