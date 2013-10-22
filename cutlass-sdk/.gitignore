@@ -5,6 +5,8 @@ build
 .classpath
 .project
 
+**/bundles/*
+
 
 # WARNING: everything in build-workspace is automaticaly generated
 # the only things that are checked in are in sdk/libs/javascript and sdk/system-applications
@@ -12,3 +14,4 @@ build
 workspace/**/*
 !workspace/sdk/libs/javascript
 !workspace/sdk/system-application
+workspace/**/WEB-INF/lib/brjs-*

@@ -83,45 +83,6 @@ subprojects { p ->
 	
 }
 
-configurations {
-	browsers_dep
-	browsers_webdriver
-}
-
-dependencies {
-	browsers_dep dependency('chrome-stable')
-	browsers_dep dependency('firefox-stable') 
-	
-	browsers_webdriver dependency('firefox-webdriver') 
-}
-
-
-def browserRootDir = buildDir.path+"/browsers"
-def browserProfileDir = "${browserRootDir}/profile"
-task copyBrowsers(type: Sync) {
-	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
-	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
-	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
-	into browserRootDir
-	doLast {
-		//TODO: this should probabaly be done in a task listener
-		if (file(browserProfileDir).exists()) {
-			delete browserProfileDir
-		}
-    	file(browserProfileDir).mkdirs();
-    	file(browserProfileDir + "/chrome").mkdir();
-    		/* prevent chrome asking to set default search engine */
-    		file(browserProfileDir + "/chrome/First Run").createNewFile();
-    	file(browserProfileDir + "/chromium").mkdir();
-    		/* prevent chromium asking to set default search engine */
-    		file(browserProfileDir + "/chromium/First Run").createNewFile();
-    	file(browserProfileDir + "/firefox").mkdir();
-    		file(browserProfileDir + "/firefox/prefs.js").createNewFile();
-    		file(browserProfileDir + "/firefox/prefs.js").text = "user_pref(\"browser.shell.checkDefaultBrowser\", false);\nuser_pref(\"browser.sessionstore.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.recent_crashes\", -1);\n";
-    	}
-}
-
-
 
 /* provides compound tasks that are run in CI */
 

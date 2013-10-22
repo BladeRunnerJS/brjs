@@ -15,6 +15,9 @@ configurations {
 	ct3Zip
 	bladerunnerZip
 	deployerJars
+	
+	browsers_dep
+	browsers_webdriver
 } 
 
 dependencies {
@@ -40,6 +43,11 @@ dependencies {
 	testRunner files('build-resources/JsTestDriver.conf')
 
 	deployerJars dependency('wagon-http')
+	
+	browsers_dep dependency('chrome-stable')
+	browsers_dep dependency('firefox-stable')
+	
+	browsers_webdriver dependency('firefox-webdriver')
 }
 
 buildscript {
@@ -49,6 +57,33 @@ buildscript {
 		classpath dependency('jyaml')
 	}
 }
+
+def browserRootDir = buildDir.path+"/browsers"
+def browserProfileDir = "${browserRootDir}/profile"
+task copyBrowsers(type: Sync) {
+	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
+	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
+	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
+	into browserRootDir
+	doLast {
+		//TODO: this should probabaly be done in a task listener
+		if (file(browserProfileDir).exists()) {
+			delete browserProfileDir
+		}
+		file(browserProfileDir).mkdirs();
+		file(browserProfileDir + "/chrome").mkdir();
+			/* prevent chrome asking to set default search engine */
+			file(browserProfileDir + "/chrome/First Run").createNewFile();
+		file(browserProfileDir + "/chromium").mkdir();
+			/* prevent chromium asking to set default search engine */
+			file(browserProfileDir + "/chromium/First Run").createNewFile();
+		file(browserProfileDir + "/firefox").mkdir();
+			file(browserProfileDir + "/firefox/prefs.js").createNewFile();
+			file(browserProfileDir + "/firefox/prefs.js").text = "user_pref(\"browser.shell.checkDefaultBrowser\", false);\nuser_pref(\"browser.sessionstore.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.recent_crashes\", -1);\n";
+		}
+}
+
+
 
 task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner], {
 	def includesDir = "build-resources/includes"
@@ -70,7 +105,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	{
 		into "conf"
 	}
-	from ("../conf")
+	from ("../build-resources")
 	{
 		into "conf"
 		include "test-runner.conf"
@@ -117,7 +152,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		}
 		exclude '*xom-*.jar'
 	}
-	file("sdk/system-applications").listFiles().each {
+	file("workspace/sdk/system-applications").listFiles().each {
 		if (it.isDirectory()) {
 			into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
 				from configurations.systemApp
@@ -172,10 +207,11 @@ task assembleJsDoc, type:com.caplin.gradle.tasks.JsDoc, dependsOn: assembleSdk, 
 def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
 		description = "Run ${testType} for ${testDir}"
-		dependsOn = [assemble, project.parent.tasks['copyBrowsers']]
+		dependsOn = [assemble, copyBrowsers]
 		inputs.dir file("workspace/apps/")
     	inputs.dir file("workspace/sdk/")
     	inputs.dir file("workspace/conf/")
+		workingDir = "workspace/sdk"
 		testType = taskTestType
 		browsers = browser
 		testDir = taskTestDir 
@@ -202,7 +238,7 @@ task test, dependsOn:[testJsChrome, testJsFirefox, testSystemAppsChrome, testSys
 task testIE, dependsOn: [testJsIE, testSystemAppsIE]
 
 
-assemble.dependsOn = [assembleSdk, assembleJsDoc]
+assemble.dependsOn = [assembleSdk, assembleJsDoc, copyBrowsers]
 
 task check, dependsOn: assemble, {}
 task build, dependsOn: [assemble, check, test], {}
@@ -305,7 +341,6 @@ check.dependsOn checkSdkStructure
 
 checkSdkStructure.enabled = false
 // disabled until we add more JS libraries in and fix the paths
-
 	
 clean {
 //	doFirst {
