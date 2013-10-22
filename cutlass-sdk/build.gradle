@@ -113,14 +113,15 @@ task copyJsLibsAndDocs {}
 
 
 task copySdkIncludes(type: Copy) {
-	from "build-resources/includes/sdk"
-	into file("sdk")
-	exclude "**/release-notes/*"
-	exclude "**/version.txt"
+	destinationDir file("sdk")
 	
 	from ("build-resources/includes/sdk") {
-		include "**/release-notes/*"
-    	include "bladerunner-*.*"
+		exclude "release-notes/*"
+		exclude "version.txt"
+	}
+	
+	from ("build-resources/includes/sdk") {
+		include "release-notes/*"
     	filter(ReplaceTokens, tokens: [
     		buildVersion: buildVersion,
     		buildDate: buildDate,
@@ -130,11 +131,7 @@ task copySdkIncludes(type: Copy) {
 	}
 	
 	from ("build-resources/includes/sdk") {
-		include "**/version.txt"
-		
-		if (buildDate != "") { inputs.property "buildDate" , buildDate }
-		inputs.property "version" , buildVersion
-		
+		include "version.txt"
 		filter( ReplaceTokens, tokens: [
 			sdkVersion:buildVersion, 
 			buildDate:buildDate, 
@@ -317,7 +314,7 @@ clean {
     	delete "webcentric-db"
     	delete "test-results"
     	delete "${projectDir.path}/conf/test-runner.conf"
-    	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore", "**/*.gitignore", "libs/javascript", "jsdoc-*", "templates"]).each { delete it }
+    	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore", "**/*.gitignore", "libs/javascript"]).each { delete it }
     	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
     	fileTree(dir:"sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
 	}
