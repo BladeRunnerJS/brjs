@@ -109,35 +109,64 @@ task copyTestRunnerJars(type:Copy, dependsOn: configurations.testRunner) {
 	}
 }
 
-task copyJsLibsAndDocs {}
 
-
-task copySdkIncludes(type: Copy) {
-	destinationDir file("sdk")
+task assembleSdk, type: Copy, {
+	def includesDir = "build-resources/includes"
 	
-	from ("build-resources/includes/sdk") {
+	destinationDir projectDir
+	
+	from ("${includesDir}")
+	{
+		include "LICENSE"
+		include "README.txt"
+	}
+	
+	from ("${includesDir}/apps")
+	{
+		into "apps"
+	}
+	
+	from ("${includesDir}/conf")
+	{
+		into "conf"
+	}
+	from ("../conf")
+	{
+		into "conf"
+		include "test-runner.conf"
+	}
+	
+	from ("${includesDir}/sdk") {
+		into "sdk"
 		exclude "release-notes/*"
 		exclude "version.txt"
 	}
 	
-	from ("build-resources/includes/sdk") {
+	from ("${includesDir}/sdk") {
+		into "sdk"
 		include "release-notes/*"
-    	filter(ReplaceTokens, tokens: [
-    		buildVersion: buildVersion,
-    		buildDate: buildDate,
-    		productName: "BladeRunner"
-    	] )
-    	rename '([a-zA-Z0-9]+)-(.*)', '$2'
+		filter(ReplaceTokens, tokens: [
+			buildVersion: buildVersion,
+			buildDate: buildDate,
+			productName: "BladeRunner"
+		] )
+		rename '([a-zA-Z0-9]+)-(.*)', '$2'
 	}
 	
-	from ("build-resources/includes/sdk") {
+	from ("${includesDir}/sdk") {
+		into "sdk"
 		include "version.txt"
 		filter( ReplaceTokens, tokens: [
-			sdkVersion:buildVersion, 
-			buildDate:buildDate, 
-			distType:"bladerunner", 
-			buildHostname:buildHostname 
+			sdkVersion:buildVersion,
+			buildDate:buildDate,
+			distType:"bladerunner",
+			buildHostname:buildHostname
 		] )
+	}
+	
+	from ("${includesDir}/licenses")
+	{
+		into "licenses"
 	}
 	
 	doLast {
@@ -148,21 +177,11 @@ task copySdkIncludes(type: Copy) {
 	}
 }
 
-task copyTestRunnerConf, type:Copy, {
-	from file("../conf")
-	into file("conf")
-	include "test-runner.conf"
-	doLast {
-		def confFile = file("conf/test-runner.conf")
-		confFile.text = "## WARNING: do not change this file. The original lives in <branch-dir>/test-runner.conf ##\n\n" + confFile.text
-	}
-}
-
 
 def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
 		description = "Run ${testType} for ${testDir}"
-		dependsOn = [assemble, project.parent.tasks['copyBrowsers'], copyTestRunnerConf]
+		dependsOn = [assemble, project.parent.tasks['copyBrowsers']]
 		inputs.dir file("apps/")
     	inputs.dir file("sdk/")
     	inputs.dir file("conf/")
@@ -182,8 +201,8 @@ task testIE, dependsOn:testJsIE
 
 
 assemble {
-	dependsOn = [copySystemFiles, copyApplicationFiles, copyJsLibsAndDocs, copySdkIncludes, copyTestRunnerJars,
-			copySystemApplicationLibs, copyTestRunnerConf]
+	dependsOn = [copySystemFiles, copyApplicationFiles, assembleSdk, copyTestRunnerJars,
+			copySystemApplicationLibs]
 }
 task check, dependsOn: assemble, {}
 task build, dependsOn: [assemble, check, test], {}
@@ -309,7 +328,11 @@ checkSdkStructure.enabled = false
 	
 clean { 
 	doFirst {
+    	delete "LICENSE"
+    	delete "README.txt"
     	delete "apps"
+    	delete "conf"
+    	delete "licenses"
     	delete "test-results"
     	delete "webcentric-db"
     	delete "test-results"
