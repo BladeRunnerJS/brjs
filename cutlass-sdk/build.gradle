@@ -77,6 +77,10 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	
 	destinationDir file("${projectDir.path}/workspace")
 	
+	inputs.property "sdkVersion", buildVersion
+	inputs.property "buildDate", buildDate
+	inputs.property "buildHostname", buildHostname	
+	
 	from ("${includesDir}")
 	{
 		include "LICENSE"
@@ -227,8 +231,8 @@ task testIE, dependsOn: [testJsIE, testSystemAppsIE]
 
 assemble.dependsOn = [assembleSdk, assembleJsDoc, copyBrowsers]
 
-task check, dependsOn: assemble, {}
-task build, dependsOn: [assemble, check, test], {}
+task check, dependsOn: [assemble, test] {}
+task build, dependsOn: [check], {}
 
 
 ext.explodedSdkDir = "${project.buildDir}/exploded"
@@ -236,12 +240,10 @@ ext.sdkDir = "BladeRunner/sdk"
 
 task distZip, type:Zip, dependsOn: [assemble], {
 	baseName = "BladeRunner"
-	
-	from (file("sdk")) {
-		into "BladeRunner/sdk"
-	}
-	
-	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*"
+	from "workspace/"
+	into "BladeRunner/"
+	include "licenses/**", "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
+	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*"
 }
 build.dependsOn distZip
 
@@ -250,20 +252,6 @@ task explodeSdk, type:Sync, dependsOn: distZip, {
 	from files(distZip).collect { zipTree(it) }
 	into explodedSdkDir
 }
-
-
-task checkCopyrightStatements, dependsOn: explodeSdk, {
-	doFirst {
-		// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
-		fileTree(dir:explodedSdkDir, include:"sdk/libs/javascript/caplin/src/**/*.js").each { file ->
-			def fileText = file.text
-			if (!fileText.contains("Copyright") || !fileText.contains("Caplin Systems Ltd")) {
-				throw new GradleException("${file.path} does not contain copyright statement.")
-			}
-		}
-	}
-}
-check.dependsOn checkCopyrightStatements
 
 
 task checkVersionTxt, dependsOn: explodeSdk, {
@@ -282,8 +270,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	checkRoot = file(explodedSdkDir)
 	expectedPaths = [
 		"*/sdk/**",
-		"*/sdk/bladerunner",
-		"*/sdk/bladerunner.cmd",
+		"*/sdk/brjs",
+		"*/sdk/brjs.cmd",
 		"*/sdk/version.txt",
 		"*/sdk/libs/java/testRunner/*",
 		"*/sdk/libs/java/testRunner/js-test-driver-bundler-plugin.jar", /* make sure this isnt versioned */
@@ -291,9 +279,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/libs/java/application/**",
 
 		// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
-		"*/sdk/libs/javascript/caplin/src/caplin/**",
-		"*/sdk/libs/javascript/caplin/src/ct/**",
-		"*/sdk/libs/javascript/caplin/resources/**/*",
+		"*/sdk/libs/javascript/caplin/src/br/**",
+//		"*/sdk/libs/javascript/caplin/resources/**/*",
 		"*/sdk/libs/javascript/thirdparty/**/*",
 		"*/sdk/system-applications/**/*",
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
@@ -303,6 +290,7 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/docs/jsdoc/classesindex.html", 
 		"*/sdk/docs/jsdoc/static/*",
 		"*/README.txt",
+		"*/LICENSE",
 		"*/apps/apps.txt",
 		"*/licenses/java.html",
 		"*/licenses/javascript.html",
@@ -320,14 +308,11 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	   "**/js-test-driver/bundles/**/*",
 	   "**/libs/**/tests/**/*",
 	   "**/system-applications/**/tests/**/*",
+	   "*/sdk/libs/javascript/caplin/test/**",
 	   "*/sdk/run*"
 	]
 }
 check.dependsOn checkSdkStructure
-
-
-checkSdkStructure.enabled = false
-// disabled until we add more JS libraries in and fix the paths
 	
 clean {
 	doFirst {
