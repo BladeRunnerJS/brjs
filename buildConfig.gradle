@@ -37,16 +37,6 @@ BuildConfig.putAll([
 	BROWSER_GROUP_IE8			:	'ie',
 	BROWSER_GROUP_IE9			:	'ie',
 	BROWSER_GROUP_IE10			:	'ie',
-	
-	
-	SDK_EXCLUDE_CAPLIN_LIBRARIES		:	['alerts','tree'],
-	SDK_EXCLUDE_THIRDPARTY_LIBRARIES	:	['jshamcrest','jsmockito','jstd','jstestdriverextensions',
-											 'jsunitextensions', 'mock4js'],
-	SDK_CT3_ONLY_THIRDPARTY_LIBRARIES	:	['sl4b', 'sl4bdummy', 'ejschart', 'sljs'],
-	
-	/* dont forget to add @BladeRunner to the jsdoc for any new bladerunner libraries */
-	SDK_BLADERUNNER_LIBRARIES			:	['component', 'core', 'dom' ,'i18n', 
-											 'presenter', 'services', 'testing', 'workbench'],
 ]);
 
 
