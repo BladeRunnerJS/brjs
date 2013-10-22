@@ -343,20 +343,17 @@ checkSdkStructure.enabled = false
 // disabled until we add more JS libraries in and fix the paths
 	
 clean {
-//	doFirst {
-//    	delete "LICENSE"
-//    	delete "README.txt"
-//    	delete "apps"
-//    	delete "conf"
-//    	delete "licenses"
-//    	delete "test-results"
-//    	delete "webcentric-db"
-//    	delete "test-results"
-//    	delete "${projectDir.path}/conf/test-runner.conf"
-//    	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore", "**/*.gitignore", "libs/javascript"]).each { delete it }
-//    	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
-//    	fileTree(dir:"sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
-//	}
+	doFirst {
+		ant.delete(includeemptydirs: 'true') {
+			fileset(dir: 'workspace') {
+				include(name: '**/*')
+				exclude(name: 'sdk/system-applications/**/*')
+				exclude(name: 'sdk/libs/javascript/**/*')
+			}
+    	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
+    	fileTree(dir:"workspace/sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
+		}
+	}
 }
 
 uploadArchives {
