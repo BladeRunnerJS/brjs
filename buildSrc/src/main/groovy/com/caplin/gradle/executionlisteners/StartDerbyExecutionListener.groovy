@@ -69,7 +69,7 @@ public class StartDerbyExecutionListener implements TaskExecutionListener
 				}
 			
     			project.exec {
-    				workingDir project.config('SDK_LOCATION')
+    				workingDir 'sdk'
     				def cutlassCommand = org.bladerunnerjs.OSCalculator.getOSSpecificCommand('bladerunner')
     				commandLine cutlassCommand + ['reset-db', appCopy.name, '--jdbc', 
 						'jdbc:derby://localhost:1527/'+app.name+';create=true', 'org.apache.derby.jdbc.ClientDriver', 'derbyuser', 'derbyuser']

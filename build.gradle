@@ -4,7 +4,6 @@ apply from: 'wrapper.gradle'
 
 allprojects {
 	def projectContainingSharedLogic = (project.parent) ? project.parent : project
-	apply from: projectContainingSharedLogic.file('buildConfig.gradle')
 	apply from: projectContainingSharedLogic.file('dependencies.gradle')
 	
 	apply plugin: 'eclipse'
