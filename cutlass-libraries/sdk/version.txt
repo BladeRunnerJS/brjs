@@ -1,5 +1,0 @@
-{
-
-"Version" : "main-dev",
-"BuildDate" : "1/2/3"
-}

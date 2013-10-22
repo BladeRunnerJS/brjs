@@ -1,0 +1,36 @@
+
+<div id="api_content">
+		
+	<div class='free-content'>
+		{+include("homepage-content.html")+}
+	</div>
+		
+	<div class="divider">
+		<span class='divider-image'></span>
+	</div>
+
+	<h3>Packages</h3>
+	<div class='packages'>
+		<for each="thisClass" in="data">
+			{!
+				var isPackage = thisClass.alias.split(".").length == 2;
+			!}
+			<if test="isPackage">
+				<div class='features-wrapper'>
+					<p class='header'>
+						{+(new Link().toSymbol(thisClass.alias))+}
+						<if test="thisClass.comment.getTag('BladeRunner').length">
+							<span class="bladerunner-package">BladeRunner<span>
+						</if>
+					</p>
+					{+resolveLinks(summarize(thisClass.classDesc))+}
+				</div>
+			</if>
+		</for>
+	</div>
+
+	<div class="divider">
+		<span class='divider-image'></span>
+	</div>
+		
+</div>
