@@ -42,7 +42,7 @@ public class CutlassConfig
 	
 	public static final String DEFAULT_APP_LOCALES = "en";
 	
-	public static final String AUTO_DEPLOY_CONTEXT_FILENAME = "autoDeploy.txt";
+	public static final String AUTO_DEPLOY_CONTEXT_FILENAME = ".deploy";
 	
 	public static final String CUTLASS_SDK_HIBERNATE_DIALECT = "org.hibernate.dialect.H2Dialect";
 	public static final String HIBERNATE_CFG_XML = "/WEB-INF/classes/hibernate.cfg.xml";
