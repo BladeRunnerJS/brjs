@@ -1,4 +1,3 @@
-import org.ho.yaml.Yaml
 import org.apache.tools.ant.filters.*
 
 apply plugin: 'maven'
@@ -14,7 +13,6 @@ configurations {
 	testRunner
 	ct3Zip
 	bladerunnerZip
-	deployerJars
 	
 	browsers_dep
 	browsers_webdriver
@@ -41,8 +39,6 @@ dependencies {
 	testRunner project(path: ':js-test-driver-bundler-plugin', transitive : false)
 	testRunner project(path: ':brjs-logger')
 	testRunner files('build-resources/JsTestDriver.conf')
-
-	deployerJars dependency('wagon-http')
 	
 	browsers_dep dependency('chrome-stable')
 	browsers_dep dependency('firefox-stable')
@@ -50,13 +46,6 @@ dependencies {
 	browsers_webdriver dependency('firefox-webdriver')
 }
 
-buildscript {
-	dependencies {
-		classpath dependency('junit')
-		classpath dependency('commons-io')
-		classpath dependency('jyaml')
-	}
-}
 
 def browserRootDir = buildDir.path+"/browsers"
 def browserProfileDir = "${browserRootDir}/profile"
@@ -82,8 +71,6 @@ task copyBrowsers(type: Sync) {
 			file(browserProfileDir + "/firefox/prefs.js").text = "user_pref(\"browser.shell.checkDefaultBrowser\", false);\nuser_pref(\"browser.sessionstore.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.recent_crashes\", -1);\n";
 		}
 }
-
-
 
 task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner], {
 	def includesDir = "build-resources/includes"
@@ -356,18 +343,3 @@ clean {
 	}
 }
 
-uploadArchives {
-	repositories.mavenDeployer {
-		name = 'Artifactory-Deployer'
-		configuration = configurations.deployerJars
-		repository(url: "http://artifactory.caplin.com:8081/artifactory/caplin-ci/")
-	}
-	doLast {
-		String gradleDir = getGradle().gradleUserHomeDir
-		File cachesDir = new File(gradleDir, "caches")
-		fileTree(dir: gradleDir, include:"artifacts-*/**/${group}").each {
-			println "cleaning up ${it.path}"
-			delete it;
-		}
-	}
-}
