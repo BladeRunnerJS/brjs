@@ -1,6 +1,5 @@
 /**
  * Constructs a new instance of <code>MappedNodeList</code>.
- * @beta
  * @class
  * <code>MappedNodeList</code> is a {@link br.presenter.node.NodeList}.
  * 

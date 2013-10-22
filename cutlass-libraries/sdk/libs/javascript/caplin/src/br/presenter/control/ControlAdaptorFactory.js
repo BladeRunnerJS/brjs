@@ -3,7 +3,6 @@
 	var AliasRegistry = require('br/AliasRegistry');
 	
 	/**
-	 * @beta
 	 * @class
 	 * Repository for presenter controls referenced in HTML templates.
 	 * All custom controls are registered here.
