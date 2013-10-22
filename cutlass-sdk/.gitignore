@@ -4,19 +4,11 @@ bin
 build
 .classpath
 .project
-test-results
-apps
-generated
-js-patches
-conf
-licenses
-LICENSE
-README.txt
 
-sdk/jsdoc-*
-sdk/libs/java
-sdk/release-notes
-sdk/templates
-sdk/docs/
-sdk/brjs*
-sdk/version.txt
+
+# WARNING: everything in build-workspace is automaticaly generated
+# the only things that are checked in are in sdk/libs/javascript and sdk/system-applications
+
+workspace/**/*
+!workspace/sdk/libs/javascript
+!workspace/sdk/system-application

@@ -53,7 +53,7 @@ buildscript {
 task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner], {
 	def includesDir = "build-resources/includes"
 	
-	destinationDir projectDir
+	destinationDir file("${projectDir.path}/workspace")
 	
 	from ("${includesDir}")
 	{
@@ -154,18 +154,18 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	}
 	doLast {
 		ant {
-			fixcrlf(srcdir:"sdk", includes:"brjs", eol:"lf" )
-			fixcrlf(srcdir:"sdk", includes:"brjs.cmd", eol:"crlf" )
+			fixcrlf(srcdir:"workspace", includes:"**/brjs", eol:"lf" )
+			fixcrlf(srcdir:"workspace", includes:"**/brjs.cmd", eol:"crlf" )
 		}
 	}
 }
 
 task assembleJsDoc, type:com.caplin.gradle.tasks.JsDoc, dependsOn: assembleSdk, {
-	jsDocsDir = file("sdk/docs/jsdoc")
+	jsDocsDir = file("workspace/sdk/docs/jsdoc")
 	// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
-	jsRootPathRelativeToJsDocDir = "sdk/libs/javascript/caplin/src"
-	jsDocToolkitDir = file("sdk/jsdoc-toolkit")
-	templateDir = file("sdk/jsdoc-templates/Caplin")
+	jsRootPathRelativeToJsDocDir = "workspace/sdk/libs/javascript/caplin/src"
+	jsDocToolkitDir = file("workspace/sdk/jsdoc-toolkit")
+	templateDir = file("workspace/sdk/jsdoc-templates/Caplin")
 }
 
 
@@ -173,9 +173,9 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
 		description = "Run ${testType} for ${testDir}"
 		dependsOn = [assemble, project.parent.tasks['copyBrowsers']]
-		inputs.dir file("apps/")
-    	inputs.dir file("sdk/")
-    	inputs.dir file("conf/")
+		inputs.dir file("workspace/apps/")
+    	inputs.dir file("workspace/sdk/")
+    	inputs.dir file("workspace/conf/")
 		testType = taskTestType
 		browsers = browser
 		testDir = taskTestDir 
@@ -307,21 +307,21 @@ checkSdkStructure.enabled = false
 // disabled until we add more JS libraries in and fix the paths
 
 	
-clean { 
-	doFirst {
-    	delete "LICENSE"
-    	delete "README.txt"
-    	delete "apps"
-    	delete "conf"
-    	delete "licenses"
-    	delete "test-results"
-    	delete "webcentric-db"
-    	delete "test-results"
-    	delete "${projectDir.path}/conf/test-runner.conf"
-    	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore", "**/*.gitignore", "libs/javascript"]).each { delete it }
-    	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
-    	fileTree(dir:"sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
-	}
+clean {
+//	doFirst {
+//    	delete "LICENSE"
+//    	delete "README.txt"
+//    	delete "apps"
+//    	delete "conf"
+//    	delete "licenses"
+//    	delete "test-results"
+//    	delete "webcentric-db"
+//    	delete "test-results"
+//    	delete "${projectDir.path}/conf/test-runner.conf"
+//    	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore", "**/*.gitignore", "libs/javascript"]).each { delete it }
+//    	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
+//    	fileTree(dir:"sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
+//	}
 }
 
 uploadArchives {
