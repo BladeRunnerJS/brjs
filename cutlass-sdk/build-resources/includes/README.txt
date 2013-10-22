@@ -1,4 +1,4 @@
-Readme for @productName@
+BladeRunnerJs Readme
 =======================
 
 

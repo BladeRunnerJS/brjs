@@ -87,10 +87,8 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		include "release-notes/*"
 		filter(ReplaceTokens, tokens: [
 			buildVersion: buildVersion,
-			buildDate: buildDate,
-			productName: "BladeRunner"
+			buildDate: buildDate
 		] )
-		rename '([a-zA-Z0-9]+)-(.*)', '$2'
 	}
 	
 	from ("${includesDir}/sdk") {
@@ -255,22 +253,6 @@ task checkVersionTxt, dependsOn: explodeSdk, {
 	}
 }
 check.dependsOn checkVersionTxt
-		
-
-task checkReadme, dependsOn: explodeSdk, {
-	doFirst {
-		def readmeFile = project.file("${explodedSdkDir}/BladeRunner/README.txt");
-		if (readmeFile.text.contains("@productName@"))
-		{
-			throw new GradleException("Readme at ${readmeFile.getAbsolutePath()} has not been correctly filtered.")
-		}
-		else if (!readmeFile.text.contains("Readme for BladeRunner"))
-		{
-			throw new GradleException("Readme at ${readmeFile.getAbsolutePath()} does not contain the product name.")
-		}
-	}
-}
-check.dependsOn checkReadme
 		
 
 task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, dependsOn: explodeSdk, {
