@@ -2,10 +2,10 @@
  * This class is constructed by presenter automatically on your behalf.
  * 
  * @class
- * A Caplin provided toggle-switch control that can be used to render instances
+ * A provided toggle-switch control that can be used to render instances
  * of {@link br.presenter.node.SelectionField} within presenter.
  * 
- * <p>The Caplin toggle-switch control is aliased by <em>br.toggle-switch</em>,
+ * <p>The toggle-switch control is aliased by <em>br.toggle-switch</em>,
  * and can be used within templates as follows:</p>
  * 
  * <pre>
