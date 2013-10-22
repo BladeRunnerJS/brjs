@@ -25,9 +25,6 @@ class JsDoc extends DefaultTask
 	@InputDirectory
 	File jsDocToolkitDir = null
 	
-	@Input
-	boolean createEmptyJsDoc = true
-	
 	@OutputDirectory
 	File jsDocsDir = null
 	
@@ -41,29 +38,20 @@ class JsDoc extends DefaultTask
 	def exec() 
 	{		
 		jsDocsDir.mkdirs()
-		def jsDocIndex = project.file("${jsDocsDir}/index.html")
-		if (createEmptyJsDoc)
-		{
-			jsDocIndex.createNewFile()
-			jsDocIndex.text = "<h1>jsDocs</h1><p>The jsDoc is empty. It can be built by running the 'buildJsDoc' task.</p>"
+		def jsDocIndex = project.file("${jsDocsDir}/index.html")    
+    	def jsDocArgs = [ "--recurse=20", "--template=${templateDir.getAbsolutePath()}", "--directory=./", "-u" ]
+		
+		if (!gradle.startParameter.logLevel.toString().equals("INFO") && !gradle.startParameter.logLevel.toString().equals("DEBUG")) {
+			jsDocArgs += [ '-q']
 		}
-		else 
-		{    
-        	def jsDocArgs = [ "--recurse=20", "--template=${templateDir.getAbsolutePath()}", "--directory=./", "-u" ]
-    		
-    		if (!gradle.startParameter.logLevel.toString().equals("INFO") && !gradle.startParameter.logLevel.toString().equals("DEBUG")) {
-    			jsDocArgs += [ '-q']
-    		}
-    		if (gradle.startParameter.logLevel.toString().equals("DEBUG")) {
-    			jsDocArgs += [ '-v']
-    		}
-        	
-    		project.javaexec {
-    			main = '-jar'
-    			args = ["${jsDocToolkitDir.getAbsolutePath()}/jsrun.jar", "${jsDocToolkitDir.getAbsolutePath()}/app/run.js"] + jsDocArgs + jsRootPathRelativeToJsDocDir
-    			workingDir jsDocsDir
-    		}
-			
+		if (gradle.startParameter.logLevel.toString().equals("DEBUG")) {
+			jsDocArgs += [ '-v']
+		}
+    	
+		project.javaexec {
+			main = '-jar'
+			args = ["${jsDocToolkitDir.getAbsolutePath()}/jsrun.jar", "${jsDocToolkitDir.getAbsolutePath()}/app/run.js"] + jsDocArgs + jsRootPathRelativeToJsDocDir
+			workingDir jsDocsDir
 		}
 	}
 	

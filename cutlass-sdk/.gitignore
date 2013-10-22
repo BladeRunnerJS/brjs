@@ -12,3 +12,11 @@ conf
 licenses
 LICENSE
 README.txt
+
+sdk/jsdoc-*
+sdk/libs/java
+sdk/release-notes
+sdk/templates
+sdk/docs/
+sdk/brjs*
+sdk/version.txt
