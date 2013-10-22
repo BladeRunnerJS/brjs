@@ -122,7 +122,7 @@ task copySdkIncludes(type: Copy) {
 	from "sdk-includes"
 	into file("sdk")
 	doFirst {
-		delete fileTree(dir:"sdk",include:"*", exclude:".p4ignore")
+		delete fileTree(dir:"sdk",include:"*", exclude:".p4ignore", ".gitignore")
 	}
 	doLast {
 		ant {
@@ -238,7 +238,7 @@ task distZip, type:Zip, dependsOn: [assemble], {
     	filter( ReplaceTokens, tokens: [ sdkVersion:buildVersion, buildDate:buildDate, distType:"bladerunner", buildHostname:buildHostname ] )
 	}
 	
-	exclude "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*"
+	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*"
 }
 build.dependsOn distZip
 
@@ -321,6 +321,7 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	]
 	bannedPaths = [
 	   "**/.p4ignore",
+	   "**/.gitignore",
 	   "**/empty.txt",
 	   "**/system-applications/dashboard/WEB-INF/lib/*xom-*",
 	   "**/libs/java/application/xom-*",
@@ -353,7 +354,7 @@ clean {
     	delete "test-results"
     	delete "sdk/templates"
     	delete "conf/test-runner.conf"
-    	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore"]).each { delete it }
+    	fileTree(dir:"sdk", exclude:["system-applications/*","**/*.p4ignore", "**/*.gitignore"]).each { delete it }
     	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
     	fileTree(dir:"sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
 	}
