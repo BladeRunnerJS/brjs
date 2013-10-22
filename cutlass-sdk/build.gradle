@@ -38,7 +38,7 @@ dependencies {
 	// Note: don't try to add support for transitive dependencies here as it will just fail
 	testRunner project(path: ':js-test-driver-bundler-plugin', transitive : false)
 	testRunner project(path: ':brjs-logger')
-	testRunner files('JsTestDriver.conf')
+	testRunner files('build-resources/JsTestDriver.conf')
 
 	deployerJars dependency('wagon-http')
 }
@@ -109,27 +109,44 @@ task copyTestRunnerJars(type:Copy, dependsOn: configurations.testRunner) {
 	}
 }
 
-//task copyJsLibsAndDocs(type: Copy, dependsOn: configurations.jsLibsAndDocs) {
-//	from { configurations.jsLibsAndDocs.collect { it.isDirectory() ? it : zipTree(it) } }
-//	into file("sdk")
-//	doFirst {
-//		delete 'sdk/docs/jsdoc'
-//		delete 'sdk/libs/javascript'
-//	}
-//}
 task copyJsLibsAndDocs {}
 
 
 task copySdkIncludes(type: Copy) {
-	from "sdk-includes"
+	from "build-resources/includes/sdk"
 	into file("sdk")
-	doFirst {
-		delete fileTree(dir:"sdk",include:"*", exclude:[".p4ignore", ".gitignore"])
+	exclude "**/release-notes/*"
+	exclude "**/version.txt"
+	
+	from ("build-resources/includes/sdk") {
+		include "**/release-notes/*"
+    	include "bladerunner-*.*"
+    	filter(ReplaceTokens, tokens: [
+    		buildVersion: buildVersion,
+    		buildDate: buildDate,
+    		productName: "BladeRunner"
+    	] )
+    	rename '([a-zA-Z0-9]+)-(.*)', '$2'
 	}
+	
+	from ("build-resources/includes/sdk") {
+		include "**/version.txt"
+		
+		if (buildDate != "") { inputs.property "buildDate" , buildDate }
+		inputs.property "version" , buildVersion
+		
+		filter( ReplaceTokens, tokens: [
+			sdkVersion:buildVersion, 
+			buildDate:buildDate, 
+			distType:"bladerunner", 
+			buildHostname:buildHostname 
+		] )
+	}
+	
 	doLast {
 		ant {
-			fixcrlf(srcdir:"sdk", includes:"bladerunner", eol:"lf" )
-			fixcrlf(srcdir:"sdk", includes:"bladerunner.cmd", eol:"crlf" )
+			fixcrlf(srcdir:"sdk", includes:"brjs", eol:"lf" )
+			fixcrlf(srcdir:"sdk", includes:"brjs.cmd", eol:"crlf" )
 		}
 	}
 }
@@ -167,20 +184,8 @@ task test, dependsOn:[testJsChrome, testJsFirefox]
 task testIE, dependsOn:testJsIE
 
 
-task copyReleaseNote, type:Copy, {
-	from "release-notes"
-	into "sdk/docs/release-notes/"
-	include "bladerunner-*.*"
-	filter(ReplaceTokens, tokens: [
-		buildVersion: buildVersion,
-		buildDate: buildDate,
-		productName: "BladeRunner"
-	] )
-	rename '([a-zA-Z0-9]+)-(.*)', '$2'
-}
-
 assemble {
-	dependsOn = [copySystemFiles, copyApplicationFiles, copyJsLibsAndDocs, copySdkIncludes, copyTestRunnerJars, copyReleaseNote,
+	dependsOn = [copySystemFiles, copyApplicationFiles, copyJsLibsAndDocs, copySdkIncludes, copyTestRunnerJars,
 			copySystemApplicationLibs, copyTestRunnerConf]
 }
 task check, dependsOn: assemble, {}
@@ -195,49 +200,6 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	
 	from (file("sdk")) {
 		into "BladeRunner/sdk"
-		exclude "version.txt"
-		exclude "**/release-notes/*"
-	}
-	from (file("sdk")) {
-		into "BladeRunner/sdk"
-		include "version.txt"
-		filter( ReplaceTokens, tokens: [ distType:"BladeRunner" ] )
-		exclude "**/release-notes/*"
-	}
-	from (file("dist-includes")) {
-		into "BladeRunner"
-		include("*.html")
-		include("*.txt")
-		/* only copy the *html files here so we can filter them - copy the rest of the stuff in the next bit */
-		filter(ReplaceTokens, tokens: [
-			buildVersion: buildVersion,
-			buildDate: buildDate,
-			productName: "BladeRunner" 
-		])
-	}
-	from (file("dist-includes")) {
-		into "BladeRunner"
-		exclude("*.html")
-		exclude("*.txt")
-	}
-	from (file("release-notes")) {
-		into "BladeRunner/sdk/docs/release-notes"
-		include "bladerunner-*.*"
-		filter(ReplaceTokens, tokens: [
-			buildVersion: buildVersion,
-			buildDate: buildDate,
-			productName: "BladeRunner" 
-		] )
-		rename '([a-zA-Z0-9]+)-(.*)', '$2'
-	}
-	from (file("version.txt"))
-	{
-		into "BladeRunner/sdk"
-	
-    	if (buildDate != "") { inputs.property "buildDate" , buildDate }
-    	inputs.property "version" , buildVersion
-    	
-    	filter( ReplaceTokens, tokens: [ sdkVersion:buildVersion, buildDate:buildDate, distType:"bladerunner", buildHostname:buildHostname ] )
 	}
 	
 	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*"

@@ -1,7 +1,6 @@
-libs
-bladerunner
-bladerunner.cmd
-loginRealm.conf
-docs
+jsdoc-*
+libs/java
+release-notes
+templates
+brjs*
 version.txt
-apps
