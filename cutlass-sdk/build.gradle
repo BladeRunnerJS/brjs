@@ -105,7 +105,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	{
 		into "conf"
 	}
-	from ("../build-resources")
+	from ("build-resources")
 	{
 		into "conf"
 		include "test-runner.conf"
