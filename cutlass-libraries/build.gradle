@@ -57,7 +57,7 @@ task copyTestRunnerConf, type:Copy, {
 copyTestRunnerConf.outputs.upToDateWhen { false }
 
 /* function to create test tasks */
-def createTestTask = { taskName, taskTestDir, taskTestType ->
+def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
 		description = "Run ${testType} for ${testDir}"
 		dependsOn = [project.parent.tasks['copyBrowsers'], copyBrjsRunnerDependencies, copyTestRunnerDependencies, copyTestRunnerConf]
@@ -66,31 +66,23 @@ def createTestTask = { taskName, taskTestDir, taskTestType ->
 		testDir = taskTestDir
 		testArg = ""
 		testType = taskTestType
+		browsers = browser
 		command = "runTests"
 	}
 }
 
-// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
-createTestTask "jsTestDriverUTs", "libs/javascript/caplin/test", "UTs"
-createTestTask "jsTestDriverATs", "libs/javascript/caplin/test", "ATs"
-createTestTask "jsTestDriverITs", "libs/javascript/caplin/test", "ITs"
-
-createTestTask "caplinBrTests", "libs/javascript/thirdparty/caplin-br", "ALL"
-
-/* tasks to run individual library tests for browsers that are prone to memory leaks etc */
-task invidualLibraryTests, {}
 
 // TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
-file("sdk/libs/javascript/caplin/test/caplin").listFiles().each { libDir ->
-	if (libDir.isDirectory()) {
-    	def taskName = "jsTestDriverTests${libDir.name.capitalize()}"
-		// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
-    	createTestTask taskName, "libs/javascript/caplin/test/caplin/${libDir.name}", ""
-    	invidualLibraryTests.dependsOn taskName
-	}
-}
+createTestTask "testJsIE", "libs/javascript/caplin/test", "ALL", "ie"
+createTestTask "testJsChrome", "libs/javascript/caplin/test", "ALL", "chrome"
+createTestTask "testJsFirefox", "libs/javascript/caplin/test", "ALL", "firefox"
 
-task test(dependsOn:[jsTestDriverUTs, jsTestDriverATs, caplinBrTests]) { }
+createTestTask "caplinBrTestsIE", "libs/javascript/thirdparty/caplin-br", "ALL", "chrome"
+createTestTask "caplinBrTestsChrome", "libs/javascript/thirdparty/caplin-br", "ALL", "chrome"
+createTestTask "caplinBrTestsFirefox", "libs/javascript/thirdparty/caplin-br", "ALL", "firefox"
+
+task test, dependsOn:[testJsChrome, testJsFirefox, caplinBrTestsChrome, caplinBrTestsFirefox]
+task testIE, dependsOn:[testJsIE, caplinBrTestsIE]
 
 task beautifyLibs, type:com.caplin.gradle.tasks.ProcessJsLibs, {
 	dependsOn configurations.beautifier
