@@ -10,3 +10,5 @@ out
 .idea
 conf/.project
 js.bundle
+html.bundle
+xml.bundle
