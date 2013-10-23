@@ -117,14 +117,6 @@ caplinx.dashboard.app.service.dashboard.DashboardProvider.prototype.getCurrentRe
 	this._makeGetRequest(this.m_sRequestPrefix+"/note/latest", fCallback, fErrorCallback, false, "Retrieving Latest Release Notes");
 };
 
-caplinx.dashboard.app.service.dashboard.DashboardProvider.prototype.resetDatabase = function(sApp, fCallback, fErrorCallback)
-{
-	var oData = {
-		command:"reset-db"
-	};
-	this._makePostRequest(this.m_sRequestPrefix+"/apps/"+sApp, oData, fCallback, fErrorCallback, false, "Resetting database.");
-};
-
 caplinx.dashboard.app.service.dashboard.DashboardProvider.prototype.getSdkVersion = function(fCallback, fErrorCallback)
 {
 	var fGetSdkVersionCallback = function(oResponse)

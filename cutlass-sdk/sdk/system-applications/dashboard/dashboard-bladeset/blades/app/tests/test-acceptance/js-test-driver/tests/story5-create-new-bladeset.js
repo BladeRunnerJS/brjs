@@ -55,7 +55,6 @@ describe("story #5", function()
 		then("dash.model.appDetailScreen.bladesets.length = 1");
 			and("dash.model.appDetailScreen.bladesets[0].bladesetName = 'fx'");
 			and("dash.model.appDetailScreen.bladesets[0].blades.length = 0");
-			and("dash.model.appDetailScreen.resetDatabaseButton.enabled = true");
 			and("dash.model.appDetailScreen.exportWarButton.enabled = true");
 			and("dash.model.appDetailScreen.launchAppButton.enabled = true");
 			and("dash.model.appDetailScreen.newBladesetButton.enabled = true");
