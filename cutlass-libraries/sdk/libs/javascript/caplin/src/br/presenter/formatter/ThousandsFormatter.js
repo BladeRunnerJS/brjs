@@ -3,21 +3,22 @@
  * 
  * Adds a separator character for each 'thousand' position in a 1234567.890 eg 1000000 becomes 1,000,000
  * 
- * This formatter must be run after the DecimalFormatter, otherwise different locale formats for
- * decimal places may confuse the DecimalFormatter
- * <p/>
- * The following attributes are required:
- * <p/>
- * <ul>
- * <li><code>separator</code> - the character to use as a thousands separator</li>
+ * 
  * </ul>
  */
 
 /**
- * ThousandsFormatter is a flyweight singleton, and therefore this constructor should never be invoked directly.
- * <p/>
- * Instead, it is instantiated by the RendererFactory, which reads RendererType specifications from XML and
- * instantiates the formatters by name.
+ * Adds a separator character for each 'thousand' position (e.g. 1,000,000).
+ * 
+ * <p><code>ThousandsFormatter</code> is typically used with Presenter, but can be invoked programmatically
+ * too. This formatter must be run after the {@link br.presenter.formatter.DecimalFormatter}, otherwise different locale formats for
+ * decimal places may confuse the <code>DecimalFormatter</code>.</p>
+ * 
+ * <p>The following attributes are required:<p/>
+ * 
+ * <ul>
+ *   <li><code>separator</code> - the character to use as a thousands separator</li>
+ * </ul>
  * 
  * @implements br.presenter.formatter.Formatter
  * @constructor
@@ -32,7 +33,7 @@ br.implement(br.presenter.formatter.ThousandsFormatter, br.presenter.formatter.F
  * Adds a separator character for each 'thousand' position in a number. eg 1000000 becomes 1,000,000
  * 
  * @param {String} sValue  The field value
- * @param {Map} mAttributes  The renderer attributes
+ * @param {Map} mAttributes  The formatter attributes
  * @return The formatted value
  * @type String
  */
