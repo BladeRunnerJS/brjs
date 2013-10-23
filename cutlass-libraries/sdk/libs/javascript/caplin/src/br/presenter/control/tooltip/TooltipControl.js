@@ -3,9 +3,9 @@
  * This class is constructed by presenter automatically on your behalf.
  * 
  * @class
- * A Caplin presenter control that places a tooltip next to the field defined by the  {@link br.presenter.node.ToolTipNode}.
+ * A presenter control that places a tooltip next to the field defined by the  {@link br.presenter.node.ToolTipNode}.
  * 
- * <p>The Caplin TooltipControl must be used with a {@link br.presenter.node.ToolTipNode}.
+ * <p>The TooltipControl must be used with a {@link br.presenter.node.ToolTipNode}.
  * This presentation node represents the view element which will be the container of the tooltip box. 
  * This means, all the fields in which a tooltip will be displayed must be contained inside this
  * element. Unlike a normal tooltip this automatically displays beside the specified field without the user having to hover over it.</p>

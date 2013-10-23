@@ -34,13 +34,11 @@ if (false)
 	 *  valid HTML, but which is ignored by the browser.
 	 * </p>
 	 * <p>
-	 *  Presenter enhances <em>Knockout</em>, allowing it to be embedded within Caplin web
-	 *  applications. It makes it easy to create standard Caplin components built using
+	 *  Presenter enhances <em>Knockout</em>, allowing it to be embedded within web
+	 *  applications. It makes it easy to create standard components built using
 	 *  a presentation model and an HTML view (via
 	 *  {@link br.presenter.component.PresenterComponent}), and it makes it easy for
-	 *  these components to further embed any other Caplin components within themselves,
-	 *  or to make use of standard Caplin <em>renderers</em> for display purposes where
-	 *  this is useful.
+	 *  these components to further embed any other components within themselves.
 	 * </p>
 	 * 
 	 * <p>

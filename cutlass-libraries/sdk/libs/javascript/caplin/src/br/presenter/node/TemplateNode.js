@@ -2,7 +2,6 @@
  * Constructs a new instance of <code>TemplateNode</code> that will cause the given template name to be displayed when
  * {@link #getTemplateName} is invoked.
  * 
- * @beta
  * @class
  * Utility used for displaying a template in a {@link br.presenter.node.NodeList}, where the template
  * does not need to bind to a real {@link br.presenter.node.PresentationNode}.

@@ -9,11 +9,12 @@ import java.util.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import org.bladerunnerjs.model.utility.FileUtility;
+
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
@@ -31,9 +32,9 @@ public class ExportApplicationCommandTest
 		FileUtils.copyDirectory(testFolder, tempDirRoot);
 		
 		sdkBaseDir = new File(tempDirRoot, "structure1" + File.separator + CutlassConfig.SDK_DIR);
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(sdkBaseDir.getParentFile()));
+		BRJS brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(sdkBaseDir.getParentFile()));
 		
-		exportCommand = new ExportApplicationCommand(sdkBaseDir);
+		exportCommand = new ExportApplicationCommand(brjs);
 	}
 	
 	@Test
@@ -98,7 +99,7 @@ public class ExportApplicationCommandTest
 		exportCommand.doCommand(new String[] {});
 	}
 	
-	@Test (expected=CommandOperationException.class)
+	@Test (expected=NodeDoesNotExistException.class)
 	public void commandThrowsErrorIfSpecifiedAppDoesNotExist() throws Exception
 	{
 		exportCommand.doCommand(new String[] { "doesnotexist" });

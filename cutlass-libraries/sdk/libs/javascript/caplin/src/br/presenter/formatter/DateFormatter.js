@@ -5,7 +5,7 @@ br.thirdparty("momentjs");
  * 
  * Formats a date value by converting it from a specified input format to a new output format.
  * <p/>
- * <code>DateFormatter</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>DateFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following examples which evaluate to "09-Sep-2001 01:46:40" and "2001Sep09" respectively:
  * <p/>
  * <code>br.presenter.formatter.DateFormatter.format(1e12, {inputFormat:"U"})</code><br/>

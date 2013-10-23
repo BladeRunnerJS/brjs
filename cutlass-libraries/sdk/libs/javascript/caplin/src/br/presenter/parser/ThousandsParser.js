@@ -3,7 +3,7 @@
  * 
  * Parses an amount and strips any thousands separators.  
  * <p/>
- * <code>ThousandsParser</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>ThousandsParser</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "8987551787.0":
  * <p/>
  * <code>br.presenter.parser.ThousandsParser.parse("8,987,551,787.0", {})</code>

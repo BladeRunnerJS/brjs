@@ -1,6 +1,6 @@
 libs
-bladerunner
-bladerunner.cmd
+brjs
+brjs.cmd
 bladerunnerAscii.txt
 loginRealm.conf
 templates
@@ -9,3 +9,4 @@ version.txt
 apps
 jsdoc-toolkit
 jsdoc-templates
+system-applications/live-examples/WEB-INF

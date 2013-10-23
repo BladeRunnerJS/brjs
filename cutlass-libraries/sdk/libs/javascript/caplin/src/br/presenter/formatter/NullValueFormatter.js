@@ -3,7 +3,7 @@
  * 
  * Substitutes text when the value is null, undefined, or the empty string.
  * <p/>
- * <code>NullValueFormatter</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>NullValueFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "N/A":
  * <p/>
  * <code>br.presenter.formatter.NullValueFormatter.format("", {nullValue:"N/A"})</code>

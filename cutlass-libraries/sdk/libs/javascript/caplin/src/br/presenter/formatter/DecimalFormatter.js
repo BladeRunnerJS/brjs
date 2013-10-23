@@ -3,11 +3,11 @@
  * 
  * Formats the value to the specified number of decimal places.
  * <p/>
- * <code>DecimalFormatter</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>DecimalFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "3.142":
  * 
  * If you are using this formatter in conjunction with the ThousandsFormatter in a localised application, please
- * ensure this DecimalFormatter comes before the ThousandsFomatter in the renderer xml, otherwise localised
+ * ensure this DecimalFormatter is applied before the ThousandsFomatter, otherwise localised
  * decimal point characters will stop the DecimalFormatter from recognising the number.  
  * <p/>
  * <code>br.presenter.formatter.DecimalFormatter.format(3.14159, {dp:3})</code>

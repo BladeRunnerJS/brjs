@@ -26,10 +26,19 @@ br.workbench.ui.Workbench = function(nLeftWidth, nRightWidth)
  * Centers the specified element so that it is evenly spaced between the 2 side panels.
  * 
  * @param {DOMElement} eElement The element (usually the workbench component element) to center.
+ * @see #displayComponent
  */
 br.workbench.ui.Workbench.prototype.center = function(eElement)
 {
 	br.util.ElementUtility.addClassName(eElement, "workbench-centered");
+};
+
+br.workbench.ui.Workbench.prototype.displayComponent = function(oComponent, width, height)
+{
+	var simpleFrame = new br.component.SimpleFrame(oComponent, width, height);
+	
+	this.center(simpleFrame.getElement());
+	document.body.appendChild(simpleFrame.getElement());
 };
 
 /**

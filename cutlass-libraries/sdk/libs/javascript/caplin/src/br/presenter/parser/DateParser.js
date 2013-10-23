@@ -3,7 +3,7 @@
  *
  * Matches a date string and converts it to a specified output format.
  * <p/>
- * <code>DateParser</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>DateParser</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "08-Sep-2000"
  * <p/>
  * <code>br.presenter.parser.DateParser.parse("09/08/2000", {american:"true", outputFormat:"d-M-Y"})</code>

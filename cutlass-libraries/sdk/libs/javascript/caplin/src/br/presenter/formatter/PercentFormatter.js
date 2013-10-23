@@ -3,7 +3,7 @@
  * 
  * Converts the number to a percentage.
  * <p/>
- * <code>PercentFormatter<code/> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>PercentFormatter<code/> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "61.8%":
  * <p/>
  * <code>br.presenter.formatter.PercentFormatter.format(0.618, {dp:1})</code>

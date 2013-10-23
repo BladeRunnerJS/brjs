@@ -64,15 +64,15 @@ public class BRJSApplicationServer implements ApplicationServer
 		{
 			throw new IOException( String.format(PORT_ALREADY_BOUND_EXCEPTION_MSG, port, BRJS.PRODUCT_NAME) );
 		}
-
-		File appsDir = new File(brjs.root().dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
-		File sysAppsDir = new File(brjs.root().dir(), "sdk/system-applications"); //TODO: use the model to find this directory
-		new AppDeploymentFileWatcher(brjs, this, appsDir).start();
-		new AppDeploymentFileWatcher(brjs, this, sysAppsDir).start();
 		
 		ApplicationServerUtils.addAuthRealmToWebServer(brjs, server);
 		ApplicationServerUtils.addRootContext(contexts);
 		ApplicationServerUtils.addAppContexts(brjs, contexts);
+		
+		File appsDir = new File(brjs.root().dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
+		File sysAppsDir = new File(brjs.root().dir(), "sdk/system-applications"); //TODO: use the model to find this directory
+		new AppDeploymentFileWatcher(brjs, this, appsDir).start();
+		new AppDeploymentFileWatcher(brjs, this, sysAppsDir).start();
 		
 		server.start();
 		logger.info(SERVER_STARTED_LOG_MESSAGE, getPort());

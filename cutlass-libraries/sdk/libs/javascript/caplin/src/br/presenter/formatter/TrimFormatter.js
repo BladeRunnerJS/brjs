@@ -15,7 +15,7 @@ br.implement(br.presenter.formatter.TrimFormatter, br.presenter.formatter.Format
 /**
  * Trims whitespace from boths ends of the string.
  * <p/>
- * <code>TrimFormatter</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>TrimFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "Buy USD":
  * <p/>
  * <code>br.presenter.formatter.TrimFormatter.format(" Buy USD ", {})</code>

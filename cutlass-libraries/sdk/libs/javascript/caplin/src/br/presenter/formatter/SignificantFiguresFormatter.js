@@ -3,7 +3,7 @@
  * 
  * Formats a number to the specified number of significant figures.
  * <p/>
- * <code>SignificantFiguresFormatter</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>SignificantFiguresFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "3.142":
  * <p/>
  * <code>br.presenter.formatter.SignificantFiguresFormatter.format(3.14159, {sf:4})</code>

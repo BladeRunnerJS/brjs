@@ -1,5 +1,4 @@
 /**
- * @beta
  * @class
  * Represents a DateField that can be updated with a calendar.
  * @constructor
