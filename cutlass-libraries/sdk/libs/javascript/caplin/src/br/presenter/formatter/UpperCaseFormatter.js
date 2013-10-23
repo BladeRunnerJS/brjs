@@ -3,7 +3,7 @@
  * 
  * Converts a string to upper case.
  * <p/>
- * <code>UpperCaseFormatter</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>UpperCaseFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluate to "hello, world!":
  * <p/>
  * <code>br.presenter.formatter.UpperCaseFormatter.format("Hello, World!", {})</code>

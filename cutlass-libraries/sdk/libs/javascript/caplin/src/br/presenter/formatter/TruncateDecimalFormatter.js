@@ -3,7 +3,7 @@
  * 
  * Truncates the value to the specified number of decimal places.
  * <p/>
- * <code>TruncateDecimalFormatter</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>TruncateDecimalFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "3.142":
  * <p/>
  * <code>br.presenter.formatter.TruncateDecimalFormatter.format(3.14159, {dp:3})</code>

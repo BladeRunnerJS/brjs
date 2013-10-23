@@ -8,7 +8,7 @@
  * browser and uses that to format numbers. For example<br/>
  *  1234567.89 = 1,234,567.89 in english locale<br/>
  * 	1234567.89 = 1.234.567,89 in french locale<br/>
- * It is typically used in the XML Renderer Framework, but can be invoked programmatically:
+ * It is typically used with Presenter, but can be invoked programmatically:
  * <p/>
  * <code>br.presenter.formatter.LocalisedAmountFormatter.format(1234567890, {})</code>
  * <code>br.presenter.formatter.LocalisedAmountFormatter.format(1234567890, {dp: 4})</code>

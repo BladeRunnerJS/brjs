@@ -107,7 +107,7 @@ br.presenter.property.Property.prototype.getFormattedValue = function()
 };
 
 /**
- * Returns the rendered value if this value is being rendered using the Caplin renderer library,
+ * Returns the rendered value after applying any active formatters,
  * otherwise returns the raw property value.
  *
  * @type Object

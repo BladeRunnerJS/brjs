@@ -3,7 +3,7 @@
  * 
  * Transforms a string using a standard JavaScript regular expression.
  * <p/>
- * <code>RegExpFormatter</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>RegExpFormatter</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following examples which evaluate to "8987551787.0" and "Buy USD" respectively:
  * <p/>
  * <code>br.presenter.formatter.RegExpFormatter.format("8987551787.0", { match:"[A-Z]" })</code><br/>

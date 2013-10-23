@@ -3,7 +3,7 @@
  * 
  * Parses an amount containing a thousands, millions or billions token into a number.
  * <p/>
- * <code>LocalisedAmountParser</code> is typically used in the XML Renderer Framework, but can be invoked programmatically
+ * <code>LocalisedAmountParser</code> is typically used with Presenter, but can be invoked programmatically
  * as in the following example which evaluates to "4900000"
  * <p/>
  * <code>br.presenter.parser.LocalisedAmountParser.parse("4.9MM", {})</code>

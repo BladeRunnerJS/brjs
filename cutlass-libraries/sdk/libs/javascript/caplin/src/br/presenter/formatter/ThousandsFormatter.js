@@ -6,7 +6,7 @@
  * This formatter must be run after the DecimalFormatter, otherwise different locale formats for
  * decimal places may confuse the DecimalFormatter
  * <p/>
- * The following attributes are required by the renderer:
+ * The following attributes are required:
  * <p/>
  * <ul>
  * <li><code>separator</code> - the character to use as a thousands separator</li>
