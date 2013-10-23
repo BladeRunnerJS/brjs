@@ -81,7 +81,7 @@ public class ExportApplicationCommand implements LegacyCommandPlugin
 			
 			IOFileFilter excludeUserLibraryTestsFilter = createExcludeUserLibsTestsFilter(applicationName);
 			IOFileFilter excludeDirFilter = new ExcludeDirFileFilter("js-test-driver", "bundles");
-			IOFileFilter excludeJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("br-"),new SuffixFileFilter(".jar")));
+			IOFileFilter excludeJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("brjs-"),new SuffixFileFilter(".jar")));
 			IOFileFilter filter = new AndFileFilter(excludeDirFilter, excludeJarFilter);
 			filter = new AndFileFilter(filter, excludeUserLibraryTestsFilter);
 			

@@ -37,7 +37,7 @@ public class UserCommandTest extends SpecTest {
 			"  Parameter 'target-bladeset-name' is required.",
 			"",
 			"Usage:",
-			"  bladerunner create-blade <target-app-name> <target-bladeset-name> <new-blade-name>");
+			"  brjs create-blade <target-app-name> <target-bladeset-name> <new-blade-name>");
 	}
 	
 	@Test
