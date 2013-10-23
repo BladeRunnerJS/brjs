@@ -1,12 +1,22 @@
 package org.bladerunnerjs.model.utility;
 
+import static org.mockito.Mockito.*;
+
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppNamespaceException;
 import org.bladerunnerjs.model.utility.NameValidator;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class NameValidatorTest
 {
+	
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+
 
 	/* lower case alphabet tests */
 	
@@ -140,5 +150,22 @@ public class NameValidatorTest
 		String[] messageLines = NameValidator.getReservedNamespaces().split("\n");
 		assertEquals(messageLines[0], "Reserved namespace(s): 'caplin', 'caplinx'");
 		assertTrue(messageLines[2], messageLines[2].startsWith("Banned Namespaces/JavaScript keywords: 'abstract', 'as', 'boolean', 'break'"));
+	}
+	
+	@Test
+	public void testGenerateAppNamespace() throws UnableToAutomaticallyGenerateAppNamespaceException
+	{
+		App app = mock(App.class);
+		when(app.getName()).thenReturn("my-App");
+		assertEquals("myapp", NameValidator.generateAppNamespaceFromApp(app));
+	}
+	
+	@Test
+	public void testExceptionThrownIfNamespaceCantBeAutomaticallyDetirmined() throws UnableToAutomaticallyGenerateAppNamespaceException
+	{
+		App app = mock(App.class);
+		when(app.getName()).thenReturn("my�App");
+		exception.expectMessage( startsWith("Unable to automatically calculate app namespace") );
+		NameValidator.generateAppNamespaceFromApp(app);
 	}
 }

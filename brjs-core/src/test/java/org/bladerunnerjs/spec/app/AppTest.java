@@ -79,14 +79,14 @@ public class AppTest extends SpecTest {
 	public void invalidAppNameSpaceThrowsException() throws Exception {
 		given(appTemplate).containsFile("some-file.blah");
 		when(app).populate("appX");
-		then(exceptions).verifyException(InvalidPackageNameException.class, app.dir(), unquoted("'appX'"));
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, app.dir(), unquoted("'appX'"));
 	}
 	
 	@Test
 	public void usingJSKeywordAsAppNameSpaceThrowsException() throws Exception {
 		given(appTemplate).containsFile("some-file.blah");
 		when(app).populate("transient");
-		then(exceptions).verifyException(InvalidPackageNameException.class, app.dir(), unquoted("'transient'"));
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, app.dir(), unquoted("'transient'"));
 	}
 	
 	@Test

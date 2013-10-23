@@ -13,19 +13,22 @@ class BuildVersionCalculator
 
 	static String calculateVersion(Project p)
 	{
-		def versionString = attemptToGetDescribeString(p)
-		if ( !versionString.equals("") )
+		def stdout = new ByteArrayOutputStream()
+		def stderr = new ByteArrayOutputStream()
+		try 
 		{
-			return versionString
+			p.exec {
+				commandLine 'git', 'describe', '--tags', '--long', '--dirty=-DEV'
+				standardOutput = stdout
+				errorOutput = stderr
+			}
+			return stdout.toString().trim()
 		}
-		
-		versionString = getVersionFallback(p)
-		if ( !versionString.equals("") )
+		catch (ex)
 		{
-			return versionString
+			p.logger.error "Error calculating version using 'git describe'. Command stderr was:  '${stderr.toString()}'"
+			throw new GradleException("Unable to detirmine buildVersion")
 		}
-		
-		throw new GradleException("Unable to detirmine buildVersion")
 	}
 	
 	static String calculateBuildDate(Project p)
@@ -56,46 +59,6 @@ class BuildVersionCalculator
 	
 	
 	////////////////////////////////////////////////////////
-	
-	private static String attemptToGetDescribeString(Project p)
-	{
-		def stdout = new ByteArrayOutputStream()
-		def stderr = new ByteArrayOutputStream()
-		try 
-		{
-			p.exec {
-				commandLine 'git', 'describe', '--tags', '--long', '--dirty'
-				standardOutput = stdout
-				errorOutput = stderr
-			}
-			return stdout.toString().trim()
-		}
-		catch (ex)
-		{
-			p.logger.error "Error calculating version using 'git describe'. Command stderr was:  '${stderr.toString()}'"
-			return "" 			
-		}
-	}
-	
-	private static String getVersionFallback(Project p)
-	{
-		def stdout = new ByteArrayOutputStream()
-		def stderr = new ByteArrayOutputStream()
-		try
-		{
-			p.exec {
-				commandLine 'git', 'rev-parse', '--short', 'HEAD'
-				standardOutput = stdout
-				errorOutput = stderr
-			}
-			return "0.0.0-"+stdout.toString().trim()
-		}
-		catch (ex)
-		{
-			p.logger.error "Error calculating version using 'git rev-parse'. Command stderr was:  '${stderr.toString()}'"
-			return ""
-		}
-	}
 	
 	private static String getHostnameUsingHostnameCommand(Project p)
 	{

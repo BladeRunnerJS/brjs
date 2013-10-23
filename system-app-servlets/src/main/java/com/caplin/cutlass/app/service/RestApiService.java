@@ -232,17 +232,6 @@ public class RestApiService
 		return FileUtils.readFileToString(versionFile);
 	}
 	
-	public void resetDatabase(String appName) throws Exception
-	{
-//		ResetDbCommand cmd = null;
-//		cmd = new ResetDbCommand();
-//		cmd.setBRJS(brjs);
-//		String[] args = new String[]{ appName };		
-//		doCommand( cmd, args );
-		//TODO: how do we deal with this? reset DB cannot be part of the API anymore
-		throw new RuntimeException("reset DB is now a plugin - fix this!!");
-	}
-	
 	public void getJsdocForApp(String appName) throws Exception {
 		JsDocCommand jsDocCommand = new JsDocCommand();
 		jsDocCommand.setBRJS(brjs);

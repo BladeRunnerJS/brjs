@@ -327,23 +327,6 @@ public class RestApiServiceTest
 		}
 	}
 	
-	/* reset war tests */
-	
-	@Test @Ignore //TODO: this should be moved into the CT3 plugin
-	public void testResetApp() throws Exception
-	{
-		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
-		setupService(temporarySdk);
-		try 
-		{			
-			service.resetDatabase("multi-bladeset-multi-blade-app");
-		} 
-		catch (Exception ex)
-		{
-			//TODO: we dont want to actually reset the db here - find a better way to check the reset db command is executed
-			assertTrue( ex.getMessage(), ex.getMessage().startsWith("Could not find webcentric database for application 'multi-bladeset-multi-blade-app'"));
-		}
-	}
 	
 	// TODO: re-enable this test once we are using a stream handlers to keep the process from blocking
 	@Ignore

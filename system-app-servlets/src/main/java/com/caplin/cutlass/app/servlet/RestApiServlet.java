@@ -76,7 +76,6 @@ public class RestApiServlet extends HttpServlet
 	private static final String CREATE_BLADESET_COMMAND = "create-bladeset";
 	private static final String CREATE_BLADE_COMMAND = "create-blade";
 	private static final String IMPORT_BLADES_COMMAND = "import-blades";
-	private static final String RESET_DATABASE_COMMAND = "reset-db";
 	private static final String GENERATE_DOCS_COMMAND = "generate-docs";
 	//private static final String TEST_COMMAND = "test";	// is this needed?
 	
@@ -217,10 +216,6 @@ public class RestApiServlet extends HttpServlet
 					if (command.equals(CREATE_APP_COMMAND))
 					{
 						apiService.createApp(appName, requestJson.get(NAMESPACE_PARAM).getAsString());
-						responseHandled = true;
-					}
-					else if (command.equals(RESET_DATABASE_COMMAND)) {
-						apiService.resetDatabase(appName);
 						responseHandled = true;
 					}
 					else if (command.equals(GENERATE_DOCS_COMMAND))

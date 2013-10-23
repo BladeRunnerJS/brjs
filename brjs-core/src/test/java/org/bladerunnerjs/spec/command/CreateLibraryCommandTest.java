@@ -61,7 +61,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheLibraryNamespaceIsNotAValidPackageName() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib", "lib-x");
-		then(exceptions).verifyException(InvalidPackageNameException.class, "lib-x", lib.dir().getPath())
+		then(exceptions).verifyException(InvalidRootPackageNameException.class, "lib-x", lib.dir().getPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
