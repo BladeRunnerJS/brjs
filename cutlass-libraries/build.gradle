@@ -17,6 +17,7 @@ dependencies {
 	testRunner project(path: ':js-test-driver-bundler-plugin', transitive : false)
 	testRunner project(path: ':brjs-logger-binding')
 	testRunner dependency('JsTestDriver')
+	testRunner dependency('bval-jsr303')
 	testRunner files('JsTestDriver.conf')
 	
 	beautifier project(path: ':cutlass-common')
