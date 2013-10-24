@@ -5,7 +5,7 @@ br.thirdparty("jquery");
  * <code>IsVisible ViewFixtureHandler</code> can be used to check if a view element is visible.
  * Example usage:
  * <p>
- * <code>then("ticket.view.(.forwardGeneralSummary).isVisible = true");</code>
+ * <code>then("form.view.(.orderSummary).isVisible = true");</code>
  * </p>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler

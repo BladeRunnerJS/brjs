@@ -5,7 +5,7 @@ br.thirdparty("jquery");
  * <code>TypedValue ViewFixtureHandler</code> can be used to simulate typing a value into an input view element.
  * Example usage:
  * <p>
- * <code>when("tile.view.([identifier=\'FxTileSpot\'] .fxtile_amount .fx_tile_amount_input input).typedValue => 'abc'");</code>
+ * <code>when("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).typedValue => 'abc'");</code>
  * </p>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
