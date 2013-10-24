@@ -234,8 +234,8 @@ task testIE, dependsOn: [testJsIE, testSystemAppsIE]
 
 assemble.dependsOn = [assembleSdk, assembleJsDoc, copyBrowsers]
 
-task check, dependsOn: [assemble, test], {}
-task build, dependsOn: [check], {}
+task check, dependsOn: test, {}
+task build, dependsOn: check, {}
 
 
 ext.explodedSdkDir = "${project.buildDir}/exploded"
@@ -249,6 +249,7 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*"
 }
 build.dependsOn distZip
+distZip.mustRunAfter test
 
 
 task explodeSdk, type:Sync, dependsOn: distZip, {
