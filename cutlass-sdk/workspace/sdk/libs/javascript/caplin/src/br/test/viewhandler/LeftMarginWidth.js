@@ -5,7 +5,7 @@ br.thirdparty("jquery");
  * <code>LeftMarginWidth ViewFixtureHandler</code> can be used to test the left margin width of an element.
  * Example usage:
  * <p>
- * <code>and("tile.view.([identifier=\'FxTileSpot\'] .fxtile_amount .fx_tile_amount_input input).leftMarginWidth = '10'");</code>
+ * <code>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).leftMarginWidth = '10'");</code>
  * </p>
  * 
  * @constructor
