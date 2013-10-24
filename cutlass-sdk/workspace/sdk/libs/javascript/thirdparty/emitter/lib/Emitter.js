@@ -92,9 +92,10 @@
 			if (arguments.length === 0) {
 				// return all values for all keys.
 				val = [];
-				this._map.forEach(function(values) {
+				for (var key in this._map) {
+					var values = this._map[key];
 					val.push.apply(val, values);
-				});
+				}
 			} else {
 				// return all the values for the provided key.
 				val = this._map.get(key);
@@ -122,14 +123,15 @@
 			}
 		},
 		'filterAll': function(filterFunction) {
-			this._map.forEach(function(values, key, map) {
+			for (var key in this._map) {
+				var values = this._map[key];
 				var newValues = values.filter(filterFunction);
 				if (newValues.length === 0) {
-					map['delete'](key);
+					this._map['delete'](key);
 				} else {
-					map.set(key, newValues);
+					this._map.set(key, newValues);
 				}
-			});
+			}
 		},
 		'removeLastMatch': function removeLast(key, matchFunction) {
 			if (this._map.has(key) === false) { return false; }
