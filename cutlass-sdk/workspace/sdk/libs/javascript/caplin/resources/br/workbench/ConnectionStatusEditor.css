@@ -1,0 +1,4 @@
+.workbench-panel .btn:disabled.notClickable.selected{
+	background-color: #62a4ee;
+	color: #fff;
+}

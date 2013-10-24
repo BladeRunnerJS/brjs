@@ -1,0 +1,84 @@
+
+.workbench-component .settings-switch {
+	z-index:1;
+	position:absolute;
+	padding: 1px;
+	width: 46px;
+	height: 24px;
+	background-clip: padding-box;
+	border: 1px solid;
+	border-color: rgba(0, 0, 0, 0.45) rgba(0, 0, 0, 0.4) rgba(0, 0, 0, 0.28);
+	border-radius: 15px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;	
+	 box-sizing: border-box;
+	background-color: #b5b5b5;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #b5b5b5), color-stop(100%, #d5d5d5));
+ 	background-image: -webkit-linear-gradient(top, #b5b5b5, #d5d5d5);
+  background-image: -moz-linear-gradient(top, #b5b5b5, #d5d5d5);
+  background-image: -ms-linear-gradient(top, #b5b5b5, #d5d5d5);
+  background-image: -o-linear-gradient(top, #b5b5b5, #d5d5d5);
+  background-image: linear-gradient(top, #b5b5b5, #d5d5d5);
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.12), 0 1px rgba(255, 255, 255, 0.4);
+}
+.workbench-component .settings-switch.on {
+	background-clip: border-box;
+	border-color: #1f559f #3672b8 #498cd3;
+	background-color: #417ece;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #417ece), color-stop(100%, #62a4ee));
+	background-image: -webkit-linear-gradient(top, #417ece, #62a4ee);
+	background-image: -moz-linear-gradient(top, #417ece, #62a4ee);
+	background-image: -ms-linear-gradient(top, #417ece, #62a4ee);
+	background-image: -o-linear-gradient(top, #417ece, #62a4ee);
+	background-image: linear-gradient(top, #417ece, #62a4ee);
+}
+
+.toggleAutoServer {
+	position: relative;
+	height: 25px;
+}
+
+.workbench-component .toggleAutoServerCheckbox {
+	display: none;
+}
+
+.workbench-component .settings-off {
+	font: 9px/26px Arial, sans-serif;
+	color: #888;
+	position: absolute;
+	right: 4px;
+	top: -1px;
+	z-index: -1;
+	font-weight: bold;
+	text-shadow: 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.workbench-component .settings-on {
+	font: 9px/26px Arial, sans-serif;
+	color: #fff;
+	position: absolute;
+	left: 4px;
+	top: -1px;
+	z-index: -1;
+	font-weight: bold;
+	text-shadow: 0px -1px 0px rgba(0,0,0, 0.2);
+}
+
+.workbench-component .settings-switch-handle {
+	z-index:999;
+  display: block;
+  margin: -1px;
+  margin-bottom: 1px;
+  padding: 1px;
+  width: 20px;
+  height: 20px;
+  background-image:url(steel-knob.png);
+  background-repeat:no-repeat;
+}
+
+.workbench-component .toggleAutoServer label {
+	margin-left: 46px;
+	display: block;
+	padding: 5px;
+}

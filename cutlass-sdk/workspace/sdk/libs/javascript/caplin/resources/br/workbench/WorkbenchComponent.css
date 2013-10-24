@@ -1,0 +1,76 @@
+
+.workbench-component {
+	margin:5px;
+	font-family: arial;
+	background-color: #b9b9b9;
+	border-radius: 5px;
+	
+	-moz-box-shadow: 2px 2px 2px #222;
+	-webkit-box-shadow: 2px 2px 2px #222;
+	box-shadow: 2px 2px 3px #222;
+}
+
+.workbench-component.collapsed {
+	margin-bottom: 8px;
+}
+
+.workbench-component .header {
+	padding-left: 7px;
+	padding-top: 5px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	background: #B9B9B9;
+	background: -moz-linear-gradient(top, rgba(217,217,217,1) 0%, rgba(159,159,159,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(217,217,217,1)), color-stop(100%,rgba(159,159,159,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, rgba(217,217,217,1) 0%,rgba(159,159,159,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, rgba(217,217,217,1) 0%,rgba(159,159,159,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, rgba(217,217,217,1) 0%,rgba(159,159,159,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom, rgba(217,217,217,1) 0%,rgba(159,159,159,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d9d9d9', endColorstr='#9f9f9f',GradientType=0 ); /* IE6-9 */
+	height: 21px;
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #666;
+	cursor: pointer;
+}
+
+.workbench-component.collapsed .header {
+	border-radius: 5px;
+}
+
+.workbench-component.collapsed .arrow {
+	margin-right: -4px;
+	margin-top: 3px;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-left: 9px solid #666;
+}
+
+.workbench-component .arrow {
+	cursor: default;
+	width: 0px;
+	height: 0px;
+	margin-top: 4px;
+	float: left;	
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 9px solid #666;
+}
+
+.workbench-component.collapsed .title {
+	color: #666;
+}
+
+.workbench-component .title {
+	float: left;
+	margin-left: 3px;
+	color: #333;
+	font-weight: bold;
+	font-size: 14px;
+	text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.4);
+}
+
+.workbench-component .container {
+	border-top: 1px solid #CCC;
+	padding: 6px;
+}

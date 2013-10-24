@@ -1,0 +1,8 @@
+<div id="template-aware-node-list">
+	<div id="single-node-list" data-bind="template:{name:nodeList.getTemplateName, foreach:nodeList}"></div>
+
+	<div id="two-node-lists">
+		<div data-bind="template:{name:nodeList.getTemplateName, foreach:nodeList}"></div>
+		<div data-bind="template:{name:anotherNodeList.getTemplateName, foreach:anotherNodeList}"></div>
+	</div>
+</div>

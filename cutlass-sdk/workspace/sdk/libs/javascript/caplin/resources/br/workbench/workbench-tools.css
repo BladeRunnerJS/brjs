@@ -1,0 +1,176 @@
+.toggleAutoServer.data .settings-switch.on
+{
+	padding-left: 22px;
+}
+
+.autoGen
+{
+	vertical-align: middle;	
+}
+ 
+
+.workbench-panel .btn.enabled {
+	border: 1px solid green;
+}
+
+.workbench-panel .btn.denied, .workbench-panel .btn.notavailable {
+	border: 1px solid red;
+}
+
+.workbench-panel .btn:disabled {
+    background: rgb(201, 201, 201);
+    color: rgb(112, 112, 112);
+    border: thin solid rgb(167, 167, 167);
+    box-shadow: none;
+}
+
+.message-header
+{
+    position: relative
+;
+	padding-top: 3px;
+	padding-bottom: 10px;
+	padding-right: 5px;
+	padding-left: 5px;
+
+	margin-bottom: 5px;
+		
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	
+	background: #B9B9B9;
+	background: -moz-linear-gradient(top, rgba(217, 217, 217, 1) 0%, rgba(159, 159, 159, 1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(217, 217, 217, 1)), color-stop(100%,rgba(159, 159, 159, 1)));
+	background: -webkit-linear-gradient(top, rgba(217, 217, 217, 1) 0%,rgba(159, 159, 159, 1) 100%);
+	background: -o-linear-gradient(top, rgba(217, 217, 217, 1) 0%,rgba(159, 159, 159, 1) 100%);
+	background: -ms-linear-gradient(top, rgba(217, 217, 217, 1) 0%,rgba(159, 159, 159, 1) 100%);
+	background: linear-gradient(to bottom, rgba(217, 217, 217, 1) 0%,rgba(159, 159, 159, 1) 100%);
+	border-bottom: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #666;
+	cursor: pointer;
+}
+
+.message-header .controls
+{
+	vertical-align: bottom;
+	margin-bottom: -6px;
+}
+
+.message-header .controls .btn
+{
+	margin: 0;
+}
+
+.message-header .controls .btn.isHidden {
+    visibility: hidden;
+}
+
+.message-header span
+{
+	vertical-align: bottom;
+	display: inline-block;
+}
+
+.message-section.control .btn.config
+{
+    visibility: hidden;
+}
+
+.message-section .fields
+{
+	padding: 5px 0 5px 5px;
+	margin-top: -5.5px;
+	width: 95%;
+	margin-left: 1.5%;
+
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	
+	background: #B9B9B9;
+	background: -moz-linear-gradient(top, rgba(217, 217, 217, 1) 0%, rgba(159, 159, 159, 1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(217, 217, 217, 1)), color-stop(100%,rgba(159, 159, 159, 1)));
+	background: -webkit-linear-gradient(top, rgba(217, 217, 217, 1) 0%,rgba(159, 159, 159, 1) 100%);
+	background: -o-linear-gradient(top, rgba(217, 217, 217, 1) 0%,rgba(159, 159, 159, 1) 100%);
+	background: -ms-linear-gradient(top, rgba(217, 217, 217, 1) 0%,rgba(159, 159, 159, 1) 100%);
+	background: linear-gradient(to bottom, rgba(217, 217, 217, 1) 0%,rgba(159, 159, 159, 1) 100%);
+	
+	margin-bottom: 5px;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}
+
+.messageEditorSlider .slider
+{
+	margin: 10px 20px 10px 20px;
+    display: inline-block;
+    min-width: 50%;
+}
+
+.messageEditorSlider .speed
+{
+    vertical-align: top;
+    height: 25px;
+    background: url("workbench-sprite.png") no-repeat;
+}
+
+.messageEditorSlider .slow
+{
+
+    width: 25px;
+
+    background-position: -520px -210px;
+}
+
+.message-header .fast
+{
+    width: 52px;
+    background-position: -501px -180px;
+}
+
+
+/***************** Config editor ***************/
+.workbench-config-editor-alphaNumeric-config label {
+    display: inline-block;
+    width: 40%;
+}
+
+.workbench-config-editor-alphaNumeric-config input {
+    width: 40%;
+}
+
+.subscriber-list-item {
+	position: relative;
+}
+
+.subscriber-count {
+	position: absolute;
+	right: 0.5em;
+	top: 0.25em;
+	font-size: .75em;
+	background: rgba(255,255,255,0.2);
+	padding: 0.1em 0.5em;
+	border-radius: 0.5em;
+	box-shadow: 0 0 0.25em rgba(0,0,0,0.3) inset;
+}
