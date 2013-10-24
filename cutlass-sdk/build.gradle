@@ -220,13 +220,6 @@ createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
 createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
 createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
 
-//TODO: remove this once the presenter libs have been moved across
-testSystemAppsIE.enabled = false
-testSystemAppsChrome.enabled = false
-testSystemAppsFirefox.enabled = false
-
-
-
 
 task test, dependsOn:[testJsChrome, testJsFirefox, testSystemAppsChrome, testSystemAppsFirefox]
 task testIE, dependsOn: [testJsIE, testSystemAppsIE]
@@ -284,7 +277,7 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 
 		// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
 		"*/sdk/libs/javascript/caplin/src/br/**",
-//		"*/sdk/libs/javascript/caplin/resources/**/*",
+		"*/sdk/libs/javascript/caplin/resources/**/*",
 		"*/sdk/libs/javascript/thirdparty/**/*",
 		"*/sdk/system-applications/**/*",
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
