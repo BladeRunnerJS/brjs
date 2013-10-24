@@ -46,7 +46,7 @@ caplinx.dashboard.app.NameValidator.isReservedJsWord = function(sName)
 {
 	if(!this.mReservedWords)
 	{
-		this.mReservedWords = caplin.core.MapUtility.addArrayToMap({}, this.RESERVED_JS_WORDS);
+		this.mReservedWords = br.util.MapUtility.addArrayToMap({}, this.RESERVED_JS_WORDS);
 	}
 	
 	return (this.mReservedWords[sName]) ? true : false;

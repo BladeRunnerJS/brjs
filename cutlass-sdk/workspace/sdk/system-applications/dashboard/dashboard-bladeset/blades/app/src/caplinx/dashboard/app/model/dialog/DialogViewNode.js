@@ -1,16 +1,16 @@
 caplinx.dashboard.app.model.dialog.DialogViewNode = function(sTemplateId)
 {
 	// call super constructor
-	caplin.presenter.node.TemplateNode.call(this, "caplinx.dashboard.app." + sTemplateId);
+	br.presenter.node.TemplateNode.call(this, "caplinx.dashboard.app." + sTemplateId);
 	
-	this.isClosable = new caplin.presenter.property.EditableProperty(true);
-	this.hasBackground = new caplin.presenter.property.EditableProperty(true);
+	this.isClosable = new br.presenter.property.EditableProperty(true);
+	this.hasBackground = new br.presenter.property.EditableProperty(true);
 	
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.DialogViewNode, caplin.presenter.node.TemplateNode);
+br.extend(caplinx.dashboard.app.model.dialog.DialogViewNode, br.presenter.node.TemplateNode);
 
 caplinx.dashboard.app.model.dialog.DialogViewNode.prototype.initializeForm = function()
 {
-	caplin.core.Utility.interfaceMethod("DialogViewNode", "initializeForm");
+	throw new Error("DialogViewNode.initializeForm not implemented.");
 };
 

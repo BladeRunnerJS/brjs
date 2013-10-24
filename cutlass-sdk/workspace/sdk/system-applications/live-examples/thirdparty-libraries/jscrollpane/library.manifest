@@ -1,3 +1,0 @@
-js : jqmousewheel.js, jscrollmin.js, 
-css: jscrollpane.css
-depends: jquery

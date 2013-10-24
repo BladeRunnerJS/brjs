@@ -1,7 +1,7 @@
 caplinx.dashboard.app.testing.DashboardFixture = function(oViewFixture, oPageUrlFixture, oUrlRequestServiceFixture, oLocalStorageFixture, oBrowserFixture) 
 {
 	this.m_oViewFixture = oViewFixture;
-	this.m_oModelFixture = new caplin.presenter.testing.PresentationModelFixture();
+	this.m_oModelFixture = new br.presenter.testing.PresentationModelFixture();
 	this.m_oPageUrlFixture = oPageUrlFixture;
 	this.m_oWindowOpenFixture = new caplinx.dashboard.app.testing.WindowOpenFixture();
 	this.m_oLocalStorageFixture = oLocalStorageFixture;	
@@ -11,7 +11,7 @@ caplinx.dashboard.app.testing.DashboardFixture = function(oViewFixture, oPageUrl
 	this.oApp = null;
 };
 
-caplin.implement(caplinx.dashboard.app.testing.DashboardFixture, caplin.testing.Fixture);
+br.inherit(caplinx.dashboard.app.testing.DashboardFixture, br.test.Fixture);
 
 caplinx.dashboard.app.testing.DashboardFixture.prototype.setUp = function() 
 {

@@ -5,7 +5,7 @@ br.thirdparty("jquery");
  * <code>Clicked ViewFixtureHandler</code> can be used to trigger a click on a view element.
  * Example usage:
  * <p>
-* <code>when("form.view.(.executeOrder [identifier=\'buttonOrder\'] .order_button).clicked => true");</code>
+ * <code>when("ticket.view.(.executeForward [identifier=\'buttonSell\'] .fx_execute_button).clicked => true");</code>
  * </p>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler

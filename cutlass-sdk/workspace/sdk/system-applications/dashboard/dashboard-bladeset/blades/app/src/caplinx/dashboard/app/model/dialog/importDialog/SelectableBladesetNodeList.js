@@ -1,7 +1,7 @@
 caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList = function(oAppSelectionField, oPresentationModel, fNewBladesetNameValidationListener)
 {
 	// call super constructor
-	caplin.presenter.node.NodeList.call(this, [], caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNode);
+	br.presenter.node.NodeList.call(this, [], caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNode);
 	
 	this.m_oAppSelectionField = oAppSelectionField;
 	this.m_oPresentationModel = oPresentationModel;
@@ -11,7 +11,7 @@ caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList = fun
 	
 	oAppSelectionField.value.addChangeListener(this, "_onSelectedAppChanged");
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList, caplin.presenter.node.NodeList);
+br.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList, br.presenter.node.NodeList);
 
 caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList.prototype._onSelectedAppChanged = function()
 {

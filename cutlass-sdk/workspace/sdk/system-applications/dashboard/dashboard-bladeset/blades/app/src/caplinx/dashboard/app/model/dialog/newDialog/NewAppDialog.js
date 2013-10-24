@@ -9,7 +9,7 @@ caplinx.dashboard.app.model.dialog.newDialog.NewAppDialog = function(oPresentati
 	
 	this.appName = new caplinx.dashboard.app.model.form.Field("-- Please name your app --", "");
 	this.appNamespace = new caplinx.dashboard.app.model.form.Field("-- Please give a namespace --");
-	this.createAppButton = new caplin.presenter.node.Button("Create");
+	this.createAppButton = new br.presenter.node.Button("Create");
 	
 	this.appName.value.addValidator(new caplinx.dashboard.app.model.dialog.validator.AppNameValidator(oPresentationModel));
 	this.appNamespace.value.addValidator(new caplinx.dashboard.app.model.dialog.validator.AppNamespaceValidator());
@@ -18,7 +18,7 @@ caplinx.dashboard.app.model.dialog.newDialog.NewAppDialog = function(oPresentati
 	this.appNamespace.value.addValidationCompleteListener(this, "_updateDialog");
 	this.appNamespace.value.addChangeListener(this, "_onNamespaceChanged");
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.newDialog.NewAppDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.extend(caplinx.dashboard.app.model.dialog.newDialog.NewAppDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.newDialog.NewAppDialog.prototype.initializeForm = function()
 {

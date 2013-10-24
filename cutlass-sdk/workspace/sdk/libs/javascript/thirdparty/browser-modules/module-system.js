@@ -54,7 +54,7 @@
 
 			return moduleExports[id];
 		}
-		
+
 		require.modules = moduleExports;
 		
 		return {
@@ -62,10 +62,10 @@
 			require: require
 		};
 	}
-	
+
 	var global = (new Function("return this;"))();
 	var defaultRealm = realm();
-	
+
 	global.define = defaultRealm.define;
 	global.require = defaultRealm.require.bind(null, "");
 })();

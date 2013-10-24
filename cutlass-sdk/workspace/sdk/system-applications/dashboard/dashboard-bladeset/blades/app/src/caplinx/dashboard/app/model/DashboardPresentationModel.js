@@ -6,14 +6,14 @@ caplinx.dashboard.app.model.DashboardPresentationModel = function(oDashboardServ
 	this.m_oLocalStorage = oLocalStorage;
 	this.m_oBrowserDetector = oBrowserDetector;
 	
-	this.currentSection = new caplin.presenter.property.WritableProperty( "" );
-	this.isLoading = new caplin.presenter.property.WritableProperty();
+	this.currentSection = new br.presenter.property.WritableProperty( "" );
+	this.isLoading = new br.presenter.property.WritableProperty();
 	this.m_oDashboardService.setIsLoadingProperty(this.isLoading);
-	this.loadingText = new caplin.presenter.property.WritableProperty();
+	this.loadingText = new br.presenter.property.WritableProperty();
 	this.m_oDashboardService.setLoadingTextProperty(this.loadingText);
 	
-	this.isSDKSectionSelected = new caplin.presenter.property.WritableProperty();
-	this.isSupportSectionSelected = new caplin.presenter.property.WritableProperty();
+	this.isSDKSectionSelected = new br.presenter.property.WritableProperty();
+	this.isSupportSectionSelected = new br.presenter.property.WritableProperty();
 	
 	this.crumbtrail = new caplinx.dashboard.app.model.crumbtrail.CrumbTrail(this);
 	
@@ -22,13 +22,13 @@ caplinx.dashboard.app.model.DashboardPresentationModel = function(oDashboardServ
 	this.workbenchScreen = new caplinx.dashboard.app.model.workbench.WorkbenchScreen(this);
 	this.releaseNoteScreen = new caplinx.dashboard.app.model.release.ReleaseNoteScreen(this);
 	
-	this.sdkVersion = new caplin.presenter.property.WritableProperty();
+	this.sdkVersion = new br.presenter.property.WritableProperty();
 	this.setSdkVersion();
 	
 	this.dialog = new caplinx.dashboard.app.model.dialog.Dialog(this);
 	this.dialog.initialize();
 };
-caplin.extend(caplinx.dashboard.app.model.DashboardPresentationModel, caplin.presenter.PresentationModel);
+br.extend(caplinx.dashboard.app.model.DashboardPresentationModel, br.presenter.PresentationModel);
 
 caplinx.dashboard.app.model.DashboardPresentationModel.prototype.getBrowserDetector = function()
 {

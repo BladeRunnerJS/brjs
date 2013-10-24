@@ -5,7 +5,7 @@ br.thirdparty("jquery");
  * <code>BackgroundImage ViewFixtureHandler</code> can be used to test the background image value.
  * Example usage:
  * <p>
- * <code>and("form.view.([identifier=\'orderForm\'] .order_amount .order_amount_input input).backgroundImage = 'images/image.png'");</code>
+ * <code>and("tile.view.([identifier=\'FxTileSpot\'] .fxtile_amount .fx_tile_amount_input input).backgroundImage = 'images/image.png'");</code>
  * </p>
  * 
  * @constructor

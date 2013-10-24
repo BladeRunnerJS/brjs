@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 describe("App Detail Screen", function() {
 	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");
@@ -8,7 +8,6 @@ describe("App Detail Screen", function() {
 		given("dash.loaded = true");
 			and("dash.model.appDetailScreen.newBladesetButton.label = 'new-bladeset-button'");
 			and("dash.model.appDetailScreen.importBladesFromAppButton.label = 'import-blades-from-app-button'");
-			and("dash.model.appDetailScreen.resetDatabaseButton.label = 'reset-database-button'");
 			and("dash.model.appDetailScreen.launchAppButton.label = 'launch-app-button'");
 			and("dash.model.appDetailScreen.exportWarButton.label = 'export-war-button'");
 			and("dash.model.appDetailScreen.bladesets.length = 1");
@@ -17,7 +16,6 @@ describe("App Detail Screen", function() {
 			and("dash.model.appDetailScreen.bladesets[0].blades[0].bladeName = 'myblade'");
 		then("dash.view.(#appDetailScreen .newBladeSetBtn button).text = '   new-bladeset-button     '");
 			and("dash.view.(#appDetailScreen .importBladesFromAppBtn button).text = '   import-blades-from-app-button     '");
-			and("dash.view.(#appDetailScreen .resetDatabaseBtn button).text = '      reset-database-button  '");
 			and("dash.view.(#appDetailScreen .launchAppBtn button).text = '      launch-app-button  '");
 			and("dash.view.(#appDetailScreen .exportWarBtn button).text = '      export-war-button  '");
 			and("dash.view.(#appDetailScreen .bladeset .bladeset-title .bladeset-title-text).text = 'mybladeset'");
@@ -38,14 +36,6 @@ describe("App Detail Screen", function() {
 			and("dash.model.appDetailScreen.importBladesFromAppButton.enabled = true");
 		when("dash.view.(#appDetailScreen .importBladesFromAppBtn button).clicked => true");
 		then("dash.model.appDetailScreen.importBladesFromApp.invocationCount = 1");
-	});
-	
-	it("invokes the resetDatabase() method when the 'reset database' button is clicked", function() {
-		given("dash.loaded = true");
-			and("dash.model.appDetailScreen.resetDatabase.invocationCount = 0");
-			and("dash.model.appDetailScreen.resetDatabaseButton.enabled = true");
-		when("dash.view.(#appDetailScreen .resetDatabaseBtn button).clicked => true");
-		then("dash.model.appDetailScreen.resetDatabase.invocationCount = 1");
 	});
 	
 	it("invokes the launchApp() method when the 'launch app' button is clicked", function() {

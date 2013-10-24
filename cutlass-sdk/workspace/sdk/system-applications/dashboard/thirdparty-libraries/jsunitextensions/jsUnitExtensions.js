@@ -355,7 +355,7 @@ _isMessageSupplied = function(oArguments, nExpectedArgumentCount) {
 	if (oArguments.length >= nExpectedArgumentCount) {
 		var sMsg = oArguments[0];   // first argument is always the message
 		if (typeof sMsg != "string") {
-			caplin.core.Error.raise("assert incorrectly invoked: first argument needs to be a string message");
+			throw new Error("assert incorrectly invoked: first argument needs to be a string message");
 		}
 		return true;
 	}

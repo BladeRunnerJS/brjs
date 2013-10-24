@@ -5,7 +5,7 @@ caplinx.dashboard.app.service.url.PageUrlProviderStub = function(sRootUrl)
 	
 	this.m_sRootUrl = sRootUrl;
 };
-caplin.implement(caplinx.dashboard.app.service.url.PageUrlProviderStub, caplinx.dashboard.app.service.url.PageUrlProvider);
+br.inherit(caplinx.dashboard.app.service.url.PageUrlProviderStub, caplinx.dashboard.app.service.url.PageUrlProvider);
 
 caplinx.dashboard.app.service.url.PageUrlProviderStub.prototype.getRootUrl = function()
 {

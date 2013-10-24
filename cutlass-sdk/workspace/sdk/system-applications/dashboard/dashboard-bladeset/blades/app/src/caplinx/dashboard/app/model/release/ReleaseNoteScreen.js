@@ -4,10 +4,10 @@ caplinx.dashboard.app.model.release.ReleaseNoteScreen = function(oPresentationMo
 	this.m_fRefreshReleaseNote = this._refreshReleaseNoteScreen.bind(this);
 	this.m_fOnServiceError = this._onServiceError.bind(this);
 	
-	this.visible = new caplin.presenter.property.WritableProperty(false);
-	this.content = new caplin.presenter.property.WritableProperty();
+	this.visible = new br.presenter.property.WritableProperty(false);
+	this.content = new br.presenter.property.WritableProperty();
 };
-caplin.extend(caplinx.dashboard.app.model.release.ReleaseNoteScreen, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.release.ReleaseNoteScreen, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.release.ReleaseNoteScreen.prototype.displayReleaseNote = function()
 {

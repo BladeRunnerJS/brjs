@@ -2,7 +2,7 @@ caplinx.dashboard.app.testing.WindowOpenFixture = function()
 {
 	this.bIgnoreEvents = false;
 };
-caplin.implement(caplinx.dashboard.app.testing.WindowOpenFixture, caplin.testing.Fixture);
+br.inherit(caplinx.dashboard.app.testing.WindowOpenFixture, br.test.Fixture);
 
 caplinx.dashboard.app.testing.WindowOpenFixture.prototype.setWindowOpenerService = function(oWindowOpenerService)
 {

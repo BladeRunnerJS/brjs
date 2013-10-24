@@ -8,13 +8,13 @@ caplinx.dashboard.app.model.dialog.newDialog.NewBladesetDialog = function(oPrese
 	this.m_fOnFailure = this._onFailure.bind(this);
 	
 	this.bladesetName = new caplinx.dashboard.app.model.form.Field("-- Please name your bladeset --");
-	this.createBladesetButton = new caplin.presenter.node.Button("Create");
+	this.createBladesetButton = new br.presenter.node.Button("Create");
 	
 	this.bladesetName.value.addValidator(new caplinx.dashboard.app.model.dialog.validator.BladesetNameValidator(oPresentationModel));
 	
 	this.bladesetName.value.addValidationCompleteListener(this, "_updateDialog");
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.newDialog.NewBladesetDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.extend(caplinx.dashboard.app.model.dialog.newDialog.NewBladesetDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.newDialog.NewBladesetDialog.prototype.initializeForm = function()
 {

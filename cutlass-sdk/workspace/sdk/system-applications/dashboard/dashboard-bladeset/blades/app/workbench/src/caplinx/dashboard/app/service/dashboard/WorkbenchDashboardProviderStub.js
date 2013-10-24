@@ -13,7 +13,7 @@ caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub = functio
 	this.RESPONSE_DELAY = 50;
 	this.TEST_CHUNK_DELAY = 2000;
 };
-caplin.implement(caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub, caplinx.dashboard.app.service.dashboard.DashboardService);
+br.inherit(caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub, caplinx.dashboard.app.service.dashboard.DashboardService);
 
 caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.setIsLoadingProperty = function() { }
 
@@ -85,20 +85,6 @@ caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype
 	{
 		this.m_mApps[sNewApp] = {"FX":["Tile", "Ticket", "Grid", "Blotter"], "FI":["Ticket", "Grid", "Blotter"]};
 		
-		window.setTimeout(function() {
-			fCallback();
-		}, this.RESPONSE_DELAY);
-	}
-};
-
-caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub.prototype.resetDatabase = function(sApp, fCallback, fErrorCallback)
-{
-	if(!this.m_bSuccessMode)
-	{
-		this._invokeErrorCallback("resetDatabase", fErrorCallback);
-	}
-	else
-	{
 		window.setTimeout(function() {
 			fCallback();
 		}, this.RESPONSE_DELAY);

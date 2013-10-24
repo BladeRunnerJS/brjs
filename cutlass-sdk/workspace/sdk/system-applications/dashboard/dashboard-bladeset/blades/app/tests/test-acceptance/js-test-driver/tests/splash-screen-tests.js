@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 describe("splash screen tests", function() 
 {

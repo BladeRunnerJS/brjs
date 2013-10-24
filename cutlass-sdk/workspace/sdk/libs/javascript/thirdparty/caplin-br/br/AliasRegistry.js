@@ -1,6 +1,7 @@
 /** @module br/AliasRegistry */
 define('br/AliasRegistry', function(require, module, exports) {
-
+	"use strict";
+	
 	/**
 	 * The <code>AliasRegistry</code> is provides access to the aliases used within
 	 * the application.
@@ -56,7 +57,7 @@ define('br/AliasRegistry', function(require, module, exports) {
 	 * @param {function} interface the interface being used to filter the aliases by.
 	 * @type Array
 	 */
-	exports.getAliasesByInterface = function getAliasesByInterface(interface) {
+	exports.getAliasesByInterface = function getAliasesByInterface(protocol) {
 		ensureAliasDataHasBeenSet();
 		var allAliases = this.getAllAliases();
 		var filteredAliases = [];
@@ -65,12 +66,12 @@ define('br/AliasRegistry', function(require, module, exports) {
 			var alias = allAliases[i];
 			var aliasInterface = aliasData[alias]["interface"];
 
-			if(aliasInterface === interface) {
+			if(aliasInterface === protocol) {
 				filteredAliases.push(alias);
 			} else if (this.isAliasAssigned(alias)) {
 				var aliasClass = this.getClass(alias);
 
-				if(br.isAssignableFrom(aliasClass, interface) || implementsInterface(aliasClass, interface)) {
+				if(br.isAssignableFrom(aliasClass, protocol) || implementsInterface(aliasClass, protocol)) {
 					filteredAliases.push(alias);
 				}
 			}
@@ -154,9 +155,9 @@ define('br/AliasRegistry', function(require, module, exports) {
 
 			if (this.isAliasAssigned(aliasId) && alias["interface"]) {
 				var aliasClass = alias["class"];
-				var interface = alias["interface"];
+				var protocol = alias["interface"];
 
-				if (br.isAssignableFrom(aliasClass, interface) == false && implementsInterface(aliasClass, interface) == false) {
+				if (br.isAssignableFrom(aliasClass, protocol) == false && implementsInterface(aliasClass, protocol) == false) {
 					incorrectAliases.push(aliasId);
 				}
 			}
@@ -176,8 +177,8 @@ define('br/AliasRegistry', function(require, module, exports) {
 
 	// private utility functions /////////////////////////////////////////////////////////////////////
 	// TODO: This should not be required.
-	function implementsInterface(aliasClass, interface) {
-		for(member in interface.prototype) {
+	function implementsInterface(aliasClass, protocol) {
+		for(member in protocol.prototype) {
 			if(typeof aliasClass.prototype[member] != "function")
 			{
 				return false;
@@ -188,12 +189,13 @@ define('br/AliasRegistry', function(require, module, exports) {
 
 	function ensureAliasDataHasBeenSet() {
 		if (isAliasDataSet !== true) {
-			if(caplin.__aliasData) {
-				exports.setAliasData(caplin.__aliasData);
+			// This is just until the bundler has been updated to initialise the alias data itself.
+			var global = Function("return this")(); 
+			if (global.caplin && global.caplin.__aliasData) {
+				exports.setAliasData(global.caplin.__aliasData);
 				return;
 			}
 			throw new Errors.IllegalStateError("Alias data has not been set.");
 		}
 	}
-
 });

@@ -5,10 +5,10 @@ caplinx.dashboard.app.model.dialog.BrowserWarningDialog = function(oPresentation
 	
 	this.isClosable.setValue(false);
 	this.hasBackground.setValue( false );
-	this.browserVersionsHtml = new caplin.presenter.property.EditableProperty("");
+	this.browserVersionsHtml = new br.presenter.property.EditableProperty("");
 	this.m_pMinimumBrowserVersions = null;
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.BrowserWarningDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.extend(caplinx.dashboard.app.model.dialog.BrowserWarningDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.BrowserWarningDialog.prototype.initializeForm = function()
 {
