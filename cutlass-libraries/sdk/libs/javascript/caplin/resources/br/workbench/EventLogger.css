@@ -1,0 +1,32 @@
+.messagelog {
+	border-radius: 5px;
+	background-color: #222c21;
+	color: #39f736;
+	font-faimily: "Courier New";
+	height: 200px;
+	overflow: auto;
+	font-size: 12px;
+	text-shadow: none;
+	padding: 2px;
+}
+
+.messagelog .event-title-with-children {
+	margin-left: 14px;
+}
+
+.messagelog .plus-minus {
+	margin-bottom: 4px;
+}
+
+.messagelog .plus-minus .icon {
+	background: url("plus-minus.png") no-repeat;
+	width: 11px;
+	height: 11px;
+	background-position: 0 -22px;
+	float: left;
+}
+
+.messagelog .expanded .plus-minus .icon {
+	background: url("plus-minus.png") no-repeat;
+	background-position: 0 -33px;
+}

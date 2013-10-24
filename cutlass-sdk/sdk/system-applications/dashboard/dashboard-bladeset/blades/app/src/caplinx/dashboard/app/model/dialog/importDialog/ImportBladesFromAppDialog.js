@@ -10,11 +10,11 @@ caplinx.dashboard.app.model.dialog.importDialog.ImportBladesFromAppDialog = func
 	
 	this.selectedApp = new caplinx.dashboard.app.model.dialog.importDialog.AppSelectionField(oPresentationModel);
 	this.bladesets = new caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList(this.selectedApp, oPresentationModel, this.m_fNewBladesetNameValidationListener);
-	this.importBladesButton = new caplin.presenter.node.Button("Import");
+	this.importBladesButton = new br.presenter.node.Button("Import");
 	
 	this.bladesets.addChangeListener(this, "_onBladesetsChanged", true);
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.importDialog.ImportBladesFromAppDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.extend(caplinx.dashboard.app.model.dialog.importDialog.ImportBladesFromAppDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.importDialog.ImportBladesFromAppDialog.prototype.initializeForm = function()
 {

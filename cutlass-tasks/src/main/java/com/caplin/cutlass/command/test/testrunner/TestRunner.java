@@ -81,8 +81,7 @@ public class TestRunner {
 	}
 	
 	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean generateReports) throws FileNotFoundException, YamlException, IOException {
-		LogLevel logLevel = StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger().getLogLevel();
-		verbose = (logLevel == LogLevel.DEBUG);
+		verbose = determineIfVerbose();
 		TestRunnerConfiguration config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
 		
 		this.jsTestDriverJar = config.getJsTestDriverJarFile();
@@ -141,7 +140,22 @@ public class TestRunner {
 			displayTimeInfo();
 		}
 	}
-
+	
+	private boolean determineIfVerbose() {
+		boolean isVerbose;
+		
+		try {
+			LogLevel logLevel = StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger().getLogLevel();
+			isVerbose = (logLevel == LogLevel.DEBUG);
+		}
+		catch(NoSuchMethodError e) {
+			// the tests are being run through the dashboard, where we will be using J2EE logging
+			isVerbose = false;
+		}
+		
+		return isVerbose;
+	}
+	
 	private void displayTimeInfo()
 	{
 		long duration = execEndTime-execStartTime;

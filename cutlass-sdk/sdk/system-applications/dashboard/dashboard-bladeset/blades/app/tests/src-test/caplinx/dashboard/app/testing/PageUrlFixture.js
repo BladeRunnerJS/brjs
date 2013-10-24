@@ -2,7 +2,7 @@ caplinx.dashboard.app.testing.PageUrlFixture = function()
 {
 	this.m_oPageUrlService = null;  
 };
-caplin.implement(caplinx.dashboard.app.testing.PageUrlFixture, caplin.testing.Fixture);
+br.inherit(caplinx.dashboard.app.testing.PageUrlFixture, br.test.Fixture);
 
 caplinx.dashboard.app.testing.PageUrlFixture.prototype.setPageUrlService = function(oPageUrlService) {
 	this.m_oPageUrlService = oPageUrlService;

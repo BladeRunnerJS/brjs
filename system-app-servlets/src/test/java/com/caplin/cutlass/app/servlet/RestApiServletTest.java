@@ -196,17 +196,6 @@ public class RestApiServletTest
 	}
 	
 	@Test
-	public void testResetDb() throws Exception
-	{
-		String jsonBody = "{\n" +
-				"command:\"reset-db\"" +
-				"}";
-		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "POST", URL_BASE+"/apps/some-app", jsonBody);
-		verify(service,times(1)).resetDatabase("some-app");
-		assertEquals( "", RestApiServletTestUtils.getResponseTextFromResponse(response) );
-	}
-	
-	@Test
 	public void testShowJsDoc() throws Exception
 	{
 		String jsonBody = "{\n" +

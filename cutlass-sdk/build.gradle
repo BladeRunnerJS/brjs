@@ -35,9 +35,11 @@ dependencies {
 	jsLibsAndDocs project(path: ':cutlass-libraries', configuration: 'libsAndDocsZip')
 
 	testRunner dependency('JsTestDriver')
+	testRunner dependency('validation-api')
+	testRunner dependency('bval-jsr303')
 	// Note: don't try to add support for transitive dependencies here as it will just fail
 	testRunner project(path: ':js-test-driver-bundler-plugin', transitive : false)
-	testRunner project(path: ':brjs-logger')
+	testRunner project(path: ':brjs-logger-binding')
 	testRunner files('JsTestDriver.conf')
 
 	deployerJars dependency('wagon-http')

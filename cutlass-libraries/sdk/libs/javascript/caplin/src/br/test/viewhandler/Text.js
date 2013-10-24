@@ -5,7 +5,7 @@ br.thirdparty("jquery");
  * <code>Text ViewFixtureHandler</code> can be used to set or get <code>text</code> property of a view element.
  * Example usage:
  * <p>
- * <code>and("form.view.(.orderSummary .deliveryDate label).text = 'Delivery Date'");</code>
+ * <code>and("ticket.view.(.setupSpot .tradeDate label).text = 'Trade Date'");</code>
  * </p>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler

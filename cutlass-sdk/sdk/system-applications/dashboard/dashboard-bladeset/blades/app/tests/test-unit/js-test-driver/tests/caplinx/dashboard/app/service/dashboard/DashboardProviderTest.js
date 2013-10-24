@@ -1,7 +1,7 @@
 
 DashboardProviderTest = TestCase("DashboardProviderTest");
 
-caplin.thirdparty("mock4js");
+br.thirdparty("mock4js");
 
 DashboardProviderTest.prototype.setUp = function() {
 	Mock4JS.addMockSupport(window);

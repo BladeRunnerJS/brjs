@@ -1,1 +1,1 @@
-module.exports = ["fatal", "error", "warn", "info", "debug"];
+module.exports = ["fatal", "error", "warn", "info", "debug"];

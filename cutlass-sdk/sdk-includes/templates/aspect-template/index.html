@@ -12,12 +12,6 @@
 		<@js.bundle@/>
 		<script>
 			( function() {
-				br.thirdparty('br-caplin');
-				
-				var ServiceRegistry = require( 'br/ServiceRegistry' );
-				var DemoEventHub = require( 'br/DemoEventHub' );
-				ServiceRegistry.registerService( 'demo-event-hub', new DemoEventHub() );
-				
 				var oApp = new @appns.App();
 			} )();
 		</script>

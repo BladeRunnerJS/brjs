@@ -5,7 +5,6 @@ import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
 import java.io.File;
 
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.specutil.logging.ExpectedFailure;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

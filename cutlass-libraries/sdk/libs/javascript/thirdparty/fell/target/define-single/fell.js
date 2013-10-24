@@ -650,7 +650,7 @@ define('fell/lib/Utils', function(require, exports, module) {
 		"info": {},
 		"debug": {color: "green"}
 	};
-	
+
 	/**
 	 * A formatter that converts log events to ansi colored strings.
 	 * @param time

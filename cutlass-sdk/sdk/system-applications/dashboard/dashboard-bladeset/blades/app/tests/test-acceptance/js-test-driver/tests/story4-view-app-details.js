@@ -1,4 +1,4 @@
-caplin.testing.GwtTestRunner.initialize();
+br.test.GwtTestRunner.initialize();
 
 // Story 4 - VIEW APP DETAILS
 describe("story #4", function() 
@@ -21,7 +21,6 @@ describe("story #4", function()
 		when("dash.service.responseReceived => '200 {}'");
 		then("dash.model.appDetailScreen.appName = 'mynewtrader'")
 			and("dash.model.appDetailScreen.bladesets.length = 0");
-			and("dash.model.appDetailScreen.resetDatabaseButton.enabled = true");
 			and("dash.model.appDetailScreen.exportWarButton.enabled = true");
 			and("dash.model.appDetailScreen.launchAppButton.enabled = true");
 			and("dash.model.appDetailScreen.newBladesetButton.enabled = true");
@@ -55,7 +54,6 @@ describe("story #4", function()
 			and("dash.model.appDetailScreen.bladesets[1].bladesetName = 'red'");
 			and("dash.model.appDetailScreen.bladesets[1].blades[0].bladeName = 'crimson'");
 			and("dash.model.appDetailScreen.bladesets[1].blades[1].bladeName = 'scarlet'");
-			and("dash.model.appDetailScreen.resetDatabaseButton.enabled = true");
 			and("dash.model.appDetailScreen.exportWarButton.enabled = true");
 			and("dash.model.appDetailScreen.launchAppButton.enabled = true");
 			and("dash.model.appDetailScreen.newBladesetButton.enabled = true");

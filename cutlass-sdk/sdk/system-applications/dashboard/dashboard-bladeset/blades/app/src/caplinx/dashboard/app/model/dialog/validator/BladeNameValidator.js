@@ -2,7 +2,7 @@ caplinx.dashboard.app.model.dialog.validator.BladeNameValidator = function(oPres
 {
 	this.m_oPresentationModel = oPresentationModel;
 };
-caplin.extend(caplinx.dashboard.app.model.dialog.validator.BladeNameValidator, caplin.core.Validator);
+br.extend(caplinx.dashboard.app.model.dialog.validator.BladeNameValidator, br.presenter.validator.Validator);
 
 caplinx.dashboard.app.model.dialog.validator.BladeNameValidator.prototype.setBladeset = function(sBladeset)
 {

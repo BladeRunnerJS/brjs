@@ -1,11 +1,11 @@
 caplinx.dashboard.app.model.crumbtrail.CrumbTrail = function(oPresentationModel)
 {
-	this.crumbs = new caplin.presenter.node.NodeList([], caplinx.dashboard.app.model.crumbtrail.BreadCrumb);
-	this.visible = new caplin.presenter.property.WritableProperty();
+	this.crumbs = new br.presenter.node.NodeList([], caplinx.dashboard.app.model.crumbtrail.BreadCrumb);
+	this.visible = new br.presenter.property.WritableProperty();
 	
 	oPresentationModel.getPageUrlService().addPageUrlListener(this._onPageUrlUpdated.bind(this), true);
 };
-caplin.extend(caplinx.dashboard.app.model.crumbtrail.CrumbTrail, caplin.presenter.node.PresentationNode);
+br.extend(caplinx.dashboard.app.model.crumbtrail.CrumbTrail, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.crumbtrail.CrumbTrail.prototype._onPageUrlUpdated = function(sPageUrl)
 {

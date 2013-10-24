@@ -13,11 +13,11 @@ br.thirdparty("jquery");
  * then check in the Then phase that this value has been updated after updating the relevant presentation model property.</p>
  * 
  * <p>Assuming that the <code>ViewFixture</code> has been added with the identifier <code>view</code> as a subfixture
- * of the <code>ComponentFixture</code> which has the identifier <code>form</code>, then the <code>ViewFixture</code>
+ * of the <code>ComponentFixture</code> which has the identifier <code>ticket</code>, then the <code>ViewFixture</code>
  * can be used in the following way in a test:
  * </p>
  * <p>
- * <code>then("form.view.(.orderSummary [identifier=\'orderStatus\']).text = 'complete'");</code>
+ * <code>then("ticket.view.(.spotGeneralSummary [identifier=\'dealSubmittedFor\']).text = 'test phrase'");</code>
  * </p>
  * <p>
  * In the above example the jQuery selector for the element in the view is
