@@ -3,19 +3,14 @@
 	
 	margin: 0 auto 0 auto;
 }
-#botnav ul {
-	
+#botnav a {
 	padding: 0 0 0 0px;
 	margin: 10px;
 	line-height: 0px;
-}
-#botnav li {
 	font-family: 'HelveticaNeueW01-55Roma';
 	font-weight: normal;
 	font-size: 11px;
 	display: inline;
-}
-#botnav li a {
 	text-decoration: none;
 	color: #333;
 	padding-left: 10px;
@@ -34,7 +29,7 @@
 }
 
 .footer-logo a{
-	background-image: url(img/small-footer-logo.png);
+	background-image: url(img/brjs-logo-small.png);
 	background-position: right;
 	background-repeat: no-repeat;
 	text-decoration:none;
@@ -42,17 +37,26 @@
 	font-size: 10px;
 	width: auto;
 	height: 12px;
-	margin-top: -50px;
+	margin-top: -60px;
 	padding-top: 30px;
 	margin-right: 20px;
 	float: right;
+    width: 116px;
 }
 
 .footer-logo a:hover{
 	color: #54b0cb; 
 }
-	
-		
+
+.caplin-logo-small {
+    background-image: url(img/caplin-logo-small.png);
+    background-position: 20px 12px;
+    background-repeat: no-repeat;
+    text-decoration:none;
+    display:block;
+    height:26px;
+    padding-top: 22px;
+}
 
 .footer-wrap{
 	bottom: 10px;
