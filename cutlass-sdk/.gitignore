@@ -11,6 +11,7 @@ build
 # WARNING: everything in build-workspace is automaticaly generated
 # the only things that are checked in are in sdk/libs/javascript and sdk/system-applications
 
+workspace/*
 workspace/**/*
 !workspace/sdk/libs/javascript
 !workspace/sdk/system-application
