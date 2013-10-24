@@ -231,7 +231,7 @@ task testIE, dependsOn: [testJsIE, testSystemAppsIE]
 
 assemble.dependsOn = [assembleSdk, assembleJsDoc, copyBrowsers]
 
-task check, dependsOn: [assemble, test] {}
+task check, dependsOn: [assemble, test], {}
 task build, dependsOn: [check], {}
 
 
