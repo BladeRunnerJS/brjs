@@ -7,7 +7,7 @@ configurations {
 	application
 	systemApp {
 		exclude module: 'jetty-all-server'
-			extendsFrom application
+		extendsFrom application
 	}
 	jsLibsAndDocs
 	testRunner
@@ -30,7 +30,9 @@ dependencies {
 	application project(path: ':bladerunner-prod-servlets')
 	application dependency('h2')
 	application dependency('javassist')
-	application dependency('jsp-2.1-glassfish')
+	application (dependency('jsp-2.1-glassfish')) {
+		exclude module: 'ant'
+	}
 	
 	systemApp (project(path: ':system-app-servlets'))
 
@@ -41,6 +43,7 @@ dependencies {
 	testRunner project(path: ':js-test-driver-bundler-plugin', transitive : false)
 
 	testRunner project(path: ':brjs-logger')
+	testRunner project(path: ':brjs-logger-binding')
 	testRunner files('build-resources/JsTestDriver.conf')
 	
 	browsers_dep dependency('chrome-stable')
