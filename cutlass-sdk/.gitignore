@@ -4,8 +4,26 @@ bin
 build
 .classpath
 .project
-sdk/libs
-test-results
-apps
-generated
-js-patches
+
+**/bundles/*
+
+
+# WARNING: everything in build-workspace is automaticaly generated
+# the only things that are checked in are in sdk/libs/javascript and sdk/system-applications
+
+workspace/LICENSE
+workspace/README.txt
+workspace/apps/
+workspace/conf/
+workspace/generated/
+workspace/licenses/
+workspace/sdk/brjs
+workspace/sdk/brjs.cmd
+workspace/sdk/docs/
+workspace/sdk/jsdoc-templates/
+workspace/sdk/jsdoc-toolkit/
+workspace/sdk/libs/java/
+workspace/sdk/templates/
+workspace/sdk/version.txt
+workspace/test-results/
+workspace/**/WEB-INF/lib/brjs-*

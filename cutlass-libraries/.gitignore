@@ -1,8 +1,0 @@
-.gradle
-.settings
-bin
-build
-.classpath
-.project
-test-results
-generated

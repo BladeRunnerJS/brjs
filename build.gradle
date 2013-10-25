@@ -1,11 +1,9 @@
 import static org.bladerunnerjs.BuildVersionCalculator.*
 
-apply from: 'composite-tasks.gradle'
 apply from: 'wrapper.gradle'
 
 allprojects {
 	def projectContainingSharedLogic = (project.parent) ? project.parent : project
-	apply from: projectContainingSharedLogic.file('buildConfig.gradle')
 	apply from: projectContainingSharedLogic.file('dependencies.gradle')
 	
 	apply plugin: 'eclipse'
@@ -85,40 +83,52 @@ subprojects { p ->
 	
 }
 
-configurations {
-	browsers_dep
-	browsers_webdriver
+
+/* provides compound tasks that are run in CI */
+
+task runAllJavaTests {
+	description "Runs 'test' for all Java projects."
 }
-
-dependencies {
-	browsers_dep dependency('chrome-stable')
-	browsers_dep dependency('firefox-stable') 
-	
-	browsers_webdriver dependency('firefox-webdriver') 
-}
-
-
-def browserRootDir = buildDir.path+"/browsers"
-def browserProfileDir = "${browserRootDir}/profile"
-task copyBrowsers(type: Sync) {
-	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
-	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
-	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
-	into browserRootDir
-	doLast {
-		//TODO: this should probabaly be done in a task listener
-		if (file(browserProfileDir).exists()) {
-			delete browserProfileDir
+subprojects {
+	afterEvaluate { project ->
+		project.tasks.withType(Test) { testTask ->
+			runAllJavaTests.dependsOn testTask
 		}
-    	file(browserProfileDir).mkdirs();
-    	file(browserProfileDir + "/chrome").mkdir();
-    		/* prevent chrome asking to set default search engine */
-    		file(browserProfileDir + "/chrome/First Run").createNewFile();
-    	file(browserProfileDir + "/chromium").mkdir();
-    		/* prevent chromium asking to set default search engine */
-    		file(browserProfileDir + "/chromium/First Run").createNewFile();
-    	file(browserProfileDir + "/firefox").mkdir();
-    		file(browserProfileDir + "/firefox/prefs.js").createNewFile();
-    		file(browserProfileDir + "/firefox/prefs.js").text = "user_pref(\"browser.shell.checkDefaultBrowser\", false);\nuser_pref(\"browser.sessionstore.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.recent_crashes\", -1);\n";
-    	}
+		
+		runAllJavaTests.dependsOn tasks.matching { Task task -> task.name.equals("coberturaReports")}
+	}
 }
+
+task cleanJava {
+	description "Runs clean for all Java projects."
+}
+subprojects {
+	afterEvaluate { project ->
+		if (project.plugins.hasPlugin(JavaPlugin.class)) {
+			cleanJava.dependsOn project.clean
+		}
+	}
+}
+
+
+task build {
+	description "Builds the Cutlass SDK (without JsDocs) and build ands tests all SDK dependencies."
+}
+subprojects {
+	afterEvaluate { subProject ->
+		if (!subProject.name.equals('test-apps')) {
+			subProject.parent.build.dependsOn subProject.getTasksByName('build',false)
+		}
+	}
+}
+
+
+task buildSdk {
+	description "Builds the Cutlass SDK and build ands tests all SDK dependencies."
+}
+afterEvaluate { project ->
+	buildSdk.dependsOn build
+}
+
+
+

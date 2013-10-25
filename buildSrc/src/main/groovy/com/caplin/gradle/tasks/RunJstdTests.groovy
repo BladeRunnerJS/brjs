@@ -24,7 +24,7 @@ class RunJstdTests extends DefaultTask
 	String testType = "ALL"
 	String testArg = "test"
 	String browsers = ""
-	String command = "bladerunner"
+	String command = "brjs"
 	
 	def RunJstdTests()
 	{			
