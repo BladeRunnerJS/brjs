@@ -12,3 +12,5 @@ conf/.project
 js.bundle
 html.bundle
 xml.bundle
+brjs-*.jar
+*/**/bundles
