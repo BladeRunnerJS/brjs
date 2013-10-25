@@ -1,0 +1,53 @@
+
+/**** stuff for Gradle wrapper ****
+ * based on https://github.com/gradle/gradle/blob/master/gradle/wrapper.gradle
+ *
+ * provides three tasks:
+ * nightlyWrapper	- update to latest nightly version
+ * rcWrapper		- update to latest RC version
+ * releaseWrapper	- update to latest release version
+ *
+ */
+
+def wrapperUpdateTask = { name, label ->
+    task "${name}Wrapper"(type: Wrapper) {
+    	description = "Update Gradle wrapper to the ${label} version."
+        group = "wrapper"
+        doFirst {
+            def version = new groovy.json.JsonSlurper().parseText(new URL("http://services.gradle.org/versions/${label}").text)
+            if (version == null || version.version == null || version.empty) {
+                throw new GradleException("Cannot update wrapper to '${label}' version as there is currently no version of that label")
+            }
+            println "Updating wrapper to ${label} version: ${version.version} (downloadUrl: ${version.downloadUrl})"
+            distributionUrl version.downloadUrl
+        }
+        doLast {
+        	def JAVA_OPTS="-Xms128m -Xmx256m -XX:MaxPermSize=128M"
+			def GRADLE_OPTS="-Xms16m -Xmx96m -XX:MaxPermSize=32M"
+
+			def NIX_DEFAULT_JVM_OPTS="DEFAULT_JVM_OPTS=\"\""
+			def NIX_JAVA_OPTS="JAVA_OPTS=\""+JAVA_OPTS+" \$JAVA_OPTS\""
+			def NIX_GRADLE_OPTS="GRADLE_OPTS=\""+GRADLE_OPTS+" \$GRADLE_OPTS\""
+
+			def WIN32_DEFAULT_JVM_OPTS="set DEFAULT_JVM_OPTS="
+			def WIN32_JAVA_OPTS="set JAVA_OPTS="+JAVA_OPTS+" %JAVA_OPTS%"
+			def WIN32_GRADLE_OPTS="set GRADLE_OPTS="+GRADLE_OPTS+" %GRADLE_OPTS%"
+		
+			/* edit gradlew - changes default memory settings */
+			def bashFile = file("gradlew")
+			String bashContent = bashFile.text
+			bashFile.text = bashContent.replace("DEFAULT_JVM_OPTS=\"\"", NIX_DEFAULT_JVM_OPTS+"\n"+NIX_JAVA_OPTS+"\n"+NIX_GRADLE_OPTS)
+			
+			/* edit gradlew.bat - changes default memory settings */
+			def batchFile = file("gradlew.bat")
+			String batchContent = batchFile.text
+			batchFile.text = batchContent.replace("set DEFAULT_JVM_OPTS=", WIN32_DEFAULT_JVM_OPTS+"\n"+WIN32_JAVA_OPTS+"\n"+WIN32_GRADLE_OPTS)
+		}
+    }
+}
+
+wrapperUpdateTask "nightly", "nightly"
+wrapperUpdateTask "rc", "release-candidate"
+wrapperUpdateTask "release", "current"
+
+task wrapper, dependsOn: releaseWrapper {}

@@ -1,0 +1,95 @@
+#topnav {
+	-moz-box-shadow: 0px 2px 3px #999;
+	-webkit-box-shadow: 0px 2px 3px #999;
+	box-shadow: 0px 2px 3px #999;
+	background-color: #ffffff;
+	background-image: -moz-linear-gradient(top, #595959, #1f1f1f);
+	background-image: -ms-linear-gradient(top, #595959, #1f1f1f);
+	background-image: -o-linear-gradient(top, #595959, #1f1f1f);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#595959), to(#1f1f1f));
+	background-image: -webkit-linear-gradient(top, #595959, #1f1f1f);
+	background-image: linear-gradient(top, #595959, #1f1f1f);
+	background: linear-gradient(to bottom, rgba(89,89,89,1) 0%,rgba(31,31,31,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#595959', endColorstr='#1f1f1f',GradientType=0 ); /* IE6-9 */
+	height: 40px;
+	left: 0;
+	margin: 0 auto;
+	position: relative;
+	top: 0;
+	width: 100%;
+	z-index: 1000;
+	display:inline-block;
+}
+
+#topnav li{
+	position: relative;
+	float: left;
+	display: inline-block;
+	
+}
+
+topnav a{
+	display:block;
+	width:60px;
+}
+
+#topnav ul {
+	list-style: none;
+	padding: 0 0 0 0px;
+	margin: 0px 20px 0px 0px;
+	line-height: 40px;
+	
+	
+}
+#topnav li a{
+	border-right: solid;
+	-webkit-transition: all 0.25s ease-out 0s;
+	margin-right: 5px;
+	margin-left: 5px;
+	border-right-color: #888;
+	border-right-width: 1px;
+	text-decoration: none;
+	padding-left:5px;
+	padding-right: 10px;
+	color:#fff;
+	font-family: "HelveticaNeueW01-55Roma", Arial, sans-serif;
+	font-weight: normal;
+	font-size: 12px;
+}
+
+#topnav li a.newsite{
+	background: url("img/newsite.png") no-repeat right top;
+	background-position: 100% 50%;
+	height:12px;
+	padding-right: 20px;
+}
+
+#topnav li a.popout{
+	background: url("img/popout.png") no-repeat right top;
+	padding-right: 28px;
+	background-position: 88px 50%;
+}
+
+#topnav li:last-child a{
+	border-right:0px; 
+}
+
+#topnav li a:hover{
+	
+	color:#54b0cb;
+}
+
+.btns-area ul{
+list-style: none;
+clear:both;
+}
+
+.btns-area li{
+position: relative;
+float: left;
+display: inline-block;
+}
+
+.btns-area li.right-align {
+float: right;
+}

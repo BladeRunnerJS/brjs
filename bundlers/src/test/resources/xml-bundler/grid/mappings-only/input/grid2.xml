@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gridDefinitions xmlns="http://schema.caplin.com/CaplinTrader/gridDefinitions">
+	<dataProviderMappings>
+		<dataProviderMapping id="gridDP-2A" className="GridDP2A"/>
+		<dataProviderMapping id="DP1" className="DP1"/>
+		<dataProviderMapping id="gridDP-2B" className="GridDP2B"/>
+	</dataProviderMappings>
+	
+	<decoratorMappings>
+		<decoratorMapping id="gridDec-2A" className="GridDec2A"/>
+		<decoratorMapping id="gridDec-2B" className="GridDec2B"/>
+	</decoratorMappings>
+	
+	<grids/>
+</gridDefinitions>

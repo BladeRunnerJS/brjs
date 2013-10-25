@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dashboard Workbench</title>
+		<@css.bundle theme="standard"@/>
+		<@js.bundle@/>
+		<@i18n.bundle@/>
+		<link type="text/css" rel="stylesheet" media="screen" href="../../../../unbundled-resources/standard-theme/typography.css" />
+		<script type="text/javascript">
+			br.thirdparty("jquery");
+		
+			var oApp;
+			var oDashboardService;
+			
+			jQuery(document).ready(function() {
+				caplinx.dashboard.app.DashboardApp.initializeLibrary();
+				
+				oDashboardService = new caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub();
+				var sRootUrl = window.location.href.replace(/dashboard\/dashboard-bladeset.*$/, "");
+				var oPageUrlService = new caplinx.dashboard.app.service.url.PageUrlProviderStub(sRootUrl);
+				var oWindowOpenerService = new caplinx.dashboard.app.service.window.WindowOpenerProvider();
+				var oDummyLocalStorage = new caplinx.dashboard.app.service.dashboard.DummyLocalStorage();
+				var oDummyBrowserDetector = new caplinx.dashboard.app.service.browserdetector.BrowserDetector();
+				
+				oApp = new caplinx.dashboard.app.DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, oDummyLocalStorage, oDummyBrowserDetector);
+			});
+			
+			function onControlPanelClicked()
+			{
+				var eSuccessModeInput = document.querySelector(".serviceModeConfig").serviceMode[0];
+				
+				if(eSuccessModeInput.checked)
+				{
+					oDashboardService.setSuccessMode();
+				}
+				else
+				{
+					oDashboardService.setFailureMode();
+				}
+			}
+			function showBrowserDialog()
+			{
+				oApp.m_oInvalidBrowserDecider.isValidBrowser = function(){ return false }
+				oApp._showBrowserWarningDialogIfNeeded();
+			}
+		</script>
+	</head>
+	<body>
+		<form class="serviceModeConfig">
+			<h2>Workbench Panel</h2>
+			<div class="controls" onclick="onControlPanelClicked()">
+				<input type="radio" name="serviceMode" value="success" checked="checked" />Success Mode<br />
+				<input type="radio" name="serviceMode" value="failure" />Failure Mode
+			</div>
+			<button onclick="showBrowserDialog()">Show Browser Dialog</button>
+		</form>
+	</body>
+</html>

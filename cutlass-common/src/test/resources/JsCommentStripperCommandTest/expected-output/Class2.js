@@ -1,0 +1,3 @@
+
+Class2 = function() {
+};

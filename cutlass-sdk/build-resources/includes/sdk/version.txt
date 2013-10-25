@@ -1,0 +1,6 @@
+{
+	"Version" : "@sdkVersion@",
+	"BuildDate" : "@buildDate@",
+	"DistType" : "@distType@",
+	"BuildHostname" : "@buildHostname@" 
+}

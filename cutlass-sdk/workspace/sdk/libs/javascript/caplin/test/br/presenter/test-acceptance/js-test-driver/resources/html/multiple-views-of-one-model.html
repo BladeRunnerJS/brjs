@@ -1,0 +1,15 @@
+<div id="multiple-views">
+	<select id="selectBox"  data-bind="options:selectionField.options, value:selectionField.value, enable:selectionField.enabled, visible:selectionField.visible, attr:{name: selectionField.controlName}, optionsValue: 'value'"></select>
+	<div id="alt-selectBox" data-bind="template:{name:'radio-button-template', foreach:selectionField.options, templateOptions:{controlName: selectionField.controlName, selectedValue:selectionField.value}}"></div>
+
+	<select id="multiSelectBox" multiple="multiple" data-bind="options:multiSelectField.options, optionsValue: 'value', optionsText: 'label', selectedOptions:multiSelectField.value, visible:multiSelectField.visible, enable:multiSelectField.enabled, attr:{name: multiSelectField.controlName}"></select>
+	<div id="alt-multiSelectBox" data-bind="template:{name:'checkbox-template', foreach:multiSelectField.options, templateOptions:{controlName:multiSelectField.controlName, selectedValue:multiSelectField.value}}"></div>
+</div>
+
+<div id="radio-button-template">
+	<input type="radio" data-bind="value:value, checked:$item.selectedValue, attr:{name:$item.controlName}"/>
+</div>
+
+<div id="checkbox-template">
+	<input type="checkbox" data-bind="value:value, checked:$item.selectedValue, attr:{name:$item.controlName}"/>
+</div>

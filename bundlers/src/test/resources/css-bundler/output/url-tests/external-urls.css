@@ -1,0 +1,11 @@
+h1 {
+	background-image: url("http://www.some-domain.com/myImage.png");
+}
+
+h2 {
+	background-image: url("http://www.some-domain.org.uk/myImage.png");
+}
+
+h3 {
+	background-image: url("https://www.some-subdomain.some-domain.com/myImage.png");
+}

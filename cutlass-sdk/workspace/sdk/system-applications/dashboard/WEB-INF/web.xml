@@ -1,0 +1,55 @@
+<web-app>
+	<servlet>
+          <servlet-name>CutlassServlets</servlet-name> 
+          <servlet-class>com.caplin.cutlass.servlet.BundlerServlet</servlet-class> 
+          <load-on-startup>1</load-on-startup> 
+      </servlet>
+      <servlet-mapping>
+          <servlet-name>CutlassServlets</servlet-name> 
+          <url-pattern>*.bundle</url-pattern> 
+      </servlet-mapping>
+      
+      <servlet>
+          <servlet-name>RestAPIServlet</servlet-name> 
+          <servlet-class>com.caplin.cutlass.app.servlet.RestApiServlet</servlet-class> 
+          <load-on-startup>1</load-on-startup> 
+      </servlet>
+      <servlet-mapping>
+          <servlet-name>RestAPIServlet</servlet-name> 
+          <url-pattern>/servlet/app-manager/*</url-pattern> 
+      </servlet-mapping>
+
+	<!-- start-env: dev -->
+      <filter>
+          <filter-name>BladerunnerDevFilters</filter-name> 
+          <filter-class>com.caplin.cutlass.filter.BladerunnerDevFilters</filter-class> 
+      </filter>
+      <!-- <filter-mapping>
+          <filter-name>BladerunnerDevFilters</filter-name> 
+          <url-pattern>/*</url-pattern> 
+          <dispatcher>REQUEST</dispatcher>
+          <dispatcher>FORWARD</dispatcher>
+      </filter-mapping> -->
+       <!--  end-env -->
+
+	<filter>
+          <filter-name>BladerunnerFilters</filter-name> 
+          <filter-class>com.caplin.cutlass.filter.BladerunnerFilters</filter-class> 
+      </filter>
+      <filter-mapping>
+          <filter-name>BladerunnerFilters</filter-name> 
+          <url-pattern>/*</url-pattern> 
+          <dispatcher>REQUEST</dispatcher>
+          <dispatcher>FORWARD</dispatcher>
+      </filter-mapping>
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	
+	<mime-mapping>
+		<extension>woff</extension>
+		<mime-type>application/x-font-woff</mime-type>
+	</mime-mapping>
+	
+</web-app>

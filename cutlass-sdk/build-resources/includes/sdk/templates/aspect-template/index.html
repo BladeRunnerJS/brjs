@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<base href="@APP.VERSION@"/>
+		
+		<title>My Application</title>
+		
+		<@css.bundle theme="standard"@/>
+		
+	</head>
+	<body>
+		<@js.bundle@/>
+		<script>
+			( function() {
+				var oApp = new @appns.App();
+			} )();
+		</script>
+	</body>
+</html>

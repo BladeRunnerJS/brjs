@@ -1,0 +1,17 @@
+
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+	
+repositories {
+	mavenCentral()
+}	
+
+dependencies {
+	compile localGroovy()
+	
+	compile gradleApi()
+	compile 'commons-io:commons-io:2.3'
+	compile 'org.apache.httpcomponents:httpclient:4.2.1'
+	compile 'org.apache.commons:commons-lang3:3.1'
+}

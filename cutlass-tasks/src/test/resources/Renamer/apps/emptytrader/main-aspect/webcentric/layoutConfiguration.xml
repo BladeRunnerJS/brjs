@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layoutConfiguration xmlns="http://schema.caplin.com/CaplinTrader/layoutConfiguration"
+ applicationName="emptytrader" themes="blue" emptyLayoutName="@{ct.webcentric.layouts.new.layout}">
+ 	<layouts>
+ 		<layout name="@{layout.name.emptytrader}" src="emptytrader_layout.xml"/>
+ 	</layouts>
+</layoutConfiguration>

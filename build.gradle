@@ -1,0 +1,134 @@
+import static org.bladerunnerjs.BuildVersionCalculator.*
+
+apply from: 'wrapper.gradle'
+
+allprojects {
+	def projectContainingSharedLogic = (project.parent) ? project.parent : project
+	apply from: projectContainingSharedLogic.file('dependencies.gradle')
+	
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+	apply plugin: 'base'
+	
+	repositories {
+		mavenCentral()
+		maven { url "http://bladerunnerjs.github.io/brjs-build-dependencies/repo" }
+	}
+	
+	buildscript {
+    	repositories {
+    		mavenCentral()
+    	}
+	}
+		
+	tasks.withType(Copy) {
+		fileMode = 0755
+		includeEmptyDirs = false
+	}
+	tasks.withType(Sync) {
+		fileMode = 0755
+		includeEmptyDirs = false
+	}
+	tasks.withType(Zip) {
+		fileMode = 0755
+		includeEmptyDirs = false
+	}
+	
+}
+
+def projectBuildVersion = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(project)
+def projectBuildDate = org.bladerunnerjs.BuildVersionCalculator.calculateBuildDate(project)
+def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBuildHostname(project)
+
+logger.info "Build version calculated as: ${projectBuildVersion}"
+logger.info "Build date is: ${projectBuildDate}"
+logger.info "Build hostname is: ${projectBuildHostname}"
+
+subprojects { p ->
+	
+	ext {
+		buildVersion = projectBuildVersion
+		buildDate = projectBuildDate
+		buildHostname = projectBuildHostname
+	}
+	
+	version = projectBuildVersion
+	group = 'org.bladerunnerjs'
+		
+	afterEvaluate { project ->
+		
+		if (project.plugins.hasPlugin(JavaPlugin)) {
+			sourceCompatibility = '1.7'
+			targetCompatibility = '1.7'
+					
+			project.tasks.withType(Test) { testTask ->
+				test {
+					testLogging {
+						events 'skipped', 'failed'
+						exceptionFormat 'full'
+						info {
+							displayGranularity = 0
+						}
+					}
+				}
+			}
+			
+			project.tasks.withType(JavaCompile) {
+				options.compilerArgs += ['-Xlint:all']
+				options.encoding = 'UTF-8'
+			}
+		}
+	
+	}
+	
+}
+
+
+/* provides compound tasks that are run in CI */
+
+task runAllJavaTests {
+	description "Runs 'test' for all Java projects."
+}
+subprojects {
+	afterEvaluate { project ->
+		project.tasks.withType(Test) { testTask ->
+			runAllJavaTests.dependsOn testTask
+		}
+		
+		runAllJavaTests.dependsOn tasks.matching { Task task -> task.name.equals("coberturaReports")}
+	}
+}
+
+task cleanJava {
+	description "Runs clean for all Java projects."
+}
+subprojects {
+	afterEvaluate { project ->
+		if (project.plugins.hasPlugin(JavaPlugin.class)) {
+			cleanJava.dependsOn project.clean
+		}
+	}
+}
+
+
+task build {
+	description "Builds the Cutlass SDK (without JsDocs) and build ands tests all SDK dependencies."
+}
+subprojects {
+	afterEvaluate { subProject ->
+		if (!subProject.name.equals('test-apps')) {
+			subProject.parent.build.dependsOn subProject.getTasksByName('build',false)
+		}
+	}
+}
+
+
+task buildSdk {
+	description "Builds the Cutlass SDK and build ands tests all SDK dependencies."
+}
+afterEvaluate { project ->
+	buildSdk.dependsOn build
+}
+
+
+

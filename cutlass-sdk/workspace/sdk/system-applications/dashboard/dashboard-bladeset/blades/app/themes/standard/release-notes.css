@@ -1,0 +1,276 @@
+.support .footer-wrap{
+    position: static;
+}
+
+#releaseNoteScreen{
+    border-bottom: 1px solid #AAA;
+    background: #fff;
+}
+
+#releaseNoteScreen .contentStart{
+	height:20px;
+}
+
+
+#releaseNoteScreen .chevron {
+    font-size: 0;
+    height: 0;
+    line-height: 0;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 13px 0 10px 10px;
+    border-left-color: #EB5E81;
+    position: relative;
+    right: 0px;
+    top: -4px
+}
+
+#releaseNoteScreen .pink-text{
+    color:#eb5e81;
+    margin-left: 5px;
+    font-size: 14px;
+    line-height: 1.5em;
+    font-family: 'HelveticaNeueW01-55Roma',sans-serif;
+    font-weight: normal;
+
+}
+
+#releaseNoteScreen .horizontal_dotted_line {
+	border-bottom: 1px dashed #ccc; 
+	width: 100%; 
+}
+
+#releaseNoteScreen  h1, 
+#releaseNoteScreen  h2, 
+#releaseNoteScreen  h3, 
+#releaseNoteScreen  h4, 
+#releaseNoteScreen  h5, 
+#releaseNoteScreen  h6 {
+    margin-left: 24px;
+    margin-right: 10px;
+    font-family: 'HelveticaNeueW01-77BdCn 692722', Arial, sans-serif;
+    font-weight: normal;
+    color: inherit;
+    text-rendering: optimizelegibility;
+    text-shadow: /*0px -1px 0px rgba(0, 0, 0, 0.9),*/
+	0px 1px 1px rgba(255, 255, 255, 0.7);
+	margin-bottom: 10px;
+}
+
+#releaseNoteScreen  h1 {
+	margin-bottom:0px;
+}
+
+#releaseNoteScreen h1 {
+	font-weight: normal;
+	color:black;
+} 
+#releaseNoteScreen h2 {
+    font-weight: normal;
+    color: #5A5A5A;
+    
+}
+#releaseNoteScreen h1,
+#releaseNoteScreen .h1 {
+    font-size: 50px;
+}
+#releaseNoteScreen h2, 
+#releaseNoteScreen .h2 {
+    font-size: 30px;
+    line-height: 1.2;
+    color: black;
+}
+#releaseNoteScreen  h3, 
+#releaseNoteScreen .h3 {
+    font-size: 25px;
+    line-height: 1.2;
+}
+#releaseNoteScreen h4, 
+#releaseNoteScreen .h4 {
+    font-size: 20px;
+    line-height: 1.2;
+    color: #5A5A5A;
+}
+#releaseNoteScreen h5,
+#releaseNoteScreen .h5 {
+    font-size: 13px;
+    font-size: 1.3rem;
+}
+#releaseNoteScreen h6, 
+#releaseNoteScreen .h6 {
+    font-size: 12px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+#releaseNoteScreen p, 
+#releaseNoteScreen  ol, 
+#releaseNoteScreen ul,
+#releaseNoteScreen  dl, 
+#releaseNoteScreen address,
+#releaseNoteScreen .previous_release_item ul {
+    margin-left: 34px;
+    margin-top: 0px;
+    margin-bottom: 1.5em;
+    width: 750px;
+    font-size: 14px;
+    /*font-size: 1.4rem;*/
+    line-height: 1.4em;
+    font-family: 'HelveticaNeueW01-55Roma',sans-serif;
+    font-weight: normal;
+}
+
+#releaseNoteScreen .current_release li,
+#releaseNoteScreen .previous_release_item li {
+    margin-left: 32px;
+    display: list-item;
+    list-style-type: disc;
+    list-style-image: url(img/pinkdot.png);
+    text-align: -webkit-match-parent;
+    line-height:19px;
+}
+
+#releaseNoteScreen li ul,
+#releaseNoteScreen .previous_release_item li ul {
+	margin-left:0px;
+}
+
+#releaseNoteScreen .colwrapper {
+	display: inline-block;
+	width:800px;
+	margin-left:20px;
+	margin-bottom:20px;
+}
+
+#releaseNoteScreen .columnblock {
+	float:left;
+	margin: 0 2% 10px 0;
+	padding: 20px 10px 5px 10px;
+	-webkit-box-flex: 1;
+	-moz-box-flex: 1;
+	-o-box-flex: 1;
+	background: grey;
+	border: solid 1px #CCC;
+	position:relative;
+	text-align:left;
+	vertical-align:top;
+	background: #FEFEFE;
+	background: -webkit-gradient(linear,left bottom,left top,color-stop(0,#F4F4F4),color-stop(1,#FEFEFE));
+	background: -ms-linear-gradient(bottom,#F4F4F4,#FEFEFE);
+	background: -moz-linear-gradient(center bottom,#F4F4F4 0%,#FEFEFE 100%);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	width: 28%;
+	min-height:260px;
+	
+}
+
+#releaseNoteScreen .columnblock li {
+	padding: 5px 10px 5px 10px;
+}
+
+#releaseNoteScreen .columnblock ul {
+	width:auto;
+	margin-left:5px;
+}
+
+#releaseNoteScreen .columnblock ul:last-child {
+	margin-right:0px;
+}
+
+
+#releaseNoteScreen .version-unselected:hover{
+    color: #000;
+
+}
+
+#releaseNoteScreen .version-current{
+    line-height: 20px;
+    cursor:default;
+    background:#eb5e81;
+    padding:3px;
+    margin-left: 24px;
+    margin-top:5px;
+    width: 100%;
+    font-family: 'HelveticaNeueW01-55Roma',sans-serif;
+    font-weight: normal;
+    color:#fff;
+    text-rendering: optimizelegibility;
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.6);
+}
+
+#releaseNoteScreen .version{
+	font-weight: bold;
+	display: inline;
+}
+#releaseNoteScreen .strapline{
+	padding-left:20px;
+	display: inline;
+}
+
+#releaseNoteScreen .previous_releases ul{
+	font-size:14px;
+	line-height:14px;
+	display:block;
+}
+ 
+#releaseNoteScreen .previous_heading {
+	width:800px;
+	border: 1px solid #CCC;
+    margin-left: -15px;
+	cursor: pointer;
+	font-size: 14px;
+	height: 30px;
+	line-height: 30px;
+	list-style-type: none;
+	padding-left: 10px;
+    list-style-image: none;
+    height: 100%;
+    background: #FEFEFE;
+	background: -webkit-gradient(linear,left bottom,left top,color-stop(0,#F4F4F4),color-stop(1,#FEFEFE));
+	background: -ms-linear-gradient(bottom,#F4F4F4,#FEFEFE);
+	background: -moz-linear-gradient(center bottom,#F4F4F4 0%,#FEFEFE 100%);
+	-moz-user-select: -moz-none;
+   	-khtml-user-select: none;
+   	-webkit-user-select: none;
+}
+
+#releaseNoteScreen .previous_release_item{
+	margin-left: -15px;
+	padding-top: 10px;
+	border: 1px solid #CCC;
+	width: 810px;
+}
+
+#releaseNoteScreen .previous_heading .arrow {
+	background-image: url(img/pink_triangle_right.png);
+	background-position: center;
+	position: relative;
+	display: inline-block;
+	width: 16px;
+	height: 20px;
+	margin-right: 10px;
+	background-repeat: no-repeat;
+	top: 4px;
+}
+
+#releaseNoteScreen .expanded .arrow {
+	background-image: url(img/pink_triangle_down.png);
+	background-position: center;
+	position: relative;
+	display: inline-block;
+	width: 16px;
+	height: 20px;
+	margin-right: 10px;
+	background-repeat: no-repeat;
+	top: 4px;
+}
+

@@ -1,0 +1,4 @@
+<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
+	<alias name="novox.example.blade1.alias #1" defaultClass="novox.g1.AliasClass1"/>
+	<alias name="novox.example.blade1.alias #2" defaultClass="novox.g1.AliasClass2"/>
+</aliasDefinitions>

@@ -1,0 +1,49 @@
+<html>
+<head>
+	<title>Hello Presenter</title>
+	
+	<@css.bundle theme="blue"@ />
+	<@css.bundle alternateTheme="red"@ />
+	<@js.bundle@ />
+	<@i18n.bundle@ />
+	
+	<script>
+		
+		window.addEventListener("load", function() {
+			var oComponent = new caplin.presenter.component.PresenterComponent(
+				"emptycorp.example.helloworld.view-template", "emptycorp.example.helloworld.HelloWorldPresentationModel");
+			var oWorkbenchComponent = new caplin.presenter.component.PresenterComponent(
+					"emptycorp.example.helloworld.workbench-template", "emptycorp.example.helloworld.HelloWorldWorkbenchPresentationModel");
+		    
+			var oFrameManager = {
+				setSubHeading:function(sSubHeading)
+				{
+				},
+				
+				setClosable:function(bValue)
+				{
+				},
+				
+				close:function(){}
+			};
+		    
+			oComponent.setFrame(oFrameManager);
+			oWorkbenchComponent.setFrame(oFrameManager);
+		    oComponent.onOpen(500, 500);
+		    oWorkbenchComponent.onOpen(500, 500);
+		    document.body.appendChild(oWorkbenchComponent.getElement());
+		    document.body.appendChild(oComponent.getElement());
+		    
+		    jQuery(document).append(jQuery("<div>caplin.cutlass translation="+ct.i18n("caplin.cutlass")+"</div>"));
+		}, false);
+	</script>
+</head>
+<body>
+	- Welcome to 'hello-world' Presenter Blade Workbench!!!! -
+	<div>
+		<img src='../../../../images/sdk/caplin/chart/tick-hover.gif_image.bundle'/>
+		<small>(image loaded from sdk resources,  url: ../../../../images/sdk/caplin/chart/tick-hover.gif_image.bundle)</small>
+	</div>
+	<hr/>
+</body>
+</html>

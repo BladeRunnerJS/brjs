@@ -1,0 +1,146 @@
+<html>
+
+<head>
+<script type="text/javascript">
+	
+/**
+ * Sets the value of the <code>document.domain</code> attribute to the value of the
+ * <code>domain</code> query string attribute, 
+ * 
+ * @private
+ */
+function _setDomain()
+{
+	var l_sDomain = _getParameter("domain"); 
+	
+	if (l_sDomain !== null && l_sDomain !== "null" && l_sDomain != document.domain)
+	{
+		document.domain = l_sDomain;
+	}
+}
+
+_setDomain();	
+	
+var g_oOwnerWindow = null;
+var g_pWindows = [];
+var g_nId = 0;
+var g_nLoadCount = 0;
+
+
+window.onload = doLoad;
+
+function doLoad()
+{
+	g_oOwnerWindow = null;
+	g_pWindows = [];
+	g_nId = 0;
+	g_nLoadCount = 0;	
+	
+	g_nLoadCount++;
+	
+	var parentWindow = window.parent;
+	
+	try 
+	{
+		parentWindow.SL4B_WindowRegistrar.log("Window-registry.html loaded.");
+		parentWindow.SL4B_WindowRegistrar.registryWindowLoaded();
+	}
+	catch (e)
+	{
+		parentWindow.SL4B_WindowRegistrar.log("Window-registry.html Error occured in calling SL4B_WindowRegistrar.registryWindowLoaded().");
+	}
+}
+
+/**
+ * Sets the window as the master window
+ * @param {Object} oWindow The window to be made master
+ */
+function setOwner(oWindow, nId)
+{
+	g_nId = nId;
+	g_oOwnerWindow = oWindow;
+	document.getElementById("txtLog").value += "setOwner\n";
+}
+
+/**
+ * Registers the window as a slave and also sets the Master window
+ * @param {Object} oWindow The slave window to register
+ */
+function registerWindow(oWindow, l_oMasterWindow)
+{
+	var sSlaveId = null;
+	var pos = getWindowPosition(oWindow);
+	if (pos == -1 && oWindow != g_oOwnerWindow && (l_oMasterWindow == null || g_oOwnerWindow == l_oMasterWindow)) 
+	{
+		g_pWindows.push(oWindow);
+		sSlaveId = "slave" + (g_nId++);
+		oWindow.SL4B_WindowRegistrar.setMasterWindow(g_oOwnerWindow, sSlaveId);
+		document.getElementById("txtLog").value += "registerWindow: " + sSlaveId + "\n";
+	}
+	return sSlaveId;
+}
+
+function getWindowPosition(oWindow)
+{
+	for (var i = 0; i < g_pWindows.length; i++) 
+	{	
+		if (g_pWindows[i] == oWindow) 
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
+
+function removeWindow(oWindow, sSlaveId)
+{
+	var pos = getWindowPosition(oWindow);
+	if (pos != -1) 
+	{
+		g_pWindows.splice(pos,1);
+	}
+	document.getElementById("txtLog").value += "removeWindow: " + sSlaveId + " slave Count: " + g_pWindows.length + "\n";
+}
+
+function getOwner()
+{
+	return g_oOwnerWindow;
+}
+
+function getSlaveWindows()
+{
+	return g_pWindows;
+}
+
+function getNextSlaveId()
+{
+	return g_nId;
+}
+
+
+/**
+ * Gets the value of parameter with the specified name from the query string for the page.
+ * 
+ * @param {String} l_sName The name of the parameter.
+ * @type String
+ * @return The value of specified parameter.
+ * @private
+ */
+function _getParameter(l_sName)
+{
+	var l_oMatch = window.location.href.match(new RegExp("[?&]" + l_sName + "=([^&]*)"));
+	return ((l_oMatch == null)?null:l_oMatch[1]);
+}
+
+
+
+
+</script>
+</head>
+
+<body>
+<textarea id="txtLog" cols="80" rows="20"></textarea>
+</body>
+
+</html>

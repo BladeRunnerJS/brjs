@@ -1,0 +1,202 @@
+.gridHeaderContainer{position:relative; overflow:hidden; width:100%;} 
+.gridBodyContainer{overflow:auto; width:100%; height:0px;} 
+.gridFooter{clear:both;} 
+.cell{float:left; margin:0; overflow:hidden;} 
+.rowGroup_NOT_FOUND div, .row_NOT_FOUND div{display:none;}
+.gridWidget .gridHeader {margin:0px!important; padding:0px; border-width:0!important;}
+.gridWidget .gridHeader .cell {margin:0px; }
+.gridWidget .scrollbar-vertical {position:absolute; top:0; right:0; z-index:10;}
+.gridWidget .scrollbar-horizontal {position:absolute; left:0; bottom:0;}
+.gridWidget .squareElement {position:absolute; bottom:0; right:0; }
+
+/* grid widget */
+.gridWidget {
+	position:relative; overflow:hidden; width:100%;height:100%;
+}
+
+.gridHeader .cell{ position:relative; }
+
+.gridHeader .hover .headerMenu{
+	visibility:visible;
+}
+
+.gridHeader .cell span {
+	display: block;
+}
+.gridHeader .hover span {
+	background-position: 0 0;
+}
+
+.gridHeader .cell span {
+	position: relative; 
+	margin-top: 3px; 
+	padding:2px 0 4px 0;
+}
+
+.gridWidget .row:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+}
+
+.gridBody div.cell { cursor:default; }
+
+.cell .columnHeader {
+	padding-top: 5px;
+	display: block;
+}
+
+
+.gridWidget .gridHeader .headerSplitter {
+	width:2px;
+	height:22px;
+	position:absolute;
+	top:0;right:0;
+}
+
+.gridWidget .scrollPane {overflow:hidden;}
+
+.spVerticalScrollBar {
+	overflow:hidden; /* TODO move this to other class ? */
+}
+
+.currentRowTip {
+	position:absolute;
+	bottom:3px;
+	right:15px;
+	padding-top:7px;
+	width:75px;
+	height:16px;
+	visibility:hidden;
+}
+.spHorizontalScrollBar .currentRowTip {
+	bottom:19px;
+}
+
+/* Standard Grid Body Row Height (setting the height might seem more sensible, but causes rendering issues during scrolling in IE) */
+.gridWidget .gridBody > .cell,
+.gridWidget .gridBody > .row, .gridWidget .gridBody .rowGroup > .row {padding-bottom:0px; height:17px; }
+
+.fxPipsGrid .gridBody > .cell,
+.fxPipsGrid .gridBody > .row, .fxPipsGrid .gridBody .rowGroup > .row {padding-bottom:0px; height:22px; }
+
+/* Standard Grid Body Cell Formatting */
+.gridWidget .gridBody .cell span { line-height:17px; white-space:nowrap; }
+.fxPipsGrid .gridBody .cell span { line-height:19px; }
+.gridWidget .gridBody .cell var { white-space:nowrap; }
+
+/*Display Spread Elements correctly - CIT-1079*/
+.row .firstElement, .row .secondElement {display:inline;}
+
+/*.textBoxContainer*/
+.row .textBoxContainer {
+	top: -2px;
+	border: 0px;
+}
+
+.row .textBox {
+	position:relative;
+	line-height:10px; 
+	height:13px; 
+	padding:0;
+	margin:0; 
+}
+
+.textBoxContainer .selectorImage {
+	top: 0px;
+	right: 0px;
+}
+
+/* context menu */
+.gridMenu{ z-index:2000; }
+.gridMenu .item a{display:block; padding:0.15em 1em;  }
+.gridMenu .divider{height:1px; overflow:hidden;}
+
+/* drag & drop */
+.x-dd-drag-proxy .row {height:17px; 
+	opacity:0.50; filter:alpha(opacity=50);}
+.x-dd-drag-proxy .row .cell {padding:2px;position: relative; }
+.x-dd-drag-proxy .rowPadding {display:none;}
+
+/* drag and drop for the personal grid */
+.x-dd-drag-ghost .row .tradablePrices .firstElement,
+.x-dd-drag-ghost .row .tradablePrices .secondElement,
+.x-dd-drag-ghost .row .tradablePrices span {float:left;}
+
+.dropTarget{border:1px solid red !important;}
+.gridBody .dropTarget{border-width:0px !important;}
+
+.gridDropElem.dropTarget{z-index:9999;}
+.gridDropElem{z-index:-9999;}
+.dropTarget{z-index:1;}
+
+.headerRow {
+ 	position:absolute;
+	left:0;
+	/* don't set a top position, as the default is what we want */
+	/* height is set by decorator, picked up from the grid */
+      padding-left:5px;
+      padding-top:2px;
+}
+
+.filterRenderer .combo-clear {
+	overflow: hidden;
+	width:8px; height:8px;
+}
+
+.filterRenderer .combo-clear img {
+	position:absolute;
+	left: 0px;
+}
+
+.filterRenderer .combo-clear-up img {
+	top: 0px;
+}
+
+.filterRenderer .combo-clear-down img {
+	top: -16px;
+}
+
+.filterRenderer .combo-clear-hover img {
+	top: -8px;
+}
+
+.filterRenderer .combo-clear-disabled img {
+	top: -24px;
+}
+
+.gridHeader .cell span {
+	padding:5px 0 1px 0;
+	overflow:hidden; 
+}
+
+div.gridBody div.cell { overflow:hidden;height:17px;  }
+.gridBody .remove div {padding:0;}
+.gridBody .remove .ImageButton {margin-top:2px;}
+.Panel .gridHeaderContainer .gridHeader .remove {
+	height:19px;
+}
+
+.gridBody .cell span { display:inline-block; }
+
+.gridBody div.flashing-price span { padding-left:13px; padding-right:3px; width:43px;}
+.gridBody div.flashing-pips span { padding-left:13px; padding-right:3px; width:53px;}
+.gridBody div.flashing-total span { padding-left:13px; padding-right:3px; width:63px;}
+
+
+/**/
+.gridWidget .gridHeader .headerSplitter {
+	height:19px;
+}
+
+
+div.row.even {
+	background-color: #00FFFF;
+}
+
+div.gridHeaderContainer {
+	height: 29px !important; /* override element css */
+}

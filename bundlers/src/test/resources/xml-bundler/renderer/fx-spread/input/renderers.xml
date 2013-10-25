@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rendererDefinitions xmlns="http://schema.caplin.com/CaplinTrader/rendererDefinitions">
+	<renderer type="fx-spread" streams="bid,ask">
+		<template>
+			<var><renderer type="fx-spread-price" stream="bid"/> / <renderer type="fx-spread-price" stream="ask"/></var>
+		</template>		
+	</renderer>
+</rendererDefinitions>

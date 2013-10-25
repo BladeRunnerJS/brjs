@@ -1,0 +1,20 @@
+<div id="focus-view-form-id">
+	<h1>Focus Fields</h1><hr />
+	<form>
+    	<div class="input-label"> Input A:</div>
+		<div id="inputA" data-bind="template:{name:'focus.inputField', data:inputA}"></div>
+        <div class="input-label">Field B:</div>
+		<div id="inputB" data-bind="template:{name:'focus.inputField', data:inputB}"></div>
+	</form>
+</div>
+
+
+<div id="focus.inputField">
+	<div class="field">
+		<label data-bind="text:label"></label>
+		<div class="input">
+			<input class='fieldInput' type="text" data-bind="hasfocus:hasFocus, enable:enabled"/>
+		</div>
+	</div>
+</div>
+	

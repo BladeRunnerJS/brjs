@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+ 
+ <web-app>
+      <display-name>Cutlass Dev Filters Test</display-name>
+
+      <servlet>
+          <servlet-name>DefaultServlet</servlet-name> 
+          <servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class> 
+          <load-on-startup>1</load-on-startup> 
+      </servlet>
+      <servlet-mapping>
+          <servlet-name>DefaultServlet</servlet-name> 
+          <url-pattern>/*</url-pattern> 
+      </servlet-mapping>
+
+      <filter>
+          <filter-name>BladerunnerProdFilters</filter-name> 
+          <filter-class>com.caplin.cutlass.filter.BladerunnerProdFilters</filter-class> 
+      </filter>
+      <filter-mapping>
+          <filter-name>BladerunnerProdFilters</filter-name> 
+          <url-pattern>/*</url-pattern> 
+          <dispatcher>REQUEST</dispatcher>
+          <dispatcher>FORWARD</dispatcher>
+      </filter-mapping>
+
+  </web-app>
+ 
+ 
+ 

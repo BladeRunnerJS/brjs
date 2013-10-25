@@ -1,0 +1,2 @@
+<Panel xmlns="http://schema.caplin.com/CaplinTrader/webcentricLayout" panel_type="blank" src="source/message-panes/blank_layout.html" style="new-layout" decorators="blankLayoutDecorator">
+</Panel>

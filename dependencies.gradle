@@ -1,0 +1,129 @@
+
+/*
+ * provides a map of centralised dependencies
+ * dependencies can be accessed by using 'dependency("artifact_id")'
+ */
+
+def Dependencies = project.extensions.Dependencies = [:]
+ext {
+	dependency = { String dep ->
+		if (project.extensions.Dependencies[dep] == null) {
+			throw new GradleException("no definded dependency for '${dep}'.")
+		}
+		return project.extensions.Dependencies[dep]
+	}
+}
+
+/*
+ * when adding a new dependency use the artifactId as the map key
+ * e.g. 'org.eclipse.jetty.aggregate:jetty-all-server:8.1.0.v20120127' becomes
+ * 			'jetty-all-server'	:	'org.eclipse.jetty.aggregate:jetty-all-server:8.1.0.v20120127'
+ */
+Dependencies.putAll([
+
+	'jetty-all-server'			:	'org.eclipse.jetty.aggregate:jetty-all-server:7.6.4.v20120524',	/* version should be 7.x - this version uses servlet api v2.5 */
+	'jsp-2.1-glassfish'			:	'org.mortbay.jetty:jsp-2.1-glassfish:2.1.v20100127',
+	'jta'						:	'javax.transaction:jta:1.1',
+	'bonecp'					:	'com.jolbox:bonecp:0.7.1.RELEASE',
+	'h2'						:	'com.h2database:h2:1.3.167',
+	'xom'						:	'xom:xom:1.2.5',
+	'javassist'					:	'org.javassist:javassist:3.16.1-GA',
+	'servlet-api'				:	'javax.servlet:servlet-api:2.5',	/* do not update - this is the version Tomcat 6.0.x uses */
+	'guava'						:	'com.google.guava:guava:12.0',
+	'gson'						:	'com.google.code.gson:gson:2.2.2',
+	'json-simple'				:	'com.googlecode.json-simple:json-simple:1.1.1',
+	'hibernate-core'			:	'org.hibernate:hibernate-core:3.6.10.Final',
+	'hibernate-validator'		:	'org.hibernate:hibernate-validator:5.0.1.Final',
+	'hibernate-c3p0'			:	'org.hibernate:hibernate-c3p0:3.6.10.Final',
+	'javassist'					:	'javassist:javassist:3.12.1.GA',
+	'validation-api'			:	'javax.validation:validation-api:1.1.0.Final',
+	'bval-jsr303'				:	'org.apache.bval:bval-jsr303:0.5',
+	
+	'reflections'				:	'org.reflections:reflections:0.9.9-RC1',
+
+	'jsap'						:	'com.martiansoftware:jsap:2.1',
+
+	'commons-io'				:	'commons-io:commons-io:2.3',
+	'commons-lang3'				:	'org.apache.commons:commons-lang3:3.1',
+	'commons-codec'				:	'commons-codec:commons-codec:1.6',
+	'commons-fileupload'		:	'commons-fileupload:commons-fileupload:1.2',
+
+	'httpclient'				:	'org.apache.httpcomponents:httpclient:4.2.1',
+	'httpcore'					:	'org.apache.httpcomponents:httpcore:4.2.1',
+	'httpmime'					:	'org.apache.httpcomponents:httpmime:4.1.2',
+
+	'selenium-java'				:	'org.seleniumhq.selenium:selenium-java:2.24.1',
+
+	'log4j'						:	'log4j:log4j:1.2.17',
+
+	'slf4j-api'					:	'org.slf4j:slf4j-api:1.6.6',
+	'slf4j-log4j12'				:	'org.slf4j:slf4j-log4j12:1.6.6',
+	'yamlbeans'					:	'com.esotericsoftware.yamlbeans:yamlbeans:1.06',
+
+	'ant'						:	'org.apache.ant:ant:1.8.4',
+	'ant-junit'					:	'org.apache.ant:ant-junit:1.8.4',
+	'xalan'						:	'xalan:xalan:2.7.1',
+
+	
+	'uadetector-core'			:	'net.sf.uadetector:uadetector-core:0.9.8',
+	'uadetector-resources'		:	'net.sf.uadetector:uadetector-resources:2013.08',
+	
+
+//	'uadetector-resources'		:	'net.sf.uadetector:uadetector-resources:2012.04-caplin', /* DO NOT CHANGE */
+	'osbcp-css-parser-caplin'	:	'osbcp-css-parser:osbcp-css-parser-caplin:1.0', /* DO NOT CHANGE */
+
+	'junit'						:	'junit:junit:4.11',
+	'xmlunit'					:	'xmlunit:xmlunit:1.3',
+	'jmock-junit4'				:	'org.jmock:jmock-junit4:2.5.1',
+	'jmock'						:	'org.jmock:jmock:2.5.1',
+	'mockito-core'				:	'org.mockito:mockito-core:1.9.0',
+	'jetty-servlet-tester'		:	'org.mortbay.jetty:jetty-servlet-tester:6.1H.22',
+	'jyaml'						:	'org.jyaml:jyaml:1.3',
+	'hamcrest-all'				:	'org.hamcrest:hamcrest-all:1.3',
+
+	'woodstox-core-asl'			:	'org.codehaus.woodstox:woodstox-core-asl:4.2.0',
+	'stax2-api'					:	'org.codehaus.woodstox:stax2-api:3.1.1',
+	'msv-core'					:	'net.java.dev.msv:msv-core:2013.2.2',
+	'trang'						:	'com.thaiopensource:trang:20091111',
+
+	'cobertura'					:	'net.sourceforge.cobertura:cobertura:1.9.4.1',
+	'JsTestDriver'				:	'com.google:JsTestDriver:1.3.3d-brjs1',
+	'ecj'						:	'org.eclipse.jdt.core.compiler:ecj:3.7.2',
+	'closure-compiler'			:	'com.google.javascript:closure-compiler:r2180',
+	'jsdoc_toolkit'				:	'jsdoc_toolkit:jsdoc_toolkit:2.4.0@zip',
+	'jericho-html'				:	'net.htmlparser.jericho:jericho-html:3.2',
+	'wagon-http'				:	'org.apache.maven.wagon:wagon-http:2.2',
+
+	'apache-tomcat'				:	'org.apache:apache-tomcat:6.0.35@zip',
+
+	'db-derby'					:	'db-derby:db-derby:10.9.1.0@zip',
+	'hsqldb'					:	'hsqldb:hsqldb:1.8.0.10',
+
+	'rhino'						:	'org.mozilla:rhino:1.7R4',
+	
+	'saxon-dom'					:	'net.sf.saxon:saxon-dom:8.7'
+]);
+
+/* browsers are defined as browserName+version because we probably want to use multiple versions */
+def os = org.bladerunnerjs.OSCalculator.getOS()
+Dependencies.putAll([
+	'chromium25'				:	'browser:chrome-'+os+':25.0.1339.0@zip',
+	'chromium27'				:	'browser:chromium-'+os+':27.0.1453.0@zip',
+	'chrome27'					:	'browser:chromeportable-'+os+':27.0.1453.110@zip',
+	
+	'firefox12'					:	'browser:firefox-'+os+':12.0@zip',
+	'firefox21'					:	'browser:firefox-'+os+':21.0@zip',
+
+ 	'chromedriver21'			:	'browser:chromedriver_'+os+':21.0.1180.4@zip',
+ 	'chromedriver23'			:	'browser:chromedriver_'+os+':23.0.1240.0@zip',
+
+])
+
+Dependencies.put('firefox-stable', dependency('firefox21'));
+Dependencies.put('firefox-webdriver', dependency('firefox12'));
+if ( os == 'linux' ) {
+	Dependencies.put('chrome-stable', dependency('chromium25'));
+} else {
+	Dependencies.put('chrome-stable', dependency('chrome27'));
+}
+

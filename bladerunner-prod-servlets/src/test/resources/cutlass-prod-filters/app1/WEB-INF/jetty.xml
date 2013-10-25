@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure id="Server" class="org.eclipse.jetty.server.Server">
+
+	<Set name="handler">
+		<New class="org.eclipse.jetty.server.handler.HandlerList">
+			<Set name="handlers">
+				<Array type="org.eclipse.jetty.server.Handler">
+					<Item>
+						<New id="Contexts"
+							class="org.eclipse.jetty.server.handler.ContextHandlerCollection" />
+					</Item>
+					<Item>
+						<New class="org.eclipse.jetty.server.handler.DefaultHandler">
+						</New>
+					</Item>
+				</Array>
+			</Set>
+		</New>
+	</Set>
+
+</Configure>

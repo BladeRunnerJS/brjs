@@ -1,0 +1,17 @@
+.serviceModeConfig {
+	position:absolute;
+	z-index:1;
+	top:175px;
+	right:9px;
+	padding:10px 13px 15px;
+	color:white;
+	background-color:red;
+}
+
+.serviceModeConfig h2 {
+	margin:0 0 2px;
+}
+
+.serviceModeConfig .controls {
+	margin-left:25px;
+}

@@ -1,0 +1,206 @@
+.apps-area{
+	clear:both;
+	text-align: center;
+	height: 100%;
+	margin-left:auto;
+	margin-right: auto;
+	-webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+
+}
+
+
+
+.appbox{
+	/*--- Remove me Later--- */
+	
+	
+	margin: 15px;
+	/*--- --- */
+	display: inline-block;
+	position:relative;
+	padding:4px;
+	width: 285px;
+	height: 180px;
+	
+	
+	color: #474747;
+	text-shadow: 0px 2px 2px rgba(255, 255, 255, 0.9);
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-style:solid;
+	border-width:2px;
+	border-color: #fff;
+	border-radius: 5px;
+	text-decoration:none;
+	/* -webkit-filter: grayscale(70%);  */
+	-webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+
+	
+     box-shadow:  0px 1px 1px 1px rgba(0, 0, 0, 0.3),
+	 			 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
+				
+	background-color: rgba(255, 255, 255, 0.9);
+	-webkit-box-shadow:   0px 1px 1px 1px rgba(0, 0, 0, 0.3),
+	 					 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
+	 
+	-moz-box-shadow:   0px 1px 1px 1px rgba(0, 0, 0, 0.3),
+	 					 0px 0px 10px 3px rgba(0, 0, 0, 0.1);
+						
+
+}
+
+.appbox:hover{
+	top:-5px;
+	border-style:solid;
+	border-width:2px;
+	border-color: #54b0cb;
+	border-radius: 5px;
+	color:#54B0CB;
+
+	/* -webkit-filter: grayscale(0%);*/  
+     box-shadow:  0px 1px 1px 1px rgba(0, 0, 0, 0.3),
+	 			 0px 8px 15px 0px rgba(0, 0, 0, 0.4);
+				
+	background-color: rgba(255, 255, 255, 0.9);
+	-webkit-box-shadow:   0px 1px 1px 1px rgba(0, 0, 0, 0.3),
+	 					 0px 8px 15px 0px rgba(0, 0, 0, 0.4);
+	 
+	-webkit-box-shadow:   0px 1px 1px 1px rgba(0, 0, 0, 0.3),
+	 					 0px 8px 15px 0px rgba(0, 0, 0, 0.4);
+						
+
+}
+
+
+.appbox-img{
+	height: 140px;
+	width: 285px;
+	position: relative;
+	background-repeat: no-repeat;
+	bottom: -4px;
+
+
+	
+	box-shadow:inset 0px 1px 1px 3px rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow:inset 0px 1px 3px 1px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow:inset 0px 1px 1px 3px rgba(0, 0, 0, 0.3);
+		
+}
+
+
+.appbox-title{
+	
+	line-height: 35px;
+	font-family: "HelveticaNeueW01-55Roma", Arial, sans-serif;
+	color: inherit;
+	
+	text-rendering: optimizelegibility;
+	font-size: 16px;
+	text-align: left;
+	margin-left: 5px;
+		
+}
+
+
+
+
+.app-btn {
+	color: #fff !important;
+	position: absolute;
+	top: 10px;
+	right: -12px;
+	width: 65px;
+	cursor: pointer;
+	margin-left: 10px;
+	margin-right: 20px;
+	-moz-transition: all 0.25s ease-in-out 0s;
+	-webkit-transition: all 0.25s ease-in-out 0s;
+	background-color: #A0A2A2;
+	font-family: "HelveticaNeueW01-55Roma", Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	font-style: normal;
+
+	text-shadow: 0px 1px 0px rgba(52, 121, 141, 1);
+	text-decoration: none; 
+	padding: 5px 10px 5px 10px;
+	-moz-border-radius: 30px;
+	-webkit-border-radius: 30px;
+	border-radius: 30px;
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#54b0cb', endColorstr = '#3f97b2');
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#54b0cb', endColorstr = '#3f97b2')";*/
+	background-image: -moz-linear-gradient(top, #a0a2a2, #7b7d7c);
+	background-image: -ms-linear-gradient(top, #a0a2a2, #7b7d7c);
+	background-image: -o-linear-gradient(top, #a0a2a2, #7b7d7c);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#a0a2a2), to(#7b7d7c));
+	background-image: -webkit-linear-gradient(top, #a0a2a2, #7b7d7c);
+	background-image: linear-gradient(top, #a0a2a2, #7b7d7c);
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+.appbox:hover .app-btn {
+	color: #fff;
+	text-shadow: 0px 1px 0px rgba(52, 121, 141, 1);
+	text-decoration: none;
+	-moz-transition: all 0.25s ease-in-out 0s;
+	-webkit-transition: all 0.25s ease-in-out 0s;
+	background-color: #226f86;
+	-moz-border-radius: 30px;
+	-webkit-border-radius: 30px;
+	border-radius: 30px;
+	background-color: #226f86;
+	
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#54b0cb', endColorstr = '#3f97b2');
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr = '#54b0cb', endColorstr = '#3f97b2')";*/
+	background-image: -moz-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: -ms-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: -o-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: -webkit-gradient(linear, center top, center bottom, from(#54b0cb), to(#3f97b2));
+	background-image: -webkit-linear-gradient(top, #54b0cb, #3f97b2);
+	background-image: linear-gradient(top, #54b0cb, #3f97b2);
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+.showJsDocsBtn .button-image {
+	background-image: url(img/docs-up.png);
+}
+
+.refreshBtn .button-image {
+	background-image: url(img/refresh-up.png);
+}
+
+.exportWarBtn .button-image {
+	background-image: url(img/exportwar-up.png);
+}
+
+.launchAppBtn .button-image {
+	background-image: url(img/launch-up.png);
+}
+
+.importMotifFromZipButton .button-text {
+	background-image: url(img/importApp-up.png);
+}
+
+.newAppButton .button-text {
+	background-image: url(img/NewApp-up.png);
+}
+
+.newBladeSetBtn .button-text {
+	background-image: url(img/NewBladeset-up.png);
+}
+
+.importBladesFromAppBtn .button-text {
+	background-image: url(img/importApp-up.png);
+}
+
+.popoutWorkbenchBtn .button-image {
+	background-image: url(img/launch-up.png);
+}
+

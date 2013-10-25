@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bundle>
+	<resource name="gridDefinitions">
+		<gridDefinitions xmlns="http://schema.caplin.com/CaplinTrader/gridDefinitions">
+			<dataProviderMappings>
+				<dataProviderMapping id="DP1" className="DP1"/>
+				<dataProviderMapping id="gridDP-1A" className="GridDP1A"/>
+				<dataProviderMapping id="gridDP-1B" className="GridDP1B"/>
+				<dataProviderMapping id="gridDP-2A" className="GridDP2A"/>
+				<dataProviderMapping id="gridDP-2B" className="GridDP2B"/>
+			</dataProviderMappings>
+			
+			<decoratorMappings>
+				<decoratorMapping id="gridDec-1A" className="GridDec1A"/>
+				<decoratorMapping id="gridDec-1B" className="GridDec1B"/>
+				<decoratorMapping id="gridDec-2A" className="GridDec2A"/>
+				<decoratorMapping id="gridDec-2B" className="GridDec2B"/>
+			</decoratorMappings>
+			
+			<templates>
+				<gridTemplate id="template1">
+					<decorators>
+						<loadingDataDecorator showInitialLoad="true"/>
+					</decorators>
+				</gridTemplate>
+				
+				<gridTemplate id="template2">
+					<decorators>
+						<loadingDataDecorator showInitialLoad="true"/>
+					</decorators>
+				</gridTemplate>
+				
+				<gridTemplate id="template3">
+					<decorators>
+						<loadingDataDecorator showInitialLoad="true"/>
+					</decorators>
+				</gridTemplate>
+			</templates>
+			
+			<grids>
+				<grid id="grid-1A">
+					<decorators>
+						<loadingDataDecorator showInitialLoad="true"/>
+					</decorators>
+				</grid>
+				
+				<folder name="folder1">
+					<grid id="grid-1B">
+						<decorators>
+							<loadingDataDecorator showInitialLoad="true"/>
+						</decorators>
+					</grid>
+				</folder>
+				
+				<grid id="grid-2A">
+					<decorators>
+						<loadingDataDecorator showInitialLoad="true"/>
+					</decorators>
+				</grid>
+				
+				<folder name="folder2">
+					<grid id="grid-2B">
+						<decorators>
+							<loadingDataDecorator showInitialLoad="true"/>
+						</decorators>
+					</grid>
+				</folder>
+			</grids>
+		</gridDefinitions>
+	</resource>
+</bundle>

@@ -1,0 +1,3 @@
+novox.ValidClass = function()
+{
+};

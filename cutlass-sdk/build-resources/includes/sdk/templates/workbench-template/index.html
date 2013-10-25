@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Workbench</title>
+		
+		<@css.bundle theme="standard"@/>
+		<@js.bundle@/>
+		
+		<script type="text/javascript">
+			function initialize() {
+				var workbench = new br.workbench.ui.Workbench(250, 310);
+				var model = new @appns.@bladeset.@blade.ExamplePresentationModel();
+				var component = new br.presenter.component.PresenterComponent("@appns.@bladeset.@blade.view-template", model);
+				var presentationModelViewer = new br.presenter.workbench.ui.PresentationModelViewer(model);
+				
+				workbench.addToRightWing(presentationModelViewer, "Visualise Presentation Model", false);
+				workbench.displayComponent(component, 200, 100);
+			}
+		</script>
+	</head>
+	<body onload="initialize()">
+	</body>
+</html>

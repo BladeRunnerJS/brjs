@@ -1,0 +1,331 @@
+import org.apache.tools.ant.filters.*
+
+apply plugin: 'maven'
+
+configurations { 
+	system
+	application
+	systemApp {
+		exclude module: 'jetty-all-server'
+		extendsFrom application
+	}
+	jsLibsAndDocs
+	testRunner
+	ct3Zip
+	bladerunnerZip
+	
+	browsers_dep
+	browsers_webdriver
+} 
+
+dependencies {
+	system project(path: ':cutlass-tasks')
+	system project(path: ':brjs-runner')
+	system project(path: ':brjs-logger')
+	system project(":brjs-logger-binding")
+	system dependency('selenium-java')
+	
+	application project(path: ':bladerunner-dev-servlets')
+	application project(path: ':bladerunner-common-servlets')
+	application project(path: ':bladerunner-prod-servlets')
+	application dependency('h2')
+	application dependency('javassist')
+	application (dependency('jsp-2.1-glassfish')) {
+		exclude module: 'ant'
+	}
+	
+	systemApp (project(path: ':system-app-servlets'))
+
+	testRunner dependency('JsTestDriver')
+	testRunner dependency('validation-api')
+	testRunner dependency('bval-jsr303')
+	// Note: don't try to add support for transitive dependencies here as it will just fail
+	testRunner project(path: ':js-test-driver-bundler-plugin', transitive : false)
+
+	testRunner project(path: ':brjs-logger')
+	testRunner project(path: ':brjs-logger-binding')
+	testRunner files('build-resources/JsTestDriver.conf')
+	
+	browsers_dep dependency('chrome-stable')
+	browsers_dep dependency('firefox-stable')
+	
+	browsers_webdriver dependency('firefox-webdriver')
+}
+
+
+def browserRootDir = buildDir.path+"/browsers"
+def browserProfileDir = "${browserRootDir}/profile"
+task copyBrowsers(type: Sync) {
+	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
+	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
+	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
+	into browserRootDir
+	doLast {
+		//TODO: this should probabaly be done in a task listener
+		if (file(browserProfileDir).exists()) {
+			delete browserProfileDir
+		}
+		file(browserProfileDir).mkdirs();
+		file(browserProfileDir + "/chrome").mkdir();
+			/* prevent chrome asking to set default search engine */
+			file(browserProfileDir + "/chrome/First Run").createNewFile();
+		file(browserProfileDir + "/chromium").mkdir();
+			/* prevent chromium asking to set default search engine */
+			file(browserProfileDir + "/chromium/First Run").createNewFile();
+		file(browserProfileDir + "/firefox").mkdir();
+			file(browserProfileDir + "/firefox/prefs.js").createNewFile();
+			file(browserProfileDir + "/firefox/prefs.js").text = "user_pref(\"browser.shell.checkDefaultBrowser\", false);\nuser_pref(\"browser.sessionstore.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.recent_crashes\", -1);\n";
+		}
+}
+
+task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner], {
+	def includesDir = "build-resources/includes"
+	
+	destinationDir file("${projectDir.path}/workspace")
+	
+	inputs.property "sdkVersion", buildVersion
+	inputs.property "buildDate", buildDate
+	inputs.property "buildHostname", buildHostname	
+	
+	from ("${includesDir}")
+	{
+		include "LICENSE"
+		include "README.txt"
+	}
+	
+	from ("${includesDir}/apps")
+	{
+		into "apps"
+	}
+	
+	from ("${includesDir}/conf")
+	{
+		into "conf"
+	}
+	from ("build-resources")
+	{
+		into "conf"
+		include "test-runner.conf"
+	}
+	
+	from ("${includesDir}/sdk") {
+		into "sdk"
+		exclude "release-notes/*"
+		exclude "version.txt"
+	}
+	
+	from ("${includesDir}/sdk") {
+		into "sdk"
+		include "release-notes/*"
+		filter(ReplaceTokens, tokens: [
+			buildVersion: buildVersion,
+			buildDate: buildDate
+		] )
+	}
+	
+	from ("${includesDir}/sdk") {
+		into "sdk"
+		include "version.txt"
+		filter( ReplaceTokens, tokens: [
+			sdkVersion:buildVersion,
+			buildDate:buildDate,
+			distType:"bladerunner",
+			buildHostname:buildHostname
+		] )
+	}
+	
+	from (configurations.system)
+	{
+		into "sdk/libs/java/system"
+	}
+	from (configurations.application)
+	{
+		into "sdk/libs/java/application"
+		rename { String fileName ->
+    		if ( !fileName.startsWith("brjs-") )
+    		{
+    			fileName = "brjs-"+fileName
+    		}
+		}
+		exclude '*xom-*.jar'
+	}
+	file("workspace/sdk/system-applications").listFiles().each {
+		if (it.isDirectory()) {
+			into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
+				from configurations.systemApp
+				rename { String fileName ->
+					if ( !fileName.startsWith("brjs-") )
+					{
+						fileName = "brjs-"+fileName
+					}
+				}
+				exclude '*xom-*.jar'
+			}
+		}
+	}
+	from (configurations.testRunner)
+	{
+		into "sdk/libs/java/testRunner"
+		rename 'js-test-driver-bundler-plugin-.*', 'js-test-driver-bundler-plugin.jar'
+		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
+	}
+	
+	from ("${includesDir}/licenses")
+	{
+		into "licenses"
+	}
+	
+	
+	doFirst {
+		delete file("sdk/libs/java")
+		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+	}
+	doLast {
+		//TODO: find a better way to do this so we dont copy files and then immediately delete them
+		fileTree(dir:"sdk/system-applications/dashboard-services/WEB-INF/lib", include:"brjs-*", exclude:"*system-app-servlets*").each { delete it }
+	}
+	doLast {
+		ant {
+			fixcrlf(srcdir:"workspace", includes:"**/brjs", eol:"lf" )
+			fixcrlf(srcdir:"workspace", includes:"**/brjs.cmd", eol:"crlf" )
+		}
+	}
+}
+
+task assembleJsDoc, type:com.caplin.gradle.tasks.JsDoc, dependsOn: assembleSdk, {
+	jsDocsDir = file("workspace/sdk/docs/jsdoc")
+	// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
+	jsRootPathRelativeToJsDocDir = "workspace/sdk/libs/javascript/caplin/src"
+	jsDocToolkitDir = file("workspace/sdk/jsdoc-toolkit")
+	templateDir = file("workspace/sdk/jsdoc-templates/Caplin")
+}
+
+
+def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
+	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
+		description = "Run ${testType} for ${testDir}"
+		dependsOn = [assemble, copyBrowsers]
+		inputs.dir file("workspace/apps/")
+    	inputs.dir file("workspace/sdk/")
+    	inputs.dir file("workspace/conf/")
+		workingDir = "workspace/sdk"
+		testType = taskTestType
+		browsers = browser
+		testDir = taskTestDir 
+	}
+}
+
+createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
+createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
+createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
+
+createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
+createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
+createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
+
+
+task test, dependsOn:[testJsChrome, testJsFirefox, testSystemAppsChrome, testSystemAppsFirefox]
+task testIE, dependsOn: [testJsIE, testSystemAppsIE]
+
+
+assemble.dependsOn = [assembleSdk, assembleJsDoc, copyBrowsers]
+
+task check, dependsOn: test, {}
+task build, dependsOn: check, {}
+
+
+ext.explodedSdkDir = "${project.buildDir}/exploded"
+ext.sdkDir = "BladeRunner/sdk"
+
+task distZip, type:Zip, dependsOn: [assemble], {
+	baseName = "BladeRunner"
+	from "workspace/"
+	into "BladeRunner/"
+	include "licenses/**", "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
+	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**"
+}
+build.dependsOn distZip
+distZip.mustRunAfter test
+
+
+task explodeSdk, type:Sync, dependsOn: distZip, {
+	from files(distZip).collect { zipTree(it) }
+	into explodedSdkDir
+}
+
+
+task checkVersionTxt, dependsOn: explodeSdk, {
+	doFirst {
+		def versionFile = project.file("${explodedSdkDir}/BladeRunner/sdk/version.txt");
+		if (versionFile.text.contains("@"))
+		{
+			throw new GradleException("version.txt (${versionFile.getAbsolutePath()}) contains an unfiltered token.")
+		}
+	}
+}
+check.dependsOn checkVersionTxt
+		
+
+task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, dependsOn: explodeSdk, {
+	checkRoot = file(explodedSdkDir)
+	expectedPaths = [
+		"*/sdk/**",
+		"*/sdk/brjs",
+		"*/sdk/brjs.cmd",
+		"*/sdk/version.txt",
+		"*/sdk/libs/java/testRunner/*",
+		"*/sdk/libs/java/testRunner/js-test-driver-bundler-plugin.jar", /* make sure this isnt versioned */
+		"*/sdk/libs/java/system/*",
+		"*/sdk/libs/java/application/**",
+
+		// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
+		"*/sdk/libs/javascript/caplin/src/br/**",
+		"*/sdk/libs/javascript/caplin/resources/**/*",
+		"*/sdk/libs/javascript/thirdparty/**/*",
+		"*/sdk/system-applications/**/*",
+		"*/sdk/system-applications/*/WEB-INF/lib/*",
+		"*/sdk/templates/**/*",
+		"*/sdk/templates/**/tests/**/*",
+		"*/sdk/docs/jsdoc/index.html",
+		"*/sdk/docs/jsdoc/classesindex.html", 
+		"*/sdk/docs/jsdoc/static/*",
+		"*/README.txt",
+		"*/LICENSE",
+		"*/apps/apps.txt",
+		"*/licenses/java.html",
+		"*/licenses/javascript.html",
+		"*/licenses/Third Party Legal Notice.pdf",
+	]
+	bannedPaths = [
+	   "**/.p4ignore",
+	   "**/.gitignore",
+	   "**/empty.txt",
+	   "**/system-applications/dashboard/WEB-INF/lib/*xom-*",
+	   "**/libs/java/application/xom-*",
+	   "**/libs/java/application/*bladerunner.jar",
+	   "**/libs/java/application/servlet-api-*",
+	   "**/libs/java/system/bladerunner-*-servlets*",
+	   "**/js-test-driver/bundles/**/*",
+	   "**/libs/**/tests/**/*",
+	   "**/system-applications/**/tests/**/*",
+	   "*/sdk/libs/javascript/caplin/test/**",
+	   "*/sdk/run*",
+	   "**/node_modules/**"
+	]
+}
+check.dependsOn checkSdkStructure
+	
+clean {
+	doFirst {
+		ant.delete(includeemptydirs: 'true') {
+			fileset(dir: 'workspace') {
+				include(name: '**/*')
+				exclude(name: 'sdk/system-applications/**/*')
+				exclude(name: 'sdk/libs/javascript/**/*')
+			}
+    	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
+    	fileTree(dir:"workspace/sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
+		}
+	}
+}
+

@@ -1,0 +1,48 @@
+<web-app>
+	
+   <servlet>
+       <servlet-name>jsDocServlet</servlet-name>
+       <servlet-class>com.caplin.cutlass.servlet.FileServlet</servlet-class>
+       <init-param>
+           <param-name>basePath</param-name>
+           <param-value>../../../generated/app</param-value>
+       </init-param>
+       <load-on-startup>1</load-on-startup> 
+   </servlet>
+   
+   <servlet>
+       <servlet-name>liveExamplesJsDocServlet</servlet-name>
+       <servlet-class>com.caplin.cutlass.servlet.FileServlet</servlet-class>
+       <init-param>
+           <param-name>basePath</param-name>
+           <param-value>../../docs/jsdoc/</param-value>
+       </init-param>
+       <load-on-startup>1</load-on-startup> 
+   </servlet>
+
+   <servlet-mapping>
+       <servlet-name>jsDocServlet</servlet-name>
+       <url-pattern>/appjsdoc/*</url-pattern>
+   </servlet-mapping>
+   
+    <servlet-mapping>
+       <servlet-name>liveExamplesJsDocServlet</servlet-name>
+       <url-pattern>/jsdoc/*</url-pattern>
+   </servlet-mapping>
+   
+   <servlet>
+       <servlet-name>testResultsServlet</servlet-name>
+       <servlet-class>com.caplin.cutlass.servlet.FileServlet</servlet-class>
+       <init-param>
+           <param-name>basePath</param-name>
+           <param-value>../../../test-results/html/</param-value>
+       </init-param>
+       <load-on-startup>1</load-on-startup> 
+   </servlet>
+
+   <servlet-mapping>
+       <servlet-name>testResultsServlet</servlet-name>
+       <url-pattern>/test-results/*</url-pattern>
+   </servlet-mapping>
+	
+</web-app>
