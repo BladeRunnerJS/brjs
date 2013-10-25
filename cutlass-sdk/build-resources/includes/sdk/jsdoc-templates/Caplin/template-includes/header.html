@@ -11,53 +11,21 @@
 		<link rel="shortcut icon" href="favicon.ico">
 		<link rel="stylesheet" type="text/css" href="static/caplin-styles.css" />
 		<link rel="stylesheet" type="text/css" href="static/style-overrides.css" />
-		<link rel="stylesheet" type="text/css" href="static/crumbtrail.css" />
-		<link rel="stylesheet" type="text/css" href="static/regenerateDocs.css" />
 
-		<script>
-			function getAppName() 
-			{
-				var initialIndex = window.location.pathname.indexOf("jsdoc/") + 6;
-				var lastIndex = window.location.pathname.indexOf("/jsdoc-toolkit");
-				return window.location.pathname.substring(initialIndex, lastIndex);
-			}
-
-			function createAppLinks()
-			{
-				var appName = getAppName();
-				var appLink = document.getElementById("appLink");
-				appLink.href = "/dashboard/#apps/" + appName;
-				appLink.innerHTML = appName;
-			}
-			
-			function generateDocs()
-			{
-				window.location = "/dashboard-services/appjsdoc/" + getAppName() + "/jsdoc-toolkit/generatedocs.html";
-			};
-			
-		</script>
 	</head>
 	
-	<body onload="createAppLinks()">
+	<body>
+		
 		<header>
 			<div id="topnav">
 				<ul>
-					<li><a href="/#">BladeRunner</a></li>
+					<li><a href="/#"><b>BladeRunner</b>JS</a></li>
+					<li><a href="/dashboard-services/jsdoc/index.html" class='selected'>API Docs</a></li>
 					<li><a href="/#note/latest" class="noborder">Release Notes</a></li>
-					<li><a href="/live-examples" class="popout" target="_blank">Live Examples</a></li>
-					<li><a href="http://www.caplin.com/developer" target="_blank">Developer Site</a></li>
+					<li><a href="http://bladerunnerjs.org" target="_blank">Developer Site</a></li>
 				</ul>
 			</div>
 			<br class="clearfloat">
-			
-			<div class="subnav">
-				<ul>
-					<li><a href="/dashboard" class="subnav-extend-btn"></a></li>
-					<li><a id="appLink" class="subnav-btn">app</a></li>
-					<li><div class="subnav-selected" >docs</div></li>
-				</ul>
-			</div>
-			
 		</header>
 		
 		<div id="flex-con">
