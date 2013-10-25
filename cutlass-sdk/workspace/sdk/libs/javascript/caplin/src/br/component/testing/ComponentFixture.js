@@ -44,15 +44,8 @@
 		 */
 		this.m_oViewFixture = oViewFixture || new br.test.ViewFixture();
 		
-		/**
-		 * @private
-		 */
-		this.m_oComponentFrame = new ComponentFrame(this);
-		/**
-		 * @private
-		 */
-		this.m_oComponentFrameFixture = new ComponentFrameFixture(this.m_oComponentFrame);
-		
+		// TODO: find out why we need this as setUp() should be called before the test starts anyway
+		this.setUp();
 		
 		this.m_fOnOpenCallback = null;
 	};
@@ -66,7 +59,14 @@
 	 * @see br.test.Fixture#setUp
 	 */
 	ComponentFixture.prototype.setUp = function() {
-		// Ensure we don't return an error component.
+		/**
+		 * @private
+		 */
+		this.m_oComponentFrame = new ComponentFrame(this);
+		/**
+		 * @private
+		 */
+		this.m_oComponentFrameFixture = new ComponentFrameFixture(this.m_oComponentFrame);
 	};
 
 	/**
@@ -80,8 +80,8 @@
 			this.m_oComponent.onClose();
 			this.m_oComponent = null;
 		}
-		this.m_oComponentFrame.tearDown();
-		// if we made a change not to return an error component, revert it here.
+		this.m_oComponentFrame = null;
+		this.m_oComponentFrameFixture = null;
 	};
 
 	/**
@@ -277,10 +277,6 @@
 
 	ComponentFrame.prototype.getComponentModified = function() {
 		return this.m_bIsModified;
-	};
-
-	ComponentFrame.prototype.tearDown = function() {
-		this.m_bIsModified = false;
 	};
 
 	/* -----------------------------------------------------------------------------
