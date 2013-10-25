@@ -2,6 +2,8 @@ package org.bladerunnerjs
 
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import org.gradle.BuildAdapter
+import org.gradle.BuildResult
 
 import java.util.Date;
 import java.text.DateFormat;
@@ -26,8 +28,16 @@ class BuildVersionCalculator
 		}
 		catch (ex)
 		{
-			p.logger.error "Error calculating version using 'git describe'. Command stderr was:  '${stderr.toString()}'"
-			throw new GradleException("Unable to detirmine buildVersion")
+			p.logger.error "Error calculating version using 'git describe'. Command stderr was:  '${stderr.toString()}'."
+
+			stdout = new ByteArrayOutputStream()
+			stderr = new ByteArrayOutputStream()
+			p.exec {
+				commandLine 'git', 'rev-parse', '--short', 'HEAD'
+				standardOutput = stdout
+				errorOutput = stderr
+			}
+			return "v0.0-${stdout.toString().trim()}-DEV"
 		}
 	}
 	
