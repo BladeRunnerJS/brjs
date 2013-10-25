@@ -3,8 +3,7 @@
  * <code>ClassName ViewFixtureHandler</code> can be used to get a class of a view element.
  * Example usage:
  * <p>
- * <code>then("ticket.view.('#ticketContentAreaContainer').className = 'OpenSent'");</code>
- * </p>
+ * <code>then("form.view.('#formContentAreaContainer').className = 'OpenSent'");</code> * </p>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */

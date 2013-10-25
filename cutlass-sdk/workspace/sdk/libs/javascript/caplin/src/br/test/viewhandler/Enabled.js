@@ -6,7 +6,7 @@ br.thirdparty("jquery");
  * by setting the <code>disabled<code> attribute.
  * Example usage:
  * <p>
- * <code>and("tile.view.(.close).enabled = true");</code>
+ * <code>and("form.view.(.close).enabled = true");</code>
  * </p>
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
