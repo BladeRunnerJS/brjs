@@ -1,31 +1,44 @@
 <div id="caplinx.dashboard.app.splash-screen">
 	<div class="tour" data-bind="visible:isVisible">
 		<div class="close-window" data-bind="click:_closeSplashScreen"></div>
-		<h1>Welcome to BladeRunner</h1>
+		<h1>Welcome to BladeRunnerJS</h1>
 		<section id="section-left">
-			<div class="video-placeholder" data-bind="visible:videoPlacholderVisible">
-				<div>Video Not Available Offline</div>
-			</div>
-			<iframe class='video' onload="window.oApp.m_oPresentationModel.appsScreen.splashScreen._showVideo()" data-bind="visible:videoVisible" class="vimeo-vid" src="http://player.vimeo.com/video/51539915" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+			<h2 class="learn">Use</h2>
+      <ul>
+        <li><a href="http://bladerunnerjs.org/docs/use/getting_started" target="_blank">BladeRunnerJS getting started guide</a></li>
+      </ul> 
+      <h2 id="extend">Extend</h2>
+      <ul>
+        <li><a href="http://bladerunnerjs.org/docs/extend/command_plugin_tutorial/">CommandPlugin tutorial</a></li>
+      </ul> 
+      <h2 id="whats-new" class="learn">What's New?</h2>
+      <ul>
+        <li><a href="../#note/latest">See the latest release note</a></li>
+      </ul>
 		</section>
 		<section id="section-right">
-			<h2 id="learn">Learn</h2>
-			<ul>
-				<li><a href="http://www.caplin.com/developer/component/bladerunner/getting-started/bladerunner-bladerunner-architectural-overview" target="_blank">BladeRunner architectural overview</a></li>
-				<li><a href="http://www.caplin.com/developer/component/bladerunner/getting-started/bladerunner-creating-your-first-blade" target="_blank">Create your first Blade</a></li>
-				<li><a href="http://www.caplin.com/developer/component/base-library/getting-started/base-library-structured-services" target="_blank">Get data through Services</a></li>
-				<li><a href="http://www.caplin.com/developer/component/bladerunner/getting-started/bladerunner-exporting-a-war-ready-for-production" target="_blank">Export ready for production</a></li>
-			</ul>	
-			<h2 id="learn">Tutorial Worked Example</h2>
-			<ul>
-				<li><a href="http://www.caplin.com/developer/component/presenter/getting-started/presenter-worked-example" target="_blank">Using Presenter to Create a Simple Trade Tile</a></li>
-				<li><a href="http://www.caplin.com/developer/component/verifier/getting-started/verifier-worked-example" target="_blank">Using Verifier to write Acceptance Tests</a></li>
-				<li><a href="http://www.caplin.com/developer/component/base-library/getting-started/base-library-eventhub" target="_blank">Using the Event Hub</a></li>
-			</ul>	
-			<h2 id="whats-new">What's New?</h2>
-			<ul>
-				<li><a href="../#note/latest">See the latest release note</a></li>
-			</ul>
+      <h2 class="learn">Concepts</h2>
+      <h3>Application structure</h3>
+      <ul>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/blades/">Blades</a></li>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/bladesets/">BladeSets</a></li>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/aspects/">Aspects</a></li>
+      </ul>
+
+      <h3>Developer workflow</h3>
+      <ul>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/workbenches/">Workbenches</a></li>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/workbench_tools/">Workbench Tools</a></li>
+      </ul>
+
+      <h3>JavaScript</h3>
+      <ul>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/classes/">Classes</a></li>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/interfaces/">Interfaces</a></li>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/services/">Services</a></li>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/service_registry/">ServiceRegistry</a></li>
+        <li><a href="http://bladerunnerjs.org/docs/concepts/event_hub/">EventHub</a></li>
+      </ul>
 		</section>
 		<div class="tour-dontshow">
 			<form action="">

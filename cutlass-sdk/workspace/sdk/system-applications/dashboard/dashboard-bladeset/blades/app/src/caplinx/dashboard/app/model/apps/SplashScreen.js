@@ -5,9 +5,7 @@ caplinx.dashboard.app.model.apps.SplashScreen = function(oPresentationModel)
 	this.isVisible = new br.presenter.property.EditableProperty(true);
 	this.permanentlyHideSplashScreen = new br.presenter.property.EditableProperty(false);
 	this.permanentlyHideSplashScreen.addChangeListener(this, "_toggleLocalStoragePermanentHide");
-	
-	this.videoVisible = new br.presenter.property.EditableProperty(false);
-	this.videoPlacholderVisible = new br.presenter.property.EditableProperty(true);
+
 	
 	this.m_sLocalStoragePermanentlyHideSplashScreen = "dashboard_permanentlyHideSplashScreen";
 
@@ -38,10 +36,3 @@ caplinx.dashboard.app.model.apps.SplashScreen.prototype._canUseLocalStorage = fu
 {
 	return (this.m_oLocalStorage.getItem != undefined && this.m_oLocalStorage.setItem != undefined);
 }
-
-caplinx.dashboard.app.model.apps.SplashScreen.prototype._showVideo = function()
-{
-	this.videoVisible.setValue(true);
-	this.videoPlacholderVisible.setValue(false);
-}
-
