@@ -177,12 +177,12 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	
 	
 	doFirst {
-		delete file("sdk/libs/java")
-		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+		delete file("workspace/sdk/libs/java")
+		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
 		//TODO: find a better way to do this so we dont copy files and then immediately delete them
-		fileTree(dir:"sdk/system-applications/dashboard-services/WEB-INF/lib", include:"brjs-*", exclude:"*system-app-servlets*").each { delete it }
+		fileTree(dir:"workspace/sdk/system-applications/dashboard-services/WEB-INF/lib", include:"brjs-*", exclude:"*system-app-servlets*").each { delete it }
 	}
 	doLast {
 		ant {
