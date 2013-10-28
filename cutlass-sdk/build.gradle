@@ -110,17 +110,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	
 	from ("${includesDir}/sdk") {
 		into "sdk"
-		exclude "release-notes/*"
 		exclude "version.txt"
-	}
-	
-	from ("${includesDir}/sdk") {
-		into "sdk"
-		include "release-notes/*"
-		filter(ReplaceTokens, tokens: [
-			buildVersion: buildVersion,
-			buildDate: buildDate
-		] )
 	}
 	
 	from ("${includesDir}/sdk") {
