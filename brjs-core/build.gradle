@@ -40,3 +40,11 @@ dependencies {
 	
 	testRuntime project(path: ':brjs-logger-binding')
 }
+
+
+task zipJsDoc, type:Zip, dependsOn: processResources, {
+	from "jsdoc-resources"
+	archiveName "jsdoc-resources.zip"
+	destinationDir = file("${sourceSets.main.output.resourcesDir}/org/bladerunnerjs/core/plugin/command/standard/")
+}
+classes.dependsOn zipJsDoc

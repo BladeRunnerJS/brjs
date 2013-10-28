@@ -131,7 +131,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		if(!installDir.exists()) {
 			installDir.mkdirs();
 			
-			try (InputStream jsdocZipStream = getClass().getClassLoader().getResourceAsStream("org/bladerunnerjs/core/plugin/command/standard/jsdoc-toolkit.zip")) {
+			try (InputStream jsdocZipStream = getClass().getClassLoader().getResourceAsStream("org/bladerunnerjs/core/plugin/command/standard/jsdoc-resources.zip")) {
 				unzipInputStream(jsdocZipStream, installDir);
 			}
 			catch (IOException e) {
