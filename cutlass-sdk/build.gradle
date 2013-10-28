@@ -177,12 +177,12 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	
 	
 	doFirst {
-		delete file("sdk/libs/java")
-		fileTree(dir:"sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+		delete file("workspace/sdk/libs/java")
+		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
 		//TODO: find a better way to do this so we dont copy files and then immediately delete them
-		fileTree(dir:"sdk/system-applications/dashboard-services/WEB-INF/lib", include:"brjs-*", exclude:"*system-app-servlets*").each { delete it }
+		fileTree(dir:"workspace/sdk/system-applications/dashboard-services/WEB-INF/lib", include:"brjs-*", exclude:"*system-app-servlets*").each { delete it }
 	}
 	doLast {
 		ant {
@@ -191,15 +191,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		}
 	}
 }
-
-task assembleJsDoc, type:com.caplin.gradle.tasks.JsDoc, dependsOn: assembleSdk, {
-	jsDocsDir = file("workspace/sdk/docs/jsdoc")
-	// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
-	jsRootPathRelativeToJsDocDir = "workspace/sdk/libs/javascript/caplin/src"
-	jsDocToolkitDir = file("workspace/sdk/jsdoc-toolkit")
-	templateDir = file("workspace/sdk/jsdoc-templates/Caplin")
-}
-
 
 def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
@@ -228,7 +219,7 @@ task test, dependsOn:[testJsChrome, testJsFirefox, testSystemAppsChrome, testSys
 task testIE, dependsOn: [testJsIE, testSystemAppsIE]
 
 
-assemble.dependsOn = [assembleSdk, assembleJsDoc, copyBrowsers]
+assemble.dependsOn = [assembleSdk, copyBrowsers]
 
 task check, dependsOn: test, {}
 task build, dependsOn: check, {}
@@ -286,9 +277,6 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
 		"*/sdk/templates/**/*",
 		"*/sdk/templates/**/tests/**/*",
-		"*/sdk/docs/jsdoc/index.html",
-		"*/sdk/docs/jsdoc/classesindex.html", 
-		"*/sdk/docs/jsdoc/static/*",
 		"*/README.txt",
 		"*/LICENSE",
 		"*/apps/apps.txt",
