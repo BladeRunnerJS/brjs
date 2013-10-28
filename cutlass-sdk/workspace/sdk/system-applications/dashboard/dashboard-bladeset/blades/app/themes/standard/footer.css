@@ -41,7 +41,8 @@
 	padding-top: 30px;
 	margin-right: 20px;
 	float: right;
-    width: 116px;
+    width: 135px;
+    text-align: right;
 }
 
 .footer-logo a:hover{
