@@ -44,7 +44,6 @@ dependencies {
 
 task zipJsDoc, type:Zip, dependsOn: processResources, {
 	from "jsdoc-toolkit"
-	into "jsdoc-toolkit"
 	archiveName "jsdoc-toolkit.zip"
 	destinationDir = file("${sourceSets.main.output.resourcesDir}/org/bladerunnerjs/core/plugin/command/standard/")
 }
