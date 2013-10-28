@@ -90,7 +90,6 @@ Dependencies.putAll([
 	'JsTestDriver'				:	'com.google:JsTestDriver:1.3.3d-brjs1',
 	'ecj'						:	'org.eclipse.jdt.core.compiler:ecj:3.7.2',
 	'closure-compiler'			:	'com.google.javascript:closure-compiler:r2180',
-	'jsdoc_toolkit'				:	'jsdoc_toolkit:jsdoc_toolkit:2.4.0@zip',
 	'jericho-html'				:	'net.htmlparser.jericho:jericho-html:3.2',
 	'wagon-http'				:	'org.apache.maven.wagon:wagon-http:2.2',
 
