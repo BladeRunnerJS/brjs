@@ -41,7 +41,7 @@ import org.bladerunnerjs.model.utility.VersionInfo;
 
 public class BRJS extends AbstractBRJSRootNode
 {
-	public static final String PRODUCT_NAME = "BladeRunner";
+	public static final String PRODUCT_NAME = "BladeRunnerJS";
 	
 	public class Messages {
 		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "performing node discovery";
