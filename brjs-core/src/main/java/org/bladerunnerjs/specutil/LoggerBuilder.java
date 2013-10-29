@@ -27,4 +27,10 @@ public class LoggerBuilder
 		logStore.disableLogging();
 		return builderChainer;
 	}
+
+	public BuilderChainer writtenToConsole()
+	{
+		logStore.printLogsToConsole();
+		return builderChainer;
+	}
 }

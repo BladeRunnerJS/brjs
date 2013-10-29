@@ -28,7 +28,9 @@ public class JsDocCommandTest extends SpecTest {
 		jsdocOutputDir = app.storageDir("jsdoc-toolkit");
 	}
 	
-	@Test
+	
+	@Test /* TODO: To make this test pass in Eclipse, the jsdoc-toolkit zip is checked in to test/resources/... but assembled at build time. 
+					This means the jsdoc for this test and the jsdoc used in the actual kit can be different. */
 	public void runningJsDocCommandCausesApiDocsToBeCreated() throws Exception {
 		given(app).hasBeenCreated()
 			.and(appLib).containsFileWithContents("src/MyClass.js", "/** @constructor */MyClass = function() {};");

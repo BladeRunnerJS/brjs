@@ -16,13 +16,20 @@ public class MockCommand implements CommandPlugin
 	String description;
 	String usage;
 	private final String helpMessage;
+	boolean failOnSetBRJS;
 	
 	public MockCommand(String name, String description, String usage, String helpMessage)
+	{
+		this(name, description, usage, helpMessage, false);
+	}
+	
+	public MockCommand(String name, String description, String usage, String helpMessage, boolean failOnSetBRJS)
 	{
 		this.name = name;
 		this.description = description;
 		this.usage = usage;
 		this.helpMessage = helpMessage;
+		this.failOnSetBRJS = failOnSetBRJS;
 	}
 
 	@Override

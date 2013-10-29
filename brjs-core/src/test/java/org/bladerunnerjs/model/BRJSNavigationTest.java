@@ -137,13 +137,6 @@ public class BRJSNavigationTest
 	}
 	
 	@Test
-	public void releaseNotes()
-	{
-		nodeTesterFactory.createItemTester(DirNode.class, "releaseNotes", "sdk/docs/release-notes")
-			.assertModelIsOK();
-	}
-	
-	@Test
 	public void testGettingLoggerForClass() throws Exception
 	{
 		Logger logger = brjs.logger(LoggerType.BUNDLER, this.getClass());
