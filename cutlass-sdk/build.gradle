@@ -219,9 +219,9 @@ ext.explodedSdkDir = "${project.buildDir}/exploded"
 ext.sdkDir = "BladeRunner/sdk"
 
 task distZip, type:Zip, dependsOn: [assemble], {
-	baseName = "BladeRunner"
+	baseName = "BladeRunnerJS"
 	from "workspace/"
-	into "BladeRunner/"
+	into "BladeRunnerJS/"
 	include "licenses/**", "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
 	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**"
 }
@@ -288,7 +288,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	   "**/system-applications/**/tests/**/*",
 	   "*/sdk/libs/javascript/caplin/test/**",
 	   "*/sdk/run*",
-	   "**/node_modules/**"
+	   "**/node_modules/**",
+	   "*/apps/**/*"
 	]
 }
 check.dependsOn checkSdkStructure
