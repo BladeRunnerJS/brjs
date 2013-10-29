@@ -15,8 +15,11 @@ import org.bladerunnerjs.core.log.LoggerFactory;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
 import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
+import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.command.CommandList;
+import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.engine.Node;
@@ -44,6 +47,7 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "performing node discovery";
 		public static final String CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG = "creating model observer plugins";
 		public static final String CREATING_COMMAND_PLUGINS_LOG_MSG = "creating command plugins";
+		public static final String PLUGIN_FOUND_MSG = "found plugin %s";
 	}
 	
 	private final NodeMap<App> apps = App.createAppNodeSet();
@@ -74,15 +78,18 @@ public class BRJS extends AbstractBRJSRootNode
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
 		logger.info(Messages.CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG);
-		pluginLocator.createModelObservers(this);
+		List<ModelObserverPlugin> modelObservers = pluginLocator.createModelObservers(this);
+		listFoundPlugins(modelObservers);
 		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 		discoverAllChildren();
 		
 		logger.info(Messages.CREATING_COMMAND_PLUGINS_LOG_MSG);
-		commandList = new CommandList(this, pluginLocator.createCommandPlugins(this));
+		List<CommandPlugin> commandPlugins = pluginLocator.createCommandPlugins(this);
+		listFoundPlugins(commandPlugins);
+		commandList = new CommandList(this, commandPlugins);
 	}
-	
+
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
 		this(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
@@ -290,5 +297,13 @@ public class BRJS extends AbstractBRJSRootNode
 			appServers.put(port, appServer);
 		}
 		return appServer;
+	}
+	
+	private void listFoundPlugins(List<? extends Plugin> plugins)
+	{
+		for(Plugin p : plugins)
+		{
+			logger.debug(Messages.PLUGIN_FOUND_MSG, p.getClass().getCanonicalName());
+		}
 	}
 }

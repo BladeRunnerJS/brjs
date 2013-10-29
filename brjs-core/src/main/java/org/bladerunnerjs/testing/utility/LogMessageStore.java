@@ -161,7 +161,7 @@ public class LogMessageStore
 			foundMessage = (!messages.isEmpty()) ? messages.removeFirst() : null;
 			isNullFailMessage = NO_MESSAGES_RECIEVED;
 		} else {
-			foundMessage = findFirstMessageMatching(messages, message);
+			foundMessage = findAndRemoveFirstMessageMatching(messages, message);
 			isNullFailMessage = NO_MESSAGE_MATCHING_RECIEVED;
 		}
 		assertNotNull( String.format(isNullFailMessage, logLevel, message) , foundMessage );
@@ -186,16 +186,19 @@ public class LogMessageStore
 		return s.toString().trim();
 	}
 
-	private LogMessage findFirstMessageMatching(LinkedList<LogMessage> messages, String message)
+	private LogMessage findAndRemoveFirstMessageMatching(LinkedList<LogMessage> messages, String message)
 	{
+		LogMessage foundMessage = null;
 		for (LogMessage m : messages)
 		{
 			if (m.message.equals(message))
 			{
-				return m;
+				foundMessage = m;
+				break;
 			}
 		}
-		return null;
+		messages.remove(foundMessage);
+		return foundMessage;
 	}
 
 	private void verifyNoMoreMessageOnList(String logLevel, List<LogMessage> messages)
