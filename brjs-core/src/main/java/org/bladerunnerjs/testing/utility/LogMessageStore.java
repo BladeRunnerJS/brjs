@@ -20,6 +20,7 @@ public class LogMessageStore
 	private boolean storeLogs = false; /* enable capturing log messages for 'when' actions */
 	private boolean loggingEnabled = false;
 	private boolean assertionMade = false;
+	private boolean printLogsToConsole = false;
 	
 	private LinkedList<LogMessage> fatalMessages = new LinkedList<LogMessage>();
 	private LinkedList<LogMessage> errorMessages = new LinkedList<LogMessage>();
@@ -139,9 +140,15 @@ public class LogMessageStore
 
 	private void registerLogMessage(LinkedList<LogMessage> messages, String loggerName, String message, Object[] params)
 	{
+		LogMessage log = new LogMessage(message, params);
 		if (storeLogs)
 		{
-			messages.add(new LogMessage(message, params));
+			messages.add(log);
+		}
+		if (printLogsToConsole)
+		{
+			System.out.println(log.toString());
+			System.out.flush();
 		}
 	}
 
@@ -219,5 +226,10 @@ public class LogMessageStore
 
 	public void stopStoringLogs() {
 		disableStoringLogs();
+	}
+
+	public void printLogsToConsole()
+	{
+		printLogsToConsole = true;
 	}
 }
