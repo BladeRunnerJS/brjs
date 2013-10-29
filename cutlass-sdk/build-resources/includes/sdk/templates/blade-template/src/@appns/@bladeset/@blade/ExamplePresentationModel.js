@@ -1,4 +1,4 @@
-br.thirdparty( 'caplin-br' );
+caplin.thirdparty( 'caplin-br' );
 
 ( function() {
 
