@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<java version="1.7.0_17" class="java.beans.XMLDecoder">
+<java version="1.7.0_45" class="java.beans.XMLDecoder">
  <object class="com.horstmann.violet.ClassDiagramGraph">
   <void method="addNode">
    <object class="com.horstmann.violet.ClassNode" id="ClassNode0">
@@ -207,7 +207,7 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
    <object class="com.horstmann.violet.ClassNode" id="ClassNode3">
     <void property="name">
      <void property="text">
-      <string>FullyQualifiedSourceFile</string>
+      <string>CaplinJsSourceFile</string>
      </void>
     </void>
    </object>
@@ -268,7 +268,7 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
       <string>String getRequirePrefix()
 SourceFile sourceFile(String requirePath)
 List&lt;SourceFile&gt; sourceFiles()
-Resources getResourceDir(String srcPath)
+Resources getResourceDir(String srcPath)???
 addSourceObserver(so SourceObserver)</string>
      </void>
     </void>
@@ -603,19 +603,19 @@ List&lt;AssetFile&gt; bundleResources(String fileExtension)
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double18"/>
-      <double>970.0</double>
+      <double>1191.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double18"/>
-      <double>665.0</double>
+      <double>571.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>970.0</double>
-     <double>665.0</double>
+     <double>1191.0</double>
+     <double>571.0</double>
     </void>
    </object>
   </void>

@@ -1,13 +1,12 @@
 package org.bladerunnerjs.model;
 
+// TODO: delete this class and have the model nodes use the file-sets provided by the bundle-sources instead
 public class FileSetBuilder<AF extends AssetFile> {
 	private final SourceLocation sourceLocation;
 	private String[] includePaths;
 	private String[] excludePaths;
-	private final Class<AF> assetFileClass;
 	
 	public FileSetBuilder(Class<AF> assetFileClass, SourceLocation sourceLocation) {
-		this.assetFileClass = assetFileClass;
 		this.sourceLocation = sourceLocation;
 	}
 	
@@ -34,6 +33,6 @@ public class FileSetBuilder<AF extends AssetFile> {
 	}
 	
 	public FileSet<AF> build() {
-		return new FileSet<AF>(assetFileClass, sourceLocation, includePaths, excludePaths);
+		return new StandardFileSet<AF>(sourceLocation.dir(), includePaths, excludePaths, null);
 	}
 }

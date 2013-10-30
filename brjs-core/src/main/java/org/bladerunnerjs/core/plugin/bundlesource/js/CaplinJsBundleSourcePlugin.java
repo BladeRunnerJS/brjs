@@ -1,5 +1,6 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -15,11 +16,13 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.FileSet;
+import org.bladerunnerjs.model.FileSetFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.SourceLocation;
+import org.bladerunnerjs.model.StandardFileSet;
 import org.bladerunnerjs.model.TagAppender;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -119,20 +122,25 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 	
 	private class JsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
 		@Override
-		public FileSet<LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode) {
-			// TODO Auto-generated method stub
-//			return new FileSet<CaplinJsSourceFile>(CaplinJsSourceFile.class, );
-			return null;
+		public FileSet<? extends LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode) {
+			return new StandardFileSet<CaplinJsSourceFile>(bundlableNode.dir(), StandardFileSet.paths("caplin-src/**/*.js"), StandardFileSet.paths(), new CaplinJsFileSetFactory());
 		}
 		
 		@Override
-		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			// TODO Auto-generated method stub
-			return null;
+		public FileSet<? extends SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
+			return new StandardFileSet<CaplinJsSourceFile>(sourceLocation.dir(), StandardFileSet.paths("caplin-src/**/*.js"), StandardFileSet.paths(), new CaplinJsFileSetFactory());
 		}
 		
 		@Override
-		public FileSet<AssetFile> getResourceFileSet(SourceLocation sourceLocation) {
+		public FileSet<? extends AssetFile> getResourceFileSet(SourceLocation sourceLocation) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
+	
+	private class CaplinJsFileSetFactory implements FileSetFactory<CaplinJsSourceFile> {
+		@Override
+		public CaplinJsSourceFile createFile(File filePath) {
 			// TODO Auto-generated method stub
 			return null;
 		}
