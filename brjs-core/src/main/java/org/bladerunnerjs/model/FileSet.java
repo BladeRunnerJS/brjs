@@ -8,12 +8,13 @@ import java.util.List;
 import org.bladerunnerjs.model.engine.Node;
 
 public class FileSet<AF extends AssetFile> {
-	private final Constructor<AF> classConstructor = null; // TODO: remove the = null bit once fully implemented
+	private Constructor<AF> classConstructor = null; // TODO: remove the = null bit once fully implemented
 	private final SourceLocation sourceLocation;
 	
 	public FileSet(Class<AF> assetFileClass, SourceLocation sourceLocation, String[] includePaths, String[] excludePaths) {
 		this.sourceLocation = sourceLocation;
 		
+		// TODO: comment this back in once we are using it correctly
 //		try {
 //			classConstructor = assetFileClass.getConstructor(String.class, File.class, Resources.class, SourceLocation.class);
 //		}
@@ -44,4 +45,10 @@ public class FileSet<AF extends AssetFile> {
 			throw new RuntimeException(e);
 		}
 	}
+	
+	// ----
+	
+//	public FileSet(File rootDir, String[] includePaths, String[] excludePaths, FileSetFactory<AF> fileSetFactory) {
+//		
+//	}
 }

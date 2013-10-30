@@ -121,6 +121,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 		@Override
 		public FileSet<LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode) {
 			// TODO Auto-generated method stub
+//			return new FileSet<CaplinJsSourceFile>(CaplinJsSourceFile.class, );
 			return null;
 		}
 		

@@ -53,19 +53,19 @@ void transformFile(Reader reader, Writer writer, TransformInfo info) throws File
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>165.0</double>
+      <double>177.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>715.0</double>
+      <double>722.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>165.0</double>
-     <double>715.0</double>
+     <double>177.0</double>
+     <double>722.0</double>
     </void>
    </object>
   </void>
@@ -80,7 +80,7 @@ void writeTagContent(List&lt;String&gt; bundlerRequestPaths, Writer writer)  thr
     </void>
     <void property="name">
      <void property="text">
-      <string>«TagHandler»</string>
+      <string>«TagHandlerPlugin»</string>
      </void>
     </void>
    </object>
@@ -296,18 +296,6 @@ FileSet&lt;AssetFile&gt; getResourceFileSet(SourceLocation sourceLocation)</stri
      <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/>
     </void>
    </object>
-   <object idref="InterfaceNode0"/>
-   <object idref="InterfaceNode1"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
-    </void>
-    <void property="startArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/>
-    </void>
-   </object>
    <object idref="InterfaceNode2"/>
    <object idref="InterfaceNode3"/>
   </void>
@@ -346,6 +334,18 @@ FileSet&lt;AssetFile&gt; getResourceFileSet(SourceLocation sourceLocation)</stri
    </object>
    <object idref="InterfaceNode2"/>
    <object idref="InterfaceNode6"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
+   <object idref="InterfaceNode0"/>
+   <object idref="InterfaceNode1"/>
   </void>
  </object>
 </java>
