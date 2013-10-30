@@ -8,7 +8,7 @@ import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.SourceLocation;
 
 public interface BundleSourceFileSetFactory {
-	FileSet<? extends LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode);
-	FileSet<? extends SourceFile> getSourceFileSet(SourceLocation sourceLocation);
-	FileSet<? extends AssetFile> getResourceFileSet(SourceLocation sourceLocation);
+	FileSet<LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode);
+	FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation);
+	FileSet<AssetFile> getResourceFileSet(SourceLocation sourceLocation);
 }

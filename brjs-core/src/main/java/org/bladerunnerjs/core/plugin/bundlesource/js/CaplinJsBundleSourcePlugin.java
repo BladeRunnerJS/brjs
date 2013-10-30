@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.FileSet;
 import org.bladerunnerjs.model.FileSetFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
+import org.bladerunnerjs.model.NullFileSet;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.SourceFile;
@@ -68,8 +69,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 		List<String> requestPaths = new ArrayList<>();
 		
 		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
-			// TODO: fix instanceof type -- we should only be returning source-files related to this bundle-source
-			if(sourceFile instanceof SourceFile) {
+			if(sourceFile instanceof CaplinJsSourceFile) {
 				requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
 			}
 		}
@@ -93,8 +93,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 			try {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
 					for(SourceFile sourceFile : bundlableNode.getBundleSet().getSourceFiles()) {
-						// TODO: fix instanceof type -- we should only be returning source-files related to this bundle-source
-						if(sourceFile instanceof SourceFile) {
+						if(sourceFile instanceof CaplinJsSourceFile) {
 							writer.write("// " + sourceFile.getRequirePath() + "\n");
 							IOUtils.copy(sourceFile.getReader(), writer);
 							writer.write("\n\n");
@@ -122,23 +121,22 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 	
 	private class JsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
 		@Override
-		public FileSet<? extends LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode) {
-			return new StandardFileSet<CaplinJsSourceFile>(bundlableNode.dir(), StandardFileSet.paths("caplin-src/**/*.js"), StandardFileSet.paths(), new CaplinJsFileSetFactory());
+		public FileSet<LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode) {
+			return new NullFileSet<LinkedAssetFile>();
 		}
 		
 		@Override
-		public FileSet<? extends SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			return new StandardFileSet<CaplinJsSourceFile>(sourceLocation.dir(), StandardFileSet.paths("caplin-src/**/*.js"), StandardFileSet.paths(), new CaplinJsFileSetFactory());
+		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
+			return new StandardFileSet<SourceFile>(sourceLocation.dir(), StandardFileSet.paths("caplin-src/**/*.js"), StandardFileSet.paths(), new CaplinJsFileSetFactory());
 		}
 		
 		@Override
-		public FileSet<? extends AssetFile> getResourceFileSet(SourceLocation sourceLocation) {
-			// TODO Auto-generated method stub
-			return null;
+		public FileSet<AssetFile> getResourceFileSet(SourceLocation sourceLocation) {
+			return new NullFileSet<AssetFile>();
 		}
 	}
 	
-	private class CaplinJsFileSetFactory implements FileSetFactory<CaplinJsSourceFile> {
+	private class CaplinJsFileSetFactory implements FileSetFactory<SourceFile> {
 		@Override
 		public CaplinJsSourceFile createFile(File filePath) {
 			// TODO Auto-generated method stub

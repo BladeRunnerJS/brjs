@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
 import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.PluginLocator;
+import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
@@ -296,5 +298,10 @@ public class BRJS extends AbstractBRJSRootNode
 			appServers.put(port, appServer);
 		}
 		return appServer;
+	}
+	
+	// TODO: talk to the team about making all plugins available from BRJS
+	public List<BundleSourcePlugin> bundleSources() {
+		return new ArrayList<>();
 	}
 }
