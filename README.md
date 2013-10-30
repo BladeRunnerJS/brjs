@@ -1,10 +1,21 @@
-# BladeRunnerJS (BRJS) - Divide & conquer web apps
+# BladeRunnerJS (BRJS)
+
+**Divide & conquer web apps**
+
+## Getting Started
+
+The best way to get started depends on why you're here.
+
+* **I want to build an application with BRJS:** Try the [getting started guide](http://bladerunnerjs.org/docs/use/getting_started/).
+* **I want to learn more about BRJS:** Head to the [BRJS documentation](http://bladerunnerjs.org/docs/)
+* **I'm already familiar with BRJS and want to write a plugin:** Check out the [CommandPlugin tutorial](http://bladerunnerjs.org/docs/extend/command_plugin_tutorial/)
+* **I'd like to get the core BRJS development environment set up:** See the [BRJS Core Toolkit Development section](https://github.com/BladeRunnerJS/brjs#brjs-core-toolkit-development) below.
 
 ## Documentation
 
-The documentation for BRJS can be found via http://bladerunnerjs.org/docs. The source code for the documentation can be found via https://github.com/BladeRunnerJS/brjs-site so if you find any error or have any suggestions please submit a pull request.
+The main documentation for BRJS can be found via http://bladerunnerjs.org/docs. The source code for the documentation can be found via https://github.com/BladeRunnerJS/brjs-site so if you find any error or have any suggestions please submit a pull request.
 
-Find out more and register your interest at http://bladerunnerjs.org/
+API reference guides are coming soon.
 
 ## BRJS Core Toolkit Development
 
@@ -23,5 +34,7 @@ If you are interested in contributing to the BRJS core toolkit then the followin
 From the root `brjs` source directory:
 
     $ ./gradlew cutlass-sdk:distZip
+
+### More information    
 
 See the [BRJS Developer Setup Guide](https://github.com/BladeRunnerJS/brjs/wiki/BRJS-Developer-Setup) for more information.
