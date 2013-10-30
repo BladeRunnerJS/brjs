@@ -26,6 +26,7 @@ If you are interested in contributing to the BRJS core toolkit then the followin
 #### Get the code
 
     git clone git@github.com:BladeRunnerJS/brjs.git
+    cd brjs
     git submodule init
     git submodule update
 
@@ -34,6 +35,8 @@ If you are interested in contributing to the BRJS core toolkit then the followin
 From the root `brjs` source directory:
 
     $ ./gradlew cutlass-sdk:distZip
+    
+The built zip file will be found in `BRJS_ROOT/cutlass-sdk/build/distributions/` in the format `BladeRunner-VERSION.zip`.
 
 ### More information    
 
