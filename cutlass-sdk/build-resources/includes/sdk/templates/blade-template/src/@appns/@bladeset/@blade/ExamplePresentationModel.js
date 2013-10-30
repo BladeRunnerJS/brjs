@@ -5,7 +5,9 @@ caplin.thirdparty( 'caplin-br' );
   var br = require( 'br' );
 
   function ExamplePresentationModel() {
-    this.message = new br.presenter.property.Property( 'Hello World!' );
+    var Property = br.presenter.property.Property;
+    
+    this.message = new Property( 'Hello World!' );
   };
   br.extend( ExamplePresentationModel, br.presenter.PresentationModel );
 

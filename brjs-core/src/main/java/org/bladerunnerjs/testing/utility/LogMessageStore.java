@@ -20,6 +20,7 @@ public class LogMessageStore
 	private boolean storeLogs = false; /* enable capturing log messages for 'when' actions */
 	private boolean loggingEnabled = false;
 	private boolean assertionMade = false;
+	private boolean printLogsToConsole = false;
 	
 	private LinkedList<LogMessage> fatalMessages = new LinkedList<LogMessage>();
 	private LinkedList<LogMessage> errorMessages = new LinkedList<LogMessage>();
@@ -139,9 +140,15 @@ public class LogMessageStore
 
 	private void registerLogMessage(LinkedList<LogMessage> messages, String loggerName, String message, Object[] params)
 	{
+		LogMessage log = new LogMessage(message, params);
 		if (storeLogs)
 		{
-			messages.add(new LogMessage(message, params));
+			messages.add(log);
+		}
+		if (printLogsToConsole)
+		{
+			System.out.println(log.toString());
+			System.out.flush();
 		}
 	}
 
@@ -154,7 +161,7 @@ public class LogMessageStore
 			foundMessage = (!messages.isEmpty()) ? messages.removeFirst() : null;
 			isNullFailMessage = NO_MESSAGES_RECIEVED;
 		} else {
-			foundMessage = findFirstMessageMatching(messages, message);
+			foundMessage = findAndRemoveFirstMessageMatching(messages, message);
 			isNullFailMessage = NO_MESSAGE_MATCHING_RECIEVED;
 		}
 		assertNotNull( String.format(isNullFailMessage, logLevel, message) , foundMessage );
@@ -179,16 +186,19 @@ public class LogMessageStore
 		return s.toString().trim();
 	}
 
-	private LogMessage findFirstMessageMatching(LinkedList<LogMessage> messages, String message)
+	private LogMessage findAndRemoveFirstMessageMatching(LinkedList<LogMessage> messages, String message)
 	{
+		LogMessage foundMessage = null;
 		for (LogMessage m : messages)
 		{
 			if (m.message.equals(message))
 			{
-				return m;
+				foundMessage = m;
+				break;
 			}
 		}
-		return null;
+		messages.remove(foundMessage);
+		return foundMessage;
 	}
 
 	private void verifyNoMoreMessageOnList(String logLevel, List<LogMessage> messages)
@@ -219,5 +229,10 @@ public class LogMessageStore
 
 	public void stopStoringLogs() {
 		disableStoringLogs();
+	}
+
+	public void printLogsToConsole()
+	{
+		printLogsToConsole = true;
 	}
 }
