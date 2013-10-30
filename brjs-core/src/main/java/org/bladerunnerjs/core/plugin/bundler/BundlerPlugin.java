@@ -7,13 +7,13 @@ import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.TagHandler;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 
 public interface BundlerPlugin extends Plugin {
-	String getMimeType();
-	String getBundlerName();
+	TagHandler getTagHandler();
 	RequestParser getRequestParser();
 	List<String> generateRequiredDevRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException;
 	List<String> generateRequiredProdRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException;

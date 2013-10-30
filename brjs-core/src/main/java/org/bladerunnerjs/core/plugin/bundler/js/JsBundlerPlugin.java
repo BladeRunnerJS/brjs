@@ -9,12 +9,13 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.TagHandler;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
@@ -22,26 +23,27 @@ import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 public class JsBundlerPlugin implements BundlerPlugin {
 	private final RequestParser requestParser;
+	private List<BundleSourcePlugin> bundleSourcePlugins;
+	
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
 		requestParserBuilder.accepts("js/bundle.js").as("bundle-request")
-			.and("js/module/<module>.js").as("source-file-request");
+			.and("js/module/<module>.js").as("single-module-request");
+		
+		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+			bundleSourcePlugin.configureRequestParser(requestParserBuilder);
+		}
+		
 		requestParser = requestParserBuilder.build();
 	}
 	
 	@Override
-	public void setBRJS(BRJS brjs)
-	{
+	public void setBRJS(BRJS brjs) {
 	}
 	
 	@Override
-	public String getMimeType() {
-		return "text/javascript";
-	}
-	
-	@Override
-	public String getBundlerName() {
-		return "js";
+	public TagHandler getTagHandler() {
+		return new JsBundlerTagHandler();
 	}
 	
 	@Override
@@ -51,48 +53,79 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	
 	@Override
 	public List<String> generateRequiredDevRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException {
-		List<String> requests = new ArrayList<>();
+		List<String> requestPaths = new ArrayList<>();
 		
-		try {
-			for(SourceFile sourceFile : bundlableNode.getBundleSet().getSourceFiles()) {
-				requests.add(requestParser.createRequest("source-file-request", sourceFile.getRequirePath()));
-			}
-		}
-		catch(ModelOperationException e) {
-			throw new BundlerProcessingException(e);
+		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+			requestPaths.addAll(bundleSourcePlugin.generateRequiredDevRequestPaths(bundlableNode, locale));
 		}
 		
-		return requests;
+		return requestPaths;
 	}
 	
 	@Override
-	public List<String> generateRequiredProdRequestPaths(BundlableNode bundlableNode, String locale) {
-		List<String> requests = new ArrayList<>();
-		requests.add(requestParser.createRequest("bundle-request", getBundlerName()));
+	public List<String> generateRequiredProdRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException {
+		List<String> requestPaths = new ArrayList<>();
 		
-		return requests;
+		requestPaths.add(requestParser.createRequest("bundle-request"));
+		
+		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+			requestPaths.addAll(bundleSourcePlugin.generateRequiredProdRequestPaths(bundlableNode, locale));
+		}
+		
+		return requestPaths;
 	}
 	
 	@Override
 	public void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStream os) throws ResourceNotFoundException, BundlerProcessingException {
 		try {
-			// TODO: ensure we use the correct character encoding
-			Writer writer = new OutputStreamWriter(os);
-			
-			if(request.formName.equals("source-file-request")) {
+			if(request.formName.equals("single-module-request")) {
+				// TODO: ensure we use the correct character encoding
+				Writer writer = new OutputStreamWriter(os);
+				
 				SourceFile jsModule = bundlableNode.sourceFile(request.properties.get("module"));
 				IOUtils.copy(jsModule.getReader(), writer);
 			}
 			else if(request.formName.equals("bundle-request")) {
-				for(SourceFile sourceFile : bundlableNode.getBundleSet().getSourceFiles()) {
-					writer.write("// " + sourceFile.getRequirePath() + "\n");
-					IOUtils.copy(sourceFile.getReader(), writer);
-					writer.write("\n\n");
+				for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+					bundleSourcePlugin.handleRequest(request, bundlableNode, os);
+				}
+			}
+			else {
+				boolean requestHandled = false;
+				
+				for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+					if(bundleSourcePlugin.handlesRequestForm(request.formName)) {
+						bundleSourcePlugin.handleRequest(request, bundlableNode, os);
+						requestHandled = true;
+						break;
+					}
+				}
+				
+				if(!requestHandled) {
+					throw new BundlerProcessingException("request form '" + request.formName + "' was not handled by any of the available bunlde sources.");
 				}
 			}
 		}
-		catch(IOException | ModelOperationException e) {
+		catch(IOException e) {
 			throw new BundlerProcessingException(e);
+		}
+	}
+	
+	private class JsBundlerTagHandler implements TagHandler {
+		@Override
+		public String getTagName() {
+			return "js";
+		}
+		
+		@Override
+		public void writeTagContent(List<String> bundlerRequestPaths, Writer writer) throws IOException {
+			for(String bundlerRequestPath : bundlerRequestPaths) {
+				writer.write("<script type='text/javascript' src='" + bundlerRequestPath + "'></script>\n");
+			}
+			
+			for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+				bundleSourcePlugin.getTagAppender().writeTagContent(bundlerRequestPaths, writer);
+			}
 		}
 	}
 }
