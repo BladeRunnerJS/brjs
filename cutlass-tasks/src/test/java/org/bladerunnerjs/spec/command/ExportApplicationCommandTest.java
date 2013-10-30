@@ -61,14 +61,13 @@ public class ExportApplicationCommandTest extends SpecTest{
 	}
 	
 	@Test
-	public void commandAllowsAppToBeExportedWithCorrectContents() throws Exception 
+	public void commandAllowsAppToBeExportedAsAZip() throws Exception 
 	{
 		File sdkDir = new File(brjs.dir(), "sdk");
 		
-		given(app).hasBeenPopulated();
+		given(app).hasBeenCreated().and(aspect).hasBeenCreated().and(aspect).containsFileWithContents("index.html", "Hello World");
 		when(brjs).runCommand("export-app", "myapp");
 		then(sdkDir).containsFile("myapp.zip");
-		// TODO - verify zip contents
 	}
 	
 	@Test
