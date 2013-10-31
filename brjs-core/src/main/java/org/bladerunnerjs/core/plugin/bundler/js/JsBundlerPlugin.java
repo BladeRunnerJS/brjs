@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
@@ -51,17 +52,22 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public void writeTagContent(List<String> bundlerRequestPaths, Writer writer) throws IOException {
-		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-			bundleSourcePlugin.getTagAppender().writePreTagContent(bundlerRequestPaths, writer);
+	public void writeDevContent(Map<String, String> tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException {
+		try {
+			writeTagContent(generateRequiredDevRequestPaths(bundlableNode, locale), writer);
 		}
-		
-		for(String bundlerRequestPath : bundlerRequestPaths) {
-			writer.write("<script type='text/javascript' src='" + bundlerRequestPath + "'></script>\n");
+		catch (BundlerProcessingException e) {
+			throw new IOException(e);
 		}
-		
-		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-			bundleSourcePlugin.getTagAppender().writePostTagContent(bundlerRequestPaths, writer);
+	}
+	
+	@Override
+	public void writeProdContent(Map<String, String> tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException {
+		try {
+			writeTagContent(generateRequiredProdRequestPaths(bundlableNode, locale), writer);
+		}
+		catch (BundlerProcessingException e) {
+			throw new IOException(e);
 		}
 	}
 	
@@ -140,6 +146,20 @@ public class JsBundlerPlugin implements BundlerPlugin {
 		}
 		catch(ConfigException | IOException e) {
 			throw new BundlerProcessingException(e);
+		}
+	}
+	
+	private void writeTagContent(List<String> bundlerRequestPaths, Writer writer) throws IOException {
+		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+			bundleSourcePlugin.getTagAppender().writePreTagContent(bundlerRequestPaths, writer);
+		}
+		
+		for(String bundlerRequestPath : bundlerRequestPaths) {
+			writer.write("<script type='text/javascript' src='" + bundlerRequestPath + "'></script>\n");
+		}
+		
+		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+			bundleSourcePlugin.getTagAppender().writePostTagContent(bundlerRequestPaths, writer);
 		}
 	}
 }

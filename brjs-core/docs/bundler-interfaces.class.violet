@@ -5,8 +5,7 @@
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode0">
     <void property="methods">
      <void property="text">
-      <string>TagHandler getTagHandler()
-RequestParser getRequestParser()
+      <string>RequestParser getRequestParser()
 List&lt;String&gt; generateRequiredDevRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException
 List&lt;String&gt; generateRequiredProdRequestPaths(BundlableNode bundlableNode, String locale, List&lt;String&gt; requests) throws BundlerProcessingException
 void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStream os) throws BundlerProcessingException
@@ -74,7 +73,8 @@ void transformFile(Reader reader, Writer writer, TransformInfo info) throws File
     <void property="methods">
      <void property="text">
       <string>String getTagName()
-void writeTagContent(List&lt;String&gt; bundlerRequestPaths, Writer writer)  throws IOException
+void writeDevContent(Map&lt;String, String&gt; tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException
+void writeProdContent(Map&lt;String, String&gt; tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException
 </string>
      </void>
     </void>
@@ -89,19 +89,19 @@ void writeTagContent(List&lt;String&gt; bundlerRequestPaths, Writer writer)  thr
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>200.0</double>
+      <double>61.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>149.0</double>
+      <double>127.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>200.0</double>
-     <double>149.0</double>
+     <double>61.0</double>
+     <double>127.0</double>
     </void>
    </object>
   </void>
@@ -201,19 +201,19 @@ AF createFile(String sourcePath)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>1022.0</double>
+      <double>980.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>405.0</double>
+      <double>406.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1022.0</double>
-     <double>405.0</double>
+     <double>980.0</double>
+     <double>406.0</double>
     </void>
    </object>
   </void>
@@ -235,19 +235,19 @@ AF createFile(String sourcePath)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>1099.0</double>
+      <double>1057.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>552.0</double>
+      <double>538.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1099.0</double>
-     <double>552.0</double>
+     <double>1057.0</double>
+     <double>538.0</double>
     </void>
    </object>
   </void>
