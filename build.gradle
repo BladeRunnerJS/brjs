@@ -86,7 +86,7 @@ subprojects { p ->
 
 /* provides compound tasks that are run in CI */
 
-task runAllJavaTests {
+task testJava {
 	description "Runs 'test' for all Java projects."
 }
 subprojects {
@@ -112,23 +112,29 @@ subprojects {
 
 
 task build {
-	description "Builds the Cutlass SDK (without JsDocs) and build ands tests all SDK dependencies."
+	description "Builds and tests the distribution. Runs 'build' on all subprojects."
 }
+def parentBuildTask = build
 subprojects {
 	afterEvaluate { subProject ->
-		if (!subProject.name.equals('test-apps')) {
-			subProject.parent.build.dependsOn subProject.getTasksByName('build',false)
-		}
+		parentBuildTask.dependsOn subProject.getTasksByName('build',false)
 	}
 }
 
-
-task buildSdk {
-	description "Builds the Cutlass SDK and build ands tests all SDK dependencies."
+task buildAndTestIE {
+	description "Runs the 'build' task and also includes IE tests"
 }
 afterEvaluate { project ->
-	buildSdk.dependsOn build
+	buildAndTestIE.dependsOn build
+	buildAndTestIE.dependsOn ':cutlass-sdk:testIE'
 }
 
+task buildAndTestIE_NoSysApps {
+	description "Runs the 'build' task and also includes IE tests, ignoring the IE tests for systems apps"
+}
+afterEvaluate { project ->
+	buildAndTestIE_JSOnly.dependsOn buildAndTestIE
+	task(':cutlass-sdk:testSystemAppsIE').enabled = false
+}
 
 
