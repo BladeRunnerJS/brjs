@@ -107,18 +107,6 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 		}
 	}
 	
-	private class JsBundleSourceTagAppender implements TagAppender {
-		@Override
-		public void writePreTagContent(List<String> bundlerRequestPaths, Writer writer) throws IOException {
-			// TODO: create packages for all CaplinJs modules (if any Caplin style modules have been used)
-		}
-		
-		@Override
-		public void writePostTagContent(List<String> bundlerRequestPaths, Writer writer) throws IOException {
-			// TODO: globalize any non CaplinJs modules (if any Caplin style modules have been used)
-		}
-	}
-	
 	private class JsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
 		@Override
 		public FileSet<LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode) {
