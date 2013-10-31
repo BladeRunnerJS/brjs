@@ -3,12 +3,10 @@ package org.bladerunnerjs.spec.brjs;
 import static org.bladerunnerjs.model.BRJS.Messages.*;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bladerunnerjs.core.plugin.Event;
 import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.core.plugin.PluginLocatorUtils;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
-import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.BRJSEventObserverCreator;
 import org.bladerunnerjs.testing.utility.ExceptionThrowingEventObserver;
