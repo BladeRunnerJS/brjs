@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.BRJS;
 
 
 
-public class TypedClassCreator<I>
+public class TypedPluginCreator<I>
 {
 	// TODO: these messages (and likely, this classes functionality) aren't currently covered within our spec tests
 	public class Messages {

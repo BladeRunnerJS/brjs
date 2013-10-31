@@ -95,27 +95,27 @@ public class LogMessageStore
 	
 	public void addFatal(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(fatalMessages, loggerName, message, params);
+		registerLogMessage("fatal", fatalMessages, loggerName, message, params);
 	}
 
 	public void addError(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(errorMessages, loggerName, message, params);
+		registerLogMessage("error", errorMessages, loggerName, message, params);
 	}
 	
 	public void addWarn(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(warnMessages, loggerName, message, params);
+		registerLogMessage("warn", warnMessages, loggerName, message, params);
 	}
 
 	public void addInfo(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(infoMessages, loggerName, message, params);
+		registerLogMessage("info", infoMessages, loggerName, message, params);
 	}
 
 	public void addDebug(String loggerName, String message, Object... params)
 	{
-		registerLogMessage(debugMessages, loggerName, message, params);
+		registerLogMessage("debug", debugMessages, loggerName, message, params);
 	}
 
 	public void verifyNoMoreFatalMessages()
@@ -138,7 +138,7 @@ public class LogMessageStore
 		verifyNoMoreMessageOnList("info", infoMessages);
 	}
 
-	private void registerLogMessage(LinkedList<LogMessage> messages, String loggerName, String message, Object[] params)
+	private void registerLogMessage(String logLevel, LinkedList<LogMessage> messages, String loggerName, String message, Object[] params)
 	{
 		LogMessage log = new LogMessage(message, params);
 		if (storeLogs)
@@ -147,7 +147,7 @@ public class LogMessageStore
 		}
 		if (printLogsToConsole)
 		{
-			System.out.println(log.toString());
+			System.out.println(logLevel.toUpperCase() + ":  " + log.toString());
 			System.out.flush();
 		}
 	}
