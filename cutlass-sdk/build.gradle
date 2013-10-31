@@ -215,6 +215,31 @@ task check, dependsOn: test, {}
 task build, dependsOn: check, {}
 
 
+task downloadExampleApps, {
+	outputs.dir file("${buildDir}/brjs-example-apps.zip")
+	doFirst {
+		if (!buildDir.isDirectory()) { buildDir.mkdir() }
+		ant.get(src: "https://github.com/BladeRunnerJS/brjs-example-apps/archive/master.zip", dest: "${buildDir}/brjs-example-apps.zip")
+	}
+}
+
+task extractExampleApps, type:Copy, dependsOn:downloadExampleApps, {
+	from zipTree( tasks.downloadExampleApps.outputs.files.singleFile )
+	into "workspace/apps"
+	includeEmptyDirs = false
+	eachFile {
+		it.path = it.path.replaceFirst("[A-Za-z0-9-_]+/","")
+		if (it.path.startsWith(".git")) { exclude it }
+	}
+}
+
+createTestTask "exampleAppsTestJsChrome", "../apps/", "ALL", "chrome"
+exampleAppsTestJsChrome.dependsOn extractExampleApps
+createTestTask "exampleAppsTestJsFirefox", "../apps/", "ALL", "firefox"
+exampleAppsTestJsFirefox.dependsOn extractExampleApps
+
+task exampleAppsTestJs, dependsOn: [exampleAppsTestJsChrome, exampleAppsTestJsFirefox], {}
+
 ext.explodedSdkDir = "${project.buildDir}/exploded"
 
 task distZip, type:Zip, dependsOn: [assemble], {
