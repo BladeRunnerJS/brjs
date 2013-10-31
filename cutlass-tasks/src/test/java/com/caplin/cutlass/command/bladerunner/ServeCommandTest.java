@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.bladerunnerjs.core.plugin.command.standard.BladerunnerCommand;
+import org.bladerunnerjs.core.plugin.command.standard.ServeCommand;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import com.caplin.cutlass.command.CommandTaskTest;
@@ -17,7 +17,7 @@ import org.bladerunnerjs.model.BRJS;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-public class BladerunnerCommandTest extends CommandTaskTest
+public class ServeCommandTest extends CommandTaskTest
 {
 	private ApplicationServer mockAppServer;
 	private BRJS brjs;
@@ -27,10 +27,10 @@ public class BladerunnerCommandTest extends CommandTaskTest
 	{
 		mockAppServer = mock(ApplicationServer.class);
 		when(mockAppServer.getPort()).thenReturn(1234);
-		File brjsDir = new File("src/test/resources/BladerunnerCommandTest");
+		File brjsDir = new File("src/test/resources/ServeCommandTest");
 		brjs = BRJSTestFactory.createBRJS(brjsDir);
 		BRJSAccessor.initialize(brjs);
-		commandTask = new BladerunnerCommand(mockAppServer);
+		commandTask = new ServeCommand(mockAppServer);
 		commandTask.setBRJS(brjs);
 		out = BRJSAccessor.root.getConsoleWriter();
 	}
