@@ -289,7 +289,7 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	   "*/sdk/libs/javascript/caplin/test/**",
 	   "*/sdk/run*",
 	   "**/node_modules/**",
-	   "*/apps/**/*"
+	   "*/apps/*/*"
 	]
 }
 check.dependsOn checkSdkStructure
