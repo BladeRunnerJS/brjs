@@ -16,7 +16,8 @@ import org.junit.Test;
 import com.caplin.cutlass.command.export.ExportApplicationCommand;
 
 
-public class ExportApplicationCommandTest extends SpecTest{
+public class ExportAppCommandTest extends SpecTest
+{
 	App app;
 	Aspect aspect;
 	Bladeset bladeset;
