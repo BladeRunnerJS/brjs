@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import org.bladerunnerjs.core.console.ConsoleWriter;
 import org.bladerunnerjs.core.plugin.command.CommandList;
+import org.bladerunnerjs.core.plugin.command.core.HelpCommand;
 import org.bladerunnerjs.core.plugin.command.core.VersionCommand;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LogLevelAccessor;
@@ -21,11 +22,18 @@ public class UserCommandRunner {
 			out.println("");
 		}
 		
+		doRunCommand(brjs, args, out);
+	}
+
+	private static void doRunCommand(BRJS brjs, String[] args, ConsoleWriter out) throws CommandOperationException
+	{
 		try {
 			brjs.runCommand(args);
 		}
 		catch (NoSuchCommandException e) {
 			out.println("No such command '%s'", e.getCommandName());
+			out.println("");
+			doRunCommand(brjs, new String[] {new HelpCommand().getCommandName() }, out);
 		}
 		catch (CommandArgumentsException e) {
 			out.println("Problem:");
