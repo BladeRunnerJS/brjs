@@ -134,8 +134,8 @@ task buildAndTestIE_NoSysApps {
 	description "Runs the 'build' task and also includes IE tests, ignoring the IE tests for systems apps"
 }
 afterEvaluate { project ->
-	buildAndTestIE_NoSysApps.dependsOn buildAndTestIE
-	task(':cutlass-sdk:testSystemAppsIE').enabled = false
+    buildAndTestIE_NoSysApps.dependsOn build
+    buildAndTestIE_NoSysApps.dependsOn ':cutlass-sdk:testJsIE'
 }
 
 
