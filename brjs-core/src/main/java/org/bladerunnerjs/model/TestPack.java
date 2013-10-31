@@ -25,7 +25,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(dir);
+		super(rootNode, dir);
 		this.name = name;
 		init(rootNode, parent, dir);
 	}

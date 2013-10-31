@@ -28,7 +28,7 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(dir);
+		super(rootNode, dir);
 		this.name = name;
 		init(rootNode, parent, dir);
 		

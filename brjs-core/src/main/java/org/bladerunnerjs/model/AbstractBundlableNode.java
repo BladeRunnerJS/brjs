@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
+import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.file.AliasesFile;
@@ -9,8 +10,8 @@ import org.bladerunnerjs.model.file.AliasesFile;
 public abstract class AbstractBundlableNode extends AbstractSourceLocation implements BundlableNode {
 	private AliasesFile aliasesFile;
 	
-	public AbstractBundlableNode(File dir) {
-		super(dir);
+	public AbstractBundlableNode(RootNode rootNode, File dir) {
+		super(rootNode, dir);
 	}
 	
 	@Override

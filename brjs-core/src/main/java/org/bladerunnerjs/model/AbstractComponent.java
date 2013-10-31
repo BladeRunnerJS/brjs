@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 import org.bladerunnerjs.model.utility.TestRunner;
 
@@ -14,8 +15,8 @@ public abstract class AbstractComponent extends AbstractSourceLocation implement
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	
-	public AbstractComponent(File dir) {
-		super(dir);
+	public AbstractComponent(RootNode rootNode, File dir) {
+		super(rootNode, dir);
 	}
 	
 	public AliasDefinitionsFile aliasDefinitions()

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
@@ -17,17 +18,16 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
 	private final NodeMap<Theme> themes = Theme.createNodeSet();
-	private final FileSet<LinkedAssetFile> seedFiles;
+	private final CompositeFileSet<LinkedAssetFile> seedFileSet = new CompositeFileSet<LinkedAssetFile>();
 
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
-		super(dir);
+		super(rootNode, dir);
 		init(rootNode, parent, dir);
 		
-		seedFiles = FileSetBuilder.createLinkedAssetFileSetForDir(this)
-			.includingPaths("index.html", "index.jsp", "resources/**.xml")
-			.excludingPaths("resources/aliases.xml")
-			.build();
+		for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSources()) {
+			seedFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSeedFileSet(this));
+		}
 	}
 
 	public DirNode styleResources()
@@ -53,7 +53,7 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	
 	@Override
 	public List<LinkedAssetFile> getSeedFiles() {
-		return seedFiles.getFiles();
+		return seedFileSet.getFiles();
 	}
 	
 	@Override

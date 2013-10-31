@@ -19,7 +19,7 @@ public class Bladeset extends AbstractComponent implements NamedNode
 
 	public Bladeset(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(dir);
+		super(rootNode, dir);
 		this.name = name;
 		init(rootNode, parent, dir);
 	}

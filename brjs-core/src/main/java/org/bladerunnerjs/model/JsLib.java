@@ -3,8 +3,10 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -21,16 +23,18 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
 	private String name;
 	private JsLibConf libConf;
-	private final FileSet<SourceFile> sourceFiles;
+	private final CompositeFileSet<SourceFile> sourceFileSet = new CompositeFileSet<SourceFile>();
 	private final Resources caplinSrcResources;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		this.name = name;
 		init(rootNode, parent, dir);
-		sourceFiles = FileSetBuilder.createSourceFileSetForDir(this)
-			.includingPaths("src/**.js", "caplin-src/**.js")
-			.build();
+		
+		for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSources()) {
+			sourceFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSourceFileSet(this));
+		}
+		
 		caplinSrcResources = new DeepResources(dir);
 	}
 	
@@ -132,7 +136,7 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	
 	@Override
 	public List<SourceFile> sourceFiles() {
-		return sourceFiles.getFiles();
+		return sourceFileSet.getFiles();
 	}
 	
 	@Override
