@@ -84,7 +84,8 @@ subprojects { p ->
 }
 
 
-/* provides compound tasks that are run in CI */
+task runAllJavaTests << { throw new GradleException("runAllJavaTests has been renamed to testJava") }
+
 
 task testJava {
 	description "Runs 'test' for all Java projects."
@@ -92,10 +93,8 @@ task testJava {
 subprojects {
 	afterEvaluate { project ->
 		project.tasks.withType(Test) { testTask ->
-			runAllJavaTests.dependsOn testTask
+			testJava.dependsOn testTask
 		}
-		
-		runAllJavaTests.dependsOn tasks.matching { Task task -> task.name.equals("coberturaReports")}
 	}
 }
 
@@ -121,6 +120,7 @@ subprojects {
 	}
 }
 
+
 task buildAndTestIE {
 	description "Runs the 'build' task and also includes IE tests"
 }
@@ -134,6 +134,14 @@ task buildAndTestIE_NoSysApps {
 }
 afterEvaluate { project ->
 	buildAndTestIE_JSOnly.dependsOn buildAndTestIE
+	task(':cutlass-sdk:testSystemAppsIE').enabled = false
+}
+
+task buildAndTestIE_NoSysApps {
+	description "Runs the 'build' task and also includes IE tests, ignoring the IE tests for systems apps"
+}
+afterEvaluate { project ->
+	buildAndTestIE_NoSysApps.dependsOn buildAndTestIE
 	task(':cutlass-sdk:testSystemAppsIE').enabled = false
 }
 
