@@ -14,7 +14,7 @@ import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 
-public class BladerunnerCommand extends ArgsParsingCommandPlugin
+public class ServeCommand extends ArgsParsingCommandPlugin
 {
 	public class Messages {
 		public static final String SERVER_STARTUP_MESSAGE = "Bladerunner server is now running and can be accessed at http://localhost:";
@@ -25,12 +25,12 @@ public class BladerunnerCommand extends ArgsParsingCommandPlugin
 	private BRJS brjs;
 	private Logger logger;
 	
-	public BladerunnerCommand()
+	public ServeCommand()
 	{
 	}
 	
 	/* this should only be used for testing */
-	public BladerunnerCommand(ApplicationServer appServer)
+	public ServeCommand(ApplicationServer appServer)
 	{
 		this.appServer = appServer;
 	}
@@ -45,13 +45,13 @@ public class BladerunnerCommand extends ArgsParsingCommandPlugin
 	@Override
 	public String getCommandName()
 	{
-		return "start";
+		return "serve";
 	}
 	
 	@Override
 	public String getCommandDescription()
 	{
-		return "Start the embedded application server and database.";
+		return "Starts the embedded application server and database.";
 	}
 	
 	
