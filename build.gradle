@@ -139,3 +139,52 @@ afterEvaluate { project ->
 }
 
 
+def getProperty = { project, property ->
+	if (!project.hasProperty(property)) {
+		throw new GradleException("${property} property must be set")
+	}
+	return project.property(property)
+}
+
+
+def getGitHubToken = { project ->
+	return getProperty(project,"githubToken")
+}
+def getGitHubUsername = { project ->
+	return getProperty(project,"githubUsername")
+}
+
+
+import org.bladerunnerjs.github.*
+
+def github = new GitHubAPIBridge("BladeRunnerJS", "brjs", getGitHubUsername(project), getGitHubToken(project))
+
+
+
+task generateReleaseNotes, {
+	def assembledReleaseNotesFile = file("${buildDir}/release-note.txt")
+	inputs.property "projectBuildVersion", projectBuildVersion
+	outputs.file assembledReleaseNotesFile
+	doFirst {
+    	def gitHubToken = getGitHubToken(project)
+    	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
+		
+		def releaseDataFile = file("releases/${tagVersion}.json")
+		def releaseNoteFile = file("releases/${tagVersion}.md")
+		
+		def releaseNoteJson = new groovy.json.JsonSlurper().parseText( releaseDataFile.text )
+		def milestoneId = releaseNoteJson.milestone
+		
+		List<Issue> issues = github.getClosedIssuesForMilestone(milestoneId);
+		
+		assembledReleaseNotesFile.parentFile.mkdirs()
+		assembledReleaseNotesFile.createNewFile()
+		assembledReleaseNotesFile.text = releaseNoteFile.text
+		assembledReleaseNotesFile.text += "\n\n## Closed Issues ##\n"
+		issues.each {
+			assembledReleaseNotesFile.text += "   - ${it.toString()}\n"
+		}
+	}
+}
+
+
