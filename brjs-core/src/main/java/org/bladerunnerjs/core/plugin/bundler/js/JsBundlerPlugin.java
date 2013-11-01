@@ -52,7 +52,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	@Override
 	public void writeDevContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
-			writeTagContent(generateRequiredDevRequestPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, generateRequiredDevRequestPaths(bundleSet, locale), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
@@ -62,7 +62,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	@Override
 	public void writeProdContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
-			writeTagContent(generateRequiredProdRequestPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, generateRequiredProdRequestPaths(bundleSet, locale), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
@@ -132,9 +132,9 @@ public class JsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
-	private void writeTagContent(List<String> bundlerRequestPaths, Writer writer) throws IOException {
+	private void writeTagContent(BundleSet bundleSet, List<String> bundlerRequestPaths, Writer writer) throws IOException {
 		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-			bundleSourcePlugin.getTagAppender().writePreTagContent(bundlerRequestPaths, writer);
+			bundleSourcePlugin.getTagAppender().writePreTagContent(bundleSet, writer);
 		}
 		
 		for(String bundlerRequestPath : bundlerRequestPaths) {
@@ -142,7 +142,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 		}
 		
 		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-			bundleSourcePlugin.getTagAppender().writePostTagContent(bundlerRequestPaths, writer);
+			bundleSourcePlugin.getTagAppender().writePostTagContent(bundleSet, writer);
 		}
 	}
 }

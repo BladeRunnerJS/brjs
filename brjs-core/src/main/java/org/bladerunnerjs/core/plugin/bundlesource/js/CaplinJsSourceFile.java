@@ -63,4 +63,9 @@ public class CaplinJsSourceFile implements SourceFile {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public String getClassName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

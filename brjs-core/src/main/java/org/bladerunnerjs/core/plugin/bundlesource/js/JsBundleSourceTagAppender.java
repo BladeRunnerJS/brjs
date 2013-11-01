@@ -3,33 +3,31 @@ package org.bladerunnerjs.core.plugin.bundlesource.js;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.TagAppender;
 import org.json.simple.JSONObject;
 
 public class JsBundleSourceTagAppender implements TagAppender {
 	@Override
-	public void writePreTagContent(List<String> bundlerRequestPaths, Writer writer) throws IOException {
-		Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundlerRequestPaths, writer);
+	public void writePreTagContent(BundleSet bundleSet, Writer writer) throws IOException {
+		Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
 		writePackageStructure(packageStructure, writer);
 	}
 	
 	@Override
-	public void writePostTagContent(List<String> bundlerRequestPaths, Writer writer) throws IOException {
-		globalizeNonCaplinJsClasses(bundlerRequestPaths, writer);
+	public void writePostTagContent(BundleSet bundleSet, Writer writer) throws IOException {
+		globalizeNonCaplinJsClasses(bundleSet, writer);
 	}
 	
-	private Map<String, Map<String, ?>> createPackageStructureForCaplinJsClasses(List<String> bundlerRequestPaths, Writer writer) {
+	private Map<String, Map<String, ?>> createPackageStructureForCaplinJsClasses(BundleSet bundleSet, Writer writer) {
 		Map<String, Map<String, ?>> packageStructure = new HashMap<>();
 		
-		for(String bundlerRequestPath : bundlerRequestPaths) {
-			// TODO: how do work this out?
-			boolean isCaplinJsClass = false;
-			
-			if(isCaplinJsClass) {
-				addPackageToStructure(packageStructure, bundlerRequestPath.split("/"));
+		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
+			if(sourceFile instanceof CaplinJsSourceFile) {
+				addPackageToStructure(packageStructure, sourceFile.getRequirePath().split("/"));
 			}
 		}
 		
@@ -74,14 +72,12 @@ public class JsBundleSourceTagAppender implements TagAppender {
 		}
 	}
 	
-	private void globalizeNonCaplinJsClasses(List<String> bundlerRequestPaths, Writer writer) throws IOException {
-		for(String bundlerRequestPath : bundlerRequestPaths) {
-			// TODO: how do work this out?
-			boolean isCaplinJsClass = false;
-			
-			if(!isCaplinJsClass) {
-				String className = bundlerRequestPath.replaceAll("/", ".");
-				writer.write(className + " = require('" + bundlerRequestPath  + "')");
+	private void globalizeNonCaplinJsClasses(BundleSet bundleSet, Writer writer) throws IOException {
+		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
+			if(sourceFile instanceof CaplinJsSourceFile) {
+				CaplinJsSourceFile caplinSourceFile = (CaplinJsSourceFile) sourceFile;
+				
+				writer.write(caplinSourceFile.getClassName() + " = require('" + caplinSourceFile.getRequirePath()  + "')");
 			}
 		}
 	}

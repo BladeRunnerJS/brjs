@@ -6,9 +6,9 @@
     <void property="methods">
      <void property="text">
       <string>RequestParser getRequestParser()
-List&lt;String&gt; generateRequiredDevRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException
-List&lt;String&gt; generateRequiredProdRequestPaths(BundlableNode bundlableNode, String locale, List&lt;String&gt; requests) throws BundlerProcessingException
-void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStream os) throws BundlerProcessingException
+List&lt;String&gt; generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+List&lt;String&gt; generateRequiredProdRequestPaths(BundleSet bundleSet, String locale, List&lt;String&gt; requests) throws BundlerProcessingException
+void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 </string>
      </void>
     </void>
@@ -73,8 +73,8 @@ void transformFile(Reader reader, Writer writer, TransformInfo info) throws File
     <void property="methods">
      <void property="text">
       <string>String getTagName()
-void writeDevContent(Map&lt;String, String&gt; tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException
-void writeProdContent(Map&lt;String, String&gt; tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException
+void writeDevContent(Map&lt;String, String&gt; tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+void writeProdContent(Map&lt;String, String&gt; tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 </string>
      </void>
     </void>
@@ -89,19 +89,19 @@ void writeProdContent(Map&lt;String, String&gt; tagAttributes, BundlableNode bun
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>61.0</double>
+      <double>59.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>127.0</double>
+      <double>129.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>61.0</double>
-     <double>127.0</double>
+     <double>59.0</double>
+     <double>129.0</double>
     </void>
    </object>
   </void>
@@ -114,9 +114,9 @@ TagAppender getTagAppender()
 BundleSourceFileSetFactory getFileSetFactory()
 void configureRequestParser(RequestParserBuilder requestParserBuilder)
 void setRequestParser(RequestParser requestParser)
-List&lt;String&gt; generateRequiredDevRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException
-List&lt;String&gt; generateRequiredProdRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException
-void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStream os) throws BundlerProcessingException</string>
+List&lt;String&gt; generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+List&lt;String&gt; generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException</string>
      </void>
     </void>
     <void property="name">
@@ -130,7 +130,7 @@ void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStr
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>70.0</double>
+      <double>90.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -141,7 +141,7 @@ void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStr
      </void>
     </void>
     <void method="setLocation">
-     <double>70.0</double>
+     <double>90.0</double>
      <double>371.0</double>
     </void>
    </object>
@@ -150,8 +150,8 @@ void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStr
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode3">
     <void property="methods">
      <void property="text">
-      <string>void writePreTagContent(List&lt;String&gt; bundlerRequestPaths, Writer writer)  throws IOException
-void writePostTagContent(List&lt;String&gt; bundlerRequestPaths, Writer writer)  throws IOException
+      <string>void writePreTagContent(BundleSet bundleSet, Writer writer)  throws IOException
+void writePostTagContent(BundleSet bundleSet, Writer writer)  throws IOException
 </string>
      </void>
     </void>
@@ -166,7 +166,7 @@ void writePostTagContent(List&lt;String&gt; bundlerRequestPaths, Writer writer) 
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>177.0</double>
+      <double>207.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -177,7 +177,7 @@ void writePostTagContent(List&lt;String&gt; bundlerRequestPaths, Writer writer) 
      </void>
     </void>
     <void method="setLocation">
-     <double>177.0</double>
+     <double>207.0</double>
      <double>259.0</double>
     </void>
    </object>
@@ -271,19 +271,19 @@ FileSet&lt;AssetFile&gt; getResourceFileSet(SourceLocation sourceLocation)</stri
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>247.0</double>
+      <double>239.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>563.0</double>
+      <double>564.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>247.0</double>
-     <double>563.0</double>
+     <double>239.0</double>
+     <double>564.0</double>
     </void>
    </object>
   </void>

@@ -187,24 +187,29 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>991.0</double>
+      <double>990.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>497.0</double>
+      <double>501.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>991.0</double>
-     <double>497.0</double>
+     <double>990.0</double>
+     <double>501.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
    <object class="com.horstmann.violet.ClassNode" id="ClassNode3">
+    <void property="methods">
+     <void property="text">
+      <string>String getClassName()</string>
+     </void>
+    </void>
     <void property="name">
      <void property="text">
       <string>CaplinJsSourceFile</string>
@@ -216,19 +221,19 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>993.0</double>
+      <double>989.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>571.0</double>
+      <double>573.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>993.0</double>
-     <double>571.0</double>
+     <double>989.0</double>
+     <double>573.0</double>
     </void>
    </object>
   </void>
