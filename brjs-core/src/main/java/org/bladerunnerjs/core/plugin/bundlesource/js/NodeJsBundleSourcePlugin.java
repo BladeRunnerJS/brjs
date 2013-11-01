@@ -104,8 +104,7 @@ public class NodeJsBundleSourcePlugin implements BundleSourcePlugin {
 	private class NodeJsFileSetFactory implements FileSetFactory<SourceFile> {
 		@Override
 		public NodeJsSourceFile createFile(SourceLocation sourceLocation, String filePath) {
-			// TODO Auto-generated method stub
-			return null;
+			return new NodeJsSourceFile(sourceLocation, filePath);
 		}
 	}
 }

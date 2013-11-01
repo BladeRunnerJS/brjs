@@ -19,6 +19,11 @@ public class NodeJsSourceFile implements SourceFile {
 	private List<String> dependentRequirePaths;
 	private List<AliasDefinition> aliases;
 	private BundlableNode bundlableNode; // TODO: where do I get this from?
+	private String filePath;
+	
+	public NodeJsSourceFile(SourceLocation sourceLocation, String filePath) {
+		this.filePath = filePath;
+	}
 	
 	@Override
 	public void onSourceLocationsUpdated(List<SourceLocation> sourceLocations) {
@@ -59,8 +64,7 @@ public class NodeJsSourceFile implements SourceFile {
 	
 	@Override
 	public String getRequirePath() {
-		// TODO Auto-generated method stub
-		return null;
+		return filePath.replaceAll("\\.js^", "");
 	}
 	
 	@Override

@@ -30,8 +30,10 @@ public class CaplinJsSourceFile implements SourceFile {
 	
 	@Override
 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
-		// TODO: remove order dependent source files from the list we return
-		return assetFile.getDependentSourceFiles();
+		List<SourceFile> dependentSourceFiles = assetFile.getDependentSourceFiles();
+		dependentSourceFiles.removeAll(getOrderDependentSourceFiles());
+		
+		return dependentSourceFiles;
 	}
 	
 	@Override
@@ -51,7 +53,7 @@ public class CaplinJsSourceFile implements SourceFile {
 	
 	@Override
 	public String getRequirePath() {
-		return getClassName().replaceAll("\\.", "/");
+		return filePath.replaceAll("\\.js^", "");
 	}
 	
 	@Override
@@ -66,7 +68,6 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	public String getClassName() {
-		// TODO: implement this once we receive a SourceLocation in the constructor, instead of a file
-		return null;
+		return getRequirePath().replaceAll("/", ".");
 	}
 }
