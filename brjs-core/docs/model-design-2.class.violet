@@ -631,6 +631,7 @@ List&lt;AssetFile&gt; bundleResources(String fileExtension)
       <string>List&lt;AliasDefinition&gt; getActiveAliases()
 List&lt;JsSource&gt; getSourceFiles()
 List&lt;Resources&gt; getResources()
+List&lt;AssetFile&gt; getResourceFiles(String fileExtension)
 </string>
      </void>
     </void>
@@ -652,12 +653,12 @@ List&lt;Resources&gt; getResources()
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double19"/>
-      <double>121.0</double>
+      <double>129.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>946.0</double>
-     <double>121.0</double>
+     <double>129.0</double>
     </void>
    </object>
   </void>
