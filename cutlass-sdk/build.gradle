@@ -11,8 +11,7 @@ configurations {
 	}
 	jsLibsAndDocs
 	testRunner
-	ct3Zip
-	bladerunnerZip
+	javadocs
 	
 	browsers_dep
 	browsers_webdriver
@@ -33,6 +32,8 @@ dependencies {
 	application (dependency('jsp-2.1-glassfish')) {
 		exclude module: 'ant'
 	}
+	
+	javadocs project(path: ':brjs-core', configuration:'javadocs')
 	
 	systemApp (project(path: ':system-app-servlets'))
 
@@ -78,7 +79,7 @@ task copyBrowsers(type: Sync) {
 		}
 }
 
-task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner], {
+task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner, configurations.javadocs], {
 	def includesDir = "build-resources/includes"
 	
 	destinationDir file("${projectDir.path}/workspace")
@@ -127,6 +128,9 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	from (configurations.system)
 	{
 		into "sdk/libs/java/system"
+	}
+	from (configurations.javadocs.collect { zipTree(it) }) {
+		into "sdk/docs"
 	}
 	from (configurations.application)
 	{
@@ -291,6 +295,7 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
 		"*/sdk/templates/**/*",
 		"*/sdk/templates/**/tests/**/*",
+		"*/sdk/docs/javadoc/**/*",
 		"*/README.txt",
 		"*/LICENSE",
 		"*/apps/apps.txt",
