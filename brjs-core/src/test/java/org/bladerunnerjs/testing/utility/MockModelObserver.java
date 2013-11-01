@@ -8,22 +8,23 @@ public class MockModelObserver implements ModelObserverPlugin
 {
 
 	BRJS brjs;
-	boolean failOnSetBRJS;
+	RuntimeException throwException;
 	
 	public MockModelObserver()
 	{
-		this(false);
+		this(null);
 	}
 	
-	public MockModelObserver(boolean failOnSetBRJS)
+	public MockModelObserver(RuntimeException throwException)
 	{
-		this.failOnSetBRJS = failOnSetBRJS;
+		this.throwException = throwException;
 	}
 
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
+		if (throwException != null) { throw throwException; }
 	}
 
 }

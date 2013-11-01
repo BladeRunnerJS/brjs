@@ -11,9 +11,9 @@ import org.bladerunnerjs.model.BRJS;
 public class BRJSPluginLocator implements PluginLocator
 {
 
-	private TypedClassCreator<BundlerPlugin> bundlerPluginLocator = new TypedClassCreator<BundlerPlugin>();
-	private TypedClassCreator<CommandPlugin> commandPluginLocator = new TypedClassCreator<CommandPlugin>();
-	private TypedClassCreator<ModelObserverPlugin> modelObserverLocator = new TypedClassCreator<ModelObserverPlugin>();
+	private TypedPluginCreator<BundlerPlugin> bundlerPluginLocator = new TypedPluginCreator<BundlerPlugin>();
+	private TypedPluginCreator<CommandPlugin> commandPluginLocator = new TypedPluginCreator<CommandPlugin>();
+	private TypedPluginCreator<ModelObserverPlugin> modelObserverLocator = new TypedPluginCreator<ModelObserverPlugin>();
 	
 	@Override
 	public List<BundlerPlugin> createBundlerPlugins(BRJS brjs)
