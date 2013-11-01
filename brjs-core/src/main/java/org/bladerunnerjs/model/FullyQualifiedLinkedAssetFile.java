@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -16,8 +15,8 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
 	
-	public FullyQualifiedLinkedAssetFile(File file) {
-		assetFile = new WatchingAssetFile(file);
+	public FullyQualifiedLinkedAssetFile(SourceLocation sourceLocation, String filePath) {
+		assetFile = new WatchingAssetFile(sourceLocation, filePath);
 		assetFile.addObserver(new Observer());
 	}
 	

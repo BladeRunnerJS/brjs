@@ -1,10 +1,9 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.io.Reader;
 
 public class WatchingAssetFile implements AssetFile {
-	public WatchingAssetFile(File file) {
+	public WatchingAssetFile(SourceLocation sourceLocation, String filePath) {
 		// TODO Auto-generated constructor stub
 	}
 	

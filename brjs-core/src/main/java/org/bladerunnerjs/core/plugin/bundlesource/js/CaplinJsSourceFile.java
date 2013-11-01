@@ -1,6 +1,5 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
 
-import java.io.File;
 import java.io.Reader;
 import java.util.List;
 
@@ -15,9 +14,13 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class CaplinJsSourceFile implements SourceFile {
 	private LinkedAssetFile assetFile;
+	private SourceLocation sourceLocation;
+	private String filePath;
 	
-	public CaplinJsSourceFile(File sourceFile) {
-		assetFile = new FullyQualifiedLinkedAssetFile(sourceFile);
+	public CaplinJsSourceFile(SourceLocation sourceLocation, String filePath) {
+		this.sourceLocation = sourceLocation;
+		this.filePath = filePath;
+		assetFile = new FullyQualifiedLinkedAssetFile(sourceLocation, filePath);
 	}
 	
 	@Override
@@ -53,8 +56,7 @@ public class CaplinJsSourceFile implements SourceFile {
 	
 	@Override
 	public Resources getResources() {
-		// TODO: implement this once we receive a SourceLocation in the constructor, instead of a file
-		return null;
+		return sourceLocation.getResources(filePath);
 	}
 	
 	@Override

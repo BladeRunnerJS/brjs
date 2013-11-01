@@ -1,6 +1,5 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
 
-import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +92,7 @@ public class NodeJsBundleSourcePlugin implements BundleSourcePlugin {
 		
 		@Override
 		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			return new StandardFileSet<SourceFile>(sourceLocation.dir(), StandardFileSet.paths("src/**/*.js"), StandardFileSet.paths(), new NodeJsFileSetFactory());
+			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), StandardFileSet.paths(), new NodeJsFileSetFactory());
 		}
 		
 		@Override
@@ -104,7 +103,7 @@ public class NodeJsBundleSourcePlugin implements BundleSourcePlugin {
 	
 	private class NodeJsFileSetFactory implements FileSetFactory<SourceFile> {
 		@Override
-		public NodeJsSourceFile createFile(File filePath) {
+		public NodeJsSourceFile createFile(SourceLocation sourceLocation, String filePath) {
 			// TODO Auto-generated method stub
 			return null;
 		}

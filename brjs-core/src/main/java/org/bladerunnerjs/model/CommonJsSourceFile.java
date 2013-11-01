@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -18,17 +17,13 @@ public class CommonJsSourceFile implements SourceFile {
 	private WatchingAssetFile assetFile;
 	private List<String> requirePaths;
 	private List<String> aliasNames;
-	private final String requirePath;
-	private final Resources resources;
 	private final SourceLocation sourceLocation;
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
 	
-	public CommonJsSourceFile(String requirePath, File sourceFile, Resources resources, SourceLocation sourceLocation) {
-		this.requirePath = requirePath;
-		this.resources = resources;
+	public CommonJsSourceFile(SourceLocation sourceLocation, String sourceFile) {
 		this.sourceLocation = sourceLocation;
-		assetFile = new WatchingAssetFile(sourceFile);
+		assetFile = new WatchingAssetFile(sourceLocation, sourceFile);
 		assetFile.addObserver(new Observer());
 	}
 	
@@ -76,12 +71,14 @@ public class CommonJsSourceFile implements SourceFile {
 	
 	@Override
 	public String getRequirePath() {
-		return requirePath;
+		// TODO
+		return null;
 	}
 	
 	@Override
 	public Resources getResources() {
-		return resources;
+		// TODO
+		return null;
 	}
 	
 	@Override
