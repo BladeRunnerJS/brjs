@@ -9,6 +9,7 @@ import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.resourcebundler.LogicalTagPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 
@@ -29,10 +30,10 @@ public class JsLogicalTagPlugin implements LogicalTagPlugin {
 		
 		try {
 			for (BundlerPlugin bundler : indexPageFile.getBundlerPlugins("text/javascript")) {
-				writeRequests(writer, bundler.generateRequiredDevRequestPaths(bundlableNode, locale));
+				writeRequests(writer, bundler.generateRequiredDevRequestPaths(bundlableNode.getBundleSet(), locale));
 			}
 		}
-		catch(BundlerProcessingException e) {
+		catch(BundlerProcessingException | ModelOperationException e) {
 			// TODO: we need a better standard exception type for tag replacement plugins
 			throw new RuntimeException(e);
 		}
@@ -44,10 +45,10 @@ public class JsLogicalTagPlugin implements LogicalTagPlugin {
 		
 		try {
 			for (BundlerPlugin bundler : indexPageFile.getBundlerPlugins("text/javascript")) {
-				writeRequests(writer, bundler.generateRequiredProdRequestPaths(bundlableNode, locale));
+				writeRequests(writer, bundler.generateRequiredProdRequestPaths(bundlableNode.getBundleSet(), locale));
 			}
 		}
-		catch(BundlerProcessingException e) {
+		catch(BundlerProcessingException | ModelOperationException e) {
 			// TODO: we need a better standard exception type for tag replacement plugins
 			throw new RuntimeException(e);
 		}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.model.AliasDefinition;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.Resources;
@@ -18,6 +19,11 @@ public class BundleSetBuilder {
 	Set<SourceFile> sourceFiles = new HashSet<>();
 	Set<AliasDefinition> activeAliases = new HashSet<>();
 	Set<Resources> resources = new HashSet<>();
+	private BundlableNode bundlableNode;
+	
+	public BundleSetBuilder(BundlableNode bundlableNode) {
+		this.bundlableNode = bundlableNode;
+	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
 		List<AliasDefinition> activeAliasList = new ArrayList<>();
@@ -26,7 +32,7 @@ public class BundleSetBuilder {
 		activeAliasList.addAll(activeAliases);
 		resourcesList.addAll(resources);
 		
-		return new BundleSet(orderSourceFiles(sourceFiles), activeAliasList, resourcesList);
+		return new BundleSet(bundlableNode, orderSourceFiles(sourceFiles), activeAliasList, resourcesList);
 	}
 	
 	public void addSeedFile(LinkedAssetFile seedFile) throws ModelOperationException {

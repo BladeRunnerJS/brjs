@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedRequest;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -24,20 +25,25 @@ public class LogicalRequestHandler {
 	}
 
 	public void handle(BladerunnerUri requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
-		File baseDir = new File(brjs.dir(), requestUri.scopePath);
-		BundlableNode bundlableNode = brjs.locateFirstBundlableAncestorNode(baseDir);
-		
-		if(bundlableNode == null) {
-			throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
-		}
-		else {
-			// TODO: should be brjs.bundler(bundlerName)
-			BundlerPlugin bundler = bundlers.get(getResourceBundlerName(requestUri));
-			ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri.logicalPath);
+		try {
+			File baseDir = new File(brjs.dir(), requestUri.scopePath);
+			BundlableNode bundlableNode = brjs.locateFirstBundlableAncestorNode(baseDir);
 			
-			// we're currently de-encapsulating the request parser within the bundler since this would allow bundlers
-			// to safely route messages to other bundlers
-			bundler.handleRequest(parsedRequest, bundlableNode, os);
+			if(bundlableNode == null) {
+				throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
+			}
+			else {
+				// TODO: should be brjs.bundler(bundlerName)
+				BundlerPlugin bundler = bundlers.get(getResourceBundlerName(requestUri));
+				ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri.logicalPath);
+				
+				// we're currently de-encapsulating the request parser within the bundler since this would allow bundlers
+				// to safely route messages to other bundlers
+				bundler.handleRequest(parsedRequest, bundlableNode.getBundleSet(), os);
+			}
+		}
+		catch(ModelOperationException e) {
+			throw new BundlerProcessingException(e);
 		}
 	}
 	

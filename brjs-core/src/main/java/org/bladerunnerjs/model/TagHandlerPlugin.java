@@ -8,6 +8,6 @@ import org.bladerunnerjs.core.plugin.Plugin;
 
 public interface TagHandlerPlugin extends Plugin {
 	String getTagName();
-	void writeDevContent(Map<String, String> tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException;
-	void writeProdContent(Map<String, String> tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException;
+	void writeDevContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException;
+	void writeProdContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException;
 }

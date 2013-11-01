@@ -4,7 +4,6 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.bladerunnerjs.core.plugin.Plugin;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
@@ -21,5 +20,5 @@ public interface BundleSourcePlugin extends Plugin {
 	List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
 	List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
 	boolean handlesRequestForm(String formName);
-	void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStream os) throws BundlerProcessingException;
+	void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException;
 }

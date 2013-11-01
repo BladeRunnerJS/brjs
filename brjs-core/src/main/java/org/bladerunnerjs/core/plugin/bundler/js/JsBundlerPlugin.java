@@ -12,13 +12,11 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
@@ -52,9 +50,9 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public void writeDevContent(Map<String, String> tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException {
+	public void writeDevContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
-			writeTagContent(generateRequiredDevRequestPaths(bundlableNode, locale), writer);
+			writeTagContent(generateRequiredDevRequestPaths(bundleSet, locale), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
@@ -62,9 +60,9 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public void writeProdContent(Map<String, String> tagAttributes, BundlableNode bundlableNode, String locale, Writer writer) throws IOException {
+	public void writeProdContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
-			writeTagContent(generateRequiredProdRequestPaths(bundlableNode, locale), writer);
+			writeTagContent(generateRequiredProdRequestPaths(bundleSet, locale), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
@@ -77,55 +75,40 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public List<String> generateRequiredDevRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException {
+	public List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		try {
-			BundleSet bundleSet = bundlableNode.getBundleSet();
-			
-			for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-				requestPaths.addAll(bundleSourcePlugin.generateRequiredDevRequestPaths(bundleSet, locale));
-			}
-		}
-		catch(ModelOperationException e) {
-			throw new BundlerProcessingException(e);
+		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+			requestPaths.addAll(bundleSourcePlugin.generateRequiredDevRequestPaths(bundleSet, locale));
 		}
 		
 		return requestPaths;
 	}
 	
 	@Override
-	public List<String> generateRequiredProdRequestPaths(BundlableNode bundlableNode, String locale) throws BundlerProcessingException {
+	public List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
+		requestPaths.add(requestParser.createRequest("bundle-request"));
 		
-		try {
-			BundleSet bundleSet = bundlableNode.getBundleSet();
-			
-			requestPaths.add(requestParser.createRequest("bundle-request"));
-			
-			for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-				requestPaths.addAll(bundleSourcePlugin.generateRequiredProdRequestPaths(bundleSet, locale));
-			}
-		}
-		catch(ModelOperationException e) {
-			throw new BundlerProcessingException(e);
+		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+			requestPaths.addAll(bundleSourcePlugin.generateRequiredProdRequestPaths(bundleSet, locale));
 		}
 		
 		return requestPaths;
 	}
 	
 	@Override
-	public void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStream os) throws ResourceNotFoundException, BundlerProcessingException {
+	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws ResourceNotFoundException, BundlerProcessingException {
 		try {
 			if(request.formName.equals("single-module-request")) {
 				Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding());
 				
-				SourceFile jsModule = bundlableNode.sourceFile(request.properties.get("module"));
+				SourceFile jsModule = bundleSet.getBundlableNode().sourceFile(request.properties.get("module"));
 				IOUtils.copy(jsModule.getReader(), writer);
 			}
 			else if(request.formName.equals("bundle-request")) {
 				for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-					bundleSourcePlugin.handleRequest(request, bundlableNode, os);
+					bundleSourcePlugin.handleRequest(request, bundleSet, os);
 				}
 			}
 			else {
@@ -133,7 +116,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 				
 				for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
 					if(bundleSourcePlugin.handlesRequestForm(request.formName)) {
-						bundleSourcePlugin.handleRequest(request, bundlableNode, os);
+						bundleSourcePlugin.handleRequest(request, bundleSet, os);
 						requestHandled = true;
 						break;
 					}

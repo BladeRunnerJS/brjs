@@ -26,7 +26,6 @@ import org.bladerunnerjs.model.SourceLocation;
 import org.bladerunnerjs.model.StandardFileSet;
 import org.bladerunnerjs.model.TagAppender;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
@@ -88,11 +87,11 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 	}
 	
 	@Override
-	public void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStream os) throws BundlerProcessingException {
+	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		if(request.formName.equals("bundle-request")) {
 			try {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-					for(SourceFile sourceFile : bundlableNode.getBundleSet().getSourceFiles()) {
+					for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
 						if(sourceFile instanceof CaplinJsSourceFile) {
 							writer.write("// " + sourceFile.getRequirePath() + "\n");
 							IOUtils.copy(sourceFile.getReader(), writer);
@@ -101,7 +100,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 					}
 				}
 			}
-			catch(ConfigException | IOException | ModelOperationException e) {
+			catch(ConfigException | IOException e) {
 				throw new BundlerProcessingException(e);
 			}
 		}
