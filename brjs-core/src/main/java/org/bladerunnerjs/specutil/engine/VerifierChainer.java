@@ -1,5 +1,6 @@
 package org.bladerunnerjs.specutil.engine;
 
+import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.core.plugin.EventObserver;
@@ -18,6 +19,7 @@ import org.bladerunnerjs.specutil.AspectVerifier;
 import org.bladerunnerjs.specutil.BRJSVerifier;
 import org.bladerunnerjs.specutil.BladeVerifier;
 import org.bladerunnerjs.specutil.DirNodeVerifier;
+import org.bladerunnerjs.specutil.DirectoryVerifier;
 import org.bladerunnerjs.specutil.JsLibVerifier;
 import org.bladerunnerjs.specutil.LoggerVerifier;
 import org.bladerunnerjs.specutil.NamedDirNodeVerifier;
@@ -46,4 +48,5 @@ public class VerifierChainer {
 	public ConsoleWriterVerifier and(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(modelTest, consoleMessageStore); }
 	public AppServerVerifier and(ApplicationServer appServer) { return new AppServerVerifier(modelTest, appServer); }
 	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(appConf); }
+	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(modelTest, dir); }
 }
