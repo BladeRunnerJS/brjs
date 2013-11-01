@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BundleSet {
@@ -29,5 +30,15 @@ public class BundleSet {
 	
 	public List<Resources> getResourceNodes() {
 		return resources;
+	}
+	
+	public List<AssetFile> getResourceFiles(String fileExtension) {
+		List<AssetFile> resourceFiles = new ArrayList<>();
+		
+		for(Resources resourceNode : resources) {
+			resourceFiles.addAll(resourceNode.bundleResources(fileExtension));
+		}
+		
+		return resourceFiles;
 	}
 }
