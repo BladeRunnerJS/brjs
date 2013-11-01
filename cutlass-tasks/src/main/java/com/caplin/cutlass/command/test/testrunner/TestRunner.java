@@ -27,6 +27,7 @@ import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
@@ -71,6 +72,7 @@ public class TestRunner {
 	private boolean generateReports;
 	private long execStartTime;
 	private long execEndTime;
+	private TestRunnerConfiguration config;
 	private List<TestRunResult> testResultList = new ArrayList<TestRunResult>();
 	
 	static boolean disableLogging = false;
@@ -82,7 +84,7 @@ public class TestRunner {
 	
 	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean generateReports) throws FileNotFoundException, YamlException, IOException {
 		verbose = determineIfVerbose();
-		TestRunnerConfiguration config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
+		config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
 		
 		this.jsTestDriverJar = config.getJsTestDriverJarFile();
 		this.portNumber = config.getPortNumber();
@@ -408,9 +410,19 @@ public class TestRunner {
 		for(String browser : browsers) {
 			String[] args = CmdCreator.cmd("%s http://localhost:%s/capture?strict", browser, portNumber);
 			logger.debug("Running command: " + CmdCreator.printCmd(args));
-			Process process = runTime.exec(args);
-			childProcesses.add(process);
-			childLoggers.add(new ProcessLogger(brjs, process, "browser #" + browserNo++));
+			try 
+			{
+				Process process = runTime.exec(args);
+				childProcesses.add(process);
+				childLoggers.add(new ProcessLogger(brjs, process, "browser #" + browserNo++));	
+			}
+			catch (IOException e)
+			{
+				String browserString = browser == null ? "" : "'" + browser + "' "; 
+				throw new BrowserNotFoundException("Could not find the browser " + browserString + "on disk. Please check your test config inside\n '" + 
+						config.getRelativeDir().getPath() + "'");
+			}
+			
 		}
 		waitForServer(browsers.size());
 	}
