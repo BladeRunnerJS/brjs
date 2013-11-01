@@ -1,0 +1,91 @@
+<html>
+<head>
+	<title>Topiary</title>
+	<meta charset=utf-8 />
+	<style type="text/css">
+		h1, h2 {
+			font-family: "Franklin Gothic Medium", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif;
+			color: black;
+		}
+		h1 {
+			font-size: xx-large;
+		}
+		h2 {
+			font-size: large;
+		}
+		body {
+			width: 80%;
+			max-width: 970px;
+			margin: 2px auto;
+			font-family:   Garamond, Georgia, Times, serif;
+			font-size: x-large;
+			color: #222;
+			background-color: #ffe;
+		}
+	</style>
+	<script src="lib/topiary.js" type="text/javascript"></script>
+</head>
+<body>
+	<h1>Topiary</h1>
+	<p>
+		Topiary is a microlibrary providing tree and shape-based type verification for JavaScript.
+	</p>
+
+	<h2>Details</h2>
+	<p>
+		You can see the specification <a href="specs">here</a>, or the git repository <a href="https://github.com/caplin/topiary">here</a>.
+		This page has the library loaded so you can experiment by opening up a console.
+	</p>
+
+	<p>
+		This library provides:
+		<ul>
+		<li>
+			<code>topiary.extend(subclass, superclass)</code> which implements classical single inheritance by setting up the prototype chain.
+		</li>
+		<li>
+			<code>topiary.implement(class, interface)</code> which declares that a class implements an interface and throws an exception if it does not.
+		</li>
+		<li>
+			<code>topiary.inherit(class, parent)</code> which provides multiple inheritance by copying functionality from the parent to the class.
+		</li>
+		<li>
+			<code>topiary.mixin(class, mixin)</code> which provides mixin inheritance, sandboxing mixin methods that are copied onto the class.
+		</li>
+		<li>
+			<code>topiary.isA(instance, parent)</code> which returns true if the instance is of a type which has been declared to be descended from the parent, e.g. because it's extended or implemented or mixed-in.
+		</li>
+		<li>
+			<code>topiary.isAssignableFrom(class, parent)</code> which returns true if the class has been declared to be descended from the parent, e.g. through extension, implementation, etc.
+		</li>
+		<li>
+			<code>topiary.fulfills(instance, interface)</code> which returns true if the instance supports everything on the interface.
+		</li>
+		<li>
+			<code>topiary.classFulfills(class, interface)</code> which returns true if instances of the class will be created supporting everything on the interface.
+		</li>
+		</ul>
+		Please see the <a href="specs">specifications</a> and <a href="doc/topiary.html">code documentation</a> for more details.
+	</p>
+	<p>
+		The following convenience methods are also provided:
+		<ul>
+		<li>
+			<code>topiary.install()</code> which copies the appropriate methods onto the Function and Object prototype, renaming them where appropriate.  This lets you do things like <code>Subclass.extends(Superclass)</code>
+		</li>
+		<li>
+			<code>topiary.export()</code> which copies the appropriate methods onto the global object so they can be accessed directly.
+		</li>
+		</ul>
+	</p>
+
+	<h2>A Note on implementation</h2>
+	<p>
+		This library makes liberal use of nonenumerable attributes and Object.getPrototypeOf.
+		It is therefore suitable only for ecmascript 5 engines.  It will work in ecmascript 6
+		engines but there would be a much nicer implementation in that case, using Map and
+		private symbols.
+	</p>
+
+</body>
+</html>

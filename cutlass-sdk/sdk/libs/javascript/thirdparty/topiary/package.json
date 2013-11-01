@@ -1,0 +1,35 @@
+{
+  "name": "topiary",
+  "version": "0.0.1",
+  "author": {
+    "name": "kybernetikos",
+    "email": "kybernetikos@gmail.com"
+  },
+  "description": "a micro library for extension, mixin and interfaces.",
+  "main": "./lib/topiary.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BladeRunnerJS/topiary.git"
+  },
+  "keywords": [
+    "extend",
+    "inheritance",
+    "OO"
+  ],
+  "dependencies": {},
+  "license": "MIT",
+  "readme": "Topiary\r\n=======\r\n\r\nTopiary provides tree and shape-based type verification for JavaScript.\r\n\r\nDetails\r\n-------\r\n\r\nYou can see the main page [here](http://BladeRunnerJS.github.io/topiary/), or the git repository [here](https://github.com/BladeRunnerJS/topiary).\r\nActual js file is at https://github.com/BladeRunnerJS/topiary/blob/gh-pages/lib/topiary.js.\r\n\r\n\r\nA Note on implementation\r\n------------------------\r\n\r\nThis library makes liberal use of nonenumerable attributes and Object.getPrototypeOf.\r\nIt is therefore suitable only for ecmascript 5 engines.  It will work in ecmascript 6\r\nengines but there would be a much nicer implementation in that case, using Map and\r\nprivate symbols.\r\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/BladeRunnerJS/topiary/issues"
+  },
+  "bundleDependencies": [
+    "jasmine-standalone"
+  ],
+  "_id": "topiary@0.0.1",
+  "dist": {
+    "shasum": "01454aee8ceb593148f85c222a1433b59e2af8b4"
+  },
+  "_resolved": "git+https://github.com/BladeRunnerJS/topiary.git#36ccbb9061af3cf2a73a2e854d5036af68020eae",
+  "_from": "topiary@git+https://github.com/BladeRunnerJS/topiary.git#gh-pages"
+}
