@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.TagAppender;
 import org.json.simple.JSONObject;
 
-public class JsBundleSourceTagAppender implements TagAppender {
+public class CaplinJsBundleSourceTagAppender implements TagAppender {
 	@Override
 	public void writePreTagContent(BundleSet bundleSet, Writer writer) throws IOException {
 		Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);

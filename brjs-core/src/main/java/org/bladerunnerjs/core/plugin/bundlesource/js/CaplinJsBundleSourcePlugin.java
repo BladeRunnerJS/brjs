@@ -45,7 +45,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 	
 	@Override
 	public TagAppender getTagAppender() {
-		return new JsBundleSourceTagAppender();
+		return new CaplinJsBundleSourceTagAppender();
 	}
 	
 	@Override
