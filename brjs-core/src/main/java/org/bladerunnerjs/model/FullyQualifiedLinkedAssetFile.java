@@ -15,7 +15,6 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private boolean recalculateDependencies = true;
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
-	private boolean containsClassReferences;
 	
 	public FullyQualifiedLinkedAssetFile(File file) {
 		assetFile = new WatchingAssetFile(file);
@@ -56,19 +55,9 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		return aliases;
 	}
 	
-	@Override
-	public boolean containsClassReferences() throws ModelOperationException {
-		if(recalculateDependencies) {
-			recalculateDependencies();
-		}
-		
-		return containsClassReferences;
-	}
-	
 	private void recalculateDependencies() throws ModelOperationException {
 		dependentSourceFiles = new ArrayList<>();
 		aliases = new ArrayList<>();
-		containsClassReferences = false;
 		Trie trie = createTrie();
 		
 		try {
@@ -78,7 +67,6 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 						dependentSourceFiles.add((SourceFile) match);
 					}
 					else if(match instanceof ClassSourceFile) {
-						containsClassReferences = true;
 						dependentSourceFiles.add(((ClassSourceFile) match).getSourceFile());
 					}
 					else {

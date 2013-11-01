@@ -107,29 +107,31 @@ public class JsBundlerPlugin implements BundlerPlugin {
 				IOUtils.copy(jsModule.getReader(), writer);
 			}
 			else if(request.formName.equals("bundle-request")) {
-				for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-					bundleSourcePlugin.handleRequest(request, bundleSet, os);
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+					for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
+						writer.write("// " + sourceFile.getRequirePath() + "\n");
+						IOUtils.copy(sourceFile.getReader(), writer);
+						writer.write("\n\n");
+					}
 				}
 			}
 			else {
-				boolean requestHandled = false;
-				
-				for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-					if(bundleSourcePlugin.handlesRequestForm(request.formName)) {
-						bundleSourcePlugin.handleRequest(request, bundleSet, os);
-						requestHandled = true;
-						break;
-					}
-				}
-				
-				if(!requestHandled) {
-					throw new BundlerProcessingException("request form '" + request.formName + "' was not handled by any of the available bunlde sources.");
-				}
+				getBundleSourcePluginForRequest(request).handleRequest(request, bundleSet, os);
 			}
 		}
 		catch(ConfigException | IOException e) {
 			throw new BundlerProcessingException(e);
 		}
+	}
+	
+	private BundleSourcePlugin getBundleSourcePluginForRequest(ParsedRequest request) throws BundlerProcessingException {
+		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+			if(bundleSourcePlugin.handlesRequestForm(request.formName)) {
+				return bundleSourcePlugin;
+			}
+		}
+		
+		throw new BundlerProcessingException("request form '" + request.formName + "' was not handled by any of the available bunlde sources.");
 	}
 	
 	private void writeTagContent(BundleSet bundleSet, List<String> bundlerRequestPaths, Writer writer) throws IOException {

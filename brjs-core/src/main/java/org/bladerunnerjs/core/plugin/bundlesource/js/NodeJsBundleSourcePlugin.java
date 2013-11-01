@@ -24,7 +24,7 @@ import org.bladerunnerjs.model.TagAppender;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
-public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
+public class NodeJsBundleSourcePlugin implements BundleSourcePlugin {
 	private RequestParser requestParser;
 	
 	@Override
@@ -39,12 +39,12 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 	
 	@Override
 	public TagAppender getTagAppender() {
-		return new CaplinJsBundleSourceTagAppender();
+		return new NullTagAppender();
 	}
 	
 	@Override
 	public BundleSourceFileSetFactory getFileSetFactory() {
-		return new CaplinJsBundleSourceFileSetFactory();
+		return new NodeJsBundleSourceFileSetFactory();
 	}
 	
 	@Override
@@ -62,7 +62,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 		List<String> requestPaths = new ArrayList<>();
 		
 		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
-			if(sourceFile instanceof CaplinJsSourceFile) {
+			if(sourceFile instanceof NodeJsSourceFile) {
 				requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
 			}
 		}
@@ -85,7 +85,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 		// do nothing
 	}
 	
-	private class CaplinJsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
+	private class NodeJsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
 		@Override
 		public FileSet<LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode) {
 			return new NullFileSet<LinkedAssetFile>();
@@ -93,7 +93,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 		
 		@Override
 		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			return new StandardFileSet<SourceFile>(sourceLocation.dir(), StandardFileSet.paths("caplin-src/**/*.js"), StandardFileSet.paths(), new CaplinJsFileSetFactory());
+			return new StandardFileSet<SourceFile>(sourceLocation.dir(), StandardFileSet.paths("src/**/*.js"), StandardFileSet.paths(), new NodeJsFileSetFactory());
 		}
 		
 		@Override
@@ -102,11 +102,11 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 		}
 	}
 	
-	private class CaplinJsFileSetFactory implements FileSetFactory<SourceFile> {
-		// TODO: could this take a richer object, like a SourceLocation?
+	private class NodeJsFileSetFactory implements FileSetFactory<SourceFile> {
 		@Override
-		public CaplinJsSourceFile createFile(File filePath) {
-			return new CaplinJsSourceFile(filePath);
+		public NodeJsSourceFile createFile(File filePath) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

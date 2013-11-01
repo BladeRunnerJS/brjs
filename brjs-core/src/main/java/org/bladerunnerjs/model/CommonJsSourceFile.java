@@ -65,11 +65,6 @@ public class CommonJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public boolean containsClassReferences() throws ModelOperationException {
-		return false;
-	}
-	
-	@Override
 	public Reader getReader() {
 		return assetFile.getReader();
 	}

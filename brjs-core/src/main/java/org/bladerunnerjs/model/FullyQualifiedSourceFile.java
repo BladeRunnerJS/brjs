@@ -46,11 +46,6 @@ public class FullyQualifiedSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public boolean containsClassReferences() throws ModelOperationException {
-		return linkedAssetFile.containsClassReferences();
-	}
-	
-	@Override
 	public Reader getReader() {
 		return linkedAssetFile.getReader();
 	}
