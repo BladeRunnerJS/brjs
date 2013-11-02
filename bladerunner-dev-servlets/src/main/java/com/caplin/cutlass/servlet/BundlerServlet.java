@@ -83,10 +83,15 @@ public class BundlerServlet extends HttpServlet
 			logger.debug("BASE DIR " + baseDir);
 			logger.debug("REQUEST PATH " + requestPath);
 			
-			LegacyFileBundlerPlugin theBundler = getBundlerForRequest(request);
-			List<File> bundleFiles = getBundleFiles(theBundler, baseDir, requestPath);
-			
-			writeBundle(theBundler, bundleFiles, cachedBundlerOutputStream, requestPath);
+			if(requestPath.equals("js/js.bundle")) {
+				brjs.handleLogicalRequest(bladerunnerUri, cachedBundlerOutputStream);
+			}
+			else {
+				LegacyFileBundlerPlugin theBundler = getBundlerForRequest(request);
+				List<File> bundleFiles = getBundleFiles(theBundler, baseDir, requestPath);
+				
+				writeBundle(theBundler, bundleFiles, cachedBundlerOutputStream, requestPath);
+			}
 		} 
 		catch (MalformedRequestException ex)
 		{
@@ -115,7 +120,6 @@ public class BundlerServlet extends HttpServlet
 		{
 			logger.debug("Output stream closed: unable to write response for '" + requestPath + "'.");
 		}
-		
 	}
 	
 

@@ -10,24 +10,28 @@ import org.junit.Test;
 
 
 public class AspectBundlingTest extends SpecTest {
-	private App app = brjs.app("app1");
-	private Aspect aspect = app.aspect("default");
-	private Blade blade = app.bladeset("bs").blade("b1");
+	private App app;
+	private Aspect aspect;
+	private Blade blade;
+	private String response;
 	
 	private String CLASS_BUNDLED_MESSAGE = "class bundled"; /* TODO: once Bundler is moved into brjs-core static log messages will be on the relevant object */
 	
 	@Before
-	public void setUp() throws Exception
+	public void initTestObjects() throws Exception
 	{
-		given(app).hasBeenCreated();
+		given(brjs).hasBeenCreated();
+			app = brjs.app("app1");
+			aspect = app.aspect("default");
+			blade = app.bladeset("bs").blade("b1");
 	}
 	
-	@Ignore
 	@Test
 	public void weBundleAClassIfItIsReferredToInTheAspectIndexPage() throws Exception {
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1");
-		then(aspect).bundledFilesEquals(blade.src().file("novox/Class1.js"));
+		when(app).requestReceived("js/js.bundle", response);
+		then(response).containsText("novox.Class1 = function()");
 	}
 	
 	@Ignore
