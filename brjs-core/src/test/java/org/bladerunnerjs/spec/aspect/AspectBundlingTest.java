@@ -30,7 +30,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void weBundleAClassIfItIsReferredToInTheAspectIndexPage() throws Exception {
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1");
-		when(app).requestReceived("js/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/js.bundle", response);
 		then(response).containsText("novox.Class1 = function()");
 	}
 	

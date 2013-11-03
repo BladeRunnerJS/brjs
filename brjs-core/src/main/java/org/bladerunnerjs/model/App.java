@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.core.log.Logger;
@@ -16,8 +17,12 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.model.utility.FileUtility;
+import org.bladerunnerjs.model.utility.LogicalRequestHandler;
 import org.bladerunnerjs.model.utility.NameValidator;
 
 
@@ -31,6 +36,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private final NodeMap<Bladeset> bladesets = Bladeset.createNodeSet();
 	private final NodeMap<Aspect> aspects = Aspect.createNodeSet();
 	private final NodeMap<JsLib> jsLibs = JsLib.createAppNodeSet();
+	private final LogicalRequestHandler requestHandler = new LogicalRequestHandler(this);
 	
 	private String name;
 	private AppConf appConf;
@@ -178,5 +184,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 		} catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public void handleLogicalRequest(BladerunnerUri requestUri, java.io.OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
+		requestHandler.handle(requestUri, os);
 	}
 }

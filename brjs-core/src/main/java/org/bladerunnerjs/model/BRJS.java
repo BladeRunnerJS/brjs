@@ -29,11 +29,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.utility.CommandRunner;
-import org.bladerunnerjs.model.utility.LogicalRequestHandler;
 import org.bladerunnerjs.model.utility.UserCommandRunner;
 import org.bladerunnerjs.model.utility.VersionInfo;
 
@@ -64,7 +60,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> testResults = new NodeItem<>(DirNode.class, "sdk/test-results");
 	
 	private final Logger logger;
-	private final LogicalRequestHandler requestHandler = new LogicalRequestHandler(this);
 	private final CommandList commandList;
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
@@ -263,10 +258,6 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		return testRunnerConf;
-	}
-	
-	public void handleLogicalRequest(BladerunnerUri requestUri, java.io.OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
-		requestHandler.handle(requestUri, os);
 	}
 	
 	public CommandList commandList()

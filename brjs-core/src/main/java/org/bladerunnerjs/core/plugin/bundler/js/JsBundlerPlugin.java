@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
+import org.bladerunnerjs.core.plugin.bundlesource.js.CaplinJsBundleSourcePlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedRequest;
@@ -24,12 +25,16 @@ import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 public class JsBundlerPlugin implements BundlerPlugin {
 	private final RequestParser requestParser;
-	private List<BundleSourcePlugin> bundleSourcePlugins;
+	private List<BundleSourcePlugin> bundleSourcePlugins = new ArrayList<>();
 	private BRJS brjs;
 	
 	{
+		// TODO: switch to using automatically discovered bundle-source plugins from BRJS
+		bundleSourcePlugins.add(new CaplinJsBundleSourcePlugin());
+		//bundleSourcePlugins.add(new NodeJsBundleSourcePlugin());
+		
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
-		requestParserBuilder.accepts("js/bundle.js").as("bundle-request")
+		requestParserBuilder.accepts("js/js.bundle").as("bundle-request")
 			.and("js/module/<module>.js").as("single-module-request");
 		
 		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {

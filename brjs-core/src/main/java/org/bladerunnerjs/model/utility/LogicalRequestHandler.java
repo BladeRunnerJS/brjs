@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.core.plugin.bundler.js.JsBundlerPlugin;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedRequest;
@@ -18,16 +19,19 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 public class LogicalRequestHandler {
 	private Map<String, BundlerPlugin> bundlers = new HashMap<>();
-	private final BRJS brjs;
+	private App app;
 	
-	public LogicalRequestHandler(BRJS brjs) {
-		this.brjs = brjs;
+	public LogicalRequestHandler(App app) {
+		this.app = app;
+		
+		// TODO: make the automatically discovered bundler plugins available from BRJS
+		bundlers.put("js", new JsBundlerPlugin());
 	}
-
+	
 	public void handle(BladerunnerUri requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
 		try {
-			File baseDir = new File(brjs.dir(), requestUri.scopePath);
-			BundlableNode bundlableNode = brjs.locateFirstBundlableAncestorNode(baseDir);
+			File baseDir = new File(app.dir(), requestUri.scopePath);
+			BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
 			
 			if(bundlableNode == null) {
 				throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
@@ -49,6 +53,6 @@ public class LogicalRequestHandler {
 	
 	// TODO: move this method within RequestParser
 	private String getResourceBundlerName(BladerunnerUri requestUri) {
-		return requestUri.logicalPath.substring(requestUri.logicalPath.indexOf('/'));
+		return requestUri.logicalPath.substring(requestUri.logicalPath.indexOf('/') + 1).replaceAll("\\.bundle$", "");
 	}
 }
