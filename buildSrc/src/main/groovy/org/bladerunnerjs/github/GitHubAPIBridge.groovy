@@ -138,7 +138,7 @@ class GitHubAPIBridge
 	}
 	
 	
-	private Object doRequest(String httpMethod, String restUrl, String queryString, Object contentType, Object body)
+	private Object doRequest(String httpMethod, String restUrl, String queryString, Object contentType, Object requestBody)
 	{
 		try {
 			logger.quiet "making GitHub API ${httpMethod.toUpperCase()} request for '${restUrl}', query string is '${queryString}, body is '${body.toString()}'"
@@ -154,7 +154,8 @@ class GitHubAPIBridge
     				'Accept': 'application/vnd.github.manifold-preview'
     			],
     			path: restUrl,
-    			queryString : queryString
+    			queryString : queryString,
+				body: requestBody
     		)
     		logger.debug "GitHub response was: ${response.data.toString()}"
     		return response
