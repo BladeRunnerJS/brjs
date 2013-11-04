@@ -47,7 +47,6 @@ public class RequestParser
 	
 	public ParsedRequest parse(String request) throws MalformedRequestException
 	{
-		ParsedRequest parsedRequest = new ParsedRequest();
 		int lastMatchPos = 0;
 		
 		for (String requestFormName : requestFormPatterns.keySet())
@@ -59,6 +58,7 @@ public class RequestParser
 			{
 				if ((requestMatcher.start() == 0) && (requestMatcher.end() == request.length()))
 				{
+					ParsedRequest parsedRequest = new ParsedRequest(requestFormName);
 					List<String> tokens = requestFormTokens.get(requestFormName);
 
 					for (int gi = 0; gi < requestMatcher.groupCount() && gi < tokens.size(); ++gi)
