@@ -37,131 +37,73 @@ class GitHubAPIBridge
 	
 	List<Issue> getClosedIssuesForMilestone(int milestoneID, List<String> includeIssueLabels)
 	{
-		try {
-			String restUrl = getRestUrl('issues')
-			String restQueryString = 'milestone='+milestoneID+'&state=closed&per_page=100'
-			
-			logger.quiet "getting closed issues for milestoneID ${milestoneID}"
-			logger.quiet " - making GitHub API 'GET' request for '${restUrl}' with query string '${restQueryString}"
-			
-			def response = new RESTClient( apiPrefix ).get( 
-				uri: apiPrefix,
-				requestContentType: URLENC,
-				headers: [
-					'Authorization': "token ${authToken}",
-					'Accept': 'application/vnd.github.manifold-preview'
-				],
-				path: restUrl,
-				queryString : restQueryString
-			)
-			logger.debug " - GitHub response was: ${response.data.toString()}"
-			
-			List<Issue> issues = new ArrayList<Issue>();
-			response.data.each {
-				Issue issue = new Issue(it.html_url, it.id, it.title)
-				boolean addIssue = false
-				it.labels.each {
-					if (includeIssueLabels.contains(it.name))
-					{
-						addIssue = true
-						return
-					}
-				}
-				if (addIssue)
+		String restUrl = getRestUrl('issues')
+		String restQueryString = 'milestone='+milestoneID+'&state=closed&per_page=100'
+		
+		logger.quiet "getting closed issues for milestoneID ${milestoneID}"
+		
+		def response = doRequest("get", restUrl, restQueryString, URLENC, null)
+		
+		List<Issue> issues = new ArrayList<Issue>();
+		response.data.each {
+			Issue issue = new Issue(it.html_url, it.id, it.title)
+			boolean addIssue = false
+			it.labels.each {
+				if (includeIssueLabels.contains(it.name))
 				{
-    				issues.add( issue )
-    				logger.info " - creating Issue object:  ${issue.toString()}"
-				}
-				else
-				{
-					logger.info " - ignoring Issue:  ${issue.toString()}"
+					addIssue = true
+					return
 				}
 			}
-			logger.quiet " - got ${issues.size()} issues back from GitHub"
-			
-			return issues
+			if (addIssue)
+			{
+				issues.add( issue )
+				logger.info "creating Issue object:  ${issue.toString()}"
+			}
+			else
+			{
+				logger.info "ignoring Issue:  ${issue.toString()}"
+			}
 		}
-		catch( ex ) { 
-			if (ex.hasProperty("response")) { logger.error "error getting milestones, response data was: '${ex.response.data}'" }
-			throw ex
-		}
+		logger.quiet "got ${issues.size()} issues matching label filters back from GitHub"
+		
+		return issues
 	}
 	
 	Release createReleaseForTag(String tagVersion, HashMap releaseJson, String releaseDescription)
 	{	
-		try {
-			logger.quiet "creating/editting release for tag ${tagVersion}"
-			
-			String httpMethod = "post"
-			String httpUrl = 'releases'
-			int releaseId = getIdForExistingRelease(tagVersion)
-			if (releaseId >= 0) {
-				 httpMethod = "patch"
-				 httpUrl += '/'+releaseId
-			}
-			String restUrl = getRestUrl(httpUrl)
-			
-			logger.quiet " - making GitHub API '${httpMethod.toUpperCase()}' request for ${restUrl}"
-			
-			def bodyData = [
-				tag_name: tagVersion,
-				name: releaseJson.name,
-				body: releaseDescription,
-				prerelease: releaseJson.prerelease
-			] 
-			logger.info " - request body data is ${bodyData.toString()}"
-			
-			def response = new RESTClient( apiPrefix )."${httpMethod}"(
-				uri: apiPrefix,
-				path: getRestUrl(httpUrl),
-				requestContentType: JSON,
-				headers: [
-					'Authorization': "token ${authToken}",
-					'Accept': 'application/vnd.github.manifold-preview'
-				],
-				body: bodyData
-			)
-			logger.debug " - GitHub response was: ${response.data.toString()}"
-			
-			def jsonData = response.data
-			
-			Release release = new Release(jsonData.url, jsonData.upload_url, jsonData.id, jsonData.name, jsonData.tag_name)
-			logger.quiet " - created/editted ${release.toString()}"
-			return release
+		logger.quiet "creating/editting release for tag ${tagVersion}"
+		
+		String httpMethod = "post"
+		String httpUrl = 'releases'
+		int releaseId = getIdForExistingRelease(tagVersion)
+		if (releaseId >= 0) {
+			 httpMethod = "patch"
+			 httpUrl += '/'+releaseId
 		}
-		catch( ex ) {
-			if (ex.hasProperty("response")) { logger.error "error creating release, response data was: '${ex.response.data}'" }
-			throw ex
-		}
+		String restUrl = getRestUrl(httpUrl)
+		
+		def response = doRequest(httpMethod, restUrl, null, JSON, [
+            tag_name: tagVersion,
+            name: releaseJson.name,
+            body: releaseDescription,
+            prerelease: releaseJson.prerelease
+        ] )
+		
+		def jsonData = response.data
+		
+		Release release = new Release(jsonData.url, jsonData.upload_url, jsonData.id, jsonData.name, jsonData.tag_name)
+		logger.quiet "created/editted release '${release.toString()}'"
+		return release
 	}
 	
 	void uploadAssetForRelease(File brjsZip, Release release)
 	{
-		try {
-			logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
-			
-			String restUrl = release.getAssetUrl(brjsZip)
-			logger.quiet " - making GitHub API 'POST' request for '${restUrl}'"
-			
-			def restClient = new RESTClient( apiPrefix )
-			restClient.encoder.'application/zip' = this.&encodeZipFile
-			def response = restClient.post( 
-				uri: apiPrefix,
-				requestContentType: 'application/zip',
-				headers: [
-					'Authorization': "token ${authToken}",
-					'Accept': 'application/vnd.github.manifold-preview'
-				],
-				path: restUrl,
-				body: brjsZip
-			)
-			logger.debug " - GitHub response was: ${response.data.toString()}"
-			logger.quiet " - successfully added release asset"
-		}
-		catch( ex ) { 
-			if (ex.hasProperty("response")) { logger.error "error adding release asset, response data was: '${ex.response.data}'" }
-			throw ex
-		}
+		logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
+		
+		String restUrl = release.getAssetUrl(brjsZip)
+		def response = doRequest("post", restUrl, null, "application/zip", brjsZip )
+		logger.quiet "successfully added release asset, ${brjsZip.toString()}"
 	}
 
 	private String getRestUrl(String suffix)
@@ -171,44 +113,56 @@ class GitHubAPIBridge
 	
 	private int getIdForExistingRelease(String tagVersion)
 	{
+		String restUrl = getRestUrl('releases')
+		logger.quiet "checking if release for tag ${tagVersion} already exists"			
+		
+		def response = doRequest("get", restUrl, null, URLENC, null )
+		
+		int releaseId = -1
+		response.data.each {
+			if (it.tag_name.equals(tagVersion))
+			{
+				releaseId = it.id
+			}
+		}
+		if (releaseId >= 0)
+		{
+			logger.quiet "release for tag ${tagVersion}, already exists, ID is ${releaseId}"
+		}
+		else 
+		{
+			logger.quiet "no release exists for tag ${tagVersion}"
+		}
+		
+		return releaseId
+	}
+	
+	
+	private Object doRequest(String httpMethod, String restUrl, String queryString, Object contentType, Object body)
+	{
 		try {
-			String restUrl = getRestUrl('releases')
-			logger.quiet "checking if release for tag ${tagVersion} already exists"
-			logger.quiet " - making GitHub API GET request for ${restUrl}"
+			logger.quiet "making GitHub API ${httpMethod.toUpperCase()} request for '${restUrl}', query string is '${queryString}, body is '${body.toString()}'"
+    		
+			def restClient = new RESTClient( apiPrefix )
+			restClient.encoder.'application/zip' = this.&encodeZipFile
 			
-			def response = new RESTClient( apiPrefix ).get(
-				uri: apiPrefix,
-				requestContentType: URLENC,
-				headers: [
-					'Authorization': "token ${authToken}",
-					'Accept': 'application/vnd.github.manifold-preview'
-				],
-				path: getRestUrl('releases')
-			)
-			logger.debug " - GitHub response was: ${response.data.toString()}"
-			
-			int releaseId = -1
-			response.data.each {
-				if (it.tag_name.equals(tagVersion))
-				{
-					releaseId = it.id
-				}
-			}
-			if (releaseId >= 0)
-			{
-				logger.quiet " - release for tag ${tagVersion}, already exists, ID is ${releaseId}"
-			}
-			else 
-			{
-				logger.quiet " - no release exists for tag ${tagVersion}"
-			}
-			
-			return releaseId
-		}
-		catch( ex ) {
-			if (ex.hasProperty("response")) { logger.error "error getting releases list, response data was: '${ex.response.data}'" }
-			throw ex
-		}
+			def response = restClient."${httpMethod}"(
+    			uri: apiPrefix,
+    			requestContentType: contentType,
+    			headers: [
+    				'Authorization': "token ${authToken}",
+    				'Accept': 'application/vnd.github.manifold-preview'
+    			],
+    			path: restUrl,
+    			queryString : queryString
+    		)
+    		logger.debug "GitHub response was: ${response.data.toString()}"
+    		return response
+    	}
+    	catch( ex ) {
+    		if (ex.hasProperty("response")) { logger.error "error making request, response data was: '${ex.response.data}'" }
+    		throw ex
+    	}
 	}
 	
 	
