@@ -18,16 +18,12 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
 	private final NodeMap<Theme> themes = Theme.createNodeSet();
-	private final CompositeFileSet<LinkedAssetFile> seedFileSet = new CompositeFileSet<LinkedAssetFile>();
-
+	private CompositeFileSet<LinkedAssetFile> seedFileSet;
+	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, dir);
 		init(rootNode, parent, dir);
-		
-		for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSources()) {
-			seedFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSeedFileSet(this));
-		}
 	}
 
 	public DirNode styleResources()
@@ -52,7 +48,15 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	}
 	
 	@Override
-	public List<LinkedAssetFile> getSeedFiles() {
+	public List<LinkedAssetFile> seedFiles() {
+		if(seedFileSet == null) {
+			seedFileSet = new CompositeFileSet<LinkedAssetFile>();
+			
+			for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSourcePlugins()) {
+				seedFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSeedFileSet(this));
+			}
+		}
+		
 		return seedFileSet.getFiles();
 	}
 	

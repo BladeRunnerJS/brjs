@@ -2,11 +2,8 @@ package org.bladerunnerjs.model.utility;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundler.js.JsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
@@ -18,16 +15,10 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 
 public class LogicalRequestHandler {
-	private Map<String, BundlerPlugin> bundlers = new HashMap<>();
 	private App app;
 	
 	public LogicalRequestHandler(App app) {
 		this.app = app;
-		
-		// TODO: make the automatically discovered bundler plugins available from BRJS
-		BundlerPlugin jsBundlerPlugin = new JsBundlerPlugin();
-		jsBundlerPlugin.setBRJS(app.root());
-		bundlers.put("js", jsBundlerPlugin);
 	}
 	
 	public void handle(BladerunnerUri requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
@@ -40,7 +31,7 @@ public class LogicalRequestHandler {
 			}
 			else {
 				// TODO: should be brjs.bundler(bundlerName)
-				BundlerPlugin bundler = bundlers.get(getResourceBundlerName(requestUri));
+				BundlerPlugin bundler = app.root().bundler(getResourceBundlerName(requestUri));
 				ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri.logicalPath);
 				
 				// we're currently de-encapsulating the request parser within the bundler since this would allow bundlers

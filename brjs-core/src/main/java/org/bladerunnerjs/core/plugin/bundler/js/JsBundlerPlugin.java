@@ -11,7 +11,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.js.CaplinJsBundleSourcePlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedRequest;
@@ -24,32 +23,22 @@ import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 
 public class JsBundlerPlugin implements BundlerPlugin {
-	private final RequestParser requestParser;
-	private List<BundleSourcePlugin> bundleSourcePlugins = new ArrayList<>();
+	private RequestParser requestParser;
 	private BRJS brjs;
-	
-	{
-		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
-		requestParserBuilder.accepts("js/js.bundle").as("bundle-request")
-			.and("js/module/<module>.js").as("single-module-request");
-		
-		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
-			bundleSourcePlugin.configureRequestParser(requestParserBuilder);
-		}
-		
-		requestParser = requestParserBuilder.build();
-	}
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
 		
-		// TODO: switch to using automatically discovered bundle-source plugins from BRJS
-		BundleSourcePlugin caplinJsBundleSourcePlugin = new CaplinJsBundleSourcePlugin();
-		caplinJsBundleSourcePlugin.setBRJS(brjs);
-		bundleSourcePlugins.add(caplinJsBundleSourcePlugin);
-		// TODO
-		//bundleSourcePlugins.add(nodeJsBundleSourcePlugin);
+		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
+		requestParserBuilder.accepts("js/js.bundle").as("bundle-request")
+			.and("js/module/<module>.js").as("single-module-request");
+		
+		for(BundleSourcePlugin bundleSourcePlugin : brjs.bundleSourcePlugins()) {
+			bundleSourcePlugin.configureRequestParser(requestParserBuilder);
+		}
+		
+		requestParser = requestParserBuilder.build();
 	}
 	
 	@Override
@@ -86,7 +75,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	public List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+		for(BundleSourcePlugin bundleSourcePlugin : brjs.bundleSourcePlugins()) {
 			requestPaths.addAll(bundleSourcePlugin.generateRequiredDevRequestPaths(bundleSet, locale));
 		}
 		
@@ -98,7 +87,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 		List<String> requestPaths = new ArrayList<>();
 		requestPaths.add(requestParser.createRequest("bundle-request"));
 		
-		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+		for(BundleSourcePlugin bundleSourcePlugin : brjs.bundleSourcePlugins()) {
 			requestPaths.addAll(bundleSourcePlugin.generateRequiredProdRequestPaths(bundleSet, locale));
 		}
 		
@@ -133,7 +122,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	private BundleSourcePlugin getBundleSourcePluginForRequest(ParsedRequest request) throws BundlerProcessingException {
-		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+		for(BundleSourcePlugin bundleSourcePlugin : brjs.bundleSourcePlugins()) {
 			if(bundleSourcePlugin.handlesRequestForm(request.formName)) {
 				return bundleSourcePlugin;
 			}
@@ -143,7 +132,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	private void writeTagContent(BundleSet bundleSet, List<String> bundlerRequestPaths, Writer writer) throws IOException {
-		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+		for(BundleSourcePlugin bundleSourcePlugin : brjs.bundleSourcePlugins()) {
 			bundleSourcePlugin.getTagAppender().writePreTagContent(bundleSet, writer);
 		}
 		
@@ -151,7 +140,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 			writer.write("<script type='text/javascript' src='" + bundlerRequestPath + "'></script>\n");
 		}
 		
-		for(BundleSourcePlugin bundleSourcePlugin : bundleSourcePlugins) {
+		for(BundleSourcePlugin bundleSourcePlugin : brjs.bundleSourcePlugins()) {
 			bundleSourcePlugin.getTagAppender().writePostTagContent(bundleSet, writer);
 		}
 	}

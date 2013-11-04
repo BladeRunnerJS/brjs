@@ -23,7 +23,7 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	private final NodeItem<DirNode> unbundledResources = new NodeItem<>(DirNode.class, "unbundled-resources");
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
 	private final NodeMap<Theme> themes = Theme.createNodeSet();
-	private final CompositeFileSet<LinkedAssetFile> seedFileSet = new CompositeFileSet<LinkedAssetFile>();
+	private CompositeFileSet<LinkedAssetFile> seedFileSet;
 	private String name;
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
@@ -31,10 +31,6 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 		super(rootNode, dir);
 		this.name = name;
 		init(rootNode, parent, dir);
-		
-		for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSources()) {
-			seedFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSeedFileSet(this));
-		}
 	}
 	
 	public static NodeMap<Aspect> createNodeSet()
@@ -79,7 +75,15 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	}
 	
 	@Override
-	public List<LinkedAssetFile> getSeedFiles() {
+	public List<LinkedAssetFile> seedFiles() {
+		if(seedFileSet == null) {
+			seedFileSet = new CompositeFileSet<LinkedAssetFile>();
+			
+			for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSourcePlugins()) {
+				seedFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSeedFileSet(this));
+			}
+		}
+		
 		return seedFileSet.getFiles();
 	}
 	

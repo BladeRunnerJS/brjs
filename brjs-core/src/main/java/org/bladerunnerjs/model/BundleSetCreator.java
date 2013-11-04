@@ -7,7 +7,7 @@ public class BundleSetCreator {
 	public static BundleSet createBundleSet(BundlableNode bundlableNode) throws ModelOperationException {
 		BundleSetBuilder bundleSetBuilder = new BundleSetBuilder(bundlableNode);
 		
-		for(LinkedAssetFile seedFile : bundlableNode.getSeedFiles()) {
+		for(LinkedAssetFile seedFile : bundlableNode.seedFiles()) {
 			bundleSetBuilder.addSeedFile(seedFile);
 			processSeedFile(seedFile, bundleSetBuilder);
 		}

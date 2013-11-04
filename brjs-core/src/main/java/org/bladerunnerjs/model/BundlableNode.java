@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.file.AliasesFile;
 public interface BundlableNode extends Node, SourceLocation {
 	AliasesFile aliases();
 	SourceFile getSourceFile(String requirePath) throws AmbiguousRequirePathException;
-	List<LinkedAssetFile> getSeedFiles();
+	List<LinkedAssetFile> seedFiles();
 	List<SourceLocation> getSourceLocations();
 	BundleSet getBundleSet() throws ModelOperationException;
 }
