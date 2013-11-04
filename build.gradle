@@ -170,11 +170,11 @@ task generateReleaseNotes, {
 		def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
     	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
 		
-		
 		def releaseNoteFile = file("releases/${tagVersion}.md")
 		def milestoneId = getReleaseNoteJson(project,tagVersion).milestone
+		def includeIssueLabels = ["bug", "feature", "enhancement"]
 		
-		List<Issue> issues = githubApi.getClosedIssuesForMilestone(milestoneId);
+		List<Issue> issues = githubApi.getClosedIssuesForMilestone(milestoneId, includeIssueLabels);
 		
 		assembledReleaseNotesFile.parentFile.mkdirs()
 		assembledReleaseNotesFile.createNewFile()

@@ -34,8 +34,8 @@ class GitHubAPIBridge
 		this.repo = repo
 		this.authToken = authToken
 	}
-
-	List<Issue> getClosedIssuesForMilestone(int milestoneID)
+	
+	List<Issue> getClosedIssuesForMilestone(int milestoneID, List<String> includeIssueLabels)
 	{
 		try {
 			String restUrl = getRestUrl('issues')
@@ -59,8 +59,23 @@ class GitHubAPIBridge
 			List<Issue> issues = new ArrayList<Issue>();
 			response.data.each {
 				Issue issue = new Issue(it.html_url, it.id, it.title)
-				issues.add( issue )
-				logger.info " - creating Issue object:  ${issue.toString()}"
+				boolean addIssue = false
+				it.labels.each {
+					if (includeIssueLabels.contains(it.name))
+					{
+						addIssue = true
+						return
+					}
+				}
+				if (addIssue)
+				{
+    				issues.add( issue )
+    				logger.info " - creating Issue object:  ${issue.toString()}"
+				}
+				else
+				{
+					logger.info " - ignoring Issue:  ${issue.toString()}"
+				}
 			}
 			logger.quiet " - got ${issues.size()} issues back from GitHub"
 			
