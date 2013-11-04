@@ -64,10 +64,10 @@ public class AppCommander extends NodeCommander<App> {
 		return commanderChainer;
 	}
 	
-	public void requestReceived(String requestPath, String response) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException, UnsupportedEncodingException {
+	public void requestReceived(String requestPath, StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException, UnsupportedEncodingException {
 		BladerunnerUri uri = new BladerunnerUri(app.root(), app.dir(), "/app", requestPath, null);
 		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
 		app.handleLogicalRequest(uri, responseOutput);
-		response = responseOutput.toString("UTF-8");
+		response.append(responseOutput.toString("UTF-8"));
 	}
 }

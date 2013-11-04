@@ -13,7 +13,7 @@ public class AspectBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private Blade blade;
-	private String response;
+	private StringBuffer response = new StringBuffer();
 	
 	private String CLASS_BUNDLED_MESSAGE = "class bundled"; /* TODO: once Bundler is moved into brjs-core static log messages will be on the relevant object */
 	

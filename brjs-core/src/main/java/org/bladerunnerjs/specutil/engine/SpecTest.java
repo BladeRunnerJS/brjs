@@ -140,8 +140,8 @@ public abstract class SpecTest
 	
 	public DirectoryVerifier then(File dir) { return new DirectoryVerifier(this, dir); }
 	
-	// String
-	public StringVerifier then(String string) { return new StringVerifier(this, string); }
+	// StringBuffer
+	public StringVerifier then(StringBuffer stringBuffer) { return new StringVerifier(this, stringBuffer); }
 	
 	// BRJS
 	public BRJSBuilder given(BRJS brjs) { return new BRJSBuilder(this, brjs); }
