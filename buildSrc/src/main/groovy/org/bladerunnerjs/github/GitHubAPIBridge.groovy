@@ -20,7 +20,8 @@ import static groovyx.net.http.ContentType.JSON
 class GitHubAPIBridge
 {
 	
-	static apiPrefix = "https://api.github.com"
+	static final apiPrefix = "https://api.github.com"
+	static final uploadsPrefix = "https://uploads.github.com"
 	
 	Logger logger
 	String repoOwner
@@ -39,7 +40,7 @@ class GitHubAPIBridge
 	{
 		logger.quiet "getting closed issues for milestoneID ${milestoneID}"
 		
-		def response = doRequest("get", getRestUrl('issues'), 'milestone='+milestoneID+'&state=closed&per_page=100', URLENC, null)
+		def response = doRequest(apiPrefix, "get", getRestUrl('issues'), 'milestone='+milestoneID+'&state=closed&per_page=100', URLENC, null)
 		
 		List<Issue> issues = new ArrayList<Issue>();
 		response.data.each {
@@ -80,7 +81,7 @@ class GitHubAPIBridge
 		}
 		String restUrl = getRestUrl(httpUrl)
 		
-		def response = doRequest(httpMethod, restUrl, null, JSON, [
+		def response = doRequest(apiPrefix, httpMethod, restUrl, null, JSON, [
             tag_name: tagVersion,
             name: releaseJson.name,
             body: releaseDescription,
@@ -98,7 +99,7 @@ class GitHubAPIBridge
 	{
 		logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
 		
-		def response = doRequest("post", release.upload_url, "name=${brjsZip.name}", "application/zip", brjsZip )
+		def response = doRequest(uploadsPrefix, "post", release.upload_url, "name=${brjsZip.name}", "application/zip", brjsZip )
 		logger.quiet "successfully added release asset, ${brjsZip.toString()}"
 	}
 
@@ -111,7 +112,7 @@ class GitHubAPIBridge
 	{ 
 		logger.quiet "checking if release for tag ${tagVersion} already exists"			
 		
-		def response = doRequest("get", getRestUrl('releases'), null, URLENC, null )
+		def response = doRequest(apiPrefix, "get", getRestUrl('releases'), null, URLENC, null )
 		
 		int releaseId = -1
 		response.data.each {
@@ -133,16 +134,16 @@ class GitHubAPIBridge
 	}
 	
 	
-	private Object doRequest(String httpMethod, String restUrl, String queryString, Object contentType, Object requestBody)
+	private Object doRequest(String requestPrefix, String httpMethod, String restUrl, String queryString, Object contentType, Object requestBody)
 	{
 		try {
 			logger.quiet "making GitHub API ${httpMethod.toUpperCase()} request for '${restUrl}', query string is '${queryString}, body is '${requestBody.toString()}'"
     		
-			def restClient = new RESTClient( apiPrefix )
+			def restClient = new RESTClient( requestPrefix )
 			restClient.encoder.'application/zip' = this.&encodeZipFile
 			
 			def response = restClient."${httpMethod}"(
-    			uri: apiPrefix,
+    			uri: requestPrefix,
     			requestContentType: contentType,
     			headers: [
     				'Authorization': "token ${authToken}",
