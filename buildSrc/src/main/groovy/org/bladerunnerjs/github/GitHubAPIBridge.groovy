@@ -141,7 +141,7 @@ class GitHubAPIBridge
 	private Object doRequest(String httpMethod, String restUrl, String queryString, Object contentType, Object requestBody)
 	{
 		try {
-			logger.quiet "making GitHub API ${httpMethod.toUpperCase()} request for '${restUrl}', query string is '${queryString}, body is '${body.toString()}'"
+			logger.quiet "making GitHub API ${httpMethod.toUpperCase()} request for '${restUrl}', query string is '${queryString}, body is '${requestBody.toString()}'"
     		
 			def restClient = new RESTClient( apiPrefix )
 			restClient.encoder.'application/zip' = this.&encodeZipFile
