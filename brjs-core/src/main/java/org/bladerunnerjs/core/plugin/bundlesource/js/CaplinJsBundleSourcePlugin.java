@@ -86,7 +86,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 	
 	private class CaplinJsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
 		@Override
-		public FileSet<LinkedAssetFile> getSeedFileSet(Resources resources) {
+		public FileSet<LinkedAssetFile> getLinkedResourceFileSet(Resources resources) {
 			return new NullFileSet<LinkedAssetFile>();
 		}
 		

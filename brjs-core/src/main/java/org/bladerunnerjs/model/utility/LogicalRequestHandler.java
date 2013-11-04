@@ -30,7 +30,6 @@ public class LogicalRequestHandler {
 				throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
 			}
 			else {
-				// TODO: should be brjs.bundler(bundlerName)
 				BundlerPlugin bundler = app.root().bundler(getResourceBundlerName(requestUri));
 				ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri.logicalPath);
 				

@@ -86,7 +86,7 @@ public class NodeJsBundleSourcePlugin implements BundleSourcePlugin {
 	
 	private class NodeJsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
 		@Override
-		public FileSet<LinkedAssetFile> getSeedFileSet(Resources resources) {
+		public FileSet<LinkedAssetFile> getLinkedResourceFileSet(Resources resources) {
 			return new NullFileSet<LinkedAssetFile>();
 		}
 		

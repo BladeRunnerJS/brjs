@@ -86,19 +86,19 @@ boolean containsClassReferences()</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>253.0</double>
+      <double>254.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>497.0</double>
+      <double>510.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>253.0</double>
-     <double>497.0</double>
+     <double>254.0</double>
+     <double>510.0</double>
     </void>
    </object>
   </void>

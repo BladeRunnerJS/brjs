@@ -9,19 +9,19 @@ public class BundleSetCreator {
 		
 		for(LinkedAssetFile seedFile : bundlableNode.seedFiles()) {
 			bundleSetBuilder.addSeedFile(seedFile);
-			processSeedFile(seedFile, bundleSetBuilder);
+			processFile(seedFile, bundleSetBuilder);
 		}
 		
 		return bundleSetBuilder.createBundleSet();
 	}
 	
-	private static void processSeedFile(LinkedAssetFile seedFile, BundleSetBuilder bundleSetBuilder) throws ModelOperationException {
-		for(SourceFile sourceFile : seedFile.getDependentSourceFiles()) {
+	private static void processFile(LinkedAssetFile file, BundleSetBuilder bundleSetBuilder) throws ModelOperationException {
+		for(SourceFile sourceFile : file.getDependentSourceFiles()) {
 			if(bundleSetBuilder.addSourceFile(sourceFile)) {
-				processSeedFile(sourceFile, bundleSetBuilder);
+				processFile(sourceFile, bundleSetBuilder);
 				
 				for(LinkedAssetFile resourceSeedFile : sourceFile.getResources().seedResources()) {
-					processSeedFile(resourceSeedFile, bundleSetBuilder);
+					processFile(resourceSeedFile, bundleSetBuilder);
 				}
 			}
 		}

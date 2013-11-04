@@ -105,6 +105,7 @@ public class JsBundlerPlugin implements BundlerPlugin {
 			}
 			else if(request.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+					// TODO: this code needs to live in the bundle-source again, since TypeScript wouldn't want to bundle it source files here
 					for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
 						writer.write("// " + sourceFile.getRequirePath() + "\n");
 						IOUtils.copy(sourceFile.getReader(), writer);

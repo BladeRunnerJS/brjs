@@ -27,7 +27,8 @@ public abstract class AbstractBundlableNode extends AbstractSourceLocation imple
 			seedFileSet.addFileSet(getSeedFileSet());
 			
 			for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSourcePlugins()) {
-				seedFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSeedFileSet(this.getResources(null)));
+				// TODO: ???
+				seedFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getLinkedResourceFileSet(this.getResources(null)));
 			}
 		}
 		
