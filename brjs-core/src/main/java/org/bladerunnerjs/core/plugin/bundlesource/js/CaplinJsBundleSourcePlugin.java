@@ -8,7 +8,6 @@ import org.bladerunnerjs.core.plugin.bundlesource.BundleSourceFileSetFactory;
 import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.FileSet;
 import org.bladerunnerjs.model.FileSetFactory;
@@ -16,6 +15,7 @@ import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.NullFileSet;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.Resources;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.SourceLocation;
 import org.bladerunnerjs.model.StandardFileSet;
@@ -86,7 +86,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 	
 	private class CaplinJsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
 		@Override
-		public FileSet<LinkedAssetFile> getSeedFileSet(BundlableNode bundlableNode) {
+		public FileSet<LinkedAssetFile> getSeedFileSet(Resources resources) {
 			return new NullFileSet<LinkedAssetFile>();
 		}
 		
@@ -96,7 +96,7 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 		}
 		
 		@Override
-		public FileSet<AssetFile> getResourceFileSet(SourceLocation sourceLocation) {
+		public FileSet<AssetFile> getResourceFileSet(Resources resources) {
 			return new NullFileSet<AssetFile>();
 		}
 	}

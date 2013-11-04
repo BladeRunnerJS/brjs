@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
@@ -18,7 +17,6 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
 	private final NodeMap<Theme> themes = Theme.createNodeSet();
-	private CompositeFileSet<LinkedAssetFile> seedFileSet;
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
@@ -37,6 +35,11 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	}
 	
 	@Override
+	public FileSet<LinkedAssetFile> getSeedFileSet() {
+		return new StandardFileSet<LinkedAssetFile>(this, StandardFileSet.paths("index.html",  "index.jsp"), StandardFileSet.paths(), null);
+	}
+	
+	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
 	}
@@ -45,19 +48,6 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	public String getRequirePrefix() {
 		App app = parent().parent().parent();
 		return "/" + app.getNamespace();
-	}
-	
-	@Override
-	public List<LinkedAssetFile> seedFiles() {
-		if(seedFileSet == null) {
-			seedFileSet = new CompositeFileSet<LinkedAssetFile>();
-			
-			for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSourcePlugins()) {
-				seedFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSeedFileSet(this));
-			}
-		}
-		
-		return seedFileSet.getFiles();
 	}
 	
 	@Override

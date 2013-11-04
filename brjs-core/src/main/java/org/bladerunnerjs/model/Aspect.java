@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -23,7 +22,6 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	private final NodeItem<DirNode> unbundledResources = new NodeItem<>(DirNode.class, "unbundled-resources");
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
 	private final NodeMap<Theme> themes = Theme.createNodeSet();
-	private CompositeFileSet<LinkedAssetFile> seedFileSet;
 	private String name;
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
@@ -36,6 +34,11 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	public static NodeMap<Aspect> createNodeSet()
 	{
 		return new NodeMap<>(Aspect.class, null, "-aspect$");
+	}
+	
+	@Override
+	public FileSet<LinkedAssetFile> getSeedFileSet() {
+		return new StandardFileSet<LinkedAssetFile>(this, StandardFileSet.paths("index.html",  "index.jsp"), StandardFileSet.paths(), null);
 	}
 	
 	@Override
@@ -72,19 +75,6 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	public String getRequirePrefix() {
 		App app = parent();
 		return "/" + app.getNamespace();
-	}
-	
-	@Override
-	public List<LinkedAssetFile> seedFiles() {
-		if(seedFileSet == null) {
-			seedFileSet = new CompositeFileSet<LinkedAssetFile>();
-			
-			for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSourcePlugins()) {
-				seedFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSeedFileSet(this));
-			}
-		}
-		
-		return seedFileSet.getFiles();
 	}
 	
 	@Override

@@ -36,15 +36,13 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public String getRequirePrefix() {
-		return ((SourceLocation) parentNode()).getRequirePrefix();
+	public FileSet<LinkedAssetFile> getSeedFileSet() {
+		return new NullFileSet<>();
 	}
 	
 	@Override
-	public List<LinkedAssetFile> seedFiles()
-	{
-		// TODO
-		return null;
+	public String getRequirePrefix() {
+		return ((SourceLocation) parentNode()).getRequirePrefix();
 	}
 	
 	@Override
