@@ -37,12 +37,9 @@ class GitHubAPIBridge
 	
 	List<Issue> getClosedIssuesForMilestone(int milestoneID, List<String> includeIssueLabels)
 	{
-		String restUrl = getRestUrl('issues')
-		String restQueryString = 'milestone='+milestoneID+'&state=closed&per_page=100'
-		
 		logger.quiet "getting closed issues for milestoneID ${milestoneID}"
 		
-		def response = doRequest("get", restUrl, restQueryString, URLENC, null)
+		def response = doRequest("get", getRestUrl('issues'), 'milestone='+milestoneID+'&state=closed&per_page=100', URLENC, null)
 		
 		List<Issue> issues = new ArrayList<Issue>();
 		response.data.each {
@@ -101,8 +98,7 @@ class GitHubAPIBridge
 	{
 		logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
 		
-		String restUrl = release.getAssetUrl(brjsZip)
-		def response = doRequest("post", restUrl, null, "application/zip", brjsZip )
+		def response = doRequest("post", release.upload_url, "?name=${brjsZip.name}", "application/zip", brjsZip )
 		logger.quiet "successfully added release asset, ${brjsZip.toString()}"
 	}
 
@@ -112,11 +108,10 @@ class GitHubAPIBridge
 	}
 	
 	private int getIdForExistingRelease(String tagVersion)
-	{
-		String restUrl = getRestUrl('releases')
+	{ 
 		logger.quiet "checking if release for tag ${tagVersion} already exists"			
 		
-		def response = doRequest("get", restUrl, null, URLENC, null )
+		def response = doRequest("get", getRestUrl('releases'), null, URLENC, null )
 		
 		int releaseId = -1
 		response.data.each {
