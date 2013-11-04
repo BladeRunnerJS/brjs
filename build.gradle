@@ -150,15 +150,14 @@ def getProperty = { project, property ->
 def getGitHubToken = { project ->
 	return getProperty(project,"githubToken")
 }
-def getGitHubUsername = { project ->
-	return getProperty(project,"githubUsername")
+
+def getReleaseNoteJson = { project, tagVersion ->
+	def releaseDataFile = file("releases/${tagVersion}.json")
+	def releaseNoteJson = new groovy.json.JsonSlurper().parseText( releaseDataFile.text )
+	return releaseNoteJson
 }
 
-
 import org.bladerunnerjs.github.*
-
-def github = new GitHubAPIBridge("BladeRunnerJS", "brjs", getGitHubUsername(project), getGitHubToken(project))
-
 
 
 task generateReleaseNotes, {
@@ -167,15 +166,14 @@ task generateReleaseNotes, {
 	outputs.file assembledReleaseNotesFile
 	doFirst {
     	def gitHubToken = getGitHubToken(project)
+		def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
     	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
 		
-		def releaseDataFile = file("releases/${tagVersion}.json")
+		
 		def releaseNoteFile = file("releases/${tagVersion}.md")
+		def milestoneId = getReleaseNoteJson(project,tagVersion).milestone
 		
-		def releaseNoteJson = new groovy.json.JsonSlurper().parseText( releaseDataFile.text )
-		def milestoneId = releaseNoteJson.milestone
-		
-		List<Issue> issues = github.getClosedIssuesForMilestone(milestoneId);
+		List<Issue> issues = githubApi.getClosedIssuesForMilestone(milestoneId);
 		
 		assembledReleaseNotesFile.parentFile.mkdirs()
 		assembledReleaseNotesFile.createNewFile()
@@ -187,4 +185,14 @@ task generateReleaseNotes, {
 	}
 }
 
+task githubRelease, dependsOn:generateReleaseNotes, {
+	doFirst {
+    	def gitHubToken = getGitHubToken(project)
+    	def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
+    	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
+    	
+		def releaseNoteFile = generateReleaseNotes.outputs.files.singleFile
+    	Release release = githubApi.createReleaseForTag(tagVersion, getReleaseNoteJson(project,tagVersion), releaseNoteFile.text)
+	}
+}
 

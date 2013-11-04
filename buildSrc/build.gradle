@@ -5,6 +5,9 @@ apply plugin: 'idea'
 	
 repositories {
 	mavenCentral()
+	maven {
+		url "http://snapshots.repository.codehaus.org/"
+	}
 }	
 
 dependencies {
@@ -14,5 +17,5 @@ dependencies {
 	compile 'commons-io:commons-io:2.3'
 	compile 'org.apache.httpcomponents:httpclient:4.2.1'
 	compile 'org.apache.commons:commons-lang3:3.1'
-	compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.5+'
+	compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7-SNAPSHOT'
 }
