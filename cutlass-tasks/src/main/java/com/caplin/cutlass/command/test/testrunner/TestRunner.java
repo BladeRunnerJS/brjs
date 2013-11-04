@@ -70,6 +70,7 @@ public class TestRunner {
 //	private File resultDir; //TODO:uncomment
 	private boolean verbose;
 	private boolean generateReports;
+	private boolean noBrowserFlag;
 	private long execStartTime;
 	private long execEndTime;
 	private TestRunnerConfiguration config;
@@ -79,10 +80,10 @@ public class TestRunner {
 	
 	
 	public TestRunner(File configFile, File resultDir, List<String> browserNames) throws FileNotFoundException, YamlException, IOException {
-		this(configFile, resultDir, browserNames, false);
+		this(configFile, resultDir, browserNames, false, false);
 	}
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean generateReports) throws FileNotFoundException, YamlException, IOException {
+	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean noBrowser, boolean generateReports) throws FileNotFoundException, YamlException, IOException {
 		verbose = determineIfVerbose();
 		config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
 		
@@ -90,6 +91,7 @@ public class TestRunner {
 		this.portNumber = config.getPortNumber();
 		this.browsers = config.getBrowsers();
 //		this.resultDir = resultDir;
+		this.noBrowserFlag = noBrowser;
 		this.generateReports = generateReports;
 		addShutDownHook();
 	}
@@ -267,7 +269,10 @@ public class TestRunner {
 		}
 		else {
 			startServerProcess();
-			startBrowserProcesses();
+			if(this.noBrowserFlag == false)
+			{
+				startBrowserProcesses();
+			}
 			serverStarted = true;
 		}
 		
