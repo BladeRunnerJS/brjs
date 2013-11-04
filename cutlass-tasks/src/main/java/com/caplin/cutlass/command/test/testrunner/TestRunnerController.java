@@ -18,7 +18,6 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
@@ -130,10 +129,6 @@ public class TestRunnerController
 				try
 				{
 					success = testRunner.runTests(new File(config.getString("dir")), getTestTypeEnum(config.getString("testType")));
-				}
-				catch (BrowserNotFoundException ex)
-				{
-					testRunner.showExceptionInConsole(ex);
 				}
 				catch (Exception ex)
 				{

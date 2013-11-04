@@ -419,8 +419,7 @@ public class TestRunner {
 			catch (IOException e)
 			{
 				String browserString = browser == null ? "" : "'" + browser + "' "; 
-				throw new BrowserNotFoundException("Could not find the browser " + browserString + "on disk. Please check your test config inside\n '" + 
-						config.getRelativeDir().getPath() + "'");
+				throw new BrowserNotFoundException(browserString, config.getRelativeDir().getPath());
 			}
 			
 		}

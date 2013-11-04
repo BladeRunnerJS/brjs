@@ -9,7 +9,8 @@ public class BrowserNotFoundException extends Exception {
 		super("Could not find the browser on disk. Please check your test configuration file.");
 	}
 
-	public BrowserNotFoundException(String message) {
-		super(message);
+	public BrowserNotFoundException(String browserString, String confPath) 
+	{
+		super("Could not find the browser " + browserString + "on disk. Please check your test config inside\n '" + confPath + "'");
 	}
 }
