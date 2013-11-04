@@ -98,7 +98,7 @@ class GitHubAPIBridge
 	{
 		logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
 		
-		def response = doRequest("post", release.upload_url, "?name=${brjsZip.name}", "application/zip", brjsZip )
+		def response = doRequest("post", release.upload_url, "name=${brjsZip.name}", "application/zip", brjsZip )
 		logger.quiet "successfully added release asset, ${brjsZip.toString()}"
 	}
 
