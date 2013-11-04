@@ -25,7 +25,9 @@ public class LogicalRequestHandler {
 		this.app = app;
 		
 		// TODO: make the automatically discovered bundler plugins available from BRJS
-		bundlers.put("js", new JsBundlerPlugin());
+		BundlerPlugin jsBundlerPlugin = new JsBundlerPlugin();
+		jsBundlerPlugin.setBRJS(app.root());
+		bundlers.put("js", jsBundlerPlugin);
 	}
 	
 	public void handle(BladerunnerUri requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {

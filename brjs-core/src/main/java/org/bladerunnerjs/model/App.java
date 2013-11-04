@@ -36,7 +36,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private final NodeMap<Bladeset> bladesets = Bladeset.createNodeSet();
 	private final NodeMap<Aspect> aspects = Aspect.createNodeSet();
 	private final NodeMap<JsLib> jsLibs = JsLib.createAppNodeSet();
-	private final LogicalRequestHandler requestHandler = new LogicalRequestHandler(this);
+	private final LogicalRequestHandler requestHandler;
 	
 	private String name;
 	private AppConf appConf;
@@ -46,6 +46,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		this.name = name;
 		init(rootNode, parent, dir);
+		requestHandler = new LogicalRequestHandler(this);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 	}
 	

@@ -29,10 +29,6 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	private BRJS brjs;
 	
 	{
-		// TODO: switch to using automatically discovered bundle-source plugins from BRJS
-		bundleSourcePlugins.add(new CaplinJsBundleSourcePlugin());
-		//bundleSourcePlugins.add(new NodeJsBundleSourcePlugin());
-		
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
 		requestParserBuilder.accepts("js/js.bundle").as("bundle-request")
 			.and("js/module/<module>.js").as("single-module-request");
@@ -47,6 +43,13 @@ public class JsBundlerPlugin implements BundlerPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
+		
+		// TODO: switch to using automatically discovered bundle-source plugins from BRJS
+		BundleSourcePlugin caplinJsBundleSourcePlugin = new CaplinJsBundleSourcePlugin();
+		caplinJsBundleSourcePlugin.setBRJS(brjs);
+		bundleSourcePlugins.add(caplinJsBundleSourcePlugin);
+		// TODO
+		//bundleSourcePlugins.add(nodeJsBundleSourcePlugin);
 	}
 	
 	@Override
