@@ -50,7 +50,7 @@ javadoc {
 	classpath += project.configurations.compileOnly
 }
 
-task javadocZip, type:Zip, {
+task javadocZip, type:Zip, dependsOn:javadoc, {
 	from javadoc.outputs.files.singleFile
 	into "javadoc"
 }
