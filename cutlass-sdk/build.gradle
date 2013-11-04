@@ -85,7 +85,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	destinationDir file("${projectDir.path}/workspace")
 	
 	inputs.property "sdkVersion", buildVersion
-	inputs.property "buildDate", buildDate
 	inputs.property "buildHostname", buildHostname	
 	
 	from ("${includesDir}")

@@ -110,7 +110,7 @@ class GitHubAPIBridge
 			
 			def jsonData = response.data
 			
-			Release release = new Release(jsonData.url, jsonData.upload_url, jsonData.id, jsonData.name, jsonData.tagVersion)
+			Release release = new Release(jsonData.url, jsonData.upload_url, jsonData.id, jsonData.name, jsonData.tag_name)
 			logger.quiet " - created/editted ${release.toString()}"
 			return release
 		}
@@ -120,7 +120,34 @@ class GitHubAPIBridge
 		}
 	}
 	
-	
+	void uploadAssetForRelease(File brjsZip, Release release)
+	{
+		try {
+			logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
+			
+			String restUrl = release.getAssetUrl(brjsZip)
+			logger.quiet " - making GitHub API 'POST' request for '${restUrl}'"
+			
+			def restClient = new RESTClient( apiPrefix )
+			restClient.encoder.'application/zip' = this.&encodeZipFile
+			def response = restClient.post( 
+				uri: apiPrefix,
+				requestContentType: 'application/zip',
+				headers: [
+					'Authorization': "token ${authToken}",
+					'Accept': 'application/vnd.github.manifold-preview'
+				],
+				path: restUrl,
+				body: brjsZip
+			)
+			logger.debug " - GitHub response was: ${response.data.toString()}"
+			logger.quiet " - successfully added release asset"
+		}
+		catch( ex ) { 
+			if (ex.hasProperty("response")) { logger.error "error adding release asset, response data was: '${ex.response.data}'" }
+			throw ex
+		}
+	}
 
 	private String getRestUrl(String suffix)
 	{
@@ -166,6 +193,19 @@ class GitHubAPIBridge
 		catch( ex ) {
 			if (ex.hasProperty("response")) { logger.error "error getting releases list, response data was: '${ex.response.data}'" }
 			throw ex
+		}
+	}
+	
+	
+	/* from http://agileice.blogspot.co.uk/2009/08/groovy-restclient-and-putting-zip-files.html */
+	def encodeZipFile( Object data ) throws UnsupportedEncodingException {
+		if ( data instanceof File ) {
+			def entity = new org.apache.http.entity.FileEntity( (File) data, "application/zip" );
+			entity.setContentType( "application/zip" );
+			return entity
+		} else {
+			throw new IllegalArgumentException(
+				"Don't know how to encode ${data.class.name} as a zip file" );
 		}
 	}
 	

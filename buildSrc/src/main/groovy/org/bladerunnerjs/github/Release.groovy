@@ -19,4 +19,14 @@ class Release
 		this.tagVersion = tagVersion
 	}
 	
+	public String getAssetUrl(File asset)
+	{
+		String assetUrl = upload_url.replace("{?name}", "")
+		return assetUrl + "?name=${asset.name}"
+	}
+	
+	public String toString()
+	{
+		return "${name}, ${tagVersion}, ${url}"
+	}
 }

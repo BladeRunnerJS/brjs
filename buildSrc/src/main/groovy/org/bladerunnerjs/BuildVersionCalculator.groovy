@@ -13,6 +13,8 @@ import java.util.Calendar;
 class BuildVersionCalculator
 {
 
+	public static final DIRTY_TAG = "-DEV"
+	
 	static String calculateMajorVersion(Project p)
 	{
 		def stdout = new ByteArrayOutputStream()
@@ -38,7 +40,7 @@ class BuildVersionCalculator
 		try 
 		{
 			p.exec {
-				commandLine 'git', 'describe', '--long', '--dirty=-DEV'
+				commandLine 'git', 'describe', '--long', "--dirty=${DIRTY_TAG}"
 				standardOutput = stdout
 				errorOutput = stderr
 			}
@@ -55,8 +57,13 @@ class BuildVersionCalculator
 				standardOutput = stdout
 				errorOutput = stderr
 			}
-			return "v0.0-${stdout.toString().trim()}-DEV"
+			return "v0.0-${stdout.toString().trim()}${DIRTY_TAG}"
 		}
+	}
+	
+	static boolean isVersionDirty(Project p)
+	{
+		return calculateVersion(p).endsWith(DIRTY_TAG)
 	}
 	
 	static String calculateBuildDate(Project p)
