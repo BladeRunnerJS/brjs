@@ -255,6 +255,26 @@ public class RenamerTest
 	}
 	
 	@Test
+	public void testRenameBladesetToDifferentAppNameSpaceIsCorrect() throws Exception
+	{
+		File originalFile = new File(applicationDir, "example-bladeset/blades/grid/src/emptycorp/example/grid/RightClickMenuDecorator.js");
+		File expectedRenamedFile = new File(applicationDir, "limitorders-bladeset/blades/grid/src/newcorp/limitorders/grid/RightClickMenuDecorator.js");
+		assertFileExists(originalFile);
+		assertFileDoesNotExist(expectedRenamedFile);
+		
+		Renamer.renameBladeset(new File(applicationDir, "example-bladeset"), "emptycorp.example", "newcorp.limitorders");
+		
+		assertFileExists(expectedRenamedFile);
+		assertFileDoesNotExist(originalFile);
+		assertFileDoesNotExist(new File(applicationDir, "limitorders-bladeset/blades/grid/src/emptycorp"));
+		
+		String newAliasDefContents = FileUtils.readFileToString(new File(applicationDir, "limitorders-bladeset/resources/aliasDefinitions.xml"));
+		assertFalse(newAliasDefContents.contains("emptycorp.example"));
+		assertTrue(newAliasDefContents.contains("emptycorpsexamples.InputControl"));
+		assertTrue(newAliasDefContents.contains("newcorp.limitorders"));
+	}
+	
+	@Test
 	public void testRenameBladesetIsCorrectForBladesetNamedWithCommonCharacters() throws Exception
 	{
 		File originalFile = new File(applicationDir, "a-bladeset/blades/grid/src/emptycorp/a/grid/RightClickMenuDecorator.js");
@@ -266,6 +286,7 @@ public class RenamerTest
 		
 		assertFileExists(expectedRenamedFile);
 		assertFileDoesNotExist(originalFile);
+		assertFileDoesNotExist(new File(applicationDir, "fx-bladeset/blades/grid/src/emptycorp/fx/a"));
 	}
 	
 	@Test
