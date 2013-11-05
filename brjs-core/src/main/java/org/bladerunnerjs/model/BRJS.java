@@ -18,7 +18,6 @@ import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
 import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
@@ -63,7 +62,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Logger logger;
 	private final CommandList commandList;
 	private final Map<String, BundlerPlugin> bundlerPlugins;
-	private final List<BundleSourcePlugin> bundleSourcePlugins;
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
@@ -82,7 +80,6 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		logger.info(Messages.CREATING_COMMAND_PLUGINS_LOG_MSG);
 		commandList = new CommandList(this, pluginLocator.createCommandPlugins(this));
-		bundleSourcePlugins = BundleSourcePluginFactory.createBundleSourcePlugins(this);
 		bundlerPlugins = BundlePluginFactory.createBundlerPlugins(this);
 	}
 	
@@ -297,15 +294,11 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	// TODO: talk to the team about making all plugins available from BRJS
-	public BundlerPlugin bundler(String bundlerName) {
+	public BundlerPlugin bundlerPlugin(String bundlerName) {
 		return bundlerPlugins.get(bundlerName);
 	}
 	
-	public Collection<BundlerPlugin> bundlers() {
+	public Collection<BundlerPlugin> bundlerPlugins() {
 		return bundlerPlugins.values();
-	}
-	
-	public List<BundleSourcePlugin> bundleSourcePlugins() {
-		return bundleSourcePlugins;
 	}
 }

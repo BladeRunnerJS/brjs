@@ -30,7 +30,7 @@ public class LogicalRequestHandler {
 				throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
 			}
 			else {
-				BundlerPlugin bundler = app.root().bundler(getResourceBundlerName(requestUri));
+				BundlerPlugin bundler = app.root().bundlerPlugin(getResourceBundlerName(requestUri));
 				ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri.logicalPath);
 				
 				// we're currently de-encapsulating the request parser within the bundler since this would allow bundlers
@@ -43,8 +43,7 @@ public class LogicalRequestHandler {
 		}
 	}
 	
-	// TODO: move this method within RequestParser
 	private String getResourceBundlerName(BladerunnerUri requestUri) {
-		return requestUri.logicalPath.substring(requestUri.logicalPath.indexOf('/') + 1).replaceAll("\\.bundle$", "");
+		return requestUri.logicalPath.substring(0, requestUri.logicalPath.indexOf('/'));
 	}
 }

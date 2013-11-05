@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
+import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -135,8 +135,8 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 		if(sourceFileSet == null) {
 			sourceFileSet = new CompositeFileSet<SourceFile>();
 			
-			for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSourcePlugins()) {
-				sourceFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSourceFileSet(this));
+			for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
+				sourceFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getSourceFileSet(this));
 			}
 		}
 		
