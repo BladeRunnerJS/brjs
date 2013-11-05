@@ -92,7 +92,7 @@ public class NodeJsBundleSourcePlugin implements BundleSourcePlugin {
 		
 		@Override
 		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), StandardFileSet.paths(), new NodeJsFileSetFactory());
+			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new NodeJsFileSetFactory());
 		}
 		
 		@Override
