@@ -1,6 +1,10 @@
 package org.bladerunnerjs.github
 
+import java.security.SecureRandom
 import java.util.List;
+import javax.net.ssl.SSLContext
+import javax.net.ssl.X509TrustManager
+import javax.net.ssl.TrustManager
 
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
@@ -8,9 +12,6 @@ import org.gradle.api.logging.Logger
 import org.apache.commons.codec.binary.Base64;
 
 import groovyx.net.http.*
-import groovyx.net.http.HTTPBuilder.RequestConfigDelegate
-import org.apache.http.client.ClientProtocolException
-import org.apache.http.client.methods.HttpPatch
 
 import groovy.util.slurpersupport.GPathResult
 import static groovyx.net.http.ContentType.URLENC
@@ -23,6 +24,7 @@ class GitHubAPIBridge
 	static final apiPrefix = "https://api.github.com"
 	static final uploadsPrefix = "https://uploads.github.com"
 	
+	Project project
 	Logger logger
 	String repoOwner
 	String repo
@@ -31,6 +33,7 @@ class GitHubAPIBridge
 	public GitHubAPIBridge(Project project, String repoOwner, String repo, String authToken)
 	{
 		this.logger = project.logger
+		this.project = project
 		this.repoOwner = repoOwner
 		this.repo = repo
 		this.authToken = authToken
@@ -98,7 +101,6 @@ class GitHubAPIBridge
 	void uploadAssetForRelease(File brjsZip, Release release)
 	{
 		logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
-		
 		def response = doRequest(uploadsPrefix, "post", release.upload_url, "name=${brjsZip.name}", "application/zip", brjsZip )
 		logger.quiet "successfully added release asset, ${brjsZip.toString()}"
 	}
@@ -136,30 +138,52 @@ class GitHubAPIBridge
 	
 	private Object doRequest(String requestPrefix, String httpMethod, String restUrl, String queryString, Object contentType, Object requestBody)
 	{
-		try {
-			logger.quiet "making GitHub API ${httpMethod.toUpperCase()} request for '${restUrl}', query string is '${queryString}, body is '${requestBody.toString()}'"
+		logger.quiet "making GitHub API ${httpMethod.toUpperCase()} request for '${restUrl}', query string is '${queryString}', body is '${requestBody.toString()}'"
     		
-			def restClient = new RESTClient( requestPrefix )
-			restClient.encoder.'application/zip' = this.&encodeZipFile
+		if (requestPrefix.equals(uploadsPrefix))
+		{
+			logger.info "using cURL because of SSL certificate issues in the Groovy REST client..."
+			project.exec {
+    			commandLine = [ "curl",
+    				"-i",
+    				"-H", "Authorization: token ${authToken}", 
+    				"-H", "Accept: application/vnd.github.manifold-preview", 
+    				"-H", "Content-Type: ${contentType}",
+					"-X", "${httpMethod.toUpperCase()}",
+    				"-v", "-v", "-v",
+    				"--data-binary", "@${requestBody}",
+    				"${restUrl}?${queryString}"
+    			]
+			}
+			logger.info "...cURL upload completed successfully"
+			return null
+		}
+		else
+		{
+			try {
 			
-			def response = restClient."${httpMethod}"(
-    			uri: requestPrefix,
-    			requestContentType: contentType,
-    			headers: [
-    				'Authorization': "token ${authToken}",
-    				'Accept': 'application/vnd.github.manifold-preview'
-    			],
-    			path: restUrl,
-    			queryString : queryString,
-				body: requestBody
-    		)
-    		logger.debug "GitHub response was: ${response.data.toString()}"
-    		return response
-    	}
-    	catch( ex ) {
-    		if (ex.hasProperty("response")) { logger.error "error making request, response data was: '${ex.response.data}'" }
-    		throw ex
-    	}
+    			def restClient = new RESTClient( requestPrefix )
+    			restClient.encoder.'application/zip' = this.&encodeZipFile
+    			
+    			def response = restClient."${httpMethod}"(
+        			uri: requestPrefix,
+        			requestContentType: contentType,
+        			headers: [
+        				'Authorization': "token ${authToken}",
+        				'Accept': 'application/vnd.github.manifold-preview'
+        			],
+        			path: restUrl,
+        			queryString : queryString,
+    				body: requestBody
+        		)
+        		logger.debug "GitHub response was: ${response.data.toString()}"
+        		return response
+        	}
+        	catch( ex ) {
+        		if (ex.hasProperty("response")) { logger.error "error making request, response data was: '${ex.response.data}'" }
+        		throw ex
+        	}
+		}
 	}
 	
 	
