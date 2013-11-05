@@ -34,7 +34,7 @@ public class TestServerCommandTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{	
-		//TODO::have to create brjs first should remove when moved over to core
+		//TODO: have to create brjs first should remove when moved over to core
 		given(brjs).hasBeenCreated();
 		
 		given(pluginLocator).hasCommand(new TestServerCommand());
@@ -45,7 +45,7 @@ public class TestServerCommandTest extends SpecTest
 			sdkDir = new File(brjs.dir(), "sdk");
 	}
 	
-	// #183 - TODO Remove the @Ignore once we are able to allow jsTestDriver on the path for the specTests
+	// #183 - TODO: Remove the @Ignore once we are able to allow jsTestDriver on the path for the specTests
 	@Ignore
 	@Test
 	public void canLaunchTestServerWithoutBrowsersConfiguredUsingTheNoBrowserFlag() throws Exception 
@@ -54,5 +54,6 @@ public class TestServerCommandTest extends SpecTest
 			.and(brjs).containsFileWithContents("conf/test-runner.conf", "bad test-runner.conf contents");
 		when(brjs).runCommand("test-server", "--no-browser");
 		then(exceptions).verifyNoOutstandingExceptions();
+//			.and(processes).testServerProcessesStarted(); //TODO: add the ability to test whether a process (or mock process) has been started by the test runner
 	}
 }
