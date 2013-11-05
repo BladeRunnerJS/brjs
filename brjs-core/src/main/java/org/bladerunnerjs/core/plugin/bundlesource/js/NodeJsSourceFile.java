@@ -23,9 +23,8 @@ public class NodeJsSourceFile implements SourceFile {
 	private String filePath;
 	@SuppressWarnings("unused") private FileModifiedChecker fileModifiedChecker;
 	
-	public NodeJsSourceFile(SourceLocation sourceLocation, String filePath) {
-		this.filePath = filePath;
-		assetFile = new File(sourceLocation.dir(), filePath);
+	public NodeJsSourceFile(SourceLocation sourceLocation, File file) {
+		assetFile = file;
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	

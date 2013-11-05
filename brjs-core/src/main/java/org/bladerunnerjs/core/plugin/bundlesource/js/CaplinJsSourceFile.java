@@ -1,5 +1,6 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.util.List;
@@ -17,10 +18,10 @@ public class CaplinJsSourceFile implements SourceFile {
 	private SourceLocation sourceLocation;
 	private String filePath;
 	
-	public CaplinJsSourceFile(SourceLocation sourceLocation, String filePath) {
+	public CaplinJsSourceFile(SourceLocation sourceLocation, File file) {
 		this.sourceLocation = sourceLocation;
-		this.filePath = filePath;
-		assetFile = new FullyQualifiedLinkedAssetFile(sourceLocation, filePath);
+		this.filePath = file.getPath();
+		assetFile = new FullyQualifiedLinkedAssetFile(sourceLocation, file);
 	}
 	
 	@Override

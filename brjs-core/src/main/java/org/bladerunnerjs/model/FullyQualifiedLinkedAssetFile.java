@@ -14,14 +14,16 @@ import org.bladerunnerjs.model.utility.FileModifiedChecker;
 
 
 public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
+	private final SourceLocation sourceLocation;
 	private List<SourceLocation> sourceLocations;
 	private final File assetFile;
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	
-	public FullyQualifiedLinkedAssetFile(SourceLocation sourceLocation, String filePath) {
-		assetFile = new File(sourceLocation.dir(), filePath);
+	public FullyQualifiedLinkedAssetFile(SourceLocation sourceLocation, File file) {
+		this.sourceLocation = sourceLocation;	
+		assetFile = file;
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
@@ -76,7 +78,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private Trie createTrie() throws ModelOperationException {
 		Trie trie = new Trie();
 		
-		for(SourceLocation sourceLocation : sourceLocations) {
+//		for(SourceLocation sourceLocation : sourceLocations) {
 			for(SourceFile sourceFile : sourceLocation.sourceFiles()) {
 				ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
 				
@@ -87,7 +89,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 					trie.add(aliasDefinition.getName(), aliasDefinition);
 				}
 			}
-		}
+//		}
 		
 		return trie;
 	}

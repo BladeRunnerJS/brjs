@@ -1,5 +1,6 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,8 +105,8 @@ public class CaplinJsBundleSourcePlugin implements BundleSourcePlugin {
 	private class CaplinJsFileSetFactory implements FileSetFactory<SourceFile> {
 		// TODO: could this take a richer object, like a SourceLocation?
 		@Override
-		public CaplinJsSourceFile createFile(SourceLocation sourceLocation, String filePath) {
-			return new CaplinJsSourceFile(sourceLocation, filePath);
+		public CaplinJsSourceFile createFile(SourceLocation sourceLocation, File file) {
+			return new CaplinJsSourceFile(sourceLocation, file);
 		}
 	}
 }

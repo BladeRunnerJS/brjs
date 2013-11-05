@@ -36,7 +36,7 @@ public class StandardFileSet<AF extends AssetFile> implements FileSet<AF> {
 			String relativePath = baseDir.toURI().relativize(file.toURI()).getPath();
 			
 			if(pathMatcher.matches(relativePath, true)) {
-				files.add(fileSetFactory.createFile(sourceLocation, file.getPath()));
+				files.add(fileSetFactory.createFile(sourceLocation, file));
 			}
 		}
 		
