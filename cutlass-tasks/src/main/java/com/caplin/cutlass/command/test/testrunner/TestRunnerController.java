@@ -29,6 +29,7 @@ import com.martiansoftware.jsap.stringparsers.EnumeratedStringParser;
 public class TestRunnerController
 {
 	public static final String REPORT_SWITCH = "report";
+	public static final String NO_BROWSER_SWITCH = "no-browser";
 
 	public enum RunMode {
 		RUN_TESTS, RUN_SERVER
@@ -101,7 +102,9 @@ public class TestRunnerController
 					}
 					
 					boolean generateReports = (mode == RunMode.RUN_TESTS) && config.getBoolean(REPORT_SWITCH);
-					testRunner = new TestRunner(configFile, resultDir, Arrays.asList(config.getStringArray("browsers")), generateReports);
+					boolean noBrowser = (mode == RunMode.RUN_SERVER) && config.getBoolean(NO_BROWSER_SWITCH);
+					
+					testRunner = new TestRunner(configFile, resultDir, Arrays.asList(config.getStringArray("browsers")), noBrowser, generateReports);
 				}
 			}
 			catch (CommandOperationException ex)
@@ -163,6 +166,10 @@ public class TestRunnerController
 			if (mode == RunMode.RUN_TESTS)
 			{
 				argsParser.registerParameter(new Switch(REPORT_SWITCH).setLongFlag(REPORT_SWITCH).setDefault("false").setHelp("if supplied, generate the HTML reports after running tests"));
+			}
+			if (mode == RunMode.RUN_SERVER)
+			{
+				argsParser.registerParameter(new Switch(NO_BROWSER_SWITCH).setLongFlag(NO_BROWSER_SWITCH).setDefault("false").setHelp("you can start the test-server on it's own without a browser"));
 			}
 		}
 		catch (Exception ex)
