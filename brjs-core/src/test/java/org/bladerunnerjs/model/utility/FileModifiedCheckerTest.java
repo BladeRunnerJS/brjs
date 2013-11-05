@@ -27,15 +27,15 @@ public class FileModifiedCheckerTest
 	@Test
 	public void firstCheckReturnsTrue()
 	{
-		assertTrue("first check should be true", checker.fileModified());
+		assertTrue("first check should be true", checker.fileModifiedSinceLastCheck());
 	}
 	
 	@Test
 	public void subsequentChecksReturnFalseIfFileNotChanged()
 	{
 		when(file.lastModified()).thenReturn(t0);
-		assertTrue("first check should be true", checker.fileModified());
-		assertFalse("should be false, modified time not changed", checker.fileModified());
+		assertTrue("first check should be true", checker.fileModifiedSinceLastCheck());
+		assertFalse("should be false, modified time not changed", checker.fileModifiedSinceLastCheck());
 	}
 	
 	@Test
@@ -44,20 +44,20 @@ public class FileModifiedCheckerTest
 		when(file.lastModified()).thenReturn(t0);
 //		assertTrue("first check should be true", checker.fileModified());
 		when(file.lastModified()).thenReturn(t1);
-		assertTrue("should be true, modified time changed", checker.fileModified());
+		assertTrue("should be true, modified time changed", checker.fileModifiedSinceLastCheck());
 	}
 	
 	@Test
 	public void trueOnlyReturnedWhenFileChanges()
 	{
 		when(file.lastModified()).thenReturn(t0);
-		assertTrue("first check should be true", checker.fileModified());
-		assertFalse("should be false, modified time not changed", checker.fileModified());
+		assertTrue("first check should be true", checker.fileModifiedSinceLastCheck());
+		assertFalse("should be false, modified time not changed", checker.fileModifiedSinceLastCheck());
 		when(file.lastModified()).thenReturn(t1);
-		assertTrue("should be true, modified time changed", checker.fileModified());
-		assertFalse("should be false, modified time not changed", checker.fileModified());
+		assertTrue("should be true, modified time changed", checker.fileModifiedSinceLastCheck());
+		assertFalse("should be false, modified time not changed", checker.fileModifiedSinceLastCheck());
 		when(file.lastModified()).thenReturn(t2);
-		assertTrue("should be true, modified time changed", checker.fileModified());
+		assertTrue("should be true, modified time changed", checker.fileModifiedSinceLastCheck());
 	}
 	
 	

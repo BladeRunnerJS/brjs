@@ -6,7 +6,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 
 
 public interface LinkedAssetFile extends AssetFile {
-	void onSourceLocationsUpdated(List<SourceLocation> sourceLocations);
 	List<SourceFile> getDependentSourceFiles() throws ModelOperationException;
 	List<AliasDefinition> getAliases() throws ModelOperationException;
 }

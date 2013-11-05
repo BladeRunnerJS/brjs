@@ -1,5 +1,9 @@
 package org.bladerunnerjs.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -10,40 +14,26 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-
+import org.bladerunnerjs.model.utility.FileModifiedChecker;
 
 public class CommonJsSourceFile implements SourceFile {
-	private boolean recalculateDependencies;
-	private WatchingAssetFile assetFile;
+	private final File assetFile;
 	private List<String> requirePaths;
 	private List<String> aliasNames;
 	private final SourceLocation sourceLocation;
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
+	private FileModifiedChecker fileModifiedChecker;
 	
-	public CommonJsSourceFile(SourceLocation sourceLocation, String sourceFile) {
+	public CommonJsSourceFile(SourceLocation sourceLocation, String filePath) {
 		this.sourceLocation = sourceLocation;
-		assetFile = new WatchingAssetFile(sourceLocation, sourceFile);
-		assetFile.addObserver(new Observer());
-	}
-	
-	@Override
-	public void onSourceLocationsUpdated(List<SourceLocation> sourceLocations) {
-		dependentSourceFiles = new ArrayList<>();
-		aliases = new ArrayList<>();
-		
-		for(String requirePath : requirePaths) {
-			dependentSourceFiles.add(sourceLocation.sourceFile(requirePath));
-		}
-		
-		for(@SuppressWarnings("unused") String aliasName : aliasNames) {
-			// TODO: how do I get the AliasDefinition instance?
-		}
+		assetFile = new File(sourceLocation.dir(), filePath);
+		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
 	@Override
 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
-		if (recalculateDependencies) {
+		if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
 		
@@ -52,7 +42,7 @@ public class CommonJsSourceFile implements SourceFile {
 	
 	@Override
 	public List<AliasDefinition> getAliases() throws ModelOperationException {
-		if (recalculateDependencies) {
+		if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
 		
@@ -60,13 +50,8 @@ public class CommonJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public Reader getReader() {
-		return assetFile.getReader();
-	}
-	
-	@Override
-	public void addObserver(AssetFileObserver observer) {
-		assetFile.addObserver(observer);
+	public Reader getReader() throws FileNotFoundException {
+		return new BufferedReader( new FileReader(assetFile) );
 	}
 	
 	@Override
@@ -92,7 +77,7 @@ public class CommonJsSourceFile implements SourceFile {
 		
 		try {
 			StringWriter stringWriter = new StringWriter();
-			IOUtils.copy(assetFile.getReader(), stringWriter);
+			IOUtils.copy(getReader(), stringWriter);
 			
 			Matcher m = Pattern.compile("(require|br\\.alias|caplin\\.alias)\\([\"']([^)]+)[\"']\\)").matcher(stringWriter.toString());
 			
@@ -107,18 +92,21 @@ public class CommonJsSourceFile implements SourceFile {
 					aliasNames.add(methodArgument);
 				}
 			}
+			
+			dependentSourceFiles = new ArrayList<>();
+			for(String requirePath : requirePaths) {
+				dependentSourceFiles.add(sourceLocation.sourceFile(requirePath));
+			}
+			
+			aliases = new ArrayList<>();
+			for(@SuppressWarnings("unused") String aliasName : aliasNames) {
+				// TODO: how do I get the AliasDefinition instance?
+				// aliases.add( .... )
+			}
 		}
 		catch(IOException e) {
 			throw new ModelOperationException(e);
 		}
-		
-		recalculateDependencies = false;
 	}
 	
-	private class Observer implements AssetFileObserver {
-		@Override
-		public void onAssetFileModified() {
-			recalculateDependencies = true;
-		}
-	}
 }

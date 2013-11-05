@@ -14,7 +14,7 @@ public class FileModifiedChecker
 		this.file = file;
 	}
 
-	public boolean fileModified()
+	public boolean fileModifiedSinceLastCheck()
 	{
 		Long currentLastModified = file.lastModified();
 		boolean fileModified = currentLastModified > lastModified;

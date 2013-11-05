@@ -1,33 +1,32 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
 
+import java.io.File;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.AliasDefinition;
-import org.bladerunnerjs.model.AssetFileObserver;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.Resources;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.SourceLocation;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.utility.FileModifiedChecker;
 
 public class NodeJsSourceFile implements SourceFile {
-	@SuppressWarnings("unused")
-	private List<SourceLocation> sourceLocations;
+	private final File assetFile;
+	@SuppressWarnings("unused") private List<SourceLocation> sourceLocations;
 	private List<String> dependentRequirePaths;
 	private List<AliasDefinition> aliases;
 	private BundlableNode bundlableNode; // TODO: where do I get this from?
 	private String filePath;
+	@SuppressWarnings("unused") private FileModifiedChecker fileModifiedChecker;
 	
 	public NodeJsSourceFile(SourceLocation sourceLocation, String filePath) {
 		this.filePath = filePath;
-	}
-	
-	@Override
-	public void onSourceLocationsUpdated(List<SourceLocation> sourceLocations) {
-		this.sourceLocations = sourceLocations;
+		assetFile = new File(sourceLocation.dir(), filePath);
+		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
 	@Override
@@ -55,11 +54,6 @@ public class NodeJsSourceFile implements SourceFile {
 	public Reader getReader() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-	
-	@Override
-	public void addObserver(AssetFileObserver observer) {
-		// TODO Auto-generated method stub
 	}
 	
 	@Override
