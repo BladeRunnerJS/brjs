@@ -12,7 +12,7 @@ br.presenter.validator.CrossValidationPropertyListener = function(oCrossProperty
 	this.m_sPropertyId = sPropertyId;
 };
 
-br.provide(br.presenter.validator.CrossValidationPropertyListener, br.presenter.property.PropertyListener);
+br.inherit(br.presenter.validator.CrossValidationPropertyListener, br.presenter.property.PropertyListener);
 
 br.presenter.validator.CrossValidationPropertyListener.prototype.onPropertyChanged = function()
 {

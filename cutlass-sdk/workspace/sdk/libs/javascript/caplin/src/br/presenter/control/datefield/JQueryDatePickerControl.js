@@ -32,7 +32,7 @@ br.presenter.control.datefield.JQueryDatePickerControl = function()
 	this.m_mOptions = {};
 };
 
-br.provide(br.presenter.control.datefield.JQueryDatePickerControl, br.presenter.control.ControlAdaptor);
+br.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.presenter.control.ControlAdaptor);
 
 // *********************** ControlAdaptor Interface ***********************
 

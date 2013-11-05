@@ -82,7 +82,7 @@ br.test.ViewFixture = function(sViewSelector)
 	};
 };
 
-br.provide(br.test.ViewFixture, br.test.Fixture);
+br.inherit(br.test.ViewFixture, br.test.Fixture);
 
 br.test.ViewFixture.prototype.setUp = function()
 {

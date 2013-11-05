@@ -2,7 +2,7 @@ testing.GrandParentTestFixture = function()
 {
 	this.m_oChildMockFixture = new testing.ParentTestFixture();
 };
-br.provide(testing.GrandParentTestFixture, br.test.Fixture);
+br.inherit(testing.GrandParentTestFixture, br.test.Fixture);
 
 testing.GrandParentTestFixture.prototype.addSubFixtures = function(oFixtureRegistry)
 {
