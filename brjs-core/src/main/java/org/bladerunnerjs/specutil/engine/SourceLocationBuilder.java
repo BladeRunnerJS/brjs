@@ -1,18 +1,18 @@
 package org.bladerunnerjs.specutil.engine;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.AbstractComponent;
 import org.bladerunnerjs.model.AbstractSourceLocation;
 
 
 public abstract class SourceLocationBuilder<N extends AbstractSourceLocation> extends NodeBuilder<N>
 {
 	
-	private AbstractComponent node;
+	private AbstractSourceLocation node;
 	
 	public SourceLocationBuilder(SpecTest specTest, N node)
 	{
 		super(specTest, node);
+		this.node = node;
 	}
 
 	public BuilderChainer hasClass(String className) throws Exception
