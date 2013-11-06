@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
+import org.bladerunnerjs.model.utility.Trie;
 
 
 public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
@@ -53,7 +54,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private void recalculateDependencies() throws ModelOperationException {
 		dependentSourceFiles = new ArrayList<>();
 		aliases = new ArrayList<>();
-		Trie trie = createTrie();
+		Trie<Object> trie = createTrie();
 		
 		try {
 			try(Reader reader = getReader()) {
@@ -75,8 +76,8 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		}
 	}
 	
-	private Trie createTrie() throws ModelOperationException {
-		Trie trie = new Trie();
+	private Trie<Object> createTrie() throws ModelOperationException {
+		Trie<Object> trie = new Trie<Object>();
 		
 //		for(SourceLocation sourceLocation : sourceLocations) {
 			for(SourceFile sourceFile : sourceLocation.sourceFiles()) {

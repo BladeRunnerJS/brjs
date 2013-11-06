@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.SourceLocation;
 import org.bladerunnerjs.model.Resources;
 
-public interface BundleSourceFileSetFactory {
+public interface FileSetFactory {
 	FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation);
 	FileSet<LinkedAssetFile> getLinkedResourceFileSet(Resources resources);
 	FileSet<AssetFile> getResourceFileSet(Resources resources);

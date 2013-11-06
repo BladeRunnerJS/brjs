@@ -19,7 +19,6 @@ import com.martiansoftware.jsap.JSAPResult;
 public class VersionCommand extends ArgsParsingCommandPlugin
 {
 	// Note: ASCII art created using http://patorjk.com/software/taag/#p=display&h=1&f=Ivrit&t=%20%20%20%20BladeRunnerJS%20%20%20%20
-	// TODO: change the "Divide & conquer your web apps" in the ascii art if the strapline changes
 	private static final String ASCII_ART_RESOURCE_PATH = "org/bladerunnerjs/core/plugin/command/core/bladerunner-ascii-art.txt";
 	
 	private BRJS brjs;

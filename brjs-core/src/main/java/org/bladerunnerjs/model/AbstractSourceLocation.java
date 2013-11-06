@@ -3,7 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.bundlesource.BundleSourcePlugin;
+import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 
@@ -25,8 +25,8 @@ public abstract class AbstractSourceLocation extends AbstractBRJSNode implements
 		if(sourceFileSet == null) {
 			sourceFileSet = new CompositeFileSet<SourceFile>();
 			
-			for(BundleSourcePlugin bundleSourcePlugin : ((BRJS) rootNode).bundleSourcePlugins()) {
-				sourceFileSet.addFileSet(bundleSourcePlugin.getFileSetFactory().getSourceFileSet(this));
+			for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
+				sourceFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getSourceFileSet(this));
 			}
 		}
 		
