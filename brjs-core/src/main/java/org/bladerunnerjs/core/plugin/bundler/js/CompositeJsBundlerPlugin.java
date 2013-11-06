@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.BundleSourceFileSetFactory;
+import org.bladerunnerjs.core.plugin.bundlesource.FileSetFactory;
 import org.bladerunnerjs.core.plugin.bundlesource.NullFileSetFactory;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
@@ -56,7 +56,7 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public BundleSourceFileSetFactory getFileSetFactory() {
+	public FileSetFactory getFileSetFactory() {
 		return new NullFileSetFactory();
 	}
 	

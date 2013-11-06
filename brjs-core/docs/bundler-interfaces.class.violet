@@ -193,7 +193,7 @@ FileSet&lt;AssetFile&gt; getResourceFileSet(SourceLocation sourceLocation)</stri
     </void>
     <void property="name">
      <void property="text">
-      <string>«BundleSourceFileSetFactory»</string>
+      <string>«FileSetFactory»</string>
      </void>
     </void>
    </object>
@@ -215,6 +215,35 @@ FileSet&lt;AssetFile&gt; getResourceFileSet(SourceLocation sourceLocation)</stri
     <void method="setLocation">
      <double>245.0</double>
      <double>321.0</double>
+    </void>
+   </object>
+  </void>
+  <void method="addNode">
+   <object class="com.horstmann.violet.NoteNode">
+    <void property="text">
+     <void property="text">
+      <string>Do we still need this?</string>
+     </void>
+    </void>
+   </object>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double6">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double6"/>
+      <double>826.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double6"/>
+      <double>489.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>826.0</double>
+     <double>489.0</double>
     </void>
    </object>
   </void>

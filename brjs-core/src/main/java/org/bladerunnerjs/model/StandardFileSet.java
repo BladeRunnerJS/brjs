@@ -12,14 +12,14 @@ import com.google.common.base.Joiner;
 public class StandardFileSet<AF extends AssetFile> implements FileSet<AF> {
 	private List<FileSetObserver> observers = new ArrayList<>();
 	private SourceLocation sourceLocation;
-	private FileSetFactory<AF> fileSetFactory;
+	private AssetFileFactory<AF> fileSetFactory;
 	private PathMatcher pathMatcher;
 	
 	public static String[] paths(String... paths) {
 		return paths;
 	}
 	
-	public StandardFileSet(SourceLocation sourceLocation, String[] includePaths, String[] excludePaths, FileSetFactory<AF> fileSetFactory) {
+	public StandardFileSet(SourceLocation sourceLocation, String[] includePaths, String[] excludePaths, AssetFileFactory<AF> fileSetFactory) {
 		this.sourceLocation = sourceLocation;
 		this.fileSetFactory = fileSetFactory;
 		

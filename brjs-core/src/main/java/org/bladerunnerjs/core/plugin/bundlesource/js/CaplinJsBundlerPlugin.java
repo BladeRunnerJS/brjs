@@ -11,12 +11,12 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.BundleSourceFileSetFactory;
+import org.bladerunnerjs.core.plugin.bundlesource.FileSetFactory;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.FileSet;
-import org.bladerunnerjs.model.FileSetFactory;
+import org.bladerunnerjs.model.AssetFileFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.NullFileSet;
 import org.bladerunnerjs.model.ParsedRequest;
@@ -75,7 +75,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public BundleSourceFileSetFactory getFileSetFactory() {
+	public FileSetFactory getFileSetFactory() {
 		return new CaplinJsBundleSourceFileSetFactory();
 	}
 	
@@ -200,7 +200,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
-	private class CaplinJsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
+	private class CaplinJsBundleSourceFileSetFactory implements FileSetFactory {
 		@Override
 		public FileSet<LinkedAssetFile> getLinkedResourceFileSet(Resources resources) {
 			return new NullFileSet<LinkedAssetFile>();
@@ -217,7 +217,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
-	private class CaplinJsFileSetFactory implements FileSetFactory<SourceFile> {
+	private class CaplinJsFileSetFactory implements AssetFileFactory<SourceFile> {
 		// TODO: could this take a richer object, like a SourceLocation?
 		@Override
 		public CaplinJsSourceFile createFile(SourceLocation sourceLocation, String filePath) {

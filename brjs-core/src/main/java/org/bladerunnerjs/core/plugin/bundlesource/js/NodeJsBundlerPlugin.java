@@ -10,12 +10,12 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.BundleSourceFileSetFactory;
+import org.bladerunnerjs.core.plugin.bundlesource.FileSetFactory;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.FileSet;
-import org.bladerunnerjs.model.FileSetFactory;
+import org.bladerunnerjs.model.AssetFileFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.NullFileSet;
 import org.bladerunnerjs.model.ParsedRequest;
@@ -73,7 +73,7 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public BundleSourceFileSetFactory getFileSetFactory() {
+	public FileSetFactory getFileSetFactory() {
 		return new NodeJsBundleSourceFileSetFactory();
 	}
 	
@@ -133,7 +133,7 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
-	private class NodeJsBundleSourceFileSetFactory implements BundleSourceFileSetFactory {
+	private class NodeJsBundleSourceFileSetFactory implements FileSetFactory {
 		@Override
 		public FileSet<LinkedAssetFile> getLinkedResourceFileSet(Resources resources) {
 			return new NullFileSet<LinkedAssetFile>();
@@ -150,7 +150,7 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
-	private class NodeJsFileSetFactory implements FileSetFactory<SourceFile> {
+	private class NodeJsFileSetFactory implements AssetFileFactory<SourceFile> {
 		@Override
 		public NodeJsSourceFile createFile(SourceLocation sourceLocation, String filePath) {
 			return new NodeJsSourceFile(sourceLocation, filePath);
