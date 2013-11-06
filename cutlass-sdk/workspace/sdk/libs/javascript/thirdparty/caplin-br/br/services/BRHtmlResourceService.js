@@ -1,4 +1,4 @@
-define("br/services/BRHtmlResourceService", function(require, module, exports) {
+define("br/services/BRHtmlResourceService", function(require, exports, module) {
 
 	var br = require('br');
 	var File = require('br/core/File');

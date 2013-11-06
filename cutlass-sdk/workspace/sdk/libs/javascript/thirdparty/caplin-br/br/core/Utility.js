@@ -1,4 +1,4 @@
-define('br/core/Utility', function(require, module, exports) {
+define('br/core/Utility', function(require, exports, module) {
 	"use strict";
 
 	var global = new Function("return this")();

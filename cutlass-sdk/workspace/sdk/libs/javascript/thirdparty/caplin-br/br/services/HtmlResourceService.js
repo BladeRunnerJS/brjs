@@ -1,4 +1,4 @@
-define("br/services/HtmlResourceService", /** @exports br/services/HtmlResourceService */ function(require, module, exports) {
+define("br/services/HtmlResourceService", /** @exports br/services/HtmlResourceService */ function(require, exports, module) {
 
 	var Errors = require('br/Errors');
 

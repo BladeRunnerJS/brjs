@@ -1,4 +1,4 @@
-define('br/core/File', function(require, module, exports) {
+define('br/core/File', function(require, exports, module) {
 	var Errors = require('br/Errors');
 	
 	var HTTP_OK = 200;

@@ -1,4 +1,4 @@
-define("br/services/XmlResourceService", /** @exports br/services/XmlResourceService */ function(require, module, exports) {
+define("br/services/XmlResourceService", /** @exports br/services/XmlResourceService */ function(require, exports, module) {
 
 	var Errors = require('br/Errors');
 

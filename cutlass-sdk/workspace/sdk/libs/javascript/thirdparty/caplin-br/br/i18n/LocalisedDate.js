@@ -1,4 +1,4 @@
-define("br/i18n/LocalisedDate", function(require, module, exports) {
+define("br/i18n/LocalisedDate", function(require, exports, module) {
 	"use strict";
 	
 	// caplin.thirdparty("momentjs");
