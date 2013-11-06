@@ -7,7 +7,6 @@ import java.io.StringReader;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -59,22 +58,6 @@ public class TrieTest
 		assertEquals(test_object_1, foundObjects.get(0));
 		assertEquals(test_object_2, foundObjects.get(1));
 		assertEquals(test_object_4, foundObjects.get(2));
-	}
-	
-	@Ignore
-	@Test
-	public void testCharsArentSwallowedOnceNotMatched() throws IOException
-	{
-		trie.add("test_object_1", test_object_1);
-		trie.add("test_object_2", test_object_2);
-		
-		StringReader reader = new StringReader("here is some text, test_object_1 is here too.\n"+
-				"and also test_objtest_object_2");
-		
-		List<String> foundObjects = trie.getMatches(reader);
-		assertEquals(2, foundObjects.size());
-		assertEquals(test_object_1, foundObjects.get(0));
-		assertEquals(test_object_2, foundObjects.get(1));
 	}
 	
 }
