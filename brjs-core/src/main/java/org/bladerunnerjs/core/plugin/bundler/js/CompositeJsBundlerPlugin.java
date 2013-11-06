@@ -93,6 +93,6 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	
 	@Override
 	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
-		// TODO: throw an exception
+		throw new BundlerProcessingException("handleRequest() should never be invoked as CompositeJsBundlerPlugin uses a null request parser.");
 	}
 }

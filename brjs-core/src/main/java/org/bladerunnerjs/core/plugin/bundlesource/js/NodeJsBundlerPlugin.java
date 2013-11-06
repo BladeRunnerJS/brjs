@@ -114,7 +114,7 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 				}
 			}
 			else {
-				// TODO: throw an exception
+				throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
 			}
 		}
 		catch(ConfigException | IOException e) {

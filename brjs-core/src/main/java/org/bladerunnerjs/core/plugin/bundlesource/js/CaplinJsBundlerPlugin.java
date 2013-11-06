@@ -116,7 +116,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 				}
 			}
 			else {
-				// TODO: throw an exception
+				throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
 			}
 		}
 		catch(ConfigException | IOException e) {
@@ -218,7 +218,6 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	private class CaplinJsFileSetFactory implements AssetFileFactory<SourceFile> {
-		// TODO: could this take a richer object, like a SourceLocation?
 		@Override
 		public CaplinJsSourceFile createFile(SourceLocation sourceLocation, String filePath) {
 			return new CaplinJsSourceFile(sourceLocation, filePath);
