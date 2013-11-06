@@ -89,7 +89,7 @@ public class TestRunner {
 		
 		this.jsTestDriverJar = config.getJsTestDriverJarFile();
 		this.portNumber = config.getPortNumber();
-		this.browsers = config.getBrowsers();
+		this.browsers = noBrowser == true ? null : config.getBrowsers();
 //		this.resultDir = resultDir;
 		this.noBrowserFlag = noBrowser;
 		this.generateReports = generateReports;
