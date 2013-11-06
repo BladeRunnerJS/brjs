@@ -31,12 +31,11 @@ public class BRJSTest extends SpecTest {
         	app2 = brjs.app("app2");
 	}
 	
-	@Ignore //TODO: fix test
 	@Test
 	public void theAppConfIsWrittenOnPopulate() throws Exception {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/bladerunner.conf", "defaultInputEncoding: UTF-8\ndefaultOutputEncoding: UTF-8\njettyPort: 7070");
+		then(brjs).fileHasContents("conf/bladerunner.conf", "defaultInputEncoding: UTF-8\ndefaultOutputEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test
