@@ -1,44 +1,38 @@
 package org.bladerunnerjs.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.utility.FileModifiedChecker;
 
 
 public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private List<SourceLocation> sourceLocations;
-	private final AssetFile assetFile;
-	private boolean recalculateDependencies = true;
+	private final File assetFile;
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
+	private FileModifiedChecker fileModifiedChecker;
 	
 	public FullyQualifiedLinkedAssetFile(SourceLocation sourceLocation, String filePath) {
-		assetFile = new WatchingAssetFile(sourceLocation, filePath);
-		assetFile.addObserver(new Observer());
+		assetFile = new File(sourceLocation.dir(), filePath);
+		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
 	@Override
-	public Reader getReader() {
-		return assetFile.getReader();
-	}
-	
-	@Override
-	public void addObserver(AssetFileObserver observer) {
-		assetFile.addObserver(observer);
-	}
-	
-	@Override
-	public void onSourceLocationsUpdated(List<SourceLocation> sourceLocations) {
-		recalculateDependencies = true;
-		this.sourceLocations = sourceLocations;
+	public Reader getReader() throws FileNotFoundException {
+		return new BufferedReader( new FileReader(assetFile) );
 	}
 	
 	@Override
 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
-		if(recalculateDependencies) {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
 		
@@ -47,7 +41,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 
 	@Override
 	public List<AliasDefinition> getAliases() throws ModelOperationException {
-		if(recalculateDependencies) {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
 		
@@ -60,7 +54,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		Trie trie = createTrie();
 		
 		try {
-			try(Reader reader = assetFile.getReader()) {
+			try(Reader reader = getReader()) {
 				for(Object match : trie.getMatches(reader)) {
 					if(match instanceof SourceFile) {
 						dependentSourceFiles.add((SourceFile) match);
@@ -77,8 +71,6 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		catch(IOException e) {
 			throw new ModelOperationException(e);
 		}
-		
-		recalculateDependencies = false;
 	}
 	
 	private Trie createTrie() throws ModelOperationException {
@@ -98,12 +90,5 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		}
 		
 		return trie;
-	}
-	
-	private class Observer implements AssetFileObserver {
-		@Override
-		public void onAssetFileModified() {
-			recalculateDependencies = true;
-		}
 	}
 }

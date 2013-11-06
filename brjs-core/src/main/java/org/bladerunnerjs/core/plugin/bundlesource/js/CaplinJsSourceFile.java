@@ -1,10 +1,10 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
 
+import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.model.AliasDefinition;
-import org.bladerunnerjs.model.AssetFileObserver;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.Resources;
@@ -24,11 +24,6 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public void onSourceLocationsUpdated(List<SourceLocation> sourceLocations) {
-		assetFile.onSourceLocationsUpdated(sourceLocations);
-	}
-	
-	@Override
 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
 		List<SourceFile> dependentSourceFiles = assetFile.getDependentSourceFiles();
 		dependentSourceFiles.removeAll(getOrderDependentSourceFiles());
@@ -42,13 +37,8 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public Reader getReader() {
+	public Reader getReader() throws FileNotFoundException {
 		return assetFile.getReader();
-	}
-	
-	@Override
-	public void addObserver(AssetFileObserver observer) {
-		assetFile.addObserver(observer);
 	}
 	
 	@Override
