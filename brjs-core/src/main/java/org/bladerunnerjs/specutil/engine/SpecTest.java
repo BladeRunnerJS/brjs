@@ -164,7 +164,7 @@ public abstract class SpecTest
 	public AspectVerifier then(Aspect aspect) { return new AspectVerifier(this, aspect); }
 	
 	// Blade
-	public BladeBuilder given(Blade blade) { return new BladeBuilder(this, blade); }
+	public SourceLocationBuilder<Blade> given(Blade blade) { return new BladeBuilder(this, blade); }
 	public BladeCommander when(Blade blade) { return new BladeCommander(this, blade); }
 	public BladeVerifier then(Blade blade) { return new BladeVerifier(this, blade); }
 	

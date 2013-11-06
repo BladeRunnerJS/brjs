@@ -33,7 +33,7 @@ public class BuilderChainer {
 	public BRJSBuilder and(BRJS brjs) { return new BRJSBuilder(modelTest, brjs); }
 	public AppBuilder and(App app) { return new AppBuilder(modelTest, app); }
 	public AspectBuilder and(Aspect aspect) { return new AspectBuilder(modelTest, aspect); }
-	public BladeBuilder and(Blade blade) { return new BladeBuilder(modelTest, blade); }
+	public SourceLocationBuilder<Blade> and(Blade blade) { return new BladeBuilder(modelTest, blade); }
 	public JsLibBuilder and(JsLib jsLib) { return new JsLibBuilder(modelTest, jsLib); }
 	public DirNodeBuilder and(DirNode dirNode) { return new DirNodeBuilder(modelTest, dirNode); }
 	public NamedDirNodeBuilder and(NamedDirNode namedDirNode) { return new NamedDirNodeBuilder(modelTest, namedDirNode); }

@@ -3,11 +3,11 @@ package org.bladerunnerjs.specutil;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
-import org.bladerunnerjs.specutil.engine.NodeBuilder;
+import org.bladerunnerjs.specutil.engine.SourceLocationBuilder;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 
 
-public class AspectBuilder extends NodeBuilder<Aspect> {
+public class AspectBuilder extends SourceLocationBuilder<Aspect> {
 	private final Aspect aspect;
 	
 	public AspectBuilder(SpecTest modelTest, Aspect aspect)
