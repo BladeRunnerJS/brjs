@@ -62,7 +62,7 @@ public class Trie<T>
 		if (nextNode == null)
 		{
 			T matcherValue = matcher.previousNode.getValue();
-			if (matcherValue != null)
+			if (matcherValue != null && Character.isWhitespace(nextChar))
 			{
 				matches.add(matcherValue);
 			}
