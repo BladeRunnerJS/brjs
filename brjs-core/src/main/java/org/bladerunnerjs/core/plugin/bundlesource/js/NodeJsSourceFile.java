@@ -1,43 +1,44 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AliasDefinition;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.Resources;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.SourceLocation;
-import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 
 public class NodeJsSourceFile implements SourceFile {
 	private final File assetFile;
-	@SuppressWarnings("unused") private List<SourceLocation> sourceLocations;
-	private List<String> dependentRequirePaths;
+	private List<String> requirePaths;
+	private List<String> aliasNames;
+	private final SourceLocation sourceLocation;
+	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
-	private BundlableNode bundlableNode; // TODO: where do I get this from?
-	@SuppressWarnings("unused") private FileModifiedChecker fileModifiedChecker;
+	private FileModifiedChecker fileModifiedChecker;
 	
 	public NodeJsSourceFile(SourceLocation sourceLocation, File file) {
+		this.sourceLocation = sourceLocation;
 		assetFile = file;
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
 	@Override
 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
-		List<SourceFile> dependentSourceFiles = new ArrayList<>();
-		
-		try {
-			for(String dependentRequirePath : dependentRequirePaths) {
-				dependentSourceFiles.add(bundlableNode.getSourceFile(dependentRequirePath));
-			}
-		}
-		catch (AmbiguousRequirePathException e) {
-			throw new ModelOperationException(e);
+		if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			recalculateDependencies();
 		}
 		
 		return dependentSourceFiles;
@@ -45,23 +46,27 @@ public class NodeJsSourceFile implements SourceFile {
 	
 	@Override
 	public List<AliasDefinition> getAliases() throws ModelOperationException {
+		if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			recalculateDependencies();
+		}
+		
 		return aliases;
 	}
 	
 	@Override
-	public Reader getReader() {
-		// TODO Auto-generated method stub
-		return null;
+	public Reader getReader() throws FileNotFoundException {
+		return new BufferedReader( new FileReader(assetFile) );
 	}
 	
 	@Override
 	public String getRequirePath() {
-		return assetFile.getPath().replaceAll("\\.js^", "");
+		// TODO
+		return null;
 	}
 	
 	@Override
 	public Resources getResources() {
-		// TODO Auto-generated method stub
+		// TODO
 		return null;
 	}
 	
@@ -69,4 +74,43 @@ public class NodeJsSourceFile implements SourceFile {
 	public List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException {
 		return new ArrayList<>();
 	}
+	
+	private void recalculateDependencies() throws ModelOperationException {
+		requirePaths = new ArrayList<>();
+		aliasNames = new ArrayList<>();
+		
+		try {
+			StringWriter stringWriter = new StringWriter();
+			IOUtils.copy(getReader(), stringWriter);
+			
+			Matcher m = Pattern.compile("(require|br\\.alias|caplin\\.alias)\\([\"']([^)]+)[\"']\\)").matcher(stringWriter.toString());
+			
+			while(m.find()) {
+				boolean isRequirePath = m.group(1).startsWith("require");
+				String methodArgument = m.group(2);
+				
+				if(isRequirePath) {
+					requirePaths.add(methodArgument);
+				}
+				else {
+					aliasNames.add(methodArgument);
+				}
+			}
+			
+			dependentSourceFiles = new ArrayList<>();
+			for(String requirePath : requirePaths) {
+				dependentSourceFiles.add(sourceLocation.sourceFile(requirePath));
+			}
+			
+			aliases = new ArrayList<>();
+			for(@SuppressWarnings("unused") String aliasName : aliasNames) {
+				// TODO: how do I get the AliasDefinition instance?
+				// aliases.add( .... )
+			}
+		}
+		catch(IOException e) {
+			throw new ModelOperationException(e);
+		}
+	}
+	
 }
