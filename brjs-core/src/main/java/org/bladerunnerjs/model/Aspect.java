@@ -82,18 +82,7 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 		List<SourceLocation> sourceLocations = new ArrayList<>();
 		
 		sourceLocations.add(this);
-		
-		for(JsLib jsLib : parent().jsLibs()) {
-			sourceLocations.add(jsLib);
-		}
-		
-		for(Bladeset bladeset : parent().bladesets()) {
-			sourceLocations.add(bladeset);
-			
-			for(Blade blade : bladeset.blades()) {
-				sourceLocations.add(blade);
-			}
-		}
+		sourceLocations.addAll(parent().getNonAspectSourceLocations());
 		
 		return sourceLocations;
 	}

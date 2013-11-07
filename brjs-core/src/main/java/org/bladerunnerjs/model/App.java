@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +59,34 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public static NodeMap<App> createSystemAppNodeSet()
 	{
 		return new NodeMap<>(App.class, "sdk/system-applications", null);
+	}
+	
+	public List<SourceLocation> getAllSourceLocations() {
+		List<SourceLocation> sourceLocations = getNonAspectSourceLocations();
+		
+		for(Aspect aspect : aspects()) {
+			sourceLocations.add(aspect);
+		}
+		
+		return sourceLocations;
+	}
+	
+	public List<SourceLocation> getNonAspectSourceLocations() {
+		List<SourceLocation> sourceLocations = new ArrayList<>();
+		
+		for(JsLib jsLib : jsLibs()) {
+			sourceLocations.add(jsLib);
+		}
+		
+		for(Bladeset bladeset : bladesets()) {
+			sourceLocations.add(bladeset);
+			
+			for(Blade blade : bladeset.blades()) {
+				sourceLocations.add(blade);
+			}
+		}
+		
+		return sourceLocations;
 	}
 	
 	@Override

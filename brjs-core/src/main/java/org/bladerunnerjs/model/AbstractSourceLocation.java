@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 
@@ -18,6 +19,17 @@ public abstract class AbstractSourceLocation extends AbstractBRJSNode implements
 	
 	public DirNode src() {
 		return item(src);
+	}
+	
+	@Override
+	public App getApp() {
+		Node node = this.parentNode();
+		
+		while(!(node instanceof App)) {
+			node = node.parentNode();
+		}
+		
+		return (App) node;
 	}
 	
 	@Override

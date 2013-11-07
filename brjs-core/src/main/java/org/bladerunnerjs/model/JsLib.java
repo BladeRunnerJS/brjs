@@ -54,6 +54,11 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	}
 	
 	@Override
+	public App getApp() {
+		return (App) parent;
+	}
+	
+	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
 		try {
