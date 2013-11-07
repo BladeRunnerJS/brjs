@@ -78,5 +78,6 @@ public class TestServerCommandTest extends SpecTest
 		when(brjs).runCommand("test-server");
 		then(exceptions).verifyException(NoBrowsersDefinedException.class).
 			whereTopLevelExceptionIs(CommandOperationException.class);
+//			.and(processes).testServerProcessesNotStarted(); //TODO: add the ability to test whether a process (or mock process) is not running
 	}
 }
