@@ -2,17 +2,21 @@ package org.bladerunnerjs.model.utility;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 
 public class TrieTest
 {
 
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+	
 	Trie<TestObject> trie;
 	
 	TestObject test_object_1;
@@ -34,14 +38,14 @@ public class TrieTest
 	}
 	
 	@Test
-	public void testAddingToTrie()
+	public void addingToTrie() throws Exception
 	{
 		trie.add("1234-abc#;;a", test_object_1);
 		assertEquals(test_object_1, trie.get("1234-abc#;;a"));
 	}
 	
 	@Test
-	public void testCorrectObjectsReturnedFromUsingReader() throws IOException
+	public void correctObjectsReturnedFromUsingReader() throws Exception
 	{
 		trie.add("test_object_1", test_object_1);
 		trie.add("test_object_2", test_object_2);
@@ -63,7 +67,7 @@ public class TrieTest
 	}
 	
 	@Test
-	public void testOccurancesWithPrefixDontMatch() throws IOException
+	public void occurancesWithPrefixDontMatch() throws Exception
 	{
 		trie.add("test_object_1", test_object_1);
 		
@@ -74,7 +78,7 @@ public class TrieTest
 	}
 	
 	@Test
-	public void testOccurancesWithSuffixDontMatch() throws IOException
+	public void occurancesWithSuffixDontMatch() throws Exception
 	{
 		trie.add("test_object_1", test_object_1);
 		
@@ -85,7 +89,7 @@ public class TrieTest
 	}
 	
 	@Test
-	public void testOccurancesWithSuffixAndPrefixDontMatch() throws IOException
+	public void occurancesWithSuffixAndPrefixDontMatch() throws Exception
 	{
 		trie.add("test_object_1", test_object_1);
 		
@@ -96,7 +100,7 @@ public class TrieTest
 	}
 	
 	@Test
-	public void testSubstringAtTheStartDoNotMatch() throws IOException
+	public void substringAtTheStartDoNotMatch() throws Exception
 	{
 		trie.add("test_object_1", test_object_1);
 		
@@ -107,7 +111,7 @@ public class TrieTest
 	}
 	
 	@Test
-	public void testMatcherIsGreedy() throws IOException
+	public void matcherIsGreedy() throws Exception
 	{
 		trie.add("test_object_1", test_object_1);
 		trie.add("test_object_1_extraStuff", test_object_1_extraStuff);
@@ -117,6 +121,16 @@ public class TrieTest
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(1, foundObjects.size());
 		assertEquals(test_object_1_extraStuff, foundObjects.get(0));
+	}
+	
+	@Test
+	public void throwsExceptionIfKeyHasAlreadyBeenAdded() throws Exception
+	{
+		exception.expect(TrieKeyAlreadyExistsException.class);
+		exception.expectMessage("The key 'test_object_1' already exists");
+		
+		trie.add("test_object_1", test_object_1);
+		trie.add("test_object_1", test_object_1_extraStuff);
 	}
 	
 	

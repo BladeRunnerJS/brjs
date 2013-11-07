@@ -12,6 +12,7 @@ import java.util.List;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 import org.bladerunnerjs.model.utility.Trie;
+import org.bladerunnerjs.model.utility.TrieKeyAlreadyExistsException;
 
 
 public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
@@ -23,7 +24,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private FileModifiedChecker fileModifiedChecker;
 	
 	public FullyQualifiedLinkedAssetFile(SourceLocation sourceLocation, File file) {
-		this.sourceLocation = sourceLocation;	
+		this.sourceLocation = sourceLocation;
 		assetFile = file;
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
@@ -83,11 +84,18 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 			for(SourceFile sourceFile : sourceLocation.sourceFiles()) {
 				ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
 				
-				trie.add(sourceFile.getRequirePath(), sourceFile);
-				trie.add(classSourceFile.getClassName(), classSourceFile);
-				
-				for(AliasDefinition aliasDefinition : sourceFile.getAliases()) {
-					trie.add(aliasDefinition.getName(), aliasDefinition);
+				try
+				{
+    				trie.add(sourceFile.getRequirePath(), sourceFile);
+    				trie.add(classSourceFile.getClassName(), classSourceFile);
+    				
+    				for(AliasDefinition aliasDefinition : sourceFile.getAliases()) {
+    					trie.add(aliasDefinition.getName(), aliasDefinition);
+    				}
+				}
+				catch (TrieKeyAlreadyExistsException ex)
+				{
+					throw new ModelOperationException(ex);
 				}
 			}
 //		}

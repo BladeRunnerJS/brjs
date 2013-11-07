@@ -9,7 +9,7 @@ public class Trie<T>
 {
 	private TrieNode<T> root = new TrieNode<T>();
 	
-	public void add(String key, T value) {
+	public void add(String key, T value) throws TrieKeyAlreadyExistsException {
 		TrieNode<T> node = root;
 		
 		for( char character : key.toCharArray() )
@@ -17,6 +17,10 @@ public class Trie<T>
 			node = node.getOrCreateNextNode( character );
 		}
 		
+		if (node.getValue() != null)
+		{
+			throw new TrieKeyAlreadyExistsException(key);
+		}
 		node.setValue(value);
 	}
 	
