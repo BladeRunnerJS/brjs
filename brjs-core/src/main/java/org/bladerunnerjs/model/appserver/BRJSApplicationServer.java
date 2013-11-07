@@ -70,7 +70,7 @@ public class BRJSApplicationServer implements ApplicationServer
 		ApplicationServerUtils.addAppContexts(brjs, contexts);
 		
 		File appsDir = new File(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
-		File sysAppsDir = brjs.systemApp("no-such-app").file("..");
+		File sysAppsDir = brjs.systemApp("no-such-app").dir().getParentFile();
 		new AppDeploymentFileWatcher(brjs, this, appsDir).start();
 		new AppDeploymentFileWatcher(brjs, this, sysAppsDir).start();
 		
