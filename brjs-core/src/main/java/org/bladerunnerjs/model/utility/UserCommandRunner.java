@@ -31,8 +31,10 @@ public class UserCommandRunner {
 			brjs.runCommand(args);
 		}
 		catch (NoSuchCommandException e) {
-			out.println("No such command '%s'", e.getCommandName());
-			out.println("");
+			if (e.getCommandName().length() > 0)
+			{
+				out.println(e.getMessage());				
+			}
 			doRunCommand(brjs, new String[] {new HelpCommand().getCommandName() }, out);
 		}
 		catch (CommandArgumentsException e) {

@@ -25,7 +25,8 @@ public class BRJSTest extends SpecTest {
 		command2 = new MockCommand("command2", "Command #2 description.", "command-usage", "Command #2 help.");
 		
 		given(brjs).hasCommand(command1)
-			.and(brjs).hasBeenCreated();
+			.and(brjs).hasBeenCreated()
+			.and(brjs).containsFileWithContents("sdk/version.txt", "{'Version': 'the-version', 'BuildDate': 'the-build-date'}");
         	brjsTemplate = brjs.template("brjs");
         	app1 = brjs.app("app1");
         	app2 = brjs.app("app2");
@@ -55,18 +56,18 @@ public class BRJSTest extends SpecTest {
 	public void helpMenuIsShownIfRunUserCommandIsInvokedWithoutACommandName() throws Exception {
 		when(brjs).runUserCommand("");
     	then(output).containsText(
-    				"No such command ''",
-    				"",
-    				"Possible commands:",
-    				"  command1     :Command #1 description.                ",
-    				"  -----",
-    				"  help         :Prints this list of commands           ",
-    				"  version      :Displays the BladeRunnerJS version     ",
-    				"",
-    				"Supported flags:",
-    				"  --quiet",
-    				"  --verbose",
-    				"  --debug");
+			"BladeRunnerJS version: the-version, built: the-build-date",
+			"",
+			"Possible commands:",
+			"  command1     :Command #1 description.                ",
+			"  -----",
+			"  help         :Prints this list of commands           ",
+			"  version      :Displays the BladeRunnerJS version     ",
+			"",
+			"Supported flags:",
+			"  --quiet",
+			"  --verbose",
+			"  --debug");
 	}
 	
 	@Test
