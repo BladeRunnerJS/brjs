@@ -9,7 +9,7 @@ br.presenter.view.knockout.KnockoutPropertySubclass = function()
 	this.addListener(this);
 };
 br.extend(br.presenter.view.knockout.KnockoutPropertySubclass, br.presenter.property.WritableProperty);
-br.provide(br.presenter.view.knockout.KnockoutPropertySubclass, br.presenter.property.PropertyListener);
+br.inherit(br.presenter.view.knockout.KnockoutPropertySubclass, br.presenter.property.PropertyListener);
 
 br.presenter.view.knockout.KnockoutPropertySubclass.prototype.onPropertyUpdated = function()
 {

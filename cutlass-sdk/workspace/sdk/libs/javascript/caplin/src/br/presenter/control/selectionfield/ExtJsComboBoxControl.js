@@ -54,7 +54,7 @@ br.presenter.control.selectionfield.ExtJsComboBoxControl = function()
 		}
 	};
 };
-br.provide(br.presenter.control.selectionfield.ExtJsComboBoxControl, br.presenter.control.ControlAdaptor);
+br.inherit(br.presenter.control.selectionfield.ExtJsComboBoxControl, br.presenter.control.ControlAdaptor);
 
 // *********************** ControlAdaptor Interface ***********************
 

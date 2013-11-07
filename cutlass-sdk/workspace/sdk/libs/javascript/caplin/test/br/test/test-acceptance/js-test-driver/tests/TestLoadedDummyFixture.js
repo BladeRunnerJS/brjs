@@ -4,7 +4,7 @@ TestLoadedDummyFixture = function()
 {
 	
 };
-br.provide(TestLoadedDummyFixture, br.test.Fixture);
+br.inherit(TestLoadedDummyFixture, br.test.Fixture);
 
 
 TestLoadedDummyFixture.prototype.canHandleProperty = function()

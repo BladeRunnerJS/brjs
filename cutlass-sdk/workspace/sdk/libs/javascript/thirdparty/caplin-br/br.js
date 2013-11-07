@@ -17,8 +17,7 @@ define("br", function(require, exports, module) {
 		}, 0);
 	};
 
-	exports.provide = exports.inherit;
+	exports.thirdparty = function(library){};
 
-	exports.thirdparty = function(library) {};
 	require("br/i18n").initialise(window.pUnprocessedI18NMessages || []);
 });
