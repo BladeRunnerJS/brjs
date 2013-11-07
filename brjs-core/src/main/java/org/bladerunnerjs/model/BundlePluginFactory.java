@@ -8,7 +8,7 @@ import java.util.Map;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.js.CompositeJsBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundlesource.js.CaplinJsBundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.js.NodeJsBundlerPlugin;
+//import org.bladerunnerjs.core.plugin.bundlesource.js.NodeJsBundlerPlugin;
 
 public class BundlePluginFactory {
 	public static Map<String, BundlerPlugin> createBundlerPlugins(BRJS brjs) {
@@ -18,7 +18,7 @@ public class BundlePluginFactory {
 		// TODO: start discovering these plug-ins automatically
 		bundlerPluginList.add(new CompositeJsBundlerPlugin());
 		bundlerPluginList.add(new CaplinJsBundlerPlugin());
-		bundlerPluginList.add(new NodeJsBundlerPlugin());
+//		bundlerPluginList.add(new NodeJsBundlerPlugin());
 		
 		for(BundlerPlugin bundlerPlugin : bundlerPluginList) {
 			bundlerPlugin.setBRJS(brjs);

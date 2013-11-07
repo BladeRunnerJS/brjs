@@ -209,7 +209,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		
 		@Override
 		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("caplin-src/**/*.js"), null, new CaplinJsFileSetFactory());
+			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new CaplinJsFileSetFactory());
 		}
 		
 		@Override
