@@ -37,6 +37,7 @@ allprojects {
 }
 
 def projectBuildVersion = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(project)
+def projectVersionIsDirty = org.bladerunnerjs.BuildVersionCalculator.isVersionDirty(project)
 def projectBuildDate = org.bladerunnerjs.BuildVersionCalculator.calculateBuildDate(project)
 def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBuildHostname(project)
 
@@ -138,4 +139,76 @@ afterEvaluate { project ->
     buildAndTestIE_NoSysApps.dependsOn ':cutlass-sdk:testJsIE'
 }
 
+
+def getProperty = { project, property ->
+	if (!project.hasProperty(property)) {
+		throw new GradleException("${property} property must be set")
+	}
+	return project.property(property)
+}
+
+
+def getGitHubToken = { project ->
+	return getProperty(project,"githubToken")
+}
+
+def getReleaseNoteJson = { project, tagVersion ->
+	def releaseDataFile = file("releases/${tagVersion}.json")
+	def releaseNoteJson = new groovy.json.JsonSlurper().parseText( releaseDataFile.text )
+	return releaseNoteJson
+}
+
+import org.bladerunnerjs.github.*
+
+
+task generateReleaseNotes, {
+	def assembledReleaseNotesFile = file("${buildDir}/release-note.txt")
+	inputs.property "projectBuildVersion", projectBuildVersion
+	outputs.file assembledReleaseNotesFile
+	doFirst {
+    	def gitHubToken = getGitHubToken(project)
+		def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
+    	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
+		
+		def releaseNoteFile = file("releases/${tagVersion}.md")
+		def milestoneId = getReleaseNoteJson(project,tagVersion).milestone
+		def includeIssueLabels = ["bug", "feature", "enhancement"]
+		
+		List<Issue> issues = githubApi.getClosedIssuesForMilestone(milestoneId, includeIssueLabels);
+		
+		assembledReleaseNotesFile.parentFile.mkdirs()
+		assembledReleaseNotesFile.createNewFile()
+		assembledReleaseNotesFile.text = releaseNoteFile.text
+		assembledReleaseNotesFile.text += "\n\n"
+		assembledReleaseNotesFile.text += "-------------\n"
+		assembledReleaseNotesFile.text += "### Closed Issues ###\n"
+		issues.each {
+			assembledReleaseNotesFile.text += "   - ${it.toString()}\n"
+		}
+		assembledReleaseNotesFile.text += "\n"
+		assembledReleaseNotesFile.text += '<sub>Parts of this release note have been auto-generated. If you notice any problems with it, <a href="https://github.com/BladeRunnerJS/brjs/issues/new">tell us</a></sub>'
+	}
+}
+
+
+task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip'], {
+	doFirst {
+		def cutlassSdkProject = project(':cutlass-sdk')
+		def brjsZipPattern = "**/BladeRunnerJS-${projectBuildVersion}.zip"
+		def brjsZip = fileTree(dir:cutlassSdkProject.buildDir, include:brjsZipPattern).singleFile
+
+		if (projectVersionIsDirty)
+		{
+			throw new GradleException("Project version is dirty, this version (${projectBuildVersion}) cannot be released.")
+		}
+		
+    	def gitHubToken = getGitHubToken(project)
+    	def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
+    	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
+    	
+		def releaseNoteFile = generateReleaseNotes.outputs.files.singleFile
+    	Release release = githubApi.createReleaseForTag(tagVersion, getReleaseNoteJson(project,tagVersion), releaseNoteFile.text)
+		githubApi.uploadAssetForRelease(brjsZip, release)
+	}
+}
 
