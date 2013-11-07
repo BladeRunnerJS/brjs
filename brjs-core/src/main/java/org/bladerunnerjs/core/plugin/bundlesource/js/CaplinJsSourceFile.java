@@ -16,11 +16,11 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 public class CaplinJsSourceFile implements SourceFile {
 	private LinkedAssetFile assetFile;
 	private SourceLocation sourceLocation;
-	private String filePath;
+	private String requirePath;
 	
 	public CaplinJsSourceFile(SourceLocation sourceLocation, File file) {
 		this.sourceLocation = sourceLocation;
-		this.filePath = file.getPath();
+		this.requirePath = sourceLocation.file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
 		assetFile = new FullyQualifiedLinkedAssetFile(sourceLocation, file);
 	}
 	
@@ -44,12 +44,12 @@ public class CaplinJsSourceFile implements SourceFile {
 	
 	@Override
 	public String getRequirePath() {
-		return filePath.replaceAll("\\.js^", "");
+		return requirePath;
 	}
 	
 	@Override
 	public Resources getResources() {
-		return sourceLocation.getResources(filePath);
+		return sourceLocation.getResources(requirePath);
 	}
 	
 	@Override
