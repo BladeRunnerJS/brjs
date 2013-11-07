@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.specutil.AppBuilder;
@@ -19,6 +20,7 @@ import org.bladerunnerjs.specutil.JsLibBuilder;
 import org.bladerunnerjs.specutil.LoggerBuilder;
 import org.bladerunnerjs.specutil.NamedDirNodeBuilder;
 import org.bladerunnerjs.specutil.NamedNodeBuilder;
+import org.bladerunnerjs.specutil.TestPackNodeBuilder;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 
 
@@ -29,6 +31,7 @@ public class BuilderChainer {
 		this.modelTest = modelTest;
 	}
 	
+	public TestPackNodeBuilder and(TestPack testPack) { return new TestPackNodeBuilder(modelTest, testPack); }
 	public NamedNodeBuilder and(NamedNode namedDirNode) { return new NamedNodeBuilder(modelTest, namedDirNode); }
 	public BRJSBuilder and(BRJS brjs) { return new BRJSBuilder(modelTest, brjs); }
 	public AppBuilder and(App app) { return new AppBuilder(modelTest, app); }

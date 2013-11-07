@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
@@ -51,6 +52,7 @@ import org.bladerunnerjs.specutil.NamedNodeVerifier;
 import org.bladerunnerjs.specutil.NodePropertiesBuilder;
 import org.bladerunnerjs.specutil.NodePropertiesCommander;
 import org.bladerunnerjs.specutil.NodePropertiesVerifier;
+import org.bladerunnerjs.specutil.TestPackVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
@@ -182,6 +184,9 @@ public abstract class SpecTest
 	public NamedDirNodeBuilder given(NamedDirNode namedDirNode) { return new NamedDirNodeBuilder(this, namedDirNode); }
 	public NamedDirNodeCommander when(NamedDirNode namedDirNode) { return new NamedDirNodeCommander(this, namedDirNode); }
 	public NamedDirNodeVerifier then(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(this, namedDirNode); }
+	
+	// TestPack
+	public TestPackVerifier then(TestPack testPack) { return new TestPackVerifier(this, testPack); }
 	
 	// App server
 	public AppServerBuilder given(ApplicationServer appServer) { return new AppServerBuilder(this, appServer); }
