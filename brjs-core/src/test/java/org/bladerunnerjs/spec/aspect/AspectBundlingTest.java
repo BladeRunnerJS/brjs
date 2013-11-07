@@ -27,9 +27,17 @@ public class AspectBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void weBundleAClassIfItIsReferredToInTheAspectIndexPage() throws Exception {
-		given(blade).hasClass("novox.Class1")
+	public void weBundleAnAspectClassIfItIsReferredToInTheAspectIndexPage() throws Exception {
+		given(aspect).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1");
+		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		then(response).containsText("novox.Class1 = function()");
+	}
+	
+	@Test
+	public void weBundleABladeClassIfItIsReferredToInTheAspectIndexPage() throws Exception {
+		given(blade).hasClass("novox.Class1")
+		.and(aspect).indexPageRefersTo("novox.Class1");
 		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
 		then(response).containsText("novox.Class1 = function()");
 	}

@@ -20,7 +20,6 @@ public class NodeJsSourceFile implements SourceFile {
 	private List<String> dependentRequirePaths;
 	private List<AliasDefinition> aliases;
 	private BundlableNode bundlableNode; // TODO: where do I get this from?
-	private String filePath;
 	@SuppressWarnings("unused") private FileModifiedChecker fileModifiedChecker;
 	
 	public NodeJsSourceFile(SourceLocation sourceLocation, File file) {
@@ -57,7 +56,7 @@ public class NodeJsSourceFile implements SourceFile {
 	
 	@Override
 	public String getRequirePath() {
-		return filePath.replaceAll("\\.js^", "");
+		return assetFile.getPath().replaceAll("\\.js^", "");
 	}
 	
 	@Override
