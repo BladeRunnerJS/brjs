@@ -28,6 +28,7 @@ import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
+import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
@@ -79,17 +80,17 @@ public class TestRunner {
 	static boolean disableLogging = false;
 	
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames) throws FileNotFoundException, YamlException, IOException {
+	public TestRunner(File configFile, File resultDir, List<String> browserNames) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
 		this(configFile, resultDir, browserNames, false, false);
 	}
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean noBrowser, boolean generateReports) throws FileNotFoundException, YamlException, IOException {
+	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean noBrowser, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
 		verbose = determineIfVerbose();
 		config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
 		
 		this.jsTestDriverJar = config.getJsTestDriverJarFile();
 		this.portNumber = config.getPortNumber();
-		this.browsers = config.getBrowsers();
+		this.browsers = noBrowser == true ? null : config.getBrowsers();
 //		this.resultDir = resultDir;
 		this.noBrowserFlag = noBrowser;
 		this.generateReports = generateReports;

@@ -9,8 +9,10 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
+import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,7 +31,7 @@ public class TestServerCommandTest extends SpecTest
 	private DirNode appJars;
 	private File sdkDir;
 	
-	private String testRunnerConfContents;
+	private String testRunnerConfWithoutBrowsersDefined;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -43,6 +45,16 @@ public class TestServerCommandTest extends SpecTest
 			bladeset = app.bladeset("mybladeset");
 			blade = bladeset.blade("myblade");
 			sdkDir = new File(brjs.dir(), "sdk");
+			
+		testRunnerConfWithoutBrowsersDefined = 
+				"jsTestDriverJar: pathToJsTestDriver.jar\n" +
+				"portNumber: 4224\n" +
+				"defaultBrowser: chrome\n" +
+				"\n" +
+				"browserPaths:\n" + 
+				"  windows:\n" +
+				"  mac:" +
+				"  linux:";
 	}
 	
 	// #183 - TODO: Remove the @Ignore once we are able to allow jsTestDriver on the path for the specTests
@@ -50,10 +62,22 @@ public class TestServerCommandTest extends SpecTest
 	@Test
 	public void canLaunchTestServerWithoutBrowsersConfiguredUsingTheNoBrowserFlag() throws Exception 
 	{
-		given(brjs).containsFile("sdk/templates/brjs-template/conf/test-runner.conf")
-			.and(brjs).containsFileWithContents("conf/test-runner.conf", "bad test-runner.conf contents");
+		given(brjs).containsFileWithContents("sdk/templates/brjs-template/conf/test-runner.conf", testRunnerConfWithoutBrowsersDefined)
+			.and(brjs).containsFileWithContents("conf/test-runner.conf", testRunnerConfWithoutBrowsersDefined);
 		when(brjs).runCommand("test-server", "--no-browser");
 		then(exceptions).verifyNoOutstandingExceptions();
 //			.and(processes).testServerProcessesStarted(); //TODO: add the ability to test whether a process (or mock process) has been started by the test runner
+	}
+	
+	@Ignore
+	@Test
+	public void throwsNoBrowsersDefinedExceptionWhenNoBrowsersAreDefined() throws Exception
+	{
+		given(brjs).containsFileWithContents("sdk/templates/brjs-template/conf/test-runner.conf", testRunnerConfWithoutBrowsersDefined)
+			.and(brjs).containsFileWithContents("conf/test-runner.conf", testRunnerConfWithoutBrowsersDefined);
+		when(brjs).runCommand("test-server");
+		then(exceptions).verifyException(NoBrowsersDefinedException.class).
+			whereTopLevelExceptionIs(CommandOperationException.class);
+//			.and(processes).testServerProcessesNotStarted(); //TODO: add the ability to test whether a process (or mock process) is not running
 	}
 }

@@ -10,8 +10,13 @@ import java.util.Map;
 
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
+
 import com.caplin.cutlass.BRJSAccessor;
+
+import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
+import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
@@ -47,7 +52,8 @@ public class TestRunnerConfiguration {
 		return configuration;
 	}
 	
-	public List<String> getBrowsers() {
+	public List<String> getBrowsers() throws NoBrowsersDefinedException, IOException 
+	{
 		List<String> browsers = new ArrayList<String>();
 		Map<String, String> osBrowserPaths = getBrowserPathsForOS();
 		
@@ -62,9 +68,17 @@ public class TestRunnerConfiguration {
 		return browsers;
 	}
 	
-	public Map<String, String> getBrowserPathsForOS()
+	public Map<String, String> getBrowserPathsForOS() throws NoBrowsersDefinedException, IOException
 	{
-		return browserPaths.get(getOperatingSystem());
+		Map<String, String> paths = null;
+		try {
+			paths = browserPaths.get(getOperatingSystem());
+		}
+		catch (ClassCastException e) 
+		{
+			throw new NoBrowsersDefinedException(getRelativeDir().getCanonicalPath());
+		}
+		return paths;
 	}
 	
 	public File getJsTestDriverJarFile() {

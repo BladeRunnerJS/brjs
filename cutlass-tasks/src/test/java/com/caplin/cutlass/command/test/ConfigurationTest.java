@@ -3,10 +3,12 @@ package com.caplin.cutlass.command.test;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +50,7 @@ public class ConfigurationTest {
 	}
 	
 	@Test
-	public void browsersListIsCorrect()
+	public void browsersListIsCorrect() throws NoBrowsersDefinedException, IOException
 	{
 		List<String> browsers = config.getBrowsers();
 		
@@ -57,7 +59,7 @@ public class ConfigurationTest {
 	}
 	
 	@Test
-	public void notSpecifyingAnyBrowsersShouldCauseTheDefaultToBeUsed()
+	public void notSpecifyingAnyBrowsersShouldCauseTheDefaultToBeUsed() throws NoBrowsersDefinedException, IOException
 	{
 		config.setBrowserNames(new ArrayList<String>());
 		List<String> browsers = config.getBrowsers();
@@ -67,7 +69,7 @@ public class ConfigurationTest {
 	}
 	
 	@Test
-	public void specifyingANonExistentBrowserShouldCauseTheDefaultToBeUsed()
+	public void specifyingANonExistentBrowserShouldCauseTheDefaultToBeUsed() throws NoBrowsersDefinedException, IOException
 	{
 		config.setBrowserNames(Arrays.asList("non-existent-browser"));
 		List<String> browsers = config.getBrowsers();
@@ -77,7 +79,7 @@ public class ConfigurationTest {
 	}
 	
 	@Test
-	public void specifyingALLShouldCauseAllBrowsersToBeReturned()
+	public void specifyingALLShouldCauseAllBrowsersToBeReturned() throws NoBrowsersDefinedException, IOException
 	{
 		config.setBrowserNames(Arrays.asList("ALL"));
 		List<String> browsers = config.getBrowsers();
