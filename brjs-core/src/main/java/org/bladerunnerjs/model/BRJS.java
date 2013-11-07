@@ -19,6 +19,7 @@ import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
+import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.engine.Node;
@@ -62,6 +63,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Logger logger;
 	private final CommandList commandList;
 	private final Map<String, BundlerPlugin> bundlerPlugins;
+	private List<MinifierPlugin> minifierPlugins;
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
@@ -81,6 +83,7 @@ public class BRJS extends AbstractBRJSRootNode
 		logger.info(Messages.CREATING_COMMAND_PLUGINS_LOG_MSG);
 		commandList = new CommandList(this, pluginLocator.createCommandPlugins(this));
 		bundlerPlugins = BundlePluginFactory.createBundlerPlugins(this);
+		minifierPlugins = MinifierPluginFactory.createMinifierPlugins(this);
 	}
 	
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
@@ -300,5 +303,19 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public Collection<BundlerPlugin> bundlerPlugins() {
 		return bundlerPlugins.values();
+	}
+	
+	public List<MinifierPlugin> minifierPlugins() {
+		return minifierPlugins;
+	}
+	
+	public MinifierPlugin minifierPlugin(String minifierSetting) {
+		for(MinifierPlugin minifierPlugin : minifierPlugins) {
+			if(minifierPlugin.getSettingNames().contains(minifierSetting)) {
+				return minifierPlugin;
+			}
+		}
+		
+		throw new RuntimeException("No minifier plugin for minifier setting '" + minifierSetting + "'");
 	}
 }
