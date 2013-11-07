@@ -28,6 +28,7 @@ public class StandardFileSet<AF extends AssetFile> implements FileSet<AF> {
 		pathMatcher = new PathMatcher(includePathsStr, excludePathsStr, sourceLocation.dir());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<AF> getFiles() {
 		List<AF> files = new ArrayList<>();
 		File baseDir = sourceLocation.dir();
@@ -36,7 +37,7 @@ public class StandardFileSet<AF extends AssetFile> implements FileSet<AF> {
 			String relativePath = baseDir.toURI().relativize(file.toURI()).getPath();
 			
 			if(pathMatcher.matches(relativePath, true)) {
-				files.add(fileSetFactory.createFile(sourceLocation, file));
+				files.add((AF) sourceLocation.root().getAssetFile(fileSetFactory, sourceLocation, file));
 			}
 		}
 		

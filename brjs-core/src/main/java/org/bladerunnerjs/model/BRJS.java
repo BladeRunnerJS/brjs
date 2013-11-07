@@ -67,6 +67,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
+	private final Map<String, AssetFile> assetFiles = new HashMap<>();
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
@@ -317,5 +318,20 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		throw new RuntimeException("No minifier plugin for minifier setting '" + minifierSetting + "'");
+	}
+	
+	public synchronized <AF extends AssetFile> AssetFile getAssetFile(AssetFileFactory<AF> assetFileFactory, SourceLocation sourceLocation, File file) {
+		String absolutePath = file.getAbsolutePath();
+		AssetFile assetFile;
+		
+		if(assetFiles.containsKey(absolutePath)) {
+			assetFile = assetFiles.get(absolutePath);
+		}
+		else {
+			assetFile = assetFileFactory.createFile(sourceLocation, file);
+			assetFiles.put(absolutePath, assetFile);
+		}
+		
+		return assetFile;
 	}
 }
