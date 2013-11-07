@@ -2,13 +2,11 @@ package com.caplin.cutlass.command.test.testrunner;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Arrays;
 
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.IOUtils;
-
 import com.caplin.cutlass.command.test.testrunner.TestRunner.TestType;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
 import com.caplin.cutlass.BRJSAccessor;
@@ -89,27 +87,11 @@ public class TestRunnerController
 			TestRunner testRunner;
 			
 			try
-			{
-				File templateConfigFile = BRJSAccessor.root.template("brjs").file("conf/test-runner.conf");
+			{				
+				boolean generateReports = (mode == RunMode.RUN_TESTS) && config.getBoolean(REPORT_SWITCH);
+				boolean noBrowser = (mode == RunMode.RUN_SERVER) && config.getBoolean(NO_BROWSER_SWITCH);
 				
-				try(FileReader configFileReader = new FileReader(configFile);
-					FileReader templateConfigFileReader = new FileReader(templateConfigFile))
-				{
-					if( IOUtils.contentEquals(configFileReader, templateConfigFileReader) )
-					{
-						throw new CommandOperationException("Browsers must first be defined within the test runner configuration file ('" +
-							configFile.getAbsolutePath() + "') before any tests can be run.");
-					}
-					
-					boolean generateReports = (mode == RunMode.RUN_TESTS) && config.getBoolean(REPORT_SWITCH);
-					boolean noBrowser = (mode == RunMode.RUN_SERVER) && config.getBoolean(NO_BROWSER_SWITCH);
-					
-					testRunner = new TestRunner(configFile, resultDir, Arrays.asList(config.getStringArray("browsers")), noBrowser, generateReports);
-				}
-			}
-			catch (CommandOperationException ex)
-			{
-				throw ex;
+				testRunner = new TestRunner(configFile, resultDir, Arrays.asList(config.getStringArray("browsers")), noBrowser, generateReports);
 			}
 			catch (Exception ex)
 			{
