@@ -88,7 +88,7 @@ public class BundlerServlet extends HttpServlet
 			logger.debug("BASE DIR " + baseDir);
 			logger.debug("REQUEST PATH " + requestPath);
 			
-			if(requestPath.equals("js/js.bundle")) {
+			if(requestPath.equals("XXX-js/js.bundle")) {
 				app.handleLogicalRequest(bladerunnerUri, cachedBundlerOutputStream);
 			}
 			else {
