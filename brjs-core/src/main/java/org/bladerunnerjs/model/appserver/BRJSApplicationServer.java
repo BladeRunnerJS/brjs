@@ -27,7 +27,7 @@ public class BRJSApplicationServer implements ApplicationServer
 	// TODO: these messages aren't currently covered within our spec tests
 	public class Messages {
 		public static final String SERVER_STARTING_LOG_MSG = "%s server starting";
-		public static final String SERVER_STOPPING_LOG_MSG = "%s server starting";
+		public static final String SERVER_STOPPING_LOG_MSG = "%s server stopping";
 		public static final String PORT_ALREADY_BOUND_EXCEPTION_MSG = "Port '%s' is already bound. Either another instance of %s is running or another server is using this port.";
 		public static final String SERVER_STARTED_LOG_MESSAGE = "Application server started on port %s";
 		public static final String SERVER_STOPPED_LOG_MESSAGE = "Application server running on port %s stopped";

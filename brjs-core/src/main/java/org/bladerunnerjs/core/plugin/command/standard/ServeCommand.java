@@ -17,7 +17,7 @@ import com.martiansoftware.jsap.JSAPResult;
 public class ServeCommand extends ArgsParsingCommandPlugin
 {
 	public class Messages {
-		public static final String SERVER_STARTUP_MESSAGE = "Bladerunner server is now running and can be accessed at http://localhost:";
+		public static final String SERVER_STARTUP_MESSAGE = "BladerunnerJS server is now running and can be accessed at http://localhost:";
 		public static final String SERVER_STOP_INSTRUCTION_MESSAGE = "Press Ctrl + C to stop the server";
 	}
 	
