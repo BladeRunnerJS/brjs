@@ -17,7 +17,8 @@ public abstract class SourceLocationBuilder<N extends AbstractSourceLocation> ex
 
 	public BuilderChainer hasClass(String className) throws Exception
 	{
-		FileUtils.write(node.src().file(className.replaceAll("\\.", "/") + ".js"), "");
+		String classBody = className + " = function() {\n};\n";
+		FileUtils.write(node.src().file(className.replaceAll("\\.", "/") + ".js"), classBody);
 		
 		return builderChainer;
 	}

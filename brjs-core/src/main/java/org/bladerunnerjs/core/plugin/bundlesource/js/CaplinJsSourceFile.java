@@ -3,6 +3,7 @@ package org.bladerunnerjs.core.plugin.bundlesource.js;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.AliasDefinition;
@@ -30,6 +31,7 @@ public class CaplinJsSourceFile implements SourceFile {
 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
 		List<SourceFile> dependentSourceFiles = assetFile.getDependentSourceFiles();
 		dependentSourceFiles.removeAll(getOrderDependentSourceFiles());
+		dependentSourceFiles.remove(this);
 		
 		return dependentSourceFiles;
 	}
@@ -57,7 +59,7 @@ public class CaplinJsSourceFile implements SourceFile {
 	@Override
 	public List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException {
 		// TODO: scan the source file for caplin.extend(), caplin.implement(), br.extend() & br.implement()
-		return null;
+		return new ArrayList<>();
 	}
 	
 	public String getClassName() {
