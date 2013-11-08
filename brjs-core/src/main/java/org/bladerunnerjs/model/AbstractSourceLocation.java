@@ -10,15 +10,23 @@ import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractSourceLocation extends AbstractBRJSNode implements SourceLocation {
 	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
+	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
 	private CompositeFileSet<SourceFile> sourceFileSet ;
-	private final Resources resources;
+	protected final SourceLocationResources sourceLocationResources;
 	
 	public AbstractSourceLocation(RootNode rootNode, File dir) {
-		resources = new DeepResources(dir);
+		init(rootNode, rootNode, dir);
+		
+		sourceLocationResources = new SourceLocationResources(src().dir(), resources().dir());
 	}
 	
 	public DirNode src() {
 		return item(src);
+	}
+	
+	public DirNode resources()
+	{
+		return item(resources);
 	}
 	
 	@Override
@@ -52,8 +60,8 @@ public abstract class AbstractSourceLocation extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public Resources getResources(String srcPath) {
-		return resources;
+	public List<Resources> getResources(File srcDir) {
+		return sourceLocationResources.getResources(srcDir);
 	}
 	
 	@Override

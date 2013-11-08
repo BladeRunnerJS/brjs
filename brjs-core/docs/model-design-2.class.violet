@@ -143,7 +143,7 @@ void transformFile(Reader reader, Writer writer, TransformInfo info) throws File
     <void property="methods">
      <void property="text">
       <string>String getRequirePath()
-Resources getResources()
+List&lt;Resources&gt; getResources()
 List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
      </void>
     </void>
@@ -273,7 +273,7 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
       <string>String getRequirePrefix()
 SourceFile sourceFile(String requirePath)
 List&lt;SourceFile&gt; sourceFiles()
-Resources getResourceDir(String srcPath)???
+List&lt;Resources&gt; getResourceDir(File srcDir)
 addSourceObserver(so SourceObserver)</string>
      </void>
     </void>
@@ -288,7 +288,7 @@ addSourceObserver(so SourceObserver)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>624.0</double>
+      <double>604.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -299,7 +299,7 @@ addSourceObserver(so SourceObserver)</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>624.0</double>
+     <double>604.0</double>
      <double>309.0</double>
     </void>
    </object>
@@ -1045,7 +1045,7 @@ locations become available</string>
      <object class="com.horstmann.violet.BentStyle" field="HVH"/>
     </void>
     <void property="endLabel">
-     <string>1</string>
+     <string>*</string>
     </void>
     <void property="startArrowHead">
      <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/>

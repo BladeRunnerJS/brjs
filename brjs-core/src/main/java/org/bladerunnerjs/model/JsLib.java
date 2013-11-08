@@ -24,14 +24,14 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	private String name;
 	private JsLibConf libConf;
 	private CompositeFileSet<SourceFile> sourceFileSet;
-	private final Resources caplinSrcResources;
+	private final SourceLocationResources sourceLocationResources;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		this.name = name;
 		init(rootNode, parent, dir);
 		
-		caplinSrcResources = new DeepResources(dir);
+		sourceLocationResources = new SourceLocationResources(src().dir(), resources().dir());
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)
@@ -155,14 +155,8 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	}
 	
 	@Override
-	public Resources getResources(String srcPath) {
-		if(srcPath.startsWith("caplin-src")) {
-			return caplinSrcResources;
-		}
-		else {
-			// TODO
-			return null;
-		}
+	public List<Resources> getResources(File srcDir) {
+		return sourceLocationResources.getResources(srcDir);
 	}
 	
 	@Override

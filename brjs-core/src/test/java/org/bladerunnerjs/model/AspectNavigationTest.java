@@ -59,4 +59,10 @@ public class AspectNavigationTest
 	{
 		nodeTesterFactory.createItemTester(DirNode.class, "src", "src").assertModelIsOK();
 	}
+	
+	@Test
+	public void resources()
+	{
+		nodeTesterFactory.createItemTester(DirNode.class, "resources", "resources").assertModelIsOK();
+	}
 }

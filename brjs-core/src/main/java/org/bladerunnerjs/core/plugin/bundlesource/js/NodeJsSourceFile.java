@@ -65,7 +65,7 @@ public class NodeJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public Resources getResources() {
+	public List<Resources> getResources() {
 		// TODO
 		return null;
 	}

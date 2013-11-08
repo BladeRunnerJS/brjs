@@ -1,10 +1,15 @@
 package org.bladerunnerjs.model;
 
+import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 
 public class ShallowResources implements Resources {
+	public ShallowResources(File srcDir) {
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
 	public AliasDefinitionsFile aliasDefinitions() {
 		// TODO Auto-generated method stub

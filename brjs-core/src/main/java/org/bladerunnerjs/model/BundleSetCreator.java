@@ -20,8 +20,10 @@ public class BundleSetCreator {
 			if(bundleSetBuilder.addSourceFile(sourceFile)) {
 				processFile(sourceFile, bundleSetBuilder);
 				
-				for(LinkedAssetFile resourceSeedFile : sourceFile.getResources().seedResources()) {
-					processFile(resourceSeedFile, bundleSetBuilder);
+				for(Resources resources : sourceFile.getResources()) {
+					for(LinkedAssetFile resourceSeedFile : resources.seedResources()) {
+						processFile(resourceSeedFile, bundleSetBuilder);
+					}
 				}
 			}
 		}

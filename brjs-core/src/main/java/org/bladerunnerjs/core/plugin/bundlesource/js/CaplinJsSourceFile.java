@@ -17,11 +17,13 @@ public class CaplinJsSourceFile implements SourceFile {
 	private LinkedAssetFile assetFile;
 	private SourceLocation sourceLocation;
 	private String requirePath;
+	private File srcDir;
 	
 	public CaplinJsSourceFile(SourceLocation sourceLocation, File file) {
 		this.sourceLocation = sourceLocation;
 		this.requirePath = sourceLocation.file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
 		assetFile = new FullyQualifiedLinkedAssetFile(sourceLocation, file);
+		srcDir = file.getParentFile();
 	}
 	
 	@Override
@@ -48,8 +50,8 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public Resources getResources() {
-		return sourceLocation.getResources(requirePath);
+	public List<Resources> getResources() {
+		return sourceLocation.getResources(srcDir);
 	}
 	
 	@Override

@@ -27,15 +27,15 @@ public abstract class AbstractBundlableNode extends AbstractSourceLocation imple
 			seedFileSet.addFileSet(getSeedFileSet());
 			
 			for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-				// TODO: We probably need something more appropriate than getResources(null), as getResources(path) is designed
-				// for finding the resources node for a particular path. Alternatively, it's quite possible that we could just
-				// delete the path parameter, since we it's no longer obvious why getting the resources from a SourceFile isn't
-				// adequate anyway.
-				seedFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getLinkedResourceFileSet(this.getResources(null)));
+				seedFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getLinkedResourceFileSet(this.getSeedResources()));
 			}
 		}
 		
 		return seedFileSet.getFiles();
+	}
+	
+	private Resources getSeedResources() {
+		return sourceLocationResources.getSeedResources();
 	}
 	
 	@Override

@@ -56,6 +56,12 @@ public class BladeNavigationTest
 	}
 	
 	@Test
+	public void resources()
+	{
+		nodeTesterFactory.createItemTester(DirNode.class, "resources", "resources").assertModelIsOK();
+	}
+	
+	@Test
 	public void workbench()
 	{
 		nodeTesterFactory.createItemTester(Workbench.class, "workbench", "workbench").assertModelIsOK();

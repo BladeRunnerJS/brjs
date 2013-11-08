@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model;
 
+import java.io.File;
 import java.util.List;
 
 public interface SourceLocation extends BRJSNode {
@@ -7,6 +8,6 @@ public interface SourceLocation extends BRJSNode {
 	String getRequirePrefix();
 	List<SourceFile> sourceFiles();
 	SourceFile sourceFile(String requirePath);
-	Resources getResources(String srcPath);
+	List<Resources> getResources(File srcDir);
 	void addSourceObserver(SourceObserver sourceObserver);
 }

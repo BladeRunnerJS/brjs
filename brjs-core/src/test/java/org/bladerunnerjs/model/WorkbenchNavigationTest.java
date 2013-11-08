@@ -44,9 +44,14 @@ public class WorkbenchNavigationTest
 	}
 	
 	@Test
+	public void resources()
+	{
+		nodeTesterFactory.createItemTester(DirNode.class, "resources", "resources").assertModelIsOK();
+	}
+	
+	@Test
 	public void styleResources()
 	{
 		nodeTesterFactory.createItemTester(DirNode.class, "styleResources", "resources/style").assertModelIsOK();
 	}
-	
 }

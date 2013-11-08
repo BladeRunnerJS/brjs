@@ -7,6 +7,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public interface SourceFile extends LinkedAssetFile {
 	String getRequirePath();
-	Resources getResources();
+	List<Resources> getResources();
 	List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException;
 }
