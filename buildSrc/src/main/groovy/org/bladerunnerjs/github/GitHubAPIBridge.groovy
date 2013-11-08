@@ -20,7 +20,7 @@ import static groovyx.net.http.ContentType.JSON
 
 class GitHubAPIBridge
 {
-	
+	static final githubWebPrefix = "https://github.com/"
 	static final apiPrefix = "https://api.github.com"
 	static final uploadsPrefix = "https://uploads.github.com"
 	
@@ -39,7 +39,17 @@ class GitHubAPIBridge
 		this.authToken = authToken
 	}
 	
-	List<Issue> getClosedIssuesForMilestone(int milestoneID, List<String> includeIssueLabels)
+	public String getMilestonesUrl()
+	{
+		return getWebUrl("issues/milestones")
+	}
+	
+	public String getMilestoneUrl(int milestoneId)
+	{
+		return getWebUrl("issues?milestone=${milestoneId}")
+	}
+	
+	List<Issue> getClosedIssuesForMilestone(int milestoneID)
 	{
 		logger.quiet "getting closed issues for milestoneID ${milestoneID}"
 		
@@ -47,26 +57,15 @@ class GitHubAPIBridge
 		
 		List<Issue> issues = new ArrayList<Issue>();
 		response.data.each {
-			Issue issue = new Issue(it.html_url, it.id, it.title)
-			boolean addIssue = false
+			def labels = []
 			it.labels.each {
-				if (includeIssueLabels.contains(it.name))
-				{
-					addIssue = true
-					return
-				}
+				labels.add(it.name)
 			}
-			if (addIssue)
-			{
-				issues.add( issue )
-				logger.info "creating Issue object:  ${issue.toString()}"
-			}
-			else
-			{
-				logger.info "ignoring Issue:  ${issue.toString()}"
-			}
+			Issue issue = new Issue(it.html_url, it.id, it.title, labels)
+			issues.add( issue )
+			logger.info "creating Issue object:  ${issue.toString()}"
 		}
-		logger.quiet "got ${issues.size()} issues matching label filters back from GitHub"
+		logger.quiet "got ${issues.size()} closed issues back from GitHub"
 		
 		return issues
 	}
@@ -108,6 +107,11 @@ class GitHubAPIBridge
 	private String getRestUrl(String suffix)
 	{
 		return "/repos/${repoOwner}/${repo}/${suffix}"
+	}
+	
+	private String getWebUrl(String suffix)
+	{
+		return "${githubWebPrefix}/${repoOwner}/${repo}/${suffix}"
 	}
 	
 	private int getIdForExistingRelease(String tagVersion)
