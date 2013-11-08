@@ -28,7 +28,7 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
+ 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
 		List<SourceFile> dependentSourceFiles = assetFile.getDependentSourceFiles();
 		dependentSourceFiles.removeAll(getOrderDependentSourceFiles());
 		dependentSourceFiles.remove(this);
