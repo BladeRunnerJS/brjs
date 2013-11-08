@@ -15,4 +15,10 @@ public class StringVerifier {
 		}
 		
 	}
+	
+	public void containsClasses(String... classes) {
+		for(String className : classes) {
+			containsText(className + " = function()");
+		}
+	}
 }

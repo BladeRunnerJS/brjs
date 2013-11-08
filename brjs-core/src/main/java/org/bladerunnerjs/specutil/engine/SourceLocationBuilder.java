@@ -17,8 +17,7 @@ public abstract class SourceLocationBuilder<N extends AbstractSourceLocation> ex
 
 	public BuilderChainer hasClass(String className) throws Exception
 	{
-		String classBody = className + " = function() {\n};\n";
-		FileUtils.write(node.src().file(className.replaceAll("\\.", "/") + ".js"), classBody);
+		FileUtils.write(node.src().file(className.replaceAll("\\.", "/") + ".js"), getClassBody(className));
 		
 		return builderChainer;
 	}
@@ -34,7 +33,7 @@ public abstract class SourceLocationBuilder<N extends AbstractSourceLocation> ex
 
 	public BuilderChainer classRefersTo(String sourceClass, String destClass) throws Exception
 	{
-		FileUtils.write(node.src().file(sourceClass.replaceAll("\\.", "/") + ".js"), destClass);
+		FileUtils.write(node.src().file(sourceClass.replaceAll("\\.", "/") + ".js"), getClassBody(sourceClass, destClass));
 		
 		return builderChainer;
 	}
@@ -44,5 +43,12 @@ public abstract class SourceLocationBuilder<N extends AbstractSourceLocation> ex
 		node.populate();
 		return builderChainer;
 	}
-
+	
+	private String getClassBody(String className) {
+		return className + " = function() {\n};\n";
+	}
+	
+	private String getClassBody(String sourceClass, String destClass) {
+		return getClassBody(sourceClass) + "br.extend(" + sourceClass + ", " + destClass + ")\n";
+	}
 }

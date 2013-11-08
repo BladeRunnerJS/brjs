@@ -27,19 +27,19 @@ public class AspectBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void weBundleAnAspectClassIfItIsReferredToInTheAspectIndexPage() throws Exception {
+	public void weBundleAnAspectClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1");
 		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
-		then(response).containsText("novox.Class1 = function()");
+		then(response).containsClasses("novox.Class1");
 	}
 	
 	@Test
-	public void weBundleABladeClassIfItIsReferredToInTheAspectIndexPage() throws Exception {
+	public void weBundleABladeClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(blade).hasClass("novox.Class1")
 		.and(aspect).indexPageRefersTo("novox.Class1");
 		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
-		then(response).containsText("novox.Class1 = function()");
+		then(response).containsClasses("novox.Class1");
 	}
 	
 	@Ignore
@@ -48,7 +48,8 @@ public class AspectBundlingTest extends SpecTest {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(blade).classRefersTo("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1");
-		then(aspect).bundledFilesEquals(blade.src().file("novox/Class1.js"), blade.src().file("novox/Class2.js"));
+		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
 	
 	@Ignore
@@ -57,7 +58,8 @@ public class AspectBundlingTest extends SpecTest {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(blade).classRefersTo("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class2");
-		then(aspect).bundledFilesEquals(blade.src().file("novox/Class2.js"));
+		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		then(response).containsClasses("novox.Class2");
 	}
 	
 	@Ignore
