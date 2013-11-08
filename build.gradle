@@ -212,3 +212,8 @@ task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip'], {
 	}
 }
 
+//TODO: add issues stats? (e.g. X issues closed this sprint; Y bugs, improvements or enhancements
+//TODO: allow release/<tag>.md to have tokens (e.g. tagName)
+//TODO: allow tokens for GitHub info (milestoneURL etc)
+//TODO: allow more than 1 milestoneID
+//TODO: allow milestone names??
