@@ -27,3 +27,4 @@ workspace/sdk/templates/
 workspace/sdk/version.txt
 workspace/test-results/
 workspace/**/WEB-INF/lib/brjs-*
+test-results

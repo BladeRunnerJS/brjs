@@ -1,4 +1,4 @@
-define("br/Errors", /** @exports br/Errors */ function(require, module, exports) {
+define("br/Errors", /** @exports br/Errors */ function(require, exports, module) {
 	"use strict";
 	
 	var br = require('br');

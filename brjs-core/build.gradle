@@ -13,6 +13,10 @@ sourceSets {
 	}
 }
 
+configurations {
+	javadocs
+}
+
 dependencies {
 	compile project(":brjs-logger")
 	compile dependency('commons-io')
@@ -41,10 +45,23 @@ dependencies {
 	testRuntime project(path: ':brjs-logger-binding')
 }
 
+javadoc {
+	title = "BladeRunnerJS ${buildVersion}"
+	classpath += project.configurations.compileOnly
+}
 
-task zipJsDoc, type:Zip, dependsOn: processResources, {
+task javadocZip, type:Zip, dependsOn:javadoc, {
+	from javadoc.outputs.files.singleFile
+	into "javadoc"
+}
+
+artifacts {
+	javadocs javadocZip
+}
+
+task zipJsDocResources, type:Zip, dependsOn: processResources, {
 	from "jsdoc-resources"
 	archiveName "jsdoc-resources.zip"
 	destinationDir = file("${sourceSets.main.output.resourcesDir}/org/bladerunnerjs/core/plugin/command/standard/")
 }
-classes.dependsOn zipJsDoc
+classes.dependsOn zipJsDocResources

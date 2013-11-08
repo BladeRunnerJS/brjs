@@ -186,7 +186,7 @@ br.util.EventUtility._handlePageUnload = function()
 	// remove all the event handler registered with addEventListener()
 	for (nUniqueListenerId in br.util.EventUtility.m_mEvents)
 	{
-		br.util.EventUtility.removeEventListenerById(nUniqueListenerId);
+		br.util.EventUtility.removeEventListener(nUniqueListenerId);
 	}
 
 	// remove the unload event listener that caused this callback

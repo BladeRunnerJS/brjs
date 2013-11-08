@@ -1,5 +1,4 @@
-define("br", function(require, module, exports) {	
-
+define("br", function(require, exports, module) {
 	var topiary = require('topiary');
 	topiary.exportTo(exports);
 
@@ -18,8 +17,7 @@ define("br", function(require, module, exports) {
 		}, 0);
 	};
 
-	exports.provide = exports.inherit;
-
 	exports.thirdparty = function(library){};
+
 	require("br/i18n").initialise(window.pUnprocessedI18NMessages || []);
 });

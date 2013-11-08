@@ -35,7 +35,7 @@ br.presenter.control.tooltip.TooltipControl = function()
 	this.m_oTooltip = null;
 	this.m_oPresentationNode = null;
 };
-br.provide(br.presenter.control.tooltip.TooltipControl, br.presenter.control.ControlAdaptor);
+br.inherit(br.presenter.control.tooltip.TooltipControl, br.presenter.control.ControlAdaptor);
 
 br.presenter.control.tooltip.TooltipControl.prototype.destroy = function()
 {

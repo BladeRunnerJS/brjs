@@ -1,5 +1,5 @@
 /** @module br/AliasRegistry */
-define('br/AliasRegistry', function(require, module, exports) {
+define('br/AliasRegistry', function(require, exports, module) {
 	"use strict";
 	
 	/**

@@ -99,8 +99,6 @@ public class ImportApplicationCommand implements LegacyCommandPlugin
 			
 			importApplicationCommandUtility.createAutoDeployFileForApp(newApplicationDirectory, jettyPort);
 			
-			createJsDocPlaceHolder(newApplicationName);
-			
 			out.println("Successfully imported '" + new File(applicationZip).getName() + "' as new application '" + newApplicationName + "'");
 			out.println(" " + newApplicationDirectory.getAbsolutePath());
 		}
@@ -111,15 +109,6 @@ public class ImportApplicationCommand implements LegacyCommandPlugin
 		catch (Exception e)
 		{
 			throw new CommandOperationException("Failed to import application from zip '" + applicationZip + "'.", e);
-		}
-	}
-	
-	private void createJsDocPlaceHolder(String appName) throws IOException {
-		String[] extensions = {"html", "js"};
-		
-		for (File fileInTemplate : FileUtils.listFiles(new File(sdkBaseDir, "templates/jsdoc-template"), extensions, false))
-		{
-			FileUtils.copyFileToDirectory (fileInTemplate, BRJSAccessor.root.app(appName).storageDir("jsdoc-toolkit"));
 		}
 	}
 

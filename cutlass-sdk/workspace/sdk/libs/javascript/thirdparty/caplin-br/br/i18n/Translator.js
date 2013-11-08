@@ -1,4 +1,4 @@
-define("br/i18n/Translator", function(require, module, exports) {
+define("br/i18n/Translator", function(require, exports, module) {
 	"use strict";
 
 	var LocalisedNumber = require('./LocalisedNumber');

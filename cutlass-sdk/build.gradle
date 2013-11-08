@@ -11,8 +11,7 @@ configurations {
 	}
 	jsLibsAndDocs
 	testRunner
-	ct3Zip
-	bladerunnerZip
+	javadocs
 	
 	browsers_dep
 	browsers_webdriver
@@ -33,6 +32,8 @@ dependencies {
 	application (dependency('jsp-2.1-glassfish')) {
 		exclude module: 'ant'
 	}
+	
+	javadocs project(path: ':brjs-core', configuration:'javadocs')
 	
 	systemApp (project(path: ':system-app-servlets'))
 
@@ -78,13 +79,12 @@ task copyBrowsers(type: Sync) {
 		}
 }
 
-task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner], {
+task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner, configurations.javadocs], {
 	def includesDir = "build-resources/includes"
 	
 	destinationDir file("${projectDir.path}/workspace")
 	
 	inputs.property "sdkVersion", buildVersion
-	inputs.property "buildDate", buildDate
 	inputs.property "buildHostname", buildHostname	
 	
 	from ("${includesDir}")
@@ -127,6 +127,9 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	from (configurations.system)
 	{
 		into "sdk/libs/java/system"
+	}
+	from (configurations.javadocs.collect { zipTree(it) }) {
+		into "sdk/docs"
 	}
 	from (configurations.application)
 	{
@@ -215,13 +218,37 @@ task check, dependsOn: test, {}
 task build, dependsOn: check, {}
 
 
+task downloadExampleApps, {
+	outputs.dir file("${buildDir}/brjs-example-apps.zip")
+	doFirst {
+		if (!buildDir.isDirectory()) { buildDir.mkdir() }
+		ant.get(src: "https://github.com/BladeRunnerJS/brjs-example-apps/archive/master.zip", dest: "${buildDir}/brjs-example-apps.zip")
+	}
+}
+
+task extractExampleApps, type:Copy, dependsOn:downloadExampleApps, {
+	from zipTree( tasks.downloadExampleApps.outputs.files.singleFile )
+	into "workspace/apps"
+	includeEmptyDirs = false
+	eachFile {
+		it.path = it.path.replaceFirst("[A-Za-z0-9-_]+/","")
+		if (it.path.startsWith(".git")) { exclude it }
+	}
+}
+
+createTestTask "exampleAppsTestJsChrome", "../apps/", "ALL", "chrome"
+exampleAppsTestJsChrome.dependsOn extractExampleApps
+createTestTask "exampleAppsTestJsFirefox", "../apps/", "ALL", "firefox"
+exampleAppsTestJsFirefox.dependsOn extractExampleApps
+
+task exampleAppsTestJs, dependsOn: [exampleAppsTestJsChrome, exampleAppsTestJsFirefox], {}
+
 ext.explodedSdkDir = "${project.buildDir}/exploded"
-ext.sdkDir = "BladeRunner/sdk"
 
 task distZip, type:Zip, dependsOn: [assemble], {
-	baseName = "BladeRunner"
+	baseName = "BladeRunnerJS"
 	from "workspace/"
-	into "BladeRunner/"
+	into "BladeRunnerJS/"
 	include "licenses/**", "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
 	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**"
 }
@@ -237,7 +264,7 @@ task explodeSdk, type:Sync, dependsOn: distZip, {
 
 task checkVersionTxt, dependsOn: explodeSdk, {
 	doFirst {
-		def versionFile = project.file("${explodedSdkDir}/BladeRunner/sdk/version.txt");
+		def versionFile = project.file("${explodedSdkDir}/BladeRunnerJS/sdk/version.txt");
 		if (versionFile.text.contains("@"))
 		{
 			throw new GradleException("version.txt (${versionFile.getAbsolutePath()}) contains an unfiltered token.")
@@ -267,6 +294,7 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
 		"*/sdk/templates/**/*",
 		"*/sdk/templates/**/tests/**/*",
+		"*/sdk/docs/javadoc/**/*",
 		"*/README.txt",
 		"*/LICENSE",
 		"*/apps/apps.txt",
@@ -288,7 +316,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	   "**/system-applications/**/tests/**/*",
 	   "*/sdk/libs/javascript/caplin/test/**",
 	   "*/sdk/run*",
-	   "**/node_modules/**"
+	   "**/node_modules/**",
+	   "*/apps/*/*"
 	]
 }
 check.dependsOn checkSdkStructure

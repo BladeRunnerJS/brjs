@@ -1,12 +1,12 @@
 package org.bladerunnerjs.core.plugin;
 
 import static org.junit.Assert.*;
-import static org.bladerunnerjs.core.plugin.TypedClassCreator.Messages.*;
+import static org.bladerunnerjs.core.plugin.TypedPluginCreator.Messages.*;
 
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.TypedClassCreator;
+import org.bladerunnerjs.core.plugin.TypedPluginCreator;
 import org.bladerunnerjs.core.plugin.utilClasses.AnotherTestInterface;
 import org.bladerunnerjs.core.plugin.utilClasses.ClassImplementingNestedInterface;
 import org.bladerunnerjs.core.plugin.utilClasses.MyTestInterface;
@@ -36,7 +36,7 @@ public class TypedClassCreatorTest
 	@Test
 	public void testInstancesOfInterfaceAreReturned()
 	{
-		TypedClassCreator<MyTestInterface> classCreator = new TypedClassCreator<MyTestInterface>();
+		TypedPluginCreator<MyTestInterface> classCreator = new TypedPluginCreator<MyTestInterface>();
 		List<MyTestInterface> newObjectList = classCreator.getSubTypesOfClass(brjs, MyTestInterface.class);
 		assertEquals("List should contain 1 item", 1, newObjectList.size());
 		assertEquals("List item should be of type MyTestInterfaceImplementer", MyTestInterfaceImplementer.class, newObjectList.get(0).getClass());
@@ -45,7 +45,7 @@ public class TypedClassCreatorTest
 	@Test
 	public void testErroMessageIsPrintedIfConstructorCantBeFound()
 	{
-		TypedClassCreator<MyTestInterface> classCreator = new TypedClassCreator<MyTestInterface>();
+		TypedPluginCreator<MyTestInterface> classCreator = new TypedPluginCreator<MyTestInterface>();
 		classCreator.getSubTypesOfClass(brjs, MyTestInterface.class);
 		logStore.verifyErrorLogMessage(CANNOT_CREATE_INSTANCE_LOG_MSG, "org.bladerunnerjs.core.plugin.utilClasses.MyTestInterfaceImplementerBadConstructor");
 	}
@@ -53,7 +53,7 @@ public class TypedClassCreatorTest
 	@Test
 	public void testInterfacesExtendingAnotherArentLoaded()
 	{
-		TypedClassCreator<AnotherTestInterface> classCreator = new TypedClassCreator<AnotherTestInterface>();
+		TypedPluginCreator<AnotherTestInterface> classCreator = new TypedPluginCreator<AnotherTestInterface>();
 		classCreator.getSubTypesOfClass(brjs, AnotherTestInterface.class);
 		/* make sure we haven't tried to instantiate the sub interface InterfaceExtendingMyTestInterface */
 		// TODO: talk to Andy about the testing of logs inside this test -- do we really want to be testing behavior outside of our spec tests
@@ -63,7 +63,7 @@ public class TypedClassCreatorTest
 	@Test
 	public void classesImplementingNestedInterfacesAreCreated()
 	{
-		TypedClassCreator<AnotherTestInterface> classCreator = new TypedClassCreator<AnotherTestInterface>();
+		TypedPluginCreator<AnotherTestInterface> classCreator = new TypedPluginCreator<AnotherTestInterface>();
 		classCreator.getSubTypesOfClass(brjs, AnotherTestInterface.class);
 		List<AnotherTestInterface> newObjectList = classCreator.getSubTypesOfClass(brjs, AnotherTestInterface.class);
 		assertEquals("List should contain 1 item", 1, newObjectList.size());

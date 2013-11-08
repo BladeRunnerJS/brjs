@@ -13,6 +13,26 @@ import java.util.Calendar;
 class BuildVersionCalculator
 {
 
+	public static final DIRTY_TAG = "-DEV"
+	
+	static String calculateMajorVersion(Project p)
+	{
+		def stdout = new ByteArrayOutputStream()
+		def stderr = new ByteArrayOutputStream()
+		p.exec {
+			commandLine 'git', 'describe', '--abbrev=0'
+			standardOutput = stdout
+			errorOutput = stderr
+		}
+		def majorVersion = stdout.toString().trim()
+		def version = calculateVersion(p)
+		if (!version.startsWith(majorVersion))
+		{
+			throw new GradleException("majorVersion '${majorVersion} isn't the same as the major part of version '${version}', something may be wrong with tags and commits. Try using 'git describe' to debug.")
+		}
+		return majorVersion
+	}
+	
 	static String calculateVersion(Project p)
 	{
 		def stdout = new ByteArrayOutputStream()
@@ -20,7 +40,7 @@ class BuildVersionCalculator
 		try 
 		{
 			p.exec {
-				commandLine 'git', 'describe', '--tags', '--long', '--dirty=-DEV'
+				commandLine 'git', 'describe', '--long', "--dirty=${DIRTY_TAG}"
 				standardOutput = stdout
 				errorOutput = stderr
 			}
@@ -37,8 +57,13 @@ class BuildVersionCalculator
 				standardOutput = stdout
 				errorOutput = stderr
 			}
-			return "v0.0-${stdout.toString().trim()}-DEV"
+			return "v0.0-${stdout.toString().trim()}${DIRTY_TAG}"
 		}
+	}
+	
+	static boolean isVersionDirty(Project p)
+	{
+		return calculateVersion(p).endsWith(DIRTY_TAG)
 	}
 	
 	static String calculateBuildDate(Project p)

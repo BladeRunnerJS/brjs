@@ -28,30 +28,42 @@
 		}
 
 		function require(context, id) {
-			id = derelativise(context, id);
+			id = derelativise(context, id).replace(/\.js$/, "");
 
 			if (moduleExports[id] != null) { return moduleExports[id]; }
 
 			if (incompleteExports[id] != null) {
-				// there is a circular dependency, we do the best we can
-				// in the circumstances.
+				// there is a circular dependency, we do the best we can in the circumstances.
 				return incompleteExports[id].exports;
 			}
 
 			var definition = moduleDefinitions[id];
-			if (definition == null) { throw new Error("No definition for module " + id + " has been loaded."); }
+			if (definition == null) {
+				if (parentRequire != null) {
+					var result = parentRequire(id);
+					modulesFromParent[id] = true;
+					return result;
+				}
+				throw new Error("No definition for module " + id + " has been loaded.");
+			}
 
-			var module = { exports: {} };
-			Object.defineProperty(module, 'id', {
-				value: id,
-				configurable: false, writable: false, enumerable: true
-			});
+			var module = { exports: {}, id: id };
 			incompleteExports[id] = module;
-			var definitionContext = id.substring(0, id.lastIndexOf("/"));
-			var returnValue = definition.call(module, require.bind(null, definitionContext), module, module.exports);
-			moduleExports[id] = returnValue || module.exports;
-			delete incompleteExports[id];
-
+			try {
+				if (typeof definition === 'function') {
+					var definitionContext = id;
+					var idx = id.lastIndexOf("/");
+					if (idx >= 0) {
+						definitionContext = id.substring(0, idx);
+					}
+					var returnValue = definition.call(module, require.bind(null, definitionContext), module.exports, module);
+					moduleExports[id] = returnValue || module.exports;
+				} else {
+					moduleExports[id] = definition;
+				}
+			} finally {
+				delete incompleteExports[id];
+			}
 			return moduleExports[id];
 		}
 

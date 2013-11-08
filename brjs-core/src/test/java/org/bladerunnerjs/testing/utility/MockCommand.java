@@ -16,26 +16,27 @@ public class MockCommand implements CommandPlugin
 	String description;
 	String usage;
 	private final String helpMessage;
-	boolean failOnSetBRJS;
+	RuntimeException throwException;
 	
 	public MockCommand(String name, String description, String usage, String helpMessage)
 	{
-		this(name, description, usage, helpMessage, false);
+		this(name, description, usage, helpMessage, null);
 	}
 	
-	public MockCommand(String name, String description, String usage, String helpMessage, boolean failOnSetBRJS)
+	public MockCommand(String name, String description, String usage, String helpMessage, RuntimeException throwException)
 	{
 		this.name = name;
 		this.description = description;
 		this.usage = usage;
 		this.helpMessage = helpMessage;
-		this.failOnSetBRJS = failOnSetBRJS;
+		this.throwException = throwException;
 	}
 
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
+		if (throwException != null) { throw throwException; }
 	}
 
 	@Override

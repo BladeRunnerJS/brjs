@@ -1,4 +1,4 @@
-define("br/i18n/LocalisedTime", function(require, module, exports) {
+define("br/i18n/LocalisedTime", function(require, exports, module) {
 	"use strict";
 
 	var Errors = require('br/Errors');

@@ -3,7 +3,7 @@ testing.ParentTestFixture = function()
 	this.m_oFirstMockFixture = testing.TestFixtureFactory.createMockFixture(false);
 	this.m_oSecondMockFixture = testing.TestFixtureFactory.createMockFixture(false);
 };
-br.provide(testing.ParentTestFixture, br.test.Fixture);
+br.inherit(testing.ParentTestFixture, br.test.Fixture);
 
 testing.ParentTestFixture.prototype.addSubFixtures = function(oFixtureRegistry)
 {

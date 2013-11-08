@@ -44,7 +44,7 @@ br.test.GwtTestRunner = function(sFixtureFactoryClass) {
 	this.m_fFinishedContinuesFrom = br.test.GwtTestRunner.createTestMethod(this, "finishedContinuesFrom");
 };
 
-br.provide(br.test.GwtTestRunner, br.test.FixtureRegistry);
+br.inherit(br.test.GwtTestRunner, br.test.FixtureRegistry);
 
 br.test.GwtTestRunner.m_mTests = {};
 br.test.GwtTestRunner.m_mSuites = {};

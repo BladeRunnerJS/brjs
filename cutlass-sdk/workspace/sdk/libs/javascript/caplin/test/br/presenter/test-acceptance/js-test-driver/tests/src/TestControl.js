@@ -3,7 +3,7 @@ TestControl = function()
 	this.m_eElement = document.createElement("span");
 	this.m_nOnViewReadyInvocationCount = 0;
 };
-br.provide(TestControl, br.presenter.control.ControlAdaptor);
+br.inherit(TestControl, br.presenter.control.ControlAdaptor);
 
 TestControl.prototype.setElement = function(parentElement) {
 	parentElement.appendChild(this.m_eElement);
