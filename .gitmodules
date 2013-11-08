@@ -7,3 +7,6 @@
 [submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/emitr"]
 	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/emitr
 	url = https://github.com/BladeRunnerJS/emitr.git
+[submodule "cutlass-sdk\\workspace\\sdk\\libs\\javascript\\thirdparty\\topiarist"]
+	path = cutlass-sdk\\workspace\\sdk\\libs\\javascript\\thirdparty\\topiarist
+	url = https://github.com/BladeRunnerJS/topiarist.git
