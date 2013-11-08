@@ -195,7 +195,7 @@ task generateReleaseNotes, {
 		assembledReleaseNotesFile.text += "\n\n"
 		assembledReleaseNotesFile.text += "-------------\n"
 		assembledReleaseNotesFile.text += "### Closed Issues\n"
-		assembledReleaseNotesFile.text += "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} - @milestoneURL@<sup>\n\n"
+		assembledReleaseNotesFile.text += "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} - <a href=\"@milestoneURL@\">@milestoneURL@</a><sup>\n\n"
 		releaseNoteIssues.each {
 			assembledReleaseNotesFile.text += "- ${it.toString()}\n"
 		}
