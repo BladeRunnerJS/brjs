@@ -1,36 +1,73 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 
 public class ShallowResources implements Resources {
-	public ShallowResources(File srcDir) {
-		// TODO Auto-generated constructor stub
+	private CompositeFileSet<LinkedAssetFile> seedFileSet = new CompositeFileSet<>();
+	private CompositeFileSet<AssetFile> fileSet = new CompositeFileSet<>();
+	private BRJS brjs;
+	private boolean objectInitialized = false;
+	private File dir;
+	
+	public ShallowResources(BRJS brjs, File dir) {
+		this.brjs = brjs;
+		this.dir = dir;
+	}
+	
+	@Override
+	public File dir() {
+		return dir;
 	}
 	
 	@Override
 	public AliasDefinitionsFile aliasDefinitions() {
-		// TODO Auto-generated method stub
+		initialize();
+		
+		// TODO: implement this method
 		return null;
 	}
 	
 	@Override
 	public List<LinkedAssetFile> seedResources() {
-		// TODO Auto-generated method stub
-		return null;
+		initialize();
+		
+		return seedFileSet.getFiles();
 	}
 	
 	@Override
 	public List<LinkedAssetFile> seedResources(String fileExtension) {
-		// TODO Auto-generated method stub
-		return null;
+		List<LinkedAssetFile> typedSeedResources = new ArrayList<>();
+		
+		for(LinkedAssetFile seedResource : seedResources()) {
+			if(seedResource.getUnderlyingFile().getName().endsWith("." + fileExtension)) {
+				typedSeedResources.add(seedResource);
+			}
+		}
+		
+		return typedSeedResources;
 	}
 	
 	@Override
 	public List<AssetFile> bundleResources(String fileExtension) {
-		// TODO Auto-generated method stub
-		return null;
+		initialize();
+		
+		return fileSet.getFiles();
+	}
+	
+	// TODO: can we find a better solution to the construction ordering problem that we have
+	private void initialize() {
+		if(!objectInitialized) {
+			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
+				seedFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getLinkedResourceFileSet(this));
+				fileSet.addFileSet(bundlerPlugin.getFileSetFactory().getResourceFileSet(this));
+			}
+			
+			objectInitialized = true;
+		}
 	}
 }

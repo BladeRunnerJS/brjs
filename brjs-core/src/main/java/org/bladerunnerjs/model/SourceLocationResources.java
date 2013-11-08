@@ -13,10 +13,12 @@ public class SourceLocationResources {
 	private final DeepResources seedResources;
 	private final Map<String, ShallowResources> resources = new HashMap<>();
 	private File srcLocationDir;
+	private BRJS brjs;
 	
-	public SourceLocationResources(File srcLocationDir, File resourcesDir) {
+	public SourceLocationResources(BRJS brjs, File srcLocationDir, File resourcesDir) {
+		this.brjs = brjs;
 		this.srcLocationDir = srcLocationDir;
-		seedResources = new DeepResources(resourcesDir);
+		seedResources = new DeepResources(brjs, resourcesDir);
 	}
 	
 	public Resources getSeedResources() {
@@ -56,7 +58,7 @@ public class SourceLocationResources {
 		String srcPath = srcDir.getAbsolutePath();
 		
 		if(!resources.containsKey(srcPath)) {
-			resources.put(srcPath, new ShallowResources(srcDir));
+			resources.put(srcPath, new ShallowResources(brjs, srcDir));
 		}
 		
 		return resources.get(srcPath);

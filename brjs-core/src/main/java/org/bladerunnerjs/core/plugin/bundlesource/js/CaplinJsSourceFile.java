@@ -63,4 +63,9 @@ public class CaplinJsSourceFile implements SourceFile {
 	public String getClassName() {
 		return getRequirePath().replaceAll("/", ".");
 	}
+	
+	@Override
+	public File getUnderlyingFile() {
+		return assetFile.getUnderlyingFile();
+	}
 }

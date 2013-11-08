@@ -35,6 +35,7 @@
     <void property="methods">
      <void property="text">
       <string>Reader getReader()
+File getUnderlyingFile()
 addObserver(afo)</string>
      </void>
     </void>

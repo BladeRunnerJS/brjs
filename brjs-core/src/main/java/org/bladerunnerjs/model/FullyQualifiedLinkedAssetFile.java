@@ -51,6 +51,11 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		return aliases;
 	}
 	
+	@Override
+	public File getUnderlyingFile() {
+		return assetFile;
+	}
+	
 	private void recalculateDependencies() throws ModelOperationException {
 		dependentSourceFiles = new ArrayList<>();
 		aliases = new ArrayList<>();

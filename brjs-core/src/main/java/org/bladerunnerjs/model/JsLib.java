@@ -31,7 +31,7 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 		this.name = name;
 		init(rootNode, parent, dir);
 		
-		sourceLocationResources = new SourceLocationResources(src().dir(), resources().dir());
+		sourceLocationResources = new SourceLocationResources((BRJS) rootNode, src().dir(), resources().dir());
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)

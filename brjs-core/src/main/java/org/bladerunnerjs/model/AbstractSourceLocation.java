@@ -17,7 +17,7 @@ public abstract class AbstractSourceLocation extends AbstractBRJSNode implements
 	public AbstractSourceLocation(RootNode rootNode, File dir) {
 		init(rootNode, rootNode, dir);
 		
-		sourceLocationResources = new SourceLocationResources(src().dir(), resources().dir());
+		sourceLocationResources = new SourceLocationResources((BRJS) rootNode, src().dir(), resources().dir());
 	}
 	
 	public DirNode src() {

@@ -75,6 +75,11 @@ public class NodeJsSourceFile implements SourceFile {
 		return new ArrayList<>();
 	}
 	
+	@Override
+	public File getUnderlyingFile() {
+		return assetFile;
+	}
+	
 	private void recalculateDependencies() throws ModelOperationException {
 		requirePaths = new ArrayList<>();
 		aliasNames = new ArrayList<>();
@@ -112,5 +117,4 @@ public class NodeJsSourceFile implements SourceFile {
 			throw new ModelOperationException(e);
 		}
 	}
-	
 }

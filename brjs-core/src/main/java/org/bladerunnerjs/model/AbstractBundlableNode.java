@@ -1,9 +1,9 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.file.AliasesFile;
 
 public abstract class AbstractBundlableNode extends AbstractSourceLocation implements BundlableNode {
 	private AliasesFile aliasesFile;
-	private CompositeFileSet<LinkedAssetFile> seedFileSet;
 	
 	public AbstractBundlableNode(RootNode rootNode, File dir) {
 		super(rootNode, dir);
@@ -21,17 +20,12 @@ public abstract class AbstractBundlableNode extends AbstractSourceLocation imple
 	
 	@Override
 	public List<LinkedAssetFile> seedFiles() {
-		if(seedFileSet == null) {
-			seedFileSet = new CompositeFileSet<LinkedAssetFile>();
-			
-			seedFileSet.addFileSet(getSeedFileSet());
-			
-			for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-				seedFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getLinkedResourceFileSet(this.getSeedResources()));
-			}
-		}
+		List<LinkedAssetFile> seedFiles = new ArrayList<>();
 		
-		return seedFileSet.getFiles();
+		seedFiles.addAll(getSeedFileSet().getFiles());
+		seedFiles.addAll(this.getSeedResources().seedResources());
+		
+		return seedFiles;
 	}
 	
 	private Resources getSeedResources() {
