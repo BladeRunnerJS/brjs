@@ -149,6 +149,7 @@ class GitHubAPIBridge
 			logger.info "using cURL because of SSL certificate issues in the Groovy REST client..."
 			project.exec {
     			commandLine = [ "curl",
+					"--insecure", // We have to use this because the SSL cert for uploads.github.com doesnt match the hostname
     				"-i",
     				"-H", "Authorization: token ${authToken}", 
     				"-H", "Accept: application/vnd.github.manifold-preview", 

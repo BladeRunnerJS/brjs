@@ -48,7 +48,7 @@ public class ServeCommandTest extends SpecTest
 		given(logging).enabled();
 		when(brjs).runCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
-			.and(logging).infoMessageReceived("Application server started on port %s", "7070")
+			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7070")
 			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + "7070/")
 			.and(logging).infoMessageReceived("\t" + SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
 			.and(appServer).requestIsRedirected("/","/dashboard");
