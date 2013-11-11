@@ -76,6 +76,11 @@ public class NodeJsSourceFile implements SourceFile {
 	}
 	
 	@Override
+	public SourceLocation getSourceLocation() {
+		return sourceLocation;
+	}
+	
+	@Override
 	public File getUnderlyingFile() {
 		return assetFile;
 	}

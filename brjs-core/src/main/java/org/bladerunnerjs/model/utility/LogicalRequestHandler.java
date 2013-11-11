@@ -3,11 +3,14 @@ package org.bladerunnerjs.model.utility;
 import java.io.File;
 import java.io.OutputStream;
 
+import org.bladerunnerjs.core.log.Logger;
+import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedRequest;
+import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -15,13 +18,24 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 
 public class LogicalRequestHandler {
-	private App app;
+	// TODO: these messages need to be covered off in a spec test (a single test would be perfect)
+	public class Messages {
+		public static final String REQUEST_HANDLED_MSG = "Handling logical request '%s' for app '%s'.";
+		public static final String CONTEXT_IDENTIFIED_MSG = "%s '%s' identified as context for request '%s'.";
+		public static final String BUNDLER_IDENTIFIED_MSG = "Bundler '%s' identified as handler for request '%'.";
+	}
+	
+	private final App app;
+	private final Logger logger;
 	
 	public LogicalRequestHandler(App app) {
 		this.app = app;
+		logger = app.root().logger(LoggerType.BUNDLER, getClass());
 	}
 	
 	public void handle(BladerunnerUri requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
+		logger.debug(Messages.REQUEST_HANDLED_MSG, requestUri.logicalPath, app.getName());
+		
 		try {
 			File baseDir = new File(app.dir(), requestUri.scopePath);
 			BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
@@ -29,14 +43,16 @@ public class LogicalRequestHandler {
 			if(bundlableNode == null) {
 				throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
 			}
-			else {
-				BundlerPlugin bundler = app.root().bundlerPlugin(getResourceBundlerName(requestUri));
-				ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri.logicalPath);
-				
-				// we're currently de-encapsulating the request parser within the bundler since this would allow bundlers
-				// to safely route messages to other bundlers
-				bundler.handleRequest(parsedRequest, bundlableNode.getBundleSet(), os);
-			}
+			
+			String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
+			logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getClass().getSimpleName(), name, requestUri.logicalPath);
+			
+			BundlerPlugin bundler = app.root().bundlerPlugin(getResourceBundlerName(requestUri));
+			
+			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, bundler.getClass().getSimpleName(), requestUri.logicalPath);
+			
+			ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri.logicalPath);
+			bundler.handleRequest(parsedRequest, bundlableNode.getBundleSet(), os);
 		}
 		catch(ModelOperationException e) {
 			throw new BundlerProcessingException(e);

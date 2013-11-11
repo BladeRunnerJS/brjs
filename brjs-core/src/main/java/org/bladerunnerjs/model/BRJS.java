@@ -320,6 +320,7 @@ public class BRJS extends AbstractBRJSRootNode
 		throw new RuntimeException("No minifier plugin for minifier setting '" + minifierSetting + "'");
 	}
 	
+	// TODO: get rid of this synchronized since none of this API is thread-safe?
 	public synchronized <AF extends AssetFile> AssetFile getAssetFile(AssetFileFactory<AF> assetFileFactory, SourceLocation sourceLocation, File file) {
 		String absolutePath = file.getAbsolutePath();
 		AssetFile assetFile;
