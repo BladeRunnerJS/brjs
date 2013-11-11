@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 import org.bladerunnerjs.model.utility.Trie;
 import org.bladerunnerjs.model.utility.TrieKeyAlreadyExistsException;
@@ -107,6 +108,10 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 				catch (TrieKeyAlreadyExistsException ex)
 				{
 					throw new ModelOperationException(ex);
+				}
+				catch (EmptyTrieKeyException ex)
+				{
+					throw new ModelOperationException(ex);					
 				}
 			}
 		}
