@@ -72,9 +72,7 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	{
 		return (App) parent;
 	}
-	
-	// TODO: populate
-	
+
 	public List<Blade> blades()
 	{
 		return children(blades);
