@@ -10,6 +10,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.google.common.base.CharMatcher;
+
 
 public class TrieTest
 {
@@ -30,11 +32,11 @@ public class TrieTest
 	public void setup()
 	{
 		trie = new Trie<TestObject>();
-		test_object_1 = new TestObject("test_object_1");
-		test_object_2 = new TestObject("test_object_2");
-		test_object_3 = new TestObject("test_object_3");
-		test_object_4 = new TestObject("test_object_4");
-		test_object_1_extraStuff = new TestObject("test_object_1_extraStuff");
+		test_object_1 = new TestObject("test.object.1");
+		test_object_2 = new TestObject("test.object.2");
+		test_object_3 = new TestObject("test.object.3");
+		test_object_4 = new TestObject("test.object.4");
+		test_object_1_extraStuff = new TestObject("test.object.1.extraStuff");
 	}
 	
 	@Test
@@ -45,19 +47,37 @@ public class TrieTest
 	}
 	
 	@Test
+	public void cantAddEmptyValue() throws Exception
+	{
+		exception.expect(EmptyTrieKeyException.class);
+		trie.add("", test_object_1);
+	}
+	
+	@Test
+	public void emptyReaderReturnsEmptyList() throws Exception
+	{
+		trie.add("test.object.1", test_object_1);
+		
+		StringReader reader = new StringReader("");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(0, foundObjects.size());
+	}
+	
+	@Test
 	public void correctObjectsReturnedFromUsingReader() throws Exception
 	{
-		trie.add("test_object_1", test_object_1);
-		trie.add("test_object_2", test_object_2);
-		trie.add("test_object_3", test_object_3);
-		trie.add("test_object_4", test_object_4);
+		trie.add("test.object.1", test_object_1);
+		trie.add("test.object.2", test_object_2);
+		trie.add("test.object.3", test_object_3);
+		trie.add("test.object.4", test_object_4);
 		
-		StringReader reader = new StringReader("here is some text, test_object_1 is here too.\n"+
-				"and also test_object_2\n"+
+		StringReader reader = new StringReader("here is some text, test.object.1 is here too.\n"+
+				"and also test.object.2\n"+
 				"more stuff. 138t912109\n"+
 				"\n"+
-				"test_object 3 isnt here, its not spelt correctly\n"+
-				"and finally test_object_4");
+				"test.object 3 isnt here, its not spelt correctly\n"+
+				"and finally test.object.4");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(3, foundObjects.size());
@@ -69,9 +89,9 @@ public class TrieTest
 	@Test
 	public void occurancesWithPrefixDontMatch() throws Exception
 	{
-		trie.add("test_object_1", test_object_1);
+		trie.add("test.object.1", test_object_1);
 		
-		StringReader reader = new StringReader("abcd testtest_object_1 1234");
+		StringReader reader = new StringReader("abcd testtest.object.1 1234");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(0, foundObjects.size());
@@ -80,9 +100,9 @@ public class TrieTest
 	@Test
 	public void occurancesWithSuffixDontMatch() throws Exception
 	{
-		trie.add("test_object_1", test_object_1);
+		trie.add("test.object.1", test_object_1);
 		
-		StringReader reader = new StringReader("abcd test_object_123 1234");
+		StringReader reader = new StringReader("abcd test.object.123 1234");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(0, foundObjects.size());
@@ -91,9 +111,9 @@ public class TrieTest
 	@Test
 	public void occurancesWithSuffixAndPrefixDontMatch() throws Exception
 	{
-		trie.add("test_object_1", test_object_1);
+		trie.add("test.object.1", test_object_1);
 		
-		StringReader reader = new StringReader("abcd testtest_object_123 1234");
+		StringReader reader = new StringReader("abcd testtest.object.123 1234");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(0, foundObjects.size());
@@ -102,9 +122,9 @@ public class TrieTest
 	@Test
 	public void substringAtTheStartDoNotMatch() throws Exception
 	{
-		trie.add("test_object_1", test_object_1);
+		trie.add("test.object.1", test_object_1);
 		
-		StringReader reader = new StringReader("abcd test_object_123 1234");
+		StringReader reader = new StringReader("abcd test.object.123 1234");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(0, foundObjects.size());
@@ -113,10 +133,10 @@ public class TrieTest
 	@Test
 	public void matcherIsGreedy() throws Exception
 	{
-		trie.add("test_object_1", test_object_1);
-		trie.add("test_object_1_extraStuff", test_object_1_extraStuff);
+		trie.add("test.object.1", test_object_1);
+		trie.add("test.object.1.extraStuff", test_object_1_extraStuff);
 		
-		StringReader reader = new StringReader("abcd test_object_1_extraStuff 1234");
+		StringReader reader = new StringReader("abcd test.object.1.extraStuff 1234");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(1, foundObjects.size());
@@ -124,13 +144,33 @@ public class TrieTest
 	}
 	
 	@Test
+	public void readerMatcherMustMatchCharMatcher() throws Exception
+	{
+		trie.setCharMatcher(CharMatcher.DIGIT);
+		trie.add("test.object.1", test_object_1);
+		
+		StringReader reader = new StringReader("test.object.1");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(0, foundObjects.size());
+	}
+	
+	@Test
+	public void itemsCanBeAddedAndReturnedIfTheyDontMatchTheMatcher() throws Exception
+	{
+		trie.setCharMatcher(CharMatcher.DIGIT);
+		trie.add("1234", test_object_1);
+		assertEquals(test_object_1, trie.get("1234"));
+	}
+	
+	@Test
 	public void throwsExceptionIfKeyHasAlreadyBeenAdded() throws Exception
 	{
 		exception.expect(TrieKeyAlreadyExistsException.class);
-		exception.expectMessage("The key 'test_object_1' already exists");
+		exception.expectMessage("The key 'test.object.1' already exists");
 		
-		trie.add("test_object_1", test_object_1);
-		trie.add("test_object_1", test_object_1_extraStuff);
+		trie.add("test.object.1", test_object_1);
+		trie.add("test.object.1", test_object_1_extraStuff);
 	}
 	
 	

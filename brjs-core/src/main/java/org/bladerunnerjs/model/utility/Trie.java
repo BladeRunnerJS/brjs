@@ -5,11 +5,21 @@ import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Predicate;
+
 public class Trie<T>
 {
+	private Predicate<Character> charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.'));
 	private TrieNode<T> root = new TrieNode<T>();
 	
-	public void add(String key, T value) throws TrieKeyAlreadyExistsException {
+	
+	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException {
+		if (key.length() < 1)
+		{
+			throw new EmptyTrieKeyException();
+		}
+		
 		TrieNode<T> node = root;
 		
 		for( char character : key.toCharArray() )
@@ -55,23 +65,34 @@ public class Trie<T>
 		}
 		processChar( matches, '\n', matcher);
 		
-		return matches;
-		
+		return matches;	
+	}
+	
+	public void setCharMatcher(Predicate<Character> matcher)
+	{
+		charMatcher = matcher;
 	}
 
 	
 	private void processChar(List<T> matches, char nextChar, TrieMatcher matcher)
 	{
 		TrieNode<T> nextNode = matcher.next(nextChar);
+		
 		if (nextNode == null)
 		{
 			T matcherValue = matcher.previousNode.getValue();
-			if (matcherValue != null && Character.isWhitespace(nextChar))
+			if (matcherValue != null && !charMatcher.apply(nextChar))
 			{
 				matches.add(matcherValue);
 			}
 			matcher.reset();
 		}
+		
+		if (!CharMatcher.forPredicate(charMatcher).apply( matcher.currentNode.getNodeChar() ))
+		{
+			matcher.reset();
+		}
+		
 		return;
 	}
 
