@@ -181,10 +181,12 @@ task generateReleaseNotes, {
 		def includeIssueLabels = ["bug", "feature", "enhancement"]
 		def issueIncludeLabelsString = includeIssueLabels.join(", ").replaceAll(/^(.*),(.*)$/,'$1 or$2'); /* regex replaces the last ',' with 'or' */	
 		
+		def excludeIssueLabels = ["invalid", "duplicate"]
+		
 		List<Issue> issues = githubApi.getClosedIssuesForMilestone(milestoneId)
 		List<Issue> releaseNoteIssues = new LinkedList<Issue>()
 		issues.each {
-			if (it.labels.intersect(includeIssueLabels)) {
+			if (it.labels.intersect(includeIssueLabels) && !it.labels.intersect(excludeIssueLabels)) {
 				releaseNoteIssues.add(it)
 			}
 		}
@@ -211,7 +213,7 @@ task generateReleaseNotes, {
 	}
 }
 
-
+//TODO: make this depend on 'build' when we have linux VMs with a GUI
 task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip'], {
 	doFirst {
 		def cutlassSdkProject = project(':cutlass-sdk')
