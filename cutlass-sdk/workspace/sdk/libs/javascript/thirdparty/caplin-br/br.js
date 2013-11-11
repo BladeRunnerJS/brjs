@@ -1,10 +1,10 @@
 define("br", function(require, exports, module) {
-	var topiary = require('topiary');
-	topiary.exportTo(exports);
+	var topiarist = require('topiarist');
+	topiarist.exportTo(exports);
 
 	exports.implement = function(implementor, interface) {
 		// We do this on a timeout so you can implement the methods later.
-		var br = topiary;
+		var br = topiarist;
 		var error = new Error();
 		setTimeout(function() {
 			try { 
