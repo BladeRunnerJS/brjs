@@ -18,8 +18,6 @@ import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.junit.Before;
 import org.junit.Test;
 
-
-
 public class TypedClassCreatorTest
 {
 
@@ -56,8 +54,10 @@ public class TypedClassCreatorTest
 		TypedPluginCreator<AnotherTestInterface> classCreator = new TypedPluginCreator<AnotherTestInterface>();
 		classCreator.getSubTypesOfClass(brjs, AnotherTestInterface.class);
 		/* make sure we haven't tried to instantiate the sub interface InterfaceExtendingMyTestInterface */
-		// TODO: talk to Andy about the testing of logs inside this test -- do we really want to be testing behavior outside of our spec tests
-		//logStore.verifyNoUnhandledMessage();
+		logStore.verifyInfoLogMessage("creating model observer plugins");
+		logStore.verifyInfoLogMessage("performing node discovery");
+		logStore.verifyInfoLogMessage("creating command plugins");
+		logStore.verifyNoUnhandledMessage();
 	}
 	
 	@Test
