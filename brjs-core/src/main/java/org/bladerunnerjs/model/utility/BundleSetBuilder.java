@@ -55,9 +55,10 @@ public class BundleSetBuilder {
 	private List<SourceFile> orderSourceFiles(Set<SourceFile> sourceFiles) throws ModelOperationException {
 		List<SourceFile> sourceFileList = new ArrayList<>();
 		Set<LinkedAssetFile> metDependencies = new HashSet<>();
-		Set<SourceFile> unprocessedSourceFiles = new HashSet<>();
 		
 		while(!sourceFiles.isEmpty()) {
+			Set<SourceFile> unprocessedSourceFiles = new HashSet<>();
+			
 			for(SourceFile sourceFile : sourceFiles) {
 				if(dependenciesHaveBeenMet(sourceFile, metDependencies)) {
 					sourceFileList.add(sourceFile);
