@@ -49,6 +49,6 @@ public abstract class SourceLocationBuilder<N extends AbstractSourceLocation> ex
 	}
 	
 	private String getClassBody(String sourceClass, String destClass) {
-		return getClassBody(sourceClass) + "br.extend(" + sourceClass + ", " + destClass + ")\n";
+		return getClassBody(sourceClass) + "br.extend(" + sourceClass + ", " + destClass + ");\n";
 	}
 }
