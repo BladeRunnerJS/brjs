@@ -1,6 +1,11 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
 
+import static org.bladerunnerjs.core.plugin.command.standard.ServeCommand.Messages.*;
+import static org.bladerunnerjs.model.appserver.BRJSApplicationServer.Messages.*;
+import static org.bladerunnerjs.model.appserver.AppDeploymentObserver.Messages.*;
+import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.*;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -61,11 +66,16 @@ public class BRJSApplicationServerTest extends SpecTest
 	}
 	
 	@Test
-	public void appIsHostedWhenAppServerStarts() throws Exception
+	public void appIsDeployedWhenAppServerStarts() throws Exception
 	{
-		given(app1).hasBeenCreated();
+		given(logging).enabled()
+			.and(app1).hasBeenCreated();
 		when(appServer).started();
-		then(appServer).requestCanBeMadeFor("/app1");
+		then(appServer).requestCanBeMadeFor("/app1")
+			.and(appServer).requestIsRedirected("/","/dashboard")
+			.and(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
+			.and(logging).debugMessageReceived(DEPLOYING_APP_MSG, "app1");
 	}
 	
 	@Test

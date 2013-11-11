@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.events.AppDeployedEvent;
 public class AppDeploymentObserver implements EventObserver, ModelObserverPlugin
 {
 	
-	// TODO: these messages aren't currently covered within our spec tests
+	// TODO: this message is currently only used by an integration test and not by BRJS command runner
 	public class Messages {
 		public static final String NEW_APP_LOG_MSG = "New app '%s' found, creating deploy file.";
 	}

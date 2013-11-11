@@ -35,9 +35,8 @@ public class BladeBuilder extends NodeBuilder<Blade> {
 		return builderChainer;
 	}
 
-	//TODO: waiting for blade to have a populate command
 	public BuilderChainer hasBeenPopulated() throws Exception {
-	//	blade.populate("blade");
+		blade.populate();
 		return builderChainer;
 	}
 }
