@@ -27,4 +27,9 @@ public class LoggerBuilder
 		logStore.disableLogging();
 		return builderChainer;
 	}
+	
+	public BuilderChainer echoEnabled() {
+		logStore.enableEchoingLogs();
+		return builderChainer;
+	}
 }

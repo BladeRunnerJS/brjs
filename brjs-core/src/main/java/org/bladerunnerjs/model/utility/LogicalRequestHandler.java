@@ -22,7 +22,7 @@ public class LogicalRequestHandler {
 	public class Messages {
 		public static final String REQUEST_HANDLED_MSG = "Handling logical request '%s' for app '%s'.";
 		public static final String CONTEXT_IDENTIFIED_MSG = "%s '%s' identified as context for request '%s'.";
-		public static final String BUNDLER_IDENTIFIED_MSG = "Bundler '%s' identified as handler for request '%'.";
+		public static final String BUNDLER_IDENTIFIED_MSG = "Bundler '%s' identified as handler for request '%s'.";
 	}
 	
 	private final App app;

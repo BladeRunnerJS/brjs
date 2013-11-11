@@ -18,6 +18,7 @@ public class LogMessageStore
 	public static final String UNEXPECTED_LOG_MESSAGES = "Unexpected %s log messages: [%s]";
 	
 	private boolean storeLogs = false; /* enable capturing log messages for 'when' actions */
+	private boolean echoLogs = false;
 	private boolean loggingEnabled = false;
 	private boolean assertionMade = false;
 	
@@ -34,6 +35,14 @@ public class LogMessageStore
 	public LogMessageStore(boolean storeLogs)
 	{
 		this.storeLogs = storeLogs;
+	}
+	
+	public void enableEchoingLogs()
+	{
+		System.out.println("");
+		System.out.println("Echoing logs for test:");
+		
+		echoLogs = true;
 	}
 	
 	public void enableStoringLogs()
@@ -139,6 +148,10 @@ public class LogMessageStore
 
 	private void registerLogMessage(LinkedList<LogMessage> messages, String loggerName, String message, Object[] params)
 	{
+		if(echoLogs ) {
+			System.out.println(String.format(message, params));
+		}
+		
 		if (storeLogs)
 		{
 			messages.add(new LogMessage(message, params));

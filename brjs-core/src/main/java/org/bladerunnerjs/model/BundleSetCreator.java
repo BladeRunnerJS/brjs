@@ -36,7 +36,7 @@ public class BundleSetCreator {
 			logger.debug(Messages.BUNDLABLE_NODE_SEED_FILES_MSG, bundlableNode.getClass().getSimpleName(), name, seedFilePaths(bundlableNode, seedFiles));
 		}
 		
-		logger.debug(Messages.APP_SOURCE_LOCATIONS_MSG, sourceLocationPaths(bundlableNode.getApp()));
+		logger.debug(Messages.APP_SOURCE_LOCATIONS_MSG, bundlableNode.getApp().getName(), sourceLocationPaths(bundlableNode.getApp()));
 		
 		for(LinkedAssetFile seedFile : seedFiles) {
 			bundleSetBuilder.addSeedFile(seedFile);
