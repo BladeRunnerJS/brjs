@@ -52,7 +52,6 @@ public class AspectBundlingTest extends SpecTest {
 		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
 	
-	@Ignore
 	@Test
 	public void weDontBundleAClassIfItIsNotReferredTo() throws Exception {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")

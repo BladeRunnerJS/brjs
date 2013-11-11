@@ -8,11 +8,12 @@ import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 
 public class ShallowResources implements Resources {
-	private CompositeFileSet<LinkedAssetFile> seedFileSet = new CompositeFileSet<>();
-	private CompositeFileSet<AssetFile> fileSet = new CompositeFileSet<>();
-	private BRJS brjs;
+	protected BRJS brjs;
+	protected File dir;
+	protected CompositeFileSet<LinkedAssetFile> seedFileSet = new CompositeFileSet<>();
+	protected CompositeFileSet<AssetFile> fileSet = new CompositeFileSet<>();
+	
 	private boolean objectInitialized = false;
-	private File dir;
 	
 	public ShallowResources(BRJS brjs, File dir) {
 		this.brjs = brjs;

@@ -54,7 +54,7 @@ public class SourceLocationResources {
 		return resourcesList;
 	}
 	
-	private ShallowResources createResource(File srcDir) {
+	private Resources createResource(File srcDir) {
 		String srcPath = srcDir.getAbsolutePath();
 		
 		if(!resources.containsKey(srcPath)) {
