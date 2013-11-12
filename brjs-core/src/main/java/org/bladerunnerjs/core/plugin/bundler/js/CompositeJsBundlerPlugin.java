@@ -52,9 +52,8 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		MinifierSetting minifierSetting = new MinifierSetting(tagAttributes);
 		
 		if(minifierSetting.devSetting().equals("separate")) {
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
-				// TODO: allow the mime-type to be passed into bundlerPlugins() so I don't need to keep repeating this guard
-				if((bundlerPlugin != this) && (bundlerPlugin.getMimeType().equals("text/javascript"))) {
+			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+				if(bundlerPlugin != this) {
 					bundlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
 				}
 			}
@@ -69,8 +68,8 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		MinifierSetting minifierSetting = new MinifierSetting(tagAttributes);
 		
 		if(minifierSetting.prodSetting().equals("separate")) {
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
-				if((bundlerPlugin != this) && (bundlerPlugin.getMimeType().equals("text/javascript"))) {
+			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+				if(bundlerPlugin != this) {
 					bundlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
 				}
 			}
@@ -99,8 +98,8 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	public List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
-			if((bundlerPlugin != this) && (bundlerPlugin.getMimeType().equals("text/javascript"))) {
+		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+			if(bundlerPlugin != this) {
 				requestPaths.addAll(bundlerPlugin.generateRequiredDevRequestPaths(bundleSet, locale));
 			}
 		}
@@ -112,8 +111,8 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	public List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
-			if((bundlerPlugin != this) && (bundlerPlugin.getMimeType().equals("text/javascript"))) {
+		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+			if(bundlerPlugin != this) {
 				requestPaths.addAll(bundlerPlugin.generateRequiredProdRequestPaths(bundleSet, locale));
 			}
 		}
@@ -148,8 +147,8 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		try {
 			String charsetName = brjs.bladerunnerConf().getDefaultOutputEncoding();
 			
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
-				if((bundlerPlugin != this) && (bundlerPlugin.getMimeType().equals("text/javascript"))) {
+			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+				if(bundlerPlugin != this) {
 					String locale = request.properties.get("locale");
 					List<String> requestPaths = (request.formName.equals("dev-bundle-request")) ? bundlerPlugin.generateRequiredDevRequestPaths(bundleSet, locale) :
 						bundlerPlugin.generateRequiredProdRequestPaths(bundleSet, locale);

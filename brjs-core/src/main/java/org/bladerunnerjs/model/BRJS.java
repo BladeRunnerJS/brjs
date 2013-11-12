@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -304,6 +305,18 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public Collection<BundlerPlugin> bundlerPlugins() {
 		return bundlerPlugins.values();
+	}
+	
+	public Collection<BundlerPlugin> bundlerPlugins(String mimeType) {
+		Collection<BundlerPlugin> bundlerPlugins = new ArrayList<>();
+		
+		for(BundlerPlugin bundlerPlugin : bundlerPlugins()) {
+			if(bundlerPlugin.getMimeType().equals(mimeType)) {
+				bundlerPlugins.add(bundlerPlugin);
+			}
+		}
+		
+		return bundlerPlugins;
 	}
 	
 	public List<MinifierPlugin> minifierPlugins() {
