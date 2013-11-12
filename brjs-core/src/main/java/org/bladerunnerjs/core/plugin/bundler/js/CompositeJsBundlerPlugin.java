@@ -51,32 +51,14 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		MinifierSetting minifierSetting = new MinifierSetting(tagAttributes);
 		
-		if(minifierSetting.devSetting().equals("separate")) {
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-				if(bundlerPlugin != this) {
-					bundlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
-				}
-			}
-		}
-		else {
-			writer.write("<script type='text/javascript' src='" + requestParser.createRequest("bundle-request", locale, minifierSetting.devSetting()) + "'></script>\n");
-		}
+		writeTagContent(true, tagAttributes, bundleSet, locale, writer, minifierSetting.prodSetting().equals("separate"));
 	}
 	
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		MinifierSetting minifierSetting = new MinifierSetting(tagAttributes);
 		
-		if(minifierSetting.prodSetting().equals("separate")) {
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-				if(bundlerPlugin != this) {
-					bundlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
-				}
-			}
-		}
-		else {
-			writer.write("<script type='text/javascript' src='" + requestParser.createRequest("bundle-request", locale, minifierSetting.prodSetting()) + "'></script>\n");
-		}
+		writeTagContent(false, tagAttributes, bundleSet, locale, writer, minifierSetting.prodSetting().equals("separate"));
 	}
 	
 	@Override
@@ -96,28 +78,12 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	
 	@Override
 	public List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
-		List<String> requestPaths = new ArrayList<>();
-		
-		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-			if(bundlerPlugin != this) {
-				requestPaths.addAll(bundlerPlugin.generateRequiredDevRequestPaths(bundleSet, locale));
-			}
-		}
-		
-		return requestPaths;
+		return generateRequiredRequestPaths(true, bundleSet, locale);
 	}
 	
 	@Override
 	public List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
-		List<String> requestPaths = new ArrayList<>();
-		
-		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-			if(bundlerPlugin != this) {
-				requestPaths.addAll(bundlerPlugin.generateRequiredProdRequestPaths(bundleSet, locale));
-			}
-		}
-		
-		return requestPaths;
+		return generateRequiredRequestPaths(false, bundleSet, locale);
 	}
 	
 	@Override
@@ -140,7 +106,7 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 			throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
 		}
 	}
-
+	
 	private List<InputSource> getInputSources(ParsedRequest request, BundleSet bundleSet) throws BundlerProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
@@ -169,5 +135,42 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		}
 		
 		return inputSources;
+	}
+	
+	private void writeTagContent(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, boolean separateFiles) throws IOException {
+		MinifierSetting minifierSetting = new MinifierSetting(tagAttributes);
+		
+		if(separateFiles) {
+			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+				if(bundlerPlugin != this) {
+					if(isDev) {
+						bundlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
+					}
+					else {
+						bundlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
+					}
+				}
+			}
+		}
+		else {
+			writer.write("<script type='text/javascript' src='" + requestParser.createRequest("bundle-request", locale, minifierSetting.devSetting()) + "'></script>\n");
+		}
+	}
+	
+	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, String locale) throws BundlerProcessingException {
+		List<String> requestPaths = new ArrayList<>();
+		
+		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+			if(bundlerPlugin != this) {
+				if(isDev) {
+					requestPaths.addAll(bundlerPlugin.generateRequiredDevRequestPaths(bundleSet, locale));
+				}
+				else {
+					requestPaths.addAll(bundlerPlugin.generateRequiredProdRequestPaths(bundleSet, locale));
+				}
+			}
+		}
+		
+		return requestPaths;
 	}
 }
