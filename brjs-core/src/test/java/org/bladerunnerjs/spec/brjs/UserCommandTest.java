@@ -22,7 +22,9 @@ public class UserCommandTest extends SpecTest {
 		then(output).containsText(
 			"BladeRunnerJS version: the-version, built: the-build-date",
 			"",
-			"No such command 'no-such-command'");
+			"No such command 'no-such-command'",
+			"--------",
+			"");
 	}
 	
 	@Test
