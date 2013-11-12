@@ -37,7 +37,12 @@ public abstract class SourceLocationBuilder<N extends AbstractSourceLocation> ex
 		
 		return builderChainer;
 	}
-
+	
+	public BuilderChainer classDependsOn(String sourceClass, String destClass) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public BuilderChainer hasBeenPopulated() throws Exception
 	{
 		node.populate();
@@ -49,6 +54,6 @@ public abstract class SourceLocationBuilder<N extends AbstractSourceLocation> ex
 	}
 	
 	private String getClassBody(String sourceClass, String destClass) {
-		return getClassBody(sourceClass) + "br.extend(" + sourceClass + ", " + destClass + ");\n";
+		return getClassBody(sourceClass) + "br.extend(" + sourceClass + ", " + destClass + " " + ");\n";
 	}
 }

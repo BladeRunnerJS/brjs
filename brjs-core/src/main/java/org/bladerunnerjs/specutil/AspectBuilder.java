@@ -21,4 +21,10 @@ public class AspectBuilder extends SourceLocationBuilder<Aspect> {
 		
 		return builderChainer;
 	}
+	
+	public BuilderChainer resourceFileRefersTo(String resourceFileName, String className) throws Exception {
+		FileUtils.write(aspect.resources().file(resourceFileName), "<root refs='" + className + "'/>");
+		
+		return builderChainer;
+	}
 }

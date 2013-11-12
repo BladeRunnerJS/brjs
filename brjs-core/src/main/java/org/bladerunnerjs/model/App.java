@@ -62,11 +62,13 @@ public class App extends AbstractBRJSNode implements NamedNode
 	}
 	
 	public List<SourceLocation> getAllSourceLocations() {
-		List<SourceLocation> sourceLocations = getNonAspectSourceLocations();
+		List<SourceLocation> sourceLocations = new ArrayList<>();
 		
 		for(Aspect aspect : aspects()) {
 			sourceLocations.add(aspect);
 		}
+		
+		sourceLocations.addAll(getNonAspectSourceLocations());
 		
 		return sourceLocations;
 	}
