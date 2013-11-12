@@ -14,8 +14,8 @@ import org.bladerunnerjs.model.BRJS;
 
 public class TypedPluginCreator<I>
 {
-	// TODO: these messages (and likely, this classes functionality) aren't currently covered within our spec tests
 	public class Messages {
+//		TODO: this message is not covered within our spec tests
 		public static final String ERROR_CREATING_OBJECT_LOG_MSG =
 			"There was an error loading plugins, some plugins have not been loaded. The exception was: %s";
 		public static final String CANNOT_CREATE_INSTANCE_LOG_MSG =
@@ -51,7 +51,5 @@ public class TypedPluginCreator<I>
 		}
 
 		return objectList;
-
 	}
-
 }
