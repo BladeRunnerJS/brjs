@@ -215,7 +215,7 @@ task generateReleaseNotes, {
 
 //TODO: make this depend on 'build' when we have linux VMs with a GUI
 task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip'], {
-	doFirst {
+	doLast {
 		def cutlassSdkProject = project(':cutlass-sdk')
 		def brjsZipPattern = "**/BladeRunnerJS-${projectBuildVersion}.zip"
 		def brjsZip = fileTree(dir:cutlassSdkProject.buildDir, include:brjsZipPattern).singleFile
@@ -233,4 +233,25 @@ task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip'], {
     	Release release = githubApi.createReleaseForTag(tagVersion, getReleaseNoteJson(project,tagVersion), releaseNoteFile.text)
 		githubApi.uploadAssetForRelease(brjsZip, release)
 	}
+}
+
+
+if (org.bladerunnerjs.OSCalculator.isWin32())
+{
+	configurations {
+		curlDep
+	}
+	dependencies {
+		curlDep dependency('curl-win32')
+	}
+	
+    task downloadCurl, type:Copy, dependsOn:configurations.curlDep, {
+    	from { configurations.curlDep.collect { zipTree(it) } }
+		into "${buildDir}/curl"
+    }
+	
+	githubRelease.doFirst {
+		GitHubAPIBridge.CURL_PATH = fileTree(dir:downloadCurl.outputs.files.singleFile, include:"**/curl.exe").singleFile.path
+	}
+	githubRelease.dependsOn downloadCurl
 }

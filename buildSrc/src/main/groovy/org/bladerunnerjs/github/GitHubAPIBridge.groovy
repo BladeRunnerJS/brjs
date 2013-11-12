@@ -20,6 +20,8 @@ import static groovyx.net.http.ContentType.JSON
 
 class GitHubAPIBridge
 {
+	public static String CURL_PATH = "curl" 
+	
 	static final githubWebPrefix = "https://github.com/"
 	static final apiPrefix = "https://api.github.com"
 	static final uploadsPrefix = "https://uploads.github.com"
@@ -100,7 +102,7 @@ class GitHubAPIBridge
 	void uploadAssetForRelease(File brjsZip, Release release)
 	{
 		logger.quiet "uploading file ${brjsZip.path} for release ${release.tagVersion}"
-		def response = doRequest(uploadsPrefix, "post", release.upload_url, "name=${brjsZip.name}", "application/zip", brjsZip )
+		def response = doRequest(uploadsPrefix, "post", release.upload_url, "name=${brjsZip.name}", "application/zip", brjsZip)
 		logger.quiet "successfully added release asset, ${brjsZip.toString()}"
 	}
 
@@ -146,9 +148,9 @@ class GitHubAPIBridge
     		
 		if (requestPrefix.equals(uploadsPrefix))
 		{
-			logger.info "using cURL because of SSL certificate issues in the Groovy REST client..."
+			logger.info "using cURL because of SSL certificate issues in the Groovy REST client... (curl path is '${CURL_PATH}')"
 			project.exec {
-    			commandLine = [ "curl",
+    			commandLine = [ CURL_PATH,
 					"--insecure", // We have to use this because the SSL cert for uploads.github.com doesnt match the hostname
     				"-i",
     				"-H", "Authorization: token ${authToken}", 

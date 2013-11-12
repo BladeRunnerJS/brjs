@@ -100,7 +100,9 @@ Dependencies.putAll([
 
 	'rhino'						:	'org.mozilla:rhino:1.7R4',
 	
-	'saxon-dom'					:	'net.sf.saxon:saxon-dom:8.7'
+	'saxon-dom'					:	'net.sf.saxon:saxon-dom:8.7',
+	
+	'curl-win32'				:	'util:curl-win32:7.33.0'
 ]);
 
 /* browsers are defined as browserName+version because we probably want to use multiple versions */
