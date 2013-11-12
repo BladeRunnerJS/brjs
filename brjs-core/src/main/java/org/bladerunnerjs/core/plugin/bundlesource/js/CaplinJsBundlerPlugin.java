@@ -26,6 +26,7 @@ import org.bladerunnerjs.model.Resources;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.SourceLocation;
 import org.bladerunnerjs.model.StandardFileSet;
+import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
@@ -38,8 +39,10 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
-		requestParserBuilder.accepts("caplin-js/js.bundle").as("bundle-request")
-			.and("caplin-js/module/<module>.js").as("single-module-request");
+		requestParserBuilder
+			.accepts("caplin-js/js.bundle").as("bundle-request")
+				.and("caplin-js/module/<module>/js.bundle").as("single-module-request")
+			.where("module").hasForm(".+");
 		
 		requestParser = requestParserBuilder.build();
 		prodRequestPaths.add(requestParser.createRequest("bundle-request"));
@@ -102,10 +105,10 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		try {
 			if(request.formName.equals("single-module-request")) {
-				Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding());
-				
-				SourceFile jsModule = bundleSet.getBundlableNode().sourceFile(request.properties.get("module"));
-				IOUtils.copy(jsModule.getReader(), writer);
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+					SourceFile jsModule = bundleSet.getBundlableNode().getSourceFile(request.properties.get("module"));
+					IOUtils.copy(jsModule.getReader(), writer);
+				}
 			}
 			else if(request.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
@@ -120,7 +123,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 				throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
 			}
 		}
-		catch(ConfigException | IOException e) {
+		catch(ConfigException | IOException | AmbiguousRequirePathException e) {
 			throw new BundlerProcessingException(e);
 		}
 	}

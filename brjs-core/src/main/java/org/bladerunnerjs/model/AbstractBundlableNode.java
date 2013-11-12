@@ -43,8 +43,24 @@ public abstract class AbstractBundlableNode extends AbstractSourceLocation imple
 	
 	@Override
 	public SourceFile getSourceFile(String requirePath) throws AmbiguousRequirePathException {
-		// TODO: implement this method
-		return null;
+		SourceFile sourceFile = null;
+		
+		for(SourceLocation sourceLocation : getSourceLocations()) {
+			SourceFile locationSourceFile = sourceLocation.sourceFile(requirePath);
+			
+			if(locationSourceFile != null) {
+				if(sourceFile == null) {
+					sourceFile = locationSourceFile;
+				}
+				else {
+					throw new AmbiguousRequirePathException("'" + sourceFile.getUnderlyingFile().getPath() + "' and '" +
+						locationSourceFile.getUnderlyingFile().getPath() + "' source files both available via require path '" +
+						sourceFile.getRequirePath() + "'.");
+				}
+			}
+		}
+		
+		return sourceFile;
 	}
 	
 	@Override

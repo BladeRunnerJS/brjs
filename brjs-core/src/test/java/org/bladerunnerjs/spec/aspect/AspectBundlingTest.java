@@ -32,7 +32,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void weBundleAnAspectClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1");
-		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class1");
 	}
 	
@@ -40,7 +40,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void weBundleABladeClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1");
-		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class1");
 	}
 	
@@ -49,7 +49,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
-		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
 	
@@ -59,7 +59,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classDependsOn("novox.Class1", "novox.Class2");
-		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
 	
@@ -68,7 +68,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class2")
 			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
-		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class2");
 	}
 	
@@ -78,7 +78,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classDependsOn("novox.Class1", "novox.NonExistentClass");
-		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(exceptions).verifyException(ClassNotFoundException.class, "novox/NonExistentClass.js");
 	}
 	
@@ -87,7 +87,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classRefersTo("novox.Class1", "novox.NonExistentClass");
-		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -100,10 +100,10 @@ public class AspectBundlingTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
-		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
-		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "caplin-js/js.bundle", "app1")
-			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "caplin-js/js.bundle")
-			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CaplinJsBundlerPlugin", "caplin-js/js.bundle")
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/js.bundle", "app1")
+			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/js.bundle")
+			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsBundlerPlugin", "js/dev/en_GB/combined/js.bundle")
 //			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'index.html', 'xml/config.xml'")) // TODO: uncomment this line once xml seed files are supported
 			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "index.html", "'src/novox/Class1.js'")
@@ -118,10 +118,10 @@ public class AspectBundlingTest extends SpecTest {
 			.and(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(blade).classRefersTo("novox.Class1", "novox.Class2")
 			.and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/caplin-js/js.bundle", response);
-		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "caplin-js/js.bundle", "app1")
-			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, unquoted("Aspect"), "default", "caplin-js/js.bundle")
-			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CaplinJsBundlerPlugin", "caplin-js/js.bundle")
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/js.bundle", "app1")
+			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, unquoted("Aspect"), "default", "js/dev/en_GB/combined/js.bundle")
+			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsBundlerPlugin", "js/dev/en_GB/combined/js.bundle")
 			.and(logging).debugMessageReceived(BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, unquoted("Aspect"), "default")
 			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", unquoted("'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/'"));
 	}

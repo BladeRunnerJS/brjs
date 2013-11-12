@@ -55,7 +55,12 @@ public abstract class AbstractSourceLocation extends AbstractBRJSNode implements
 	
 	@Override
 	public SourceFile sourceFile(String requirePath) {
-		// TODO Auto-generated method stub
+		for(SourceFile sourceFile : sourceFiles()) {
+			if(sourceFile.getRequirePath().equals(requirePath)) {
+				return sourceFile;
+			}
+		}
+		
 		return null;
 	}
 	
