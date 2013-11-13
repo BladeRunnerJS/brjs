@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
@@ -11,7 +12,6 @@ import org.bladerunnerjs.model.engine.RootNode;
 public abstract class AbstractSourceLocation extends AbstractBRJSNode implements SourceLocation {
 	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
-	private CompositeFileSet<SourceFile> sourceFileSet ;
 	protected final SourceLocationResources sourceLocationResources;
 	
 	public AbstractSourceLocation(RootNode rootNode, File dir) {
@@ -42,15 +42,13 @@ public abstract class AbstractSourceLocation extends AbstractBRJSNode implements
 	
 	@Override
 	public List<SourceFile> sourceFiles() {
-		if(sourceFileSet == null) {
-			sourceFileSet = new CompositeFileSet<SourceFile>();
+		List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
 			
-			for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-				sourceFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getSourceFileSet(this));
-			}
+		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
+			sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(this));
 		}
 		
-		return sourceFileSet.getFiles();
+		return sourceFiles;
 	}
 	
 	@Override
@@ -71,6 +69,5 @@ public abstract class AbstractSourceLocation extends AbstractBRJSNode implements
 	
 	@Override
 	public void addSourceObserver(SourceObserver sourceObserver) {
-		sourceFileSet.addObserver(new FileSetSourceObserver(sourceObserver));
 	}
 }

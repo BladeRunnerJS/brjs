@@ -11,11 +11,10 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.FileSetFactory;
 import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.FileSet;
 import org.bladerunnerjs.model.AssetFileFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.NullFileSet;
@@ -74,8 +73,9 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public FileSetFactory getFileSetFactory() {
-		return new NodeJsBundleSourceFileSetFactory();
+	public AssetFileAccessor getAssetFileAccessor()
+	{
+		return new NodeJsAssetFileAccessor();
 	}
 	
 	@Override
@@ -134,27 +134,37 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
-	private class NodeJsBundleSourceFileSetFactory implements FileSetFactory {
+	
+	
+	private class NodeJsAssetFileAccessor implements AssetFileAccessor
+	{
+
 		@Override
-		public FileSet<LinkedAssetFile> getLinkedResourceFileSet(Resources resources) {
-			return new NullFileSet<LinkedAssetFile>();
+		public List<SourceFile> getSourceFiles(SourceLocation sourceLocation)
+		{ 
+			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new NodeJsFileSetFactory()).getFiles();
+		}
+
+		@Override
+		public List<LinkedAssetFile> getLinkedResourceFiles(Resources resources)
+		{
+			return new NullFileSet<LinkedAssetFile>().getFiles();
+		}
+
+		@Override
+		public List<AssetFile> getResourceFiles(Resources resources)
+		{
+			return new NullFileSet<AssetFile>().getFiles();
 		}
 		
-		@Override
-		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new NodeJsFileSetFactory());
-		}
-		
-		@Override
-		public FileSet<AssetFile> getResourceFileSet(Resources resources) {
-			return new NullFileSet<AssetFile>();
-		}
 	}
 	
+	//TODO: get rid of this
 	private class NodeJsFileSetFactory implements AssetFileFactory<SourceFile> {
 		@Override
 		public NodeJsSourceFile createFile(SourceLocation sourceLocation, File file) {
 			return new NodeJsSourceFile(sourceLocation, file);
 		}
 	}
+	
 }

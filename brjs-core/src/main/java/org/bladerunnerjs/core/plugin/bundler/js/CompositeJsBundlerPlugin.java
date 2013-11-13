@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.FileSetFactory;
-import org.bladerunnerjs.core.plugin.bundlesource.NullFileSetFactory;
 import org.bladerunnerjs.core.plugin.minifier.InputSource;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.NullAssetFileAccessor;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -65,8 +65,9 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public FileSetFactory getFileSetFactory() {
-		return new NullFileSetFactory();
+	public AssetFileAccessor getAssetFileAccessor()
+	{
+		return new NullAssetFileAccessor();
 	}
 	
 	@Override

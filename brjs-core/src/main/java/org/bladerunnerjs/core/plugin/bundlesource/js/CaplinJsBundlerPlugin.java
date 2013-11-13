@@ -12,11 +12,10 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.FileSetFactory;
 import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.FileSet;
 import org.bladerunnerjs.model.AssetFileFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.NullFileSet;
@@ -79,8 +78,9 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public FileSetFactory getFileSetFactory() {
-		return new CaplinJsBundleSourceFileSetFactory();
+	public AssetFileAccessor getAssetFileAccessor()
+	{
+		return new CaplinJsAssetFileAccessor();
 	}
 	
 	@Override
@@ -204,23 +204,31 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
-	private class CaplinJsBundleSourceFileSetFactory implements FileSetFactory {
+	
+	private class CaplinJsAssetFileAccessor implements AssetFileAccessor
+	{
+
 		@Override
-		public FileSet<LinkedAssetFile> getLinkedResourceFileSet(Resources resources) {
-			return new NullFileSet<LinkedAssetFile>();
+		public List<SourceFile> getSourceFiles(SourceLocation sourceLocation)
+		{
+			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new CaplinJsFileSetFactory()).getFiles();
+		}
+
+		@Override
+		public List<LinkedAssetFile> getLinkedResourceFiles(Resources resources)
+		{
+			return new NullFileSet<LinkedAssetFile>().getFiles();
+		}
+
+		@Override
+		public List<AssetFile> getResourceFiles(Resources resources)
+		{
+			return new NullFileSet<AssetFile>().getFiles();
 		}
 		
-		@Override
-		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new CaplinJsFileSetFactory());
-		}
-		
-		@Override
-		public FileSet<AssetFile> getResourceFileSet(Resources resources) {
-			return new NullFileSet<AssetFile>();
-		}
 	}
 	
+	//TODO: get rid of this
 	private class CaplinJsFileSetFactory implements AssetFileFactory<SourceFile> {
 		@Override
 		public CaplinJsSourceFile createFile(SourceLocation sourceLocation, File file) {

@@ -7,18 +7,22 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.FileSetFactory;
+import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.Resources;
+import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.SourceLocation;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 
 public class XMLBundlerPlugin implements BundlerPlugin
 {
-
 	private RequestParser requestParser;
 	
 	{
@@ -57,9 +61,9 @@ public class XMLBundlerPlugin implements BundlerPlugin
 	}
 
 	@Override
-	public FileSetFactory getFileSetFactory()
+	public AssetFileAccessor getAssetFileAccessor()
 	{
-		return null;
+		return new XMLBundlerAssetFileAccessor();
 	}
 
 	@Override
@@ -87,4 +91,30 @@ public class XMLBundlerPlugin implements BundlerPlugin
 	}
 	
 	
+	
+	public class XMLBundlerAssetFileAccessor implements AssetFileAccessor
+	{
+
+		@Override
+		public List<SourceFile> getSourceFiles(SourceLocation sourceLocation)
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<LinkedAssetFile> getLinkedResourceFiles(Resources resources)
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public List<AssetFile> getResourceFiles(Resources resources)
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+	}
 }

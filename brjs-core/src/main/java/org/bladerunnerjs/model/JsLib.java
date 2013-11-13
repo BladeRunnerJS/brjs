@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +24,6 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
 	private String name;
 	private JsLibConf libConf;
-	private CompositeFileSet<SourceFile> sourceFileSet;
 	private final SourceLocationResources sourceLocationResources;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
@@ -137,16 +137,15 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	
 	@Override
 	public List<SourceFile> sourceFiles() {
-		if(sourceFileSet == null) {
-			sourceFileSet = new CompositeFileSet<SourceFile>();
+		List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
 			
-			for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-				sourceFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getSourceFileSet(this));
-			}
+		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
+			sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(this));
 		}
 		
-		return sourceFileSet.getFiles();
+		return sourceFiles;
 	}
+	
 	
 	@Override
 	public SourceFile sourceFile(String requirePath) {
