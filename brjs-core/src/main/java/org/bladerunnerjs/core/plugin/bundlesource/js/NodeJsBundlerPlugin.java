@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.AssetFileFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
-import org.bladerunnerjs.model.NullFileSet;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.Resources;
@@ -148,13 +148,13 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		@Override
 		public List<LinkedAssetFile> getLinkedResourceFiles(Resources resources)
 		{
-			return new NullFileSet<LinkedAssetFile>().getFiles();
+			return Arrays.asList();
 		}
 
 		@Override
 		public List<AssetFile> getResourceFiles(Resources resources)
 		{
-			return new NullFileSet<AssetFile>().getFiles();
+			return Arrays.asList();
 		}
 		
 	}

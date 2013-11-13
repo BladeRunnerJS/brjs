@@ -9,7 +9,7 @@ import org.netbeans.spi.project.support.ant.PathMatcher;
 
 import com.google.common.base.Joiner;
 
-public class StandardFileSet<AF extends AssetFile> implements FileSet<AF> {
+public class StandardFileSet<AF extends AssetFile> {
 	private SourceLocation sourceLocation;
 	private AssetFileFactory<AF> fileSetFactory;
 	private PathMatcher pathMatcher;
