@@ -157,9 +157,4 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	public List<Resources> getResources(File srcDir) {
 		return sourceLocationResources.getResources(srcDir);
 	}
-	
-	@Override
-	public void addSourceObserver(SourceObserver sourceObserver) {
-		// TODO Auto-generated method stub
-	}
 }

@@ -9,6 +9,4 @@ public interface SourceLocation extends BRJSNode {
 	List<SourceFile> sourceFiles();
 	SourceFile sourceFile(String requirePath);
 	List<Resources> getResources(File srcDir);
-	//TODO: remove this
-	void addSourceObserver(SourceObserver sourceObserver);
 }

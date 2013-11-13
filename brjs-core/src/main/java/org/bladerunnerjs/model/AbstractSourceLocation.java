@@ -66,8 +66,4 @@ public abstract class AbstractSourceLocation extends AbstractBRJSNode implements
 	public List<Resources> getResources(File srcDir) {
 		return sourceLocationResources.getResources(srcDir);
 	}
-	
-	@Override
-	public void addSourceObserver(SourceObserver sourceObserver) {
-	}
 }
