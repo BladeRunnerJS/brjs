@@ -16,13 +16,13 @@ public abstract class AbstractBundlableNode extends AbstractSourceLocation imple
 		super(rootNode, dir);
 	}
 	
-	public abstract FileSet<LinkedAssetFile> getSeedFileSet();
+	public abstract List<LinkedAssetFile> getSeedFiles();
 	
 	@Override
 	public List<LinkedAssetFile> seedFiles() {
 		List<LinkedAssetFile> seedFiles = new ArrayList<>();
 		
-		seedFiles.addAll(getSeedFileSet().getFiles());
+		seedFiles.addAll(getSeedFiles());
 		seedFiles.addAll(this.getSeedResources().seedResources());
 		
 		return seedFiles;

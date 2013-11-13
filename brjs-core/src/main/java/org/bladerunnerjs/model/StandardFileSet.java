@@ -10,7 +10,6 @@ import org.netbeans.spi.project.support.ant.PathMatcher;
 import com.google.common.base.Joiner;
 
 public class StandardFileSet<AF extends AssetFile> implements FileSet<AF> {
-	private List<FileSetObserver> observers = new ArrayList<>();
 	private SourceLocation sourceLocation;
 	private AssetFileFactory<AF> fileSetFactory;
 	private PathMatcher pathMatcher;
@@ -44,7 +43,4 @@ public class StandardFileSet<AF extends AssetFile> implements FileSet<AF> {
 		return files;
 	}
 	
-	public void addObserver(FileSetObserver fileSetObserver) {
-		observers.add(fileSetObserver);
-	}
 }
