@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<java version="1.7.0_17" class="java.beans.XMLDecoder">
+<java version="1.7.0_45" class="java.beans.XMLDecoder">
  <object class="com.horstmann.violet.ClassDiagramGraph">
   <void method="addNode">
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode0">
@@ -21,33 +21,32 @@ TestServer startTestServer()
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double0"/>
-      <double>4.0</double>
+      <double>558.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double0"/>
-      <double>659.0</double>
+      <double>171.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>4.0</double>
-     <double>659.0</double>
+     <double>558.0</double>
+     <double>171.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode1">
     <void property="methods">
      <void property="text">
       <string>String getMimeType()
-String getBundlerName()
-RequestPathParser getRequestPathParser()
-List&lt;String&gt; getDevBundlerRequestPaths(BundlableNode bundlableNode, String locale) throws FileBundlerException
-List&lt;String&gt; getProdBundlerRequestPaths(BundlableNode bundlableNode, String locale, List&lt;String&gt; requests) throws FileBundlerException
-void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStream os) throws FileBundlerException
-</string>
+FileSetFactory getFileAccessor()
+RequestParser getRequestParser()
+List&lt;String&gt; generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+List&lt;String&gt; generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException</string>
      </void>
     </void>
     <void property="name">
@@ -61,30 +60,32 @@ void handleRequest(ParsedRequest request, BundlableNode bundlableNode, OutputStr
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>-3.0</double>
+      <double>28.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>257.0</double>
+      <double>398.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>-3.0</double>
-     <double>257.0</double>
+     <double>28.0</double>
+     <double>398.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode2">
     <void property="methods">
      <void property="text">
       <string>String getCommandName()
 String getCommandDescription()
 String getCommandUsage()
-void doCommand(String[] args, StdOut out) throws CommandException</string>
+String getCommandHelp()
+void doCommand(String[] args) throws CommandException
+</string>
      </void>
     </void>
     <void property="name">
@@ -98,32 +99,27 @@ void doCommand(String[] args, StdOut out) throws CommandException</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>1.0</double>
+      <double>30.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>4.0</double>
+      <double>-5.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>1.0</double>
-     <double>4.0</double>
+     <double>30.0</double>
+     <double>-5.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode">
-    <void property="methods">
-     <void property="text">
-      <string>addObservers(BRJS brjs)</string>
-     </void>
-    </void>
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode3">
     <void property="name">
      <void property="text">
-      <string>«ObserverPlugin»</string>
+      <string>«ModelObserverPlugin»</string>
      </void>
     </void>
    </object>
@@ -132,24 +128,24 @@ void doCommand(String[] args, StdOut out) throws CommandException</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>-2.0</double>
+      <double>108.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>779.0</double>
+      <double>180.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>-2.0</double>
-     <double>779.0</double>
+     <double>108.0</double>
+     <double>180.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode4">
     <void property="methods">
      <void property="text">
       <string>String getMimeType()
@@ -168,35 +164,34 @@ void transformFile(Reader reader, Writer writer, TransformInfo info) throws File
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>-1.0</double>
+      <double>443.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>524.0</double>
+      <double>17.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>-1.0</double>
-     <double>524.0</double>
+     <double>443.0</double>
+     <double>17.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode5">
     <void property="methods">
      <void property="text">
       <string>String getTagName()
-void writeDevContent(Map&lt;String, String&gt; tagAttributes, PageNode pageNode, String locale, Writer writer) throws ResourceBundlerException
-void writeProdContent(Map&lt;String, String&gt; tagAttributes, PageNode pageNode, String locale, Writer writer) throws ResourceBundlerException
-</string>
+void writeDevTagContent(Map&lt;String, String&gt; tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+void writeProdTagContent(Map&lt;String, String&gt; tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException</string>
      </void>
     </void>
     <void property="name">
      <void property="text">
-      <string>«LogicalTagReplacementPlugin»</string>
+      <string>«TagHandlerPlugin»</string>
      </void>
     </void>
    </object>
@@ -205,24 +200,24 @@ void writeProdContent(Map&lt;String, String&gt; tagAttributes, PageNode pageNode
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>-3.0</double>
+      <double>-1.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>126.0</double>
+      <double>274.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>-3.0</double>
-     <double>126.0</double>
+     <double>-1.0</double>
+     <double>274.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode1">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode6">
     <void property="methods">
      <void property="text">
       <string>void stop()
@@ -240,32 +235,34 @@ void runTests(TestableNode node) throws TestException</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>445.0</double>
+      <double>953.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>660.0</double>
+      <double>170.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>445.0</double>
-     <double>660.0</double>
+     <double>953.0</double>
+     <double>170.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode7">
     <void property="methods">
      <void property="text">
-      <string>FileSet&lt;SF&gt; getSourceFileSet(SourceLocation sourceLocation)</string>
+      <string>List&lt;AssetFile&gt; getAssetFiles(Resources resources)
+List&lt;LinkedAssetFile&gt; getLinkedAsetFiles(Resources resources)
+List&lt;SourceFile&gt; getSourceFiles(SourceLocation sourceLocation)</string>
      </void>
     </void>
     <void property="name">
      <void property="text">
-      <string>«SourceFilePlugin»</string>
+      <string>«FileAccessor»</string>
      </void>
     </void>
    </object>
@@ -274,19 +271,53 @@ void runTests(TestableNode node) throws TestException</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>2.0</double>
+      <double>211.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>427.0</double>
+      <double>567.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>2.0</double>
-     <double>427.0</double>
+     <double>211.0</double>
+     <double>567.0</double>
+    </void>
+   </object>
+  </void>
+  <void method="addNode">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode8">
+    <void property="methods">
+     <void property="text">
+      <string>setBRJS(BRJS brjs)</string>
+     </void>
+    </void>
+    <void property="name">
+     <void property="text">
+      <string>«Plugin»</string>
+     </void>
+    </void>
+   </object>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double8">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double8"/>
+      <double>357.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double8"/>
+      <double>177.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>357.0</double>
+     <double>177.0</double>
     </void>
    </object>
   </void>
@@ -300,7 +331,91 @@ void runTests(TestableNode node) throws TestException</string>
     </void>
    </object>
    <object idref="InterfaceNode0"/>
+   <object idref="InterfaceNode6"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
    <object idref="InterfaceNode1"/>
+   <object idref="InterfaceNode5"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="V"/>
+    </void>
+   </object>
+   <object idref="InterfaceNode1"/>
+   <object idref="InterfaceNode7"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
+   <object idref="InterfaceNode5"/>
+   <object idref="InterfaceNode8"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
+   <object idref="InterfaceNode3"/>
+   <object idref="InterfaceNode8"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
+   <object idref="InterfaceNode2"/>
+   <object idref="InterfaceNode8"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
+   <object idref="InterfaceNode4"/>
+   <object idref="InterfaceNode8"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
+   <object idref="InterfaceNode0"/>
+   <object idref="InterfaceNode8"/>
   </void>
  </object>
 </java>

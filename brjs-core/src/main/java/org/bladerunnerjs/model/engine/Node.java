@@ -14,8 +14,8 @@ public interface Node {
 	RootNode root();
 	Node parentNode();
 	File dir();
-	boolean dirExists();
 	File file(String filePath);
+	boolean dirExists();
 	boolean containsFile(String filePath);
 	void create() throws InvalidNameException, ModelUpdateException;
 	void ready();
