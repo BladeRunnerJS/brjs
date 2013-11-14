@@ -194,14 +194,17 @@ public class LogMessageStore
 
 	private LogMessage findFirstMessageMatching(LinkedList<LogMessage> messages, String message)
 	{
+		LogMessage foundMessage = null;
 		for (LogMessage m : messages)
 		{
 			if (m.message.equals(message))
 			{
-				return m;
+				foundMessage = m;
+				break;
 			}
 		}
-		return null;
+		messages.remove(foundMessage);
+		return foundMessage;
 	}
 
 	private void verifyNoMoreMessageOnList(String logLevel, List<LogMessage> messages)

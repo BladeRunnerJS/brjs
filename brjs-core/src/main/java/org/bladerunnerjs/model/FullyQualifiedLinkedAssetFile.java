@@ -98,12 +98,15 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 				
 				try
 				{
-    				trie.add(sourceFile.getRequirePath(), sourceFile);
-    				trie.add(classSourceFile.getClassName(), classSourceFile);
-    				
-    				for(AliasDefinition aliasDefinition : sourceFile.getAliases()) {
-    					trie.add(aliasDefinition.getName(), aliasDefinition);
-    				}
+					if (!sourceFile.getUnderlyingFile().equals(assetFile))
+					{
+        				trie.add(sourceFile.getRequirePath(), sourceFile);
+        				trie.add(classSourceFile.getClassName(), classSourceFile);
+        				
+        				for(AliasDefinition aliasDefinition : sourceFile.getAliases()) {
+        					trie.add(aliasDefinition.getName(), aliasDefinition);
+        				}
+					}
 				}
 				catch (TrieKeyAlreadyExistsException ex)
 				{

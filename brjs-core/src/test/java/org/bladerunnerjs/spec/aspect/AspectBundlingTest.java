@@ -113,7 +113,6 @@ public class AspectBundlingTest extends SpecTest {
 	}
 	
 	
-	// TODO: uncomment missing test lines as bugs are fixed
 	// TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
 	@Test
 	public void helpfulLoggingMessagesAreEmitted() throws Exception {
@@ -129,9 +128,9 @@ public class AspectBundlingTest extends SpecTest {
 			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'index.html', 'resources/xml/config.xml'"))
 			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "index.html", "'src/novox/Class1.js'")
-//			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "xml/config.xml", "'src/novox/Class1.js'") // TODO: uncomment this line once xml seed files are supported
-//			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "novox/Class1.js", "'src/novox/Class2.js'") // TODO: uncomment this line once logging assertions don't just grab the first matching message they find
-			.and(logging).debugMessageReceived(FILE_HAS_NO_DEPENDENCIES_MSG, "src/novox/Class2.js");
+			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "src/novox/Class1.js", "'src/novox/Class2.js'")
+			.and(logging).debugMessageReceived(FILE_HAS_NO_DEPENDENCIES_MSG, "src/novox/Class2.js")
+			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "resources/xml/config.xml", "'src/novox/Class1.js'");
 	}
 	
 	@Test
