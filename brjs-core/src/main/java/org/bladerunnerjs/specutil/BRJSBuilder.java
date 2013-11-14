@@ -24,16 +24,22 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 
-	public BuilderChainer hasCommand(CommandPlugin command)
+	public BuilderChainer hasCommands(CommandPlugin... commands)
 	{
-		specTest.pluginLocator.pluginCommands.add(command);
+		for(CommandPlugin command : commands)
+		{
+			specTest.pluginLocator.pluginCommands.add(command);
+		}
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasModelObserver(ModelObserverPlugin modelObserver)
+	public BuilderChainer hasModelObservers(ModelObserverPlugin... modelObservers)
 	{
-		specTest.pluginLocator.modelObservers.add(modelObserver);
+		for(ModelObserverPlugin modelObserver : modelObservers)
+		{
+			specTest.pluginLocator.modelObservers.add(modelObserver);
+		}
 		
 		return builderChainer;
 	}
