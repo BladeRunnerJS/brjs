@@ -22,7 +22,8 @@ public class AspectBundlingTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsBundlers()
+			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			blade = app.bladeset("bs").blade("b1");
@@ -84,6 +85,8 @@ public class AspectBundlingTest extends SpecTest {
 	
 	@Test
 	public void classesThatReferToExistentClassesWontCauseAnException() throws Exception {
+		given(exceptions).arentCaught();
+		
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classRefersTo("novox.Class1", "novox.NonExistentClass");

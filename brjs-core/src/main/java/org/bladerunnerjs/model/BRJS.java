@@ -84,7 +84,12 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		logger.info(Messages.CREATING_COMMAND_PLUGINS_LOG_MSG);
 		commandList = new CommandList(this, pluginLocator.createCommandPlugins(this));
-		bundlerPlugins = BundlePluginFactory.createBundlerPlugins(this);
+		
+		bundlerPlugins = new HashMap<String,BundlerPlugin>();
+		for(BundlerPlugin bundlerPlugin :  pluginLocator.createBundlerPlugins(this)) {
+			bundlerPlugins.put(bundlerPlugin.getTagName(), bundlerPlugin);
+		}
+		
 		minifierPlugins = MinifierPluginFactory.createMinifierPlugins(this);
 	}
 	
