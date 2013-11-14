@@ -13,12 +13,12 @@ public class AssetContainerResources {
 	private final DeepAssetLocation seedResources;
 	private final Map<String, ShallowAssetLocation> resources = new HashMap<>();
 	private File srcLocationDir;
-	private BRJS brjs;
+	private AssetContainer assetContainer;
 	
-	public AssetContainerResources(BRJS brjs, File srcLocationDir, File resourcesDir) {
-		this.brjs = brjs;
+	public AssetContainerResources(AssetContainer assetContainer, File srcLocationDir, File resourcesDir) {
 		this.srcLocationDir = srcLocationDir;
-		seedResources = new DeepAssetLocation(brjs, resourcesDir);
+		this.assetContainer = assetContainer;
+		seedResources = new DeepAssetLocation(assetContainer, resourcesDir);
 	}
 	
 	public AssetLocation getSeedResources() {
@@ -58,7 +58,7 @@ public class AssetContainerResources {
 		String srcPath = srcDir.getAbsolutePath();
 		
 		if(!resources.containsKey(srcPath)) {
-			resources.put(srcPath, new ShallowAssetLocation(brjs, srcDir));
+			resources.put(srcPath, new ShallowAssetLocation(assetContainer, srcDir));
 		}
 		
 		return resources.get(srcPath);

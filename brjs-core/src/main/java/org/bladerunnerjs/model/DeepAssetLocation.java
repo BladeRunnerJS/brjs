@@ -15,8 +15,8 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	
 	Map<File,AssetLocation> resourcesMap = new LinkedHashMap<File,AssetLocation>();
 	
-	public DeepAssetLocation(BRJS brjs, File dir) {
-		super(brjs, dir);
+	public DeepAssetLocation(AssetContainer assetContainer, File dir) {
+		super(assetContainer, dir);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class DeepAssetLocation extends ShallowAssetLocation {
     			AssetLocation dirResources = resourcesMap.get(dir);
     			if (dirResources == null)
     			{
-    				dirResources = new ShallowAssetLocation(brjs, dir);
+    				dirResources = new ShallowAssetLocation(assetContainer, dir);
     				resourcesMap.put(dir, dirResources);
     			}
     			assetFiles.addAll(dirResources.seedResources());		

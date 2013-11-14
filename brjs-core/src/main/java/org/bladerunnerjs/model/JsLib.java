@@ -31,7 +31,7 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 		this.name = name;
 		init(rootNode, parent, dir);
 		
-		assetContainerResources = new AssetContainerResources((BRJS) rootNode, src().dir(), resources().dir());
+		assetContainerResources = new AssetContainerResources(this, src().dir(), resources().dir());
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)

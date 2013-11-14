@@ -17,7 +17,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	public AbstractAssetContainer(RootNode rootNode, File dir) {
 		init(rootNode, rootNode, dir);
 		
-		assetContainerResources = new AssetContainerResources((BRJS) rootNode, src().dir(), resources().dir());
+		assetContainerResources = new AssetContainerResources(this, src().dir(), resources().dir());
 	}
 	
 	public DirNode src() {

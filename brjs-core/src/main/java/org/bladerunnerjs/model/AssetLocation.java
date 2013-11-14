@@ -16,6 +16,6 @@ public interface AssetLocation {
 	List<LinkedAssetFile> seedResources();
 	List<LinkedAssetFile> seedResources(String fileExtension);
 	List<AssetFile> bundleResources(String fileExtension);
-//	AssetContainer getAssetContainer();	//TODO: add this method - move it from AssetFile
+	AssetContainer getAssetContainer();
 //	List<Resources> getDependentResources(); //TODO: add this method to the interface
 }

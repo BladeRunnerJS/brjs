@@ -9,12 +9,14 @@ import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 
 public class ShallowAssetLocation implements AssetLocation {
+	protected AssetContainer assetContainer;
 	protected BRJS brjs;
 	protected File dir;
 	
-	public ShallowAssetLocation(BRJS brjs, File dir) {
-		this.brjs = brjs;
+	public ShallowAssetLocation(AssetContainer assetContainer, File dir) {
+		this.assetContainer = assetContainer;
 		this.dir = dir;
+		this.brjs = assetContainer.root();
 	}
 	
 	@Override
@@ -62,5 +64,11 @@ public class ShallowAssetLocation implements AssetLocation {
 		}
 		
 		return bundleResources;
+	}
+
+	@Override
+	public AssetContainer getAssetContainer()
+	{
+		return assetContainer;
 	}
 }
