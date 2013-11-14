@@ -43,11 +43,11 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public String getRequirePrefix() {
-		return ((SourceLocation) parentNode()).getRequirePrefix();
+		return ((AssetContainer) parentNode()).getRequirePrefix();
 	}
 	
 	@Override
-	public List<SourceLocation> getSourceLocations()
+	public List<AssetContainer> getAssetContainers()
 	{
 		// TODO
 		return null;

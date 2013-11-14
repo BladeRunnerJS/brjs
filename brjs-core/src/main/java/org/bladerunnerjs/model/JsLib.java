@@ -18,20 +18,20 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.utility.NameValidator;
 
 
-public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
+public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 {
 	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
 	private String name;
 	private JsLibConf libConf;
-	private final SourceLocationResources sourceLocationResources;
+	private final AssetContainerResources assetContainerResources;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		this.name = name;
 		init(rootNode, parent, dir);
 		
-		sourceLocationResources = new SourceLocationResources((BRJS) rootNode, src().dir(), resources().dir());
+		assetContainerResources = new AssetContainerResources((BRJS) rootNode, src().dir(), resources().dir());
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)
@@ -155,6 +155,6 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	
 	@Override
 	public List<Resources> getResources(File srcDir) {
-		return sourceLocationResources.getResources(srcDir);
+		return assetContainerResources.getResources(srcDir);
 	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface AssetFileAccessor
 {
-	List<SourceFile> getSourceFiles(SourceLocation sourceLocation);
+	List<SourceFile> getSourceFiles(AssetContainer assetContainer);
 	List<LinkedAssetFile> getLinkedResourceFiles(Resources resources);
 	List<AssetFile> getResourceFiles(Resources resources);
 }

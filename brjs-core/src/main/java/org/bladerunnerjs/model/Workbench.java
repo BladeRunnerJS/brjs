@@ -51,18 +51,18 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	}
 	
 	@Override
-	public List<SourceLocation> getSourceLocations() {
-		List<SourceLocation> sourceLocations = new ArrayList<>();
+	public List<AssetContainer> getAssetContainers() {
+		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		sourceLocations.add(this);
-		sourceLocations.add(this.parent());
-		sourceLocations.add(this.parent().parent());
+		assetContainers.add(this);
+		assetContainers.add(this.parent());
+		assetContainers.add(this.parent().parent());
 		
 		for(JsLib jsLib : parent().parent().parent().jsLibs()) {
-			sourceLocations.add(jsLib);
+			assetContainers.add(jsLib);
 		}
 		
-		return sourceLocations;
+		return assetContainers;
 	}
 	
 	@Override

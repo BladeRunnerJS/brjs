@@ -16,7 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AliasDefinition;
 import org.bladerunnerjs.model.Resources;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.SourceLocation;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 
@@ -24,13 +24,13 @@ public class NodeJsSourceFile implements SourceFile {
 	private final File assetFile;
 	private List<String> requirePaths;
 	private List<String> aliasNames;
-	private final SourceLocation sourceLocation;
+	private final AssetContainer assetContainer;
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	
-	public NodeJsSourceFile(SourceLocation sourceLocation, File file) {
-		this.sourceLocation = sourceLocation;
+	public NodeJsSourceFile(AssetContainer assetContainer, File file) {
+		this.assetContainer = assetContainer;
 		assetFile = file;
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
@@ -76,8 +76,8 @@ public class NodeJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public SourceLocation getSourceLocation() {
-		return sourceLocation;
+	public AssetContainer getAssetContainer() {
+		return assetContainer;
 	}
 	
 	@Override
@@ -109,7 +109,7 @@ public class NodeJsSourceFile implements SourceFile {
 			
 			dependentSourceFiles = new ArrayList<>();
 			for(String requirePath : requirePaths) {
-				dependentSourceFiles.add(sourceLocation.sourceFile(requirePath));
+				dependentSourceFiles.add(assetContainer.sourceFile(requirePath));
 			}
 			
 			aliases = new ArrayList<>();

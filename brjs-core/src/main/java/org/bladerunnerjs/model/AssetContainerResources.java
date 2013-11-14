@@ -9,13 +9,13 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-public class SourceLocationResources {
+public class AssetContainerResources {
 	private final DeepResources seedResources;
 	private final Map<String, ShallowResources> resources = new HashMap<>();
 	private File srcLocationDir;
 	private BRJS brjs;
 	
-	public SourceLocationResources(BRJS brjs, File srcLocationDir, File resourcesDir) {
+	public AssetContainerResources(BRJS brjs, File srcLocationDir, File resourcesDir) {
 		this.brjs = brjs;
 		this.srcLocationDir = srcLocationDir;
 		seedResources = new DeepResources(brjs, resourcesDir);

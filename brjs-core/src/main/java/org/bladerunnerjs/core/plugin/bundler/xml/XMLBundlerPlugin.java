@@ -16,7 +16,7 @@ import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.Resources;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.SourceLocation;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
@@ -96,7 +96,7 @@ public class XMLBundlerPlugin implements BundlerPlugin
 	{
 
 		@Override
-		public List<SourceFile> getSourceFiles(SourceLocation sourceLocation)
+		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
 		{
 			// TODO Auto-generated method stub
 			return null;

@@ -212,10 +212,10 @@ public class SectionRedirectFilterTest
 		
 		assertEquals("404", responseMap.get("responseCode"));		
 
-		File newBladeSetSourceLocation = new File(APP_LOCATION + "/../new-bladeset-for-app1");
+		File newBladeSetAssetContainer = new File(APP_LOCATION + "/../new-bladeset-for-app1");
 		File newBladeSetDir = new File(temporaryDirectoryForWebApp, newBladeSetDirName);
 		newBladeSetDir.mkdir();
-		FileUtility.copyDirectoryContents(newBladeSetSourceLocation, newBladeSetDir);
+		FileUtility.copyDirectoryContents(newBladeSetAssetContainer, newBladeSetDir);
 		
 		responseMap = makeRequest("http://localhost:"+PORT+"/" + app1ContextPath 
 				+ "/" + newBladeSetDirName + "/index.html");

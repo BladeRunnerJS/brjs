@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 import org.bladerunnerjs.model.utility.TestRunner;
 
 
-public abstract class AbstractComponent extends AbstractSourceLocation implements TestableNode
+public abstract class AbstractComponent extends AbstractAssetContainer implements TestableNode
 {
 	private final NodeMap<Theme> themes = Theme.createNodeSet();
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();

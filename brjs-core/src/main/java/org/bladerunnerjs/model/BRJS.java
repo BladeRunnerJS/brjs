@@ -334,7 +334,7 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	// TODO: get rid of this synchronized since none of this API is thread-safe?
-	public synchronized <AF extends AssetFile> AssetFile getAssetFile(AssetFileFactory<AF> assetFileFactory, SourceLocation sourceLocation, File file) {
+	public synchronized <AF extends AssetFile> AssetFile getAssetFile(AssetFileFactory<AF> assetFileFactory, AssetContainer assetContainer, File file) {
 		String absolutePath = file.getAbsolutePath();
 		AssetFile assetFile;
 		
@@ -342,7 +342,7 @@ public class BRJS extends AbstractBRJSRootNode
 			assetFile = assetFiles.get(absolutePath);
 		}
 		else {
-			assetFile = assetFileFactory.createFile(sourceLocation, file);
+			assetFile = assetFileFactory.createFile(assetContainer, file);
 			assetFiles.put(absolutePath, assetFile);
 		}
 		

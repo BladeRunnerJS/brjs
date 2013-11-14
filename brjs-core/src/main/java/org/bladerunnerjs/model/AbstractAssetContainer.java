@@ -9,15 +9,15 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 
-public abstract class AbstractSourceLocation extends AbstractBRJSNode implements SourceLocation {
+public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
-	protected final SourceLocationResources sourceLocationResources;
+	protected final AssetContainerResources assetContainerResources;
 	
-	public AbstractSourceLocation(RootNode rootNode, File dir) {
+	public AbstractAssetContainer(RootNode rootNode, File dir) {
 		init(rootNode, rootNode, dir);
 		
-		sourceLocationResources = new SourceLocationResources((BRJS) rootNode, src().dir(), resources().dir());
+		assetContainerResources = new AssetContainerResources((BRJS) rootNode, src().dir(), resources().dir());
 	}
 	
 	public DirNode src() {
@@ -64,6 +64,6 @@ public abstract class AbstractSourceLocation extends AbstractBRJSNode implements
 	
 	@Override
 	public List<Resources> getResources(File srcDir) {
-		return sourceLocationResources.getResources(srcDir);
+		return assetContainerResources.getResources(srcDir);
 	}
 }

@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.file.AliasesFile;
 
-public abstract class AbstractBundlableNode extends AbstractSourceLocation implements BundlableNode {
+public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private AliasesFile aliasesFile;
 	
 	public AbstractBundlableNode(RootNode rootNode, File dir) {
@@ -29,7 +29,7 @@ public abstract class AbstractBundlableNode extends AbstractSourceLocation imple
 	}
 	
 	private Resources getSeedResources() {
-		return sourceLocationResources.getSeedResources();
+		return assetContainerResources.getSeedResources();
 	}
 	
 	@Override
@@ -45,8 +45,8 @@ public abstract class AbstractBundlableNode extends AbstractSourceLocation imple
 	public SourceFile getSourceFile(String requirePath) throws AmbiguousRequirePathException {
 		SourceFile sourceFile = null;
 		
-		for(SourceLocation sourceLocation : getSourceLocations()) {
-			SourceFile locationSourceFile = sourceLocation.sourceFile(requirePath);
+		for(AssetContainer assetContainer : getAssetContainers()) {
+			SourceFile locationSourceFile = assetContainer.sourceFile(requirePath);
 			
 			if(locationSourceFile != null) {
 				if(sourceFile == null) {

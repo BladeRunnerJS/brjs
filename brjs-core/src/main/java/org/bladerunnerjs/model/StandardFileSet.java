@@ -10,7 +10,7 @@ import org.netbeans.spi.project.support.ant.PathMatcher;
 import com.google.common.base.Joiner;
 
 public class StandardFileSet<AF extends AssetFile> {
-	private SourceLocation sourceLocation;
+	private AssetContainer assetContainer;
 	private AssetFileFactory<AF> fileSetFactory;
 	private PathMatcher pathMatcher;
 	
@@ -18,25 +18,25 @@ public class StandardFileSet<AF extends AssetFile> {
 		return paths;
 	}
 	
-	public StandardFileSet(SourceLocation sourceLocation, String[] includePaths, String[] excludePaths, AssetFileFactory<AF> fileSetFactory) {
-		this.sourceLocation = sourceLocation;
+	public StandardFileSet(AssetContainer assetContainer, String[] includePaths, String[] excludePaths, AssetFileFactory<AF> fileSetFactory) {
+		this.assetContainer = assetContainer;
 		this.fileSetFactory = fileSetFactory;
 		
 		String includePathsStr = (includePaths == null) ? null : Joiner.on(", ").join(includePaths);
 		String excludePathsStr = (excludePaths == null) ? null : Joiner.on(", ").join(excludePaths);
-		pathMatcher = new PathMatcher(includePathsStr, excludePathsStr, sourceLocation.dir());
+		pathMatcher = new PathMatcher(includePathsStr, excludePathsStr, assetContainer.dir());
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<AF> getFiles() {
 		List<AF> files = new ArrayList<>();
-		File baseDir = sourceLocation.dir();
+		File baseDir = assetContainer.dir();
 		
 		for(File file : FileUtils.listFiles(baseDir, null, true)) {
 			String relativePath = baseDir.toURI().relativize(file.toURI()).getPath();
 			
 			if(pathMatcher.matches(relativePath, true)) {
-				files.add((AF) sourceLocation.root().getAssetFile(fileSetFactory, sourceLocation, file));
+				files.add((AF) assetContainer.root().getAssetFile(fileSetFactory, assetContainer, file));
 			}
 		}
 		

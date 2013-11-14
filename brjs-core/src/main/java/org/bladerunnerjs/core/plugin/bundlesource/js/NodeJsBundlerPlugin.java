@@ -22,7 +22,7 @@ import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.Resources;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.SourceLocation;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.StandardFileSet;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -140,9 +140,9 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	{
 
 		@Override
-		public List<SourceFile> getSourceFiles(SourceLocation sourceLocation)
+		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
 		{ 
-			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new NodeJsFileSetFactory()).getFiles();
+			return new StandardFileSet<SourceFile>(assetContainer, StandardFileSet.paths("src/**/*.js"), null, new NodeJsFileSetFactory()).getFiles();
 		}
 
 		@Override
@@ -162,8 +162,8 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	//TODO: get rid of this
 	private class NodeJsFileSetFactory implements AssetFileFactory<SourceFile> {
 		@Override
-		public NodeJsSourceFile createFile(SourceLocation sourceLocation, File file) {
-			return new NodeJsSourceFile(sourceLocation, file);
+		public NodeJsSourceFile createFile(AssetContainer assetContainer, File file) {
+			return new NodeJsSourceFile(assetContainer, file);
 		}
 	}
 	

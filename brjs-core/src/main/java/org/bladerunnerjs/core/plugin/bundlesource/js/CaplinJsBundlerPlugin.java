@@ -23,7 +23,7 @@ import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.Resources;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.SourceLocation;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.StandardFileSet;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -209,9 +209,9 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	{
 
 		@Override
-		public List<SourceFile> getSourceFiles(SourceLocation sourceLocation)
+		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
 		{
-			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new CaplinJsFileSetFactory()).getFiles();
+			return new StandardFileSet<SourceFile>(assetContainer, StandardFileSet.paths("src/**/*.js"), null, new CaplinJsFileSetFactory()).getFiles();
 		}
 
 		@Override
@@ -231,8 +231,8 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	//TODO: get rid of this
 	private class CaplinJsFileSetFactory implements AssetFileFactory<SourceFile> {
 		@Override
-		public CaplinJsSourceFile createFile(SourceLocation sourceLocation, File file) {
-			return new CaplinJsSourceFile(sourceLocation, file);
+		public CaplinJsSourceFile createFile(AssetContainer assetContainer, File file) {
+			return new CaplinJsSourceFile(assetContainer, file);
 		}
 	}
 }

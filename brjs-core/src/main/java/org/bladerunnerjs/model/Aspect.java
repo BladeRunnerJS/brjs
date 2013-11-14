@@ -78,13 +78,13 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	}
 	
 	@Override
-	public List<SourceLocation> getSourceLocations() {
-		List<SourceLocation> sourceLocations = new ArrayList<>();
+	public List<AssetContainer> getAssetContainers() {
+		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		sourceLocations.add(this);
-		sourceLocations.addAll(parent().getNonAspectSourceLocations());
+		assetContainers.add(this);
+		assetContainers.addAll(parent().getNonAspectAssetContainer());
 		
-		return sourceLocations;
+		return assetContainers;
 	}
 	
 	public App parent()
