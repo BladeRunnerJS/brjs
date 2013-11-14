@@ -11,11 +11,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
-public class DeepResources extends ShallowResources {
+public class DeepAssetLocation extends ShallowAssetLocation {
 	
-	Map<File,Resources> resourcesMap = new LinkedHashMap<File,Resources>();
+	Map<File,AssetLocation> resourcesMap = new LinkedHashMap<File,AssetLocation>();
 	
-	public DeepResources(BRJS brjs, File dir) {
+	public DeepAssetLocation(BRJS brjs, File dir) {
 		super(brjs, dir);
 	}
 
@@ -30,10 +30,10 @@ public class DeepResources extends ShallowResources {
     		while (fileIterator.hasNext())
     		{
     			File dir = fileIterator.next();
-    			Resources dirResources = resourcesMap.get(dir);
+    			AssetLocation dirResources = resourcesMap.get(dir);
     			if (dirResources == null)
     			{
-    				dirResources = new ShallowResources(brjs, dir);
+    				dirResources = new ShallowAssetLocation(brjs, dir);
     				resourcesMap.put(dir, dirResources);
     			}
     			assetFiles.addAll(dirResources.seedResources());		

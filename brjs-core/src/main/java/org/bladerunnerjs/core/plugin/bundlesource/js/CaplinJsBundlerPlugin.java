@@ -21,7 +21,7 @@ import org.bladerunnerjs.model.AssetFileFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
-import org.bladerunnerjs.model.Resources;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.StandardFileSet;
@@ -215,13 +215,13 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		}
 
 		@Override
-		public List<LinkedAssetFile> getLinkedResourceFiles(Resources resources)
+		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
 		{
 			return Arrays.asList();
 		}
 
 		@Override
-		public List<AssetFile> getResourceFiles(Resources resources)
+		public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
 		{
 			return Arrays.asList();
 		}

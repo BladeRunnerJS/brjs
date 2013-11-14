@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
-import org.bladerunnerjs.model.Resources;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -103,14 +103,14 @@ public class XMLBundlerPlugin implements BundlerPlugin
 		}
 
 		@Override
-		public List<LinkedAssetFile> getLinkedResourceFiles(Resources resources)
+		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
 		{
 			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
-		public List<AssetFile> getResourceFiles(Resources resources)
+		public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
 		{
 			// TODO Auto-generated method stub
 			return null;

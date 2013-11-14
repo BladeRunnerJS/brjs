@@ -14,13 +14,13 @@ public class NullAssetFileAccessor implements AssetFileAccessor
 	}
 
 	@Override
-	public List<LinkedAssetFile> getLinkedResourceFiles(Resources resources)
+	public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}
 
 	@Override
-	public List<AssetFile> getResourceFiles(Resources resources)
+	public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}

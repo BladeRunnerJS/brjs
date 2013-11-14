@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AliasDefinition;
-import org.bladerunnerjs.model.Resources;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -65,7 +65,7 @@ public class NodeJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<Resources> getResources() {
+	public List<AssetLocation> getAssetLocations() {
 		// TODO
 		return null;
 	}

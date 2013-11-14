@@ -8,11 +8,11 @@ import java.util.List;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 
-public class ShallowResources implements Resources {
+public class ShallowAssetLocation implements AssetLocation {
 	protected BRJS brjs;
 	protected File dir;
 	
-	public ShallowResources(BRJS brjs, File dir) {
+	public ShallowAssetLocation(BRJS brjs, File dir) {
 		this.brjs = brjs;
 		this.dir = dir;
 	}

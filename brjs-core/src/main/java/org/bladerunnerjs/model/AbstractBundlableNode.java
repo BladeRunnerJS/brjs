@@ -28,7 +28,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		return seedFiles;
 	}
 	
-	private Resources getSeedResources() {
+	private AssetLocation getSeedResources() {
 		return assetContainerResources.getSeedResources();
 	}
 	

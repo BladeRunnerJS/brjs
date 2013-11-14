@@ -63,7 +63,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public List<Resources> getResources(File srcDir) {
+	public List<AssetLocation> getAssetLocations(File srcDir) {
 		return assetContainerResources.getResources(srcDir);
 	}
 }

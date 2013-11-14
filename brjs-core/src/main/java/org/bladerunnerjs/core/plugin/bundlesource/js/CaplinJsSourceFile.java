@@ -9,7 +9,7 @@ import java.util.List;
 import org.bladerunnerjs.model.AliasDefinition;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
 import org.bladerunnerjs.model.LinkedAssetFile;
-import org.bladerunnerjs.model.Resources;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -52,8 +52,8 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<Resources> getResources() {
-		return assetContainer.getResources(srcDir);
+	public List<AssetLocation> getAssetLocations() {
+		return assetContainer.getAssetLocations(srcDir);
 	}
 	
 	@Override

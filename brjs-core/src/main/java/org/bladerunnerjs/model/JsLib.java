@@ -154,7 +154,7 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	}
 	
 	@Override
-	public List<Resources> getResources(File srcDir) {
+	public List<AssetLocation> getAssetLocations(File srcDir) {
 		return assetContainerResources.getResources(srcDir);
 	}
 }

@@ -10,23 +10,23 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
 public class AssetContainerResources {
-	private final DeepResources seedResources;
-	private final Map<String, ShallowResources> resources = new HashMap<>();
+	private final DeepAssetLocation seedResources;
+	private final Map<String, ShallowAssetLocation> resources = new HashMap<>();
 	private File srcLocationDir;
 	private BRJS brjs;
 	
 	public AssetContainerResources(BRJS brjs, File srcLocationDir, File resourcesDir) {
 		this.brjs = brjs;
 		this.srcLocationDir = srcLocationDir;
-		seedResources = new DeepResources(brjs, resourcesDir);
+		seedResources = new DeepAssetLocation(brjs, resourcesDir);
 	}
 	
-	public Resources getSeedResources() {
+	public AssetLocation getSeedResources() {
 		return seedResources;
 	}
 	
-	public List<Resources> getResources(File srcDir) {
-		List<Resources> resourcesList = new ArrayList<>();
+	public List<AssetLocation> getResources(File srcDir) {
+		List<AssetLocation> resourcesList = new ArrayList<>();
 		
 		try {
 			if(!srcLocationDir.equals(srcDir) && !FileUtils.directoryContains(srcLocationDir, srcDir)) {
@@ -43,8 +43,8 @@ public class AssetContainerResources {
 		return resourcesList;
 	}
 	
-	private List<Resources> getResourcesList(File srcDir) {
-		List<Resources> resourcesList = new ArrayList<>();
+	private List<AssetLocation> getResourcesList(File srcDir) {
+		List<AssetLocation> resourcesList = new ArrayList<>();
 		
 		do {
 			resourcesList.add(createResource(srcDir));
@@ -54,11 +54,11 @@ public class AssetContainerResources {
 		return resourcesList;
 	}
 	
-	private Resources createResource(File srcDir) {
+	private AssetLocation createResource(File srcDir) {
 		String srcPath = srcDir.getAbsolutePath();
 		
 		if(!resources.containsKey(srcPath)) {
-			resources.put(srcPath, new ShallowResources(brjs, srcDir));
+			resources.put(srcPath, new ShallowAssetLocation(brjs, srcDir));
 		}
 		
 		return resources.get(srcPath);

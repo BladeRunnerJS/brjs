@@ -8,5 +8,5 @@ public interface AssetContainer extends BRJSNode {
 	String getRequirePrefix();
 	List<SourceFile> sourceFiles();
 	SourceFile sourceFile(String requirePath);
-	List<Resources> getResources(File srcDir);
+	List<AssetLocation> getAssetLocations(File srcDir);
 }

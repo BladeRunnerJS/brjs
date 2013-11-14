@@ -6,7 +6,7 @@ import java.util.List;
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 
 
-public interface Resources {
+public interface AssetLocation {
 	File dir();
 	AliasDefinitionsFile aliasDefinitions();
 	List<LinkedAssetFile> seedResources();
