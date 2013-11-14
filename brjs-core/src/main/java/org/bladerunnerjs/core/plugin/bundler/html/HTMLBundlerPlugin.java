@@ -1,4 +1,4 @@
-package org.bladerunnerjs.core.plugin.bundler.xml;
+package org.bladerunnerjs.core.plugin.bundler.html;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -24,21 +24,21 @@ import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 
-public class XMLBundlerPlugin implements BundlerPlugin
+public class HTMLBundlerPlugin implements BundlerPlugin
 {
 
 	private RequestParser requestParser;
 	
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
-		requestParserBuilder.accepts("xml.bundle").as("bundle-request");
+		requestParserBuilder.accepts("html.bundle").as("bundle-request");
 		requestParser = requestParserBuilder.build();
 	}
 	
 	@Override
 	public String getTagName()
 	{
-		return "xml";
+		return "html";
 	}
 
 	@Override
@@ -61,13 +61,13 @@ public class XMLBundlerPlugin implements BundlerPlugin
 	@Override
 	public String getMimeType()
 	{
-		return "application/xml";
+		return "text/html";
 	}
 
 	@Override
 	public AssetFileAccessor getAssetFileAccessor()
 	{
-		return new XMLBundlerAssetFileAccessor();
+		return new HTMLBundlerAssetFileAccessor();
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class XMLBundlerPlugin implements BundlerPlugin
 	
 	
 	
-	public class XMLBundlerAssetFileAccessor implements AssetFileAccessor
+	public class HTMLBundlerAssetFileAccessor implements AssetFileAccessor
 	{
 
 		@Override
@@ -109,7 +109,7 @@ public class XMLBundlerPlugin implements BundlerPlugin
 		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
 		{
 			//TODO: remove this "src" - it should be known by the model
-			return new FullyQualifiedLinkedAssetFileFactory().findFiles(assetLocation.getAssetContainer(), assetLocation.dir(), new SuffixFileFilter("xml"), null);
+			return new FullyQualifiedLinkedAssetFileFactory().findFiles(assetLocation.getAssetContainer(), assetLocation.dir(), new SuffixFileFilter("html"), null);
 		}
 
 		@Override

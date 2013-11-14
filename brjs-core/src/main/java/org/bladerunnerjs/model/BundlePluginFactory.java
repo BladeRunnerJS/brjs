@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundler.html.HTMLBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.js.CompositeJsBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.xml.XMLBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundlesource.js.CaplinJsBundlerPlugin;
@@ -20,6 +21,7 @@ public class BundlePluginFactory {
 		bundlerPluginList.add(new CompositeJsBundlerPlugin());
 		bundlerPluginList.add(new CaplinJsBundlerPlugin());
 		bundlerPluginList.add(new XMLBundlerPlugin());
+		bundlerPluginList.add(new HTMLBundlerPlugin());
 //		bundlerPluginList.add(new NodeJsBundlerPlugin());
 		
 		for(BundlerPlugin bundlerPlugin : bundlerPluginList) {
