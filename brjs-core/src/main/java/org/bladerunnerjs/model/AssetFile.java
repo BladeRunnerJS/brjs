@@ -6,7 +6,6 @@ import java.io.Reader;
 
 public interface AssetFile {
 	Reader getReader() throws FileNotFoundException;
-	AssetContainer getAssetContainer(); //TODO: remove this - it should be moved to AssetLocation
-//	Resources getResources(); //TODO: add this to the interface
+	AssetContainer getAssetContainer(); // TODO: this should be changed to getAssetLocation(), since you can always get the AssetContainer from the AssetLocation, but not the other way around.
 	File getUnderlyingFile();
 }

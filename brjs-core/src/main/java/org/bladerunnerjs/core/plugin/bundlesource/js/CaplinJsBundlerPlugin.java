@@ -212,6 +212,14 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		@Override
 		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
 		{
+			// TODO: switch over to this simpler AssetLocationUtility once all the AssetFileAccessor methods are passed an AssetLocation
+//			if(JsStyleUtility.getJsStyle(assetLocation.dir().equals("caplin-js"))) {
+//				return AssetLocationUtility.populateFileList(new ArrayList<SourceFile>, assetLocation, "js", CaplinJsSourceFile.class);
+//			}
+//			else {
+//				return Arrays.asList();
+//			}
+			
 			//TODO: remove this "src" - it should be known by the model
 			return new CaplinJsFileSetFactory().findFiles(assetContainer, assetContainer.file("src"), new SuffixFileFilter("js"), TrueFileFilter.INSTANCE);
 		}
