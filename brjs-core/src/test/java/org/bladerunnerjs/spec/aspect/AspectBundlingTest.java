@@ -94,6 +94,25 @@ public class AspectBundlingTest extends SpecTest {
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
+	//TODO: we may want to move these tests into the [X|HT]ML bundler tests
+	@Test
+	public void classesReferredToInXMlFilesAreBundled() throws Exception {
+		given(blade).hasClasses("novox.Class1", "novox.Class2")
+    		.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
+    		.and(blade).classRefersTo("novox.Class1", "novox.Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		then(response).containsClasses("novox.Class1", "novox.Class2");
+	}
+	@Test
+	public void classesReferredToInHTMlFilesAreBundled() throws Exception {
+		given(blade).hasClasses("novox.Class1", "novox.Class2")
+			.and(aspect).resourceFileRefersTo("html/view.html", "novox.Class1")
+			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		then(response).containsClasses("novox.Class1", "novox.Class2");
+	}
+	
+	
 	// TODO: uncomment missing test lines as bugs are fixed
 	// TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
 	@Test
@@ -102,13 +121,12 @@ public class AspectBundlingTest extends SpecTest {
 			.and(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).resourceFileRefersTo("html/view.html", "novox.Class1")
 			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/js.bundle", "app1")
 			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/js.bundle")
 			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsBundlerPlugin", "js/dev/en_GB/combined/js.bundle")
-			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'index.html', 'resources/html/view.html', 'resources/xml/config.xml'"))
+			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'index.html', 'resources/xml/config.xml'"))
 			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "index.html", "'src/novox/Class1.js'")
 //			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "xml/config.xml", "'src/novox/Class1.js'") // TODO: uncomment this line once xml seed files are supported
