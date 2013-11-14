@@ -22,11 +22,11 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
 	private FileModifiedChecker fileModifiedChecker;
-	private SourceLocation sourceLocation;
+	private AssetContainer assetContainer;
 	
-	public FullyQualifiedLinkedAssetFile(SourceLocation sourceLocation, File file) {
-		this.sourceLocation = sourceLocation;
-		app = sourceLocation.getApp();
+	public FullyQualifiedLinkedAssetFile(AssetContainer assetContainer, File file) {
+		this.assetContainer = assetContainer;
+		app = assetContainer.getApp();
 		assetFile = file;
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
@@ -55,8 +55,8 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	}
 	
 	@Override
-	public SourceLocation getSourceLocation() {
-		return sourceLocation;
+	public AssetContainer getAssetContainer() {
+		return assetContainer;
 	}
 	
 	@Override
@@ -92,8 +92,8 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private Trie<Object> createTrie() throws ModelOperationException {
 		Trie<Object> trie = new Trie<Object>();
 		
-		for(SourceLocation sourceLocation : app.getAllSourceLocations()) {
-			for(SourceFile sourceFile : sourceLocation.sourceFiles()) {
+		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
+			for(SourceFile sourceFile : assetContainer.sourceFiles()) {
 				ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
 				
 				try

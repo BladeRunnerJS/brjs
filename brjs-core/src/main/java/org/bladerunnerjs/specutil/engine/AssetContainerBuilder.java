@@ -1,15 +1,15 @@
 package org.bladerunnerjs.specutil.engine;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.AbstractSourceLocation;
+import org.bladerunnerjs.model.AbstractAssetContainer;
 
 
-public abstract class SourceLocationBuilder<N extends AbstractSourceLocation> extends NodeBuilder<N>
+public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> extends NodeBuilder<N>
 {
 	
-	private AbstractSourceLocation node;
+	private AbstractAssetContainer node;
 	
-	public SourceLocationBuilder(SpecTest specTest, N node)
+	public AssetContainerBuilder(SpecTest specTest, N node)
 	{
 		super(specTest, node);
 		this.node = node;

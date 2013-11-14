@@ -68,22 +68,22 @@ public class FileUtility {
 		return files;
 	}
 	
-	// Copy the contents of the sourceLocation (not the actual folder itself) to targetLocation
-	public static void copyDirectoryContents(File sourceLocation , File targetLocation) throws IOException 
+	// Copy the contents of the assetContainer (not the actual folder itself) to targetLocation
+	public static void copyDirectoryContents(File assetContainer , File targetLocation) throws IOException 
 	{
-		if (sourceLocation.isDirectory()) {
+		if (assetContainer.isDirectory()) {
 			if (!targetLocation.exists()) {
 				targetLocation.mkdirs();
 			}
 			
-			String[] children = sourceLocation.list();
+			String[] children = assetContainer.list();
 			for (int i=0; i<children.length; i++) {
-				copyDirectoryContents(new File(sourceLocation, children[i]),
+				copyDirectoryContents(new File(assetContainer, children[i]),
 						new File(targetLocation, children[i]));
 			}
 		} else {
 			
-			InputStream in = new FileInputStream(sourceLocation);
+			InputStream in = new FileInputStream(assetContainer);
 			OutputStream out = new FileOutputStream(targetLocation);
 			
 			// Copy the bits from instream to outstream
@@ -398,4 +398,5 @@ public class FileUtility {
 			FileUtils.copyDirectory(srcDir, destDir);
 		}
 	}
+	
 }

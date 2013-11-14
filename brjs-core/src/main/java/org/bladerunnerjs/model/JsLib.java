@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,21 +18,20 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.utility.NameValidator;
 
 
-public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
+public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 {
 	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
 	private String name;
 	private JsLibConf libConf;
-	private CompositeFileSet<SourceFile> sourceFileSet;
-	private final SourceLocationResources sourceLocationResources;
+	private final AssetContainerResources assetContainerResources;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		this.name = name;
 		init(rootNode, parent, dir);
 		
-		sourceLocationResources = new SourceLocationResources((BRJS) rootNode, src().dir(), resources().dir());
+		assetContainerResources = new AssetContainerResources(this, src().dir(), resources().dir());
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)
@@ -137,16 +137,15 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	
 	@Override
 	public List<SourceFile> sourceFiles() {
-		if(sourceFileSet == null) {
-			sourceFileSet = new CompositeFileSet<SourceFile>();
+		List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
 			
-			for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-				sourceFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getSourceFileSet(this));
-			}
+		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
+			sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(this));
 		}
 		
-		return sourceFileSet.getFiles();
+		return sourceFiles;
 	}
+	
 	
 	@Override
 	public SourceFile sourceFile(String requirePath) {
@@ -155,12 +154,7 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	}
 	
 	@Override
-	public List<Resources> getResources(File srcDir) {
-		return sourceLocationResources.getResources(srcDir);
-	}
-	
-	@Override
-	public void addSourceObserver(SourceObserver sourceObserver) {
-		// TODO Auto-generated method stub
+	public List<AssetLocation> getAssetLocations(File srcDir) {
+		return assetContainerResources.getResources(srcDir);
 	}
 }

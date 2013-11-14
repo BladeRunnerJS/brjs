@@ -22,7 +22,7 @@ public class TypedClassCreator<I>
 			"Error while creating the plugin %s, the class will not be loaded. Make sure there is a constructor for the class that accepts 0 arguments.";
 	}
 	
-	List<I> getSubTypesOfClass(BRJS brjs, Class<I> iFace)
+	public List<I> getSubTypesOfClass(BRJS brjs, Class<I> iFace)
 	{
 		List<I> objectList = new ArrayList<I>();
 

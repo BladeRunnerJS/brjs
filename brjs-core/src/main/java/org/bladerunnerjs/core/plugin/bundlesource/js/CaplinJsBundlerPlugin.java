@@ -6,26 +6,26 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.FileSetFactory;
 import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.AssetFileAccessor;
+import org.bladerunnerjs.model.AbstractAssetFileFactory;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.FileSet;
-import org.bladerunnerjs.model.AssetFileFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
-import org.bladerunnerjs.model.NullFileSet;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
-import org.bladerunnerjs.model.Resources;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.SourceLocation;
-import org.bladerunnerjs.model.StandardFileSet;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -79,8 +79,9 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public FileSetFactory getFileSetFactory() {
-		return new CaplinJsBundleSourceFileSetFactory();
+	public AssetFileAccessor getAssetFileAccessor()
+	{
+		return new CaplinJsAssetFileAccessor();
 	}
 	
 	@Override
@@ -204,27 +205,38 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
-	private class CaplinJsBundleSourceFileSetFactory implements FileSetFactory {
+	
+	private class CaplinJsAssetFileAccessor implements AssetFileAccessor
+	{
+
 		@Override
-		public FileSet<LinkedAssetFile> getLinkedResourceFileSet(Resources resources) {
-			return new NullFileSet<LinkedAssetFile>();
+		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
+		{
+			//TODO: remove this "src" - it should be known by the model
+			return new CaplinJsFileSetFactory().findFiles(assetContainer, assetContainer.file("src"), new SuffixFileFilter("js"), TrueFileFilter.INSTANCE);
+		}
+
+		@Override
+		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+		{
+			return Arrays.asList();
+		}
+
+		@Override
+		public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+		{
+			return Arrays.asList();
 		}
 		
+	}
+	
+	class CaplinJsFileSetFactory extends AbstractAssetFileFactory<SourceFile>
+	{
 		@Override
-		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new CaplinJsFileSetFactory());
-		}
-		
-		@Override
-		public FileSet<AssetFile> getResourceFileSet(Resources resources) {
-			return new NullFileSet<AssetFile>();
+		public CaplinJsSourceFile createFile(AssetContainer assetContainer, File file)
+		{
+			return new CaplinJsSourceFile(assetContainer, file);
 		}
 	}
 	
-	private class CaplinJsFileSetFactory implements AssetFileFactory<SourceFile> {
-		@Override
-		public CaplinJsSourceFile createFile(SourceLocation sourceLocation, File file) {
-			return new CaplinJsSourceFile(sourceLocation, file);
-		}
-	}
 }

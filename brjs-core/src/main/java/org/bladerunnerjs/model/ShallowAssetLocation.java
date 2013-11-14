@@ -2,22 +2,21 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 
-public class ShallowResources implements Resources {
+public class ShallowAssetLocation implements AssetLocation {
+	protected AssetContainer assetContainer;
 	protected BRJS brjs;
 	protected File dir;
-	protected CompositeFileSet<LinkedAssetFile> seedFileSet = new CompositeFileSet<>();
-	protected CompositeFileSet<AssetFile> fileSet = new CompositeFileSet<>();
 	
-	private boolean objectInitialized = false;
-	
-	public ShallowResources(BRJS brjs, File dir) {
-		this.brjs = brjs;
+	public ShallowAssetLocation(AssetContainer assetContainer, File dir) {
+		this.assetContainer = assetContainer;
 		this.dir = dir;
+		this.brjs = assetContainer.root();
 	}
 	
 	@Override
@@ -26,19 +25,22 @@ public class ShallowResources implements Resources {
 	}
 	
 	@Override
-	public AliasDefinitionsFile aliasDefinitions() {
-		initialize();
-		
+	public AliasDefinitionsFile aliasDefinitions() {		
 		// TODO: implement this method
 		return null;
 	}
-	
+		
 	@Override
 	public List<LinkedAssetFile> seedResources() {
-		initialize();
+		List<LinkedAssetFile> seedResources = new LinkedList<LinkedAssetFile>();
+			
+		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
+			seedResources.addAll(bundlerPlugin.getAssetFileAccessor().getLinkedResourceFiles(this));
+		}
 		
-		return seedFileSet.getFiles();
+		return seedResources;
 	}
+	
 	
 	@Override
 	public List<LinkedAssetFile> seedResources(String fileExtension) {
@@ -55,20 +57,18 @@ public class ShallowResources implements Resources {
 	
 	@Override
 	public List<AssetFile> bundleResources(String fileExtension) {
-		initialize();
+		List<AssetFile> bundleResources = new LinkedList<AssetFile>();
 		
-		return fileSet.getFiles();
-	}
-	
-	// TODO: can we find a better solution to the construction ordering problem that we have
-	private void initialize() {
-		if(!objectInitialized) {
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
-				seedFileSet.addFileSet(bundlerPlugin.getFileSetFactory().getLinkedResourceFileSet(this));
-				fileSet.addFileSet(bundlerPlugin.getFileSetFactory().getResourceFileSet(this));
-			}
-			
-			objectInitialized = true;
+		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
+			bundleResources.addAll(bundlerPlugin.getAssetFileAccessor().getResourceFiles(this));
 		}
+		
+		return bundleResources;
+	}
+
+	@Override
+	public AssetContainer getAssetContainer()
+	{
+		return assetContainer;
 	}
 }

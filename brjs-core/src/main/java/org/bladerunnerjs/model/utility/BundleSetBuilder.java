@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.AliasDefinition;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAssetFile;
-import org.bladerunnerjs.model.Resources;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
@@ -18,7 +18,7 @@ public class BundleSetBuilder {
 	Set<LinkedAssetFile> seedFiles = new HashSet<>();
 	Set<SourceFile> sourceFiles = new HashSet<>();
 	Set<AliasDefinition> activeAliases = new HashSet<>();
-	Set<Resources> resources = new HashSet<>();
+	Set<AssetLocation> resources = new HashSet<>();
 	private BundlableNode bundlableNode;
 	
 	public BundleSetBuilder(BundlableNode bundlableNode) {
@@ -27,7 +27,7 @@ public class BundleSetBuilder {
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
 		List<AliasDefinition> activeAliasList = new ArrayList<>();
-		List<Resources> resourcesList = new ArrayList<>();
+		List<AssetLocation> resourcesList = new ArrayList<>();
 		
 		activeAliasList.addAll(activeAliases);
 		resourcesList.addAll(resources);
@@ -46,7 +46,7 @@ public class BundleSetBuilder {
 		if(sourceFiles.add(sourceFile)) {
 			isNewSourceFile = true;
 			activeAliases.addAll(sourceFile.getAliases());
-			resources.addAll(sourceFile.getResources());
+			resources.addAll(sourceFile.getAssetLocations());
 		}
 		
 		return isNewSourceFile;

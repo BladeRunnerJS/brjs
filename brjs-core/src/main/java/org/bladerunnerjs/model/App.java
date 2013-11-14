@@ -61,34 +61,34 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return new NodeMap<>(App.class, "sdk/system-applications", null);
 	}
 	
-	public List<SourceLocation> getAllSourceLocations() {
-		List<SourceLocation> sourceLocations = new ArrayList<>();
+	public List<AssetContainer> getAllAssetContainers() {
+		List<AssetContainer> assetContainer = new ArrayList<>();
 		
 		for(Aspect aspect : aspects()) {
-			sourceLocations.add(aspect);
+			assetContainer.add(aspect);
 		}
 		
-		sourceLocations.addAll(getNonAspectSourceLocations());
+		assetContainer.addAll(getNonAspectAssetContainer());
 		
-		return sourceLocations;
+		return assetContainer;
 	}
 	
-	public List<SourceLocation> getNonAspectSourceLocations() {
-		List<SourceLocation> sourceLocations = new ArrayList<>();
+	public List<AssetContainer> getNonAspectAssetContainer() {
+		List<AssetContainer> assetContainers = new ArrayList<>();
 		
 		for(JsLib jsLib : jsLibs()) {
-			sourceLocations.add(jsLib);
+			assetContainers.add(jsLib);
 		}
 		
 		for(Bladeset bladeset : bladesets()) {
-			sourceLocations.add(bladeset);
+			assetContainers.add(bladeset);
 			
 			for(Blade blade : bladeset.blades()) {
-				sourceLocations.add(blade);
+				assetContainers.add(blade);
 			}
 		}
 		
-		return sourceLocations;
+		return assetContainers;
 	}
 	
 	@Override

@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -36,17 +37,17 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public FileSet<LinkedAssetFile> getSeedFileSet() {
-		return new NullFileSet<>();
+	public List<LinkedAssetFile> getSeedFiles() {
+		return Arrays.asList();
 	}
 	
 	@Override
 	public String getRequirePrefix() {
-		return ((SourceLocation) parentNode()).getRequirePrefix();
+		return ((AssetContainer) parentNode()).getRequirePrefix();
 	}
 	
 	@Override
-	public List<SourceLocation> getSourceLocations()
+	public List<AssetContainer> getAssetContainers()
 	{
 		// TODO
 		return null;

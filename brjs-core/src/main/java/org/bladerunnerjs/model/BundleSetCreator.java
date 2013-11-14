@@ -36,7 +36,7 @@ public class BundleSetCreator {
 			logger.debug(Messages.BUNDLABLE_NODE_SEED_FILES_MSG, bundlableNode.getClass().getSimpleName(), name, seedFilePaths(bundlableNode, seedFiles));
 		}
 		
-		logger.debug(Messages.APP_SOURCE_LOCATIONS_MSG, bundlableNode.getApp().getName(), sourceLocationPaths(bundlableNode.getApp()));
+		logger.debug(Messages.APP_SOURCE_LOCATIONS_MSG, bundlableNode.getApp().getName(), assetContainerPaths(bundlableNode.getApp()));
 		
 		for(LinkedAssetFile seedFile : seedFiles) {
 			bundleSetBuilder.addSeedFile(seedFile);
@@ -50,18 +50,18 @@ public class BundleSetCreator {
 		List<SourceFile> fileDependencies = file.getDependentSourceFiles();
 		
 		if(fileDependencies.isEmpty()) {
-			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getSourceLocation().dir(), file.getUnderlyingFile()));
+			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetContainer().dir(), file.getUnderlyingFile()));
 		}
 		else {
-			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getSourceLocation().dir(), file.getUnderlyingFile()), sourceFilePaths(fileDependencies));
+			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(fileDependencies));
 		}
 		
 		for(SourceFile sourceFile : fileDependencies) {
 			if(bundleSetBuilder.addSourceFile(sourceFile)) {
 				processFile(sourceFile, bundleSetBuilder, logger);
 				
-				for(Resources resources : sourceFile.getResources()) {
-					for(LinkedAssetFile resourceSeedFile : resources.seedResources()) {
+				for(AssetLocation assetLocation : sourceFile.getAssetLocations()) {
+					for(LinkedAssetFile resourceSeedFile : assetLocation.seedResources()) {
 						processFile(resourceSeedFile, bundleSetBuilder, logger);
 					}
 				}
@@ -79,21 +79,21 @@ public class BundleSetCreator {
 		return "'" + Joiner.on("', '").join(seedFilePaths) + "'";
 	}
 	
-	private static String sourceLocationPaths(App app) {
-		List<String> sourceLocationPaths = new ArrayList<>();
+	private static String assetContainerPaths(App app) {
+		List<String> assetContainerPaths = new ArrayList<>();
 		
-		for(SourceLocation sourceLocation : app.getAllSourceLocations()) {
-			sourceLocationPaths.add(getRelativePath(app.dir(), sourceLocation.dir()));
+		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
+			assetContainerPaths.add(getRelativePath(app.dir(), assetContainer.dir()));
 		}
 		
-		return "'" + Joiner.on("', '").join(sourceLocationPaths) + "'";
+		return "'" + Joiner.on("', '").join(assetContainerPaths) + "'";
 	}
 	
 	private static String sourceFilePaths(List<SourceFile> sourceFiles) {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
 		for(SourceFile sourceFile : sourceFiles) {
-			sourceFilePaths.add(getRelativePath(sourceFile.getSourceLocation().dir(), sourceFile.getUnderlyingFile()));
+			sourceFilePaths.add(getRelativePath(sourceFile.getAssetContainer().dir(), sourceFile.getUnderlyingFile()));
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";

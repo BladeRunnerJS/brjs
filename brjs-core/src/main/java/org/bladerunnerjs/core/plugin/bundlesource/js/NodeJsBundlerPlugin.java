@@ -6,25 +6,25 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.FileSetFactory;
 import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.FileSet;
-import org.bladerunnerjs.model.AssetFileFactory;
+import org.bladerunnerjs.model.AbstractAssetFileFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
-import org.bladerunnerjs.model.NullFileSet;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
-import org.bladerunnerjs.model.Resources;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.SourceLocation;
-import org.bladerunnerjs.model.StandardFileSet;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
@@ -74,8 +74,9 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public FileSetFactory getFileSetFactory() {
-		return new NodeJsBundleSourceFileSetFactory();
+	public AssetFileAccessor getAssetFileAccessor()
+	{
+		return new NodeJsAssetFileAccessor();
 	}
 	
 	@Override
@@ -134,27 +135,38 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
-	private class NodeJsBundleSourceFileSetFactory implements FileSetFactory {
+	
+	
+	private class NodeJsAssetFileAccessor implements AssetFileAccessor
+	{
+
 		@Override
-		public FileSet<LinkedAssetFile> getLinkedResourceFileSet(Resources resources) {
-			return new NullFileSet<LinkedAssetFile>();
+		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
+		{ 
+			//TODO: remove this "src" - it should be known by the model
+			return new NodeJsFileSetFactory().findFiles(assetContainer, assetContainer.file("src"), new SuffixFileFilter("js"), TrueFileFilter.INSTANCE);
+		}
+
+		@Override
+		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+		{
+			return Arrays.asList();
+		}
+
+		@Override
+		public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+		{
+			return Arrays.asList();
 		}
 		
+	}
+	
+	//TODO: get rid of this
+	private class NodeJsFileSetFactory extends AbstractAssetFileFactory<SourceFile> {
 		@Override
-		public FileSet<SourceFile> getSourceFileSet(SourceLocation sourceLocation) {
-			return new StandardFileSet<SourceFile>(sourceLocation, StandardFileSet.paths("src/**/*.js"), null, new NodeJsFileSetFactory());
-		}
-		
-		@Override
-		public FileSet<AssetFile> getResourceFileSet(Resources resources) {
-			return new NullFileSet<AssetFile>();
+		public NodeJsSourceFile createFile(AssetContainer assetContainer, File file) {
+			return new NodeJsSourceFile(assetContainer, file);
 		}
 	}
 	
-	private class NodeJsFileSetFactory implements AssetFileFactory<SourceFile> {
-		@Override
-		public NodeJsSourceFile createFile(SourceLocation sourceLocation, File file) {
-			return new NodeJsSourceFile(sourceLocation, file);
-		}
-	}
 }

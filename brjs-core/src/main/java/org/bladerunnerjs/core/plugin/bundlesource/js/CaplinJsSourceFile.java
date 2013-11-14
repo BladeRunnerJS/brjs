@@ -9,21 +9,21 @@ import java.util.List;
 import org.bladerunnerjs.model.AliasDefinition;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
 import org.bladerunnerjs.model.LinkedAssetFile;
-import org.bladerunnerjs.model.Resources;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.SourceLocation;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class CaplinJsSourceFile implements SourceFile {
 	private LinkedAssetFile assetFile;
-	private SourceLocation sourceLocation;
+	private AssetContainer assetContainer;
 	private String requirePath;
 	private File srcDir;
 	
-	public CaplinJsSourceFile(SourceLocation sourceLocation, File file) {
-		this.sourceLocation = sourceLocation;
-		this.requirePath = sourceLocation.file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
-		assetFile = new FullyQualifiedLinkedAssetFile(sourceLocation, file);
+	public CaplinJsSourceFile(AssetContainer assetContainer, File file) {
+		this.assetContainer = assetContainer;
+		this.requirePath = assetContainer.file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
+		assetFile = new FullyQualifiedLinkedAssetFile(assetContainer, file);
 		srcDir = file.getParentFile();
 	}
 	
@@ -52,8 +52,8 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<Resources> getResources() {
-		return sourceLocation.getResources(srcDir);
+	public List<AssetLocation> getAssetLocations() {
+		return assetContainer.getAssetLocations(srcDir);
 	}
 	
 	@Override
@@ -67,8 +67,8 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public SourceLocation getSourceLocation() {
-		return sourceLocation;
+	public AssetContainer getAssetContainer() {
+		return assetContainer;
 	}
 	
 	@Override
