@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.filefilter.NameFileFilter;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
@@ -36,7 +37,7 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	
 	@Override
 	public List<LinkedAssetFile> getSeedFiles() {
-		return new StandardFileSet<LinkedAssetFile>(this, StandardFileSet.paths("index.html",  "index.jsp"), null, new FullyQualifiedLinkedAssetFileSetFactory()).getFiles();
+		return new FullyQualifiedLinkedAssetFileSetFactory().findFiles(this, dir(), new NameFileFilter( new String[] {"index.html","index.jsp"} ), null);
 	}
 	
 	@Override

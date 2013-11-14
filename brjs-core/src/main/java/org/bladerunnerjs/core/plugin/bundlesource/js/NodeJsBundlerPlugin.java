@@ -11,19 +11,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.AssetFileFactory;
+import org.bladerunnerjs.model.AbstractAssetFileFactory;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.StandardFileSet;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
@@ -142,7 +143,8 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		@Override
 		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
 		{ 
-			return new StandardFileSet<SourceFile>(assetContainer, StandardFileSet.paths("src/**/*.js"), null, new NodeJsFileSetFactory()).getFiles();
+			//TODO: remove this "src" - it should be known by the model
+			return new NodeJsFileSetFactory().findFiles(assetContainer, assetContainer.file("src"), new SuffixFileFilter("js"), TrueFileFilter.INSTANCE);
 		}
 
 		@Override
@@ -160,7 +162,7 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	//TODO: get rid of this
-	private class NodeJsFileSetFactory implements AssetFileFactory<SourceFile> {
+	private class NodeJsFileSetFactory extends AbstractAssetFileFactory<SourceFile> {
 		@Override
 		public NodeJsSourceFile createFile(AssetContainer assetContainer, File file) {
 			return new NodeJsSourceFile(assetContainer, file);
