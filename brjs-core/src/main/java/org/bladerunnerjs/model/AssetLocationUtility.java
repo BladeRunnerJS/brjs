@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -18,7 +17,7 @@ public class AssetLocationUtility
 	
 	public static <AF extends AssetFile> List<AF> getFilesWithExtension(AssetContainer assetContainer, Class<? extends AssetFile> assetFileType, String... extensions)
 	{
-		File srcDir = assetContainer.dir();
+		File srcDir = assetContainer.file("src"); //TODO: use the model to get this, we probably should be looking at resources too. And it might not be something we even do here, we should just look at 'dir()'
 		if (!srcDir.isDirectory()) { return Arrays.asList(); }
 		
 		return createAssetFileListFromFiles( assetContainer, assetFileType, FileUtils.listFiles(srcDir, new SuffixFileFilter(extensions), TrueFileFilter.INSTANCE) );
