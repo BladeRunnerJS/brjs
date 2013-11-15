@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.core.log.LoggerType;
@@ -15,12 +16,18 @@ import org.bladerunnerjs.core.log.LoggerType;
 public class AssetLocationUtility
 {
 	
-	public static <AF extends AssetFile> List<AF> getFilesWithExtension(AssetContainer assetContainer, Class<? extends AssetFile> assetFileType, String... extensions)
+	public static <AF extends AssetFile> List<AF> getFilesNamed(AssetContainer assetContainer, File dir, Class<? extends AssetFile> assetFileType, String... fileNames)
 	{
-		File srcDir = assetContainer.file("src"); //TODO: use the model to get this, we probably should be looking at resources too. And it might not be something we even do here, we should just look at 'dir()'
-		if (!srcDir.isDirectory()) { return Arrays.asList(); }
+		if (!dir.isDirectory()) { return Arrays.asList(); }
 		
-		return createAssetFileListFromFiles( assetContainer, assetFileType, FileUtils.listFiles(srcDir, new SuffixFileFilter(extensions), TrueFileFilter.INSTANCE) );
+		return createAssetFileListFromFiles( assetContainer, assetFileType, FileUtils.listFiles(dir, new NameFileFilter(fileNames), TrueFileFilter.INSTANCE) );
+	}
+	
+	public static <AF extends AssetFile> List<AF> getFilesWithExtension(AssetContainer assetContainer, File dir, Class<? extends AssetFile> assetFileType, String... extensions)
+	{
+		if (!dir.isDirectory()) { return Arrays.asList(); }
+		
+		return createAssetFileListFromFiles( assetContainer, assetFileType, FileUtils.listFiles(dir, new SuffixFileFilter(extensions), TrueFileFilter.INSTANCE) );
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -1,4 +1,5 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -145,7 +146,8 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		{ 
 			AssetContainer assetLocation = assetContainer; // TODO: delete this line once we are passing in an AssetLocation
 			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js")) {
-				return AssetLocationUtility.getFilesWithExtension(assetLocation, NodeJsSourceFile.class, "js");
+				//TODO: dont use file('src') here
+				return AssetLocationUtility.getFilesWithExtension(assetLocation, assetLocation.file("src"), NodeJsSourceFile.class, "js");
 			}
 			else {
 				return Arrays.asList();

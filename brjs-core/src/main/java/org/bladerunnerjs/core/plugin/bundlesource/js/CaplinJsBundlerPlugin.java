@@ -212,7 +212,8 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		{
 			AssetContainer assetLocation = assetContainer; // TODO: delete this line once we are passing in an AssetLocation
 			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js")) {
-				return AssetLocationUtility.getFilesWithExtension(assetLocation, CaplinJsSourceFile.class, "js");
+				//TODO: don't use file('src') here
+				return AssetLocationUtility.getFilesWithExtension(assetLocation, assetLocation.file("src"), CaplinJsSourceFile.class, "js");
 			}
 			else {
 				return Arrays.asList();

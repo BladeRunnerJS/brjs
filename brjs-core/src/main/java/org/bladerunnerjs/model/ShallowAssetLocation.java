@@ -9,9 +9,10 @@ import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 
 public class ShallowAssetLocation implements AssetLocation {
-	protected AssetContainer assetContainer;
-	protected BRJS brjs;
-	protected File dir;
+	
+	private AssetContainer assetContainer;
+	private BRJS brjs;
+	private File dir;
 	
 	public ShallowAssetLocation(AssetContainer assetContainer, File dir) {
 		this.assetContainer = assetContainer;

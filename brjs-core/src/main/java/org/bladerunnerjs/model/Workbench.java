@@ -37,7 +37,7 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	
 	@Override
 	public List<LinkedAssetFile> getSeedFiles() {
-		return new FullyQualifiedLinkedAssetFileSetFactory().findFiles(this, dir(), new NameFileFilter( new String[] {"index.html","index.jsp"} ), null);
+		return AssetLocationUtility.getFilesNamed(this, dir(), FullyQualifiedLinkedAssetFile.class, "index.html", "index.jsp");
 	}
 	
 	@Override

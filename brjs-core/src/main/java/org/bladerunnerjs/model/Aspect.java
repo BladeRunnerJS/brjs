@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.io.filefilter.NameFileFilter;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -39,7 +38,7 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	
 	@Override
 	public List<LinkedAssetFile> getSeedFiles() {
-		return new FullyQualifiedLinkedAssetFileSetFactory().findFiles(this, dir(), new NameFileFilter( new String[] {"index.html","index.jsp"} ), null);
+		return AssetLocationUtility.getFilesNamed(this, dir(), FullyQualifiedLinkedAssetFile.class, "index.html", "index.jsp");
 	}
 	
 	@Override
