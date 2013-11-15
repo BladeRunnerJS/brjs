@@ -10,7 +10,6 @@ import java.util.Map;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.AssetFileAccessor;
-import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
@@ -108,7 +107,7 @@ public class XMLBundlerPlugin implements BundlerPlugin
 		@Override
 		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
 		{
-			return AssetLocationUtility.getFilesWithExtension(assetLocation.getAssetContainer(), assetLocation.dir(), FullyQualifiedLinkedAssetFile.class, "xml");
+			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation.getAssetContainer(), assetLocation.dir(), FullyQualifiedLinkedAssetFile.class, "xml");
 		}
 
 		@Override

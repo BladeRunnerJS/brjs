@@ -14,7 +14,6 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.AssetFileAccessor;
-import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAssetFile;
@@ -213,7 +212,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 			AssetContainer assetLocation = assetContainer; // TODO: delete this line once we are passing in an AssetLocation
 			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js")) {
 				//TODO: don't use file('src') here
-				return AssetLocationUtility.getFilesWithExtension(assetLocation, assetLocation.file("src"), CaplinJsSourceFile.class, "js");
+				return assetLocation.root().getAssetFilesWithExtension(assetLocation, assetLocation.file("src"), CaplinJsSourceFile.class, "js");
 			}
 			else {
 				return Arrays.asList();

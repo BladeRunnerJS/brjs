@@ -38,7 +38,7 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	
 	@Override
 	public List<LinkedAssetFile> getSeedFiles() {
-		return AssetLocationUtility.getFilesNamed(this, dir(), FullyQualifiedLinkedAssetFile.class, "index.html", "index.jsp");
+		return root().getAssetFilesNamed(this, dir(), FullyQualifiedLinkedAssetFile.class, "index.html", "index.jsp");
 	}
 	
 	@Override

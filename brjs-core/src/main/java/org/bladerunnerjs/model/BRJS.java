@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,6 +61,8 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> releaseNotes = new NodeItem<>(DirNode.class, "sdk/docs/release-notes");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(DirNode.class, "sdk/test-results");
 	
+	private AssetLocationUtility assetLocator = new AssetLocationUtility();
+	
 	private final Logger logger;
 	private final CommandList commandList;
 	private final Map<String, BundlerPlugin> bundlerPlugins;
@@ -69,7 +70,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
-	private final Map<String, AssetFile> assetFiles = new HashMap<>();
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
@@ -338,58 +338,20 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		throw new RuntimeException("No minifier plugin for minifier setting '" + minifierSetting + "'");
-	}
-	
-	//TODO: delete this
-	public <AF extends AssetFile> AssetFile getAssetFile(AbstractAssetFileFactory<AF> assetFileFactory, AssetContainer assetContainer, File file) {
-		String absolutePath = file.getAbsolutePath();
-		AssetFile assetFile;
-		
-		if(assetFiles.containsKey(absolutePath)) {
-			assetFile = assetFiles.get(absolutePath);
-		}
-		else {
-			assetFile = assetFileFactory.createFile(assetContainer, file);
-			assetFiles.put(absolutePath, assetFile);
-		}
-		
-		return assetFile;
-	}
+	}	
 	
 	
 	
 	
-	public <AF extends AssetFile> AssetFile getAssetFile(Class<? extends AssetFile> assetFileType, AssetContainer assetContainer, File file) throws UnableToInstantiateAssetFileException {
-		String absolutePath = file.getAbsolutePath();
-		AssetFile assetFile;
-		
-		if(assetFiles.containsKey(absolutePath)) {
-			assetFile = assetFiles.get(absolutePath);
-		}
-		else {
-			assetFile = createAssetFileObjectForFile(assetFileType, assetContainer, file);
-			assetFiles.put(absolutePath, assetFile);
-		}
-		
-		return assetFile;
-	}
 	
-	@SuppressWarnings("unchecked")
-	private static <AF extends AssetFile> AF createAssetFileObjectForFile(Class<? extends AssetFile> assetFileType, AssetContainer assetContainer, File file) throws UnableToInstantiateAssetFileException
+	public <AF extends AssetFile> List<AF> getAssetFilesNamed(AssetContainer assetContainer, File dir, Class<? extends AssetFile> assetFileType, String... fileNames)
 	{
-		try
-		{
-			Constructor<? extends AssetFile> ctor = assetFileType.getConstructor(AssetContainer.class, File.class);
-			return (AF) ctor.newInstance(assetContainer, file);
-		}
-		catch (SecurityException e)
-		{
-			throw new RuntimeException(e);
-		}
-		catch (Exception e)
-		{
-			throw new UnableToInstantiateAssetFileException(assetFileType, AssetContainer.class, File.class);
-		}		
+		return assetLocator.getAssetFilesNamed(assetContainer, dir, assetFileType, fileNames);
+	}
+	
+	public <AF extends AssetFile> List<AF> getAssetFilesWithExtension(AssetContainer assetContainer, File dir, Class<? extends AssetFile> assetFileType, String... extensions)
+	{
+		return assetLocator.getAssetFilesWithExtension(assetContainer, dir, assetFileType, extensions);
 	}
 	
 	
