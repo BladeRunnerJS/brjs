@@ -25,8 +25,10 @@ import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.utility.JsStyleUtility;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 public class NodeJsBundlerPlugin implements BundlerPlugin {
@@ -36,8 +38,10 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
-		requestParserBuilder.accepts("node-js/js.bundle").as("bundle-request")
-			.and("node-js/module/<module>.js").as("single-module-request");
+		requestParserBuilder
+			.accepts("node-js/js.bundle").as("bundle-request")
+				.and("node-js/module/<module>/js.bundle").as("single-module-request")
+			.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 		
 		requestParser = requestParserBuilder.build();
 		prodRequestPaths.add(requestParser.createRequest("bundle-request"));
@@ -101,10 +105,10 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		try {
 			if(request.formName.equals("single-module-request")) {
-				Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding());
-				
-				SourceFile jsModule = bundleSet.getBundlableNode().sourceFile(request.properties.get("module"));
-				IOUtils.copy(jsModule.getReader(), writer);
+				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+					SourceFile jsModule = bundleSet.getBundlableNode().getSourceFile(request.properties.get("module"));
+					IOUtils.copy(jsModule.getReader(), writer);
+				}
 			}
 			else if(request.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
@@ -119,7 +123,7 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 				throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
 			}
 		}
-		catch(ConfigException | IOException e) {
+		catch(ConfigException | IOException | AmbiguousRequirePathException e) {
 			throw new BundlerProcessingException(e);
 		}
 	}
@@ -143,8 +147,17 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		@Override
 		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
 		{ 
-			//TODO: remove this "src" - it should be known by the model
-			return new NodeJsFileSetFactory().findFiles(assetContainer, assetContainer.file("src"), new SuffixFileFilter("js"), TrueFileFilter.INSTANCE);
+			AssetContainer assetLocation = assetContainer; // TODO: delete this line once we are passing in an AssetLocation
+			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js")) {
+				// TODO: switch over to this simpler AssetLocationUtility once all the AssetFileAccessor methods are passed an AssetLocation
+//				return AssetLocationUtility.populateFileList(new ArrayList<SourceFile>, assetLocation, "js", NodeJsSourceFile.class);
+				
+				// TODO: remove this "src" - it should be known by the model
+				return new NodeJsFileSetFactory().findFiles(assetContainer, assetContainer.file("src"), new SuffixFileFilter("js"), TrueFileFilter.INSTANCE);
+			}
+			else {
+				return Arrays.asList();
+			}
 		}
 
 		@Override

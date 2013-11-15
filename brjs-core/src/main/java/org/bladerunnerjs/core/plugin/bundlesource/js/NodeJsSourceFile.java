@@ -28,10 +28,14 @@ public class NodeJsSourceFile implements SourceFile {
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
 	private FileModifiedChecker fileModifiedChecker;
+	private String requirePath;
+	private File srcDir;
 	
 	public NodeJsSourceFile(AssetContainer assetContainer, File file) {
 		this.assetContainer = assetContainer;
+		this.requirePath = assetContainer.file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
 		assetFile = file;
+		srcDir = file.getParentFile();
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
@@ -60,14 +64,12 @@ public class NodeJsSourceFile implements SourceFile {
 	
 	@Override
 	public String getRequirePath() {
-		// TODO
-		return null;
+		return requirePath;
 	}
 	
 	@Override
 	public List<AssetLocation> getAssetLocations() {
-		// TODO
-		return null;
+		return assetContainer.getAssetLocations(srcDir);
 	}
 	
 	@Override

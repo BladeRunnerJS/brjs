@@ -12,7 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
-// TODO: change all tests within this test class to go through the composite bundler (we can create some other test classes for bundler specific testing)
+//TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
 public class AspectBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
@@ -47,7 +47,8 @@ public class AspectBundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependencies() throws Exception {
-		given(blade).hasClasses("novox.Class1", "novox.Class2")
+		given(blade).packageOfStyle("novox", "caplin-js")
+			.and(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
@@ -55,7 +56,6 @@ public class AspectBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	@Ignore
 	public void weBundleExplicitTransitiveDependencies() throws Exception {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
@@ -66,15 +66,16 @@ public class AspectBundlingTest extends SpecTest {
 	
 	@Test
 	public void weDontBundleAClassIfItIsNotReferredTo() throws Exception {
-		given(blade).hasClasses("novox.Class1", "novox.Class2")
+		given(blade).packageOfStyle("novox", "caplin-js")
+			.and(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class2")
 			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class2");
 	}
 	
-	@Test
 	@Ignore
+	@Test
 	public void classesCanOnlyDependOnExistentClasses() throws Exception {
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
@@ -84,43 +85,38 @@ public class AspectBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void classesThatReferToExistentClassesWontCauseAnException() throws Exception {
-		given(exceptions).arentCaught();
-		
-		given(blade).hasClass("novox.Class1")
+	public void classesThatReferToNonExistentClassesWontCauseAnException() throws Exception {
+		given(blade).packageOfStyle("novox", "caplin-js")
+			.and(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classRefersTo("novox.Class1", "novox.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
-	//TODO: we may want to move these tests into the [X|HT]ML bundler tests
 	@Test
 	public void classesReferredToInXMlFilesAreBundled() throws Exception {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
-    		.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-    		.and(blade).classRefersTo("novox.Class1", "novox.Class2");
+    		.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
-		then(response).containsClasses("novox.Class1", "novox.Class2");
+		then(response).containsClasses("novox.Class1");
 	}
+	
 	@Test
 	public void classesReferredToInHTMlFilesAreBundled() throws Exception {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).resourceFileRefersTo("html/view.html", "novox.Class1")
-			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
+			.and(aspect).resourceFileRefersTo("html/view.html", "novox.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
-		then(response).containsClasses("novox.Class1", "novox.Class2");
+		then(response).containsClasses("novox.Class1");
 	}
 	
-	
-	// TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
 	@Test
 	public void helpfulLoggingMessagesAreEmitted() throws Exception {
 		given(logging).enabled()
 			.and(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
+			.and(blade).classDependsOn("novox.Class1", "novox.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/js.bundle", "app1")
 			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/js.bundle")
@@ -137,7 +133,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void helpfulLoggingMessagesAreEmittedWhenThereAreNoSeedFiles() throws Exception {
 		given(logging).enabled()
 			.and(blade).hasClasses("novox.Class1", "novox.Class2")
-			.and(blade).classRefersTo("novox.Class1", "novox.Class2")
+			.and(blade).classDependsOn("novox.Class1", "novox.Class2")
 			.and(aspect).hasBeenCreated();
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/js.bundle", "app1")

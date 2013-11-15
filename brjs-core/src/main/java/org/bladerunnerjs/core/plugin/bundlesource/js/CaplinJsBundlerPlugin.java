@@ -29,6 +29,7 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.utility.JsStyleUtility;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 import org.json.simple.JSONObject;
 
@@ -42,7 +43,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		requestParserBuilder
 			.accepts("caplin-js/js.bundle").as("bundle-request")
 				.and("caplin-js/module/<module>/js.bundle").as("single-module-request")
-			.where("module").hasForm(".+");
+			.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 		
 		requestParser = requestParserBuilder.build();
 		prodRequestPaths.add(requestParser.createRequest("bundle-request"));
@@ -212,16 +213,17 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		@Override
 		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
 		{
-			// TODO: switch over to this simpler AssetLocationUtility once all the AssetFileAccessor methods are passed an AssetLocation
-//			if(JsStyleUtility.getJsStyle(assetLocation.dir().equals("caplin-js"))) {
+			AssetContainer assetLocation = assetContainer; // TODO: delete this line once we are passing in an AssetLocation
+			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js")) {
+				// TODO: switch over to this simpler AssetLocationUtility once all the AssetFileAccessor methods are passed an AssetLocation
 //				return AssetLocationUtility.populateFileList(new ArrayList<SourceFile>, assetLocation, "js", CaplinJsSourceFile.class);
-//			}
-//			else {
-//				return Arrays.asList();
-//			}
-			
-			//TODO: remove this "src" - it should be known by the model
-			return new CaplinJsFileSetFactory().findFiles(assetContainer, assetContainer.file("src"), new SuffixFileFilter("js"), TrueFileFilter.INSTANCE);
+				
+				// TODO: remove this "src" - it should be known by the model
+				return new CaplinJsFileSetFactory().findFiles(assetContainer, assetContainer.file("src"), new SuffixFileFilter("js"), TrueFileFilter.INSTANCE);
+			}
+			else {
+				return Arrays.asList();
+			}
 		}
 
 		@Override

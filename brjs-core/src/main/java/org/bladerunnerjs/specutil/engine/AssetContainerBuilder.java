@@ -1,7 +1,10 @@
 package org.bladerunnerjs.specutil.engine;
 
+import java.io.File;
+
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.AbstractAssetContainer;
+import org.bladerunnerjs.model.utility.JsStyleUtility;
 
 
 public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> extends NodeBuilder<N>
@@ -14,10 +17,16 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		super(specTest, node);
 		this.node = node;
 	}
-
+	
+	public BuilderChainer packageOfStyle(String packageDir, String jsStyle) {
+		JsStyleUtility.setJsStyle(node.dir(), jsStyle);
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer hasClass(String className) throws Exception
 	{
-		FileUtils.write(node.src().file(className.replaceAll("\\.", "/") + ".js"), getClassBody(className));
+		FileUtils.write(getSourceFile(className), getClassBody(className));
 		
 		return builderChainer;
 	}
@@ -33,14 +42,33 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 
 	public BuilderChainer classRefersTo(String sourceClass, String destClass) throws Exception
 	{
-		FileUtils.write(node.src().file(sourceClass.replaceAll("\\.", "/") + ".js"), getClassBody(sourceClass, destClass));
+		File sourceFile = getSourceFile(sourceClass);
+		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		
+		if(!jsStyle.equals("caplin-js")) {
+			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to 'caplinjs'");
+		}
+		
+		FileUtils.write(sourceFile, getCaplinJsClassBody(sourceClass, destClass));
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer classDependsOn(String sourceClass, String destClass) {
-		// TODO Auto-generated method stub
-		return null;
+	public BuilderChainer classDependsOn(String sourceClass, String destClass) throws Exception {
+		File sourceFile = getSourceFile(sourceClass);
+		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		
+		if(!jsStyle.equals("node.js")) {
+			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has not been used, or has been set to 'node.js'");
+		}
+		
+		FileUtils.write(sourceFile, getNodeJsClassBody(sourceClass, destClass));
+		
+		return builderChainer;
+	}
+
+	private File getSourceFile(String sourceClass) {
+		return node.src().file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 	
 	public BuilderChainer hasBeenPopulated() throws Exception
@@ -50,10 +78,31 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 	}
 	
 	private String getClassBody(String className) {
-		return className + " = function() {\n};\n";
+		File sourceFile = getSourceFile(className);
+		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		String classBody;
+		
+		if(jsStyle.equals("node.js")) {
+			classBody = className + " = function() {\n};\n";
+		}
+		else if(jsStyle.equals("caplin-js")) {
+			classBody = className + " = function() {\n};\n";
+		}
+		else {
+			throw new RuntimeException("'" + jsStyle + "' is an unsupported js style");
+		}
+		
+		return classBody;
 	}
 	
-	private String getClassBody(String sourceClass, String destClass) {
+	private String getNodeJsClassBody(String sourceClass, String destClass) {
+		String classRef = sourceClass.substring(sourceClass.lastIndexOf('.') + 1);
+		String destClassRequirePath = destClass.replaceAll("\\.", "/").replaceAll("\\.js$", "");
+		
+		return "var " + classRef + " = require('" + destClassRequirePath + "');\n" + getClassBody(sourceClass);
+	}
+	
+	private String getCaplinJsClassBody(String sourceClass, String destClass) {
 		return getClassBody(sourceClass) + "br.extend(" + sourceClass + ", " + destClass + ");\n";
 	}
 }
