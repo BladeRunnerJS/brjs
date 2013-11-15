@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -339,8 +340,8 @@ public class BRJS extends AbstractBRJSRootNode
 		throw new RuntimeException("No minifier plugin for minifier setting '" + minifierSetting + "'");
 	}
 	
-	// TODO: get rid of this synchronized since none of this API is thread-safe?
-	public synchronized <AF extends AssetFile> AssetFile getAssetFile(AbstractAssetFileFactory<AF> assetFileFactory, AssetContainer assetContainer, File file) {
+	//TODO: delete this
+	public <AF extends AssetFile> AssetFile getAssetFile(AbstractAssetFileFactory<AF> assetFileFactory, AssetContainer assetContainer, File file) {
 		String absolutePath = file.getAbsolutePath();
 		AssetFile assetFile;
 		
@@ -354,4 +355,42 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		return assetFile;
 	}
+	
+	
+	
+	
+	public <AF extends AssetFile> AssetFile getAssetFile(Class<? extends AssetFile> assetFileType, AssetContainer assetContainer, File file) throws UnableToInstantiateAssetFileException {
+		String absolutePath = file.getAbsolutePath();
+		AssetFile assetFile;
+		
+		if(assetFiles.containsKey(absolutePath)) {
+			assetFile = assetFiles.get(absolutePath);
+		}
+		else {
+			assetFile = createAssetFileObjectForFile(assetFileType, assetContainer, file);
+			assetFiles.put(absolutePath, assetFile);
+		}
+		
+		return assetFile;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static <AF extends AssetFile> AF createAssetFileObjectForFile(Class<? extends AssetFile> assetFileType, AssetContainer assetContainer, File file) throws UnableToInstantiateAssetFileException
+	{
+		try
+		{
+			Constructor<? extends AssetFile> ctor = assetFileType.getConstructor(AssetContainer.class, File.class);
+			return (AF) ctor.newInstance(assetContainer, file);
+		}
+		catch (SecurityException e)
+		{
+			throw new RuntimeException(e);
+		}
+		catch (Exception e)
+		{
+			throw new UnableToInstantiateAssetFileException(assetFileType, AssetContainer.class, File.class);
+		}		
+	}
+	
+	
 }
