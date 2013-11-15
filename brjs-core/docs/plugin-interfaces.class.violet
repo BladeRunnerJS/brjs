@@ -98,19 +98,19 @@ void doCommand(String[] args) throws CommandException
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>30.0</double>
+      <double>12.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>-5.0</double>
+      <double>-4.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>30.0</double>
-     <double>-5.0</double>
+     <double>12.0</double>
+     <double>-4.0</double>
     </void>
    </object>
   </void>
@@ -163,19 +163,19 @@ void transformFile(Reader reader, Writer writer, TransformInfo info) throws File
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>443.0</double>
+      <double>421.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>17.0</double>
+      <double>21.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>443.0</double>
-     <double>17.0</double>
+     <double>421.0</double>
+     <double>21.0</double>
     </void>
    </object>
   </void>
@@ -356,6 +356,43 @@ void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os, 
     </void>
    </object>
   </void>
+  <void method="addNode">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode10">
+    <void property="methods">
+     <void property="text">
+      <string>List&lt;String&gt; getSettingNames()
+void minify(String settingName, List&lt;InputSource&gt; inputSources, Writer writer)
+void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSources, Writer writer)
+</string>
+     </void>
+    </void>
+    <void property="name">
+     <void property="text">
+      <string>«MinifierPlugin»</string>
+     </void>
+    </void>
+   </object>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double10">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double10"/>
+      <double>1070.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double10"/>
+      <double>22.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>1070.0</double>
+     <double>22.0</double>
+    </void>
+   </object>
+  </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
     <void property="bentStyle">
@@ -475,6 +512,18 @@ void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os, 
    </object>
    <object idref="InterfaceNode1"/>
    <object idref="InterfaceNode9"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
+   <object idref="InterfaceNode10"/>
+   <object idref="InterfaceNode8"/>
   </void>
  </object>
 </java>
