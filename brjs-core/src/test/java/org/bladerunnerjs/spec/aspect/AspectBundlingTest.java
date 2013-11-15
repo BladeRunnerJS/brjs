@@ -6,9 +6,10 @@ import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
+import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -74,14 +75,14 @@ public class AspectBundlingTest extends SpecTest {
 		then(response).containsClasses("novox.Class2");
 	}
 	
-	@Ignore
 	@Test
 	public void classesCanOnlyDependOnExistentClasses() throws Exception {
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classDependsOn("novox.Class1", "novox.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
-		then(exceptions).verifyException(ClassNotFoundException.class, "novox/NonExistentClass.js");
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "novox/NonExistentClass")
+			.whereTopLevelExceptionIs(BundlerProcessingException.class);
 	}
 	
 	@Test

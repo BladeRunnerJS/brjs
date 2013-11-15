@@ -26,8 +26,8 @@ import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.JsStyleUtility;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
@@ -125,7 +125,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 				throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
 			}
 		}
-		catch(ConfigException | IOException | AmbiguousRequirePathException e) {
+		catch(ConfigException | IOException | RequirePathException e) {
 			throw new BundlerProcessingException(e);
 		}
 	}

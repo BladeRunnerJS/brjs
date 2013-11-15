@@ -7,6 +7,8 @@ import java.util.List;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.file.AliasesFile;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
@@ -42,7 +44,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public SourceFile getSourceFile(String requirePath) throws AmbiguousRequirePathException {
+	public SourceFile getSourceFile(String requirePath) throws RequirePathException {
 		SourceFile sourceFile = null;
 		
 		for(AssetContainer assetContainer : getAssetContainers()) {
@@ -58,6 +60,10 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 						sourceFile.getRequirePath() + "'.");
 				}
 			}
+		}
+		
+		if(sourceFile == null) {
+			throw new UnresolvableRequirePathException(requirePath);
 		}
 		
 		return sourceFile;

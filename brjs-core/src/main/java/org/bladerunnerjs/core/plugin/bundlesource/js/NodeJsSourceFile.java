@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 
 public class NodeJsSourceFile implements SourceFile {
@@ -25,7 +26,6 @@ public class NodeJsSourceFile implements SourceFile {
 	private List<String> requirePaths;
 	private List<String> aliasNames;
 	private final AssetContainer assetContainer;
-	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private String requirePath;
@@ -41,8 +41,25 @@ public class NodeJsSourceFile implements SourceFile {
 	
 	@Override
 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
-		if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			recalculateDependencies();
+		List<SourceFile> dependentSourceFiles = new ArrayList<>();
+		
+		try {
+			if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
+				recalculateDependencies();
+			}
+			
+			for(String requirePath : requirePaths) {
+				SourceFile sourceFile = assetContainer.sourceFile(requirePath);
+				
+				if(sourceFile == null) {
+					throw new UnresolvableRequirePathException(requirePath);
+				}
+				
+				dependentSourceFiles.add(sourceFile);
+			}
+		}
+		catch(UnresolvableRequirePathException e) {
+			throw new ModelOperationException(e);
 		}
 		
 		return dependentSourceFiles;
@@ -107,11 +124,6 @@ public class NodeJsSourceFile implements SourceFile {
 				else {
 					aliasNames.add(methodArgument);
 				}
-			}
-			
-			dependentSourceFiles = new ArrayList<>();
-			for(String requirePath : requirePaths) {
-				dependentSourceFiles.add(assetContainer.sourceFile(requirePath));
 			}
 			
 			aliases = new ArrayList<>();
