@@ -1,7 +1,7 @@
 package org.bladerunnerjs.specutil;
 
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.core.plugin.TypedClassCreator;
+import org.bladerunnerjs.core.plugin.PluginLoader;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
@@ -60,7 +60,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer automaticallyFindsCommands()
 	{
 		specTest.pluginLocator.bundlers.clear();
-		specTest.pluginLocator.pluginCommands.addAll( new TypedClassCreator<CommandPlugin>().getSubTypesOfClass(Mockito.mock(BRJS.class), CommandPlugin.class) );
+		specTest.pluginLocator.pluginCommands.addAll( new PluginLoader<CommandPlugin>().createPluginsOfType(Mockito.mock(BRJS.class), CommandPlugin.class) );
 		
 		return builderChainer;
 	}
@@ -68,7 +68,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer automaticallyFindsModelObservers()
 	{
 		specTest.pluginLocator.bundlers.clear();
-		specTest.pluginLocator.modelObservers.addAll( new TypedClassCreator<ModelObserverPlugin>().getSubTypesOfClass(Mockito.mock(BRJS.class), ModelObserverPlugin.class) );
+		specTest.pluginLocator.modelObservers.addAll( new PluginLoader<ModelObserverPlugin>().createPluginsOfType(Mockito.mock(BRJS.class), ModelObserverPlugin.class) );
 		
 		return builderChainer;
 	}
@@ -76,7 +76,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer automaticallyFindsBundlers()
 	{
 		specTest.pluginLocator.bundlers.clear();
-		specTest.pluginLocator.bundlers.addAll( new TypedClassCreator<BundlerPlugin>().getSubTypesOfClass(Mockito.mock(BRJS.class), BundlerPlugin.class) );
+		specTest.pluginLocator.bundlers.addAll( new PluginLoader<BundlerPlugin>().createPluginsOfType(Mockito.mock(BRJS.class), BundlerPlugin.class) );
 		
 		return builderChainer;
 	}

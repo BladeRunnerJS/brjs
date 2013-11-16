@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
+import org.bladerunnerjs.core.plugin.PluginAccessor;
 import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -98,7 +98,7 @@ public abstract class SpecTest
 	}
 	
 	public BRJS createNonTestModel() {
-		return new BRJS(testSdkDirectory, new BRJSPluginLocator(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return new BRJS(testSdkDirectory, new PluginAccessor(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 	}
 	
 	@After

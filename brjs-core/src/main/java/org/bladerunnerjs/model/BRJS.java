@@ -16,7 +16,7 @@ import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerFactory;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
-import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
+import org.bladerunnerjs.core.plugin.PluginAccessor;
 import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
@@ -95,7 +95,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
-		this(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new PluginAccessor(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
 
 	@Override

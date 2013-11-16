@@ -1,5 +1,6 @@
 package org.bladerunnerjs.core.plugin;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +13,7 @@ import org.bladerunnerjs.model.BRJS;
 
 
 
-public class TypedClassCreator<I>
+public class PluginLoader<P extends Plugin>
 {
 	// TODO: these messages (and likely, this classes functionality) aren't currently covered within our spec tests
 	public class Messages {
@@ -22,25 +23,38 @@ public class TypedClassCreator<I>
 			"Error while creating the plugin %s, the class will not be loaded. Make sure there is a constructor for the class that accepts 0 arguments.";
 	}
 	
-	public List<I> getSubTypesOfClass(BRJS brjs, Class<I> iFace)
+	public List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface)
 	{
-		List<I> objectList = new ArrayList<I>();
-
-		Logger logger = brjs.logger(LoggerType.CORE, BRJSPluginLocator.class);
-
-		ServiceLoader<I> loader = ServiceLoader.load(iFace);
+		return createPluginsOfType(brjs, pluginInterface, null);
+	}
+	
+	public <VPP extends P> List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface, Class<VPP> virtualProxyClass)
+	{
+		Logger logger = brjs.logger(LoggerType.CORE, PluginAccessor.class);
+		List<P> objectList = new ArrayList<P>();
+		
 		try
 		{
-			Iterator<I> classes = loader.iterator();
-			while (classes.hasNext())
+			ServiceLoader<P> loader = ServiceLoader.load(pluginInterface);
+			Iterator<P> objectIterator = loader.iterator();
+			
+			while (objectIterator.hasNext())
 			{
-				I clazz = classes.next();
-				objectList.add(clazz);
+				P object = objectIterator.next();
+				
+				if(virtualProxyClass != null) {
+					object = virtualProxyClass.getConstructor(pluginInterface).newInstance(object);
+				}
+				
+				object.setBRJS(brjs);
+				
+				objectList.add(object);
 			}
 		}
 		catch (ServiceConfigurationError serviceError)
 		{
 			Throwable cause = serviceError.getCause();
+			
 			if (cause != null && cause.getClass() == InstantiationException.class)
 			{
 				logger.error(Messages.CANNOT_CREATE_INSTANCE_LOG_MSG, cause.getMessage());				
@@ -49,9 +63,10 @@ public class TypedClassCreator<I>
 				logger.error(Messages.ERROR_CREATING_OBJECT_LOG_MSG, serviceError);
 			}
 		}
-
+		catch(NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+			throw new RuntimeException(e);
+		}
+		
 		return objectList;
-
 	}
-
 }
