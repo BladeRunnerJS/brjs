@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.BRJS;
 
 
 
-public class PluginLoader<P extends Plugin>
+public class PluginLoader
 {
 	// TODO: these messages (and likely, this classes functionality) aren't currently covered within our spec tests
 	public class Messages {
@@ -23,14 +23,14 @@ public class PluginLoader<P extends Plugin>
 			"Error while creating the plugin %s, the class will not be loaded. Make sure there is a constructor for the class that accepts 0 arguments.";
 	}
 	
-	public List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface)
+	public static <P extends Plugin> List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface)
 	{
 		return createPluginsOfType(brjs, pluginInterface, null);
 	}
 	
-	public <VPP extends P> List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface, Class<VPP> virtualProxyClass)
+	public static <P extends Plugin, VPP extends P> List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface, Class<VPP> virtualProxyClass)
 	{
-		Logger logger = brjs.logger(LoggerType.CORE, PluginAccessor.class);
+		Logger logger = brjs.logger(LoggerType.CORE, BRJSPluginLocator.class);
 		List<P> objectList = new ArrayList<P>();
 		
 		try

@@ -16,26 +16,28 @@ public class MockPluginLocator implements PluginLocator
 	public List<BundlerPlugin> bundlers = new ArrayList<BundlerPlugin>();
 	public List<CommandPlugin> pluginCommands = new ArrayList<CommandPlugin>();
 	public List<ModelObserverPlugin> modelObservers = new ArrayList<ModelObserverPlugin>();
-
-	@Override
-	public List<BundlerPlugin> createBundlerPlugins(BRJS brjs)
-	{
+	
+	public void createPlugins(BRJS brjs) {
 		PluginLocatorUtils.setBRJSForPlugins(brjs, bundlers);
+		PluginLocatorUtils.setBRJSForPlugins(brjs, pluginCommands);
+		PluginLocatorUtils.setBRJSForPlugins(brjs, modelObservers);
+	}
+	
+	@Override
+	public List<BundlerPlugin> getBundlerPlugins()
+	{
 		return bundlers;
 	}
 
 	@Override
-	public List<CommandPlugin> createCommandPlugins(BRJS brjs)
+	public List<CommandPlugin> getCommandPlugins()
 	{
-		PluginLocatorUtils.setBRJSForPlugins(brjs, pluginCommands);
 		return pluginCommands;
 	}
 
 	@Override
-	public List<ModelObserverPlugin> createModelObservers(BRJS brjs)
+	public List<ModelObserverPlugin> getModelObservers()
 	{
-		PluginLocatorUtils.setBRJSForPlugins(brjs, modelObservers);
 		return modelObservers;
 	}
-
 }

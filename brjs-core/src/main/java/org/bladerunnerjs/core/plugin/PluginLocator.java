@@ -7,13 +7,10 @@ import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 
 
-
 public interface PluginLocator
 {
-
-	public List<BundlerPlugin> createBundlerPlugins(BRJS brjs);
-
-	public List<CommandPlugin> createCommandPlugins(BRJS brjs);
-
-	public List<ModelObserverPlugin> createModelObservers(BRJS brjs);
+	void createPlugins(BRJS brjs);
+	List<BundlerPlugin> getBundlerPlugins();
+	List<CommandPlugin> getCommandPlugins();
+	List<ModelObserverPlugin> getModelObservers();
 }

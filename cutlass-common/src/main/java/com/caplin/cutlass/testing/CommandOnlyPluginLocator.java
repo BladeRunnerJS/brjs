@@ -3,7 +3,7 @@ package com.caplin.cutlass.testing;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.PluginAccessor;
+import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
@@ -11,20 +11,25 @@ import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 
 public class CommandOnlyPluginLocator implements PluginLocator {
-	private PluginLocator brjsPluginLocator = new PluginAccessor();
+	private final PluginLocator brjsPluginLocator = new BRJSPluginLocator();
 	
 	@Override
-	public List<CommandPlugin> createCommandPlugins(BRJS brjs) {
-		return brjsPluginLocator.createCommandPlugins(brjs);
+	public void createPlugins(BRJS brjs) {
+		brjsPluginLocator.createPlugins(brjs);
 	}
 	
 	@Override
-	public List<ModelObserverPlugin> createModelObservers(BRJS brjs) {
+	public List<CommandPlugin> getCommandPlugins() {
+		return brjsPluginLocator.getCommandPlugins();
+	}
+	
+	@Override
+	public List<ModelObserverPlugin> getModelObservers() {
 		return new ArrayList<>();
 	}
 	
 	@Override
-	public List<BundlerPlugin> createBundlerPlugins(BRJS brjs) {
+	public List<BundlerPlugin> getBundlerPlugins() {
 		return new ArrayList<>();
 	}
 }

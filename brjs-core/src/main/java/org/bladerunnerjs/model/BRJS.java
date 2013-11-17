@@ -16,7 +16,7 @@ import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerFactory;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
-import org.bladerunnerjs.core.plugin.PluginAccessor;
+import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
@@ -76,26 +76,29 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
+		// TODO: change the logging now that all plug-ins will be partially created at this point
 		logger.info(Messages.CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG);
-		pluginLocator.createModelObservers(this);
+		pluginLocator.createPlugins(this);
 		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 		discoverAllChildren();
 		
+		// TODO: change this log message to be one about making plugins accessible from the model
 		logger.info(Messages.CREATING_COMMAND_PLUGINS_LOG_MSG);
-		commandList = new CommandList(this, pluginLocator.createCommandPlugins(this));
+		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
 		bundlerPlugins = new HashMap<String,BundlerPlugin>();
-		for(BundlerPlugin bundlerPlugin :  pluginLocator.createBundlerPlugins(this)) {
+		for(BundlerPlugin bundlerPlugin :  pluginLocator.getBundlerPlugins()) {
 			bundlerPlugins.put(bundlerPlugin.getTagName(), bundlerPlugin);
 		}
 		
+		// TODO: have the minifier plug-ins built by PluginLocator too
 		minifierPlugins = MinifierPluginFactory.createMinifierPlugins(this);
 	}
 	
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
-		this(brjsDir, new PluginAccessor(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
 
 	@Override
