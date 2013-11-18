@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.io.IOUtils;
 import com.caplin.cutlass.command.test.testrunner.TestRunner.TestType;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
 import com.caplin.cutlass.BRJSAccessor;

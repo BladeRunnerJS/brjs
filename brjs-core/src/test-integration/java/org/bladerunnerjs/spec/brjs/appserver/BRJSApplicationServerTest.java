@@ -1,9 +1,6 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
-
-import static org.bladerunnerjs.core.plugin.command.standard.ServeCommand.Messages.*;
 import static org.bladerunnerjs.model.appserver.BRJSApplicationServer.Messages.*;
-import static org.bladerunnerjs.model.appserver.AppDeploymentObserver.Messages.*;
 import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.*;
 
 import java.io.IOException;

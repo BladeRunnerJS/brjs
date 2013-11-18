@@ -3,30 +3,20 @@ package org.bladerunnerjs.spec.command;
 import java.io.File;
 
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.caplin.cutlass.command.export.ExportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
-import com.caplin.cutlass.command.test.TestServerCommand;
 
 
 public class TestCommandTest extends SpecTest
 {
 	private App app;
-	private Aspect aspect;
 	private Bladeset bladeset;
-	private Blade blade;
-	private DirNode appJars;
 	private File sdkDir;
 	
 	private String testRunnerConfContents;
@@ -39,9 +29,9 @@ public class TestCommandTest extends SpecTest
 		
 		given(pluginLocator).hasCommand(new TestCommand());
 			app = brjs.app("myapp");
-			aspect = app.aspect("myaspect");
+			app.aspect("myaspect");
 			bladeset = app.bladeset("mybladeset");
-			blade = bladeset.blade("myblade");
+			bladeset.blade("myblade");
 			sdkDir = new File(brjs.dir(), "sdk");
 			
 			testRunnerConfContents  = 

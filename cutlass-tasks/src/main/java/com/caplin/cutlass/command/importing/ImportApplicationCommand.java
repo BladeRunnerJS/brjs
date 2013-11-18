@@ -1,7 +1,6 @@
 package com.caplin.cutlass.command.importing;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
@@ -14,7 +13,6 @@ import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.utility.NameValidator;
 
-import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.structure.NamespaceCalculator;
 
