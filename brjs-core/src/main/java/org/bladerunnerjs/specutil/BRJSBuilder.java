@@ -4,6 +4,7 @@ import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.core.plugin.PluginLoader;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
+import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
 import org.bladerunnerjs.specutil.engine.NodeBuilder;
@@ -81,6 +82,13 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer automaticallyFindsMinifiers() {
+		specTest.pluginLocator.minifiers.clear();
+		specTest.pluginLocator.minifiers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), MinifierPlugin.class) );
+		
+		return builderChainer;
+	}
+	
 	@Override
 	public BuilderChainer hasBeenCreated() throws Exception
 	{
@@ -101,5 +109,4 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		
 		return builderChainer;
 	}
-	
 }

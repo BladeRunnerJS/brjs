@@ -21,9 +21,9 @@ public class BRJSPluginLocator implements PluginLocator
 	private List<ModelObserverPlugin> observerPlugins;
 	private List<BundlerPlugin> bundlerPlugins;
 	private List<CommandPlugin> commandPlugins;
-	private List<MinifierPlugin> minifiers;
-	private List<ServletPlugin> servlets;
-	private List<TagHandlerPlugin> tagHandlers;
+	private List<MinifierPlugin> minifierPlugins;
+	private List<ServletPlugin> servletPLugins;
+	private List<TagHandlerPlugin> tagHandlerPlugins;
 	
 	
 	@Override
@@ -31,9 +31,9 @@ public class BRJSPluginLocator implements PluginLocator
 		observerPlugins = PluginLoader.createPluginsOfType(brjs, ModelObserverPlugin.class);
 		bundlerPlugins = PluginLoader.createPluginsOfType(brjs, BundlerPlugin.class, VirtualProxyBundlerPlugin.class);
 		commandPlugins = PluginLoader.createPluginsOfType(brjs, CommandPlugin.class, VirtualProxyCommandPlugin.class);
-		minifiers = PluginLoader.createPluginsOfType(brjs, MinifierPlugin.class, VirtualProxyMinifierPlugin.class);
-		servlets = PluginLoader.createPluginsOfType(brjs, ServletPlugin.class, VirtualProxyServletPlugin.class);
-		tagHandlers = PluginLoader.createPluginsOfType(brjs, TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class);
+		minifierPlugins = PluginLoader.createPluginsOfType(brjs, MinifierPlugin.class, VirtualProxyMinifierPlugin.class);
+		servletPLugins = PluginLoader.createPluginsOfType(brjs, ServletPlugin.class, VirtualProxyServletPlugin.class);
+		tagHandlerPlugins = PluginLoader.createPluginsOfType(brjs, TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class);
 	}
 	
 	@Override
@@ -56,16 +56,16 @@ public class BRJSPluginLocator implements PluginLocator
 	
 	@Override
 	public List<MinifierPlugin> getMinifiers() {
-		return minifiers;
+		return minifierPlugins;
 	}
 	
 	@Override
 	public List<ServletPlugin> getServlets() {
-		return servlets;
+		return servletPLugins;
 	}
 	
 	@Override
 	public List<TagHandlerPlugin> getTagHandlers() {
-		return tagHandlers;
+		return tagHandlerPlugins;
 	}
 }

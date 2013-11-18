@@ -66,10 +66,10 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Logger logger;
 	private final CommandList commandList;
 	private final Map<String, BundlerPlugin> bundlerPlugins;
-	private List<MinifierPlugin> minifierPlugins;
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
+	private PluginLocator pluginLocator;
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
@@ -84,15 +84,13 @@ public class BRJS extends AbstractBRJSRootNode
 		discoverAllChildren();
 		
 		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
+		this.pluginLocator = pluginLocator;
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
 		bundlerPlugins = new HashMap<String,BundlerPlugin>();
 		for(BundlerPlugin bundlerPlugin :  pluginLocator.getBundlerPlugins()) {
 			bundlerPlugins.put(bundlerPlugin.getTagName(), bundlerPlugin);
 		}
-		
-		// TODO: have the minifier plug-ins built by PluginLocator too
-		minifierPlugins = MinifierPluginFactory.createMinifierPlugins(this);
 	}
 	
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
@@ -305,7 +303,6 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
-	// TODO: talk to the team about making all plugins available from BRJS
 	public BundlerPlugin bundlerPlugin(String bundlerName) {
 		return bundlerPlugins.get(bundlerName);
 	}
@@ -327,11 +324,11 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public List<MinifierPlugin> minifierPlugins() {
-		return minifierPlugins;
+		return pluginLocator.getMinifiers();
 	}
 	
 	public MinifierPlugin minifierPlugin(String minifierSetting) {
-		for(MinifierPlugin minifierPlugin : minifierPlugins) {
+		for(MinifierPlugin minifierPlugin : minifierPlugins()) {
 			if(minifierPlugin.getSettingNames().contains(minifierSetting)) {
 				return minifierPlugin;
 			}
