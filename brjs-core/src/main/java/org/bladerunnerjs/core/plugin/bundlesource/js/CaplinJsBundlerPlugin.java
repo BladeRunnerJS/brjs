@@ -21,7 +21,6 @@ import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -207,12 +206,10 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	{
 
 		@Override
-		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
+		public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 		{
-			AssetContainer assetLocation = assetContainer; // TODO: delete this line once we are passing in an AssetLocation
 			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js")) {
-				//TODO: don't use file('src') here
-				return assetLocation.root().getAssetFilesWithExtension(assetLocation, assetLocation.file("src"), CaplinJsSourceFile.class, "js");
+				return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, assetLocation.dir(), CaplinJsSourceFile.class, "js");
 			}
 			else {
 				return Arrays.asList();

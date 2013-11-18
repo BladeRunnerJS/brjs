@@ -8,7 +8,7 @@ public class NullAssetFileAccessor implements AssetFileAccessor
 {
 
 	@Override
-	public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
+	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}

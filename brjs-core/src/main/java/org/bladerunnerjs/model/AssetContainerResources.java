@@ -26,7 +26,12 @@ public class AssetContainerResources {
 	}
 	
 	public List<AssetLocation> getResources(File srcDir) {
-		List<AssetLocation> resourcesList = new ArrayList<>();
+		List<AssetLocation> resourcesList = new ArrayList<>();	
+		
+		if (!srcDir.exists())
+		{
+			return resourcesList;
+		}
 		
 		try {
 			if(!srcLocationDir.equals(srcDir) && !FileUtils.directoryContains(srcLocationDir, srcDir)) {
@@ -46,10 +51,15 @@ public class AssetContainerResources {
 	private List<AssetLocation> getResourcesList(File srcDir) {
 		List<AssetLocation> resourcesList = new ArrayList<>();
 		
-		do {
+		while (srcDir != null)
+		{
 			resourcesList.add(createResource(srcDir));
+			if (srcDir.equals(srcLocationDir))
+			{
+				break;
+			}
 			srcDir = srcDir.getParentFile();
-		} while (!srcDir.equals(srcLocationDir));
+		}
 		
 		return resourcesList;
 	}

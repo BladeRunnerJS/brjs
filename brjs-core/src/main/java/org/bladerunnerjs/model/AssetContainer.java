@@ -12,6 +12,6 @@ public interface AssetContainer extends BRJSNode {
 	String getRequirePrefix();
 	List<SourceFile> sourceFiles();
 	SourceFile sourceFile(String requirePath);
-//	List<AssetLocation> getAllAssetLocations(); // TODO: add this method so we can modify AssetFileAccessor.getSourceFiles(AssetContainer ac) to take an AssetLocation instead, like the other methods
-	List<AssetLocation> getAssetLocations(File srcDir);
+	List<AssetLocation> getAllAssetLocations();
+	AssetLocation getAssetLocation(File dir);
 }

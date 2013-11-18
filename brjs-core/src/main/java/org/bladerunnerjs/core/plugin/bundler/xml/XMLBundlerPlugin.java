@@ -18,7 +18,6 @@ import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
@@ -99,7 +98,7 @@ public class XMLBundlerPlugin implements BundlerPlugin
 	{
 
 		@Override
-		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
+		public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 		{
 			return Arrays.asList();
 		}
@@ -107,7 +106,7 @@ public class XMLBundlerPlugin implements BundlerPlugin
 		@Override
 		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
 		{
-			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation.getAssetContainer(), assetLocation.dir(), FullyQualifiedLinkedAssetFile.class, "xml");
+			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, assetLocation.dir(), FullyQualifiedLinkedAssetFile.class, "xml");
 		}
 
 		@Override

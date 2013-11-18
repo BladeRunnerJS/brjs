@@ -11,20 +11,19 @@ import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class CaplinJsSourceFile implements SourceFile {
 	private LinkedAssetFile assetFile;
-	private AssetContainer assetContainer;
+	private AssetLocation assetLocation;
 	private String requirePath;
-	private File srcDir;
 	
-	public CaplinJsSourceFile(AssetContainer assetContainer, File file) {
-		this.assetContainer = assetContainer;
-		this.requirePath = assetContainer.file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
-		assetFile = new FullyQualifiedLinkedAssetFile(assetContainer, file);
-		srcDir = file.getParentFile();
+	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
+	{
+		this.assetLocation = assetLocation;
+		this.requirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
+		assetFile = new FullyQualifiedLinkedAssetFile();
+		assetFile.initializeUnderlyingObjects(assetLocation, file);
 	}
 	
 	@Override
@@ -52,11 +51,6 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations() {
-		return assetContainer.getAssetLocations(srcDir);
-	}
-	
-	@Override
 	public List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException {
 		// TODO: scan the source file for caplin.extend(), caplin.implement(), br.extend() & br.implement()
 		return new ArrayList<>();
@@ -67,12 +61,13 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public AssetContainer getAssetContainer() {
-		return assetContainer;
-	}
-	
-	@Override
 	public File getUnderlyingFile() {
 		return assetFile.getUnderlyingFile();
+	}
+
+	@Override
+	public AssetLocation getAssetLocation()
+	{
+		return assetLocation;
 	}
 }

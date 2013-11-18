@@ -1,9 +1,15 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -13,6 +19,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
 	protected final AssetContainerResources assetContainerResources;
+	
+	final Map<File, AssetLocation> assetLocations = new HashMap<>();
 	
 	public AbstractAssetContainer(RootNode rootNode, File dir) {
 		init(rootNode, rootNode, dir);
@@ -42,10 +50,13 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<SourceFile> sourceFiles() {
-		List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
+		List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 			
 		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-			sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(this));
+			for (AssetLocation assetLocation : getAllAssetLocations())
+			{
+				sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(assetLocation));
+			}
 		}
 		
 		return sourceFiles;
@@ -62,8 +73,43 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		return null;
 	}
 	
+	@Override /* deep AssetLocation for resources, for each dir in src call getAssetLocation(dir) */
+	public List<AssetLocation> getAllAssetLocations() {
+		List<AssetLocation> allAssetLocations = new ArrayList<AssetLocation>();
+		allAssetLocations.add( getAssetLocation(resources().dir(), false) );
+		
+		File srcDir = src().dir();
+		if (srcDir.isDirectory())
+		{
+    		Iterator<File> fileIterator = FileUtils.iterateFilesAndDirs(srcDir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+    		while (fileIterator.hasNext())
+    		{
+    			File dir = fileIterator.next();
+    			if (!dir.equals(dir()))
+    			{
+    				allAssetLocations.add( getAssetLocation(dir) );
+    			}
+    		}
+		}
+		return allAssetLocations;
+	}
+	
 	@Override
-	public List<AssetLocation> getAssetLocations(File srcDir) {
-		return assetContainerResources.getResources(srcDir);
+	public AssetLocation getAssetLocation(File dir) {
+		return getAssetLocation(dir, true);
+	}
+	
+	
+	
+	
+	public AssetLocation getAssetLocation(File dir, boolean createShallowAssetLocation) 
+	{
+		AssetLocation assetLocation = assetLocations.get(dir);
+		if (assetLocation == null) {
+			assetLocation = (createShallowAssetLocation) ? new ShallowAssetLocation(this, dir) : new DeepAssetLocation(this, dir);
+			assetLocations.put(dir, assetLocation);
+		}
+		return assetLocation;
+		
 	}
 }

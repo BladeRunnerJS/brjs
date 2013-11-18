@@ -17,18 +17,19 @@ import org.bladerunnerjs.model.utility.TrieKeyAlreadyExistsException;
 
 
 public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
-	private final App app;
-	private final File assetFile;
+	private App app;
+	private File assetFile;
 	private List<SourceFile> dependentSourceFiles;
 	private List<AliasDefinition> aliases;
 	private FileModifiedChecker fileModifiedChecker;
-	private AssetContainer assetContainer;
+	private AssetLocation assetLocation;
 	
-	public FullyQualifiedLinkedAssetFile(AssetContainer assetContainer, File file) {
-		this.assetContainer = assetContainer;
-		app = assetContainer.getApp();
-		assetFile = file;
-		fileModifiedChecker = new FileModifiedChecker(assetFile);
+	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
+	{
+		this.assetLocation = assetLocation;
+		app = assetLocation.getAssetContainer().getApp();
+		this.assetFile = file;
+		fileModifiedChecker = new FileModifiedChecker(file);
 	}
 	
 	@Override
@@ -52,11 +53,6 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		}
 		
 		return aliases;
-	}
-	
-	@Override
-	public AssetContainer getAssetContainer() {
-		return assetContainer;
 	}
 	
 	@Override
@@ -120,5 +116,11 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		}
 		
 		return trie;
+	}
+
+	@Override
+	public AssetLocation getAssetLocation()
+	{
+		return assetLocation;
 	}
 }

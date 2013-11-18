@@ -46,7 +46,7 @@ public class BundleSetBuilder {
 		if(sourceFiles.add(sourceFile)) {
 			isNewSourceFile = true;
 			activeAliases.addAll(sourceFile.getAliases());
-			resources.addAll(sourceFile.getAssetLocations());
+			resources.addAll(sourceFile.getAssetLocation().getAssetContainer().getAllAssetLocations());
 		}
 		
 		return isNewSourceFile;
