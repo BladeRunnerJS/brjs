@@ -209,7 +209,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 		{
 			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js")) {
-				return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, assetLocation.dir(), CaplinJsSourceFile.class, "js");
+				return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, CaplinJsSourceFile.class, "js");
 			}
 			else {
 				return Arrays.asList();

@@ -106,7 +106,7 @@ public class HTMLBundlerPlugin implements BundlerPlugin
 		@Override
 		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
 		{
-			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, assetLocation.dir(), FullyQualifiedLinkedAssetFile.class, "html");
+			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, FullyQualifiedLinkedAssetFile.class, "html");
 		}
 
 		@Override

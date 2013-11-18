@@ -344,14 +344,14 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	
 	
-	public <AF extends AssetFile> List<AF> getAssetFilesNamed(AssetLocation assetLocation, File dir, Class<? extends AssetFile> assetFileType, String... fileNames)
+	public <AF extends AssetFile> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... fileNames)
 	{
-		return assetLocator.getAssetFilesNamed(assetLocation, dir, assetFileType, fileNames);
+		return assetLocator.getAssetFilesNamed(assetLocation, assetFileType, fileNames);
 	}
 	
-	public <AF extends AssetFile> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, File dir, Class<? extends AssetFile> assetFileType, String... extensions)
+	public <AF extends AssetFile> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... extensions)
 	{
-		return assetLocator.getAssetFilesWithExtension(assetLocation, dir, assetFileType, extensions);
+		return assetLocator.getAssetFilesWithExtension(assetLocation, assetFileType, extensions);
 	}
 	
 	

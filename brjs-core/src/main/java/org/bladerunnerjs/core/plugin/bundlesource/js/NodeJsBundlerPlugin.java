@@ -143,7 +143,7 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 		{ 
 			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js")) {
-				return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, assetLocation.dir(), NodeJsSourceFile.class, "js");
+				return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceFile.class, "js");
 			}
 			else {
 				return Arrays.asList();

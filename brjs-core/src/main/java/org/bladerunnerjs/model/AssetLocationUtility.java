@@ -21,15 +21,17 @@ public class AssetLocationUtility
 	
 	private final Map<String, AssetFile> assetFiles = new HashMap<>();
 	
-	<AF extends AssetFile> List<AF> getAssetFilesNamed(AssetLocation assetLocation, File dir, Class<? extends AssetFile> assetFileType, String... fileNames)
+	<AF extends AssetFile> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... fileNames)
 	{
+		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
 		
 		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtils.listFiles(dir, new NameFileFilter(fileNames), FalseFileFilter.INSTANCE) );
 	}
 	
-	<AF extends AssetFile> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, File dir, Class<? extends AssetFile> assetFileType, String... extensions)
+	<AF extends AssetFile> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... extensions)
 	{
+		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
 		
 		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtils.listFiles(dir, new SuffixFileFilter(extensions), FalseFileFilter.INSTANCE) );
