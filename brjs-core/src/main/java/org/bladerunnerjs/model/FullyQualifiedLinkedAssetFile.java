@@ -15,7 +15,10 @@ import org.bladerunnerjs.model.utility.FileModifiedChecker;
 import org.bladerunnerjs.model.utility.Trie;
 import org.bladerunnerjs.model.utility.TrieKeyAlreadyExistsException;
 
-
+/**
+ * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
+ *
+ */
 public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private App app;
 	private File assetFile;

@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
 
+/**
+ * Any file that lives within an App
+ *
+ */
 public interface AssetFile {
 	Reader getReader() throws FileNotFoundException;
 	AssetLocation getAssetLocation();
