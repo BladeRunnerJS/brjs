@@ -1,6 +1,5 @@
 package org.bladerunnerjs.core.plugin.bundlesource.js;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -12,12 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.AssetFileAccessor;
-import org.bladerunnerjs.model.AbstractAssetFileFactory;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAssetFile;
@@ -25,7 +21,6 @@ import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -211,15 +206,10 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	{
 
 		@Override
-		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
+		public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 		{
-			AssetContainer assetLocation = assetContainer; // TODO: delete this line once we are passing in an AssetLocation
 			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js")) {
-				// TODO: switch over to this simpler AssetLocationUtility once all the AssetFileAccessor methods are passed an AssetLocation
-//				return AssetLocationUtility.populateFileList(new ArrayList<SourceFile>, assetLocation, "js", CaplinJsSourceFile.class);
-				
-				// TODO: remove this "src" - it should be known by the model
-				return new CaplinJsFileSetFactory().findFiles(assetContainer, assetContainer.file("src"), new SuffixFileFilter("js"), TrueFileFilter.INSTANCE);
+				return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, CaplinJsSourceFile.class, "js");
 			}
 			else {
 				return Arrays.asList();
@@ -238,15 +228,6 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 			return Arrays.asList();
 		}
 		
-	}
-	
-	class CaplinJsFileSetFactory extends AbstractAssetFileFactory<SourceFile>
-	{
-		@Override
-		public CaplinJsSourceFile createFile(AssetContainer assetContainer, File file)
-		{
-			return new CaplinJsSourceFile(assetContainer, file);
-		}
 	}
 	
 }

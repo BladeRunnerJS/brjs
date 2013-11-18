@@ -16,6 +16,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.bladerunnerjs.core.console.ConsoleWriter;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import org.bladerunnerjs.model.AbstractAssetContainer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
@@ -144,7 +145,7 @@ public class WarCommand implements LegacyCommandPlugin
 		}
 	}
 	
-	private void createAspectBundles(Aspect origAspect, Aspect warAspect, ArrayList<LegacyFileBundlerPlugin> bundlers, AppMetaData appMetaData) throws CommandOperationException {
+	private void createAspectBundles(AbstractAssetContainer origAspect, AbstractAssetContainer warAspect, ArrayList<LegacyFileBundlerPlugin> bundlers, AppMetaData appMetaData) throws CommandOperationException {
 		try {
 			for(LegacyFileBundlerPlugin bundler : bundlers) {
 				for(String bundleRequest : bundler.getValidRequestStrings(appMetaData)) {

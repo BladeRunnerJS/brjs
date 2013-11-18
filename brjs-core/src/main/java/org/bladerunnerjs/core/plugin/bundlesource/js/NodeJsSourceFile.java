@@ -16,26 +16,25 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AliasDefinition;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 
 public class NodeJsSourceFile implements SourceFile {
-	private final File assetFile;
+	private File assetFile;
 	private List<String> requirePaths;
 	private List<String> aliasNames;
-	private final AssetContainer assetContainer;
+	private AssetLocation assetLocation;
 	private List<AliasDefinition> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private String requirePath;
-	private File srcDir;
 	
-	public NodeJsSourceFile(AssetContainer assetContainer, File file) {
-		this.assetContainer = assetContainer;
-		this.requirePath = assetContainer.file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
+	@Override
+	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
+	{
+		this.assetLocation = assetLocation;
 		assetFile = file;
-		srcDir = file.getParentFile();
+		this.requirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
@@ -49,7 +48,7 @@ public class NodeJsSourceFile implements SourceFile {
 			}
 			
 			for(String requirePath : requirePaths) {
-				SourceFile sourceFile = assetContainer.sourceFile(requirePath);
+				SourceFile sourceFile = assetLocation.getAssetContainer().sourceFile(requirePath);
 				
 				if(sourceFile == null) {
 					throw new UnresolvableRequirePathException(requirePath);
@@ -85,18 +84,8 @@ public class NodeJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations() {
-		return assetContainer.getAssetLocations(srcDir);
-	}
-	
-	@Override
 	public List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException {
 		return new ArrayList<>();
-	}
-	
-	@Override
-	public AssetContainer getAssetContainer() {
-		return assetContainer;
 	}
 	
 	@Override
@@ -136,4 +125,11 @@ public class NodeJsSourceFile implements SourceFile {
 			throw new ModelOperationException(e);
 		}
 	}
+
+	@Override
+	public AssetLocation getAssetLocation()
+	{
+		return assetLocation;
+	}
+	
 }

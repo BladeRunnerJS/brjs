@@ -2,16 +2,22 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.file.AliasDefinitionsFile;
 
 public class ShallowAssetLocation implements AssetLocation {
-	protected AssetContainer assetContainer;
-	protected BRJS brjs;
-	protected File dir;
+	
+	private AssetContainer assetContainer;
+	private BRJS brjs;
+	private File dir;
+	
+	private final Map<String, ShallowAssetLocation> resources = new HashMap<>();
+	
 	
 	public ShallowAssetLocation(AssetContainer assetContainer, File dir) {
 		this.assetContainer = assetContainer;
@@ -71,4 +77,36 @@ public class ShallowAssetLocation implements AssetLocation {
 	{
 		return assetContainer;
 	}
+
+	@Override
+	public List<AssetLocation> getAncestorAssetLocations()
+	{
+    	List<AssetLocation> resourcesList = new ArrayList<>();
+    	
+    	File srcDir = dir;
+    	
+    	while (srcDir != null)
+    	{
+    		resourcesList.add(createResource(srcDir));
+    		if (srcDir.equals(assetContainer.src().dir()))
+    		{
+    			break;
+    		}
+    		srcDir = srcDir.getParentFile();
+    	}
+    	
+    	return resourcesList;
+	}
+	
+	
+	private AssetLocation createResource(File srcDir) {
+		String srcPath = srcDir.getAbsolutePath();
+		
+		if(!resources.containsKey(srcPath)) {
+			resources.put(srcPath, new ShallowAssetLocation(assetContainer, srcDir));
+		}
+		
+		return resources.get(srcPath);
+	}
+	
 }

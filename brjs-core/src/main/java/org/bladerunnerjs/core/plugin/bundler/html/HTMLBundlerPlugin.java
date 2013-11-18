@@ -7,19 +7,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFileFactory;
+import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
@@ -100,7 +98,7 @@ public class HTMLBundlerPlugin implements BundlerPlugin
 	{
 
 		@Override
-		public List<SourceFile> getSourceFiles(AssetContainer assetContainer)
+		public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 		{
 			return Arrays.asList();
 		}
@@ -108,8 +106,7 @@ public class HTMLBundlerPlugin implements BundlerPlugin
 		@Override
 		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
 		{
-			//TODO: remove this "src" - it should be known by the model
-			return new FullyQualifiedLinkedAssetFileFactory().findFiles(assetLocation.getAssetContainer(), assetLocation.dir(), new SuffixFileFilter("html"), null);
+			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, FullyQualifiedLinkedAssetFile.class, "html");
 		}
 
 		@Override

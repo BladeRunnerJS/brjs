@@ -24,14 +24,14 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
 	private String name;
 	private JsLibConf libConf;
-	private final AssetContainerResources assetContainerResources;
+	private final AssetContainerLocations assetContainerLocations;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		this.name = name;
 		init(rootNode, parent, dir);
 		
-		assetContainerResources = new AssetContainerResources(this, src().dir(), resources().dir());
+		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)
@@ -140,7 +140,10 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 		List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
 			
 		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-			sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(this));
+			for (AssetLocation assetLocation : getAllAssetLocations())
+			{
+				sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(assetLocation));
+			}
 		}
 		
 		return sourceFiles;
@@ -154,7 +157,13 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(File srcDir) {
-		return assetContainerResources.getResources(srcDir);
+	public List<AssetLocation> getAllAssetLocations() {
+		return assetContainerLocations.getAllAssetLocations();
 	}
+	
+	@Override
+	public AssetLocation getAssetLocation(File dir) {
+		return assetContainerLocations.getAssetLocation(dir);
+	}
+	
 }

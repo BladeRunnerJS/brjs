@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.utility.BundleSetBuilder;
 import com.google.common.base.Joiner;
 
 public class BundleSetCreator {
-	// TODO: these messages need to be covered off in a spec test (a single test would be perfect)
+
 	public class Messages {
 		public static final String BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG = "%s '%s' has no seed files.";
 		public static final String BUNDLABLE_NODE_SEED_FILES_MSG = "%s '%s' contains seed files %s.";
@@ -50,17 +50,17 @@ public class BundleSetCreator {
 		List<SourceFile> fileDependencies = file.getDependentSourceFiles();
 		
 		if(fileDependencies.isEmpty()) {
-			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetContainer().dir(), file.getUnderlyingFile()));
+			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
 		}
 		else {
-			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(fileDependencies));
+			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(fileDependencies));
 		}
 		
 		for(SourceFile sourceFile : fileDependencies) {
 			if(bundleSetBuilder.addSourceFile(sourceFile)) {
 				processFile(sourceFile, bundleSetBuilder, logger);
 				
-				for(AssetLocation assetLocation : sourceFile.getAssetLocations()) {
+				for(AssetLocation assetLocation : sourceFile.getAssetLocation().getAssetContainer().getAllAssetLocations()) {
 					for(LinkedAssetFile resourceSeedFile : assetLocation.seedResources()) {
 						processFile(resourceSeedFile, bundleSetBuilder, logger);
 					}
@@ -93,7 +93,7 @@ public class BundleSetCreator {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
 		for(SourceFile sourceFile : sourceFiles) {
-			sourceFilePaths.add(getRelativePath(sourceFile.getAssetContainer().dir(), sourceFile.getUnderlyingFile()));
+			sourceFilePaths.add(getRelativePath(sourceFile.getAssetLocation().getAssetContainer().dir(), sourceFile.getUnderlyingFile()));
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";

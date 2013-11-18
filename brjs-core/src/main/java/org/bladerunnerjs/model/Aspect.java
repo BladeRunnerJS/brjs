@@ -2,12 +2,12 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.io.filefilter.NameFileFilter;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -20,15 +20,19 @@ import org.bladerunnerjs.model.utility.TestRunner;
 
 public class Aspect extends AbstractBundlableNode implements TestableNode, NamedNode
 {
+	private static final List<String> seedFilenames = Arrays.asList("index.html", "index.jsp");
+	
 	private final NodeItem<DirNode> unbundledResources = new NodeItem<>(DirNode.class, "unbundled-resources");
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
 	private final NodeMap<Theme> themes = Theme.createNodeSet();
 	private String name;
+	private AssetLocation thisAssetLocation;
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, dir);
 		this.name = name;
+		thisAssetLocation = new ShallowAssetLocation(this, dir);
 		init(rootNode, parent, dir);
 	}
 	
@@ -39,7 +43,18 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	
 	@Override
 	public List<LinkedAssetFile> getSeedFiles() {
-		return new FullyQualifiedLinkedAssetFileSetFactory().findFiles(this, dir(), new NameFileFilter( new String[] {"index.html","index.jsp"} ), null);
+		List<LinkedAssetFile> assetFiles = new ArrayList<LinkedAssetFile>();
+		
+		//TODO: move this in to a seperate AssetLocation class since this is duplicated in Workbench
+		for (LinkedAssetFile assetFile : thisAssetLocation.seedResources())
+		{
+			if ( seedFilenames.contains( assetFile.getUnderlyingFile().getName() ) )
+			{
+				assetFiles.add(assetFile);
+			}
+		}
+		
+		return assetFiles;
 	}
 	
 	@Override

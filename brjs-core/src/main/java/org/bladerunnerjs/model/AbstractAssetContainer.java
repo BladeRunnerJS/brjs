@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
@@ -12,12 +12,12 @@ import org.bladerunnerjs.model.engine.RootNode;
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
-	protected final AssetContainerResources assetContainerResources;
+	protected final AssetContainerLocations assetContainerLocations;
 	
 	public AbstractAssetContainer(RootNode rootNode, File dir) {
 		init(rootNode, rootNode, dir);
 		
-		assetContainerResources = new AssetContainerResources(this, src().dir(), resources().dir());
+		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
 	public DirNode src() {
@@ -42,10 +42,13 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<SourceFile> sourceFiles() {
-		List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
+		List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 			
 		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-			sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(this));
+			for (AssetLocation assetLocation : getAllAssetLocations())
+			{
+				sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(assetLocation));
+			}
 		}
 		
 		return sourceFiles;
@@ -63,7 +66,19 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(File srcDir) {
-		return assetContainerResources.getResources(srcDir);
+	public List<AssetLocation> getAllAssetLocations() {
+		return assetContainerLocations.getAllAssetLocations();
 	}
+	
+	@Override
+	public AssetLocation getAssetLocation(File dir) {
+		return assetContainerLocations.getAssetLocation(dir);
+	}
+	
+	
+	protected AssetContainerLocations getAssetContainerLocations()
+	{
+		return assetContainerLocations;
+	}
+	
 }

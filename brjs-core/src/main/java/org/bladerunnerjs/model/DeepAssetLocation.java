@@ -24,19 +24,22 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	{
 		List<LinkedAssetFile> assetFiles = new LinkedList<LinkedAssetFile>();
 		
-		if (dir.exists())
+		if (dir().exists())
 		{
-    		Iterator<File> fileIterator = FileUtils.iterateFilesAndDirs(dir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+    		Iterator<File> fileIterator = FileUtils.iterateFilesAndDirs(dir(), FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
     		while (fileIterator.hasNext())
     		{
     			File dir = fileIterator.next();
-    			AssetLocation dirResources = resourcesMap.get(dir);
-    			if (dirResources == null)
+    			if (!dir.equals(dir()))
     			{
-    				dirResources = new ShallowAssetLocation(assetContainer, dir);
-    				resourcesMap.put(dir, dirResources);
+        			AssetLocation dirResources = resourcesMap.get(dir);
+        			if (dirResources == null)
+        			{
+        				dirResources = new ShallowAssetLocation(getAssetContainer(), dir);
+        				resourcesMap.put(dir, dirResources);
+        			}
+        			assetFiles.addAll(dirResources.seedResources());
     			}
-    			assetFiles.addAll(dirResources.seedResources());		
     		}
 		}
 		
