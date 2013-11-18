@@ -2,9 +2,10 @@ package org.bladerunnerjs.core.plugin.bundler;
 
 import java.util.List;
 
+import org.bladerunnerjs.core.plugin.servlet.ServletPlugin;
+import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.TagHandlerPlugin;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 

@@ -1,7 +1,6 @@
 package org.bladerunnerjs.core.plugin.command;
 
 import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 
@@ -13,11 +12,6 @@ public class VirtualProxyCommandPlugin extends VirtualProxyPlugin implements Com
 		this.commandPlugin = commandPlugin;
 	}
 	
-	@Override
-	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
-	}
-
 	@Override
 	public String getCommandName() {
 		return commandPlugin.getCommandName();

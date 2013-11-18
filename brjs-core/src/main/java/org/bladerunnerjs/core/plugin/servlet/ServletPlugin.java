@@ -1,4 +1,4 @@
-package org.bladerunnerjs.core.plugin.bundler;
+package org.bladerunnerjs.core.plugin.servlet;
 
 import java.io.OutputStream;
 

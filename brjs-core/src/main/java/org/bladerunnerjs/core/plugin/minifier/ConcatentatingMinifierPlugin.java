@@ -5,11 +5,18 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.BRJS;
+
 public class ConcatentatingMinifierPlugin implements MinifierPlugin {
 	private List<String> settingNames = new ArrayList<>();
 	
 	{
 		settingNames.add("combined");
+	}
+	
+	@Override
+	public void setBRJS(BRJS brjs) {
+		// do nothing
 	}
 	
 	@Override

@@ -5,14 +5,20 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.BRJS;
+
 public class ClosureMinifierPlugin implements MinifierPlugin {
 	private List<String> settingNames = new ArrayList<>();
 	
 	{
-		// TODO: start discovering these plug-ins automatically
 		settingNames.add("closure-whitespace");
 		settingNames.add("closure-simple");
 		settingNames.add("closure-advanced");
+	}
+	
+	@Override
+	public void setBRJS(BRJS brjs) {
+		// TODO Auto-generated method stub
 	}
 	
 	@Override

@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.model.AssetFileAccessor;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.RequestParser;
@@ -20,11 +19,6 @@ public class VirtualProxyBundlerPlugin extends VirtualProxyPlugin implements Bun
 	public VirtualProxyBundlerPlugin(BundlerPlugin bundlerPlugin) {
 		super(bundlerPlugin);
 		this.bundlerPlugin = bundlerPlugin;
-	}
-	
-	@Override
-	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
 	}
 	
 	@Override

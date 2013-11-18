@@ -2,10 +2,10 @@ package org.bladerunnerjs.core.plugin;
 
 import org.bladerunnerjs.model.BRJS;
 
-public class VirtualProxyPlugin {
+public class VirtualProxyPlugin implements Plugin {
 	private VirtualProxyState proxyState = VirtualProxyState.Uninitialized;
 	private Plugin plugin;
-	protected BRJS brjs;
+	private BRJS brjs;
 	
 	public VirtualProxyPlugin(Plugin plugin) {
 		this.plugin = plugin;
@@ -20,5 +20,10 @@ public class VirtualProxyPlugin {
 		else if(proxyState == VirtualProxyState.Initlializing) {
 			throw new CircularPluginDependencyException(plugin.getClass());
 		}
+	}
+	
+	@Override
+	public void setBRJS(BRJS brjs) {
+		this.brjs = brjs;
 	}
 }
