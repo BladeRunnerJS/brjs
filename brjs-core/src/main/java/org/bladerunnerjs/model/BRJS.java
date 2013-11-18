@@ -42,8 +42,8 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public class Messages {
 		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "performing node discovery";
-		public static final String CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG = "creating model observer plugins";
-		public static final String CREATING_COMMAND_PLUGINS_LOG_MSG = "creating command plugins";
+		public static final String CREATING_PLUGINS_LOG_MSG = "creating plugins";
+		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "making plugins available via model";
 	}
 	
 	private final NodeMap<App> apps = App.createAppNodeSet();
@@ -76,15 +76,13 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
-		// TODO: change the logging now that all plug-ins will be partially created at this point
-		logger.info(Messages.CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG);
+		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
 		pluginLocator.createPlugins(this);
 		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 		discoverAllChildren();
 		
-		// TODO: change this log message to be one about making plugins accessible from the model
-		logger.info(Messages.CREATING_COMMAND_PLUGINS_LOG_MSG);
+		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
 		bundlerPlugins = new HashMap<String,BundlerPlugin>();
