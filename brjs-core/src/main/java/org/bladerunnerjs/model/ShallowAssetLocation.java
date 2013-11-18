@@ -88,7 +88,7 @@ public class ShallowAssetLocation implements AssetLocation {
     	while (srcDir != null)
     	{
     		resourcesList.add(createResource(srcDir));
-    		if (srcDir.equals(assetContainer.file("src")))	//TODO: dont use 'src' here - why isnt there a src() method
+    		if (srcDir.equals(assetContainer.src().dir()))
     		{
     			break;
     		}

@@ -1,18 +1,12 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
@@ -30,16 +24,14 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
 	private String name;
 	private JsLibConf libConf;
-	private final AssetContainerResources assetContainerResources;
-	
-	final Map<File, AssetLocation> assetLocations = new HashMap<>();
+	private final AssetContainerLocations assetContainerLocations;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		this.name = name;
 		init(rootNode, parent, dir);
 		
-		assetContainerResources = new AssetContainerResources(this, src().dir(), resources().dir());
+		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)
@@ -166,42 +158,12 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	
 	@Override
 	public List<AssetLocation> getAllAssetLocations() {
-		List<AssetLocation> allAssetLocations = new ArrayList<AssetLocation>();
-		allAssetLocations.add( getAssetLocation(resources().dir(), false) );
-		
-		File srcDir = src().dir();
-		if (srcDir.isDirectory())
-		{
-    		Iterator<File> fileIterator = FileUtils.iterateFilesAndDirs(srcDir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-    		while (fileIterator.hasNext())
-    		{
-    			File dir = fileIterator.next();
-    			if (!dir.equals(dir()))
-    			{
-    				allAssetLocations.add( getAssetLocation(dir) );
-    			}
-    		}
-		}
-		return allAssetLocations;
+		return assetContainerLocations.getAllAssetLocations();
 	}
 	
 	@Override
 	public AssetLocation getAssetLocation(File dir) {
-		return getAssetLocation(dir, true);
-	}
-	
-	
-	
-	
-	public AssetLocation getAssetLocation(File dir, boolean createShallowAssetLocation) 
-	{
-		AssetLocation assetLocation = assetLocations.get(dir);
-		if (assetLocation == null) {
-			assetLocation = (createShallowAssetLocation) ? new ShallowAssetLocation(this, dir) : new DeepAssetLocation(this, dir);
-			assetLocations.put(dir, assetLocation);
-		}
-		return assetLocation;
-		
+		return assetContainerLocations.getAssetLocation(dir);
 	}
 	
 }
