@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.utility.BundleSetBuilder;
 import com.google.common.base.Joiner;
 
 public class BundleSetCreator {
-	// TODO: these messages need to be covered off in a spec test (a single test would be perfect)
+
 	public class Messages {
 		public static final String BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG = "%s '%s' has no seed files.";
 		public static final String BUNDLABLE_NODE_SEED_FILES_MSG = "%s '%s' contains seed files %s.";
