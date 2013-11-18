@@ -22,7 +22,6 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		return commanderChainer;
 	}
 
-	//TODO: returns the bundle set. 
 	public BundleInfoCommander getBundleInfo() throws Exception {
 		
 		return new BundleInfoCommander((aspect.getBundleSet()));

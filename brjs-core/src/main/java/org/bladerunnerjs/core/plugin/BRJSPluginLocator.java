@@ -15,7 +15,6 @@ import org.bladerunnerjs.core.plugin.taghandler.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 
 
-
 public class BRJSPluginLocator implements PluginLocator
 {
 	private List<ModelObserverPlugin> observerPlugins;

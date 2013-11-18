@@ -27,6 +27,8 @@ import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
+import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
@@ -69,25 +71,28 @@ public class TestRunner {
 //	private File resultDir; //TODO:uncomment
 	private boolean verbose;
 	private boolean generateReports;
+	private boolean noBrowserFlag;
 	private long execStartTime;
 	private long execEndTime;
+	private TestRunnerConfiguration config;
 	private List<TestRunResult> testResultList = new ArrayList<TestRunResult>();
 	
 	static boolean disableLogging = false;
 	
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames) throws FileNotFoundException, YamlException, IOException {
-		this(configFile, resultDir, browserNames, false);
+	public TestRunner(File configFile, File resultDir, List<String> browserNames) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
+		this(configFile, resultDir, browserNames, false, false);
 	}
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean generateReports) throws FileNotFoundException, YamlException, IOException {
+	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean noBrowser, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
 		verbose = determineIfVerbose();
-		TestRunnerConfiguration config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
+		config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
 		
 		this.jsTestDriverJar = config.getJsTestDriverJarFile();
 		this.portNumber = config.getPortNumber();
-		this.browsers = config.getBrowsers();
+		this.browsers = noBrowser == true ? null : config.getBrowsers();
 //		this.resultDir = resultDir;
+		this.noBrowserFlag = noBrowser;
 		this.generateReports = generateReports;
 		addShutDownHook();
 	}
@@ -265,7 +270,10 @@ public class TestRunner {
 		}
 		else {
 			startServerProcess();
-			startBrowserProcesses();
+			if(this.noBrowserFlag == false)
+			{
+				startBrowserProcesses();
+			}
 			serverStarted = true;
 		}
 		
@@ -408,9 +416,18 @@ public class TestRunner {
 		for(String browser : browsers) {
 			String[] args = CmdCreator.cmd("%s http://localhost:%s/capture?strict", browser, portNumber);
 			logger.debug("Running command: " + CmdCreator.printCmd(args));
-			Process process = runTime.exec(args);
-			childProcesses.add(process);
-			childLoggers.add(new ProcessLogger(brjs, process, "browser #" + browserNo++));
+			try 
+			{
+				Process process = runTime.exec(args);
+				childProcesses.add(process);
+				childLoggers.add(new ProcessLogger(brjs, process, "browser #" + browserNo++));	
+			}
+			catch (IOException e)
+			{
+				String browserString = browser == null ? "" : "'" + browser + "' "; 
+				throw new BrowserNotFoundException(browserString, config.getRelativeDir().getPath());
+			}
+			
 		}
 		waitForServer(browsers.size());
 	}

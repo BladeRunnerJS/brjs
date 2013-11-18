@@ -1,11 +1,10 @@
-define("br/DemoEventHub", /** @exports br/DemoEventHub */ function(require, module, exports) {
+define("br/DemoEventHub", /** @exports br/DemoEventHub */ function(require, exports, module) {
 	"use strict";
 	
 	var br = require( 'br' );
 	var ServiceRegistry = require( './ServiceRegistry' );
 	
-	// TODO: work out why 'Emitter' should be used here rather than 'emitter'
-	var Emitter = require( 'Emitter' );
+	var Emitter = require( 'emitr' );
 	
 	var DemoEventHub = function() {
 		this.channels = {};

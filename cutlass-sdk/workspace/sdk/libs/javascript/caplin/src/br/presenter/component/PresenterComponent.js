@@ -175,6 +175,25 @@ br.thirdparty("caplin-br");
 		}
 	};
 
+	PresenterComponent.deserialize = function(sXml) {
+		var oPresenterNode = br.util.XmlParser.parse( sXml );
+		var sPresenterNodeName = oPresenterNode.nodeName;
+		
+		if( sPresenterNodeName !== 'presenter' && sPresenterNodeName !== "br.presenter-component" ) {
+			var sErrorMsg = "Nodename for Presenter Configuration XML must be either 'presenter' or 'br.presenter-component', but was:" + sPresenterNodeName;
+			
+			throw new Errors.InvalidParametersError(sErrorMsg);
+		}
+		
+		var sTemplateId = oPresenterNode.getAttribute("templateId");
+		var sPresentationModel = oPresenterNode.getAttribute("presentationModel");
+		
+		var oPresenterComponent = new br.presenter.component.PresenterComponent(sTemplateId, sPresentationModel);
+		oPresenterComponent.deserialize(sXml);
+		
+		return oPresenterComponent;
+	};
+	
 	/**
 	 * When invoked, the onOpen component life cycle event is propagated to the 
 	 * <code>PresentationModel</code>.

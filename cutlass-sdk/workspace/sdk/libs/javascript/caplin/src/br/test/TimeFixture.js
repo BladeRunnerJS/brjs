@@ -44,7 +44,7 @@ br.test.TimeFixture = function(oTimeUtility)
 	this.m_oTimeUtility = oTimeUtility;
 };
 
-br.provide(br.test.TimeFixture, br.test.Fixture);
+br.inherit(br.test.TimeFixture, br.test.Fixture);
 
 br.test.TimeFixture.prototype.canHandleExactMatch = function()
 {

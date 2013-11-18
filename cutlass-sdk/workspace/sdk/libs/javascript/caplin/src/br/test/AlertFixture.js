@@ -8,7 +8,7 @@ br.test.AlertFixture = function()
 	
 };
 
-br.provide(br.test.AlertFixture, br.test.Fixture);
+br.inherit(br.test.AlertFixture, br.test.Fixture);
 
 br.test.AlertFixture.prototype.setUp = function()
 {

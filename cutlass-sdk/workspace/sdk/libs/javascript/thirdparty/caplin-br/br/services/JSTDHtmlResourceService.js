@@ -1,4 +1,4 @@
-define("br/services/JSTDHtmlResourceService", function(require, module, exports) {
+define("br/services/JSTDHtmlResourceService", function(require, exports, module) {
 	"use strict";
 	
 	var BRHtmlResourceService = require('./BRHtmlResourceService'); 

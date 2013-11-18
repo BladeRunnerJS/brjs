@@ -1,11 +1,20 @@
-@appns.@bladeset.@blade.ExamplePresentationModel = function()
-{
-	this.message = new br.presenter.property.Property("Hello World!" );	
-};
+caplin.thirdparty( 'caplin-br' );
 
-br.extend(@appns.@bladeset.@blade.ExamplePresentationModel, br.presenter.PresentationModel);
+( function() {
 
-@appns.@bladeset.@blade.ExamplePresentationModel.prototype.buttonClicked = function()
-{
-	alert(this.message.getValue());
-}
+  var br = require( 'br' );
+
+  function ExamplePresentationModel() {
+    var Property = br.presenter.property.Property;
+    
+    this.message = new Property( 'Hello World!' );
+  };
+  br.extend( ExamplePresentationModel, br.presenter.PresentationModel );
+
+  ExamplePresentationModel.prototype.buttonClicked = function() {
+    console.log( 'button clicked' );
+  }
+
+  @appns.@bladeset.@blade.ExamplePresentationModel = ExamplePresentationModel;
+
+} )();

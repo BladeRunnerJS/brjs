@@ -1,4 +1,4 @@
-define("br/ServiceRegistry", /** @exports br/ServiceRegistry */ function(require, module, exports) {
+define("br/ServiceRegistry", /** @exports br/ServiceRegistry */ function(require, exports, module) {
 	"use strict";
 
 	/**

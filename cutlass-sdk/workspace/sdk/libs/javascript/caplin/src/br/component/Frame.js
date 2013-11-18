@@ -1,6 +1,6 @@
 (function() {
 
-	var Emitter = require('Emitter');
+	var Emitter = require('emitr');
 	var Errors = require('br/Errors');
 	
 	/**

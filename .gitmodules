@@ -1,9 +1,9 @@
 [submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/fell"]
 	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/fell
-	url = git@github.com:BladeRunnerJS/fell.git
-[submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/topiary"]
-	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/topiary
-	url = git@github.com:BladeRunnerJS/topiary.git
-[submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/emitter"]
-	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/emitter
-	url = git@github.com:BladeRunnerJS/emitter.git
+	url = https://github.com/BladeRunnerJS/fell.git
+[submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/emitr"]
+	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/emitr
+	url = https://github.com/BladeRunnerJS/emitr.git
+[submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/topiarist"]
+	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/topiarist
+	url = https://github.com/BladeRunnerJS/topiarist.git

@@ -38,8 +38,8 @@ topnav a{
 	padding: 0 0 0 0px;
 	margin: 0px 20px 0px 0px;
 	line-height: 40px;
-	
-	
+
+
 }
 #topnav li a{
 	border-right: solid;
@@ -59,7 +59,7 @@ topnav a{
 
 #topnav li a.newsite{
 	background: url("img/newsite.png") no-repeat right top;
-	background-position: 100% 50%;
+	background-position: 96% 50%;
 	height:12px;
 	padding-right: 20px;
 }

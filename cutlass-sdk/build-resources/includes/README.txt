@@ -7,7 +7,7 @@ Getting Started
 
  -  Open a terminal console in the sdk directory.
 
- -  In Windows run the command 'brjs start', in Unix run the command './brjs start'. 
+ -  In Windows run the command 'brjs serve', in Unix run the command './brjs serve'.
 
  -  Then open a web browser and point it to the URL http://localhost:7070/ to open the BladeRunner
     Dashboard.

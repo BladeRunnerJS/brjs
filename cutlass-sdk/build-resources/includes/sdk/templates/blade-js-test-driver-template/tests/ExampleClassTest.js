@@ -1,6 +1,9 @@
-ExampleClassTest = TestCase("ExampleClassTest");
+;( function() {
 
-ExampleClassTest.prototype.testSomething = function()
-{
-	assertEquals(1, 1);
-};
+  ExampleClassTest = TestCase("ExampleClassTest");
+
+  ExampleClassTest.prototype.testSomething = function() {
+  	assertEquals(1, 1);
+  };
+
+} )();

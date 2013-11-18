@@ -1,4 +1,4 @@
-define("br/i18n/LocalisedNumber", function (require, module, exports) {
+define("br/i18n/LocalisedNumber", function (require, exports, module) {
 	"use strict";
 
 	var Errors = require('br/Errors');

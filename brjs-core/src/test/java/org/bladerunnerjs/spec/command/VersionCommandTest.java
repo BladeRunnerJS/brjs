@@ -23,7 +23,7 @@ public class VersionCommandTest extends SpecTest {
 	public void versionNumberAndBuildDateIsIncludedInTheMessage() throws Exception {
 		given(brjs).containsFileWithContents("sdk/version.txt", "{'Version': 'the-version', 'BuildDate': 'the-build-date'}");
 		when(brjs).runCommand("version");
-		then(output).containsLine("BladeRunner version: the-version, built: the-build-date");
+		then(output).containsLine("BladeRunnerJS version: the-version, built: the-build-date");
 	}
 	
 	@Test

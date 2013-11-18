@@ -12,7 +12,7 @@ br.presenter.node.FieldValuePropertyListener = function(oField)
 	// TODO: we need to invoke removeListener() in our destructor
 };
 
-br.provide(br.presenter.node.FieldValuePropertyListener, br.presenter.property.PropertyListener);
+br.inherit(br.presenter.node.FieldValuePropertyListener, br.presenter.property.PropertyListener);
 
 
 // *********************** PropertyListener Interface ***********************

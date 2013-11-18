@@ -17,10 +17,13 @@ import org.bladerunnerjs.core.log.LoggerFactory;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
 import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
+import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.engine.Node;
@@ -38,12 +41,13 @@ import org.bladerunnerjs.model.utility.VersionInfo;
 
 public class BRJS extends AbstractBRJSRootNode
 {
-	public static final String PRODUCT_NAME = "BladeRunner";
+	public static final String PRODUCT_NAME = "BladeRunnerJS";
 	
 	public class Messages {
 		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "performing node discovery";
 		public static final String CREATING_PLUGINS_LOG_MSG = "creating plugins";
 		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "making plugins available via model";
+		public static final String PLUGIN_FOUND_MSG = "found plugin %s";
 	}
 	
 	private final NodeMap<App> apps = App.createAppNodeSet();
@@ -58,7 +62,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> userJars = new NodeItem<>(DirNode.class, "conf/java");
 	private final NodeItem<DirNode> logs = new NodeItem<>(DirNode.class, "sdk/log");
 	private final NodeItem<DirNode> apiDocs = new NodeItem<>(DirNode.class, "sdk/docs/jsdoc");
-	private final NodeItem<DirNode> releaseNotes = new NodeItem<>(DirNode.class, "sdk/docs/release-notes");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(DirNode.class, "sdk/test-results");
 	
 	private AssetLocationUtility assetLocator = new AssetLocationUtility();
@@ -80,19 +83,26 @@ public class BRJS extends AbstractBRJSRootNode
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
 		pluginLocator.createPlugins(this);
 		
+        List<ModelObserverPlugin> modelObservers = pluginLocator.getModelObservers();
+        listFoundPlugins(modelObservers);
+		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 		discoverAllChildren();
 		
 		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		this.pluginLocator = pluginLocator;
-		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
+		List<CommandPlugin> foundCommandPlugins = pluginLocator.getCommandPlugins();
+		listFoundPlugins(foundCommandPlugins);
+		commandList = new CommandList(this, foundCommandPlugins);
 		
 		bundlerPlugins = new HashMap<String,BundlerPlugin>();
-		for(BundlerPlugin bundlerPlugin :  pluginLocator.getBundlerPlugins()) {
+		List<BundlerPlugin> foundBundlerPlugins = pluginLocator.getBundlerPlugins();
+		listFoundPlugins(foundBundlerPlugins);
+		for(BundlerPlugin bundlerPlugin :  foundBundlerPlugins) {
 			bundlerPlugins.put(bundlerPlugin.getTagName(), bundlerPlugin);
 		}
 	}
-	
+
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
 		this(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
@@ -236,11 +246,6 @@ public class BRJS extends AbstractBRJSRootNode
 		return item(apiDocs);
 	}
 	
-	public DirNode releaseNotes()
-	{
-		return item(releaseNotes);
-	}
-	
 	public VersionInfo versionInfo()
 	{
 		return new VersionInfo(this);
@@ -352,4 +357,12 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	
+	
+	private void listFoundPlugins(List<? extends Plugin> plugins)
+    {
+        for(Plugin p : plugins)
+        {
+                logger.debug(Messages.PLUGIN_FOUND_MSG, p.getClass().getCanonicalName());
+        }
+    }
 }
