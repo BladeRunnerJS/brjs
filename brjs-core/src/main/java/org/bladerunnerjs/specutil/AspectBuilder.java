@@ -27,4 +27,10 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		
 		return builderChainer;
 	}
+	
+	public BuilderChainer hasAlias(String aliasName, String classRef) {
+		// TODO Auto-generated method stub
+		
+		return builderChainer;
+	}
 }
