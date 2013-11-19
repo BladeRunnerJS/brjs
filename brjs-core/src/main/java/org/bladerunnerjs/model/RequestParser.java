@@ -45,6 +45,11 @@ public class RequestParser
 		return requestForm;
 	}
 	
+	public ParsedRequest parse(BladerunnerUri request) throws MalformedRequestException
+	{
+		return parse(request.getUri());
+	}
+	
 	public ParsedRequest parse(String request) throws MalformedRequestException
 	{
 		int lastMatchPos = 0;

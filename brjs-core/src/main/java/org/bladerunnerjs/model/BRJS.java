@@ -23,6 +23,7 @@ import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ServletPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
@@ -342,7 +343,9 @@ public class BRJS extends AbstractBRJSRootNode
 		throw new RuntimeException("No minifier plugin for minifier setting '" + minifierSetting + "'");
 	}	
 	
-	
+	public List<ServletPlugin> servletPlugins() {
+		return pluginLocator.getServlets();
+	}
 	
 	
 	
