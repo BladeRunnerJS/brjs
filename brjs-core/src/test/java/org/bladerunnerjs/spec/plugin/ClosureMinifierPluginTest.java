@@ -4,11 +4,10 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
-public class ClosureMinifierTest extends SpecTest
+public class ClosureMinifierPluginTest extends SpecTest
 {
 	private App app;
 	private Aspect aspect;
