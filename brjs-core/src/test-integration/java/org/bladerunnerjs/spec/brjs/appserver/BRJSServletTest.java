@@ -43,7 +43,7 @@ public class BRJSServletTest extends SpecTest
 	{
 		given(app1).hasBeenCreated();
 		when(appServer).started();
-		then(appServer).requestForUrlReturns("/app/brjs/", "BRJS Servlet");
+		then(appServer).requestForUrlReturns("/app/brjs/version/", brjs.versionInfo().getVersionNumber());
 	}
 	
 }
