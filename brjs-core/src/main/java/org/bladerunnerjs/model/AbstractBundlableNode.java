@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
@@ -73,6 +75,12 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public List<SourceFile> getAllSourceFiles() {
 		// TODO: implement this method
 		return new ArrayList<>();
+	}
+	
+	@Override
+	public AliasDefinition getAlias(AliasName aliasName) {
+		// TODO: implement this method
+		return null;
 	}
 	
 	@Override

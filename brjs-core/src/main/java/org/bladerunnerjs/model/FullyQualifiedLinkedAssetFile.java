@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
@@ -24,7 +25,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private App app;
 	private File assetFile;
 	private List<SourceFile> dependentSourceFiles;
-	private List<AliasDefinition> aliases;
+	private List<AliasName> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private AssetLocation assetLocation;
 	
@@ -51,7 +52,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	}
 
 	@Override
-	public List<AliasDefinition> getAliases() throws ModelOperationException {
+	public List<AliasName> getAliasNames() throws ModelOperationException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
@@ -79,7 +80,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 						dependentSourceFiles.add(((ClassSourceFile) match).getSourceFile());
 					}
 					else {
-						aliases.add((AliasDefinition) match);
+						aliases.add((AliasName) match);
 					}
 				}
 			}
@@ -105,7 +106,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 				
 				for(AssetLocation assetLocation : assetContainer.getAllAssetLocations()) {
 					for(AliasDefinition aliasDefinition : assetLocation.aliasDefinitionsFile().aliasDefinitions()) {
-						trie.add(aliasDefinition.getName(), aliasDefinition);
+						trie.add(aliasDefinition.getName(), new AliasName(aliasDefinition.getName()));
 					}
 				}
 			}

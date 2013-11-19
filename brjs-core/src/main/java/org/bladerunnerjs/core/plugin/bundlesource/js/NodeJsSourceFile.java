@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
@@ -25,7 +25,7 @@ public class NodeJsSourceFile implements SourceFile {
 	private List<String> requirePaths;
 	private List<String> aliasNames;
 	private AssetLocation assetLocation;
-	private List<AliasDefinition> aliases;
+	private List<AliasName> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private String requirePath;
 	
@@ -65,7 +65,7 @@ public class NodeJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<AliasDefinition> getAliases() throws ModelOperationException {
+	public List<AliasName> getAliasNames() throws ModelOperationException {
 		if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
