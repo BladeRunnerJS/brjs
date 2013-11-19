@@ -31,7 +31,7 @@ public class ClosureMinifierPlugin implements MinifierPlugin {
 	
 	public static final String CLOSURE_WHITESPACE = "closure-whitespace";
 	public static final String CLOSURE_SIMPLE = "closure-simple";
-	public static final String CLOSURE_ADVANCED = "closure-CLOSURE_WHITESPACE";
+	public static final String CLOSURE_ADVANCED = "closure-advanced";
 	
 	private Logger logger;
 	

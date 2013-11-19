@@ -68,7 +68,7 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		return builderChainer;
 	}
 	
-	public BuilderChainer classHasContent(String sourceClass, String content) throws Exception
+	public BuilderChainer classFileHasContent(String sourceClass, String content) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
 		FileUtils.write(sourceFile, content);

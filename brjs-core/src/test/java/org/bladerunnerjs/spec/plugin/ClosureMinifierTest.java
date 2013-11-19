@@ -43,30 +43,28 @@ public class ClosureMinifierTest extends SpecTest
 	{
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(aspect).classHasContent("novox.Class1", unminifiedContent);
+			.and(aspect).classFileHasContent("novox.Class1", unminifiedContent);
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/js.bundle", response);
 		then(response).containsText(minifyWhitespaceContent);
 	}
 	
-	@Ignore
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureSimpleOption() throws Exception
 	{
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(aspect).classHasContent("novox.Class1", unminifiedContent);
-		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/js.bundle", response);
+			.and(aspect).classFileHasContent("novox.Class1", unminifiedContent);
+		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-simple/js.bundle", response);
 		then(response).containsText(minifySimpleContent);
 	}
 	
-	@Ignore
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureAdvancedOption() throws Exception
 	{
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(aspect).classHasContent("novox.Class1", unminifiedContent);
-		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/js.bundle", response);
+			.and(aspect).classFileHasContent("novox.Class1", unminifiedContent);
+		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-advanced/js.bundle", response);
 		then(response).containsText(minifyAdvancedContent);
 	}
 }
