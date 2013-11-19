@@ -52,9 +52,7 @@ public class BRJSStartupTest extends SpecTest {
 	}
 	
 	@Test
-	public void pluginsThatHaveBeenFoundAreListed() {	
-		given(logging).echoEnabled();
-		
+	public void pluginsThatHaveBeenFoundAreListed() {			
 		given(logging).enabled()
 			.and(brjs).hasCommands(passingCommandPlugin)
 			.and(brjs).hasModelObservers(passingModelObserverPlugin);
