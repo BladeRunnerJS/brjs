@@ -3,7 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.model.file.AliasDefinitionsFile;
+import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
 
 /**
  * Represents the parent directory of any AssetFile, so in the example src/a/b/c/someFile.xml it would represent the src/a/b/c directory.

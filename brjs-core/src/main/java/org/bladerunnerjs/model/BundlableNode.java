@@ -2,10 +2,10 @@ package org.bladerunnerjs.model;
 
 import java.util.List;
 
+import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.file.AliasesFile;
 
 
 public interface BundlableNode extends Node, AssetContainer {

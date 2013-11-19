@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model.file;
+package org.bladerunnerjs.model.aliasing;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.model.file.AliasDefinitionsFile;
+import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
 
 public class ShallowAssetLocation implements AssetLocation {
 	
