@@ -108,9 +108,12 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 			else if(request.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
 					for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
-						writer.write("// " + sourceFile.getRequirePath() + "\n");
-						IOUtils.copy(sourceFile.getReader(), writer);
-						writer.write("\n\n");
+						if (sourceFile instanceof NodeJsSourceFile)
+						{
+							writer.write("// " + sourceFile.getRequirePath() + "\n");
+    						IOUtils.copy(sourceFile.getReader(), writer);
+    						writer.write("\n\n");
+						}
 					}
 				}
 			}

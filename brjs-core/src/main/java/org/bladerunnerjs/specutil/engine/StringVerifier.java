@@ -21,4 +21,8 @@ public class StringVerifier {
 			containsText(className + " = function()");
 		}
 	}
+
+	public void textEquals(String content) {
+		assertEquals(content, string);
+	}
 }
