@@ -47,7 +47,7 @@ public class RequestParser
 	
 	public ParsedRequest parse(BladerunnerUri request) throws MalformedRequestException
 	{
-		return parse(request.getUri());
+		return parse(request.getInternalPath());
 	}
 	
 	public ParsedRequest parse(String request) throws MalformedRequestException

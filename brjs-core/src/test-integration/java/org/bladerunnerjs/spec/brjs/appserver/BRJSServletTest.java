@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -52,13 +51,12 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/brjs/version/", brjs.versionInfo().getVersionNumber());
 	}
 	
-	@Ignore
 	@Test
 	public void servletPluginsCanHandleRequests() throws Exception
 	{
 		given(app1).hasBeenCreated();
 		when(appServer).started();
-		then(appServer).requestForUrlReturns("/app/brjs/mock", MockServletPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/brjs/mock-servlet", MockServletPlugin.class.getCanonicalName());
 	}
 	
 }

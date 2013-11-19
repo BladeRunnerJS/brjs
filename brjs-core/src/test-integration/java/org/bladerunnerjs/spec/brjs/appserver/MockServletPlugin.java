@@ -19,10 +19,11 @@ public class MockServletPlugin implements ServletPlugin
 	private RequestParser requestParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	
+	//TODO: can we 'auto add' the brjs or get rid of the need for it completely
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
 		requestParserBuilder
-			.accepts("mock/").as("request");
+			.accepts("/brjs/mock-servlet").as("request");
 		
 		requestParser = requestParserBuilder.build();
 		prodRequestPaths.add(requestParser.createRequest("request"));
@@ -48,7 +49,9 @@ public class MockServletPlugin implements ServletPlugin
 	@Override
 	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
-		new PrintWriter(os).println(this.getClass().getCanonicalName());
+		PrintWriter out = new PrintWriter(os);
+		out.print(this.getClass().getCanonicalName());
+		out.flush();
 	}
 
 }
