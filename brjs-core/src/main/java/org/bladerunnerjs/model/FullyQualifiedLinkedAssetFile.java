@@ -92,30 +92,29 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		Trie<Object> trie = new Trie<Object>();
 		
 		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
-			for(SourceFile sourceFile : assetContainer.sourceFiles()) {
-				ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
-				
-				try
-				{
-					if (!sourceFile.getUnderlyingFile().equals(assetFile))
-					{
-        				trie.add(sourceFile.getRequirePath(), sourceFile);
-        				trie.add(classSourceFile.getClassName(), classSourceFile);
-        				
-        				for(AliasDefinition aliasDefinition : sourceFile.getAliases()) {
-        					trie.add(aliasDefinition.getName(), aliasDefinition);
-        				}
+			try {
+				for(SourceFile sourceFile : assetContainer.sourceFiles()) {
+					ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
+					
+					if (!sourceFile.getUnderlyingFile().equals(assetFile)) {
+	    				trie.add(sourceFile.getRequirePath(), sourceFile);
+	    				trie.add(classSourceFile.getClassName(), classSourceFile);
 					}
 				}
-				catch (TrieKeyAlreadyExistsException ex)
-				{
-					throw new ModelOperationException(ex);
-				}
-				catch (EmptyTrieKeyException ex)
-				{
-					throw new ModelOperationException(ex);					
+				
+				for(AssetLocation assetLocation : assetContainer.getAllAssetLocations()) {
+					for(AliasDefinition aliasDefinition : assetLocation.aliasDefinitionsFile().aliasDefinitions()) {
+						trie.add(aliasDefinition.getName(), aliasDefinition);
+					}
 				}
 			}
+			catch (TrieKeyAlreadyExistsException ex) {
+				throw new ModelOperationException(ex);
+			}
+			catch (EmptyTrieKeyException ex) {
+				throw new ModelOperationException(ex);					
+			}
+			
 		}
 		
 		return trie;

@@ -52,7 +52,7 @@ public class AspectBundlingTest extends SpecTest {
 	@Test
 	public void weBundleAClassIfItsAliasIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("novox.Class1")
-			.and(aspect).hasAlias("the-alias", "novox/Class1")
+			.and(aspect).hasAlias("the-alias", "novox.Class1")
 			.and(aspect).indexPageRefersTo("the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class1");

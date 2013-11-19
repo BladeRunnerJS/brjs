@@ -17,6 +17,7 @@ public class ShallowAssetLocation implements AssetLocation {
 	private File dir;
 	
 	private final Map<String, ShallowAssetLocation> resources = new HashMap<>();
+	private AliasDefinitionsFile aliasDefinitionsFile;
 	
 	
 	public ShallowAssetLocation(AssetContainer assetContainer, File dir) {
@@ -31,9 +32,12 @@ public class ShallowAssetLocation implements AssetLocation {
 	}
 	
 	@Override
-	public AliasDefinitionsFile aliasDefinitions() {		
-		// TODO: implement this method
-		return null;
+	public AliasDefinitionsFile aliasDefinitionsFile() {		
+		if(aliasDefinitionsFile == null) {
+			aliasDefinitionsFile = new AliasDefinitionsFile(dir(), "resources/aliasDefinitions.xml");
+		}
+		
+		return aliasDefinitionsFile;
 	}
 		
 	@Override

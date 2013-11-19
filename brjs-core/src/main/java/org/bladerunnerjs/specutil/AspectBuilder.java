@@ -28,8 +28,11 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasAlias(String aliasName, String classRef) {
-		// TODO Auto-generated method stub
+	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
+		FileUtils.write(aspect.aliases(),
+			"<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'>" +
+			"	<alias name='" + aliasName + "' defaultClass='" + classRef + "'/>" +
+			"</aliasDefinitions>");
 		
 		return builderChainer;
 	}

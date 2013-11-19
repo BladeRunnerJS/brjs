@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.file.AliasDefinitionsFile;
  */
 public interface AssetLocation {
 	File dir();
-	AliasDefinitionsFile aliasDefinitions();
+	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAssetFile> seedResources();
 	List<LinkedAssetFile> seedResources(String fileExtension);
 	List<AssetFile> bundleResources(String fileExtension);
