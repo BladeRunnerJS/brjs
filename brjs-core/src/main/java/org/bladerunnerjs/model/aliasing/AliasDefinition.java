@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.model.aliasing;
 
 public class AliasDefinition
 {

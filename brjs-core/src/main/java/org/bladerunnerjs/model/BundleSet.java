@@ -3,6 +3,8 @@ package org.bladerunnerjs.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
+
 public class BundleSet {
 	private final List<SourceFile> sourceFiles;
 	private final List<AliasDefinition> activeAliases;

@@ -70,6 +70,12 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
+	public List<SourceFile> getAllSourceFiles() {
+		// TODO: implement this method
+		return new ArrayList<>();
+	}
+	
+	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
 		return BundleSetCreator.createBundleSet(this);
 	}

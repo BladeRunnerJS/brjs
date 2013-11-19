@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.util.List;
 
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 /**

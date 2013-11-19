@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;

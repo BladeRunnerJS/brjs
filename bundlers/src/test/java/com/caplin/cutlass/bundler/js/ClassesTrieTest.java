@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
 
-import org.bladerunnerjs.model.AliasDefinition;
 import com.caplin.cutlass.bundler.js.aliasing.AliasInformation;
 import com.caplin.cutlass.bundler.js.aliasing.ScenarioAliases;
 

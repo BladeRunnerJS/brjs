@@ -3,8 +3,7 @@ package com.caplin.cutlass.bundler.js.aliasing;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-
-import org.bladerunnerjs.model.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
 
 public class AliasInformationTest {
 

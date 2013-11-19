@@ -33,6 +33,12 @@ dependencies {
 	compile dependency('jta')
 	compile dependency('closure-compiler')
 	
+	/* woodstox deps */
+	compile dependency('woodstox-core-asl')
+	compile dependency('stax2-api')
+	compile dependency('msv-core')
+	compile dependency('trang')
+	
 	compileOnly dependency('servlet-api')
 	compileOnly dependency('junit')
 	compileOnly dependency('mockito-core')
