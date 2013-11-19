@@ -13,6 +13,7 @@ import org.eclipse.jetty.security.authentication.FormAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.*;
@@ -39,6 +40,9 @@ public class ApplicationServerUtils
 	{
 		app.root().logger(LoggerType.APP_SERVER, ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
+		
+		appContext.addServlet( new ServletHolder(new BRJSServlet(app)), BRJSServlet.SERVLET_PATH );
+		
 		contexts.addHandler(appContext);
 		appContext.start();
 		ApplicationServerUtils.getDeployFileForApp(app).delete();

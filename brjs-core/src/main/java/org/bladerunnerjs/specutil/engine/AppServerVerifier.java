@@ -50,4 +50,12 @@ public class AppServerVerifier
 		return verifierChainer;
 	}
 
+	public VerifierChainer requestForUrlReturns(String urlPath, String response) throws ClientProtocolException, IOException
+	{
+		String url = String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, specTest.appServerPort, urlPath);
+		specTest.webappTester.whenRequestMadeTo(url,false).responseIs(response);
+		
+		return verifierChainer;		
+	}
+
 }

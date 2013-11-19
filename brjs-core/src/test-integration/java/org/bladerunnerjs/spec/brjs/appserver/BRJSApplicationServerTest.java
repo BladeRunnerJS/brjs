@@ -35,13 +35,13 @@ public class BRJSApplicationServerTest extends SpecTest
 	public void initTestObjects() throws Exception {
 		given(brjs).hasModelObservers(new AppDeploymentObserver());
 		given(brjs).hasBeenCreated();
-		appServer = brjs.applicationServer(appServerPort);
-		app1 = brjs.app("app1");
-		app2 = brjs.app("app2");
-		sysapp1 = brjs.systemApp("sysapp1");
-		sysapp2 = brjs.systemApp("sysapp2");
-		appJars = brjs.appJars();
-		appJars.create();
+    		appServer = brjs.applicationServer(appServerPort);
+    		app1 = brjs.app("app1");
+    		app2 = brjs.app("app2");
+    		sysapp1 = brjs.systemApp("sysapp1");
+    		sysapp2 = brjs.systemApp("sysapp2");
+    		appJars = brjs.appJars();
+    		appJars.create();
 		
 		secondBrjsProcess = createNonTestModel();
 	}
