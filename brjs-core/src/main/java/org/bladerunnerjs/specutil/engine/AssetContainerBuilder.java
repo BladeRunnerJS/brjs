@@ -1,6 +1,7 @@
 package org.bladerunnerjs.specutil.engine;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.AbstractAssetContainer;
@@ -66,6 +67,15 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		
 		return builderChainer;
 	}
+	
+	public BuilderChainer classHasContent(String sourceClass, String content) throws Exception
+	{
+		File sourceFile = getSourceFile(sourceClass);
+		FileUtils.write(sourceFile, content);
+		
+		return builderChainer;
+	}
+	
 
 	private File getSourceFile(String sourceClass) {
 		return node.src().file(sourceClass.replaceAll("\\.", "/") + ".js");

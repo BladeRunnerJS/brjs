@@ -31,6 +31,7 @@ dependencies {
 	compile dependency('jsap')
 	compile dependency('jetty-all-server')
 	compile dependency('jta')
+	compile dependency('closure-compiler')
 	
 	compileOnly dependency('servlet-api')
 	compileOnly dependency('junit')
