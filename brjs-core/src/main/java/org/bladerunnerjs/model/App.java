@@ -68,12 +68,12 @@ public class App extends AbstractBRJSNode implements NamedNode
 			assetContainer.add(aspect);
 		}
 		
-		assetContainer.addAll(getNonAspectAssetContainer());
+		assetContainer.addAll(getNonAspectAssetContainers());
 		
 		return assetContainer;
 	}
 	
-	public List<AssetContainer> getNonAspectAssetContainer() {
+	public List<AssetContainer> getNonAspectAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
 		for(JsLib jsLib : jsLibs()) {

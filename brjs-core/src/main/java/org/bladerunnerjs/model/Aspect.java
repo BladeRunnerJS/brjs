@@ -98,7 +98,7 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
 		assetContainers.add(this);
-		assetContainers.addAll(parent().getNonAspectAssetContainer());
+		assetContainers.addAll(parent().getNonAspectAssetContainers());
 		
 		return assetContainers;
 	}

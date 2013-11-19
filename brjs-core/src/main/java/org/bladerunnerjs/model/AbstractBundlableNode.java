@@ -37,7 +37,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public AliasesFile aliases() {
+	public AliasesFile aliasesFile() {
 		if(aliasesFile == null) {
 			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml");
 		}
@@ -77,6 +77,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		return new ArrayList<>();
 	}
 	
+	// TODO: should this query involve the scenario name?
 	@Override
 	public AliasDefinition getAlias(AliasName aliasName) {
 		// TODO: implement this method

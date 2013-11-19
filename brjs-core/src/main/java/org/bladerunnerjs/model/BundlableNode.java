@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 
 
 public interface BundlableNode extends Node, AssetContainer {
-	AliasesFile aliases();
+	AliasesFile aliasesFile();
 	SourceFile getSourceFile(String requirePath) throws RequirePathException;
 	List<LinkedAssetFile> seedFiles();
 	List<AssetContainer> getAssetContainers();

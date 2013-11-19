@@ -80,5 +80,4 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	{
 		return assetContainerLocations;
 	}
-	
 }

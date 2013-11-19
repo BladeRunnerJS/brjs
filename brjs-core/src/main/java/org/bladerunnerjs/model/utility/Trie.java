@@ -34,6 +34,10 @@ public class Trie<T>
 		node.setValue(value);
 	}
 	
+	public boolean containsKey(String key) {
+		return (get(key) == null) ? false : true;
+	}
+	
 	public Object get(String key)
 	{
 		TrieNode<T> node = root;
@@ -72,7 +76,6 @@ public class Trie<T>
 	{
 		charMatcher = matcher;
 	}
-
 	
 	private void processChar(List<T> matches, char nextChar, TrieMatcher matcher)
 	{
@@ -119,6 +122,4 @@ public class Trie<T>
 			previousNode = null;
 		}
 	}
-	
-	
 }

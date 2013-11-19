@@ -82,7 +82,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		return parentNode().parentNode().getClass().getSimpleName().toLowerCase() + "-" + name;
 	}
 	
-	public AliasesFile aliases()
+	public AliasesFile aliasesFile()
 	{
 		if(aliasesFile == null) {
 			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml");

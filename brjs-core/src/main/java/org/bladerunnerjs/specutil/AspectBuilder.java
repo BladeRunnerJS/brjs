@@ -29,7 +29,7 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 	}
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
-		FileUtils.write(aspect.aliases(),
+		FileUtils.write(aspect.aliasesFile(),
 			"<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'>" +
 			"	<alias name='" + aliasName + "' defaultClass='" + classRef + "'/>" +
 			"</aliasDefinitions>");

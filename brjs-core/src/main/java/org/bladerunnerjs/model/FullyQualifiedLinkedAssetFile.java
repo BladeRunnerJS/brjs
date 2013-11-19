@@ -95,6 +95,16 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		
 		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
 			try {
+				if(assetContainer instanceof BundlableNode) {
+					BundlableNode bundlableNode = (BundlableNode) assetContainer;
+					
+					for(AliasDefinition aliasDefinition : bundlableNode.aliasesFile().aliasDefinitions()) {
+						if(!trie.containsKey(aliasDefinition.getName())) {
+							trie.add(aliasDefinition.getName(), new AliasName(aliasDefinition.getName()));
+						}
+					}
+				}
+				
 				for(SourceFile sourceFile : assetContainer.sourceFiles()) {
 					ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
 					
