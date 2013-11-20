@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.plugin;
+package org.bladerunnerjs.spec.plugin.minifier;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;

@@ -25,4 +25,9 @@ public class StringVerifier {
 	public void textEquals(String content) {
 		assertEquals(content, string);
 	}
+	
+	public void containsRequests(StringBuffer page, String... requests) {
+		// TODO Auto-generated method stub
+		
+	}
 }
