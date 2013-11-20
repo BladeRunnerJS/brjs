@@ -214,5 +214,11 @@ public class WebappTester
 	private String contentBodyText(String comparisonTitle, Object comparisonValue, String contentBody) {
 		return comparisonTitle + ": " + comparisonValue + "\nContent Body: " + ((contentBody == null) ? "<ANYTHING>" : contentBody);
 	}
+
+	public void storeContentIn(StringBuffer responseContent)
+	{
+		responseContent.setLength(0);
+		responseContent.append(response);
+	}
 	
 }

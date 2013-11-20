@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AliasDefinitionsFile extends File {
-	
 	private static final long serialVersionUID = 822434477840572747L;
-
+	
 	public AliasDefinitionsFile(File parent, String child) {
 		super(parent, child);
 	}

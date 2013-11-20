@@ -26,4 +26,8 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		
 		return new BundleInfoCommander((aspect.getBundleSet()));
 	}
+	
+	public void pageLoadedInProd(StringBuffer page, String locale) {
+		// TODO Auto-generated method stub
+	}
 }

@@ -171,7 +171,7 @@ public class BRJSApplicationServerTest extends SpecTest
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
-		then(appServer).requestCanEventuallyBeMadeFor("/app1");
+		then(appServer).requestCanEventuallyBeMadeFor("/app1/default-aspect/index.html");
 	}
 	
 	@Test
@@ -182,7 +182,7 @@ public class BRJSApplicationServerTest extends SpecTest
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
 			.and(brjs.applicationServer(appServerPort)).started();
-		then(appServer).requestCanBeMadeFor("/app1");
+		then(appServer).requestCanBeMadeFor("/app1/default-aspect/index.html");
 	}
 	
 }

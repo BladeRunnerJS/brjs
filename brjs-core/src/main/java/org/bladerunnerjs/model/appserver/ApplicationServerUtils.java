@@ -2,6 +2,10 @@ package org.bladerunnerjs.model.appserver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServlet;
 
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.model.App;
@@ -24,30 +28,39 @@ public class ApplicationServerUtils
 		public static final String DEPLOYING_APP_MSG = "Deploying new app to app server '%s'"; 
 	}
 	
-	static void addAppContexts(BRJS brjs, ContextHandlerCollection contexts) throws Exception
+	static Map<App,WebAppContext> addAppContexts(BRJS brjs, ContextHandlerCollection contexts) throws Exception
 	{
+		Map<App,WebAppContext> contextMap = new HashMap<App,WebAppContext>(); 
 		for (App app : brjs.systemApps())
 		{
-			addAppContext(app, contexts);
+			contextMap.put(app, addAppContext(app, contexts) );
 		}
 		for (App app : brjs.apps())
 		{
-			addAppContext(app, contexts);
+			contextMap.put(app, addAppContext(app, contexts) );
 		}
+		return contextMap;
 	}
 	
-	static void addAppContext(App app, ContextHandlerCollection contexts) throws Exception
+	static WebAppContext addAppContext(App app, ContextHandlerCollection contexts) throws Exception
 	{
 		app.root().logger(LoggerType.APP_SERVER, ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
 		
-		appContext.addServlet( new ServletHolder(new BRJSServlet(app)), BRJSServlet.SERVLET_PATH );
+		addServletToApp(appContext, new BRJSServlet(app), "/*");
 		
 		contexts.addHandler(appContext);
 		appContext.start();
 		ApplicationServerUtils.getDeployFileForApp(app).delete();
+		
+		return appContext;
 	}
 	
+	public static void addServletToApp(WebAppContext appContext, HttpServlet servlet, String servletPath)
+	{
+		appContext.addServlet( new ServletHolder(servlet), servletPath );
+	}
+
 	static void addRootContext(ContextHandlerCollection contexts)
 	{
 		ContextHandler rootContext = new ContextHandler();

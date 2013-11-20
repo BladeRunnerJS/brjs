@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +53,13 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	public void registerNode(Node node)
 	{
 		nodeCache.put(node.dir().getAbsolutePath(), node);
+		try {
+			nodeCache.put(node.dir().getCanonicalPath(), node);
+		}
+		catch (IOException ex)
+		{
+			root().logger(LoggerType.CORE, this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
+		}
 	}
 	
 	@Override

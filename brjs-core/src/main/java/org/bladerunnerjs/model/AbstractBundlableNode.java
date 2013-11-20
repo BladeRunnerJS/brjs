@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
 import org.bladerunnerjs.model.aliasing.AliasName;
+import org.bladerunnerjs.model.aliasing.AliasProcessor;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
@@ -73,12 +75,23 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public AliasDefinition getAlias(AliasName aliasName, String scenarioName) {
-		// TODO: bring aliasing code over from the 'bundlers' project
-		return null;
+		return AliasProcessor.getAlias(aliasName, aliasesFile, getAliasDefinitionFiles());
 	}
 	
 	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
 		return BundleSetCreator.createBundleSet(this);
+	}
+	
+	private List<AliasDefinitionsFile> getAliasDefinitionFiles() {
+		List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
+		
+		for(AssetContainer assetContainer : getAssetContainers()) {
+			for(AssetLocation assetLocation : assetContainer.getAllAssetLocations()) {
+				aliasDefinitionFiles.add(assetLocation.aliasDefinitionsFile());
+			}
+		}
+		
+		return aliasDefinitionFiles;
 	}
 }

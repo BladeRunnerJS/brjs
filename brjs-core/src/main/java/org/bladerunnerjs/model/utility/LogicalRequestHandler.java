@@ -51,7 +51,7 @@ public class LogicalRequestHandler {
 			
 			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, bundler.getClass().getSimpleName(), requestUri.logicalPath);
 			
-			ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri.logicalPath);
+			ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri);
 			bundler.handleRequest(parsedRequest, bundlableNode.getBundleSet(), os);
 		}
 		catch(ModelOperationException e) {

@@ -45,9 +45,22 @@ public class RequestParser
 		return requestForm;
 	}
 	
+	public boolean canParseRequest(BladerunnerUri request)
+	{
+		try
+		{
+			parse(request);
+			return true;
+		}
+		catch (MalformedRequestException e)
+		{
+			return false;
+		}
+	}
+	
 	public ParsedRequest parse(BladerunnerUri request) throws MalformedRequestException
 	{
-		return parse(request.getInternalPath());
+		return parse(request.logicalPath);
 	}
 	
 	public ParsedRequest parse(String request) throws MalformedRequestException

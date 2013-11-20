@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,11 +123,27 @@ public class BladerunnerUri
 		}
 		else
 		{
-			scopePath = StringUtils.substringAfter(requestContextNode.dir().getAbsolutePath(), contextRoot.getAbsolutePath()).replace("\\", "/") + "/";
+			scopePath = calculateScopePath(requestContextNode.dir(), contextRoot);
 			logicalPath = StringUtils.substringAfter(requestPath, scopePath);
 		}
 	}
 	
+	private String calculateScopePath(File requestContextDir, File contextRoot)
+	{
+		if (requestContextDir.getAbsolutePath().contains(contextRoot.getAbsolutePath()))
+		{
+			return StringUtils.substringAfter(requestContextDir.getAbsolutePath(), contextRoot.getAbsolutePath()).replace("\\", "/") + "/";			
+		}
+		try
+		{
+			return StringUtils.substringAfter(requestContextDir.getCanonicalPath(), contextRoot.getCanonicalPath()).replace("\\", "/") + "/";
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException("Unable to calculate scope path for request using canonical paths", ex);			
+		}
+	}
+
 	private String getPathParameter(String requestUri)
 	{
 		Matcher pathMatcher = pathPattern.matcher(requestUri);
