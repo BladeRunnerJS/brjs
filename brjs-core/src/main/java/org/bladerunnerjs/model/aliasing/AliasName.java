@@ -7,7 +7,7 @@ public class AliasName {
 		this.aliasName = aliasName;
 	}
 	
-	public String getAliasName() {
+	public String getName() {
 		return aliasName;
 	}
 }

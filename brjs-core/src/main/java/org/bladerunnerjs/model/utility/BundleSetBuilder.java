@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasException;
 import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
@@ -53,11 +54,16 @@ public class BundleSetBuilder {
 		return isNewSourceFile;
 	}
 	
-	private List<AliasDefinition> getAliases(List<AliasName> aliasNames) {
+	private List<AliasDefinition> getAliases(List<AliasName> aliasNames) throws ModelOperationException {
 		List<AliasDefinition> aliases = new ArrayList<>();
 		
-		for(AliasName aliasName : aliasNames) {
-			aliases.add(bundlableNode.getAlias(aliasName, null));
+		try {
+			for(AliasName aliasName : aliasNames) {
+				aliases.add(bundlableNode.getAlias(aliasName, null));
+			}
+		}
+		catch(AliasException e) {
+			throw new ModelOperationException(e);
 		}
 		
 		return aliases;

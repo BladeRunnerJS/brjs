@@ -11,6 +11,11 @@ public class AliasDefinitionsFile extends File {
 		super(parent, child);
 	}
 	
+	public AliasDefinition getAlias(AliasName aliasName, String scenarioName, List<String> groupNames) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	public List<AliasDefinition> aliasDefinitions() {
 		// TODO: bring aliasing code over from the 'bundlers' project
 		return new ArrayList<>();
