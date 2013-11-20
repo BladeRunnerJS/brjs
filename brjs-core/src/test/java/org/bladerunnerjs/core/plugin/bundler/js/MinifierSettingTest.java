@@ -5,8 +5,6 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +20,7 @@ public class MinifierSettingTest {
 	}
 	
 	@Test
-	public void MinifierSettingsHasDefaultValues()
+	public void settingsHasDefaultValues()
 	{
 		minifierSettings = new MinifierSetting(settings);
 		
@@ -31,7 +29,7 @@ public class MinifierSettingTest {
 	}
 	
 	@Test
-	public void MinifierSettingsCanBeOverriden()
+	public void settingsCanBeOverriden()
 	{
 		settings.put("dev", "combined");
 		settings.put("prod", "closure-simple");
@@ -39,5 +37,16 @@ public class MinifierSettingTest {
 		
 		assertEquals("combined", minifierSettings.devSetting());
 		assertEquals("closure-simple", minifierSettings.prodSetting());
+	}
+	
+	@Test
+	public void settingsCanOnlyBeDefinedWithCorrectNamecase()
+	{
+		settings.put("Dev", "combined");
+		settings.put("Prod", "closure-simple");
+		minifierSettings = new MinifierSetting(settings);
+		
+		assertEquals("none", minifierSettings.devSetting());
+		assertEquals("combined", minifierSettings.prodSetting());
 	}
 }
