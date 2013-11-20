@@ -41,10 +41,9 @@ TestServer startTestServer()
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode1">
     <void property="methods">
      <void property="text">
-      <string>FileAccessor getFileAccessor()
-List&lt;String&gt; generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
-List&lt;String&gt; generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
-
+      <string>List&lt;AssetFile&gt; getAssetFiles(Resources resources)
+List&lt;LinkedAssetFile&gt; getLinkedAsetFiles(Resources resources)
+List&lt;SourceFile&gt; getSourceFiles(SourceLocation sourceLocation)
 </string>
      </void>
     </void>
@@ -59,19 +58,19 @@ List&lt;String&gt; generateRequiredProdRequestPaths(BundleSet bundleSet, String 
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>459.0</double>
+      <double>596.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>464.0</double>
+      <double>495.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>459.0</double>
-     <double>464.0</double>
+     <double>596.0</double>
+     <double>495.0</double>
     </void>
    </object>
   </void>
@@ -254,42 +253,6 @@ void runTests(TestableNode node) throws TestException</string>
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode7">
     <void property="methods">
      <void property="text">
-      <string>List&lt;AssetFile&gt; getAssetFiles(Resources resources)
-List&lt;LinkedAssetFile&gt; getLinkedAsetFiles(Resources resources)
-List&lt;SourceFile&gt; getSourceFiles(SourceLocation sourceLocation)</string>
-     </void>
-    </void>
-    <void property="name">
-     <void property="text">
-      <string>«FileAccessor»</string>
-     </void>
-    </void>
-   </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double7">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double7"/>
-      <double>637.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double7"/>
-      <double>585.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>637.0</double>
-     <double>585.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode8">
-    <void property="methods">
-     <void property="text">
       <string>setBRJS(BRJS brjs)</string>
      </void>
     </void>
@@ -299,18 +262,18 @@ List&lt;SourceFile&gt; getSourceFiles(SourceLocation sourceLocation)</string>
      </void>
     </void>
    </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double8">
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double7">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
-      <object idref="Point2D$Double8"/>
+      <object idref="Point2D$Double7"/>
       <double>592.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double8"/>
+      <object idref="Point2D$Double7"/>
       <double>181.0</double>
      </void>
     </void>
@@ -321,12 +284,14 @@ List&lt;SourceFile&gt; getSourceFiles(SourceLocation sourceLocation)</string>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode9">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode8">
     <void property="methods">
      <void property="text">
       <string>String getMimeType()
 RequestParser getRequestParser()
-void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os, HttpResponse resp) throws ServletException</string>
+void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws ServletException
+List&lt;String&gt; getPossibleDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+List&lt;String&gt; getPossibleProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException</string>
      </void>
     </void>
     <void property="name">
@@ -335,18 +300,18 @@ void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os, 
      </void>
     </void>
    </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double9">
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double8">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
-      <object idref="Point2D$Double9"/>
+      <object idref="Point2D$Double8"/>
       <double>859.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double9"/>
+      <object idref="Point2D$Double8"/>
       <double>302.0</double>
      </void>
     </void>
@@ -357,7 +322,7 @@ void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os, 
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode10">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode9">
     <void property="methods">
      <void property="text">
       <string>List&lt;String&gt; getSettingNames()
@@ -372,18 +337,18 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
      </void>
     </void>
    </object>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double10">
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double9">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
-      <object idref="Point2D$Double10"/>
+      <object idref="Point2D$Double9"/>
       <double>1070.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double10"/>
+      <object idref="Point2D$Double9"/>
       <double>22.0</double>
      </void>
     </void>
@@ -420,13 +385,13 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
     <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="HVH"/>
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
     </void>
     <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="V"/>
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
     </void>
    </object>
-   <object idref="InterfaceNode1"/>
+   <object idref="InterfaceNode5"/>
    <object idref="InterfaceNode7"/>
   </void>
   <void method="connect">
@@ -438,20 +403,8 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
      <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
     </void>
    </object>
-   <object idref="InterfaceNode5"/>
-   <object idref="InterfaceNode8"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
-    </void>
-    <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
-    </void>
-   </object>
    <object idref="InterfaceNode3"/>
-   <object idref="InterfaceNode8"/>
+   <object idref="InterfaceNode7"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
@@ -463,7 +416,7 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
     </void>
    </object>
    <object idref="InterfaceNode2"/>
-   <object idref="InterfaceNode8"/>
+   <object idref="InterfaceNode7"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
@@ -475,7 +428,7 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
     </void>
    </object>
    <object idref="InterfaceNode4"/>
-   <object idref="InterfaceNode8"/>
+   <object idref="InterfaceNode7"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
@@ -487,7 +440,7 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
     </void>
    </object>
    <object idref="InterfaceNode0"/>
-   <object idref="InterfaceNode8"/>
+   <object idref="InterfaceNode7"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
@@ -498,8 +451,8 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
      <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
     </void>
    </object>
-   <object idref="InterfaceNode9"/>
    <object idref="InterfaceNode8"/>
+   <object idref="InterfaceNode7"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
@@ -511,7 +464,7 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
     </void>
    </object>
    <object idref="InterfaceNode1"/>
-   <object idref="InterfaceNode9"/>
+   <object idref="InterfaceNode8"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
@@ -522,8 +475,8 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
      <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
     </void>
    </object>
-   <object idref="InterfaceNode10"/>
-   <object idref="InterfaceNode8"/>
+   <object idref="InterfaceNode9"/>
+   <object idref="InterfaceNode7"/>
   </void>
  </object>
 </java>
