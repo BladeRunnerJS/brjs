@@ -1,0 +1,22 @@
+{
+  "name": "browser-modules",
+  "main": "index.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/kybernetikos/browser-modules",
+  "authors": [
+    "kybernetikos <me@kybernetikos.com>"  ],
+  "description": "A simple define/require for the browser",
+  "keywords": [
+    "define",
+    "require",
+    "commonjs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

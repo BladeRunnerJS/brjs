@@ -1,0 +1,23 @@
+{
+  "name": "browser-modules",
+  "version": "0.0.0",
+  "description": "A simple define/require for the browser.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kybernetikos/browser-modules.git"
+  },
+  "keywords": [
+    "define",
+    "require",
+    "commonjs"
+  ],
+  "author": "kybernetikos <me@kybernetikos.com>",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/kybernetikos/browser-modules/issues"
+  }
+}
