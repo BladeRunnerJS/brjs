@@ -56,7 +56,7 @@ public class BRJSServletTest extends SpecTest
 	{
 		given(app1).hasBeenCreated();
 		when(appServer).started();
-		then(appServer).requestForUrlReturns("/app/brjs/mock-servlet", MockServletPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/mock-servlet", MockServletPlugin.class.getCanonicalName());
 	}
 	
 }

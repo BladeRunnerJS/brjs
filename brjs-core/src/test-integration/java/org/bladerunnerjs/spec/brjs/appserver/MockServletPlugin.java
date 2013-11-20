@@ -19,11 +19,10 @@ public class MockServletPlugin implements ServletPlugin
 	private RequestParser requestParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	
-	//TODO: can we 'auto add' the brjs or get rid of the need for it completely
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
 		requestParserBuilder
-			.accepts("/brjs/mock-servlet").as("request");
+			.accepts("/mock-servlet").as("request");
 		
 		requestParser = requestParserBuilder.build();
 		prodRequestPaths.add(requestParser.createRequest("request"));

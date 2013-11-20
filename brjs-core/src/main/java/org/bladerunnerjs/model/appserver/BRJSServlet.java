@@ -27,9 +27,9 @@ public class BRJSServlet extends HttpServlet
 		public static final String CANNOT_FIND_SERVLET_PLUGIN_MSG = "Cannot find ServletPlugin for request %s";		
 	}
 
-	public static final String SERVLET_PATH = "/brjs/*";
+	public static final String SERVLET_PATH = "/*";
 
-	private static final Pattern VERSION_REGEX = Pattern.compile("/version/?");
+	private static final Pattern VERSION_REGEX = Pattern.compile("brjs/version/?");
 	
 	private BRJS brjs;
 	
