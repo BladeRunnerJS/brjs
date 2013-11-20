@@ -31,8 +31,8 @@ public class MinifierSettingTest {
 	@Test
 	public void settingsCanBeOverriden()
 	{
-		settings.put("dev", "combined");
-		settings.put("prod", "closure-simple");
+		settings.put("dev-minifier", "combined");
+		settings.put("prod-minifier", "closure-simple");
 		minifierSettings = new MinifierSetting(settings);
 		
 		assertEquals("combined", minifierSettings.devSetting());
@@ -42,8 +42,8 @@ public class MinifierSettingTest {
 	@Test
 	public void settingsCanOnlyBeDefinedWithCorrectNamecase()
 	{
-		settings.put("Dev", "combined");
-		settings.put("Prod", "closure-simple");
+		settings.put("Dev-minifier", "combined");
+		settings.put("Prod-minifier", "closure-simple");
 		minifierSettings = new MinifierSetting(settings);
 		
 		assertEquals("none", minifierSettings.devSetting());
