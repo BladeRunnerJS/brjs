@@ -46,4 +46,9 @@ public class AliasDefinition
 		this.groupName = groupName;
 		
 	}
+	
+	public String getScenario() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
