@@ -16,7 +16,7 @@ public class MinifierSettingTest {
 	private Map<String, String> settings;
 	
 	@Before
-	public void setUp()
+	public void setup()
 	{
 		settings =  new HashMap<String, String>();
 	}
