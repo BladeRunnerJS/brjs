@@ -152,7 +152,8 @@ public class LogMessageStore
 			System.out.println(String.format(message, params));
 		}
 		
-		if (storeLogs)
+		boolean isFatalOrErrorLog = (messages == fatalMessages) || (messages == errorMessages);
+		if (storeLogs || isFatalOrErrorLog)
 		{
 			messages.add(new LogMessage(message, params));
 		}
