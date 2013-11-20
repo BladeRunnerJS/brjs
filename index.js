@@ -127,7 +127,7 @@
 	}
 
 	var defaultRealm = realm(global.require || function(moduleId) {
-		if (global[moduleId]) {
+		if (moduleId in global) {
 			return global[moduleId];
 		}
 		throw new Error("No definition for module " + moduleId + " could be found in the global top level.");
