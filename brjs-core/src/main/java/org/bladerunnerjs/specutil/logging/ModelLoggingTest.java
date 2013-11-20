@@ -124,7 +124,7 @@ public class ModelLoggingTest extends SpecTest
 	
 	
 	@Test /* 4A. we don't enable logging for something that logs at error level */
-	/* test should not fail since we can ignore messages when logging is disabled */
+	@ExpectedFailure("Test should have failed since an error was logged")
 	public void testFailsWhenWeDontEnableLoggingButAnErrorLogHappens() {
 		given(logging).disabled();
 		logCommander.whenErrorMessageLogged(LOG_MESSAGE_ONE_PARAM, PARAM1);
