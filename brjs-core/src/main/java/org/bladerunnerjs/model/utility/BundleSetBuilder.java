@@ -57,7 +57,7 @@ public class BundleSetBuilder {
 		List<AliasDefinition> aliases = new ArrayList<>();
 		
 		for(AliasName aliasName : aliasNames) {
-			aliases.add(bundlableNode.getAlias(aliasName));
+			aliases.add(bundlableNode.getAlias(aliasName, null));
 		}
 		
 		return aliases;

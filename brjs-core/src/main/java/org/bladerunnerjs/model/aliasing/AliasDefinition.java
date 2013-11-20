@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model.aliasing;
 
+// TODO: we will probably need to add scenarioName in our new bundling code
 public class AliasDefinition
 {
 	private String className;

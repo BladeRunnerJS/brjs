@@ -116,7 +116,9 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 				
 				for(AssetLocation assetLocation : assetContainer.getAllAssetLocations()) {
 					for(AliasDefinition aliasDefinition : assetLocation.aliasDefinitionsFile().aliasDefinitions()) {
-						trie.add(aliasDefinition.getName(), new AliasName(aliasDefinition.getName()));
+						if(!trie.containsKey(aliasDefinition.getName())) {
+							trie.add(aliasDefinition.getName(), new AliasName(aliasDefinition.getName()));
+						}
 					}
 				}
 			}

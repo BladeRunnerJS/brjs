@@ -72,15 +72,8 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<SourceFile> getAllSourceFiles() {
-		// TODO: implement this method
-		return new ArrayList<>();
-	}
-	
-	// TODO: should this query involve the scenario name?
-	@Override
-	public AliasDefinition getAlias(AliasName aliasName) {
-		// TODO: implement this method
+	public AliasDefinition getAlias(AliasName aliasName, String scenarioName) {
+		// TODO: bring aliasing code over from the 'bundlers' project
 		return null;
 	}
 	

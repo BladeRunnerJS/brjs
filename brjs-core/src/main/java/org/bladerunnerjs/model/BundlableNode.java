@@ -16,6 +16,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	List<LinkedAssetFile> seedFiles();
 	List<AssetContainer> getAssetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;
-	List<SourceFile> getAllSourceFiles();
-	AliasDefinition getAlias(AliasName aliasName);
+	AliasDefinition getAlias(AliasName aliasName, String scenarioName);
 }
