@@ -7,7 +7,7 @@ public class AliasProcessor {
 		AliasDefinition aliasDefinition = aliasesFile.getAlias(aliasName, scenarioName);
 		
 		if(aliasDefinition == null) {
-			List<String> groupNames = aliasesFile.getGroupNames();
+			List<String> groupNames = aliasesFile.groupNames();
 			
 			for(AliasDefinitionsFile aliasDefinitionsFile : aliasDefinitionFiles) {
 				AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAlias(aliasName, scenarioName, groupNames);

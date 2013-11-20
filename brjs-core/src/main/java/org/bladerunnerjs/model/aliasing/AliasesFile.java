@@ -11,12 +11,12 @@ public class AliasesFile extends File {
 		super(parent, child);
 	}
 	
-	public List<String> getGroupNames() {
+	public AliasDefinition getAlias(AliasName aliasName, String scenarioName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	public AliasDefinition getAlias(AliasName aliasName, String scenarioName) {
+	public List<String> groupNames() {
 		// TODO Auto-generated method stub
 		return null;
 	}
