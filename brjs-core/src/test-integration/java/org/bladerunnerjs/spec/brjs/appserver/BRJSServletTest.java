@@ -59,4 +59,22 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/mock-servlet", MockServletPlugin.class.getCanonicalName());
 	}
 	
+	@Test
+	public void longUrlsDontGetHandedToOtherServlets() throws Exception
+	{
+		given(app1).hasBeenCreated();
+		when(appServer).started()
+			.and(appServer).appHasServlet(app1, new HelloWorldServlet(), "/hello");
+		then(appServer).requestForUrlReturns("/app/mock-servlet/some/other/path", MockServletPlugin.class.getCanonicalName());
+	}
+	
+	@Test
+	public void brjsServletAllowsOtherServletsToBeAdded() throws Exception
+	{
+		given(app1).hasBeenCreated();
+		when(appServer).started()
+			.and(appServer).appHasServlet(app1, new HelloWorldServlet(), "/hello");
+		then(appServer).requestForUrlReturns("/app/hello", "Hello World!");
+	}
+	
 }

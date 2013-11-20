@@ -22,10 +22,12 @@ public class MockServletPlugin implements ServletPlugin
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
 		requestParserBuilder
-			.accepts("/mock-servlet").as("request");
+			.accepts("/mock-servlet").as("request")
+			.and("/mock-servlet/some/other/path").as("long-request");
 		
 		requestParser = requestParserBuilder.build();
 		prodRequestPaths.add(requestParser.createRequest("request"));
+		prodRequestPaths.add(requestParser.createRequest("long-request"));
 	}
 
 	@Override

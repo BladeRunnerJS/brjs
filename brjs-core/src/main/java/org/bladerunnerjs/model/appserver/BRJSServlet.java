@@ -16,20 +16,15 @@ import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.ParsedRequest;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 
 public class BRJSServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1964608537461568895L;
 
-	public class Messages {
-		public static final String CANNOT_FIND_SERVLET_PLUGIN_MSG = "Cannot find ServletPlugin for request %s";		
-	}
-
 	public static final String SERVLET_PATH = "/*";
 
-	private static final Pattern VERSION_REGEX = Pattern.compile("brjs/version/?");
+	private static final Pattern VERSION_REGEX = Pattern.compile("/brjs/version/?");
 	
 	private BRJS brjs;
 	
@@ -70,7 +65,6 @@ public class BRJSServlet extends HttpServlet
 				// do nothing - this bundler can't handle this request
 			}
 		}
-		sendErrorResponse( resp, 404, new ResourceNotFoundException( String.format(Messages.CANNOT_FIND_SERVLET_PLUGIN_MSG, req.getRequestURI()) ) );
 	}
 	
 	
