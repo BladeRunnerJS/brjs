@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.bladeset;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
@@ -69,18 +70,21 @@ public class BladesetTest extends SpecTest {
 	@Test
 	public void invalidBladesetDirectoryNameSpaceThrowsException() throws Exception {
 		when(invalidBladesetName).populate();
-		then(exceptions).verifyException(InvalidDirectoryNameException.class,invalidBladesetName.dir(), "#Invalid");
+		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Bladeset", invalidBladesetName.dir())
+			.and(exceptions).verifyException(InvalidDirectoryNameException.class,invalidBladesetName.dir(), "#Invalid");
 	}
 	
 	@Test
 	public void usingJSKeywordAsBladesetNameSpaceThrowsException() throws Exception {
 		when(JSKeywordBladesetName).populate();
-		then(exceptions).verifyException(InvalidPackageNameException.class,JSKeywordBladesetName.dir(), "else");
+		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Bladeset", JSKeywordBladesetName.dir())
+			.and(exceptions).verifyException(InvalidPackageNameException.class,JSKeywordBladesetName.dir(), "else");
 	}
 	
 	@Test
 	public void invalidBladesetPackageNameSpaceThrowsException() throws Exception {
 		when(invalidPackageName).populate();
-		then(exceptions).verifyException(InvalidPackageNameException.class,invalidPackageName.dir(), "_invalid");
+		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Bladeset", invalidPackageName.dir())
+			.and(exceptions).verifyException(InvalidPackageNameException.class,invalidPackageName.dir(), "_invalid");
 	}
 }
