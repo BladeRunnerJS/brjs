@@ -9,7 +9,7 @@ import org.bladerunnerjs.core.plugin.PluginLocatorUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ServletPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 
@@ -20,7 +20,7 @@ public class MockPluginLocator implements PluginLocator
 	public List<CommandPlugin> pluginCommands = new ArrayList<CommandPlugin>();
 	public List<ModelObserverPlugin> modelObservers = new ArrayList<ModelObserverPlugin>();
 	public List<MinifierPlugin> minifiers = new ArrayList<MinifierPlugin>();
-	public List<ServletPlugin> servlets = new ArrayList<ServletPlugin>();
+	public List<ContentPlugin> servlets = new ArrayList<ContentPlugin>();
 	public List<TagHandlerPlugin> tagHandlers = new ArrayList<TagHandlerPlugin>();
 	
 	public void createPlugins(BRJS brjs) {
@@ -56,7 +56,7 @@ public class MockPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<ServletPlugin> getServlets() {
+	public List<ContentPlugin> getContentPlugins() {
 		return servlets;
 	}
 	

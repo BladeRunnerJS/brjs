@@ -50,9 +50,9 @@ public class VirtualProxyBundlerPlugin extends VirtualProxyPlugin implements Bun
 	}
 	
 	@Override
-	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		initializePlugin();
-		bundlerPlugin.handleRequest(request, bundleSet, os);
+		bundlerPlugin.writeContent(request, bundleSet, os);
 	}
 	
 	@Override

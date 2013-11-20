@@ -23,7 +23,7 @@ import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ServletPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
@@ -343,20 +343,19 @@ public class BRJS extends AbstractBRJSRootNode
 		throw new RuntimeException("No minifier plugin for minifier setting '" + minifierSetting + "'");
 	}	
 	
-	public List<ServletPlugin> servletPlugins() {
-		return pluginLocator.getServlets();
+	public List<ContentPlugin> contentPlugins() {
+		return pluginLocator.getContentPlugins();
 	}
 	
 	
 	/**
-	 * Returns *all* plugins that are servlets. This includes ServletPlugins and BundlerPlugins since bundlers the interface.
-	 * @return
+	 * Returns *all* plugins that are servlets. This includes ContentPlugins and BundlerPlugins since BundlerPlugin extends the interface.
 	 */
-	public List<ServletPlugin> allServletPlugins() {
-		List<ServletPlugin> servletPlugins = new ArrayList<>();
-		servletPlugins.addAll(servletPlugins());
-		servletPlugins.addAll(bundlerPlugins());
-		return servletPlugins;
+	public List<ContentPlugin> allContentPlugins() {
+		List<ContentPlugin> contentPlugins = new ArrayList<>();
+		contentPlugins.addAll(contentPlugins());
+		contentPlugins.addAll(bundlerPlugins());
+		return contentPlugins;
 	}
 	
 	

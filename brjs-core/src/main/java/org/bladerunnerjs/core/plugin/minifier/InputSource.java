@@ -46,7 +46,7 @@ public class InputSource {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ParsedRequest parsedRequest = bundlerPlugin.getRequestParser().parse(sourceMappingUrl);
 				
-				bundlerPlugin.handleRequest(parsedRequest, bundleSet, bos);
+				bundlerPlugin.writeContent(parsedRequest, bundleSet, bos);
 				
 				sourceMap = bos.toString(bundleSet.getBundlableNode().root().bladerunnerConf().getDefaultOutputEncoding());
 			}

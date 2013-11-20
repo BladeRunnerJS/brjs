@@ -88,7 +88,7 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		if(request.formName.equals("dev-bundle-request") || request.formName.equals("prod-bundle-request")) {
 			try {
 				String minifierSetting = request.properties.get("minifier-setting");
@@ -165,7 +165,7 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 						ParsedRequest parsedRequest = requestParser.parse(requestPath);
 						ByteArrayOutputStream baos = new ByteArrayOutputStream();
 						
-						bundlerPlugin.handleRequest(parsedRequest, bundleSet, baos);
+						bundlerPlugin.writeContent(parsedRequest, bundleSet, baos);
 						inputSources.add(new InputSource(requestPath, baos.toString(charsetName), bundlerPlugin, bundleSet));
 					}
 				}

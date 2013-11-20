@@ -27,7 +27,7 @@ public class BRJSServletTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception {
 		
-		given(brjs).hasServlets( new MockServletPlugin() )
+		given(brjs).hasServlets( new MockContentPlugin() )
 			.and(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated();
@@ -57,11 +57,11 @@ public class BRJSServletTest extends SpecTest
 	}
 	
 	@Test
-	public void servletPluginsCanHandleRequests() throws Exception
+	public void contentPluginsCanHandleRequests() throws Exception
 	{
 		given(app).hasBeenCreated()
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet", MockServletPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class BRJSServletTest extends SpecTest
 		given(app).hasBeenCreated()
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app, new HelloWorldServlet(), "/hello");
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet/some/other/path", MockServletPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet/some/other/path", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test

@@ -5,7 +5,7 @@ import org.bladerunnerjs.core.plugin.PluginLoader;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ServletPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
 import org.bladerunnerjs.specutil.engine.NodeBuilder;
@@ -59,11 +59,11 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasServlets(ServletPlugin... servletPlugins)
+	public BuilderChainer hasServlets(ContentPlugin... contentPlugins)
 	{
-		for(ServletPlugin servletPlugin : servletPlugins)
+		for(ContentPlugin contentPlugin : contentPlugins)
 		{
-			specTest.pluginLocator.servlets.add(servletPlugin);
+			specTest.pluginLocator.servlets.add(contentPlugin);
 		}
 		
 		return builderChainer;
@@ -102,7 +102,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsServlets() {
 		specTest.pluginLocator.minifiers.clear();
-		specTest.pluginLocator.servlets.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ServletPlugin.class) );
+		specTest.pluginLocator.servlets.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class) );
 		
 		return builderChainer;
 	}

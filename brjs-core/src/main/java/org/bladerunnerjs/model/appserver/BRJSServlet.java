@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bladerunnerjs.core.plugin.servlet.ServletPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
@@ -48,20 +48,20 @@ public class BRJSServlet extends HttpServlet
 		}
 		else
 		{
-			passRequestToApropriateServletPlugin(req, resp);
+			passRequestToApropriateContentPlugin(req, resp);
 		}
 	}
 
 	//TODO: this logic should be moved into the logical request handler
-	private void passRequestToApropriateServletPlugin(HttpServletRequest req, HttpServletResponse resp) throws ServletException
+	private void passRequestToApropriateContentPlugin(HttpServletRequest req, HttpServletResponse resp) throws ServletException
 	{
 		BladerunnerUri bladerunnerUri = createBladeRunnerUri(req);
-		for (ServletPlugin servletPlugin : brjs.allServletPlugins())
+		for (ContentPlugin contentPlugin : brjs.allContentPlugins())
 		{
-			RequestParser requestParser = servletPlugin.getRequestParser();
+			RequestParser requestParser = contentPlugin.getRequestParser();
 			if ( requestParser.canParseRequest(bladerunnerUri) )
 			{
-				handleRequestUsingServletPlugin(bladerunnerUri, parse(requestParser, bladerunnerUri), servletPlugin, resp);
+				handleRequestUsingContentPlugin(bladerunnerUri, parse(requestParser, bladerunnerUri), contentPlugin, resp);
 				return;
 			}
 		}
@@ -81,13 +81,13 @@ public class BRJSServlet extends HttpServlet
 		}
 	}
 	
-	private void handleRequestUsingServletPlugin(BladerunnerUri requestUri, ParsedRequest parsedRequest, ServletPlugin servletPlugin, HttpServletResponse resp) throws ServletException
+	private void handleRequestUsingContentPlugin(BladerunnerUri requestUri, ParsedRequest parsedRequest, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
 	{
 		try
 		{
 			File baseDir = new File(app.dir(), requestUri.scopePath);
 			BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
-			servletPlugin.handleRequest(parsedRequest, bundlableNode.getBundleSet(), resp.getOutputStream());
+			contentPlugin.writeContent(parsedRequest, bundlableNode.getBundleSet(), resp.getOutputStream());
 		}
 		catch (BundlerProcessingException ex)
 		{

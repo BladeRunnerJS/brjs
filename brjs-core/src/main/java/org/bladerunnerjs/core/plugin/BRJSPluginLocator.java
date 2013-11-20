@@ -8,8 +8,8 @@ import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.core.plugin.command.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
 import org.bladerunnerjs.core.plugin.minifier.VirtualProxyMinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ServletPlugin;
-import org.bladerunnerjs.core.plugin.servlet.VirtualProxyServletPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
+import org.bladerunnerjs.core.plugin.servlet.VirtualProxyContentPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
@@ -21,7 +21,7 @@ public class BRJSPluginLocator implements PluginLocator
 	private List<BundlerPlugin> bundlerPlugins;
 	private List<CommandPlugin> commandPlugins;
 	private List<MinifierPlugin> minifierPlugins;
-	private List<ServletPlugin> servletPLugins;
+	private List<ContentPlugin> contentPlugins;
 	private List<TagHandlerPlugin> tagHandlerPlugins;
 	
 	
@@ -31,7 +31,7 @@ public class BRJSPluginLocator implements PluginLocator
 		bundlerPlugins = PluginLoader.createPluginsOfType(brjs, BundlerPlugin.class, VirtualProxyBundlerPlugin.class);
 		commandPlugins = PluginLoader.createPluginsOfType(brjs, CommandPlugin.class, VirtualProxyCommandPlugin.class);
 		minifierPlugins = PluginLoader.createPluginsOfType(brjs, MinifierPlugin.class, VirtualProxyMinifierPlugin.class);
-		servletPLugins = PluginLoader.createPluginsOfType(brjs, ServletPlugin.class, VirtualProxyServletPlugin.class);
+		contentPlugins = PluginLoader.createPluginsOfType(brjs, ContentPlugin.class, VirtualProxyContentPlugin.class);
 		tagHandlerPlugins = PluginLoader.createPluginsOfType(brjs, TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class);
 	}
 	
@@ -59,8 +59,8 @@ public class BRJSPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<ServletPlugin> getServlets() {
-		return servletPLugins;
+	public List<ContentPlugin> getContentPlugins() {
+		return contentPlugins;
 	}
 	
 	@Override

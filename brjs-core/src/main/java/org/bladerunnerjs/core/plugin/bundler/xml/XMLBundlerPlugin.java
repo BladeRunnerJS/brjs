@@ -87,7 +87,7 @@ public class XMLBundlerPlugin implements BundlerPlugin
 	}
 
 	@Override
-	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
 		throw new RuntimeException("Not implemented!");
 	}

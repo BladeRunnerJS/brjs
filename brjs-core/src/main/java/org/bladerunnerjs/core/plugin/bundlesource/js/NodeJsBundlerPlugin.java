@@ -97,7 +97,7 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		try {
 			if(request.formName.equals("single-module-request")) {
 				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
