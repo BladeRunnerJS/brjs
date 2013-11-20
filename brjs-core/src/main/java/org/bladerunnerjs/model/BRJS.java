@@ -348,6 +348,17 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	
+	/**
+	 * Returns *all* plugins that are servlets. This includes ServletPlugins and BundlerPlugins since bundlers the interface.
+	 * @return
+	 */
+	public List<ServletPlugin> allServletPlugins() {
+		List<ServletPlugin> servletPlugins = new ArrayList<>();
+		servletPlugins.addAll(servletPlugins());
+		servletPlugins.addAll(bundlerPlugins());
+		return servletPlugins;
+	}
+	
 	
 	public <AF extends AssetFile> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... fileNames)
 	{

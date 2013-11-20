@@ -90,8 +90,6 @@ public class ApplicationEndToEndTests
 	{
 		tester.whenRequestMadeTo(AUTH_APP_URL)
 			.statusCodeIs(200)
-			.responseIs("You must login!")
-			.sameAsRequestFor(AUTH_APP_URL+"/login")
 			.sameAsRequestFor(AUTH_APP_URL+"/login/index.html");
 	}
 	

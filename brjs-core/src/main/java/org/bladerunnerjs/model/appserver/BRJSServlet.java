@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model.appserver;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +14,10 @@ import org.bladerunnerjs.core.plugin.servlet.ServletPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedRequest;
+import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
@@ -22,15 +26,15 @@ public class BRJSServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1964608537461568895L;
 
-	public static final String SERVLET_PATH = "/*";
-
 	private static final Pattern VERSION_REGEX = Pattern.compile("/brjs/version/?");
 	
 	private BRJS brjs;
+	private App app;
 	
 	public BRJSServlet(App app)
 	{
 		brjs = app.root();
+		this.app = app;
 	}
 
 	@Override
@@ -52,34 +56,48 @@ public class BRJSServlet extends HttpServlet
 	private void passRequestToApropriateServletPlugin(HttpServletRequest req, HttpServletResponse resp) throws ServletException
 	{
 		BladerunnerUri bladerunnerUri = createBladeRunnerUri(req);
-		for (ServletPlugin servletPlugin : brjs.servletPlugins())
+		for (ServletPlugin servletPlugin : brjs.allServletPlugins())
 		{
-			try
+			RequestParser requestParser = servletPlugin.getRequestParser();
+			if ( requestParser.canParseRequest(bladerunnerUri) )
 			{
-				ParsedRequest parsedRequest = servletPlugin.getRequestParser().parse(bladerunnerUri);
-				handleRequestUsingServletPlugin(parsedRequest, servletPlugin, resp);
+				handleRequestUsingServletPlugin(bladerunnerUri, parse(requestParser, bladerunnerUri), servletPlugin, resp);
 				return;
-			}
-			catch (MalformedRequestException e)
-			{
-				// do nothing - this bundler can't handle this request
 			}
 		}
 	}
 	
 	
 	
-	private void handleRequestUsingServletPlugin(ParsedRequest parsedRequest, ServletPlugin servletPlugin, HttpServletResponse resp) throws ServletException
+	private ParsedRequest parse(RequestParser requestParser, BladerunnerUri bladerunnerUri) throws ServletException
 	{
 		try
 		{
-			servletPlugin.handleRequest(parsedRequest, null, resp.getOutputStream());
+			return requestParser.parse(bladerunnerUri);
+		}
+		catch (MalformedRequestException ex)
+		{
+			throw new ServletException(ex);
+		}
+	}
+	
+	private void handleRequestUsingServletPlugin(BladerunnerUri requestUri, ParsedRequest parsedRequest, ServletPlugin servletPlugin, HttpServletResponse resp) throws ServletException
+	{
+		try
+		{
+			File baseDir = new File(app.dir(), requestUri.scopePath);
+			BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
+			servletPlugin.handleRequest(parsedRequest, bundlableNode.getBundleSet(), resp.getOutputStream());
 		}
 		catch (BundlerProcessingException ex)
 		{
 			sendErrorResponse(resp, 500, ex);
 		}
 		catch (IOException ex)
+		{
+			sendErrorResponse(resp, 500, ex);
+		}
+		catch (ModelOperationException ex)
 		{
 			sendErrorResponse(resp, 500, ex);
 		}

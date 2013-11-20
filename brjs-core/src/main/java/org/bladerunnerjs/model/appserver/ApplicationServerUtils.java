@@ -47,7 +47,7 @@ public class ApplicationServerUtils
 		app.root().logger(LoggerType.APP_SERVER, ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
 		
-		addServletToApp(appContext, new BRJSServlet(app), BRJSServlet.SERVLET_PATH);
+		addServletToApp(appContext, new BRJSServlet(app), "/*");
 		
 		contexts.addHandler(appContext);
 		appContext.start();

@@ -8,7 +8,7 @@ import org.bladerunnerjs.core.log.LoggerType;
 
 
 public interface RootNode extends Node {
-	Logger logger(LoggerType type, Class<?> classRef);
+	Logger logger(LoggerType type, Class<?> classRef);	
 	ConsoleWriter getConsoleWriter();
 	void setConsoleWriter(ConsoleWriter consoleWriter);
 	boolean isRootDir(File dir);
