@@ -1,7 +1,6 @@
 package org.bladerunnerjs.spec.workbench;
 
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
@@ -12,7 +11,6 @@ import org.junit.Test;
 
 public class WorkbenchTest extends SpecTest {
 	private App app;
-	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;
@@ -35,9 +33,8 @@ public class WorkbenchTest extends SpecTest {
 		then(workbench.parent()).isSameAs(blade);
 	}
 	
-	
 	@Test
-	public void dashAspectIsApendedToAspectNode() throws Exception {
+	public void workbenchTemplateIsPopulatedAsExpected() throws Exception {
 		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello world</html>'")
 			.and(workbenchTemplate).containsFolder("resources")
 			.and(workbenchTemplate).containsFolder("src");

@@ -79,11 +79,12 @@ public class BladeTest extends SpecTest {
 			.and(blade1).fileHasContents("MyClass.js", "app.bs.b1 = function() {};");
 	}
 	
-	//TODO: waiting for bundlers to be implemented
-	@Ignore
+	//TODO: verify bundleInfo exception
 	@Test
 	public void classesWithinABladeCantReferenceClassesInOtherBlades() throws Exception {
-		given(blade1).hasClass("blade.Class1")
+		given(blade1).packageOfStyle("blade", "caplin-js")
+			.and(blade2).packageOfStyle("blade2", "caplin-js")
+			.and(blade1).hasClass("blade.Class1")
 			.and(blade2).classRefersTo("blade2.Class2", "blade.Class1")
 			.and(aspect).indexPageRefersTo("blade2.Class2");
 		when(aspect).getBundleInfo();
