@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -59,12 +58,11 @@ public class AspectBundlingTest extends SpecTest {
 		then(response).containsClasses("novox.bs.b1.Class1");
 	}
 	
-	@Ignore
 	@Test
 	public void weBundleAClassIfItsAliasIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("novox.Class1")
-			.and(aspect).hasAlias("the-alias", "novox.Class1")
-			.and(aspect).indexPageRefersTo("the-alias");
+			.and(aspect).hasAlias("thealias", "novox.Class1") // TODO: change back to 'the-alias' once the Trie is updated to support all Javascript variable name characters
+			.and(aspect).indexPageRefersTo("thealias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class1");
 	}
