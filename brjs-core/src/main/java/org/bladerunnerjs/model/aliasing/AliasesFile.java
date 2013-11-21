@@ -3,10 +3,12 @@ package org.bladerunnerjs.model.aliasing;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
@@ -18,12 +20,13 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 
 public class AliasesFile extends File {
-	private static final long serialVersionUID = -3607791607132062852L;
-	
+	private static final long serialVersionUID = 1L;
 	private static XMLValidationSchema aliasesSchema;
+	
 	private final FileModifiedChecker fileModifiedChecker;
 	private List<AliasDefinition> aliasDefinitions;
 	private List<String> groupNames;
+	private String scenario;
 	
 	{
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -56,6 +59,14 @@ public class AliasesFile extends File {
 		return aliasDefinition;
 	}
 	
+	public String groupScenario() throws BundlerFileProcessingException {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			reparseFile();
+		}
+		
+		return scenario;
+	}
+	
 	public List<String> groupNames() throws BundlerFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reparseFile();
@@ -76,9 +87,23 @@ public class AliasesFile extends File {
 		aliasDefinitions = new ArrayList<>();
 		groupNames = new ArrayList<>();
 		
-		if(this.exists()) {
+		if(exists()) {
 			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(this, aliasesSchema)) {
-				// TODO: bring more aliasing code over from the 'bundlers' project
+				while(streamReader.hasNextTag()) {
+					streamReader.nextTag();
+					
+					if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
+						switch(streamReader.getLocalName()) {
+							case "aliases":
+								processAliases(streamReader);
+								break;
+							
+							case "alias":
+								processAlias(streamReader);
+								break;
+						}
+					}
+				}
 			}
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
@@ -89,5 +114,21 @@ public class AliasesFile extends File {
 				throw new BundlerFileProcessingException(this, e);
 			}
 		}
+	}
+	
+	private void processAliases(XmlStreamReader streamReader) {
+		scenario = streamReader.getAttributeValue("useScenario");
+		
+		String useGroups = streamReader.getAttributeValue("useGroups");
+		if(useGroups != null) {
+			groupNames = Arrays.asList(useGroups.split(" "));
+		}
+	}
+	
+	private void processAlias(XmlStreamReader streamReader) {
+		String aliasName = streamReader.getAttributeValue("name");
+		String aliasClass = streamReader.getAttributeValue("class");
+		
+		aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, null));
 	}
 }
