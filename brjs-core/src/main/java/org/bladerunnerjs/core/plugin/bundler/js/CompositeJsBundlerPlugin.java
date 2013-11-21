@@ -12,7 +12,7 @@ import java.util.Map;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.minifier.InputSource;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.bundler.js.MinifierSetting.MinifierTypes;
+import org.bladerunnerjs.core.plugin.bundler.js.MinifierSetting;
 import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
@@ -112,7 +112,7 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		MinifierSetting minifierSettings = new MinifierSetting(tagAttributes);
 		String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
 		
-		if(minifierSetting.equals(MinifierTypes.SEPARATE_JS_FILES)) {
+		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
 			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
 				if(bundlerPlugin != this) {
 					if(isDev) {
