@@ -70,17 +70,36 @@ public class AspectBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void weBundleImplicitTransitiveDependencies() throws Exception {
-		given(blade).packageOfStyle("novox", "caplin-js")
-			.and(blade).hasClasses("novox.Class1", "novox.Class2")
+	public void weBundleImplicitTransitiveDependenciesFromABladeset() throws Exception {
+		given(bladeset).packageOfStyle("novox", "caplin-js")
+			.and(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
+			.and(bladeset).classRefersTo("novox.bs.Class1", "novox.bs.Class2")
+			.and(aspect).indexPageRefersTo("novox.bs.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		then(response).containsClasses("novox.bs.Class1", "novox.bs.Class2");
+	}
+	
+	@Test
+	public void weBundleExplicitTransitiveDependenciesForFromABladeset() throws Exception {
+		given(bladeset).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
+			.and(bladeset).classDependsOn("novox.Class1", "novox.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
 	
 	@Test
-	public void weBundleExplicitTransitiveDependenciesForClassesInTheSameBlade() throws Exception {
+	public void weBundleImplicitTransitiveDependenciesFromABlade() throws Exception {
+		given(blade).packageOfStyle("novox.bs", "caplin-js")
+			.and(blade).hasClasses("novox.bs.Class1", "novox.bs.Class2")
+			.and(blade).classRefersTo("novox.bs.Class1", "novox.bs.Class2")
+			.and(aspect).indexPageRefersTo("novox.bs.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		then(response).containsClasses("novox.bs.Class1", "novox.bs.Class2");
+	}
+	
+	@Test
+	public void weBundleExplicitTransitiveDependenciesForFromABlade() throws Exception {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classDependsOn("novox.Class1", "novox.Class2");
@@ -89,13 +108,23 @@ public class AspectBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void weDontBundleAClassIfItIsNotReferredTo() throws Exception {
-		given(blade).packageOfStyle("novox", "caplin-js")
-			.and(blade).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).indexPageRefersTo("novox.Class2")
-			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
+	public void weDontBundleABladesetIfItIsNotReferredTo() throws Exception {
+		given(bladeset).packageOfStyle("novox.bs", "caplin-js")
+			.and(blade).hasClasses("novox.bs.Class1", "novox.bs.Class2")
+			.and(blade).classRefersTo("novox.bs.Class1", "novox.bs.Class2")
+			.and(aspect).indexPageRefersTo("novox.bs.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
-		then(response).containsClasses("novox.Class2");
+		then(response).containsClasses("novox.bs.Class2");
+	}
+	
+	@Test
+	public void weDontBundleABladeIfItIsNotReferredTo() throws Exception {
+		given(blade).packageOfStyle("novox.bs.b1", "caplin-js")
+			.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
+			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2")
+			.and(aspect).indexPageRefersTo("novox.bs.b1.Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		then(response).containsClasses("novox.bs.b1.Class2");
 	}
 	
 	@Test
