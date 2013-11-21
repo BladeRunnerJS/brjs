@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.aliasing.AliasException;
 import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
 
 public class BundleSetBuilder {
@@ -62,7 +63,7 @@ public class BundleSetBuilder {
 				aliases.add(bundlableNode.getAlias(aliasName, null));
 			}
 		}
-		catch(AliasException e) {
+		catch(AliasException | BundlerFileProcessingException e) {
 			throw new ModelOperationException(e);
 		}
 		

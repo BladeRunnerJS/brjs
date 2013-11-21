@@ -12,6 +12,7 @@ import java.util.List;
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 import org.bladerunnerjs.model.utility.Trie;
@@ -122,13 +123,9 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 					}
 				}
 			}
-			catch (TrieKeyAlreadyExistsException ex) {
+			catch (TrieKeyAlreadyExistsException | EmptyTrieKeyException | BundlerFileProcessingException ex) {
 				throw new ModelOperationException(ex);
 			}
-			catch (EmptyTrieKeyException ex) {
-				throw new ModelOperationException(ex);					
-			}
-			
 		}
 		
 		return trie;

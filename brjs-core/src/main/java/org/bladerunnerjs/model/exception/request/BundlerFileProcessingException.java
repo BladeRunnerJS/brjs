@@ -4,7 +4,7 @@ import java.io.File;
 
 
 
-
+// TODO: rename class to FileProcessingException
 public class BundlerFileProcessingException extends BundlerProcessingException
 {
 	 
@@ -38,6 +38,11 @@ public class BundlerFileProcessingException extends BundlerProcessingException
 		this.sourceFile = sourceFile;
 		this.lineNumber = lineNumber;
 		this.characterNumber = characterNumber;
+	}
+	
+	public BundlerFileProcessingException(File sourceFile, Exception cause) {
+		super(cause);
+		this.sourceFile = sourceFile;
 	}
 	
 	@Override
