@@ -127,6 +127,27 @@ public class ApplicationEndToEndTests
 	}
 	
 	@Test
+	public void testRequestToJsBundleWithVersionString() throws Exception 
+	{
+		tester.whenRequestMadeTo(APP1_URL+"/default-aspect/v_1234/js/js.bundle")
+		.statusCodeIs(200).contentTypeIs("text/javascript")
+		.responseIsConcatenationOfFiles(new String[]{
+				APPS + "/test-app1/default-aspect/src/section/xmlDepend.js",
+				SDK_DIR + "/libs/javascript/caplin/src/caplin/bootstrap.js",
+				SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js",
+				SDK_DIR + "/libs/javascript/thirdparty/knockout/knockout.js",
+				APPS + "/test-app1/default-aspect/src/section/app/main1.js", 
+				APPS + "/test-app1/default-aspect/src/section/app/main2.js", 
+				APPS + "/test-app1/a-bladeset/src/section/a/app/bladeset1.js", 
+				APPS + "/test-app1/a-bladeset/src/section/a/app/bladeset2.js", 
+				APPS + "/test-app1/a-bladeset/blades/blade1/src/section/a/blade1/app/blade1.js", 
+				APPS + "/test-app1/a-bladeset/blades/blade1/src/section/a/blade1/app/blade2.js",
+				APPS + "/test-app1/a-bladeset/blades/blade1/src/section/a/blade1/xmlDepend.js",
+				APPS + "/test-app1/a-bladeset/src/section/a/xmlDepend.js"})
+		.sameAsRequestFor(APP1_URL+"/js/js.bundle");
+	}
+	
+	@Test
 	public void testRequestDoesnotContainNamespaceFromOtherApp() throws Exception 
 	{
 		tester.whenRequestMadeTo(APP3_URL+"/js/js.bundle")

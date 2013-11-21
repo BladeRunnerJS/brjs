@@ -20,7 +20,7 @@ public class MockPluginLocator implements PluginLocator
 	public List<CommandPlugin> pluginCommands = new ArrayList<CommandPlugin>();
 	public List<ModelObserverPlugin> modelObservers = new ArrayList<ModelObserverPlugin>();
 	public List<MinifierPlugin> minifiers = new ArrayList<MinifierPlugin>();
-	public List<ContentPlugin> servlets = new ArrayList<ContentPlugin>();
+	public List<ContentPlugin> contentPlugins = new ArrayList<ContentPlugin>();
 	public List<TagHandlerPlugin> tagHandlers = new ArrayList<TagHandlerPlugin>();
 	
 	public void createPlugins(BRJS brjs) {
@@ -28,7 +28,7 @@ public class MockPluginLocator implements PluginLocator
 		PluginLocatorUtils.setBRJSForPlugins(brjs, pluginCommands);
 		PluginLocatorUtils.setBRJSForPlugins(brjs, modelObservers);
 		PluginLocatorUtils.setBRJSForPlugins(brjs, minifiers);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, servlets);
+		PluginLocatorUtils.setBRJSForPlugins(brjs, contentPlugins);
 		PluginLocatorUtils.setBRJSForPlugins(brjs, tagHandlers);
 	}
 	
@@ -57,7 +57,7 @@ public class MockPluginLocator implements PluginLocator
 	
 	@Override
 	public List<ContentPlugin> getContentPlugins() {
-		return servlets;
+		return contentPlugins;
 	}
 	
 	@Override

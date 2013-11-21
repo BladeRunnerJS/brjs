@@ -2,6 +2,8 @@ package org.bladerunnerjs.spec.brjs.appserver;
 
 import java.net.ServerSocket;
 
+import javax.servlet.Servlet;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -22,21 +24,24 @@ public class BRJSServletTest extends SpecTest
 	Blade blade;
 	DirNode appJars;
 	ServerSocket socket;
+	Servlet helloWorldServlet;
 	StringBuffer response = new StringBuffer();
 
 	@Before
 	public void initTestObjects() throws Exception {
 		
-		given(brjs).hasServlets( new MockContentPlugin() )
+		given(brjs).hasContentPlugins( new MockContentPlugin() )
 			.and(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
-			.and(brjs).hasBeenCreated();
+			.and(brjs).hasBeenCreated()
+			.and(brjs).usedForServletModel();
     		appServer = brjs.applicationServer(appServerPort);
     		app = brjs.app("app");
     		aspect = app.aspect("default");
     		blade = app.bladeset("bs").blade("b1");
     		appJars = brjs.appJars();
     		appJars.create();
+    		helloWorldServlet = new HelloWorldServlet();
 	}
 	
 	
@@ -57,6 +62,16 @@ public class BRJSServletTest extends SpecTest
 	}
 	
 	@Test
+	public void brjsServletDoesntHandleAspectIndexFile() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "aspect index.html");
+	}
+	
+	@Test
 	public void contentPluginsCanHandleRequests() throws Exception
 	{
 		given(app).hasBeenCreated()
@@ -69,8 +84,9 @@ public class BRJSServletTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(appServer).started()
-			.and(appServer).appHasServlet(app, new HelloWorldServlet(), "/hello");
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet/some/other/path", MockContentPlugin.class.getCanonicalName());
+			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
+		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet/some/other/path", MockContentPlugin.class.getCanonicalName())
+			.and(appServer).requestForUrlReturns("/app/hello", "Hello World!");
 	}
 	
 	@Test
@@ -78,8 +94,17 @@ public class BRJSServletTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(appServer).started()
-			.and(appServer).appHasServlet(app, new HelloWorldServlet(), "/hello");
+			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello/*");
 		then(appServer).requestForUrlReturns("/app/hello", "Hello World!");
+	}
+	
+	@Test
+	public void brjsServletAllowsOtherServletsToBeAddedWithExtensionMapping() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(appServer).started()
+			.and(appServer).appHasServlet(app, helloWorldServlet, "*.mock");
+		then(appServer).requestForUrlReturns("/app/hello.mock", "Hello World!");
 	}
 	
 	@Test
@@ -92,7 +117,7 @@ public class BRJSServletTest extends SpecTest
     		.and(aspect).indexPageRefersTo("novox.cjs.Class")
     		.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class")
     		.and(appServer).started()
-			.and(appServer).appHasServlet(app, new HelloWorldServlet(), "/hello");
+			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/js.bundle", response);
 		then(response).textEquals("novox.node.Class=function(){};var Class=require(\"novox/node/Class\");novox.cjs.Class=function(){};");
 	}

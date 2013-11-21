@@ -2,7 +2,7 @@ package org.bladerunnerjs.specutil.engine;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServlet;
+import javax.servlet.Servlet;
 
 import org.apache.http.client.ClientProtocolException;
 import org.bladerunnerjs.model.App;
@@ -46,7 +46,7 @@ public class AppServerBuilder
 		return builderChainer;
 	}
 
-	public BuilderChainer appHasServlet(App app, HttpServlet servlet, String path)
+	public BuilderChainer appHasServlet(App app, Servlet servlet, String path) throws Exception
 	{
 		if ( !(appServer instanceof BRJSApplicationServer) )
 		{
