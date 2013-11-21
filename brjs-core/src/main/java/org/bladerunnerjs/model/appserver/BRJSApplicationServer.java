@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
+import javax.servlet.Servlet;
 
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
@@ -70,7 +70,7 @@ public class BRJSApplicationServer implements ApplicationServer
 		}
 		
 		ApplicationServerUtils.addAuthRealmToWebServer(brjs, server);
-		ApplicationServerUtils.addRootContext(contexts);
+		ApplicationServerUtils.addRootContext(brjs, contexts);
 		contextMap = ApplicationServerUtils.addAppContexts(brjs, contexts);
 		
 		File appsDir = new File(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
@@ -103,14 +103,14 @@ public class BRJSApplicationServer implements ApplicationServer
 	/**
 	 * This method should only be used for testing. Allows another servlet to be added to an app.
 	 */
-	public void addServlet(App app, HttpServlet servlet, String servletPath)
+	public void addServlet(App app, Servlet servlet, String servletPath)
 	{
 		WebAppContext appContext = contextMap.get(app);
 		if (appContext == null)
 		{
 			throw new RuntimeException("No app context found for app " + app.getName());
 		}
-		ApplicationServerUtils.addServletToApp(appContext, servlet, servletPath);
+		ApplicationServerUtils.addServletToContext(appContext, servlet, servletPath);
 	}
 	
 }

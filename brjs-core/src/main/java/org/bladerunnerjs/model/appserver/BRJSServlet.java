@@ -6,10 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -20,12 +20,14 @@ import org.bladerunnerjs.model.RequestParser;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.eclipse.jetty.servlet.DefaultServlet;
 
 
-public class BRJSServlet extends HttpServlet
+public class BRJSServlet extends DefaultServlet
 {
 	private static final long serialVersionUID = 1964608537461568895L;
 
+	private static final Pattern DASHBOARD_REDIRECT_REGEX = Pattern.compile("/");
 	private static final Pattern VERSION_REGEX = Pattern.compile("/brjs/version/?");
 	
 	private BRJS brjs;
@@ -33,38 +35,49 @@ public class BRJSServlet extends HttpServlet
 	
 	public BRJSServlet(App app)
 	{
-		brjs = app.root();
 		this.app = app;
+		brjs = app.root();
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
-		String requestPath = req.getPathInfo();
+		String requestPath = req.getRequestURI();
+		String pathRelativeToApp = StringUtils.substringAfter(requestPath, req.getContextPath());
 		
-		if (matchesRegex(requestPath, VERSION_REGEX))
+		if (matchesRegex(pathRelativeToApp, DASHBOARD_REDIRECT_REGEX))
+		{
+			resp.sendRedirect("/dashboard/");
+		}
+		else if (matchesRegex(pathRelativeToApp, VERSION_REGEX))
 		{
 			resp.getWriter().print(brjs.versionInfo().getVersionNumber());
 		}
 		else
 		{
-			passRequestToApropriateContentPlugin(req, resp);
+			boolean foundHandler = passRequestToApropriateContentPlugin(req, resp);
+			if (!foundHandler)
+			{
+				super.doGet(req, resp);
+			}
 		}
 	}
 
 	//TODO: this logic should be moved into the logical request handler
-	private void passRequestToApropriateContentPlugin(HttpServletRequest req, HttpServletResponse resp) throws ServletException
+	private boolean passRequestToApropriateContentPlugin(HttpServletRequest req, HttpServletResponse resp) throws ServletException
 	{
 		BladerunnerUri bladerunnerUri = createBladeRunnerUri(req);
+		
 		for (ContentPlugin contentPlugin : brjs.allContentPlugins())
 		{
 			RequestParser requestParser = contentPlugin.getRequestParser();
 			if ( requestParser.canParseRequest(bladerunnerUri) )
 			{
 				handleRequestUsingContentPlugin(bladerunnerUri, parse(requestParser, bladerunnerUri), contentPlugin, resp);
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	

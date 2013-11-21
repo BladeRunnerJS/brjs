@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServlet;
+import javax.servlet.Servlet;
 
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.model.App;
@@ -17,6 +17,7 @@ import org.eclipse.jetty.security.authentication.FormAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
@@ -47,7 +48,7 @@ public class ApplicationServerUtils
 		app.root().logger(LoggerType.APP_SERVER, ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
 		
-		addServletToApp(appContext, new BRJSServlet(app), "/*");
+//		addServletToContext(appContext, new BRJSServlet(app), "/*");
 		
 		contexts.addHandler(appContext);
 		appContext.start();
@@ -56,12 +57,12 @@ public class ApplicationServerUtils
 		return appContext;
 	}
 	
-	public static void addServletToApp(WebAppContext appContext, HttpServlet servlet, String servletPath)
+	public static void addServletToContext(ServletContextHandler appContext, Servlet servlet, String servletPath)
 	{
 		appContext.addServlet( new ServletHolder(servlet), servletPath );
 	}
 
-	static void addRootContext(ContextHandlerCollection contexts)
+	static void addRootContext(BRJS brjs, ContextHandlerCollection contexts)
 	{
 		ContextHandler rootContext = new ContextHandler();
 		rootContext.setContextPath("/");
