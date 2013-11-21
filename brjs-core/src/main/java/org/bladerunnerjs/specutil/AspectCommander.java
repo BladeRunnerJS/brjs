@@ -2,11 +2,15 @@ package org.bladerunnerjs.specutil;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.io.StringWriter;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Mode;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.utility.IndexPageWriter;
 import org.bladerunnerjs.specutil.engine.CommanderChainer;
 import org.bladerunnerjs.specutil.engine.NodeCommander;
 import org.bladerunnerjs.specutil.engine.SpecTest;
@@ -31,18 +35,19 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		return new BundleInfoCommander((aspect.getBundleSet()));
 	}
 	
-	public void pageLoadedInDev(StringBuffer page, String locale) throws ConfigException {
-		pageLoaded(page, locale, Mode.Dev);
+	public void indexPageLoadedInDev(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException {
+		pageLoaded(pageResponse, locale, Mode.Dev);
 	}
 
-	public void pageLoadedInProd(StringBuffer page, String locale) throws ConfigException {
-		pageLoaded(page, locale, Mode.Prod);
+	public void pageLoadedInProd(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException {
+		pageLoaded(pageResponse, locale, Mode.Prod);
 	}
 	
-	private void pageLoaded(StringBuffer page, String locale, Mode opMode) throws ConfigException {
+	private void pageLoaded(StringBuffer pageResponse, String locale, Mode opMode) throws ConfigException, IOException, ModelOperationException {
 		StringWriter writer = new StringWriter();	
-		aspect.writeIndexPage(writer, opMode, locale);
 		
-		page.append(writer.toString());
+		IndexPageWriter.write(FileUtils.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale);
+		
+		pageResponse.append(writer.toString());
 	}
 }
