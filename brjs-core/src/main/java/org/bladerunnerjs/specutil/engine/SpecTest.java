@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
@@ -53,6 +54,9 @@ import org.bladerunnerjs.specutil.NodePropertiesBuilder;
 import org.bladerunnerjs.specutil.NodePropertiesCommander;
 import org.bladerunnerjs.specutil.NodePropertiesVerifier;
 import org.bladerunnerjs.specutil.TestPackVerifier;
+import org.bladerunnerjs.specutil.WorkbenchBuilder;
+import org.bladerunnerjs.specutil.WorkbenchCommander;
+import org.bladerunnerjs.specutil.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
@@ -169,6 +173,11 @@ public abstract class SpecTest
 	public AssetContainerBuilder<Blade> given(Blade blade) { return new BladeBuilder(this, blade); }
 	public BladeCommander when(Blade blade) { return new BladeCommander(this, blade); }
 	public BladeVerifier then(Blade blade) { return new BladeVerifier(this, blade); }
+	
+	// Workbench
+	public WorkbenchBuilder given(Workbench workbench) { return new WorkbenchBuilder(this, workbench); }
+	public WorkbenchCommander when(Workbench workbench) { return new WorkbenchCommander(this, workbench); }
+	public WorkbenchVerifier then(Workbench workbench) { return new WorkbenchVerifier(this, workbench); }
 	
 	// JsLib
 	public JsLibBuilder given(JsLib jsLib) { return new JsLibBuilder(this, jsLib); }
