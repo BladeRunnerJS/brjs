@@ -46,11 +46,11 @@ public class AliasesFile extends File {
 		fileModifiedChecker = new FileModifiedChecker(this);
 	}
 	
-	public AliasDefinition getAlias(AliasName aliasName, String scenarioName) throws BundlerFileProcessingException {
+	public AliasDefinition getAlias(AliasName aliasName) throws BundlerFileProcessingException {
 		AliasDefinition aliasDefinition = null;
 		
 		for(AliasDefinition nextAliasDefinition : aliasDefinitions()) {
-			if(nextAliasDefinition.getScenario().equals(scenarioName) && nextAliasDefinition.getName().equals(aliasName.getName())) {
+			if(nextAliasDefinition.getName().equals(aliasName.getName())) {
 				aliasDefinition = nextAliasDefinition;
 				break;
 			}
@@ -59,7 +59,7 @@ public class AliasesFile extends File {
 		return aliasDefinition;
 	}
 	
-	public String groupScenario() throws BundlerFileProcessingException {
+	public String scenarioName() throws BundlerFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reparseFile();
 		}

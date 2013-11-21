@@ -5,10 +5,11 @@ import java.util.List;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
 public class AliasUtility {
-	public static AliasDefinition getAlias(AliasName aliasName, String scenarioName, AliasesFile aliasesFile, List<AliasDefinitionsFile> aliasDefinitionFiles) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
-		AliasDefinition aliasDefinition = aliasesFile.getAlias(aliasName, scenarioName);
+	public static AliasDefinition getAlias(AliasName aliasName, AliasesFile aliasesFile, List<AliasDefinitionsFile> aliasDefinitionFiles) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
+		AliasDefinition aliasDefinition = aliasesFile.getAlias(aliasName);
 		
 		if(aliasDefinition == null) {
+			String scenarioName = aliasesFile.scenarioName();
 			List<String> groupNames = aliasesFile.groupNames();
 			
 			for(AliasDefinitionsFile aliasDefinitionsFile : aliasDefinitionFiles) {
@@ -21,7 +22,7 @@ public class AliasUtility {
 		}
 		
 		if(aliasDefinition == null) {
-			throw new UnresolvableAliasException(aliasesFile, aliasName, scenarioName);
+			throw new UnresolvableAliasException(aliasesFile, aliasName);
 		}
 		
 		return aliasDefinition;
