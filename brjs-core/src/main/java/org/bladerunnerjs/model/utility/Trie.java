@@ -45,11 +45,11 @@ public class Trie<T>
 		for( char character : key.toCharArray() )
 		{
 			node = node.getNextNode( character );
-		}
-		
-		if (node == null)
-		{
-			return null;
+			
+			if (node == null)
+			{
+				return null;
+			}
 		}
 		
 		return node.getValue();
