@@ -2,8 +2,10 @@ package org.bladerunnerjs.model.aliasing;
 
 import java.util.List;
 
-public class AliasProcessor {
-	public static AliasDefinition getAlias(AliasName aliasName, String scenarioName, AliasesFile aliasesFile, List<AliasDefinitionsFile> aliasDefinitionFiles) throws UnresolvableAliasException, AmbiguousAliasException {
+import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+
+public class AliasUtility {
+	public static AliasDefinition getAlias(AliasName aliasName, String scenarioName, AliasesFile aliasesFile, List<AliasDefinitionsFile> aliasDefinitionFiles) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
 		AliasDefinition aliasDefinition = aliasesFile.getAlias(aliasName, scenarioName);
 		
 		if(aliasDefinition == null) {
