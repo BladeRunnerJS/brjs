@@ -60,7 +60,7 @@ public class BundleSetBuilder {
 		
 		try {
 			for(AliasName aliasName : aliasNames) {
-				aliases.add(bundlableNode.getAlias(aliasName, null));
+				aliases.add(bundlableNode.getAlias(aliasName));
 			}
 		}
 		catch(AliasException | BundlerFileProcessingException e) {
