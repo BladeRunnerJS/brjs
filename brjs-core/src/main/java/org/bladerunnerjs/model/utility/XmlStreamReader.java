@@ -10,6 +10,7 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.codehaus.stax2.AttributeInfo;
 import org.codehaus.stax2.DTDInfo;
@@ -29,6 +30,14 @@ public class XmlStreamReader implements XMLStreamReader2, AutoCloseable {
 	public XmlStreamReader(XMLStreamReader2 streamReader, FileReader fileReader) {
 		this.streamReader = streamReader;
 		this.fileReader = fileReader;
+	}
+	
+	public boolean hasNextTag() {
+		return (getEventType() == XMLStreamReader.START_DOCUMENT) || ((streamReader.getDepth() > 1) || (getEventType() == XMLStreamReader.START_ELEMENT));
+	}
+	
+	public String getAttributeValue(String attributeName) {
+		return getAttributeValue(null, attributeName);
 	}
 	
 	@Override
