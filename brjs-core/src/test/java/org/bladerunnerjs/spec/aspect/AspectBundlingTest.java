@@ -6,6 +6,7 @@ import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.specutil.engine.SpecTest;
@@ -19,6 +20,7 @@ public class AspectBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private Blade blade;
+	private Bladeset bladeset;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -29,7 +31,8 @@ public class AspectBundlingTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			blade = app.bladeset("bs").blade("b1");
+			bladeset = app.bladeset("bs");
+			blade = bladeset.blade("b1");
 	}
 	
 	@Test
@@ -41,11 +44,19 @@ public class AspectBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void weBundleABladeClassIfItIsReferredToInTheIndexPage() throws Exception {
-		given(blade).hasClass("novox.Class1")
-			.and(aspect).indexPageRefersTo("novox.Class1");
+	public void weBundleABladesetClassIfItIsReferredToInTheIndexPage() throws Exception {
+		given(bladeset).hasClass("novox.bs.Class1")
+			.and(aspect).indexPageRefersTo("novox.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
-		then(response).containsClasses("novox.Class1");
+		then(response).containsClasses("novox.bs.Class1");
+	}
+	
+	@Test
+	public void weBundleABladeClassIfItIsReferredToInTheIndexPage() throws Exception {
+		given(blade).hasClass("novox.bs.b1.Class1")
+			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		then(response).containsClasses("novox.bs.b1.Class1");
 	}
 	
 	@Ignore
@@ -69,7 +80,7 @@ public class AspectBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void weBundleExplicitTransitiveDependencies() throws Exception {
+	public void weBundleExplicitTransitiveDependenciesForClassesInTheSameBlade() throws Exception {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classDependsOn("novox.Class1", "novox.Class2");
