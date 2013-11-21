@@ -46,7 +46,7 @@ public class AppServerBuilder
 		return builderChainer;
 	}
 
-	public BuilderChainer appHasServlet(App app, Servlet servlet, String path)
+	public BuilderChainer appHasServlet(App app, Servlet servlet, String path) throws Exception
 	{
 		if ( !(appServer instanceof BRJSApplicationServer) )
 		{

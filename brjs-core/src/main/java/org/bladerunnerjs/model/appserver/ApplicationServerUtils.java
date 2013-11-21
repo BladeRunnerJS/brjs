@@ -49,8 +49,8 @@ public class ApplicationServerUtils
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
 		
 		//TODO: this needs to be moved in to the web.xml
-		appContext.addServlet( new ServletHolder(new BRJSServlet(app)), "/brjs/*" );
-		appContext.addFilter(new FilterHolder(new BRJSServletFilter(app)), "/*", EnumSet.of(DispatcherType.FORWARD,DispatcherType.REQUEST));
+		appContext.addServlet( new ServletHolder(new BRJSServlet()), "/brjs/*" );
+		appContext.addFilter(new FilterHolder(new BRJSServletFilter()), "/*", EnumSet.of(DispatcherType.FORWARD,DispatcherType.REQUEST));
 		
 		contexts.addHandler(appContext);
 		appContext.start();

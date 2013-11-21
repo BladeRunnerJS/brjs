@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -21,16 +22,13 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 public class BRJSServletUtils
 {
-
-	public BRJS brjs;
-	public App app;
-
-	public BRJSServletUtils(App app)
+	
+	private BRJS brjs;
+	
+	public BRJSServletUtils(BRJS brjs)
 	{
-		this.app = app;
-		brjs = app.root();
+		this.brjs = brjs;
 	}
-
 	
 	ContentPlugin getContentPluginForRequest(BladerunnerUri bladerunnerUri)
 	{
@@ -76,6 +74,12 @@ public class BRJSServletUtils
 	{
 		try
 		{
+			String appName = StringUtils.substringAfter(requestUri.contextPath, "/");
+			if (appName.endsWith("/"))
+			{
+				appName = StringUtils.substringBeforeLast(appName, "/");
+			}
+			App app = brjs.app(appName);
 			File baseDir = new File(app.dir(), requestUri.scopePath);
 			BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
 			contentPlugin.writeContent(parsedRequest, bundlableNode.getBundleSet(), resp.getOutputStream());

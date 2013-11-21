@@ -5,31 +5,28 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 
 
 public class BRJSServletFilter implements Filter
 {
 
-	private FilterConfig filterConfig;
+	private ServletContext servletContext;
 	BRJSServletUtils servletUtils;
-	
-	//TODO: dont pass the app in - filters/servlets in web.xml must have default constructors
-	public BRJSServletFilter(App app)
-	{
-		servletUtils = new BRJSServletUtils(app);
-	}
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		this.filterConfig = filterConfig;
+		servletContext = filterConfig.getServletContext();
+		BRJS brjs = ServletModelAccessor.initializeModel(servletContext);
+		servletUtils = new BRJSServletUtils(brjs);
 	}
 
 	@Override
@@ -41,12 +38,12 @@ public class BRJSServletFilter implements Filter
 		}
 		HttpServletRequest httpRequest = (HttpServletRequest) request;		
 		
-		BladerunnerUri bladerunnerUri = servletUtils.createBladeRunnerUri(filterConfig.getServletContext(), httpRequest);
+		BladerunnerUri bladerunnerUri = servletUtils.createBladeRunnerUri(servletContext, httpRequest);
 		boolean brjsPluginCanHandleRequest = servletUtils.getContentPluginForRequest(bladerunnerUri) != null;
 		
 		if (brjsPluginCanHandleRequest && !BladerunnerUri.isBrjsUriRequest(httpRequest))
 		{
-			filterConfig.getServletContext().getRequestDispatcher("/brjs"+httpRequest.getRequestURI()).forward(httpRequest, response);
+			request.getRequestDispatcher("/brjs"+httpRequest.getRequestURI()).forward(httpRequest, response);
 		}
 		else
 		{

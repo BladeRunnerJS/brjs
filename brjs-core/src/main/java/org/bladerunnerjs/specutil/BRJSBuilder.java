@@ -7,6 +7,7 @@ import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
 import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.appserver.ServletModelAccessor;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
 import org.bladerunnerjs.specutil.engine.NodeBuilder;
 import org.bladerunnerjs.specutil.engine.SpecTest;
@@ -59,11 +60,11 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasServlets(ContentPlugin... contentPlugins)
+	public BuilderChainer hasContentPlugins(ContentPlugin... contentPlugins)
 	{
 		for(ContentPlugin contentPlugin : contentPlugins)
 		{
-			specTest.pluginLocator.servlets.add(contentPlugin);
+			specTest.pluginLocator.contentPlugins.add(contentPlugin);
 		}
 		
 		return builderChainer;
@@ -100,9 +101,9 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsServlets() {
+	public BuilderChainer automaticallyFindsContentPlugins() {
 		specTest.pluginLocator.minifiers.clear();
-		specTest.pluginLocator.servlets.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class) );
+		specTest.pluginLocator.contentPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class) );
 		
 		return builderChainer;
 	}
@@ -125,6 +126,13 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		specTest.brjs = brjs;
 		this.node = brjs;
 		
+		return builderChainer;
+	}
+
+	public BuilderChainer usedForServletModel()
+	{
+		ServletModelAccessor.reset();
+		ServletModelAccessor.initializeModel(brjs);
 		return builderChainer;
 	}
 	

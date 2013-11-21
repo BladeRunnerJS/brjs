@@ -104,14 +104,16 @@ public class BRJSApplicationServer implements ApplicationServer
 	/**
 	 * This method should only be used for testing. Allows another servlet to be added to an app.
 	 */
-	public void addServlet(App app, Servlet servlet, String servletPath)
+	public void addServlet(App app, Servlet servlet, String servletPath) throws Exception
 	{
 		WebAppContext appContext = contextMap.get(app);
 		if (appContext == null)
 		{
 			throw new RuntimeException("No app context found for app " + app.getName());
 		}
-		appContext.addServlet(new ServletHolder(servlet), servletPath);
+		ServletHolder servletHolder = new ServletHolder(servlet);
+		appContext.addServlet(servletHolder, servletPath);
+		servletHolder.start();
 	}
 	
 }

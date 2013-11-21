@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -23,14 +23,15 @@ public class BRJSServlet extends DefaultServlet
 	
 	BRJS brjs;
 	BRJSServletUtils servletUtils;
-	
-	//TODO: dont pass the app in - filters/servlets in web.xml must have default constructors
-	public BRJSServlet(App app)
-	{
-		servletUtils = new BRJSServletUtils(app);
-		brjs = app.root();
-	}
 
+	@Override
+	public void init(ServletConfig config) throws ServletException
+	{
+		super.init(config);
+		brjs = ServletModelAccessor.initializeModel(config.getServletContext());
+		servletUtils = new BRJSServletUtils(brjs);
+	}
+	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
@@ -46,7 +47,7 @@ public class BRJSServlet extends DefaultServlet
 			boolean foundHandler = servletUtils.passRequestToApropriateContentPlugin(getServletContext(), request, response);
 			if (!foundHandler)
 			{
-				servletUtils.sendErrorResponse(response, 404, new ResourceNotFoundException("No content plugin could be found for the request: " + requestPath) );
+				servletUtils.sendErrorResponse(response, 404, new ResourceNotFoundException("No content plugin could be found for the request: " + pathRelativeToApp) );
 			}
 		}
 	}

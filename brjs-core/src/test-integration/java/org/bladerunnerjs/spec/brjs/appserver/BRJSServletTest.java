@@ -30,10 +30,11 @@ public class BRJSServletTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception {
 		
-		given(brjs).hasServlets( new MockContentPlugin() )
+		given(brjs).hasContentPlugins( new MockContentPlugin() )
 			.and(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
-			.and(brjs).hasBeenCreated();
+			.and(brjs).hasBeenCreated()
+			.and(brjs).usedForServletModel();
     		appServer = brjs.applicationServer(appServerPort);
     		app = brjs.app("app");
     		aspect = app.aspect("default");
