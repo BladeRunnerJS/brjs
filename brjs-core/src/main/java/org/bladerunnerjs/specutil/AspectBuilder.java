@@ -37,8 +37,7 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		return builderChainer;
 	}
 	
-	public void indexPageHasContent(String string) {
-		// TODO Auto-generated method stub
-		
+	public BuilderChainer indexPageHasContent(String content) throws Exception {
+		return indexPageRefersTo(content);
 	}
 }

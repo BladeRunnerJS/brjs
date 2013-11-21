@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.utility.IndexPageWriter;
 import org.bladerunnerjs.model.utility.NameValidator;
 import org.bladerunnerjs.model.utility.TestRunner;
 
@@ -39,6 +41,12 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	public static NodeMap<Aspect> createNodeSet()
 	{
 		return new NodeMap<>(Aspect.class, null, "-aspect$");
+	}
+	
+	public void writeIndexPage(Writer writer, Mode opMode, String locale)
+	{
+		IndexPageWriter.write(this, writer, opMode, locale);
+		
 	}
 	
 	@Override

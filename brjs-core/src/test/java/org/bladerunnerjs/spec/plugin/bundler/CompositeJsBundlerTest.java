@@ -22,9 +22,9 @@ public class CompositeJsBundlerTest extends SpecTest {
 			aspect = app.aspect("default");
 	}
 	
-	@Ignore
 	@Test
-	public void inDevSeparateJsFilesRequestedAreGeneratedByDefeault() {
+	public void inDevSeparateJsFilesRequestedAreGeneratedByDefeault() throws Exception {
+		given(exceptions).arentCaught();
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).pageLoadedInDev(page, "en_GB");
 		then(page).containsRequests(page, "/app1/default-aspect/src/app.js");
@@ -32,7 +32,7 @@ public class CompositeJsBundlerTest extends SpecTest {
 	
 	@Ignore
 	@Test
-	public void devMinifierTagCanAllowJsFilesToBeCombined() {
+	public void devMinifierTagCanAllowJsFilesToBeCombined() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>");
 		when(aspect).pageLoadedInDev(page, "en_GB");
 		then(page).containsRequests(page, "/js/js.bundle");
@@ -40,7 +40,7 @@ public class CompositeJsBundlerTest extends SpecTest {
 	
 	@Ignore
 	@Test
-	public void inProdASingleBundlerRequestIsGeneratedByDefault() {
+	public void inProdASingleBundlerRequestIsGeneratedByDefault() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).pageLoadedInProd(page, "en_GB");
 		then(page).containsRequests(page, "/js/js.bundle");
@@ -48,7 +48,7 @@ public class CompositeJsBundlerTest extends SpecTest {
 	
 	@Ignore
 	@Test
-	public void prodMinifierTagCanAllowJsFilesToBeServedAsSeparateFiles() {
+	public void prodMinifierTagCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@ prod-minifier='none'/>");
 		when(aspect).pageLoadedInProd(page, "en_GB");
 		then(page).containsRequests(page, "/app1/default-aspect/src/app.js");
