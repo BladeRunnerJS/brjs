@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.utility.ServerUtility;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import static org.bladerunnerjs.model.appserver.BRJSApplicationServer.Messages.*;
@@ -110,7 +111,7 @@ public class BRJSApplicationServer implements ApplicationServer
 		{
 			throw new RuntimeException("No app context found for app " + app.getName());
 		}
-		ApplicationServerUtils.addServletToContext(appContext, servlet, servletPath);
+		appContext.addServlet(new ServletHolder(servlet), servletPath);
 	}
 	
 }

@@ -12,7 +12,6 @@ import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -53,7 +52,6 @@ public class BRJSServletTest extends SpecTest
 		if (socket  != null && socket.isBound()) { socket.close(); }
 	}
 	
-	@Ignore
 	@Test
 	public void brjsServletIsAutomaticallyLoaded() throws Exception
 	{
@@ -62,7 +60,6 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/brjs/version/", brjs.versionInfo().getVersionNumber());
 	}
 	
-	@Ignore
 	@Test
 	public void brjsServletDoesntHandleAspectIndexFile() throws Exception
 	{
@@ -73,7 +70,6 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "aspect index.html");
 	}
 	
-	@Ignore
 	@Test
 	public void contentPluginsCanHandleRequests() throws Exception
 	{
@@ -82,7 +78,6 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet", MockContentPlugin.class.getCanonicalName());
 	}
 	
-	@Ignore
 	@Test
 	public void longUrlsDontGetHandedToOtherServlets() throws Exception
 	{
@@ -93,7 +88,6 @@ public class BRJSServletTest extends SpecTest
 			.and(appServer).requestForUrlReturns("/app/hello", "Hello World!");
 	}
 	
-	@Ignore
 	@Test
 	public void brjsServletAllowsOtherServletsToBeAdded() throws Exception
 	{
@@ -103,7 +97,6 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/hello", "Hello World!");
 	}
 	
-	@Ignore
 	@Test
 	public void brjsServletAllowsOtherServletsToBeAddedWithExtensionMapping() throws Exception
 	{
@@ -113,7 +106,6 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/hello.mock", "Hello World!");
 	}
 	
-	@Ignore
 	@Test
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{

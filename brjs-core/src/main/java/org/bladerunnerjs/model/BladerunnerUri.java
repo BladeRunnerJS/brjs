@@ -15,6 +15,7 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 public class BladerunnerUri
 {
+	public static final String BRJS_URL_PREFIX = "/brjs";
 	private static final Pattern pathPattern = Pattern.compile(";[^;]+$");
 	private final BRJS brjs;
 
@@ -67,7 +68,15 @@ public class BladerunnerUri
 		this.brjs = brjs;
 		String requestUri = request.getRequestURI();
 		String contextPath = request.getContextPath();
-		String requestPath = requestUri.substring((contextPath == null) ? 0 : contextPath.length());
+		String requestPath = "";
+		if (isBrjsUriRequest(request))
+		{
+			requestPath = StringUtils.substringAfter(requestUri, contextPath+BRJS_URL_PREFIX+contextPath);
+		}
+		else
+		{
+			requestPath = StringUtils.substringAfter(requestUri, contextPath);
+		}
 		
 		processUri(new File(context.getRealPath("/")), contextPath, requestPath, request.getQueryString());
 	}
@@ -110,7 +119,7 @@ public class BladerunnerUri
 			// This happens only if the request is not in a real SDK.
 			// e.g. for our tests.
 
-			if(requestPath.charAt(0) == '/')
+			if(requestPath.length() > 0 && requestPath.charAt(0) == '/')
 			{
 				scopePath = "/";
 				logicalPath = requestPath.substring(1);
@@ -169,5 +178,12 @@ public class BladerunnerUri
 		}
 		
 		return bundlableNode;
+	}
+
+	public static boolean isBrjsUriRequest(HttpServletRequest request)
+	{
+		String requestUri = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		return requestUri.startsWith(contextPath+BRJS_URL_PREFIX+"/");
 	}
 }

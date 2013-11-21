@@ -56,6 +56,10 @@ public class RequestParser
 		{
 			return false;
 		}
+		catch (IndexOutOfBoundsException e)
+		{
+			return false;
+		}
 	}
 	
 	public ParsedRequest parse(BladerunnerUri request) throws MalformedRequestException

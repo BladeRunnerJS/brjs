@@ -33,6 +33,7 @@ public class WebappTester
 	private static final int MAX_POLL_REQUESTS = 10;
 	private static final int POLL_INTERVAL = 500;
 	
+	//TODO: make this 1000 again
 	private int defaultSocketTimeout = 999999;
 	private int defaultConnectionTimeout = 999999;
 	
