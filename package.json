@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "A simple define/require for the browser.",
   "homepage": "http://kybernetikos.github.io/browser-modules",
-  "main": "index.js",
+  "main": "browser-modules.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

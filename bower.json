@@ -1,6 +1,6 @@
 {
   "name": "browser-modules",
-  "main": "index.js",
+  "main": "browser-modules.js",
   "version": "0.0.0",
   "homepage": "http://kybernetikos.github.io/browser-modules",
   "authors": [
