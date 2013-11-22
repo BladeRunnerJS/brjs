@@ -29,7 +29,7 @@ public class VersionCommandTest extends SpecTest {
 	@Test
 	public void asciiArtIsIncludedInTheMessage() throws Exception {
 		when(brjs).runCommand("version");
-		then(output).containsText("-- Divide & conquer your web apps --");
+		then(output).containsText("-- Divide & conquer complex web apps --");
 	}
 	
 	@Test

@@ -7,15 +7,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 public class RequestParserTest
 {
 	private RequestParserBuilder builder;
-	private RequestParser parser;
+	private ContentPathParser parser;
 	
 	@Before
 	public void setUp()
@@ -57,7 +57,7 @@ public class RequestParserTest
 		builder.accepts("request").as("request-form");
 		parser = builder.build();
 		
-		ParsedRequest request = parser.parse("request");
+		ParsedContentPath request = parser.parse("request");
 		assertEquals("1a", 0, request.properties.size());
 	}
 	
@@ -96,7 +96,7 @@ public class RequestParserTest
 		builder.accepts("request-one").as("request-one-form").and("request-two").as("request-two-form");
 		parser = builder.build();
 		
-		ParsedRequest request = parser.parse("request-one");
+		ParsedContentPath request = parser.parse("request-one");
 		assertEquals("1a", 0, request.properties.size());
 		
 		request = parser.parse("request-two");
@@ -127,7 +127,7 @@ public class RequestParserTest
 		builder.accepts("request/<token1>/<token2>").as("request-form").where("token1").hasForm("[0-9]+").and("token2").hasForm("[a-z]+");
 		parser = builder.build();
 		
-		ParsedRequest request = parser.parse("request/33/foo");
+		ParsedContentPath request = parser.parse("request/33/foo");
 		assertEquals("1a", 2, request.properties.size());
 		assertEquals("1b", "33", request.properties.get("token1"));
 		assertEquals("1c", "foo", request.properties.get("token2"));

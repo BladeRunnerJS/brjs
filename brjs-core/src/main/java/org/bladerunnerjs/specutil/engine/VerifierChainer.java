@@ -9,21 +9,25 @@ import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.specutil.AppVerifier;
 import org.bladerunnerjs.specutil.AspectVerifier;
 import org.bladerunnerjs.specutil.BRJSVerifier;
 import org.bladerunnerjs.specutil.BladeVerifier;
+import org.bladerunnerjs.specutil.BladesetVerifier;
 import org.bladerunnerjs.specutil.DirNodeVerifier;
 import org.bladerunnerjs.specutil.DirectoryVerifier;
 import org.bladerunnerjs.specutil.JsLibVerifier;
 import org.bladerunnerjs.specutil.LoggerVerifier;
 import org.bladerunnerjs.specutil.NamedDirNodeVerifier;
 import org.bladerunnerjs.specutil.NamedNodeVerifier;
+import org.bladerunnerjs.specutil.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 
 
@@ -41,6 +45,8 @@ public class VerifierChainer {
 	public AppVerifier and(App app) { return new AppVerifier(modelTest, app); }
 	public AspectVerifier and(Aspect aspect) { return new AspectVerifier(modelTest, aspect); }
 	public BladeVerifier and(Blade blade) { return new BladeVerifier(modelTest, blade); }
+	public BladesetVerifier and(Bladeset bladeset) { return new BladesetVerifier(modelTest, bladeset); }
+	public WorkbenchVerifier and(Workbench workbench) { return new WorkbenchVerifier(modelTest, workbench); }
 	public JsLibVerifier and(JsLib jsLib) { return new JsLibVerifier(modelTest, jsLib); }
 	public DirNodeVerifier and(DirNode dirNode) { return new DirNodeVerifier(modelTest, dirNode); }
 	public NamedDirNodeVerifier and(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(modelTest, namedDirNode); }

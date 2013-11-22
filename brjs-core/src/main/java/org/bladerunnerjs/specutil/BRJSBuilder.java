@@ -1,11 +1,17 @@
 package org.bladerunnerjs.specutil;
 
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.core.plugin.PluginLoader;
+import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
+import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.appserver.ServletModelAccessor;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
 import org.bladerunnerjs.specutil.engine.NodeBuilder;
 import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.mockito.Mockito;
 
 
 public class BRJSBuilder extends NodeBuilder<BRJS> {
@@ -24,16 +30,80 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 
-	public BuilderChainer hasCommand(CommandPlugin command)
+	public BuilderChainer hasCommands(CommandPlugin... commands)
 	{
-		specTest.pluginLocator.pluginCommands.add(command);
+		for(CommandPlugin command : commands)
+		{
+			specTest.pluginLocator.pluginCommands.add(command);
+		}
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasModelObserver(ModelObserverPlugin modelObserver)
+	public BuilderChainer hasModelObservers(ModelObserverPlugin... modelObservers)
 	{
-		specTest.pluginLocator.modelObservers.add(modelObserver);
+		for(ModelObserverPlugin modelObserver : modelObservers)
+		{
+			specTest.pluginLocator.modelObservers.add(modelObserver);
+		}
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBundlers(BundlerPlugin... bundlerPlugins)
+	{
+		for(BundlerPlugin bundlerPlugin : bundlerPlugins)
+		{
+			specTest.pluginLocator.bundlers.add(bundlerPlugin);
+		}
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasContentPlugins(ContentPlugin... contentPlugins)
+	{
+		for(ContentPlugin contentPlugin : contentPlugins)
+		{
+			specTest.pluginLocator.contentPlugins.add(contentPlugin);
+		}
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer automaticallyFindsCommands()
+	{
+		specTest.pluginLocator.bundlers.clear();
+		specTest.pluginLocator.pluginCommands.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), CommandPlugin.class) );
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer automaticallyFindsModelObservers()
+	{
+		specTest.pluginLocator.bundlers.clear();
+		specTest.pluginLocator.modelObservers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ModelObserverPlugin.class) );
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer automaticallyFindsBundlers()
+	{
+		specTest.pluginLocator.bundlers.clear();
+		specTest.pluginLocator.bundlers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), BundlerPlugin.class) );
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer automaticallyFindsMinifiers() {
+		specTest.pluginLocator.minifiers.clear();
+		specTest.pluginLocator.minifiers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), MinifierPlugin.class) );
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer automaticallyFindsContentPlugins() {
+		specTest.pluginLocator.minifiers.clear();
+		specTest.pluginLocator.contentPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class) );
 		
 		return builderChainer;
 	}
@@ -56,6 +126,13 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		specTest.brjs = brjs;
 		this.node = brjs;
 		
+		return builderChainer;
+	}
+
+	public BuilderChainer usedForServletModel()
+	{
+		ServletModelAccessor.reset();
+		ServletModelAccessor.initializeModel(brjs);
 		return builderChainer;
 	}
 	

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<java version="1.7.0_17" class="java.beans.XMLDecoder">
+<java version="1.7.0_45" class="java.beans.XMLDecoder">
  <object class="com.horstmann.violet.ClassDiagramGraph">
   <void method="addNode">
    <object class="com.horstmann.violet.ClassNode" id="ClassNode0">
@@ -35,7 +35,9 @@
     <void property="methods">
      <void property="text">
       <string>Reader getReader()
-addObserver(afo)</string>
+SourceLocation getSourceLocation()
+File getUnderlyingFile()
+</string>
      </void>
     </void>
     <void property="name">
@@ -49,19 +51,19 @@ addObserver(afo)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>321.0</double>
+      <double>281.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>655.0</double>
+      <double>660.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>321.0</double>
-     <double>655.0</double>
+     <double>281.0</double>
+     <double>660.0</double>
     </void>
    </object>
   </void>
@@ -69,10 +71,9 @@ addObserver(afo)</string>
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode0">
     <void property="methods">
      <void property="text">
-      <string>void onSourceLocsUpdated(List&lt;SL&gt; sLocs)
-List&lt;SourceFile&gt; getDependentSourceFiles()
-List&lt;Alias&gt; getAliases()
-boolean containsClassReferences()</string>
+      <string>List&lt;SourceFile&gt; getDependentSourceFiles()
+List&lt;AliasDefinition&gt; getAliases()
+</string>
      </void>
     </void>
     <void property="name">
@@ -86,19 +87,19 @@ boolean containsClassReferences()</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>253.0</double>
+      <double>239.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>497.0</double>
+      <double>514.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>253.0</double>
-     <double>497.0</double>
+     <double>239.0</double>
+     <double>514.0</double>
     </void>
    </object>
   </void>
@@ -143,7 +144,7 @@ void transformFile(Reader reader, Writer writer, TransformInfo info) throws File
     <void property="methods">
      <void property="text">
       <string>String getRequirePath()
-Resources getResources()
+List&lt;Resources&gt; getResources()
 List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
      </void>
     </void>
@@ -187,27 +188,32 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>991.0</double>
+      <double>990.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>497.0</double>
+      <double>501.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>991.0</double>
-     <double>497.0</double>
+     <double>990.0</double>
+     <double>501.0</double>
     </void>
    </object>
   </void>
   <void method="addNode">
    <object class="com.horstmann.violet.ClassNode" id="ClassNode3">
+    <void property="methods">
+     <void property="text">
+      <string>String getClassName()</string>
+     </void>
+    </void>
     <void property="name">
      <void property="text">
-      <string>FullyQualifiedSourceFile</string>
+      <string>CaplinJsSourceFile</string>
      </void>
     </void>
    </object>
@@ -216,19 +222,19 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>993.0</double>
+      <double>989.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>571.0</double>
+      <double>573.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>993.0</double>
-     <double>571.0</double>
+     <double>989.0</double>
+     <double>573.0</double>
     </void>
    </object>
   </void>
@@ -265,10 +271,11 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode3">
     <void property="methods">
      <void property="text">
-      <string>String getRequirePrefix()
-SourceFile sourceFile(String requirePath)
+      <string>App getApp()
+String getRequirePrefix()
 List&lt;SourceFile&gt; sourceFiles()
-Resources getResourceDir(String srcPath)
+SourceFile sourceFile(String requirePath)
+List&lt;Resource&gt; getResources()
 addSourceObserver(so SourceObserver)</string>
      </void>
     </void>
@@ -283,19 +290,19 @@ addSourceObserver(so SourceObserver)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>624.0</double>
+      <double>621.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>309.0</double>
+      <double>304.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>624.0</double>
-     <double>309.0</double>
+     <double>621.0</double>
+     <double>304.0</double>
     </void>
    </object>
   </void>
@@ -603,19 +610,19 @@ List&lt;AssetFile&gt; bundleResources(String fileExtension)
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double18"/>
-      <double>970.0</double>
+      <double>1191.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double18"/>
-      <double>665.0</double>
+      <double>571.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>970.0</double>
-     <double>665.0</double>
+     <double>1191.0</double>
+     <double>571.0</double>
     </void>
    </object>
   </void>
@@ -623,10 +630,11 @@ List&lt;AssetFile&gt; bundleResources(String fileExtension)
    <object class="com.horstmann.violet.ClassNode" id="ClassNode12">
     <void property="methods">
      <void property="text">
-      <string>List&lt;AliasDefinition&gt; getActiveAliases()
-List&lt;JsSource&gt; getSourceFiles()
-List&lt;Resources&gt; getResources()
-</string>
+      <string>BundlableNode getBundlableNode()
+List&lt;SourceFile&gt; getSourceFiles()
+List&lt;AliasDefinition&gt; getActiveAliases()
+List&lt;Resources&gt; getResourceNodes()
+List&lt;AssetFile&gt; getResourceFiles(String fileExtension)</string>
      </void>
     </void>
     <void property="name">
@@ -640,19 +648,19 @@ List&lt;Resources&gt; getResources()
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double19"/>
-      <double>946.0</double>
+      <double>950.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double19"/>
-      <double>121.0</double>
+      <double>122.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>946.0</double>
-     <double>121.0</double>
+     <double>950.0</double>
+     <double>122.0</double>
     </void>
    </object>
   </void>
@@ -1039,7 +1047,7 @@ locations become available</string>
      <object class="com.horstmann.violet.BentStyle" field="HVH"/>
     </void>
     <void property="endLabel">
-     <string>1</string>
+     <string>*</string>
     </void>
     <void property="startArrowHead">
      <object class="com.horstmann.violet.ArrowHead" field="BLACK_DIAMOND"/>

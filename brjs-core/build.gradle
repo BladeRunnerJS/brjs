@@ -24,12 +24,20 @@ dependencies {
 	compile dependency('guava')
 	compile dependency('slf4j-api')
 	compile dependency('gson')
+	compile dependency('json-simple')
 	compile dependency('yamlbeans')
 	compile dependency('validation-api')
 	compile dependency('bval-jsr303')
 	compile dependency('jsap')
 	compile dependency('jetty-all-server')
 	compile dependency('jta')
+	compile dependency('closure-compiler')
+	
+	/* woodstox deps */
+	compile dependency('woodstox-core-asl')
+	compile dependency('stax2-api')
+	compile dependency('msv-core')
+	compile dependency('trang')
 	
 	compileOnly dependency('servlet-api')
 	compileOnly dependency('junit')
@@ -43,6 +51,13 @@ dependencies {
 	testCompile dependency('hamcrest-all')
 	
 	testRuntime project(path: ':brjs-logger-binding')
+}
+
+javadoc {
+	title = "BladeRunnerJS ${buildVersion}"
+	classpath += project.configurations.compileOnly
+	/* info for JavaDoc options http://docs.oracle.com/javase/6/docs/technotes/tools/windows/javadoc.html#overviewcomment */
+	options.overview = "${sourceSets.main.java.srcDirs.toArray()[0]}/overview-summary.html"
 }
 
 javadoc {

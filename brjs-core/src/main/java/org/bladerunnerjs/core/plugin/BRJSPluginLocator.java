@@ -3,40 +3,68 @@ package org.bladerunnerjs.core.plugin;
 import java.util.List;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundler.VirtualProxyBundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
+import org.bladerunnerjs.core.plugin.command.VirtualProxyCommandPlugin;
+import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.core.plugin.minifier.VirtualProxyMinifierPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
+import org.bladerunnerjs.core.plugin.servlet.VirtualProxyContentPlugin;
+import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
+import org.bladerunnerjs.core.plugin.taghandler.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-
 
 
 public class BRJSPluginLocator implements PluginLocator
 {
-
-	private TypedPluginCreator<BundlerPlugin> bundlerPluginLocator = new TypedPluginCreator<BundlerPlugin>();
-	private TypedPluginCreator<CommandPlugin> commandPluginLocator = new TypedPluginCreator<CommandPlugin>();
-	private TypedPluginCreator<ModelObserverPlugin> modelObserverLocator = new TypedPluginCreator<ModelObserverPlugin>();
+	private List<ModelObserverPlugin> observerPlugins;
+	private List<BundlerPlugin> bundlerPlugins;
+	private List<CommandPlugin> commandPlugins;
+	private List<MinifierPlugin> minifierPlugins;
+	private List<ContentPlugin> contentPlugins;
+	private List<TagHandlerPlugin> tagHandlerPlugins;
+	
 	
 	@Override
-	public List<BundlerPlugin> createBundlerPlugins(BRJS brjs)
+	public void createPlugins(BRJS brjs) {
+		observerPlugins = PluginLoader.createPluginsOfType(brjs, ModelObserverPlugin.class);
+		bundlerPlugins = PluginLoader.createPluginsOfType(brjs, BundlerPlugin.class, VirtualProxyBundlerPlugin.class);
+		commandPlugins = PluginLoader.createPluginsOfType(brjs, CommandPlugin.class, VirtualProxyCommandPlugin.class);
+		minifierPlugins = PluginLoader.createPluginsOfType(brjs, MinifierPlugin.class, VirtualProxyMinifierPlugin.class);
+		contentPlugins = PluginLoader.createPluginsOfType(brjs, ContentPlugin.class, VirtualProxyContentPlugin.class);
+		tagHandlerPlugins = PluginLoader.createPluginsOfType(brjs, TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class);
+	}
+	
+	@Override
+	public List<BundlerPlugin> getBundlerPlugins()
 	{
-		List<BundlerPlugin> plugins = bundlerPluginLocator.getSubTypesOfClass(brjs, BundlerPlugin.class);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, plugins);
-		return plugins;
+		return bundlerPlugins;
 	}
 
 	@Override
-	public List<CommandPlugin> createCommandPlugins(BRJS brjs)
+	public List<CommandPlugin> getCommandPlugins()
 	{
-		List<CommandPlugin> plugins = commandPluginLocator.getSubTypesOfClass(brjs, CommandPlugin.class);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, plugins);
-		return plugins;
+		return commandPlugins;
 	}
 	
 	@Override
-	public List<ModelObserverPlugin> createModelObservers(BRJS brjs)
+	public List<ModelObserverPlugin> getModelObservers()
 	{
-		List<ModelObserverPlugin> plugins = modelObserverLocator.getSubTypesOfClass(brjs, ModelObserverPlugin.class);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, plugins);
-		return plugins;
+		return observerPlugins;
 	}
 	
+	@Override
+	public List<MinifierPlugin> getMinifiers() {
+		return minifierPlugins;
+	}
+	
+	@Override
+	public List<ContentPlugin> getContentPlugins() {
+		return contentPlugins;
+	}
+	
+	@Override
+	public List<TagHandlerPlugin> getTagHandlers() {
+		return tagHandlerPlugins;
+	}
 }

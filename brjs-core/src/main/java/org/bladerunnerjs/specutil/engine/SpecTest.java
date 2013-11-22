@@ -13,9 +13,12 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
@@ -29,6 +32,9 @@ import org.bladerunnerjs.specutil.AspectCommander;
 import org.bladerunnerjs.specutil.AspectVerifier;
 import org.bladerunnerjs.specutil.BRJSBuilder;
 import org.bladerunnerjs.specutil.BRJSCommander;
+import org.bladerunnerjs.specutil.BladesetBuilder;
+import org.bladerunnerjs.specutil.BladesetCommander;
+import org.bladerunnerjs.specutil.BladesetVerifier;
 import org.bladerunnerjs.specutil.DirectoryVerifier;
 import org.bladerunnerjs.specutil.BRJSVerifier;
 import org.bladerunnerjs.specutil.BladeBuilder;
@@ -51,6 +57,10 @@ import org.bladerunnerjs.specutil.NamedNodeVerifier;
 import org.bladerunnerjs.specutil.NodePropertiesBuilder;
 import org.bladerunnerjs.specutil.NodePropertiesCommander;
 import org.bladerunnerjs.specutil.NodePropertiesVerifier;
+import org.bladerunnerjs.specutil.TestPackVerifier;
+import org.bladerunnerjs.specutil.WorkbenchBuilder;
+import org.bladerunnerjs.specutil.WorkbenchCommander;
+import org.bladerunnerjs.specutil.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
@@ -140,6 +150,9 @@ public abstract class SpecTest
 	
 	public DirectoryVerifier then(File dir) { return new DirectoryVerifier(this, dir); }
 	
+	// StringBuffer
+	public StringVerifier then(StringBuffer stringBuffer) { return new StringVerifier(this, stringBuffer); }
+	
 	// BRJS
 	public BRJSBuilder given(BRJS brjs) { return new BRJSBuilder(this, brjs); }
 	public BRJSCommander when(BRJS brjs) { return new BRJSCommander(this, brjs); }
@@ -161,9 +174,19 @@ public abstract class SpecTest
 	public AspectVerifier then(Aspect aspect) { return new AspectVerifier(this, aspect); }
 	
 	// Blade
-	public BladeBuilder given(Blade blade) { return new BladeBuilder(this, blade); }
+	public AssetContainerBuilder<Blade> given(Blade blade) { return new BladeBuilder(this, blade); }
 	public BladeCommander when(Blade blade) { return new BladeCommander(this, blade); }
 	public BladeVerifier then(Blade blade) { return new BladeVerifier(this, blade); }
+
+	// Bladeset
+	public AssetContainerBuilder<Bladeset> given(Bladeset bladeset) { return new BladesetBuilder(this, bladeset); }
+	public BladesetCommander when(Bladeset bladeset) { return new BladesetCommander(this, bladeset); }
+	public BladesetVerifier then(Bladeset bladeset) { return new BladesetVerifier(this, bladeset); }
+	
+	// Workbench
+	public WorkbenchBuilder given(Workbench workbench) { return new WorkbenchBuilder(this, workbench); }
+	public WorkbenchCommander when(Workbench workbench) { return new WorkbenchCommander(this, workbench); }
+	public WorkbenchVerifier then(Workbench workbench) { return new WorkbenchVerifier(this, workbench); }
 	
 	// JsLib
 	public JsLibBuilder given(JsLib jsLib) { return new JsLibBuilder(this, jsLib); }
@@ -179,6 +202,9 @@ public abstract class SpecTest
 	public NamedDirNodeBuilder given(NamedDirNode namedDirNode) { return new NamedDirNodeBuilder(this, namedDirNode); }
 	public NamedDirNodeCommander when(NamedDirNode namedDirNode) { return new NamedDirNodeCommander(this, namedDirNode); }
 	public NamedDirNodeVerifier then(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(this, namedDirNode); }
+	
+	// TestPack
+	public TestPackVerifier then(TestPack testPack) { return new TestPackVerifier(this, testPack); }
 	
 	// App server
 	public AppServerBuilder given(ApplicationServer appServer) { return new AppServerBuilder(this, appServer); }

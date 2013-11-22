@@ -2,6 +2,9 @@ package org.bladerunnerjs.model.appserver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.model.App;
@@ -10,9 +13,12 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.eclipse.jetty.security.Authenticator;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.authentication.FormAuthenticator;
+import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.servlet.FilterHolder;
+import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.*;
@@ -23,28 +29,37 @@ public class ApplicationServerUtils
 		public static final String DEPLOYING_APP_MSG = "Deploying new app to app server '%s'"; 
 	}
 	
-	static void addAppContexts(BRJS brjs, ContextHandlerCollection contexts) throws Exception
+	static Map<App,WebAppContext> addAppContexts(BRJS brjs, ContextHandlerCollection contexts) throws Exception
 	{
+		Map<App,WebAppContext> contextMap = new HashMap<App,WebAppContext>(); 
 		for (App app : brjs.systemApps())
 		{
-			addAppContext(app, contexts);
+			contextMap.put(app, addAppContext(app, contexts) );
 		}
 		for (App app : brjs.apps())
 		{
-			addAppContext(app, contexts);
+			contextMap.put(app, addAppContext(app, contexts) );
 		}
+		return contextMap;
 	}
 	
-	static void addAppContext(App app, ContextHandlerCollection contexts) throws Exception
+	static WebAppContext addAppContext(App app, ContextHandlerCollection contexts) throws Exception
 	{
 		app.root().logger(LoggerType.APP_SERVER, ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
+		
+		//TODO: this needs to be moved in to the web.xml
+		appContext.addServlet( new ServletHolder(new BRJSServlet()), "/brjs/*" );
+		appContext.addFilter(new FilterHolder(new BRJSServletFilter()), "/*", EnumSet.of(DispatcherType.FORWARD,DispatcherType.REQUEST));
+		
 		contexts.addHandler(appContext);
 		appContext.start();
 		ApplicationServerUtils.getDeployFileForApp(app).delete();
+		
+		return appContext;
 	}
-	
-	static void addRootContext(ContextHandlerCollection contexts)
+
+	static void addRootContext(BRJS brjs, ContextHandlerCollection contexts)
 	{
 		ContextHandler rootContext = new ContextHandler();
 		rootContext.setContextPath("/");
@@ -76,6 +91,7 @@ public class ApplicationServerUtils
 		webappContext.setResourceBase(app.dir().getAbsolutePath());
 		webappContext.setContextPath("/"+app.getName());
 		webappContext.setServerClasses(new String[] {"org.slf4j."});
+		webappContext.setParentLoaderPriority(false);
 		//webappContext.setExtraClasspath(applicationPath+"/MY_CUSTOM_JARS/");
 		/* TOOD: add plugin jars to the classpath 
 		 * 		- can be done using webappContext.setExtraClasspath(applicationPath+"/MY_CUSTOM_JARS/");

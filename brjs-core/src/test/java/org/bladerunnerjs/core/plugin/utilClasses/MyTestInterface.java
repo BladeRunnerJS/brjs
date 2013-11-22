@@ -1,3 +1,5 @@
 package org.bladerunnerjs.core.plugin.utilClasses;
 
-public interface MyTestInterface { }
+import org.bladerunnerjs.core.plugin.Plugin;
+
+public interface MyTestInterface extends Plugin { }

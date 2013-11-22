@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -13,21 +14,20 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.utility.TestRunner;
 
 
-public class Workbench extends AbstractBundlableNode implements TestableNode {
+public class Workbench extends AbstractBundlableNode implements TestableNode 
+{
+	private static final List<String> seedFilenames = Arrays.asList("index.html", "index.jsp");
+	
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
 	private final NodeMap<Theme> themes = Theme.createNodeSet();
-	private final FileSet<LinkedAssetFile> seedFiles;
-
+	private AssetLocation thisAssetLocation;
+	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
-		super(dir);
+		super(rootNode, dir);
+		thisAssetLocation = new ShallowAssetLocation(this, dir);
 		init(rootNode, parent, dir);
-		
-		seedFiles = FileSetBuilder.createLinkedAssetFileSetForDir(this)
-			.includingPaths("index.html", "index.jsp", "resources/**.xml")
-			.excludingPaths("resources/aliases.xml")
-			.build();
 	}
 
 	public DirNode styleResources()
@@ -38,6 +38,21 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	public Blade parent()
 	{
 		return (Blade) parent;
+	}
+		
+	@Override
+	public List<LinkedAssetFile> getSeedFiles() {
+		List<LinkedAssetFile> assetFiles = new ArrayList<LinkedAssetFile>();
+		
+		for (LinkedAssetFile assetFile : thisAssetLocation.seedResources())
+		{
+			if ( seedFilenames.contains( assetFile.getUnderlyingFile().getName() ) )
+			{
+				assetFiles.add(assetFile);
+			}
+		}
+		
+		return assetFiles;
 	}
 	
 	@Override
@@ -52,23 +67,18 @@ public class Workbench extends AbstractBundlableNode implements TestableNode {
 	}
 	
 	@Override
-	public List<LinkedAssetFile> getSeedFiles() {
-		return seedFiles.getFiles();
-	}
-	
-	@Override
-	public List<SourceLocation> getSourceLocations() {
-		List<SourceLocation> sourceLocations = new ArrayList<>();
+	public List<AssetContainer> getAssetContainers() {
+		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		sourceLocations.add(this);
-		sourceLocations.add(this.parent());
-		sourceLocations.add(this.parent().parent());
+		assetContainers.add(this);
+		assetContainers.add(this.parent());
+		assetContainers.add(this.parent().parent());
 		
 		for(JsLib jsLib : parent().parent().parent().jsLibs()) {
-			sourceLocations.add(jsLib);
+			assetContainers.add(jsLib);
 		}
 		
-		return sourceLocations;
+		return assetContainers;
 	}
 	
 	@Override

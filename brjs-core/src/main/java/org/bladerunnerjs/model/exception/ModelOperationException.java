@@ -6,4 +6,8 @@ public class ModelOperationException extends Exception {
 	public ModelOperationException(Exception e) {
 		super(e);
 	}
+
+	public ModelOperationException(String message) {
+		super(message);
+	}
 }

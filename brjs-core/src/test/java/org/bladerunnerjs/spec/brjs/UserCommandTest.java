@@ -12,8 +12,7 @@ public class UserCommandTest extends SpecTest {
 	public void initTestObjects() throws Exception {
 		given(brjs).hasBeenCreated()
 			.and(brjs).containsFileWithContents("sdk/version.txt", "{'Version': 'the-version', 'BuildDate': 'the-build-date'}")
-			.and(brjs).hasCommand(new CreateBladeCommand())
-			.and(brjs).hasCommand(new ExplodingCommand());
+			.and(brjs).hasCommands(new CreateBladeCommand(), new ExplodingCommand());
 	}
 	
 	@Test

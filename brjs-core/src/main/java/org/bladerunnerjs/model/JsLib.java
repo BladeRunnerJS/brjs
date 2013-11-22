@@ -1,10 +1,13 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -15,23 +18,20 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.utility.NameValidator;
 
 
-public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
+public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 {
 	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
 	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
 	private String name;
 	private JsLibConf libConf;
-	private final FileSet<SourceFile> sourceFiles;
-	private final Resources caplinSrcResources;
+	private final AssetContainerLocations assetContainerLocations;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		this.name = name;
 		init(rootNode, parent, dir);
-		sourceFiles = FileSetBuilder.createSourceFileSetForDir(this)
-			.includingPaths("src/**.js", "caplin-src/**.js")
-			.build();
-		caplinSrcResources = new DeepResources(dir);
+		
+		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)
@@ -51,6 +51,11 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 		appNodeSet.addAdditionalNamedLocation("caplin", "../../sdk/libs/javascript/caplin");
 		
 		return appNodeSet;
+	}
+	
+	@Override
+	public App getApp() {
+		return (App) parent;
 	}
 	
 	@Override
@@ -132,8 +137,18 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	
 	@Override
 	public List<SourceFile> sourceFiles() {
-		return sourceFiles.getFiles();
+		List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
+			
+		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
+			for (AssetLocation assetLocation : getAllAssetLocations())
+			{
+				sourceFiles.addAll(bundlerPlugin.getSourceFiles(assetLocation));
+			}
+		}
+		
+		return sourceFiles;
 	}
+	
 	
 	@Override
 	public SourceFile sourceFile(String requirePath) {
@@ -142,18 +157,13 @@ public class JsLib extends AbstractBRJSNode implements SourceLocation, NamedNode
 	}
 	
 	@Override
-	public Resources getResources(String srcPath) {
-		if(srcPath.startsWith("caplin-src")) {
-			return caplinSrcResources;
-		}
-		else {
-			// TODO
-			return null;
-		}
+	public List<AssetLocation> getAllAssetLocations() {
+		return assetContainerLocations.getAllAssetLocations();
 	}
 	
 	@Override
-	public void addSourceObserver(SourceObserver sourceObserver) {
-		// TODO Auto-generated method stub
+	public AssetLocation getAssetLocation(File dir) {
+		return assetContainerLocations.getAssetLocation(dir);
 	}
+	
 }

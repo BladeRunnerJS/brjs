@@ -14,197 +14,181 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.utility.ObserverList;
 
 
-public class MockRootNode implements RootNode {
+public class MockRootNode implements RootNode
+{
 
 	@Override
-	public Node parentNode() {
-		// TODO Auto-generated method stub
+	public Node parentNode()
+	{
 		return null;
 	}
 
 	@Override
-	public File dir() {
-		// TODO Auto-generated method stub
+	public File dir()
+	{
 		return null;
 	}
 
 	@Override
-	public File file(String filePath) {
-		// TODO Auto-generated method stub
+	public File file(String filePath)
+	{
 		return null;
 	}
 
 	@Override
-	public boolean dirExists() {
-		// TODO Auto-generated method stub
+	public boolean dirExists()
+	{
 		return false;
 	}
 
 	@Override
-	public boolean containsFile(String filePath) {
-		// TODO Auto-generated method stub
+	public boolean containsFile(String filePath)
+	{
 		return false;
 	}
 
 	@Override
-	public void create() throws ModelUpdateException {
-		// TODO Auto-generated method stub
+	public void create() throws ModelUpdateException
+	{
 
 	}
 
 	@Override
-	public void delete() throws ModelUpdateException {
-		// TODO Auto-generated method stub
-
+	public void delete() throws ModelUpdateException
+	{
 	}
 
 	@Override
-	public File storageDir(String pluginName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public File storageFile(String pluginName, String filePath) {
-		// TODO Auto-generated method stub
+	public File storageDir(String pluginName)
+	{
 		return null;
 	}
 
 	@Override
-	public void discoverAllChildren() {
-		// TODO Auto-generated method stub
-
+	public File storageFile(String pluginName, String filePath)
+	{
+		return null;
 	}
 
 	@Override
-	public Logger logger(LoggerType type, Class<?> clazz) {
-		// TODO Auto-generated method stub
-		return new Logger() {
+	public void discoverAllChildren()
+	{
+	}
+
+	@Override
+	public Logger logger(LoggerType type, Class<?> clazz)
+	{
+		return new Logger()
+		{
+
 			@Override
-			public String getName() {
-				// TODO Auto-generated method stub
+			public String getName()
+			{
 				return null;
 			}
 
 			@Override
-			public void fatal(String message, Object... params) {
-				// TODO Auto-generated method stub
-				
+			public void fatal(String message, Object... params)
+			{
 			}
 
 			@Override
-			public void error(String message, Object... params) {
-				// TODO Auto-generated method stub
-				
+			public void error(String message, Object... params)
+			{
 			}
 
 			@Override
-			public void warn(String message, Object... params) {
-				// TODO Auto-generated method stub
-				
+			public void warn(String message, Object... params)
+			{
 			}
 
 			@Override
-			public void info(String message, Object... params) {
-				// TODO Auto-generated method stub
-				
+			public void info(String message, Object... params)
+			{
 			}
 
 			@Override
-			public void debug(String message, Object... params) {
-				// TODO Auto-generated method stub
-				
+			public void debug(String message, Object... params)
+			{
 			}
 		};
 	}
 
 	@Override
-	public ConsoleWriter getConsoleWriter() {
-		// TODO Auto-generated method stub
+	public ConsoleWriter getConsoleWriter()
+	{
 		return null;
 	}
 
 	@Override
-	public void setConsoleWriter(ConsoleWriter consoleWriter) {
-		// TODO Auto-generated method stub
-
+	public void setConsoleWriter(ConsoleWriter consoleWriter)
+	{
 	}
 
 	@Override
-	public boolean isRootDir(File dir) {
-		// TODO Auto-generated method stub
+	public boolean isRootDir(File dir)
+	{
 		return false;
 	}
 
 	@Override
-	public Node locateFirstAncestorNode(File file) {
-		// TODO Auto-generated method stub
+	public Node locateFirstAncestorNode(File file)
+	{
 		return null;
 	}
 
 	@Override
-	public <N extends Node> N locateAncestorNodeOfClass(File file,
-			Class<N> nodeClass) {
-		// TODO Auto-generated method stub
+	public <N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass)
+	{
 		return null;
 	}
 
 	@Override
-	public void registerNode(Node node) {
-		// TODO Auto-generated method stub
-
+	public void registerNode(Node node)
+	{
 	}
 
 	@Override
-	public Node getRegisteredNode(File childPath) {
-		// TODO Auto-generated method stub
+	public Node getRegisteredNode(File childPath)
+	{
 		return null;
 	}
 
 	@Override
 	public void addObserver(EventObserver observer)
 	{
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public NodeProperties nodeProperties(String pluginName)
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void ready()
 	{
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public ObserverList getObservers()
 	{
-		System.err.println("HERE");
 		return null;
 	}
 
 	@Override
 	public RootNode root()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void addObserver(Class<? extends Event> eventType, EventObserver observer)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void notifyObservers(Event event, Node notifyForNode)
 	{
-		// TODO Auto-generated method stub
-		
 	}
 }

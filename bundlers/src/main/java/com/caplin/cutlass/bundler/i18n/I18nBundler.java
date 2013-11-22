@@ -15,8 +15,8 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
@@ -35,7 +35,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class I18nBundler implements LegacyFileBundlerPlugin
 {
-	private final RequestParser requestParser = RequestParserFactory.createI18nBundlerRequestParser();
+	private final ContentPathParser requestParser = RequestParserFactory.createI18nBundlerRequestParser();
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -121,7 +121,7 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 	
 	private String getI18nPropertiesFilePattern(String requestString) throws MalformedRequestException
 	{
-		ParsedRequest request = requestParser.parse(requestString);
+		ParsedContentPath request = requestParser.parse(requestString);
 		String languageCode = request.properties.get("languageCode");
 		String countryCode = request.properties.get("countryCode");
 		

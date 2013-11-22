@@ -4,16 +4,19 @@ import java.util.List;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
+import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
+import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-
 
 
 public interface PluginLocator
 {
-
-	public List<BundlerPlugin> createBundlerPlugins(BRJS brjs);
-
-	public List<CommandPlugin> createCommandPlugins(BRJS brjs);
-
-	public List<ModelObserverPlugin> createModelObservers(BRJS brjs);
+	void createPlugins(BRJS brjs);
+	List<BundlerPlugin> getBundlerPlugins();
+	List<CommandPlugin> getCommandPlugins();
+	List<ModelObserverPlugin> getModelObservers();
+	List<MinifierPlugin> getMinifiers();
+	List<ContentPlugin> getContentPlugins();
+	List<TagHandlerPlugin> getTagHandlers();
 }

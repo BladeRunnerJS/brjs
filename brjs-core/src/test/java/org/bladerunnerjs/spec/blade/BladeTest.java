@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
@@ -57,13 +58,15 @@ public class BladeTest extends SpecTest {
 	@Test
 	public void invalidBladeNameSpaceThrowsException() throws Exception {
 		when(bladeWithInvalidName).populate();
-		then(exceptions).verifyException(InvalidDirectoryNameException.class, bladeWithInvalidName.dir(), "_-=+");
+		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Blade", bladeWithInvalidName.dir())
+			.and(exceptions).verifyException(InvalidDirectoryNameException.class, bladeWithInvalidName.dir(), "_-=+");
 	}
 	
 	@Test
 	public void usingJSKeywordAsBladeNameSpaceThrowsException() throws Exception {
 		when(bladeWithJSKeyWordName).populate();
-		then(exceptions).verifyException(InvalidPackageNameException.class, bladeWithJSKeyWordName.dir(), "export");
+		then(logging).errorMessageReceived(AbstractNode.Messages.NODE_CREATION_FAILED_LOG_MSG, "Blade", bladeWithJSKeyWordName.dir())
+			.and(exceptions).verifyException(InvalidPackageNameException.class, bladeWithJSKeyWordName.dir(), "export");
 	}
 	@Ignore //waiting for change to default appConf values, app namespace will be set to app name
 	@Test
@@ -76,12 +79,14 @@ public class BladeTest extends SpecTest {
 			.and(blade1).fileHasContents("MyClass.js", "app.bs.b1 = function() {};");
 	}
 	
-	//TODO: waiting for bundlers to be implemented
-	@Ignore
+	//TODO: verify bundleInfo exception
 	@Test
 	public void classesWithinABladeCantReferenceClassesInOtherBlades() throws Exception {
-		given(blade1).hasClass("blade.Class1")
-			.and(blade2).classRefersTo("blade2.Class2", "blade.Class1")
+		given(blade1).hasPackageStyle("src/novox/bs/", "caplin-js")
+			.and(blade1).hasClass("novox.bs.b1.Class1")
+			.and(blade2).hasPackageStyle("src/novox/bs", "caplin-js")
+			.and(blade2).hasClass("novox.bs.b2.Class1")
+			.and(blade2).classRefersTo("novox.bs.b2.Class1", "novox.bs.b1.blade.Class1")
 			.and(aspect).indexPageRefersTo("blade2.Class2");
 		when(aspect).getBundleInfo();
 //		then(exceptions).verifyException(BundleSetException.class, blade2.getName() //some other information);

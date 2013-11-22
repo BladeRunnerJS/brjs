@@ -21,8 +21,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
@@ -41,7 +41,7 @@ import com.caplin.cutlass.structure.model.path.ThirdpartyLibPath;
 public class ThirdPartyBundler implements LegacyFileBundlerPlugin
 {
 	private static final NotFileFilter notManifestFileFilter = new NotFileFilter(new NameFileFilter(CutlassConfig.LIBRARY_MANIFEST_FILENAME, IOCase.INSENSITIVE));
-	private final RequestParser requestParser = RequestParserFactory.createThirdPartyBundlerRequestParser();
+	private final ContentPathParser requestParser = RequestParserFactory.createThirdPartyBundlerRequestParser();
 	private final ThirdPartyLibraryFinder libraryFinder = new ThirdPartyLibraryFinder();
 	
 	@Override
@@ -66,7 +66,7 @@ public class ThirdPartyBundler implements LegacyFileBundlerPlugin
 	{
 		String requestPath = StringUtils.substringBeforeLast(requestName, "?");		
 		
-		ParsedRequest request = requestParser.parse(requestPath);
+		ParsedContentPath request = requestParser.parse(requestPath);
 		String resourcePath = getResourcePath(baseDir, request.properties);
 		File file = new File(resourcePath);
 		

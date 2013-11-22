@@ -13,11 +13,12 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
 import com.caplin.cutlass.bundler.js.ClassDictionary;
 import com.caplin.cutlass.bundler.js.SourceFileLocator;
-import org.bladerunnerjs.model.AliasDefinition;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
