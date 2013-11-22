@@ -28,15 +28,6 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
-		FileUtils.write(aspect.aliasesFile(),
-			"<aliases xmlns='http://schema.caplin.com/CaplinTrader/aliases'>" +
-			"	<alias name='" + aliasName + "' class='" + classRef + "'/>" +
-			"</aliases>");
-		
-		return builderChainer;
-	}
-	
 	public BuilderChainer indexPageHasContent(String content) throws Exception {
 		return indexPageRefersTo(content);
 	}
