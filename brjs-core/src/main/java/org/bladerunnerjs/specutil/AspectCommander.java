@@ -7,7 +7,7 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Mode;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.utility.IndexPageWriter;
@@ -36,14 +36,14 @@ public class AspectCommander extends NodeCommander<Aspect> {
 	}
 	
 	public void indexPageLoadedInDev(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException {
-		pageLoaded(pageResponse, locale, Mode.Dev);
+		pageLoaded(pageResponse, locale, RequestMode.Dev);
 	}
 
 	public void pageLoadedInProd(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException {
-		pageLoaded(pageResponse, locale, Mode.Prod);
+		pageLoaded(pageResponse, locale, RequestMode.Prod);
 	}
 	
-	private void pageLoaded(StringBuffer pageResponse, String locale, Mode opMode) throws ConfigException, IOException, ModelOperationException {
+	private void pageLoaded(StringBuffer pageResponse, String locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException {
 		StringWriter writer = new StringWriter();	
 		
 		IndexPageWriter.write(FileUtils.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale);

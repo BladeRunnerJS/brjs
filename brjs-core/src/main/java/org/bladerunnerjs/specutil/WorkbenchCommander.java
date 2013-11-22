@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.Mode;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -39,7 +39,7 @@ public class WorkbenchCommander extends NodeCommander<Workbench>
 	public void pageLoaded(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException 
 	{
 		StringWriter writer = new StringWriter();	
-		IndexPageWriter.write(FileUtils.readFileToString(workbench.file("index.html")), workbench.getBundleSet(), writer, Mode.Dev, locale);
+		IndexPageWriter.write(FileUtils.readFileToString(workbench.file("index.html")), workbench.getBundleSet(), writer, RequestMode.Dev, locale);
 		pageResponse.append(writer.toString());
 	}
 }

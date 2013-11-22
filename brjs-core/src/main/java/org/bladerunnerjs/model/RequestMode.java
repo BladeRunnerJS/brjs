@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model;
 
-public enum Mode {
+public enum RequestMode {
 
 	Dev, Prod;
 }
