@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ParsedRequest;
+import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -44,7 +44,7 @@ public class InputSource {
 		try {
 			if(source != filteredSource) {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				ParsedRequest parsedRequest = bundlerPlugin.getRequestParser().parse(sourceMappingUrl);
+				ParsedContentPath parsedRequest = bundlerPlugin.getContentPathParser().parse(sourceMappingUrl);
 				
 				bundlerPlugin.writeContent(parsedRequest, bundleSet, bos);
 				

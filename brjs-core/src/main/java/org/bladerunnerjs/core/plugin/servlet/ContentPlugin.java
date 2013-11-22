@@ -5,14 +5,14 @@ import java.util.List;
 
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 public interface ContentPlugin extends Plugin {
 	String getMimeType();
-	RequestParser getRequestParser();
-	void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException;
-	List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
-	List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
+	ContentPathParser getContentPathParser();
+	void writeContent(ParsedContentPath path, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException;
+	List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
+	List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
 }

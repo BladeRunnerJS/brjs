@@ -17,8 +17,8 @@ import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAssetFile;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -29,7 +29,7 @@ import org.bladerunnerjs.model.utility.RequestParserBuilder;
 import org.json.simple.JSONObject;
 
 public class CaplinJsBundlerPlugin implements BundlerPlugin {
-	private RequestParser requestParser;
+	private ContentPathParser requestParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	private BRJS brjs;
 	
@@ -70,7 +70,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public RequestParser getRequestParser() {
+	public ContentPathParser getContentPathParser() {
 		return requestParser;
 	}
 	
@@ -81,7 +81,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
 		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
@@ -94,12 +94,12 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		return prodRequestPaths;
 	}
 	
 	@Override
-	public void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		try {
 			if(request.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
@@ -133,7 +133,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 			Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
 			writePackageStructure(packageStructure, writer);
 			
-			for(String bundlerRequestPath : generateRequiredDevRequestPaths(bundleSet, locale)) {
+			for(String bundlerRequestPath : getValidDevRequestPaths(bundleSet, locale)) {
 				writer.write("<script type='text/javascript' src='" + bundlerRequestPath + "'></script>\n");
 			}
 			

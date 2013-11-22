@@ -288,15 +288,15 @@ void runTests(TestableNode node) throws TestException</string>
     <void property="methods">
      <void property="text">
       <string>String getMimeType()
-RequestParser getRequestParser()
-void handleRequest(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws ServletException
-List&lt;String&gt; getPossibleDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
-List&lt;String&gt; getPossibleProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException</string>
+ContentPathParser getContentPathParser()
+void writeContent(ParsedContentPath path, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+List&lt;String&gt; getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+List&lt;String&gt; getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException</string>
      </void>
     </void>
     <void property="name">
      <void property="text">
-      <string>«ServletPlugin»</string>
+      <string>«ContentPlugin»</string>
      </void>
     </void>
    </object>

@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
@@ -36,7 +36,7 @@ public class XmlBundler implements LegacyFileBundlerPlugin
 {
 	private XmlBundleWriter bundleWriter;
 	private final IOFileFilter xmlFilter = new SuffixFileFilter(".xml");
-	private final RequestParser requestParser = RequestParserFactory.createXmlBundlerRequestParser();
+	private final ContentPathParser requestParser = RequestParserFactory.createXmlBundlerRequestParser();
 	
 	public XmlBundler() throws ParserConfigurationException, SAXException, IOException
 	{		

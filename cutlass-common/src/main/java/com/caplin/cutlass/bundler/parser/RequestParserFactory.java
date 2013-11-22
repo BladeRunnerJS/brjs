@@ -1,11 +1,11 @@
 package com.caplin.cutlass.bundler.parser;
 
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 public class RequestParserFactory {
 	
-	public static RequestParser createCssBundlerRequestParser()
+	public static ContentPathParser createCssBundlerRequestParser()
 	{
 		RequestParserBuilder cssRequestParserBuilder = new RequestParserBuilder();
 		cssRequestParserBuilder
@@ -21,7 +21,7 @@ public class RequestParserFactory {
 		return cssRequestParserBuilder.build();
 	}
 	
-	public static RequestParser createHtmlBundlerRequestParser()
+	public static ContentPathParser createHtmlBundlerRequestParser()
 	{
 		RequestParserBuilder htmlRequestParserBuilder = new RequestParserBuilder();
 		htmlRequestParserBuilder.accepts("html.bundle").as("simple-request");
@@ -29,7 +29,7 @@ public class RequestParserFactory {
 		return htmlRequestParserBuilder.build();
 	}
 	
-	public static RequestParser createI18nBundlerRequestParser()
+	public static ContentPathParser createI18nBundlerRequestParser()
 	{
 		RequestParserBuilder i18nRequestParserBuilder = new RequestParserBuilder();
 		i18nRequestParserBuilder
@@ -41,7 +41,7 @@ public class RequestParserFactory {
 		return i18nRequestParserBuilder.build();
 	}
 	
-	public static RequestParser createImageBundlerRequestParser()
+	public static ContentPathParser createImageBundlerRequestParser()
 	{
 		RequestParserBuilder imageRequestParserBuilder = new RequestParserBuilder();
 		imageRequestParserBuilder
@@ -59,7 +59,7 @@ public class RequestParserFactory {
 		return imageRequestParserBuilder.build();
 	}
 	
-	public static RequestParser createThirdPartyBundlerRequestParser()
+	public static ContentPathParser createThirdPartyBundlerRequestParser()
 	{
 		RequestParserBuilder thirdPartyRequestParserBuilder = new RequestParserBuilder();
 		thirdPartyRequestParserBuilder
@@ -70,7 +70,7 @@ public class RequestParserFactory {
 		return thirdPartyRequestParserBuilder.build();
 	}
 	
-	public static RequestParser createJsBundlerRequestParser()
+	public static ContentPathParser createJsBundlerRequestParser()
 	{
 		RequestParserBuilder jsRequestParserBuilder = new RequestParserBuilder();
 		jsRequestParserBuilder.accepts("js/js.bundle").as("bundle-request")
@@ -80,7 +80,7 @@ public class RequestParserFactory {
 		return jsRequestParserBuilder.build();
 	}
 	
-	public static RequestParser createXmlBundlerRequestParser()
+	public static ContentPathParser createXmlBundlerRequestParser()
 	{
 		RequestParserBuilder xmlRequestParser = new RequestParserBuilder();
 		xmlRequestParser.accepts("xml.bundle").as("simple-request");

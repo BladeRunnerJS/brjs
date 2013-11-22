@@ -18,18 +18,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 
 public class ValidRequestForBundledResourceFilter implements Filter {
 
-	private Map<String, RequestParser> requestParsers;
+	private Map<String, ContentPathParser> requestParsers;
 	
 	public ValidRequestForBundledResourceFilter()
 	{
-		requestParsers = new HashMap<String, RequestParser>();
+		requestParsers = new HashMap<String, ContentPathParser>();
 		requestParsers.put("css.bundle", RequestParserFactory.createCssBundlerRequestParser());
 		requestParsers.put("i18n.bundle", RequestParserFactory.createI18nBundlerRequestParser());		
 	}
@@ -67,7 +67,7 @@ public class ValidRequestForBundledResourceFilter implements Filter {
 	
 	private boolean isValidBundledResourcePath(String bundlePathFromSectionRoot)
 	{
-		RequestParser requestParser = getRequestParserForRequest(bundlePathFromSectionRoot);
+		ContentPathParser requestParser = getRequestParserForRequest(bundlePathFromSectionRoot);
 		if(requestParser == null) {
 			return false;
 		}
@@ -92,7 +92,7 @@ public class ValidRequestForBundledResourceFilter implements Filter {
 		
 	}
 
-	private RequestParser getRequestParserForRequest(String requestPath)
+	private ContentPathParser getRequestParserForRequest(String requestPath)
 	{
 		String requestFilename = StringUtils.substringAfterLast(requestPath, "/");
 		for (String bundlerFileExtension : requestParsers.keySet())

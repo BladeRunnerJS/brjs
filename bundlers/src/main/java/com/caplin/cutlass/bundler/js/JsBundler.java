@@ -12,8 +12,8 @@ import java.util.List;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
@@ -26,7 +26,7 @@ import com.caplin.cutlass.structure.BundlePathsFromRoot;
 
 public class JsBundler implements LegacyFileBundlerPlugin
 {
-	private final RequestParser requestParser = RequestParserFactory.createJsBundlerRequestParser();
+	private final ContentPathParser requestParser = RequestParserFactory.createJsBundlerRequestParser();
 	private Minifier minifier;
 	
 	public JsBundler()
@@ -59,7 +59,7 @@ public class JsBundler implements LegacyFileBundlerPlugin
 	@Override
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{
-		ParsedRequest request = requestParser.parse(requestName);
+		ParsedContentPath request = requestParser.parse(requestName);
 		
 		if(request.properties.containsKey("path"))
 		{

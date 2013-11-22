@@ -14,8 +14,8 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -34,7 +34,7 @@ public class BRJSServletUtils
 	{
 		for (ContentPlugin contentPlugin : brjs.allContentPlugins())
 		{
-			RequestParser requestParser = contentPlugin.getRequestParser();
+			ContentPathParser requestParser = contentPlugin.getContentPathParser();
 			if ( requestParser.canParseRequest(bladerunnerUri) )
 			{
 				return contentPlugin;
@@ -51,14 +51,14 @@ public class BRJSServletUtils
 		ContentPlugin contentPlugin = getContentPluginForRequest(bladerunnerUri);
 		if (contentPlugin != null)
 		{
-			RequestParser requestParser = contentPlugin.getRequestParser();
+			ContentPathParser requestParser = contentPlugin.getContentPathParser();
 			handleRequestUsingContentPlugin(bladerunnerUri, parse(requestParser, bladerunnerUri), contentPlugin, resp);
 			return true;
 		}
 		return false;
 	}
 
-	ParsedRequest parse(RequestParser requestParser, BladerunnerUri bladerunnerUri) throws ServletException
+	ParsedContentPath parse(ContentPathParser requestParser, BladerunnerUri bladerunnerUri) throws ServletException
 	{
 		try
 		{
@@ -70,7 +70,7 @@ public class BRJSServletUtils
 		}
 	}
 	
-	void handleRequestUsingContentPlugin(BladerunnerUri requestUri, ParsedRequest parsedRequest, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
+	void handleRequestUsingContentPlugin(BladerunnerUri requestUri, ParsedContentPath parsedRequest, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
 	{
 		try
 		{

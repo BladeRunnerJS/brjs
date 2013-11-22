@@ -9,15 +9,15 @@ import java.util.List;
 import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 
 public class MockContentPlugin implements ContentPlugin
 {
-	private RequestParser requestParser;
+	private ContentPathParser requestParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	
 	{
@@ -43,13 +43,13 @@ public class MockContentPlugin implements ContentPlugin
 	}
 
 	@Override
-	public RequestParser getRequestParser()
+	public ContentPathParser getContentPathParser()
 	{
 		return requestParser;
 	}
 
 	@Override
-	public void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
 		PrintWriter out = new PrintWriter(os);
 		out.print(this.getClass().getCanonicalName());
@@ -57,13 +57,13 @@ public class MockContentPlugin implements ContentPlugin
 	}
 
 	@Override
-	public List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
 		return Arrays.asList();
 	}
 
 	@Override
-	public List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
 		return Arrays.asList();
 	}
