@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
-import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAssetFile;
@@ -73,12 +72,6 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public AssetFileAccessor getAssetFileAccessor()
-	{
-		return new NodeJsAssetFileAccessor();
-	}
-	
-	@Override
 	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
@@ -126,6 +119,29 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 		}
 	}
 	
+	@Override
+	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
+	{ 
+		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js")) {
+			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceFile.class, "js");
+		}
+		else {
+			return Arrays.asList();
+		}			
+	}
+
+	@Override
+	public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+	{
+		return Arrays.asList();
+	}
+
+	@Override
+	public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+	{
+		return Arrays.asList();
+	}
+	
 	private void writeTagContent(BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
 			for(String bundlerRequestPath : getValidDevRequestPaths(bundleSet, locale)) {
@@ -136,35 +152,4 @@ public class NodeJsBundlerPlugin implements BundlerPlugin {
 			throw new IOException(e);
 		}
 	}
-	
-	
-	
-	private class NodeJsAssetFileAccessor implements AssetFileAccessor
-	{
-
-		@Override
-		public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
-		{ 
-			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js")) {
-				return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceFile.class, "js");
-			}
-			else {
-				return Arrays.asList();
-			}			
-		}
-
-		@Override
-		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
-		{
-			return Arrays.asList();
-		}
-
-		@Override
-		public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
-		{
-			return Arrays.asList();
-		}
-		
-	}
-	
 }

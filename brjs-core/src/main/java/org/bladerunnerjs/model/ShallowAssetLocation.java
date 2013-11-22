@@ -45,7 +45,7 @@ public class ShallowAssetLocation implements AssetLocation {
 		List<LinkedAssetFile> seedResources = new LinkedList<LinkedAssetFile>();
 			
 		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
-			seedResources.addAll(bundlerPlugin.getAssetFileAccessor().getLinkedResourceFiles(this));
+			seedResources.addAll(bundlerPlugin.getLinkedResourceFiles(this));
 		}
 		
 		return seedResources;
@@ -70,7 +70,7 @@ public class ShallowAssetLocation implements AssetLocation {
 		List<AssetFile> bundleResources = new LinkedList<AssetFile>();
 		
 		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
-			bundleResources.addAll(bundlerPlugin.getAssetFileAccessor().getResourceFiles(this));
+			bundleResources.addAll(bundlerPlugin.getResourceFiles(this));
 		}
 		
 		return bundleResources;

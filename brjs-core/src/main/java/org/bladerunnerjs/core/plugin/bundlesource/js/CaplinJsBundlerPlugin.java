@@ -13,7 +13,6 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
-import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAssetFile;
@@ -75,12 +74,6 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public AssetFileAccessor getAssetFileAccessor()
-	{
-		return new CaplinJsAssetFileAccessor();
-	}
-	
-	@Override
 	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
@@ -126,6 +119,29 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 		catch(ConfigException | IOException | RequirePathException e) {
 			throw new BundlerProcessingException(e);
 		}
+	}
+	
+	@Override
+	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
+	{
+		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js")) {
+			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, CaplinJsSourceFile.class, "js");
+		}
+		else {
+			return Arrays.asList();
+		}
+	}
+	
+	@Override
+	public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+	{
+		return Arrays.asList();
+	}
+	
+	@Override
+	public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+	{
+		return Arrays.asList();
 	}
 	
 	private void writeTagContent(BundleSet bundleSet, String locale, Writer writer) throws IOException {
@@ -203,34 +219,4 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 			}
 		}
 	}
-	
-	
-	private class CaplinJsAssetFileAccessor implements AssetFileAccessor
-	{
-
-		@Override
-		public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
-		{
-			if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js")) {
-				return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, CaplinJsSourceFile.class, "js");
-			}
-			else {
-				return Arrays.asList();
-			}
-		}
-
-		@Override
-		public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
-		{
-			return Arrays.asList();
-		}
-
-		@Override
-		public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
-		{
-			return Arrays.asList();
-		}
-		
-	}
-	
 }

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -13,12 +14,14 @@ import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.minifier.InputSource;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
 import org.bladerunnerjs.core.plugin.bundler.js.MinifierSetting;
-import org.bladerunnerjs.model.AssetFileAccessor;
+import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.NullAssetFileAccessor;
+import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
+import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -67,12 +70,6 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public AssetFileAccessor getAssetFileAccessor()
-	{
-		return new NullAssetFileAccessor();
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser() {
 		return requestParser;
 	}
@@ -106,6 +103,24 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		else {
 			throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
 		}
+	}
+	
+	@Override
+	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
+	{
+		return Arrays.asList();
+	}
+	
+	@Override
+	public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+	{
+		return Arrays.asList();
+	}
+	
+	@Override
+	public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+	{
+		return Arrays.asList();
 	}
 	
 	private void writeTagContent(Map<String, String> tagAttributes, boolean isDev, BundleSet bundleSet, String locale, Writer writer) throws IOException {

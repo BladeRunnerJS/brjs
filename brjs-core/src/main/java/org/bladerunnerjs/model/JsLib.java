@@ -142,7 +142,7 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
 			for (AssetLocation assetLocation : getAllAssetLocations())
 			{
-				sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(assetLocation));
+				sourceFiles.addAll(bundlerPlugin.getSourceFiles(assetLocation));
 			}
 		}
 		

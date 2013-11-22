@@ -47,7 +47,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
 			for (AssetLocation assetLocation : getAllAssetLocations())
 			{
-				sourceFiles.addAll(bundlerPlugin.getAssetFileAccessor().getSourceFiles(assetLocation));
+				sourceFiles.addAll(bundlerPlugin.getSourceFiles(assetLocation));
 			}
 		}
 		
