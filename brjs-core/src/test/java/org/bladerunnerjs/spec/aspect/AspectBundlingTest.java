@@ -7,11 +7,11 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -19,8 +19,9 @@ import org.junit.Test;
 public class AspectBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private Blade blade;
+	private AliasesFile aspectAliasesFile;
 	private Bladeset bladeset;
+	private Blade blade;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -31,6 +32,7 @@ public class AspectBundlingTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			aspectAliasesFile = aspect.aliasesFile();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 	}
@@ -59,12 +61,11 @@ public class AspectBundlingTest extends SpecTest {
 		then(response).containsClasses("novox.bs.b1.Class1");
 	}
 	
-	@Ignore
 	@Test
 	public void weBundleAClassIfItsAliasIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("novox.Class1")
-			.and(aspect).hasAlias("the-alias", "novox.Class1")
-			.and(aspect).indexPageRefersTo("the-alias");
+			.and(aspectAliasesFile).hasAlias("thealias", "novox.Class1") // TODO: change back to 'the-alias' once the Trie is updated to support all Javascript variable name characters
+			.and(aspect).indexPageRefersTo("thealias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
 		then(response).containsClasses("novox.Class1");
 	}

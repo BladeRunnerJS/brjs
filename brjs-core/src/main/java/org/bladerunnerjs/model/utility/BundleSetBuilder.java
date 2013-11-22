@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.aliasing.AliasException;
 import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
 
@@ -32,8 +33,18 @@ public class BundleSetBuilder {
 		List<AliasDefinition> activeAliasList = new ArrayList<>();
 		List<AssetLocation> resourcesList = new ArrayList<>();
 		
-		activeAliasList.addAll(activeAliases);
-		resourcesList.addAll(resources);
+		try {
+			activeAliasList.addAll(activeAliases);
+			resourcesList.addAll(resources);
+			
+			for(AliasDefinition aliasDefinition : activeAliases) {
+				String requirePath = aliasDefinition.getClassName().replaceAll("\\.", "/");
+				sourceFiles.add(bundlableNode.getSourceFile(requirePath));
+			}
+		}
+		catch(RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 		
 		return new BundleSet(bundlableNode, orderSourceFiles(sourceFiles), activeAliasList, resourcesList);
 	}
