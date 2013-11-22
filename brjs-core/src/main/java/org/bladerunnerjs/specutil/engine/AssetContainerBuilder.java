@@ -18,8 +18,9 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		this.node = node;
 	}
 	
-	public BuilderChainer packageOfStyle(String packageDir, String jsStyle) {
-		JsStyleUtility.setJsStyle(node.dir(), jsStyle);
+	public BuilderChainer hasPackageStyle(String packageDir, String jsStyle) {
+		String path = packageDir.replaceAll("\\.", "/");
+		JsStyleUtility.setJsStyle(node.file(path), jsStyle);
 		
 		return builderChainer;
 	}
@@ -40,21 +41,21 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		return builderChainer;
 	}
 
-	public BuilderChainer classRefersTo(String sourceClass, String destClass) throws Exception
+	public BuilderChainer classRefersTo(String sourceClass, String referencedClass) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals("caplin-js")) {
-			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to 'caplinjs'");
+			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to 'caplin-js'");
 		}
 		
-		FileUtils.write(sourceFile, getCaplinJsClassBody(sourceClass, destClass));
+		FileUtils.write(sourceFile, getCaplinJsClassBody(sourceClass, referencedClass));
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer classDependsOn(String sourceClass, String destClass) throws Exception {
+	public BuilderChainer classDependsOn(String sourceClass, String dependencyClass) throws Exception {
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
@@ -62,7 +63,7 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has not been used, or has been set to 'node.js'");
 		}
 		
-		FileUtils.write(sourceFile, getNodeJsClassBody(sourceClass, destClass));
+		FileUtils.write(sourceFile, getNodeJsClassBody(sourceClass, dependencyClass));
 		
 		return builderChainer;
 	}

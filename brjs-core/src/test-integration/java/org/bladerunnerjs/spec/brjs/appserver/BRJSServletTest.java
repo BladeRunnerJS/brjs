@@ -111,8 +111,8 @@ public class BRJSServletTest extends SpecTest
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).packageOfStyle("novox.cjs", "caplin-js")
-    		.and(blade).packageOfStyle("novox.node", "node.js")
+			.and(blade).hasPackageStyle("novox.cjs", "caplin-js")
+    		.and(blade).hasPackageStyle("novox.node", "node.js")
     		.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
     		.and(aspect).indexPageRefersTo("novox.cjs.Class")
     		.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class")

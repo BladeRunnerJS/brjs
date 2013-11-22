@@ -75,19 +75,19 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
-		given(blade).packageOfStyle("novox", "caplin-js")
-			.and(blade).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(blade).classRefersTo("novox.Class1", "novox.Class2");
+		given(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+			.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
+			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1")
+			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/js.bundle", response);
-		then(response).textEquals("novox.Class2=function(){};novox.Class1=function(){};br.extend(novox.Class1,novox.Class2);");
+		then(response).textEquals("novox.bs.b1.Class2=function(){};novox.bs.b1.Class1=function(){};br.extend(novox.bs.b1.Class1,novox.bs.b1.Class2);");
 	}
 	
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
-		given(blade).packageOfStyle("novox.cjs", "caplin-js")
-			.and(blade).packageOfStyle("novox.node", "node.js")
+		given(blade).hasPackageStyle("novox.cjs", "caplin-js")
+			.and(blade).hasPackageStyle("novox.node", "node.js")
 			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
 			.and(aspect).indexPageRefersTo("novox.cjs.Class")
 			.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class");
