@@ -80,7 +80,16 @@ public class BRJSServletUtils
 				appName = StringUtils.substringBeforeLast(appName, "/");
 			}
 			App app = brjs.app(appName);
-			File baseDir = new File(app.dir(), requestUri.scopePath);
+			if (!app.dirExists())
+			{
+				app = brjs.systemApp(appName);
+				if (!app.dirExists())
+				{
+					sendErrorResponse(resp, 404, "App not found.");
+				}
+			}
+			
+			File baseDir = app.file(requestUri.scopePath);
 			BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
 			contentPlugin.writeContent(parsedRequest, bundlableNode.getBundleSet(), resp.getOutputStream());
 		}
@@ -110,12 +119,15 @@ public class BRJSServletUtils
 		}
 	}
 	
-	
-	
 	void sendErrorResponse(HttpServletResponse response, int code, Exception exception) throws ServletException
 	{
+		sendErrorResponse(response, code, exception.toString());
+	}
+	
+	void sendErrorResponse(HttpServletResponse response, int code, String message) throws ServletException
+	{
 		try {
-			response.sendError(code, exception.toString());
+			response.sendError(code, message);
 		}
 		catch (IOException ex)
 		{

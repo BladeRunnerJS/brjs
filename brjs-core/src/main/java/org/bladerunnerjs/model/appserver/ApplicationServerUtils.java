@@ -91,6 +91,7 @@ public class ApplicationServerUtils
 		webappContext.setResourceBase(app.dir().getAbsolutePath());
 		webappContext.setContextPath("/"+app.getName());
 		webappContext.setServerClasses(new String[] {"org.slf4j."});
+		webappContext.setParentLoaderPriority(false);
 		//webappContext.setExtraClasspath(applicationPath+"/MY_CUSTOM_JARS/");
 		/* TOOD: add plugin jars to the classpath 
 		 * 		- can be done using webappContext.setExtraClasspath(applicationPath+"/MY_CUSTOM_JARS/");

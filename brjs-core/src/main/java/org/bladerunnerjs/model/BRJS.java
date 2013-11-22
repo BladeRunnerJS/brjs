@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.console.ConsoleWriter;
 import org.bladerunnerjs.core.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.core.log.LogConfiguration;
@@ -334,13 +335,27 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public MinifierPlugin minifierPlugin(String minifierSetting) {
+		
+		List<String> validMinifySettings = new ArrayList<String>();
+		MinifierPlugin pluginForMinifierSetting = null;
+		
 		for(MinifierPlugin minifierPlugin : minifierPlugins()) {
-			if(minifierPlugin.getSettingNames().contains(minifierSetting)) {
-				return minifierPlugin;
+			for (String setting : minifierPlugin.getSettingNames())
+			{
+				validMinifySettings.add(setting);
+				if (setting.equals(minifierSetting))
+				{
+					pluginForMinifierSetting = (pluginForMinifierSetting == null) ? minifierPlugin : pluginForMinifierSetting;
+				}
 			}
 		}
 		
-		throw new RuntimeException("No minifier plugin for minifier setting '" + minifierSetting + "'");
+		if (pluginForMinifierSetting != null)
+		{
+			return pluginForMinifierSetting;
+		}
+		
+		throw new RuntimeException( "No minifier plugin for minifier setting '" + minifierSetting + "'. Valid settings are: " + StringUtils.join(validMinifySettings, ", ") );
 	}	
 	
 	public List<ContentPlugin> contentPlugins() {

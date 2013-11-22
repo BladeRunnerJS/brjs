@@ -102,6 +102,10 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 			}
 			else if(request.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+					
+					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
+					writePackageStructure(packageStructure, writer);
+					
 					for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
 						if(sourceFile instanceof CaplinJsSourceFile)
 						{
@@ -110,6 +114,8 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
     						writer.write("\n\n");
 						}
 					}
+					
+					globalizeNonCaplinJsClasses(bundleSet, writer);
 				}
 			}
 			else {
@@ -146,14 +152,9 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	
 	private void writeTagContent(BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
-			Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
-			writePackageStructure(packageStructure, writer);
-			
 			for(String bundlerRequestPath : getValidDevRequestPaths(bundleSet, locale)) {
 				writer.write("<script type='text/javascript' src='" + bundlerRequestPath + "'></script>\n");
 			}
-			
-			globalizeNonCaplinJsClasses(bundleSet, writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
@@ -215,7 +216,7 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 			if(sourceFile instanceof CaplinJsSourceFile) {
 				CaplinJsSourceFile caplinSourceFile = (CaplinJsSourceFile) sourceFile;
 				
-				writer.write(caplinSourceFile.getClassName() + " = require('" + caplinSourceFile.getRequirePath()  + "')");
+				writer.write(caplinSourceFile.getClassName() + " = require('" + caplinSourceFile.getRequirePath()  + "');\n");
 			}
 		}
 	}

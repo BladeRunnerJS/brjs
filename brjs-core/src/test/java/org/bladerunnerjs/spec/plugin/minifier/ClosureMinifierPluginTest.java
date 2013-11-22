@@ -80,7 +80,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/js.bundle", response);
-		then(response).textEquals("novox.bs.b1.Class2=function(){};novox.bs.b1.Class1=function(){};br.extend(novox.bs.b1.Class1,novox.bs.b1.Class2);");
+		then(response).textEquals("window.novox={\"bs\":{\"b1\":{\"Class2\":{},\"Class1\":{}}}};novox.bs.b1.Class2=function(){};novox.bs.b1.Class1=function(){};br.extend(novox.bs.b1.Class1,novox.bs.b1.Class2);novox.bs.b1.Class2=require(\"novox/bs/b1/Class2\");novox.bs.b1.Class1=require(\"novox/bs/b1/Class1\");");
 	}
 	
 	@Test

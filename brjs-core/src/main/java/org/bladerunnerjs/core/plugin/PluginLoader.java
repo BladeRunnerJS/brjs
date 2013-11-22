@@ -28,14 +28,25 @@ public class PluginLoader
 		return createPluginsOfType(brjs, pluginInterface, null);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static <P extends Plugin, VPP extends P> List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface, Class<VPP> virtualProxyClass)
 	{
+		ClassLoader classLoader = Plugin.class.getClassLoader();
+		try {
+			pluginInterface = (Class<P>) classLoader.loadClass(pluginInterface.getCanonicalName());
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException(ex);
+		}
+		
+		
 		Logger logger = brjs.logger(LoggerType.CORE, BRJSPluginLocator.class);
 		List<P> objectList = new ArrayList<P>();
 		
 		try
 		{
-			ServiceLoader<P> loader = ServiceLoader.load(pluginInterface);
+			ServiceLoader<P> loader = ServiceLoader.load(pluginInterface, classLoader);
 			Iterator<P> objectIterator = loader.iterator();
 			
 			while (objectIterator.hasNext())
