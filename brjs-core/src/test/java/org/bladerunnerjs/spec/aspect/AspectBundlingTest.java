@@ -20,8 +20,8 @@ public class AspectBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private AliasesFile aspectAliasesFile;
-	private Blade blade;
 	private Bladeset bladeset;
+	private Blade blade;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before

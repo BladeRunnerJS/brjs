@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -51,4 +52,5 @@ public class BuilderChainer {
 	public NodeObserverBuilder and(EventObserver observer) { return new NodeObserverBuilder(modelTest, observer); }
 	public AppServerBuilder and(ApplicationServer appServer) { return new AppServerBuilder(modelTest, appServer); }
 	public AliasesFileBuilder and(AliasesFile aliasesFile) { return new AliasesFileBuilder(modelTest, aliasesFile); }
+	public AliasDefinitionsFileBuilder and(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(modelTest, aliasDefinitionsFile); }
 }
