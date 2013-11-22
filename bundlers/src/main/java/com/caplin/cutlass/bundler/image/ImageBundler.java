@@ -13,8 +13,8 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
@@ -33,7 +33,7 @@ import com.caplin.cutlass.structure.model.path.BladePath;
 
 public class ImageBundler implements LegacyFileBundlerPlugin
 {
-	private final RequestParser requestParser = RequestParserFactory.createImageBundlerRequestParser();;
+	private final ContentPathParser requestParser = RequestParserFactory.createImageBundlerRequestParser();;
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -56,7 +56,7 @@ public class ImageBundler implements LegacyFileBundlerPlugin
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{
 		Node requestNode = SdkModel.getNode(baseDir);
-		ParsedRequest request = requestParser.parse(requestName);
+		ParsedContentPath request = requestParser.parse(requestName);
 		ScopeLevel imageScope = getImageScope(request.properties);
 		
 		if(!RequestScopeProvider.isValidRequest(requestNode, imageScope))

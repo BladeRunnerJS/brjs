@@ -9,7 +9,7 @@ import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.ParsedRequest;
+import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -51,7 +51,7 @@ public class LogicalRequestHandler {
 			
 			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, bundler.getClass().getSimpleName(), requestUri.logicalPath);
 			
-			ParsedRequest parsedRequest = bundler.getRequestParser().parse(requestUri);
+			ParsedContentPath parsedRequest = bundler.getContentPathParser().parse(requestUri);
 			bundler.writeContent(parsedRequest, bundlableNode.getBundleSet(), os);
 		}
 		catch(ModelOperationException e) {

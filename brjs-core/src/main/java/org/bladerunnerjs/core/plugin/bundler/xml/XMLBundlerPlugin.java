@@ -14,8 +14,8 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
 import org.bladerunnerjs.model.LinkedAssetFile;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -25,7 +25,7 @@ import org.bladerunnerjs.model.utility.RequestParserBuilder;
 public class XMLBundlerPlugin implements BundlerPlugin
 {
 
-	private RequestParser requestParser;
+	private ContentPathParser requestParser;
 	
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
@@ -69,25 +69,25 @@ public class XMLBundlerPlugin implements BundlerPlugin
 	}
 
 	@Override
-	public RequestParser getRequestParser()
+	public ContentPathParser getContentPathParser()
 	{
 		return requestParser;
 	}
 
 	@Override
-	public List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
 		throw new RuntimeException("Not implemented!");
 	}
 
 	@Override
-	public List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
 		throw new RuntimeException("Not implemented!");
 	}
 
 	@Override
-	public void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
 		throw new RuntimeException("Not implemented!");
 	}

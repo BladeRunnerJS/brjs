@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements ContentPlugin {
@@ -23,28 +23,28 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public RequestParser getRequestParser() {
+	public ContentPathParser getContentPathParser() {
 		initializePlugin();
-		return contentPlugin.getRequestParser();
+		return contentPlugin.getContentPathParser();
 	}
 	
 	@Override
-	public void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		initializePlugin();
 		contentPlugin.writeContent(request, bundleSet, os);
 	}
 
 	@Override
-	public List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
 		initializePlugin();
-		return contentPlugin.generateRequiredDevRequestPaths(bundleSet, locale);
+		return contentPlugin.getValidDevRequestPaths(bundleSet, locale);
 	}
 
 	@Override
-	public List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
 		initializePlugin();
-		return contentPlugin.generateRequiredProdRequestPaths(bundleSet, locale);
+		return contentPlugin.getValidProdRequestPaths(bundleSet, locale);
 	}
 }

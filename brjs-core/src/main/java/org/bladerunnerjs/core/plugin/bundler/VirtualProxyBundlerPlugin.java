@@ -9,8 +9,8 @@ import java.util.Map;
 import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.model.AssetFileAccessor;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 public class VirtualProxyBundlerPlugin extends VirtualProxyPlugin implements BundlerPlugin {
@@ -44,13 +44,13 @@ public class VirtualProxyBundlerPlugin extends VirtualProxyPlugin implements Bun
 	}
 	
 	@Override
-	public RequestParser getRequestParser() {
+	public ContentPathParser getContentPathParser() {
 		initializePlugin();
-		return bundlerPlugin.getRequestParser();
+		return bundlerPlugin.getContentPathParser();
 	}
 	
 	@Override
-	public void writeContent(ParsedRequest request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		initializePlugin();
 		bundlerPlugin.writeContent(request, bundleSet, os);
 	}
@@ -62,14 +62,14 @@ public class VirtualProxyBundlerPlugin extends VirtualProxyPlugin implements Bun
 	}
 	
 	@Override
-	public List<String> generateRequiredDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		initializePlugin();
-		return bundlerPlugin.generateRequiredDevRequestPaths(bundleSet, locale);
+		return bundlerPlugin.getValidDevRequestPaths(bundleSet, locale);
 	}
 	
 	@Override
-	public List<String> generateRequiredProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		initializePlugin();
-		return bundlerPlugin.generateRequiredProdRequestPaths(bundleSet, locale);
+		return bundlerPlugin.getValidProdRequestPaths(bundleSet, locale);
 	}
 }

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ContentPathParser;
 
 
 public class RequestParserBuilder
@@ -28,13 +28,13 @@ public class RequestParserBuilder
 		return new TokenKeyAppender(this, tokens).and(tokenName);
 	}
 	
-	public RequestParser build()
+	public ContentPathParser build()
 	{
 		if(builderIsMidSentence) {
 			throw new IllegalStateException("build() invoked while RequestParserBuilder was left mid-sentence");
 		}
 		
-		return new RequestParser(requestForms, tokens);
+		return new ContentPathParser(requestForms, tokens);
 	}
 	
 	public class RequestFormAppender

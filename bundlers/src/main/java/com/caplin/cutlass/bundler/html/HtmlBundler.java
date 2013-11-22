@@ -15,7 +15,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
@@ -31,7 +31,7 @@ public class HtmlBundler implements LegacyFileBundlerPlugin
 	private final IOFileFilter htmlFilter = new SuffixFileFilter(".html");
 	private final IOFileFilter htmFilter = new SuffixFileFilter(".htm");
 	private final IOFileFilter htmlOrHtmFileFilter = new OrFileFilter(htmlFilter, htmFilter);
-	private final RequestParser requestParser = RequestParserFactory.createHtmlBundlerRequestParser();
+	private final ContentPathParser requestParser = RequestParserFactory.createHtmlBundlerRequestParser();
 	
 	@Override
 	public void setBRJS(BRJS brjs)

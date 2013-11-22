@@ -3,8 +3,8 @@ package org.bladerunnerjs.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ParsedRequest {
-	public ParsedRequest(String formName) {
+public class ParsedContentPath {
+	public ParsedContentPath(String formName) {
 		this.formName = formName;
 	}
 	

@@ -15,8 +15,8 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ParsedRequest;
-import org.bladerunnerjs.model.RequestParser;
+import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
@@ -32,7 +32,7 @@ public class CssBundler implements LegacyFileBundlerPlugin
 {
 	private static final String CSS_BUNDLE_EXT = "_css" + BUNDLE_EXT;
 	private final Map<String, BladeRunnerSourceFileProvider> providers = new HashMap<String, BladeRunnerSourceFileProvider>();
-	private final RequestParser requestParser = RequestParserFactory.createCssBundlerRequestParser();
+	private final ContentPathParser requestParser = RequestParserFactory.createCssBundlerRequestParser();
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -104,7 +104,7 @@ public class CssBundler implements LegacyFileBundlerPlugin
 
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{		
-		ParsedRequest request = requestParser.parse(requestName);
+		ParsedContentPath request = requestParser.parse(requestName);
 		String theme = request.properties.get("theme");
 		String languageCode = request.properties.get("languageCode");
 		String countryCode = request.properties.get("countryCode");

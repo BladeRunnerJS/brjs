@@ -10,13 +10,13 @@ import java.util.regex.Pattern;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 
-public class RequestParser
+public class ContentPathParser
 {
 	private Map<String, String> requestForms;
 	private final Map<String, Pattern> requestFormPatterns;
 	private final Map<String, List<String>> requestFormTokens;
 	
-	public RequestParser(Map<String, String> requestForms, Map<String, String> tokens)
+	public ContentPathParser(Map<String, String> requestForms, Map<String, String> tokens)
 	{
 		this.requestForms = requestForms;
 		this.requestFormPatterns = generateRequestFormPatterns(requestForms, tokens);
@@ -62,12 +62,12 @@ public class RequestParser
 		}
 	}
 	
-	public ParsedRequest parse(BladerunnerUri request) throws MalformedRequestException
+	public ParsedContentPath parse(BladerunnerUri request) throws MalformedRequestException
 	{
 		return parse(request.logicalPath);
 	}
 	
-	public ParsedRequest parse(String request) throws MalformedRequestException
+	public ParsedContentPath parse(String request) throws MalformedRequestException
 	{
 		int lastMatchPos = 0;
 		
@@ -80,7 +80,7 @@ public class RequestParser
 			{
 				if ((requestMatcher.start() == 0) && (requestMatcher.end() == request.length()))
 				{
-					ParsedRequest parsedRequest = new ParsedRequest(requestFormName);
+					ParsedContentPath parsedRequest = new ParsedContentPath(requestFormName);
 					List<String> tokens = requestFormTokens.get(requestFormName);
 
 					for (int gi = 0; gi < requestMatcher.groupCount() && gi < tokens.size(); ++gi)
