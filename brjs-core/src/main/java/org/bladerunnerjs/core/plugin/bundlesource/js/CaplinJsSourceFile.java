@@ -18,6 +18,7 @@ public class CaplinJsSourceFile implements SourceFile {
 	private AssetLocation assetLocation;
 	private String requirePath;
 	
+	@Override
 	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
 	{
 		this.assetLocation = assetLocation;
@@ -56,10 +57,6 @@ public class CaplinJsSourceFile implements SourceFile {
 		return new ArrayList<>();
 	}
 	
-	public String getClassName() {
-		return getRequirePath().replaceAll("/", ".");
-	}
-	
 	@Override
 	public File getUnderlyingFile() {
 		return assetFile.getUnderlyingFile();
@@ -69,5 +66,9 @@ public class CaplinJsSourceFile implements SourceFile {
 	public AssetLocation getAssetLocation()
 	{
 		return assetLocation;
+	}
+	
+	public String getClassName() {
+		return getRequirePath().replaceAll("/", ".");
 	}
 }

@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
  * Due to legacy resources the AssetLocation for any file in resources is always the resources directory. So in the example resources/a/b/c/someFile.xml, resouces is the AssetLocation.
  *
  */
+// TODO: why isn't this a Node?
 public interface AssetLocation {
 	File dir();
 	AliasDefinitionsFile aliasDefinitionsFile();
