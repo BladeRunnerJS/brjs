@@ -40,7 +40,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void weBundleAnAspectClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1");
 	}
 	
@@ -49,7 +49,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspectAliasesFile).hasAlias("thealias", "novox.Class1") // TODO: change back to 'the-alias' once the Trie is updated to support all Javascript variable name characters
 			.and(aspect).indexPageRefersTo("thealias");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1");
 	}
 	
@@ -58,7 +58,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void weBundleABladesetClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(bladeset).hasClass("novox.bs.Class1")
 			.and(aspect).indexPageRefersTo("novox.bs.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.bs.Class1");
 	}
 	
@@ -68,7 +68,7 @@ public class AspectBundlingTest extends SpecTest {
 			.and(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
 			.and(bladeset).classRefersTo("novox.bs.Class1", "novox.bs.Class2")
 			.and(aspect).indexPageRefersTo("novox.bs.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.bs.Class1", "novox.bs.Class2");
 	}
 	
@@ -77,7 +77,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(bladeset).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(bladeset).classDependsOn("novox.Class1", "novox.Class2");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
 	
@@ -86,7 +86,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void weBundleABladeClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(blade).hasClass("novox.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.bs.b1.Class1");
 	}
 	
@@ -96,7 +96,7 @@ public class AspectBundlingTest extends SpecTest {
 			.and(blade).hasClasses("novox.bs.Class1", "novox.bs.Class2")
 			.and(blade).classRefersTo("novox.bs.Class1", "novox.bs.Class2")
 			.and(aspect).indexPageRefersTo("novox.bs.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.bs.Class1", "novox.bs.Class2");
 	}
 	
@@ -105,7 +105,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classDependsOn("novox.Class1", "novox.Class2");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
 	
@@ -118,7 +118,7 @@ public class AspectBundlingTest extends SpecTest {
 			.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.bs.Class1", "novox.bs.b1.Class1");
 	}
 	
@@ -130,7 +130,7 @@ public class AspectBundlingTest extends SpecTest {
 			.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.bs.Class1", "novox.bs.b1.Class1");
 	}
 		
@@ -139,7 +139,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void classesReferredToInXMlFilesAreBundled() throws Exception {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
     		.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1");
 	}
 	
@@ -147,7 +147,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void classesReferredToInHTMlFilesAreBundled() throws Exception {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "novox.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1");
 	}
 	
@@ -159,10 +159,10 @@ public class AspectBundlingTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(blade).classDependsOn("novox.Class1", "novox.Class2");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
-		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/js.bundle", "app1")
-			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/js.bundle")
-			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsBundlerPlugin", "js/dev/en_GB/combined/js.bundle")
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/bundle.js", "app1")
+			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/bundle.js")
+			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsBundlerPlugin", "js/dev/en_GB/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'index.html', 'resources/xml/config.xml'"))
 			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "index.html", "'src/novox/Class1.js'")
@@ -177,10 +177,10 @@ public class AspectBundlingTest extends SpecTest {
 			.and(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(blade).classDependsOn("novox.Class1", "novox.Class2")
 			.and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
-		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/js.bundle", "app1")
-			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, unquoted("Aspect"), "default", "js/dev/en_GB/combined/js.bundle")
-			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsBundlerPlugin", "js/dev/en_GB/combined/js.bundle")
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/bundle.js", "app1")
+			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, unquoted("Aspect"), "default", "js/dev/en_GB/combined/bundle.js")
+			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsBundlerPlugin", "js/dev/en_GB/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, unquoted("Aspect"), "default")
 			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", unquoted("'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/'"));
 	}

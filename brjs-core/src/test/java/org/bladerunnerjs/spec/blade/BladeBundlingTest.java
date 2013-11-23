@@ -39,7 +39,7 @@ public class BladeBundlingTest extends SpecTest {
 			.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class2");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.bs.b1.Class2");
 	}
 	
@@ -48,7 +48,7 @@ public class BladeBundlingTest extends SpecTest {
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(blade).classDependsOn("novox.Class1", "novox.NonExistentClass");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "novox/NonExistentClass")
 			.whereTopLevelExceptionIs(BundlerProcessingException.class);
 	}
@@ -59,7 +59,7 @@ public class BladeBundlingTest extends SpecTest {
 			.and(blade).hasClass("novox.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.NonExistentClass");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	

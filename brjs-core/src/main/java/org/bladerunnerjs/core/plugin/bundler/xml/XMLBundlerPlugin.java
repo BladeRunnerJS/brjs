@@ -28,7 +28,7 @@ public class XMLBundlerPlugin implements BundlerPlugin
 	
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
-		requestParserBuilder.accepts("xml.bundle").as("bundle-request");
+		requestParserBuilder.accepts("bundle.xml").as("bundle-request");
 		requestParser = requestParserBuilder.build();
 	}
 	
