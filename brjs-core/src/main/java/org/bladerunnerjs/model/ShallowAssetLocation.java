@@ -9,8 +9,9 @@ import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
-public class ShallowAssetLocation implements AssetLocation {
+public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocation {
 	
 	private AssetContainer assetContainer;
 	private BRJS brjs;
@@ -102,6 +103,10 @@ public class ShallowAssetLocation implements AssetLocation {
     	return resourcesList;
 	}
 	
+	@Override
+	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException {
+		// do nothing
+	}
 	
 	private AssetLocation createResource(File srcDir) {
 		String srcPath = srcDir.getAbsolutePath();
@@ -112,5 +117,4 @@ public class ShallowAssetLocation implements AssetLocation {
 		
 		return resources.get(srcPath);
 	}
-	
 }
