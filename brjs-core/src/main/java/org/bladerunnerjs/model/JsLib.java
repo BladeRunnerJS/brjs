@@ -160,10 +160,4 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	public List<AssetLocation> getAllAssetLocations() {
 		return assetContainerLocations.getAllAssetLocations();
 	}
-	
-	@Override
-	public AssetLocation getAssetLocation(File dir) {
-		return assetContainerLocations.getAssetLocation(dir);
-	}
-	
 }

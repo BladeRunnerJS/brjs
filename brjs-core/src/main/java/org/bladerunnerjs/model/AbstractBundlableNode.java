@@ -32,13 +32,9 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		List<LinkedAssetFile> seedFiles = new ArrayList<>();
 		
 		seedFiles.addAll(getSeedFiles());
-		seedFiles.addAll(this.getSeedLocation().seedResources());
+		seedFiles.addAll(resources().seedResources());
 		
 		return seedFiles;
-	}
-	
-	private AssetLocation getSeedLocation() {
-		return getAssetContainerLocations().getSeedLocation();
 	}
 	
 	@Override

@@ -70,12 +70,6 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		return assetContainerLocations.getAllAssetLocations();
 	}
 	
-	@Override
-	public AssetLocation getAssetLocation(File dir) {
-		return assetContainerLocations.getAssetLocation(dir);
-	}
-	
-	
 	protected AssetContainerLocations getAssetContainerLocations()
 	{
 		return assetContainerLocations;

@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocation {
-	private AssetContainer assetContainer;
+	protected AssetContainer assetContainer;
 	private final Map<String, ShallowAssetLocation> resources = new HashMap<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	
