@@ -28,7 +28,7 @@ public class JsLibNavigationTest
 	@Test
 	public void src()
 	{
-		nodeTesterFactory.createItemTester(ShallowAssetLocation.class, "src", "src").assertModelIsOK();
+		nodeTesterFactory.createItemTester(SourceAssetLocation.class, "src", "src").assertModelIsOK();
 	}
 	
 	@Test

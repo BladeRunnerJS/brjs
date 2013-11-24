@@ -20,7 +20,7 @@ import org.bladerunnerjs.model.utility.NameValidator;
 
 public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 {
-	private final NodeItem<ShallowAssetLocation> src = new NodeItem<>(ShallowAssetLocation.class, "src");
+	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
 	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
 	private String name;
 	private JsLibConf libConf;

@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final NodeItem<ShallowAssetLocation> src = new NodeItem<>(ShallowAssetLocation.class, "src");
+	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
 	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
 	protected final AssetContainerLocations assetContainerLocations;
 	
