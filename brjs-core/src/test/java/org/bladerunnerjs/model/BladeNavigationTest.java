@@ -52,13 +52,13 @@ public class BladeNavigationTest
 	@Test
 	public void src()
 	{
-		nodeTesterFactory.createItemTester(DirNode.class, "src", "src").assertModelIsOK();
+		nodeTesterFactory.createItemTester(ShallowAssetLocation.class, "src", "src").assertModelIsOK();
 	}
 	
 	@Test
 	public void resources()
 	{
-		nodeTesterFactory.createItemTester(DirNode.class, "resources", "resources").assertModelIsOK();
+		nodeTesterFactory.createItemTester(DeepAssetLocation.class, "resources", "resources").assertModelIsOK();
 	}
 	
 	@Test

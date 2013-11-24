@@ -27,6 +27,6 @@ public class TestPackNavigationTest
 	@Test
 	public void resources()
 	{
-		nodeTesterFactory.createItemTester(DirNode.class, "resources", "resources").assertModelIsOK();
+		nodeTesterFactory.createItemTester(DeepAssetLocation.class, "resources", "resources").assertModelIsOK();
 	}
 }

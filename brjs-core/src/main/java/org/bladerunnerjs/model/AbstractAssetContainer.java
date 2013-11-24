@@ -10,8 +10,8 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
-	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
+	private final NodeItem<ShallowAssetLocation> src = new NodeItem<>(ShallowAssetLocation.class, "src");
+	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
 	protected final AssetContainerLocations assetContainerLocations;
 	
 	public AbstractAssetContainer(RootNode rootNode, File dir) {
@@ -20,11 +20,11 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
-	public DirNode src() {
+	public AssetLocation src() {
 		return item(src);
 	}
 	
-	public DirNode resources()
+	public AssetLocation resources()
 	{
 		return item(resources);
 	}

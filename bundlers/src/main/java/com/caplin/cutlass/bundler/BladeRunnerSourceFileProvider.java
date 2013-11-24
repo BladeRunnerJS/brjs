@@ -8,7 +8,6 @@ import static com.caplin.cutlass.structure.CutlassDirectoryLocator.getParentBlad
 import static com.caplin.cutlass.structure.CutlassDirectoryLocator.getParentBladeContainer;
 import static com.caplin.cutlass.structure.CutlassDirectoryLocator.getScope;
 
-
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,9 +16,12 @@ import java.util.List;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.App;
+
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.model.DirNode;
+
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.JsLib;
+
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.ScopeLevel;
 import com.caplin.cutlass.structure.model.Node;
@@ -138,8 +140,8 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	{
 		JsLib jsLib = BRJSAccessor.root.sdkLib();
 		
-		DirNode libSrcRoot = jsLib.src();
-		DirNode libResourcesRoot = jsLib.resources();
+		AssetLocation libSrcRoot = jsLib.src();
+		AssetLocation libResourcesRoot = jsLib.resources();
 
 		if(libSrcRoot.dirExists())
 		{
@@ -165,8 +167,8 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 
 		for(JsLib jsLib: app.jsLibs()){
 
-			DirNode libSrcRoot = jsLib.src();
-			DirNode libResourcesRoot = jsLib.resources();
+			AssetLocation libSrcRoot = jsLib.src();
+			AssetLocation libResourcesRoot = jsLib.resources();
 			
 			if(libSrcRoot.dirExists())
 			{
