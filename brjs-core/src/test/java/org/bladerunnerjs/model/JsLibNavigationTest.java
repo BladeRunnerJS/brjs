@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
