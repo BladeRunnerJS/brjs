@@ -92,7 +92,7 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 		return (App) parent;
 	}
 	
-	public AssetLocation src()
+	public SourceAssetLocation src()
 	{
 		return item(src);
 	}

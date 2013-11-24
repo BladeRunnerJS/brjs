@@ -20,7 +20,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
-	public AssetLocation src() {
+	public SourceAssetLocation src() {
 		return item(src);
 	}
 	
