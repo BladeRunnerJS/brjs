@@ -159,6 +159,7 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 		List<AssetLocation> assetLocations = new ArrayList<>();
 		
 		assetLocations.add(resources());
+		assetLocations.add(src());
 		assetLocations.addAll(src().getChildAssetLocations()); // TODO: should we just be adding the src(), rather than all it's children?
 		
 		return assetLocations;

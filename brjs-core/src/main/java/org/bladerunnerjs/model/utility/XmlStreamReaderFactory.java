@@ -6,6 +6,7 @@ import java.io.FileReader;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.bladerunnerjs.model.utility.stax.XmlStreamReader;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.XMLValidationSchema;

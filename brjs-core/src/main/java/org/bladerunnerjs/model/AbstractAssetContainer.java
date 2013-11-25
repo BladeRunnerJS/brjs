@@ -67,6 +67,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		List<AssetLocation> assetLocations = new ArrayList<>();
 		
 		assetLocations.add(resources());
+		assetLocations.add(src());
 		assetLocations.addAll(src().getChildAssetLocations()); // TODO: should we just be adding the src(), rather than all it's children?
 		
 		return assetLocations;

@@ -1,12 +1,12 @@
 package org.bladerunnerjs.model.aliasing;
 
-// TODO: we will probably need to add scenarioName in our new bundling code
 public class AliasDefinition
 {
 	private String className;
 	private String interfaceName;
 	private String name;
 	private String groupName;
+	private String scenarioName;
 	
 	public AliasDefinition(String name, String className, String interfaceName)
 	{
@@ -48,7 +48,10 @@ public class AliasDefinition
 	}
 	
 	public String getScenario() {
-		// TODO Auto-generated method stub
-		return null;
+		return scenarioName;
+	}
+	
+	public void setScenario(String scenarioName) {
+		this.scenarioName = scenarioName;
 	}
 }
