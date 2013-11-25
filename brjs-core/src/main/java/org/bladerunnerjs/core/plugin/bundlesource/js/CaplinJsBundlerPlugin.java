@@ -38,6 +38,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 		requestParserBuilder
 			.accepts("caplin-js/bundle.js").as("bundle-request")
 				.and("caplin-js/module/<module>/bundle.js").as("single-module-request")
+				.and("caplin-js/package-definitions.js").as("package-definitions-request")
 			.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 		
 		requestParser = requestParserBuilder.build();
@@ -78,6 +79,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
+		requestPaths.add(requestParser.createRequest("package-definitions-request"));
 		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
 			if(sourceFile instanceof CaplinJsSourceFile) {
 				requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
@@ -99,13 +101,15 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
 					SourceFile jsModule = bundleSet.getBundlableNode().getSourceFile(request.properties.get("module"));
 					IOUtils.copy(jsModule.getReader(), writer);
+					globalizeNonCaplinJsClasses((CaplinJsSourceFile) jsModule, writer);
 				}
 			}
 			else if(request.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-					
+								
 					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
-					writePackageStructure(packageStructure, writer);
+    				writePackageStructure(packageStructure, writer);
+    				writer.write("\n");
 					
 					for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
 						if(sourceFile instanceof CaplinJsSourceFile)
@@ -115,8 +119,13 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
     						writer.write("\n\n");
 						}
 					}
-					
 					globalizeNonCaplinJsClasses(bundleSet, writer);
+				}
+			}
+			else if(request.formName.equals("package-definitions-request")) {
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+    				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
+    				writePackageStructure(packageStructure, writer);
 				}
 			}
 			else {
@@ -153,6 +162,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 	
 	private void writeTagContent(BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
+			
 			for(String bundlerRequestPath : getValidDevRequestPaths(bundleSet, locale)) {
 				writer.write("<script type='text/javascript' src='" + bundlerRequestPath + "'></script>\n");
 			}
@@ -207,7 +217,6 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 				writer.write(";\n");
 			}
 			
-			writer.write("\n");
 			writer.flush();
 		}
 	}
@@ -215,10 +224,12 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 	private void globalizeNonCaplinJsClasses(BundleSet bundleSet, Writer writer) throws IOException {
 		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
 			if(sourceFile instanceof CaplinJsSourceFile) {
-				CaplinJsSourceFile caplinSourceFile = (CaplinJsSourceFile) sourceFile;
-				
-				writer.write(caplinSourceFile.getClassName() + " = require('" + caplinSourceFile.getRequirePath()  + "');\n");
+				globalizeNonCaplinJsClasses((CaplinJsSourceFile) sourceFile, writer);
 			}
 		}
+	}
+	
+	private void globalizeNonCaplinJsClasses(CaplinJsSourceFile sourceFile, Writer writer) throws IOException {
+		writer.write(sourceFile.getClassName() + " = require('" + sourceFile.getRequirePath()  + "');\n");
 	}
 }

@@ -132,10 +132,33 @@ public class AspectBundlingTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.bs.Class1", "novox.bs.b1.Class1");
-//		TODO assert that dev request creates the window objects for dev
-//		.and(response).textEquals(""); 
 	}
-		
+	
+	@Test
+	public void devRequestsContainThePackageDefinitionsAtTheTop() throws Exception {
+		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
+    		.and(bladeset).classDependsOn("novox.bs.Class1", "novox.bs.Class2")
+    		.and(blade).hasClass("novox.bs.b1.Class1")
+    		.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+    		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
+    		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
+    	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("window.novox = {\"bs\":{\"b1\":{\"Class1\":{}}}};");
+	}
+	
+	@Test
+	public void packageDefinitionsAreDefinedInASingleRequest() throws Exception {	
+		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
+    		.and(bladeset).classDependsOn("novox.bs.Class1", "novox.bs.Class2")
+    		.and(blade).hasClass("novox.bs.b1.Class1")
+    		.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+    		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
+    		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
+		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", response);
+		then(response).textEquals("// package definition block\n"+
+"window.novox = {\"bs\":{\"b1\":{\"Class1\":{}}}};\n");
+	}
+	
 	// X M L  &  H T M L
 	@Test
 	public void classesReferredToInXMlFilesAreBundled() throws Exception {
