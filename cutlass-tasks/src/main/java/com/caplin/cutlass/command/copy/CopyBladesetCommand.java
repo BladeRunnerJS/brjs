@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.core.plugin.command.AbstractCommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -17,7 +18,7 @@ import com.caplin.cutlass.structure.AppStructureVerifier;
 import com.caplin.cutlass.structure.NamespaceCalculator;
 import org.bladerunnerjs.model.utility.NameValidator;
 
-public class CopyBladesetCommand implements LegacyCommandPlugin
+public class CopyBladesetCommand extends AbstractCommandPlugin implements LegacyCommandPlugin
 {
 	private final File sdkBaseDir;
 	private ConsoleWriter out;

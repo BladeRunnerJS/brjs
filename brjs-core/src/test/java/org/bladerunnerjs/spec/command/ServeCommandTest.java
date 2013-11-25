@@ -23,7 +23,7 @@ public class ServeCommandTest extends SpecTest
 	{
 		appServerPort = 7070;
 		
-		given(pluginLocator).hasCommand(new ServeCommand())
+		given(brjs).hasCommands(new ServeCommand())
 			.and(brjs).hasBeenCreated();	
 		appServer = brjs.applicationServer(appServerPort);
 	}

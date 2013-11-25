@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +20,12 @@ import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.PluginLocator;
+import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.engine.Node;
@@ -314,12 +314,12 @@ public class BRJS extends AbstractBRJSRootNode
 		return bundlerPlugins.get(bundlerName);
 	}
 	
-	public Collection<BundlerPlugin> bundlerPlugins() {
-		return bundlerPlugins.values();
+	public List<BundlerPlugin> bundlerPlugins() {
+		return new ArrayList<BundlerPlugin>(bundlerPlugins.values());
 	}
 	
-	public Collection<BundlerPlugin> bundlerPlugins(String mimeType) {
-		Collection<BundlerPlugin> bundlerPlugins = new ArrayList<>();
+	public List<BundlerPlugin> bundlerPlugins(String mimeType) {
+		List<BundlerPlugin> bundlerPlugins = new ArrayList<>();
 		
 		for(BundlerPlugin bundlerPlugin : bundlerPlugins()) {
 			if(bundlerPlugin.getMimeType().equals(mimeType)) {
@@ -362,6 +362,16 @@ public class BRJS extends AbstractBRJSRootNode
 		return pluginLocator.getContentPlugins();
 	}
 	
+	public List<CommandPlugin> commandPlugins()
+	{
+		return commandList().getPluginCommands();
+	}
+	
+	public List<ModelObserverPlugin> modelObserverPlugins()
+	{
+		return pluginLocator.getModelObservers();
+	}
+	
 	
 	/**
 	 * Returns *all* plugins that are servlets. This includes ContentPlugins and BundlerPlugins since BundlerPlugin extends the interface.
@@ -390,7 +400,12 @@ public class BRJS extends AbstractBRJSRootNode
     {
         for(Plugin p : plugins)
         {
-                logger.debug(Messages.PLUGIN_FOUND_MSG, p.getClass().getCanonicalName());
+        	if (p instanceof VirtualProxyPlugin)
+        	{
+        		p = ((VirtualProxyPlugin) p).getUnderlyingPlugin();
+        	}
+            logger.debug(Messages.PLUGIN_FOUND_MSG, p.getClass().getCanonicalName());
         }
     }
+	
 }

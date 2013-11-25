@@ -34,7 +34,8 @@ public class ExportApplicationCommandTest
 		sdkBaseDir = new File(tempDirRoot, "structure1" + File.separator + CutlassConfig.SDK_DIR);
 		BRJS brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(sdkBaseDir.getParentFile()));
 		
-		exportCommand = new ExportApplicationCommand(brjs);
+		exportCommand = new ExportApplicationCommand();
+		exportCommand.setBRJS(brjs);
 	}
 	
 	@Test

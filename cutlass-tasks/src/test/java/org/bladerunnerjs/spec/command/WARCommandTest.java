@@ -23,7 +23,7 @@ public class WARCommandTest extends SpecTest {
 		//TODO::have to create brjs first should remove when moved over to core
 		given(brjs).hasBeenCreated();
 		
-		given(pluginLocator).hasCommand(new WarCommand(brjs))
+		given(brjs).hasCommands(new WarCommand(brjs))
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("myaspect");

@@ -33,8 +33,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
@@ -337,6 +339,13 @@ public class BundlerServletTest
 			public List<String> getValidRequestStrings(AppMetaData appMetaData)
 			{
 				return null;
+			}
+			
+
+			@Override
+			public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+			{
+				throw new InstanceOfShouldntBeInvokedException();
 			}
 		};
 		bundlerServlet.bundlers = Arrays.asList(dummyBundler);

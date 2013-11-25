@@ -21,8 +21,8 @@ public class JsDocCommandTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		pluginLocator.pluginCommands.add(new JsDocCommand());
-		given(brjs).hasBeenCreated();
+		given(brjs).hasCommands(new JsDocCommand())
+			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
 		appLib = app.jsLib("lib");
 		jsdocOutputDir = app.storageDir("jsdoc-toolkit");

@@ -25,7 +25,7 @@ public class CreateAppCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(pluginLocator).hasCommand(new CreateApplicationCommand())
+		given(brjs).hasCommands(new CreateApplicationCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			badApp = brjs.app("app#$@/");

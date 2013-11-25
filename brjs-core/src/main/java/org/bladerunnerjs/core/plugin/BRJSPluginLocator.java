@@ -6,10 +6,10 @@ import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.VirtualProxyBundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.core.plugin.command.VirtualProxyCommandPlugin;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
+import org.bladerunnerjs.core.plugin.content.VirtualProxyContentPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
 import org.bladerunnerjs.core.plugin.minifier.VirtualProxyMinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
-import org.bladerunnerjs.core.plugin.servlet.VirtualProxyContentPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
@@ -27,7 +27,7 @@ public class BRJSPluginLocator implements PluginLocator
 	
 	@Override
 	public void createPlugins(BRJS brjs) {
-		observerPlugins = PluginLoader.createPluginsOfType(brjs, ModelObserverPlugin.class);
+		observerPlugins = PluginLoader.createPluginsOfType(brjs, ModelObserverPlugin.class, VirtualProxyModelObserverPlugin.class);
 		bundlerPlugins = PluginLoader.createPluginsOfType(brjs, BundlerPlugin.class, VirtualProxyBundlerPlugin.class);
 		commandPlugins = PluginLoader.createPluginsOfType(brjs, CommandPlugin.class, VirtualProxyCommandPlugin.class);
 		minifierPlugins = PluginLoader.createPluginsOfType(brjs, MinifierPlugin.class, VirtualProxyMinifierPlugin.class);

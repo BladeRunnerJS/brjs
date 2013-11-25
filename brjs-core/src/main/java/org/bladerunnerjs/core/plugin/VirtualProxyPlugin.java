@@ -14,7 +14,11 @@ public class VirtualProxyPlugin implements Plugin {
 	protected void initializePlugin() {
 		if(proxyState == VirtualProxyState.Uninitialized) {
 			proxyState = VirtualProxyState.Initlializing;
-			plugin.setBRJS(brjs);
+			if (brjs == null)
+			{
+				throw new RuntimeException("BRJS hasn't been set!");
+			}
+			PluginLocatorUtils.setBRJSForPlugins(brjs, plugin);
 			proxyState = VirtualProxyState.Initialized;
 		}														
 		else if(proxyState == VirtualProxyState.Initlializing) {
@@ -26,4 +30,23 @@ public class VirtualProxyPlugin implements Plugin {
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
 	}
+	
+	public Plugin getUnderlyingPlugin()
+	{
+		return plugin;
+	}
+	
+	@Override
+	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+	{
+		return getUnderlyingPlugin().getClass().equals(otherPluginCLass);
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		Plugin p = (Plugin) o;
+		return p == getUnderlyingPlugin();
+	}
+	
 }

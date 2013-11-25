@@ -40,9 +40,8 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	private File sdkBaseDir;
 	private ConsoleWriter out;
 	
-	public ExportApplicationCommand(BRJS brjs)
+	public ExportApplicationCommand()
 	{
-		setBRJS(brjs);
 	}
 	
 	@Override

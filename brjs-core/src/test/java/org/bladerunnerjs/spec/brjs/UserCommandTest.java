@@ -10,9 +10,9 @@ import org.junit.Test;
 public class UserCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasBeenCreated()
-			.and(brjs).containsFileWithContents("sdk/version.txt", "{'Version': 'the-version', 'BuildDate': 'the-build-date'}")
-			.and(brjs).hasCommands(new CreateBladeCommand(), new ExplodingCommand());
+		given(brjs).hasCommands(new CreateBladeCommand(), new ExplodingCommand())
+			.and(brjs).hasBeenCreated()
+			.and(brjs).containsFileWithContents("sdk/version.txt", "{'Version': 'the-version', 'BuildDate': 'the-build-date'}");
 	}
 	
 	@Test

@@ -2,6 +2,7 @@ package org.bladerunnerjs.spec.brjs;
 
 import static org.bladerunnerjs.model.BRJS.Messages.*;
 
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
@@ -10,8 +11,8 @@ import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.BRJSEventObserverCreator;
 import org.bladerunnerjs.testing.utility.ExceptionThrowingEventObserver;
-import org.bladerunnerjs.testing.utility.MockCommand;
-import org.bladerunnerjs.testing.utility.MockModelObserver;
+import org.bladerunnerjs.testing.utility.MockCommandPlugin;
+import org.bladerunnerjs.testing.utility.MockModelObserverPlugin;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,10 +35,10 @@ public class BRJSStartupTest extends SpecTest {
 	@Before
 	public void setup()
 	{
-		passingCommandPlugin = new MockCommand("passingCommand","","","");
-		failingCommandPlugin = new MockCommand("failingCommand","","","",pluginException);
-		passingModelObserverPlugin = new MockModelObserver();
-		failingModelObserverPlugin = new MockModelObserver(pluginException);
+		passingCommandPlugin = new MockCommandPlugin("passingCommand","","","");
+		failingCommandPlugin = new MockCommandPlugin("failingCommand","","","",pluginException);
+		passingModelObserverPlugin = new MockModelObserverPlugin();
+		failingModelObserverPlugin = new MockModelObserverPlugin(pluginException);
 		
 		
 	}
@@ -65,12 +66,12 @@ public class BRJSStartupTest extends SpecTest {
 	}
 	
 	@Test
-	public void fatalErrorIsEmittedIfAnyOfTheModelObserverPluginsCantBeCreated() {		
+	public void fatalErrorIsEmittedIfAnyOfTheModelObserverPluginsCantBeCreated() {
 		given(logging).enabled()
 			.and(brjs).hasModelObservers(failingModelObserverPlugin);
 		when(brjs).hasBeenCreated();
 		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
-			.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLGUIN_ERROR_MSG, failingModelObserverPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
+			.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLUGIN_ERROR_MSG, failingModelObserverPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
 			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		
@@ -89,13 +90,15 @@ public class BRJSStartupTest extends SpecTest {
 	}
 	
 	@Test
-	public void fatalErrorIsEmittedIfAnyOfTheCommandPluginsCantBeCreated() {
+	public void fatalErrorIsEmittedIfAnyOfTheCommandPluginsCantBeCreated() throws Exception {
 		given(logging).enabled()
     		.and(brjs).hasCommands(failingCommandPlugin);
-    	when(brjs).hasBeenCreated();
+    	when(brjs).hasBeenCreated()
+    		.and(brjs).runCommand("help", "failingCommand");
     	then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
-    		.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLGUIN_ERROR_MSG, failingCommandPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
+    		.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLUGIN_ERROR_MSG, failingCommandPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
     		.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
     		.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
+	
 }

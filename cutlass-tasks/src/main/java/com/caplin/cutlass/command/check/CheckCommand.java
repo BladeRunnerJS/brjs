@@ -11,8 +11,11 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
+
 import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.JsNonBladeRunnerLib;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -80,5 +83,12 @@ public class CheckCommand implements LegacyCommandPlugin
 		checkUtility.checkThatWeHaveNothingInPatchesDirectory(messageToShowUser);
 		
 		out.println(messageToShowUser.toString());
+	}
+	
+
+	@Override
+	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+	{
+		throw new InstanceOfShouldntBeInvokedException();
 	}
 }

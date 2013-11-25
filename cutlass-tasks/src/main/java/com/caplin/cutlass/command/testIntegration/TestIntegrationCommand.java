@@ -11,7 +11,9 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import com.caplin.cutlass.BRJSAccessor;
@@ -188,5 +190,11 @@ public class TestIntegrationCommand implements LegacyCommandPlugin
 	private boolean ignoreWorkbenches(String[] args)
 	{
 		return ( (args.length >= 2 && args[1].equals(NO_WORKBENCH_FLAG)) || (args.length >= 4 && args[3].equals(NO_WORKBENCH_FLAG)) );
+	}
+	
+	@Override
+	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+	{
+		throw new InstanceOfShouldntBeInvokedException();
 	}
 }

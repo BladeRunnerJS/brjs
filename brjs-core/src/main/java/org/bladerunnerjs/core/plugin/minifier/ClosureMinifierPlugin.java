@@ -22,7 +22,7 @@ import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 
 
-public class ClosureMinifierPlugin implements MinifierPlugin {
+public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements MinifierPlugin {
 	
 	public class Messages {
 		public static final String OUTPUT_FROM_MINIFIER = "Minifying complete, output from minifier was:\n%s";

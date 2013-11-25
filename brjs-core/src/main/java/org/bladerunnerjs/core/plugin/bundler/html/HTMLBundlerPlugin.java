@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.core.plugin.bundler.AbstractBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.BRJS;
@@ -21,7 +22,7 @@ import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 
-public class HTMLBundlerPlugin implements BundlerPlugin
+public class HTMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin
 {
 
 	private ContentPathParser requestParser;

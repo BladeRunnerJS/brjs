@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.core.plugin.bundler.AbstractBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.minifier.InputSource;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
@@ -29,7 +30,7 @@ import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 
 
-public class CompositeJsBundlerPlugin implements BundlerPlugin {
+public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin {
 	private ContentPathParser requestParser = (new RequestParserBuilder()).build();
 	private BRJS brjs;
 	
@@ -129,7 +130,7 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		
 		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
 			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-				if(bundlerPlugin != this) {
+				if( !bundlerPlugin.equals(this) ) {
 					if(isDev) {
 						bundlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
 					}
@@ -150,7 +151,7 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		List<String> requestPaths = new ArrayList<>();
 		
 		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-			if(bundlerPlugin != this) {
+			if( !bundlerPlugin.equals(this) ) {
 				if(isDev) {
 					requestPaths.addAll(bundlerPlugin.getValidDevRequestPaths(bundleSet, locale));
 				}
@@ -170,7 +171,7 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 			String charsetName = brjs.bladerunnerConf().getDefaultOutputEncoding();
 			
 			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-				if(bundlerPlugin != this) {
+				if( !bundlerPlugin.equals(this) ) {
 					String locale = request.properties.get("locale");
 					List<String> requestPaths = (request.formName.equals("dev-bundle-request")) ? bundlerPlugin.getValidDevRequestPaths(bundleSet, locale) :
 						bundlerPlugin.getValidProdRequestPaths(bundleSet, locale);

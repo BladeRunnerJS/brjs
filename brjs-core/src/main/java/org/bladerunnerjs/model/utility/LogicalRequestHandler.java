@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundler.VirtualProxyBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
@@ -49,7 +50,9 @@ public class LogicalRequestHandler {
 			
 			BundlerPlugin bundler = app.root().bundlerPlugin(getResourceBundlerName(requestUri));
 			
-			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, bundler.getClass().getSimpleName(), requestUri.logicalPath);
+			BundlerPlugin realBundler = (BundlerPlugin) ((bundler instanceof VirtualProxyBundlerPlugin) ? ((VirtualProxyBundlerPlugin) bundler).getUnderlyingPlugin() : bundler);
+			
+			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, realBundler.getClass().getSimpleName(), requestUri.logicalPath);
 			
 			ParsedContentPath parsedRequest = bundler.getContentPathParser().parse(requestUri);
 			bundler.writeContent(parsedRequest, bundlableNode.getBundleSet(), os);

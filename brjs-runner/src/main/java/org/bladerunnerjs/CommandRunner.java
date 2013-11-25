@@ -130,7 +130,7 @@ public class CommandRunner {
 			commandList.addCommand(new WarCommand(brjs));
 			commandList.addCommand(new PackageDepsCommand());
 			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
-			commandList.addCommand(new ExportApplicationCommand( brjs ));
+			commandList.addCommand(new ExportApplicationCommand(  ));
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
