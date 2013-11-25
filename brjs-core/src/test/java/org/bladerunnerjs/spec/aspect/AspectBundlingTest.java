@@ -132,6 +132,8 @@ public class AspectBundlingTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.bs.Class1", "novox.bs.b1.Class1");
+//		TODO assert that dev request creates the window objects for dev
+//		.and(response).textEquals(""); 
 	}
 		
 	// X M L  &  H T M L
