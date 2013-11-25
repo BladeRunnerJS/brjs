@@ -28,7 +28,7 @@ public class HTMLBundlerPlugin implements BundlerPlugin
 	
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
-		requestParserBuilder.accepts("html.bundle").as("bundle-request");
+		requestParserBuilder.accepts("bundle.html").as("bundle-request");
 		requestParser = requestParserBuilder.build();
 	}
 	

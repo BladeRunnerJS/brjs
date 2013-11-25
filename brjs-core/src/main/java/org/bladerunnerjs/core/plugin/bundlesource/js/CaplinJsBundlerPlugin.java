@@ -35,8 +35,8 @@ public class CaplinJsBundlerPlugin implements BundlerPlugin {
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
 		requestParserBuilder
-			.accepts("caplin-js/js.bundle").as("bundle-request")
-				.and("caplin-js/module/<module>/js.bundle").as("single-module-request")
+			.accepts("caplin-js/bundle.js").as("bundle-request")
+				.and("caplin-js/module/<module>/bundle.js").as("single-module-request")
 			.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 		
 		requestParser = requestParserBuilder.build();

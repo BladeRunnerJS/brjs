@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -12,8 +11,7 @@ public interface AssetContainer extends BRJSNode {
 	String getRequirePrefix();
 	List<SourceFile> sourceFiles();
 	SourceFile sourceFile(String requirePath);
+	AssetLocation src();
+	AssetLocation resources();
 	List<AssetLocation> getAllAssetLocations();
-	AssetLocation getAssetLocation(File dir);
-	DirNode src();
-	DirNode resources();
 }

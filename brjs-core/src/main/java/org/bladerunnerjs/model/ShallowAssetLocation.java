@@ -9,21 +9,19 @@ import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
-public class ShallowAssetLocation implements AssetLocation {
-	
-	private AssetContainer assetContainer;
-	private BRJS brjs;
-	private File dir;
-	
+public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocation {
+	protected AssetContainer assetContainer;
 	private final Map<String, ShallowAssetLocation> resources = new HashMap<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	
-	
-	public ShallowAssetLocation(AssetContainer assetContainer, File dir) {
-		this.assetContainer = assetContainer;
-		this.dir = dir;
-		this.brjs = assetContainer.root();
+	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
+	{
+		init(rootNode, parent, dir);
+		this.assetContainer = (AssetContainer) parent;
 	}
 	
 	@Override
@@ -44,7 +42,7 @@ public class ShallowAssetLocation implements AssetLocation {
 	public List<LinkedAssetFile> seedResources() {
 		List<LinkedAssetFile> seedResources = new LinkedList<LinkedAssetFile>();
 			
-		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
+		for(BundlerPlugin bundlerPlugin : root().bundlerPlugins()) {
 			seedResources.addAll(bundlerPlugin.getLinkedResourceFiles(this));
 		}
 		
@@ -69,7 +67,7 @@ public class ShallowAssetLocation implements AssetLocation {
 	public List<AssetFile> bundleResources(String fileExtension) {
 		List<AssetFile> bundleResources = new LinkedList<AssetFile>();
 		
-		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins()) {
+		for(BundlerPlugin bundlerPlugin : root().bundlerPlugins()) {
 			bundleResources.addAll(bundlerPlugin.getResourceFiles(this));
 		}
 		
@@ -102,15 +100,18 @@ public class ShallowAssetLocation implements AssetLocation {
     	return resourcesList;
 	}
 	
+	@Override
+	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException {
+		// do nothing
+	}
 	
 	private AssetLocation createResource(File srcDir) {
 		String srcPath = srcDir.getAbsolutePath();
 		
 		if(!resources.containsKey(srcPath)) {
-			resources.put(srcPath, new ShallowAssetLocation(assetContainer, srcDir));
+			resources.put(srcPath, new ShallowAssetLocation(assetContainer.root(), assetContainer, srcDir));
 		}
 		
 		return resources.get(srcPath);
 	}
-	
 }

@@ -32,7 +32,7 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	{
 		super(rootNode, dir);
 		this.name = name;
-		thisAssetLocation = new ShallowAssetLocation(this, dir);
+		thisAssetLocation = new ShallowAssetLocation(this.rootNode, this, dir);
 		init(rootNode, parent, dir);
 	}
 	

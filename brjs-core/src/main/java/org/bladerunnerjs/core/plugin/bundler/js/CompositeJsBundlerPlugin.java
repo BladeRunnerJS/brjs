@@ -36,8 +36,8 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	{
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
 		requestParserBuilder
-			.accepts("js/dev/<locale>/<minifier-setting>/js.bundle").as("dev-bundle-request")
-				.and("js/prod/<locale>/<minifier-setting>/js.bundle").as("prod-bundle-request")
+			.accepts("js/dev/<locale>/<minifier-setting>/bundle.js").as("dev-bundle-request")
+				.and("js/prod/<locale>/<minifier-setting>/bundle.js").as("prod-bundle-request")
 			.where("locale").hasForm("[a-z]{2}_[A-Z]{2}")
 				.and("minifier-setting").hasForm("[a-z-]+");
 		

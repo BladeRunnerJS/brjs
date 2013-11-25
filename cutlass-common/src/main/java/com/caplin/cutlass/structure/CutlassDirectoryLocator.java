@@ -10,8 +10,11 @@ import java.util.List;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.model.DirNode;
+
+import org.bladerunnerjs.model.AssetLocation;
+
 import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.NodeType;
 import com.caplin.cutlass.structure.model.SdkModel;
@@ -481,7 +484,7 @@ public class CutlassDirectoryLocator
 			return null;
 		}
 
-		DirNode resourcesDir = BRJSAccessor.root.sdkLib().resources();
+		AssetLocation resourcesDir = BRJSAccessor.root.sdkLib().resources();
 
 		if(resourcesDir.dirExists())
 		{
@@ -499,7 +502,7 @@ public class CutlassDirectoryLocator
 			return null;
 		}
 
-		DirNode srcDir = BRJSAccessor.root.sdkLib().src();
+		AssetLocation srcDir = BRJSAccessor.root.sdkLib().src();
 		
 		if(srcDir.dirExists())
 		{

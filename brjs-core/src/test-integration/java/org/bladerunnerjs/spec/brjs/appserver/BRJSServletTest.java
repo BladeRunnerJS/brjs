@@ -118,7 +118,7 @@ public class BRJSServletTest extends SpecTest
     		.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class")
     		.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
-		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/js.bundle", response);
+		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).textEquals("novox.node.Class=function(){};var Class=require(\"novox/node/Class\");novox.cjs.Class=function(){};");
 	}
 	

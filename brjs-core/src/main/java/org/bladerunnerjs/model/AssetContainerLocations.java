@@ -21,13 +21,13 @@ public class AssetContainerLocations {
 	public AssetContainerLocations(AssetContainer assetContainer, File srcLocationDir, File resourcesDir) {
 		this.srcLocationDir = srcLocationDir;
 		this.assetContainer = assetContainer;
-		seedResources = new DeepAssetLocation(assetContainer, resourcesDir);
+		seedResources = new DeepAssetLocation(assetContainer.root(), assetContainer, resourcesDir);
 	}
 	
 	public AssetLocation getAssetLocation(File dir) {
 		AssetLocation assetLocation = assetLocations.get(dir);
 		if (assetLocation == null) {
-			assetLocation = new ShallowAssetLocation(assetContainer, dir);
+			assetLocation = new ShallowAssetLocation(assetContainer.root(), assetContainer, dir);
 			assetLocations.put(dir, assetLocation);
 		}
 		return assetLocation;

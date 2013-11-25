@@ -67,13 +67,15 @@ List&lt;BP&gt; bundlerPlugins(String mimeType)</string>
 String getRequirePrefix()
 List&lt;SourceFile&gt; sourceFiles()
 SourceFile sourceFile(String requirePath)
-List&lt;Resource&gt; getResources()
-addSourceObserver(so SourceObserver)</string>
+List&lt;AssetLocation&gt; getAllAssetLocations()
+AssetLocation getAssetLocation(File dir)
+DirNode src()
+DirNode resources()</string>
      </void>
     </void>
     <void property="name">
      <void property="text">
-      <string>«SourceLocation»</string>
+      <string>«AssetContainer»</string>
      </void>
     </void>
    </object>
@@ -141,11 +143,12 @@ locateAncestorNodeOfClass(Node node, Class&lt;N&gt; nodeClass)</string>
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode2">
     <void property="methods">
      <void property="text">
-      <string>AliasesFile aliases()
-SourceFile getSourceFile(String requirePath)
-List&lt;LinkedAssetFile&gt; getSeedFiles()
-List&lt;SourceLocation&gt; getSourceLocations()
-BundleSet getBundleSet()</string>
+      <string>AliasesFile aliasesFile()
+SourceFile getSourceFile(String requirePath) 
+List&lt;LinkedAssetFile&gt; seedFiles()
+List&lt;AssetContainer&gt; getAssetContainers()
+BundleSet getBundleSet()
+AliasDefinition getAlias(AliasName aliasName)</string>
      </void>
     </void>
     <void property="name">
@@ -159,19 +162,19 @@ BundleSet getBundleSet()</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>344.0</double>
+      <double>354.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>1194.0</double>
+      <double>1224.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>344.0</double>
-     <double>1194.0</double>
+     <double>354.0</double>
+     <double>1224.0</double>
     </void>
    </object>
   </void>
@@ -197,19 +200,19 @@ Theme theme(String themeName)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>-3.0</double>
+      <double>7.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double4"/>
-      <double>1361.0</double>
+      <double>1397.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>-3.0</double>
-     <double>1361.0</double>
+     <double>7.0</double>
+     <double>1397.0</double>
     </void>
    </object>
   </void>
@@ -235,19 +238,19 @@ Theme theme(String themeName)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>382.0</double>
+      <double>392.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>1364.0</double>
+      <double>1400.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>382.0</double>
-     <double>1364.0</double>
+     <double>392.0</double>
+     <double>1400.0</double>
     </void>
    </object>
   </void>
@@ -272,19 +275,19 @@ public DirNode tests()</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>756.0</double>
+      <double>766.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>1364.0</double>
+      <double>1400.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>756.0</double>
-     <double>1364.0</double>
+     <double>766.0</double>
+     <double>1400.0</double>
     </void>
    </object>
   </void>
@@ -346,12 +349,12 @@ Theme theme(String name)</string>
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>1166.0</double>
+      <double>1173.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>39.0</double>
-     <double>1166.0</double>
+     <double>1173.0</double>
     </void>
    </object>
   </void>
@@ -420,12 +423,12 @@ TypedTestPack testType(String type)</string>
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double10"/>
-      <double>1039.0</double>
+      <double>1053.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>863.0</double>
-     <double>1039.0</double>
+     <double>1053.0</double>
     </void>
    </object>
   </void>
@@ -448,19 +451,19 @@ TestPack testTech(String technologyName)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double11"/>
-      <double>723.0</double>
+      <double>733.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double11"/>
-      <double>1505.0</double>
+      <double>1541.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>723.0</double>
-     <double>1505.0</double>
+     <double>733.0</double>
+     <double>1541.0</double>
     </void>
    </object>
   </void>
@@ -578,12 +581,12 @@ TestableNode.</string>
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double14"/>
-      <double>999.0</double>
+      <double>1012.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>690.0</double>
-     <double>999.0</double>
+     <double>1012.0</double>
     </void>
    </object>
   </void>

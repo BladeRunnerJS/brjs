@@ -40,7 +40,7 @@ public class AliasingTest extends SpecTest {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspectAliasesFile).hasAlias("thealias", "novox.Class1") // TODO: change back to 'the-alias' once the Trie is updated to support all Javascript variable name characters
 			.and(aspect).indexPageRefersTo("thealias");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1");
 	}
 	
@@ -50,7 +50,7 @@ public class AliasingTest extends SpecTest {
 		given(aspect).hasClass("novox.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("thealias", "novox.Class1") // TODO: change back to 'the-alias' once the Trie is updated to support all Javascript variable name characters
 			.and(aspect).indexPageRefersTo("thealias");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/js.bundle", response);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1");
 	}
 }

@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
@@ -28,12 +27,12 @@ public class JsLibNavigationTest
 	@Test
 	public void src()
 	{
-		nodeTesterFactory.createItemTester(DirNode.class, "src", "src").assertModelIsOK();
+		nodeTesterFactory.createItemTester(SourceAssetLocation.class, "src", "src").assertModelIsOK();
 	}
 	
 	@Test
 	public void resources()
 	{
-		nodeTesterFactory.createItemTester(DirNode.class, "resources", "resources").assertModelIsOK();
+		nodeTesterFactory.createItemTester(DeepAssetLocation.class, "resources", "resources").assertModelIsOK();
 	}
 }

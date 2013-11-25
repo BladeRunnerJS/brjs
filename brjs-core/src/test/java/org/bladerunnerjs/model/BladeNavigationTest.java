@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 
 import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.model.Workbench;
@@ -52,13 +51,13 @@ public class BladeNavigationTest
 	@Test
 	public void src()
 	{
-		nodeTesterFactory.createItemTester(DirNode.class, "src", "src").assertModelIsOK();
+		nodeTesterFactory.createItemTester(SourceAssetLocation.class, "src", "src").assertModelIsOK();
 	}
 	
 	@Test
 	public void resources()
 	{
-		nodeTesterFactory.createItemTester(DirNode.class, "resources", "resources").assertModelIsOK();
+		nodeTesterFactory.createItemTester(DeepAssetLocation.class, "resources", "resources").assertModelIsOK();
 	}
 	
 	@Test

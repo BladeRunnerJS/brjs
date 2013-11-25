@@ -10,8 +10,8 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final NodeItem<DirNode> src = new NodeItem<>(DirNode.class, "src");
-	private final NodeItem<DirNode> resources = new NodeItem<>(DirNode.class, "resources");
+	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
+	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
 	protected final AssetContainerLocations assetContainerLocations;
 	
 	public AbstractAssetContainer(RootNode rootNode, File dir) {
@@ -20,11 +20,11 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
-	public DirNode src() {
+	public SourceAssetLocation src() {
 		return item(src);
 	}
 	
-	public DirNode resources()
+	public AssetLocation resources()
 	{
 		return item(resources);
 	}
@@ -67,17 +67,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<AssetLocation> getAllAssetLocations() {
-		return assetContainerLocations.getAllAssetLocations();
-	}
-	
-	@Override
-	public AssetLocation getAssetLocation(File dir) {
-		return assetContainerLocations.getAssetLocation(dir);
-	}
-	
-	
-	protected AssetContainerLocations getAssetContainerLocations()
-	{
-		return assetContainerLocations;
+		List<AssetLocation> assetLocations = new ArrayList<>();
+		
+		assetLocations.add(resources());
+//		assetLocations.add(src()); // TODO: talk to team about asset locations still not being quite right
+		assetLocations.addAll(src().getChildAssetLocations());
+		
+		return assetLocations;
 	}
 }

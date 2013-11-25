@@ -26,7 +26,7 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, dir);
-		thisAssetLocation = new ShallowAssetLocation(this, dir);
+		thisAssetLocation = new ShallowAssetLocation(rootNode, this, dir);
 		init(rootNode, parent, dir);
 	}
 
