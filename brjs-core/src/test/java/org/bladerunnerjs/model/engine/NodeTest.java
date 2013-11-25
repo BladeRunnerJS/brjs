@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
+import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.utility.ObserverList;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
@@ -15,7 +16,6 @@ import org.junit.Test;
 import org.mockito.InOrder;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -111,7 +111,7 @@ public class NodeTest
 	@Test
 	public void createPathShouldCauseAllNecesarrySubDirectoriesToBeCreated() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File childDir = new File(tempDir, "child");
 		File grandchildDir = new File(childDir, "grandchild");
 		File greatGrandchildDir = new File(grandchildDir, "great-grandchild");
@@ -140,7 +140,7 @@ public class NodeTest
 	@Test
 	public void deleteShouldCauseTheDirectoryToBeDeletedIfItExists() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File childDir = new File(rootDir, "child");
 		
@@ -159,7 +159,7 @@ public class NodeTest
 	@Test
 	public void deleteShouldWorkEvenWhenTheDirectoryIsNonEmpty() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		
 		rootDir.mkdir();
@@ -175,7 +175,7 @@ public class NodeTest
 	@Test
 	public void constructingARootNodeShouldLocateTheRootAncestorDirectory() throws Exception
 	{
-		File rootDir = Files.createTempDirectory("root").toFile();
+		File rootDir = FileUtility.createTemporaryDirectory("root");
 		TestRootNode rootNode = new TestRootNode(new File(rootDir, "child-dir"));
 		
 		assertEquals(rootDir.getAbsolutePath(), rootNode.dir().getAbsolutePath());
@@ -184,7 +184,7 @@ public class NodeTest
 	@Test
 	public void locateAncestorNodeOfClassShouldSucceedIfOneOfTheAncestorsIsACachedNode() throws Exception
 	{
-		File rootDir = Files.createTempDirectory("root").toFile();
+		File rootDir = FileUtility.createTemporaryDirectory("root");
 		File childDir = new File(rootDir, "child");
 		File grandchildDir = new File(childDir, "grandchild");
 		
@@ -202,7 +202,7 @@ public class NodeTest
 	@Test
 	public void locateAncestorNodeOfClassShouldReturnNullIfNoneOfTheAncestorsAreCachedNodes() throws Exception
 	{
-		File rootDir = Files.createTempDirectory("root").toFile();
+		File rootDir = FileUtility.createTemporaryDirectory("root");
 		File childDir = new File(rootDir, "child");
 		File grandchildDir = new File(childDir, "grandchild");
 		
@@ -362,7 +362,7 @@ public class NodeTest
 	@Test
 	public void requestingAllChildrenAgainReturnsDifferentResultsIfTheFilesOnDiskHaveChanged() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		
 		rootDir.mkdir();
@@ -379,7 +379,7 @@ public class NodeTest
 	@Test
 	public void theChildrenOnlyIncludeDirectories() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File child1 = new File(rootDir, "child-1");
 		File child2 = new File(rootDir, "child-2");
@@ -395,7 +395,7 @@ public class NodeTest
 	@Test
 	public void theChildrenOnlyIncludeDirectoriesThatMatchTheFileNameFilter() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File child1 = new File(rootDir, "child-1");
 		File child2 = new File(rootDir, "child2");
@@ -422,7 +422,7 @@ public class NodeTest
 	@Test
 	public void cachedNonExistentItemsWillLaterBeUsedIfTheItemSubsequentlyComesIntoExistence() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File child1 = new File(rootDir, "child-1");
 		File child2 = new File(rootDir, "child-2");
@@ -447,7 +447,7 @@ public class NodeTest
 	@Test
 	public void existentSingleItemNodesCanBeNavigated() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File itemDir = new File(rootDir, "single-item");
 		itemDir.mkdirs();
@@ -462,7 +462,7 @@ public class NodeTest
 	@Test
 	public void nonExistentSingleItemNodesCanBeNavigated() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File itemDir = new File(rootDir, "single-item");
 		rootDir.mkdir();
@@ -474,7 +474,7 @@ public class NodeTest
 	@Test
 	public void nonExistentSingleItemNodesCanNotBeLocated() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File itemDir = new File(rootDir, "single-item");
 		
@@ -488,7 +488,7 @@ public class NodeTest
 	@Test
 	public void existentSingleItemNodesCanBeLocated() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File itemDir = new File(rootDir, "single-item");
 		
@@ -502,7 +502,7 @@ public class NodeTest
 	@Test
 	public void nonExistentMultiLocationSingleItemNodesCanBeNavigated() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File primaryItemDir = new File(rootDir, "single-item-primary-location");
 		rootDir.mkdir();
@@ -514,7 +514,7 @@ public class NodeTest
 	@Test
 	public void multiLocationSingleItemNodesCanBeNavigatedWhenAtThePrimaryLocation() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File primaryItemDir = new File(rootDir, "single-item-primary-location");
 		primaryItemDir.mkdirs();
@@ -527,7 +527,7 @@ public class NodeTest
 	@Test
 	public void multiLocationSingleItemNodesCanBeNavigatedWhenAtTheSecondaryLocation() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File secondaryItemDir = new File(rootDir, "single-item-secondary-location");
 		secondaryItemDir.mkdirs();
@@ -540,7 +540,7 @@ public class NodeTest
 	@Test(expected=BladeRunnerDirectoryException.class)
 	public void multiLocationSingleItemNodesThrowAnExceptionIfDefinedAtBothLocations() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File primaryItemDir = new File(rootDir, "single-item-primary-location");
 		File secondaryItemDir = new File(rootDir, "single-item-secondary-location");
@@ -555,7 +555,7 @@ public class NodeTest
 	@Test
 	public void nonExistentMultiLocationSingleItemNodesCanNotBeLocated() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File primaryItemDir = new File(rootDir, "single-item-primary-location");
 		rootDir.mkdir();
@@ -569,7 +569,7 @@ public class NodeTest
 	@Test
 	public void multiLocationSingleItemNodesCanBeLocatedWhenAtThePrimaryLocation() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File primaryItemDir = new File(rootDir, "single-item-primary-location");
 		primaryItemDir.mkdirs();
@@ -583,7 +583,7 @@ public class NodeTest
 	@Test
 	public void multiLocationSingleItemNodesCanBeLocatedWhenAtTheSecondaryLocation() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File secondaryItemDir = new File(rootDir, "single-item-secondary-location");
 		secondaryItemDir.mkdirs();
@@ -597,7 +597,7 @@ public class NodeTest
 	@Test
 	public void multiLocationItemSetNodesCanBeNavigatedWhenItemsPresentInOneSideOnly() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File primarySetDir = new File(rootDir, "set-primary-location");
 		File child1Dir = new File(primarySetDir, "child-1");
@@ -616,7 +616,7 @@ public class NodeTest
 	@Test
 	public void multiLocationItemSetCanBeNavigatedWhenListPlusList() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File primarySetDir = new File(rootDir, "set-primary-location");
 		File secondarySetDir = new File(rootDir, "set-secondary-location");
@@ -642,7 +642,7 @@ public class NodeTest
 	@Test
 	public void multiLocationItemSetNodesCanBeNavigatedWhenItemPlusList() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File primarySetDir = new File(rootDir, "set-primary-location");
 		File singleItemSetDir = new File(rootDir, "set-single-item-location");
@@ -665,7 +665,7 @@ public class NodeTest
 	@Test(expected=BladeRunnerDirectoryException.class)
 	public void multiLocationItemSetNodesThrowAnExceptionOnNavigationIfTheSameNameIsDefinedTwice() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("node-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("node-test");
 		File rootDir = new File(tempDir, "root");
 		File primarySetDir = new File(rootDir, "set-primary-location");
 		File singleItemSetDir = new File(rootDir, "set-single-item-location");

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
+import org.bladerunnerjs.model.utility.FileUtility;
+
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
 import com.caplin.cutlass.bundler.js.aliasing.AliasRegistry;
 import com.caplin.cutlass.bundler.js.aliasing.ScenarioAliases;
@@ -54,7 +56,7 @@ public class SourceFileFinder
 		
 		try
 		{
-			temporaryAliasesFile = File.createTempFile("alias-file_", ".tmp");
+			temporaryAliasesFile = FileUtility.createTemporaryFile("alias-file_", ".tmp");
 			
 			try(FileWriter temporaryAliasesWriter = new FileWriter(temporaryAliasesFile))
 			{
