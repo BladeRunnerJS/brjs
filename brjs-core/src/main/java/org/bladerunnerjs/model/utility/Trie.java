@@ -10,7 +10,8 @@ import com.google.common.base.Predicate;
 
 public class Trie<T>
 {
-	private Predicate<Character> charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.'));
+	// TODO: this charMatcher should actually be a negated character set of all the characters that haven't been placed into the trie
+	private Predicate<Character> charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.')).or(CharMatcher.is('-'));
 	private TrieNode<T> root = new TrieNode<T>();
 	
 	
