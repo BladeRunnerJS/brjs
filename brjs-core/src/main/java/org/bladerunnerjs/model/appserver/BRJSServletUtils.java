@@ -32,7 +32,7 @@ public class BRJSServletUtils
 	
 	ContentPlugin getContentPluginForRequest(BladerunnerUri bladerunnerUri)
 	{
-		for (ContentPlugin contentPlugin : brjs.allContentPlugins())
+		for (ContentPlugin contentPlugin : brjs.contentPlugins())
 		{
 			ContentPathParser requestParser = contentPlugin.getContentPathParser();
 			if ( requestParser.canParseRequest(bladerunnerUri) )

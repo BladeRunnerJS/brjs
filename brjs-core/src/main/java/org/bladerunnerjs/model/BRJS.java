@@ -3,8 +3,10 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
@@ -24,6 +26,7 @@ import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
@@ -359,7 +362,10 @@ public class BRJS extends AbstractBRJSRootNode
 	}	
 	
 	public List<ContentPlugin> contentPlugins() {
-		return pluginLocator.getContentPlugins();
+		Set<ContentPlugin> contentPlugins = new HashSet<ContentPlugin>();
+		contentPlugins.addAll( pluginLocator.getContentPlugins() );
+		contentPlugins.addAll( bundlerPlugins() );
+		return new ArrayList<ContentPlugin>( contentPlugins );
 	}
 	
 	public List<CommandPlugin> commandPlugins()
@@ -370,6 +376,14 @@ public class BRJS extends AbstractBRJSRootNode
 	public List<ModelObserverPlugin> modelObserverPlugins()
 	{
 		return pluginLocator.getModelObservers();
+	}
+	
+	public List<TagHandlerPlugin> tagHandlers()
+	{
+		Set<TagHandlerPlugin> tagHandlers = new HashSet<TagHandlerPlugin>();
+		tagHandlers.addAll( pluginLocator.getTagHandlers() );
+		tagHandlers.addAll( bundlerPlugins() );
+		return new ArrayList<TagHandlerPlugin>( tagHandlers );
 	}
 	
 	
