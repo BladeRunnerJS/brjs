@@ -124,7 +124,7 @@ public class TrieTest
 	{
 		trie.add("test.object.1", test_object_1);
 		
-		StringReader reader = new StringReader("abcd test.object.123 1234");
+		StringReader reader = new StringReader("abcd a.test.object.1 1234");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(0, foundObjects.size());
