@@ -7,13 +7,15 @@ import java.util.Map;
 public class TrieNode<T>
 {
 
+	private static final char ROOT_NODE_CHAR = '\u0000';
+	
 	private Map<Character, TrieNode<T>> children = new HashMap<Character, TrieNode<T>>();
 	private T value;
 	private final char nodeChar;
 	
 	public TrieNode ()
 	{
-		nodeChar = '\u0000';
+		nodeChar = ROOT_NODE_CHAR;
 	}
 	
 	public TrieNode (char character)
