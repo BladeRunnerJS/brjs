@@ -74,23 +74,7 @@ public class BRJSServletUtils
 	{
 		try
 		{
-			String appName = StringUtils.substringAfter(requestUri.contextPath, "/");
-			if (appName.endsWith("/"))
-			{
-				appName = StringUtils.substringBeforeLast(appName, "/");
-			}
-			App app = brjs.app(appName);
-			if (!app.dirExists())
-			{
-				app = brjs.systemApp(appName);
-				if (!app.dirExists())
-				{
-					sendErrorResponse(resp, 404, "App not found.");
-				}
-			}
-			
-			File baseDir = app.file(requestUri.scopePath);
-			BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
+			BundlableNode bundlableNode = getBundableNodeForRequest(requestUri, resp);
 			contentPlugin.writeContent(parsedRequest, bundlableNode.getBundleSet(), resp.getOutputStream());
 		}
 		catch (BundlerProcessingException ex)
@@ -105,6 +89,28 @@ public class BRJSServletUtils
 		{
 			sendErrorResponse(resp, 500, ex);
 		}
+	}
+
+	public BundlableNode getBundableNodeForRequest(BladerunnerUri requestUri, HttpServletResponse resp) throws ServletException
+	{
+		String appName = StringUtils.substringAfter(requestUri.contextPath, "/");
+		if (appName.endsWith("/"))
+		{
+			appName = StringUtils.substringBeforeLast(appName, "/");
+		}
+		App app = brjs.app(appName);
+		if (!app.dirExists())
+		{
+			app = brjs.systemApp(appName);
+			if (!app.dirExists())
+			{
+				sendErrorResponse(resp, 404, "App not found.");
+			}
+		}
+		
+		File baseDir = app.file(requestUri.scopePath);
+		BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
+		return bundlableNode;
 	}
 
 	BladerunnerUri createBladeRunnerUri(ServletContext context, HttpServletRequest req) throws ServletException
