@@ -12,12 +12,9 @@ import org.bladerunnerjs.model.engine.RootNode;
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
 	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
-	protected final AssetContainerLocations assetContainerLocations;
 	
 	public AbstractAssetContainer(RootNode rootNode, File dir) {
 		init(rootNode, rootNode, dir);
-		
-		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
 	public SourceAssetLocation src() {
@@ -70,8 +67,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		List<AssetLocation> assetLocations = new ArrayList<>();
 		
 		assetLocations.add(resources());
-//		assetLocations.add(src()); // TODO: talk to team about asset locations still not being quite right
-		assetLocations.addAll(src().getChildAssetLocations());
+		assetLocations.addAll(src().getChildAssetLocations()); // TODO: should we just be adding the src(), rather than all it's children?
 		
 		return assetLocations;
 	}
