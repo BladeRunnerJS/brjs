@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
+import org.bladerunnerjs.core.plugin.content.AbstractContentPlugin;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
@@ -15,7 +16,7 @@ import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 
-public class MockContentPlugin implements ContentPlugin
+public class MockContentPlugin extends AbstractContentPlugin implements ContentPlugin
 {
 	private ContentPathParser requestParser;
 	private List<String> prodRequestPaths = new ArrayList<>();

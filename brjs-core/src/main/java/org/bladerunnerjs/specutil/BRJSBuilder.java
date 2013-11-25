@@ -2,10 +2,15 @@ package org.bladerunnerjs.specutil;
 
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.core.plugin.PluginLoader;
+import org.bladerunnerjs.core.plugin.VirtualProxyModelObserverPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundler.VirtualProxyBundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
+import org.bladerunnerjs.core.plugin.command.VirtualProxyCommandPlugin;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
+import org.bladerunnerjs.core.plugin.content.VirtualProxyContentPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
+import org.bladerunnerjs.core.plugin.minifier.VirtualProxyMinifierPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.appserver.ServletModelAccessor;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
@@ -22,7 +27,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		this.brjs = brjs;
 	}
 	
-	// look at brjs is null
+	//TODO: look at brjs is null - commands must be added before BRJS is created
 	
 	public BuilderChainer hasBeenPopulated() throws Exception {
 		brjs.populate();
@@ -32,9 +37,10 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 
 	public BuilderChainer hasCommands(CommandPlugin... commands)
 	{
+		verifyBrjsIsSet();
 		for(CommandPlugin command : commands)
 		{
-			specTest.pluginLocator.pluginCommands.add(command);
+			specTest.pluginLocator.pluginCommands.add( new VirtualProxyCommandPlugin(command) );
 		}
 		
 		return builderChainer;
@@ -42,9 +48,10 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasModelObservers(ModelObserverPlugin... modelObservers)
 	{
+		verifyBrjsIsSet();
 		for(ModelObserverPlugin modelObserver : modelObservers)
 		{
-			specTest.pluginLocator.modelObservers.add(modelObserver);
+			specTest.pluginLocator.modelObservers.add( new VirtualProxyModelObserverPlugin(modelObserver) );
 		}
 		
 		return builderChainer;
@@ -52,9 +59,10 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasBundlers(BundlerPlugin... bundlerPlugins)
 	{
+		verifyBrjsIsSet();
 		for(BundlerPlugin bundlerPlugin : bundlerPlugins)
 		{
-			specTest.pluginLocator.bundlers.add(bundlerPlugin);
+			specTest.pluginLocator.bundlers.add( new VirtualProxyBundlerPlugin(bundlerPlugin) );
 		}
 		
 		return builderChainer;
@@ -62,9 +70,21 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasContentPlugins(ContentPlugin... contentPlugins)
 	{
+		verifyBrjsIsSet();
 		for(ContentPlugin contentPlugin : contentPlugins)
 		{
-			specTest.pluginLocator.contentPlugins.add(contentPlugin);
+			specTest.pluginLocator.contentPlugins.add( new VirtualProxyContentPlugin(contentPlugin) );
+		}
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasMinifiers(MinifierPlugin... minifyPlugins)
+	{
+		verifyBrjsIsSet();
+		for(MinifierPlugin minifierPlugin : minifyPlugins)
+		{
+			specTest.pluginLocator.minifiers.add( new VirtualProxyMinifierPlugin(minifierPlugin) );
 		}
 		
 		return builderChainer;
@@ -72,38 +92,45 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsCommands()
 	{
+		verifyBrjsIsSet();
 		specTest.pluginLocator.bundlers.clear();
-		specTest.pluginLocator.pluginCommands.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), CommandPlugin.class) );
+		specTest.pluginLocator.pluginCommands.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), CommandPlugin.class, VirtualProxyCommandPlugin.class) );
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer automaticallyFindsModelObservers()
 	{
+		verifyBrjsIsSet();
 		specTest.pluginLocator.bundlers.clear();
-		specTest.pluginLocator.modelObservers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ModelObserverPlugin.class) );
+		specTest.pluginLocator.modelObservers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ModelObserverPlugin.class, VirtualProxyModelObserverPlugin.class) );
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer automaticallyFindsBundlers()
 	{
+		verifyBrjsIsSet();
 		specTest.pluginLocator.bundlers.clear();
-		specTest.pluginLocator.bundlers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), BundlerPlugin.class) );
+		specTest.pluginLocator.bundlers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), BundlerPlugin.class, VirtualProxyBundlerPlugin.class) );
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsMinifiers() {
+	public BuilderChainer automaticallyFindsMinifiers() 
+	{
+		verifyBrjsIsSet();
 		specTest.pluginLocator.minifiers.clear();
-		specTest.pluginLocator.minifiers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), MinifierPlugin.class) );
+		specTest.pluginLocator.minifiers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), MinifierPlugin.class, VirtualProxyMinifierPlugin.class) );
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsContentPlugins() {
-		specTest.pluginLocator.minifiers.clear();
-		specTest.pluginLocator.contentPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class) );
+	public BuilderChainer automaticallyFindsContentPlugins() 
+	{
+		verifyBrjsIsSet();
+		specTest.pluginLocator.contentPlugins.clear();
+		specTest.pluginLocator.contentPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class, VirtualProxyContentPlugin.class) );
 		
 		return builderChainer;
 	}
@@ -134,6 +161,14 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		ServletModelAccessor.reset();
 		ServletModelAccessor.initializeModel(brjs);
 		return builderChainer;
+	}
+	
+	private void verifyBrjsIsSet()
+	{
+		if (specTest.brjs != null)
+		{
+			throw new RuntimeException("Plugins must be added to BRJS before it is created.");
+		}
 	}
 	
 }

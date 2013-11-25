@@ -26,7 +26,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(pluginLocator).hasCommand(new CreateBladeCommand())
+		given(brjs).hasCommands(new CreateBladeCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			bladeset = app.bladeset("bladeset");

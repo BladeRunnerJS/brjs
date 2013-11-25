@@ -2,13 +2,14 @@ package org.bladerunnerjs.testing.utility;
 
 import java.util.Arrays;
 
+import org.bladerunnerjs.core.plugin.command.AbstractCommandPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 
 
-public class MockCommand implements CommandPlugin
+public class MockCommandPlugin extends AbstractCommandPlugin implements CommandPlugin
 {
 
 	BRJS brjs;
@@ -18,12 +19,17 @@ public class MockCommand implements CommandPlugin
 	private final String helpMessage;
 	RuntimeException throwException;
 	
-	public MockCommand(String name, String description, String usage, String helpMessage)
+	public MockCommandPlugin()
+	{
+		this("mock", "mock command", "I'm a mock!", "no help for you", null);
+	}
+	
+	public MockCommandPlugin(String name, String description, String usage, String helpMessage)
 	{
 		this(name, description, usage, helpMessage, null);
 	}
 	
-	public MockCommand(String name, String description, String usage, String helpMessage, RuntimeException throwException)
+	public MockCommandPlugin(String name, String description, String usage, String helpMessage, RuntimeException throwException)
 	{
 		this.name = name;
 		this.description = description;

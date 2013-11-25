@@ -7,10 +7,11 @@ import java.util.List;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
-import org.bladerunnerjs.model.utility.XmlStreamReader;
+import org.bladerunnerjs.model.utility.stax.XmlStreamReader;
 import org.bladerunnerjs.model.utility.XmlStreamReaderFactory;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
@@ -18,12 +19,13 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 
 public class AliasDefinitionsFile extends File {
-	private static final long serialVersionUID = 822434477840572747L;
+	private static final long serialVersionUID = 1L;
+	private static XMLValidationSchema aliasDefinitionsSchema;
+	
 	private final FileModifiedChecker fileModifiedChecker;
 	private List<AliasDefinition> aliasDefinitions;
-	private XMLValidationSchema aliasDefinitionsSchema;
 	
-	{
+	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
 		
 		try
@@ -46,8 +48,10 @@ public class AliasDefinitionsFile extends File {
 		
 		for(AliasDefinition nextAliasDefinition : aliasDefinitions()) {
 			String groupName = nextAliasDefinition.getGroup();
+			boolean isValidScenario = (scenarioName == null) || nextAliasDefinition.getScenario().equals(scenarioName);
+			boolean isValidGroup = (groupName == null) || groupNames.contains(groupName);
 			
-			if(nextAliasDefinition.getScenario().equals(scenarioName) && ((groupName == null) || groupNames.contains(groupName)) && nextAliasDefinition.getName().equals(aliasName.getName())) {
+			if(isValidScenario && isValidGroup && nextAliasDefinition.getName().equals(aliasName.getName())) {
 				aliasDefinition = nextAliasDefinition;
 				break;
 			}
@@ -69,7 +73,25 @@ public class AliasDefinitionsFile extends File {
 		
 		if(exists()) {
 			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(this, aliasDefinitionsSchema)) {
-				// TODO: bring more aliasing code over from the 'bundlers' project
+				while(streamReader.hasNextTag()) {
+					streamReader.nextTag();
+					
+					if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
+						switch(streamReader.getLocalName()) {
+							case "aliasDefinitions":
+								// do nothing
+								break;
+							
+							case "alias":
+								processAlias(streamReader.getChildReader());
+								break;
+							
+							case "group":
+								processGroup(streamReader.getChildReader());
+								break;
+						}
+					}
+				}
 			}
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
@@ -80,5 +102,59 @@ public class AliasDefinitionsFile extends File {
 				throw new BundlerFileProcessingException(this, e);
 			}
 		}
+	}
+	
+	private void processAlias(XmlStreamReader streamReader) throws XMLStreamException {
+		String aliasName = streamReader.getAttributeValue("name");
+		String aliasClass = streamReader.getAttributeValue("defaultClass");
+		String aliasInterface = streamReader.getAttributeValue("interface");
+		
+		aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
+		
+		while(streamReader.hasNextTag()) {
+			streamReader.nextTag();
+			
+			if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
+				switch(streamReader.getLocalName()) {
+					case "scenario":
+						processScenario(aliasName, aliasInterface, streamReader);
+						break;
+				}
+			}
+		}
+	}
+	
+	private void processGroup(XmlStreamReader streamReader) throws XMLStreamException {
+		String groupName = streamReader.getAttributeValue("name");
+		
+		while(streamReader.hasNextTag()) {
+			streamReader.nextTag();
+			
+			if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
+				switch(streamReader.getLocalName()) {
+					case "alias":
+						processGroupAlias(groupName, streamReader);
+						break;
+				}
+			}
+		}
+	}
+	
+	private void processGroupAlias(String groupName, XmlStreamReader streamReader) {
+		String aliasName = streamReader.getAttributeValue("name");
+		String aliasClass = streamReader.getAttributeValue("class");
+		AliasDefinition aliasDefinition = new AliasDefinition(aliasName, aliasClass, null);
+		aliasDefinition.setGroup(groupName);
+		
+		aliasDefinitions.add(aliasDefinition);
+	}
+	
+	private void processScenario(String aliasName, String aliasInterface, XmlStreamReader streamReader) {
+		String scenarioName = streamReader.getAttributeValue("name");
+		String aliasClass = streamReader.getAttributeValue("class");
+		AliasDefinition aliasDefinition = new AliasDefinition(aliasName, aliasClass, aliasInterface);
+		aliasDefinition.setScenario(scenarioName);
+		
+		aliasDefinitions.add(aliasDefinition);
 	}
 }

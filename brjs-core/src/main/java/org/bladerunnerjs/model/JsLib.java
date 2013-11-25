@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +25,11 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
 	private String name;
 	private JsLibConf libConf;
-	private final AssetContainerLocations assetContainerLocations;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		this.name = name;
 		init(rootNode, parent, dir);
-		
-		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)
@@ -158,6 +156,12 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	
 	@Override
 	public List<AssetLocation> getAllAssetLocations() {
-		return assetContainerLocations.getAllAssetLocations();
+		List<AssetLocation> assetLocations = new ArrayList<>();
+		
+		assetLocations.add(resources());
+		assetLocations.add(src());
+		assetLocations.addAll(src().getChildAssetLocations()); // TODO: should we just be adding the src(), rather than all it's children?
+		
+		return assetLocations;
 	}
 }

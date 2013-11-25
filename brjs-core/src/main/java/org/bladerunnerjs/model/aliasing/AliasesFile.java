@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 import org.bladerunnerjs.model.utility.XmlStreamReaderFactory;
-import org.bladerunnerjs.model.utility.XmlStreamReader;
+import org.bladerunnerjs.model.utility.stax.XmlStreamReader;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
@@ -28,7 +28,7 @@ public class AliasesFile extends File {
 	private List<String> groupNames;
 	private String scenario;
 	
-	{
+	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
 		
 		try

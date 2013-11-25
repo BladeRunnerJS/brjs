@@ -10,8 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
@@ -79,6 +81,12 @@ public class CommandTaskTest
 		public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException
 		{
 			out.println("DummyCommandTask.doCommand");
+		}
+		
+		@Override
+		public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+		{
+			throw new InstanceOfShouldntBeInvokedException();
 		}
 	}
 

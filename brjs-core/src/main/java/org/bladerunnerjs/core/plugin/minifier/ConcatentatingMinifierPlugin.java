@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 
-public class ConcatentatingMinifierPlugin implements MinifierPlugin {
+public class ConcatentatingMinifierPlugin extends AbstractMinifierPlugin implements MinifierPlugin {
 	private List<String> settingNames = new ArrayList<>();
 	
 	{

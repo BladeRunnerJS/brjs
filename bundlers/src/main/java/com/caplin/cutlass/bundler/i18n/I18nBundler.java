@@ -13,8 +13,10 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
+import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
@@ -190,5 +192,11 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 		}
 		
 		return i18nBundle;
+	}
+	
+	@Override
+	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+	{
+		throw new InstanceOfShouldntBeInvokedException();
 	}
 }

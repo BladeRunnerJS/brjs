@@ -2,7 +2,7 @@ package org.bladerunnerjs.core.plugin.bundler;
 
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.AssetLocation;

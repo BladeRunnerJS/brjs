@@ -1,11 +1,12 @@
 package org.bladerunnerjs.testing.utility;
 
+import org.bladerunnerjs.core.plugin.command.AbstractCommandPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 
-public class ExplodingCommand implements CommandPlugin {
+public class ExplodingCommand extends AbstractCommandPlugin implements CommandPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}

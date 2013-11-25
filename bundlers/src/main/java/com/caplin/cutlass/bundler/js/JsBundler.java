@@ -9,9 +9,11 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
@@ -156,5 +158,11 @@ public class JsBundler implements LegacyFileBundlerPlugin
 		{
 			BundleWriterFactory.closeWriter(writer);
 		}
+	}
+	
+	@Override
+	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+	{
+		throw new InstanceOfShouldntBeInvokedException();
 	}
 }

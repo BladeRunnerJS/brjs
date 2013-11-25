@@ -25,7 +25,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(pluginLocator).hasCommand(new CreateLibraryCommand())
+		given(brjs).hasCommands(new CreateLibraryCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			lib = app.jsLib("lib");

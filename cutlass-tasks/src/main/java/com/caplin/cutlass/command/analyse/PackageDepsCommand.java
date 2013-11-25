@@ -3,8 +3,11 @@ package com.caplin.cutlass.command.analyse;
 import java.io.File;
 
 import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.core.plugin.Plugin;
+
 import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -70,5 +73,11 @@ public class PackageDepsCommand implements LegacyCommandPlugin
 		
 		String result = visitor.getResult();
 		out.println(result);
+	}
+	
+	@Override
+	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+	{
+		throw new InstanceOfShouldntBeInvokedException();
 	}
 }

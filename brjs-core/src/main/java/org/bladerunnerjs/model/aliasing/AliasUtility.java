@@ -15,9 +15,11 @@ public class AliasUtility {
 			for(AliasDefinitionsFile aliasDefinitionsFile : aliasDefinitionFiles) {
 				AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAlias(aliasName, scenarioName, groupNames);
 				
-				if(nextAliasDefinition != null) {
+				if(aliasDefinition != null) {
 					throw new AmbiguousAliasException(aliasesFile, aliasName, scenarioName);
 				}
+				
+				aliasDefinition = nextAliasDefinition;
 			}
 		}
 		

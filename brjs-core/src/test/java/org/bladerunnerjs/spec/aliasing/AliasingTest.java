@@ -8,7 +8,6 @@ import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AliasingTest extends SpecTest {
@@ -16,7 +15,6 @@ public class AliasingTest extends SpecTest {
 	private Aspect aspect;
 	private AliasesFile aspectAliasesFile;
 	private Bladeset bladeset;
-	@SuppressWarnings("unused")
 	private Blade blade;
 	private AliasDefinitionsFile bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
@@ -32,7 +30,7 @@ public class AliasingTest extends SpecTest {
 			aspectAliasesFile = aspect.aliasesFile();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
-			//bladeAliasDefinitionsFile = blade.src().aliasDefinitionsFile(); // TODO: we need to convert src() and resources() to AssetLocation instances, rather than DirNode instances
+			bladeAliasDefinitionsFile = blade.src().aliasDefinitionsFile();
 	}
 	
 	@Test
@@ -44,7 +42,6 @@ public class AliasingTest extends SpecTest {
 		then(response).containsClasses("novox.Class1");
 	}
 	
-	@Ignore
 	@Test
 	public void weBundleAClassIfTheAliasIsDefinedInABladeAliasDefinitionsXml() throws Exception {
 		given(aspect).hasClass("novox.Class1")
