@@ -55,4 +55,5 @@ public class VerifierChainer {
 	public AppServerVerifier and(ApplicationServer appServer) { return new AppServerVerifier(modelTest, appServer); }
 	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(appConf); }
 	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(modelTest, dir); }
+	public StringVerifier and(StringBuffer stringBuffer) { return new StringVerifier(modelTest, stringBuffer); }
 }
