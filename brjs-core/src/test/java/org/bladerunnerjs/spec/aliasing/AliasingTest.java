@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AliasingTest extends SpecTest {
@@ -49,5 +50,50 @@ public class AliasingTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1");
+	}
+	
+	@Ignore
+	@Test
+	public void aliasDefinitionsDefinedWithinBladesetsMustBeNamespaced() throws Exception {
+	}
+	
+	@Ignore
+	@Test
+	public void aliasDefinitionsDefinedWithinBladesMustBeNamespaced() throws Exception {
+	}
+	
+	@Ignore
+	@Test
+	public void aliasDefinitionsCanBeOverriddenWithinTheAliasesFile() throws Exception {
+	}
+	
+	@Ignore
+	@Test
+	public void settingTheScenarioChangesTheAliasesThatAreUsed() throws Exception {
+	}
+	
+	@Ignore
+	@Test
+	public void aliasesCanStillBeOverriddenWhenTheScenarioIsSet() throws Exception {
+	}
+	
+	@Ignore
+	@Test
+	public void settingAGroupChangesTheAliasesThatAreUsed() throws Exception {
+	}
+	
+	@Ignore
+	@Test
+	public void aliasesCanStillBeOverriddenWhenAGroupIsSet() throws Exception {
+	}
+	
+	@Ignore
+	@Test
+	public void settingMultipleGroupsChangesTheAliasesThatAreUsed() throws Exception {
+	}
+	
+	@Ignore
+	@Test
+	public void aliasesCanStillBeOverriddenWhenMultipleGroupsAreSet() throws Exception {
 	}
 }
