@@ -67,11 +67,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<AssetLocation> getAllAssetLocations() {
-		return assetContainerLocations.getAllAssetLocations();
-	}
-	
-	protected AssetContainerLocations getAssetContainerLocations()
-	{
-		return assetContainerLocations;
+		List<AssetLocation> assetLocations = new ArrayList<>();
+		
+		assetLocations.add(resources());
+//		assetLocations.add(src()); // TODO: talk to team about asset locations still not being quite right
+		assetLocations.addAll(src().getChildAssetLocations());
+		
+		return assetLocations;
 	}
 }

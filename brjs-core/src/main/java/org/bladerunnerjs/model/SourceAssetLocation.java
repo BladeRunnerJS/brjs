@@ -27,10 +27,10 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 			Iterator<File> fileIterator = FileUtils.iterateFilesAndDirs(dir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 			
 			while (fileIterator.hasNext()) {
-				File dir = fileIterator.next();
+				File nextDir = fileIterator.next();
 				
-				if (!dir.equals(dir)) {
-					assetLocations.add(getChildAssetLocation(dir));
+				if (!nextDir.equals(dir)) {
+					assetLocations.add(getChildAssetLocation(nextDir));
 				}
 			}
 		}
