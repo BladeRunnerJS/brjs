@@ -36,7 +36,7 @@ public class AliasingTest extends SpecTest {
 	@Test
 	public void weBundleAClassIfTheAliasIsDefinedInTheAliasesXml() throws Exception {
 		given(aspect).hasClass("novox.Class1")
-			.and(aspectAliasesFile).hasAlias("the-alias", "novox.Class1") // TODO: change back to 'the-alias' once the Trie is updated to support all Javascript variable name characters
+			.and(aspectAliasesFile).hasAlias("the-alias", "novox.Class1")
 			.and(aspect).indexPageRefersTo("the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1");
@@ -45,7 +45,7 @@ public class AliasingTest extends SpecTest {
 	@Test
 	public void weBundleAClassIfTheAliasIsDefinedInABladeAliasDefinitionsXml() throws Exception {
 		given(aspect).hasClass("novox.Class1")
-			.and(bladeAliasDefinitionsFile).hasAlias("the-alias", "novox.Class1") // TODO: change back to 'the-alias' once the Trie is updated to support all Javascript variable name characters
+			.and(bladeAliasDefinitionsFile).hasAlias("the-alias", "novox.Class1")
 			.and(aspect).indexPageRefersTo("the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1");
