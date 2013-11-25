@@ -67,7 +67,8 @@ public class Trie<T>
 		List<T> matches = new LinkedList<T>();
 		
 		TrieMatcher matcher = new TrieMatcher();
-		CharMatcher charMatcher = CharMatcher.anyOf( StringUtils.join(trieChars.toArray()) );
+//		CharMatcher charMatcher = CharMatcher.anyOf( StringUtils.join(trieChars.toArray()) );	//TODO: use the CharMatcher that is calculated from the entries in the Trie
+		CharMatcher charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.')).or(CharMatcher.is('-')).or(CharMatcher.is('_'));
 		
 		int latestCharVal;
 		while ((latestCharVal = reader.read()) != -1)
@@ -94,7 +95,7 @@ public class Trie<T>
 			matcher.reset();
 		}
 		
-		if (!CharMatcher.forPredicate(charMatcher).apply( matcher.currentNode.getNodeChar() ))
+		if ( !charMatcher.apply(matcher.currentNode.getNodeChar()) )
 		{
 			matcher.reset();
 		}
