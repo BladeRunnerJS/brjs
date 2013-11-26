@@ -155,8 +155,7 @@ public class AspectBundlingTest extends SpecTest {
     		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
     		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", response);
-		then(response).textEquals("// package definition block\n"+
-"window.novox = {\"bs\":{\"b1\":{\"Class1\":{}}}};\n");
+		then(response).textEquals("// package definition block\n" + "window.novox = {\"bs\":{\"b1\":{\"Class1\":{}}}};\n");
 	}
 	
 	// X M L  &  H T M L
