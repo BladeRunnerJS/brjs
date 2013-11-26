@@ -212,7 +212,6 @@ task generateReleaseNotes, {
     	}
 	}
 }
-build.dependsOn generateReleaseNotes
 
 
 task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', build], {
