@@ -32,6 +32,7 @@ dependencies {
 	compile dependency('jetty-all-server')
 	compile dependency('jta')
 	compile dependency('closure-compiler')
+	compile dependency('java-xmlbuilder')
 	
 	/* woodstox deps */
 	compile dependency('woodstox-core-asl')
