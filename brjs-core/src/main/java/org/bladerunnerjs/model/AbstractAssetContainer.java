@@ -38,6 +38,11 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
+	public String requirePrefix() {
+		return "/" + namespace().replaceAll("\\.", "/");
+	}
+	
+	@Override
 	public List<SourceFile> sourceFiles() {
 		List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 			
