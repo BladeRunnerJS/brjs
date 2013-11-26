@@ -169,7 +169,7 @@ public class AliasingTest extends SpecTest {
 			.and(bladeAliasDefinitionsFile).hasAlias("novox.bs.b1.the-alias", "novox.Class1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class2")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "novox.bs.b1.the-alias", "novox.Class3")
-			.and(aspectAliasesFile).usesGroup("g2")
+			.and(aspectAliasesFile).usesGroups("g2")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class3");

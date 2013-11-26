@@ -1,6 +1,7 @@
 package org.bladerunnerjs.specutil.engine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -8,14 +9,15 @@ import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.specutil.XmlBuilderSerializer;
 
+import com.google.common.base.Joiner;
 import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasesFileBuilder {
 	private AliasesFile aliasesFile;
 	private BuilderChainer builderChainer;
-	private List<AliasDefinition> aliases = new ArrayList<>();
+	private List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 	private String scenario = null;
-	private String group = null;
+	private List<String> groupNames = null;
 	
 	public AliasesFileBuilder(SpecTest specTest, AliasesFile aliasesFile) {
 		this.aliasesFile = aliasesFile;
@@ -28,8 +30,8 @@ public class AliasesFileBuilder {
 		return builderChainer;
 	}
 	
-	public BuilderChainer usesGroup(String group) {
-		this.group = group;
+	public BuilderChainer usesGroups(String... groups) {
+		this.groupNames = Arrays.asList(groups);
 		
 		return builderChainer;
 	}
@@ -41,7 +43,7 @@ public class AliasesFileBuilder {
 	}
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
-		aliases.add(new AliasDefinition(aliasName, classRef, null));
+		aliasDefinitions.add(new AliasDefinition(aliasName, classRef, null));
 		writeAliasesFile();
 		
 		return builderChainer;
@@ -54,11 +56,11 @@ public class AliasesFileBuilder {
 			builder.a("useScenario", scenario);
 		}
 		
-		if(group != null) {
-			builder.a("useGroups", group);
+		if(groupNames != null) {
+			builder.a("useGroups", Joiner.on(" ").join(groupNames));
 		}
 		
-		for(AliasDefinition aliasDefinition : aliases) {
+		for(AliasDefinition aliasDefinition : aliasDefinitions) {
 			builder.e("alias").a("name", aliasDefinition.getName()).a("class", aliasDefinition.getClassName()).up();
 		}
 		
