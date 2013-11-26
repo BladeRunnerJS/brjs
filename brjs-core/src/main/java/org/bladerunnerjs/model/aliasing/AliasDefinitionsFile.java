@@ -9,6 +9,7 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 import org.bladerunnerjs.model.utility.stax.XmlStreamReader;
@@ -24,6 +25,7 @@ public class AliasDefinitionsFile extends File {
 	
 	private final FileModifiedChecker fileModifiedChecker;
 	private List<AliasDefinition> aliasDefinitions;
+	private AssetContainer assetContainer;
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -38,8 +40,9 @@ public class AliasDefinitionsFile extends File {
 		}
 	}
 	
-	public AliasDefinitionsFile(File parent, String child) {
+	public AliasDefinitionsFile(AssetContainer assetContainer, File parent, String child) {
 		super(parent, child);
+		this.assetContainer = assetContainer;
 		fileModifiedChecker = new FileModifiedChecker(this);
 	}
 	
@@ -98,16 +101,20 @@ public class AliasDefinitionsFile extends File {
 				
 				throw new BundlerFileProcessingException(this, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
-			catch (FileNotFoundException e) {
+			catch (FileNotFoundException | NamespaceException e) {
 				throw new BundlerFileProcessingException(this, e);
 			}
 		}
 	}
 	
-	private void processAlias(XmlStreamReader streamReader) throws XMLStreamException {
+	private void processAlias(XmlStreamReader streamReader) throws XMLStreamException, NamespaceException {
 		String aliasName = streamReader.getAttributeValue("name");
 		String aliasClass = streamReader.getAttributeValue("defaultClass");
 		String aliasInterface = streamReader.getAttributeValue("interface");
+		
+		if(!aliasName.startsWith(assetContainer.namespace())) {
+			throw new NamespaceException("Alias '" + aliasName + "' does not begin with required container prefix of '" + assetContainer.namespace() + "'.");
+		}
 		
 		aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
 		

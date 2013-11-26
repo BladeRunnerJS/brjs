@@ -32,7 +32,7 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	@Override
 	public AliasDefinitionsFile aliasDefinitionsFile() {		
 		if(aliasDefinitionsFile == null) {
-			aliasDefinitionsFile = new AliasDefinitionsFile(dir(), "aliasDefinitions.xml");
+			aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, dir(), "aliasDefinitions.xml");
 		}
 		
 		return aliasDefinitionsFile;

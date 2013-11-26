@@ -1,6 +1,10 @@
 package org.bladerunnerjs.model.appserver;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,50 +14,125 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.utility.TagPluginUtility;
 
 
 public class BRJSServletFilter implements Filter
 {
+	private List<String> filterForUrlFilenames = Arrays.asList("index.html");
 
 	private ServletContext servletContext;
-	BRJSServletUtils servletUtils;
+	private BRJSServletUtils servletUtils;
+	private BRJS brjs;
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
 		servletContext = filterConfig.getServletContext();
-		BRJS brjs = ServletModelAccessor.initializeModel(servletContext);
+		brjs = ServletModelAccessor.initializeModel(servletContext);
 		servletUtils = new BRJSServletUtils(brjs);
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException
 	{
-		if ( !(request instanceof HttpServletRequest))
+		if ( !(req instanceof HttpServletRequest))
 		{
 			throw new ServletException(this.getClass().getSimpleName()+" can only handle HTTP requests.");
 		}
-		HttpServletRequest httpRequest = (HttpServletRequest) request;		
+		HttpServletRequest request = (HttpServletRequest) req;		
+		HttpServletResponse response = (HttpServletResponse) resp;		
 		
-		BladerunnerUri bladerunnerUri = servletUtils.createBladeRunnerUri(servletContext, httpRequest);
+		
+		BladerunnerUri bladerunnerUri = servletUtils.createBladeRunnerUri(servletContext, request);
 		boolean brjsPluginCanHandleRequest = servletUtils.getContentPluginForRequest(bladerunnerUri) != null;
 		
-		if (brjsPluginCanHandleRequest && !BladerunnerUri.isBrjsUriRequest(httpRequest))
+		if (brjsPluginCanHandleRequest && !BladerunnerUri.isBrjsUriRequest(request))
 		{
-			request.getRequestDispatcher("/brjs"+httpRequest.getRequestURI()).forward(httpRequest, response);
+			request.getRequestDispatcher("/brjs"+request.getRequestURI()).forward(request, response);
 		}
 		else
 		{
-			chain.doFilter(httpRequest, response);
+			doFiltering(request, response, chain);
 		}
+		
 	}
 
 	@Override
 	public void destroy()
 	{
+	}
+	
+	
+	
+	
+	private void doFiltering(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException
+	{
+		if (shouldFilterResponse(request))
+		{
+			try
+			{
+				StringWriter tagPluginStringWriter = new StringWriter();
+				BladerunnerUri bladerunnerUri = servletUtils.createBladeRunnerUri(servletContext, request);
+				App app = servletUtils.getAppForRequest(bladerunnerUri, response);
+				BundlableNode bundleableNode = servletUtils.getBundableNodeForRequest(bladerunnerUri, response);
+
+				if (bundleableNode != null)
+				{
+					CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
+					
+					chain.doFilter(request, responseWrapper);
+					
+					String responseData = getResponseData(responseWrapper);
+					String locale = LocaleHelper.getLocaleFromRequest(app, request);
+					TagPluginUtility.filterContent(responseData, bundleableNode.getBundleSet(), tagPluginStringWriter, RequestMode.Dev, locale);
+					
+					byte[] filteredData = tagPluginStringWriter.toString().getBytes();
+					response.setContentLength(filteredData.length);
+					response.getOutputStream().write(filteredData);
+				}
+				else
+				{
+					chain.doFilter(request, response);
+				}
+			}
+			catch (MalformedRequestException ex)
+			{
+				servletUtils.sendErrorResponse(response, 404, ex);				
+			}
+			catch (Exception ex)
+			{
+				servletUtils.sendErrorResponse(response, 500, ex);
+			}
+		}
+		else
+		{
+			chain.doFilter(request, response);
+		}
+	}
+	
+	private String getResponseData(CharResponseWrapper responseWrapper) throws IOException, UnsupportedEncodingException
+	{
+		StringWriter bufferedResponseStringWriter = new StringWriter();
+		IOUtils.copy(responseWrapper.getReader(), bufferedResponseStringWriter);
+		String responseData = bufferedResponseStringWriter.toString();
+		return responseData;
+	}
+
+	private boolean shouldFilterResponse(HttpServletRequest request)
+	{
+		String urlFileName = FilenameUtils.getName(request.getRequestURI());
+		return filterForUrlFilenames.contains(urlFileName);
 	}
 
 }

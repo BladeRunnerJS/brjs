@@ -61,9 +61,9 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 	}
 	
 	@Override
-	public String getRequirePrefix() {
+	public String namespace() {
 		App app = parent().parent().parent();
-		return "/" + app.getNamespace();
+		return app.getNamespace();
 	}
 	
 	@Override

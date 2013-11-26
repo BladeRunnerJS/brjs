@@ -270,6 +270,7 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
     <void property="methods">
      <void property="text">
       <string>App getApp()
+String namespace()
 String getRequirePrefix()
 List&lt;SourceFile&gt; sourceFiles()
 SourceFile sourceFile(String requirePath)
@@ -297,12 +298,12 @@ AssetLocation getAssetLocation(File dir)</string>
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>301.0</double>
+      <double>288.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>639.0</double>
-     <double>301.0</double>
+     <double>288.0</double>
     </void>
    </object>
   </void>

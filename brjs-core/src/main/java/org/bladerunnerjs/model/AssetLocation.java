@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
@@ -11,7 +10,6 @@ import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
  *
  */
 public interface AssetLocation extends BRJSNode {
-	File dir();
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAssetFile> seedResources();
 	List<LinkedAssetFile> seedResources(String fileExtension);

@@ -88,9 +88,9 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	}
 	
 	@Override
-	public String getRequirePrefix() {
+	public String namespace() {
 		App app = parent();
-		return "/" + app.getNamespace();
+		return app.getNamespace();
 	}
 	
 	@Override

@@ -11,6 +11,8 @@ import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.core.plugin.content.VirtualProxyContentPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
 import org.bladerunnerjs.core.plugin.minifier.VirtualProxyMinifierPlugin;
+import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
+import org.bladerunnerjs.core.plugin.taghandler.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.appserver.ServletModelAccessor;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
@@ -90,6 +92,17 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer hasTagPlugins(TagHandlerPlugin... tagHandlers)
+	{
+		verifyBrjsIsSet();
+		for(TagHandlerPlugin tagHandler : tagHandlers)
+		{
+			specTest.pluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin(tagHandler) );
+		}
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer automaticallyFindsCommands()
 	{
 		verifyBrjsIsSet();
@@ -131,6 +144,15 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		verifyBrjsIsSet();
 		specTest.pluginLocator.contentPlugins.clear();
 		specTest.pluginLocator.contentPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class, VirtualProxyContentPlugin.class) );
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer automaticallyFindsTagHandlers() 
+	{
+		verifyBrjsIsSet();
+		specTest.pluginLocator.tagHandlers.clear();
+		specTest.pluginLocator.tagHandlers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class) );
 		
 		return builderChainer;
 	}

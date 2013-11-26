@@ -57,6 +57,11 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	}
 	
 	@Override
+	public String requirePrefix() {
+		return "/" + namespace().replaceAll("\\.", "/");
+	}
+	
+	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
 		try {
@@ -129,8 +134,8 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	}
 	
 	@Override
-	public String getRequirePrefix() {
-		return "/" + getName();
+	public String namespace() {
+		return getName();
 	}
 	
 	@Override

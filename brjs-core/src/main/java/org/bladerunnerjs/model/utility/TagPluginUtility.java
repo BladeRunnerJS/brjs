@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 //import org.bladerunnerjs.model.BRJS;
@@ -18,10 +19,10 @@ import org.bladerunnerjs.model.RequestMode;
 public class TagPluginUtility {
 
 	private static final String attributePatternString = "(\\s+(\\w+)\\s*=\\s*\\\"([\\w]+)\\\")";
-	private static final Pattern tagPattern = Pattern.compile("<@([\\w]+)("+attributePatternString+"*)?[ ]*/>");
+	private static final Pattern tagPattern = Pattern.compile("<@([\\w]+)("+attributePatternString+"*)?[ ]*@>");
 	private static final Pattern attributePattern = Pattern.compile(attributePatternString);
 	
-	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode opMode, String locale) throws IOException, NoTagHandlerFoundException
+	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale) throws IOException, NoTagHandlerFoundException
 	{
 		BRJS brjs = bundleSet.getBundlableNode().root();
 		List<TagHandlerPlugin> tagHandlerPlugins = brjs.tagHandlers();
@@ -31,7 +32,7 @@ public class TagPluginUtility {
 		
 		while (matcher.find())
 		{
-			String replacement = handleTag(tagHandlerPlugins, bundleSet, opMode, locale, matcher.group(1), matcher.group(2));
+			String replacement = handleTag(tagHandlerPlugins, bundleSet, requestMode, locale, matcher.group(1), matcher.group(2));
 			if (replacement != null)
 			{
 				matcher.appendReplacement(result, replacement);
@@ -39,27 +40,34 @@ public class TagPluginUtility {
 		}
 		matcher.appendTail(result);
 		
-		writer.write(result.toString());
+		String filteredContent = result.toString();
+		if (filteredContent.endsWith("\n")) // matcher.appendTail seems to append an extra \n that wasn't in the original content, so we remove it
+		{
+			filteredContent = StringUtils.substringBeforeLast(filteredContent, "\n");
+		}
+		
+		writer.write(filteredContent);
+		writer.flush();
 	}
 
-	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode opMode, String locale, String tagName, String attributesContent) throws NoTagHandlerFoundException, IOException
+	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String tagName, String attributesContent) throws NoTagHandlerFoundException, IOException
 	{
 		StringWriter writer = new StringWriter();
 		TagHandlerPlugin tagHandler = getTagHandlerForTag(tagHandlerPlugins, tagName);
 		
 		Map<String,String> attributes = getTagAttributes(attributesContent);
 		
-		if (opMode == RequestMode.Dev)
+		if (requestMode == RequestMode.Dev)
 		{
 			tagHandler.writeDevTagContent(attributes, bundleSet, locale, writer);
 		}
-		else if (opMode == RequestMode.Prod)
+		else if (requestMode == RequestMode.Prod)
 		{
 			tagHandler.writeProdTagContent(attributes, bundleSet, locale, writer);		
 		}
 		else
 		{
-			throw new RuntimeException("Unsupported request mode '" + opMode.toString() + "'.");
+			throw new RuntimeException("Unsupported request mode '" + requestMode.toString() + "'.");
 		}
 		return writer.toString();
 	}
