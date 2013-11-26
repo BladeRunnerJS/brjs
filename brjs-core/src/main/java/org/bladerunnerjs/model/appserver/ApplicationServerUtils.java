@@ -18,7 +18,6 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.*;
@@ -26,7 +25,7 @@ import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.
 public class ApplicationServerUtils
 {	
 	public class Messages {
-		public static final String DEPLOYING_APP_MSG = "Deploying new app to app server '%s'"; 
+		public static final String DEPLOYING_APP_MSG = "Deploying new app to app server '%s'";
 	}
 	
 	static Map<App,WebAppContext> addAppContexts(BRJS brjs, ContextHandlerCollection contexts) throws Exception
@@ -48,8 +47,6 @@ public class ApplicationServerUtils
 		app.root().logger(LoggerType.APP_SERVER, ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
 		
-		//TODO: this needs to be moved in to the web.xml
-		appContext.addServlet( new ServletHolder(new BRJSServlet()), "/brjs/*" );
 		appContext.addFilter(new FilterHolder(new BRJSServletFilter()), "/*", EnumSet.of(DispatcherType.FORWARD,DispatcherType.REQUEST));
 		
 		contexts.addHandler(appContext);
@@ -86,8 +83,16 @@ public class ApplicationServerUtils
 			"org.eclipse.jetty.plus.webapp.EnvConfiguration",
 			"org.eclipse.jetty.plus.webapp.PlusConfiguration",
 			"org.eclipse.jetty.webapp.JettyWebXmlConfiguration"});
+		
+		// webdefault.xml defines BRJS servlet and BRJS filter
 		webappContext.setDefaultsDescriptor("org/bladerunnerjs/model/appserver/webdefault.xml");
-		webappContext.setDescriptor(app.file("WEB-INF/web.xml").getAbsolutePath());
+		
+		File webXml = app.file("WEB-INF/web.xml");
+		if (webXml.exists())
+		{
+			webappContext.setDescriptor(webXml.getAbsolutePath());
+		}
+		
 		webappContext.setResourceBase(app.dir().getAbsolutePath());
 		webappContext.setContextPath("/"+app.getName());
 		webappContext.setServerClasses(new String[] {"org.slf4j."});
