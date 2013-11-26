@@ -12,9 +12,9 @@ import org.bladerunnerjs.model.aliasing.NamespaceException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
+// TODO: confirm with the team and or KG that groups can only be used to define aliases that haven't otherwise been defined -- we are currently throwing an ambiguity exception in this case
 public class AliasingTest extends SpecTest {
 	private App app;
 	private AppConf appConf;
@@ -170,9 +170,16 @@ public class AliasingTest extends SpecTest {
 		then(response).containsClasses("novox.Class2");
 	}
 	
-	@Ignore
 	@Test
 	public void aliasesCanStillBeOverriddenWhenAGroupIsSet() throws Exception {
+		given(appConf).hasNamespace("novox")
+			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class1")
+			.and(aspectAliasesFile).usesGroups("g1")
+			.and(aspectAliasesFile).hasAlias("novox.bs.b1.the-alias", "novox.Class2")
+			.and(aspect).indexPageRefersTo("novox.bs.b1.the-alias");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("novox.Class2");
 	}
 	
 	@Test
@@ -199,15 +206,15 @@ public class AliasingTest extends SpecTest {
 		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", bladeAliasDefinitionsFile.getPath());
 	}
 	
-	@Ignore
 	@Test
 	public void settingMultipleGroupsChangesTheAliasesThatAreUsed() throws Exception {
+		given(appConf).hasNamespace("novox")
+			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.alias1", "novox.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "novox.bs.b1.alias2", "novox.Class2")
+			.and(aspectAliasesFile).usesGroups("g1", "g2")
+			.and(aspect).indexPageRefersTo("novox.bs.b1.alias1, novox.bs.b1.alias2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
-	
-	@Ignore
-	@Test
-	public void aliasesCanStillBeOverriddenWhenMultipleGroupsAreSet() throws Exception {
-	}
-	
-	// TODO: we need some tests that use scenarios and groups in conjunction
 }
