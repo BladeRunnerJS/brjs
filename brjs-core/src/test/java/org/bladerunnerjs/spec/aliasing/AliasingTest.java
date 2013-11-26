@@ -148,7 +148,6 @@ public class AliasingTest extends SpecTest {
 		then(response).containsClasses("novox.Class3");
 	}
 	
-	@Ignore
 	@Test
 	public void theNonGroupAliasIsUsedByDefault() throws Exception {
 		given(appConf).hasNamespace("novox")

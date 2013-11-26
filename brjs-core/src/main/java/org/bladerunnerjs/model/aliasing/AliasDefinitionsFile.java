@@ -122,7 +122,7 @@ public class AliasDefinitionsFile extends File {
 				XMLBuilder groupBuilder = builder.e("group").a("name", groupName);
 				
 				for(AliasDefinition groupAlias : groupAliases.get(groupName)) {
-					groupBuilder.e("alias").a("name", groupAlias.getName()).a("defaultClass", groupAlias.getClassName());
+					groupBuilder.e("alias").a("name", groupAlias.getName()).a("class", groupAlias.getClassName());
 				}
 			}
 			
