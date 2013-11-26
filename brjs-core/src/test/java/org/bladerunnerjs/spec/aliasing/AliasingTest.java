@@ -159,18 +159,16 @@ public class AliasingTest extends SpecTest {
 		then(response).containsClasses("novox.Class1");
 	}
 	
-	@Ignore
 	@Test
 	public void settingAGroupChangesTheAliasesThatAreUsed() throws Exception {
 		given(appConf).hasNamespace("novox")
 			.and(aspect).hasClasses("novox.Class1", "novox.Class2", "novox.Class3")
-			.and(bladeAliasDefinitionsFile).hasAlias("novox.bs.b1.the-alias", "novox.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class2")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "novox.bs.b1.the-alias", "novox.Class3")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "novox.bs.b1.the-alias", "novox.Class2")
 			.and(aspectAliasesFile).usesGroups("g2")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("novox.Class3");
+		then(response).containsClasses("novox.Class2");
 	}
 	
 	@Ignore
@@ -178,9 +176,28 @@ public class AliasingTest extends SpecTest {
 	public void aliasesCanStillBeOverriddenWhenAGroupIsSet() throws Exception {
 	}
 	
-	@Ignore
 	@Test
-	public void usingGroupsCanLeadToAmbiguousAliases() throws Exception {
+	public void usingGroupsCanLeadToAmbiguity() throws Exception {
+		given(appConf).hasNamespace("novox")
+			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
+			.and(bladeAliasDefinitionsFile).hasAlias("novox.bs.b1.the-alias", "novox.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class2")
+			.and(aspectAliasesFile).usesGroups("g1")
+			.and(aspect).indexPageRefersTo("novox.bs.b1.the-alias");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", bladeAliasDefinitionsFile.getPath());
+	}
+	
+	@Test
+	public void usingMultipleGroupsCanLeadToAmbiguity() throws Exception {
+		given(appConf).hasNamespace("novox")
+			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "novox.bs.b1.the-alias", "novox.Class2")
+			.and(aspectAliasesFile).usesGroups("g1", "g2")
+			.and(aspect).indexPageRefersTo("novox.bs.b1.the-alias");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", bladeAliasDefinitionsFile.getPath());
 	}
 	
 	@Ignore

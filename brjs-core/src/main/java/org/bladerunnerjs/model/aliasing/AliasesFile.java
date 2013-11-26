@@ -113,7 +113,7 @@ public class AliasesFile extends File {
 				builder.a("useScenario", scenario);
 			}
 			
-			if(groupNames != null) {
+			if(!groupNames.isEmpty()) {
 				builder.a("useGroups", Joiner.on(" ").join(groupNames));
 			}
 			
