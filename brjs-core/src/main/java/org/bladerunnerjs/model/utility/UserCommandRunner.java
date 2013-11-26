@@ -33,7 +33,9 @@ public class UserCommandRunner {
 		catch (NoSuchCommandException e) {
 			if (e.getCommandName().length() > 0)
 			{
-				out.println(e.getMessage());				
+				out.println(e.getMessage());
+				out.println("--------");
+				out.println("");
 			}
 			doRunCommand(brjs, new String[] {new HelpCommand().getCommandName() }, out);
 		}

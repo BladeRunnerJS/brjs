@@ -2,6 +2,9 @@ package org.bladerunnerjs.model.appserver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+
+import javax.servlet.Servlet;
 
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
@@ -11,6 +14,8 @@ import org.bladerunnerjs.model.utility.ServerUtility;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.webapp.WebAppContext;
 
 import static org.bladerunnerjs.model.appserver.BRJSApplicationServer.Messages.*;
 
@@ -38,6 +43,7 @@ public class BRJSApplicationServer implements ApplicationServer
 	private int port;
 	private Server server;
 	private ContextHandlerCollection contexts;
+	private Map<App,WebAppContext> contextMap;
 	
 	public BRJSApplicationServer(BRJS brjs, int port)
 	{
@@ -65,11 +71,11 @@ public class BRJSApplicationServer implements ApplicationServer
 		}
 		
 		ApplicationServerUtils.addAuthRealmToWebServer(brjs, server);
-		ApplicationServerUtils.addRootContext(contexts);
-		ApplicationServerUtils.addAppContexts(brjs, contexts);
+		ApplicationServerUtils.addRootContext(brjs, contexts);
+		contextMap = ApplicationServerUtils.addAppContexts(brjs, contexts);
 		
-		File appsDir = new File(brjs.root().dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
-		File sysAppsDir = new File(brjs.root().dir(), "sdk/system-applications"); //TODO: use the model to find this directory
+		File appsDir = new File(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
+		File sysAppsDir = brjs.systemApp("no-such-app").dir().getParentFile();
 		new AppDeploymentFileWatcher(brjs, this, appsDir).start();
 		new AppDeploymentFileWatcher(brjs, this, sysAppsDir).start();
 		
@@ -92,7 +98,22 @@ public class BRJSApplicationServer implements ApplicationServer
 
 	public synchronized void deployApp(App app) throws Exception
 	{
-		ApplicationServerUtils.addAppContext(app, contexts);
+		contextMap.put(app, ApplicationServerUtils.addAppContext(app, contexts) );
+	}
+
+	/**
+	 * This method should only be used for testing. Allows another servlet to be added to an app.
+	 */
+	public void addServlet(App app, Servlet servlet, String servletPath) throws Exception
+	{
+		WebAppContext appContext = contextMap.get(app);
+		if (appContext == null)
+		{
+			throw new RuntimeException("No app context found for app " + app.getName());
+		}
+		ServletHolder servletHolder = new ServletHolder(servlet);
+		appContext.addServlet(servletHolder, servletPath);
+		servletHolder.start();
 	}
 	
 }

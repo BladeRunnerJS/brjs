@@ -2,8 +2,12 @@ package org.bladerunnerjs.specutil.engine;
 
 import java.io.IOException;
 
+import javax.servlet.Servlet;
+
 import org.apache.http.client.ClientProtocolException;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
+import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
 
 
 public class AppServerBuilder
@@ -38,6 +42,18 @@ public class AppServerBuilder
 	{
 		String url = String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, specTest.appServerPort, urlPath);
 		specTest.webappTester.requestTimesOut(url);
+		
+		return builderChainer;
+	}
+
+	public BuilderChainer appHasServlet(App app, Servlet servlet, String path) throws Exception
+	{
+		if ( !(appServer instanceof BRJSApplicationServer) )
+		{
+			throw new RuntimeException("appHasServlet can only be called when application server is an instance of  " + BRJSApplicationServer.class.getSimpleName());
+		}
+		BRJSApplicationServer brjsAppServer = (BRJSApplicationServer) appServer;
+		brjsAppServer.addServlet(app, servlet, path);
 		
 		return builderChainer;
 	}

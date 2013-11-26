@@ -18,13 +18,15 @@ import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import org.xml.sax.SAXException;
-
-import org.bladerunnerjs.model.AliasDefinition;
 import org.bladerunnerjs.model.GroupDefinition;
 import org.bladerunnerjs.model.AliasContainer;
+
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
+
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
 import com.caplin.cutlass.bundler.js.ClassDictionary;
 import com.caplin.cutlass.exception.NamespaceException;
 import com.ctc.wstx.exc.WstxValidationException;

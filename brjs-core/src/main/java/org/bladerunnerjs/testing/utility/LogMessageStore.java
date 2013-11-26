@@ -18,9 +18,9 @@ public class LogMessageStore
 	public static final String UNEXPECTED_LOG_MESSAGES = "Unexpected %s log messages: [%s]";
 	
 	private boolean storeLogs = false; /* enable capturing log messages for 'when' actions */
+	private boolean echoLogs = false;
 	private boolean loggingEnabled = false;
 	private boolean assertionMade = false;
-	private boolean printLogsToConsole = false;
 	
 	private LinkedList<LogMessage> fatalMessages = new LinkedList<LogMessage>();
 	private LinkedList<LogMessage> errorMessages = new LinkedList<LogMessage>();
@@ -35,6 +35,14 @@ public class LogMessageStore
 	public LogMessageStore(boolean storeLogs)
 	{
 		this.storeLogs = storeLogs;
+	}
+	
+	public void enableEchoingLogs()
+	{
+		System.out.println("");
+		System.out.println("Echoing logs for test:");
+		
+		echoLogs = true;
 	}
 	
 	public void enableStoringLogs()
@@ -95,27 +103,27 @@ public class LogMessageStore
 	
 	public void addFatal(String loggerName, String message, Object... params)
 	{
-		registerLogMessage("fatal", fatalMessages, loggerName, message, params);
+		registerLogMessage(fatalMessages, loggerName, message, params);
 	}
 
 	public void addError(String loggerName, String message, Object... params)
 	{
-		registerLogMessage("error", errorMessages, loggerName, message, params);
+		registerLogMessage(errorMessages, loggerName, message, params);
 	}
 	
 	public void addWarn(String loggerName, String message, Object... params)
 	{
-		registerLogMessage("warn", warnMessages, loggerName, message, params);
+		registerLogMessage(warnMessages, loggerName, message, params);
 	}
 
 	public void addInfo(String loggerName, String message, Object... params)
 	{
-		registerLogMessage("info", infoMessages, loggerName, message, params);
+		registerLogMessage(infoMessages, loggerName, message, params);
 	}
 
 	public void addDebug(String loggerName, String message, Object... params)
 	{
-		registerLogMessage("debug", debugMessages, loggerName, message, params);
+		registerLogMessage(debugMessages, loggerName, message, params);
 	}
 
 	public void verifyNoMoreFatalMessages()
@@ -138,17 +146,16 @@ public class LogMessageStore
 		verifyNoMoreMessageOnList("info", infoMessages);
 	}
 
-	private void registerLogMessage(String logLevel, LinkedList<LogMessage> messages, String loggerName, String message, Object[] params)
+	private void registerLogMessage(LinkedList<LogMessage> messages, String loggerName, String message, Object[] params)
 	{
-		LogMessage log = new LogMessage(message, params);
-		if (storeLogs)
-		{
-			messages.add(log);
+		if(echoLogs ) {
+			System.out.println(String.format(message, params));
 		}
-		if (printLogsToConsole)
+		
+		boolean isFatalOrErrorLog = (messages == fatalMessages) || (messages == errorMessages);
+		if (storeLogs || isFatalOrErrorLog)
 		{
-			System.out.println(logLevel.toUpperCase() + ":  " + log.toString());
-			System.out.flush();
+			messages.add(new LogMessage(message, params));
 		}
 	}
 
@@ -161,7 +168,7 @@ public class LogMessageStore
 			foundMessage = (!messages.isEmpty()) ? messages.removeFirst() : null;
 			isNullFailMessage = NO_MESSAGES_RECIEVED;
 		} else {
-			foundMessage = findAndRemoveFirstMessageMatching(messages, message);
+			foundMessage = findFirstMessageMatching(messages, message);
 			isNullFailMessage = NO_MESSAGE_MATCHING_RECIEVED;
 		}
 		assertNotNull( String.format(isNullFailMessage, logLevel, message) , foundMessage );
@@ -186,7 +193,7 @@ public class LogMessageStore
 		return s.toString().trim();
 	}
 
-	private LogMessage findAndRemoveFirstMessageMatching(LinkedList<LogMessage> messages, String message)
+	private LogMessage findFirstMessageMatching(LinkedList<LogMessage> messages, String message)
 	{
 		LogMessage foundMessage = null;
 		for (LogMessage m : messages)
@@ -229,10 +236,5 @@ public class LogMessageStore
 
 	public void stopStoringLogs() {
 		disableStoringLogs();
-	}
-
-	public void printLogsToConsole()
-	{
-		printLogsToConsole = true;
 	}
 }

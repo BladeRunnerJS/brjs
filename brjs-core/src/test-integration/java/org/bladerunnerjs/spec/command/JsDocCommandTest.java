@@ -29,12 +29,20 @@ public class JsDocCommandTest extends SpecTest {
 	}
 	
 	
-	@Test /* TODO: To make this test pass in Eclipse, the jsdoc-toolkit zip is checked in to test/resources/... but assembled at build time. 
-					This means the jsdoc for this test and the jsdoc used in the actual kit can be different. */
+	@Test 
 	public void runningJsDocCommandCausesApiDocsToBeCreated() throws Exception {
 		given(app).hasBeenCreated()
 			.and(appLib).containsFileWithContents("src/MyClass.js", "/** @constructor */MyClass = function() {};");
 		when(brjs).runCommand("jsdoc", "app");
+		then(jsdocOutputDir).containsFile("MyClass.html")
+			.and(output).containsLine(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
+	}
+	
+	@Test 
+	public void runningJsDocCommandWithVerboseFlagCausesApiDocsToBeCreated() throws Exception {
+		given(app).hasBeenCreated()
+			.and(appLib).containsFileWithContents("src/MyClass.js", "/** @constructor */MyClass = function() {};");
+		when(brjs).runCommand("jsdoc", "app", "-v");
 		then(jsdocOutputDir).containsFile("MyClass.html")
 			.and(output).containsLine(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
 	}
@@ -57,10 +65,16 @@ public class JsDocCommandTest extends SpecTest {
 		when(brjs).runCommand("jsdoc");
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'app-name' is required"));
 	}
-	@Ignore // Does the JSDoc command take two or three params?
+
 	@Test
-	public void runningJsDocWithTooManyArgsThrowsEception() throws Exception {
-		when(brjs).runCommand("jsdoc", "app", "false", "extra");
+	public void runningJsDocWithTooManyArgsThrowsException() throws Exception {
+		when(brjs).runCommand("jsdoc", "app", "extra");
+		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: extra"));
+	}
+	
+	@Test
+	public void runningJsDocWithVerboseFlagAndTooManyArgsThrowsException() throws Exception {
+		when(brjs).runCommand("jsdoc", "app", "extra");
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: extra"));
 	}
 }

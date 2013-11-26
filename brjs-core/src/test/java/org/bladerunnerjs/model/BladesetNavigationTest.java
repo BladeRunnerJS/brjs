@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
@@ -61,6 +60,12 @@ public class BladesetNavigationTest
 	@Test
 	public void src()
 	{
-		nodeTesterFactory.createItemTester(DirNode.class, "src", "src").assertModelIsOK();
+		nodeTesterFactory.createItemTester(SourceAssetLocation.class, "src", "src").assertModelIsOK();
+	}
+	
+	@Test
+	public void resources()
+	{
+		nodeTesterFactory.createItemTester(DeepAssetLocation.class, "resources", "resources").assertModelIsOK();
 	}
 }

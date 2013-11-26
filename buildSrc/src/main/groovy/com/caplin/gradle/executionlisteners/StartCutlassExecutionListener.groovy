@@ -34,7 +34,7 @@ public class StartCutlassExecutionListener implements TaskExecutionListener
 		}
 		def project = task.project
 		if (task == taskToListenFor) {
-			println "Starting BladeRunner..."
+			println "Starting BladeRunnerJS..."
 			
 			def classpath = (classesDir.path+"/*").replace("/",File.separator)
 			classpath = (org.bladerunnerjs.OSCalculator.isWin32()) ? "\""+classpath+";\"" : classpath
@@ -73,7 +73,7 @@ public class StartCutlassExecutionListener implements TaskExecutionListener
 		}
 		def project = task.project
 		if (task == taskToListenFor) {
-			println "Stopping BladeRunner..."
+			println "Stopping BladeRunnerJS..."
 			cutlassProcess.destroy()
 		}
 	}

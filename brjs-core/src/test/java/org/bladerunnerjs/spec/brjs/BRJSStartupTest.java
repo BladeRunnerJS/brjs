@@ -46,33 +46,33 @@ public class BRJSStartupTest extends SpecTest {
 	public void informativeInitializationLogsAreEmittedAtStartup() {
 		given(logging).enabled();
 		when(brjs).hasBeenCreated();
-		then(logging).infoMessageReceived(CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG)
+		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-			.and(logging).infoMessageReceived(CREATING_COMMAND_PLUGINS_LOG_MSG);
+			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
 	
 	@Test
-	public void pluginsThatHaveBeenFoundAreListed() {		
+	public void pluginsThatHaveBeenFoundAreListed() {			
 		given(logging).enabled()
-			.and(brjs).hasCommand(passingCommandPlugin)
-			.and(brjs).hasModelObserver(passingModelObserverPlugin);
+			.and(brjs).hasCommands(passingCommandPlugin)
+			.and(brjs).hasModelObservers(passingModelObserverPlugin);
 		when(brjs).hasBeenCreated();
-		then(logging).infoMessageReceived(CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG)
+		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).debugMessageReceived(PLUGIN_FOUND_MSG, passingModelObserverPlugin.getClass().getCanonicalName())
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-			.and(logging).infoMessageReceived(CREATING_COMMAND_PLUGINS_LOG_MSG)
+			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG)
 			.and(logging).debugMessageReceived(PLUGIN_FOUND_MSG, passingCommandPlugin.getClass().getCanonicalName());
 	}
 	
 	@Test
 	public void fatalErrorIsEmittedIfAnyOfTheModelObserverPluginsCantBeCreated() {		
 		given(logging).enabled()
-			.and(brjs).hasModelObserver(failingModelObserverPlugin);
+			.and(brjs).hasModelObservers(failingModelObserverPlugin);
 		when(brjs).hasBeenCreated();
-		then(logging).infoMessageReceived(CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG)
+		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLGUIN_ERROR_MSG, failingModelObserverPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-			.and(logging).infoMessageReceived(CREATING_COMMAND_PLUGINS_LOG_MSG);
+			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		
 	}
 	
@@ -80,22 +80,22 @@ public class BRJSStartupTest extends SpecTest {
 	@Test
 	public void modelObserverExceptionsAreLoggedAsWarningsDuringNodeDiscovery() {
 		given(logging).enabled()
-			.and(brjs).hasModelObserver(failingEventObserverModelObserver);
+			.and(brjs).hasModelObservers(failingEventObserverModelObserver);
 		when(brjs).hasBeenCreated();
-			then(logging).infoMessageReceived(CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG)
+			then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 //				.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLGUIN_ERROR_MSG, failingModelObserverPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
 			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-			.and(logging).infoMessageReceived(CREATING_COMMAND_PLUGINS_LOG_MSG);
+			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
 	
 	@Test
 	public void fatalErrorIsEmittedIfAnyOfTheCommandPluginsCantBeCreated() {
 		given(logging).enabled()
-    		.and(brjs).hasCommand(failingCommandPlugin);
+    		.and(brjs).hasCommands(failingCommandPlugin);
     	when(brjs).hasBeenCreated();
-    	then(logging).infoMessageReceived(CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG)
+    	then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
     		.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLGUIN_ERROR_MSG, failingCommandPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
     		.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-    		.and(logging).infoMessageReceived(CREATING_COMMAND_PLUGINS_LOG_MSG);
+    		.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
 }

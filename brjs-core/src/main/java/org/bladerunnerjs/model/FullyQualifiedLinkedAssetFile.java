@@ -1,46 +1,51 @@
 package org.bladerunnerjs.model;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.utility.EmptyTrieKeyException;
+import org.bladerunnerjs.model.utility.FileModifiedChecker;
+import org.bladerunnerjs.model.utility.Trie;
+import org.bladerunnerjs.model.utility.TrieKeyAlreadyExistsException;
 
-
+/**
+ * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
+ *
+ */
 public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
-	private List<SourceLocation> sourceLocations;
-	private final AssetFile assetFile;
-	private boolean recalculateDependencies = true;
+	private App app;
+	private File assetFile;
 	private List<SourceFile> dependentSourceFiles;
-	private List<AliasDefinition> aliases;
-	private boolean containsClassReferences;
+	private List<AliasName> aliases;
+	private FileModifiedChecker fileModifiedChecker;
+	private AssetLocation assetLocation;
 	
-	public FullyQualifiedLinkedAssetFile(File file) {
-		assetFile = new WatchingAssetFile(file);
-		assetFile.addObserver(new Observer());
+	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
+	{
+		this.assetLocation = assetLocation;
+		app = assetLocation.getAssetContainer().getApp();
+		this.assetFile = file;
+		fileModifiedChecker = new FileModifiedChecker(file);
 	}
 	
 	@Override
-	public Reader getReader() {
-		return assetFile.getReader();
-	}
-	
-	@Override
-	public void addObserver(AssetFileObserver observer) {
-		assetFile.addObserver(observer);
-	}
-	
-	@Override
-	public void onSourceLocationsUpdated(List<SourceLocation> sourceLocations) {
-		recalculateDependencies = true;
-		this.sourceLocations = sourceLocations;
+	public Reader getReader() throws FileNotFoundException {
+		return new BufferedReader( new FileReader(assetFile) );
 	}
 	
 	@Override
 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
-		if(recalculateDependencies) {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
 		
@@ -48,8 +53,8 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	}
 
 	@Override
-	public List<AliasDefinition> getAliases() throws ModelOperationException {
-		if(recalculateDependencies) {
+	public List<AliasName> getAliasNames() throws ModelOperationException {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
 		
@@ -57,32 +62,26 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	}
 	
 	@Override
-	public boolean containsClassReferences() throws ModelOperationException {
-		if(recalculateDependencies) {
-			recalculateDependencies();
-		}
-		
-		return containsClassReferences;
+	public File getUnderlyingFile() {
+		return assetFile;
 	}
 	
 	private void recalculateDependencies() throws ModelOperationException {
 		dependentSourceFiles = new ArrayList<>();
 		aliases = new ArrayList<>();
-		containsClassReferences = false;
-		Trie trie = createTrie();
+		Trie<Object> trie = createTrie();
 		
 		try {
-			try(Reader reader = assetFile.getReader()) {
+			try(Reader reader = getReader()) {
 				for(Object match : trie.getMatches(reader)) {
 					if(match instanceof SourceFile) {
 						dependentSourceFiles.add((SourceFile) match);
 					}
 					else if(match instanceof ClassSourceFile) {
-						containsClassReferences = true;
 						dependentSourceFiles.add(((ClassSourceFile) match).getSourceFile());
 					}
 					else {
-						aliases.add((AliasDefinition) match);
+						aliases.add((AliasName) match);
 					}
 				}
 			}
@@ -90,33 +89,51 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		catch(IOException e) {
 			throw new ModelOperationException(e);
 		}
-		
-		recalculateDependencies = false;
 	}
 	
-	private Trie createTrie() throws ModelOperationException {
-		Trie trie = new Trie();
+	private Trie<Object> createTrie() throws ModelOperationException {
+		Trie<Object> trie = new Trie<Object>();
 		
-		for(SourceLocation sourceLocation : sourceLocations) {
-			for(SourceFile sourceFile : sourceLocation.sourceFiles()) {
-				ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
-				
-				trie.add(sourceFile.getRequirePath(), sourceFile);
-				trie.add(classSourceFile.getClassName(), classSourceFile);
-				
-				for(AliasDefinition aliasDefinition : sourceFile.getAliases()) {
-					trie.add(aliasDefinition.getName(), aliasDefinition);
+		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
+			try {
+				if(assetContainer instanceof BundlableNode) {
+					BundlableNode bundlableNode = (BundlableNode) assetContainer;
+					
+					for(AliasDefinition aliasDefinition : bundlableNode.aliasesFile().aliasDefinitions()) {
+						if(!trie.containsKey(aliasDefinition.getName())) {
+							trie.add(aliasDefinition.getName(), new AliasName(aliasDefinition.getName()));
+						}
+					}
 				}
+				
+				for(SourceFile sourceFile : assetContainer.sourceFiles()) {
+					ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
+					
+					if (!sourceFile.getUnderlyingFile().equals(assetFile)) {
+	    				trie.add(sourceFile.getRequirePath(), sourceFile);
+	    				trie.add(classSourceFile.getClassName(), classSourceFile);
+					}
+				}
+				
+				for(AssetLocation assetLocation : assetContainer.getAllAssetLocations()) {
+					for(AliasDefinition aliasDefinition : assetLocation.aliasDefinitionsFile().aliasDefinitions()) {
+						if(!trie.containsKey(aliasDefinition.getName())) {
+							trie.add(aliasDefinition.getName(), new AliasName(aliasDefinition.getName()));
+						}
+					}
+				}
+			}
+			catch (TrieKeyAlreadyExistsException | EmptyTrieKeyException | BundlerFileProcessingException ex) {
+				throw new ModelOperationException(ex);
 			}
 		}
 		
 		return trie;
 	}
-	
-	private class Observer implements AssetFileObserver {
-		@Override
-		public void onAssetFileModified() {
-			recalculateDependencies = true;
-		}
+
+	@Override
+	public AssetLocation getAssetLocation()
+	{
+		return assetLocation;
 	}
 }

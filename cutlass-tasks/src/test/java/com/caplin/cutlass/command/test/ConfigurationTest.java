@@ -9,10 +9,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
+import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
+import com.caplin.cutlass.testing.BRJSTestFactory;
 
 public class ConfigurationTest {
 	TestRunnerConfiguration config;
@@ -23,6 +26,10 @@ public class ConfigurationTest {
 	
 	@Before
 	public void beforeTest() throws Exception {
+		// we're cheekily using another tests sdk structure so the test can work
+		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/" + CutlassConfig.SDK_DIR);
+		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(sdkBaseDir));
+				
 		config = TestRunnerConfiguration.getConfiguration(new File("src/test/resources/TestCommand/test-runner.conf"), browserList("browser1"));
 		config.setOperatingSystem("OS1");
 	}

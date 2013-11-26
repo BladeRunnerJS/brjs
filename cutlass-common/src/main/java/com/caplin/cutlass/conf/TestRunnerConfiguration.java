@@ -13,7 +13,6 @@ import org.bladerunnerjs.core.log.LoggerType;
 
 import com.caplin.cutlass.BRJSAccessor;
 
-import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 

@@ -1,5 +1,7 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
+import static org.bladerunnerjs.model.appserver.BRJSApplicationServer.Messages.*;
+import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -31,15 +33,15 @@ public class BRJSApplicationServerTest extends SpecTest
 
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasModelObserver(new AppDeploymentObserver());
+		given(brjs).hasModelObservers(new AppDeploymentObserver());
 		given(brjs).hasBeenCreated();
-		appServer = brjs.applicationServer(appServerPort);
-		app1 = brjs.app("app1");
-		app2 = brjs.app("app2");
-		sysapp1 = brjs.systemApp("sysapp1");
-		sysapp2 = brjs.systemApp("sysapp2");
-		appJars = brjs.appJars();
-		appJars.create();
+    		appServer = brjs.applicationServer(appServerPort);
+    		app1 = brjs.app("app1");
+    		app2 = brjs.app("app2");
+    		sysapp1 = brjs.systemApp("sysapp1");
+    		sysapp2 = brjs.systemApp("sysapp2");
+    		appJars = brjs.appJars();
+    		appJars.create();
 		
 		secondBrjsProcess = createNonTestModel();
 	}
@@ -61,11 +63,16 @@ public class BRJSApplicationServerTest extends SpecTest
 	}
 	
 	@Test
-	public void appIsHostedWhenAppServerStarts() throws Exception
+	public void appIsDeployedWhenAppServerStarts() throws Exception
 	{
-		given(app1).hasBeenCreated();
+		given(logging).enabled()
+			.and(app1).hasBeenCreated();
 		when(appServer).started();
-		then(appServer).requestCanBeMadeFor("/app1");
+		then(appServer).requestCanBeMadeFor("/app1")
+			.and(appServer).requestIsRedirected("/","/dashboard")
+			.and(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
+			.and(logging).debugMessageReceived(DEPLOYING_APP_MSG, "app1");
 	}
 	
 	@Test
@@ -164,7 +171,7 @@ public class BRJSApplicationServerTest extends SpecTest
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah");
-		then(appServer).requestCanEventuallyBeMadeFor("/app1");
+		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
 	}
 	
 	@Test
@@ -175,7 +182,7 @@ public class BRJSApplicationServerTest extends SpecTest
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
 			.and(brjs.applicationServer(appServerPort)).started();
-		then(appServer).requestCanBeMadeFor("/app1");
+		then(appServer).requestCanBeMadeFor("/app1/");
 	}
 	
 }

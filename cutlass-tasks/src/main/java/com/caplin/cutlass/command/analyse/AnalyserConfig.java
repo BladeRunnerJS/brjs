@@ -5,8 +5,8 @@ import java.io.File;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
+import org.bladerunnerjs.model.AbstractAssetContainer;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
 import com.caplin.cutlass.BRJSAccessor;
 
 public class AnalyserConfig
@@ -48,7 +48,7 @@ public class AnalyserConfig
 			throw new Exception("Could not find application '" + appName + "' inside your '" + CutlassConfig.APPLICATIONS_DIR + "' folder.");
 		}
 		
-		Aspect aspectDirFileObject = BRJSAccessor.root.app(appName).aspect(aspectName);
+		AbstractAssetContainer aspectDirFileObject = BRJSAccessor.root.app(appName).aspect(aspectName);
 		
 		if (aspectDirFileObject.dirExists() == false)
 		{

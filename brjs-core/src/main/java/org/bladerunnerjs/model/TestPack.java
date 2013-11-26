@@ -1,18 +1,19 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.file.AliasesFile;
 import org.bladerunnerjs.model.utility.NameValidator;
 
 
@@ -25,7 +26,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(dir);
+		super(rootNode, dir);
 		this.name = name;
 		init(rootNode, parent, dir);
 	}
@@ -36,19 +37,17 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
+	public List<LinkedAssetFile> getSeedFiles() {
+		return Arrays.asList();
+	}
+	
+	@Override
 	public String getRequirePrefix() {
-		return ((SourceLocation) parentNode()).getRequirePrefix();
+		return ((AssetContainer) parentNode()).getRequirePrefix();
 	}
 	
 	@Override
-	public List<LinkedAssetFile> getSeedFiles()
-	{
-		// TODO
-		return null;
-	}
-	
-	@Override
-	public List<SourceLocation> getSourceLocations()
+	public List<AssetContainer> getAssetContainers()
 	{
 		// TODO
 		return null;
@@ -83,7 +82,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		return parentNode().parentNode().getClass().getSimpleName().toLowerCase() + "-" + name;
 	}
 	
-	public AliasesFile aliases()
+	public AliasesFile aliasesFile()
 	{
 		if(aliasesFile == null) {
 			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml");

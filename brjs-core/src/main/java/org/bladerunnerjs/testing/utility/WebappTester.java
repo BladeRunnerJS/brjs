@@ -33,8 +33,9 @@ public class WebappTester
 	private static final int MAX_POLL_REQUESTS = 10;
 	private static final int POLL_INTERVAL = 500;
 	
-	private int defaultSocketTimeout = 1000;
-	private int defaultConnectionTimeout = 1000;
+	//TODO: make this 1000 again
+	private int defaultSocketTimeout = 999999;
+	private int defaultConnectionTimeout = 999999;
 	
 	private File filePathBase;
 	private int statusCode;
@@ -213,6 +214,12 @@ public class WebappTester
 	
 	private String contentBodyText(String comparisonTitle, Object comparisonValue, String contentBody) {
 		return comparisonTitle + ": " + comparisonValue + "\nContent Body: " + ((contentBody == null) ? "<ANYTHING>" : contentBody);
+	}
+
+	public void storeContentIn(StringBuffer responseContent)
+	{
+		responseContent.setLength(0);
+		responseContent.append(response);
 	}
 	
 }

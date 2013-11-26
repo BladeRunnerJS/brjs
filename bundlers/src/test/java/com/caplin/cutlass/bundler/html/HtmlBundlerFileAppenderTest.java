@@ -10,12 +10,11 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
+
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
-
-import org.bladerunnerjs.model.DirNode;
 
 public class HtmlBundlerFileAppenderTest 
 {	
@@ -40,7 +39,7 @@ public class HtmlBundlerFileAppenderTest
 	{
 		BRJS brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File("src/test/resources/generic-bundler/bundler-structure-tests")));
 
-		DirNode resourcesDir = brjs.sdkLib().resources();
+		AssetLocation resourcesDir = brjs.sdkLib().resources();
 		
 		File resourceDir = new File(resourcesDir.dir(), "caplin/chart");
 		File speculativeFile = new File(resourceDir, "somehtml.html");

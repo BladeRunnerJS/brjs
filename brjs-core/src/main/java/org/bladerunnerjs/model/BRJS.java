@@ -1,12 +1,15 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.console.ConsoleWriter;
 import org.bladerunnerjs.core.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.core.log.LogConfiguration;
@@ -18,7 +21,10 @@ import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.PluginLocator;
+import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
+import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
@@ -30,11 +36,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.utility.CommandRunner;
-import org.bladerunnerjs.model.utility.LogicalRequestHandler;
 import org.bladerunnerjs.model.utility.UserCommandRunner;
 import org.bladerunnerjs.model.utility.VersionInfo;
 
@@ -45,8 +47,8 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public class Messages {
 		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "performing node discovery";
-		public static final String CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG = "creating model observer plugins";
-		public static final String CREATING_COMMAND_PLUGINS_LOG_MSG = "creating command plugins";
+		public static final String CREATING_PLUGINS_LOG_MSG = "creating plugins";
+		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "making plugins available via model";
 		public static final String PLUGIN_FOUND_MSG = "found plugin %s";
 	}
 	
@@ -64,12 +66,15 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> apiDocs = new NodeItem<>(DirNode.class, "sdk/docs/jsdoc");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(DirNode.class, "sdk/test-results");
 	
+	private AssetLocationUtility assetLocator = new AssetLocationUtility();
+	
 	private final Logger logger;
-	private final LogicalRequestHandler requestHandler = new LogicalRequestHandler(this);
 	private final CommandList commandList;
+	private final Map<String, BundlerPlugin> bundlerPlugins;
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
+	private PluginLocator pluginLocator;
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
@@ -77,17 +82,27 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
-		logger.info(Messages.CREATING_MODEL_OBSERVER_PLUGINS_LOG_MSG);
-		List<ModelObserverPlugin> modelObservers = pluginLocator.createModelObservers(this);
-		listFoundPlugins(modelObservers);
+		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
+		pluginLocator.createPlugins(this);
+		
+        List<ModelObserverPlugin> modelObservers = pluginLocator.getModelObservers();
+        listFoundPlugins(modelObservers);
 		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 		discoverAllChildren();
 		
-		logger.info(Messages.CREATING_COMMAND_PLUGINS_LOG_MSG);
-		List<CommandPlugin> commandPlugins = pluginLocator.createCommandPlugins(this);
-		listFoundPlugins(commandPlugins);
-		commandList = new CommandList(this, commandPlugins);
+		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
+		this.pluginLocator = pluginLocator;
+		List<CommandPlugin> foundCommandPlugins = pluginLocator.getCommandPlugins();
+		listFoundPlugins(foundCommandPlugins);
+		commandList = new CommandList(this, foundCommandPlugins);
+		
+		bundlerPlugins = new HashMap<String,BundlerPlugin>();
+		List<BundlerPlugin> foundBundlerPlugins = pluginLocator.getBundlerPlugins();
+		listFoundPlugins(foundBundlerPlugins);
+		for(BundlerPlugin bundlerPlugin :  foundBundlerPlugins) {
+			bundlerPlugins.put(bundlerPlugin.getTagName(), bundlerPlugin);
+		}
 	}
 
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
@@ -264,10 +279,6 @@ public class BRJS extends AbstractBRJSRootNode
 		return testRunnerConf;
 	}
 	
-	public void handleLogicalRequest(BladerunnerUri requestUri, java.io.OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
-		requestHandler.handle(requestUri, os);
-	}
-	
 	public CommandList commandList()
 	{
 		return commandList;
@@ -299,11 +310,87 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
-	private void listFoundPlugins(List<? extends Plugin> plugins)
-	{
-		for(Plugin p : plugins)
-		{
-			logger.debug(Messages.PLUGIN_FOUND_MSG, p.getClass().getCanonicalName());
-		}
+	public BundlerPlugin bundlerPlugin(String bundlerName) {
+		return bundlerPlugins.get(bundlerName);
 	}
+	
+	public Collection<BundlerPlugin> bundlerPlugins() {
+		return bundlerPlugins.values();
+	}
+	
+	public Collection<BundlerPlugin> bundlerPlugins(String mimeType) {
+		Collection<BundlerPlugin> bundlerPlugins = new ArrayList<>();
+		
+		for(BundlerPlugin bundlerPlugin : bundlerPlugins()) {
+			if(bundlerPlugin.getMimeType().equals(mimeType)) {
+				bundlerPlugins.add(bundlerPlugin);
+			}
+		}
+		
+		return bundlerPlugins;
+	}
+	
+	public List<MinifierPlugin> minifierPlugins() {
+		return pluginLocator.getMinifiers();
+	}
+	
+	public MinifierPlugin minifierPlugin(String minifierSetting) {
+		
+		List<String> validMinifySettings = new ArrayList<String>();
+		MinifierPlugin pluginForMinifierSetting = null;
+		
+		for(MinifierPlugin minifierPlugin : minifierPlugins()) {
+			for (String setting : minifierPlugin.getSettingNames())
+			{
+				validMinifySettings.add(setting);
+				if (setting.equals(minifierSetting))
+				{
+					pluginForMinifierSetting = (pluginForMinifierSetting == null) ? minifierPlugin : pluginForMinifierSetting;
+				}
+			}
+		}
+		
+		if (pluginForMinifierSetting != null)
+		{
+			return pluginForMinifierSetting;
+		}
+		
+		throw new RuntimeException( "No minifier plugin for minifier setting '" + minifierSetting + "'. Valid settings are: " + StringUtils.join(validMinifySettings, ", ") );
+	}	
+	
+	public List<ContentPlugin> contentPlugins() {
+		return pluginLocator.getContentPlugins();
+	}
+	
+	
+	/**
+	 * Returns *all* plugins that are servlets. This includes ContentPlugins and BundlerPlugins since BundlerPlugin extends the interface.
+	 */
+	public List<ContentPlugin> allContentPlugins() {
+		List<ContentPlugin> contentPlugins = new ArrayList<>();
+		contentPlugins.addAll(contentPlugins());
+		contentPlugins.addAll(bundlerPlugins());
+		return contentPlugins;
+	}
+	
+	
+	public <AF extends AssetFile> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... fileNames)
+	{
+		return assetLocator.getAssetFilesNamed(assetLocation, assetFileType, fileNames);
+	}
+	
+	public <AF extends AssetFile> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... extensions)
+	{
+		return assetLocator.getAssetFilesWithExtension(assetLocation, assetFileType, extensions);
+	}
+	
+	
+	
+	private void listFoundPlugins(List<? extends Plugin> plugins)
+    {
+        for(Plugin p : plugins)
+        {
+                logger.debug(Messages.PLUGIN_FOUND_MSG, p.getClass().getCanonicalName());
+        }
+    }
 }

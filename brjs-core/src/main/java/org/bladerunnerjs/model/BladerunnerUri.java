@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +15,7 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 public class BladerunnerUri
 {
+	public static final String BRJS_URL_PREFIX = "/brjs";
 	private static final Pattern pathPattern = Pattern.compile(";[^;]+$");
 	private final BRJS brjs;
 
@@ -66,7 +68,15 @@ public class BladerunnerUri
 		this.brjs = brjs;
 		String requestUri = request.getRequestURI();
 		String contextPath = request.getContextPath();
-		String requestPath = requestUri.substring((contextPath == null) ? 0 : contextPath.length());
+		String requestPath = "";
+		if (isBrjsUriRequest(request))
+		{
+			requestPath = StringUtils.substringAfter(requestUri, contextPath+BRJS_URL_PREFIX+contextPath);
+		}
+		else
+		{
+			requestPath = StringUtils.substringAfter(requestUri, contextPath);
+		}
 		
 		processUri(new File(context.getRealPath("/")), contextPath, requestPath, request.getQueryString());
 	}
@@ -109,7 +119,7 @@ public class BladerunnerUri
 			// This happens only if the request is not in a real SDK.
 			// e.g. for our tests.
 
-			if(requestPath.charAt(0) == '/')
+			if(requestPath.length() > 0 && requestPath.charAt(0) == '/')
 			{
 				scopePath = "/";
 				logicalPath = requestPath.substring(1);
@@ -122,11 +132,27 @@ public class BladerunnerUri
 		}
 		else
 		{
-			scopePath = StringUtils.substringAfter(requestContextNode.dir().getAbsolutePath(), contextRoot.getAbsolutePath()).replace("\\", "/") + "/";
+			scopePath = calculateScopePath(requestContextNode.dir(), contextRoot);
 			logicalPath = StringUtils.substringAfter(requestPath, scopePath);
 		}
 	}
 	
+	private String calculateScopePath(File requestContextDir, File contextRoot)
+	{
+		if (requestContextDir.getAbsolutePath().contains(contextRoot.getAbsolutePath()))
+		{
+			return StringUtils.substringAfter(requestContextDir.getAbsolutePath(), contextRoot.getAbsolutePath()).replace("\\", "/") + "/";			
+		}
+		try
+		{
+			return StringUtils.substringAfter(requestContextDir.getCanonicalPath(), contextRoot.getCanonicalPath()).replace("\\", "/") + "/";
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException("Unable to calculate scope path for request using canonical paths", ex);			
+		}
+	}
+
 	private String getPathParameter(String requestUri)
 	{
 		Matcher pathMatcher = pathPattern.matcher(requestUri);
@@ -152,5 +178,12 @@ public class BladerunnerUri
 		}
 		
 		return bundlableNode;
+	}
+
+	public static boolean isBrjsUriRequest(HttpServletRequest request)
+	{
+		String requestUri = request.getRequestURI();
+		String contextPath = request.getContextPath();
+		return requestUri.startsWith(contextPath+BRJS_URL_PREFIX+"/");
 	}
 }

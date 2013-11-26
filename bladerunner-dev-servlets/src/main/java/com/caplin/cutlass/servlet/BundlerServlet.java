@@ -15,19 +15,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.bundler.css.CssBundler;
+
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+
 import com.caplin.cutlass.bundler.exception.UnknownBundlerException;
 import com.caplin.cutlass.bundler.html.HtmlBundler;
 import com.caplin.cutlass.bundler.i18n.I18nBundler;
@@ -43,6 +46,7 @@ public class BundlerServlet extends HttpServlet
 	protected List<LegacyFileBundlerPlugin> bundlers = null;
 	
 	private BRJS brjs;
+	private App app;
 	private Logger logger;
 	private ServletContext servletContext;
 	
@@ -61,6 +65,7 @@ public class BundlerServlet extends HttpServlet
 	public void init(final ServletConfig servletConfig) throws ServletException
 	{
 		brjs = ServletModelAccessor.initializeModel(servletConfig.getServletContext());
+		app = brjs.app(new File(servletConfig.getServletContext().getRealPath("/")).getName());
 		logger = brjs.logger(LoggerType.SERVLET, BundlerServlet.class);
 		
 		servletContext = servletConfig.getServletContext();
@@ -83,10 +88,15 @@ public class BundlerServlet extends HttpServlet
 			logger.debug("BASE DIR " + baseDir);
 			logger.debug("REQUEST PATH " + requestPath);
 			
-			LegacyFileBundlerPlugin theBundler = getBundlerForRequest(request);
-			List<File> bundleFiles = getBundleFiles(theBundler, baseDir, requestPath);
-			
-			writeBundle(theBundler, bundleFiles, cachedBundlerOutputStream, requestPath);
+			if(requestPath.equals("XXX-js/js.bundle")) {
+				app.handleLogicalRequest(bladerunnerUri, cachedBundlerOutputStream);
+			}
+			else {
+				LegacyFileBundlerPlugin theBundler = getBundlerForRequest(request);
+				List<File> bundleFiles = getBundleFiles(theBundler, baseDir, requestPath);
+				
+				writeBundle(theBundler, bundleFiles, cachedBundlerOutputStream, requestPath);
+			}
 		} 
 		catch (MalformedRequestException ex)
 		{
@@ -115,7 +125,6 @@ public class BundlerServlet extends HttpServlet
 		{
 			logger.debug("Output stream closed: unable to write response for '" + requestPath + "'.");
 		}
-		
 	}
 	
 

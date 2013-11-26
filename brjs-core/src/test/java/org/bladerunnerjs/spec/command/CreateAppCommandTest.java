@@ -116,6 +116,7 @@ public class CreateAppCommandTest extends SpecTest {
 		then(app).dirExists()
 			.and(output).containsLine(APP_CREATED_CONSOLE_MSG, app.getName())
 			.and(output).doesNotContain(APP_DEPLOYED_LOG_MSG, app.getName())
+			.and(logging).errorMessageReceived(APP_DEPLOYMENT_FAILED_LOG_MSG, app.getName(), app.dir())
 			.and(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}
 	

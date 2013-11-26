@@ -10,6 +10,7 @@ public enum LoggerType
 	UTIL("util"),
 	FILTER("filter"), 
 	REST_API("restapi"), 
+	MINIFIER("minifier"), 
 	SERVLET("servlet"), 
 	DATABASE("database"), 
 	DATABASE_UTIL("database.util"), 

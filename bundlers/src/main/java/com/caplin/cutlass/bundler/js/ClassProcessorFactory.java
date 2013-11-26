@@ -5,7 +5,8 @@ import java.util.List;
 
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.model.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
+
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.bundler.js.aliasing.AliasInformation;
 import com.caplin.cutlass.bundler.js.aliasing.AliasRegistry;

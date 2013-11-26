@@ -1,0 +1,2 @@
+org.bladerunnerjs.core.plugin.minifier.ConcatentatingMinifierPlugin
+org.bladerunnerjs.core.plugin.minifier.ClosureMinifierPlugin

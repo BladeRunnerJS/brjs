@@ -20,7 +20,7 @@ public class Blade extends AbstractComponent implements NamedNode
 
 	public Blade(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(dir);
+		super(rootNode, dir);
 		this.name = name;
 		init(rootNode, parent, dir);
 	}
