@@ -50,37 +50,37 @@ public class TagPluginUtilityTest
 	@Test
 	public void testFilteringTagWithoutAttributes() throws Exception
 	{
-		filterAndAssert( "this is a <@tag/>", "this is a replaced tag!\n", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag@>", "this is a replaced tag!\n", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	@Test
 	public void testFilteringTagWithSpacesAtEnd() throws Exception
 	{
-		filterAndAssert( "this is a <@tag  />", "this is a replaced tag!\n", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag  @>", "this is a replaced tag!\n", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 
 	@Test
 	public void testFilteringTagWithAttributes() throws Exception
 	{
-		filterAndAssert( "this is a <@tag key=\"value\"/>", "this is a replaced tag!\nkey=value\n", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag key=\"value\"@>", "this is a replaced tag!\nkey=value\n", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void testFilteringTagWithAttributesWithExtraSpaces() throws Exception
 	{
-		filterAndAssert( "this is a <@tag   key=\"value\"     />", "this is a replaced tag!\nkey=value\n", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag   key=\"value\"     @>", "this is a replaced tag!\nkey=value\n", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void testFilteringTagWithMultipleAttributes() throws Exception
 	{
-		filterAndAssert( "this is a <@tag key=\"value\" key2=\"value2\"/>", "this is a replaced tag!\nkey=value\nkey2=value2\n", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag key=\"value\" key2=\"value2\"@>", "this is a replaced tag!\nkey=value\nkey2=value2\n", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 
 	@Test
 	public void testFilteringTagInProdAndDevMode() throws Exception
 	{
-		filterAndAssert( "<@amIDevOrProd/>", "dev\n", aspect.getBundleSet(), RequestMode.Dev, "");
-		filterAndAssert( "<@amIDevOrProd/>", "prod\n", aspect.getBundleSet(), RequestMode.Prod, "");
+		filterAndAssert( "<@amIDevOrProd@>", "dev\n", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@amIDevOrProd@>", "prod\n", aspect.getBundleSet(), RequestMode.Prod, "");
 	}
 	
 	
