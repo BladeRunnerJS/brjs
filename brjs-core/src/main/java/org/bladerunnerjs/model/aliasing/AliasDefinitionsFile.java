@@ -63,7 +63,7 @@ public class AliasDefinitionsFile extends File {
 		try {
 			for(AliasDefinition nextAliasDefinition : aliasDefinitions()) {
 				String groupName = nextAliasDefinition.getGroup();
-				boolean isValidScenario = ((scenarioName == null) && (nextAliasDefinition.getScenario() == null)) || nextAliasDefinition.getScenario().equals(scenarioName);
+				boolean isValidScenario = (scenarioName == null) ? (scenarioName == nextAliasDefinition.getScenario()) : (scenarioName.equals(nextAliasDefinition.getScenario()));
 				boolean isValidGroup = (groupName == null) || groupNames.contains(groupName);
 				
 				if(isValidScenario && isValidGroup && nextAliasDefinition.getName().equals(aliasName.getName())) {

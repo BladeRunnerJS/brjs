@@ -122,7 +122,6 @@ public class AliasingTest extends SpecTest {
 		then(response).containsClasses("novox.Class1");
 	}
 	
-	@Ignore
 	@Test
 	public void settingTheScenarioChangesTheAliasesThatAreUsed() throws Exception {
 		given(appConf).hasNamespace("novox")
