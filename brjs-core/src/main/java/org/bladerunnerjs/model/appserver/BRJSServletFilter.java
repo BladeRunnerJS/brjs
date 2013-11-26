@@ -2,6 +2,7 @@ package org.bladerunnerjs.model.appserver;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,10 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.utility.TagPluginUtility;
 
 
@@ -65,45 +68,71 @@ public class BRJSServletFilter implements Filter
 		
 	}
 
-	private void doFiltering(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException
-	{
-		List<TagHandlerPlugin> tagHandlers = brjs.tagHandlers();
-		
-		CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-		chain.doFilter(request, responseWrapper);
-		
-		doIndexTagHandlerFiltering(tagHandlers, request, response, responseWrapper);
-	}
-
-	private void doIndexTagHandlerFiltering(List<TagHandlerPlugin> tagHandlers, HttpServletRequest request, HttpServletResponse response, CharResponseWrapper responseWrapper)
-	{
-		String urlFileName = FilenameUtils.getName(request.getRequestURI());
-		if (filterForUrlFilenames.contains(urlFileName))
-		{
-			StringWriter bufferedResponseStringWriter = new StringWriter();
-			try
-			{
-				IOUtils.copy(responseWrapper.getReader(), bufferedResponseStringWriter);
-				String responseData = bufferedResponseStringWriter.toString();
-			
-				StringWriter tagPluginStringWriter = new StringWriter();
-				BladerunnerUri bladerunnerUri = servletUtils.createBladeRunnerUri(servletContext, request);
-				TagPluginUtility.filterContent(responseData, servletUtils.getBundableNodeForRequest(bladerunnerUri, response).getBundleSet(), tagPluginStringWriter, RequestMode.Dev, "");
-				
-				byte[] filteredData = tagPluginStringWriter.toString().getBytes();
-				response.setContentLength(filteredData.length);
-				response.getOutputStream().write(filteredData);
-			}
-			catch (Exception ex)
-			{
-				throw new RuntimeException(ex);
-			}
-		}
-	}
-
 	@Override
 	public void destroy()
 	{
+	}
+	
+	
+	
+	
+	private void doFiltering(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException
+	{
+		if (shouldFilterResponse(request))
+		{
+			try
+			{
+				StringWriter tagPluginStringWriter = new StringWriter();
+				BladerunnerUri bladerunnerUri = servletUtils.createBladeRunnerUri(servletContext, request);
+				App app = servletUtils.getAppForRequest(bladerunnerUri, response);
+				BundlableNode bundleableNode = servletUtils.getBundableNodeForRequest(bladerunnerUri, response);
+
+				if (bundleableNode != null)
+				{
+					CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
+					
+					chain.doFilter(request, responseWrapper);
+					
+					String responseData = getResponseData(responseWrapper);
+					String locale = LocaleHelper.getLocaleFromRequest(app, request);
+					TagPluginUtility.filterContent(responseData, bundleableNode.getBundleSet(), tagPluginStringWriter, RequestMode.Dev, locale);
+					
+					byte[] filteredData = tagPluginStringWriter.toString().getBytes();
+					response.setContentLength(filteredData.length);
+					response.getOutputStream().write(filteredData);
+				}
+				else
+				{
+					chain.doFilter(request, response);
+				}
+			}
+			catch (MalformedRequestException ex)
+			{
+				servletUtils.sendErrorResponse(response, 404, ex);				
+			}
+			catch (Exception ex)
+			{
+				servletUtils.sendErrorResponse(response, 500, ex);
+			}
+		}
+		else
+		{
+			chain.doFilter(request, response);
+		}
+	}
+	
+	private String getResponseData(CharResponseWrapper responseWrapper) throws IOException, UnsupportedEncodingException
+	{
+		StringWriter bufferedResponseStringWriter = new StringWriter();
+		IOUtils.copy(responseWrapper.getReader(), bufferedResponseStringWriter);
+		String responseData = bufferedResponseStringWriter.toString();
+		return responseData;
+	}
+
+	private boolean shouldFilterResponse(HttpServletRequest request)
+	{
+		String urlFileName = FilenameUtils.getName(request.getRequestURI());
+		return filterForUrlFilenames.contains(urlFileName);
 	}
 
 }

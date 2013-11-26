@@ -33,9 +33,8 @@ public class WebappTester
 	private static final int MAX_POLL_REQUESTS = 10;
 	private static final int POLL_INTERVAL = 500;
 	
-	//TODO: make this 1000 again
-	private int defaultSocketTimeout = 999999;
-	private int defaultConnectionTimeout = 999999;
+	private int defaultSocketTimeout = 9999999;
+	private int defaultConnectionTimeout = 9999999;
 	
 	private File filePathBase;
 	private int statusCode;
@@ -44,6 +43,8 @@ public class WebappTester
 	private String response;
 	private String contentType;
 	private String url;
+	
+	public String requestLocale = "";
 	
 	public WebappTester(File filePathBase, int defaultSocketTimeout, int defaultConnectionTimeout)
 	{
@@ -77,6 +78,7 @@ public class WebappTester
 		HttpParams params = get.getParams();
 		params.setParameter(ClientPNames.HANDLE_REDIRECTS, followRedirects);
 		get.setParams(params);
+		get.addHeader("Accept-Language", requestLocale);
 		
 		httpResponse = httpClient.execute( get );
 		statusCode = httpResponse.getStatusLine().getStatusCode();

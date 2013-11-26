@@ -31,7 +31,7 @@ public class BRJSServletFilterTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception {
 		
-		given(brjs).hasTagPlugins( new MockTagHandler("tagToken", "dev replacement", "prod replacement") )
+		given(brjs).hasTagPlugins( new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true) )
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usedForServletModel();
     		appServer = brjs.applicationServer(appServerPort);
@@ -72,6 +72,17 @@ public class BRJSServletFilterTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "dev replacement\n");
 	}
 	
-	//TODO: test locales can be passed in
+	@Test
+	public void localesCanBeUsedInTagHandlers() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).hasSupportedLocales("ab_CD")
+    		.and(aspect).hasBeenCreated()
+    		.and(aspect).containsFileWithContents("index.html", "<@localeToken />")
+    		.and(appServer).started();
+		when(webappTester).makesRequestWithLocale("ab_CD");
+		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "- ab_CD\n");
+	}
+	
 	//TODO: test for bundle set usage
 }

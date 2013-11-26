@@ -77,6 +77,10 @@ public class BRJSServletUtils
 			BundlableNode bundlableNode = getBundableNodeForRequest(requestUri, resp);
 			contentPlugin.writeContent(parsedRequest, bundlableNode.getBundleSet(), resp.getOutputStream());
 		}
+		catch (MalformedRequestException ex)
+		{
+			sendErrorResponse(resp, 404, ex);
+		}
 		catch (BundlerProcessingException ex)
 		{
 			sendErrorResponse(resp, 500, ex);
@@ -91,7 +95,7 @@ public class BRJSServletUtils
 		}
 	}
 
-	public BundlableNode getBundableNodeForRequest(BladerunnerUri requestUri, HttpServletResponse resp) throws ServletException
+	public App getAppForRequest(BladerunnerUri requestUri, HttpServletResponse resp) throws ServletException, MalformedRequestException
 	{
 		String appName = StringUtils.substringAfter(requestUri.contextPath, "/");
 		if (appName.endsWith("/"))
@@ -99,15 +103,23 @@ public class BRJSServletUtils
 			appName = StringUtils.substringBeforeLast(appName, "/");
 		}
 		App app = brjs.app(appName);
+		
+		
 		if (!app.dirExists())
 		{
 			app = brjs.systemApp(appName);
 			if (!app.dirExists())
 			{
-				sendErrorResponse(resp, 404, "App not found.");
+				throw new MalformedRequestException(requestUri.getUri(), "App '"+app.getName()+"' not found.");
 			}
 		}
-		
+	
+		return app;
+	}
+	
+	public BundlableNode getBundableNodeForRequest(BladerunnerUri requestUri, HttpServletResponse resp) throws ServletException, MalformedRequestException
+	{
+		App app = getAppForRequest(requestUri, resp);
 		File baseDir = app.file(requestUri.scopePath);
 		BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
 		return bundlableNode;

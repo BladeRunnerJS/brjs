@@ -85,7 +85,7 @@ public abstract class SpecTest
 	public BRJS brjs;
 	public int appServerPort;
 	
-	WebappTester webappTester;
+	public WebappTester webappTester;
 
 		
 	@Before
@@ -215,6 +215,9 @@ public abstract class SpecTest
 	public AppServerBuilder given(ApplicationServer appServer) { return new AppServerBuilder(this, appServer); }
 	public AppServerCommander when(ApplicationServer appServer) { return new AppServerCommander(this, appServer); }
 	public AppServerVerifier then(ApplicationServer appServer) { return new AppServerVerifier(this, appServer); }
+	
+	// Webapp Tester
+	public WebappTesterCommander when(WebappTester webappTester) { return new WebappTesterCommander(this, webappTester); } 
 	
 	private File createTestSdkDirectory() {
 		File sdkDir;

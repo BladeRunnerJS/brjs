@@ -1,6 +1,7 @@
 package org.bladerunnerjs.specutil;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
 import org.bladerunnerjs.specutil.engine.NodeBuilder;
@@ -25,6 +26,13 @@ public class AppBuilder extends NodeBuilder<App> {
 	public BuilderChainer hasBeenDeployed() throws TemplateInstallationException
 	{
 		app.deploy();
+		
+		return builderChainer;
+	}
+
+	public BuilderChainer hasSupportedLocales(String locales) throws ConfigException
+	{
+		app.appConf().setLocales( locales );
 		
 		return builderChainer;
 	}
