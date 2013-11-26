@@ -32,6 +32,13 @@ public class TagPluginUtilityTest
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("tag", "replaced tag!", "") ) );
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("amIDevOrProd", "dev", "prod") ) );
 		
+		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("a.tag", "replaced tag!", "") ) );
+		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("a-tag", "replaced tag!", "") ) );
+		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("a_tag", "replaced tag!", "") ) );
+		
+		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("1tag", "replaced tag!", "") ) );
+		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("-tag", "replaced tag!", "") ) );
+		
 		File tempDir = createTestSdkDirectory();
 		brjs = BRJSTestFactory.createBRJS(tempDir, mockPluginLocator);
 		
@@ -90,6 +97,21 @@ public class TagPluginUtilityTest
 		filterAndAssert( "this is a < @tag@>", "this is a < @tag@>", aspect.getBundleSet(), RequestMode.Dev, "");
 		filterAndAssert( "this is a <@ tag@>", "this is a <@ tag@>", aspect.getBundleSet(), RequestMode.Dev, "");
 		filterAndAssert( "this is a <@tag@ >", "this is a <@tag@ >", aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	@Test
+	public void tagsCanContainSeperatorChars() throws Exception
+	{		
+		filterAndAssert( "<@a.tag@>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@a-tag@>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@a_tag@>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	@Test
+	public void tagsCannotStartWithNumbersOfSeperatorChars() throws Exception
+	{		
+		filterAndAssert( "<@1tag@>", "<@1tag@>", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@-tag@>", "<@-tag@>", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	

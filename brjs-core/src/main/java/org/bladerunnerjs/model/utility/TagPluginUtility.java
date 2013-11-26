@@ -19,7 +19,7 @@ import org.bladerunnerjs.model.RequestMode;
 public class TagPluginUtility {
 
 	private static final String attributePatternString = "(\\s+(\\w+)\\s*=\\s*\\\"([\\w]+)\\\")";
-	private static final Pattern tagPattern = Pattern.compile("<@([\\w]+)("+attributePatternString+"*)?[ ]*@>");
+	private static final Pattern tagPattern = Pattern.compile("<@([A-Za-z][A-Za-z0-9-_.]+)("+attributePatternString+"*)?[ ]*@>");
 	private static final Pattern attributePattern = Pattern.compile(attributePatternString);
 	
 	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale) throws IOException, NoTagHandlerFoundException
