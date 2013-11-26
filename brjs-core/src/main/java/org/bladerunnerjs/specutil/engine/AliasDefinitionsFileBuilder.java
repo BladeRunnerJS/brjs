@@ -15,7 +15,7 @@ import com.jamesmurty.utils.XMLBuilder;
 public class AliasDefinitionsFileBuilder {
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private BuilderChainer builderChainer;
-	private List<AliasDefinition> aliases = new ArrayList<>();
+	private List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 	private Map<String, List<AliasDefinition>> scenarioAliases = new HashMap<>();
 	private Map<String, List<AliasDefinition>> groupAliases = new HashMap<>();
 	
@@ -31,7 +31,7 @@ public class AliasDefinitionsFileBuilder {
 	}
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
-		aliases.add(new AliasDefinition(aliasName, classRef, null));
+		aliasDefinitions.add(new AliasDefinition(aliasName, classRef, null));
 		writeAliasDefinitionsFile();
 		
 		return builderChainer;
@@ -58,7 +58,7 @@ public class AliasDefinitionsFileBuilder {
 	private void writeAliasDefinitionsFile() throws Exception {
 		XMLBuilder builder = XMLBuilder.create("aliasDefinitions").ns("http://schema.caplin.com/CaplinTrader/aliasDefinitions");
 		
-		for(AliasDefinition aliasDefinition : aliases) {
+		for(AliasDefinition aliasDefinition : aliasDefinitions) {
 			builder.e("alias").a("name", aliasDefinition.getName()).a("defaultClass", aliasDefinition.getClassName());
 			
 			for(AliasDefinition scenarioAliasDefinition : getScenarioAliases(aliasDefinition.getName())) {

@@ -3,7 +3,9 @@ package org.bladerunnerjs.model.aliasing;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
@@ -24,7 +26,9 @@ public class AliasDefinitionsFile extends File {
 	private static XMLValidationSchema aliasDefinitionsSchema;
 	
 	private final FileModifiedChecker fileModifiedChecker;
-	private List<AliasDefinition> aliasDefinitions;
+	private List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+	private Map<String, List<AliasDefinition>> scenarioAliases = new HashMap<>();
+	private Map<String, List<AliasDefinition>> groupAliases = new HashMap<>();
 	private AssetContainer assetContainer;
 	
 	static {
@@ -64,8 +68,20 @@ public class AliasDefinitionsFile extends File {
 	}
 	
 	public List<AliasDefinition> aliasDefinitions() throws BundlerFileProcessingException {
+		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+		
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reparseFile();
+		}
+		
+		aliasDefinitions.addAll(this.aliasDefinitions);
+		
+		for(List<AliasDefinition> scenarioAliasList : scenarioAliases.values()) {
+			aliasDefinitions.addAll(scenarioAliasList);
+		}
+		
+		for(List<AliasDefinition> groupAliasList : groupAliases.values()) {
+			aliasDefinitions.addAll(groupAliasList);
 		}
 		
 		return aliasDefinitions;
@@ -73,6 +89,8 @@ public class AliasDefinitionsFile extends File {
 	
 	private void reparseFile() throws BundlerFileProcessingException {
 		aliasDefinitions = new ArrayList<>();
+		scenarioAliases = new HashMap<>();
+		groupAliases = new HashMap<>();
 		
 		if(exists()) {
 			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(this, aliasDefinitionsSchema)) {
@@ -153,7 +171,7 @@ public class AliasDefinitionsFile extends File {
 		AliasDefinition aliasDefinition = new AliasDefinition(aliasName, aliasClass, null);
 		aliasDefinition.setGroup(groupName);
 		
-		aliasDefinitions.add(aliasDefinition);
+		getGroupAliases(groupName).add(aliasDefinition);
 	}
 	
 	private void processScenario(String aliasName, String aliasInterface, XmlStreamReader streamReader) {
@@ -162,6 +180,22 @@ public class AliasDefinitionsFile extends File {
 		AliasDefinition aliasDefinition = new AliasDefinition(aliasName, aliasClass, aliasInterface);
 		aliasDefinition.setScenario(scenarioName);
 		
-		aliasDefinitions.add(aliasDefinition);
+		getScenarioAliases(scenarioName).add(aliasDefinition);
+	}
+	
+	private List<AliasDefinition> getScenarioAliases(String aliasName) {
+		if(!scenarioAliases.containsKey(aliasName)) {
+			scenarioAliases.put(aliasName, new ArrayList<AliasDefinition>());
+		}
+		
+		return scenarioAliases.get(aliasName);
+	}
+	
+	private List<AliasDefinition> getGroupAliases(String groupName) {
+		if(!groupAliases.containsKey(groupName)) {
+			groupAliases.put(groupName, new ArrayList<AliasDefinition>());
+		}
+		
+		return groupAliases.get(groupName);
 	}
 }
