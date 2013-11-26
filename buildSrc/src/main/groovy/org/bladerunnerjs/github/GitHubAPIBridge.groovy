@@ -38,7 +38,7 @@ class GitHubAPIBridge
 	{
 		this.logger = project.logger
 		this.project = project
-		userAgentString = project+"-GitHubAPIBridge"
+		userAgentString = "${repoOwner}-${repo}-GitHubAPIBridge"
 		this.repoOwner = repoOwner
 		this.repo = repo
 		this.authToken = authToken
@@ -179,7 +179,7 @@ class GitHubAPIBridge
         			uri: requestPrefix,
         			requestContentType: contentType,
         			headers: [
-						'User-Agent': 'application/vnd.github.manifold-preview',
+						'User-Agent': userAgentString,
         				'Authorization': "token ${authToken}",
         				'Accept': 'application/vnd.github.manifold-preview'
         			],
