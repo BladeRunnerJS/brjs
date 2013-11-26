@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 //import org.bladerunnerjs.model.BRJS;
@@ -39,7 +40,13 @@ public class TagPluginUtility {
 		}
 		matcher.appendTail(result);
 		
-		writer.write(result.toString());
+		String filteredContent = result.toString();
+		if (filteredContent.endsWith("\n")) // matcher.appendTail seems to append an extra \n that wasn't in the original content, so we remove it
+		{
+			filteredContent = StringUtils.substringBeforeLast(filteredContent, "\n");
+		}
+		
+		writer.write(filteredContent);
 		writer.flush();
 	}
 
