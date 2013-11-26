@@ -10,6 +10,7 @@ import java.util.List;
 import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
@@ -26,6 +27,7 @@ import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 import org.bladerunnerjs.specutil.AppBuilder;
 import org.bladerunnerjs.specutil.AppCommander;
+import org.bladerunnerjs.specutil.AppConfCommander;
 import org.bladerunnerjs.specutil.AppVerifier;
 import org.bladerunnerjs.specutil.AspectBuilder;
 import org.bladerunnerjs.specutil.AspectCommander;
@@ -165,6 +167,11 @@ public abstract class SpecTest
 	public AppBuilder given(App app) { return new AppBuilder(this, app); }
 	public AppCommander when(App app) { return new AppCommander(this, app); }
 	public AppVerifier then(App app) { return new AppVerifier(this, app); }
+	
+	// App
+	public AppConfBuilder given(AppConf appConf) { return new AppConfBuilder(this, appConf); }
+	public AppConfCommander when(AppConf appConf) { return new AppConfCommander(this, appConf); }
+	public AppConfVerifier then(AppConf appConf) { return new AppConfVerifier(this, appConf); }
 	
 	// Aspect
 	public AspectBuilder given(Aspect aspect) { return new AspectBuilder(this, aspect); }

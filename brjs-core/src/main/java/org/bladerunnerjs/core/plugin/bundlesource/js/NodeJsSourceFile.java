@@ -34,6 +34,7 @@ public class NodeJsSourceFile implements SourceFile {
 	{
 		this.assetLocation = assetLocation;
 		assetFile = file;
+		// TODO: this requirePath should use assetLocation.getAssetContainer().requirePrefix() and not require the 'src' directory to contain the entire namespace to be repeated
 		this.requirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}

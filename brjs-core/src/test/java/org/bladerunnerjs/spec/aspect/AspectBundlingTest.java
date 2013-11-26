@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
+//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'novox' when the default namespace is 'appns')?
 //TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
 public class AspectBundlingTest extends SpecTest {
 	private App app;
