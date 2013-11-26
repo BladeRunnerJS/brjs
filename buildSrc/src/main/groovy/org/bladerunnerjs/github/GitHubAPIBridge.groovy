@@ -20,11 +20,13 @@ import static groovyx.net.http.ContentType.JSON
 
 class GitHubAPIBridge
 {
-	public static String CURL_PATH = "curl" 
+	String userAgentString = ""
 	
-	static final githubWebPrefix = "https://github.com/"
-	static final apiPrefix = "https://api.github.com"
-	static final uploadsPrefix = "https://uploads.github.com"
+	String curlPath = "curl" 
+	
+	String githubWebPrefix = "https://github.com/"
+	String apiPrefix = "https://api.github.com"
+	String uploadsPrefix = "https://uploads.github.com"
 	
 	Project project
 	Logger logger
@@ -36,6 +38,7 @@ class GitHubAPIBridge
 	{
 		this.logger = project.logger
 		this.project = project
+		userAgentString = project+"-GitHubAPIBridge"
 		this.repoOwner = repoOwner
 		this.repo = repo
 		this.authToken = authToken
@@ -148,9 +151,9 @@ class GitHubAPIBridge
     		
 		if (requestPrefix.equals(uploadsPrefix))
 		{
-			logger.info "using cURL because of SSL certificate issues in the Groovy REST client... (curl path is '${CURL_PATH}')"
+			logger.info "using cURL because of SSL certificate issues in the Groovy REST client... (curl path is '${curlPath}')"
 			project.exec {
-    			commandLine = [ CURL_PATH,
+    			commandLine = [ curlPath,
 					"--insecure", // We have to use this because the SSL cert for uploads.github.com doesnt match the hostname
     				"-i",
     				"-H", "Authorization: token ${authToken}", 
@@ -176,6 +179,7 @@ class GitHubAPIBridge
         			uri: requestPrefix,
         			requestContentType: contentType,
         			headers: [
+						'User-Agent': 'application/vnd.github.manifold-preview',
         				'Authorization': "token ${authToken}",
         				'Accept': 'application/vnd.github.manifold-preview'
         			],
