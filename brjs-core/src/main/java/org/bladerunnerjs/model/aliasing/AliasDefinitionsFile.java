@@ -2,24 +2,31 @@ package org.bladerunnerjs.model.aliasing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.TransformerException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 import org.bladerunnerjs.model.utility.stax.XmlStreamReader;
 import org.bladerunnerjs.model.utility.XmlStreamReaderFactory;
+import org.bladerunnerjs.specutil.XmlBuilderSerializer;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
+import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasDefinitionsFile extends File {
 	private static final long serialVersionUID = 1L;
@@ -85,6 +92,45 @@ public class AliasDefinitionsFile extends File {
 		}
 		
 		return aliasDefinitions;
+	}
+	
+	public void addAliasDefinition(AliasDefinition aliasDefinition) {
+		if(aliasDefinition.getScenario() != null) {
+			getScenarioAliases(aliasDefinition.getName()).add(aliasDefinition);
+		}
+		else if(aliasDefinition.getGroup() != null) {
+			getGroupAliases(aliasDefinition.getGroup()).add(aliasDefinition);
+		}
+		else {
+			aliasDefinitions.add(aliasDefinition);
+		}
+	}
+	
+	public void write() throws IOException {
+		try {
+			XMLBuilder builder = XMLBuilder.create("aliasDefinitions").ns("http://schema.caplin.com/CaplinTrader/aliasDefinitions");
+			
+			for(AliasDefinition aliasDefinition : aliasDefinitions) {
+				XMLBuilder aliasBuilder = builder.e("alias").a("name", aliasDefinition.getName()).a("defaultClass", aliasDefinition.getClassName());
+				
+				for(AliasDefinition scenarioAliasDefinition : getScenarioAliases(aliasDefinition.getName())) {
+					aliasBuilder.e("scenario").a("name", scenarioAliasDefinition.getScenario()).a("class", scenarioAliasDefinition.getClassName());
+				}
+			}
+			
+			for(String groupName : groupAliases.keySet()) {
+				XMLBuilder groupBuilder = builder.e("group").a("name", groupName);
+				
+				for(AliasDefinition groupAlias : groupAliases.get(groupName)) {
+					groupBuilder.e("alias").a("name", groupAlias.getName()).a("defaultClass", groupAlias.getClassName());
+				}
+			}
+			
+			FileUtils.write(this, XmlBuilderSerializer.serialize(builder));
+		}
+		catch(IOException | ParserConfigurationException | FactoryConfigurationError | TransformerException e) {
+			throw new IOException(e);
+		}
 	}
 	
 	private void reparseFile() throws BundlerFileProcessingException {

@@ -111,7 +111,6 @@ public class AliasingTest extends SpecTest {
 		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", aspectAliasesFile.getPath());
 	}
 	
-	@Ignore
 	@Test
 	public void theNonScenarioAliasIsUsedByDefault() throws Exception {
 		given(appConf).hasNamespace("novox")

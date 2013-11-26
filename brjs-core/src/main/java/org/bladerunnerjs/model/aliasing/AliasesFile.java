@@ -118,7 +118,7 @@ public class AliasesFile extends File {
 			}
 			
 			for(AliasDefinition aliasDefinition : aliasDefinitions) {
-				builder.e("alias").a("name", aliasDefinition.getName()).a("class", aliasDefinition.getClassName()).up();
+				builder.e("alias").a("name", aliasDefinition.getName()).a("class", aliasDefinition.getClassName());
 			}
 			
 			FileUtils.write(this, XmlBuilderSerializer.serialize(builder));
