@@ -20,9 +20,10 @@ import static groovyx.net.http.ContentType.JSON
 
 class GitHubAPIBridge
 {
+	static String CURL_PATH = "curl" 
+
 	String userAgentString = ""
 	
-	String curlPath = "curl" 
 	
 	String githubWebPrefix = "https://github.com/"
 	String apiPrefix = "https://api.github.com"
@@ -151,9 +152,9 @@ class GitHubAPIBridge
     		
 		if (requestPrefix.equals(uploadsPrefix))
 		{
-			logger.info "using cURL because of SSL certificate issues in the Groovy REST client... (curl path is '${curlPath}')"
+			logger.info "using cURL because of SSL certificate issues in the Groovy REST client... (curl path is '${CURL_PATH}')"
 			project.exec {
-    			commandLine = [ curlPath,
+    			commandLine = [ CURL_PATH,
 					"--insecure", // We have to use this because the SSL cert for uploads.github.com doesnt match the hostname
     				"-i",
     				"-H", "Authorization: token ${authToken}", 
