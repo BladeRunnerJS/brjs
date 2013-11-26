@@ -251,7 +251,7 @@ if (org.bladerunnerjs.OSCalculator.isWin32())
     }
 	
 	githubRelease.doFirst {
-		GitHubAPIBridge.CURL_PATH = fileTree(dir:downloadCurl.outputs.files.singleFile, include:"**/curl.exe").singleFile.path
+		GitHubAPIBridge.curlPath = fileTree(dir:downloadCurl.outputs.files.singleFile, include:"**/curl.exe").singleFile.path
 	}
 	githubRelease.dependsOn downloadCurl
 }
