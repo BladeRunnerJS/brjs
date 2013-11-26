@@ -123,7 +123,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public BRJS parent()
 	{
-		return (BRJS) parent;
+		return (BRJS) parentNode();
 	}
 	
 	public AppConf appConf() throws ConfigException {

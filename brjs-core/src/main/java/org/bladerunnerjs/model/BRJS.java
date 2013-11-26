@@ -258,12 +258,12 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public File loginRealmConf()
 	{
-		return new File(dir, "sdk/loginRealm.conf");
+		return new File(dir(), "sdk/loginRealm.conf");
 	}
 	
 	public File usersPropertiesConf()
 	{
-		return new File(dir, "conf/users.properties");
+		return new File(dir(), "conf/users.properties");
 	}
 	
 	public BladerunnerConf bladerunnerConf() throws ConfigException {

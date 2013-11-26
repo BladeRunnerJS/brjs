@@ -17,7 +17,7 @@ public abstract class AbstractBRJSRootNode extends AbstractRootNode implements B
 	
 	@Override
 	public BRJS root() {
-		return (BRJS) rootNode;
+		return (BRJS) super.root();
 	}
 	
 	@Override

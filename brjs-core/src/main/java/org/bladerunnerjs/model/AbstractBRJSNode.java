@@ -7,9 +7,10 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 
 public abstract class AbstractBRJSNode extends AbstractNode implements BRJSNode {
+	
 	@Override
 	public BRJS root() {
-		return (BRJS) rootNode;
+		return (BRJS) super.root();
 	}
 	
 	@Override

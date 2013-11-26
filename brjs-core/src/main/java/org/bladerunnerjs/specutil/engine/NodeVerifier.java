@@ -17,7 +17,7 @@ public abstract class NodeVerifier<N extends Node> {
 	}
 	
 	public VerifierChainer isSameAs(N node) {
-		assertSame(this.node, node);
+		assertSame(node, this.node);
 		
 		return verifierChainer;
 	}

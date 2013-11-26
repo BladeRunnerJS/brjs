@@ -37,7 +37,7 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 		
 	public Blade parent()
 	{
-		return (Blade) parent;
+		return (Blade) parentNode();
 	}
 		
 	@Override

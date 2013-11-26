@@ -46,7 +46,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	public List<SourceFile> sourceFiles() {
 		List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
 			
-		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
+		for(BundlerPlugin bundlerPlugin : (root()).bundlerPlugins()) {
 			for (AssetLocation assetLocation : getAllAssetLocations())
 			{
 				sourceFiles.addAll(bundlerPlugin.getSourceFiles(assetLocation));
