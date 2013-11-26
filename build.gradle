@@ -212,8 +212,9 @@ task generateReleaseNotes, {
     	}
 	}
 }
+build.dependsOn generateReleaseNotes
 
-//TODO: make this depend on 'build' when we have linux VMs with a GUI
+
 task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', build], {
 	doLast {
 		def cutlassSdkProject = project(':cutlass-sdk')
