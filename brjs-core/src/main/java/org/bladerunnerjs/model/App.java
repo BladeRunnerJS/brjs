@@ -158,7 +158,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		List<JsLib> appJsLibs = new ArrayList<JsLib>();
 		appJsLibs.addAll( children(jsLibs) );
-		appJsLibs.add( root().sdkLib() );
+		appJsLibs.add( new AppJsLibWrapper(this, root().sdkLib()) );
 		return appJsLibs;
 	}
 	
