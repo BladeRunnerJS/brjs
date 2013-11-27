@@ -9,7 +9,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.aliasing.AliasOverride;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
@@ -116,9 +115,9 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 				}
 				
 				for(AssetLocation assetLocation : assetContainer.getAllAssetLocations()) {
-					for(AliasDefinition aliasDefinition : assetLocation.aliasDefinitionsFile().aliasDefinitions()) {
-						if(!trie.containsKey(aliasDefinition.getName())) {
-							trie.add(aliasDefinition.getName(), aliasDefinition.getName());
+					for(String aliasName : assetLocation.aliasDefinitionsFile().aliasNames()) {
+						if(!trie.containsKey(aliasName)) {
+							trie.add(aliasName, aliasName);
 						}
 					}
 				}

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
@@ -57,6 +58,32 @@ public class AliasDefinitionsFile extends File {
 		fileModifiedChecker = new FileModifiedChecker(this);
 	}
 	
+	public List<String> aliasNames() throws BundlerFileProcessingException {
+		List<String> aliasNames = new ArrayList<>();
+		
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			reparseFile();
+		}
+		
+		for(AliasDefinition aliasDefinition : aliasDefinitions) {
+			aliasNames.add(aliasDefinition.getName());
+		}
+		
+		for(Map<String, AliasDefinition> aliasScenarioAliases : scenarioAliases.values()) {
+			for(AliasDefinition scenarioAlias : aliasScenarioAliases.values()) {
+				aliasNames.add(scenarioAlias.getName());
+			}
+		}
+		
+		for(List<AliasDefinition> groupAliasList : groupAliases.values()) {
+			for(AliasDefinition groupAlias : groupAliasList) {
+				aliasNames.add(groupAlias.getName());
+			}
+		}
+		
+		return aliasNames;
+	}
+	
 	// TODO: delete this method and offer each type alias structure up individually
 	public List<AliasDefinition> aliasDefinitions() throws BundlerFileProcessingException {
 		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
@@ -92,9 +119,21 @@ public class AliasDefinitionsFile extends File {
 		getScenarioAliases(aliasDefinition.getName()).put(scenarioName, aliasDefinition);
 	}
 	
+	public Map<String, AliasDefinition> scenarioAliases(AliasDefinition alias) throws BundlerFileProcessingException {
+		return scenarioAliases.get(alias.getName());
+	}
+	
 	// TODO: AliasDefinition -> AliasOverride
 	public void addGroupAliasOverride(String groupName, AliasDefinition aliasOverride) {
 		getGroupAliases(groupName).add(aliasOverride);
+	}
+	
+	public Set<String> groupNames() {
+		return groupAliases.keySet();
+	}
+	
+	public List<AliasDefinition> groupAliases(String groupName) throws BundlerFileProcessingException {
+		return groupAliases.get(groupName);
 	}
 	
 	public AliasDefinition getAlias(String aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
