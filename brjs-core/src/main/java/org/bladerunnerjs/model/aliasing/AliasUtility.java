@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
 public class AliasUtility {
 	public static AliasDefinition getAlias(AliasName aliasName, AliasesFile aliasesFile, List<AliasDefinitionsFile> aliasDefinitionFiles) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
-		AliasDefinition aliasDefinition = aliasesFile.getAlias(aliasName);
+		AliasDefinition aliasDefinition = aliasesFile.getAlias(aliasName);		
 		
 		if(aliasDefinition == null) {
 			String scenarioName = aliasesFile.scenarioName();
@@ -15,11 +15,14 @@ public class AliasUtility {
 			for(AliasDefinitionsFile aliasDefinitionsFile : aliasDefinitionFiles) {
 				AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAlias(aliasName, scenarioName, groupNames);
 				
-				if(aliasDefinition != null) {
+				if(aliasDefinition != null && nextAliasDefinition != null) {
 					throw new AmbiguousAliasException(aliasesFile, aliasName, scenarioName);
 				}
 				
-				aliasDefinition = nextAliasDefinition;
+				if (nextAliasDefinition != null)
+				{
+					aliasDefinition = nextAliasDefinition;
+				}
 			}
 		}
 		

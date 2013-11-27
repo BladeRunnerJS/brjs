@@ -76,16 +76,16 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public List<AssetContainer> getNonAspectAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		for(JsLib jsLib : jsLibs()) {
-			assetContainers.add(jsLib);
-		}
-		
 		for(Bladeset bladeset : bladesets()) {
 			assetContainers.add(bladeset);
 			
 			for(Blade blade : bladeset.blades()) {
 				assetContainers.add(blade);
 			}
+		}
+		
+		for(JsLib jsLib : jsLibs()) {
+			assetContainers.add(jsLib);
 		}
 		
 		return assetContainers;
@@ -156,7 +156,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<JsLib> jsLibs()
 	{
-		return children(jsLibs);
+		List<JsLib> appJsLibs = new ArrayList<JsLib>();
+		appJsLibs.addAll( children(jsLibs) );
+		appJsLibs.add( root().sdkLib() );
+		return appJsLibs;
 	}
 	
 	public JsLib jsLib(String jsLibName)

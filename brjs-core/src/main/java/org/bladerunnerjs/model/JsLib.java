@@ -26,6 +26,7 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, dir);
+		init(rootNode, parent, dir);
 		this.name = name;
 		this.parent = parent;
 	}
@@ -33,7 +34,7 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 	public JsLib(RootNode rootNode, Node parent, File dir)
 	{
 		// TODO: can we avoid having to have a null name for a NamedNode that is available as a single item through the model
-		this(rootNode, parent, dir, null);
+		this(rootNode, parent, dir, dir.getName());
 	}
 	
 	public static NodeItem<JsLib> createSdkNodeItem()
@@ -44,7 +45,6 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 	public static NodeMap<JsLib> createAppNodeSet()
 	{
 		NodeMap<JsLib> appNodeSet = new NodeMap<>(JsLib.class, "libs", null);
-		appNodeSet.addAdditionalNamedLocation("caplin", "../../sdk/libs/javascript/caplin");
 		
 		return appNodeSet;
 	}

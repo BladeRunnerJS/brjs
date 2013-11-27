@@ -6,6 +6,7 @@ import static org.bladerunnerjs.model.App.Messages.APP_DEPLOYMENT_FAILED_LOG_MSG
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
@@ -17,7 +18,10 @@ import org.junit.Test;
 
 
 public class AppTest extends SpecTest {
+	
+	private JsLib sdkLib;
 	private App app;
+	private JsLib appLib;
 	private NamedDirNode appTemplate;
 	private DirNode appJars;
 	private Aspect aspect;
@@ -26,7 +30,9 @@ public class AppTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
+			sdkLib = brjs.sdkLib();
 			app = brjs.app("app1");
+			appLib = app.jsLib("lib1");
 			appTemplate = brjs.template("app");
 			appJars = brjs.appJars();
 			aspect = app.aspect("default");
@@ -133,4 +139,16 @@ public class AppTest extends SpecTest {
 		then(logging).errorMessageReceived(APP_DEPLOYMENT_FAILED_LOG_MSG, app.getName(), app.dir().getPath())
 			.and(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}
+	
+	
+	@Test
+	public void appLibsReturnedContainBothAppLibsAndSdkLibs() throws Exception {
+		given(app).hasBeenCreated()
+			.and(appLib).hasBeenCreated()
+			.and(sdkLib).hasBeenCreated();
+		then(app).hasLibs(appLib, sdkLib);
+	}
+	
+	
+	
 }

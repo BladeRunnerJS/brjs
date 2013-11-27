@@ -14,12 +14,13 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.utility.NameValidator;
 
 
-public class JsNonBladeRunnerLib extends AbstractBRJSNode implements NamedNode
+public class JsNonBladeRunnerLib extends AbstractAssetContainer implements NamedNode
 {
 	private String name;
 	
 	public JsNonBladeRunnerLib(RootNode rootNode, Node parent, File dir)
 	{
+		super(rootNode, dir);
 		init(rootNode, parent, dir);
 	}
 	
@@ -53,7 +54,12 @@ public class JsNonBladeRunnerLib extends AbstractBRJSNode implements NamedNode
 	
 	public List<JsNonBladeRunnerLib> getDependencies()
 	{
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public String namespace()
+	{
+		return getName();
 	}
 }
