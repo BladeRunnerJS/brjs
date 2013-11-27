@@ -84,35 +84,12 @@ public class AliasDefinitionsFile extends File {
 		return aliasNames;
 	}
 	
-	// TODO: delete this method and offer each type alias structure up individually
-	public List<AliasDefinition> aliasDefinitions() throws BundlerFileProcessingException {
-		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-		
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			reparseFile();
-		}
-		
-		aliasDefinitions.addAll(this.aliasDefinitions);
-		
-		for(Map<String, AliasDefinition> aliasScenarioAliases : scenarioAliases.values()) {
-			// this hack is needed while we are still using this method, rather than using structure specific methods to access the aliases
-			for(String scenarioName : aliasScenarioAliases.keySet()) {
-				AliasDefinition scenarioAlias = aliasScenarioAliases.get(scenarioName);
-				scenarioAlias.setScenario(scenarioName);
-			}
-			
-			aliasDefinitions.addAll(aliasScenarioAliases.values());
-		}
-		
-		for(List<AliasDefinition> groupAliasList : groupAliases.values()) {
-			aliasDefinitions.addAll(groupAliasList);
-		}
-		
-		return aliasDefinitions;
-	}
-	
 	public void addAlias(AliasDefinition aliasDefinition) {
 		aliasDefinitions.add(aliasDefinition);
+	}
+	
+	public List<AliasDefinition> aliases() throws BundlerFileProcessingException {
+		return aliasDefinitions;
 	}
 	
 	public void addScenarioAlias(String scenarioName, AliasDefinition aliasDefinition) {
@@ -133,24 +110,40 @@ public class AliasDefinitionsFile extends File {
 	}
 	
 	public List<AliasDefinition> groupAliases(String groupName) throws BundlerFileProcessingException {
-		return groupAliases.get(groupName);
+		return ((groupAliases.containsKey(groupName)) ? groupAliases.get(groupName) : new ArrayList<AliasDefinition>());
 	}
 	
 	public AliasDefinition getAlias(String aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
 		AliasDefinition aliasDefinition = null;
 		
 		try {
-			for(AliasDefinition nextAliasDefinition : aliasDefinitions()) {
-				String groupName = nextAliasDefinition.getGroup();
-				boolean isValidScenario = (scenarioName == null) ? (scenarioName == nextAliasDefinition.getScenario()) : (scenarioName.equals(nextAliasDefinition.getScenario()));
-				boolean isValidGroup = (groupName == null) || groupNames.contains(groupName);
-				
-				if(isValidScenario && isValidGroup && nextAliasDefinition.getName().equals(aliasName)) {
+			for(AliasDefinition nextAliasDefinition : aliases()) {
+				if(nextAliasDefinition.getName().equals(aliasName)) {
+					if(scenarioName != null) {
+						AliasDefinition scenarioAliasDefinition = getScenarioAliases(nextAliasDefinition.getName()).get(scenarioName);
+						
+						if(scenarioAliasDefinition != null) {
+							nextAliasDefinition = scenarioAliasDefinition;
+						}
+					}
+					
 					if(aliasDefinition != null) {
 						throw new AmbiguousAliasException(this, aliasName, scenarioName);
 					}
 					
 					aliasDefinition = nextAliasDefinition;
+				}
+			}
+			
+			for(String groupName : groupNames) {
+				for(AliasDefinition nextGroupAlias : groupAliases(groupName)) {
+					if(nextGroupAlias.getName().equals(aliasName)) {
+						if(aliasDefinition != null) {
+							throw new AmbiguousAliasException(this, aliasName, scenarioName);
+						}
+						
+						aliasDefinition = nextGroupAlias;
+					}
 				}
 			}
 		}
@@ -282,7 +275,7 @@ public class AliasDefinitionsFile extends File {
 		String aliasClass = streamReader.getAttributeValue("class");
 		AliasDefinition aliasDefinition = new AliasDefinition(aliasName, aliasClass, aliasInterface);
 		
-		getScenarioAliases(scenarioName).put(scenarioName, aliasDefinition);
+		getScenarioAliases(aliasName).put(scenarioName, aliasDefinition);
 	}
 	
 	private Map<String, AliasDefinition> getScenarioAliases(String aliasName) {
