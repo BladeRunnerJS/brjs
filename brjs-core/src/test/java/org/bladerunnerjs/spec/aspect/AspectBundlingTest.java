@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.JsNonBladeRunnerLib;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
@@ -24,6 +25,7 @@ public class AspectBundlingTest extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade;
 	private JsLib sdkLib;
+	private JsNonBladeRunnerLib sdkThirdpartyLib;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -38,6 +40,7 @@ public class AspectBundlingTest extends SpecTest {
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			sdkLib = brjs.sdkLib();
+			sdkThirdpartyLib = brjs.sdkNonBladeRunnerLib("legacy-thirdparty");
 	}
 	
 	// A S P E C T
@@ -247,6 +250,32 @@ public class AspectBundlingTest extends SpecTest {
 		.and(aspect).classRequires("novox.Class1", "sdk.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("sdk.Class1");
+	}
+	
+	
+	// T H I R D P A R T Y    L I B S
+	
+	@Ignore
+	@Test
+	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
+		given(sdkThirdpartyLib).hasBeenCreated()
+			.and(sdkThirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
+			.and(aspect).hasClass("novox.Class1")
+			.and(aspect).indexPageRefersTo(sdkThirdpartyLib);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("window.lib = { }");
+	}
+	
+	@Ignore
+	@Test
+	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInAClass() throws Exception {
+		given(sdkThirdpartyLib).hasBeenCreated()
+    		.and(sdkThirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
+    		.and(aspect).hasClass("novox.Class1")
+    		.and(aspect).classRequiresThirdpartyLib("novox.Class1", sdkThirdpartyLib)
+    		.and(aspect).indexPageRefersTo("novox.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("window.lib = { }");
 	}
 	
 }

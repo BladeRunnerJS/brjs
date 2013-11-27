@@ -16,7 +16,6 @@ public class JsLibTest extends SpecTest {
 	private App app;
 	private JsLib lib;
 	private JsLib badLib;
-	private JsLib sdkLib;
 	private NamedDirNode libTemplate;
 	
 	@Before
@@ -25,7 +24,6 @@ public class JsLibTest extends SpecTest {
 		given(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			lib = app.jsLib("lib1");
-			sdkLib = brjs.sdkLib();
 			badLib = app.jsLib("%$&@");
 			libTemplate = brjs.template("jslib");
 	}
@@ -65,15 +63,6 @@ public class JsLibTest extends SpecTest {
 		then(lib).hasDir("libx")
 			.and(lib).doesNotHaveDir("@libns")
 			.and(lib).fileHasContents("some-libx-file.txt", "'libx'");
-	}
-	
-	@Test
-	public void globalLibsAreWrappedSoTheCorrectAppIsReturned() throws Exception {
-		given(app).hasBeenCreated()
-			.and(lib).hasBeenCreated()
-			.and(sdkLib).hasBeenCreated();
-		given(app).hasLibs(lib, sdkLib);
-		then(app).libsReturnCorrectApp();
 	}
 	
 }

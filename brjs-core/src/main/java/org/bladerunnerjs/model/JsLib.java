@@ -63,7 +63,11 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 	@Override
 	public String getName()
 	{
-		return name;
+		if (name != null)
+		{
+			return name;			
+		}
+		return dir().getName();
 	}
 	
 	@Override
@@ -129,6 +133,13 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 	
 	@Override
 	public String namespace() {
+		return getName();
+	}
+	
+
+	@Override
+	public String toString()
+	{
 		return getName();
 	}
 	

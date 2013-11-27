@@ -1,26 +1,20 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 
-import javax.naming.InvalidNameException;
-
-import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.NameValidator;
 
 
-public class JsNonBladeRunnerLib extends AbstractAssetContainer implements NamedNode
+public class JsNonBladeRunnerLib extends JsLib
 {
-	private String name;
 	
 	public JsNonBladeRunnerLib(RootNode rootNode, Node parent, File dir)
 	{
-		super(rootNode, dir);
+		super(rootNode, parent, dir);
 		init(rootNode, parent, dir);
 	}
 	
@@ -34,32 +28,4 @@ public class JsNonBladeRunnerLib extends AbstractAssetContainer implements Named
 	{
 	}
 	
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-	
-	@Override
-	public boolean isValidName()
-	{
-		return NameValidator.isValidDirectoryName(name);
-	}
-	
-	@Override
-	public void assertValidName() throws InvalidNameException
-	{
-		NameValidator.assertValidDirectoryName(this);
-	}
-	
-	public List<JsNonBladeRunnerLib> getDependencies()
-	{
-		return null;
-	}
-
-	@Override
-	public String namespace()
-	{
-		return getName();
-	}
 }

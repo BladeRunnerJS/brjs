@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
+	private final NodeMap<JsNonBladeRunnerLib> nonBladeRunnerLibs = JsNonBladeRunnerLib.createSdkNonBladeRunnerLibNodeSet();
 	private final NodeMap<Bladeset> bladesets = Bladeset.createNodeSet();
 	private final NodeMap<Aspect> aspects = Aspect.createNodeSet();
 	private final NodeMap<JsLib> jsLibs = JsLib.createAppNodeSet();
@@ -159,6 +161,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		List<JsLib> appJsLibs = new ArrayList<JsLib>();
 		appJsLibs.addAll( children(jsLibs) );
 		appJsLibs.add( new AppJsLibWrapper(this, root().sdkLib()) );
+		appJsLibs.addAll( nonBladeRunnerLibs() );
 		return appJsLibs;
 	}
 	
@@ -224,4 +227,33 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void handleLogicalRequest(BladerunnerUri requestUri, java.io.OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
 		requestHandler.handle(requestUri, os);
 	}
+
+	public List<JsLib> nonBladeRunnerLibs()
+	{
+		Map<String, JsLib> libs = new HashMap<String,JsLib>();
+		
+		for (JsLib lib : root().sdkNonBladeRunnerLibs())
+		{
+			libs.put(lib.getName(), new AppJsLibWrapper(this, lib) );			
+		}
+		for (JsLib lib : children(nonBladeRunnerLibs))
+		{
+			libs.put(lib.getName(), lib );			
+		}
+		
+		return new ArrayList<JsLib>( libs.values() );
+	}
+	
+	public JsLib nonBladeRunnerLib(String libName)
+	{
+		JsNonBladeRunnerLib appLib = child(nonBladeRunnerLibs, libName);
+		JsNonBladeRunnerLib sdkLib = root().sdkNonBladeRunnerLib(libName);
+		
+		if (!appLib.dirExists() && sdkLib.dirExists())
+		{
+			return new AppJsLibWrapper(this, sdkLib);
+		}
+		return appLib;
+	}
+	
 }
