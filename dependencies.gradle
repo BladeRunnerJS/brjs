@@ -38,6 +38,7 @@ Dependencies.putAll([
 	'javassist'					:	'javassist:javassist:3.12.1.GA',
 	'validation-api'			:	'javax.validation:validation-api:1.1.0.Final',
 	'bval-jsr303'				:	'org.apache.bval:bval-jsr303:0.5',
+	'java-xmlbuilder'			:	'com.jamesmurty.utils:java-xmlbuilder:0.6',
 	
 	'reflections'				:	'org.reflections:reflections:0.9.9-RC1',
 

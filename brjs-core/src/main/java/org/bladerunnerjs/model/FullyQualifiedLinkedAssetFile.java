@@ -9,8 +9,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.aliasing.AliasName;
+import org.bladerunnerjs.model.aliasing.AliasOverride;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.EmptyTrieKeyException;
@@ -26,7 +25,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	private App app;
 	private File assetFile;
 	private List<SourceFile> dependentSourceFiles;
-	private List<AliasName> aliases;
+	private List<String> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private AssetLocation assetLocation;
 	
@@ -53,7 +52,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	}
 
 	@Override
-	public List<AliasName> getAliasNames() throws ModelOperationException {
+	public List<String> getAliasNames() throws ModelOperationException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
@@ -81,7 +80,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 						dependentSourceFiles.add(((ClassSourceFile) match).getSourceFile());
 					}
 					else {
-						aliases.add((AliasName) match);
+						aliases.add((String) match);
 					}
 				}
 			}
@@ -99,9 +98,9 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 				if(assetContainer instanceof BundlableNode) {
 					BundlableNode bundlableNode = (BundlableNode) assetContainer;
 					
-					for(AliasDefinition aliasDefinition : bundlableNode.aliasesFile().aliasDefinitions()) {
-						if(!trie.containsKey(aliasDefinition.getName())) {
-							trie.add(aliasDefinition.getName(), new AliasName(aliasDefinition.getName()));
+					for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
+						if(!trie.containsKey(aliasOverride.getName())) {
+							trie.add(aliasOverride.getName(), aliasOverride.getName());
 						}
 					}
 				}
@@ -116,9 +115,9 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 				}
 				
 				for(AssetLocation assetLocation : assetContainer.getAllAssetLocations()) {
-					for(AliasDefinition aliasDefinition : assetLocation.aliasDefinitionsFile().aliasDefinitions()) {
-						if(!trie.containsKey(aliasDefinition.getName())) {
-							trie.add(aliasDefinition.getName(), new AliasName(aliasDefinition.getName()));
+					for(String aliasName : assetLocation.aliasDefinitionsFile().aliasNames()) {
+						if(!trie.containsKey(aliasName)) {
+							trie.add(aliasName, aliasName);
 						}
 					}
 				}

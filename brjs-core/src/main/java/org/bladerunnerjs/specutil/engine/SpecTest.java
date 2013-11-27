@@ -20,6 +20,8 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
@@ -148,6 +150,7 @@ public abstract class SpecTest
 	public NamedNodeCommander when(NamedNode namedDirNode) { return new NamedNodeCommander(this, namedDirNode); }
 	public NamedNodeVerifier then(NamedNode namedDirNode) { return new NamedNodeVerifier(this, namedDirNode); }
 	
+	// Directory
 	public DirectoryVerifier then(File dir) { return new DirectoryVerifier(this, dir); }
 	
 	// StringBuffer
@@ -218,6 +221,12 @@ public abstract class SpecTest
 	
 	// Webapp Tester
 	public WebappTesterCommander when(WebappTester webappTester) { return new WebappTesterCommander(this, webappTester); } 
+
+	// AliasesFile
+	public AliasesFileBuilder given(AliasesFile aliasesFile) { return new AliasesFileBuilder(this, aliasesFile); }
+	
+	// AliasDefinitionsFile
+	public AliasDefinitionsFileBuilder given(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile); }
 	
 	private File createTestSdkDirectory() {
 		File sdkDir;

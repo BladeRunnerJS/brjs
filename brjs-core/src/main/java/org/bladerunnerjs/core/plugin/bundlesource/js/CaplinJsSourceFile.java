@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
-import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class CaplinJsSourceFile implements SourceFile {
@@ -37,7 +36,7 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<AliasName> getAliasNames() throws ModelOperationException {
+	public List<String> getAliasNames() throws ModelOperationException {
 		return assetFile.getAliasNames();
 	}
 	

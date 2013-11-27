@@ -2,30 +2,39 @@ package org.bladerunnerjs.model.aliasing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.TransformerException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 import org.bladerunnerjs.model.utility.XmlStreamReaderFactory;
 import org.bladerunnerjs.model.utility.stax.XmlStreamReader;
+import org.bladerunnerjs.specutil.XmlBuilderSerializer;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
+import com.esotericsoftware.yamlbeans.parser.Parser.ParserException;
+import com.google.common.base.Joiner;
+import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasesFile extends File {
 	private static final long serialVersionUID = 1L;
 	private static XMLValidationSchema aliasesSchema;
 	
 	private final FileModifiedChecker fileModifiedChecker;
-	private List<AliasDefinition> aliasDefinitions;
-	private List<String> groupNames;
+	private List<AliasOverride> aliasOverrides = new ArrayList<>();
+	private List<String> groupNames = new ArrayList<>();
 	private String scenario;
 	
 	static {
@@ -46,25 +55,16 @@ public class AliasesFile extends File {
 		fileModifiedChecker = new FileModifiedChecker(this);
 	}
 	
-	public AliasDefinition getAlias(AliasName aliasName) throws BundlerFileProcessingException {
-		AliasDefinition aliasDefinition = null;
-		
-		for(AliasDefinition nextAliasDefinition : aliasDefinitions()) {
-			if(nextAliasDefinition.getName().equals(aliasName.getName())) {
-				aliasDefinition = nextAliasDefinition;
-				break;
-			}
-		}
-		
-		return aliasDefinition;
-	}
-	
 	public String scenarioName() throws BundlerFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reparseFile();
 		}
 		
 		return scenario;
+	}
+	
+	public void setScenarioName(String scenarioName) {
+		this.scenario = scenarioName;
 	}
 	
 	public List<String> groupNames() throws BundlerFileProcessingException {
@@ -75,16 +75,60 @@ public class AliasesFile extends File {
 		return groupNames;
 	}
 	
-	public List<AliasDefinition> aliasDefinitions() throws BundlerFileProcessingException {
+	public void setGroupNames(List<String> groupNames) {
+		this.groupNames = groupNames;
+	}
+	
+	public List<AliasOverride> aliasOverrides() throws BundlerFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reparseFile();
 		}
 		
-		return aliasDefinitions;
+		return aliasOverrides;
+	}
+	
+	public void addAlias(AliasOverride aliasOverride) {
+		aliasOverrides.add(aliasOverride);
+	}
+	
+	public AliasOverride getAlias(String aliasName) throws BundlerFileProcessingException {
+		AliasOverride aliasOverride = null;
+		
+		for(AliasOverride nextAliasOverride : aliasOverrides()) {
+			if(nextAliasOverride.getName().equals(aliasName)) {
+				aliasOverride = nextAliasOverride;
+				break;
+			}
+		}
+		
+		return aliasOverride;
+	}
+	
+	public void write() throws IOException {
+		try {
+			XMLBuilder builder = XMLBuilder.create("aliases").ns("http://schema.caplin.com/CaplinTrader/aliases");
+			
+			if(scenario != null) {
+				builder.a("useScenario", scenario);
+			}
+			
+			if(!groupNames.isEmpty()) {
+				builder.a("useGroups", Joiner.on(" ").join(groupNames));
+			}
+			
+			for(AliasOverride aliasOverride : aliasOverrides) {
+				builder.e("alias").a("name", aliasOverride.getName()).a("class", aliasOverride.getClassName());
+			}
+			
+			FileUtils.write(this, XmlBuilderSerializer.serialize(builder));
+		}
+		catch(ParserException | TransformerException | ParserConfigurationException | FactoryConfigurationError e) {
+			throw new IOException(e);
+		}
 	}
 	
 	private void reparseFile() throws BundlerFileProcessingException {
-		aliasDefinitions = new ArrayList<>();
+		aliasOverrides = new ArrayList<>();
 		groupNames = new ArrayList<>();
 		
 		if(exists()) {
@@ -129,6 +173,6 @@ public class AliasesFile extends File {
 		String aliasName = streamReader.getAttributeValue("name");
 		String aliasClass = streamReader.getAttributeValue("class");
 		
-		aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, null));
+		aliasOverrides.add(new AliasOverride(aliasName, aliasClass));
 	}
 }
