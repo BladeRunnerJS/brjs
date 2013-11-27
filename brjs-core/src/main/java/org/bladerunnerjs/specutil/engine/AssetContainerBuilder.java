@@ -55,7 +55,7 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		return builderChainer;
 	}
 	
-	public BuilderChainer classDependsOn(String sourceClass, String dependencyClass) throws Exception {
+	public BuilderChainer classRequires(String sourceClass, String dependencyClass) throws Exception {
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		

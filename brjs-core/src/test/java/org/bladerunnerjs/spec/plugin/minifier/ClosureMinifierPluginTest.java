@@ -90,7 +90,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(blade).hasPackageStyle("novox.node", "node.js")
 			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
 			.and(aspect).indexPageRefersTo("novox.cjs.Class")
-			.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class");
+			.and(blade).classRequires("novox.cjs.Class",  "novox.node.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).textEquals("novox.node.Class=function(){};var Class=require(\"novox/node/Class\");novox.cjs.Class=function(){};");
 	}

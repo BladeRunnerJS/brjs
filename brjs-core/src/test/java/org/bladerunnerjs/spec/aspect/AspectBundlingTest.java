@@ -77,7 +77,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void weBundleExplicitTransitiveDependenciesForFromABladeset() throws Exception {
 		given(bladeset).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(bladeset).classDependsOn("novox.Class1", "novox.Class2");
+			.and(bladeset).classRequires("novox.Class1", "novox.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
@@ -105,7 +105,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void weBundleExplicitTransitiveDependenciesForFromABlade() throws Exception {
 		given(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(blade).classDependsOn("novox.Class1", "novox.Class2");
+			.and(blade).classRequires("novox.Class1", "novox.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("novox.Class1", "novox.Class2");
 	}
@@ -126,7 +126,7 @@ public class AspectBundlingTest extends SpecTest {
 	@Test
 	public void weBundleExplicitTransitiveDependenciesFromABladeIncludingBladesetDependencies() throws Exception {	
 		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
-			.and(bladeset).classDependsOn("novox.bs.Class1", "novox.bs.Class2")
+			.and(bladeset).classRequires("novox.bs.Class1", "novox.bs.Class2")
 			.and(blade).hasClass("novox.bs.b1.Class1")
 			.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
@@ -138,7 +138,7 @@ public class AspectBundlingTest extends SpecTest {
 	@Test
 	public void devRequestsContainThePackageDefinitionsAtTheTop() throws Exception {
 		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
-    		.and(bladeset).classDependsOn("novox.bs.Class1", "novox.bs.Class2")
+    		.and(bladeset).classRequires("novox.bs.Class1", "novox.bs.Class2")
     		.and(blade).hasClass("novox.bs.b1.Class1")
     		.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
     		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
@@ -150,7 +150,7 @@ public class AspectBundlingTest extends SpecTest {
 	@Test
 	public void packageDefinitionsAreDefinedInASingleRequest() throws Exception {	
 		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
-    		.and(bladeset).classDependsOn("novox.bs.Class1", "novox.bs.Class2")
+    		.and(bladeset).classRequires("novox.bs.Class1", "novox.bs.Class2")
     		.and(blade).hasClass("novox.bs.b1.Class1")
     		.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
     		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
@@ -183,7 +183,7 @@ public class AspectBundlingTest extends SpecTest {
 			.and(blade).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(blade).classDependsOn("novox.Class1", "novox.Class2");
+			.and(blade).classRequires("novox.Class1", "novox.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/bundle.js", "app1")
 			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/bundle.js")
@@ -200,7 +200,7 @@ public class AspectBundlingTest extends SpecTest {
 	public void helpfulLoggingMessagesAreEmittedWhenThereAreNoSeedFiles() throws Exception {
 		given(logging).enabled()
 			.and(blade).hasClasses("novox.Class1", "novox.Class2")
-			.and(blade).classDependsOn("novox.Class1", "novox.Class2")
+			.and(blade).classRequires("novox.Class1", "novox.Class2")
 			.and(aspect).hasBeenCreated();
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/bundle.js", "app1")

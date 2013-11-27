@@ -117,7 +117,7 @@ public class BRJSServletTest extends SpecTest
     		.and(blade).hasPackageStyle("novox.node", "node.js")
     		.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
     		.and(aspect).indexPageRefersTo("novox.cjs.Class")
-    		.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class")
+    		.and(blade).classRequires("novox.cjs.Class",  "novox.node.Class")
     		.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);

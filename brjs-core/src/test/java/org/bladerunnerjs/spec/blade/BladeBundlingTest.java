@@ -47,7 +47,7 @@ public class BladeBundlingTest extends SpecTest {
 	public void bladeClassesCanOnlyDependOnExistentClassesWhenAspectIsRequested() throws Exception {
 		given(blade).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(blade).classDependsOn("novox.Class1", "novox.NonExistentClass");
+			.and(blade).classRequires("novox.Class1", "novox.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "novox/NonExistentClass")
 			.whereTopLevelExceptionIs(BundlerProcessingException.class);
