@@ -13,6 +13,7 @@ import org.junit.Test;
 public class BladesetBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
+	@SuppressWarnings("unused")
 	private Blade blade;
 	private Bladeset bladeset;
 	private StringBuffer response = new StringBuffer();
