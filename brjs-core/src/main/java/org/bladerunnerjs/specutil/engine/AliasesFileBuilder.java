@@ -2,7 +2,7 @@ package org.bladerunnerjs.specutil.engine;
 
 import java.util.Arrays;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasOverride;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 
 public class AliasesFileBuilder {
@@ -35,7 +35,7 @@ public class AliasesFileBuilder {
 	}
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
-		aliasesFile.addAlias(new AliasDefinition(aliasName, classRef, null));
+		aliasesFile.addAlias(new AliasOverride(aliasName, classRef));
 		aliasesFile.write();
 		
 		return builderChainer;

@@ -33,7 +33,7 @@ public class AliasesFile extends File {
 	private static XMLValidationSchema aliasesSchema;
 	
 	private final FileModifiedChecker fileModifiedChecker;
-	private List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+	private List<AliasOverride> aliasOverrides = new ArrayList<>();
 	private List<String> groupNames = new ArrayList<>();
 	private String scenario;
 	
@@ -79,32 +79,31 @@ public class AliasesFile extends File {
 		this.groupNames = groupNames;
 	}
 	
-	// TODO: AliasDefinition -> AliasOverride
-	public List<AliasDefinition> aliasOverrides() throws BundlerFileProcessingException {
+	public List<AliasOverride> aliasOverrides() throws BundlerFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reparseFile();
 		}
 		
-		return aliasDefinitions;
+		return aliasOverrides;
 	}
 	
 	// TODO: AliasDefinition -> AliasOverride
-	public void addAlias(AliasDefinition aliasDefinition) {
-		aliasDefinitions.add(aliasDefinition);
+	public void addAlias(AliasOverride aliasOverride) {
+		aliasOverrides.add(aliasOverride);
 	}
 	
 	// TODO: AliasName -> String
-	public AliasDefinition getAlias(AliasName aliasName) throws BundlerFileProcessingException {
-		AliasDefinition aliasDefinition = null;
+	public AliasOverride getAlias(AliasName aliasName) throws BundlerFileProcessingException {
+		AliasOverride aliasOverride = null;
 		
-		for(AliasDefinition nextAliasDefinition : aliasOverrides()) {
-			if(nextAliasDefinition.getName().equals(aliasName.getName())) {
-				aliasDefinition = nextAliasDefinition;
+		for(AliasOverride nextAliasOverride : aliasOverrides()) {
+			if(nextAliasOverride.getName().equals(aliasName.getName())) {
+				aliasOverride = nextAliasOverride;
 				break;
 			}
 		}
 		
-		return aliasDefinition;
+		return aliasOverride;
 	}
 	
 	public void write() throws IOException {
@@ -119,8 +118,8 @@ public class AliasesFile extends File {
 				builder.a("useGroups", Joiner.on(" ").join(groupNames));
 			}
 			
-			for(AliasDefinition aliasDefinition : aliasDefinitions) {
-				builder.e("alias").a("name", aliasDefinition.getName()).a("class", aliasDefinition.getClassName());
+			for(AliasOverride aliasOverride : aliasOverrides) {
+				builder.e("alias").a("name", aliasOverride.getName()).a("class", aliasOverride.getClassName());
 			}
 			
 			FileUtils.write(this, XmlBuilderSerializer.serialize(builder));
@@ -131,7 +130,7 @@ public class AliasesFile extends File {
 	}
 	
 	private void reparseFile() throws BundlerFileProcessingException {
-		aliasDefinitions = new ArrayList<>();
+		aliasOverrides = new ArrayList<>();
 		groupNames = new ArrayList<>();
 		
 		if(exists()) {
@@ -176,6 +175,6 @@ public class AliasesFile extends File {
 		String aliasName = streamReader.getAttributeValue("name");
 		String aliasClass = streamReader.getAttributeValue("class");
 		
-		aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, null));
+		aliasOverrides.add(new AliasOverride(aliasName, aliasClass));
 	}
 }

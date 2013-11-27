@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.aliasing.AliasName;
+import org.bladerunnerjs.model.aliasing.AliasOverride;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.EmptyTrieKeyException;
@@ -99,9 +100,9 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 				if(assetContainer instanceof BundlableNode) {
 					BundlableNode bundlableNode = (BundlableNode) assetContainer;
 					
-					for(AliasDefinition aliasDefinition : bundlableNode.aliasesFile().aliasOverrides()) {
-						if(!trie.containsKey(aliasDefinition.getName())) {
-							trie.add(aliasDefinition.getName(), new AliasName(aliasDefinition.getName()));
+					for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
+						if(!trie.containsKey(aliasOverride.getName())) {
+							trie.add(aliasOverride.getName(), new AliasName(aliasOverride.getName()));
 						}
 					}
 				}
