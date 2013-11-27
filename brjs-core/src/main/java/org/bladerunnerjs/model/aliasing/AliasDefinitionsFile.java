@@ -35,8 +35,8 @@ public class AliasDefinitionsFile extends File {
 	
 	private final FileModifiedChecker fileModifiedChecker;
 	private List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-	private Map<String, Map<String, AliasDefinition>> scenarioAliases = new HashMap<>();
-	private Map<String, List<AliasDefinition>> groupAliases = new HashMap<>();
+	private Map<String, Map<String, AliasOverride>> scenarioAliases = new HashMap<>();
+	private Map<String, List<AliasOverride>> groupAliases = new HashMap<>();
 	private AssetContainer assetContainer;
 	
 	static {
@@ -69,14 +69,14 @@ public class AliasDefinitionsFile extends File {
 			aliasNames.add(aliasDefinition.getName());
 		}
 		
-		for(Map<String, AliasDefinition> aliasScenarioAliases : scenarioAliases.values()) {
-			for(AliasDefinition scenarioAlias : aliasScenarioAliases.values()) {
+		for(Map<String, AliasOverride> aliasScenarioAliases : scenarioAliases.values()) {
+			for(AliasOverride scenarioAlias : aliasScenarioAliases.values()) {
 				aliasNames.add(scenarioAlias.getName());
 			}
 		}
 		
-		for(List<AliasDefinition> groupAliasList : groupAliases.values()) {
-			for(AliasDefinition groupAlias : groupAliasList) {
+		for(List<AliasOverride> groupAliasList : groupAliases.values()) {
+			for(AliasOverride groupAlias : groupAliasList) {
 				aliasNames.add(groupAlias.getName());
 			}
 		}
@@ -92,25 +92,24 @@ public class AliasDefinitionsFile extends File {
 		return aliasDefinitions;
 	}
 	
-	public void addScenarioAlias(String scenarioName, AliasDefinition aliasDefinition) {
-		getScenarioAliases(aliasDefinition.getName()).put(scenarioName, aliasDefinition);
+	public void addScenarioAlias(String scenarioName, AliasOverride scenarioAlias) {
+		getScenarioAliases(scenarioAlias.getName()).put(scenarioName, scenarioAlias);
 	}
 	
-	public Map<String, AliasDefinition> scenarioAliases(AliasDefinition alias) throws BundlerFileProcessingException {
+	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws BundlerFileProcessingException {
 		return scenarioAliases.get(alias.getName());
 	}
 	
-	// TODO: AliasDefinition -> AliasOverride
-	public void addGroupAliasOverride(String groupName, AliasDefinition aliasOverride) {
-		getGroupAliases(groupName).add(aliasOverride);
+	public void addGroupAliasOverride(String groupName, AliasOverride groupAlias) {
+		getGroupAliases(groupName).add(groupAlias);
 	}
 	
 	public Set<String> groupNames() {
 		return groupAliases.keySet();
 	}
 	
-	public List<AliasDefinition> groupAliases(String groupName) throws BundlerFileProcessingException {
-		return ((groupAliases.containsKey(groupName)) ? groupAliases.get(groupName) : new ArrayList<AliasDefinition>());
+	public List<AliasOverride> groupAliases(String groupName) throws BundlerFileProcessingException {
+		return ((groupAliases.containsKey(groupName)) ? groupAliases.get(groupName) : new ArrayList<AliasOverride>());
 	}
 	
 	public AliasDefinition getAlias(String aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
@@ -120,10 +119,10 @@ public class AliasDefinitionsFile extends File {
 			for(AliasDefinition nextAliasDefinition : aliases()) {
 				if(nextAliasDefinition.getName().equals(aliasName)) {
 					if(scenarioName != null) {
-						AliasDefinition scenarioAliasDefinition = getScenarioAliases(nextAliasDefinition.getName()).get(scenarioName);
+						AliasOverride scenarioAlias = getScenarioAliases(nextAliasDefinition.getName()).get(scenarioName);
 						
-						if(scenarioAliasDefinition != null) {
-							nextAliasDefinition = scenarioAliasDefinition;
+						if(scenarioAlias != null) {
+							nextAliasDefinition = new AliasDefinition(nextAliasDefinition.getName(), scenarioAlias.getClassName(), nextAliasDefinition.getInterfaceName());
 						}
 					}
 					
@@ -136,13 +135,13 @@ public class AliasDefinitionsFile extends File {
 			}
 			
 			for(String groupName : groupNames) {
-				for(AliasDefinition nextGroupAlias : groupAliases(groupName)) {
+				for(AliasOverride nextGroupAlias : groupAliases(groupName)) {
 					if(nextGroupAlias.getName().equals(aliasName)) {
 						if(aliasDefinition != null) {
 							throw new AmbiguousAliasException(this, aliasName, scenarioName);
 						}
 						
-						aliasDefinition = nextGroupAlias;
+						aliasDefinition = new AliasDefinition(nextGroupAlias.getName(), nextGroupAlias.getClassName(), null);
 					}
 				}
 			}
@@ -160,18 +159,18 @@ public class AliasDefinitionsFile extends File {
 			
 			for(AliasDefinition aliasDefinition : aliasDefinitions) {
 				XMLBuilder aliasBuilder = builder.e("alias").a("name", aliasDefinition.getName()).a("defaultClass", aliasDefinition.getClassName());
-				Map<String, AliasDefinition> scenarioAliases = getScenarioAliases(aliasDefinition.getName());
+				Map<String, AliasOverride> scenarioAliases = getScenarioAliases(aliasDefinition.getName());
 				
 				for(String scenarioName : scenarioAliases.keySet()) {
-					AliasDefinition scenarioAliasDefinition = scenarioAliases.get(scenarioName);
-					aliasBuilder.e("scenario").a("name", scenarioName).a("class", scenarioAliasDefinition.getClassName());
+					AliasOverride scenarioAlias = scenarioAliases.get(scenarioName);
+					aliasBuilder.e("scenario").a("name", scenarioName).a("class", scenarioAlias.getClassName());
 				}
 			}
 			
 			for(String groupName : groupAliases.keySet()) {
 				XMLBuilder groupBuilder = builder.e("group").a("name", groupName);
 				
-				for(AliasDefinition groupAlias : groupAliases.get(groupName)) {
+				for(AliasOverride groupAlias : groupAliases.get(groupName)) {
 					groupBuilder.e("alias").a("name", groupAlias.getName()).a("class", groupAlias.getClassName());
 				}
 			}
@@ -238,7 +237,7 @@ public class AliasDefinitionsFile extends File {
 			if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 				switch(streamReader.getLocalName()) {
 					case "scenario":
-						processScenario(aliasName, aliasInterface, streamReader);
+						processScenario(aliasName, streamReader);
 						break;
 				}
 			}
@@ -264,31 +263,30 @@ public class AliasDefinitionsFile extends File {
 	private void processGroupAlias(String groupName, XmlStreamReader streamReader) {
 		String aliasName = streamReader.getAttributeValue("name");
 		String aliasClass = streamReader.getAttributeValue("class");
-		AliasDefinition aliasDefinition = new AliasDefinition(aliasName, aliasClass, null);
-		aliasDefinition.setGroup(groupName);
+		AliasOverride groupAlias = new AliasOverride(aliasName, aliasClass);
 		
-		getGroupAliases(groupName).add(aliasDefinition);
+		getGroupAliases(groupName).add(groupAlias);
 	}
 	
-	private void processScenario(String aliasName, String aliasInterface, XmlStreamReader streamReader) {
+	private void processScenario(String aliasName, XmlStreamReader streamReader) {
 		String scenarioName = streamReader.getAttributeValue("name");
 		String aliasClass = streamReader.getAttributeValue("class");
-		AliasDefinition aliasDefinition = new AliasDefinition(aliasName, aliasClass, aliasInterface);
+		AliasOverride scenarioAlias = new AliasOverride(aliasName, aliasClass);
 		
-		getScenarioAliases(aliasName).put(scenarioName, aliasDefinition);
+		getScenarioAliases(aliasName).put(scenarioName, scenarioAlias);
 	}
 	
-	private Map<String, AliasDefinition> getScenarioAliases(String aliasName) {
+	private Map<String, AliasOverride> getScenarioAliases(String aliasName) {
 		if(!scenarioAliases.containsKey(aliasName)) {
-			scenarioAliases.put(aliasName, new HashMap<String, AliasDefinition>());
+			scenarioAliases.put(aliasName, new HashMap<String, AliasOverride>());
 		}
 		
 		return scenarioAliases.get(aliasName);
 	}
 	
-	private List<AliasDefinition> getGroupAliases(String groupName) {
+	private List<AliasOverride> getGroupAliases(String groupName) {
 		if(!groupAliases.containsKey(groupName)) {
-			groupAliases.put(groupName, new ArrayList<AliasDefinition>());
+			groupAliases.put(groupName, new ArrayList<AliasOverride>());
 		}
 		
 		return groupAliases.get(groupName);
