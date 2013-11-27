@@ -114,14 +114,14 @@ public class BRJSServletTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(blade).hasPackageStyle("novox.cjs", "caplin-js")
-    		.and(blade).hasPackageStyle("novox.node", "node.js")
-    		.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
-    		.and(aspect).indexPageRefersTo("novox.cjs.Class")
-    		.and(blade).classRequires("novox.cjs.Class",  "novox.node.Class")
+			.and(blade).hasPackageStyle("novox.node", "node.js")
+			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
+			.and(aspect).indexPageRefersTo("novox.cjs.Class")
+			.and(blade).classRefersTo("novox.cjs.Class",  "novox.node.Class")
     		.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("novox.node.Class=function(){};var Class=require(\"novox/node/Class\");novox.cjs.Class=function(){};");
+		then(response).textEquals("window.novox={\"cjs\":{\"Class\":{}}};novox.cjs.Class=function(){};br.extend(novox.cjs.Class,novox.node.Class);novox.cjs.Class=require(\"novox/cjs/Class\");novox.node.Class=function(){};");
 	}
 	
 }

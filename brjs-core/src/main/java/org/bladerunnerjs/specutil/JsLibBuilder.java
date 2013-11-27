@@ -1,12 +1,12 @@
 package org.bladerunnerjs.specutil;
 
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.specutil.engine.AssetContainerBuilder;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
-import org.bladerunnerjs.specutil.engine.NodeBuilder;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 
 
-public class JsLibBuilder extends NodeBuilder<JsLib> {
+public class JsLibBuilder extends AssetContainerBuilder<JsLib> {
 	private final JsLib jsLib;
 	
 	public JsLibBuilder(SpecTest modelTest, JsLib jsLib) {

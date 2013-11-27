@@ -8,11 +8,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -47,8 +50,18 @@ public class NodeJsSourceFile implements SourceFile {
 				recalculateDependencies();
 			}
 			
+			Map<String, SourceFile> sourceFileMap = new HashMap<String, SourceFile>();
+			
+			for (AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers())
+			{
+				for (SourceFile sourceFile : assetContainer.sourceFiles())
+				{
+					sourceFileMap.put(sourceFile.getRequirePath(), sourceFile);
+				}
+			}
+			
 			for(String requirePath : requirePaths) {
-				SourceFile sourceFile = assetLocation.getAssetContainer().sourceFile(requirePath);
+				SourceFile sourceFile = sourceFileMap.get(requirePath);
 				
 				if(sourceFile == null) {
 					throw new UnresolvableRequirePathException(requirePath);

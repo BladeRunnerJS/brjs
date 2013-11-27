@@ -35,7 +35,7 @@ public class BladeBundlingTest extends SpecTest {
 	// A S P E C T
 	@Test
 	public void weDontBundleABladeIfItIsNotReferredToAnAspect() throws Exception {
-		given(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+		given(blade).hasPackageStyle("novox/bs/b1", "caplin-js")
 			.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class2");
@@ -55,7 +55,7 @@ public class BladeBundlingTest extends SpecTest {
 	
 	@Test
 	public void bladeClassesThatReferToNonExistentClassesWontCauseAnExceptionWhenAspectIsRequested() throws Exception {
-		given(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+		given(blade).hasPackageStyle("novox/bs/b1", "caplin-js")
 			.and(blade).hasClass("novox.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.NonExistentClass");

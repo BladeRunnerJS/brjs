@@ -20,7 +20,7 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 	
 	public BuilderChainer hasPackageStyle(String packageDir, String jsStyle) {
 		String path = packageDir.replaceAll("\\.", "/");
-		JsStyleUtility.setJsStyle(node.file(path), jsStyle);
+		JsStyleUtility.setJsStyle(node.src().file(path), jsStyle);
 		
 		return builderChainer;
 	}
@@ -60,7 +60,7 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals("node.js")) {
-			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has not been used, or has been set to 'node.js'");
+			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
 		FileUtils.write(sourceFile, getNodeJsClassBody(sourceClass, dependencyClass));

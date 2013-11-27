@@ -7,9 +7,11 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -21,6 +23,7 @@ public class AspectBundlingTest extends SpecTest {
 	private AliasesFile aspectAliasesFile;
 	private Bladeset bladeset;
 	private Blade blade;
+	private JsLib sdkLib;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -34,6 +37,7 @@ public class AspectBundlingTest extends SpecTest {
 			aspectAliasesFile = aspect.aliasesFile();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
+			sdkLib = brjs.sdkLib();
 	}
 	
 	// A S P E C T
@@ -65,7 +69,7 @@ public class AspectBundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABladeset() throws Exception {
-		given(bladeset).hasPackageStyle("src.novox", "caplin-js")
+		given(bladeset).hasPackageStyle("novox", "caplin-js")
 			.and(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
 			.and(bladeset).classRefersTo("novox.bs.Class1", "novox.bs.Class2")
 			.and(aspect).indexPageRefersTo("novox.bs.Class1");
@@ -93,7 +97,7 @@ public class AspectBundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABlade() throws Exception {
-		given(blade).hasPackageStyle("src/novox/bs", "caplin-js")
+		given(blade).hasPackageStyle("novox/bs", "caplin-js")
 			.and(blade).hasClasses("novox.bs.Class1", "novox.bs.Class2")
 			.and(blade).classRefersTo("novox.bs.Class1", "novox.bs.Class2")
 			.and(aspect).indexPageRefersTo("novox.bs.Class1");
@@ -112,11 +116,11 @@ public class AspectBundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABladeIncludingBladesetDependencies() throws Exception {	
-		given(bladeset).hasPackageStyle("src/novox/bs", "caplin-js")
+		given(bladeset).hasPackageStyle("novox/bs", "caplin-js")
 			.and(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
 			.and(bladeset).classRefersTo("novox.bs.Class1", "novox.bs.Class2")
 			.and(blade).hasClass("novox.bs.b1.Class1")
-			.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+			.and(blade).hasPackageStyle("novox/bs/b1", "caplin-js")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -128,7 +132,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
 			.and(bladeset).classRequires("novox.bs.Class1", "novox.bs.Class2")
 			.and(blade).hasClass("novox.bs.b1.Class1")
-			.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+			.and(blade).hasPackageStyle("novox/bs/b1", "caplin-js")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -140,7 +144,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
     		.and(bladeset).classRequires("novox.bs.Class1", "novox.bs.Class2")
     		.and(blade).hasClass("novox.bs.b1.Class1")
-    		.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+    		.and(blade).hasPackageStyle("novox/bs/b1", "caplin-js")
     		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
     		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
     	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -152,7 +156,7 @@ public class AspectBundlingTest extends SpecTest {
 		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
     		.and(bladeset).classRequires("novox.bs.Class1", "novox.bs.Class2")
     		.and(blade).hasClass("novox.bs.b1.Class1")
-    		.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+    		.and(blade).hasPackageStyle("novox/bs/b1", "caplin-js")
     		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
     		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", response);
@@ -209,4 +213,40 @@ public class AspectBundlingTest extends SpecTest {
 			.and(logging).debugMessageReceived(BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, unquoted("Aspect"), "default")
 			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", unquoted("'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/', 'sdk/libs/javascript/caplin'"));
 	}
+	
+	
+	// J S   L I B S
+	
+	@Test
+	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
+		given(sdkLib).hasClass("sdk.Class1")
+			.and(aspect).indexPageRefersTo("sdk.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("sdk.Class1");
+	}
+	
+	@Test
+	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInAClass() throws Exception {
+		given(sdkLib).hasBeenCreated()
+			.and(sdkLib).hasPackageStyle("sdk", "caplin-js")
+			.and(sdkLib).hasClass("sdk.Class1")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageRefersTo("novox.Class1")
+			.and(aspect).hasPackageStyle("novox", "caplin-js")
+			.and(aspect).hasClass("novox.Class1")
+			.and(aspect).classRefersTo("novox.Class1", "sdk.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("sdk.Class1");
+	}
+	
+	@Test
+	public void aspectBundlesContainSdkLibsIfTheyAreRequiredInAClass() throws Exception {
+		given(sdkLib).hasClass("sdk.Class1")
+		.and(aspect).indexPageRefersTo("novox.Class1")
+		.and(aspect).hasClass("novox.Class1")
+		.and(aspect).classRequires("novox.Class1", "sdk.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("sdk.Class1");
+	}
+	
 }

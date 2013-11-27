@@ -84,7 +84,7 @@ public class BladeTest extends SpecTest {
 	public void classesWithinABladeCantReferenceClassesInOtherBlades() throws Exception {
 		given(blade1).hasPackageStyle("src/novox/bs/", "caplin-js")
 			.and(blade1).hasClass("novox.bs.b1.Class1")
-			.and(blade2).hasPackageStyle("src/novox/bs", "caplin-js")
+			.and(blade2).hasPackageStyle("novox/bs", "caplin-js")
 			.and(blade2).hasClass("novox.bs.b2.Class1")
 			.and(blade2).classRefersTo("novox.bs.b2.Class1", "novox.bs.b1.blade.Class1")
 			.and(aspect).indexPageRefersTo("blade2.Class2");

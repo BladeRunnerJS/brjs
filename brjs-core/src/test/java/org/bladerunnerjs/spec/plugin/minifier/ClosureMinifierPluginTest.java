@@ -75,7 +75,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
-		given(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+		given(blade).hasPackageStyle("novox/bs/b1", "caplin-js")
 			.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2");
@@ -90,9 +90,9 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(blade).hasPackageStyle("novox.node", "node.js")
 			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
 			.and(aspect).indexPageRefersTo("novox.cjs.Class")
-			.and(blade).classRequires("novox.cjs.Class",  "novox.node.Class");
+			.and(blade).classRefersTo("novox.cjs.Class",  "novox.node.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("novox.node.Class=function(){};var Class=require(\"novox/node/Class\");novox.cjs.Class=function(){};");
+		then(response).textEquals("window.novox={\"cjs\":{\"Class\":{}}};novox.cjs.Class=function(){};br.extend(novox.cjs.Class,novox.node.Class);novox.cjs.Class=require(\"novox/cjs/Class\");novox.node.Class=function(){};");
 	}
 	
 }

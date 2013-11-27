@@ -34,7 +34,7 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 	public JsLib(RootNode rootNode, Node parent, File dir)
 	{
 		// TODO: can we avoid having to have a null name for a NamedNode that is available as a single item through the model
-		this(rootNode, parent, dir, dir.getName());
+		this(rootNode, parent, dir, null);
 	}
 	
 	public static NodeItem<JsLib> createSdkNodeItem()
