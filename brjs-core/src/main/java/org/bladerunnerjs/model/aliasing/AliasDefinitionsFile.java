@@ -95,7 +95,7 @@ public class AliasDefinitionsFile extends File {
 	}
 	
 	// TODO: AliasName -> String
-	public AliasDefinition getAlias(AliasName aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
+	public AliasDefinition getAlias(String aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
 		AliasDefinition aliasDefinition = null;
 		
 		try {
@@ -104,7 +104,7 @@ public class AliasDefinitionsFile extends File {
 				boolean isValidScenario = (scenarioName == null) ? (scenarioName == nextAliasDefinition.getScenario()) : (scenarioName.equals(nextAliasDefinition.getScenario()));
 				boolean isValidGroup = (groupName == null) || groupNames.contains(groupName);
 				
-				if(isValidScenario && isValidGroup && nextAliasDefinition.getName().equals(aliasName.getName())) {
+				if(isValidScenario && isValidGroup && nextAliasDefinition.getName().equals(aliasName)) {
 					if(aliasDefinition != null) {
 						throw new AmbiguousAliasException(this, aliasName, scenarioName);
 					}

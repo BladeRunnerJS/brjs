@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 /**
@@ -12,5 +11,5 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
  */
 public interface LinkedAssetFile extends AssetFile {
 	List<SourceFile> getDependentSourceFiles() throws ModelOperationException;
-	List<AliasName> getAliasNames() throws ModelOperationException;
+	List<String> getAliasNames() throws ModelOperationException;
 }

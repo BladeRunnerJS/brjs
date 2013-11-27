@@ -87,17 +87,15 @@ public class AliasesFile extends File {
 		return aliasOverrides;
 	}
 	
-	// TODO: AliasDefinition -> AliasOverride
 	public void addAlias(AliasOverride aliasOverride) {
 		aliasOverrides.add(aliasOverride);
 	}
 	
-	// TODO: AliasName -> String
-	public AliasOverride getAlias(AliasName aliasName) throws BundlerFileProcessingException {
+	public AliasOverride getAlias(String aliasName) throws BundlerFileProcessingException {
 		AliasOverride aliasOverride = null;
 		
 		for(AliasOverride nextAliasOverride : aliasOverrides()) {
-			if(nextAliasOverride.getName().equals(aliasName.getName())) {
+			if(nextAliasOverride.getName().equals(aliasName)) {
 				aliasOverride = nextAliasOverride;
 				break;
 			}

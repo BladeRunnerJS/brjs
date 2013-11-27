@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.util.List;
 
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.model.aliasing.UnresolvableAliasException;
@@ -19,5 +18,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	List<LinkedAssetFile> seedFiles();
 	List<AssetContainer> getAssetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;
-	AliasDefinition getAlias(AliasName aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException;
+	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException;
 }
