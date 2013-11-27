@@ -78,25 +78,20 @@ public class AliasDefinitionsFile extends File {
 	}
 	
 	public void addAlias(AliasDefinition aliasDefinition) {
+		aliasDefinitions.add(aliasDefinition);
 	}
 	
-	public void addScenarioAlias(String aliasName, AliasDefinition aliasDefinition) {
+	public void addScenarioAlias(String scenarioName, AliasDefinition aliasDefinition) {
+		// TODO: get rid of scenarios out of AliasDefinition
+		aliasDefinition.setScenario(scenarioName);
+		getScenarioAliases(aliasDefinition.getName()).add(aliasDefinition);
 	}
 	
-	public void addGroupAlias(String groupName, AliasDefinition aliasDefinition) {
-	}
-	
-	// TODO: replace this single method with the above three method stubs
-	public void addAliasDefinition(AliasDefinition aliasDefinition) {
-		if(aliasDefinition.getScenario() != null) {
-			getScenarioAliases(aliasDefinition.getName()).add(aliasDefinition);
-		}
-		else if(aliasDefinition.getGroup() != null) {
-			getGroupAliases(aliasDefinition.getGroup()).add(aliasDefinition);
-		}
-		else {
-			aliasDefinitions.add(aliasDefinition);
-		}
+	// TODO: AliasDefinition -> AliasOverride
+	public void addGroupAliasOverride(String groupName, AliasDefinition aliasDefinition) {
+		// TODO: get rid of groups out of AliasDefinition
+		aliasDefinition.setGroup(groupName);
+		getGroupAliases(groupName).add(aliasDefinition);
 	}
 	
 	// TODO: AliasName -> String
