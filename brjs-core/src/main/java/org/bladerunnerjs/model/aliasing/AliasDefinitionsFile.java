@@ -57,6 +57,49 @@ public class AliasDefinitionsFile extends File {
 		fileModifiedChecker = new FileModifiedChecker(this);
 	}
 	
+	public List<AliasDefinition> aliasDefinitions() throws BundlerFileProcessingException {
+		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
+		
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			reparseFile();
+		}
+		
+		aliasDefinitions.addAll(this.aliasDefinitions);
+		
+		for(List<AliasDefinition> scenarioAliasList : scenarioAliases.values()) {
+			aliasDefinitions.addAll(scenarioAliasList);
+		}
+		
+		for(List<AliasDefinition> groupAliasList : groupAliases.values()) {
+			aliasDefinitions.addAll(groupAliasList);
+		}
+		
+		return aliasDefinitions;
+	}
+	
+	public void addAlias(AliasDefinition aliasDefinition) {
+	}
+	
+	public void addScenarioAlias(String aliasName, AliasDefinition aliasDefinition) {
+	}
+	
+	public void addGroupAlias(String groupName, AliasDefinition aliasDefinition) {
+	}
+	
+	// TODO: replace this single method with the above three method stubs
+	public void addAliasDefinition(AliasDefinition aliasDefinition) {
+		if(aliasDefinition.getScenario() != null) {
+			getScenarioAliases(aliasDefinition.getName()).add(aliasDefinition);
+		}
+		else if(aliasDefinition.getGroup() != null) {
+			getGroupAliases(aliasDefinition.getGroup()).add(aliasDefinition);
+		}
+		else {
+			aliasDefinitions.add(aliasDefinition);
+		}
+	}
+	
+	// TODO: AliasName -> String
 	public AliasDefinition getAlias(AliasName aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
 		AliasDefinition aliasDefinition = null;
 		
@@ -80,38 +123,6 @@ public class AliasDefinitionsFile extends File {
 		}
 		
 		return aliasDefinition;
-	}
-	
-	public List<AliasDefinition> aliasDefinitions() throws BundlerFileProcessingException {
-		List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-		
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
-			reparseFile();
-		}
-		
-		aliasDefinitions.addAll(this.aliasDefinitions);
-		
-		for(List<AliasDefinition> scenarioAliasList : scenarioAliases.values()) {
-			aliasDefinitions.addAll(scenarioAliasList);
-		}
-		
-		for(List<AliasDefinition> groupAliasList : groupAliases.values()) {
-			aliasDefinitions.addAll(groupAliasList);
-		}
-		
-		return aliasDefinitions;
-	}
-	
-	public void addAliasDefinition(AliasDefinition aliasDefinition) {
-		if(aliasDefinition.getScenario() != null) {
-			getScenarioAliases(aliasDefinition.getName()).add(aliasDefinition);
-		}
-		else if(aliasDefinition.getGroup() != null) {
-			getGroupAliases(aliasDefinition.getGroup()).add(aliasDefinition);
-		}
-		else {
-			aliasDefinitions.add(aliasDefinition);
-		}
 	}
 	
 	public void write() throws IOException {

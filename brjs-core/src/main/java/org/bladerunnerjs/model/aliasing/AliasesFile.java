@@ -55,19 +55,6 @@ public class AliasesFile extends File {
 		fileModifiedChecker = new FileModifiedChecker(this);
 	}
 	
-	public AliasDefinition getAlias(AliasName aliasName) throws BundlerFileProcessingException {
-		AliasDefinition aliasDefinition = null;
-		
-		for(AliasDefinition nextAliasDefinition : aliasDefinitions()) {
-			if(nextAliasDefinition.getName().equals(aliasName.getName())) {
-				aliasDefinition = nextAliasDefinition;
-				break;
-			}
-		}
-		
-		return aliasDefinition;
-	}
-	
 	public String scenarioName() throws BundlerFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reparseFile();
@@ -92,7 +79,8 @@ public class AliasesFile extends File {
 		this.groupNames = groupNames;
 	}
 	
-	public List<AliasDefinition> aliasDefinitions() throws BundlerFileProcessingException {
+	// TODO: AliasDefinition -> AliasOverride
+	public List<AliasDefinition> aliasOverrides() throws BundlerFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reparseFile();
 		}
@@ -100,9 +88,23 @@ public class AliasesFile extends File {
 		return aliasDefinitions;
 	}
 	
-	// TODO: should we switch away from AliasDefinition, given that there are no interfaces, scenarios or groups at this level?
-	public void addAliasDefinition(AliasDefinition aliasDefinition) {
+	// TODO: AliasDefinition -> AliasOverride
+	public void addAlias(AliasDefinition aliasDefinition) {
 		aliasDefinitions.add(aliasDefinition);
+	}
+	
+	// TODO: AliasName -> String
+	public AliasDefinition getAlias(AliasName aliasName) throws BundlerFileProcessingException {
+		AliasDefinition aliasDefinition = null;
+		
+		for(AliasDefinition nextAliasDefinition : aliasOverrides()) {
+			if(nextAliasDefinition.getName().equals(aliasName.getName())) {
+				aliasDefinition = nextAliasDefinition;
+				break;
+			}
+		}
+		
+		return aliasDefinition;
 	}
 	
 	public void write() throws IOException {

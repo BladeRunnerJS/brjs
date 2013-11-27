@@ -35,7 +35,7 @@ public class AliasesFileBuilder {
 	}
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
-		aliasesFile.addAliasDefinition(new AliasDefinition(aliasName, classRef, null));
+		aliasesFile.addAlias(new AliasDefinition(aliasName, classRef, null));
 		aliasesFile.write();
 		
 		return builderChainer;
