@@ -5,7 +5,7 @@ import java.io.File;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.BrjsJsLib;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public class AppNavigationTest
 	@Test
 	public void jsLibs()
 	{
-		nodeTesterFactory.createSetTester(BrjsJsLib.class, "jsLibs", "jsLib")
+		nodeTesterFactory.createSetTester(JsLib.class, "jsLibs", "jsLib")
 			.addChild("l1", "libs/l1")
 			.addChild("caplin", "../../sdk/libs/javascript/caplin")
 			.assertModelIsOK();

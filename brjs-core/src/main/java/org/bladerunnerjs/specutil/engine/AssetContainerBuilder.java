@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.NonBladerunnerJsLib;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.utility.JsStyleUtility;
 
 
@@ -77,7 +77,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	public BuilderChainer classRequiresThirdpartyLib(String sourceClass, NonBladerunnerJsLib thirdpartyLib) throws Exception
+	public BuilderChainer classRequiresThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
 		

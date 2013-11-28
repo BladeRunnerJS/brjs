@@ -9,9 +9,7 @@ import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import com.caplin.cutlass.file.RelativePath;
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.model.BrjsJsLib;
 import org.bladerunnerjs.model.JsLib;
-
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
 import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.NodeType;
@@ -66,7 +64,7 @@ public class TargetPathCreator
 		// Branching sdk requests via the new model 
 		if(nodeType.equals(NodeType.SDK))
 		{
-			JsLib jslib = BRJSAccessor.root.locateAncestorNodeOfClass(imageFile, BrjsJsLib.class);
+			JsLib jslib = BRJSAccessor.root.locateAncestorNodeOfClass(imageFile, JsLib.class);
 			if(jslib.dir() != null) {
 				targetPath = BundlePathsFromRoot.IMAGES + "sdk" + getSDKResourcesRelativePath(imageFile) + IMAGE_BUNDLE_EXT;
 			}
@@ -116,7 +114,7 @@ public class TargetPathCreator
 
 	private static String getSDKResourcesRelativePath(File imageFile)
 	{
-		JsLib jslib = BRJSAccessor.root.locateAncestorNodeOfClass(imageFile, BrjsJsLib.class);
+		JsLib jslib = BRJSAccessor.root.locateAncestorNodeOfClass(imageFile, JsLib.class);
 
 		Path resources = jslib.resources().dir().getAbsoluteFile().toPath();
 		Path relativised = resources.relativize(imageFile.getAbsoluteFile().toPath());

@@ -14,7 +14,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.model.BrjsJsLib;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 
 public class JsSeedBundlerFileAppender implements BladeRunnerFileAppender
@@ -41,7 +40,7 @@ public class JsSeedBundlerFileAppender implements BladeRunnerFileAppender
 	@Override
 	public void appendLibraryResourceFiles(File libraryResourcesRoot, List<File> files)
 	{
-		JsLib jsLib = BRJSAccessor.root.locateAncestorNodeOfClass(libraryResourcesRoot, BrjsJsLib.class);
+		JsLib jsLib = BRJSAccessor.root.locateAncestorNodeOfClass(libraryResourcesRoot, JsLib.class);
 		
 		// this hack should be removed -- it should actually be the source file finder that adds library seeds as they are needed
 		if(jsLib.parentNode() instanceof App)

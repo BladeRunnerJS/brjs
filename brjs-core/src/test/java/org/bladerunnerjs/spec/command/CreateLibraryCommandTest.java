@@ -5,7 +5,6 @@ import static org.bladerunnerjs.core.plugin.command.standard.CreateLibraryComman
 
 import org.bladerunnerjs.core.plugin.command.standard.CreateLibraryCommand;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BrjsJsLib;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -52,7 +51,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(logging).enabled();
 		when(brjs).runCommand("create-library", "app", "lib#$@/", "libx");
-		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, BrjsJsLib.class.getSimpleName(), badLib.dir().getPath())
+		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, JsLib.class.getSimpleName(), badLib.dir().getPath())
 			.and(exceptions).verifyException(InvalidDirectoryNameException.class, "lib#$@/", badLib.dir().getPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}

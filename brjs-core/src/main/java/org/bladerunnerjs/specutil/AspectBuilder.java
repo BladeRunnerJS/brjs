@@ -2,7 +2,7 @@ package org.bladerunnerjs.specutil;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.NonBladerunnerJsLib;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.specutil.engine.BuilderChainer;
 import org.bladerunnerjs.specutil.engine.AssetContainerBuilder;
 import org.bladerunnerjs.specutil.engine.SpecTest;
@@ -33,7 +33,7 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		return indexPageRefersTo(content);
 	}
 
-	public BuilderChainer indexPageRefersTo(NonBladerunnerJsLib thirdpartyLib) throws Exception
+	public BuilderChainer indexPageRefersTo(JsLib thirdpartyLib) throws Exception
 	{
 		FileUtils.write(aspect.file("index.html"), "br.thirdparty('"+thirdpartyLib.getName()+"');");
 		

@@ -31,7 +31,7 @@ public class AppVerifier extends NodeVerifier<App> {
 		{
 			if (lib instanceof AppJsLibWrapper) // assert against the unwrapped libs
 			{
-				appLibs.add( ((AppJsLibWrapper) lib).getWrappedLib() );
+				appLibs.add( ((AppJsLibWrapper) lib).getWrappedJsLib() );
 			}
 			else
 			{
@@ -63,7 +63,7 @@ public class AppVerifier extends NodeVerifier<App> {
 	public void libWithNameIs(String libName, JsLib appOverriddenNonBRLib)
 	{
 		JsLib appJsLib = app.nonBladeRunnerLib(libName);
-		appJsLib = (appJsLib instanceof AppJsLibWrapper) ? ((AppJsLibWrapper) appJsLib).getWrappedLib() : appJsLib;
+		appJsLib = (appJsLib instanceof AppJsLibWrapper) ? ((AppJsLibWrapper) appJsLib).getWrappedJsLib() : appJsLib;
 		assertSame(appJsLib, appOverriddenNonBRLib);
 	}
 }
