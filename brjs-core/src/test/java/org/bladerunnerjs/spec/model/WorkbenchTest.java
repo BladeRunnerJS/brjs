@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.workbench;
+package org.bladerunnerjs.spec.model;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Blade;
