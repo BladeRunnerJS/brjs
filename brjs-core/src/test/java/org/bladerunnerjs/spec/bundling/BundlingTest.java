@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.aspect;
+package org.bladerunnerjs.spec.bundling;
 
 import static org.bladerunnerjs.model.utility.LogicalRequestHandler.Messages.*;
 import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
@@ -15,7 +15,7 @@ import org.junit.Test;
 
 //TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'novox' when the default namespace is 'appns')?
 //TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
-public class AspectBundlingTest extends SpecTest {
+public class BundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private AliasesFile aspectAliasesFile;
@@ -36,6 +36,7 @@ public class AspectBundlingTest extends SpecTest {
 			blade = bladeset.blade("b1");
 	}
 	
+	// TODO remove the @Ignores
 	// A S P E C T
 	@Test
 	public void weBundleAnAspectClassIfItIsReferredToInTheIndexPage() throws Exception {
