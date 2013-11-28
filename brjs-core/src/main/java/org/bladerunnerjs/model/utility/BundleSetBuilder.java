@@ -84,9 +84,12 @@ public class BundleSetBuilder {
 		List<SourceFile> sourceFileList = new ArrayList<>();
 		Set<LinkedAssetFile> metDependencies = new HashSet<>();
 		
+		
+		int maxIterations = sourceFiles.size() * sourceFiles.size();
+		int iterationCount = 0;
+		
 		while(!sourceFiles.isEmpty()) {
 			Set<SourceFile> unprocessedSourceFiles = new HashSet<>();
-			
 			for(SourceFile sourceFile : sourceFiles) {
 				if(dependenciesHaveBeenMet(sourceFile, metDependencies)) {
 					sourceFileList.add(sourceFile);
@@ -95,6 +98,11 @@ public class BundleSetBuilder {
 				else {
 					unprocessedSourceFiles.add(sourceFile);
 				}
+			}
+			
+			if (iterationCount++ > maxIterations)
+			{
+				throw new ModelOperationException("Error satisfying source file dependencies. unprocessedSourceFiles = "+stringifySourceFiles(unprocessedSourceFiles));
 			}
 			
 			sourceFiles = unprocessedSourceFiles;
@@ -111,5 +119,17 @@ public class BundleSetBuilder {
 		}
 		
 		return true;
+	}
+	
+	private String stringifySourceFiles(Set<SourceFile> sourceFiles)
+	{
+		StringBuilder builder = new StringBuilder();
+		for (SourceFile sourceFile : sourceFiles)
+		{
+			builder.append(sourceFile.getRequirePath()+", ");
+		}
+		builder.setLength(builder.length()-2);
+		return builder.toString();
+		
 	}
 }

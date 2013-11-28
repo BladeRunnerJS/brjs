@@ -24,14 +24,8 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 {
 
 	private AssetLocation assetLocation;
+	private File dir;
 	private NonBladerunnerJsLibManifest manifest;
-	
-	
-	public NonBladerunnerJsLibSourceFile(AssetLocation assetLocation, File dir, NonBladerunnerJsLibManifest manifest)
-	{
-		this.manifest = manifest;
-		initializeUnderlyingObjects(assetLocation, dir);
-	}
 	
 	@Override
 	public Reader getReader() throws FileNotFoundException
@@ -62,13 +56,22 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 	@Override
 	public File getUnderlyingFile()
 	{
-		return assetLocation.dir();
+		return dir;
 	}
 
 	@Override
 	public void initializeUnderlyingObjects(AssetLocation assetLocation, File dir)
 	{
 		this.assetLocation = assetLocation;
+		this.dir = dir;
+	}
+	
+	public void initManifest(NonBladerunnerJsLibManifest manifest)
+	{
+		if (this.manifest == null)
+		{
+			this.manifest= manifest;
+		}
 	}
 
 	@Override
@@ -86,7 +89,7 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 	@Override
 	public String getRequirePath()
 	{
-		return assetLocation.dir().getName();
+		return dir.getName();
 	}
 
 	@Override
@@ -130,4 +133,5 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 		}
 		return filesMatching;
 	}
+
 }

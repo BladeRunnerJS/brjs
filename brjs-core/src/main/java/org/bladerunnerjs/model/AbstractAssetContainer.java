@@ -53,6 +53,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			}
 		}
 		
+//System.err.println(this + "     " + sourceFiles);
 		return sourceFiles;
 	}
 	

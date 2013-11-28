@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -254,10 +253,10 @@ public class AspectBundlingTest extends SpecTest {
 	
 	// T H I R D P A R T Y    L I B S
 	
-	@Ignore
 	@Test
 	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
 		given(sdkThirdpartyLib).hasBeenCreated()
+			.and(sdkThirdpartyLib).containsFileWithContents("library.manifest", "depends:")
 			.and(sdkThirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
 			.and(aspect).hasClass("novox.Class1")
 			.and(aspect).indexPageRefersTo(sdkThirdpartyLib);
@@ -265,10 +264,10 @@ public class AspectBundlingTest extends SpecTest {
 		then(response).containsText("window.lib = { }");
 	}
 	
-	@Ignore
 	@Test
-	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInAClass() throws Exception {
+	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInAClass() throws Exception {		
 		given(sdkThirdpartyLib).hasBeenCreated()
+			.and(sdkThirdpartyLib).containsFileWithContents("library.manifest", "depends:")
     		.and(sdkThirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
     		.and(aspect).hasClass("novox.Class1")
     		.and(aspect).classRequiresThirdpartyLib("novox.Class1", sdkThirdpartyLib)

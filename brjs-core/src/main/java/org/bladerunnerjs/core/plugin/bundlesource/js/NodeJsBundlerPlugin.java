@@ -15,6 +15,7 @@ import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
@@ -123,7 +124,7 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	@Override
 	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 	{ 
-		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js")) {
+		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js") && !(assetLocation instanceof JsLib)) {
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceFile.class, "js");
 		}
 		else {

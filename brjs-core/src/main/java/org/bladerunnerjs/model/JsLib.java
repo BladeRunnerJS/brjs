@@ -48,14 +48,14 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 		return appNodeSet;
 	}
 	
-	public static NodeMap<JsLib> createSdkNonBladeRunnerLibNodeSet()
+	public static NodeMap<ShallowJsLib> createSdkNonBladeRunnerLibNodeSet()
 	{
-		return new NodeMap<>(JsLib.class, "sdk/libs/javascript/thirdparty", null);
+		return new NodeMap<>(ShallowJsLib.class, "sdk/libs/javascript/thirdparty", null);
 	}
 	
-	public static NodeMap<JsLib> createAppNonBladeRunnerLibNodeSet()
+	public static NodeMap<ShallowJsLib> createAppNonBladeRunnerLibNodeSet()
 	{
-		return new NodeMap<>(JsLib.class, "thirdparty-libraries", null);
+		return new NodeMap<>(ShallowJsLib.class, "thirdparty-libraries", null);
 	}
 	
 	@Override

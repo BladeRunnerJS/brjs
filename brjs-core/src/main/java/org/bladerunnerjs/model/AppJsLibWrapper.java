@@ -1,5 +1,7 @@
 package org.bladerunnerjs.model;
 
+import java.util.List;
+
 
 public class AppJsLibWrapper extends JsLib
 {
@@ -23,6 +25,12 @@ public class AppJsLibWrapper extends JsLib
 	public JsLib getWrappedJsLib()
 	{
 		return wrappedJsLib;
+	}
+	
+	@Override
+	public List<AssetLocation> getAllAssetLocations()
+	{
+		return wrappedJsLib.getAllAssetLocations();
 	}
 	
 }

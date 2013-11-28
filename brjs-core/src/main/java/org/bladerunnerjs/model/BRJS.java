@@ -58,7 +58,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeMap<App> apps = App.createAppNodeSet();
 	private final NodeMap<App> systemApps = App.createSystemAppNodeSet();
 	private final NodeItem<JsLib> sdkLib = JsLib.createSdkNodeItem();
-	private final NodeMap<JsLib> sdkNonBladeRunnerLibs = JsLib.createSdkNonBladeRunnerLibNodeSet();
+	private final NodeMap<ShallowJsLib> sdkNonBladeRunnerLibs = JsLib.createSdkNonBladeRunnerLibNodeSet();
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(DirNode.class, "js-patches");
 	private final NodeMap<NamedDirNode> templates = new NodeMap<>(NamedDirNode.class, "sdk/templates", "-template$");
 	private final NodeItem<DirNode> appJars = new NodeItem<>(DirNode.class, "sdk/libs/java/application");
@@ -192,7 +192,12 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<JsLib> sdkNonBladeRunnerLibs()
 	{
-		return children(sdkNonBladeRunnerLibs);
+		List<JsLib> typeCastLibs = new ArrayList<JsLib>();
+		for (ShallowJsLib jsLib : children(sdkNonBladeRunnerLibs))
+		{
+			typeCastLibs.add(jsLib);
+		}
+		return typeCastLibs;
 	}
 	
 	public JsLib sdkNonBladeRunnerLib(String libName)
@@ -406,6 +411,11 @@ public class BRJS extends AbstractBRJSRootNode
 	public <AF extends AssetFile> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... extensions)
 	{
 		return assetLocator.getAssetFilesWithExtension(assetLocation, assetFileType, extensions);
+	}
+	
+	public <AF extends AssetFile> AssetFile getAssetFile(Class<? extends AssetFile> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException
+	{
+		return assetLocator.getAssetFile(assetFileType, assetLocation, file);
 	}
 	
 	
