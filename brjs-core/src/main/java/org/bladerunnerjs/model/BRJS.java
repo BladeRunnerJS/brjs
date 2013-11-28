@@ -57,8 +57,8 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	private final NodeMap<App> apps = App.createAppNodeSet();
 	private final NodeMap<App> systemApps = App.createSystemAppNodeSet();
-	private final NodeItem<JsLib> sdkLib = JsLib.createSdkNodeItem();
-	private final NodeMap<JsNonBladeRunnerLib> sdkNonBladeRunnerLibs = JsNonBladeRunnerLib.createSdkNonBladeRunnerLibNodeSet();
+	private final NodeItem<BrjsJsLib> sdkLib = BrjsJsLib.createSdkNodeItem();
+	private final NodeMap<NonBladerunnerJsLib> sdkNonBladeRunnerLibs = NonBladerunnerJsLib.createSdkNonBladeRunnerLibNodeSet();
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(DirNode.class, "js-patches");
 	private final NodeMap<NamedDirNode> templates = new NodeMap<>(NamedDirNode.class, "sdk/templates", "-template$");
 	private final NodeItem<DirNode> appJars = new NodeItem<>(DirNode.class, "sdk/libs/java/application");
@@ -190,12 +190,12 @@ public class BRJS extends AbstractBRJSRootNode
 		return item(sdkLib);
 	}
 	
-	public List<JsNonBladeRunnerLib> sdkNonBladeRunnerLibs()
+	public List<NonBladerunnerJsLib> sdkNonBladeRunnerLibs()
 	{
 		return children(sdkNonBladeRunnerLibs);
 	}
 	
-	public JsNonBladeRunnerLib sdkNonBladeRunnerLib(String libName)
+	public NonBladerunnerJsLib sdkNonBladeRunnerLib(String libName)
 	{
 		return child(sdkNonBladeRunnerLibs, libName);
 	}

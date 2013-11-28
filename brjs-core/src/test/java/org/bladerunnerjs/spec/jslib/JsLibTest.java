@@ -31,7 +31,7 @@ public class JsLibTest extends SpecTest {
 	@Test
 	public void parentAppGivesTheCorrectNode() throws Exception {
 		when(lib).create();
-		then(lib.parentApp()).isSameAs(app);
+		then(lib.getApp()).isSameAs(app);
 	}
 	
 	@Test

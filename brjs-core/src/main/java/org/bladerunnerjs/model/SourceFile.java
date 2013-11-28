@@ -10,5 +10,8 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
  */
 public interface SourceFile extends LinkedAssetFile {
 	String getRequirePath();
+	/**
+	 * Returns a list of source files that *must* precede this source file in the output 
+	 */
 	List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException;
 }

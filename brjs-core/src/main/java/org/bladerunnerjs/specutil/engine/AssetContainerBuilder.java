@@ -3,15 +3,15 @@ package org.bladerunnerjs.specutil.engine;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.AbstractAssetContainer;
-import org.bladerunnerjs.model.JsNonBladeRunnerLib;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.NonBladerunnerJsLib;
 import org.bladerunnerjs.model.utility.JsStyleUtility;
 
 
-public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> extends NodeBuilder<N>
+public abstract class AssetContainerBuilder<N extends AssetContainer> extends NodeBuilder<N>
 {
 	
-	private AbstractAssetContainer node;
+	private AssetContainer node;
 	
 	public AssetContainerBuilder(SpecTest specTest, N node)
 	{
@@ -77,14 +77,21 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		return builderChainer;
 	}
 	
-	public BuilderChainer classRequiresThirdpartyLib(String sourceClass, JsNonBladeRunnerLib thirdpartyLib) throws Exception
+	public BuilderChainer classRequiresThirdpartyLib(String sourceClass, NonBladerunnerJsLib thirdpartyLib) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		FileUtils.write(sourceFile, "br.thirdparty('"+thirdpartyLib.getName()+"');");
+		
+		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		
+		if (jsStyle.equals("caplin-js")) {
+			FileUtils.write(sourceFile, "br.require('"+thirdpartyLib.getName()+"');", true);
+		}
+		else {
+			FileUtils.write(sourceFile, "require('"+thirdpartyLib.getName()+"');", true);
+		}
 		
 		return builderChainer;
 	}
-	
 
 	private File getSourceFile(String sourceClass) {
 		return node.src().file(sourceClass.replaceAll("\\.", "/") + ".js");
@@ -124,4 +131,5 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 	private String getCaplinJsClassBody(String sourceClass, String destClass) {
 		return getClassBody(sourceClass) + "br.extend(" + sourceClass + ", " + destClass + ");\n";
 	}
+	
 }

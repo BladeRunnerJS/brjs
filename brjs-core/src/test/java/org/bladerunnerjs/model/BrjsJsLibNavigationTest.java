@@ -2,20 +2,20 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.BrjsJsLib;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JsLibNavigationTest
+public class BrjsJsLibNavigationTest
 {
-	private NodeTesterFactory<JsLib> nodeTesterFactory;
+	private NodeTesterFactory<BrjsJsLib> nodeTesterFactory;
 	
 	@Before
 	public void setup()
 	{
-		nodeTesterFactory = new NodeTesterFactory<>(BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).sdkLib(), JsLib.class);
+		nodeTesterFactory = new NodeTesterFactory<BrjsJsLib>((BrjsJsLib) BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).sdkLib(), BrjsJsLib.class);
 	}
 	
 	@After

@@ -8,7 +8,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.JsNonBladeRunnerLib;
+import org.bladerunnerjs.model.NonBladerunnerJsLib;
 import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
@@ -25,7 +25,7 @@ public class AspectBundlingTest extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade;
 	private JsLib sdkLib;
-	private JsNonBladeRunnerLib sdkThirdpartyLib;
+	private NonBladerunnerJsLib sdkThirdpartyLib;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before

@@ -9,8 +9,8 @@ import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.JsNonBladeRunnerLib;
+import org.bladerunnerjs.model.BrjsJsLib;
+import org.bladerunnerjs.model.NonBladerunnerJsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
@@ -58,14 +58,14 @@ public class BRJSNavigationTest
 	@Test
 	public void sdkLib()
 	{
-		nodeTesterFactory.createItemTester(JsLib.class, "sdkLib", "sdk/libs/javascript/caplin")
+		nodeTesterFactory.createItemTester(BrjsJsLib.class, "sdkLib", "sdk/libs/javascript/caplin")
 			.assertModelIsOK();
 	}
 	
 	@Test
 	public void sdkNonBladeRunnerLibs()
 	{
-		nodeTesterFactory.createSetTester(JsNonBladeRunnerLib.class, "sdkNonBladeRunnerLibs", "sdkNonBladeRunnerLib")
+		nodeTesterFactory.createSetTester(NonBladerunnerJsLib.class, "sdkNonBladeRunnerLibs", "sdkNonBladeRunnerLib")
 			.addChild("l1", "sdk/libs/javascript/thirdparty/l1")
 			.addChild("l2", "sdk/libs/javascript/thirdparty/l2")
 			.assertModelIsOK();

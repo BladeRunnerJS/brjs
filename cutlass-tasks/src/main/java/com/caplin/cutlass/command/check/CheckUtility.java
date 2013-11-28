@@ -21,7 +21,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.App;
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.model.JsNonBladeRunnerLib;
+import org.bladerunnerjs.model.NonBladerunnerJsLib;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.model.path.AppPath;
 import com.caplin.cutlass.structure.model.path.SdkPath;
@@ -199,7 +199,7 @@ public class CheckUtility
 		jarsToAdd.add(sdkLibSystemJar);
 	}
 
-	public void checkForApplicationThirdpartyLibraries(StringBuilder messageToShowUser, List<JsNonBladeRunnerLib> sdkThirdpartyLibraries, App application)
+	public void checkForApplicationThirdpartyLibraries(StringBuilder messageToShowUser, List<NonBladerunnerJsLib> sdkThirdpartyLibraries, App application)
 	{
 		if (sdkThirdpartyLibraries.size() == 0) 
 		{
@@ -221,7 +221,7 @@ public class CheckUtility
 		}
 	}
 
-	private List<File> getOverridenThirdpartyLibraries(File appThirdpartyDir, List<JsNonBladeRunnerLib> sdkThirdpartyLibraries)
+	private List<File> getOverridenThirdpartyLibraries(File appThirdpartyDir, List<NonBladerunnerJsLib> sdkThirdpartyLibraries)
 	{
 		List<File> overridenThirdpartyLibraries = new ArrayList<File>();
 		
@@ -231,7 +231,7 @@ public class CheckUtility
 
 			for(File appThirdpartyLib : appThirdpartyLibraries)
 			{
-				for(JsNonBladeRunnerLib sdkThirdpartyLib : sdkThirdpartyLibraries)
+				for(NonBladerunnerJsLib sdkThirdpartyLib : sdkThirdpartyLibraries)
 				{
 					// TODO: all named nodes should have a getName() method as checking the dir name is a hack that may be break in the future
 					if(sdkThirdpartyLib.dir().getName().equalsIgnoreCase(appThirdpartyLib.getName()))

@@ -35,10 +35,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeMap<JsNonBladeRunnerLib> nonBladeRunnerLibs = JsNonBladeRunnerLib.createSdkNonBladeRunnerLibNodeSet();
+	private final NodeMap<NonBladerunnerJsLib> nonBladeRunnerLibs = NonBladerunnerJsLib.createAppNonBladeRunnerLibNodeSet();
 	private final NodeMap<Bladeset> bladesets = Bladeset.createNodeSet();
 	private final NodeMap<Aspect> aspects = Aspect.createNodeSet();
-	private final NodeMap<JsLib> jsLibs = JsLib.createAppNodeSet();
+	private final NodeMap<BrjsJsLib> jsLibs = BrjsJsLib.createAppNodeSet();
 	private final LogicalRequestHandler requestHandler;
 	
 	private String name;
@@ -86,9 +86,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 			}
 		}
 		
-		for(JsLib jsLib : jsLibs()) {
-			assetContainers.add(jsLib);
-		}
+		assetContainers.addAll( jsLibs() );
 		
 		return assetContainers;
 	}
@@ -246,8 +244,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public JsLib nonBladeRunnerLib(String libName)
 	{
-		JsNonBladeRunnerLib appLib = child(nonBladeRunnerLibs, libName);
-		JsNonBladeRunnerLib sdkLib = root().sdkNonBladeRunnerLib(libName);
+		NonBladerunnerJsLib appLib = child(nonBladeRunnerLibs, libName);
+		NonBladerunnerJsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())
 		{
