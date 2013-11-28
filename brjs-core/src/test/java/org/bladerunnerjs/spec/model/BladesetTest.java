@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.bladeset;
+package org.bladerunnerjs.spec.model;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Bladeset;
