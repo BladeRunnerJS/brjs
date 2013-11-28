@@ -19,11 +19,15 @@ public class AliasDefinitionsFileBuilder {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
-		aliasDefinitionsFile.addAlias(new AliasDefinition(aliasName, classRef, null));
+	public BuilderChainer hasAlias(String aliasName, String classRef, String interfaceRef) throws Exception {
+		aliasDefinitionsFile.addAlias(new AliasDefinition(aliasName, classRef, interfaceRef));
 		aliasDefinitionsFile.write();
 		
 		return builderChainer;
+	}
+	
+	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
+		return hasAlias(aliasName, classRef, null);
 	}
 	
 	public BuilderChainer hasScenarioAlias(String scenarioName, String aliasName, String classRef) throws Exception {
