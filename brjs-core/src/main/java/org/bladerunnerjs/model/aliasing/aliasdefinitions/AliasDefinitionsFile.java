@@ -38,10 +38,8 @@ import com.jamesmurty.utils.XMLBuilder;
 public class AliasDefinitionsFile {
 	private static XMLValidationSchema aliasDefinitionsSchema;
 	
+	private final AliasDefinitionsData data = new AliasDefinitionsData();
 	private final FileModifiedChecker fileModifiedChecker;
-	private List<AliasDefinition> aliasDefinitions = new ArrayList<>();
-	private Map<String, Map<String, AliasOverride>> scenarioAliases = new HashMap<>();
-	private Map<String, List<AliasOverride>> groupAliases = new HashMap<>();
 	private AssetContainer assetContainer;
 
 	private File underlyingFile;
@@ -76,17 +74,17 @@ public class AliasDefinitionsFile {
 			reparseFile();
 		}
 		
-		for(AliasDefinition aliasDefinition : aliasDefinitions) {
+		for(AliasDefinition aliasDefinition : data.aliasDefinitions) {
 			aliasNames.add(aliasDefinition.getName());
 		}
 		
-		for(Map<String, AliasOverride> aliasScenarioAliases : scenarioAliases.values()) {
+		for(Map<String, AliasOverride> aliasScenarioAliases : data.scenarioAliases.values()) {
 			for(AliasOverride scenarioAlias : aliasScenarioAliases.values()) {
 				aliasNames.add(scenarioAlias.getName());
 			}
 		}
 		
-		for(List<AliasOverride> groupAliasList : groupAliases.values()) {
+		for(List<AliasOverride> groupAliasList : data.groupAliases.values()) {
 			for(AliasOverride groupAlias : groupAliasList) {
 				aliasNames.add(groupAlias.getName());
 			}
@@ -96,11 +94,11 @@ public class AliasDefinitionsFile {
 	}
 	
 	public void addAlias(AliasDefinition aliasDefinition) {
-		aliasDefinitions.add(aliasDefinition);
+		data.aliasDefinitions.add(aliasDefinition);
 	}
 	
 	public List<AliasDefinition> aliases() throws BundlerFileProcessingException {
-		return aliasDefinitions;
+		return data.aliasDefinitions;
 	}
 	
 	public void addScenarioAlias(String scenarioName, AliasOverride scenarioAlias) {
@@ -108,7 +106,7 @@ public class AliasDefinitionsFile {
 	}
 	
 	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws BundlerFileProcessingException {
-		return scenarioAliases.get(alias.getName());
+		return data.scenarioAliases.get(alias.getName());
 	}
 	
 	public void addGroupAliasOverride(String groupName, AliasOverride groupAlias) {
@@ -116,11 +114,11 @@ public class AliasDefinitionsFile {
 	}
 	
 	public Set<String> groupNames() {
-		return groupAliases.keySet();
+		return data.groupAliases.keySet();
 	}
 	
 	public List<AliasOverride> groupAliases(String groupName) throws BundlerFileProcessingException {
-		return ((groupAliases.containsKey(groupName)) ? groupAliases.get(groupName) : new ArrayList<AliasOverride>());
+		return ((data.groupAliases.containsKey(groupName)) ? data.groupAliases.get(groupName) : new ArrayList<AliasOverride>());
 	}
 	
 	public AliasDefinition getAlias(String aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
@@ -168,7 +166,7 @@ public class AliasDefinitionsFile {
 		try {
 			XMLBuilder builder = XMLBuilder.create("aliasDefinitions").ns("http://schema.caplin.com/CaplinTrader/aliasDefinitions");
 			
-			for(AliasDefinition aliasDefinition : aliasDefinitions) {
+			for(AliasDefinition aliasDefinition : data.aliasDefinitions) {
 				XMLBuilder aliasBuilder = builder.e("alias").a("name", aliasDefinition.getName()).a("defaultClass", aliasDefinition.getClassName());
 				Map<String, AliasOverride> scenarioAliases = getScenarioAliases(aliasDefinition.getName());
 				
@@ -178,10 +176,10 @@ public class AliasDefinitionsFile {
 				}
 			}
 			
-			for(String groupName : groupAliases.keySet()) {
+			for(String groupName : data.groupAliases.keySet()) {
 				XMLBuilder groupBuilder = builder.e("group").a("name", groupName);
 				
-				for(AliasOverride groupAlias : groupAliases.get(groupName)) {
+				for(AliasOverride groupAlias : data.groupAliases.get(groupName)) {
 					groupBuilder.e("alias").a("name", groupAlias.getName()).a("class", groupAlias.getClassName());
 				}
 			}
@@ -194,9 +192,9 @@ public class AliasDefinitionsFile {
 	}
 	
 	private void reparseFile() throws BundlerFileProcessingException {
-		aliasDefinitions = new ArrayList<>();
-		scenarioAliases = new HashMap<>();
-		groupAliases = new HashMap<>();
+		data.aliasDefinitions = new ArrayList<>();
+		data.scenarioAliases = new HashMap<>();
+		data.groupAliases = new HashMap<>();
 		
 		if(underlyingFile.exists()) {
 			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(underlyingFile, aliasDefinitionsSchema)) {
@@ -240,7 +238,7 @@ public class AliasDefinitionsFile {
 			throw new NamespaceException("Alias '" + aliasName + "' does not begin with required container prefix of '" + assetContainer.namespace() + "'.");
 		}
 		
-		aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
+		data.aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
 		
 		while(streamReader.hasNextTag()) {
 			streamReader.nextTag();
@@ -288,18 +286,18 @@ public class AliasDefinitionsFile {
 	}
 	
 	private Map<String, AliasOverride> getScenarioAliases(String aliasName) {
-		if(!scenarioAliases.containsKey(aliasName)) {
-			scenarioAliases.put(aliasName, new HashMap<String, AliasOverride>());
+		if(!data.scenarioAliases.containsKey(aliasName)) {
+			data.scenarioAliases.put(aliasName, new HashMap<String, AliasOverride>());
 		}
 		
-		return scenarioAliases.get(aliasName);
+		return data.scenarioAliases.get(aliasName);
 	}
 	
 	private List<AliasOverride> getGroupAliases(String groupName) {
-		if(!groupAliases.containsKey(groupName)) {
-			groupAliases.put(groupName, new ArrayList<AliasOverride>());
+		if(!data.groupAliases.containsKey(groupName)) {
+			data.groupAliases.put(groupName, new ArrayList<AliasOverride>());
 		}
 		
-		return groupAliases.get(groupName);
+		return data.groupAliases.get(groupName);
 	}
 }

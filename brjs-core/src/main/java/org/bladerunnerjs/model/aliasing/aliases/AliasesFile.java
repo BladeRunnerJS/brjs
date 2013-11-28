@@ -34,10 +34,9 @@ import com.jamesmurty.utils.XMLBuilder;
 public class AliasesFile {
 	private static XMLValidationSchema aliasesSchema;
 	
+	private final AliasesData data = new AliasesData();
 	private final FileModifiedChecker fileModifiedChecker;
-	private List<AliasOverride> aliasOverrides = new ArrayList<>();
-	private List<String> groupNames = new ArrayList<>();
-	private String scenario;
+	
 	private File underlyingFile;
 	
 	static {
@@ -67,11 +66,11 @@ public class AliasesFile {
 			reparseFile();
 		}
 		
-		return scenario;
+		return data.scenario;
 	}
 	
 	public void setScenarioName(String scenarioName) {
-		this.scenario = scenarioName;
+		data.scenario = scenarioName;
 	}
 	
 	public List<String> groupNames() throws BundlerFileProcessingException {
@@ -79,11 +78,11 @@ public class AliasesFile {
 			reparseFile();
 		}
 		
-		return groupNames;
+		return data.groupNames;
 	}
 	
 	public void setGroupNames(List<String> groupNames) {
-		this.groupNames = groupNames;
+		data.groupNames = groupNames;
 	}
 	
 	public List<AliasOverride> aliasOverrides() throws BundlerFileProcessingException {
@@ -91,11 +90,11 @@ public class AliasesFile {
 			reparseFile();
 		}
 		
-		return aliasOverrides;
+		return data.aliasOverrides;
 	}
 	
 	public void addAlias(AliasOverride aliasOverride) {
-		aliasOverrides.add(aliasOverride);
+		data.aliasOverrides.add(aliasOverride);
 	}
 	
 	public AliasOverride getAlias(String aliasName) throws BundlerFileProcessingException {
@@ -115,15 +114,15 @@ public class AliasesFile {
 		try {
 			XMLBuilder builder = XMLBuilder.create("aliases").ns("http://schema.caplin.com/CaplinTrader/aliases");
 			
-			if(scenario != null) {
-				builder.a("useScenario", scenario);
+			if(data.scenario != null) {
+				builder.a("useScenario", data.scenario);
 			}
 			
-			if(!groupNames.isEmpty()) {
-				builder.a("useGroups", Joiner.on(" ").join(groupNames));
+			if(!data.groupNames.isEmpty()) {
+				builder.a("useGroups", Joiner.on(" ").join(data.groupNames));
 			}
 			
-			for(AliasOverride aliasOverride : aliasOverrides) {
+			for(AliasOverride aliasOverride : data.aliasOverrides) {
 				builder.e("alias").a("name", aliasOverride.getName()).a("class", aliasOverride.getClassName());
 			}
 			
@@ -135,8 +134,8 @@ public class AliasesFile {
 	}
 	
 	private void reparseFile() throws BundlerFileProcessingException {
-		aliasOverrides = new ArrayList<>();
-		groupNames = new ArrayList<>();
+		data.aliasOverrides = new ArrayList<>();
+		data.groupNames = new ArrayList<>();
 		
 		if(underlyingFile.exists()) {
 			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(underlyingFile, aliasesSchema)) {
@@ -168,11 +167,11 @@ public class AliasesFile {
 	}
 	
 	private void processAliases(XmlStreamReader streamReader) {
-		scenario = streamReader.getAttributeValue("useScenario");
+		data.scenario = streamReader.getAttributeValue("useScenario");
 		
 		String useGroups = streamReader.getAttributeValue("useGroups");
 		if(useGroups != null) {
-			groupNames = Arrays.asList(useGroups.split(" "));
+			data.groupNames = Arrays.asList(useGroups.split(" "));
 		}
 	}
 	
@@ -180,6 +179,6 @@ public class AliasesFile {
 		String aliasName = streamReader.getAttributeValue("name");
 		String aliasClass = streamReader.getAttributeValue("class");
 		
-		aliasOverrides.add(new AliasOverride(aliasName, aliasClass));
+		data.aliasOverrides.add(new AliasOverride(aliasName, aliasClass));
 	}
 }
