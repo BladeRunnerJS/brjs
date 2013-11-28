@@ -12,7 +12,6 @@ import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AliasModelTest extends SpecTest {
@@ -150,7 +149,6 @@ public class AliasModelTest extends SpecTest {
 		then(aspect).hasAlias("novox.bs.b1.the-alias", "novox.Class2");
 	}
 	
-	@Ignore
 	@Test
 	public void groupAliasesCanOverrideNonGroupAliases() throws Exception {
 		given(appConf).hasNamespace("novox")
@@ -225,7 +223,6 @@ public class AliasModelTest extends SpecTest {
 		then(aspect).hasAlias("novox.bs.b1.the-alias", "novox.Class2", "novox.Interface1");
 	}
 	
-	@Ignore
 	@Test
 	public void theInterfaceIsMaintainedWhenAnAliasIsOverriddenInAGroup() throws Exception {
 		given(appConf).hasNamespace("novox")

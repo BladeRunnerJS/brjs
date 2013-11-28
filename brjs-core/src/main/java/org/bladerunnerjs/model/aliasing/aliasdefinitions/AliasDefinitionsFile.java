@@ -102,7 +102,7 @@ public class AliasDefinitionsFile {
 		return ((data.groupAliases.containsKey(groupName)) ? data.groupAliases.get(groupName) : new ArrayList<AliasOverride>());
 	}
 	
-	public AliasDefinition getAlias(String aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
+	public AliasDefinition getAliasDefinition(String aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
 		AliasDefinition aliasDefinition = null;
 		
 		try {
@@ -123,24 +123,30 @@ public class AliasDefinitionsFile {
 					aliasDefinition = nextAliasDefinition;
 				}
 			}
-			
-			for(String groupName : groupNames) {
-				for(AliasOverride nextGroupAlias : groupAliases(groupName)) {
-					if(nextGroupAlias.getName().equals(aliasName)) {
-						if(aliasDefinition != null) {
-							throw new AmbiguousAliasException(file, aliasName, scenarioName);
-						}
-						
-						aliasDefinition = new AliasDefinition(nextGroupAlias.getName(), nextGroupAlias.getClassName(), null);
-					}
-				}
-			}
 		}
 		catch(AmbiguousAliasException e) {
 			throw new BundlerFileProcessingException(file, e);
 		}
 		
 		return aliasDefinition;
+	}
+	
+	public AliasOverride getGroupOverride(String aliasName, List<String> groupNames) throws BundlerFileProcessingException, AmbiguousAliasException {
+		AliasOverride aliasOverride = null;
+		
+		for(String groupName : groupNames) {
+			for(AliasOverride nextGroupAlias : groupAliases(groupName)) {
+				if(nextGroupAlias.getName().equals(aliasName)) {
+					if(aliasOverride != null) {
+						throw new AmbiguousAliasException(file, aliasName, groupNames);
+					}
+					
+					aliasOverride = nextGroupAlias;
+				}
+			}
+		}
+		
+		return aliasOverride;
 	}
 	
 	public void write() throws IOException {

@@ -70,8 +70,13 @@ public class AliasesFile {
 	}
 	
 	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
-		AliasOverride aliasOverride = getAliasOverride(aliasName);
+		AliasOverride aliasOverride = getLocalAliasOverride(aliasName);
 		AliasDefinition aliasDefinition = getAliasDefinition(aliasName);
+		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName);
+		
+		if((aliasOverride == null) && (groupAliasOverride != null)) {
+			aliasOverride = groupAliasOverride;
+		}
 		
 		if((aliasDefinition == null) && (aliasOverride == null)) {
 			throw new UnresolvableAliasException(this, aliasName);
@@ -91,7 +96,7 @@ public class AliasesFile {
 		writer.write();
 	}
 	
-	private AliasOverride getAliasOverride(String aliasName) throws BundlerFileProcessingException {
+	private AliasOverride getLocalAliasOverride(String aliasName) throws BundlerFileProcessingException {
 		AliasOverride aliasOverride = null;
 		
 		for(AliasOverride nextAliasOverride : aliasOverrides()) {
@@ -104,13 +109,30 @@ public class AliasesFile {
 		return aliasOverride;
 	}
 	
+	private AliasOverride getGroupAliasOverride(String aliasName) throws BundlerFileProcessingException, AmbiguousAliasException {
+		AliasOverride aliasOverride = null;
+		List<String> groupNames = groupNames();
+		
+		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.getAliasDefinitionFiles()) {
+			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
+			
+			if(aliasOverride != null) {
+				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, groupNames);
+			}
+			
+			aliasOverride = nextAliasOverride;
+		}
+		
+		return aliasOverride;
+	}
+	
 	private AliasDefinition getAliasDefinition(String aliasName) throws BundlerFileProcessingException, AmbiguousAliasException {
 		AliasDefinition aliasDefinition = null;
 		String scenarioName = scenarioName();
 		List<String> groupNames = groupNames();
 		
 		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.getAliasDefinitionFiles()) {
-			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAlias(aliasName, scenarioName, groupNames);
+			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
 			
 			if(aliasDefinition != null) {
 				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, scenarioName);
