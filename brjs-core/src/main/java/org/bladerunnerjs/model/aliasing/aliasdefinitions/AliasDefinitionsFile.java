@@ -7,24 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.aliasing.AliasOverride;
 import org.bladerunnerjs.model.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
-import org.bladerunnerjs.specutil.XmlBuilderSerializer;
-
-import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasDefinitionsFile {
 	private final AliasDefinitionsData data = new AliasDefinitionsData();
 	private final AliasDefinitionsReader reader;
+	private final AliasDefinitionsWriter writer;
 	private final File file;
 	private final FileModifiedChecker fileModifiedChecker;
 	
@@ -32,6 +25,7 @@ public class AliasDefinitionsFile {
 		file = new File(parent, child);
 		fileModifiedChecker = new FileModifiedChecker(file);
 		reader = new AliasDefinitionsReader(data, file, assetContainer);
+		writer = new AliasDefinitionsWriter(data, file);
 	}
 	
 	public File getUnderlyingFile() {
@@ -134,31 +128,6 @@ public class AliasDefinitionsFile {
 	}
 	
 	public void write() throws IOException {
-		try {
-			XMLBuilder builder = XMLBuilder.create("aliasDefinitions").ns("http://schema.caplin.com/CaplinTrader/aliasDefinitions");
-			
-			for(AliasDefinition aliasDefinition : data.aliasDefinitions) {
-				XMLBuilder aliasBuilder = builder.e("alias").a("name", aliasDefinition.getName()).a("defaultClass", aliasDefinition.getClassName());
-				Map<String, AliasOverride> scenarioAliases = data.getScenarioAliases(aliasDefinition.getName());
-				
-				for(String scenarioName : scenarioAliases.keySet()) {
-					AliasOverride scenarioAlias = scenarioAliases.get(scenarioName);
-					aliasBuilder.e("scenario").a("name", scenarioName).a("class", scenarioAlias.getClassName());
-				}
-			}
-			
-			for(String groupName : data.groupAliases.keySet()) {
-				XMLBuilder groupBuilder = builder.e("group").a("name", groupName);
-				
-				for(AliasOverride groupAlias : data.groupAliases.get(groupName)) {
-					groupBuilder.e("alias").a("name", groupAlias.getName()).a("class", groupAlias.getClassName());
-				}
-			}
-			
-			FileUtils.write(file, XmlBuilderSerializer.serialize(builder));
-		}
-		catch(IOException | ParserConfigurationException | FactoryConfigurationError | TransformerException e) {
-			throw new IOException(e);
-		}
+		writer.write();
 	}
 }

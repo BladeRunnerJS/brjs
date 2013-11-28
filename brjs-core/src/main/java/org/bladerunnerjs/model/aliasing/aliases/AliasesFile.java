@@ -4,23 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.aliasing.AliasOverride;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
-import org.bladerunnerjs.specutil.XmlBuilderSerializer;
-
-import com.esotericsoftware.yamlbeans.parser.Parser.ParserException;
-import com.google.common.base.Joiner;
-import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasesFile {
 	private final AliasesData data = new AliasesData();
 	private final AliasesReader reader;
+	private final AliasesWriter writer;
 	private final File file;
 	private final FileModifiedChecker fileModifiedChecker;
 	
@@ -28,6 +19,7 @@ public class AliasesFile {
 		file = new File(parent, child);
 		fileModifiedChecker = new FileModifiedChecker(file);
 		reader = new AliasesReader(data, file);
+		writer = new AliasesWriter(data, file);
 	}
 	
 	public File getUnderlyingFile() {
@@ -84,25 +76,6 @@ public class AliasesFile {
 	}
 	
 	public void write() throws IOException {
-		try {
-			XMLBuilder builder = XMLBuilder.create("aliases").ns("http://schema.caplin.com/CaplinTrader/aliases");
-			
-			if(data.scenario != null) {
-				builder.a("useScenario", data.scenario);
-			}
-			
-			if(!data.groupNames.isEmpty()) {
-				builder.a("useGroups", Joiner.on(" ").join(data.groupNames));
-			}
-			
-			for(AliasOverride aliasOverride : data.aliasOverrides) {
-				builder.e("alias").a("name", aliasOverride.getName()).a("class", aliasOverride.getClassName());
-			}
-			
-			FileUtils.write(file, XmlBuilderSerializer.serialize(builder));
-		}
-		catch(ParserException | TransformerException | ParserConfigurationException | FactoryConfigurationError e) {
-			throw new IOException(e);
-		}
+		writer.write();
 	}
 }
