@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model.aliasing;
+package org.bladerunnerjs.model.aliasing.aliasdefinitions;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,6 +18,12 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.aliasing.AliasDefinition;
+import org.bladerunnerjs.model.aliasing.AliasOverride;
+import org.bladerunnerjs.model.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.model.aliasing.NamespaceException;
+import org.bladerunnerjs.model.aliasing.SchemaConverter;
+import org.bladerunnerjs.model.aliasing.SchemaCreationException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 import org.bladerunnerjs.model.utility.stax.XmlStreamReader;

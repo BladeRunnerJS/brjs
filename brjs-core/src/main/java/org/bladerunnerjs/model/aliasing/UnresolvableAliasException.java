@@ -1,5 +1,7 @@
 package org.bladerunnerjs.model.aliasing;
 
+import org.bladerunnerjs.model.aliasing.aliases.AliasesFile;
+
 public class UnresolvableAliasException extends AliasException {
 	private static final long serialVersionUID = 1L;
 	

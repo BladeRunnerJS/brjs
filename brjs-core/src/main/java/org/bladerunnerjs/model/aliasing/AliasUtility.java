@@ -2,6 +2,8 @@ package org.bladerunnerjs.model.aliasing;
 
 import java.util.List;
 
+import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
 public class AliasUtility {

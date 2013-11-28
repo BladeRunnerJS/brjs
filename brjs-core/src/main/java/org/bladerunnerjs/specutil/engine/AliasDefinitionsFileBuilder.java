@@ -1,8 +1,8 @@
 package org.bladerunnerjs.specutil.engine;
 
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
 import org.bladerunnerjs.model.aliasing.AliasOverride;
+import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
 
 public class AliasDefinitionsFileBuilder {
 	private AliasDefinitionsFile aliasDefinitionsFile;
