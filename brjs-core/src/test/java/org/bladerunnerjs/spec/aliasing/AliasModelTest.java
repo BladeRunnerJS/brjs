@@ -151,15 +151,38 @@ public class AliasModelTest extends SpecTest {
 		then(aspect).hasAlias("novox.bs.b1.the-alias", "novox.Class2");
 	}
 	
+	@Ignore
+	@Test
+	public void groupAliasesCanOverrideNonGroupAliases() throws Exception {
+		given(appConf).hasNamespace("novox")
+			.and(aspect).hasClasses("novox.Class1", "novox.Class2", "novox.Class3")
+			.and(bladeAliasDefinitionsFile).hasAlias("novox.bs.b1.the-alias", "novox.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class2")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "novox.bs.b1.the-alias", "novox.Class3")
+			.and(aspectAliasesFile).usesGroups("g1");
+		then(aspect).hasAlias("novox.bs.b1.the-alias", "novox.Class2");
+	}
+	
 	@Test
 	public void usingGroupsCanLeadToAmbiguity() throws Exception {
 		given(appConf).hasNamespace("novox")
 			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(bladeAliasDefinitionsFile).hasAlias("novox.bs.b1.the-alias", "novox.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class2")
-			.and(aspectAliasesFile).usesGroups("g1");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "novox.bs.b1.the-alias", "novox.Class2")
+			.and(aspectAliasesFile).usesGroups("g1", "g2");
 		when(aspect).retrievesAlias("novox.bs.b1.the-alias");
 		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", bladeAliasDefinitionsFile.getUnderlyingFile().getPath());
+	}
+	
+	@Test
+	public void usingGroupsCanLeadToAmbiguityEvenWhenASingleGroupIsUsed() throws Exception {
+		given(appConf).hasNamespace("novox")
+			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class1")
+			.and(bladesetAliasDefinitionsFile).hasGroupAlias("g1", "novox.bs.b1.the-alias", "novox.Class2")
+			.and(aspectAliasesFile).usesGroups("g1");
+		when(aspect).retrievesAlias("novox.bs.b1.the-alias");
+		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", aspectAliasesFile.getUnderlyingFile().getPath());
 	}
 	
 	@Test
