@@ -12,9 +12,9 @@ import org.junit.Test;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
+import com.caplin.cutlass.bundler.js.aliasing.AliasDefinition;
 import com.caplin.cutlass.bundler.js.aliasing.AliasInformation;
 import com.caplin.cutlass.bundler.js.aliasing.ScenarioAliases;
 

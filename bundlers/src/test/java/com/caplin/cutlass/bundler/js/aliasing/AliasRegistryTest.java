@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 

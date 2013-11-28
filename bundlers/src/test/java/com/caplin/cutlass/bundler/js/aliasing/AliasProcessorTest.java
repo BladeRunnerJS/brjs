@@ -19,12 +19,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
-import org.bladerunnerjs.model.GroupDefinition;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 

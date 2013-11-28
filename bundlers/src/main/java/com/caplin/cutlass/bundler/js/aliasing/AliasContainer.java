@@ -1,6 +1,5 @@
-package org.bladerunnerjs.model;
+package com.caplin.cutlass.bundler.js.aliasing;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 public interface AliasContainer {
