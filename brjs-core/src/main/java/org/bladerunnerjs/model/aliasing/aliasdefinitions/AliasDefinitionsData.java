@@ -12,4 +12,20 @@ public class AliasDefinitionsData {
 	public List<AliasDefinition> aliasDefinitions = new ArrayList<>();
 	public Map<String, Map<String, AliasOverride>> scenarioAliases = new HashMap<>();
 	public Map<String, List<AliasOverride>> groupAliases = new HashMap<>();
+	
+	public Map<String, AliasOverride> getScenarioAliases(String aliasName) {
+		if(!scenarioAliases.containsKey(aliasName)) {
+			scenarioAliases.put(aliasName, new HashMap<String, AliasOverride>());
+		}
+		
+		return scenarioAliases.get(aliasName);
+	}
+	
+	public List<AliasOverride> getGroupAliases(String groupName) {
+		if(!groupAliases.containsKey(groupName)) {
+			groupAliases.put(groupName, new ArrayList<AliasOverride>());
+		}
+		
+		return groupAliases.get(groupName);
+	}
 }
