@@ -85,7 +85,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	public AliasesFile aliasesFile()
 	{
 		if(aliasesFile == null) {
-			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml");
+			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml", this);
 		}
 		
 		return aliasesFile;
