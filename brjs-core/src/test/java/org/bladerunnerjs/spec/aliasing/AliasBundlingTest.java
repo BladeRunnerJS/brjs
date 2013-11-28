@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 // TODO: confirm with the team and or KG that groups can only be used to define aliases that haven't otherwise been defined -- we are currently throwing an ambiguity exception in this case
-public class AliasingTest extends SpecTest {
+public class AliasBundlingTest extends SpecTest {
 	private App app;
 	private AppConf appConf;
 	private Aspect aspect;
