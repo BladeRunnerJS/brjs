@@ -206,7 +206,6 @@ public class AliasModelTest extends SpecTest {
 		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", bladeAliasDefinitionsFile.getUnderlyingFile().getPath());
 	}
 	
-	@Ignore
 	@Test
 	public void theInterfaceIsMaintainedWhenAnAliasIsOverriddenInAliasesFile() throws Exception {
 		given(appConf).hasNamespace("novox")
