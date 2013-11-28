@@ -40,7 +40,6 @@ public class AliasModelTest extends SpecTest {
 			bladeAliasDefinitionsFile = blade.src().aliasDefinitionsFile();
 	}
 	
-	@Ignore
 	@Test
 	public void aliasesAreRetrievableViaTheModel() throws Exception {
 		given(appConf).hasNamespace("novox")
@@ -217,7 +216,6 @@ public class AliasModelTest extends SpecTest {
 		then(aspect).hasAlias("novox.bs.b1.the-alias", "novox.Class2", "novox.Interface1");
 	}
 	
-	@Ignore
 	@Test
 	public void theInterfaceIsMaintainedWhenAnAliasIsOverriddenInTheScenario() throws Exception {
 		given(appConf).hasNamespace("novox")

@@ -33,6 +33,10 @@ public class AliasDefinitionsWriter {
 					.a("defaultClass", aliasDefinition.getClassName());
 				Map<String, AliasOverride> scenarioAliases = data.getScenarioAliases(aliasDefinition.getName());
 				
+				if(aliasDefinition.getInterfaceName() != null) {
+					aliasBuilder.a("interface", aliasDefinition.getInterfaceName());
+				}
+				
 				for (String scenarioName : scenarioAliases.keySet()) {
 					AliasOverride scenarioAlias = scenarioAliases.get(scenarioName);
 					aliasBuilder.e("scenario").a("name", scenarioName).a("class", scenarioAlias.getClassName());
