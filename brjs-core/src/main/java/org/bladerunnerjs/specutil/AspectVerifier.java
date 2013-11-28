@@ -22,4 +22,8 @@ public class AspectVerifier extends NodeVerifier<Aspect> {
 		assertEquals("Class not as expected for alias '" + aliasName + "'", classRef, alias.getClassName());
 		assertEquals("Interface not as expected for alias '" + aliasName + "'", interfaceRef, alias.getInterfaceName());
 	}
+	
+	public void hasAlias(String aliasName, String classRef) throws Exception {
+		hasAlias(aliasName, classRef, null);
+	}
 }

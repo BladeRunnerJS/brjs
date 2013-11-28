@@ -63,6 +63,10 @@ public class AliasDefinitionsFile {
 	}
 	
 	public List<AliasDefinition> aliases() throws BundlerFileProcessingException {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			reader.read();
+		}
+		
 		return data.aliasDefinitions;
 	}
 	
@@ -71,6 +75,10 @@ public class AliasDefinitionsFile {
 	}
 	
 	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws BundlerFileProcessingException {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			reader.read();
+		}
+		
 		return data.scenarioAliases.get(alias.getName());
 	}
 	
@@ -78,11 +86,19 @@ public class AliasDefinitionsFile {
 		data.getGroupAliases(groupName).add(groupAlias);
 	}
 	
-	public Set<String> groupNames() {
+	public Set<String> groupNames() throws BundlerFileProcessingException {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			reader.read();
+		}
+		
 		return data.groupAliases.keySet();
 	}
 	
 	public List<AliasOverride> groupAliases(String groupName) throws BundlerFileProcessingException {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			reader.read();
+		}
+		
 		return ((data.groupAliases.containsKey(groupName)) ? data.groupAliases.get(groupName) : new ArrayList<AliasOverride>());
 	}
 	
