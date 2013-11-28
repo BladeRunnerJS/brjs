@@ -28,14 +28,14 @@ import com.esotericsoftware.yamlbeans.parser.Parser.ParserException;
 import com.google.common.base.Joiner;
 import com.jamesmurty.utils.XMLBuilder;
 
-public class AliasesFile extends File {
-	private static final long serialVersionUID = 1L;
+public class AliasesFile {
 	private static XMLValidationSchema aliasesSchema;
 	
 	private final FileModifiedChecker fileModifiedChecker;
 	private List<AliasOverride> aliasOverrides = new ArrayList<>();
 	private List<String> groupNames = new ArrayList<>();
 	private String scenario;
+	private File underlyingFile;
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -51,8 +51,12 @@ public class AliasesFile extends File {
 	}
 	
 	public AliasesFile(File parent, String child) {
-		super(parent, child);
-		fileModifiedChecker = new FileModifiedChecker(this);
+		underlyingFile = new File(parent, child);
+		fileModifiedChecker = new FileModifiedChecker(underlyingFile);
+	}
+	
+	public File getUnderlyingFile() {
+		return underlyingFile;
 	}
 	
 	public String scenarioName() throws BundlerFileProcessingException {
@@ -120,7 +124,7 @@ public class AliasesFile extends File {
 				builder.e("alias").a("name", aliasOverride.getName()).a("class", aliasOverride.getClassName());
 			}
 			
-			FileUtils.write(this, XmlBuilderSerializer.serialize(builder));
+			FileUtils.write(underlyingFile, XmlBuilderSerializer.serialize(builder));
 		}
 		catch(ParserException | TransformerException | ParserConfigurationException | FactoryConfigurationError e) {
 			throw new IOException(e);
@@ -131,8 +135,8 @@ public class AliasesFile extends File {
 		aliasOverrides = new ArrayList<>();
 		groupNames = new ArrayList<>();
 		
-		if(exists()) {
-			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(this, aliasesSchema)) {
+		if(underlyingFile.exists()) {
+			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(underlyingFile, aliasesSchema)) {
 				while(streamReader.hasNextTag()) {
 					streamReader.nextTag();
 					
@@ -152,10 +156,10 @@ public class AliasesFile extends File {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new BundlerFileProcessingException(this, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+				throw new BundlerFileProcessingException(underlyingFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
 			catch (FileNotFoundException e) {
-				throw new BundlerFileProcessingException(this, e);
+				throw new BundlerFileProcessingException(underlyingFile, e);
 			}
 		}
 	}

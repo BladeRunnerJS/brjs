@@ -108,7 +108,7 @@ public class AliasingTest extends SpecTest {
 			.and(bladesetAliasDefinitionsFile).hasAlias("novox.bs.b1.the-alias", "novox.Class2")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", aspectAliasesFile.getPath());
+		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", aspectAliasesFile.getUnderlyingFile().getPath());
 	}
 	
 	@Test
@@ -191,7 +191,7 @@ public class AliasingTest extends SpecTest {
 			.and(aspectAliasesFile).usesGroups("g1")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", bladeAliasDefinitionsFile.getPath());
+		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", bladeAliasDefinitionsFile.getUnderlyingFile().getPath());
 	}
 	
 	@Test
@@ -203,7 +203,7 @@ public class AliasingTest extends SpecTest {
 			.and(aspectAliasesFile).usesGroups("g1", "g2")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", bladeAliasDefinitionsFile.getPath());
+		then(exceptions).verifyException(AmbiguousAliasException.class, "novox.bs.b1.the-alias", bladeAliasDefinitionsFile.getUnderlyingFile().getPath());
 	}
 	
 	@Test

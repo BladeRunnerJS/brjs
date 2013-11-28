@@ -18,7 +18,7 @@ public class AliasUtility {
 				AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAlias(aliasName, scenarioName, groupNames);
 				
 				if(aliasDefinition != null) {
-					throw new AmbiguousAliasException(aliasesFile, aliasName, scenarioName);
+					throw new AmbiguousAliasException(aliasesFile.getUnderlyingFile(), aliasName, scenarioName);
 				}
 				
 				aliasDefinition = nextAliasDefinition;

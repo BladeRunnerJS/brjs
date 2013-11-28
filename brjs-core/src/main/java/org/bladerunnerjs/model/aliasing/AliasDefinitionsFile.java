@@ -29,8 +29,7 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 import com.jamesmurty.utils.XMLBuilder;
 
-public class AliasDefinitionsFile extends File {
-	private static final long serialVersionUID = 1L;
+public class AliasDefinitionsFile {
 	private static XMLValidationSchema aliasDefinitionsSchema;
 	
 	private final FileModifiedChecker fileModifiedChecker;
@@ -38,6 +37,8 @@ public class AliasDefinitionsFile extends File {
 	private Map<String, Map<String, AliasOverride>> scenarioAliases = new HashMap<>();
 	private Map<String, List<AliasOverride>> groupAliases = new HashMap<>();
 	private AssetContainer assetContainer;
+
+	private File underlyingFile;
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -53,9 +54,13 @@ public class AliasDefinitionsFile extends File {
 	}
 	
 	public AliasDefinitionsFile(AssetContainer assetContainer, File parent, String child) {
-		super(parent, child);
+		underlyingFile = new File(parent, child);
 		this.assetContainer = assetContainer;
-		fileModifiedChecker = new FileModifiedChecker(this);
+		fileModifiedChecker = new FileModifiedChecker(underlyingFile);
+	}
+	
+	public File getUnderlyingFile() {
+		return underlyingFile;
 	}
 	
 	public List<String> aliasNames() throws BundlerFileProcessingException {
@@ -127,7 +132,7 @@ public class AliasDefinitionsFile extends File {
 					}
 					
 					if(aliasDefinition != null) {
-						throw new AmbiguousAliasException(this, aliasName, scenarioName);
+						throw new AmbiguousAliasException(underlyingFile, aliasName, scenarioName);
 					}
 					
 					aliasDefinition = nextAliasDefinition;
@@ -138,7 +143,7 @@ public class AliasDefinitionsFile extends File {
 				for(AliasOverride nextGroupAlias : groupAliases(groupName)) {
 					if(nextGroupAlias.getName().equals(aliasName)) {
 						if(aliasDefinition != null) {
-							throw new AmbiguousAliasException(this, aliasName, scenarioName);
+							throw new AmbiguousAliasException(underlyingFile, aliasName, scenarioName);
 						}
 						
 						aliasDefinition = new AliasDefinition(nextGroupAlias.getName(), nextGroupAlias.getClassName(), null);
@@ -147,7 +152,7 @@ public class AliasDefinitionsFile extends File {
 			}
 		}
 		catch(AmbiguousAliasException e) {
-			throw new BundlerFileProcessingException(this, e);
+			throw new BundlerFileProcessingException(underlyingFile, e);
 		}
 		
 		return aliasDefinition;
@@ -175,7 +180,7 @@ public class AliasDefinitionsFile extends File {
 				}
 			}
 			
-			FileUtils.write(this, XmlBuilderSerializer.serialize(builder));
+			FileUtils.write(underlyingFile, XmlBuilderSerializer.serialize(builder));
 		}
 		catch(IOException | ParserConfigurationException | FactoryConfigurationError | TransformerException e) {
 			throw new IOException(e);
@@ -187,8 +192,8 @@ public class AliasDefinitionsFile extends File {
 		scenarioAliases = new HashMap<>();
 		groupAliases = new HashMap<>();
 		
-		if(exists()) {
-			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(this, aliasDefinitionsSchema)) {
+		if(underlyingFile.exists()) {
+			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(underlyingFile, aliasDefinitionsSchema)) {
 				while(streamReader.hasNextTag()) {
 					streamReader.nextTag();
 					
@@ -212,10 +217,10 @@ public class AliasDefinitionsFile extends File {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new BundlerFileProcessingException(this, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+				throw new BundlerFileProcessingException(underlyingFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
 			catch (FileNotFoundException | NamespaceException e) {
-				throw new BundlerFileProcessingException(this, e);
+				throw new BundlerFileProcessingException(underlyingFile, e);
 			}
 		}
 	}
