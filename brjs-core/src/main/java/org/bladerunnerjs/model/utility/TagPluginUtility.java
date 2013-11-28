@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.RequestMode;
 
 public class TagPluginUtility {
 
+	private static final String NEW_LINE = String.format("%n");
 	private static final String attributePatternString = "(\\s+(\\w+)\\s*=\\s*\\\"([\\w]+)\\\")";
 	private static final Pattern tagPattern = Pattern.compile("<@([A-Za-z][A-Za-z0-9-_.]+)("+attributePatternString+"*)?[ ]*@>");
 	private static final Pattern attributePattern = Pattern.compile(attributePatternString);
@@ -41,9 +42,9 @@ public class TagPluginUtility {
 		matcher.appendTail(result);
 		
 		String filteredContent = result.toString();
-		if (filteredContent.endsWith("\n")) // matcher.appendTail seems to append an extra \n that wasn't in the original content, so we remove it
+		if (filteredContent.endsWith(NEW_LINE)) // matcher.appendTail seems to append an extra \n that wasn't in the original content, so we remove it
 		{
-			filteredContent = StringUtils.substringBeforeLast(filteredContent, "\n");
+			filteredContent = StringUtils.substringBeforeLast(filteredContent, NEW_LINE);
 		}
 		
 		writer.write(filteredContent);

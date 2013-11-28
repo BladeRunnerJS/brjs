@@ -69,19 +69,19 @@ public class TagPluginUtilityTest
 	@Test
 	public void testFilteringTagWithAttributes() throws Exception
 	{
-		filterAndAssert( "this is a <@tag key=\"value\"@>", "this is a replaced tag!\nkey=value", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag key=\"value\"@>", String.format("this is a replaced tag!%nkey=value"), aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void testFilteringTagWithAttributesWithExtraSpaces() throws Exception
 	{
-		filterAndAssert( "this is a <@tag   key=\"value\"     @>", "this is a replaced tag!\nkey=value", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag   key=\"value\"     @>", String.format("this is a replaced tag!%nkey=value"), aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void testFilteringTagWithMultipleAttributes() throws Exception
 	{
-		filterAndAssert( "this is a <@tag key=\"value\" key2=\"value2\"@>", "this is a replaced tag!\nkey=value\nkey2=value2", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag key=\"value\" key2=\"value2\"@>", String.format("this is a replaced tag!%nkey=value%nkey2=value2"), aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 
 	@Test
