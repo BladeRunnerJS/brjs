@@ -23,16 +23,27 @@ public class StringVerifier {
 		for(String className : classes) {
 			containsText(className + " = function()");
 		}
+		
 		return verifierChainer;
 	}
 
 	public VerifierChainer textEquals(String content) {
 		assertEquals(content, string);
+		
 		return verifierChainer;
 	}
 	
-	public VerifierChainer containsRequests(StringBuffer page, String... requests) {
-		// TODO Auto-generated method stub
+	public VerifierChainer containsRequests(String... requests) {
+		for(String request : requests) {
+			containsText(request);
+		}
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer isEmpty() {
+		assertEquals("", string);
+		
 		return verifierChainer;
 	}
 }

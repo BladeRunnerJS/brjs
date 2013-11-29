@@ -57,61 +57,61 @@ public class TagPluginUtilityTest
 	@Test
 	public void testFilteringTagWithoutAttributes() throws Exception
 	{
-		filterAndAssert( "this is a <@tag@>", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag@/>", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void testFilteringTagWithSpacesAtEnd() throws Exception
 	{
-		filterAndAssert( "this is a <@tag  @>", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag  @/>", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 
 	@Test
 	public void testFilteringTagWithAttributes() throws Exception
 	{
-		filterAndAssert( "this is a <@tag key=\"value\"@>", String.format("this is a replaced tag!%nkey=value"), aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag key=\"value\"@/>", String.format("this is a replaced tag!%nkey=value"), aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void testFilteringTagWithAttributesWithExtraSpaces() throws Exception
 	{
-		filterAndAssert( "this is a <@tag   key=\"value\"     @>", String.format("this is a replaced tag!%nkey=value"), aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag   key=\"value\"     @/>", String.format("this is a replaced tag!%nkey=value"), aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void testFilteringTagWithMultipleAttributes() throws Exception
 	{
-		filterAndAssert( "this is a <@tag key=\"value\" key2=\"value2\"@>", String.format("this is a replaced tag!%nkey=value%nkey2=value2"), aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag key=\"value\" key2=\"value2\"@/>", String.format("this is a replaced tag!%nkey=value%nkey2=value2"), aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 
 	@Test
 	public void testFilteringTagInProdAndDevMode() throws Exception
 	{
-		filterAndAssert( "<@amIDevOrProd@>", "dev", aspect.getBundleSet(), RequestMode.Dev, "");
-		filterAndAssert( "<@amIDevOrProd@>", "prod", aspect.getBundleSet(), RequestMode.Prod, "");
+		filterAndAssert( "<@amIDevOrProd@/>", "dev", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@amIDevOrProd@/>", "prod", aspect.getBundleSet(), RequestMode.Prod, "");
 	}
 	
 	@Test
 	public void tagsMustMatchExactly() throws Exception
 	{
-		filterAndAssert( "this is a < @tag@>", "this is a < @tag@>", aspect.getBundleSet(), RequestMode.Dev, "");
-		filterAndAssert( "this is a <@ tag@>", "this is a <@ tag@>", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a < @tag@/>", "this is a < @tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@ tag@/>", "this is a <@ tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
 		filterAndAssert( "this is a <@tag@ >", "this is a <@tag@ >", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void tagsCanContainSeperatorChars() throws Exception
 	{		
-		filterAndAssert( "<@a.tag@>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
-		filterAndAssert( "<@a-tag@>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
-		filterAndAssert( "<@a_tag@>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@a.tag@/>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@a-tag@/>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@a_tag@/>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
 	public void tagsCannotStartWithNumbersOfSeperatorChars() throws Exception
 	{		
-		filterAndAssert( "<@1tag@>", "<@1tag@>", aspect.getBundleSet(), RequestMode.Dev, "");
-		filterAndAssert( "<@-tag@>", "<@-tag@>", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@1tag@/>", "<@1tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@-tag@/>", "<@-tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	
