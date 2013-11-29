@@ -7,7 +7,9 @@ import java.util.List;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppJsLibWrapper;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.ShallowJsLib;
 
 import com.caplin.cutlass.BRJSAccessor;
 
@@ -60,17 +62,24 @@ public class PackageDepsConfig
 
 		for(JsLib jsLibrary: app.jsLibs())
 		{
-			File targetDirectory = new File(jsLibrary.src().dir(), packageName.replaceAll("\\.", "/"));
-			
-			visitedPackageLocations.add(targetDirectory);
-			
-			if(targetDirectory.exists() && targetDirectory.isDirectory())
+			if ( jsLibrary instanceof ShallowJsLib || (jsLibrary instanceof AppJsLibWrapper && ((AppJsLibWrapper)jsLibrary).getWrappedJsLib() instanceof ShallowJsLib) ) 
 			{
-				if(matchingDirectory != null)
-				{
-					throw new CommandArgumentsException("Ambiguous package location: The given package '"+ packageName +"' has been found in more than one library root (" + targetDirectory.getAbsolutePath() + " and " + matchingDirectory.getAbsolutePath() + ")", packageDepsCommand);
-				}
-				matchingDirectory = targetDirectory;
+				// ignore
+			}
+			else
+			{
+    			File targetDirectory = new File(jsLibrary.src().dir(), packageName.replaceAll("\\.", "/"));
+    			
+    			visitedPackageLocations.add(targetDirectory);
+    			
+    			if(targetDirectory.exists() && targetDirectory.isDirectory())
+    			{
+    				if(matchingDirectory != null)
+    				{
+    					throw new CommandArgumentsException("Ambiguous package location: The given package '"+ packageName +"' has been found in more than one library root (" + targetDirectory.getAbsolutePath() + " and " + matchingDirectory.getAbsolutePath() + ")", packageDepsCommand);
+    				}
+    				matchingDirectory = targetDirectory;
+    			}
 			}
 
 		}
