@@ -39,6 +39,9 @@ Dependencies.putAll([
 	'validation-api'			:	'javax.validation:validation-api:1.1.0.Final',
 	'bval-jsr303'				:	'org.apache.bval:bval-jsr303:0.5',
 	'java-xmlbuilder'			:	'com.jamesmurty.utils:java-xmlbuilder:0.6',
+	'xalan'						:	'xalan:xalan:2.7.1',
+	'sjsxp'						:	'com.sun.xml.stream:sjsxp:1.0.2',
+	
 	
 	'reflections'				:	'org.reflections:reflections:0.9.9-RC1',
 

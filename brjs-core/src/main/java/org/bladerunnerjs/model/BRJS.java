@@ -20,9 +20,7 @@ import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
 import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.PluginLocator;
-import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
@@ -40,6 +38,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.utility.CommandRunner;
+import org.bladerunnerjs.model.utility.PluginLocatorLogger;
 import org.bladerunnerjs.model.utility.UserCommandRunner;
 import org.bladerunnerjs.model.utility.VersionInfo;
 
@@ -87,9 +86,9 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
 		pluginLocator.createPlugins(this);
+		PluginLocatorLogger.logPlugins(logger, pluginLocator);
 		
-        List<ModelObserverPlugin> modelObservers = pluginLocator.getModelObservers();
-        listFoundPlugins(modelObservers);
+		
 		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 		discoverAllChildren();
@@ -97,12 +96,10 @@ public class BRJS extends AbstractBRJSRootNode
 		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 		this.pluginLocator = pluginLocator;
 		List<CommandPlugin> foundCommandPlugins = pluginLocator.getCommandPlugins();
-		listFoundPlugins(foundCommandPlugins);
 		commandList = new CommandList(this, foundCommandPlugins);
 		
 		bundlerPlugins = new HashMap<String,BundlerPlugin>();
 		List<BundlerPlugin> foundBundlerPlugins = pluginLocator.getBundlerPlugins();
-		listFoundPlugins(foundBundlerPlugins);
 		for(BundlerPlugin bundlerPlugin :  foundBundlerPlugins) {
 			bundlerPlugins.put(bundlerPlugin.getRequestPrefix(), bundlerPlugin);
 		}
@@ -402,7 +399,6 @@ public class BRJS extends AbstractBRJSRootNode
 		return contentPlugins;
 	}
 	
-	
 	public <AF extends AssetFile> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... fileNames)
 	{
 		return assetLocator.getAssetFilesNamed(assetLocation, assetFileType, fileNames);
@@ -417,19 +413,4 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		return assetLocator.getAssetFile(assetFileType, assetLocation, file);
 	}
-	
-	
-	
-	private void listFoundPlugins(List<? extends Plugin> plugins)
-    {
-        for(Plugin p : plugins)
-        {
-        	if (p instanceof VirtualProxyPlugin)
-        	{
-        		p = ((VirtualProxyPlugin) p).getUnderlyingPlugin();
-        	}
-            logger.debug(Messages.PLUGIN_FOUND_MSG, p.getClass().getCanonicalName());
-        }
-    }
-	
 }

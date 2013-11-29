@@ -14,7 +14,9 @@ import com.caplin.cutlass.bundler.js.ClassnameFileMapping;
 import com.caplin.cutlass.bundler.js.SourceFileLocator;
 import com.caplin.cutlass.bundler.js.aliasing.AliasRegistry;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppJsLibWrapper;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.ShallowJsLib;
 
 public class CodeAnalyserFactory
 {
@@ -53,14 +55,21 @@ public class CodeAnalyserFactory
 		
 		for(JsLib jsLibrary: appNode.jsLibs())
 		{
-			File libraryRoot = jsLibrary.src().dir();
-
-			if(!libraryRoot.exists())
+			if ( jsLibrary instanceof ShallowJsLib || (jsLibrary instanceof AppJsLibWrapper && ((AppJsLibWrapper)jsLibrary).getWrappedJsLib() instanceof ShallowJsLib) ) 
 			{
-				throw new BundlerProcessingException("Cant find: " + libraryRoot.getAbsolutePath() );
+				// ignore
 			}
-			
-			libraryRootDirs.addAll(Arrays.asList(libraryRoot));
+			else
+			{
+    			File libraryRoot = jsLibrary.src().dir();
+    
+    			if(!libraryRoot.exists())
+    			{
+    				throw new BundlerProcessingException("Cant find: " + libraryRoot.getAbsolutePath() );
+    			}
+    			
+    			libraryRootDirs.addAll(Arrays.asList(libraryRoot));
+			}
 		}
 		
 		Set<ClassnameFileMapping> mappings = SourceFileLocator.getClassNameMappings(libraryRootDirs, SourceFileLocator.SOURCE_FILENAME_FILTER);

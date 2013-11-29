@@ -33,6 +33,8 @@ dependencies {
 	compile dependency('jta')
 	compile dependency('closure-compiler')
 	compile dependency('java-xmlbuilder')
+	compile dependency('xalan')
+	compile dependency('sjsxp')
 	
 	/* woodstox deps */
 	compile dependency('woodstox-core-asl')

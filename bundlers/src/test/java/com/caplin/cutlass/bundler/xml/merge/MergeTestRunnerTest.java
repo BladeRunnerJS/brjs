@@ -33,7 +33,7 @@ public abstract class MergeTestRunnerTest
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -63,6 +63,7 @@ public abstract class MergeTestRunnerTest
 		Reader expectedReader = new InputStreamReader(new FileInputStream(sourceXmlFile), EncodingAccessor.getDefaultInputEncoding());
 		Reader generatedReader = new InputStreamReader(new ByteArrayInputStream(generatedXml.toByteArray()), EncodingAccessor.getDefaultOutputEncoding());
 		
+		XMLUnit.setTransformerFactory("org.apache.xalan.processor.TransformerFactoryImpl");
 		XMLUnit.setIgnoreWhitespace(true);
 		Diff diff = new Diff(expectedReader, generatedReader);
 		
