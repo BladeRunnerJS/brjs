@@ -116,11 +116,17 @@ public class AliasesFile {
 		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.getAliasDefinitionFiles()) {
 			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
 			
-			if(aliasOverride != null) {
+			
+			
+			if(aliasOverride != null && nextAliasOverride != null) {
 				throw new AmbiguousAliasException(getUnderlyingFile(), aliasName, groupNames);
 			}
 			
-			aliasOverride = nextAliasOverride;
+			if (nextAliasOverride != null)
+			{
+				aliasOverride = nextAliasOverride;
+			}
+
 		}
 		
 		return aliasOverride;

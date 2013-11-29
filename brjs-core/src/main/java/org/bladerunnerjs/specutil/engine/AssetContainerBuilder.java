@@ -19,9 +19,9 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		this.node = node;
 	}
 	
-	public BuilderChainer hasPackageStyle(String packageDir, String jsStyle) {
-		String path = packageDir.replaceAll("\\.", "/");
-		JsStyleUtility.setJsStyle(node.src().file(path), jsStyle);
+	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
+		String path = packagePath.replaceAll("\\.", "/");
+		JsStyleUtility.setJsStyle(node.file(path), jsStyle);
 		
 		return builderChainer;
 	}

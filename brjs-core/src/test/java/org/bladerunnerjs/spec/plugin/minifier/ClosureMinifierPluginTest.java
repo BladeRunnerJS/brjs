@@ -75,7 +75,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
-		given(blade).hasPackageStyle("novox/bs/b1", "caplin-js")
+		given(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
 			.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1")
 			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2");
@@ -86,7 +86,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
-		given(blade).hasPackageStyle("novox.cjs", "caplin-js")
+		given(blade).hasPackageStyle("src/novox.cjs", "caplin-js")
 			.and(blade).hasPackageStyle("novox.node", "node.js")
 			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
 			.and(aspect).indexPageRefersTo("novox.cjs.Class")
