@@ -2,8 +2,8 @@ package com.caplin.cutlass.bundler.js.aliasing;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.GroupDefinition;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
 import com.caplin.cutlass.exception.NamespaceException;
 
 public class GroupNode implements AliasingNode {

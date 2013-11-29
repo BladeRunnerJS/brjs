@@ -3,7 +3,7 @@ package org.bladerunnerjs.specutil.engine;
 import java.util.Arrays;
 
 import org.bladerunnerjs.model.aliasing.AliasOverride;
-import org.bladerunnerjs.model.aliasing.AliasesFile;
+import org.bladerunnerjs.model.aliasing.aliases.AliasesFile;
 
 public class AliasesFileBuilder {
 	private AliasesFile aliasesFile;

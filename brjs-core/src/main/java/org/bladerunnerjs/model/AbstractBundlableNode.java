@@ -5,11 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
-import org.bladerunnerjs.model.aliasing.AliasUtility;
-import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.model.aliasing.UnresolvableAliasException;
+import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -39,7 +38,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	@Override
 	public AliasesFile aliasesFile() {
 		if(aliasesFile == null) {
-			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml");
+			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml", this);
 		}
 		
 		return aliasesFile;
@@ -73,7 +72,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
-		return AliasUtility.getAlias(aliasName, aliasesFile, getAliasDefinitionFiles());
+		return aliasesFile.getAlias(aliasName);
 	}
 	
 	@Override
@@ -81,7 +80,8 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		return BundleSetCreator.createBundleSet(this);
 	}
 	
-	private List<AliasDefinitionsFile> getAliasDefinitionFiles() {
+	@Override
+	public List<AliasDefinitionsFile> getAliasDefinitionFiles() {
 		List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : getAssetContainers()) {

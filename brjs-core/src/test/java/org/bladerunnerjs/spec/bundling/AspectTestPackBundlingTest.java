@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.aspect;
+package org.bladerunnerjs.spec.bundling;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -15,7 +15,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 {
 	private App app;
 	private Aspect aspect;
-	private TestPack aspectTest;
+	private TestPack aspectUTs, aspectATs;
 	private Bladeset bladeset;
 	private Blade blade;
 	
@@ -25,17 +25,27 @@ public class AspectTestPackBundlingTest extends SpecTest
 		given(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			aspectTest = aspect.testType("UT").testTech("TEST_TECH");
+			aspectUTs = aspect.testType("unit").testTech("TEST_TECH");
+			aspectATs = aspect.testType("acceptance").testTech("TEST_TECH");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 	}
 	
+	// TODO remove the @Ignores
 	@Ignore
 	@Test
-	public void weBundleFilesInABladeInAnAspectTest() throws Exception {
+	public void weBundleAspectFilesInUTs() throws Exception {
 		given(blade).hasClass("novox.Class1")
-			.and(aspectTest).testRefersTo("novox.Class1");
-		then(aspectTest).bundledFilesEquals(blade.src().file("novox/Class1.js"));
+			.and(aspectUTs).testRefersTo("novox.Class1");
+		then(aspectUTs).bundledFilesEquals(blade.src().file("novox/Class1.js"));
+	}
+	
+	@Ignore
+	@Test
+	public void weBundleAspectFilesInATs() throws Exception {
+		given(blade).hasClass("novox.Class1")
+			.and(aspectUTs).testRefersTo("novox.Class1");
+		then(aspectATs).bundledFilesEquals(blade.src().file("novox/Class1.js"));
 	}
 	
 }

@@ -1,7 +1,5 @@
 package com.caplin.cutlass.bundler.js.aliasing;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
-
 public class AliasInformation {
 
 	private String aliasName;

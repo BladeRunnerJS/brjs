@@ -56,8 +56,6 @@ public class BRJSServletTest extends SpecTest
 	@Test
 	public void brjsServletIsAutomaticallyLoaded() throws Exception
 	{
-		given(logging).echoEnabled();
-		
 		given(app).hasBeenCreated()
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/brjs/version/", brjs.versionInfo().getVersionNumber());

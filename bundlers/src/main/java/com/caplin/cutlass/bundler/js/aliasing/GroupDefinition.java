@@ -1,11 +1,10 @@
-package org.bladerunnerjs.model;
+package com.caplin.cutlass.bundler.js.aliasing;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 

@@ -271,13 +271,13 @@ List&lt;SourceFile&gt; getOrderDependentSourceFiles()</string>
      <void property="text">
       <string>App getApp()
 String namespace()
-String getRequirePrefix()
+String requirePrefix()
 List&lt;SourceFile&gt; sourceFiles()
 SourceFile sourceFile(String requirePath)
 AsseyLocation src()
 AssetLocation resources()
 List&lt;AssetLocation&gt; getAllAssetLocations()
-AssetLocation getAssetLocation(File dir)</string>
+</string>
      </void>
     </void>
     <void property="name">
