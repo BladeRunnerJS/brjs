@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class CompositeJsBundlerTest extends SpecTest {
+public class CompositeJsBundlerPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer pageResponse = new StringBuffer();
