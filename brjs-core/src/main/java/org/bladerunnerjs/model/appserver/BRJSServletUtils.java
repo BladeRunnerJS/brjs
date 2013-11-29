@@ -145,7 +145,10 @@ public class BRJSServletUtils
 	void sendErrorResponse(HttpServletResponse response, int code, String message) throws ServletException
 	{
 		try {
-			response.sendError(code, message);
+			if (!response.isCommitted())
+			{
+				response.sendError(code, message);
+			}
 		}
 		catch (IOException ex)
 		{
