@@ -23,13 +23,13 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 	public List<AssetLocation> getChildAssetLocations() {
 		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
 		
-		if (dir.isDirectory()) {
-			Iterator<File> fileIterator = FileUtils.iterateFilesAndDirs(dir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		if (dir().isDirectory()) {
+			Iterator<File> fileIterator = FileUtils.iterateFilesAndDirs(dir(), FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 			
 			while (fileIterator.hasNext()) {
 				File nextDir = fileIterator.next();
 				
-				if (!nextDir.equals(dir)) {
+				if (!nextDir.equals(dir())) {
 					assetLocations.add(getChildAssetLocation(nextDir));
 				}
 			}

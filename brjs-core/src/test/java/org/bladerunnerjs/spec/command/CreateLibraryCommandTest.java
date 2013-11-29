@@ -51,7 +51,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(logging).enabled();
 		when(brjs).runCommand("create-library", "app", "lib#$@/", "libx");
-		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, "JsLib", badLib.dir().getPath())
+		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, JsLib.class.getSimpleName(), badLib.dir().getPath())
 			.and(exceptions).verifyException(InvalidDirectoryNameException.class, "lib#$@/", badLib.dir().getPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}

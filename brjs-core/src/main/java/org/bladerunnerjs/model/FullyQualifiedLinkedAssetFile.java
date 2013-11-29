@@ -110,7 +110,10 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 					
 					if (!sourceFile.getUnderlyingFile().equals(assetFile)) {
 	    				trie.add(sourceFile.getRequirePath(), sourceFile);
-	    				trie.add(classSourceFile.getClassName(), classSourceFile);
+	    				if ( !sourceFile.getRequirePath().equals(classSourceFile.getClassName()) )
+	    				{
+	    					trie.add(classSourceFile.getClassName(), classSourceFile);
+	    				}
 					}
 				}
 				

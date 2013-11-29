@@ -10,6 +10,9 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
  * 
  */
 public interface LinkedAssetFile extends AssetFile {
+	/**
+	 * Returns a list of files this LinkedAssetFile depends on
+	 */
 	List<SourceFile> getDependentSourceFiles() throws ModelOperationException;
 	List<String> getAliasNames() throws ModelOperationException;
 }

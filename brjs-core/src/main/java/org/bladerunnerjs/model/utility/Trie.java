@@ -66,7 +66,7 @@ public class Trie<T>
 		
 		TrieMatcher matcher = new TrieMatcher();
 //		CharMatcher charMatcher = CharMatcher.anyOf( StringUtils.join(trieChars.toArray()) );	//TODO: use the CharMatcher that is calculated from the entries in the Trie
-		CharMatcher charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.')).or(CharMatcher.is('-')).or(CharMatcher.is('_'));
+		CharMatcher charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.')).or(CharMatcher.is('-')).or(CharMatcher.is('_')).or(CharMatcher.is('-'));
 		
 		int latestCharVal;
 		while ((latestCharVal = reader.read()) != -1)

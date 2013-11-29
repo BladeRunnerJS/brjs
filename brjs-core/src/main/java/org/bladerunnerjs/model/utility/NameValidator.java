@@ -26,7 +26,7 @@ public class NameValidator
 	// TODO: change to accept a single directory name
 	public static boolean isValidDirectoryName(String directoryName)
 	{
-		if (!directoryName.matches(VALID_DIRECTORY_NAME_REGEX))
+		if (directoryName != null && !directoryName.matches(VALID_DIRECTORY_NAME_REGEX))
 		{
 			return false;
 		}

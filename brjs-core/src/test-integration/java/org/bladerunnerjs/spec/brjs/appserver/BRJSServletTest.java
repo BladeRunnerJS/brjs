@@ -56,8 +56,6 @@ public class BRJSServletTest extends SpecTest
 	@Test
 	public void brjsServletIsAutomaticallyLoaded() throws Exception
 	{
-		given(logging).echoEnabled();
-		
 		given(app).hasBeenCreated()
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/brjs/version/", brjs.versionInfo().getVersionNumber());
@@ -113,15 +111,15 @@ public class BRJSServletTest extends SpecTest
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasPackageStyle("novox.cjs", "caplin-js")
-    		.and(blade).hasPackageStyle("novox.node", "node.js")
-    		.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
-    		.and(aspect).indexPageRefersTo("novox.cjs.Class")
-    		.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class")
+			.and(blade).hasPackageStyle("src/novox.cjs", "caplin-js")
+			.and(blade).hasPackageStyle("src/novox.node", "node.js")
+			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
+			.and(aspect).indexPageRefersTo("novox.cjs.Class")
+			.and(blade).classRefersTo("novox.cjs.Class",  "novox.node.Class")
     		.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("novox.node.Class=function(){};var Class=require(\"novox/node/Class\");novox.cjs.Class=function(){};");
+		then(response).textEquals("window.novox={\"cjs\":{\"Class\":{}}};novox.cjs.Class=function(){};br.extend(novox.cjs.Class,novox.node.Class);novox.cjs.Class=require(\"novox/cjs/Class\");novox.node.Class=function(){};");
 	}
 	
 }

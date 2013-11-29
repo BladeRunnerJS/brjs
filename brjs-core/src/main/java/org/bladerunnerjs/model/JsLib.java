@@ -1,14 +1,10 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -18,18 +14,20 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.utility.NameValidator;
 
-
-public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
+public class JsLib extends AbstractAssetContainer implements AssetContainer, NamedNode
 {
 	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
 	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
 	private String name;
 	private JsLibConf libConf;
+	private Node parent;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
-		this.name = name;
+		super(rootNode, dir);
 		init(rootNode, parent, dir);
+		this.name = name;
+		this.parent = parent;
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)
@@ -46,19 +44,18 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	public static NodeMap<JsLib> createAppNodeSet()
 	{
 		NodeMap<JsLib> appNodeSet = new NodeMap<>(JsLib.class, "libs", null);
-		appNodeSet.addAdditionalNamedLocation("caplin", "../../sdk/libs/javascript/caplin");
 		
 		return appNodeSet;
 	}
 	
-	@Override
-	public App getApp() {
-		return (App) parent;
+	public static NodeMap<ShallowJsLib> createSdkNonBladeRunnerLibNodeSet()
+	{
+		return new NodeMap<>(ShallowJsLib.class, "sdk/libs/javascript/thirdparty", null);
 	}
 	
-	@Override
-	public String requirePrefix() {
-		return "/" + namespace().replaceAll("\\.", "/");
+	public static NodeMap<ShallowJsLib> createAppNonBladeRunnerLibNodeSet()
+	{
+		return new NodeMap<>(ShallowJsLib.class, "thirdparty-libraries", null);
 	}
 	
 	@Override
@@ -75,7 +72,11 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	@Override
 	public String getName()
 	{
-		return name;
+		if (name != null)
+		{
+			return name;			
+		}
+		return dir().getName();
 	}
 	
 	@Override
@@ -90,9 +91,20 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 		NameValidator.assertValidDirectoryName(this);
 	}
 	
-	public App parentApp()
+	@Override
+	public Node parentNode()
 	{
-		return (App) parent;
+		return parent;
+	}
+	
+	@Override
+	public App getApp()
+	{
+		if (parent == root())
+		{
+			return root().systemApp("SDK");			
+		}
+		return super.getApp();
 	}
 	
 	public SourceAssetLocation src()
@@ -138,35 +150,17 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 		return getName();
 	}
 	
+
 	@Override
-	public List<SourceFile> sourceFiles() {
-		List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
-			
-		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-			for (AssetLocation assetLocation : getAllAssetLocations())
-			{
-				sourceFiles.addAll(bundlerPlugin.getSourceFiles(assetLocation));
-			}
-		}
-		
-		return sourceFiles;
+	public String toString()
+	{
+		return super.toString()+" - "+getName();
 	}
 	
 	
 	@Override
-	public SourceFile sourceFile(String requirePath) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public List<AssetLocation> getAllAssetLocations() {
-		List<AssetLocation> assetLocations = new ArrayList<>();
-		
-		assetLocations.add(resources());
-		assetLocations.add(src());
-		assetLocations.addAll(src().getChildAssetLocations()); // TODO: should we just be adding the src(), rather than all it's children?
-		
-		return assetLocations;
+	public String getTemplateName()
+	{
+		return JsLib.class.getSimpleName();
 	}
 }

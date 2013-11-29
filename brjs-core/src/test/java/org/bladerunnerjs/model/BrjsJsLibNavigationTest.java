@@ -8,14 +8,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JsLibNavigationTest
+public class BrjsJsLibNavigationTest
 {
 	private NodeTesterFactory<JsLib> nodeTesterFactory;
 	
 	@Before
 	public void setup()
 	{
-		nodeTesterFactory = new NodeTesterFactory<>(BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).sdkLib(), JsLib.class);
+		nodeTesterFactory = new NodeTesterFactory<JsLib>((JsLib) BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).sdkLib(), JsLib.class);
 	}
 	
 	@After

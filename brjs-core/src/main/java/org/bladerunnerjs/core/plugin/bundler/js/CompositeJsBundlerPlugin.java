@@ -52,7 +52,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 	
 	@Override
 	public String getTagName() {
-		return "js";
+		return "js.bundle";
 	}
 	
 	@Override
@@ -63,6 +63,11 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		writeTagContent(tagAttributes, false, bundleSet, locale, writer);
+	}
+	
+	@Override
+	public String getRequestPrefix() {
+		return "js";
 	}
 	
 	@Override
@@ -93,7 +98,8 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 				MinifierPlugin minifierPlugin = brjs.minifierPlugin(minifierSetting);
 				
 				try(Writer writer = new OutputStreamWriter(os)) {
-					minifierPlugin.minify(minifierSetting, getInputSources(request, bundleSet), writer);
+					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(request, bundleSet);
+					minifierPlugin.minify(minifierSetting, inputSources, writer);
 				}
 			}
 			catch(IOException e) {
@@ -164,7 +170,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 		return requestPaths;
 	}
 	
-	private List<InputSource> getInputSources(ParsedContentPath request, BundleSet bundleSet) throws BundlerProcessingException {
+	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath request, BundleSet bundleSet) throws BundlerProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {

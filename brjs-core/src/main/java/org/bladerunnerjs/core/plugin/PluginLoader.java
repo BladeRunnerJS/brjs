@@ -68,7 +68,7 @@ public class PluginLoader
 				logger.error(Messages.ERROR_CREATING_OBJECT_LOG_MSG, serviceError);
 			}
 		}
-		catch(NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+		catch(NullPointerException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 			throw new RuntimeException(e);
 		}
 		

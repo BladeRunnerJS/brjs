@@ -11,8 +11,9 @@ import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import com.caplin.cutlass.bundler.BladeRunnerFileAppender;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.App;
-import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.JsLib;
+
+import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 
 public class JsSeedBundlerFileAppender implements BladeRunnerFileAppender

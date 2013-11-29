@@ -15,6 +15,7 @@ import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
@@ -49,7 +50,7 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	
 	@Override
 	public String getTagName() {
-		return "node-js";
+		return getRequestPrefix();
 	}
 	
 	@Override
@@ -60,6 +61,11 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		writeTagContent(bundleSet, locale, writer);
+	}
+	
+	@Override
+	public String getRequestPrefix() {
+		return "node-js";
 	}
 	
 	@Override
@@ -123,7 +129,7 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	@Override
 	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 	{ 
-		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js")) {
+		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js") && !(assetLocation instanceof JsLib)) {
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceFile.class, "js");
 		}
 		else {

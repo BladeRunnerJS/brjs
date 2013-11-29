@@ -38,9 +38,9 @@ public abstract class AbstractNode implements Node
 	private ObserverList observers = new ObserverList();
 	private Map<String, NodeProperties> propertiesMap = new HashMap<String,NodeProperties>();
 	
-	protected RootNode rootNode;
-	protected Node parent;
-	protected File dir;
+	private RootNode rootNode;
+	private Node parent;
+	private File dir;
 	
 	@Override
 	public RootNode root()

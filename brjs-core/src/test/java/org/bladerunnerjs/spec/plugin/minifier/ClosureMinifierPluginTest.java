@@ -86,13 +86,13 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
-		given(blade).hasPackageStyle("novox.cjs", "caplin-js")
+		given(blade).hasPackageStyle("src/novox.cjs", "caplin-js")
 			.and(blade).hasPackageStyle("novox.node", "node.js")
 			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
 			.and(aspect).indexPageRefersTo("novox.cjs.Class")
-			.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class");
+			.and(blade).classRefersTo("novox.cjs.Class",  "novox.node.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("novox.node.Class=function(){};var Class=require(\"novox/node/Class\");novox.cjs.Class=function(){};");
+		then(response).textEquals("window.novox={\"cjs\":{\"Class\":{}}};novox.cjs.Class=function(){};br.extend(novox.cjs.Class,novox.node.Class);novox.cjs.Class=require(\"novox/cjs/Class\");novox.node.Class=function(){};");
 	}
 	
 }

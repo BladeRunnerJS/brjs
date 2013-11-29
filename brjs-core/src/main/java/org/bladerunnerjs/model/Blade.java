@@ -74,7 +74,7 @@ public class Blade extends AbstractComponent implements NamedNode
 	
 	public Bladeset parent()
 	{
-		return (Bladeset) parent;
+		return (Bladeset) parentNode();
 	}
 	
 	public Workbench workbench()

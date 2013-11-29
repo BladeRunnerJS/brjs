@@ -27,7 +27,7 @@ public class MockBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 	@Override
 	public String getTagName()
 	{
-		return "";
+		return getRequestPrefix();
 	}
 
 	@Override
@@ -45,6 +45,11 @@ public class MockBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 	{
 	}
 
+	@Override
+	public String getRequestPrefix() {
+		return "mock";
+	}
+	
 	@Override
 	public String getMimeType()
 	{

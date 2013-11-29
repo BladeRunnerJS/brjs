@@ -15,9 +15,9 @@ import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
+import org.bladerunnerjs.model.JsLib;
 
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.model.JsNonBladeRunnerLib;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
@@ -72,7 +72,7 @@ public class CheckCommand implements LegacyCommandPlugin
 		messageToShowUser.append("-- Application Details --\n");
 		
 		List<File> sdkLibsApplicationJars = Arrays.asList(BRJSAccessor.root.appJars().dir().listFiles(CAPLIN_JAR_FILE_NAME_FILTER));
-		List<JsNonBladeRunnerLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkNonBladeRunnerLibs();
+		List<JsLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkNonBladeRunnerLibs();
 		
 		for(App application : BRJSAccessor.root.apps())
 		{

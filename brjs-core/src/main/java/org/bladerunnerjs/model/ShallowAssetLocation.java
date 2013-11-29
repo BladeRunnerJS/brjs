@@ -26,7 +26,7 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	
 	@Override
 	public File dir() {
-		return dir;
+		return super.dir();
 	}
 	
 	@Override
@@ -85,7 +85,7 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	{
     	List<AssetLocation> resourcesList = new ArrayList<>();
     	
-    	File srcDir = dir;
+    	File srcDir = dir();
     	
     	while (srcDir != null)
     	{
