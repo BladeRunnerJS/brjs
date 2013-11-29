@@ -8,13 +8,14 @@ import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Test;
 
 public class WorkbenchBundlingTest extends SpecTest {
 	private App app;
+	@SuppressWarnings("unused")
 	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
+	@SuppressWarnings("unused")
 	private Workbench workbench;
 	private NamedDirNode workbenchTemplate;
 	

@@ -36,7 +36,7 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
 		requestParserBuilder
 			.accepts("node-js/bundle.js").as("bundle-request")
-				.and("node-js/module/<module>/bundle.js").as("single-module-request")
+				.and("node-js/module/<module>.js").as("single-module-request")
 			.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 		
 		requestParser = requestParserBuilder.build();

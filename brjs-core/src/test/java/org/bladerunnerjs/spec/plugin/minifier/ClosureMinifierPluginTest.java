@@ -71,7 +71,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		then(response).containsText(minifyAdvancedContent);
 	}
 	
-	
+	// TODO: talk to the team about these unreadable & unmaintainable tests
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
