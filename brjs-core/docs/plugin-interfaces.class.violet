@@ -58,19 +58,19 @@ List&lt;SourceFile&gt; getSourceFiles(SourceLocation sourceLocation)
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>596.0</double>
+      <double>171.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>495.0</double>
+      <double>483.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>596.0</double>
-     <double>495.0</double>
+     <double>171.0</double>
+     <double>483.0</double>
     </void>
    </object>
   </void>
@@ -198,19 +198,19 @@ void writeProdTagContent(Map&lt;String, String&gt; tagAttributes, BundleSet bund
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>-1.0</double>
+      <double>797.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>300.0</double>
+      <double>314.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>-1.0</double>
-     <double>300.0</double>
+     <double>797.0</double>
+     <double>314.0</double>
     </void>
    </object>
   </void>
@@ -287,7 +287,8 @@ void runTests(TestableNode node) throws TestException</string>
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode8">
     <void property="methods">
      <void property="text">
-      <string>String getMimeType()
+      <string>String getRequestPrefix()
+String getMimeType()
 ContentPathParser getContentPathParser()
 void writeContent(ParsedContentPath path, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 List&lt;String&gt; getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
@@ -305,19 +306,19 @@ List&lt;String&gt; getValidProdRequestPaths(BundleSet bundleSet, String locale) 
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>859.0</double>
+      <double>-3.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>302.0</double>
+      <double>314.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>859.0</double>
-     <double>302.0</double>
+     <double>-3.0</double>
+     <double>314.0</double>
     </void>
    </object>
   </void>
@@ -369,18 +370,6 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
    </object>
    <object idref="InterfaceNode0"/>
    <object idref="InterfaceNode6"/>
-  </void>
-  <void method="connect">
-   <object class="com.horstmann.violet.ClassRelationshipEdge">
-    <void property="bentStyle">
-     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
-    </void>
-    <void property="endArrowHead">
-     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
-    </void>
-   </object>
-   <object idref="InterfaceNode1"/>
-   <object idref="InterfaceNode5"/>
   </void>
   <void method="connect">
    <object class="com.horstmann.violet.ClassRelationshipEdge">
