@@ -104,7 +104,7 @@ public class BRJS extends AbstractBRJSRootNode
 		List<BundlerPlugin> foundBundlerPlugins = pluginLocator.getBundlerPlugins();
 		listFoundPlugins(foundBundlerPlugins);
 		for(BundlerPlugin bundlerPlugin :  foundBundlerPlugins) {
-			bundlerPlugins.put(bundlerPlugin.getTagName(), bundlerPlugin);
+			bundlerPlugins.put(bundlerPlugin.getRequestPrefix(), bundlerPlugin);
 		}
 	}
 

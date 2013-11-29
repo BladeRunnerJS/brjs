@@ -18,6 +18,11 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
+	public String getRequestPrefix() {
+		return contentPlugin.getRequestPrefix();
+	}
+	
+	@Override
 	public String getMimeType() {
 		return contentPlugin.getMimeType();
 	}

@@ -53,7 +53,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 	
 	@Override
 	public String getTagName() {
-		return "caplin-js";
+		return getRequestPrefix();
 	}
 	
 	@Override
@@ -64,6 +64,11 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		writeTagContent(bundleSet, locale, writer);
+	}
+	
+	@Override
+	public String getRequestPrefix() {
+		return "caplin-js";
 	}
 	
 	@Override
@@ -142,6 +147,8 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 	{
 		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js") && !(assetLocation instanceof JsLib)) {
+			// TODO: blow up if the package of the assetLocation would not be a valid namespace
+			
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, CaplinJsSourceFile.class, "js");
 		}
 		else {

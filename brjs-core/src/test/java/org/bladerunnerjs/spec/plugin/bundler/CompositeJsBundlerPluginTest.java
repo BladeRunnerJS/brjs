@@ -23,13 +23,11 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 	}
 	
-	// TODO: switch all tags back to <@js.bundle@/>
-	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGeneratedByDefeault() throws Exception {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).indexPageHasContent("<@js@/>");
+			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("node-js/module/novox/Class1.js");
 	}
@@ -38,7 +36,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void inProdASingleBundlerRequestIsGeneratedByDefault() throws Exception {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).indexPageHasContent("<@js@/>");
+			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).pageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/prod/en_GB/combined/bundle.js");
 	}
@@ -47,7 +45,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	@Ignore
 	@Test
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
-		given(aspect).indexPageHasContent("<@js@/>");
+		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).isEmpty();
 	}
@@ -55,7 +53,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	@Ignore
 	@Test
 	public void devMinifierAttributeCanAllowJsFilesToBeCombinedEvenInDev() throws Exception {
-		given(aspect).indexPageHasContent("<@js dev-minifier='combined'@/>");
+		given(aspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/dev/en_GB/combined/bundle.js");
 	}
@@ -65,7 +63,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).indexPageHasContent("<@js prod-minifier='none'@/>");
+			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("node-js/module/novox/Class1.js");
 	}

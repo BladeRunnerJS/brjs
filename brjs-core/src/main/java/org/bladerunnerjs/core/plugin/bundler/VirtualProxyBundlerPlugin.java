@@ -30,6 +30,11 @@ public class VirtualProxyBundlerPlugin extends VirtualProxyPlugin implements Bun
 	}
 	
 	@Override
+	public String getRequestPrefix() {
+		return bundlerPlugin.getRequestPrefix();
+	}
+	
+	@Override
 	public String getMimeType() {
 		return bundlerPlugin.getMimeType();
 	}

@@ -36,7 +36,12 @@ public class MockContentPlugin extends AbstractContentPlugin implements ContentP
 	public void setBRJS(BRJS brjs)
 	{
 	}
-
+	
+	@Override
+	public String getRequestPrefix() {
+		return "mock";
+	}
+	
 	@Override
 	public String getMimeType()
 	{

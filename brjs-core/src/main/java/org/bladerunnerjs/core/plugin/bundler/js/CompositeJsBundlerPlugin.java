@@ -52,7 +52,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 	
 	@Override
 	public String getTagName() {
-		return "js";
+		return "js.bundle";
 	}
 	
 	@Override
@@ -63,6 +63,11 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		writeTagContent(tagAttributes, false, bundleSet, locale, writer);
+	}
+	
+	@Override
+	public String getRequestPrefix() {
+		return "js";
 	}
 	
 	@Override

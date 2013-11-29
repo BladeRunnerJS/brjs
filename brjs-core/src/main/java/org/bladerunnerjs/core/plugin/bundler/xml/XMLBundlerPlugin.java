@@ -33,10 +33,11 @@ public class XMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerPl
 		requestParser = requestParserBuilder.build();
 	}
 	
+	// TODO: not all bundlers are tag handlers, so make this optional
 	@Override
 	public String getTagName()
 	{
-		return "xml";
+		return getRequestPrefix();
 	}
 
 	@Override
@@ -56,6 +57,11 @@ public class XMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerPl
 	{
 	}
 
+	@Override
+	public String getRequestPrefix() {
+		return "xml";
+	}
+	
 	@Override
 	public String getMimeType()
 	{

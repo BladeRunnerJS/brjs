@@ -33,10 +33,11 @@ public class HTMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 		requestParser = requestParserBuilder.build();
 	}
 	
+	// TODO: not all bundlers are tag handlers, so make this optional
 	@Override
 	public String getTagName()
 	{
-		return "html";
+		return getRequestPrefix();
 	}
 
 	@Override
@@ -55,7 +56,12 @@ public class HTMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 	public void setBRJS(BRJS brjs)
 	{
 	}
-
+	
+	@Override
+	public String getRequestPrefix() {
+		return "html";
+	}
+	
 	@Override
 	public String getMimeType()
 	{
