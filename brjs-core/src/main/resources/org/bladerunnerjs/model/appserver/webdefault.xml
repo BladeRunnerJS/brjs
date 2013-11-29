@@ -340,12 +340,10 @@
   <!-- resource in the org.eclipse.jetty.server.jar file.  Additional or modified  -->
   <!-- mappings may be specified here                                       -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-  <!-- UNCOMMENT TO ACTIVATE
   <mime-mapping>
-    <extension>mysuffix</extension>
-    <mime-type>mymime/type</mime-type>
+    <extension>js</extension>
+    <mime-type>text/javascript</mime-type>
   </mime-mapping>
-  -->
 
   <!-- ==================================================================== -->
   <welcome-file-list>
