@@ -11,7 +11,7 @@ public class XmlBuilderSerializer {
 		Properties outputProperties = new Properties();
 		outputProperties.put(javax.xml.transform.OutputKeys.INDENT, "yes");
 		outputProperties.put("{http://xml.apache.org/xslt}indent-amount", "4");
-		System.setProperty("javax.xml.transform.TransformerFactory", "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+		System.setProperty("javax.xml.transform.TransformerFactory", "org.apache.xalan.processor.TransformerFactoryImpl");
 		
 		return builder.asString(outputProperties);
 	}
