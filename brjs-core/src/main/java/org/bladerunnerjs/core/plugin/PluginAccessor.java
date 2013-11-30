@@ -35,7 +35,7 @@ public class PluginAccessor {
 		return commandList;
 	}
 	
-	public List<CommandPlugin> command() {
+	public List<CommandPlugin> commands() {
 		return commandList.getPluginCommands();
 	}
 	
@@ -44,17 +44,6 @@ public class PluginAccessor {
 		contentPlugins.addAll(pluginLocator.getContentPlugins());
 		contentPlugins.addAll(bundlers());
 		return new ArrayList<ContentPlugin>(contentPlugins);
-	}
-	
-	/**
-	 * Returns *all* plugins that are servlets. This includes ContentPlugins and
-	 * BundlerPlugins since BundlerPlugin extends the interface.
-	 */
-	public List<ContentPlugin> allContentProviders() {
-		List<ContentPlugin> contentPlugins = new ArrayList<>();
-		contentPlugins.addAll(contentProviders());
-		contentPlugins.addAll(bundlers());
-		return contentPlugins;
 	}
 	
 	public BundlerPlugin bundler(String bundlerName) {
