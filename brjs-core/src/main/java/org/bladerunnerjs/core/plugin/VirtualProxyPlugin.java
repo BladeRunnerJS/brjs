@@ -39,14 +39,14 @@ public class VirtualProxyPlugin implements Plugin {
 	@Override
 	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 	{
-		return getUnderlyingPlugin().getClass().equals(otherPluginCLass);
+		return otherPluginCLass.isAssignableFrom(plugin.getClass());
 	}
 	
 	@Override
-	public boolean equals(Object o)
+	public boolean equals(Object object)
 	{
-		Plugin p = (Plugin) o;
-		return p == getUnderlyingPlugin();
+		Plugin otherPlugin = (object instanceof VirtualProxyPlugin) ? ((VirtualProxyPlugin) object).getUnderlyingPlugin() : (Plugin) object;
+		
+		return plugin == otherPlugin;
 	}
-	
 }
