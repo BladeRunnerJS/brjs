@@ -12,4 +12,9 @@ public abstract class AbstractModelObserverPlugin implements ModelObserverPlugin
 	{
 		throw new InstanceOfShouldntBeInvokedException();
 	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
+	}
 }

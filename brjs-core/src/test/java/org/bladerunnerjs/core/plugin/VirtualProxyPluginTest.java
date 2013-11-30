@@ -37,5 +37,10 @@ public class VirtualProxyPluginTest {
 		public boolean instanceOf(Class<? extends Plugin> otherPluginCLass) {
 			throw new RuntimeException("This method should never be called");
 		}
+		
+		@Override
+		public Class<?> getPluginClass() {
+			return this.getClass();
+		}
 	}
 }

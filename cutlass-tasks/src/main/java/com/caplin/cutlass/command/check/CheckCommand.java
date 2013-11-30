@@ -10,6 +10,7 @@ import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
+
 import org.bladerunnerjs.core.console.ConsoleWriter;
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.model.App;
@@ -18,6 +19,7 @@ import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.JsLib;
 
 import com.caplin.cutlass.BRJSAccessor;
+
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
@@ -90,5 +92,10 @@ public class CheckCommand implements LegacyCommandPlugin
 	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 	{
 		throw new InstanceOfShouldntBeInvokedException();
+	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
 	}
 }

@@ -21,4 +21,9 @@ public class MyTestInterfaceImplementerBadConstructor implements MyTestInterface
 	{
 		throw new InstanceOfShouldntBeInvokedException();
 	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
+	}
 }

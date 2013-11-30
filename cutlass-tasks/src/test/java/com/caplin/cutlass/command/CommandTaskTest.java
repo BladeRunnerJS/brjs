@@ -8,7 +8,6 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import org.bladerunnerjs.core.console.ConsoleWriter;
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
@@ -87,6 +86,11 @@ public class CommandTaskTest
 		public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 		{
 			throw new InstanceOfShouldntBeInvokedException();
+		}
+		
+		@Override
+		public Class<?> getPluginClass() {
+			return this.getClass();
 		}
 	}
 

@@ -18,7 +18,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.lang3.StringUtils;
-
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
@@ -28,11 +27,14 @@ import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
+
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
@@ -222,5 +224,10 @@ public class ThirdPartyBundler implements LegacyFileBundlerPlugin
 	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 	{
 		throw new InstanceOfShouldntBeInvokedException();
+	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
 	}
 }

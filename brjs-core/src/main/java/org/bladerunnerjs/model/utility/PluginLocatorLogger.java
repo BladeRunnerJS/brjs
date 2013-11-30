@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.PluginLocator;
-import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.model.BRJS.Messages;
 
 public class PluginLocatorLogger {
@@ -18,12 +17,8 @@ public class PluginLocatorLogger {
 	}
 	
 	private static void listFoundPlugins(org.bladerunnerjs.core.log.Logger logger, List<? extends Plugin> plugins) {
-		for (Plugin p : plugins) {
-			if (p instanceof VirtualProxyPlugin) {
-				p = ((VirtualProxyPlugin) p).getUnderlyingPlugin();
-			}
-			
-			logger.debug(Messages.PLUGIN_FOUND_MSG, p.getClass().getCanonicalName());
+		for (Plugin plugin : plugins) {
+			logger.debug(Messages.PLUGIN_FOUND_MSG, plugin.getPluginClass().getCanonicalName());
 		}
 	}
 }

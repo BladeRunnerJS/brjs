@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -32,7 +33,6 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
@@ -43,9 +43,12 @@ import org.bladerunnerjs.model.sinbin.AppMetaData;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
+
 import com.caplin.cutlass.ServletModelAccessor;
+
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 
 public class BundlerServletTest
@@ -346,6 +349,11 @@ public class BundlerServletTest
 			public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 			{
 				throw new InstanceOfShouldntBeInvokedException();
+			}
+			
+			@Override
+			public Class<?> getPluginClass() {
+				return this.getClass();
 			}
 		};
 		bundlerServlet.bundlers = Arrays.asList(dummyBundler);

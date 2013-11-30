@@ -11,4 +11,9 @@ public abstract class AbstractCommandPlugin implements CommandPlugin
 	{
 		throw new InstanceOfShouldntBeInvokedException();
 	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
+	}
 }

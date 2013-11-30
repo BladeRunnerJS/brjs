@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model;
 
-
+// TODO: should we change the contract, and just require instanceOf() to be implemented?
 public class InstanceOfShouldntBeInvokedException extends RuntimeException
 {
 	private static final long serialVersionUID = 1005007633653118598L;

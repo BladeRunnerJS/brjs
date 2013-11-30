@@ -210,4 +210,9 @@ public class WarCommand implements LegacyCommandPlugin
 	{
 		throw new InstanceOfShouldntBeInvokedException();
 	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
+	}
 }

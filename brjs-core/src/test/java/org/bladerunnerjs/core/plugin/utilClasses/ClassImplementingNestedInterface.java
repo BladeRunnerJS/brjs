@@ -15,4 +15,9 @@ public class ClassImplementingNestedInterface implements InterfaceExtendingAnoth
 	{
 		throw new InstanceOfShouldntBeInvokedException();
 	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
+	}
 }

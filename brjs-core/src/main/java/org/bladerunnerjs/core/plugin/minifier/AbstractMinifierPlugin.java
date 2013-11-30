@@ -11,4 +11,9 @@ public abstract class AbstractMinifierPlugin implements MinifierPlugin
 	{
 		throw new InstanceOfShouldntBeInvokedException();
 	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
+	}
 }

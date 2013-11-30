@@ -11,4 +11,9 @@ public abstract class AbstractTagHandlerPlugin implements TagHandlerPlugin
 	{
 		throw new InstanceOfShouldntBeInvokedException();
 	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
+	}
 }

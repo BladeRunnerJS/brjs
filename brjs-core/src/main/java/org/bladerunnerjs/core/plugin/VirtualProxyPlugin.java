@@ -31,15 +31,15 @@ public class VirtualProxyPlugin implements Plugin {
 		this.brjs = brjs;
 	}
 	
-	public Plugin getUnderlyingPlugin()
-	{
-		return plugin;
-	}
-	
 	@Override
 	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 	{
 		return otherPluginCLass.isAssignableFrom(plugin.getClass());
+	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return plugin.getClass();
 	}
 	
 	@Override
@@ -48,5 +48,10 @@ public class VirtualProxyPlugin implements Plugin {
 		Plugin otherPlugin = (object instanceof VirtualProxyPlugin) ? ((VirtualProxyPlugin) object).getUnderlyingPlugin() : (Plugin) object;
 		
 		return plugin == otherPlugin;
+	}
+	
+	private Plugin getUnderlyingPlugin()
+	{
+		return plugin;
 	}
 }
