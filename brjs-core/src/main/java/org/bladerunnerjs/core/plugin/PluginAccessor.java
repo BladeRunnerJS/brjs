@@ -31,24 +31,24 @@ public class PluginAccessor {
 		return commandList.getPluginCommands();
 	}
 	
+	public ContentPlugin contentProvider(String requestPrefix) {
+		ContentPlugin contentPlugin = null;
+		
+		for (ContentPlugin nextContentPlugin : contentProviders()) {
+			if(nextContentPlugin.getRequestPrefix().equals(requestPrefix)) {
+				contentPlugin = nextContentPlugin;
+				break;
+			}
+		}
+		
+		return contentPlugin;
+	}
+	
 	public List<ContentPlugin> contentProviders() {
 		Set<ContentPlugin> contentPlugins = new HashSet<ContentPlugin>();
 		contentPlugins.addAll(pluginLocator.getContentPlugins());
 		contentPlugins.addAll(bundlers());
 		return new ArrayList<ContentPlugin>(contentPlugins);
-	}
-	
-	public BundlerPlugin bundler(String requestPrefix) {
-		BundlerPlugin bundler = null;
-		
-		for (BundlerPlugin nextBundler : pluginLocator.getBundlerPlugins()) {
-			if(nextBundler.getRequestPrefix().equals(requestPrefix)) {
-				bundler = nextBundler;
-				break;
-			}
-		}
-		
-		return bundler;
 	}
 	
 	public List<BundlerPlugin> bundlers() {

@@ -5,7 +5,7 @@ import java.io.OutputStream;
 
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
@@ -47,12 +47,12 @@ public class LogicalRequestHandler {
 			String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 			logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getClass().getSimpleName(), name, requestUri.logicalPath);
 			
-			BundlerPlugin bundler = app.root().plugins().bundler(getResourceBundlerName(requestUri));
+			ContentPlugin contentProvider = app.root().plugins().contentProvider(getResourceBundlerName(requestUri));
 			
-			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, bundler.getPluginClass().getSimpleName(), requestUri.logicalPath);
+			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), requestUri.logicalPath);
 			
-			ParsedContentPath parsedRequest = bundler.getContentPathParser().parse(requestUri);
-			bundler.writeContent(parsedRequest, bundlableNode.getBundleSet(), os);
+			ParsedContentPath parsedRequest = contentProvider.getContentPathParser().parse(requestUri);
+			contentProvider.writeContent(parsedRequest, bundlableNode.getBundleSet(), os);
 		}
 		catch(ModelOperationException e) {
 			throw new BundlerProcessingException(e);
