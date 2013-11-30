@@ -26,7 +26,7 @@ public class TagPluginUtility {
 	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale) throws IOException, NoTagHandlerFoundException
 	{
 		BRJS brjs = bundleSet.getBundlableNode().root();
-		List<TagHandlerPlugin> tagHandlerPlugins = brjs.tagHandlers();
+		List<TagHandlerPlugin> tagHandlerPlugins = brjs.plugins().tagHandlers();
 		
 		Matcher matcher = tagPattern.matcher(content);
 		StringBuffer result = new StringBuffer();

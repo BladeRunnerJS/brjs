@@ -120,7 +120,7 @@ public class CommandRunner {
 	
 	private void injectLegacyCommands(BRJS brjs) {
 		try {
-			CommandList commandList = brjs.commandList();
+			CommandList commandList = brjs.plugins().commandList();
 			commandList.addCommand(new DependencyAnalyserCommand(brjs));
 			commandList.addCommand(new CheckCommand());
 			commandList.addCommand(new CopyBladesetCommand( brjs.root().dir() ));

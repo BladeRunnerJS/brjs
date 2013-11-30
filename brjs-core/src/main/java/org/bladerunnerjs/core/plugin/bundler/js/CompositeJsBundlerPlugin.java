@@ -95,7 +95,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 		if(request.formName.equals("dev-bundle-request") || request.formName.equals("prod-bundle-request")) {
 			try {
 				String minifierSetting = request.properties.get("minifier-setting");
-				MinifierPlugin minifierPlugin = brjs.minifierPlugin(minifierSetting);
+				MinifierPlugin minifierPlugin = brjs.plugins().minifier(minifierSetting);
 				
 				try(Writer writer = new OutputStreamWriter(os)) {
 					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(request, bundleSet);
@@ -135,7 +135,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 		String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
 		
 		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+			for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
 				if( !bundlerPlugin.equals(this) ) {
 					if(isDev) {
 						bundlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
@@ -156,7 +156,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+		for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
 			if( !bundlerPlugin.equals(this) ) {
 				if(isDev) {
 					requestPaths.addAll(bundlerPlugin.getValidDevRequestPaths(bundleSet, locale));
@@ -176,7 +176,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 		try {
 			String charsetName = brjs.bladerunnerConf().getDefaultOutputEncoding();
 			
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
+			for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
 				if( !bundlerPlugin.equals(this) ) {
 					String locale = request.properties.get("locale");
 					List<String> requestPaths = (request.formName.equals("dev-bundle-request")) ? bundlerPlugin.getValidDevRequestPaths(bundleSet, locale) :

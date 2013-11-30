@@ -13,10 +13,10 @@ import org.bladerunnerjs.model.BRJS;
 public interface PluginLocator
 {
 	void createPlugins(BRJS brjs);
-	List<BundlerPlugin> getBundlerPlugins();
 	List<CommandPlugin> getCommandPlugins();
-	List<ModelObserverPlugin> getModelObservers();
-	List<MinifierPlugin> getMinifiers();
 	List<ContentPlugin> getContentPlugins();
-	List<TagHandlerPlugin> getTagHandlers();
+	List<BundlerPlugin> getBundlerPlugins();
+	List<TagHandlerPlugin> getTagHandlerPlugins();
+	List<MinifierPlugin> getMinifierPlugins();
+	List<ModelObserverPlugin> getModelObserverPlugins();
 }

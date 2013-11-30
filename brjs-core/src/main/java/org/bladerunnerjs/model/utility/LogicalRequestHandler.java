@@ -48,7 +48,7 @@ public class LogicalRequestHandler {
 			String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 			logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getClass().getSimpleName(), name, requestUri.logicalPath);
 			
-			BundlerPlugin bundler = app.root().bundlerPlugin(getResourceBundlerName(requestUri));
+			BundlerPlugin bundler = app.root().plugins().bundler(getResourceBundlerName(requestUri));
 			
 			BundlerPlugin realBundler = (BundlerPlugin) ((bundler instanceof VirtualProxyBundlerPlugin) ? ((VirtualProxyBundlerPlugin) bundler).getUnderlyingPlugin() : bundler);
 			

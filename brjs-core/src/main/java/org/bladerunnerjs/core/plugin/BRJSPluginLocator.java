@@ -48,13 +48,13 @@ public class BRJSPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<ModelObserverPlugin> getModelObservers()
+	public List<ModelObserverPlugin> getModelObserverPlugins()
 	{
 		return observerPlugins;
 	}
 	
 	@Override
-	public List<MinifierPlugin> getMinifiers() {
+	public List<MinifierPlugin> getMinifierPlugins() {
 		return minifierPlugins;
 	}
 	
@@ -64,7 +64,7 @@ public class BRJSPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<TagHandlerPlugin> getTagHandlers() {
+	public List<TagHandlerPlugin> getTagHandlerPlugins() {
 		return tagHandlerPlugins;
 	}
 }

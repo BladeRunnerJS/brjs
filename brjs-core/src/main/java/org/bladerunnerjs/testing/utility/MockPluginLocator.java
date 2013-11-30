@@ -49,13 +49,13 @@ public class MockPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<ModelObserverPlugin> getModelObservers()
+	public List<ModelObserverPlugin> getModelObserverPlugins()
 	{
 		return modelObservers;
 	}
 	
 	@Override
-	public List<MinifierPlugin> getMinifiers() {
+	public List<MinifierPlugin> getMinifierPlugins() {
 		return minifiers;
 	}
 	
@@ -65,7 +65,7 @@ public class MockPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<TagHandlerPlugin> getTagHandlers() {
+	public List<TagHandlerPlugin> getTagHandlerPlugins() {
 		return tagHandlers;
 	}
 	
