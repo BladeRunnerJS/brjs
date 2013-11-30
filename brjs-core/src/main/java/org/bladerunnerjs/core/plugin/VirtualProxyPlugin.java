@@ -45,13 +45,8 @@ public class VirtualProxyPlugin implements Plugin {
 	@Override
 	public boolean equals(Object object)
 	{
-		Plugin otherPlugin = (object instanceof VirtualProxyPlugin) ? ((VirtualProxyPlugin) object).getUnderlyingPlugin() : (Plugin) object;
+		Plugin otherPlugin = (object instanceof VirtualProxyPlugin) ? ((VirtualProxyPlugin) object).plugin : (Plugin) object;
 		
 		return plugin == otherPlugin;
-	}
-	
-	private Plugin getUnderlyingPlugin()
-	{
-		return plugin;
 	}
 }
