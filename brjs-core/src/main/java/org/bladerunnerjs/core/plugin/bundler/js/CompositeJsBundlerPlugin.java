@@ -10,10 +10,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.core.plugin.bundler.AbstractBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.minifier.InputSource;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.js.MinifierSetting;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.AssetLocation;
@@ -30,7 +32,7 @@ import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 
 
-public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin {
+public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin {
 	private ContentPathParser requestParser = (new RequestParserBuilder()).build();
 	private BRJS brjs;
 	
@@ -136,12 +138,14 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 		
 		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
 			for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
-				if( !bundlerPlugin.equals(this) ) {
+				if((bundlerPlugin.instanceOf(TagHandlerPlugin.class)) && !bundlerPlugin.equals(this)) {
+					TagHandlerPlugin tagHandler = (TagHandlerPlugin) ((VirtualProxyPlugin) bundlerPlugin).getUnderlyingPlugin();
+					
 					if(isDev) {
-						bundlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
+						tagHandler.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
 					}
 					else {
-						bundlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
+						tagHandler.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
 					}
 				}
 			}

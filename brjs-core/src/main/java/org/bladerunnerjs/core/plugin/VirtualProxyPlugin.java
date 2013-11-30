@@ -49,4 +49,10 @@ public class VirtualProxyPlugin implements Plugin {
 		
 		return plugin == otherPlugin;
 	}
+	
+	public Plugin getUnderlyingPlugin() {
+		initializePlugin();
+		
+		return plugin;
+	}
 }

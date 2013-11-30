@@ -68,10 +68,7 @@ public class PluginAccessor {
 	}
 	
 	public List<TagHandlerPlugin> tagHandlers() {
-		Set<TagHandlerPlugin> tagHandlers = new HashSet<TagHandlerPlugin>();
-		tagHandlers.addAll(pluginLocator.getTagHandlerPlugins());
-		tagHandlers.addAll(bundlers());
-		return new ArrayList<TagHandlerPlugin>(tagHandlers);
+		return pluginLocator.getTagHandlerPlugins();
 	}
 	
 	public List<MinifierPlugin> minifiers() {

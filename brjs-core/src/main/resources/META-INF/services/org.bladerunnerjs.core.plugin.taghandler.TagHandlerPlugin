@@ -1,0 +1,4 @@
+org.bladerunnerjs.core.plugin.bundler.js.CompositeJsBundlerPlugin
+org.bladerunnerjs.core.plugin.bundlesource.js.CaplinJsBundlerPlugin
+org.bladerunnerjs.core.plugin.bundlesource.js.NodeJsBundlerPlugin
+org.bladerunnerjs.core.plugin.bundler.js.ThirdpartyBundlerPlugin

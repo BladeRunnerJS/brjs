@@ -1,10 +1,7 @@
 package org.bladerunnerjs.core.plugin.bundler;
 
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.model.AssetFile;
@@ -25,11 +22,6 @@ public class VirtualProxyBundlerPlugin extends VirtualProxyPlugin implements Bun
 	}
 	
 	@Override
-	public String getTagName() {
-		return bundlerPlugin.getTagName();
-	}
-	
-	@Override
 	public String getRequestPrefix() {
 		return bundlerPlugin.getRequestPrefix();
 	}
@@ -37,18 +29,6 @@ public class VirtualProxyBundlerPlugin extends VirtualProxyPlugin implements Bun
 	@Override
 	public String getMimeType() {
 		return bundlerPlugin.getMimeType();
-	}
-	
-	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		initializePlugin();
-		bundlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
-	}
-	
-	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		initializePlugin();
-		bundlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
 	}
 	
 	@Override
