@@ -1,10 +1,8 @@
 package org.bladerunnerjs.core.plugin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,16 +17,10 @@ import org.bladerunnerjs.model.BRJS;
 public class PluginAccessor {
 	private final PluginLocator pluginLocator;
 	private final CommandList commandList;
-	private final Map<String, BundlerPlugin> bundlers = new HashMap<String, BundlerPlugin>();
 	
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		this.pluginLocator = pluginLocator;
-		
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
-		
-		for (BundlerPlugin bundlerPlugin : pluginLocator.getBundlerPlugins()) {
-			bundlers.put(bundlerPlugin.getRequestPrefix(), bundlerPlugin);
-		}
 	}
 	
 	public CommandList commandList() {
@@ -46,12 +38,21 @@ public class PluginAccessor {
 		return new ArrayList<ContentPlugin>(contentPlugins);
 	}
 	
-	public BundlerPlugin bundler(String bundlerName) {
-		return bundlers.get(bundlerName);
+	public BundlerPlugin bundler(String requestPrefix) {
+		BundlerPlugin bundler = null;
+		
+		for (BundlerPlugin nextBundler : pluginLocator.getBundlerPlugins()) {
+			if(nextBundler.getRequestPrefix().equals(requestPrefix)) {
+				bundler = nextBundler;
+				break;
+			}
+		}
+		
+		return bundler;
 	}
 	
 	public List<BundlerPlugin> bundlers() {
-		return new ArrayList<BundlerPlugin>(bundlers.values());
+		return pluginLocator.getBundlerPlugins();
 	}
 	
 	public List<BundlerPlugin> bundlers(String mimeType) {
