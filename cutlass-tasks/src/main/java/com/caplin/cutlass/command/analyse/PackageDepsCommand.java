@@ -6,11 +6,13 @@ import org.bladerunnerjs.core.console.ConsoleWriter;
 import org.bladerunnerjs.core.plugin.Plugin;
 
 import com.caplin.cutlass.BRJSAccessor;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyser;
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyserFactory;
 import com.caplin.cutlass.bundler.js.analyser.PackageDepsCodeUnitVisitor;
@@ -79,5 +81,10 @@ public class PackageDepsCommand implements LegacyCommandPlugin
 	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 	{
 		throw new InstanceOfShouldntBeInvokedException();
+	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
 	}
 }

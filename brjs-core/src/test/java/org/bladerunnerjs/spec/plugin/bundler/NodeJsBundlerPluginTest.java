@@ -15,6 +15,7 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).automaticallyFindsBundlers()
+			.and(brjs).automaticallyFindsTagHandlers()
 			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
@@ -23,6 +24,8 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFilesRequestedAreGeneratedByDefeault() throws Exception {
+		given(exceptions).arentCaught();
+		
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).indexPageHasContent("<@node-js@/>");

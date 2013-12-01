@@ -42,7 +42,7 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	public List<LinkedAssetFile> seedResources() {
 		List<LinkedAssetFile> seedResources = new LinkedList<LinkedAssetFile>();
 			
-		for(BundlerPlugin bundlerPlugin : root().bundlerPlugins()) {
+		for(BundlerPlugin bundlerPlugin : root().plugins().bundlers()) {
 			seedResources.addAll(bundlerPlugin.getLinkedResourceFiles(this));
 		}
 		
@@ -67,7 +67,7 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	public List<AssetFile> bundleResources(String fileExtension) {
 		List<AssetFile> bundleResources = new LinkedList<AssetFile>();
 		
-		for(BundlerPlugin bundlerPlugin : root().bundlerPlugins()) {
+		for(BundlerPlugin bundlerPlugin : root().plugins().bundlers()) {
 			bundleResources.addAll(bundlerPlugin.getResourceFiles(this));
 		}
 		

@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
 
@@ -55,5 +56,10 @@ public class TestServerCommand implements LegacyCommandPlugin
 	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 	{
 		throw new InstanceOfShouldntBeInvokedException();
+	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
 	}
 }

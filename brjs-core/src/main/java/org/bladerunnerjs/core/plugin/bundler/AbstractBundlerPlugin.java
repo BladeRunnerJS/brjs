@@ -10,4 +10,9 @@ public abstract class AbstractBundlerPlugin implements BundlerPlugin
 	{
 		throw new InstanceOfShouldntBeInvokedException();
 	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
+	}
 }

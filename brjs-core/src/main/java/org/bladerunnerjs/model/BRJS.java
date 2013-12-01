@@ -3,14 +3,11 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.console.ConsoleWriter;
 import org.bladerunnerjs.core.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.core.log.LogConfiguration;
@@ -19,14 +16,9 @@ import org.bladerunnerjs.core.log.LoggerFactory;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
 import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
-import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.core.plugin.PluginAccessor;
 import org.bladerunnerjs.core.plugin.PluginLocator;
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandList;
-import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
-import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.engine.Node;
@@ -72,11 +64,10 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	private final Logger logger;
 	private final CommandList commandList;
-	private final Map<String, BundlerPlugin> bundlerPlugins;
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
-	private PluginLocator pluginLocator;
+	private final PluginAccessor pluginAccessor;
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
@@ -88,21 +79,13 @@ public class BRJS extends AbstractBRJSRootNode
 		pluginLocator.createPlugins(this);
 		PluginLocatorLogger.logPlugins(logger, pluginLocator);
 		
-		
-		
 		logger.info(Messages.PERFORMING_NODE_DISCOVERY_LOG_MSG);
 		discoverAllChildren();
 		
 		logger.info(Messages.MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
-		this.pluginLocator = pluginLocator;
-		List<CommandPlugin> foundCommandPlugins = pluginLocator.getCommandPlugins();
-		commandList = new CommandList(this, foundCommandPlugins);
 		
-		bundlerPlugins = new HashMap<String,BundlerPlugin>();
-		List<BundlerPlugin> foundBundlerPlugins = pluginLocator.getBundlerPlugins();
-		for(BundlerPlugin bundlerPlugin :  foundBundlerPlugins) {
-			bundlerPlugins.put(bundlerPlugin.getRequestPrefix(), bundlerPlugin);
-		}
+		pluginAccessor = new PluginAccessor(this, pluginLocator);
+		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 	}
 
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
@@ -284,9 +267,8 @@ public class BRJS extends AbstractBRJSRootNode
 		return testRunnerConf;
 	}
 	
-	public CommandList commandList()
-	{
-		return commandList;
+	public PluginAccessor plugins() {
+		return pluginAccessor;
 	}
 	
 	public void runCommand(String... args) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
@@ -313,90 +295,6 @@ public class BRJS extends AbstractBRJSRootNode
 			appServers.put(port, appServer);
 		}
 		return appServer;
-	}
-	
-	public BundlerPlugin bundlerPlugin(String bundlerName) {
-		return bundlerPlugins.get(bundlerName);
-	}
-	
-	public List<BundlerPlugin> bundlerPlugins() {
-		return new ArrayList<BundlerPlugin>(bundlerPlugins.values());
-	}
-	
-	public List<BundlerPlugin> bundlerPlugins(String mimeType) {
-		List<BundlerPlugin> bundlerPlugins = new ArrayList<>();
-		
-		for(BundlerPlugin bundlerPlugin : bundlerPlugins()) {
-			if(bundlerPlugin.getMimeType().equals(mimeType)) {
-				bundlerPlugins.add(bundlerPlugin);
-			}
-		}
-		
-		return bundlerPlugins;
-	}
-	
-	public List<MinifierPlugin> minifierPlugins() {
-		return pluginLocator.getMinifiers();
-	}
-	
-	public MinifierPlugin minifierPlugin(String minifierSetting) {
-		
-		List<String> validMinifySettings = new ArrayList<String>();
-		MinifierPlugin pluginForMinifierSetting = null;
-		
-		for(MinifierPlugin minifierPlugin : minifierPlugins()) {
-			for (String setting : minifierPlugin.getSettingNames())
-			{
-				validMinifySettings.add(setting);
-				if (setting.equals(minifierSetting))
-				{
-					pluginForMinifierSetting = (pluginForMinifierSetting == null) ? minifierPlugin : pluginForMinifierSetting;
-				}
-			}
-		}
-		
-		if (pluginForMinifierSetting != null)
-		{
-			return pluginForMinifierSetting;
-		}
-		
-		throw new RuntimeException( "No minifier plugin for minifier setting '" + minifierSetting + "'. Valid settings are: " + StringUtils.join(validMinifySettings, ", ") );
-	}	
-	
-	public List<ContentPlugin> contentPlugins() {
-		Set<ContentPlugin> contentPlugins = new HashSet<ContentPlugin>();
-		contentPlugins.addAll( pluginLocator.getContentPlugins() );
-		contentPlugins.addAll( bundlerPlugins() );
-		return new ArrayList<ContentPlugin>( contentPlugins );
-	}
-	
-	public List<CommandPlugin> commandPlugins()
-	{
-		return commandList().getPluginCommands();
-	}
-	
-	public List<ModelObserverPlugin> modelObserverPlugins()
-	{
-		return pluginLocator.getModelObservers();
-	}
-	
-	public List<TagHandlerPlugin> tagHandlers()
-	{
-		Set<TagHandlerPlugin> tagHandlers = new HashSet<TagHandlerPlugin>();
-		tagHandlers.addAll( pluginLocator.getTagHandlers() );
-		tagHandlers.addAll( bundlerPlugins() );
-		return new ArrayList<TagHandlerPlugin>( tagHandlers );
-	}
-	
-	
-	/**
-	 * Returns *all* plugins that are servlets. This includes ContentPlugins and BundlerPlugins since BundlerPlugin extends the interface.
-	 */
-	public List<ContentPlugin> allContentPlugins() {
-		List<ContentPlugin> contentPlugins = new ArrayList<>();
-		contentPlugins.addAll(contentPlugins());
-		contentPlugins.addAll(bundlerPlugins());
-		return contentPlugins;
 	}
 	
 	public <AF extends AssetFile> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... fileNames)

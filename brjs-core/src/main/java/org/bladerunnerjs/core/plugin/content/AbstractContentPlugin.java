@@ -11,4 +11,9 @@ public abstract class AbstractContentPlugin implements ContentPlugin
 	{
 		throw new InstanceOfShouldntBeInvokedException();
 	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
+	}
 }

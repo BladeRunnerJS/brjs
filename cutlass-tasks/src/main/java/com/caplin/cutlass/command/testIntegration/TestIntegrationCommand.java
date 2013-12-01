@@ -9,13 +9,13 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-
 import org.bladerunnerjs.core.console.ConsoleWriter;
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
@@ -196,5 +196,10 @@ public class TestIntegrationCommand implements LegacyCommandPlugin
 	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 	{
 		throw new InstanceOfShouldntBeInvokedException();
+	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
 	}
 }

@@ -56,8 +56,8 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 
 	private void getHelpCommandResponse()
 	{
-		List<CommandPlugin> coreCommands = brjs.commandList().getCoreCommands();
-		List<CommandPlugin> extraCommands = brjs.commandList().getPluginCommands();
+		List<CommandPlugin> coreCommands = brjs.plugins().commandList().getCoreCommands();
+		List<CommandPlugin> extraCommands = brjs.plugins().commandList().getPluginCommands();
 		
 		out.println("Possible commands:");
 		for (CommandPlugin command : extraCommands)
@@ -81,7 +81,7 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 
 	private void getHelpForSpecificCommand(String commandName) throws CommandArgumentsException
 	{
-		CommandPlugin command = brjs.commandList().lookupTask(commandName);
+		CommandPlugin command = brjs.plugins().commandList().lookupTask(commandName);
 		
 		if(command == null) throw new CommandArgumentsException("Cannot show help, unknown command '" + commandName + "'", this);
 		
@@ -99,8 +99,8 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 	
 	public static String getHelpMessageFormatString(BRJS brjs)
 	{		
-		int commandNameSize = brjs.commandList().getLongestCommandName() + 5;
-		int commandDescSize = brjs.commandList().getLongestCommandDescription() + 5;
+		int commandNameSize = brjs.plugins().commandList().getLongestCommandName() + 5;
+		int commandDescSize = brjs.plugins().commandList().getLongestCommandDescription() + 5;
 		return "  %-"+commandNameSize+"s:%-"+commandDescSize+"s";
 	}
 }

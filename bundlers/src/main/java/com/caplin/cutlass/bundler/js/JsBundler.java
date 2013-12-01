@@ -11,15 +11,20 @@ import java.util.List;
 
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+
 import com.caplin.cutlass.BRJSAccessor;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
+
 import com.caplin.cutlass.bundler.BundlerFileUtils;
+
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.js.minification.Minifier;
 import com.caplin.cutlass.bundler.js.minification.MinifierFactory;
@@ -164,5 +169,10 @@ public class JsBundler implements LegacyFileBundlerPlugin
 	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 	{
 		throw new InstanceOfShouldntBeInvokedException();
+	}
+	
+	@Override
+	public Class<?> getPluginClass() {
+		return this.getClass();
 	}
 }
