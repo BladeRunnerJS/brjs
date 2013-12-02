@@ -50,10 +50,10 @@ public class BundleSetCreator {
 		List<SourceFile> fileDependencies = file.getDependentSourceFiles();
 		
 		if(fileDependencies.isEmpty()) {
-			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().root().dir(), file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
+			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
 		}
 		else {
-			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().root().dir(), file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(fileDependencies));
+			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(fileDependencies));
 		}
 		
 		for(SourceFile sourceFile : fileDependencies) {
@@ -73,7 +73,7 @@ public class BundleSetCreator {
 		List<String> seedFilePaths = new ArrayList<>();
 		
 		for(AssetFile seedFile : seedFiles) {
-			seedFilePaths.add(getRelativePath(bundlableNode.root().dir(), bundlableNode.dir(), seedFile.getUnderlyingFile()));
+			seedFilePaths.add(getRelativePath(bundlableNode.dir(), seedFile.getUnderlyingFile()));
 		}
 		
 		return "'" + Joiner.on("', '").join(seedFilePaths) + "'";
@@ -83,7 +83,8 @@ public class BundleSetCreator {
 		List<String> assetContainerPaths = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
-			assetContainerPaths.add(getRelativePath(app.root().dir(), app.dir(), assetContainer.dir()));
+			File baseDir = assetContainer instanceof AppJsLibWrapper ? app.root().dir() : app.dir();
+			assetContainerPaths.add(getRelativePath(baseDir, assetContainer.dir()));
 		}
 		
 		return "'" + Joiner.on("', '").join(assetContainerPaths) + "'";
@@ -93,18 +94,13 @@ public class BundleSetCreator {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
 		for(SourceFile sourceFile : sourceFiles) {
-			sourceFilePaths.add(getRelativePath(sourceFile.getAssetLocation().root().dir(), sourceFile.getAssetLocation().getAssetContainer().dir(), sourceFile.getUnderlyingFile()));
+			sourceFilePaths.add(getRelativePath(sourceFile.getAssetLocation().getAssetContainer().dir(), sourceFile.getUnderlyingFile()));
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
 	}
 	
-	private static String getRelativePath(File brjsRootDir, File baseFile, File sourceFile) {
-		String relativePath = baseFile.toURI().relativize(sourceFile.toURI()).getPath();
-		if (relativePath.equals(sourceFile.getAbsolutePath()))
-		{
-			relativePath = brjsRootDir.toURI().relativize(sourceFile.toURI()).getPath();
-		}
-		return relativePath;
+	private static String getRelativePath(File baseFile, File sourceFile) {
+		return baseFile.toURI().relativize(sourceFile.toURI()).getPath();
 	}
 }
