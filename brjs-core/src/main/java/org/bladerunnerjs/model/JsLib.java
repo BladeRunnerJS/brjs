@@ -157,10 +157,9 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 		return super.toString()+" - "+getName();
 	}
 	
-	
 	@Override
 	public String getTemplateName()
 	{
-		return JsLib.class.getSimpleName();
+		return BRJSNodeHelper.getTemplateName(this);
 	}
 }
