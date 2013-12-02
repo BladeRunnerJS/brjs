@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
@@ -64,7 +65,7 @@ public class NodeJsSourceFile implements SourceFile {
 				SourceFile sourceFile = sourceFileMap.get(requirePath);
 				
 				if(sourceFile == null) {
-					throw new UnresolvableRequirePathException(requirePath);
+					throw new UnresolvableRequirePathException(this.requirePath, requirePath);
 				}
 				
 				dependentSourceFiles.add(sourceFile);
@@ -121,7 +122,13 @@ public class NodeJsSourceFile implements SourceFile {
 				String methodArgument = m.group(2);
 				
 				if(isRequirePath) {
-					requirePaths.add(methodArgument);
+					String requirePath = methodArgument;
+					if (requirePath.startsWith("./"))
+					{
+						String thisRequirePathRoot = StringUtils.substringBeforeLast(getRequirePath(), "/");
+						requirePath = thisRequirePathRoot + requirePath.replaceFirst("^./", "/");
+					}
+					requirePaths.add(requirePath);
 				}
 				else {
 					aliasNames.add(methodArgument);

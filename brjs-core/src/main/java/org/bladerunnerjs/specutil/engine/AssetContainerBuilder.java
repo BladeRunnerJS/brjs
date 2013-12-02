@@ -136,6 +136,10 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	private String getNodeJsClassBody(String sourceClass, String destClass) {
 		String classRef = sourceClass.substring(sourceClass.lastIndexOf('.') + 1);
 		String destClassRequirePath = destClass.replaceAll("\\.", "/").replaceAll("\\.js$", "");
+		if (destClass.startsWith("./"))
+		{
+			destClassRequirePath = destClassRequirePath.replaceFirst("^//", "./");
+		}
 		
 		return "var " + classRef + " = require('" + destClassRequirePath + "');\n" + getClassBody(sourceClass);
 	}
