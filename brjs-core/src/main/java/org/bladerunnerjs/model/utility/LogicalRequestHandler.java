@@ -47,7 +47,7 @@ public class LogicalRequestHandler {
 			String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 			logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getClass().getSimpleName(), name, requestUri.logicalPath);
 			
-			ContentPlugin contentProvider = app.root().plugins().contentProvider(getResourceBundlerName(requestUri));
+			ContentPlugin contentProvider = app.root().plugins().contentProvider(requestUri);
 			
 			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), requestUri.logicalPath);
 			
@@ -57,9 +57,5 @@ public class LogicalRequestHandler {
 		catch(ModelOperationException e) {
 			throw new BundlerProcessingException(e);
 		}
-	}
-	
-	private String getResourceBundlerName(BladerunnerUri requestUri) {
-		return requestUri.logicalPath.substring(0, requestUri.logicalPath.indexOf('/'));
 	}
 }

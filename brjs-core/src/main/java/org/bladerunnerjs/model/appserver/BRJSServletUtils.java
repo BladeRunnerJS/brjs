@@ -22,7 +22,6 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 public class BRJSServletUtils
 {
-	
 	private BRJS brjs;
 	
 	public BRJSServletUtils(BRJS brjs)
@@ -30,21 +29,18 @@ public class BRJSServletUtils
 		this.brjs = brjs;
 	}
 	
-	ContentPlugin getContentPluginForRequest(BladerunnerUri bladerunnerUri)
-	{
-		for (ContentPlugin contentPlugin : brjs.plugins().contentProviders())
-		{
-			ContentPathParser requestParser = contentPlugin.getContentPathParser();
-			if ( requestParser.canParseRequest(bladerunnerUri) )
-			{
-				return contentPlugin;
-			}
+	public ContentPlugin getContentPluginForRequest(BladerunnerUri bladerunnerUri) {
+		ContentPlugin potentialContentPlugin = brjs.plugins().contentProvider(bladerunnerUri);
+		ContentPlugin contentPlugin = null;
+		
+		if((potentialContentPlugin != null) && potentialContentPlugin.getContentPathParser().canParseRequest(bladerunnerUri)) {
+			contentPlugin = potentialContentPlugin;
 		}
-		return null;
+		
+		return contentPlugin;
 	}
 	
-	
-	boolean passRequestToApropriateContentPlugin(ServletContext context, HttpServletRequest req, HttpServletResponse resp) throws ServletException
+	public boolean passRequestToApropriateContentPlugin(ServletContext context, HttpServletRequest req, HttpServletResponse resp) throws ServletException
 	{
 		BladerunnerUri bladerunnerUri = createBladeRunnerUri(context, req);
 		
@@ -58,7 +54,7 @@ public class BRJSServletUtils
 		return false;
 	}
 
-	ParsedContentPath parse(ContentPathParser requestParser, BladerunnerUri bladerunnerUri) throws ServletException
+	private ParsedContentPath parse(ContentPathParser requestParser, BladerunnerUri bladerunnerUri) throws ServletException
 	{
 		try
 		{
@@ -70,7 +66,7 @@ public class BRJSServletUtils
 		}
 	}
 	
-	void handleRequestUsingContentPlugin(BladerunnerUri requestUri, ParsedContentPath parsedRequest, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
+	private void handleRequestUsingContentPlugin(BladerunnerUri requestUri, ParsedContentPath parsedRequest, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
 	{
 		try
 		{
@@ -125,7 +121,7 @@ public class BRJSServletUtils
 		return bundlableNode;
 	}
 
-	BladerunnerUri createBladeRunnerUri(ServletContext context, HttpServletRequest req) throws ServletException
+	public BladerunnerUri createBladeRunnerUri(ServletContext context, HttpServletRequest req) throws ServletException
 	{
 		try
 		{
@@ -137,12 +133,12 @@ public class BRJSServletUtils
 		}
 	}
 	
-	void sendErrorResponse(HttpServletResponse response, int code, Exception exception) throws ServletException
+	public void sendErrorResponse(HttpServletResponse response, int code, Exception exception) throws ServletException
 	{
 		sendErrorResponse(response, code, exception.toString());
 	}
 	
-	void sendErrorResponse(HttpServletResponse response, int code, String message) throws ServletException
+	private void sendErrorResponse(HttpServletResponse response, int code, String message) throws ServletException
 	{
 		try {
 			if (!response.isCommitted())
@@ -155,5 +151,4 @@ public class BRJSServletUtils
 			throw new ServletException(ex);
 		}
 	}
-	
 }

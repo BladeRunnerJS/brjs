@@ -39,7 +39,7 @@ public class MockContentPlugin extends AbstractContentPlugin implements ContentP
 	
 	@Override
 	public String getRequestPrefix() {
-		return "mock";
+		return "mock-servlet";
 	}
 	
 	@Override

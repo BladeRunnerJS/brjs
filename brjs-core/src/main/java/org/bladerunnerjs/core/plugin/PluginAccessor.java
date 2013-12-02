@@ -13,6 +13,7 @@ import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BladerunnerUri;
 
 public class PluginAccessor {
 	private final PluginLocator pluginLocator;
@@ -31,6 +32,12 @@ public class PluginAccessor {
 		return commandList.getPluginCommands();
 	}
 	
+	public ContentPlugin contentProvider(BladerunnerUri requestUri) {
+		String requestPrefix = (requestUri.logicalPath.indexOf('/') == -1) ? requestUri.logicalPath : requestUri.logicalPath.substring(0, requestUri.logicalPath.indexOf('/'));
+		
+		return contentProvider(requestPrefix);
+	}
+	
 	public ContentPlugin contentProvider(String requestPrefix) {
 		ContentPlugin contentPlugin = null;
 		
@@ -39,10 +46,6 @@ public class PluginAccessor {
 				contentPlugin = nextContentPlugin;
 				break;
 			}
-		}
-		
-		if(contentPlugin == null) {
-			throw new RuntimeException("No content plugin for request prefix '" + requestPrefix + "'.");
 		}
 		
 		return contentPlugin;
