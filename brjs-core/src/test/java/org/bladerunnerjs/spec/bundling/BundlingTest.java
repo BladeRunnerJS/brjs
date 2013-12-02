@@ -208,6 +208,18 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	@Test
+	public void prodRequestsContainThePackageDefinitionsAtTheTop() throws Exception {
+		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
+    		.and(bladeset).classRequires("novox.bs.Class1", "novox.bs.Class2")
+    		.and(blade).hasClass("novox.bs.b1.Class1")
+    		.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+    		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
+    		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
+    	when(app).requestReceived("/default-aspect/js/prod/en_GB/combined/bundle.js", response);
+		then(response).containsText("window.novox = {\"bs\":{\"b1\":{\"Class1\":{}}}};");
+	}
+	
+	@Test
 	public void packageDefinitionsAreDefinedInASingleRequest() throws Exception {	
 		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
     		.and(bladeset).classRequires("novox.bs.Class1", "novox.bs.Class2")
@@ -249,23 +261,40 @@ public class BundlingTest extends SpecTest {
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
-	// ----------------------------- X M L  &  H T M L ---------------------------------
+	// ----------------------------------- X M L -------------------------------------- 
 	@Test
-	public void classesReferredToInXMlFilesAreBundled() throws Exception {
-		given(blade).hasClasses("novox.Class1", "novox.Class2")
-    		.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1");
+	public void classesReferringToABladesetInAspectXMlFilesAreBundled() throws Exception {
+		given(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
+    		.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("novox.Class1");
+		then(response).containsClasses("novox.bs.Class1");
 	}
 	
 	@Test
-	public void classesReferredToInHTMlFilesAreBundled() throws Exception {
-		given(blade).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).resourceFileRefersTo("html/view.html", "novox.Class1");
+	public void classesReferringToABladeInAspectXMlFilesAreBundled() throws Exception {
+		given(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
+    		.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("novox.Class1");
+		then(response).containsClasses("novox.bs.b1.Class1");
 	}
 
+	// ---------------------------------  H T M L -------------------------------------
+	@Test
+	public void classesReferringToABladesetInAspectHTMlFilesAreBundled() throws Exception {
+		given(blade).hasClasses("novox.bs.Class1", "novox.bs.Class2")
+		.and(aspect).resourceFileRefersTo("html/view.html", "novox.bs.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("novox.bs.Class1");
+	}
+	
+	@Test
+	public void classesReferringToABladeInAspectHTMlFilesAreBundled() throws Exception {
+		given(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
+			.and(aspect).resourceFileRefersTo("html/view.html", "novox.bs.b1.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("novox.bs.b1.Class1");
+	}
+	
 	// ----------------------------------- C S S  -------------------------------------
 	// TODO enable when we work on CSS Bundler
 	@Ignore 
@@ -334,7 +363,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	
-	// J S   L I B S
+	// ---------------------------------- J S   L I B S ----------------------------------
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
@@ -369,7 +398,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	
-	// T H I R D P A R T Y    L I B S
+	// -------------------------- T H I R D P A R T Y    L I B S --------------------------
 	
 	@Test
 	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
@@ -383,7 +412,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInAClass() throws Exception {		
+	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInAnAspectClass() throws Exception {		
 		given(sdkThirdpartyLib).hasBeenCreated()
 			.and(sdkThirdpartyLib).containsFileWithContents("library.manifest", "depends:")
     		.and(sdkThirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
@@ -394,4 +423,27 @@ public class BundlingTest extends SpecTest {
 		then(response).containsText("window.lib = { }");
 	}
 	
+	@Test
+	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInABladeset() throws Exception {		
+		given(sdkThirdpartyLib).hasBeenCreated()
+			.and(sdkThirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+    		.and(sdkThirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
+    		.and(bladeset).hasClasses("novox.bs.Class1", "novox.bs.Class2")
+    		.and(bladeset).classRequiresThirdpartyLib("novox.bs.Class1", sdkThirdpartyLib)
+    		.and(aspect).indexPageRefersTo("novox.bs.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("window.lib = { }");
+	}
+	
+	@Test
+	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInABlade() throws Exception {		
+		given(sdkThirdpartyLib).hasBeenCreated()
+			.and(sdkThirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+    		.and(sdkThirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
+    		.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
+    		.and(blade).classRequiresThirdpartyLib("novox.bs.b1.Class1", sdkThirdpartyLib)
+    		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("window.lib = { }");
+	}
 }
