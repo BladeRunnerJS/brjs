@@ -4,7 +4,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CompositeJsBundlerPluginTest extends SpecTest {
@@ -29,7 +28,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/novox/Class1.js");
+		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "node-js/module/novox/Class1.js");
 	}
 	
 	@Test
@@ -41,13 +40,11 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 		then(pageResponse).containsRequests("js/prod/en_GB/combined/bundle.js");
 	}
 	
-	// TODO: what is this 'package-definitions.js', and is it right that it's being generated even where there are no CaplinJs style classes?
-	@Ignore
 	@Test
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).isEmpty();
+		then(pageResponse).containsRequests("caplin-js/package-definitions.js");
 	}
 	
 	@Test
@@ -63,6 +60,6 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/novox/Class1.js");
+		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "node-js/module/novox/Class1.js");
 	}
 }

@@ -38,6 +38,9 @@ public class StringVerifier {
 			containsText(request);
 		}
 		
+		int requestCount = string.split("<script").length - 1;
+		assertEquals("'" + string + "' does not contain exactly " + requests.length + " request(s)", requests.length, requestCount);
+		
 		return verifierChainer;
 	}
 	
