@@ -29,13 +29,14 @@ public class TagPluginUtilityTest
 	{
 		MockPluginLocator mockPluginLocator = new MockPluginLocator();
 		
+		/* valid tags */
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("tag", "replaced tag!", "") ) );
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("amIDevOrProd", "dev", "prod") ) );
-		
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("a.tag", "replaced tag!", "") ) );
-		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("a-tag", "replaced tag!", "") ) );
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("a_tag", "replaced tag!", "") ) );
+		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("a-tag", "replaced tag!", "") ) );
 		
+		/* invalid valid tags */
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("1tag", "replaced tag!", "") ) );
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("-tag", "replaced tag!", "") ) );
 		
@@ -89,6 +90,19 @@ public class TagPluginUtilityTest
 	{
 		filterAndAssert( "this is a <@tag key=\"value\" key2=\"value2\"@/>", String.format("this is a replaced tag!%nkey=value%nkey2=value2"), aspect.getBundleSet(), RequestMode.Dev, "");
 	}
+	
+	@Test
+	public void attributesCanContainHypens() throws Exception
+	{
+		filterAndAssert( "this is a <@tag a-key=\"a-value\" @/>", String.format("this is a replaced tag!%na-key=a-value"), aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	@Test
+	public void multipleTagsAreReplaced() throws Exception
+	{
+		filterAndAssert( "<@tag  @/> and another <@tag a-key=\"a-value\" @/>", String.format("replaced tag! and another replaced tag!%na-key=a-value"), aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@tag  @/>\nand another <@tag a-key=\"a-value\" @/>", String.format("replaced tag!\nand another replaced tag!%na-key=a-value"), aspect.getBundleSet(), RequestMode.Dev, "");
+	}
 
 	@Test
 	public void testFilteringTagInProdAndDevMode() throws Exception
@@ -109,12 +123,12 @@ public class TagPluginUtilityTest
 	public void tagsCanContainSeperatorChars() throws Exception
 	{		
 		filterAndAssert( "<@a.tag@/>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
-		filterAndAssert( "<@a-tag@/>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
 		filterAndAssert( "<@a_tag@/>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@a-tag@/>", "replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
-	public void tagsCannotStartWithNumbersOfSeperatorChars() throws Exception
+	public void tagsCannotStartWithNumbersOrSeperatorCharsAndMustBeValidXmlTags() throws Exception
 	{		
 		filterAndAssert( "<@1tag@/>", "<@1tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
 		filterAndAssert( "<@-tag@/>", "<@-tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");

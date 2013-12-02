@@ -60,7 +60,10 @@ public class MockTagHandler extends AbstractTagHandlerPlugin implements TagHandl
 		PrintWriter printWriter = new PrintWriter(writer);
 		if (!content.equals(""))
 		{
-    		printWriter.println(content);
+    		printWriter.print(content);
+    		if (tagAttributes.keySet().size() > 0) {
+    			printWriter.println("");
+    		}
     		for (String attributeKey : tagAttributes.keySet())
     		{
     			String attributeValue = tagAttributes.get(attributeKey);

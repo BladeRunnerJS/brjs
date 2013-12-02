@@ -14,6 +14,7 @@ import org.bladerunnerjs.specutil.engine.Command;
 import org.bladerunnerjs.specutil.engine.CommanderChainer;
 import org.bladerunnerjs.specutil.engine.NodeCommander;
 import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.dom4j.DocumentException;
 
 
 public class AspectCommander extends NodeCommander<Aspect> {
@@ -58,7 +59,7 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		return commanderChainer;
 	}
 	
-	private void pageLoaded(StringBuffer pageResponse, String locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
+	private void pageLoaded(StringBuffer pageResponse, String locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException {
 		StringWriter writer = new StringWriter();	
 		
 		TagPluginUtility.filterContent(FileUtils.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale);

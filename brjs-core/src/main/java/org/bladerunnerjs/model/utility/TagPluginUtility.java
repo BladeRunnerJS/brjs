@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model.utility;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.LinkedHashMap;
@@ -12,19 +13,26 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-//import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
 
 // TODO: stop parsing what are essentially XML fragments (minus the extra '@' characters) using regular expressions rather than an XML parser
 public class TagPluginUtility {
 
 	private static final String NEW_LINE = String.format("%n");
-	private static final String attributePatternString = "(\\s+([\\w-]+)\\s*=\\s*\\\"([\\w]+)\\\")";
-	private static final Pattern tagPattern = Pattern.compile("<@([A-Za-z][A-Za-z0-9._-]+)("+attributePatternString+"*)?[ ]*@/>");
-	private static final Pattern attributePattern = Pattern.compile(attributePatternString);
+	private static final String TAG_START = "<@";
+	private static final String TAG_END = "@/>";
+	private static final String XML_TAG_START = "<";
+	private static final String XML_TAG_END = "/>";
+	private static final Pattern tagPattern = Pattern.compile(TAG_START+"([A-Za-z][A-Za-z0-9._-]+)([ ]+[^\\s=]+=[^\\s=]+)*[ ]*"+TAG_END);
 	
-	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale) throws IOException, NoTagHandlerFoundException
+	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale) throws IOException, NoTagHandlerFoundException, DocumentException
 	{
 		BRJS brjs = bundleSet.getBundlableNode().root();
 		List<TagHandlerPlugin> tagHandlerPlugins = brjs.plugins().tagHandlers();
@@ -34,7 +42,7 @@ public class TagPluginUtility {
 		
 		while (matcher.find())
 		{
-			String replacement = handleTag(tagHandlerPlugins, bundleSet, requestMode, locale, matcher.group(1), matcher.group(2));
+			String replacement = handleTag(tagHandlerPlugins, bundleSet, requestMode, locale, matcher.group(0));
 			if (replacement != null)
 			{
 				matcher.appendReplacement(result, replacement);
@@ -52,13 +60,35 @@ public class TagPluginUtility {
 		writer.flush();
 	}
 
-	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String tagName, String attributesContent) throws NoTagHandlerFoundException, IOException
+	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String tagContent) throws NoTagHandlerFoundException, IOException, DocumentException
+	{
+		String xmlContent = StringUtils.replaceOnce(tagContent, TAG_START, XML_TAG_START);
+		xmlContent = StringUtils.replaceOnce(xmlContent, TAG_END, XML_TAG_END);
+		
+		StringReader xmlContentReader = new StringReader(xmlContent);
+		
+        Document document = new SAXReader().read(xmlContentReader);
+        Element root = document.getRootElement();
+		
+		return handleTagXml(tagHandlerPlugins, bundleSet, requestMode, locale, root);
+	}
+
+	private static String handleTagXml(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, Element element) throws NoTagHandlerFoundException, IOException
 	{
 		StringWriter writer = new StringWriter();
+		
+		String tagName = element.getName();
 		TagHandlerPlugin tagHandler = getTagHandlerForTag(tagHandlerPlugins, tagName);
 		
-		Map<String,String> attributes = getTagAttributes(attributesContent);
+		Map<String,String> attributes = getTagAttributes(element);
 		
+		writeTagContent(bundleSet, requestMode, locale, writer, tagHandler, attributes);
+		
+		return writer.toString();
+	}
+
+	public static void writeTagContent(BundleSet bundleSet, RequestMode requestMode, String locale, StringWriter writer, TagHandlerPlugin tagHandler, Map<String, String> attributes) throws IOException
+	{
 		if (requestMode == RequestMode.Dev)
 		{
 			tagHandler.writeDevTagContent(attributes, bundleSet, locale, writer);
@@ -71,34 +101,17 @@ public class TagPluginUtility {
 		{
 			throw new RuntimeException("Unsupported request mode '" + requestMode.toString() + "'.");
 		}
-		return writer.toString();
 	}
 
-	private static Map<String, String> getTagAttributes(String attributesContent)
+	private static Map<String, String> getTagAttributes(Element element)
 	{
 		Map<String, String> attributes = new LinkedHashMap<String,String>();
 		
-		if (attributesContent != null)
+		for (Object o : element.attributes())
 		{
-    		Matcher matcher = attributePattern.matcher(attributesContent);
-    		while (matcher.find())
-    		{
-    			for (int groupNum = 1; groupNum <= matcher.groupCount(); groupNum++)
-    			{
-    				String thisAttribute = matcher.group(groupNum);
-    				
-    				Matcher thisAttributeMatcher = attributePattern.matcher(thisAttribute);
-    				
-    				while (thisAttributeMatcher.find())
-    	    		{
-    					String key = thisAttributeMatcher.group(2).trim();
-    					String value = thisAttributeMatcher.group(3).trim();
-    					attributes.put(key, value);
-    	    		}
-    			}
-    		}
+			Attribute attribute = (Attribute) o;
+			attributes.put(attribute.getName(), attribute.getValue());
 		}
-		
 		return attributes;
 	}
 
