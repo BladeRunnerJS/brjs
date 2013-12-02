@@ -41,9 +41,9 @@ TestServer startTestServer()
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode1">
     <void property="methods">
      <void property="text">
-      <string>List&lt;AssetFile&gt; getAssetFiles(Resources resources)
-List&lt;LinkedAssetFile&gt; getLinkedAsetFiles(Resources resources)
-List&lt;SourceFile&gt; getSourceFiles(SourceLocation sourceLocation)
+      <string>List&lt;Asset&gt; getAssetFiles(Resources resources)
+List&lt;LinkedAsset&gt; getLinkedAsetFiles(Resources resources)
+List&lt;SourceModule&gt; getSourceModules(SourceLocation sourceLocation)
 </string>
      </void>
     </void>
@@ -58,19 +58,19 @@ List&lt;SourceFile&gt; getSourceFiles(SourceLocation sourceLocation)
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>171.0</double>
+      <double>149.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>483.0</double>
+      <double>489.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>171.0</double>
-     <double>483.0</double>
+     <double>149.0</double>
+     <double>489.0</double>
     </void>
    </object>
   </void>
@@ -153,7 +153,7 @@ void transformFile(Reader reader, Writer writer, TransformInfo info) throws File
     </void>
     <void property="name">
      <void property="text">
-      <string>«FileTransformPlugin»</string>
+      <string>«AssetTransformPlugin»</string>
      </void>
     </void>
    </object>
