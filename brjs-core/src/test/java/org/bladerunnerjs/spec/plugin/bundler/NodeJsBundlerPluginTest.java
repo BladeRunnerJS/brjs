@@ -24,12 +24,21 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFilesRequestedAreGeneratedByDefeault() throws Exception {
-		given(exceptions).arentCaught();
-		
-		given(aspect).hasClass("novox.Class1")
+		given(aspect).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
+			.and(aspect).classRequires("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/novox/Class1.js");
+		then(pageResponse).containsRequests("node-js/module/novox/Class1.js", "node-js/module/novox/Class2.js");
+	}
+	
+	@Test
+	public void inProdSeparateJsFilesRequestedAreGeneratedByDefeault() throws Exception {
+		given(aspect).hasClasses("novox.Class1", "novox.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
+			.and(aspect).classRequires("novox.Class1", "novox.Class2")
+			.and(aspect).indexPageHasContent("<@node-js@/>");
+		when(aspect).pageLoadedInProd(pageResponse, "en_GB");
+		then(pageResponse).containsRequests("node-js/bundle.js");
 	}
 }
