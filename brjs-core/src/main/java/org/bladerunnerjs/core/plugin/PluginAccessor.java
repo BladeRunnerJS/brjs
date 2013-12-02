@@ -41,6 +41,10 @@ public class PluginAccessor {
 			}
 		}
 		
+		if(contentPlugin == null) {
+			throw new RuntimeException("No content plugin for request prefix '" + requestPrefix + "'.");
+		}
+		
 		return contentPlugin;
 	}
 	
