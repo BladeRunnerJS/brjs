@@ -52,7 +52,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void devMinifierAttributeCanAllowJsFilesToBeCombinedEvenInDev() throws Exception {
-		given(aspect).indexPageHasContent("<@js.bundle dev-minifier=\"combined\"@/>"); // TODO: change back to single quotes once TagPluginUtility is updated to use a proper XML parser
+		given(aspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/dev/en_GB/combined/bundle.js");
 	}
@@ -61,7 +61,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier=\"none\"@/>"); // TODO: change back to single quotes once TagPluginUtility is updated to use a proper XML parser
+			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("node-js/module/novox/Class1.js");
 	}
