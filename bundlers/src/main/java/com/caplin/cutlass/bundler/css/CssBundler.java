@@ -12,10 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.bladerunnerjs.core.plugin.Plugin;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
@@ -32,7 +31,7 @@ import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
 
-public class CssBundler implements LegacyFileBundlerPlugin
+public class CssBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private static final String CSS_BUNDLE_EXT = "_css" + BUNDLE_EXT;
 	private final Map<String, BladeRunnerSourceFileProvider> providers = new HashMap<String, BladeRunnerSourceFileProvider>();
@@ -168,16 +167,5 @@ public class CssBundler implements LegacyFileBundlerPlugin
 		}
 
 		return pattern + "\\.css";
-	}
-	
-	@Override
-	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
-	{
-		throw new InstanceOfShouldntBeInvokedException();
-	}
-	
-	@Override
-	public Class<?> getPluginClass() {
-		return this.getClass();
 	}
 }

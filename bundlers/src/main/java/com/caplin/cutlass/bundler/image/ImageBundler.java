@@ -9,13 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.core.plugin.Plugin;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 
 import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
@@ -37,7 +36,7 @@ import com.caplin.cutlass.structure.model.path.AppPath;
 import com.caplin.cutlass.structure.model.path.AspectPath;
 import com.caplin.cutlass.structure.model.path.BladePath;
 
-public class ImageBundler implements LegacyFileBundlerPlugin
+public class ImageBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private final ContentPathParser requestParser = RequestParserFactory.createImageBundlerRequestParser();;
 	
@@ -210,16 +209,5 @@ public class ImageBundler implements LegacyFileBundlerPlugin
 		}
 		
 		return new File(themeDir, imagePath);
-	}
-	
-	@Override
-	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
-	{
-		throw new InstanceOfShouldntBeInvokedException();
-	}
-	
-	@Override
-	public Class<?> getPluginClass() {
-		return this.getClass();
 	}
 }

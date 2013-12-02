@@ -1,15 +1,14 @@
 package com.caplin.cutlass.command.test;
 
-import org.bladerunnerjs.core.plugin.Plugin;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
 
-public class TestServerCommand implements LegacyCommandPlugin
+public class TestServerCommand extends AbstractPlugin implements LegacyCommandPlugin
 {
 	private TestRunnerController testRunner;
 	
@@ -50,16 +49,5 @@ public class TestServerCommand implements LegacyCommandPlugin
 	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException
 	{
 		testRunner.run(args, this);
-	}
-	
-	@Override
-	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
-	{
-		throw new InstanceOfShouldntBeInvokedException();
-	}
-	
-	@Override
-	public Class<?> getPluginClass() {
-		return this.getClass();
 	}
 }

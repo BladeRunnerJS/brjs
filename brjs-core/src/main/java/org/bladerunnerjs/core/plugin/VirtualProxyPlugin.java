@@ -3,8 +3,10 @@ package org.bladerunnerjs.core.plugin;
 import org.bladerunnerjs.model.BRJS;
 
 public class VirtualProxyPlugin implements Plugin {
+	// package private
+	Plugin plugin;
+	
 	private VirtualProxyState proxyState = VirtualProxyState.Uninitialized;
-	private Plugin plugin;
 	private BRJS brjs;
 	
 	public VirtualProxyPlugin(Plugin plugin) {

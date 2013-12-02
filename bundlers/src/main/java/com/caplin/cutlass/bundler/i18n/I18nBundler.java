@@ -12,10 +12,9 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
-import org.bladerunnerjs.core.plugin.Plugin;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
@@ -37,7 +36,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-public class I18nBundler implements LegacyFileBundlerPlugin
+public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private final ContentPathParser requestParser = RequestParserFactory.createI18nBundlerRequestParser();
 	
@@ -194,16 +193,5 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 		}
 		
 		return i18nBundle;
-	}
-	
-	@Override
-	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
-	{
-		throw new InstanceOfShouldntBeInvokedException();
-	}
-	
-	@Override
-	public Class<?> getPluginClass() {
-		return this.getClass();
 	}
 }

@@ -22,25 +22,16 @@ public class VirtualProxyPluginTest {
 		assertTrue("1", plugin.equals(plugin));
 		assertTrue("2", proxyPlugin.equals(proxyPlugin));
 		assertTrue("3", proxyPlugin.equals(plugin));
+		assertTrue("4", plugin.equals(proxyPlugin));
 	}
 	
 	private interface TestPlugin extends Plugin {
 	}
 	
-	private class MyTestPlugin implements TestPlugin {
+	private class MyTestPlugin extends AbstractPlugin implements TestPlugin {
 		@Override
 		public void setBRJS(BRJS brjs) {
 			// do nothing
-		}
-		
-		@Override
-		public boolean instanceOf(Class<? extends Plugin> otherPluginCLass) {
-			throw new RuntimeException("This method should never be called");
-		}
-		
-		@Override
-		public Class<?> getPluginClass() {
-			return this.getClass();
 		}
 	}
 }
