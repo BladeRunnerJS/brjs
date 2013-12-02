@@ -84,17 +84,32 @@ public class TestRunner {
 		this(configFile, resultDir, browserNames, false, false);
 	}
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean noBrowser, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
+	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean noBrowserFlag, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
 		verbose = determineIfVerbose();
 		config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
 		
 		this.jsTestDriverJar = config.getJsTestDriverJarFile();
 		this.portNumber = config.getPortNumber();
-		this.browsers = noBrowser == true ? null : config.getBrowsers();
+		this.browsers = getBrowsers(noBrowserFlag);
 //		this.resultDir = resultDir;
-		this.noBrowserFlag = noBrowser;
+		this.noBrowserFlag = noBrowserFlag;
 		this.generateReports = generateReports;
 		addShutDownHook();
+	}
+
+	private List<String> getBrowsers(boolean noBrowserFlag) throws NoBrowsersDefinedException, IOException {
+		try {
+			if(noBrowserFlag || isServerRunning())
+			{
+				return null;
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return config.getBrowsers();
 	}
 	
 	public void runServer() throws Exception {
