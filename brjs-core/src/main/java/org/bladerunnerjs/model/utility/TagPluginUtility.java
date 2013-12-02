@@ -21,8 +21,6 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-
-// TODO: stop parsing what are essentially XML fragments (minus the extra '@' characters) using regular expressions rather than an XML parser
 public class TagPluginUtility {
 
 	private static final String NEW_LINE = String.format("%n");
