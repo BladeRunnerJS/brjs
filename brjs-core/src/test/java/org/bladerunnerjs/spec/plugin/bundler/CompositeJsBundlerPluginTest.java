@@ -23,7 +23,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void inDevSeparateJsFileRequestsAreGeneratedByDefeault() throws Exception {
+	public void inDevSeparateJsFileRequestsAreGeneratedByDefault() throws Exception {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
