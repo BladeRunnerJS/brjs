@@ -77,18 +77,30 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
+	public BuilderChainer classRefersToThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
+	{
+		File sourceFile = getSourceFile(sourceClass);
+		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		
+		if(!jsStyle.equals("caplin-js")) {
+			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to 'caplin-js'");
+		}
+		
+		FileUtils.write(sourceFile, "br.thirdparty('"+thirdpartyLib.getName()+"');", true);
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer classRequiresThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if (jsStyle.equals("caplin-js")) {
-			FileUtils.write(sourceFile, "br.require('"+thirdpartyLib.getName()+"');", true);
+		if(!jsStyle.equals("node.js")) {
+			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
-		else {
-			FileUtils.write(sourceFile, "require('"+thirdpartyLib.getName()+"');", true);
-		}
+		
+		FileUtils.write(sourceFile, "require('"+thirdpartyLib.getName()+"');", true);
 		
 		return builderChainer;
 	}

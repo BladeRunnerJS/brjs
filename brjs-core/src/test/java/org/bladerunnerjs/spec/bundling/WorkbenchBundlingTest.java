@@ -7,6 +7,8 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
+import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -37,6 +39,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 		blade = bladeset.blade("b1");
 		standardBladeTheme = blade.theme("standard");
 		workbench = blade.workbench();
+		workbenchTemplate = brjs.template("workbench");
 		
 		response = new StringBuffer();
 
@@ -44,7 +47,21 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbenchTemplate).containsFolder("resources")
 			.and(workbenchTemplate).containsFolder("src");
 	}
+	// ------------------------------------ J S ---------------------------------------
+	@Test
+	public void workbenchPageDoesNotBundleAspectJSClassFilesWhenReferenced() throws Exception {
+		given(aspect).hasPackageStyle("src/novox", "caplin-js")
+			.and(aspect).hasClasses("novox.Class1")
+			.and(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
+			.and(blade).hasClass("novox.bs.b1.Class1")
+			.and(workbench).indexPageRefersTo("novox.bs.b1.Class1")
+			.and(workbench).indexPageRefersTo("novox.Class1");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "novox/Class1")
+			.whereTopLevelExceptionIs(BundlerProcessingException.class);
+	}
 
+	
 	// ----------------------------------- C S S  -------------------------------------
 	// TODO enable when we work on CSS Bundler
 	@Ignore 
