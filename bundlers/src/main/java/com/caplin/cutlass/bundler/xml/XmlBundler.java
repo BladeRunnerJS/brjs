@@ -16,11 +16,10 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.xml.sax.SAXException;
-import org.bladerunnerjs.core.plugin.Plugin;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ContentPathParser;
-import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 
@@ -36,7 +35,7 @@ import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.bundler.xml.reader.XmlSiblingReaderException;
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
 
-public class XmlBundler implements LegacyFileBundlerPlugin
+public class XmlBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private XmlBundleWriter bundleWriter;
 	private final IOFileFilter xmlFilter = new SuffixFileFilter(".xml");
@@ -117,16 +116,5 @@ public class XmlBundler implements LegacyFileBundlerPlugin
 	public List<String> getValidRequestStrings(AppMetaData appMetaData)
 	{
 		return Arrays.asList(BundlePathsFromRoot.XML + "xml" + BUNDLE_EXT);
-	}
-	
-	@Override
-	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
-	{
-		throw new InstanceOfShouldntBeInvokedException();
-	}
-	
-	@Override
-	public Class<?> getPluginClass() {
-		return this.getClass();
 	}
 }

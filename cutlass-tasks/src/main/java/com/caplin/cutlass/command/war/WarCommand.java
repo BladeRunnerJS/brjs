@@ -15,13 +15,12 @@ import javax.naming.InvalidNameException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.plugin.Plugin;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.AbstractAssetContainer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
@@ -45,7 +44,7 @@ import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class WarCommand implements LegacyCommandPlugin
+public class WarCommand extends AbstractPlugin implements LegacyCommandPlugin
 {
 	private final JSAP argsParser = new JSAP();
 	private ConsoleWriter out;
@@ -203,16 +202,5 @@ public class WarCommand implements LegacyCommandPlugin
 		}
 		
 		return bundleStream;
-	}
-	
-	@Override
-	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
-	{
-		throw new InstanceOfShouldntBeInvokedException();
-	}
-	
-	@Override
-	public Class<?> getPluginClass() {
-		return this.getClass();
 	}
 }

@@ -18,10 +18,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.core.plugin.Plugin;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
@@ -42,7 +41,7 @@ import com.caplin.cutlass.structure.model.SdkModel;
 import com.caplin.cutlass.structure.model.path.AppPath;
 import com.caplin.cutlass.structure.model.path.ThirdpartyLibPath;
 
-public class ThirdPartyBundler implements LegacyFileBundlerPlugin
+public class ThirdPartyBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private static final NotFileFilter notManifestFileFilter = new NotFileFilter(new NameFileFilter(CutlassConfig.LIBRARY_MANIFEST_FILENAME, IOCase.INSENSITIVE));
 	private final ContentPathParser requestParser = RequestParserFactory.createThirdPartyBundlerRequestParser();
@@ -218,16 +217,5 @@ public class ThirdPartyBundler implements LegacyFileBundlerPlugin
 		URI relativeURI = baseFileURI.relativize(pathFileURI);
 		
 		return relativeURI.toString();
-	}
-	
-	@Override
-	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
-	{
-		throw new InstanceOfShouldntBeInvokedException();
-	}
-	
-	@Override
-	public Class<?> getPluginClass() {
-		return this.getClass();
 	}
 }

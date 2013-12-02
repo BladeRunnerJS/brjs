@@ -10,9 +10,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.plugin.Plugin;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
@@ -21,7 +20,7 @@ import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
 import com.caplin.cutlass.testIntegration.WebDriverProvider;
 
-public class TestIntegrationCommand implements LegacyCommandPlugin 
+public class TestIntegrationCommand extends AbstractPlugin implements LegacyCommandPlugin 
 {
 	// TODO: get rid of the idea of alpha commands now that commands are plugins, and so can easily be kept separate from the product
 	private static final String ALPHA_PREFIX = "alpha-";
@@ -190,16 +189,5 @@ public class TestIntegrationCommand implements LegacyCommandPlugin
 	private boolean ignoreWorkbenches(String[] args)
 	{
 		return ( (args.length >= 2 && args[1].equals(NO_WORKBENCH_FLAG)) || (args.length >= 4 && args[3].equals(NO_WORKBENCH_FLAG)) );
-	}
-	
-	@Override
-	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
-	{
-		throw new InstanceOfShouldntBeInvokedException();
-	}
-	
-	@Override
-	public Class<?> getPluginClass() {
-		return this.getClass();
 	}
 }

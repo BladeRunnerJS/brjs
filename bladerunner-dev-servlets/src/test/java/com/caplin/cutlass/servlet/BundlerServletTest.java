@@ -36,7 +36,6 @@ import org.junit.Test;
 import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.InstanceOfShouldntBeInvokedException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
@@ -348,7 +347,7 @@ public class BundlerServletTest
 			@Override
 			public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 			{
-				throw new InstanceOfShouldntBeInvokedException();
+				throw new RuntimeException("should never be invoked");
 			}
 			
 			@Override
