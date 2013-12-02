@@ -16,10 +16,11 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
 
+// TODO: stop parsing what are essentially XML fragments (minus the extra '@' characters) using regular expressions rather than an XML parser
 public class TagPluginUtility {
 
 	private static final String NEW_LINE = String.format("%n");
-	private static final String attributePatternString = "(\\s+(\\w+)\\s*=\\s*\\\"([\\w]+)\\\")";
+	private static final String attributePatternString = "(\\s+([\\w-]+)\\s*=\\s*\\\"([\\w]+)\\\")";
 	private static final Pattern tagPattern = Pattern.compile("<@([A-Za-z][A-Za-z0-9._-]+)("+attributePatternString+"*)?[ ]*@/>");
 	private static final Pattern attributePattern = Pattern.compile(attributePatternString);
 	

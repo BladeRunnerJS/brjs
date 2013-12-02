@@ -79,6 +79,12 @@ public class TagPluginUtilityTest
 	}
 	
 	@Test
+	public void testFilteringTagWithAttributesWithHyphens() throws Exception
+	{
+		filterAndAssert( "this is a <@tag the-key=\"value\"@/>", String.format("this is a replaced tag!%nthe-key=value"), aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	@Test
 	public void testFilteringTagWithMultipleAttributes() throws Exception
 	{
 		filterAndAssert( "this is a <@tag key=\"value\" key2=\"value2\"@/>", String.format("this is a replaced tag!%nkey=value%nkey2=value2"), aspect.getBundleSet(), RequestMode.Dev, "");
