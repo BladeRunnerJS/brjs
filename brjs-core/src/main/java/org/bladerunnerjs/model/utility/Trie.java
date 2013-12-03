@@ -22,7 +22,6 @@ public class Trie<T>
 		}
 		
 		TrieNode<T> node = root;
-		
 		for( char character : key.toCharArray() )
 		{
 			if (node != root)
@@ -66,7 +65,7 @@ public class Trie<T>
 		
 		TrieMatcher matcher = new TrieMatcher();
 //		CharMatcher charMatcher = CharMatcher.anyOf( StringUtils.join(trieChars.toArray()) );	//TODO: use the CharMatcher that is calculated from the entries in the Trie
-		CharMatcher charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.')).or(CharMatcher.is('-')).or(CharMatcher.is('_')).or(CharMatcher.is('-'));
+		CharMatcher charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.')).or(CharMatcher.is('-')).or(CharMatcher.is('_')).or(CharMatcher.is('/'));
 		
 		int latestCharVal;
 		while ((latestCharVal = reader.read()) != -1)
@@ -82,7 +81,6 @@ public class Trie<T>
 	private void processChar(CharMatcher charMatcher, List<T> matches, char nextChar, TrieMatcher matcher)
 	{
 		TrieNode<T> nextNode = matcher.next(nextChar);
-		
 		if (nextNode == null)
 		{
 			T matcherValue = matcher.previousNode.getValue();
