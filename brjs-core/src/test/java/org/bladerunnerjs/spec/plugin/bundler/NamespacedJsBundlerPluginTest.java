@@ -7,7 +7,7 @@ import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CaplinJsBundlerPluginTest extends SpecTest {
+public class NamespacedJsBundlerPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer pageResponse = new StringBuffer();
