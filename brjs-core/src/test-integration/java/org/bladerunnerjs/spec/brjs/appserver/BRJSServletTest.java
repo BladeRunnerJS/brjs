@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -107,6 +108,8 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/hello.mock", "Hello World!");
 	}
 	
+	// TODO: this test need rewriting as is it hard to read and maintain
+	@Ignore
 	@Test
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
