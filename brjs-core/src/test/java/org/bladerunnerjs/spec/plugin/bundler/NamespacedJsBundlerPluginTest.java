@@ -103,22 +103,22 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void caplinStyleClassesThatReferToNonCaplinStyleClassesWillHaveRequiresAutomaticallyAdded() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg/caplin", NamespacedJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("mypkg.caplin.Class", "mypkg.nodejs.Class")
-			.and(aspect).classRefersTo("mypkg.caplin.Class", "mypkg.nodejs.Class");
+		given(aspect).hasPackageStyle("src/mypkg/namespaced", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.nodejs.Class")
+			.and(aspect).classRefersTo("mypkg.namespaced.Class", "mypkg.nodejs.Class");
 		when(app).requestReceived("/default-aspect/caplin-js/module/mypkg/caplin/Class.js", requestResponse);
-		then(requestResponse).containsText("mypkg.caplin.Class = function() {\n};")
+		then(requestResponse).containsText("mypkg.namespaced.Class = function() {\n};")
 			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
 	
 	@Test
 	public void requiresAreAlsoAutomaticallyAddedWithinTheBundledResponse() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg/caplin", NamespacedJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("mypkg.caplin.Class", "mypkg.nodejs.Class")
-			.and(aspect).indexPageRefersTo("mypkg.caplin.Class")
-			.and(aspect).classRefersTo("mypkg.caplin.Class", "mypkg.nodejs.Class");
+		given(aspect).hasPackageStyle("src/mypkg/namespaced", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.nodejs.Class")
+			.and(aspect).indexPageRefersTo("mypkg.namespaced.Class")
+			.and(aspect).classRefersTo("mypkg.namespaced.Class", "mypkg.nodejs.Class");
 		when(app).requestReceived("/default-aspect/caplin-js/bundle.js", requestResponse);
-		then(requestResponse).containsText("mypkg.caplin.Class = function() {\n};")
+		then(requestResponse).containsText("mypkg.namespaced.Class = function() {\n};")
 			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
 }
