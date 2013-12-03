@@ -15,14 +15,6 @@ public class NameValidator
 	private static final String VALID_DIRECTORY_NAME_REGEX = "^[a-zA-Z0-9_-]*$";
 	private static final String VALID_PACKAGE_NAME_REGEX = "^([a-z][a-z0-9]*)?$";
 	
-	/*
-	 * Validate that the following only contain alphabetical characters:
-	 * <app-name> 		(e.g. novotrader)
-	 * <bladeset-name> 	(e.g. 'fx', NOT 'fx-bladeset' as it should be chomped before it reaches here) 
-	 * <blade-name>		(e.g. 'grid')
-	 * <app-namespace>  (e.g. mypkg)
-	 */
-	
 	// TODO: change to accept a single directory name
 	public static boolean isValidDirectoryName(String directoryName)
 	{
