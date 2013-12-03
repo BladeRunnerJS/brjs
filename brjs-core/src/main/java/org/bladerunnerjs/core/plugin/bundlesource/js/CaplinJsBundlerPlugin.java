@@ -23,6 +23,7 @@ import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.JsStyleUtility;
@@ -236,7 +237,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 		}
 	}
 	
-	private void globalizeNonCaplinJsClasses(BundleSet bundleSet, Writer writer) throws IOException {
+	private void globalizeNonCaplinJsClasses(BundleSet bundleSet, Writer writer) throws IOException, BundlerProcessingException {
 		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
 			if(sourceFile instanceof CaplinJsSourceFile) {
 				globalizeNonCaplinJsClasses((CaplinJsSourceFile) sourceFile, writer);
@@ -244,7 +245,17 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 		}
 	}
 	
-	private void globalizeNonCaplinJsClasses(CaplinJsSourceFile sourceFile, Writer writer) throws IOException {
-		writer.write(sourceFile.getClassName() + " = require('" + sourceFile.getRequirePath()  + "');\n");
+	private void globalizeNonCaplinJsClasses(CaplinJsSourceFile sourceFile, Writer writer) throws IOException, BundlerProcessingException {
+		try {
+			for(SourceFile dependentSourceFile : sourceFile.getDependentSourceFiles()) {
+				if(!(dependentSourceFile instanceof CaplinJsSourceFile)) {
+					String moduleNamespace = dependentSourceFile.getRequirePath().replaceAll("/", ".");
+					writer.write(moduleNamespace + " = require('" + dependentSourceFile.getRequirePath()  + "');\n");
+				}
+			}
+		}
+		catch(ModelOperationException e) {
+			throw new BundlerProcessingException(e);
+		}
 	}
 }
