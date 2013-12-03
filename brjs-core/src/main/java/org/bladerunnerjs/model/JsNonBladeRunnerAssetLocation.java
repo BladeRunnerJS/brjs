@@ -11,6 +11,7 @@ public class JsNonBladeRunnerAssetLocation extends SourceAssetLocation
 {
 	
 	protected AssetContainer assetContainer;
+	@SuppressWarnings("unused")
 	private final Map<String, JsNonBladeRunnerAssetLocation> resources = new HashMap<>();
 	
 	public JsNonBladeRunnerAssetLocation(RootNode rootNode, Node parent, File dir)
