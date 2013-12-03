@@ -13,14 +13,14 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.AbstractBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
-import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.LinkedAssetFile;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -94,8 +94,8 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
-			if(sourceFile instanceof NodeJsSourceFile) {
+		for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
+			if(sourceFile instanceof NodeJsSourceModule) {
 				requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
 			}
 		}
@@ -113,14 +113,14 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 		try {
 			if(request.formName.equals("single-module-request")) {
 				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-					SourceFile jsModule = bundleSet.getBundlableNode().getSourceFile(request.properties.get("module"));
+					SourceModule jsModule = bundleSet.getBundlableNode().getSourceFile(request.properties.get("module"));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
 			else if(request.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-					for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
-						if (sourceFile instanceof NodeJsSourceFile)
+					for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
+						if (sourceFile instanceof NodeJsSourceModule)
 						{
 							writer.write("// " + sourceFile.getRequirePath() + "\n");
     						IOUtils.copy(sourceFile.getReader(), writer);
@@ -139,10 +139,10 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	}
 	
 	@Override
-	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
 	{ 
 		if (JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE)) {
-			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceFile.class, "js");
+			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceModule.class, "js");
 		}
 		else {
 			return Arrays.asList();
@@ -150,13 +150,13 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	}
 
 	@Override
-	public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}
 
 	@Override
-	public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+	public List<Asset> getResourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}

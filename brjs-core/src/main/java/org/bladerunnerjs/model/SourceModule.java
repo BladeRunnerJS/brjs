@@ -8,10 +8,10 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
  * A source file, typically JavaScript (.js) files that live in a 'src' directory.
  *
  */
-public interface SourceFile extends LinkedAssetFile {
+public interface SourceModule extends LinkedAsset {
 	String getRequirePath();
 	/**
 	 * Returns a list of source files that *must* precede this source file in the output 
 	 */
-	List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException;
+	List<SourceModule> getOrderDependentSourceModules() throws ModelOperationException;
 }

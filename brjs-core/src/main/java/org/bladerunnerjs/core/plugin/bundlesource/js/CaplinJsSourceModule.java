@@ -7,16 +7,16 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
-import org.bladerunnerjs.model.LinkedAssetFile;
+import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class CaplinJsSourceFile implements SourceFile {
-	private LinkedAssetFile assetFile;
+public class CaplinJsSourceModule implements SourceModule {
+	private LinkedAsset assetFile;
 	private AssetLocation assetLocation;
 	private String requirePath;
 	
@@ -25,17 +25,17 @@ public class CaplinJsSourceFile implements SourceFile {
 	{
 		this.assetLocation = assetLocation;
 		this.requirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
-		assetFile = new FullyQualifiedLinkedAssetFile();
+		assetFile = new FullyQualifiedLinkedAsset();
 		assetFile.initializeUnderlyingObjects(assetLocation, file);
 	}
 	
 	@Override
- 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
-		List<SourceFile> dependentSourceFiles = assetFile.getDependentSourceFiles();
-		dependentSourceFiles.removeAll(getOrderDependentSourceFiles());
-		dependentSourceFiles.remove(this);
+ 	public List<SourceModule> getDependentSourceModules() throws ModelOperationException {
+		List<SourceModule> dependentSourceModules = assetFile.getDependentSourceModules();
+		dependentSourceModules.removeAll(getOrderDependentSourceModules());
+		dependentSourceModules.remove(this);
 		
-		return dependentSourceFiles;
+		return dependentSourceModules;
 	}
 	
 	@Override
@@ -54,7 +54,7 @@ public class CaplinJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException {
+	public List<SourceModule> getOrderDependentSourceModules() throws ModelOperationException {
 		// TODO: scan the source file for caplin.extend(), caplin.implement(), br.extend() & br.implement()
 		return new ArrayList<>();
 	}
@@ -63,7 +63,17 @@ public class CaplinJsSourceFile implements SourceFile {
 	public File getUnderlyingFile() {
 		return assetFile.getUnderlyingFile();
 	}
-
+	
+	@Override
+	public String getAssetName() {
+		return assetFile.getAssetName();
+	}
+	
+	@Override
+	public String getAssetPath() {
+		return assetFile.getAssetPath();
+	}
+	
 	@Override
 	public AssetLocation getAssetLocation()
 	{
@@ -78,10 +88,10 @@ public class CaplinJsSourceFile implements SourceFile {
 		StringBuffer stringBuffer = new StringBuffer();
 		
 		try {
-			for(SourceFile dependentSourceFile : getDependentSourceFiles()) {
-				if(!(dependentSourceFile instanceof CaplinJsSourceFile)) {
-					String moduleNamespace = dependentSourceFile.getRequirePath().replaceAll("/", ".");
-					stringBuffer.append(moduleNamespace + " = require('" + dependentSourceFile.getRequirePath()  + "');\n");
+			for(SourceModule dependentSourceModules : getDependentSourceModules()) {
+				if(!(dependentSourceModules instanceof CaplinJsSourceModule)) {
+					String moduleNamespace = dependentSourceModules.getRequirePath().replaceAll("/", ".");
+					stringBuffer.append(moduleNamespace + " = require('" + dependentSourceModules.getRequirePath()  + "');\n");
 				}
 			}
 		}

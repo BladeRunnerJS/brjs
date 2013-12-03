@@ -18,12 +18,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
 
-public class NodeJsSourceFile implements SourceFile {
+public class NodeJsSourceModule implements SourceModule {
 	private File assetFile;
 	private List<String> requirePaths;
 	private List<String> aliasNames;
@@ -43,26 +43,26 @@ public class NodeJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
-		List<SourceFile> dependentSourceFiles = new ArrayList<>();
+	public List<SourceModule> getDependentSourceModules() throws ModelOperationException {
+		List<SourceModule> dependentSourceFiles = new ArrayList<>();
 		
 		try {
 			if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
 				recalculateDependencies();
 			}
 			
-			Map<String, SourceFile> sourceFileMap = new HashMap<String, SourceFile>();
+			Map<String, SourceModule> sourceFileMap = new HashMap<String, SourceModule>();
 			
 			for (AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers())
 			{
-				for (SourceFile sourceFile : assetContainer.sourceFiles())
+				for (SourceModule sourceFile : assetContainer.sourceFiles())
 				{
 					sourceFileMap.put(sourceFile.getRequirePath(), sourceFile);
 				}
 			}
 			
 			for(String requirePath : requirePaths) {
-				SourceFile sourceFile = sourceFileMap.get(requirePath);
+				SourceModule sourceFile = sourceFileMap.get(requirePath);
 				
 				if(sourceFile == null) {
 					throw new UnresolvableRequirePathException(this.requirePath, requirePath);
@@ -98,13 +98,23 @@ public class NodeJsSourceFile implements SourceFile {
 	}
 	
 	@Override
-	public List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException {
+	public List<SourceModule> getOrderDependentSourceModules() throws ModelOperationException {
 		return new ArrayList<>();
 	}
 	
 	@Override
 	public File getUnderlyingFile() {
 		return assetFile;
+	}
+	
+	@Override
+	public String getAssetName() {
+		return assetFile.getName();
+	}
+	
+	@Override
+	public String getAssetPath() {
+		return assetFile.getPath();
 	}
 	
 	private void recalculateDependencies() throws ModelOperationException {
@@ -151,5 +161,4 @@ public class NodeJsSourceFile implements SourceFile {
 	{
 		return assetLocation;
 	}
-	
 }

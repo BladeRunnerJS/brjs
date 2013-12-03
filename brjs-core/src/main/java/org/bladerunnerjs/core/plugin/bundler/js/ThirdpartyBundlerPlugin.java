@@ -13,17 +13,17 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.core.plugin.bundler.AbstractBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
-import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.LinkedAssetFile;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
-import org.bladerunnerjs.model.NonBladerunnerJsLibSourceFile;
+import org.bladerunnerjs.model.NonBladerunnerJsLibSourceModule;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.UnableToInstantiateAssetFileException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -60,17 +60,17 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	}
 
 	@Override
-	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
 	{
 		try
 		{
-    		List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
+    		List<SourceModule> sourceFiles = new ArrayList<SourceModule>();
     		if (assetLocation.getAssetContainer() instanceof JsLib)
     		{
     			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
     			if (manifest.fileExists())
     			{
-    				NonBladerunnerJsLibSourceFile sourceFile = (NonBladerunnerJsLibSourceFile) assetLocation.getAssetContainer().root().getAssetFile(NonBladerunnerJsLibSourceFile.class, assetLocation, assetLocation.dir());
+    				NonBladerunnerJsLibSourceModule sourceFile = (NonBladerunnerJsLibSourceModule) assetLocation.getAssetContainer().root().getAssetFile(NonBladerunnerJsLibSourceModule.class, assetLocation, assetLocation.dir());
     				sourceFile.initManifest(manifest);
     				sourceFiles.add( sourceFile );
     			}
@@ -84,14 +84,14 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	}
 
 	@Override
-	public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation)
 	{
 		// TODO Auto-generated method stub
 		return Arrays.asList();
 	}
 
 	@Override
-	public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+	public List<Asset> getResourceFiles(AssetLocation assetLocation)
 	{
 		// TODO Auto-generated method stub
 		return Arrays.asList();
@@ -138,8 +138,8 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 			else if(request.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
 				{
-					for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
-						if(sourceFile instanceof NonBladerunnerJsLibSourceFile)
+					for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
+						if(sourceFile instanceof NonBladerunnerJsLibSourceModule)
 						{
     						writer.write("// " + sourceFile.getRequirePath() + "\n");
     						IOUtils.copy(sourceFile.getReader(), writer);

@@ -13,14 +13,14 @@ import org.bladerunnerjs.core.plugin.bundler.AbstractBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.minifier.InputSource;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.LinkedAssetFile;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
-import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -95,19 +95,19 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 	}
 	
 	@Override
-	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}
 	
 	@Override
-	public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}
 	
 	@Override
-	public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+	public List<Asset> getResourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}

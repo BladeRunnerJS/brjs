@@ -37,8 +37,8 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	}
 		
 	@Override
-	public List<LinkedAssetFile> seedResources() {
-		List<LinkedAssetFile> seedResources = new LinkedList<LinkedAssetFile>();
+	public List<LinkedAsset> seedResources() {
+		List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
 		for(BundlerPlugin bundlerPlugin : root().plugins().bundlers()) {
 			seedResources.addAll(bundlerPlugin.getLinkedResourceFiles(this));
@@ -49,11 +49,11 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	
 	
 	@Override
-	public List<LinkedAssetFile> seedResources(String fileExtension) {
-		List<LinkedAssetFile> typedSeedResources = new ArrayList<>();
+	public List<LinkedAsset> seedResources(String fileExtension) {
+		List<LinkedAsset> typedSeedResources = new ArrayList<>();
 		
-		for(LinkedAssetFile seedResource : seedResources()) {
-			if(seedResource.getUnderlyingFile().getName().endsWith("." + fileExtension)) {
+		for(LinkedAsset seedResource : seedResources()) {
+			if(seedResource.getAssetName().endsWith("." + fileExtension)) {
 				typedSeedResources.add(seedResource);
 			}
 		}
@@ -62,8 +62,8 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	}
 	
 	@Override
-	public List<AssetFile> bundleResources(String fileExtension) {
-		List<AssetFile> bundleResources = new LinkedList<AssetFile>();
+	public List<Asset> bundleResources(String fileExtension) {
+		List<Asset> bundleResources = new LinkedList<Asset>();
 		
 		for(BundlerPlugin bundlerPlugin : root().plugins().bundlers()) {
 			bundleResources.addAll(bundlerPlugin.getResourceFiles(this));

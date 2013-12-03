@@ -37,7 +37,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<LinkedAssetFile> getSeedFiles() {
+	public List<LinkedAsset> getSeedFiles() {
 		return Arrays.asList();
 	}
 	

@@ -6,15 +6,15 @@ import java.util.List;
 
 import org.bladerunnerjs.core.plugin.bundler.AbstractBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.FullyQualifiedLinkedAssetFile;
-import org.bladerunnerjs.model.LinkedAssetFile;
+import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
@@ -71,19 +71,19 @@ public class XMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerPl
 	}
 	
 	@Override
-	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}
 
 	@Override
-	public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation)
 	{
-		return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, FullyQualifiedLinkedAssetFile.class, "xml");
+		return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, FullyQualifiedLinkedAsset.class, "xml");
 	}
 
 	@Override
-	public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+	public List<Asset> getResourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}
