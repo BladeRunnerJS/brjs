@@ -31,8 +31,7 @@ public class BundlingTest extends SpecTest {
 	private AliasesFile aspectAliasesFile;
 	private Bladeset bladeset;
 	private Blade blade;
-	private JsLib sdkLib, userLib;
-	private JsLib sdkLegacyThirdparty, sdkLegacyThirdparty2;
+	private JsLib sdkLib, userLib, appLegacyThirdparty, sdkLegacyThirdparty, sdkLegacyThirdparty2;
 	private AliasDefinitionsFile bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
 	
@@ -52,6 +51,7 @@ public class BundlingTest extends SpecTest {
 			blade = bladeset.blade("b1");
 			standardBladeTheme = blade.theme("theme");
 			
+			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty");
 			userLib = app.jsLib("userLib");
 			sdkLib = brjs.sdkLib();
 			sdkLegacyThirdparty = brjs.sdkNonBladeRunnerLib("legacy-thirdparty");
@@ -384,6 +384,40 @@ public class BundlingTest extends SpecTest {
 			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", unquoted("'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/', 'sdk/libs/javascript/caplin'"));
 	}
 	
+	// ------------------------ A P P   T H I R D P A R T Y   L I B ------------------------
+	@Test
+	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
+		given(appLegacyThirdparty).hasClass("appThirdparty.Class1")
+			.and(aspect).indexPageRefersTo("appThirdparty.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appThirdparty.Class1");
+	}
+	
+	@Test
+	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreReferencedInAClass() throws Exception {
+		given(appLegacyThirdparty).hasBeenCreated()
+			.and(appLegacyThirdparty).hasPackageStyle("appThirdpartyLibName", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(appLegacyThirdparty).hasClass("appThirdparty.Class1")
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageRefersTo("mypkg.Class1")
+			.and(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClass("mypkg.Class1")
+			.and(aspect).classRefersTo("mypkg.Class1", "appThirdparty.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appThirdparty.Class1");
+	}
+	
+	@Test
+	public void aspectBundlesContainAppLegacyThirdpartyLibsIfTheyAreRequiredInAClass() throws Exception {
+		given(appLegacyThirdparty).hasClass("appThirdpartyLibName.Class1")
+			.and(aspect).indexPageRefersTo("mypkg.Class1")
+			.and(aspect).hasClass("mypkg.Class1")
+			.and(aspect).classRequires("mypkg.Class1", "appThirdpartyLibName.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appThirdpartyLibName.Class1");
+	}
+	
+	
 	// ----------------------------- U S E R   J S   L I B S --------------------------------
 	@Test
 	public void aspectBundlesContainUserLibrLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
@@ -396,7 +430,7 @@ public class BundlingTest extends SpecTest {
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(userLib).hasBeenCreated()
-			.and(userLib).hasPackageStyle("sdk", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(userLib).hasPackageStyle("sdk", "caplin-js")
 			.and(userLib).hasClass("user.Class1")
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("mypkg.Class1")
