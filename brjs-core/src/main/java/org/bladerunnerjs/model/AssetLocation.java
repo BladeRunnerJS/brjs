@@ -15,5 +15,5 @@ public interface AssetLocation extends BRJSNode {
 	List<LinkedAssetFile> seedResources(String fileExtension);
 	List<AssetFile> bundleResources(String fileExtension);
 	AssetContainer getAssetContainer();
-	List<AssetLocation> getAncestorAssetLocations();
+	List<AssetLocation> getDependentAssetLocations();
 }

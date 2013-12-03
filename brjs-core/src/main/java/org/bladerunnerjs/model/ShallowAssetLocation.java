@@ -79,7 +79,7 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	}
 
 	@Override
-	public List<AssetLocation> getAncestorAssetLocations()
+	public List<AssetLocation> getDependentAssetLocations()
 	{
     	return new ArrayList<>();
 	}
