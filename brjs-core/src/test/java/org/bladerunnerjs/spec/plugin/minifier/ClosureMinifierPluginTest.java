@@ -72,8 +72,6 @@ public class ClosureMinifierPluginTest extends SpecTest
 		then(response).containsText(minifyAdvancedContent);
 	}
 	
-	// TODO: these tests need rewriting as they hard to read and maintain
-	@Ignore
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
@@ -82,10 +80,9 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1")
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("window.mypkg={\"bs\":{\"b1\":{}}};mypkg.bs.b1.Class2=function(){};mypkg.bs.b1.Class1=function(){};br.extend(mypkg.bs.b1.Class1,mypkg.bs.b1.Class2);mypkg.bs.b1.Class2=require(\"mypkg/bs/b1/Class2\");mypkg.bs.b1.Class1=require(\"mypkg/bs/b1/Class1\");");
+		then(response).containsMinifiedClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2");
 	}
 	
-	@Ignore
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
@@ -95,7 +92,18 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(aspect).indexPageRefersTo("mypkg.cjs.Class")
 			.and(blade).classRefersTo("mypkg.cjs.Class",  "mypkg.node.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("window.mypkg={\"cjs\":{}};mypkg.cjs.Class=function(){};br.extend(mypkg.cjs.Class,mypkg.node.Class);mypkg.cjs.Class=require(\"mypkg/cjs/Class\");mypkg.node.Class=function(){};");
+		then(response).containsMinifiedClasses("mypkg.cjs.Class", "mypkg.node.Class");
+	}
+	
+	@Test
+	public void closureMinifierStillAddsPackageDefinitionsBlock() throws Exception
+	{
+		given(blade).hasPackageStyle("src/mypkg.cjs", "caplin-js")
+    		.and(blade).hasClasses("mypkg.cjs.Class", "mypkg.node.Class")
+    		.and(aspect).indexPageRefersTo("mypkg.cjs.Class");
+		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
+		then(response).containsMinifiedClasses("mypkg.cjs.Class")
+			.and(response).containsText("window.mypkg={\"cjs\":{}};");
 	}
 	
 }

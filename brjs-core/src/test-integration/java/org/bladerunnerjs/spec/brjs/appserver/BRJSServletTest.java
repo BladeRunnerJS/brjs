@@ -108,21 +108,19 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/hello.mock", "Hello World!");
 	}
 	
-	// TODO: this test need rewriting as is it hard to read and maintain
-	@Ignore
 	@Test
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasPackageStyle("src/mypkg.cjs", "caplin-js")
-			.and(blade).hasPackageStyle("src/mypkg.node", "node.js")
-			.and(blade).hasClasses("mypkg.cjs.Class", "mypkg.node.Class")
-			.and(aspect).indexPageRefersTo("mypkg.cjs.Class")
-			.and(blade).classRefersTo("mypkg.cjs.Class",  "mypkg.node.Class")
+			.and(blade).hasPackageStyle("src/cjs", "caplin-js")
+			.and(blade).hasPackageStyle("src/node", "node.js")
+			.and(blade).hasClasses("cjs.Class", "node.Class")
+			.and(aspect).indexPageRefersTo("cjs.Class")
+			.and(blade).classRefersTo("cjs.Class",  "node.Class")
     		.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("window.mypkg={\"cjs\":{\"Class\":{}}};mypkg.cjs.Class=function(){};br.extend(mypkg.cjs.Class,mypkg.node.Class);mypkg.cjs.Class=require(\"mypkg/cjs/Class\");mypkg.node.Class=function(){};");
+		then(response).containsMinifiedClasses("cjs.Class", "node.Class");
 	}
 	
 }
