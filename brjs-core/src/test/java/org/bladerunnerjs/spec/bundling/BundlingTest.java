@@ -98,6 +98,14 @@ public class BundlingTest extends SpecTest {
 		then(response).containsClasses("mypkg.Class1", "mypkg.Class2");
 	}
 	
+	@Test
+	public void weBundleFilesRequiredFromAnAspect() throws Exception {
+		given(aspect).containsFileWithContents("src/pkg/App.js", "var App = function() {};  module.exports = App;")
+			.and(aspect).indexPageHasContent("var App = require('pkg/App')");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("var App = function() {};  module.exports = App;");
+	}
+	
 	//  ----------------------------- B L A D E S E T  -----------------------------------
 	@Test
 	public void weBundleABladesetClassIfItIsReferredToInTheIndexPage() throws Exception {
