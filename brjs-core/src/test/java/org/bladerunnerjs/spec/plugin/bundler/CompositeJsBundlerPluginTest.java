@@ -36,7 +36,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 		given(aspect).hasClass("novox.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
-		when(aspect).pageLoadedInProd(pageResponse, "en_GB");
+		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/prod/en_GB/combined/bundle.js");
 	}
 	

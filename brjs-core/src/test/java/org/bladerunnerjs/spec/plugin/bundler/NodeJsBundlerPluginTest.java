@@ -38,7 +38,7 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).classRequires("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
-		when(aspect).pageLoadedInProd(pageResponse, "en_GB");
+		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("node-js/bundle.js");
 	}
 }

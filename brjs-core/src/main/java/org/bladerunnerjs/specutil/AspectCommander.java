@@ -39,7 +39,7 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		return commanderChainer;
 	}
 
-	public CommanderChainer pageLoadedInProd(final StringBuffer pageResponse, final String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
+	public CommanderChainer indexPageLoadedInProd(final StringBuffer pageResponse, final String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
 		call(new Command() {
 			public void call() throws Exception {
 				pageLoaded(pageResponse, locale, RequestMode.Prod);

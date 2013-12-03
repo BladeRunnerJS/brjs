@@ -41,7 +41,7 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).classRefersTo("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageHasContent("<@caplin-js@/>");
-		when(aspect).pageLoadedInProd(pageResponse, "en_GB");
+		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("caplin-js/bundle.js");
 	}
 }
