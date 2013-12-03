@@ -3,6 +3,8 @@ package org.bladerunnerjs.specutil.engine;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.core.plugin.bundlesource.js.CaplinJsBundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundlesource.js.NodeJsBundlerPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.utility.JsStyleUtility;
@@ -47,7 +49,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals("caplin-js")) {
+		if(!jsStyle.equals(CaplinJsBundlerPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to 'caplin-js'");
 		}
 		
@@ -60,7 +62,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals("node.js")) {
+		if(!jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
@@ -82,7 +84,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals("caplin-js")) {
+		if(!jsStyle.equals(CaplinJsBundlerPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to 'caplin-js'");
 		}
 		
@@ -96,7 +98,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals("node.js")) {
+		if(!jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
@@ -120,10 +122,10 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		String classBody;
 		
-		if(jsStyle.equals("node.js")) {
+		if(jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
 			classBody = className + " = function() {\n};\n";
 		}
-		else if(jsStyle.equals("caplin-js")) {
+		else if(jsStyle.equals(CaplinJsBundlerPlugin.JS_STYLE)) {
 			classBody = className + " = function() {\n};\n";
 		}
 		else {

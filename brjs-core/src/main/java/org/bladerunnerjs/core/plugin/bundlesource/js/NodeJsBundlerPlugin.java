@@ -29,6 +29,8 @@ import org.bladerunnerjs.model.utility.JsStyleUtility;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin {
+	public static final String JS_STYLE = "node.js";
+	
 	private ContentPathParser requestParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	private BRJS brjs;
@@ -140,7 +142,7 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	@Override
 	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 	{ 
-		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("node.js") && !(assetLocation instanceof JsLib)) {
+		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE) && !(assetLocation instanceof JsLib)) {
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceFile.class, "js");
 		}
 		else {

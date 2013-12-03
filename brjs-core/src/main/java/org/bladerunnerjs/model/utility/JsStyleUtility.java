@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.core.plugin.bundlesource.js.NodeJsBundlerPlugin;
 
 public class JsStyleUtility {
 	public static String getJsStyle(File dir) {
@@ -15,7 +16,7 @@ public class JsStyleUtility {
 			dir = dir.getParentFile();
 		} while((jsStyle == null) && (dir != null));
 		
-		return (jsStyle != null) ? jsStyle : "node.js";
+		return (jsStyle != null) ? jsStyle : NodeJsBundlerPlugin.JS_STYLE;
 	}
 	
 	public static void setJsStyle(File dir, String jsStyle) {

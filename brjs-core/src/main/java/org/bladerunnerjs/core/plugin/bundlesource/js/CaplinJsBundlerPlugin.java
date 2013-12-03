@@ -31,6 +31,8 @@ import org.bladerunnerjs.model.utility.RequestParserBuilder;
 import org.json.simple.JSONObject;
 
 public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin {
+	public static final String JS_STYLE = "caplin-js";
+	
 	private ContentPathParser requestParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	private BRJS brjs;
@@ -157,7 +159,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 	@Override
 	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 	{
-		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals("caplin-js") && !(assetLocation instanceof JsLib)) {
+		if(JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE) && !(assetLocation instanceof JsLib)) {
 			// TODO: blow up if the package of the assetLocation would not be a valid namespace
 			
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, CaplinJsSourceFile.class, "js");
