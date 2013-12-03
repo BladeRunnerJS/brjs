@@ -98,15 +98,10 @@ public class TestRunner {
 	}
 
 	private List<String> getBrowsers(boolean noBrowserFlag) throws NoBrowsersDefinedException, IOException {
-		try {
-			if(noBrowserFlag || isServerRunning())
-			{
-				return null;
-			}
-		}
-		catch (Exception e)
+
+		if(noBrowserFlag || isServerRunning())
 		{
-			e.printStackTrace();
+				return null;
 		}
 		
 		return config.getBrowsers();
@@ -515,7 +510,7 @@ public class TestRunner {
 		}
 	}
 	
-	private boolean isServerRunning() throws Exception {
+	private boolean isServerRunning() {
 		logger.debug("Checking to see if server is running...");
 		ServerSocket socket = null;
 		boolean isServerRunning = false;
@@ -528,7 +523,12 @@ public class TestRunner {
 		}
 		finally {
 			if(socket != null) {
-				socket.close();
+				try{
+					socket.close();					
+				}
+				catch(IOException e){
+					throw new RuntimeException(e);
+				}
 			}
 		}
 		
