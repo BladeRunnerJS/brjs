@@ -3,7 +3,7 @@ package org.bladerunnerjs.specutil.engine;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.core.plugin.bundlesource.js.CaplinJsBundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundlesource.js.NodeJsBundlerPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
@@ -53,7 +53,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(CaplinJsBundlerPlugin.JS_STYLE)) {
+		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to 'caplin-js'");
 		}
 		
@@ -88,7 +88,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(CaplinJsBundlerPlugin.JS_STYLE)) {
+		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to 'caplin-js'");
 		}
 		
@@ -129,7 +129,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		if(jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
 			classBody = className + " = function() {\n};\n";
 		}
-		else if(jsStyle.equals(CaplinJsBundlerPlugin.JS_STYLE)) {
+		else if(jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
 			classBody = className + " = function() {\n};\n";
 		}
 		else {

@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.bundling;
 
+import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -50,9 +51,9 @@ public class WorkbenchBundlingTest extends SpecTest {
 	// ------------------------------------ J S ---------------------------------------
 	@Test
 	public void workbenchPageDoesNotBundleAspectJSClassFilesWhenReferenced() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg", "caplin-js")
+		given(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.Class1")
-			.and(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+			.and(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(blade).hasClass("mypkg.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("mypkg.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("mypkg.Class1");
@@ -75,7 +76,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladesetCssFilesAreBundledWhenReferencedInTheWorkbench() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", "caplin-js")
+		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(bladeset).hasClass("mypkg.bs.Class1")
 			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
 			.and(workbench).indexPageRefersTo("mypkg.bs.Class1");
@@ -86,7 +87,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladeCssFilesAreBundledWhenReferencedInTheWorkbench() throws Exception {
-		given(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(blade).hasClass("mypkg.bs.b1.Class1")
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
 			.and(workbench).indexPageRefersTo("mypkg.bs.b1.Class1");

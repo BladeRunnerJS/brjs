@@ -30,8 +30,8 @@ import org.bladerunnerjs.model.utility.JsStyleUtility;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 import org.json.simple.JSONObject;
 
-public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin {
-	public static final String JS_STYLE = "caplin-js";
+public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin {
+	public static final String JS_STYLE = "namespaced-js";
 	
 	private ContentPathParser requestParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
@@ -100,7 +100,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 		
 		requestPaths.add(requestParser.createRequest("package-definitions-request"));
 		for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-			if(sourceFile instanceof CaplinJsSourceModule) {
+			if(sourceFile instanceof NamespacedJsSourceModule) {
 				requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
 			}
 		}
@@ -130,7 +130,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
     				writer.write("\n");
 					
 					for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-						if(sourceFile instanceof CaplinJsSourceModule)
+						if(sourceFile instanceof NamespacedJsSourceModule)
 						{
     						writer.write("// " + sourceFile.getRequirePath() + "\n");
     						IOUtils.copy(sourceFile.getReader(), writer);
@@ -160,7 +160,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 		if ( !(assetLocation instanceof JsLibAppWrapper) && JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE)) {
 			// TODO: blow up if the package of the assetLocation would not be a valid namespace
 			
-			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, CaplinJsSourceModule.class, "js");
+			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NamespacedJsSourceModule.class, "js");
 		}
 		else {
 			return Arrays.asList();
@@ -189,7 +189,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 		Map<String, Map<String, ?>> packageStructure = new HashMap<>();
 		
 		for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-			if(sourceFile instanceof CaplinJsSourceModule) {
+			if(sourceFile instanceof NamespacedJsSourceModule) {
 				List<String> packageList = Arrays.asList(sourceFile.getRequirePath().split("/"));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}

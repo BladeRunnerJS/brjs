@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.bundling;
 import static org.bladerunnerjs.model.utility.LogicalRequestHandler.Messages.*;
 import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
 
+import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
@@ -108,7 +109,7 @@ public class BundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABladeset() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg", "caplin-js")
+		given(bladeset).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(aspect).indexPageRefersTo("mypkg.bs.Class1");
@@ -127,7 +128,7 @@ public class BundlingTest extends SpecTest {
 	
 	@Test	// bladeset unhappy paths
 	public void weDontBundleABladesetIfItIsNotReferredToByAnAspect() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", "caplin-js")
+		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(aspect).indexPageRefersTo("mypkg.bs.Class2");
@@ -147,7 +148,7 @@ public class BundlingTest extends SpecTest {
 	
 	@Test
 	public void bladesetClassesThatReferToNonExistentClassesWontCauseAnExceptionWhenAspectIsRequested() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", "caplin-js")
+		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(bladeset).hasClass("mypkg.bs.Class1")
 			.and(aspect).indexPageRefersTo("mypkg.bs.Class1")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.NonExistentClass");
@@ -166,7 +167,7 @@ public class BundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABlade() throws Exception {
-		given(blade).hasPackageStyle("src/mypkg/bs", "caplin-js")
+		given(blade).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(blade).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(blade).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(aspect).indexPageRefersTo("mypkg.bs.Class1");
@@ -185,11 +186,11 @@ public class BundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABladeIncludingBladesetDependencies() throws Exception {	
-		given(bladeset).hasPackageStyle("src/mypkg/bs", "caplin-js")
+		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(blade).hasClass("mypkg.bs.b1.Class1")
-			.and(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+			.and(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.Class1")
 			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -201,7 +202,7 @@ public class BundlingTest extends SpecTest {
 		given(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladeset).classRequires("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(blade).hasClass("mypkg.bs.b1.Class1")
-			.and(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+			.and(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.Class1")
 			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -213,7 +214,7 @@ public class BundlingTest extends SpecTest {
 		given(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
     		.and(bladeset).classRequires("mypkg.bs.Class1", "mypkg.bs.Class2")
     		.and(blade).hasClass("mypkg.bs.b1.Class1")
-    		.and(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+    		.and(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
     		.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.Class1")
     		.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");
     	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -225,7 +226,7 @@ public class BundlingTest extends SpecTest {
 		given(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
     		.and(bladeset).classRequires("mypkg.bs.Class1", "mypkg.bs.Class2")
     		.and(blade).hasClass("mypkg.bs.b1.Class1")
-    		.and(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+    		.and(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
     		.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.Class1")
     		.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");
     	when(app).requestReceived("/default-aspect/js/prod/en_GB/combined/bundle.js", response);
@@ -237,7 +238,7 @@ public class BundlingTest extends SpecTest {
 		given(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
     		.and(bladeset).classRequires("mypkg.bs.Class1", "mypkg.bs.Class2")
     		.and(blade).hasClass("mypkg.bs.b1.Class1")
-    		.and(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+    		.and(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
     		.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.Class1")
     		.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", response);
@@ -246,7 +247,7 @@ public class BundlingTest extends SpecTest {
 	
 	@Test	// blade unhappy paths
 	public void weDontBundleABladeIfItIsNotReferredToAnAspect() throws Exception {
-		given(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class2");
@@ -266,7 +267,7 @@ public class BundlingTest extends SpecTest {
 	
 	@Test
 	public void bladeClassesThatReferToNonExistentClassesWontCauseAnExceptionWhenAspectIsRequested() throws Exception {
-		given(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(blade).hasClass("mypkg.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1")
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.NonExistentClass");
@@ -313,7 +314,7 @@ public class BundlingTest extends SpecTest {
 	@Ignore 
  	@Test
  	public void aspectCssFilesAreBundled() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg", "caplin-js")
+		given(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content");
  		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
  		then(response).containsText("ASPECT theme content");
@@ -322,7 +323,7 @@ public class BundlingTest extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladesetCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg/bs", "caplin-js")
+		given(aspect).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(bladeset).hasClass("mypkg.bs.Class1")
 			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
 			.and(aspect).indexPageRefersTo("mypkg.bs.Class1");
@@ -333,7 +334,7 @@ public class BundlingTest extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladeCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+		given(aspect).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(blade).hasClass("mypkg.bs.b1.Class1")
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
 			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");
@@ -387,11 +388,11 @@ public class BundlingTest extends SpecTest {
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(userLib).hasBeenCreated()
-			.and(userLib).hasPackageStyle("sdk", "caplin-js")
+			.and(userLib).hasPackageStyle("sdk", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(userLib).hasClass("user.Class1")
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).hasPackageStyle("src/mypkg", "caplin-js")
+			.and(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClass("mypkg.Class1")
 			.and(aspect).classRefersTo("mypkg.Class1", "user.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -420,11 +421,11 @@ public class BundlingTest extends SpecTest {
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(sdkLib).hasBeenCreated()
-			.and(sdkLib).hasPackageStyle("sdk", "caplin-js")
+			.and(sdkLib).hasPackageStyle("sdk", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(sdkLib).hasClass("sdk.Class1")
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).hasPackageStyle("src/mypkg", "caplin-js")
+			.and(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClass("mypkg.Class1")
 			.and(aspect).classRefersTo("mypkg.Class1", "sdk.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);

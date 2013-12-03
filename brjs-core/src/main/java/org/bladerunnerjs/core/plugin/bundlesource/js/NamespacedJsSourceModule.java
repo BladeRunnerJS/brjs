@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class CaplinJsSourceModule implements SourceModule {
+public class NamespacedJsSourceModule implements SourceModule {
 	private LinkedAsset assetFile;
 	private AssetLocation assetLocation;
 	private String requirePath;
@@ -89,7 +89,7 @@ public class CaplinJsSourceModule implements SourceModule {
 		
 		try {
 			for(SourceModule dependentSourceModules : getDependentSourceModules()) {
-				if(!(dependentSourceModules instanceof CaplinJsSourceModule)) {
+				if(!(dependentSourceModules instanceof NamespacedJsSourceModule)) {
 					String moduleNamespace = dependentSourceModules.getRequirePath().replaceAll("/", ".");
 					stringBuffer.append(moduleNamespace + " = require('" + dependentSourceModules.getRequirePath()  + "');\n");
 				}

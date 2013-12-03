@@ -4,6 +4,7 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
+import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -112,7 +113,7 @@ public class BRJSServletTest extends SpecTest
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasPackageStyle("src/cjs", "caplin-js")
+			.and(blade).hasPackageStyle("src/cjs", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(blade).hasPackageStyle("src/node", "node.js")
 			.and(blade).hasClasses("cjs.Class", "node.Class")
 			.and(aspect).indexPageRefersTo("cjs.Class")
