@@ -18,29 +18,29 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	public List<String> getDepends() throws ConfigException
 	{
 		reloadConf();
-		return listify(conf.depends);
+		return listify(conf.depends, "");
 	}
 	
 	public List<String> getJs() throws ConfigException
 	{
 		reloadConf();
-		return listify(conf.js);
+		return listify(conf.js, ".*\\.js");
 	}
 	
 
 	public List<String> getCss() throws ConfigException
 	{
 		reloadConf();
-		return listify(conf.css);
+		return listify(conf.css, ".*\\.css");
 	}
 	
 	
-	private List<String> listify(String value)
+	private List<String> listify(String value, String nullValueFallback)
 	{
 		if (value != null)
 		{
 			return Arrays.asList(value.split(commaWithOptionalSpacesSeparator));
 		}
-		return Arrays.asList();
+		return Arrays.asList(nullValueFallback);
 	}
 }

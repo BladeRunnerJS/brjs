@@ -459,9 +459,8 @@ public class BundlingTest extends SpecTest {
 		then(response).containsText("window.lib = { }");
 	}
 	
-	@Ignore
 	@Test
-	public void canBundleLegacyThirdpartyLibAndItsOtherDependencyLibsIfTheyAreReferencedInABlade() throws Exception {		
+	public void canBundleLegacyThirdpartyLibAndItsOtherDependencyLibsIfTheyAreReferencedInABlade() throws Exception {
 		given(legacyThirdparty).hasBeenCreated()
 			.and(legacyThirdparty2).hasBeenCreated()
 			.and(legacyThirdparty2).containsFileWithContents("library.manifest", "depends: ")

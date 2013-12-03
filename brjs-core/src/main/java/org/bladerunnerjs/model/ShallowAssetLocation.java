@@ -15,7 +15,6 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocation {
 	protected AssetContainer assetContainer;
-	private final Map<String, ShallowAssetLocation> resources = new HashMap<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
@@ -83,35 +82,11 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	@Override
 	public List<AssetLocation> getAncestorAssetLocations()
 	{
-    	List<AssetLocation> resourcesList = new ArrayList<>();
-    	
-    	File srcDir = dir();
-    	
-    	while (srcDir != null)
-    	{
-    		resourcesList.add(createResource(srcDir));
-    		if (srcDir.equals(assetContainer.src().dir()))
-    		{
-    			break;
-    		}
-    		srcDir = srcDir.getParentFile();
-    	}
-    	
-    	return resourcesList;
+    	return new ArrayList<>();
 	}
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException {
 		// do nothing
-	}
-	
-	private AssetLocation createResource(File srcDir) {
-		String srcPath = srcDir.getAbsolutePath();
-		
-		if(!resources.containsKey(srcPath)) {
-			resources.put(srcPath, new ShallowAssetLocation(assetContainer.root(), assetContainer, srcDir));
-		}
-		
-		return resources.get(srcPath);
 	}
 }

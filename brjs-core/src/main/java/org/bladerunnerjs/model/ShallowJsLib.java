@@ -24,9 +24,7 @@ public class ShallowJsLib extends JsLib
 	public List<AssetLocation> getAllAssetLocations() 
 	{
 		List<AssetLocation> assetLocations = new ArrayList<>();
-		
 		assetLocations.add( new ShallowAssetLocation(root(), this, dir()));
-		
 		return assetLocations;
 	}
 	

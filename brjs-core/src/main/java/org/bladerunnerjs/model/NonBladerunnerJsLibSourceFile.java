@@ -8,11 +8,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.SequenceInputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -77,24 +79,6 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 	@Override
 	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException
 	{
-		return new ArrayList<SourceFile>();
-	}
-
-	@Override
-	public List<String> getAliasNames() throws ModelOperationException
-	{
-		return new ArrayList<String>();
-	}
-
-	@Override
-	public String getRequirePath()
-	{
-		return dir.getName();
-	}
-
-	@Override
-	public List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException
-	{
 		List<SourceFile> dependentLibs = new ArrayList<SourceFile>();
 		
 		try 
@@ -117,6 +101,24 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 		return dependentLibs;
 	}
 
+	@Override
+	public List<String> getAliasNames() throws ModelOperationException
+	{
+		return new ArrayList<String>();
+	}
+
+	@Override
+	public String getRequirePath()
+	{
+		return dir.getName();
+	}
+
+	@Override
+	public List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException
+	{
+		return Arrays.asList();
+	}
+
 	
 	
 	
@@ -126,9 +128,13 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 		Collection<File> foundFiles = FileUtils.listFiles(assetLocation.dir(), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 		for (File f : foundFiles)
 		{
-			if (matchFilePaths.contains(f.getPath()) || matchFilePaths.size() == 0)
+			for (String pattern : matchFilePaths)
 			{
-				filesMatching.add(f);
+				if ( Pattern.matches(pattern, f.getPath()) )
+				{
+					filesMatching.add(f);
+					break;
+				}
 			}
 		}
 		return filesMatching;
