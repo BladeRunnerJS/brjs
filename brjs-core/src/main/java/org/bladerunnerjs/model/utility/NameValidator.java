@@ -20,7 +20,7 @@ public class NameValidator
 	 * <app-name> 		(e.g. novotrader)
 	 * <bladeset-name> 	(e.g. 'fx', NOT 'fx-bladeset' as it should be chomped before it reaches here) 
 	 * <blade-name>		(e.g. 'grid')
-	 * <app-namespace>  (e.g. novox)
+	 * <app-namespace>  (e.g. mypkg)
 	 */
 	
 	// TODO: change to accept a single directory name

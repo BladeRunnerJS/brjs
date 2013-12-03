@@ -82,11 +82,11 @@ public class BladeTest extends SpecTest {
 	//TODO: verify bundleInfo exception
 	@Test
 	public void classesWithinABladeCantReferenceClassesInOtherBlades() throws Exception {
-		given(blade1).hasPackageStyle("src/novox/bs/", "caplin-js")
-			.and(blade1).hasClass("novox.bs.b1.Class1")
-			.and(blade2).hasPackageStyle("src/novox/bs", "caplin-js")
-			.and(blade2).hasClass("novox.bs.b2.Class1")
-			.and(blade2).classRefersTo("novox.bs.b2.Class1", "novox.bs.b1.blade.Class1")
+		given(blade1).hasPackageStyle("src/mypkg/bs/", "caplin-js")
+			.and(blade1).hasClass("mypkg.bs.b1.Class1")
+			.and(blade2).hasPackageStyle("src/mypkg/bs", "caplin-js")
+			.and(blade2).hasClass("mypkg.bs.b2.Class1")
+			.and(blade2).classRefersTo("mypkg.bs.b2.Class1", "mypkg.bs.b1.blade.Class1")
 			.and(aspect).indexPageRefersTo("blade2.Class2");
 		when(aspect).getBundleInfo();
 //		then(exceptions).verifyException(BundleSetException.class, blade2.getName() //some other information);

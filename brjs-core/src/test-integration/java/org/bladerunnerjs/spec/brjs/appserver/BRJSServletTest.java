@@ -114,15 +114,15 @@ public class BRJSServletTest extends SpecTest
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasPackageStyle("src/novox.cjs", "caplin-js")
-			.and(blade).hasPackageStyle("src/novox.node", "node.js")
-			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
-			.and(aspect).indexPageRefersTo("novox.cjs.Class")
-			.and(blade).classRefersTo("novox.cjs.Class",  "novox.node.Class")
+			.and(blade).hasPackageStyle("src/mypkg.cjs", "caplin-js")
+			.and(blade).hasPackageStyle("src/mypkg.node", "node.js")
+			.and(blade).hasClasses("mypkg.cjs.Class", "mypkg.node.Class")
+			.and(aspect).indexPageRefersTo("mypkg.cjs.Class")
+			.and(blade).classRefersTo("mypkg.cjs.Class",  "mypkg.node.Class")
     		.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("window.novox={\"cjs\":{\"Class\":{}}};novox.cjs.Class=function(){};br.extend(novox.cjs.Class,novox.node.Class);novox.cjs.Class=require(\"novox/cjs/Class\");novox.node.Class=function(){};");
+		then(response).textEquals("window.mypkg={\"cjs\":{\"Class\":{}}};mypkg.cjs.Class=function(){};br.extend(mypkg.cjs.Class,mypkg.node.Class);mypkg.cjs.Class=require(\"mypkg/cjs/Class\");mypkg.node.Class=function(){};");
 	}
 	
 }

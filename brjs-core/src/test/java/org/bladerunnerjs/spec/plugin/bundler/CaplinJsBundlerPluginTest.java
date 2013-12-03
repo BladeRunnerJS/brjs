@@ -27,20 +27,20 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 	@Test
 	public void inDevSeparateJsFileRequestsAreGenerated() throws Exception {
 		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).classRefersTo("novox.Class1", "novox.Class2")
+			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).indexPageHasContent("<@caplin-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "caplin-js/module/novox/Class1.js", "caplin-js/module/novox/Class2.js");
+		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "caplin-js/module/mypkg/Class1.js", "caplin-js/module/mypkg/Class2.js");
 	}
 	
 	@Test
 	public void inProdASingleBundleRequestIsGenerated() throws Exception {
 		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).classRefersTo("novox.Class1", "novox.Class2")
+			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).indexPageHasContent("<@caplin-js@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("caplin-js/bundle.js");
@@ -49,8 +49,8 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 	@Test
 	public void theBundleIsEmptyIfWeDontReferToAnyOfTheClasses() throws Exception {
 		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).classRefersTo("novox.Class1", "novox.Class2");
+			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
+			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2");
 		when(app).requestReceived("/default-aspect/caplin-js/bundle.js", requestResponse);
 		then(requestResponse).isEmpty();
 	}
@@ -58,27 +58,27 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 	@Test
 	public void thePackageDefinitionsBlockShouldContainSinglePackageIfThereIsOneTopLevelClass() throws Exception {
 		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.Class1")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1");
+			.and(aspect).hasClasses("mypkg.Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1");
 		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
-		then(requestResponse).containsText("window.novox = {};");
+		then(requestResponse).containsText("window.mypkg = {};");
 	}
 	
 	@Test
 	public void thePackageDefinitionsBlockShouldContainSinglePackageIfThereAreTwoTopLevelClasses() throws Exception {
 		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).classRefersTo("novox.Class1", "novox.Class2");
+			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2");
 		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
-		then(requestResponse).containsText("window.novox = {};");
+		then(requestResponse).containsText("window.mypkg = {};");
 	}
 	
 	@Test
 	public void thePackageDefinitionsBlockShouldBeEmptyIfNoneOfTheClassesAreUsed() throws Exception {
 		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).classRefersTo("novox.Class1", "novox.Class2");
+			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
+			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2");
 		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
 		then(requestResponse).isEmpty();
 	}
@@ -86,39 +86,39 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 	@Test
 	public void thePackageDefinitionsBlockShouldContainTwoPackagesIfThereAreClassesAtDifferentLevels() throws Exception {
 		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.Class1", "novox.pkg.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).classRefersTo("novox.Class1", "novox.pkg.Class2");
+			.and(aspect).hasClasses("mypkg.Class1", "mypkg.pkg.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.pkg.Class2");
 		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
-		then(requestResponse).containsText("window.novox = {\"pkg\":{}};");
+		then(requestResponse).containsText("window.mypkg = {\"pkg\":{}};");
 	}
 	
 	@Test
 	public void eachClassShouldBeReturnedUnchagned() throws Exception {
 		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.Class1");
-		when(app).requestReceived("/default-aspect/caplin-js/module/novox/Class1.js", requestResponse);
-		then(requestResponse).textEquals("novox.Class1 = function() {\n};\n");
+			.and(aspect).hasClasses("mypkg.Class1");
+		when(app).requestReceived("/default-aspect/caplin-js/module/mypkg/Class1.js", requestResponse);
+		then(requestResponse).textEquals("mypkg.Class1 = function() {\n};\n");
 	}
 	
 	@Test
 	public void caplinStyleClassesThatReferToNonCaplinStyleClassesWillHaveRequiresAutomaticallyAdded() throws Exception {
-		given(aspect).hasPackageStyle("src/novox/caplin", CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.caplin.Class", "novox.nodejs.Class")
-			.and(aspect).classRefersTo("novox.caplin.Class", "novox.nodejs.Class");
-		when(app).requestReceived("/default-aspect/caplin-js/module/novox/caplin/Class.js", requestResponse);
-		then(requestResponse).containsText("novox.caplin.Class = function() {\n};")
-			.and(requestResponse).containsText("novox.nodejs.Class = require('novox/nodejs/Class');");
+		given(aspect).hasPackageStyle("src/mypkg/caplin", CaplinJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("mypkg.caplin.Class", "mypkg.nodejs.Class")
+			.and(aspect).classRefersTo("mypkg.caplin.Class", "mypkg.nodejs.Class");
+		when(app).requestReceived("/default-aspect/caplin-js/module/mypkg/caplin/Class.js", requestResponse);
+		then(requestResponse).containsText("mypkg.caplin.Class = function() {\n};")
+			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
 	
 	@Test
 	public void requiresAreAlsoAutomaticallyAddedWithinTheBundledResponse() throws Exception {
-		given(aspect).hasPackageStyle("src/novox/caplin", CaplinJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("novox.caplin.Class", "novox.nodejs.Class")
-			.and(aspect).indexPageRefersTo("novox.caplin.Class")
-			.and(aspect).classRefersTo("novox.caplin.Class", "novox.nodejs.Class");
+		given(aspect).hasPackageStyle("src/mypkg/caplin", CaplinJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("mypkg.caplin.Class", "mypkg.nodejs.Class")
+			.and(aspect).indexPageRefersTo("mypkg.caplin.Class")
+			.and(aspect).classRefersTo("mypkg.caplin.Class", "mypkg.nodejs.Class");
 		when(app).requestReceived("/default-aspect/caplin-js/bundle.js", requestResponse);
-		then(requestResponse).containsText("novox.caplin.Class = function() {\n};")
-			.and(requestResponse).containsText("novox.nodejs.Class = require('novox/nodejs/Class');");
+		then(requestResponse).containsText("mypkg.caplin.Class = function() {\n};")
+			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
 }

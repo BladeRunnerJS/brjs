@@ -24,19 +24,19 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGenerated() throws Exception {
-		given(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).classRequires("novox.Class1", "novox.Class2")
+		given(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+			.and(aspect).classRequires("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/novox/Class1.js", "node-js/module/novox/Class2.js");
+		then(pageResponse).containsRequests("node-js/module/mypkg/Class1.js", "node-js/module/mypkg/Class2.js");
 	}
 	
 	@Test
 	public void inProdASingleBundleRequestIsGenerated() throws Exception {
-		given(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).classRequires("novox.Class1", "novox.Class2")
+		given(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+			.and(aspect).classRequires("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("node-js/bundle.js");

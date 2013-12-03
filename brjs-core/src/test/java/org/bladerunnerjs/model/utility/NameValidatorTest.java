@@ -131,7 +131,7 @@ public class NameValidatorTest
 	public void testReservedNamespace()
 	{
 		assertFalse("1a", NameValidator.isValidRootPackageName("caplin"));
-		assertTrue("1b", NameValidator.isValidRootPackageName("novox"));
+		assertTrue("1b", NameValidator.isValidRootPackageName("mypkg"));
 	}
 	
 	@Test
