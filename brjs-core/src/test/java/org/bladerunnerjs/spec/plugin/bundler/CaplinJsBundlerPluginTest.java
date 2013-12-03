@@ -25,7 +25,7 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGenerated() throws Exception {
-		given(aspect).hasPackageStyle("src", CaplinJsBundlerPlugin.JS_STYLE)
+		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).classRefersTo("novox.Class1", "novox.Class2")
@@ -36,7 +36,7 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inProdASingleBundleRequestIsGenerated() throws Exception {
-		given(aspect).hasPackageStyle("src", CaplinJsBundlerPlugin.JS_STYLE)
+		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).classRefersTo("novox.Class1", "novox.Class2")
