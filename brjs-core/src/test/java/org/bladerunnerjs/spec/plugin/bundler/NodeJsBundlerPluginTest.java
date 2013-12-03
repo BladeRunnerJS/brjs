@@ -44,18 +44,14 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	}
 
 	@Test
-	public void requiredDependenciesAreAddedToTheResponseWhenNodeJsStyleIsRequested() throws Exception {
+	public void appendsCommentToTheTopOfRequiredClassesWhenNodeJsStyleIsRequested() throws Exception {
 		given(aspect).hasClasses("novox.Class1", "novox.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
 			.and(aspect).classRequires("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(app).requestReceived("/default-aspect/node-js/bundle.js", requestResponse);
-		then(requestResponse).textEquals(
-				"// novox/Class2\n" +
-				"novox.Class2 = function() {\n};\n\n\n" +
-				"// novox/Class1\n" +
-				"var Class1 = require('novox/Class2');\n" +
-				"novox.Class1 = function() {\n};\n\n\n");
+		then(requestResponse).containsText("// novox/Class2\n" + "novox.Class2 = function()")
+			.and(requestResponse).containsText("// novox/Class1\n" + "var Class1 = require");
 	}
 	
 	@Test
