@@ -276,7 +276,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	
 	private void getLibraryResourceDirs(File resourceDir, File sourceDir, List<File> resourceDirs)
 	{
-		for(File resourceSubDir : FileUtility.getSortedListOfSubFolders(resourceDir))
+		for(File resourceSubDir : FileUtility.listDirs(resourceDir))
 		{
 			File sourceSubDir = new File(sourceDir, resourceSubDir.getName());
 			

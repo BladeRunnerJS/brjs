@@ -22,19 +22,19 @@ public class FileUtility {
 		return tempdir;
 	}
 	
-	public static List<File> getSortedListOfSubFolders(File sourceFolder)
+	public static List<File> listDirs(File sourceDir)
 	{
-		List<File> subfolders = new ArrayList<File>();
+		List<File> subDirs = new ArrayList<File>();
 		
-		for(File content : sortFileArray(sourceFolder.listFiles()))
+		for(File fileOrDir : sortFileArray(sourceDir.listFiles()))
 		{
-			if(content.isDirectory() && !content.getName().startsWith("."))
+			if(fileOrDir.isDirectory() && !fileOrDir.getName().startsWith("."))
 			{
-				subfolders.add(content);
+				subDirs.add(fileOrDir);
 			}
 		}
 		
-		return subfolders;
+		return subDirs;
 	}
 	
 	public static File[] sortFileArray(File[] files)
