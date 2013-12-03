@@ -23,7 +23,6 @@ import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.utility.JsStyleUtility;
@@ -120,7 +119,6 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
 					SourceFile jsModule = bundleSet.getBundlableNode().getSourceFile(request.properties.get("module"));
 					IOUtils.copy(jsModule.getReader(), writer);
-					globalizeNonCaplinJsClasses((CaplinJsSourceFile) jsModule, writer);
 				}
 			}
 			else if(request.formName.equals("bundle-request")) {
@@ -138,7 +136,6 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
     						writer.write("\n\n");
 						}
 					}
-					globalizeNonCaplinJsClasses(bundleSet, writer);
 				}
 			}
 			else if(request.formName.equals("package-definitions-request")) {
@@ -234,28 +231,6 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 			}
 			
 			writer.flush();
-		}
-	}
-	
-	private void globalizeNonCaplinJsClasses(BundleSet bundleSet, Writer writer) throws IOException, BundlerProcessingException {
-		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
-			if(sourceFile instanceof CaplinJsSourceFile) {
-				globalizeNonCaplinJsClasses((CaplinJsSourceFile) sourceFile, writer);
-			}
-		}
-	}
-	
-	private void globalizeNonCaplinJsClasses(CaplinJsSourceFile sourceFile, Writer writer) throws IOException, BundlerProcessingException {
-		try {
-			for(SourceFile dependentSourceFile : sourceFile.getDependentSourceFiles()) {
-				if(!(dependentSourceFile instanceof CaplinJsSourceFile)) {
-					String moduleNamespace = dependentSourceFile.getRequirePath().replaceAll("/", ".");
-					writer.write(moduleNamespace + " = require('" + dependentSourceFile.getRequirePath()  + "');\n");
-				}
-			}
-		}
-		catch(ModelOperationException e) {
-			throw new BundlerProcessingException(e);
 		}
 	}
 }

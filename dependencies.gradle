@@ -43,6 +43,8 @@ Dependencies.putAll([
 	'sjsxp'						:	'com.sun.xml.stream:sjsxp:1.0.2',
 	'dom4j'						:	'dom4j:dom4j:1.6.1',
 	
+	'utils'						:	'org.ostermiller:utils:1.07.00',
+	
 	
 	'reflections'				:	'org.reflections:reflections:0.9.9-RC1',
 

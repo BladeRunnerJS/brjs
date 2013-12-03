@@ -3,6 +3,7 @@ package org.bladerunnerjs.core.plugin.bundlesource.js;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+
+import com.Ostermiller.util.ConcatReader;
 
 public class CaplinJsSourceFile implements SourceFile {
 	private LinkedAssetFile assetFile;
@@ -42,7 +45,7 @@ public class CaplinJsSourceFile implements SourceFile {
 	
 	@Override
 	public Reader getReader() throws FileNotFoundException {
-		return assetFile.getReader();
+		return new ConcatReader(assetFile.getReader(), new StringReader(globalizeNonCaplinJsClasses()));
 	}
 	
 	@Override
@@ -69,5 +72,23 @@ public class CaplinJsSourceFile implements SourceFile {
 	
 	public String getClassName() {
 		return getRequirePath().replaceAll("/", ".");
+	}
+	
+	private String globalizeNonCaplinJsClasses() {
+		StringBuffer stringBuffer = new StringBuffer();
+		
+		try {
+			for(SourceFile dependentSourceFile : getDependentSourceFiles()) {
+				if(!(dependentSourceFile instanceof CaplinJsSourceFile)) {
+					String moduleNamespace = dependentSourceFile.getRequirePath().replaceAll("/", ".");
+					stringBuffer.append(moduleNamespace + " = require('" + dependentSourceFile.getRequirePath()  + "');\n");
+				}
+			}
+		}
+		catch(ModelOperationException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return stringBuffer.toString();
 	}
 }

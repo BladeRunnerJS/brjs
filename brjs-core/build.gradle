@@ -36,6 +36,7 @@ dependencies {
 	compile dependency('xalan')
 	compile dependency('sjsxp')
 	compile dependency('dom4j')
+	compile dependency('utils')
 	
 	/* woodstox deps */
 	compile dependency('woodstox-core-asl')
