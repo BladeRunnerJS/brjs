@@ -86,6 +86,16 @@ public class BundlingTest extends SpecTest {
 		then(response).containsClasses("novox.Class1");
 	}
 	
+	@Test
+	public void requirePathsCanBeRelative() throws Exception {
+		given(aspect).hasClass("novox.Class1")
+			.and(aspect).hasClass("novox.Class2")
+			.and(aspect).indexPageRefersTo("novox.Class1")
+			.and(aspect).classRequires("novox.Class1", "./Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("novox.Class1", "novox.Class2");
+	}
+	
 	//  ----------------------------- B L A D E S E T  -----------------------------------
 	@Test
 	public void weBundleABladesetClassIfItIsReferredToInTheIndexPage() throws Exception {
