@@ -141,7 +141,7 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	@Override
 	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 	{ 
-		if (JsStyleUtility.getJsStyle(assetLocation).equals(JS_STYLE)) {
+		if (JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE)) {
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceFile.class, "js");
 		}
 		else {

@@ -35,7 +35,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeMap<ShallowJsLib> nonBladeRunnerLibs = JsLib.createAppNonBladeRunnerLibNodeSet();
+	private final NodeMap<JsLib> nonBladeRunnerLibs = JsLib.createAppNonBladeRunnerLibNodeSet();
 	private final NodeMap<Bladeset> bladesets = Bladeset.createNodeSet();
 	private final NodeMap<Aspect> aspects = Aspect.createNodeSet();
 	private final NodeMap<JsLib> jsLibs = JsLib.createAppNodeSet();
@@ -158,7 +158,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		List<JsLib> appJsLibs = new ArrayList<JsLib>();
 		appJsLibs.addAll( children(jsLibs) );
-		appJsLibs.add( new AppJsLibWrapper(this, root().sdkLib()) );
+		appJsLibs.add( new JsLibAppWrapper(this, root().sdkLib()) );
 		appJsLibs.addAll( nonBladeRunnerLibs() );
 		return appJsLibs;
 	}
@@ -232,7 +232,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		
 		for (JsLib lib : root().sdkNonBladeRunnerLibs())
 		{
-			libs.put(lib.getName(), new AppJsLibWrapper(this, lib) );			
+			libs.put(lib.getName(), new JsLibAppWrapper(this, lib) );			
 		}
 		for (JsLib lib : children(nonBladeRunnerLibs))
 		{
@@ -249,7 +249,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())
 		{
-			return new AppJsLibWrapper(this, sdkLib);
+			return new JsLibAppWrapper(this, sdkLib);
 		}
 		return appLib;
 	}

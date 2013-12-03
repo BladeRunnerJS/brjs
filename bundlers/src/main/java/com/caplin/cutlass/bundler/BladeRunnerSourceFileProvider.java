@@ -19,10 +19,8 @@ import org.bladerunnerjs.model.App;
 
 import com.caplin.cutlass.BRJSAccessor;
 
-import org.bladerunnerjs.model.AppJsLibWrapper;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.ShallowJsLib;
 
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.ScopeLevel;
@@ -167,35 +165,28 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 		
 		Path sdkLibPath = BRJSAccessor.root.sdkLib().src().dir().toPath();
 
-		for(JsLib jsLib: app.jsLibs()){
-
-			if ( jsLib instanceof ShallowJsLib || (jsLib instanceof AppJsLibWrapper && ((AppJsLibWrapper)jsLib).getWrappedJsLib() instanceof ShallowJsLib) ) 
+		for(JsLib jsLib: app.jsLibs())
+		{
+			AssetLocation libSrcRoot = jsLib.src();
+			AssetLocation libResourcesRoot = jsLib.resources();
+			
+			if(libSrcRoot.dirExists())
 			{
-				// ignore
+				if(libSrcRoot.dir().toPath().normalize().equals(sdkLibPath))
+				{
+					continue;
+				}
+				bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
 			}
-			else
+			
+			if(libResourcesRoot.dirExists())
 			{
-    			AssetLocation libSrcRoot = jsLib.src();
-    			AssetLocation libResourcesRoot = jsLib.resources();
-    			
-    			if(libSrcRoot.dirExists())
-    			{
-    				if(libSrcRoot.dir().toPath().normalize().equals(sdkLibPath))
-    				{
-    					continue;
-    				}
-    				bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
-    			}
-    			
-    			if(libResourcesRoot.dirExists())
-    			{
-    				List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
-    				
-    				for(File libraryResourceDir : libraryResourceDirs)
-    				{
-    					bundlerFileAppender.appendLibraryResourceFiles(libraryResourceDir, sourceFiles);
-    				}
-    			}
+				List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
+				
+				for(File libraryResourceDir : libraryResourceDirs)
+				{
+					bundlerFileAppender.appendLibraryResourceFiles(libraryResourceDir, sourceFiles);
+				}
 			}
 		}
 	}

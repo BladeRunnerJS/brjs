@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AppJsLibWrapper;
+import org.bladerunnerjs.model.JsLibAppWrapper;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.specutil.engine.NodeVerifier;
 import org.bladerunnerjs.specutil.engine.SpecTest;
@@ -29,9 +29,9 @@ public class AppVerifier extends NodeVerifier<App> {
 		
 		for (JsLib lib : app.jsLibs())
 		{
-			if (lib instanceof AppJsLibWrapper) // assert against the unwrapped libs
+			if (lib instanceof JsLibAppWrapper) // assert against the unwrapped libs
 			{
-				appLibs.add( ((AppJsLibWrapper) lib).getWrappedJsLib() );
+				appLibs.add( ((JsLibAppWrapper) lib).getWrappedJsLib() );
 			}
 			else
 			{
@@ -63,7 +63,7 @@ public class AppVerifier extends NodeVerifier<App> {
 	public void libWithNameIs(String libName, JsLib appOverriddenNonBRLib)
 	{
 		JsLib appJsLib = app.nonBladeRunnerLib(libName);
-		appJsLib = (appJsLib instanceof AppJsLibWrapper) ? ((AppJsLibWrapper) appJsLib).getWrappedJsLib() : appJsLib;
+		appJsLib = (appJsLib instanceof JsLibAppWrapper) ? ((JsLibAppWrapper) appJsLib).getWrappedJsLib() : appJsLib;
 		assertSame(appJsLib, appOverriddenNonBRLib);
 	}
 }

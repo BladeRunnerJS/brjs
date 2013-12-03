@@ -18,11 +18,11 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentPathParser;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.NonBladerunnerJsLibSourceFile;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ShallowJsLib;
 import org.bladerunnerjs.model.SourceFile;
 import org.bladerunnerjs.model.UnableToInstantiateAssetFileException;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -65,7 +65,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 		try
 		{
     		List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
-    		if (assetLocation.getAssetContainer() instanceof ShallowJsLib)
+    		if (assetLocation.getAssetContainer() instanceof JsLib)
     		{
     			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
     			if (manifest.fileExists())

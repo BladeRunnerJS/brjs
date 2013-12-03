@@ -83,7 +83,7 @@ public class BundleSetCreator {
 		List<String> assetContainerPaths = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
-			File baseDir = assetContainer instanceof AppJsLibWrapper ? app.root().dir() : app.dir();
+			File baseDir = assetContainer instanceof JsLibAppWrapper ? app.root().dir() : app.dir();
 			assetContainerPaths.add(getRelativePath(baseDir, assetContainer.dir()));
 		}
 		

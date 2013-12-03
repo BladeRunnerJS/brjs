@@ -17,6 +17,7 @@ import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.AssetFile;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.JsLibAppWrapper;
 import org.bladerunnerjs.model.LinkedAssetFile;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
@@ -156,7 +157,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 	@Override
 	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
 	{
-		if (JsStyleUtility.getJsStyle(assetLocation).equals(JS_STYLE)) {
+		if ( !(assetLocation instanceof JsLibAppWrapper) && JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE)) {
 			// TODO: blow up if the package of the assetLocation would not be a valid namespace
 			
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, CaplinJsSourceFile.class, "js");
