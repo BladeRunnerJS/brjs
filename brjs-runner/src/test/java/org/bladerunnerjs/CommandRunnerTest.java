@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.bladerunnerjs.CommandRunner.InvalidDirectoryException;
 import org.bladerunnerjs.CommandRunner.InvalidSdkDirectoryException;
 import org.bladerunnerjs.CommandRunner.NoSdkArgumentException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.junit.Before;
 import org.junit.Test;
 

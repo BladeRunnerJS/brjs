@@ -40,7 +40,7 @@ import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 
 import com.caplin.cutlass.ServletModelAccessor;

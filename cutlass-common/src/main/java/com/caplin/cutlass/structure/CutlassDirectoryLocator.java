@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
 import com.caplin.cutlass.BRJSAccessor;

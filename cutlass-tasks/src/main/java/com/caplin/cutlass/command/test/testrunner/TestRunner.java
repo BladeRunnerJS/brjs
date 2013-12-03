@@ -33,7 +33,7 @@ import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ProcessLogger;
 import org.slf4j.impl.StaticLoggerBinder;
 

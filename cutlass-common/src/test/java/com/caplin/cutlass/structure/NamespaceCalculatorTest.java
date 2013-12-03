@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.exception.NamespaceException;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 import com.caplin.cutlass.BRJSAccessor;

@@ -21,7 +21,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 
 public class ImportApplicationCommandTest
 {

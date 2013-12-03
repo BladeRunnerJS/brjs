@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.App;
 
 import com.caplin.cutlass.BRJSAccessor;

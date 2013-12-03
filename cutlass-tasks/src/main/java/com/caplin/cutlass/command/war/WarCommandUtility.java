@@ -20,7 +20,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.WebXmlCompiler;
 import org.xml.sax.SAXException;
 

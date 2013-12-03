@@ -41,7 +41,7 @@ import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.ServletModelAccessor;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;

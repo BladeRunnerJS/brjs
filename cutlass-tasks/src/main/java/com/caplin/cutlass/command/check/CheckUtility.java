@@ -18,7 +18,7 @@ import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 

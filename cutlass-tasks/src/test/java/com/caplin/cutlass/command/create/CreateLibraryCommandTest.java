@@ -16,7 +16,7 @@ import org.bladerunnerjs.core.plugin.command.standard.CreateLibraryCommand;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.testing.model.engine.MockLoggerFactory;
 
 import com.caplin.cutlass.testing.BRJSTestFactory;

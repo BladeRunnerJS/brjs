@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.model.utility.FileUtility;
 
 
 public class TemplateUtility
@@ -25,7 +25,10 @@ public class TemplateUtility
 			}
 			
 			File templateDir = node.root().template(templateName).dir();
-			FileUtility.createResourcesFromSdkTemplate(templateDir, node.dir());
+			
+			if(templateDir.exists()) {
+				FileUtils.copyDirectory(templateDir, node.dir(), HiddenFileFilter.VISIBLE);
+			}
 			
 			if(!transformations.isEmpty()) {
 				transformDir(node.dir(), transformations);

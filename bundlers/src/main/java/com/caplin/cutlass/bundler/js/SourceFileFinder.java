@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
 import com.caplin.cutlass.bundler.js.aliasing.AliasRegistry;

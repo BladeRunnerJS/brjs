@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.command.importing.Renamer;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.AppStructureVerifier;
 import com.caplin.cutlass.structure.NamespaceCalculator;
 import org.bladerunnerjs.model.utility.NameValidator;

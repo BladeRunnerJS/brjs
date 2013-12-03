@@ -8,7 +8,7 @@ import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 
 public class IntegrationTestFinder

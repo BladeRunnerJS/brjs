@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
@@ -23,7 +24,6 @@ import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.utility.LogicalRequestHandler;
 import org.bladerunnerjs.model.utility.NameValidator;
 
@@ -199,7 +199,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		try {
 			if(!root().appJars().dirExists()) throw new IllegalStateException(
 				"The directory containing the app jars, located at '" + root().appJars().dir().getPath() + "', is not present");
-			FileUtility.copyDirectoryContents(root().appJars().dir(), file("WEB-INF/lib"));
+			FileUtils.copyDirectory(root().appJars().dir(), file("WEB-INF/lib"));
 			notifyObservers(new AppDeployedEvent(), this);
 			logger.info(Messages.APP_DEPLOYED_LOG_MSG, getName(), dir().getPath());
 		}
