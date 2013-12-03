@@ -274,7 +274,7 @@ String namespace()
 String requirePrefix()
 List&lt;SourceFile&gt; sourceFiles()
 SourceFile sourceFile(String requirePath)
-AsseyLocation src()
+AssetLocation src()
 AssetLocation resources()
 List&lt;AssetLocation&gt; getAllAssetLocations()
 </string>
@@ -291,19 +291,19 @@ List&lt;AssetLocation&gt; getAllAssetLocations()
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>639.0</double>
+      <double>641.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>288.0</double>
+      <double>296.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>639.0</double>
-     <double>288.0</double>
+     <double>641.0</double>
+     <double>296.0</double>
     </void>
    </object>
   </void>
@@ -500,7 +500,7 @@ List&lt;LinkedAssetFile&gt; seedResources()
 List&lt;LinkedAssetFile&gt; seedResources(String fileExt)
 List&lt;AssetFile&gt; bundleResources(String fileExt)
 AssetContainer getAssetContainer()
-List&lt;AssetLocation&gt; getAncestorAssetLocations()
+List&lt;AssetLocation&gt; getDependentAssetLocations()
 </string>
      </void>
     </void>
