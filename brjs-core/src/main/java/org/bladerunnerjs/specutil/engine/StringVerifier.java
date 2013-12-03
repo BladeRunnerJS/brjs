@@ -49,4 +49,13 @@ public class StringVerifier {
 		
 		return verifierChainer;
 	}
+
+	public VerifierChainer containsMinifiedClasses(String... classes)
+	{
+		for(String className : classes) {
+			containsText(className + "=function()");
+		}
+		
+		return verifierChainer;
+	}
 }

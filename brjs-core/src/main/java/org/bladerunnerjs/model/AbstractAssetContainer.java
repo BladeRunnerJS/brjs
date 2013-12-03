@@ -43,8 +43,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public List<SourceFile> sourceFiles() {
-		List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
+	public List<SourceModule> sourceFiles() {
+		List<SourceModule> sourceFiles = new ArrayList<SourceModule>();
 			
 		for(BundlerPlugin bundlerPlugin : (root()).plugins().bundlers()) {
 			for (AssetLocation assetLocation : getAllAssetLocations())
@@ -57,8 +57,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public SourceFile sourceFile(String requirePath) {
-		for(SourceFile sourceFile : sourceFiles()) {
+	public SourceModule sourceFile(String requirePath) {
+		for(SourceModule sourceFile : sourceFiles()) {
 			if(sourceFile.getRequirePath().equals(requirePath)) {
 				return sourceFile;
 			}

@@ -9,10 +9,10 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
  * For example an XML file that might reference a source file class.
  * 
  */
-public interface LinkedAssetFile extends AssetFile {
+public interface LinkedAsset extends Asset {
 	/**
 	 * Returns a list of files this LinkedAssetFile depends on
 	 */
-	List<SourceFile> getDependentSourceFiles() throws ModelOperationException;
+	List<SourceModule> getDependentSourceModules() throws ModelOperationException;
 	List<String> getAliasNames() throws ModelOperationException;
 }

@@ -35,17 +35,17 @@ public class AspectTestPackBundlingTest extends SpecTest
 	@Ignore
 	@Test
 	public void weBundleAspectFilesInUTs() throws Exception {
-		given(blade).hasClass("novox.Class1")
-			.and(aspectUTs).testRefersTo("novox.Class1");
-		then(aspectUTs).bundledFilesEquals(blade.src().file("novox/Class1.js"));
+		given(blade).hasClass("mypkg.Class1")
+			.and(aspectUTs).testRefersTo("mypkg.Class1");
+		then(aspectUTs).bundledFilesEquals(blade.src().file("mypkg/Class1.js"));
 	}
 	
 	@Ignore
 	@Test
 	public void weBundleAspectFilesInATs() throws Exception {
-		given(blade).hasClass("novox.Class1")
-			.and(aspectUTs).testRefersTo("novox.Class1");
-		then(aspectATs).bundledFilesEquals(blade.src().file("novox/Class1.js"));
+		given(blade).hasClass("mypkg.Class1")
+			.and(aspectUTs).testRefersTo("mypkg.Class1");
+		then(aspectATs).bundledFilesEquals(blade.src().file("mypkg/Class1.js"));
 	}
 	
 }

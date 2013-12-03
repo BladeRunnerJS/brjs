@@ -4,6 +4,7 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
+import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -12,7 +13,6 @@ import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -108,21 +108,19 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/hello.mock", "Hello World!");
 	}
 	
-	// TODO: this test need rewriting as is it hard to read and maintain
-	@Ignore
 	@Test
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasPackageStyle("src/novox.cjs", "caplin-js")
-			.and(blade).hasPackageStyle("src/novox.node", "node.js")
-			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
-			.and(aspect).indexPageRefersTo("novox.cjs.Class")
-			.and(blade).classRefersTo("novox.cjs.Class",  "novox.node.Class")
+			.and(blade).hasPackageStyle("src/cjs", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(blade).hasPackageStyle("src/node", "node.js")
+			.and(blade).hasClasses("cjs.Class", "node.Class")
+			.and(aspect).indexPageRefersTo("cjs.Class")
+			.and(blade).classRefersTo("cjs.Class",  "node.Class")
     		.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("window.novox={\"cjs\":{\"Class\":{}}};novox.cjs.Class=function(){};br.extend(novox.cjs.Class,novox.node.Class);novox.cjs.Class=require(\"novox/cjs/Class\");novox.node.Class=function(){};");
+		then(response).containsMinifiedClasses("cjs.Class", "node.Class");
 	}
 	
 }

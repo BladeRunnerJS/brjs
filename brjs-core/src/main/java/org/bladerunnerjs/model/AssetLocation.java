@@ -11,9 +11,9 @@ import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
  */
 public interface AssetLocation extends BRJSNode {
 	AliasDefinitionsFile aliasDefinitionsFile();
-	List<LinkedAssetFile> seedResources();
-	List<LinkedAssetFile> seedResources(String fileExtension);
-	List<AssetFile> bundleResources(String fileExtension);
+	List<LinkedAsset> seedResources();
+	List<LinkedAsset> seedResources(String fileExtension);
+	List<Asset> bundleResources(String fileExtension);
 	AssetContainer getAssetContainer();
-	List<AssetLocation> getAncestorAssetLocations();
+	List<AssetLocation> getDependentAssetLocations();
 }

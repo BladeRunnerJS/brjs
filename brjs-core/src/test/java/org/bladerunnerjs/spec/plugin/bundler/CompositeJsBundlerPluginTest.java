@@ -24,17 +24,17 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGeneratedByDefault() throws Exception {
-		given(aspect).hasClass("novox.Class1")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
+		given(aspect).hasClass("mypkg.Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "node-js/module/novox/Class1.js");
+		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
 	}
 	
 	@Test
 	public void inProdASingleBundlerRequestIsGeneratedByDefault() throws Exception {
-		given(aspect).hasClass("novox.Class1")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
+		given(aspect).hasClass("mypkg.Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/prod/en_GB/combined/bundle.js");
@@ -56,10 +56,10 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {
-		given(aspect).hasClass("novox.Class1")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
+		given(aspect).hasClass("mypkg.Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "node-js/module/novox/Class1.js");
+		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
 	}
 }

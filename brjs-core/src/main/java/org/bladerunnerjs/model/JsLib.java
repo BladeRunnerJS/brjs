@@ -1,6 +1,8 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
@@ -16,8 +18,7 @@ import org.bladerunnerjs.model.utility.NameValidator;
 
 public class JsLib extends AbstractAssetContainer implements AssetContainer, NamedNode
 {
-	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
-	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
+	private final NodeItem<DeepAssetLocation> assetLocationNodeItem = new NodeItem<>(DeepAssetLocation.class, "");
 	private String name;
 	private JsLibConf libConf;
 	private Node parent;
@@ -48,15 +49,16 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 		return appNodeSet;
 	}
 	
-	public static NodeMap<ShallowJsLib> createSdkNonBladeRunnerLibNodeSet()
+	public static NodeMap<JsLib> createSdkNonBladeRunnerLibNodeSet()
 	{
-		return new NodeMap<>(ShallowJsLib.class, "sdk/libs/javascript/thirdparty", null);
+		return new NodeMap<>(JsLib.class, "sdk/libs/javascript/thirdparty", null);
 	}
 	
-	public static NodeMap<ShallowJsLib> createAppNonBladeRunnerLibNodeSet()
+	public static NodeMap<JsLib> createAppNonBladeRunnerLibNodeSet()
 	{
-		return new NodeMap<>(ShallowJsLib.class, "thirdparty-libraries", null);
+		return new NodeMap<>(JsLib.class, "thirdparty-libraries", null);
 	}
+	
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
@@ -107,14 +109,9 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 		return super.getApp();
 	}
 	
-	public SourceAssetLocation src()
+	public AssetLocation getRootAssetLocation()
 	{
-		return item(src);
-	}
-	
-	public AssetLocation resources()
-	{
-		return item(resources);
+		return item(assetLocationNodeItem);
 	}
 	
 	public JsLibConf libConf() throws ConfigException
@@ -161,5 +158,13 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 	public String getTemplateName()
 	{
 		return BRJSNodeHelper.getTemplateName(this);
+	}
+	
+	@Override
+	public List<AssetLocation> getAllAssetLocations() {
+		List<AssetLocation> assetLocations = new ArrayList<>();
+		assetLocations.add(getRootAssetLocation());
+		assetLocations.addAll( super.getAllAssetLocations() );
+		return assetLocations;
 	}
 }

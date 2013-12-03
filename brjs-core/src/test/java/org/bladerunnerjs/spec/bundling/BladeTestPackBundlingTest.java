@@ -32,24 +32,24 @@ public class BladeTestPackBundlingTest extends SpecTest
 	@Ignore
 	@Test
 	public void weBundleBladeFilesInUTs() throws Exception {
-		given(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
-			.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
-			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2")
-			.and(bladeUTs).testRefersTo("novox.bs.b1.Class1");
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+			.and(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
+			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
+			.and(bladeUTs).testRefersTo("mypkg.bs.b1.Class1");
 		then(bladeUTs).bundledFilesEquals(
-				blade.src().file("src/novox/bs/b1/Class1.js"),
-				blade.src().file("src/novox/bs/b1/Class2.js"));
+				blade.src().file("src/mypkg/bs/b1/Class1.js"),
+				blade.src().file("src/mypkg/bs/b1/Class2.js"));
 	}
 	
 	@Ignore
 	@Test
 	public void weBundleBladeFilesInATs() throws Exception {
-		given(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
-			.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
-			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2")
-			.and(bladeUTs).testRefersTo("novox.bs.b1.Class1");
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", "caplin-js")
+			.and(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
+			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
+			.and(bladeUTs).testRefersTo("mypkg.bs.b1.Class1");
 		then(bladeATs).bundledFilesEquals(
-				blade.src().file("src/novox/bs/b1/Class1.js"),
-				blade.src().file("src/novox/bs/b1/Class2.js"));
+				blade.src().file("src/mypkg/bs/b1/Class1.js"),
+				blade.src().file("src/mypkg/bs/b1/Class2.js"));
 	}
 }

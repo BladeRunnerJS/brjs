@@ -23,11 +23,11 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		super(rootNode, dir);
 	}
 	
-	public abstract List<LinkedAssetFile> getSeedFiles();
+	public abstract List<LinkedAsset> getSeedFiles();
 	
 	@Override
-	public List<LinkedAssetFile> seedFiles() {
-		List<LinkedAssetFile> seedFiles = new ArrayList<>();
+	public List<LinkedAsset> seedFiles() {
+		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
 		seedFiles.addAll(getSeedFiles());
 		seedFiles.addAll(resources().seedResources());
@@ -45,19 +45,19 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public SourceFile getSourceFile(String requirePath) throws RequirePathException {
-		SourceFile sourceFile = null;
+	public SourceModule getSourceFile(String requirePath) throws RequirePathException {
+		SourceModule sourceFile = null;
 		
 		for(AssetContainer assetContainer : getAssetContainers()) {
-			SourceFile locationSourceFile = assetContainer.sourceFile(requirePath);
+			SourceModule locationSourceFile = assetContainer.sourceFile(requirePath);
 			
 			if(locationSourceFile != null) {
 				if(sourceFile == null) {
 					sourceFile = locationSourceFile;
 				}
 				else {
-					throw new AmbiguousRequirePathException("'" + sourceFile.getUnderlyingFile().getPath() + "' and '" +
-						locationSourceFile.getUnderlyingFile().getPath() + "' source files both available via require path '" +
+					throw new AmbiguousRequirePathException("'" + sourceFile.getAssetPath() + "' and '" +
+						locationSourceFile.getAssetPath() + "' source files both available via require path '" +
 						sourceFile.getRequirePath() + "'.");
 				}
 			}

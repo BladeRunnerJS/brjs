@@ -26,7 +26,7 @@ public class BundleSetCreator {
 		Logger logger = bundlableNode.root().logger(LoggerType.BUNDLER, BundleSetCreator.class);
 		
 		BundleSetBuilder bundleSetBuilder = new BundleSetBuilder(bundlableNode);
-		List<LinkedAssetFile> seedFiles = bundlableNode.seedFiles();
+		List<LinkedAsset> seedFiles = bundlableNode.seedFiles();
 		
 		String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 		if(seedFiles.isEmpty()) {
@@ -38,7 +38,7 @@ public class BundleSetCreator {
 		
 		logger.debug(Messages.APP_SOURCE_LOCATIONS_MSG, bundlableNode.getApp().getName(), assetContainerPaths(bundlableNode.getApp()));
 		
-		for(LinkedAssetFile seedFile : seedFiles) {
+		for(LinkedAsset seedFile : seedFiles) {
 			bundleSetBuilder.addSeedFile(seedFile);
 			processFile(seedFile, bundleSetBuilder, logger);
 		}
@@ -46,22 +46,22 @@ public class BundleSetCreator {
 		return bundleSetBuilder.createBundleSet();
 	}
 	
-	private static void processFile(LinkedAssetFile file, BundleSetBuilder bundleSetBuilder, Logger logger) throws ModelOperationException {
-		List<SourceFile> fileDependencies = file.getDependentSourceFiles();
+	private static void processFile(LinkedAsset file, BundleSetBuilder bundleSetBuilder, Logger logger) throws ModelOperationException {
+		List<SourceModule> moduleDependencies = file.getDependentSourceModules();
 		
-		if(fileDependencies.isEmpty()) {
+		if(moduleDependencies.isEmpty()) {
 			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
 		}
 		else {
-			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(fileDependencies));
+			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(moduleDependencies));
 		}
 		
-		for(SourceFile sourceFile : fileDependencies) {
-			if(bundleSetBuilder.addSourceFile(sourceFile)) {
-				processFile(sourceFile, bundleSetBuilder, logger);
+		for(SourceModule sourceModule : moduleDependencies) {
+			if(bundleSetBuilder.addSourceFile(sourceModule)) {
+				processFile(sourceModule, bundleSetBuilder, logger);
 				
-				for(AssetLocation assetLocation : sourceFile.getAssetLocation().getAssetContainer().getAllAssetLocations()) {
-					for(LinkedAssetFile resourceSeedFile : assetLocation.seedResources()) {
+				for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().getAllAssetLocations()) {
+					for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
 						processFile(resourceSeedFile, bundleSetBuilder, logger);
 					}
 				}
@@ -69,10 +69,10 @@ public class BundleSetCreator {
 		}
 	}
 	
-	private static String seedFilePaths(BundlableNode bundlableNode, List<LinkedAssetFile> seedFiles) {
+	private static String seedFilePaths(BundlableNode bundlableNode, List<LinkedAsset> seedFiles) {
 		List<String> seedFilePaths = new ArrayList<>();
 		
-		for(AssetFile seedFile : seedFiles) {
+		for(Asset seedFile : seedFiles) {
 			seedFilePaths.add(getRelativePath(bundlableNode.dir(), seedFile.getUnderlyingFile()));
 		}
 		
@@ -83,17 +83,17 @@ public class BundleSetCreator {
 		List<String> assetContainerPaths = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
-			File baseDir = assetContainer instanceof AppJsLibWrapper ? app.root().dir() : app.dir();
+			File baseDir = assetContainer instanceof JsLibAppWrapper ? app.root().dir() : app.dir();
 			assetContainerPaths.add(getRelativePath(baseDir, assetContainer.dir()));
 		}
 		
 		return "'" + Joiner.on("', '").join(assetContainerPaths) + "'";
 	}
 	
-	private static String sourceFilePaths(List<SourceFile> sourceFiles) {
+	private static String sourceFilePaths(List<SourceModule> sourceFiles) {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
-		for(SourceFile sourceFile : sourceFiles) {
+		for(SourceModule sourceFile : sourceFiles) {
 			sourceFilePaths.add(getRelativePath(sourceFile.getAssetLocation().getAssetContainer().dir(), sourceFile.getUnderlyingFile()));
 		}
 		

@@ -21,10 +21,10 @@ import org.bladerunnerjs.model.utility.TrieKeyAlreadyExistsException;
  * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
  *
  */
-public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
+public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private App app;
 	private File assetFile;
-	private List<SourceFile> dependentSourceFiles;
+	private List<SourceModule> dependentSourceFiles;
 	private List<String> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private AssetLocation assetLocation;
@@ -43,7 +43,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 	}
 	
 	@Override
-	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException {
+	public List<SourceModule> getDependentSourceModules() throws ModelOperationException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
@@ -65,6 +65,16 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		return assetFile;
 	}
 	
+	@Override
+	public String getAssetName() {
+		return assetFile.getName();
+	}
+	
+	@Override
+	public String getAssetPath() {
+		return assetFile.getPath();
+	}
+	
 	private void recalculateDependencies() throws ModelOperationException {
 		dependentSourceFiles = new ArrayList<>();
 		aliases = new ArrayList<>();
@@ -73,8 +83,8 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 		try {
 			try(Reader reader = getReader()) {
 				for(Object match : trie.getMatches(reader)) {
-					if(match instanceof SourceFile) {
-						dependentSourceFiles.add((SourceFile) match);
+					if(match instanceof SourceModule) {
+						dependentSourceFiles.add((SourceModule) match);
 					}
 					else if(match instanceof ClassSourceFile) {
 						dependentSourceFiles.add(((ClassSourceFile) match).getSourceFile());
@@ -105,7 +115,7 @@ public class FullyQualifiedLinkedAssetFile implements LinkedAssetFile {
 					}
 				}
 				
-				for(SourceFile sourceFile : assetContainer.sourceFiles()) {
+				for(SourceModule sourceFile : assetContainer.sourceFiles()) {
 					ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
 					
 					if (!sourceFile.getUnderlyingFile().equals(assetFile)) {

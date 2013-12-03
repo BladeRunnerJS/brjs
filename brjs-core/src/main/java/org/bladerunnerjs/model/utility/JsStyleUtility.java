@@ -5,20 +5,9 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.core.plugin.bundlesource.js.NodeJsBundlerPlugin;
-import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.JsLib;
 
 public class JsStyleUtility {
-	
-	public static String getJsStyle(AssetLocation assetLocation)
-	{
-		if (assetLocation instanceof JsLib)
-		{
-			return JsLib.class.getSimpleName();
-		}
-		return getJsStyle(assetLocation.dir());
-	}
-	
+		
 	public static String getJsStyle(File dir) {
 		String jsStyle = null;
 		

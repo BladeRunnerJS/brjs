@@ -22,9 +22,9 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	}
 
 	@Override
-	public List<LinkedAssetFile> seedResources()
+	public List<LinkedAsset> seedResources()
 	{
-		List<LinkedAssetFile> assetFiles = new LinkedList<LinkedAssetFile>();
+		List<LinkedAsset> assetFiles = new LinkedList<LinkedAsset>();
 		
 		if (dir().exists())
 		{

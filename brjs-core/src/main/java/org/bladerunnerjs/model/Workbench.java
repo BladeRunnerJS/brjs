@@ -41,12 +41,12 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 	}
 		
 	@Override
-	public List<LinkedAssetFile> getSeedFiles() {
-		List<LinkedAssetFile> assetFiles = new ArrayList<LinkedAssetFile>();
+	public List<LinkedAsset> getSeedFiles() {
+		List<LinkedAsset> assetFiles = new ArrayList<LinkedAsset>();
 		
-		for (LinkedAssetFile assetFile : thisAssetLocation.seedResources())
+		for (LinkedAsset assetFile : thisAssetLocation.seedResources())
 		{
-			if ( seedFilenames.contains( assetFile.getUnderlyingFile().getName() ) )
+			if ( seedFilenames.contains( assetFile.getAssetName() ) )
 			{
 				assetFiles.add(assetFile);
 			}

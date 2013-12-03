@@ -42,13 +42,13 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	}
 	
 	@Override
-	public List<LinkedAssetFile> getSeedFiles() {
-		List<LinkedAssetFile> assetFiles = new ArrayList<LinkedAssetFile>();
+	public List<LinkedAsset> getSeedFiles() {
+		List<LinkedAsset> assetFiles = new ArrayList<LinkedAsset>();
 		
 		//TODO: move this in to a seperate AssetLocation class since this is duplicated in Workbench
-		for (LinkedAssetFile assetFile : thisAssetLocation.seedResources())
+		for (LinkedAsset assetFile : thisAssetLocation.seedResources())
 		{
-			if ( seedFilenames.contains( assetFile.getUnderlyingFile().getName() ) )
+			if ( seedFilenames.contains( assetFile.getAssetName() ) )
 			{
 				assetFiles.add(assetFile);
 			}

@@ -22,7 +22,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 
-public class NonBladerunnerJsLibSourceFile implements SourceFile
+public class NonBladerunnerJsLibSourceModule implements SourceModule
 {
 
 	private AssetLocation assetLocation;
@@ -60,7 +60,17 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 	{
 		return dir;
 	}
-
+	
+	@Override
+	public String getAssetName() {
+		return dir.getName(); // TODO: this seems wrong
+	}
+	
+	@Override
+	public String getAssetPath() {
+		return dir.getPath(); // TODO: this seems wrong
+	}
+	
 	@Override
 	public void initializeUnderlyingObjects(AssetLocation assetLocation, File dir)
 	{
@@ -77,9 +87,9 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 	}
 
 	@Override
-	public List<SourceFile> getDependentSourceFiles() throws ModelOperationException
+	public List<SourceModule> getDependentSourceModules() throws ModelOperationException
 	{
-		List<SourceFile> dependentLibs = new ArrayList<SourceFile>();
+		List<SourceModule> dependentLibs = new ArrayList<SourceModule>();
 		
 		try 
 		{
@@ -114,7 +124,7 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 	}
 
 	@Override
-	public List<SourceFile> getOrderDependentSourceFiles() throws ModelOperationException
+	public List<SourceModule> getOrderDependentSourceModules() throws ModelOperationException
 	{
 		return Arrays.asList();
 	}
@@ -139,5 +149,4 @@ public class NonBladerunnerJsLibSourceFile implements SourceFile
 		}
 		return filesMatching;
 	}
-
 }
