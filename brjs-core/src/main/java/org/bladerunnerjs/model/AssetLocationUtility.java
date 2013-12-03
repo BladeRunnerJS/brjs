@@ -9,11 +9,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.model.utility.FileUtility;
 
 
 public class AssetLocationUtility
@@ -26,7 +25,7 @@ public class AssetLocationUtility
 		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
 		
-		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtils.listFiles(dir, new NameFileFilter(fileNames), FalseFileFilter.INSTANCE) );
+		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new NameFileFilter(fileNames)) );
 	}
 	
 	<AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... extensions)
@@ -34,7 +33,7 @@ public class AssetLocationUtility
 		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
 		
-		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtils.listFiles(dir, new SuffixFileFilter(extensions), FalseFileFilter.INSTANCE) );
+		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new SuffixFileFilter(extensions)) );
 	}
 	
 	

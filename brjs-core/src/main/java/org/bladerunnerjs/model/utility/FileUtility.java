@@ -8,6 +8,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.comparator.NameFileComparator;
+import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
+
 public class FileUtility {
 	public static File createTemporaryDirectory(String prependedFolderName) throws IOException
 	{
@@ -22,11 +27,18 @@ public class FileUtility {
 		return tempdir;
 	}
 	
-	public static List<File> listDirs(File sourceDir)
+	public static List<File> listFiles(File dir, IOFileFilter fileFilter) {
+		List<File> files = new ArrayList<File>(FileUtils.listFiles(dir, fileFilter, FalseFileFilter.INSTANCE));
+		Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
+		
+		return files;
+	}
+	
+	public static List<File> listDirs(File dir)
 	{
 		List<File> subDirs = new ArrayList<File>();
 		
-		for(File fileOrDir : sortFileArray(sourceDir.listFiles()))
+		for(File fileOrDir : sortFileArray(dir.listFiles()))
 		{
 			if(fileOrDir.isDirectory() && !fileOrDir.getName().startsWith("."))
 			{

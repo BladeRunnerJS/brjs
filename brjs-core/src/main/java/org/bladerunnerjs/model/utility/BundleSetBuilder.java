@@ -2,6 +2,7 @@ package org.bladerunnerjs.model.utility;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
 public class BundleSetBuilder {
 	Set<LinkedAsset> seedFiles = new HashSet<>();
-	Set<SourceModule> sourceFiles = new HashSet<>();
+	Set<SourceModule> sourceFiles = new LinkedHashSet<>();
 	Set<AliasDefinition> activeAliases = new HashSet<>();
 	Set<AssetLocation> resources = new HashSet<>();
 	private BundlableNode bundlableNode;
@@ -111,8 +112,8 @@ public class BundleSetBuilder {
 		return sourceFileList;
 	}
 	
-	private boolean dependenciesHaveBeenMet(LinkedAsset sourceAsset, Set<LinkedAsset> metDependencies) throws ModelOperationException {
-		for(LinkedAsset dependentSourceModule : sourceAsset.getDependentSourceModules()) {
+	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
+		for(LinkedAsset dependentSourceModule : sourceModule.getOrderDependentSourceModules()) {
 			if(!metDependencies.contains(dependentSourceModule)) {
 				return false;
 			}
