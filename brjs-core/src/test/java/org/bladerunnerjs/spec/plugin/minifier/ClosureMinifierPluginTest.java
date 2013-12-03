@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -71,7 +72,8 @@ public class ClosureMinifierPluginTest extends SpecTest
 		then(response).containsText(minifyAdvancedContent);
 	}
 	
-	// TODO: talk to the team about these unreadable & unmaintainable tests
+	// TODO: these tests need rewriting as they hard to read and maintain
+	@Ignore
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
@@ -83,6 +85,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		then(response).textEquals("window.novox={\"bs\":{\"b1\":{}}};novox.bs.b1.Class2=function(){};novox.bs.b1.Class1=function(){};br.extend(novox.bs.b1.Class1,novox.bs.b1.Class2);novox.bs.b1.Class2=require(\"novox/bs/b1/Class2\");novox.bs.b1.Class1=require(\"novox/bs/b1/Class1\");");
 	}
 	
+	@Ignore
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
