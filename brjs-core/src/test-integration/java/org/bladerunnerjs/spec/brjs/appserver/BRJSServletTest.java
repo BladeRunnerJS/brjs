@@ -13,7 +13,6 @@ import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
