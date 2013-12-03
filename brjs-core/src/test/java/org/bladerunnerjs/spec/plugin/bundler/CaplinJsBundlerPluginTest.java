@@ -11,6 +11,7 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer pageResponse = new StringBuffer();
+	private StringBuffer requestResponse = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -43,5 +44,43 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@caplin-js@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("caplin-js/bundle.js");
+	}
+	
+	@Test
+	public void thePackageDefinitionsBlockShouldContainSinglePackageIfThereIsOneTopLevelClass() throws Exception {
+		given(aspect).hasPackageStyle("src", CaplinJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("novox.Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1");
+		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
+		then(requestResponse).containsText("window.novox = {};");
+	}
+	
+	@Test
+	public void thePackageDefinitionsBlockShouldContainSinglePackageIfThereAreTwoTopLevelClasses() throws Exception {
+		given(aspect).hasPackageStyle("src", CaplinJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
+			.and(aspect).classRefersTo("novox.Class1", "novox.Class2");
+		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
+		then(requestResponse).containsText("window.novox = {};");
+	}
+	
+	@Test
+	public void thePackageDefinitionsBlockShouldBeEmptyIfNoneOfTheClassesAreUsed() throws Exception {
+		given(aspect).hasPackageStyle("src", CaplinJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
+			.and(aspect).classRefersTo("novox.Class1", "novox.Class2");
+		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
+	public void thePackageDefinitionsBlockShouldContainTwoPackagesIfThereAreClassesAtDifferentLevels() throws Exception {
+		given(aspect).hasPackageStyle("src", CaplinJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("novox.Class1", "novox.pkg.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
+			.and(aspect).classRefersTo("novox.Class1", "novox.pkg.Class2");
+		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
+		then(requestResponse).containsText("window.novox = {\"pkg\":{}};");
 	}
 }

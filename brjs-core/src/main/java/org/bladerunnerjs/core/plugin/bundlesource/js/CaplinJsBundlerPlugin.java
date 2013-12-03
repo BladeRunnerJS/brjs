@@ -191,7 +191,8 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 		
 		for(SourceFile sourceFile : bundleSet.getSourceFiles()) {
 			if(sourceFile instanceof CaplinJsSourceFile) {
-				addPackageToStructure(packageStructure, sourceFile.getRequirePath().split("/"));
+				List<String> packageList = Arrays.asList(sourceFile.getRequirePath().split("/"));
+				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}
 		
@@ -199,7 +200,7 @@ public class CaplinJsBundlerPlugin extends AbstractBundlerPlugin implements Bund
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void addPackageToStructure(Map<String, Map<String, ?>> packageStructure, String[] packageList)
+	private void addPackageToStructure(Map<String, Map<String, ?>> packageStructure, List<String> packageList)
 	{
 		Map<String, Map<String, ?>> currentPackage = packageStructure;
 		

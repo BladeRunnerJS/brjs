@@ -217,7 +217,7 @@ public class BundlingTest extends SpecTest {
     		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
     		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
     	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsText("window.novox = {\"bs\":{\"b1\":{\"Class1\":{}}}};");
+		then(response).containsText("window.novox = {\"bs\":{\"b1\":{}}};");
 	}
 	
 	@Test
@@ -229,7 +229,7 @@ public class BundlingTest extends SpecTest {
     		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
     		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
     	when(app).requestReceived("/default-aspect/js/prod/en_GB/combined/bundle.js", response);
-		then(response).containsText("window.novox = {\"bs\":{\"b1\":{\"Class1\":{}}}};");
+		then(response).containsText("window.novox = {\"bs\":{\"b1\":{}}};");
 	}
 	
 	@Test
@@ -241,7 +241,7 @@ public class BundlingTest extends SpecTest {
     		.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.Class1")
     		.and(aspect).indexPageRefersTo("novox.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", response);
-		then(response).textEquals("// package definition block\n" + "window.novox = {\"bs\":{\"b1\":{\"Class1\":{}}}};\n");
+		then(response).textEquals("// package definition block\n" + "window.novox = {\"bs\":{\"b1\":{}}};\n");
 	}
 	
 	@Test	// blade unhappy paths
