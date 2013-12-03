@@ -47,6 +47,15 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void theBundleIsEmptyIfWeDontReferToAnyOfTheClasses() throws Exception {
+		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("novox.Class1", "novox.Class2")
+			.and(aspect).classRefersTo("novox.Class1", "novox.Class2");
+		when(app).requestReceived("/default-aspect/caplin-js/bundle.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
 	public void thePackageDefinitionsBlockShouldContainSinglePackageIfThereIsOneTopLevelClass() throws Exception {
 		given(aspect).hasPackageStyle(CaplinJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("novox.Class1")
@@ -98,6 +107,17 @@ public class CaplinJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("novox.caplin.Class", "novox.nodejs.Class")
 			.and(aspect).classRefersTo("novox.caplin.Class", "novox.nodejs.Class");
 		when(app).requestReceived("/default-aspect/caplin-js/module/novox/caplin/Class.js", requestResponse);
+		then(requestResponse).containsText("novox.caplin.Class = function() {\n};")
+			.and(requestResponse).containsText("novox.nodejs.Class = require('novox/nodejs/Class');");
+	}
+	
+	@Test
+	public void requiresAreAlsoAutomaticallyAddedWithinTheBundledResponse() throws Exception {
+		given(aspect).hasPackageStyle("src/novox/caplin", CaplinJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("novox.caplin.Class", "novox.nodejs.Class")
+			.and(aspect).indexPageRefersTo("novox.caplin.Class")
+			.and(aspect).classRefersTo("novox.caplin.Class", "novox.nodejs.Class");
+		when(app).requestReceived("/default-aspect/caplin-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("novox.caplin.Class = function() {\n};")
 			.and(requestResponse).containsText("novox.nodejs.Class = require('novox/nodejs/Class');");
 	}

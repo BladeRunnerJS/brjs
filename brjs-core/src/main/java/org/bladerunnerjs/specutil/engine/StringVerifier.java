@@ -45,7 +45,7 @@ public class StringVerifier {
 	}
 	
 	public VerifierChainer isEmpty() {
-		assertEquals("", string);
+		assertEquals("", string.trim());
 		
 		return verifierChainer;
 	}
