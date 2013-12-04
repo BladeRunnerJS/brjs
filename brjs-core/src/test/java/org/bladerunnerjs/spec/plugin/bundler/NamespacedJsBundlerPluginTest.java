@@ -5,7 +5,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NamespacedJsBundlerPluginTest extends SpecTest {
@@ -123,7 +122,6 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
 	
-	@Ignore
 	@Test
 	public void staticDependenciesAppearFirstEvenWhenTheyAreDiscoveredLast() throws Exception {
 		given(aspect).hasPackageStyle(NamespacedJsBundlerPlugin.JS_STYLE)

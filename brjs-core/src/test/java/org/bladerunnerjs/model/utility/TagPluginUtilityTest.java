@@ -14,12 +14,17 @@ import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.MockTagHandler;
 import org.junit.*;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.*;
 
 public class TagPluginUtilityTest
 {
 
+	@Rule
+	public ExpectedException exception = ExpectedException.none();
+
+	
 	BRJS brjs;
 	App app;
 	Aspect aspect;
@@ -132,6 +137,14 @@ public class TagPluginUtilityTest
 	{		
 		filterAndAssert( "<@1tag@/>", "<@1tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
 		filterAndAssert( "<@-tag@/>", "<@-tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTagHandlerCantBeFound() throws Exception
+	{		
+		exception.expect(NoTagHandlerFoundException.class);
+		exception.expectMessage("tag1");
+		filterAndAssert( "<@tag1 @/>", "", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	

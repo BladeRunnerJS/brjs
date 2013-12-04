@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.base.Joiner;
+
 public class StringVerifier {
 	private static final Pattern scriptPattern = Pattern.compile("<script type='text/javascript' src='([^']+)'>");
 	
@@ -23,7 +25,11 @@ public class StringVerifier {
 			assertEquals(substring, string);
 		}
 		
-		return verifierChainer;		
+		return verifierChainer;	
+	}
+	
+	public VerifierChainer containsLines(String... lines) {
+		return containsText(Joiner.on("\n").join(lines));
 	}
 	
 	public VerifierChainer containsClasses(String... classes) {
