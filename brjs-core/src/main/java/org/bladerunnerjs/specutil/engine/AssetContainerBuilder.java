@@ -140,7 +140,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String classBody;
 		
 		if(jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
-			classBody = className + " = function() {\n};\n";
+			classBody = className + " = function() {\n};\nmodule.exports = " + className + ";\n";
 		}
 		else if(jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
 			classBody = className + " = function() {\n};\n";

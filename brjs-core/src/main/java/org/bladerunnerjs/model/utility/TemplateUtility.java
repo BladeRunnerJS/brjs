@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsException;
@@ -27,7 +30,8 @@ public class TemplateUtility
 			File templateDir = node.root().template(templateName).dir();
 			
 			if(templateDir.exists()) {
-				FileUtils.copyDirectory(templateDir, node.dir(), HiddenFileFilter.VISIBLE);
+				IOFileFilter fileFilter = FileFilterUtils.and( new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), HiddenFileFilter.VISIBLE );
+				FileUtils.copyDirectory(templateDir, node.dir(), fileFilter);
 			}
 			
 			if(!transformations.isEmpty()) {
@@ -102,5 +106,27 @@ public class TemplateUtility
 		}
 		
 		return file;
+	}
+	
+	static class FileDoesntAlreadyExistFileFilter implements IOFileFilter 
+	{
+		File destDir;
+		File srcDir;
+		FileDoesntAlreadyExistFileFilter(File srcDir, File destDir)
+		{
+			this.destDir = destDir;
+			this.srcDir = srcDir;
+		}
+		@Override
+		public boolean accept(File pathname)
+		{
+			String relativePath = StringUtils.substringAfter(pathname.getAbsolutePath(), srcDir.getAbsolutePath());
+			return accept(destDir, relativePath);
+		}
+		@Override
+		public boolean accept(File dir, String name)
+		{
+			return !(new File(destDir, name).exists());
+		}
 	}
 }

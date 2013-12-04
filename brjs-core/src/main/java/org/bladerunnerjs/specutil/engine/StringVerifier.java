@@ -86,4 +86,21 @@ public class StringVerifier {
 		
 		return verifierChainer;
 	}
+
+	public VerifierChainer doesNotContainClasses(String... classes) 
+	{
+		for(String className : classes) {
+			doesNotContainText(className + " = function()");
+		}
+		
+		return verifierChainer;
+	}
+
+	public VerifierChainer doesNotContainText(String substring) {
+		if(string.contains(substring)) {
+			assertEquals("Unexpected text:\n" + substring, string);
+		}
+		
+		return verifierChainer;		
+	}
 }
