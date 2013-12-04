@@ -22,11 +22,13 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 	}
 	
+	//TODO: change the new-js.bundle back to js.bundle once the legacy js bundle tag handler is deleted
+	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGeneratedByDefault() throws Exception {
 		given(aspect).hasClass("mypkg.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
-			.and(aspect).indexPageHasContent("<@js.bundle@/>");
+			.and(aspect).indexPageHasContent("<@new-js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
 	}
@@ -35,21 +37,21 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void inProdASingleBundlerRequestIsGeneratedByDefault() throws Exception {
 		given(aspect).hasClass("mypkg.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
-			.and(aspect).indexPageHasContent("<@js.bundle@/>");
+			.and(aspect).indexPageHasContent("<@new-js.bundle@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/prod/en_GB/combined/bundle.js");
 	}
 	
 	@Test
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
-		given(aspect).indexPageHasContent("<@js.bundle@/>");
+		given(aspect).indexPageHasContent("<@new-js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("namespaced-js/package-definitions.js");
 	}
 	
 	@Test
 	public void devMinifierAttributeCanAllowJsFilesToBeCombinedEvenInDev() throws Exception {
-		given(aspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>");
+		given(aspect).indexPageHasContent("<@new-js.bundle dev-minifier='combined'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/dev/en_GB/combined/bundle.js");
 	}
@@ -58,7 +60,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {
 		given(aspect).hasClass("mypkg.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
-			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
+			.and(aspect).indexPageHasContent("<@new-js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
 	}
