@@ -49,7 +49,7 @@ List&lt;SourceModule&gt; getSourceModules(SourceLocation sourceLocation)
     </void>
     <void property="name">
      <void property="text">
-      <string>«BundlerPlugin»</string>
+      <string>«AssetPlugin»</string>
      </void>
     </void>
    </object>
@@ -58,19 +58,19 @@ List&lt;SourceModule&gt; getSourceModules(SourceLocation sourceLocation)
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>149.0</double>
+      <double>1663.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>489.0</double>
+      <double>339.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>149.0</double>
-     <double>489.0</double>
+     <double>1663.0</double>
+     <double>339.0</double>
     </void>
    </object>
   </void>
@@ -198,19 +198,19 @@ void writeProdTagContent(Map&lt;String, String&gt; tagAttributes, BundleSet bund
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>797.0</double>
+      <double>-3.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>314.0</double>
+      <double>340.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>797.0</double>
-     <double>314.0</double>
+     <double>-3.0</double>
+     <double>340.0</double>
     </void>
    </object>
   </void>
@@ -288,7 +288,6 @@ void runTests(TestableNode node) throws TestException</string>
     <void property="methods">
      <void property="text">
       <string>String getRequestPrefix()
-String getMimeType()
 ContentPathParser getContentPathParser()
 void writeContent(ParsedContentPath path, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 List&lt;String&gt; getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
@@ -306,19 +305,19 @@ List&lt;String&gt; getValidProdRequestPaths(BundleSet bundleSet, String locale) 
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>-3.0</double>
+      <double>860.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>314.0</double>
+      <double>339.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>-3.0</double>
-     <double>314.0</double>
+     <double>860.0</double>
+     <double>339.0</double>
     </void>
    </object>
   </void>
@@ -356,6 +355,74 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
     <void method="setLocation">
      <double>1070.0</double>
      <double>22.0</double>
+    </void>
+   </object>
+  </void>
+  <void method="addNode">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode10">
+    <void property="methods">
+     <void property="text">
+      <string>String getMimeType()</string>
+     </void>
+    </void>
+    <void property="name">
+     <void property="text">
+      <string>«BundlerTagHandlerPlugin»</string>
+     </void>
+    </void>
+   </object>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double10">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double10"/>
+      <double>306.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double10"/>
+      <double>478.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>306.0</double>
+     <double>478.0</double>
+    </void>
+   </object>
+  </void>
+  <void method="addNode">
+   <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode11">
+    <void property="methods">
+     <void property="text">
+      <string>String getMimeType()</string>
+     </void>
+    </void>
+    <void property="name">
+     <void property="text">
+      <string>«BundlerContentPlugin»</string>
+     </void>
+    </void>
+   </object>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double11">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double11"/>
+      <double>1155.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double11"/>
+      <double>498.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>1155.0</double>
+     <double>498.0</double>
     </void>
    </object>
   </void>
@@ -452,7 +519,31 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
      <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
     </void>
    </object>
+   <object idref="InterfaceNode9"/>
+   <object idref="InterfaceNode7"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
    <object idref="InterfaceNode1"/>
+   <object idref="InterfaceNode7"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.ClassRelationshipEdge">
+    <void property="bentStyle">
+     <object class="com.horstmann.violet.BentStyle" field="VHV"/>
+    </void>
+    <void property="endArrowHead">
+     <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
+    </void>
+   </object>
+   <object idref="InterfaceNode11"/>
    <object idref="InterfaceNode8"/>
   </void>
   <void method="connect">
@@ -464,8 +555,8 @@ void generateSourceMap(String minifierLevel, List&lt;InputSource&gt; inputSource
      <object class="com.horstmann.violet.ArrowHead" field="TRIANGLE"/>
     </void>
    </object>
-   <object idref="InterfaceNode9"/>
-   <object idref="InterfaceNode7"/>
+   <object idref="InterfaceNode10"/>
+   <object idref="InterfaceNode5"/>
   </void>
  </object>
 </java>
