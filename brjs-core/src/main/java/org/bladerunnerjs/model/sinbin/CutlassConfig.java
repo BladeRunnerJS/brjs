@@ -67,15 +67,6 @@ public class CutlassConfig
 	/* servlet context attribute for SectionRedirectFilter */
 	public static final String DEV_MODE_FLAG = "dev-mode";
 	
-	/* reserved namespaces */
-	public static final String[] RESERVED_NAMESPACES = new String[] { "caplin", "caplinx" };
-	public static final String[] RESERVED_JS_KEYWORDS = new String[] { "abstract", "as", "boolean", "break", "byte", "case", "catch", 
-		"char", "class", "continue", "const", "debugger", "default", "delete", "do", "double", "else", "enum", "export", "extends", 
-		"false", "final", "finally", "float", "for", "function", "goto", "if", "implements", "import", "in", "instanceof", "int", 
-		"interface", "is", "long", "namespace", "native", "new", "null", "package", "private", "protected", "public", "return", "short", 
-		"static", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "typeof", "use", "var", "void", 
-		"volatile", "while", "with" };
-	
 	/* bundler tokens */
 	public static final String CSS_BUNDLE_TOKEN = "css.bundle";
 	public static final String JS_BUNDLE_TOKEN = "js.bundle";
