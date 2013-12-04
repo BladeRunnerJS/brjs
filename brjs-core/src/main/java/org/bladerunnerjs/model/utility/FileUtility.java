@@ -34,21 +34,6 @@ public class FileUtility {
 		return files;
 	}
 	
-	public static List<File> listDirs(File dir)
-	{
-		List<File> subDirs = new ArrayList<File>();
-		
-		for(File fileOrDir : sortFileArray(dir.listFiles()))
-		{
-			if(fileOrDir.isDirectory() && !fileOrDir.getName().startsWith("."))
-			{
-				subDirs.add(fileOrDir);
-			}
-		}
-		
-		return subDirs;
-	}
-	
 	public static File[] sortFileArray(File[] files)
 	{
 		if (files == null)
