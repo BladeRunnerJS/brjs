@@ -4,12 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.bladerunnerjs.model.utility.FileUtility;
-
-
 public class DirNodeMapLocator implements NodeMapLocator
 {
 	private String subDirPath;

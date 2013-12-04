@@ -17,7 +17,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.App;
 
 import com.caplin.cutlass.BRJSAccessor;
