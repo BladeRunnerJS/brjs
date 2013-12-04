@@ -20,11 +20,14 @@ import static groovyx.net.http.ContentType.JSON
 
 class GitHubAPIBridge
 {
-	public static String CURL_PATH = "curl" 
+	static String CURL_PATH = "curl" 
+
+	String userAgentString = ""
 	
-	static final githubWebPrefix = "https://github.com/"
-	static final apiPrefix = "https://api.github.com"
-	static final uploadsPrefix = "https://uploads.github.com"
+	
+	String githubWebPrefix = "https://github.com/"
+	String apiPrefix = "https://api.github.com"
+	String uploadsPrefix = "https://uploads.github.com"
 	
 	Project project
 	Logger logger
@@ -36,6 +39,7 @@ class GitHubAPIBridge
 	{
 		this.logger = project.logger
 		this.project = project
+		userAgentString = "${repoOwner}-${repo}-GitHubAPIBridge"
 		this.repoOwner = repoOwner
 		this.repo = repo
 		this.authToken = authToken
@@ -176,6 +180,7 @@ class GitHubAPIBridge
         			uri: requestPrefix,
         			requestContentType: contentType,
         			headers: [
+						'User-Agent': userAgentString,
         				'Authorization': "token ${authToken}",
         				'Accept': 'application/vnd.github.manifold-preview'
         			],
