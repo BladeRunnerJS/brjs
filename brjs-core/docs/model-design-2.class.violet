@@ -72,8 +72,8 @@ AssetLocation getAssetLocation()
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode0">
     <void property="methods">
      <void property="text">
-      <string>List&lt;SourceFile&gt; getDependentSourceModules()
-List&lt;AliasName&gt; getAliasNames()
+      <string>List&lt;SourceModule&gt; getDependentSourceModules()
+List&lt;String&gt; getAliasNames()
 </string>
      </void>
     </void>
@@ -88,7 +88,7 @@ List&lt;AliasName&gt; getAliasNames()
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>270.0</double>
+      <double>249.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -99,7 +99,7 @@ List&lt;AliasName&gt; getAliasNames()
      </void>
     </void>
     <void method="setLocation">
-     <double>270.0</double>
+     <double>249.0</double>
      <double>554.0</double>
     </void>
    </object>
@@ -222,19 +222,19 @@ List&lt;SourceModule&gt; getOrderDependentSourceModules()</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>30.0</double>
+      <double>13.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>382.0</double>
+      <double>380.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>30.0</double>
-     <double>382.0</double>
+     <double>13.0</double>
+     <double>380.0</double>
     </void>
    </object>
   </void>
@@ -274,8 +274,8 @@ List&lt;SourceModule&gt; getOrderDependentSourceModules()</string>
       <string>App getApp()
 String namespace()
 String requirePrefix()
-List&lt;SourceFile&gt; sourceFiles()
-SourceFile sourceFile(String requirePath)
+List&lt;SourceModule&gt; sourceModules()
+SourceModule sourceModule(String requirePath)
 AssetLocation src()
 AssetLocation resourcesRoot()
 List&lt;AssetLocation&gt; getAllAssetLocations()
@@ -372,7 +372,7 @@ List&lt;AssetLocation&gt; getAllAssetLocations()
     <void property="methods">
      <void property="text">
       <string>AliasesFile aliasesFile()
-SourceFile getSourceFile(String requirePath) 
+SourceModule getSourceModule(String requirePath) 
 List&lt;LinkedAssetFile&gt; seedFiles()
 List&lt;AssetContainer&gt; getAssetContainers()
 BundleSet getBundleSet()
@@ -390,19 +390,19 @@ AliasDefinition getAlias(AliasName aliasName)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double11"/>
-      <double>644.0</double>
+      <double>625.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double11"/>
-      <double>115.0</double>
+      <double>106.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>644.0</double>
-     <double>115.0</double>
+     <double>625.0</double>
+     <double>106.0</double>
     </void>
    </object>
   </void>
@@ -546,19 +546,19 @@ List&lt;AssetLocation&gt; getDependentAssetLocations()
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double16"/>
-      <double>21.0</double>
+      <double>1.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double16"/>
-      <double>290.0</double>
+      <double>293.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>21.0</double>
-     <double>290.0</double>
+     <double>1.0</double>
+     <double>293.0</double>
     </void>
    </object>
   </void>
@@ -584,7 +584,7 @@ List&lt;AssetFile&gt; getResourceFiles(String fileExt)</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double17"/>
-      <double>981.0</double>
+      <double>1006.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -595,7 +595,7 @@ List&lt;AssetFile&gt; getResourceFiles(String fileExt)</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>981.0</double>
+     <double>1006.0</double>
      <double>122.0</double>
     </void>
    </object>
@@ -649,19 +649,19 @@ locations become available</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double19"/>
-      <double>409.0</double>
+      <double>388.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double19"/>
-      <double>209.0</double>
+      <double>199.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>409.0</double>
-     <double>209.0</double>
+     <double>388.0</double>
+     <double>199.0</double>
     </void>
    </object>
   </void>
@@ -678,19 +678,19 @@ locations become available</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double20"/>
-      <double>460.0</double>
+      <double>432.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double20"/>
-      <double>86.0</double>
+      <double>95.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>460.0</double>
-     <double>86.0</double>
+     <double>432.0</double>
+     <double>95.0</double>
     </void>
    </object>
   </void>
