@@ -18,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
@@ -43,7 +44,7 @@ public class NodeJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules() throws ModelOperationException {
+	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		List<SourceModule> dependentSourceFiles = new ArrayList<>();
 		
 		try {
@@ -98,7 +99,7 @@ public class NodeJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules() throws ModelOperationException {
+	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		return new ArrayList<>();
 	}
 	

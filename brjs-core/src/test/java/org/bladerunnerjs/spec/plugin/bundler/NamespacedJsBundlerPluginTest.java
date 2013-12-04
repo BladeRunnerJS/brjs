@@ -129,7 +129,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		given(aspect).hasPackageStyle(NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
-			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2") // TODO: switch to classDependsOn()
+			.and(aspect).classDependsOn("mypkg.Class1", "mypkg.Class2") // TODO: switch to classDependsOn()
 			.and(aspect).indexPageHasContent("<@caplin-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "caplin-js/module/mypkg/Class2.js", "caplin-js/module/mypkg/Class1.js"); // TODO: enforce ordering

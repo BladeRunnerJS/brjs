@@ -12,6 +12,7 @@ public interface SourceModule extends LinkedAsset {
 	String getRequirePath();
 	/**
 	 * Returns a list of source files that *must* precede this source file in the output 
+	 * @param bundlableNode TODO
 	 */
-	List<SourceModule> getOrderDependentSourceModules() throws ModelOperationException;
+	List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
 }

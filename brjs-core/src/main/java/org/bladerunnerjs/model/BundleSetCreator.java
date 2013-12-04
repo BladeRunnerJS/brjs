@@ -40,14 +40,14 @@ public class BundleSetCreator {
 		
 		for(LinkedAsset seedFile : seedFiles) {
 			bundleSetBuilder.addSeedFile(seedFile);
-			processFile(seedFile, bundleSetBuilder, logger);
+			processFile(bundlableNode, seedFile, bundleSetBuilder, logger);
 		}
 		
 		return bundleSetBuilder.createBundleSet();
 	}
 	
-	private static void processFile(LinkedAsset file, BundleSetBuilder bundleSetBuilder, Logger logger) throws ModelOperationException {
-		List<SourceModule> moduleDependencies = file.getDependentSourceModules();
+	private static void processFile(BundlableNode bundlableNode, LinkedAsset file, BundleSetBuilder bundleSetBuilder, Logger logger) throws ModelOperationException {
+		List<SourceModule> moduleDependencies = file.getDependentSourceModules(bundlableNode);
 		
 		if(moduleDependencies.isEmpty()) {
 			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
@@ -58,11 +58,11 @@ public class BundleSetCreator {
 		
 		for(SourceModule sourceModule : moduleDependencies) {
 			if(bundleSetBuilder.addSourceFile(sourceModule)) {
-				processFile(sourceModule, bundleSetBuilder, logger);
+				processFile(bundlableNode, sourceModule, bundleSetBuilder, logger);
 				
 				for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().getAllAssetLocations()) {
 					for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
-						processFile(resourceSeedFile, bundleSetBuilder, logger);
+						processFile(bundlableNode, resourceSeedFile, bundleSetBuilder, logger);
 					}
 				}
 			}

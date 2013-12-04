@@ -2,20 +2,29 @@ package org.bladerunnerjs.core.plugin.bundlesource.js;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 
 import com.Ostermiller.util.ConcatReader;
 
 public class NamespacedJsSourceModule implements SourceModule {
+	private static final Pattern extendPattern = Pattern.compile("(caplin|br)\\.(extend|implement)\\([^,]+,\\s*([^)]+)\\)");
+	
 	private LinkedAsset assetFile;
 	private AssetLocation assetLocation;
 	private String requirePath;
@@ -30,9 +39,9 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
- 	public List<SourceModule> getDependentSourceModules() throws ModelOperationException {
-		List<SourceModule> dependentSourceModules = assetFile.getDependentSourceModules();
-		dependentSourceModules.removeAll(getOrderDependentSourceModules());
+ 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+		List<SourceModule> dependentSourceModules = assetFile.getDependentSourceModules(bundlableNode);
+		dependentSourceModules.removeAll(getOrderDependentSourceModules(bundlableNode));
 		dependentSourceModules.remove(this);
 		
 		return dependentSourceModules;
@@ -54,9 +63,26 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules() throws ModelOperationException {
-		// TODO: scan the source file for caplin.extend(), caplin.implement(), br.extend() & br.implement()
-		return new ArrayList<>();
+	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+		List<SourceModule> orderDependentSourceModules = new ArrayList<>();
+		
+		try {
+			StringWriter stringWriter = new StringWriter();
+			IOUtils.copy(assetFile.getReader(), stringWriter);
+			Matcher matcher = extendPattern.matcher(stringWriter.toString());
+			
+			while (matcher.find()) {
+				String referencedClass = matcher.group(3);
+				String requirePath = referencedClass.replaceAll("\\.", "/");
+				
+				orderDependentSourceModules.add(bundlableNode.getSourceFile(requirePath));
+			}
+		}
+		catch(IOException | RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
+		
+		return orderDependentSourceModules;
 	}
 	
 	@Override
@@ -88,7 +114,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 		StringBuffer stringBuffer = new StringBuffer();
 		
 		try {
-			for(SourceModule dependentSourceModules : getDependentSourceModules()) {
+			// TODO: we need to think about the current need to provide a bundlableNode as a result of a getReader() invocation
+			for(SourceModule dependentSourceModules : getDependentSourceModules(null)) {
 				if(!(dependentSourceModules instanceof NamespacedJsSourceModule)) {
 					String moduleNamespace = dependentSourceModules.getRequirePath().replaceAll("/", ".");
 					stringBuffer.append(moduleNamespace + " = require('" + dependentSourceModules.getRequirePath()  + "');\n");

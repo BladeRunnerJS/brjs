@@ -43,7 +43,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules() throws ModelOperationException {
+	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}

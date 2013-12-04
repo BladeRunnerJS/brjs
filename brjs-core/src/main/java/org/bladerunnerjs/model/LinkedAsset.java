@@ -12,7 +12,8 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 public interface LinkedAsset extends Asset {
 	/**
 	 * Returns a list of files this LinkedAssetFile depends on
+	 * @param bundlableNode TODO
 	 */
-	List<SourceModule> getDependentSourceModules() throws ModelOperationException;
+	List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
 	List<String> getAliasNames() throws ModelOperationException;
 }

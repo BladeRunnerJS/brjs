@@ -54,10 +54,23 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to 'caplin-js'");
+			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerPlugin.JS_STYLE + "'");
 		}
 		
-		FileUtils.write(sourceFile, getCaplinJsClassBody(sourceClass, referencedClass));
+		FileUtils.write(sourceFile, getClassBody(sourceClass) + "var obj = new " + referencedClass + "();\n");
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer classDependsOn(String dependentClass, String referencedClass) throws Exception {
+		File dependentSourceFile = getSourceFile(dependentClass);
+		String jsStyle = JsStyleUtility.getJsStyle(dependentSourceFile.getParentFile());
+		
+		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
+			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerPlugin.JS_STYLE + "'");
+		}
+		
+		FileUtils.write(dependentSourceFile, getCaplinJsClassBody(dependentClass, referencedClass));
 		
 		return builderChainer;
 	}

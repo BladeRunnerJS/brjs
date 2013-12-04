@@ -87,7 +87,7 @@ public class NonBladerunnerJsLibSourceModule implements SourceModule
 	}
 
 	@Override
-	public List<SourceModule> getDependentSourceModules() throws ModelOperationException
+	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		List<SourceModule> dependentLibs = new ArrayList<SourceModule>();
 		
@@ -124,7 +124,7 @@ public class NonBladerunnerJsLibSourceModule implements SourceModule
 	}
 
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules() throws ModelOperationException
+	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		return Arrays.asList();
 	}
