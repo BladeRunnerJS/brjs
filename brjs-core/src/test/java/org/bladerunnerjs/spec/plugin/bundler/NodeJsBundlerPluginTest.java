@@ -66,14 +66,14 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void classesAreAutomaticallyWrappedInAClosure() throws Exception {
-		given(aspect).hasClasses("novox.Class1")
-			.and(aspect).indexPageRefersTo("novox.Class1");
-		when(app).requestReceived("/default-aspect/node-js/module/novox/Class1.js", requestResponse);
+		given(aspect).hasClasses("Class1")
+			.and(aspect).indexPageRefersTo("Class1");
+		when(app).requestReceived("/default-aspect/node-js/module/Class1.js", requestResponse);
 		then(requestResponse).containsLines(
-			"define('novox/Class1', function(require, exports, module) {",
-			"novox.Class1 = function() {", // TODO: remove 'novox.' from start of line
+			"define('Class1', function(require, exports, module) {",
+			"Class1 = function() {",
 			"};",
-//			"module.exports = Class1;",
+			"module.exports = Class1;",
 			"});");
 	}
 }
