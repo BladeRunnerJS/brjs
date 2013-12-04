@@ -31,7 +31,7 @@ public class BundlingTest extends SpecTest {
 	private AliasesFile aspectAliasesFile;
 	private Bladeset bladeset;
 	private Blade blade;
-	private JsLib sdkLib, userLib, appLegacyThirdparty, sdkLegacyThirdparty, sdkLegacyThirdparty2;
+	private JsLib sdkJsLib, userLib, appLegacyThirdparty, sdkLegacyThirdparty, sdkLegacyThirdparty2;
 	private AliasDefinitionsFile bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
 	
@@ -53,7 +53,7 @@ public class BundlingTest extends SpecTest {
 			
 			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty");
 			userLib = app.jsLib("userLib");
-			sdkLib = brjs.sdkLib();
+			sdkJsLib = brjs.sdkLib();
 			sdkLegacyThirdparty = brjs.sdkNonBladeRunnerLib("legacy-thirdparty");
 			sdkLegacyThirdparty2 = brjs.sdkNonBladeRunnerLib("legacy-thirdparty2");
 			
@@ -261,7 +261,8 @@ public class BundlingTest extends SpecTest {
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.bs.b1.Class2");
+		then(response).containsClasses("mypkg.bs.b1.Class2")
+			.and(response).doesNotContainClasses("mypkg.bs.b1.Class1");
 	}
 	
 	@Test
@@ -388,10 +389,11 @@ public class BundlingTest extends SpecTest {
 	// ------------------------ A P P   T H I R D P A R T Y   L I B ------------------------
 	@Test
 	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(appLegacyThirdparty).hasClass("appThirdparty.Class1")
+		given(appLegacyThirdparty).hasClasses("appThirdparty.Class1", "appThirdparty.Class2")
 			.and(aspect).indexPageRefersTo("appThirdparty.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appThirdparty.Class1");
+		then(response).containsClasses("appThirdparty.Class1")
+			.and(response).doesNotContainClasses("appThirdparty.Class2");
 	}
 	
 	@Test
@@ -418,71 +420,92 @@ public class BundlingTest extends SpecTest {
 		then(response).containsClasses("appThirdpartyLibName.Class1");
 	}
 	
+	// ------------------------------- J S   P A T C H E S ----------------------------------
+//	TODO uncomment when jsPatches work is properly implemented
+	@Ignore
+	@Test
+	public void weDoNotBundleNamespacedJsPatchesForLibraryClassesWhichAreNotReferenced() throws Exception {
+		given(sdkJsLib).hasBeenCreated()
+			.and(sdkJsLib).hasPackageStyle("src/sdkJsLib", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(sdkJsLib).hasClass("sdkJsLib.Class1")
+//			.and(jsPatchesLib).hasPackageStyle("br/sdkJsLib", NamespacedJsBundlerPlugin.JS_STYLE)
+//			.and(jsPatchesLib).hasClass("sdkJsLib.Class2");	
+			.and(aspect).hasBeenCreated()
+			.and(aspect).indexPageRefersTo("mypkg.Class1")
+			.and(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClass("mypkg.Class1")
+			.and(aspect).classRefersTo("mypkg.Class1", "sdkJsLib.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("sdkJsLib.Class1")
+			.and(response).doesNotContainClasses("sdkJsLib.Class2");
+	}
 	
 	// ----------------------------- U S E R   J S   L I B S --------------------------------
 	@Test
 	public void aspectBundlesContainUserLibrLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(userLib).hasClass("user.Class1")
-			.and(aspect).indexPageRefersTo("user.Class1");
+		given(userLib).hasPackageStyle("src/userLib", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(userLib).hasClass("userLib.Class1")
+			.and(aspect).indexPageRefersTo("userLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("user.Class1");
+		then(response).containsClasses("userLib.Class1");
 	}
 	
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(userLib).hasBeenCreated()
-			.and(userLib).hasPackageStyle("sdk", "namespaced-js")
-			.and(userLib).hasClass("user.Class1")
+			.and(userLib).hasPackageStyle("src/userLib", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(userLib).hasClass("userLib.Class1")
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("mypkg.Class1")
 			.and(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspect).classRefersTo("mypkg.Class1", "user.Class1");
+			.and(aspect).classRefersTo("mypkg.Class1", "userLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("user.Class1");
+		then(response).containsClasses("userLib.Class1");
 	}
 	
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreRequiredInAClass() throws Exception {
-		given(userLib).hasClass("user.Class1")
+		given(userLib).hasClass("userLib.Class1")
 		.and(aspect).indexPageRefersTo("mypkg.Class1")
 		.and(aspect).hasClass("mypkg.Class1")
-		.and(aspect).classRequires("mypkg.Class1", "user.Class1");
+		.and(aspect).classRequires("mypkg.Class1", "userLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("user.Class1");
+		then(response).containsClasses("userLib.Class1");
 	}
 	
 	// ---------------------------- S D K   J S   L I B S ----------------------------------
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(sdkLib).hasClass("sdk.Class1")
-			.and(aspect).indexPageRefersTo("sdk.Class1");
+		given(sdkJsLib).hasClass("sdkJsLib.Class1")
+			.and(aspect).indexPageRefersTo("sdkJsLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("sdk.Class1");
+		then(response).containsClasses("sdkJsLib.Class1");
 	}
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInAClass() throws Exception {
-		given(sdkLib).hasBeenCreated()
-			.and(sdkLib).hasPackageStyle("sdk", NamespacedJsBundlerPlugin.JS_STYLE)
-			.and(sdkLib).hasClass("sdk.Class1")
+		given(sdkJsLib).hasBeenCreated()
+			.and(sdkJsLib).hasPackageStyle("src/sdkJsLib", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(sdkJsLib).hasClass("sdkJsLib.Class1")
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("mypkg.Class1")
 			.and(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspect).classRefersTo("mypkg.Class1", "sdk.Class1");
+			.and(aspect).classRefersTo("mypkg.Class1", "sdkJsLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("sdk.Class1");
+		then(response).containsClasses("sdkJsLib.Class1")
+			.and(response).doesNotContainText("require");
 	}
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreRequiredInAClass() throws Exception {
-		given(sdkLib).hasClass("sdk.Class1")
-		.and(aspect).indexPageRefersTo("mypkg.Class1")
-		.and(aspect).hasClass("mypkg.Class1")
-		.and(aspect).classRequires("mypkg.Class1", "sdk.Class1");
+		given(sdkJsLib).hasClass("sdkJsLib.Class1")
+			.and(aspect).indexPageRefersTo("mypkg.Class1")
+			.and(aspect).hasClass("mypkg.Class1")
+			.and(aspect).classRequires("mypkg.Class1", "sdkJsLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("sdk.Class1");
+		then(response).containsClasses("sdkJsLib.Class1");
 	}
 	
 	
