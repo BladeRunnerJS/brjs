@@ -29,7 +29,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	@Ignore
 	@Test
 	public void weBundleBladesetFilesInUTs() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", "caplin-js")
+		given(bladeset).hasPackageStyle("src/mypkg/bs", "namespaced-js")
 			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladesetUTs).testRefersTo("mypkg.bs.Class1");
@@ -41,7 +41,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	@Ignore
 	@Test
 	public void weBundleBladesetFilesInATs() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", "caplin-js")
+		given(bladeset).hasPackageStyle("src/mypkg/bs", "namespaced-js")
 			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladesetATs).testRefersTo("mypkg.bs.Class1");

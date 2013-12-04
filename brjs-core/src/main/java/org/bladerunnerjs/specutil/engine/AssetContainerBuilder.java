@@ -102,7 +102,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to 'caplin-js'");
+			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerPlugin.JS_STYLE + "'");
 		}
 		
 		FileUtils.write(sourceFile, "br.thirdparty('"+thirdpartyLib.getName()+"');", true);

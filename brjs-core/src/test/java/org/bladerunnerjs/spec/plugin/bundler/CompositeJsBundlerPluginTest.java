@@ -28,7 +28,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
 	}
 	
 	@Test
@@ -44,7 +44,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("caplin-js/package-definitions.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js");
 	}
 	
 	@Test
@@ -60,6 +60,6 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
 	}
 }

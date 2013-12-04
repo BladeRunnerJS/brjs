@@ -30,9 +30,9 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2")
-			.and(aspect).indexPageHasContent("<@caplin-js@/>");
+			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "caplin-js/module/mypkg/Class1.js", "caplin-js/module/mypkg/Class2.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/mypkg/Class1.js", "namespaced-js/module/mypkg/Class2.js");
 	}
 	
 	@Test
@@ -41,9 +41,9 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2")
-			.and(aspect).indexPageHasContent("<@caplin-js@/>");
+			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("caplin-js/bundle.js");
+		then(pageResponse).containsRequests("namespaced-js/bundle.js");
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		given(aspect).hasPackageStyle(NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2");
-		when(app).requestReceived("/default-aspect/caplin-js/bundle.js", requestResponse);
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).isEmpty();
 	}
 	
@@ -60,7 +60,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		given(aspect).hasPackageStyle(NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1");
-		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
+		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsText("window.mypkg = {};");
 	}
 	
@@ -70,7 +70,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2");
-		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
+		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsText("window.mypkg = {};");
 	}
 	
@@ -79,7 +79,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		given(aspect).hasPackageStyle(NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.Class2");
-		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
+		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).isEmpty();
 	}
 	
@@ -89,7 +89,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("mypkg.Class1", "mypkg.pkg.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).classRefersTo("mypkg.Class1", "mypkg.pkg.Class2");
-		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", requestResponse);
+		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsText("window.mypkg = {\"pkg\":{}};");
 	}
 	
@@ -97,7 +97,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	public void eachClassShouldBeReturnedUnchagned() throws Exception {
 		given(aspect).hasPackageStyle(NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.Class1");
-		when(app).requestReceived("/default-aspect/caplin-js/module/mypkg/Class1.js", requestResponse);
+		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/Class1.js", requestResponse);
 		then(requestResponse).textEquals("mypkg.Class1 = function() {\n};\n");
 	}
 	
@@ -106,7 +106,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		given(aspect).hasPackageStyle("src/mypkg/namespaced", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.nodejs.Class")
 			.and(aspect).classRefersTo("mypkg.namespaced.Class", "mypkg.nodejs.Class");
-		when(app).requestReceived("/default-aspect/caplin-js/module/mypkg/namespaced/Class.js", requestResponse);
+		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/namespaced/Class.js", requestResponse);
 		then(requestResponse).containsText("mypkg.namespaced.Class = function() {\n};")
 			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
@@ -117,7 +117,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.nodejs.Class")
 			.and(aspect).indexPageRefersTo("mypkg.namespaced.Class")
 			.and(aspect).classRefersTo("mypkg.namespaced.Class", "mypkg.nodejs.Class");
-		when(app).requestReceived("/default-aspect/caplin-js/bundle.js", requestResponse);
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("mypkg.namespaced.Class = function() {\n};")
 			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
@@ -128,8 +128,8 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).classDependsOn("mypkg.Class1", "mypkg.Class2") // TODO: switch to classDependsOn()
-			.and(aspect).indexPageHasContent("<@caplin-js@/>");
+			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("caplin-js/package-definitions.js", "caplin-js/module/mypkg/Class2.js", "caplin-js/module/mypkg/Class1.js"); // TODO: enforce ordering
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/mypkg/Class2.js", "namespaced-js/module/mypkg/Class1.js"); // TODO: enforce ordering
 	}
 }
