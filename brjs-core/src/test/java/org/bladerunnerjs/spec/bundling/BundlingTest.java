@@ -135,13 +135,14 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	@Test	// bladeset unhappy paths
-	public void weDontBundleABladesetIfItIsNotReferredToByAnAspect() throws Exception {
+	public void weDontBundleABladesetClassIfItIsNotReferredToByAnAspect() throws Exception {
 		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(aspect).indexPageRefersTo("mypkg.bs.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.bs.Class2");
+		then(response).containsClasses("mypkg.bs.Class2")
+			.and(response).doesNotContainClasses("mypkg.bs.Class1");
 	}
 	
 	@Test
