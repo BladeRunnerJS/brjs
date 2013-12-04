@@ -1,7 +1,5 @@
 package org.bladerunnerjs.specutil;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -10,10 +8,13 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.utility.IndexPageWriter;
+import org.bladerunnerjs.model.utility.NoTagHandlerFoundException;
+import org.bladerunnerjs.model.utility.TagPluginUtility;
+import org.bladerunnerjs.specutil.engine.Command;
 import org.bladerunnerjs.specutil.engine.CommanderChainer;
 import org.bladerunnerjs.specutil.engine.NodeCommander;
 import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.dom4j.DocumentException;
 
 
 public class AspectCommander extends NodeCommander<Aspect> {
@@ -24,29 +25,44 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		this.aspect = aspect;
 	}
 	
-	public CommanderChainer getBundledFiles() {
-		fail("the model doesn't yet support bundling!");
+	public BundleInfoCommander getBundleInfo() throws Exception {
+		return new BundleInfoCommander((aspect.getBundleSet()));
+	}
+	
+	public CommanderChainer indexPageLoadedInDev(final StringBuffer pageResponse, final String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
+		call(new Command() {
+			public void call() throws Exception {
+				pageLoaded(pageResponse, locale, RequestMode.Dev);
+			}
+		});
 		
 		return commanderChainer;
 	}
 
-	public BundleInfoCommander getBundleInfo() throws Exception {
+	public CommanderChainer indexPageLoadedInProd(final StringBuffer pageResponse, final String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
+		call(new Command() {
+			public void call() throws Exception {
+				pageLoaded(pageResponse, locale, RequestMode.Prod);
+			}
+		});
 		
-		return new BundleInfoCommander((aspect.getBundleSet()));
+		return commanderChainer;
 	}
 	
-	public void indexPageLoadedInDev(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException {
-		pageLoaded(pageResponse, locale, RequestMode.Dev);
-	}
-
-	public void pageLoadedInProd(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException {
-		pageLoaded(pageResponse, locale, RequestMode.Prod);
+	public CommanderChainer retrievesAlias(final String aliasName) throws Exception {
+		call(new Command() {
+			public void call() throws Exception {
+				aspect.aliasesFile().getAlias(aliasName);
+			}
+		});
+		
+		return commanderChainer;
 	}
 	
-	private void pageLoaded(StringBuffer pageResponse, String locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException {
+	private void pageLoaded(StringBuffer pageResponse, String locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException {
 		StringWriter writer = new StringWriter();	
 		
-		IndexPageWriter.write(FileUtils.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale);
+		TagPluginUtility.filterContent(FileUtils.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale);
 		
 		pageResponse.append(writer.toString());
 	}

@@ -7,8 +7,9 @@ import java.util.List;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import org.bladerunnerjs.model.App;
-import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.JsLib;
+
+import com.caplin.cutlass.BRJSAccessor;
 
 public class PackageDepsConfig
 {
@@ -71,7 +72,6 @@ public class PackageDepsConfig
 				}
 				matchingDirectory = targetDirectory;
 			}
-
 		}
 
 		if(matchingDirectory == null)

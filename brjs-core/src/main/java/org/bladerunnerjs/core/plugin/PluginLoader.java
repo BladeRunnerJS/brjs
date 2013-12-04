@@ -23,11 +23,6 @@ public class PluginLoader
 			"Error while creating the plugin %s, the class will not be loaded. Make sure there is a constructor for the class that accepts 0 arguments.";
 	}
 	
-	public static <P extends Plugin> List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface)
-	{
-		return createPluginsOfType(brjs, pluginInterface, null);
-	}
-	
 	@SuppressWarnings("unchecked")
 	public static <P extends Plugin, VPP extends P> List<P> createPluginsOfType(BRJS brjs, Class<P> pluginInterface, Class<VPP> virtualProxyClass)
 	{
@@ -53,11 +48,10 @@ public class PluginLoader
 			{
 				P object = objectIterator.next();
 				
-				if(virtualProxyClass != null) {
+				if (virtualProxyClass != null)
+				{
 					object = virtualProxyClass.getConstructor(pluginInterface).newInstance(object);
 				}
-				
-				object.setBRJS(brjs);
 				
 				objectList.add(object);
 			}
@@ -74,9 +68,12 @@ public class PluginLoader
 				logger.error(Messages.ERROR_CREATING_OBJECT_LOG_MSG, serviceError);
 			}
 		}
-		catch(NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+		catch(NullPointerException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 			throw new RuntimeException(e);
 		}
+		
+		// use this utility to set BRJS so we catch any runtime errors thrown by model observers
+		PluginLocatorUtils.setBRJSForPlugins(brjs, objectList);
 		
 		return objectList;
 	}

@@ -9,8 +9,8 @@ import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.core.plugin.command.VirtualProxyCommandPlugin;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 
@@ -28,7 +28,7 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	}
 	
 	@Override
-	public List<ModelObserverPlugin> getModelObservers() {
+	public List<ModelObserverPlugin> getModelObserverPlugins() {
 		return new ArrayList<>();
 	}
 	
@@ -38,7 +38,7 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	}
 	
 	@Override
-	public List<MinifierPlugin> getMinifiers() {
+	public List<MinifierPlugin> getMinifierPlugins() {
 		return new ArrayList<>();
 	}
 	
@@ -48,7 +48,7 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	}
 	
 	@Override
-	public List<TagHandlerPlugin> getTagHandlers() {
+	public List<TagHandlerPlugin> getTagHandlerPlugins() {
 		return new ArrayList<>();
 	}
 }

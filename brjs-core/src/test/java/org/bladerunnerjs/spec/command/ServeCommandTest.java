@@ -21,11 +21,10 @@ public class ServeCommandTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		appServerPort = 7070;
-		
-		given(pluginLocator).hasCommand(new ServeCommand())
-			.and(brjs).hasBeenCreated();	
+		given(brjs).hasCommands(new ServeCommand())
+			.and(brjs).hasBeenCreated();
 		appServer = brjs.applicationServer(appServerPort);
+		brjs.bladerunnerConf().setJettyPort(appServerPort);
 	}
 	
 	@After
@@ -48,8 +47,8 @@ public class ServeCommandTest extends SpecTest
 		given(logging).enabled();
 		when(brjs).runCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
-			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7070")
-			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + "7070/")
+			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
+			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + appServerPort +"/")
 			.and(logging).infoMessageReceived("\t" + SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
 			.and(appServer).requestIsRedirected("/","/dashboard");
 	}
@@ -58,6 +57,7 @@ public class ServeCommandTest extends SpecTest
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated();
+			/* and */ brjs.bladerunnerConf().setJettyPort(appServerPort);
 		when(brjs).runCommand("serve");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
@@ -67,6 +67,6 @@ public class ServeCommandTest extends SpecTest
 	{
 		given(appServer).started();
 		when(brjs).runCommand("serve");
-		then(exceptions).verifyException(IOException.class, "7070");
+		then(exceptions).verifyException(IOException.class, appServerPort);
 	}
 }

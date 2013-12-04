@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
-import org.bladerunnerjs.model.aliasing.AliasName;
-import org.bladerunnerjs.model.aliasing.AliasUtility;
-import org.bladerunnerjs.model.aliasing.AliasesFile;
 import org.bladerunnerjs.model.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.model.aliasing.UnresolvableAliasException;
+import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -25,11 +23,11 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		super(rootNode, dir);
 	}
 	
-	public abstract List<LinkedAssetFile> getSeedFiles();
+	public abstract List<LinkedAsset> getSeedFiles();
 	
 	@Override
-	public List<LinkedAssetFile> seedFiles() {
-		List<LinkedAssetFile> seedFiles = new ArrayList<>();
+	public List<LinkedAsset> seedFiles() {
+		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
 		seedFiles.addAll(getSeedFiles());
 		seedFiles.addAll(resources().seedResources());
@@ -40,26 +38,26 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	@Override
 	public AliasesFile aliasesFile() {
 		if(aliasesFile == null) {
-			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml");
+			aliasesFile = new AliasesFile(dir(), "resources/aliases.xml", this);
 		}
 		
 		return aliasesFile;
 	}
 	
 	@Override
-	public SourceFile getSourceFile(String requirePath) throws RequirePathException {
-		SourceFile sourceFile = null;
+	public SourceModule getSourceFile(String requirePath) throws RequirePathException {
+		SourceModule sourceFile = null;
 		
 		for(AssetContainer assetContainer : getAssetContainers()) {
-			SourceFile locationSourceFile = assetContainer.sourceFile(requirePath);
+			SourceModule locationSourceFile = assetContainer.sourceFile(requirePath);
 			
 			if(locationSourceFile != null) {
 				if(sourceFile == null) {
 					sourceFile = locationSourceFile;
 				}
 				else {
-					throw new AmbiguousRequirePathException("'" + sourceFile.getUnderlyingFile().getPath() + "' and '" +
-						locationSourceFile.getUnderlyingFile().getPath() + "' source files both available via require path '" +
+					throw new AmbiguousRequirePathException("'" + sourceFile.getAssetPath() + "' and '" +
+						locationSourceFile.getAssetPath() + "' source files both available via require path '" +
 						sourceFile.getRequirePath() + "'.");
 				}
 			}
@@ -73,8 +71,8 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public AliasDefinition getAlias(AliasName aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
-		return AliasUtility.getAlias(aliasName, aliasesFile, getAliasDefinitionFiles());
+	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
+		return aliasesFile.getAlias(aliasName);
 	}
 	
 	@Override
@@ -82,7 +80,8 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		return BundleSetCreator.createBundleSet(this);
 	}
 	
-	private List<AliasDefinitionsFile> getAliasDefinitionFiles() {
+	@Override
+	public List<AliasDefinitionsFile> getAliasDefinitionFiles() {
 		List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : getAssetContainers()) {

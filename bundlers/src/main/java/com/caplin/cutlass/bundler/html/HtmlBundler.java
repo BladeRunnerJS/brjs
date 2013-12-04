@@ -12,21 +12,24 @@ import java.util.List;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
-
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
+
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.SourceFileProvider;
+
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
 
-public class HtmlBundler implements LegacyFileBundlerPlugin
+public class HtmlBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private final IOFileFilter htmlFilter = new SuffixFileFilter(".html");
 	private final IOFileFilter htmFilter = new SuffixFileFilter(".htm");

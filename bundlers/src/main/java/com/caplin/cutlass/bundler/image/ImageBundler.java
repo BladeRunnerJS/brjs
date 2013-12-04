@@ -9,20 +9,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+
 import com.caplin.cutlass.BRJSAccessor;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
+
 import com.caplin.cutlass.bundler.RequestScopeProvider;
 import com.caplin.cutlass.bundler.css.TargetPathCreator;
+
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.structure.ScopeLevel;
 import com.caplin.cutlass.structure.model.Node;
@@ -31,7 +36,7 @@ import com.caplin.cutlass.structure.model.path.AppPath;
 import com.caplin.cutlass.structure.model.path.AspectPath;
 import com.caplin.cutlass.structure.model.path.BladePath;
 
-public class ImageBundler implements LegacyFileBundlerPlugin
+public class ImageBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private final ContentPathParser requestParser = RequestParserFactory.createImageBundlerRequestParser();;
 	

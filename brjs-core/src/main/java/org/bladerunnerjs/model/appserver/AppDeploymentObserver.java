@@ -5,13 +5,14 @@ import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.plugin.Event;
 import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.core.plugin.observer.AbstractModelObserverPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 
 
-public class AppDeploymentObserver implements EventObserver, ModelObserverPlugin
+public class AppDeploymentObserver extends AbstractModelObserverPlugin implements EventObserver, ModelObserverPlugin
 {
 	
 	// TODO: this message is currently only used by an integration test and not by BRJS command runner

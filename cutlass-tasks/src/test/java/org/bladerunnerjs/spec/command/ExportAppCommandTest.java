@@ -28,10 +28,10 @@ public class ExportAppCommandTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{	
+		given(brjs).hasCommands(new ExportApplicationCommand());
 		//TODO::have to create brjs first should remove when moved over to core
 		given(brjs).hasBeenCreated();
 		
-		given(pluginLocator).hasCommand(new ExportApplicationCommand(brjs));
 			app = brjs.app("myapp");
 			aspect = app.aspect("myaspect");
 			bladeset = app.bladeset("mybladeset");

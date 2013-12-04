@@ -10,6 +10,7 @@ import java.util.List;
 import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
 import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
@@ -19,6 +20,8 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
@@ -26,6 +29,7 @@ import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 import org.bladerunnerjs.specutil.AppBuilder;
 import org.bladerunnerjs.specutil.AppCommander;
+import org.bladerunnerjs.specutil.AppConfCommander;
 import org.bladerunnerjs.specutil.AppVerifier;
 import org.bladerunnerjs.specutil.AspectBuilder;
 import org.bladerunnerjs.specutil.AspectCommander;
@@ -83,7 +87,7 @@ public abstract class SpecTest
 	public BRJS brjs;
 	public int appServerPort;
 	
-	WebappTester webappTester;
+	public WebappTester webappTester;
 
 		
 	@Before
@@ -141,13 +145,12 @@ public abstract class SpecTest
 	public NodeObserverBuilder given(EventObserver observer) { return new NodeObserverBuilder(this, observer); }
 	public NodeObserverVerifier then(EventObserver observer) { return new NodeObserverVerifier(this, observer); }
 	
-	public PluginLocatorBuilder given(MockPluginLocator pluginLocator) {return new PluginLocatorBuilder(this, pluginLocator); }
-	
 	// NamedDirNode
 	public NamedNodeBuilder given(NamedNode namedDirNode) { return new NamedNodeBuilder(this, namedDirNode); }
 	public NamedNodeCommander when(NamedNode namedDirNode) { return new NamedNodeCommander(this, namedDirNode); }
 	public NamedNodeVerifier then(NamedNode namedDirNode) { return new NamedNodeVerifier(this, namedDirNode); }
 	
+	// Directory
 	public DirectoryVerifier then(File dir) { return new DirectoryVerifier(this, dir); }
 	
 	// StringBuffer
@@ -167,6 +170,11 @@ public abstract class SpecTest
 	public AppBuilder given(App app) { return new AppBuilder(this, app); }
 	public AppCommander when(App app) { return new AppCommander(this, app); }
 	public AppVerifier then(App app) { return new AppVerifier(this, app); }
+	
+	// App
+	public AppConfBuilder given(AppConf appConf) { return new AppConfBuilder(this, appConf); }
+	public AppConfCommander when(AppConf appConf) { return new AppConfCommander(this, appConf); }
+	public AppConfVerifier then(AppConf appConf) { return new AppConfVerifier(this, appConf); }
 	
 	// Aspect
 	public AspectBuilder given(Aspect aspect) { return new AspectBuilder(this, aspect); }
@@ -210,6 +218,15 @@ public abstract class SpecTest
 	public AppServerBuilder given(ApplicationServer appServer) { return new AppServerBuilder(this, appServer); }
 	public AppServerCommander when(ApplicationServer appServer) { return new AppServerCommander(this, appServer); }
 	public AppServerVerifier then(ApplicationServer appServer) { return new AppServerVerifier(this, appServer); }
+	
+	// Webapp Tester
+	public WebappTesterCommander when(WebappTester webappTester) { return new WebappTesterCommander(this, webappTester); } 
+
+	// AliasesFile
+	public AliasesFileBuilder given(AliasesFile aliasesFile) { return new AliasesFileBuilder(this, aliasesFile); }
+	
+	// AliasDefinitionsFile
+	public AliasDefinitionsFileBuilder given(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile); }
 	
 	private File createTestSdkDirectory() {
 		File sdkDir;

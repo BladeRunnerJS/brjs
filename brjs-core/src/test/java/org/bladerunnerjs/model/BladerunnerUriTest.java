@@ -3,12 +3,12 @@ package org.bladerunnerjs.model;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class BladerunnerUriTest
 	@Before
 	public void setUp() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("BladerunnerUri-test").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("BladerunnerUri-test");
 		new File(tempDir, "sdk").mkdir();
 		BRJS brjs = BRJSTestFactory.createBRJS(tempDir);
 		app = brjs.app("the-app");

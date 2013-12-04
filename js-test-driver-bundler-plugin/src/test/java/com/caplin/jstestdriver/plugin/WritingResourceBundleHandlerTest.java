@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 
 public class WritingResourceBundleHandlerTest {
 

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
@@ -22,7 +22,6 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 public class BRJSServletUtils
 {
-	
 	private BRJS brjs;
 	
 	public BRJSServletUtils(BRJS brjs)
@@ -30,21 +29,18 @@ public class BRJSServletUtils
 		this.brjs = brjs;
 	}
 	
-	ContentPlugin getContentPluginForRequest(BladerunnerUri bladerunnerUri)
-	{
-		for (ContentPlugin contentPlugin : brjs.allContentPlugins())
-		{
-			ContentPathParser requestParser = contentPlugin.getContentPathParser();
-			if ( requestParser.canParseRequest(bladerunnerUri) )
-			{
-				return contentPlugin;
-			}
+	public ContentPlugin getContentPluginForRequest(BladerunnerUri bladerunnerUri) {
+		ContentPlugin potentialContentPlugin = brjs.plugins().contentProvider(bladerunnerUri);
+		ContentPlugin contentPlugin = null;
+		
+		if((potentialContentPlugin != null) && potentialContentPlugin.getContentPathParser().canParseRequest(bladerunnerUri)) {
+			contentPlugin = potentialContentPlugin;
 		}
-		return null;
+		
+		return contentPlugin;
 	}
 	
-	
-	boolean passRequestToApropriateContentPlugin(ServletContext context, HttpServletRequest req, HttpServletResponse resp) throws ServletException
+	public boolean passRequestToApropriateContentPlugin(ServletContext context, HttpServletRequest req, HttpServletResponse resp) throws ServletException
 	{
 		BladerunnerUri bladerunnerUri = createBladeRunnerUri(context, req);
 		
@@ -58,7 +54,7 @@ public class BRJSServletUtils
 		return false;
 	}
 
-	ParsedContentPath parse(ContentPathParser requestParser, BladerunnerUri bladerunnerUri) throws ServletException
+	private ParsedContentPath parse(ContentPathParser requestParser, BladerunnerUri bladerunnerUri) throws ServletException
 	{
 		try
 		{
@@ -70,28 +66,16 @@ public class BRJSServletUtils
 		}
 	}
 	
-	void handleRequestUsingContentPlugin(BladerunnerUri requestUri, ParsedContentPath parsedRequest, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
+	private void handleRequestUsingContentPlugin(BladerunnerUri requestUri, ParsedContentPath parsedRequest, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
 	{
 		try
 		{
-			String appName = StringUtils.substringAfter(requestUri.contextPath, "/");
-			if (appName.endsWith("/"))
-			{
-				appName = StringUtils.substringBeforeLast(appName, "/");
-			}
-			App app = brjs.app(appName);
-			if (!app.dirExists())
-			{
-				app = brjs.systemApp(appName);
-				if (!app.dirExists())
-				{
-					sendErrorResponse(resp, 404, "App not found.");
-				}
-			}
-			
-			File baseDir = app.file(requestUri.scopePath);
-			BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
+			BundlableNode bundlableNode = getBundableNodeForRequest(requestUri, resp);
 			contentPlugin.writeContent(parsedRequest, bundlableNode.getBundleSet(), resp.getOutputStream());
+		}
+		catch (MalformedRequestException ex)
+		{
+			sendErrorResponse(resp, 404, ex);
 		}
 		catch (BundlerProcessingException ex)
 		{
@@ -107,7 +91,37 @@ public class BRJSServletUtils
 		}
 	}
 
-	BladerunnerUri createBladeRunnerUri(ServletContext context, HttpServletRequest req) throws ServletException
+	public App getAppForRequest(BladerunnerUri requestUri, HttpServletResponse resp) throws ServletException, MalformedRequestException
+	{
+		String appName = StringUtils.substringAfter(requestUri.contextPath, "/");
+		if (appName.endsWith("/"))
+		{
+			appName = StringUtils.substringBeforeLast(appName, "/");
+		}
+		App app = brjs.app(appName);
+		
+		
+		if (!app.dirExists())
+		{
+			app = brjs.systemApp(appName);
+			if (!app.dirExists())
+			{
+				throw new MalformedRequestException(requestUri.getUri(), "App '"+app.getName()+"' not found.");
+			}
+		}
+	
+		return app;
+	}
+	
+	public BundlableNode getBundableNodeForRequest(BladerunnerUri requestUri, HttpServletResponse resp) throws ServletException, MalformedRequestException
+	{
+		App app = getAppForRequest(requestUri, resp);
+		File baseDir = app.file(requestUri.scopePath);
+		BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
+		return bundlableNode;
+	}
+
+	public BladerunnerUri createBladeRunnerUri(ServletContext context, HttpServletRequest req) throws ServletException
 	{
 		try
 		{
@@ -119,20 +133,22 @@ public class BRJSServletUtils
 		}
 	}
 	
-	void sendErrorResponse(HttpServletResponse response, int code, Exception exception) throws ServletException
+	public void sendErrorResponse(HttpServletResponse response, int code, Exception exception) throws ServletException
 	{
 		sendErrorResponse(response, code, exception.toString());
 	}
 	
-	void sendErrorResponse(HttpServletResponse response, int code, String message) throws ServletException
+	private void sendErrorResponse(HttpServletResponse response, int code, String message) throws ServletException
 	{
 		try {
-			response.sendError(code, message);
+			if (!response.isCommitted())
+			{
+				response.sendError(code, message);
+			}
 		}
 		catch (IOException ex)
 		{
 			throw new ServletException(ex);
 		}
 	}
-	
 }

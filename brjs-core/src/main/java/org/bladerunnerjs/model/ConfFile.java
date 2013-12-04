@@ -39,4 +39,14 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 			confRefreshRequired = false;
 		}
 	}
+	
+	public File getConfFile()
+	{
+		return confFile;
+	}
+	
+	public boolean fileExists()
+	{
+		return getConfFile().isFile();
+	}
 }

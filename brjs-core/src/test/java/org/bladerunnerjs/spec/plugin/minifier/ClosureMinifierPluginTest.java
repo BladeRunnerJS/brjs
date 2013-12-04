@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.plugin.minifier;
 
+import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -44,9 +45,9 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureWhitespaceOption() throws Exception
 	{
-		given(aspect).hasClass("novox.Class1")
-			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(aspect).classFileHasContent("novox.Class1", unminifiedContent);
+		given(aspect).hasClass("mypkg.Class1")
+			.and(aspect).indexPageRefersTo("mypkg.Class1")
+			.and(aspect).classFileHasContent("mypkg.Class1", unminifiedContent);
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).containsText(minifyWhitespaceContent);
 	}
@@ -54,9 +55,9 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureSimpleOption() throws Exception
 	{
-		given(aspect).hasClass("novox.Class1")
-			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(aspect).classFileHasContent("novox.Class1", unminifiedContent);
+		given(aspect).hasClass("mypkg.Class1")
+			.and(aspect).indexPageRefersTo("mypkg.Class1")
+			.and(aspect).classFileHasContent("mypkg.Class1", unminifiedContent);
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-simple/bundle.js", response);
 		then(response).containsText(minifySimpleContent);
 	}
@@ -64,35 +65,45 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureAdvancedOption() throws Exception
 	{
-		given(aspect).hasClass("novox.Class1")
-			.and(aspect).indexPageRefersTo("novox.Class1")
-			.and(aspect).classFileHasContent("novox.Class1", unminifiedContent);
+		given(aspect).hasClass("mypkg.Class1")
+			.and(aspect).indexPageRefersTo("mypkg.Class1")
+			.and(aspect).classFileHasContent("mypkg.Class1", unminifiedContent);
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-advanced/bundle.js", response);
 		then(response).containsText(minifyAdvancedContent);
 	}
 	
-	
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
-		given(blade).hasPackageStyle("src/novox/bs/b1", "caplin-js")
-			.and(blade).hasClasses("novox.bs.b1.Class1", "novox.bs.b1.Class2")
-			.and(aspect).indexPageRefersTo("novox.bs.b1.Class1")
-			.and(blade).classRefersTo("novox.bs.b1.Class1", "novox.bs.b1.Class2");
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
+			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1")
+			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("window.novox={\"bs\":{\"b1\":{\"Class2\":{},\"Class1\":{}}}};novox.bs.b1.Class2=function(){};novox.bs.b1.Class1=function(){};br.extend(novox.bs.b1.Class1,novox.bs.b1.Class2);novox.bs.b1.Class2=require(\"novox/bs/b1/Class2\");novox.bs.b1.Class1=require(\"novox/bs/b1/Class1\");");
+		then(response).containsMinifiedClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2");
 	}
 	
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
-		given(blade).hasPackageStyle("novox.cjs", "caplin-js")
-			.and(blade).hasPackageStyle("novox.node", "node.js")
-			.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
-			.and(aspect).indexPageRefersTo("novox.cjs.Class")
-			.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class");
+		given(blade).hasPackageStyle("src/mypkg.cjs", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(blade).hasPackageStyle("mypkg.node", "node.js")
+			.and(blade).hasClasses("mypkg.cjs.Class", "mypkg.node.Class")
+			.and(aspect).indexPageRefersTo("mypkg.cjs.Class")
+			.and(blade).classRefersTo("mypkg.cjs.Class",  "mypkg.node.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("novox.node.Class=function(){};var Class=require(\"novox/node/Class\");novox.cjs.Class=function(){};");
+		then(response).containsMinifiedClasses("mypkg.cjs.Class", "mypkg.node.Class");
+	}
+	
+	@Test
+	public void closureMinifierStillAddsPackageDefinitionsBlock() throws Exception
+	{
+		given(blade).hasPackageStyle("src/mypkg.cjs", NamespacedJsBundlerPlugin.JS_STYLE)
+    		.and(blade).hasClasses("mypkg.cjs.Class", "mypkg.node.Class")
+    		.and(aspect).indexPageRefersTo("mypkg.cjs.Class");
+		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
+		then(response).containsMinifiedClasses("mypkg.cjs.Class")
+			.and(response).containsText("window.mypkg={\"cjs\":{}};");
 	}
 	
 }

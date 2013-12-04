@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.conf.AppConf;
@@ -108,7 +108,6 @@ public class BundlerTokenFilterTest
 		StringBuffer buffer = processor.replaceTokens(appConf, request, response);
 
 		String includes = buffer.toString();
-		System.err.println(includes);
 
 		assertTrue(includes.contains("<link rel=\"stylesheet\" href=\"css/common_css.bundle\"/>"));
 		assertTrue(includes.contains("<link rel=\"stylesheet\" href=\"css/common_en_GB_css.bundle\"/>"));
@@ -214,7 +213,6 @@ public class BundlerTokenFilterTest
 		
 		Map<String, String> responseMap = makeRequest("http://localhost:"+PORT+"/main-aspect/index.html");
 		String content = responseMap.get("responseText");
-		System.err.println(content);
 		assertEquals("200", responseMap.get("responseCode"));
 		
 		assertTrue(content.contains("<link rel=\"stylesheet\" href=\"css/common_css.bundle\"/>"));

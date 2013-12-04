@@ -3,14 +3,17 @@ package org.bladerunnerjs.specutil.engine;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.AbstractAssetContainer;
+import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundlesource.js.NodeJsBundlerPlugin;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.utility.JsStyleUtility;
 
 
-public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> extends NodeBuilder<N>
+public abstract class AssetContainerBuilder<N extends AssetContainer> extends NodeBuilder<N>
 {
 	
-	private AbstractAssetContainer node;
+	private AssetContainer node;
 	
 	public AssetContainerBuilder(SpecTest specTest, N node)
 	{
@@ -18,8 +21,12 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		this.node = node;
 	}
 	
-	public BuilderChainer hasPackageStyle(String packageDir, String jsStyle) {
-		String path = packageDir.replaceAll("\\.", "/");
+	public BuilderChainer hasPackageStyle(String jsStyle) {
+		return hasPackageStyle("", jsStyle);
+	}
+	
+	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
+		String path = packagePath.replaceAll("\\.", "/");
 		JsStyleUtility.setJsStyle(node.file(path), jsStyle);
 		
 		return builderChainer;
@@ -46,21 +53,34 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals("caplin-js")) {
-			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to 'caplin-js'");
+		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
+			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerPlugin.JS_STYLE + "'");
 		}
 		
-		FileUtils.write(sourceFile, getCaplinJsClassBody(sourceClass, referencedClass));
+		FileUtils.write(sourceFile, getClassBody(sourceClass) + "var obj = new " + referencedClass + "();\n");
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer classDependsOn(String sourceClass, String dependencyClass) throws Exception {
+	public BuilderChainer classDependsOn(String dependentClass, String referencedClass) throws Exception {
+		File dependentSourceFile = getSourceFile(dependentClass);
+		String jsStyle = JsStyleUtility.getJsStyle(dependentSourceFile.getParentFile());
+		
+		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
+			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerPlugin.JS_STYLE + "'");
+		}
+		
+		FileUtils.write(dependentSourceFile, getCaplinJsClassBody(dependentClass, referencedClass));
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer classRequires(String sourceClass, String dependencyClass) throws Exception {
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals("node.js")) {
-			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has not been used, or has been set to 'node.js'");
+		if(!jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
+			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
 		FileUtils.write(sourceFile, getNodeJsClassBody(sourceClass, dependencyClass));
@@ -76,6 +96,33 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		return builderChainer;
 	}
 	
+	public BuilderChainer classRefersToThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
+	{
+		File sourceFile = getSourceFile(sourceClass);
+		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		
+		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
+			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to 'caplin-js'");
+		}
+		
+		FileUtils.write(sourceFile, "br.thirdparty('"+thirdpartyLib.getName()+"');", true);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer classRequiresThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
+	{
+		File sourceFile = getSourceFile(sourceClass);
+		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		
+		if(!jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
+			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
+		}
+		
+		FileUtils.write(sourceFile, "require('"+thirdpartyLib.getName()+"');", true);
+		
+		return builderChainer;
+	}
 
 	private File getSourceFile(String sourceClass) {
 		return node.src().file(sourceClass.replaceAll("\\.", "/") + ".js");
@@ -92,10 +139,10 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		String classBody;
 		
-		if(jsStyle.equals("node.js")) {
+		if(jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
 			classBody = className + " = function() {\n};\n";
 		}
-		else if(jsStyle.equals("caplin-js")) {
+		else if(jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
 			classBody = className + " = function() {\n};\n";
 		}
 		else {
@@ -108,6 +155,10 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 	private String getNodeJsClassBody(String sourceClass, String destClass) {
 		String classRef = sourceClass.substring(sourceClass.lastIndexOf('.') + 1);
 		String destClassRequirePath = destClass.replaceAll("\\.", "/").replaceAll("\\.js$", "");
+		if (destClass.startsWith("./"))
+		{
+			destClassRequirePath = destClassRequirePath.replaceFirst("^//", "./");
+		}
 		
 		return "var " + classRef + " = require('" + destClassRequirePath + "');\n" + getClassBody(sourceClass);
 	}
@@ -115,4 +166,5 @@ public abstract class AssetContainerBuilder<N extends AbstractAssetContainer> ex
 	private String getCaplinJsClassBody(String sourceClass, String destClass) {
 		return getClassBody(sourceClass) + "br.extend(" + sourceClass + ", " + destClass + ");\n";
 	}
+	
 }

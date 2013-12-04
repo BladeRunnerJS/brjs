@@ -12,12 +12,9 @@ import org.bladerunnerjs.model.engine.RootNode;
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
 	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
-	protected final AssetContainerLocations assetContainerLocations;
 	
 	public AbstractAssetContainer(RootNode rootNode, File dir) {
 		init(rootNode, rootNode, dir);
-		
-		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
 	}
 	
 	public SourceAssetLocation src() {
@@ -41,10 +38,15 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public List<SourceFile> sourceFiles() {
-		List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
+	public String requirePrefix() {
+		return "/" + namespace().replaceAll("\\.", "/");
+	}
+	
+	@Override
+	public List<SourceModule> sourceFiles() {
+		List<SourceModule> sourceFiles = new ArrayList<SourceModule>();
 			
-		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
+		for(BundlerPlugin bundlerPlugin : (root()).plugins().bundlers()) {
 			for (AssetLocation assetLocation : getAllAssetLocations())
 			{
 				sourceFiles.addAll(bundlerPlugin.getSourceFiles(assetLocation));
@@ -55,8 +57,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public SourceFile sourceFile(String requirePath) {
-		for(SourceFile sourceFile : sourceFiles()) {
+	public SourceModule sourceFile(String requirePath) {
+		for(SourceModule sourceFile : sourceFiles()) {
 			if(sourceFile.getRequirePath().equals(requirePath)) {
 				return sourceFile;
 			}
@@ -70,8 +72,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		List<AssetLocation> assetLocations = new ArrayList<>();
 		
 		assetLocations.add(resources());
-//		assetLocations.add(src()); // TODO: talk to team about asset locations still not being quite right
-		assetLocations.addAll(src().getChildAssetLocations());
+		assetLocations.add(src());
+		assetLocations.addAll(src().getChildAssetLocations()); // TODO: should we just be adding the src(), rather than all it's children?
 		
 		return assetLocations;
 	}

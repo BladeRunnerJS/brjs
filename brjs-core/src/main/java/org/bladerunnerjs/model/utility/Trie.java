@@ -2,15 +2,16 @@ package org.bladerunnerjs.model.utility;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Predicate;
 
 public class Trie<T>
 {
-	private Predicate<Character> charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.'));
+	Set<Character> trieChars = new HashSet<Character>();
 	private TrieNode<T> root = new TrieNode<T>();
 	
 	
@@ -21,9 +22,12 @@ public class Trie<T>
 		}
 		
 		TrieNode<T> node = root;
-		
 		for( char character : key.toCharArray() )
 		{
+			if (node != root)
+			{
+				trieChars.add(character);				
+			}
 			node = node.getOrCreateNextNode( character );
 		}
 		
@@ -60,27 +64,23 @@ public class Trie<T>
 		List<T> matches = new LinkedList<T>();
 		
 		TrieMatcher matcher = new TrieMatcher();
+//		CharMatcher charMatcher = CharMatcher.anyOf( StringUtils.join(trieChars.toArray()) );	//TODO: use the CharMatcher that is calculated from the entries in the Trie
+		CharMatcher charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.')).or(CharMatcher.is('-')).or(CharMatcher.is('_')).or(CharMatcher.is('/'));
 		
 		int latestCharVal;
 		while ((latestCharVal = reader.read()) != -1)
 		{
 			char latestChar = (char) latestCharVal;
-			processChar( matches, latestChar, matcher);
+			processChar(charMatcher, matches, latestChar, matcher);
 		}
-		processChar( matches, '\n', matcher);
+		processChar(charMatcher, matches, '\n', matcher);
 		
 		return matches;	
 	}
 	
-	public void setCharMatcher(Predicate<Character> matcher)
-	{
-		charMatcher = matcher;
-	}
-	
-	private void processChar(List<T> matches, char nextChar, TrieMatcher matcher)
+	private void processChar(CharMatcher charMatcher, List<T> matches, char nextChar, TrieMatcher matcher)
 	{
 		TrieNode<T> nextNode = matcher.next(nextChar);
-		
 		if (nextNode == null)
 		{
 			T matcherValue = matcher.previousNode.getValue();
@@ -91,7 +91,7 @@ public class Trie<T>
 			matcher.reset();
 		}
 		
-		if (!CharMatcher.forPredicate(charMatcher).apply( matcher.currentNode.getNodeChar() ))
+		if ( !charMatcher.apply(matcher.currentNode.getNodeChar()) )
 		{
 			matcher.reset();
 		}

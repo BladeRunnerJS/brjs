@@ -120,7 +120,7 @@ public class CommandRunner {
 	
 	private void injectLegacyCommands(BRJS brjs) {
 		try {
-			CommandList commandList = brjs.commandList();
+			CommandList commandList = brjs.plugins().commandList();
 			commandList.addCommand(new DependencyAnalyserCommand(brjs));
 			commandList.addCommand(new CheckCommand());
 			commandList.addCommand(new CopyBladesetCommand( brjs.root().dir() ));
@@ -130,7 +130,7 @@ public class CommandRunner {
 			commandList.addCommand(new WarCommand(brjs));
 			commandList.addCommand(new PackageDepsCommand());
 			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
-			commandList.addCommand(new ExportApplicationCommand( brjs ));
+			commandList.addCommand(new ExportApplicationCommand(  ));
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

@@ -5,18 +5,19 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 
 import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.core.plugin.command.AbstractCommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.NameValidator;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.structure.NamespaceCalculator;
 
-public class ImportApplicationCommand implements LegacyCommandPlugin
+public class ImportApplicationCommand extends AbstractCommandPlugin implements LegacyCommandPlugin
 {
 	private final File sdkBaseDir;
 	private final int jettyPort;
@@ -137,4 +138,5 @@ public class ImportApplicationCommand implements LegacyCommandPlugin
 														+ "  " + NameValidator.getReservedNamespaces(), this);
 		}
 	}
+	
 }

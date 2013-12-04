@@ -2,16 +2,15 @@ package org.bladerunnerjs.core.plugin.bundler;
 
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
-import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
-import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.LinkedAssetFile;
-import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.LinkedAsset;
+import org.bladerunnerjs.model.SourceModule;
 
 
-public interface BundlerPlugin extends TagHandlerPlugin, ContentPlugin {
-	List<SourceFile> getSourceFiles(AssetLocation assetLocation);
-	List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation);
-	List<AssetFile> getResourceFiles(AssetLocation assetLocation);
+public interface BundlerPlugin extends ContentPlugin {
+	List<SourceModule> getSourceFiles(AssetLocation assetLocation);
+	List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation);
+	List<Asset> getResourceFiles(AssetLocation assetLocation);
 }

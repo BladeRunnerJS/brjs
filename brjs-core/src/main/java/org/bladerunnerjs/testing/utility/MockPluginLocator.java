@@ -1,15 +1,19 @@
 package org.bladerunnerjs.testing.utility;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.core.plugin.PluginLocator;
 import org.bladerunnerjs.core.plugin.PluginLocatorUtils;
+import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
+import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
 import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 
@@ -24,12 +28,12 @@ public class MockPluginLocator implements PluginLocator
 	public List<TagHandlerPlugin> tagHandlers = new ArrayList<TagHandlerPlugin>();
 	
 	public void createPlugins(BRJS brjs) {
-		PluginLocatorUtils.setBRJSForPlugins(brjs, bundlers);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, pluginCommands);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, modelObservers);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, minifiers);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, contentPlugins);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, tagHandlers);
+		setBRJSForPlugins(brjs, bundlers);
+		setBRJSForPlugins(brjs, pluginCommands);
+		setBRJSForPlugins(brjs, modelObservers);
+		setBRJSForPlugins(brjs, minifiers);
+		setBRJSForPlugins(brjs, contentPlugins);
+		setBRJSForPlugins(brjs, tagHandlers);
 	}
 	
 	@Override
@@ -45,13 +49,13 @@ public class MockPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<ModelObserverPlugin> getModelObservers()
+	public List<ModelObserverPlugin> getModelObserverPlugins()
 	{
 		return modelObservers;
 	}
 	
 	@Override
-	public List<MinifierPlugin> getMinifiers() {
+	public List<MinifierPlugin> getMinifierPlugins() {
 		return minifiers;
 	}
 	
@@ -61,7 +65,22 @@ public class MockPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<TagHandlerPlugin> getTagHandlers() {
+	public List<TagHandlerPlugin> getTagHandlerPlugins() {
 		return tagHandlers;
 	}
+	
+	
+	public static List<? extends Plugin> setBRJSForPlugins(BRJS brjs, List<? extends Plugin> plugins)
+	{
+		for (Plugin p : plugins)
+		{
+			if ( !(p instanceof VirtualProxyPlugin) ) 
+			{ 
+				fail("plugin class " + p.getClass() + " wasn't wrapped in a VirtualProxy plugin");
+			}
+		}
+		PluginLocatorUtils.setBRJSForPlugins(brjs, plugins);
+		return plugins;
+	}
+	
 }

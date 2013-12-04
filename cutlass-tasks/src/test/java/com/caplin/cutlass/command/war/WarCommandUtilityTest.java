@@ -29,7 +29,7 @@ import com.caplin.cutlass.testing.BRJSTestFactory;
 
 import org.bladerunnerjs.model.sinbin.AppMetaData;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.css.CssBundler;
 import com.caplin.cutlass.bundler.html.HtmlBundler;

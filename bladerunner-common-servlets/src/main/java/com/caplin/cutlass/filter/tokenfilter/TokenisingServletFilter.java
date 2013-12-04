@@ -18,9 +18,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.appserver.CharResponseWrapper;
+
 import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.ServletModelAccessor;
-import com.caplin.cutlass.filter.CharResponseWrapper;
 
 public class TokenisingServletFilter implements Filter
 {

@@ -2,25 +2,25 @@ package org.bladerunnerjs.model.utility;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.LinkedAssetFile;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.aliasing.AliasException;
-import org.bladerunnerjs.model.aliasing.AliasName;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
 
 public class BundleSetBuilder {
-	Set<LinkedAssetFile> seedFiles = new HashSet<>();
-	Set<SourceFile> sourceFiles = new HashSet<>();
+	Set<LinkedAsset> seedFiles = new HashSet<>();
+	Set<SourceModule> sourceFiles = new LinkedHashSet<>();
 	Set<AliasDefinition> activeAliases = new HashSet<>();
 	Set<AssetLocation> resources = new HashSet<>();
 	private BundlableNode bundlableNode;
@@ -49,12 +49,12 @@ public class BundleSetBuilder {
 		return new BundleSet(bundlableNode, orderSourceFiles(sourceFiles), activeAliasList, resourcesList);
 	}
 	
-	public void addSeedFile(LinkedAssetFile seedFile) throws ModelOperationException {
+	public void addSeedFile(LinkedAsset seedFile) throws ModelOperationException {
 		seedFiles.add(seedFile);
 		activeAliases.addAll(getAliases(seedFile.getAliasNames()));
 	}
 	
-	public boolean addSourceFile(SourceFile sourceFile) throws ModelOperationException {
+	public boolean addSourceFile(SourceModule sourceFile) throws ModelOperationException {
 		boolean isNewSourceFile = false;
 		
 		if(sourceFiles.add(sourceFile)) {
@@ -66,11 +66,11 @@ public class BundleSetBuilder {
 		return isNewSourceFile;
 	}
 	
-	private List<AliasDefinition> getAliases(List<AliasName> aliasNames) throws ModelOperationException {
+	private List<AliasDefinition> getAliases(List<String> aliasNames) throws ModelOperationException {
 		List<AliasDefinition> aliases = new ArrayList<>();
 		
 		try {
-			for(AliasName aliasName : aliasNames) {
+			for(String aliasName : aliasNames) {
 				aliases.add(bundlableNode.getAlias(aliasName));
 			}
 		}
@@ -81,14 +81,17 @@ public class BundleSetBuilder {
 		return aliases;
 	}
 
-	private List<SourceFile> orderSourceFiles(Set<SourceFile> sourceFiles) throws ModelOperationException {
-		List<SourceFile> sourceFileList = new ArrayList<>();
-		Set<LinkedAssetFile> metDependencies = new HashSet<>();
+	private List<SourceModule> orderSourceFiles(Set<SourceModule> sourceFiles) throws ModelOperationException {
+		List<SourceModule> sourceFileList = new ArrayList<>();
+		Set<LinkedAsset> metDependencies = new HashSet<>();
+		
+		
+		int maxIterations = sourceFiles.size() * sourceFiles.size();
+		int iterationCount = 0;
 		
 		while(!sourceFiles.isEmpty()) {
-			Set<SourceFile> unprocessedSourceFiles = new HashSet<>();
-			
-			for(SourceFile sourceFile : sourceFiles) {
+			Set<SourceModule> unprocessedSourceFiles = new HashSet<>();
+			for(SourceModule sourceFile : sourceFiles) {
 				if(dependenciesHaveBeenMet(sourceFile, metDependencies)) {
 					sourceFileList.add(sourceFile);
 					metDependencies.add(sourceFile);
@@ -98,19 +101,36 @@ public class BundleSetBuilder {
 				}
 			}
 			
+			if (iterationCount++ > maxIterations)
+			{
+				throw new ModelOperationException("Error satisfying source file dependencies. unprocessedSourceFiles = "+stringifySourceFiles(unprocessedSourceFiles));
+			}
+			
 			sourceFiles = unprocessedSourceFiles;
 		}
 		
 		return sourceFileList;
 	}
 	
-	private boolean dependenciesHaveBeenMet(LinkedAssetFile sourceFile, Set<LinkedAssetFile> metDependencies) throws ModelOperationException {
-		for(LinkedAssetFile dependentSourceFile : sourceFile.getDependentSourceFiles()) {
-			if(!metDependencies.contains(dependentSourceFile)) {
+	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
+		for(LinkedAsset dependentSourceModule : sourceModule.getOrderDependentSourceModules(bundlableNode)) {
+			if(!metDependencies.contains(dependentSourceModule)) {
 				return false;
 			}
 		}
 		
 		return true;
+	}
+	
+	private String stringifySourceFiles(Set<SourceModule> sourceFiles)
+	{
+		StringBuilder builder = new StringBuilder();
+		for (SourceModule sourceFile : sourceFiles)
+		{
+			builder.append(sourceFile.getRequirePath()+", ");
+		}
+		builder.setLength(builder.length()-2);
+		return builder.toString();
+		
 	}
 }

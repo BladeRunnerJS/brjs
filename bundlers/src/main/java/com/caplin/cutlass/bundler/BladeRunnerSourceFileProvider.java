@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.App;
 
 import com.caplin.cutlass.BRJSAccessor;
@@ -165,8 +165,8 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 		
 		Path sdkLibPath = BRJSAccessor.root.sdkLib().src().dir().toPath();
 
-		for(JsLib jsLib: app.jsLibs()){
-
+		for(JsLib jsLib: app.jsLibs())
+		{
 			AssetLocation libSrcRoot = jsLib.src();
 			AssetLocation libResourcesRoot = jsLib.resources();
 			
@@ -276,7 +276,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	
 	private void getLibraryResourceDirs(File resourceDir, File sourceDir, List<File> resourceDirs)
 	{
-		for(File resourceSubDir : FileUtility.getSortedListOfSubFolders(resourceDir))
+		for(File resourceSubDir : FileUtility.listDirs(resourceDir))
 		{
 			File sourceSubDir = new File(sourceDir, resourceSubDir.getName());
 			

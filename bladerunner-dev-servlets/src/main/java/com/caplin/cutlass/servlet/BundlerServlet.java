@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class BundlerServlet extends HttpServlet
 {
 	private static final long serialVersionUID = -3359840788356811425L;
 	
-	protected List<LegacyFileBundlerPlugin> bundlers = null;
+	protected List<LegacyFileBundlerPlugin> bundlers = new ArrayList<>();
 	
 	private BRJS brjs;
 	private App app;
@@ -52,8 +53,8 @@ public class BundlerServlet extends HttpServlet
 	
 	public BundlerServlet() throws Exception
 	{
-		bundlers = Arrays.asList(new JsBundler(), new XmlBundler(), new HtmlBundler(),
-			new I18nBundler(), new CssBundler(), new ImageBundler(), new ThirdPartyBundler());
+		bundlers.addAll(Arrays.asList(new JsBundler(), new XmlBundler(), new HtmlBundler(),
+			new I18nBundler(), new CssBundler(), new ImageBundler(), new ThirdPartyBundler()));
 	}
 
 	protected BundlerServlet(List<LegacyFileBundlerPlugin> bundlers)

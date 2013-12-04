@@ -9,39 +9,38 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.model.utility.FileUtility;
 
 
 public class AssetLocationUtility
 {
 	
-	private final Map<String, AssetFile> assetFiles = new HashMap<>();
+	private final Map<String, Asset> assetFiles = new HashMap<>();
 	
-	<AF extends AssetFile> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... fileNames)
+	<AF extends Asset> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... fileNames)
 	{
 		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
 		
-		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtils.listFiles(dir, new NameFileFilter(fileNames), FalseFileFilter.INSTANCE) );
+		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new NameFileFilter(fileNames)) );
 	}
 	
-	<AF extends AssetFile> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, String... extensions)
+	<AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... extensions)
 	{
 		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
 		
-		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtils.listFiles(dir, new SuffixFileFilter(extensions), FalseFileFilter.INSTANCE) );
+		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new SuffixFileFilter(extensions)) );
 	}
 	
 	
 	
 	
 	@SuppressWarnings("unchecked")
-	private <AF extends AssetFile> List<AF> createAssetFileListFromFiles(AssetLocation assetLocation, Class<? extends AssetFile> assetFileType, Collection<File> files)
+	private <AF extends Asset> List<AF> createAssetFileListFromFiles(AssetLocation assetLocation, Class<? extends Asset> assetFileType, Collection<File> files)
 	{
 		List<AF> assetFiles = new LinkedList<AF>();		
 		
@@ -60,9 +59,9 @@ public class AssetLocationUtility
 		return assetFiles;
 	}
 	
-	public <AF extends AssetFile> AssetFile getAssetFile(Class<? extends AssetFile> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException {
+	public <AF extends Asset> Asset getAssetFile(Class<? extends Asset> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException {
 		String absolutePath = file.getAbsolutePath();
-		AssetFile assetFile;
+		Asset assetFile;
 		
 		if(assetFiles.containsKey(absolutePath)) {
 			assetFile = assetFiles.get(absolutePath);
@@ -76,14 +75,14 @@ public class AssetLocationUtility
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <AF extends AssetFile> AF createAssetFileObjectForFile(Class<? extends AssetFile> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException
+	private <AF extends Asset> AF createAssetFileObjectForFile(Class<? extends Asset> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException
 	{
 		try
 		{
 			//TODO: discuss whether we *really* want to use a non-default constructor or an interface method gives a better dev experience
 			//		if we use this constructor delete the setters on AssetFile interface
 //			Constructor<? extends AssetFile> ctor = assetFileType.getConstructor(AssetContainer.class, File.class);
-			Constructor<? extends AssetFile> ctor = assetFileType.getConstructor();
+			Constructor<? extends Asset> ctor = assetFileType.getConstructor();
 			
 			AF assetFile = (AF) ctor.newInstance();
 			

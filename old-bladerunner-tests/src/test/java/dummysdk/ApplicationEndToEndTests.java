@@ -7,6 +7,7 @@ import java.io.File;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
@@ -15,7 +16,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.appserver.AppDeploymentObserver;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 import org.bladerunnerjs.testing.utility.WebappTester;
 
@@ -58,7 +59,7 @@ public class ApplicationEndToEndTests
 		appServer = brjs.applicationServer(HTTP_PORT);
 		appServer.start();
 		ServletModelAccessor.reset();
-		tester = new WebappTester(tempSdkInstall, 10000, 10000);
+		tester = new WebappTester(tempSdkInstall);
 	}
 	
 	@After
@@ -155,12 +156,9 @@ public class ApplicationEndToEndTests
 			.responseDoesntContain("section");
 	}
 	
-	@Test
+	@Test @Ignore // this test is duplicated in BRJSApplicationServerTest and is unreliable when run with other tests (it passes individually)
 	public void testNewContextsCanBeAddedAfterServerHasStarted() throws Exception
-	{		
-		tester.whenRequestMadeTo(APP1_URL)
-		.statusCodeIs(200);
-
+	{
 		tester.whenRequestMadeTo(BASE_URL+"/newly-created-app")
 		.statusCodeIs(404);
 		

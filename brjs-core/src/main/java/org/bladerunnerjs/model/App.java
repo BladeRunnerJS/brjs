@@ -3,11 +3,13 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
@@ -22,7 +24,6 @@ import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.utility.LogicalRequestHandler;
 import org.bladerunnerjs.model.utility.NameValidator;
 
@@ -34,6 +35,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
+	private final NodeMap<JsLib> nonBladeRunnerLibs = JsLib.createAppNonBladeRunnerLibNodeSet();
 	private final NodeMap<Bladeset> bladesets = Bladeset.createNodeSet();
 	private final NodeMap<Aspect> aspects = Aspect.createNodeSet();
 	private final NodeMap<JsLib> jsLibs = JsLib.createAppNodeSet();
@@ -76,10 +78,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public List<AssetContainer> getNonAspectAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		for(JsLib jsLib : jsLibs()) {
-			assetContainers.add(jsLib);
-		}
-		
 		for(Bladeset bladeset : bladesets()) {
 			assetContainers.add(bladeset);
 			
@@ -87,6 +85,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 				assetContainers.add(blade);
 			}
 		}
+		
+		assetContainers.addAll( jsLibs() );
 		
 		return assetContainers;
 	}
@@ -123,7 +123,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public BRJS parent()
 	{
-		return (BRJS) parent;
+		return (BRJS) parentNode();
 	}
 	
 	public AppConf appConf() throws ConfigException {
@@ -156,7 +156,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<JsLib> jsLibs()
 	{
-		return children(jsLibs);
+		List<JsLib> appJsLibs = new ArrayList<JsLib>();
+		appJsLibs.addAll( children(jsLibs) );
+		appJsLibs.add( new JsLibAppWrapper(this, root().sdkLib()) );
+		appJsLibs.addAll( nonBladeRunnerLibs() );
+		return appJsLibs;
 	}
 	
 	public JsLib jsLib(String jsLibName)
@@ -195,7 +199,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		try {
 			if(!root().appJars().dirExists()) throw new IllegalStateException(
 				"The directory containing the app jars, located at '" + root().appJars().dir().getPath() + "', is not present");
-			FileUtility.copyDirectoryContents(root().appJars().dir(), file("WEB-INF/lib"));
+			FileUtils.copyDirectory(root().appJars().dir(), file("WEB-INF/lib"));
 			notifyObservers(new AppDeployedEvent(), this);
 			logger.info(Messages.APP_DEPLOYED_LOG_MSG, getName(), dir().getPath());
 		}
@@ -221,4 +225,33 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void handleLogicalRequest(BladerunnerUri requestUri, java.io.OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
 		requestHandler.handle(requestUri, os);
 	}
+
+	public List<JsLib> nonBladeRunnerLibs()
+	{
+		Map<String, JsLib> libs = new HashMap<String,JsLib>();
+		
+		for (JsLib lib : root().sdkNonBladeRunnerLibs())
+		{
+			libs.put(lib.getName(), new JsLibAppWrapper(this, lib) );			
+		}
+		for (JsLib lib : children(nonBladeRunnerLibs))
+		{
+			libs.put(lib.getName(), lib );			
+		}
+		
+		return new ArrayList<JsLib>( libs.values() );
+	}
+	
+	public JsLib nonBladeRunnerLib(String libName)
+	{
+		JsLib appLib = child(nonBladeRunnerLibs, libName);
+		JsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
+		
+		if (!appLib.dirExists() && sdkLib.dirExists())
+		{
+			return new JsLibAppWrapper(this, sdkLib);
+		}
+		return appLib;
+	}
+	
 }

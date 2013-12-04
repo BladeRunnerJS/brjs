@@ -6,6 +6,7 @@ import static org.bladerunnerjs.model.App.Messages.APP_DEPLOYMENT_FAILED_LOG_MSG
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
@@ -17,7 +18,14 @@ import org.junit.Test;
 
 
 public class AppTest extends SpecTest {
+	
+	private JsLib sdkLib;
+	private JsLib globalNonBladeRunnerLib;
+	private JsLib appNonBladeRunnerLib;
+	private JsLib globalOverriddenNonBRLib;
+	private JsLib appOverriddenNonBRLib;
 	private App app;
+	private JsLib appLib;
 	private NamedDirNode appTemplate;
 	private DirNode appJars;
 	private Aspect aspect;
@@ -26,10 +34,16 @@ public class AppTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
+			sdkLib = brjs.sdkLib();
 			app = brjs.app("app1");
+			appLib = app.jsLib("lib1");
 			appTemplate = brjs.template("app");
 			appJars = brjs.appJars();
 			aspect = app.aspect("default");
+			globalNonBladeRunnerLib = brjs.sdkNonBladeRunnerLib("legacy-thirdparty");
+			appNonBladeRunnerLib = app.nonBladeRunnerLib("app-legacy-thirdparty");
+			globalOverriddenNonBRLib = brjs.sdkNonBladeRunnerLib("overridden-lib");
+			appOverriddenNonBRLib = app.nonBladeRunnerLib("overridden-lib");
 	}
 	
 	// TODO: does this add anything over the baselining test?
@@ -133,4 +147,59 @@ public class AppTest extends SpecTest {
 		then(logging).errorMessageReceived(APP_DEPLOYMENT_FAILED_LOG_MSG, app.getName(), app.dir().getPath())
 			.and(exceptions).verifyException(IllegalStateException.class, appJars.dir().getPath());
 	}
+	
+	@Test
+	public void globalLibsAreWrappedSoTheCorrectAppIsReturned() throws Exception {
+		given(app).hasBeenCreated()
+			.and(appLib).hasBeenCreated()
+			.and(sdkLib).hasBeenCreated();
+		given(app).hasLibs(appLib, sdkLib);
+		then(app).libsReturnCorrectApp();
+	}
+	
+	@Test
+	public void nonBladerunnerLibsAreWrappedSoTheCorrectAppIsReturned() throws Exception {
+		given(app).hasBeenCreated()
+			.and(appLib).hasBeenCreated()
+			.and(globalNonBladeRunnerLib).hasBeenCreated()
+			.and(appNonBladeRunnerLib).hasBeenCreated();
+		given(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
+		then(app).libsReturnCorrectApp();
+	}
+	
+	@Test
+	public void appLibsContainBothAppLibsAndSdkLibs() throws Exception {
+		given(app).hasBeenCreated()
+			.and(appLib).hasBeenCreated()
+			.and(sdkLib).hasBeenCreated();
+		then(app).hasLibs(appLib, sdkLib);
+	}
+	
+	@Test
+	public void appLibsContainBothAppLibsAndNonBladerunnerLibs() throws Exception {
+		given(app).hasBeenCreated()
+    		.and(appLib).hasBeenCreated()
+    		.and(globalNonBladeRunnerLib).hasBeenCreated()
+    		.and(appNonBladeRunnerLib).hasBeenCreated();
+		then(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
+	}
+	
+	@Test
+	public void overriddenLibsDontAppearTwiceInLibsList() throws Exception {
+		given(app).hasBeenCreated()
+    		.and(appLib).hasBeenCreated()
+    		.and(globalOverriddenNonBRLib).hasBeenCreated()
+    		.and(appOverriddenNonBRLib).hasBeenCreated();
+		then(app).hasLibs(appLib, sdkLib, appOverriddenNonBRLib);
+	}
+	
+	@Test
+	public void appNonBRLibsCanOverrideGlobalLibs() throws Exception {
+		given(app).hasBeenCreated()
+    		.and(appLib).hasBeenCreated()
+    		.and(globalOverriddenNonBRLib).hasBeenCreated()
+    		.and(appOverriddenNonBRLib).hasBeenCreated();
+		then(app).libWithNameIs("overridden-lib", appOverriddenNonBRLib);
+	}	
+	
 }

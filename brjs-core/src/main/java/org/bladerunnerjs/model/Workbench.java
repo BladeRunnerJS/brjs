@@ -37,16 +37,16 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 		
 	public Blade parent()
 	{
-		return (Blade) parent;
+		return (Blade) parentNode();
 	}
 		
 	@Override
-	public List<LinkedAssetFile> getSeedFiles() {
-		List<LinkedAssetFile> assetFiles = new ArrayList<LinkedAssetFile>();
+	public List<LinkedAsset> getSeedFiles() {
+		List<LinkedAsset> assetFiles = new ArrayList<LinkedAsset>();
 		
-		for (LinkedAssetFile assetFile : thisAssetLocation.seedResources())
+		for (LinkedAsset assetFile : thisAssetLocation.seedResources())
 		{
-			if ( seedFilenames.contains( assetFile.getUnderlyingFile().getName() ) )
+			if ( seedFilenames.contains( assetFile.getAssetName() ) )
 			{
 				assetFiles.add(assetFile);
 			}
@@ -61,9 +61,9 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 	}
 	
 	@Override
-	public String getRequirePrefix() {
+	public String namespace() {
 		App app = parent().parent().parent();
-		return "/" + app.getNamespace();
+		return app.getNamespace();
 	}
 	
 	@Override

@@ -15,6 +15,7 @@ import javax.naming.InvalidNameException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.AbstractAssetContainer;
 import org.bladerunnerjs.model.App;
@@ -26,7 +27,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.WebXmlCompiler;
 import org.xml.sax.SAXException;
 
@@ -43,7 +44,7 @@ import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class WarCommand implements LegacyCommandPlugin
+public class WarCommand extends AbstractPlugin implements LegacyCommandPlugin
 {
 	private final JSAP argsParser = new JSAP();
 	private ConsoleWriter out;

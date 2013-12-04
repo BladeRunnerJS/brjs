@@ -8,28 +8,26 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
+import org.bladerunnerjs.core.plugin.bundler.AbstractBundlerPlugin;
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.core.plugin.minifier.InputSource;
 import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.bundler.js.MinifierSetting;
-import org.bladerunnerjs.model.AssetFile;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.LinkedAssetFile;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
-import org.bladerunnerjs.model.SourceFile;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.utility.RequestParserBuilder;
 
 
-
-public class CompositeJsBundlerPlugin implements BundlerPlugin {
+public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin {
 	private ContentPathParser requestParser = (new RequestParserBuilder()).build();
 	private BRJS brjs;
 	
@@ -50,18 +48,8 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public String getTagName() {
+	public String getRequestPrefix() {
 		return "js";
-	}
-	
-	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		writeTagContent(tagAttributes, true, bundleSet, locale, writer);
-	}
-	
-	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		writeTagContent(tagAttributes, true, bundleSet, locale, writer);
 	}
 	
 	@Override
@@ -89,10 +77,11 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		if(request.formName.equals("dev-bundle-request") || request.formName.equals("prod-bundle-request")) {
 			try {
 				String minifierSetting = request.properties.get("minifier-setting");
-				MinifierPlugin minifierPlugin = brjs.minifierPlugin(minifierSetting);
+				MinifierPlugin minifierPlugin = brjs.plugins().minifier(minifierSetting);
 				
 				try(Writer writer = new OutputStreamWriter(os)) {
-					minifierPlugin.minify(minifierSetting, getInputSources(request, bundleSet), writer);
+					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(request, bundleSet);
+					minifierPlugin.minify(minifierSetting, inputSources, writer);
 				}
 			}
 			catch(IOException e) {
@@ -106,51 +95,28 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 	}
 	
 	@Override
-	public List<SourceFile> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}
 	
 	@Override
-	public List<LinkedAssetFile> getLinkedResourceFiles(AssetLocation assetLocation)
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}
 	
 	@Override
-	public List<AssetFile> getResourceFiles(AssetLocation assetLocation)
+	public List<Asset> getResourceFiles(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
-	}
-	
-	private void writeTagContent(Map<String, String> tagAttributes, boolean isDev, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		MinifierSetting minifierSettings = new MinifierSetting(tagAttributes);
-		String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
-		
-		if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-				if(bundlerPlugin != this) {
-					if(isDev) {
-						bundlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
-					}
-					else {
-						bundlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
-					}
-				}
-			}
-		}
-		else {
-			String bundleRequestForm = (isDev) ? "dev-bundle-request" : "prod-bundle-request";
-			
-			writer.write("<script type='text/javascript' src='" + requestParser.createRequest(bundleRequestForm, locale, minifierSetting) + "'></script>\n");
-		}
 	}
 	
 	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-			if(bundlerPlugin != this) {
+		for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
+			if( !bundlerPlugin.equals(this) ) {
 				if(isDev) {
 					requestPaths.addAll(bundlerPlugin.getValidDevRequestPaths(bundleSet, locale));
 				}
@@ -163,14 +129,14 @@ public class CompositeJsBundlerPlugin implements BundlerPlugin {
 		return requestPaths;
 	}
 	
-	private List<InputSource> getInputSources(ParsedContentPath request, BundleSet bundleSet) throws BundlerProcessingException {
+	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath request, BundleSet bundleSet) throws BundlerProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {
 			String charsetName = brjs.bladerunnerConf().getDefaultOutputEncoding();
 			
-			for(BundlerPlugin bundlerPlugin : brjs.bundlerPlugins("text/javascript")) {
-				if(bundlerPlugin != this) {
+			for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
+				if( !bundlerPlugin.equals(this) ) {
 					String locale = request.properties.get("locale");
 					List<String> requestPaths = (request.formName.equals("dev-bundle-request")) ? bundlerPlugin.getValidDevRequestPaths(bundleSet, locale) :
 						bundlerPlugin.getValidProdRequestPaths(bundleSet, locale);

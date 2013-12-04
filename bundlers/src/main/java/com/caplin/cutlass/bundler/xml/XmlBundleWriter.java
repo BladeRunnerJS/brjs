@@ -116,7 +116,7 @@ public class XmlBundleWriter
 	private Map<String, List<XmlSiblingReader>> getResourceReaders(final List<File> documents) throws XMLStreamException, BundlerFileProcessingException, IOException
 	{
 		Map<String, List<XmlSiblingReader>> resourceReaders = new HashMap<String, List<XmlSiblingReader>>();
-		System.setProperty("javax.xml.stream.XMLInputFactory", "com.sun.xml.internal.stream.XMLInputFactoryImpl");
+		System.setProperty("javax.xml.stream.XMLInputFactory", "com.sun.xml.stream.ZephyrParserFactory");
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		
 		for (File document : documents)

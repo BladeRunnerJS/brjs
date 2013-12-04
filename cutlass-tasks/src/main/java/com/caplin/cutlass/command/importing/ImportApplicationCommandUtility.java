@@ -10,7 +10,7 @@ import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 
 public class ImportApplicationCommandUtility

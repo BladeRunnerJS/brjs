@@ -10,8 +10,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.google.common.base.CharMatcher;
-
 
 public class TrieTest
 {
@@ -76,7 +74,7 @@ public class TrieTest
 				"and also test.object.2\n"+
 				"more stuff. 138t912109\n"+
 				"\n"+
-				"test.object 3 isnt here, its not spelt correctly\n"+
+				"test.object 3 isnt here, it's not spelt correctly\n"+
 				"and finally test.object.4");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
@@ -102,7 +100,7 @@ public class TrieTest
 	{
 		trie.add("test.object.1", test_object_1);
 		
-		StringReader reader = new StringReader("abcd test.object.123 1234");
+		StringReader reader = new StringReader("abcd test.object.111 1234");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(0, foundObjects.size());
@@ -120,17 +118,6 @@ public class TrieTest
 	}
 	
 	@Test
-	public void substringAtTheStartDoNotMatch() throws Exception
-	{
-		trie.add("test.object.1", test_object_1);
-		
-		StringReader reader = new StringReader("abcd test.object.123 1234");
-		
-		List<TestObject> foundObjects = trie.getMatches(reader);
-		assertEquals(0, foundObjects.size());
-	}
-	
-	@Test
 	public void matcherIsGreedy() throws Exception
 	{
 		trie.add("test.object.1", test_object_1);
@@ -141,26 +128,6 @@ public class TrieTest
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(1, foundObjects.size());
 		assertEquals(test_object_1_extraStuff, foundObjects.get(0));
-	}
-	
-	@Test
-	public void readerMatcherMustMatchCharMatcher() throws Exception
-	{
-		trie.setCharMatcher(CharMatcher.DIGIT);
-		trie.add("test.object.1", test_object_1);
-		
-		StringReader reader = new StringReader("test.object.1");
-		
-		List<TestObject> foundObjects = trie.getMatches(reader);
-		assertEquals(0, foundObjects.size());
-	}
-	
-	@Test
-	public void itemsCanBeAddedAndReturnedIfTheyDontMatchTheMatcher() throws Exception
-	{
-		trie.setCharMatcher(CharMatcher.DIGIT);
-		trie.add("1234", test_object_1);
-		assertEquals(test_object_1, trie.get("1234"));
 	}
 	
 	@Test

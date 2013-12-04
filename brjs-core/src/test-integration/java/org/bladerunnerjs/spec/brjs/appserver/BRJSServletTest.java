@@ -4,6 +4,7 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
+import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -111,15 +112,15 @@ public class BRJSServletTest extends SpecTest
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasPackageStyle("novox.cjs", "caplin-js")
-    		.and(blade).hasPackageStyle("novox.node", "node.js")
-    		.and(blade).hasClasses("novox.cjs.Class", "novox.node.Class")
-    		.and(aspect).indexPageRefersTo("novox.cjs.Class")
-    		.and(blade).classDependsOn("novox.cjs.Class",  "novox.node.Class")
+			.and(blade).hasPackageStyle("src/cjs", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(blade).hasPackageStyle("src/node", "node.js")
+			.and(blade).hasClasses("cjs.Class", "node.Class")
+			.and(aspect).indexPageRefersTo("cjs.Class")
+			.and(blade).classRefersTo("cjs.Class",  "node.Class")
     		.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).textEquals("novox.node.Class=function(){};var Class=require(\"novox/node/Class\");novox.cjs.Class=function(){};");
+		then(response).containsMinifiedClasses("cjs.Class", "node.Class");
 	}
 	
 }

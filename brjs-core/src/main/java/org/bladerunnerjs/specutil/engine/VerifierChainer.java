@@ -32,28 +32,28 @@ import org.bladerunnerjs.testing.utility.LogMessageStore;
 
 
 public class VerifierChainer {
-	private final SpecTest modelTest;
+	private final SpecTest specTest;
 	
-	public VerifierChainer(SpecTest modelTest) {
-		this.modelTest = modelTest;
+	public VerifierChainer(SpecTest specTest) {
+		this.specTest = specTest;
 	}
 	
 	public ExceptionsVerifier and(List<Throwable> exceptions) { return new ExceptionsVerifier(exceptions); }
-	public NodeObserverVerifier and(EventObserver observer) { return new NodeObserverVerifier(modelTest, observer); }
-	public NamedNodeVerifier and(NamedNode namedDirNode) { return new NamedNodeVerifier(modelTest, namedDirNode); }
-	public BRJSVerifier and(BRJS brjs) { return new BRJSVerifier(modelTest, brjs); }
-	public AppVerifier and(App app) { return new AppVerifier(modelTest, app); }
-	public AspectVerifier and(Aspect aspect) { return new AspectVerifier(modelTest, aspect); }
-	public BladeVerifier and(Blade blade) { return new BladeVerifier(modelTest, blade); }
-	public BladesetVerifier and(Bladeset bladeset) { return new BladesetVerifier(modelTest, bladeset); }
-	public WorkbenchVerifier and(Workbench workbench) { return new WorkbenchVerifier(modelTest, workbench); }
-	public JsLibVerifier and(JsLib jsLib) { return new JsLibVerifier(modelTest, jsLib); }
-	public DirNodeVerifier and(DirNode dirNode) { return new DirNodeVerifier(modelTest, dirNode); }
-	public NamedDirNodeVerifier and(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(modelTest, namedDirNode); }
-	public LoggerVerifier and(LogMessageStore logStore) { return new LoggerVerifier(modelTest, logStore); }
-	public ConsoleWriterVerifier and(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(modelTest, consoleMessageStore); }
-	public AppServerVerifier and(ApplicationServer appServer) { return new AppServerVerifier(modelTest, appServer); }
-	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(appConf); }
-	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(modelTest, dir); }
-	public StringVerifier and(StringBuffer stringBuffer) { return new StringVerifier(modelTest, stringBuffer); }
+	public NodeObserverVerifier and(EventObserver observer) { return new NodeObserverVerifier(specTest, observer); }
+	public NamedNodeVerifier and(NamedNode namedDirNode) { return new NamedNodeVerifier(specTest, namedDirNode); }
+	public BRJSVerifier and(BRJS brjs) { return new BRJSVerifier(specTest, brjs); }
+	public AppVerifier and(App app) { return new AppVerifier(specTest, app); }
+	public AspectVerifier and(Aspect aspect) { return new AspectVerifier(specTest, aspect); }
+	public BladeVerifier and(Blade blade) { return new BladeVerifier(specTest, blade); }
+	public BladesetVerifier and(Bladeset bladeset) { return new BladesetVerifier(specTest, bladeset); }
+	public WorkbenchVerifier and(Workbench workbench) { return new WorkbenchVerifier(specTest, workbench); }
+	public JsLibVerifier and(JsLib jsLib) { return new JsLibVerifier(specTest, jsLib); }
+	public DirNodeVerifier and(DirNode dirNode) { return new DirNodeVerifier(specTest, dirNode); }
+	public NamedDirNodeVerifier and(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(specTest, namedDirNode); }
+	public LoggerVerifier and(LogMessageStore logStore) { return new LoggerVerifier(specTest, logStore); }
+	public ConsoleWriterVerifier and(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(specTest, consoleMessageStore); }
+	public AppServerVerifier and(ApplicationServer appServer) { return new AppServerVerifier(specTest, appServer); }
+	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(specTest, appConf); }
+	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(specTest, dir); }
+	public StringVerifier and(StringBuffer stringBuffer) { return new StringVerifier(specTest, stringBuffer); }
 }

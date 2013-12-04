@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
 import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.exception.NamespaceException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.NamespaceCalculator;
 

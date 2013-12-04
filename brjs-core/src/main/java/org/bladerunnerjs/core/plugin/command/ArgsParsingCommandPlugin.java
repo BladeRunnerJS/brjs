@@ -14,7 +14,7 @@ import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 
-public abstract class ArgsParsingCommandPlugin implements CommandPlugin {
+public abstract class ArgsParsingCommandPlugin extends AbstractCommandPlugin implements CommandPlugin {
 	private final JSAP argsParser = new JSAP();
 	
 	protected abstract void configureArgsParser(JSAP argsParser) throws JSAPException;

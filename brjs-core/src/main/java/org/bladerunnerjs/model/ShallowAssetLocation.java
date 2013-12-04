@@ -2,20 +2,18 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocation {
 	protected AssetContainer assetContainer;
-	private final Map<String, ShallowAssetLocation> resources = new HashMap<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
@@ -26,23 +24,23 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	
 	@Override
 	public File dir() {
-		return dir;
+		return super.dir();
 	}
 	
 	@Override
 	public AliasDefinitionsFile aliasDefinitionsFile() {		
 		if(aliasDefinitionsFile == null) {
-			aliasDefinitionsFile = new AliasDefinitionsFile(dir(), "resources/aliasDefinitions.xml");
+			aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, dir(), "aliasDefinitions.xml");
 		}
 		
 		return aliasDefinitionsFile;
 	}
 		
 	@Override
-	public List<LinkedAssetFile> seedResources() {
-		List<LinkedAssetFile> seedResources = new LinkedList<LinkedAssetFile>();
+	public List<LinkedAsset> seedResources() {
+		List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
-		for(BundlerPlugin bundlerPlugin : root().bundlerPlugins()) {
+		for(BundlerPlugin bundlerPlugin : root().plugins().bundlers()) {
 			seedResources.addAll(bundlerPlugin.getLinkedResourceFiles(this));
 		}
 		
@@ -51,11 +49,11 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	
 	
 	@Override
-	public List<LinkedAssetFile> seedResources(String fileExtension) {
-		List<LinkedAssetFile> typedSeedResources = new ArrayList<>();
+	public List<LinkedAsset> seedResources(String fileExtension) {
+		List<LinkedAsset> typedSeedResources = new ArrayList<>();
 		
-		for(LinkedAssetFile seedResource : seedResources()) {
-			if(seedResource.getUnderlyingFile().getName().endsWith("." + fileExtension)) {
+		for(LinkedAsset seedResource : seedResources()) {
+			if(seedResource.getAssetName().endsWith("." + fileExtension)) {
 				typedSeedResources.add(seedResource);
 			}
 		}
@@ -64,10 +62,10 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	}
 	
 	@Override
-	public List<AssetFile> bundleResources(String fileExtension) {
-		List<AssetFile> bundleResources = new LinkedList<AssetFile>();
+	public List<Asset> bundleResources(String fileExtension) {
+		List<Asset> bundleResources = new LinkedList<Asset>();
 		
-		for(BundlerPlugin bundlerPlugin : root().bundlerPlugins()) {
+		for(BundlerPlugin bundlerPlugin : root().plugins().bundlers()) {
 			bundleResources.addAll(bundlerPlugin.getResourceFiles(this));
 		}
 		
@@ -81,37 +79,13 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	}
 
 	@Override
-	public List<AssetLocation> getAncestorAssetLocations()
+	public List<AssetLocation> getDependentAssetLocations()
 	{
-    	List<AssetLocation> resourcesList = new ArrayList<>();
-    	
-    	File srcDir = dir;
-    	
-    	while (srcDir != null)
-    	{
-    		resourcesList.add(createResource(srcDir));
-    		if (srcDir.equals(assetContainer.src().dir()))
-    		{
-    			break;
-    		}
-    		srcDir = srcDir.getParentFile();
-    	}
-    	
-    	return resourcesList;
+    	return new ArrayList<>();
 	}
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException {
 		// do nothing
-	}
-	
-	private AssetLocation createResource(File srcDir) {
-		String srcPath = srcDir.getAbsolutePath();
-		
-		if(!resources.containsKey(srcPath)) {
-			resources.put(srcPath, new ShallowAssetLocation(assetContainer.root(), assetContainer, srcDir));
-		}
-		
-		return resources.get(srcPath);
 	}
 }

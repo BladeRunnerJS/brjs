@@ -32,7 +32,7 @@ public class WorkbenchBuilder extends AssetContainerBuilder<Workbench>
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception 
 	{
-		FileUtils.write(workbench.aliasesFile(),
+		FileUtils.write(workbench.aliasesFile().getUnderlyingFile(),
 			"<aliases xmlns='http://schema.caplin.com/CaplinTrader/aliases'>" +
 			"	<alias name='" + aliasName + "' class='" + classRef + "'/>" +
 			"</aliases>");

@@ -4,7 +4,7 @@ import org.bladerunnerjs.core.plugin.command.core.HelpCommand;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.specutil.engine.SpecTest;
-import org.bladerunnerjs.testing.utility.MockCommand;
+import org.bladerunnerjs.testing.utility.MockCommandPlugin;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,14 +13,14 @@ import org.junit.Test;
 public class HelpCommandTest extends SpecTest
 {
 	HelpCommand helpCommand;
-	MockCommand command1;
-	MockCommand command2;
+	MockCommandPlugin command1;
+	MockCommandPlugin command2;
 	
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		command1 = new MockCommand("command1", "Command #1 description.", "command-usage", "Command #1 help.");
-		command2 = new MockCommand("command2", "Command #2 description.", "command-usage", "Command #2 help.");
+		command1 = new MockCommandPlugin("command1", "Command #1 description.", "command-usage", "Command #1 help.");
+		command2 = new MockCommandPlugin("command2", "Command #2 description.", "command-usage", "Command #2 help.");
 	}
 	
 	@Test

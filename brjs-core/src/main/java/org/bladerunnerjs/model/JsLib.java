@@ -1,13 +1,12 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -17,21 +16,19 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.utility.NameValidator;
 
-
-public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
+public class JsLib extends AbstractAssetContainer implements AssetContainer, NamedNode
 {
-	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
-	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
+	private final NodeItem<DeepAssetLocation> assetLocationNodeItem = new NodeItem<>(DeepAssetLocation.class, "");
 	private String name;
 	private JsLibConf libConf;
-	private final AssetContainerLocations assetContainerLocations;
+	private Node parent;
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
-		this.name = name;
+		super(rootNode, dir);
 		init(rootNode, parent, dir);
-		
-		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
+		this.name = name;
+		this.parent = parent;
 	}
 	
 	public JsLib(RootNode rootNode, Node parent, File dir)
@@ -48,15 +45,20 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	public static NodeMap<JsLib> createAppNodeSet()
 	{
 		NodeMap<JsLib> appNodeSet = new NodeMap<>(JsLib.class, "libs", null);
-		appNodeSet.addAdditionalNamedLocation("caplin", "../../sdk/libs/javascript/caplin");
 		
 		return appNodeSet;
 	}
 	
-	@Override
-	public App getApp() {
-		return (App) parent;
+	public static NodeMap<JsLib> createSdkNonBladeRunnerLibNodeSet()
+	{
+		return new NodeMap<>(JsLib.class, "sdk/libs/javascript/thirdparty", null);
 	}
+	
+	public static NodeMap<JsLib> createAppNonBladeRunnerLibNodeSet()
+	{
+		return new NodeMap<>(JsLib.class, "thirdparty-libraries", null);
+	}
+	
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
@@ -72,7 +74,11 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	@Override
 	public String getName()
 	{
-		return name;
+		if (name != null)
+		{
+			return name;			
+		}
+		return dir().getName();
 	}
 	
 	@Override
@@ -87,19 +93,25 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 		NameValidator.assertValidDirectoryName(this);
 	}
 	
-	public App parentApp()
+	@Override
+	public Node parentNode()
 	{
-		return (App) parent;
+		return parent;
 	}
 	
-	public SourceAssetLocation src()
+	@Override
+	public App getApp()
 	{
-		return item(src);
+		if (parent == root())
+		{
+			return root().systemApp("SDK");			
+		}
+		return super.getApp();
 	}
 	
-	public AssetLocation resources()
+	public AssetLocation getRootAssetLocation()
 	{
-		return item(resources);
+		return item(assetLocationNodeItem);
 	}
 	
 	public JsLibConf libConf() throws ConfigException
@@ -131,33 +143,28 @@ public class JsLib extends AbstractBRJSNode implements AssetContainer, NamedNode
 	}
 	
 	@Override
-	public String getRequirePrefix() {
-		return "/" + getName();
+	public String namespace() {
+		return getName();
+	}
+	
+
+	@Override
+	public String toString()
+	{
+		return super.toString()+" - "+getName();
 	}
 	
 	@Override
-	public List<SourceFile> sourceFiles() {
-		List<SourceFile> sourceFiles = new LinkedList<SourceFile>();
-			
-		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-			for (AssetLocation assetLocation : getAllAssetLocations())
-			{
-				sourceFiles.addAll(bundlerPlugin.getSourceFiles(assetLocation));
-			}
-		}
-		
-		return sourceFiles;
-	}
-	
-	
-	@Override
-	public SourceFile sourceFile(String requirePath) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getTemplateName()
+	{
+		return BRJSNodeHelper.getTemplateName(this);
 	}
 	
 	@Override
 	public List<AssetLocation> getAllAssetLocations() {
-		return assetContainerLocations.getAllAssetLocations();
+		List<AssetLocation> assetLocations = new ArrayList<>();
+		assetLocations.add(getRootAssetLocation());
+		assetLocations.addAll( super.getAllAssetLocations() );
+		return assetLocations;
 	}
 }

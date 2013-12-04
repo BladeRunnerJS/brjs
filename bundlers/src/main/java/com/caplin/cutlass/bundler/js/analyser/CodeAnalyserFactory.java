@@ -54,13 +54,10 @@ public class CodeAnalyserFactory
 		for(JsLib jsLibrary: appNode.jsLibs())
 		{
 			File libraryRoot = jsLibrary.src().dir();
-
-			if(!libraryRoot.exists())
+			if(libraryRoot.exists())
 			{
-				throw new BundlerProcessingException("Cant find: " + libraryRoot.getAbsolutePath() );
+				libraryRootDirs.addAll(Arrays.asList(libraryRoot));
 			}
-			
-			libraryRootDirs.addAll(Arrays.asList(libraryRoot));
 		}
 		
 		Set<ClassnameFileMapping> mappings = SourceFileLocator.getClassNameMappings(libraryRootDirs, SourceFileLocator.SOURCE_FILENAME_FILTER);

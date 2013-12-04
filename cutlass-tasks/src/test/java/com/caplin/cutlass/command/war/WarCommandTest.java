@@ -18,7 +18,7 @@ import com.caplin.cutlass.testing.BRJSTestFactory;
 
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.command.CommandTaskTest;
 
 public class WarCommandTest extends CommandTaskTest

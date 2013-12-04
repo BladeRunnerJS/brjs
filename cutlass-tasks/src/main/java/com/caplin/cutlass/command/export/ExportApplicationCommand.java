@@ -2,7 +2,6 @@ package com.caplin.cutlass.command.export;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AndFileFilter;
@@ -18,13 +17,12 @@ import org.bladerunnerjs.core.plugin.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.JsLib;
 
 import com.caplin.cutlass.BRJSAccessor;
-
-import org.bladerunnerjs.model.JsLib;
 
 import com.caplin.cutlass.structure.AppStructureVerifier;
 import com.martiansoftware.jsap.JSAP;
@@ -40,9 +38,8 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	private File sdkBaseDir;
 	private ConsoleWriter out;
 	
-	public ExportApplicationCommand(BRJS brjs)
+	public ExportApplicationCommand()
 	{
-		setBRJS(brjs);
 	}
 	
 	@Override
@@ -107,10 +104,9 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	}
 	
 	private IOFileFilter createExcludeUserLibsTestsFilter(String appName) {
-		List<JsLib> allJsLibs = BRJSAccessor.root.app(appName).jsLibs();
 		IOFileFilter excludeDirFilter = new ExcludeDirFileFilter("");
 		
-		for (JsLib jsLib : allJsLibs)
+		for (JsLib jsLib : BRJSAccessor.root.app(appName).jsLibs())
 		{
 			if (jsLib.parentNode() instanceof App)
 			{

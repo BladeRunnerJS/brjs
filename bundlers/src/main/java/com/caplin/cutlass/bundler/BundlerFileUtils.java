@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 

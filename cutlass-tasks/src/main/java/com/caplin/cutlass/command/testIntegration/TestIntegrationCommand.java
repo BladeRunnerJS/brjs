@@ -9,17 +9,18 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-
 import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
 import com.caplin.cutlass.testIntegration.WebDriverProvider;
 
-public class TestIntegrationCommand implements LegacyCommandPlugin 
+public class TestIntegrationCommand extends AbstractPlugin implements LegacyCommandPlugin 
 {
 	// TODO: get rid of the idea of alpha commands now that commands are plugins, and so can easily be kept separate from the product
 	private static final String ALPHA_PREFIX = "alpha-";

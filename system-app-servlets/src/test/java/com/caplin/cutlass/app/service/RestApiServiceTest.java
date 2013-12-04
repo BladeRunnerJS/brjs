@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.BRJS;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 
 
 public class RestApiServiceTest

@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public class TemplateUtilityTest
 	@Before
 	public void setUp() throws Exception
 	{
-		File tempDir = Files.createTempDirectory("TemplateUtilityTest").toFile();
+		File tempDir = FileUtility.createTemporaryDirectory("TemplateUtilityTest");
 		FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
 		brjs = BRJSTestFactory.createBRJS(tempDir);
 	}

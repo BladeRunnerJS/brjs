@@ -65,15 +65,16 @@ public class Blade extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public String getRequirePrefix() {
+	public String namespace() {
 		Bladeset bladeset = parent();
 		App app = bladeset.parent();
-		return "/" + app.getNamespace() + "/" + bladeset.getName() + "/" + getName();
+		// TODO: why not use bladeset.getNamespace()
+		return app.getNamespace() + "." + bladeset.getName() + "." + getName();
 	}
 	
 	public Bladeset parent()
 	{
-		return (Bladeset) parent;
+		return (Bladeset) parentNode();
 	}
 	
 	public Workbench workbench()

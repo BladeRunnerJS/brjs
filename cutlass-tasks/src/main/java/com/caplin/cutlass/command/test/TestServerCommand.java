@@ -1,12 +1,14 @@
 package com.caplin.cutlass.command.test;
 
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
 
-public class TestServerCommand implements LegacyCommandPlugin
+public class TestServerCommand extends AbstractPlugin implements LegacyCommandPlugin
 {
 	private TestRunnerController testRunner;
 	

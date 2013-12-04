@@ -53,10 +53,6 @@ public class BundlerFileTester
 		List<File> bundleFiles = bundler.getBundleFiles(bundleDir, bundleTestDir, bundleRequest);
 		removeTempBundleFileIfExists(bundleFiles);
 		
-		for (File f : bundleFiles )
-		{
-			System.err.println(f.getAbsolutePath());
-		}
 		assertArrayEquals("1a", addPathPrefix(pathPrefix, expectedFiles), convertToArray(bundleFiles));
 	}
 	

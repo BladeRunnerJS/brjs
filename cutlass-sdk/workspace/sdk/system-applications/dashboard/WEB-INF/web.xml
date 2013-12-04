@@ -52,4 +52,25 @@
 		<mime-type>application/x-font-woff</mime-type>
 	</mime-mapping>
 	
+	<servlet>
+		<servlet-name>BRJSServlet</servlet-name>
+		<servlet-class>org.bladerunnerjs.model.appserver.BRJSServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>BRJSServlet</servlet-name>
+		<url-pattern>/brjs/*</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<filter-name>BRJSFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.model.appserver.BRJSServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>BRJSFilter</filter-name> 
+		<url-pattern>/*</url-pattern> 
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	
 </web-app>

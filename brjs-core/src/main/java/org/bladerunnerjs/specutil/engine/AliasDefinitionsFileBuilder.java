@@ -1,16 +1,12 @@
 package org.bladerunnerjs.specutil.engine;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.aliasing.AliasDefinitionsFile;
+import org.bladerunnerjs.model.aliasing.AliasOverride;
+import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
 
 public class AliasDefinitionsFileBuilder {
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private BuilderChainer builderChainer;
-	private List<AliasDefinition> aliases = new ArrayList<>();
 	
 	public AliasDefinitionsFileBuilder(SpecTest specTest, AliasDefinitionsFile aliasDefinitionsFile) {
 		this.aliasDefinitionsFile = aliasDefinitionsFile;
@@ -18,26 +14,33 @@ public class AliasDefinitionsFileBuilder {
 	}
 	
 	public BuilderChainer exists() throws Exception {
-		writeAliasesFile();
+		aliasDefinitionsFile.write();
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasAlias(String aliasName, String classRef, String interfaceRef) throws Exception {
+		aliasDefinitionsFile.addAlias(new AliasDefinition(aliasName, classRef, interfaceRef));
+		aliasDefinitionsFile.write();
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasAlias(String aliasName, String classRef) throws Exception {
-		aliases.add(new AliasDefinition(aliasName, classRef, null));
-		writeAliasesFile();
+		return hasAlias(aliasName, classRef, null);
+	}
+	
+	public BuilderChainer hasScenarioAlias(String scenarioName, String aliasName, String classRef) throws Exception {
+		aliasDefinitionsFile.addScenarioAlias(scenarioName, new AliasOverride(aliasName, classRef));
+		aliasDefinitionsFile.write();
 		
 		return builderChainer;
 	}
 	
-	private void writeAliasesFile() throws Exception {
-		StringBuilder aliasDefinitionsFileContents = new StringBuilder("<aliasDefinitions xmlns='http://schema.caplin.com/CaplinTrader/aliasDefinitions'>\n");
+	public BuilderChainer hasGroupAlias(String groupName, String aliasName, String classRef) throws Exception {
+		aliasDefinitionsFile.addGroupAliasOverride(groupName, new AliasOverride(aliasName, classRef));
+		aliasDefinitionsFile.write();
 		
-		for(AliasDefinition aliasDefinition : aliases) {
-			aliasDefinitionsFileContents.append("\t<alias name='" + aliasDefinition.getName() + "' defaultClass='" + aliasDefinition.getClassName() + "'/>\n");
-		}
-		aliasDefinitionsFileContents.append("</aliasDefinitions>\n");
-		
-		FileUtils.write(aliasDefinitionsFile, aliasDefinitionsFileContents.toString());
+		return builderChainer;
 	}
 }

@@ -8,8 +8,8 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.core.plugin.AbstractPlugin;
 import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -41,7 +41,7 @@ public class CommandTaskTest
 		assertTrue(commandTask.getCommandDescription().toString().length() > 0);
 	}
 
-	private class DummyCommandTask implements LegacyCommandPlugin
+	private class DummyCommandTask extends AbstractPlugin implements LegacyCommandPlugin
 	{
 		public DummyCommandTask(File sdkBaseDir, String commandName)
 		{
