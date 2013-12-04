@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,8 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.utility.FileModifiedChecker;
+
+import com.Ostermiller.util.ConcatReader;
 
 public class NodeJsSourceModule implements SourceModule {
 	private File assetFile;
@@ -90,7 +93,11 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	@Override
 	public Reader getReader() throws FileNotFoundException {
-		return new BufferedReader( new FileReader(assetFile) );
+		return new ConcatReader(new Reader[] {
+			new StringReader("define('" + requirePath + "', function(require, exports, module) {\n"),
+			new BufferedReader(new FileReader(assetFile)),
+			new StringReader("});\n")
+		});
 	}
 	
 	@Override

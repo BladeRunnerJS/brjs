@@ -4,7 +4,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NodeJsBundlerPluginTest extends SpecTest {
@@ -51,8 +50,8 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).classRequires("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(app).requestReceived("/default-aspect/node-js/bundle.js", requestResponse);
-		then(requestResponse).containsText("// novox/Class2\n" + "novox.Class2 = function()")
-			.and(requestResponse).containsText("// novox/Class1\n" + "var Class1 = require");
+		then(requestResponse).containsText("// novox/Class2\n" + "define('novox/Class2', function(")
+			.and(requestResponse).containsText("// novox/Class1\n" + "define('novox/Class1', function(");
 	}
 	
 	@Test
@@ -65,7 +64,6 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 		then(requestResponse).isEmpty();
 	}
 	
-	@Ignore
 	@Test
 	public void classesAreAutomaticallyWrappedInAClosure() throws Exception {
 		given(aspect).hasClasses("novox.Class1")
@@ -73,9 +71,9 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/node-js/module/novox/Class1.js", requestResponse);
 		then(requestResponse).containsLines(
 			"define('novox/Class1', function(require, exports, module) {",
-			"Class1 = function() {",
+			"novox.Class1 = function() {", // TODO: remove 'novox.' from start of line
 			"};",
-			"module.exports = Class1;",
-			"};");
+//			"module.exports = Class1;",
+			"});");
 	}
 }
