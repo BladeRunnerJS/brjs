@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NodeJsBundlerPluginTest extends SpecTest {
@@ -62,5 +63,19 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(requestResponse).isEmpty();
+	}
+	
+	@Ignore
+	@Test
+	public void classesAreAutomaticallyWrappedInAClosure() throws Exception {
+		given(aspect).hasClasses("novox.Class1")
+			.and(aspect).indexPageRefersTo("novox.Class1");
+		when(app).requestReceived("/default-aspect/node-js/module/novox/Class1.js", requestResponse);
+		then(requestResponse).containsLines(
+			"define('novox/Class1', function(require, exports, module) {",
+			"Class1 = function() {",
+			"};",
+			"module.exports = Class1;",
+			"};");
 	}
 }
