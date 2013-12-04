@@ -55,12 +55,6 @@ public class CutlassConfig
 	public static final String TEST_INTEGRATION_CLASSES_DIRNAME = "classes";
 	
 	public static final String SERVLET_PATH_PREFIX = "/servlet/";
-
-	public static final String BLADERUNNER_DASHBOARD_PATH = "/dashboard/";
-
-	public static final String APP_404_MESSAGE = "The requested application was not found. If you have recently created or imported an app " +
-					" you may need to wait a few seconds for the app to be started.";
-	
 	
 	public static final String DEFAULT_INVALID_ARGUMENTS_FOR_TASK_MESSAGE = "Please provide valid arguments for this task.";
 	

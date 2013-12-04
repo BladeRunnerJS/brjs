@@ -9,12 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-
 
 public class RootContextHandler extends AbstractHandler
 {
-
+	private static final String APP_404_MESSAGE = "The requested application was not found. If you have recently created or imported an app " +
+		" you may need to wait a few seconds for the app to be started.";
+	private static final String BLADERUNNER_DASHBOARD_PATH = "/dashboard/";
+	
 	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
 	{
 		String redirectUrl = getRedirectUrl(target);
@@ -23,7 +24,7 @@ public class RootContextHandler extends AbstractHandler
 			response.sendRedirect(redirectUrl);			
 		} else {
 			/* \n allowed since the error is wrapped in a <pre> tag */
-			response.sendError(404, CutlassConfig.APP_404_MESSAGE);
+			response.sendError(404, APP_404_MESSAGE);
 		}
 	}
 
@@ -31,7 +32,7 @@ public class RootContextHandler extends AbstractHandler
 	{
 		if (url.equals("") || url.equals("/"))
 		{
-			return CutlassConfig.BLADERUNNER_DASHBOARD_PATH;
+			return BLADERUNNER_DASHBOARD_PATH;
 		}
 		return "";
 	}
