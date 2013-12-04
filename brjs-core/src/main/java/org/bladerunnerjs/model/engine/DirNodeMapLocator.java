@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FalseFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.utility.FileUtility;
 
 
@@ -28,9 +31,9 @@ public class DirNodeMapLocator implements NodeMapLocator
 		{
 			String dirNameMatcher = getDirNameMatcher(dirNameFilter);
 			
-			for(File file : FileUtility.listDirs(childDir))
+			for(File file : childDir.listFiles())
 			{
-				if((dirNameMatcher == null) || (file.getName().matches(dirNameMatcher)))
+				if( file.isDirectory() && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
 				{
 					String childName = file.getName();
 					
