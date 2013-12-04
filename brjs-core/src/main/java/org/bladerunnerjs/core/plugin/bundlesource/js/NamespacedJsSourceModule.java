@@ -40,11 +40,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		List<SourceModule> dependentSourceModules = assetFile.getDependentSourceModules(bundlableNode);
-		dependentSourceModules.removeAll(getOrderDependentSourceModules(bundlableNode));
-		dependentSourceModules.remove(this);
-		
-		return dependentSourceModules;
+		return assetFile.getDependentSourceModules(bundlableNode);
 	}
 	
 	@Override
