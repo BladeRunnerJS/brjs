@@ -16,13 +16,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.AppMetaData;
+import com.caplin.cutlass.CutlassConfig;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 public class ImageBundlerTest
 {

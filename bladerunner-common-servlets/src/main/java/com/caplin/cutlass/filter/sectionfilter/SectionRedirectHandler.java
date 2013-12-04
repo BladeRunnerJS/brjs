@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 
 public class SectionRedirectHandler
 {

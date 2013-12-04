@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model.sinbin;
+package com.caplin.cutlass;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,26 +55,11 @@ public class CutlassConfig
 	public static final String TEST_INTEGRATION_CLASSES_DIRNAME = "classes";
 	
 	public static final String SERVLET_PATH_PREFIX = "/servlet/";
-
-	public static final String BLADERUNNER_DASHBOARD_PATH = "/dashboard/";
-
-	public static final String APP_404_MESSAGE = "The requested application was not found. If you have recently created or imported an app " +
-					" you may need to wait a few seconds for the app to be started.";
-	
 	
 	public static final String DEFAULT_INVALID_ARGUMENTS_FOR_TASK_MESSAGE = "Please provide valid arguments for this task.";
 	
 	/* servlet context attribute for SectionRedirectFilter */
 	public static final String DEV_MODE_FLAG = "dev-mode";
-	
-	/* reserved namespaces */
-	public static final String[] RESERVED_NAMESPACES = new String[] { "caplin", "caplinx" };
-	public static final String[] RESERVED_JS_KEYWORDS = new String[] { "abstract", "as", "boolean", "break", "byte", "case", "catch", 
-		"char", "class", "continue", "const", "debugger", "default", "delete", "do", "double", "else", "enum", "export", "extends", 
-		"false", "final", "finally", "float", "for", "function", "goto", "if", "implements", "import", "in", "instanceof", "int", 
-		"interface", "is", "long", "namespace", "native", "new", "null", "package", "private", "protected", "public", "return", "short", 
-		"static", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "typeof", "use", "var", "void", 
-		"volatile", "while", "with" };
 	
 	/* bundler tokens */
 	public static final String CSS_BUNDLE_TOKEN = "css.bundle";

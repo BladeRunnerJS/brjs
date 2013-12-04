@@ -10,7 +10,7 @@ import com.caplin.cutlass.testing.BRJSTestFactory;
 
 import static org.junit.Assert.assertEquals;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 public class LibraryDepsTest
 {

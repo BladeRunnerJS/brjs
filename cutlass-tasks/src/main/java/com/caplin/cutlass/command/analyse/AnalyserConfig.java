@@ -3,7 +3,7 @@ package com.caplin.cutlass.command.analyse;
 import java.io.File;
 
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 
 import org.bladerunnerjs.model.AbstractAssetContainer;
 import org.bladerunnerjs.model.App;

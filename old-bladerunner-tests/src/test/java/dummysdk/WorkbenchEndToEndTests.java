@@ -10,7 +10,7 @@ import com.caplin.cutlass.testing.BRJSTestFactory;
 import com.caplin.cutlass.ServletModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 import org.bladerunnerjs.testing.utility.WebappTester;

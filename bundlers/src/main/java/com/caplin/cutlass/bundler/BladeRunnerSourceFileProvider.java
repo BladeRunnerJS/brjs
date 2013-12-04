@@ -13,10 +13,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.model.App;
 
 import com.caplin.cutlass.BRJSAccessor;
@@ -278,7 +276,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	
 	private void getLibraryResourceDirs(File resourceDir, File sourceDir, List<File> resourceDirs)
 	{
-		for(File resourceSubDir : FileUtils.listFilesAndDirs(resourceDir, FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE))
+		for(File resourceSubDir : FileUtility.listDirs(resourceDir))
 		{
 			File sourceSubDir = new File(sourceDir, resourceSubDir.getName());
 			

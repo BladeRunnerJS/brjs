@@ -21,7 +21,7 @@ import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.ServletModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 
 public class BundlerContentTypeFilter implements Filter
 {

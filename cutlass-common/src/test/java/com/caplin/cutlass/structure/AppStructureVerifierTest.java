@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 
 public class AppStructureVerifierTest 
 {

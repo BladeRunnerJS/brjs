@@ -7,11 +7,16 @@ import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppNamespaceException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
 public class NameValidator
 {
-	
+	private static final String[] RESERVED_NAMESPACES = new String[] { "caplin", "caplinx" };
+	private static final String[] RESERVED_JS_KEYWORDS = new String[] { "abstract", "as", "boolean", "break", "byte", "case", "catch", 
+		"char", "class", "continue", "const", "debugger", "default", "delete", "do", "double", "else", "enum", "export", "extends", 
+		"false", "final", "finally", "float", "for", "function", "goto", "if", "implements", "import", "in", "instanceof", "int", 
+		"interface", "is", "long", "namespace", "native", "new", "null", "package", "private", "protected", "public", "return", "short", 
+		"static", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "typeof", "use", "var", "void", 
+		"volatile", "while", "with" };
 	private static final String VALID_DIRECTORY_NAME_REGEX = "^[a-zA-Z0-9_-]*$";
 	private static final String VALID_PACKAGE_NAME_REGEX = "^([a-z][a-z0-9]*)?$";
 	
@@ -35,7 +40,7 @@ public class NameValidator
 			return false;
 		}
 		
-		for (String reservedKeyword : CutlassConfig.RESERVED_JS_KEYWORDS) {
+		for (String reservedKeyword : RESERVED_JS_KEYWORDS) {
 			if (packageName.equalsIgnoreCase(reservedKeyword)) {
 				return false;
 			}
@@ -50,7 +55,7 @@ public class NameValidator
 	
 	public static boolean isValidRootPackageName(String rootPackageName)
 	{
-		for (String reservedNamespace : CutlassConfig.RESERVED_NAMESPACES)
+		for (String reservedNamespace : RESERVED_NAMESPACES)
 		{
 			if (rootPackageName.equalsIgnoreCase(reservedNamespace))
 			{
@@ -91,14 +96,14 @@ public class NameValidator
 	
 	public static boolean legacyIsReservedNamespace(String namespace)
 	{
-		for (String reservedNamespace : CutlassConfig.RESERVED_NAMESPACES)
+		for (String reservedNamespace : RESERVED_NAMESPACES)
 		{
 			if (namespace.equalsIgnoreCase(reservedNamespace))
 			{
 				return true;
 			}
 		}
-		for (String reservedNamespace : CutlassConfig.RESERVED_JS_KEYWORDS)
+		for (String reservedNamespace : RESERVED_JS_KEYWORDS)
 		{
 			if (namespace.equalsIgnoreCase(reservedNamespace))
 			{
@@ -113,7 +118,7 @@ public class NameValidator
 	{
 		StringBuilder message = new StringBuilder();
 		
-		String[] reservedList = CutlassConfig.RESERVED_NAMESPACES;
+		String[] reservedList = RESERVED_NAMESPACES;
 		if (reservedList.length > 0)
 		{
 			message.append( "Reserved namespace(s): " );
@@ -131,7 +136,7 @@ public class NameValidator
 		
 		message.append("\n\n");
 		
-		String[] jsKeywords = CutlassConfig.RESERVED_JS_KEYWORDS;
+		String[] jsKeywords = RESERVED_JS_KEYWORDS;
 		if (jsKeywords.length > 0)
 		{
 			message.append( "Banned Namespaces/JavaScript keywords: " );

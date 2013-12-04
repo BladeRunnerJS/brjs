@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BladeRunnerFileAppender;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.App;

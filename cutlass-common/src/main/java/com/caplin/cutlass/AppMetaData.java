@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model.sinbin;
+package com.caplin.cutlass;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,7 +11,8 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Theme;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
+import com.caplin.cutlass.CutlassConfig;
 
 public class AppMetaData
 {

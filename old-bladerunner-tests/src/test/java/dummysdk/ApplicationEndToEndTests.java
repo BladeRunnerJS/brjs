@@ -1,6 +1,6 @@
 package dummysdk;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 import static org.junit.Assert.assertFalse;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.appserver.AppDeploymentObserver;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 import org.bladerunnerjs.testing.utility.WebappTester;

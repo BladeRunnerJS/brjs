@@ -4,9 +4,9 @@ import java.io.File;
 
 import org.junit.Test;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 
 public class RequestCssBundlerTest
 {

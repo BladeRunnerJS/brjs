@@ -9,11 +9,11 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
 public class ThirdPartyFileFinderTest {
 

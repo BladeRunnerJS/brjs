@@ -19,7 +19,7 @@ public class NodeUtility
 			return new ArrayList<Node>();
 		}
 		List<File> nodeFiles = new LinkedList<File>();
-		for (File child : FileUtility.sortFileArray(dirToList.listFiles()))
+		for (File child : FileUtility.sortFiles(dirToList.listFiles()))
 		{
 			if (child.isDirectory() && child.getName().endsWith(acceptSuffix)){
 				nodeFiles.add(child);

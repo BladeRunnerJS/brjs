@@ -7,7 +7,7 @@ import java.util.List;
 import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 
@@ -30,7 +30,7 @@ public class IntegrationTestFinder
 			return testDirs;
 		}
 		
-		File[] children = FileUtility.sortFileArray(root.listFiles());
+		File[] children = FileUtility.sortFiles(root.listFiles());
 		for (File child : children) 
 		{
 			if (child.isDirectory() && !child.isHidden() && isValidTestDir(child, ignoreWorkbenches)) 

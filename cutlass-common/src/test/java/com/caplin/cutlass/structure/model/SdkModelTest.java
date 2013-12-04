@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 
 
 public class SdkModelTest

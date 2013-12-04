@@ -250,7 +250,7 @@ public class BundlingTest extends SpecTest {
     		.and(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
     		.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.Class1")
     		.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/caplin-js/package-definitions.js", response);
+		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", response);
 		then(response).textEquals("// package definition block\n" + "window.mypkg = {\"bs\":{\"b1\":{}}};\n");
 	}
 	
@@ -431,7 +431,7 @@ public class BundlingTest extends SpecTest {
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(userLib).hasBeenCreated()
-			.and(userLib).hasPackageStyle("sdk", "caplin-js")
+			.and(userLib).hasPackageStyle("sdk", "namespaced-js")
 			.and(userLib).hasClass("user.Class1")
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("mypkg.Class1")

@@ -1,13 +1,13 @@
 package com.caplin.cutlass.bundler.html;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
 import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import com.caplin.cutlass.bundler.MergeTestHelper;
 

@@ -12,7 +12,7 @@ import com.caplin.cutlass.bundler.js.analyser.JsonCodeUnitVisitor;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
 public class AnalyserTest
 {

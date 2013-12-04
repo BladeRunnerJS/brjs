@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 
 import com.caplin.cutlass.BRJSAccessor;
 
@@ -432,7 +432,7 @@ public class CutlassDirectoryLocator
 		{
 			return dirs;
 		}
-		List<File> sortedDirContents = Arrays.asList(FileUtility.sortFileArray(directory.listFiles()));
+		List<File> sortedDirContents = Arrays.asList(FileUtility.sortFiles(directory.listFiles()));
 		
 		for (File dirContent : sortedDirContents)
 		{

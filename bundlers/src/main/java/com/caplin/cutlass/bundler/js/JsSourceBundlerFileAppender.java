@@ -3,7 +3,7 @@ package com.caplin.cutlass.bundler.js;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BladeRunnerFileAppender;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;

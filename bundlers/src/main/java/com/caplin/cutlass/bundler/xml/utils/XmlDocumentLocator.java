@@ -59,7 +59,7 @@ public class XmlDocumentLocator {
 	}
 
 	private static void addXmlDocumentsToList(final File directory, final List<File> xmlDocuments, String[] excludePaths) {
-		File[] directoryContents = FileUtility.sortFileArray(directory.listFiles());
+		File[] directoryContents = FileUtility.sortFiles(directory.listFiles());
 		for(File file : directoryContents) {
 			if(file.isDirectory() && !fileOrDirIsExcluded(file,excludePaths)) {
 				addXmlDocumentsToList(file, xmlDocuments, excludePaths);

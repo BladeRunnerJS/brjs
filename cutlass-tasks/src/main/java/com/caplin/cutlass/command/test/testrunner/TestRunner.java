@@ -29,7 +29,7 @@ import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 
@@ -301,7 +301,7 @@ public class TestRunner {
 			throw new IOException(failureMessage);
 		}
 		
-		File[] dirContents = FileUtility.sortFileArray(directory.listFiles());
+		File[] dirContents = FileUtility.sortFiles(directory.listFiles());
 		reverseDirectoryContentsIfContainsTestDir(dirContents);
 		for(File file : dirContents) {
 			if(file.isDirectory() && !file.isHidden()) {		
