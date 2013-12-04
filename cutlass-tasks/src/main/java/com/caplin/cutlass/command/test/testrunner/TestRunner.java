@@ -301,7 +301,7 @@ public class TestRunner {
 			throw new IOException(failureMessage);
 		}
 		
-		File[] dirContents = FileUtility.sortFileArray(directory.listFiles());
+		File[] dirContents = FileUtility.sortFiles(directory.listFiles());
 		reverseDirectoryContentsIfContainsTestDir(dirContents);
 		for(File file : dirContents) {
 			if(file.isDirectory() && !file.isHidden()) {		

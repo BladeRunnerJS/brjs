@@ -20,7 +20,7 @@ public class PathAccessor
 		
 		if(path.exists())
 		{
-			for(File childDir : FileUtility.sortFileArray(path.listFiles()))
+			for(File childDir : FileUtility.sortFiles(path.listFiles()))
 			{
 				if(childDir.isDirectory() && childDir.getName().endsWith(acceptSuffix))
 				{

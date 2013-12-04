@@ -72,7 +72,7 @@ public class CheckUtility
 			throw new Exception("Could not find directory '" + applicationWebInfLibDirectory.getAbsolutePath() + "'");
 		}
 		
-		File[] files = FileUtility.sortFileArray(applicationWebInfLibDirectory.listFiles(CAPLIN_JAR_FILE_NAME_FILTER));
+		File[] files = FileUtility.sortFiles(applicationWebInfLibDirectory.listFiles(CAPLIN_JAR_FILE_NAME_FILTER));
 		
 		return Arrays.asList(files);
 	}

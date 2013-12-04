@@ -77,7 +77,7 @@ public class BundlerFileUtils
 		{
 			if (root.isDirectory())
 			{
-				for (File child : FileUtility.sortFileArray(root.listFiles()))
+				for (File child : FileUtility.sortFiles(root.listFiles()))
 				{
 					recursiveListFiles(child, files, filter);
 				}

@@ -30,7 +30,7 @@ public class IntegrationTestFinder
 			return testDirs;
 		}
 		
-		File[] children = FileUtility.sortFileArray(root.listFiles());
+		File[] children = FileUtility.sortFiles(root.listFiles());
 		for (File child : children) 
 		{
 			if (child.isDirectory() && !child.isHidden() && isValidTestDir(child, ignoreWorkbenches)) 

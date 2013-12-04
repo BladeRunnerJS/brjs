@@ -432,7 +432,7 @@ public class CutlassDirectoryLocator
 		{
 			return dirs;
 		}
-		List<File> sortedDirContents = Arrays.asList(FileUtility.sortFileArray(directory.listFiles()));
+		List<File> sortedDirContents = Arrays.asList(FileUtility.sortFiles(directory.listFiles()));
 		
 		for (File dirContent : sortedDirContents)
 		{

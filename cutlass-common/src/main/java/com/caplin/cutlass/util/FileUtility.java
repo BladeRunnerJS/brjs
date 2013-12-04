@@ -248,7 +248,7 @@ public class FileUtility extends org.bladerunnerjs.model.utility.FileUtility {
 	{
 		if(file.isDirectory())
 		{
-			for(File r : FileUtility.sortFileArray(file.listFiles()))
+			for(File r : FileUtility.sortFiles(file.listFiles()))
 			{
 				if (!r.getName().startsWith("."))
 				{
