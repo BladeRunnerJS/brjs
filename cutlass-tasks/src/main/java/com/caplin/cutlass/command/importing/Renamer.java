@@ -15,7 +15,7 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.exception.NamespaceException;
 import com.caplin.cutlass.util.FileUtility;

@@ -12,7 +12,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import static com.caplin.cutlass.bundler.ResourceAdder.*;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BladeRunnerFileAppender;
 import com.caplin.cutlass.bundler.LibraryManifest;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;

@@ -3,7 +3,7 @@ package com.caplin.jstestdriver.plugin;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
 
 public interface BundlerHandler
 {

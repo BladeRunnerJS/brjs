@@ -33,7 +33,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 import com.caplin.cutlass.ServletModelAccessor;

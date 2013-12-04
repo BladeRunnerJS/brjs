@@ -16,8 +16,8 @@ import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.AppMetaData;
+import com.caplin.cutlass.CutlassConfig;
 
 public class AppMetaDataTest
 {

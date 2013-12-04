@@ -19,7 +19,7 @@ import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import com.caplin.cutlass.BRJSAccessor;
 import com.google.gson.Gson;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
 public class I18nResourceIdNamespaceValidationTest {
 	

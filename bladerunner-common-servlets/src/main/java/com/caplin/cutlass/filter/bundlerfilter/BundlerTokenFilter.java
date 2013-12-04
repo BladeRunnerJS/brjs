@@ -21,7 +21,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.appserver.CharResponseWrapper;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.filter.bundlerfilter.token.CSSBundleTokenProcessor;

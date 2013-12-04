@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.exception.NamespaceException;
 

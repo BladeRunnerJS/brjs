@@ -16,7 +16,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class ProductionFilePreventionFilter implements Filter

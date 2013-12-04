@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.model.path.AppPath;

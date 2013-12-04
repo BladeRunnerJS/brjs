@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 
 public class ValidRequestForBundledResourceFilter implements Filter {

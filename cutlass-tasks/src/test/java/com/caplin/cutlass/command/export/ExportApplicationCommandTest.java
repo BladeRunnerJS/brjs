@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 
 import com.caplin.cutlass.BRJSAccessor;

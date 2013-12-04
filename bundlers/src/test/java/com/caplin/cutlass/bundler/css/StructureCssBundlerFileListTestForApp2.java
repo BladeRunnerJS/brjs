@@ -3,8 +3,8 @@ package com.caplin.cutlass.bundler.css;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 import com.caplin.cutlass.bundler.BundlerFileTester;
 

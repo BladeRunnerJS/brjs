@@ -1,10 +1,10 @@
 package com.caplin.cutlass.bundler.css;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

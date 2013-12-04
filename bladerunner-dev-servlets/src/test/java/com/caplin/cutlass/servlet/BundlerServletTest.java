@@ -34,12 +34,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.core.plugin.Plugin;
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.AppMetaData;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 

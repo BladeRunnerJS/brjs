@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.bladerunnerjs.core.plugin.command.standard.CreateApplicationCommand;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.utility.ServerUtility;
 import org.bladerunnerjs.model.BRJS;

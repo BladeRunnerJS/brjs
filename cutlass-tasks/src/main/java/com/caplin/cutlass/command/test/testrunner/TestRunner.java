@@ -29,7 +29,7 @@ import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 

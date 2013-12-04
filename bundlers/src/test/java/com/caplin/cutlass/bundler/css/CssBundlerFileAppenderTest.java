@@ -8,8 +8,8 @@ import org.junit.Test;
 
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

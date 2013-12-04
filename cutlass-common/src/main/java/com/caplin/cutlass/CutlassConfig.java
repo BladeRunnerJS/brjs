@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model.sinbin;
+package com.caplin.cutlass;
 
 import java.util.Arrays;
 import java.util.List;

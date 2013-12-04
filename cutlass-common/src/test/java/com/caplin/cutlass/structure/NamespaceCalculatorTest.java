@@ -16,8 +16,8 @@ import com.caplin.cutlass.exception.NamespaceException;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 import com.caplin.cutlass.BRJSAccessor;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 public class NamespaceCalculatorTest
 {

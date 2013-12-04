@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.caplin.cutlass.bundler.BundlerFileTester;
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 public class StructureHtmlBundlerFileListTestForApp1
 {
