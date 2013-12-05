@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.CharMatcher;
 
 public class Trie<T>
@@ -24,10 +26,7 @@ public class Trie<T>
 		TrieNode<T> node = root;
 		for( char character : key.toCharArray() )
 		{
-			if (node != root)
-			{
-				trieChars.add(character);				
-			}
+			trieChars.add(character);
 			node = node.getOrCreateNextNode( character );
 		}
 		
@@ -64,8 +63,7 @@ public class Trie<T>
 		List<T> matches = new LinkedList<T>();
 		
 		TrieMatcher matcher = new TrieMatcher();
-//		CharMatcher charMatcher = CharMatcher.anyOf( StringUtils.join(trieChars.toArray()) );	//TODO: use the CharMatcher that is calculated from the entries in the Trie
-		CharMatcher charMatcher = CharMatcher.JAVA_LETTER_OR_DIGIT.or(CharMatcher.is('.')).or(CharMatcher.is('-')).or(CharMatcher.is('_')).or(CharMatcher.is('/'));
+		CharMatcher charMatcher = CharMatcher.anyOf( StringUtils.join(trieChars.toArray()) );
 		
 		int latestCharVal;
 		while ((latestCharVal = reader.read()) != -1)
@@ -81,6 +79,7 @@ public class Trie<T>
 	private void processChar(CharMatcher charMatcher, List<T> matches, char nextChar, TrieMatcher matcher)
 	{
 		TrieNode<T> nextNode = matcher.next(nextChar);
+		
 		if (nextNode == null)
 		{
 			T matcherValue = matcher.previousNode.getValue();
