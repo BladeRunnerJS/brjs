@@ -89,6 +89,15 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	@Test
+	public void weDoNotBundleAClassIfADefinedAliasIsNotReferenced() throws Exception {
+		given(appConf).hasNamespace("mypkg")
+			.and(aspect).hasClass("mypkg.Class1")
+			.and(bladeAliasDefinitionsFile).hasAlias("mypkg.bs.b1.the-alias", "mypkg.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).doesNotContainClasses("mypkg.Class1");
+	}
+	
+	@Test
 	public void requirePathsCanBeRelative() throws Exception {
 		given(aspect).hasClass("mypkg.Class1")
 			.and(aspect).hasClass("mypkg.Class2")
