@@ -38,7 +38,7 @@ public class JsStyleUtility {
 			File jsStyleFile = new File(dir, ".js-style");
 			
 			if(jsStyleFile.exists()) {
-				jsStyle = FileUtils.readFileToString(jsStyleFile);
+				jsStyle = FileUtils.readFileToString(jsStyleFile).trim();
 			}
 		}
 		catch (IOException e) {

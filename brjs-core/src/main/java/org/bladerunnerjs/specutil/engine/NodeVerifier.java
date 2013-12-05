@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.utility.JsStyleUtility;
 import org.bladerunnerjs.specutil.engine.VerifierChainer;
 
 
@@ -68,6 +69,12 @@ public abstract class NodeVerifier<N extends Node> {
 	
 	public VerifierChainer hasStorageFile(String pluginName, String filePath) {
 		assertTrue("The file '" + filePath + "' does not exist at: " + node.storageFile(pluginName, filePath).getAbsoluteFile(), node.storageFile(pluginName, filePath).exists());
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer jsStyleIs(String jsStyle) {
+		assertEquals(jsStyle, JsStyleUtility.getJsStyle(node.dir()));
 		
 		return verifierChainer;
 	}
