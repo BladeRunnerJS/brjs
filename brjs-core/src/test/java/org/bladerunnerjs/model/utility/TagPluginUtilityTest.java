@@ -103,6 +103,13 @@ public class TagPluginUtilityTest
 	}
 	
 	@Test
+	public void attributeValuesCanBeInSingleOrDoubleQuotes() throws Exception
+	{
+		filterAndAssert( "<@tag a-key=\"a-value\" @/>", String.format("replaced tag!%na-key=a-value"), aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "<@tag a-key='a-value' @/>", String.format("replaced tag!%na-key=a-value"), aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	@Test
 	public void multipleTagsAreReplaced() throws Exception
 	{
 		filterAndAssert( "<@tag  @/> and another <@tag a-key=\"a-value\" @/>", String.format("replaced tag! and another replaced tag!%na-key=a-value"), aspect.getBundleSet(), RequestMode.Dev, "");
