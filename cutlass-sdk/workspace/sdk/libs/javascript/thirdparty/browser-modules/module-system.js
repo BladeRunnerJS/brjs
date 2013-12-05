@@ -15,7 +15,7 @@
 
 	// having multiple realms would allow you to load
 	// two different versions of the same module.
-	function realm(parentRealm) {
+	function realm(parentRequire) {
 		var moduleDefinitions = {};
 		var incompleteExports = {};
 		var moduleExports = {};
