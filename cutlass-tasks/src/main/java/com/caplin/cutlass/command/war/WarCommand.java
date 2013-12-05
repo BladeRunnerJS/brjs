@@ -139,7 +139,7 @@ public class WarCommand extends AbstractPlugin implements LegacyCommandPlugin
 			}
 			
 			out.println("Successfully created war file");
-			out.println(" " + origApp.dir().getAbsolutePath());
+			out.println(" " + warFile.getAbsolutePath());
 		}
 		catch(InvalidNameException | ModelUpdateException | IOException | SAXException | ParserConfigurationException | ParseException e) {
 			throw new CommandOperationException(e);
