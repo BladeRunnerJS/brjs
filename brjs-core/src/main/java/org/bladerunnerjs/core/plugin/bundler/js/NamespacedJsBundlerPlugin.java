@@ -18,7 +18,7 @@ import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.JsLibAppWrapper;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
@@ -158,7 +158,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 	@Override
 	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
 	{
-		if ( !(assetLocation instanceof JsLibAppWrapper) && JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE)) {
+		if ( !(assetLocation.getAssetContainer() instanceof JsLib) && JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE)) {
 			// TODO: blow up if the package of the assetLocation would not be a valid namespace
 			
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NamespacedJsSourceModule.class, "js");
