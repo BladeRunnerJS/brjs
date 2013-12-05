@@ -4,7 +4,7 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
-import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundler.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;

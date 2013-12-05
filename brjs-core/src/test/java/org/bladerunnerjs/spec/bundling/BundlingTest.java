@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.bundling;
 import static org.bladerunnerjs.model.utility.LogicalRequestHandler.Messages.*;
 import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
 
-import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundler.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;

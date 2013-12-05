@@ -3,8 +3,8 @@ package org.bladerunnerjs.specutil.engine;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.core.plugin.bundlesource.js.NamespacedJsBundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundlesource.js.NodeJsBundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundler.js.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.core.plugin.bundler.js.NodeJsBundlerPlugin;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.utility.JsStyleUtility;
