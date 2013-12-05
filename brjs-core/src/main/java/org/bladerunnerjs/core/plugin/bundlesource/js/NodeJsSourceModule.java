@@ -69,7 +69,7 @@ public class NodeJsSourceModule implements SourceModule {
 				SourceModule sourceFile = sourceFileMap.get(requirePath);
 				
 				if(sourceFile == null) {
-					throw new UnresolvableRequirePathException(this.requirePath, requirePath);
+					throw new UnresolvableRequirePathException(requirePath, this.requirePath);
 				}
 				
 				dependentSourceFiles.add(sourceFile);
