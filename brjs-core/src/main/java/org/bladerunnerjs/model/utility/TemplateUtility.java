@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
@@ -30,7 +30,7 @@ public class TemplateUtility
 			File templateDir = node.root().template(templateName).dir();
 			
 			if(templateDir.exists()) {
-				IOFileFilter fileFilter = FileFilterUtils.and( new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), HiddenFileFilter.VISIBLE );
+				IOFileFilter fileFilter = FileFilterUtils.and(new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
 				FileUtils.copyDirectory(templateDir, node.dir(), fileFilter);
 			}
 			
