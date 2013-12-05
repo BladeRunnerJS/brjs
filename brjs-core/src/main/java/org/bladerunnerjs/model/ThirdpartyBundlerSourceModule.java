@@ -22,7 +22,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 
-public class NonBladerunnerJsLibSourceModule implements SourceModule
+public class ThirdpartyBundlerSourceModule implements SourceModule
 {
 
 	private AssetLocation assetLocation;

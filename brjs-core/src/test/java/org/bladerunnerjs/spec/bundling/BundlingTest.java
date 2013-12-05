@@ -577,7 +577,6 @@ public class BundlingTest extends SpecTest {
 		given(sdkLegacyThirdparty).hasBeenCreated()
 			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:")
 			.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
-			.and(aspect).hasClass("mypkg.Class1")
 			.and(aspect).indexPageRefersTo(sdkLegacyThirdparty);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
