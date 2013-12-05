@@ -30,7 +30,7 @@ public class BundlingTest extends SpecTest {
 	private Theme standardAspectTheme, standardBladesetTheme, standardBladeTheme;
 	private AliasesFile aspectAliasesFile;
 	private Bladeset bladeset;
-	private Blade blade;
+	private Blade blade, bladeWithSubstringOfAnotherBlade;
 	private JsLib sdkJsLib, userLib, appLegacyThirdparty, sdkLegacyThirdparty, sdkLegacyThirdparty2;
 	private AliasDefinitionsFile bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
@@ -49,6 +49,7 @@ public class BundlingTest extends SpecTest {
 			bladeset = app.bladeset("bs");
 			standardBladesetTheme = bladeset.theme("standard");
 			blade = bladeset.blade("b1");
+			bladeWithSubstringOfAnotherBlade = bladeset.blade("b1b");
 			standardBladeTheme = blade.theme("theme");
 			
 			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty");
@@ -310,6 +311,31 @@ public class BundlingTest extends SpecTest {
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	// TODO This test should fail
+	@Ignore
+	@Test
+	public void bladesReferencedByOtherBladesDoNotGetBundled() throws Exception {
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(blade).hasClass("mypkg.bs.b1.Class1")
+			.and(bladeWithSubstringOfAnotherBlade).hasPackageStyle("src/mypkg/bs/b1b", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(bladeWithSubstringOfAnotherBlade).classRefersTo("mypkg.bs.b1b.Class1", "mypkg.bs.b1.Class1")
+			.and(aspect).indexPageRefersTo("mypkg.bs.b1b.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("mypkg.bs.b1b.Class1")
+			.and(response).doesNotContainClasses("mypkg.bs.b1.Class1");
+	}
+	
+	@Test
+	public void bladeNamespaceWithSubstringOfAnotherBladeShouldNotGetBundled() throws Exception {
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(blade).hasClass("mypkg.bs.b1.Class1")
+			.and(bladeWithSubstringOfAnotherBlade).hasPackageStyle("src/mypkg/bs/b1b", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(bladeWithSubstringOfAnotherBlade).hasClass("mypkg.bs.b1b.Class1")
+			.and(aspect).indexPageRefersTo("mypkg.bs.b1b.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).doesNotContainClasses("mypkg.bs.b1.Class1");
 	}
 	
 	// ----------------------------------- X M L -------------------------------------- 
@@ -593,9 +619,22 @@ public class BundlingTest extends SpecTest {
 			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends: legacy-thirdparty2")
 			.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.legacy = { }")
 			.and(aspect).indexPageRefersTo(sdkLegacyThirdparty);
-
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.legacy = { }")
 			.and(response).containsText("window.legacy2 = { }");
+	}
+	
+	@Test
+	public void legacyThirdpartyLibWhichIsASubstringOfAnotherLibDoesNotGetBundledWhenReferencedInAspectIndexPage() throws Exception {		
+		given(sdkLegacyThirdparty).hasBeenCreated()
+			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:\n")
+			.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.legacy = { }")
+			.and(sdkLegacyThirdparty2).hasBeenCreated()
+			.and(sdkLegacyThirdparty2).containsFileWithContents("library.manifest", "depends:\n")
+			.and(sdkLegacyThirdparty2).containsFileWithContents("src.js", "window.legacy2 = { }")
+			.and(aspect).indexPageRefersTo(sdkLegacyThirdparty2);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("window.legacy2 = { }")
+			.and(response).doesNotContainText("window.legacy = { }");
 	}
 }
