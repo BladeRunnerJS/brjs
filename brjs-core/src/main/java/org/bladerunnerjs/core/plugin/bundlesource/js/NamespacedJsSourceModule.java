@@ -19,6 +19,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 
 import com.Ostermiller.util.ConcatReader;
 
@@ -71,7 +72,12 @@ public class NamespacedJsSourceModule implements SourceModule {
 				String referencedClass = matcher.group(3);
 				String requirePath = referencedClass.replaceAll("\\.", "/");
 				
-				orderDependentSourceModules.add(bundlableNode.getSourceFile(requirePath));
+				try {
+					orderDependentSourceModules.add(bundlableNode.getSourceFile(requirePath));
+				}
+				catch(UnresolvableRequirePathException e) {
+					// TODO: log the fact that the thing being extended was not found to be a fully qualified class name (probably a variable name), and so is being ignored for the purposes of bundling.
+				}
 			}
 		}
 		catch(IOException | RequirePathException e) {
