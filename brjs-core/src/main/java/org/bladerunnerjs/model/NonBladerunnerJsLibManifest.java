@@ -11,7 +11,6 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	
 	public static final String commaWithOptionalSpacesSeparator = "[\\s]*,[\\s]*";
 	
-	//TODO: change this back to just taking an AssetLocation once we've fixed the ThirdpartyBundlerPlugin todo
 	public NonBladerunnerJsLibManifest(AssetLocation assetLocation) throws ConfigException {
 		super(assetLocation, YamlNonBladerunnerLibManifest.class, assetLocation.file("library.manifest"));
 	}
