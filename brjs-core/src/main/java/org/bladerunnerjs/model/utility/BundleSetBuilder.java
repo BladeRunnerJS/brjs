@@ -27,6 +27,7 @@ public class BundleSetBuilder {
 	
 	public BundleSetBuilder(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
+		addImplicitDependencies();
 	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
@@ -132,5 +133,13 @@ public class BundleSetBuilder {
 		builder.setLength(builder.length()-2);
 		return builder.toString();
 		
+	}
+	
+	private void addImplicitDependencies() {
+		try {
+			sourceFiles.add(bundlableNode.getSourceFile("bootstrap"));
+		} catch (RequirePathException e) {
+			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+		}
 	}
 }

@@ -1,4 +1,4 @@
-depends: caplin-ie8-shim, html5shiv, es5-shim, normalize, browser-modules, caplin-br
+depends: caplin-ie8-shim, html5shiv, es5-shim, normalize, bootstrap, caplin-br
 
 # Uncomment the following line to use the new version of 'bootstrap.js'
 #js: bootstrap-lite.js

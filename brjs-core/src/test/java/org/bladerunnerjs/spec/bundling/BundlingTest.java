@@ -31,7 +31,7 @@ public class BundlingTest extends SpecTest {
 	private AliasesFile aspectAliasesFile;
 	private Bladeset bladeset;
 	private Blade blade, bladeWithSubstringOfAnotherBlade;
-	private JsLib sdkJsLib, userLib, appLegacyThirdparty, sdkLegacyThirdparty, sdkLegacyThirdparty2;
+	private JsLib bootstrapLib, sdkJsLib, userLib, appLegacyThirdparty, sdkLegacyThirdparty, sdkLegacyThirdparty2;
 	private AliasDefinitionsFile bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
 	
@@ -52,6 +52,7 @@ public class BundlingTest extends SpecTest {
 			bladeWithSubstringOfAnotherBlade = bladeset.blade("b1b");
 			standardBladeTheme = blade.theme("theme");
 			
+			bootstrapLib = app.jsLib("bootstrap");
 			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty");
 			userLib = app.jsLib("userLib");
 			sdkJsLib = brjs.sdkLib();
@@ -62,6 +63,16 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	// -------------------------------- A S P E C T --------------------------------------
+	@Test
+	public void weBundleBootstrapIfItExists() throws Exception {
+		given(bootstrapLib).hasBeenCreated()
+			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js")
+			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("// bootstrap");
+//		then(response).containsText("// this is bootstrap"); // TODO: Ask AB to find out why the contents of the library aren't currently emitted
+	}
+	
 	@Test
 	public void weBundleAnAspectClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("mypkg.Class1")
