@@ -62,10 +62,24 @@ public class PluginLoader
 			
 			if (cause != null && cause.getClass() == InstantiationException.class)
 			{
-				logger.error(Messages.CANNOT_CREATE_INSTANCE_LOG_MSG, cause.getMessage());				
+				if (logger != null)
+				{
+					logger.error(Messages.CANNOT_CREATE_INSTANCE_LOG_MSG, cause.getMessage());
+				}
+				else
+				{
+					System.err.println( String.format(Messages.CANNOT_CREATE_INSTANCE_LOG_MSG, cause.getMessage()) );
+				}
 			} else 
 			{
-				logger.error(Messages.ERROR_CREATING_OBJECT_LOG_MSG, serviceError);
+				if (logger != null)
+				{
+					logger.error(Messages.ERROR_CREATING_OBJECT_LOG_MSG, serviceError);
+				}
+				else
+				{
+					System.err.println( String.format(Messages.ERROR_CREATING_OBJECT_LOG_MSG, serviceError) );
+				}
 			}
 		}
 		catch(NullPointerException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
