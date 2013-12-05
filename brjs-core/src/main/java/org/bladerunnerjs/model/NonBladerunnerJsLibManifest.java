@@ -37,7 +37,7 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	
 	private List<String> listify(String value, String nullValueFallback)
 	{
-		if (value != null)
+		if (value != null && !value.equals(""))
 		{
 			return Arrays.asList(value.split(commaWithOptionalSpacesSeparator));
 		}

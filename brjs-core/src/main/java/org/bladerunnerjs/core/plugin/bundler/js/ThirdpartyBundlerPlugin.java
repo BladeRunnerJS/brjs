@@ -1,7 +1,7 @@
 package org.bladerunnerjs.core.plugin.bundler.js;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -44,7 +44,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 		requestParserBuilder
     		.accepts("thirdparty/bundle.js").as("bundle-request")
 				.and("thirdparty/<module>/bundle.js").as("single-module-request")
-				.and("thirdparty/module/<module>/<file-path>").as("file-request")
+				.and("thirdparty/file/<module>/<file-path>").as("file-request")
 			.where("module").hasForm(".+")
 				.and("file-path").hasForm(".+");
 		
@@ -60,7 +60,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	@Override
 	public String getTagName()
 	{
-		return getRequestPrefix();
+		return "thirdparty.bundle";
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	@Override
 	public String getRequestPrefix()
 	{
-		return "thirdparty.bundle";
+		return "thirdparty";
 	}
 	
 	@Override
@@ -154,27 +154,22 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 				}
 			}
 			else if(request.formName.equals("file-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
+				String libName = request.properties.get("module");
+				App app = bundleSet.getBundlableNode().getApp();
+				JsLib lib = app.nonBladeRunnerLib(libName);
+				if (!lib.dirExists())
 				{
-					String libName = request.properties.get("module");
-					App app = bundleSet.getBundlableNode().getApp();
-					JsLib lib = app.nonBladeRunnerLib(libName);
-					if (!lib.dirExists())
-					{
-						throw new BundlerProcessingException("Library " + lib.getName() + " doesn't exist.");
-					}
-					
-					String filePath = request.properties.get("file-path");
-					File file = lib.file(filePath);
-					if (!file.exists())
-					{
-						throw new BundlerProcessingException("File " + file.getAbsolutePath() + " doesn't exist.");
-					}
-					
-					writer.write("// " + file.getPath() + "\n");
-					IOUtils.copy(new FileReader(file), writer);
-					writer.write("\n\n");
+					throw new BundlerProcessingException("Library " + lib.getName() + " doesn't exist.");
 				}
+				
+				String filePath = request.properties.get("file-path");
+				File file = lib.file(filePath);
+				if (!file.exists())
+				{
+					throw new BundlerProcessingException("File " + file.getAbsolutePath() + " doesn't exist.");
+				}
+				
+				IOUtils.copy(new FileInputStream(file), os);
 			}
 			else if(request.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 

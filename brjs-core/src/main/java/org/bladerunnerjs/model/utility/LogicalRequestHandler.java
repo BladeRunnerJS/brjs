@@ -49,6 +49,10 @@ public class LogicalRequestHandler {
 			
 			ContentPlugin contentProvider = app.root().plugins().contentProvider(requestUri);
 			
+			if(contentProvider == null) {
+				throw new ResourceNotFoundException("No content provider could be found found the logical request path '" + requestUri.logicalPath + "'");
+			}
+			
 			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), requestUri.logicalPath);
 			
 			ParsedContentPath parsedRequest = contentProvider.getContentPathParser().parse(requestUri);

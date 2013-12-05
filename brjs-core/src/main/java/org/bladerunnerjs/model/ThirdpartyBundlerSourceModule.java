@@ -140,7 +140,8 @@ public class ThirdpartyBundlerSourceModule implements SourceModule
 		{
 			for (String pattern : matchFilePaths)
 			{
-				if ( Pattern.matches(pattern, f.getPath()) )
+				String relativePath = dir.toURI().relativize(f.toURI()).getPath();
+				if ( Pattern.matches(pattern, relativePath) )
 				{
 					filesMatching.add(f);
 					break;
