@@ -53,8 +53,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	public Reader getReader() throws FileNotFoundException {
 		return new ConcatReader(new Reader[] {
 			new StringReader(globalizeNonCaplinJsClasses()),
-			assetFile.getReader(),
-			new StringReader("\n")
+			assetFile.getReader()
 		});
 	}
 	
