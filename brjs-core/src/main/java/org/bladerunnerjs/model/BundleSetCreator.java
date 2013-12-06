@@ -41,13 +41,20 @@ public class BundleSetCreator {
 		
 		for(LinkedAsset seedFile : seedFiles) {
 			bundleSetBuilder.addSeedFile(seedFile);
-			processFile(bundlableNode, seedFile, bundleSetBuilder, logger);
+			processFile(bundlableNode, seedFile, bundleSetBuilder, logger, new ArrayList<LinkedAsset>());
 		}
 		
 		return bundleSetBuilder.createBundleSet();
 	}
 	
-	private static void processFile(BundlableNode bundlableNode, LinkedAsset file, BundleSetBuilder bundleSetBuilder, Logger logger) throws ModelOperationException {
+	private static void processFile(BundlableNode bundlableNode, LinkedAsset file, BundleSetBuilder bundleSetBuilder, Logger logger, List<LinkedAsset> processedFiles) throws ModelOperationException {
+
+		if (processedFiles.contains(file))
+		{
+			return;
+		}
+		processedFiles.add(file);
+
 		List<SourceModule> moduleDependencies = getDependentSourceModules(file, bundlableNode);
 		
 		if(moduleDependencies.isEmpty()) {
@@ -59,11 +66,11 @@ public class BundleSetCreator {
 		
 		for(SourceModule sourceModule : moduleDependencies) {
 			if(bundleSetBuilder.addSourceFile(sourceModule)) {
-				processFile(bundlableNode, sourceModule, bundleSetBuilder, logger);
+				processFile(bundlableNode, sourceModule, bundleSetBuilder, logger, processedFiles);
 				
 				for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().getAllAssetLocations()) {
 					for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
-						processFile(bundlableNode, resourceSeedFile, bundleSetBuilder, logger);
+						processFile(bundlableNode, resourceSeedFile, bundleSetBuilder, logger, processedFiles);
 					}
 				}
 			}
