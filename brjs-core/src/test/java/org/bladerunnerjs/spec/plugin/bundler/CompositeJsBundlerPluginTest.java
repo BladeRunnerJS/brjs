@@ -30,7 +30,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).indexPageHasContent("<@new-js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
+		then(pageResponse).containsRequests("node-js/module/mypkg/Class1.js", "namespaced-js/package-definitions.js");
 	}
 	
 	@Test
@@ -62,6 +62,6 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).indexPageHasContent("<@new-js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
+		then(pageResponse).containsRequests("node-js/module/mypkg/Class1.js", "namespaced-js/package-definitions.js");
 	}
 }
