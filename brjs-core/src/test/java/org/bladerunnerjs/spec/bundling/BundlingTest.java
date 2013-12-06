@@ -78,7 +78,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void weDontBundleBootstrapIfThereAreNoAssetsToBundle() throws Exception {
+	public void weDontBundleBootstrapIfThereIsNoSourceToBundle() throws Exception {
 		given(aspect).indexPageHasContent("the page")
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js")
