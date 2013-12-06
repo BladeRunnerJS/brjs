@@ -31,7 +31,8 @@ import org.bladerunnerjs.model.UnableToInstantiateAssetFileException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.RequestParserBuilder;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 
 public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin
@@ -40,7 +41,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	private BRJS brjs;
 
 	{
-		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
+		ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
 		requestParserBuilder
     		.accepts("thirdparty/bundle.js").as("bundle-request")
 				.and("thirdparty/<module>/bundle.js").as("single-module-request")
@@ -102,18 +103,28 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
-		for (String requestPath : getValidDevRequestPaths(bundleSet, locale))
-		{
-			writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
+		try {
+			for (String requestPath : getValidDevRequestPaths(bundleSet, locale))
+			{
+				writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
+			}
+		}
+		catch(BundlerProcessingException e) {
+			throw new IOException(e);
 		}
 	}
 
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
-		for (String requestPath : getValidProdRequestPaths(bundleSet, locale))
-		{
-			writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
+		try {
+			for (String requestPath : getValidProdRequestPaths(bundleSet, locale))
+			{
+				writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
+			}
+		}
+		catch(BundlerProcessingException e) {
+			throw new IOException(e);
 		}
 	}
 	
@@ -190,22 +201,36 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	}
 
 	@Override
-	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale)
+	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
 		List<String> requestPaths = new ArrayList<>();
-		for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-			if(sourceFile instanceof ThirdpartyBundlerSourceModule) {
-				requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
+		
+		try {
+			for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
+				if(sourceFile instanceof ThirdpartyBundlerSourceModule) {
+					requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
+				}
 			}
 		}
+		catch(MalformedTokenException e) {
+			throw new BundlerProcessingException(e);
+		}
+		
 		return requestPaths;
 	}
 
 	@Override
-	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale)
+	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException 
 	{
 		List<String> requestPaths = new ArrayList<>();
-		requestPaths.add(requestParser.createRequest("bundle-request"));
+		
+		try {
+			requestPaths.add(requestParser.createRequest("bundle-request"));
+		}
+		catch (MalformedTokenException e) {
+			throw new BundlerProcessingException(e);
+		}
+		
 		return requestPaths;
 	}
 

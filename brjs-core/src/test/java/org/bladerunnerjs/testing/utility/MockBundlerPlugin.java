@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.RequestParserBuilder;
+import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 
 public class MockBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin
@@ -39,7 +39,7 @@ public class MockBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 	@Override
 	public ContentPathParser getContentPathParser()
 	{
-		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
+		ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
 		return requestParserBuilder.build();
 	}
 

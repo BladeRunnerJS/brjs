@@ -13,7 +13,8 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.RequestParserBuilder;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 
 public class MockContentPlugin extends AbstractContentPlugin implements ContentPlugin
@@ -22,14 +23,19 @@ public class MockContentPlugin extends AbstractContentPlugin implements ContentP
 	private List<String> prodRequestPaths = new ArrayList<>();
 	
 	{
-		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
-		requestParserBuilder
-			.accepts("mock-servlet").as("request")
-			.and("mock-servlet/some/other/path").as("long-request");
-		
-		requestParser = requestParserBuilder.build();
-		prodRequestPaths.add(requestParser.createRequest("request"));
-		prodRequestPaths.add(requestParser.createRequest("long-request"));
+		try {
+			ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
+			requestParserBuilder
+				.accepts("mock-servlet").as("request")
+				.and("mock-servlet/some/other/path").as("long-request");
+			
+			requestParser = requestParserBuilder.build();
+			prodRequestPaths.add(requestParser.createRequest("request"));
+			prodRequestPaths.add(requestParser.createRequest("long-request"));
+		}
+		catch(MalformedTokenException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

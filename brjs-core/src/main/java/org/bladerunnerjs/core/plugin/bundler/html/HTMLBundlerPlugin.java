@@ -16,7 +16,7 @@ import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.RequestParserBuilder;
+import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 
 public class HTMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin
@@ -25,7 +25,7 @@ public class HTMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 	private ContentPathParser requestParser;
 	
 	{
-		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
+		ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
 		requestParserBuilder.accepts("bundle.html").as("bundle-request");
 		requestParser = requestParserBuilder.build();
 	}

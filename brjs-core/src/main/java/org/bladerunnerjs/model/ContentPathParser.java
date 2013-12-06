@@ -8,17 +8,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 
 
 public class ContentPathParser
 {
-	private Map<String, String> requestForms;
+	private final Map<String, String> requestForms;
+	private final Map<String, Pattern> tokens;
 	private final Map<String, Pattern> requestFormPatterns;
 	private final Map<String, List<String>> requestFormTokens;
 	
 	public ContentPathParser(Map<String, String> requestForms, Map<String, String> tokens)
 	{
 		this.requestForms = requestForms;
+		this.tokens = generateTokenPatterns(tokens);
 		this.requestFormPatterns = generateRequestFormPatterns(requestForms, tokens);
 		this.requestFormTokens = generateRequestFormTokens(requestForms);
 	}
@@ -28,7 +31,7 @@ public class ContentPathParser
 		return new ArrayList<>(requestForms.values());
 	}
 	
-	public String createRequest(String requestFormName, String... args)
+	public String createRequest(String requestFormName, String... args) throws MalformedTokenException
 	{
 		String requestForm = requestForms.get(requestFormName);
 		List<String> tokens = requestFormTokens.get(requestFormName);
@@ -40,6 +43,9 @@ public class ContentPathParser
 		for(String arg : args)
 		{
 			String token = tokens.get(i++);
+			
+			validateRequestToken(token, arg);
+			
 			requestForm = requestForm.replaceAll("<" + token + ">", arg);
 		}
 		
@@ -133,6 +139,21 @@ public class ContentPathParser
 		return 0;
 	}
 	
+	private String convertToPattern(String requestForm) {
+		return requestForm.replaceAll("([.?*+()\\[\\]])", "\\\\$1");
+	}
+	
+	private Map<String, Pattern> generateTokenPatterns(Map<String, String> tokens) {
+		Map<String, Pattern> tokenPatterns = new HashMap<>();
+		
+		for(String tokenName : tokens.keySet()) {
+			String tokenPattern = tokens.get(tokenName);
+			tokenPatterns.put(tokenName, Pattern.compile(tokenPattern));
+		}
+		
+		return tokenPatterns;
+	}
+	
 	private Map<String, Pattern> generateRequestFormPatterns(Map<String, String> requestForms, Map<String, String> tokens)
 	{
 		Map<String, Pattern> requestFormPatterns = new HashMap<>();
@@ -140,7 +161,7 @@ public class ContentPathParser
 		for (String requestFormName : requestForms.keySet())
 		{
 			String requestForm = requestForms.get(requestFormName);
-			String tokenizedRequestForm = requestForm.replaceAll("([.?*+()\\[\\]])", "\\\\$1");
+			String tokenizedRequestForm = convertToPattern(requestForm);
 			
 			for (String token : tokens.keySet())
 			{
@@ -173,5 +194,15 @@ public class ContentPathParser
 		}
 		
 		return requestFormTokens;
+	}
+	
+	private void validateRequestToken(String tokenName, String tokenValue) throws MalformedTokenException {
+		Pattern tokenPattern = tokens.get(tokenName);
+		Matcher tokenMatcher = tokenPattern.matcher(tokenValue);
+		
+		if(!tokenMatcher.matches()) {
+			// TODO: we need a test for this
+			throw new MalformedTokenException(tokenName, tokenValue, tokenPattern);
+		}
 	}
 }

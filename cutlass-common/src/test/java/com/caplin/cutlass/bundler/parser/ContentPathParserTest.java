@@ -4,23 +4,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.utility.RequestParserBuilder;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
-public class RequestParserTest
+public class ContentPathParserTest
 {
-	private RequestParserBuilder builder;
+	private ContentPathParserBuilder builder;
 	private ContentPathParser parser;
 	
 	@Before
 	public void setUp()
 	{
-		builder = new RequestParserBuilder();
+		builder = new ContentPathParserBuilder();
 	}
 	
 	@Test(expected=IllegalStateException.class)
@@ -186,7 +185,7 @@ public class RequestParserTest
 	@Test
 	public void validWindowsCharactersAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("XXX").where("name").hasForm(RequestParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("XXX").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,.!;#�$%^&@~()+-=[]{}'");
 	}
@@ -194,7 +193,7 @@ public class RequestParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void forwardSlashNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(RequestParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse("/");
 	}
@@ -211,7 +210,7 @@ public class RequestParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void colonNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(RequestParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse(":");
 	}
@@ -219,7 +218,7 @@ public class RequestParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void wildcardNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(RequestParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse("*");
 	}
@@ -227,7 +226,7 @@ public class RequestParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void questionMarkNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(RequestParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse("?");
 	}
@@ -235,13 +234,13 @@ public class RequestParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void doubleQuotesNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(RequestParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse("\"");
 	}
 	
 	@Test
-	public void createRequestWorks() throws MalformedRequestException
+	public void createRequestWorks() throws Exception
 	{
 		builder.accepts("request/<token1>/<token2>").as("request-form").where("token1").hasForm("[0-9]+").and("token2").hasForm("[a-z]+");
 		parser = builder.build();
@@ -250,7 +249,7 @@ public class RequestParserTest
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void createRequestWorksThrowsExceptionWhenNotEnoughArgsAreProvided() throws MalformedRequestException
+	public void createRequestThrowsExceptionWhenNotEnoughArgsAreProvided() throws Exception
 	{
 		builder.accepts("request/<token>").as("request-form").where("token").hasForm("[a-z]+");
 		parser = builder.build();
@@ -259,7 +258,7 @@ public class RequestParserTest
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
-	public void createRequestWorksThrowsExceptionWhenTooManyArgsAreProvided() throws MalformedRequestException
+	public void createRequestThrowsExceptionWhenTooManyArgsAreProvided() throws Exception
 	{
 		builder.accepts("request/<token>").as("request-form").where("token").hasForm("[a-z]+");
 		parser = builder.build();
@@ -267,10 +266,8 @@ public class RequestParserTest
 		parser.createRequest("request-form", "abc", "xyz");
 	}
 	
-	// TODO: consider making this test pass at some point if we have time, to get some better fail-fast behaviour
-	@Ignore
-	@Test(expected=IllegalArgumentException.class)
-	public void createRequestWorksThrowsExceptionWhenIncorrectlyTypedArgsAreProvided() throws MalformedRequestException
+	@Test(expected=MalformedTokenException.class)
+	public void createRequestWorksThrowsExceptionWhenIncorrectlyTypedArgsAreProvided() throws Exception
 	{
 		builder.accepts("request/<token>").as("request-form").where("token").hasForm("[a-z]+");
 		parser = builder.build();

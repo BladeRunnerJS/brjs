@@ -7,7 +7,7 @@ import java.util.Map;
 import org.bladerunnerjs.model.ContentPathParser;
 
 
-public class RequestParserBuilder
+public class ContentPathParserBuilder
 {
 	private final Map<String, String> requestForms = new LinkedHashMap<>();
 	private final Map<String, String> tokens = new HashMap<>();
@@ -41,9 +41,9 @@ public class RequestParserBuilder
 	{
 		private final Map<String, String> requestForms;
 		private Map<String, String> tokens;
-		private final RequestParserBuilder builder;
+		private final ContentPathParserBuilder builder;
 		
-		public RequestFormAppender(RequestParserBuilder builder, Map<String, String> requestForms, Map<String, String> tokens)
+		public RequestFormAppender(ContentPathParserBuilder builder, Map<String, String> requestForms, Map<String, String> tokens)
 		{
 			this.builder = builder;
 			this.requestForms = requestForms;
@@ -91,9 +91,9 @@ public class RequestParserBuilder
 	public class TokenKeyAppender
 	{
 		private Map<String, String> tokens;
-		private final RequestParserBuilder builder;
+		private final ContentPathParserBuilder builder;
 		
-		public TokenKeyAppender(RequestParserBuilder builder, Map<String, String> tokens)
+		public TokenKeyAppender(ContentPathParserBuilder builder, Map<String, String> tokens)
 		{
 			this.builder = builder;
 			this.tokens = tokens;

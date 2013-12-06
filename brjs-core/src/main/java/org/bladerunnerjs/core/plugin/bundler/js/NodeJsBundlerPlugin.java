@@ -25,8 +25,9 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.utility.JsStyleUtility;
-import org.bladerunnerjs.model.utility.RequestParserBuilder;
+import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin {
 	public static final String JS_STYLE = "node.js";
@@ -36,14 +37,19 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	private BRJS brjs;
 	
 	{
-		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
-		requestParserBuilder
-			.accepts("node-js/bundle.js").as("bundle-request")
-				.and("node-js/module/<module>.js").as("single-module-request")
-			.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
-		
-		requestParser = requestParserBuilder.build();
-		prodRequestPaths.add(requestParser.createRequest("bundle-request"));
+		try {
+			ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
+			requestParserBuilder
+				.accepts("node-js/bundle.js").as("bundle-request")
+					.and("node-js/module/<module>.js").as("single-module-request")
+				.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
+			
+			requestParser = requestParserBuilder.build();
+			prodRequestPaths.add(requestParser.createRequest("bundle-request"));
+		}
+		catch(MalformedTokenException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -95,10 +101,15 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-			if(sourceFile instanceof NodeJsSourceModule) {
-				requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
+		try {
+			for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
+				if(sourceFile instanceof NodeJsSourceModule) {
+					requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
+				}
 			}
+		}
+		catch(MalformedTokenException e) {
+			throw new BundlerProcessingException(e);
 		}
 		
 		return requestPaths;

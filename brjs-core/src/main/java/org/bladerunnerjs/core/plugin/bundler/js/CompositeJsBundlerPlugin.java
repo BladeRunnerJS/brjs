@@ -24,15 +24,15 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.utility.RequestParserBuilder;
+import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 
 public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin {
-	private ContentPathParser requestParser = (new RequestParserBuilder()).build();
+	private ContentPathParser requestParser = (new ContentPathParserBuilder()).build();
 	private BRJS brjs;
 	
 	{
-		RequestParserBuilder requestParserBuilder = new RequestParserBuilder();
+		ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
 		requestParserBuilder
 			.accepts("js/dev/<locale>/<minifier-setting>/bundle.js").as("dev-bundle-request")
 				.and("js/prod/<locale>/<minifier-setting>/bundle.js").as("prod-bundle-request")
