@@ -8,6 +8,7 @@ import org.bladerunnerjs.core.log.Logger;
 import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.utility.BundleSetBuilder;
 
 import com.google.common.base.Joiner;
@@ -47,7 +48,7 @@ public class BundleSetCreator {
 	}
 	
 	private static void processFile(BundlableNode bundlableNode, LinkedAsset file, BundleSetBuilder bundleSetBuilder, Logger logger) throws ModelOperationException {
-		List<SourceModule> moduleDependencies = file.getDependentSourceModules(bundlableNode);
+		List<SourceModule> moduleDependencies = getDependentSourceModules(file, bundlableNode);
 		
 		if(moduleDependencies.isEmpty()) {
 			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
@@ -67,6 +68,25 @@ public class BundleSetCreator {
 				}
 			}
 		}
+	}
+	
+	private static List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException {
+		List<SourceModule> dependentSourceModules = file.getDependentSourceModules(bundlableNode);
+		
+		if(file instanceof SourceModule) {
+			SourceModule sourceModule = (SourceModule) file;
+			
+			if(!sourceModule.getRequirePath().equals("bootstrap")) {
+				try {
+					dependentSourceModules.add(bundlableNode.getSourceFile("bootstrap"));
+				}
+				catch(RequirePathException e) {
+					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+				}
+			}
+		}
+		
+		return dependentSourceModules;
 	}
 	
 	private static String seedFilePaths(BundlableNode bundlableNode, List<LinkedAsset> seedFiles) {

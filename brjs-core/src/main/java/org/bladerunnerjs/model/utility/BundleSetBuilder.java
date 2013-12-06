@@ -27,7 +27,6 @@ public class BundleSetBuilder {
 	
 	public BundleSetBuilder(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
-		addImplicitDependencies();
 	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
@@ -114,7 +113,7 @@ public class BundleSetBuilder {
 	}
 	
 	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
-		for(LinkedAsset dependentSourceModule : sourceModule.getOrderDependentSourceModules(bundlableNode)) {
+		for(LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule, bundlableNode)) {
 			if(!metDependencies.contains(dependentSourceModule)) {
 				return false;
 			}
@@ -123,6 +122,21 @@ public class BundleSetBuilder {
 		return true;
 	}
 	
+	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException {
+		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
+		
+		if(!sourceModule.getRequirePath().equals("bootstrap")) {
+			try {
+				orderDependentSourceModules.add(bundlableNode.getSourceFile("bootstrap"));
+			}
+			catch(RequirePathException e) {
+				// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+			}
+		}
+		
+		return orderDependentSourceModules;
+	}
+
 	private String stringifySourceFiles(Set<SourceModule> sourceFiles)
 	{
 		StringBuilder builder = new StringBuilder();
@@ -133,13 +147,5 @@ public class BundleSetBuilder {
 		builder.setLength(builder.length()-2);
 		return builder.toString();
 		
-	}
-	
-	private void addImplicitDependencies() {
-		try {
-			sourceFiles.add(bundlableNode.getSourceFile("bootstrap"));
-		} catch (RequirePathException e) {
-			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-		}
 	}
 }

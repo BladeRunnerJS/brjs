@@ -65,12 +65,26 @@ public class BundlingTest extends SpecTest {
 	// -------------------------------- A S P E C T --------------------------------------
 	@Test
 	public void weBundleBootstrapIfItExists() throws Exception {
-		given(bootstrapLib).hasBeenCreated()
+		given(exceptions).arentCaught();
+		
+		given(aspect).hasClass("mypkg.Class1")
+			.and(aspect).indexPageRefersTo("mypkg.Class1")
+			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js")
 			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("// bootstrap");
 //		then(response).containsText("// this is bootstrap"); // TODO: Ask AB to find out why the contents of the library aren't currently emitted
+	}
+	
+	@Test
+	public void weDontBundleBootstrapIfThereAreNoAssetsToBundle() throws Exception {
+		given(aspect).indexPageHasContent("the page")
+			.and(bootstrapLib).hasBeenCreated()
+			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js")
+			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).isEmpty();
 	}
 	
 	@Test
