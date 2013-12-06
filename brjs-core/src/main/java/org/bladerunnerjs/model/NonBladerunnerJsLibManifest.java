@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	public List<String> getDepends() throws ConfigException
 	{
 		reloadConf();
-		return listify(conf.depends, "");
+		return listify(conf.depends, null);
 	}
 	
 	public List<String> getJs() throws ConfigException
@@ -41,6 +42,6 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 		{
 			return Arrays.asList(value.split(commaWithOptionalSpacesSeparator));
 		}
-		return Arrays.asList(nullValueFallback);
+		return (nullValueFallback != null) ? Arrays.asList(nullValueFallback) : new ArrayList<String>();
 	}
 }
