@@ -98,7 +98,7 @@ public class ThirdpartyBundlerSourceModule implements SourceModule
     			JsLib dependentLib = assetLocation.getAssetContainer().getApp().nonBladeRunnerLib(dependentLibName);
     			if (!dependentLib.dirExists())
     			{
-    				throw new ConfigException(String.format("Library '%s' depends on '%'s, which doesn't exists.")) ;
+    				throw new ConfigException(String.format("Library '%s' depends on '%'s, which doesn't exist.", getAssetName(), dependentLibName)) ;
     			}
     			dependentLibs.addAll(dependentLib.sourceFiles());
     		}
