@@ -96,9 +96,9 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	@Test
 	public void eachClassShouldBeReturnedUnchagned() throws Exception {
 		given(aspect).hasPackageStyle(NamespacedJsBundlerPlugin.JS_STYLE)
-			.and(aspect).hasClasses("mypkg.Class1");
+			.and(aspect).containsFileWithContents("src/mypkg/Class1.js", "mypkg.Class1 = function() {\n};");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/Class1.js", requestResponse);
-		then(requestResponse).textEquals("mypkg.Class1 = function() {\n};\n\n");
+		then(requestResponse).textEquals("mypkg.Class1 = function() {\n};");
 	}
 	
 	@Test
