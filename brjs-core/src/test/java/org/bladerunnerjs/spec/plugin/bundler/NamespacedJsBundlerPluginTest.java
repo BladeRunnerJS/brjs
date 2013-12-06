@@ -98,7 +98,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		given(aspect).hasPackageStyle(NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.Class1");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/Class1.js", requestResponse);
-		then(requestResponse).textEquals("mypkg.Class1 = function() {\n};\n");
+		then(requestResponse).textEquals("mypkg.Class1 = function() {\n};\n\n");
 	}
 	
 	@Test
@@ -108,7 +108,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).classRefersTo("mypkg.namespaced.Class", "mypkg.nodejs.Class");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/namespaced/Class.js", requestResponse);
 		then(requestResponse).containsText("mypkg.namespaced.Class = function() {\n};")
-			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
+			.and(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
 	
 	@Test
@@ -120,6 +120,15 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("mypkg.namespaced.Class = function() {\n};")
 			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
+	}
+	
+	@Test
+	public void automaticRequiresAreAddedOnlyOnceEvenIfTheClassIsReferredToMultipleTimes() throws Exception {
+		given(aspect).hasPackageStyle("src/mypkg/namespaced", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.nodejs.Class")
+			.and(aspect).classFileHasContent("mypkg.namespaced.Class", "mypkg.nodejs.Class, mypkg.nodejs.Class");
+		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/namespaced/Class.js", requestResponse);
+		then(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
 	
 	@Test

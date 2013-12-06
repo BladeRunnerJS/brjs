@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.Joiner;
 
 public class StringVerifier {
@@ -24,6 +26,12 @@ public class StringVerifier {
 		if(!string.contains(substring)) {
 			assertEquals(substring, string);
 		}
+		
+		return verifierChainer;	
+	}
+	
+	public VerifierChainer containsTextOnce(String substring) {
+		assertEquals(1, StringUtils.countMatches(string, substring));
 		
 		return verifierChainer;	
 	}
