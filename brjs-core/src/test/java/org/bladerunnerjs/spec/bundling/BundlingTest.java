@@ -63,6 +63,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	// -------------------------------- A S P E C T --------------------------------------
+	// AspectBundlingOfAspectSource
 	@Test
 	public void weBundleBootstrapIfItExists() throws Exception {
 		given(exceptions).arentCaught();
@@ -169,6 +170,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	//  ----------------------------- B L A D E S E T  -----------------------------------
+	// AspectBundlingOfBladesetSource
 	@Test
 	public void weBundleABladesetClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(bladeset).hasClass("mypkg.bs.Class1")
@@ -228,6 +230,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	// ----------------------------------- B L A D E -------------------------------------------
+	// AspectBundlingOfBladeSource
 	@Test
 	public void weBundleABladeClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(blade).hasClass("mypkg.bs.b1.Class1")
@@ -372,7 +375,13 @@ public class BundlingTest extends SpecTest {
 		then(response).doesNotContainClasses("mypkg.bs.b1.Class1");
 	}
 	
+	// TODO: AspectBundlingOfMixedSource
+	
 	// ----------------------------------- X M L -------------------------------------- 
+	// AspectBundlingOfAspectResources
+	// AspectBundlingOfBladeResources
+	// AspectBundlingOfBladesetResources
+	// AspectBundlingOfMixedResources
 	@Test
 	public void classesReferringToABladesetInAspectXMlFilesAreBundled() throws Exception {
 		given(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
@@ -440,6 +449,7 @@ public class BundlingTest extends SpecTest {
  	}
 	
 	// ------------------------------- L O G G I N G ----------------------------------
+	// AspectBundlingLoggingTest
 	@Test
 	public void helpfulLoggingMessagesAreEmitted() throws Exception {
 		given(logging).enabled()
@@ -474,6 +484,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	// ------------------------ A P P   T H I R D P A R T Y   L I B ------------------------
+	// AspectAppThirdpartyLibBundling
 	@Test
 	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
 		given(appLegacyThirdparty).hasClasses("appThirdparty.Class1", "appThirdparty.Class2")
@@ -528,6 +539,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	// ----------------------------- U S E R   J S   L I B S --------------------------------
+	// AspectUserLibraryBundling
 	@Test
 	public void aspectBundlesContainUserLibrLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
 		given(userLib).hasPackageStyle("src/userLib", NamespacedJsBundlerPlugin.JS_STYLE)
@@ -562,6 +574,7 @@ public class BundlingTest extends SpecTest {
 	}
 	
 	// ---------------------------- S D K   J S   L I B S ----------------------------------
+	// AspectSdkJsLibraryBundling
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
 		given(sdkJsLib).hasClass("sdkJsLib.Class1")
@@ -597,6 +610,7 @@ public class BundlingTest extends SpecTest {
 	
 	
 	// --------------------- S D K   T H I R D P A R T Y   L I B S --------------------------
+	// AspectSdkThirdpartyLibraryBundling
 	@Test
 	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
 		given(sdkLegacyThirdparty).hasBeenCreated()
