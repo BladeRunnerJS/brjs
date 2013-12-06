@@ -121,15 +121,12 @@ public class ThirdpartyBundlerSourceModule implements SourceModule
 	{
 		return dir.getName();
 	}
-
+	
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return new ArrayList<>();
+		return getDependentSourceModules(bundlableNode);
 	}
-
-	
-	
 	
 	private List<File> getFilesMatchingFilePaths(List<String> matchFilePaths)
 	{

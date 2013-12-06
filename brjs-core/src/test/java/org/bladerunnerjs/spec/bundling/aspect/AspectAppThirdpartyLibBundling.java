@@ -6,7 +6,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -29,10 +28,9 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			aspect = app.aspect("default");
 			
 			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty");
-			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty2");
+			appLegacyThirdparty2 = app.nonBladeRunnerLib("app-legacy-thirdparty2");
 	}
 	
-	@Ignore
 	@Test
 	public void interLibraryDependenciesAppearAheadOfTheDependentLibrary() throws Exception {
 		given(appLegacyThirdparty).hasClass("appThirdpartyLibName.Class1")
