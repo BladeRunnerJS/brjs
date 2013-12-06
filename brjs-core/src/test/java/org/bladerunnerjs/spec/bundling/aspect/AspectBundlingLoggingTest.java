@@ -1,0 +1,68 @@
+package org.bladerunnerjs.spec.bundling.aspect;
+
+import static org.bladerunnerjs.model.utility.LogicalRequestHandler.Messages.*;
+import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
+
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.junit.Before;
+import org.junit.Test;
+
+//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'mypkg' when the default namespace is 'appns')?
+//TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
+public class AspectBundlingLoggingTest extends SpecTest {
+	private App app;
+	private Aspect aspect;
+	private Bladeset bladeset;
+	private Blade blade;
+	private StringBuffer response = new StringBuffer();
+	
+	@Before
+	public void initTestObjects() throws Exception
+	{
+		given(brjs).automaticallyFindsBundlers()
+			.and(brjs).automaticallyFindsMinifiers()
+			.and(brjs).hasBeenCreated();
+		
+			app = brjs.app("app1");
+			aspect = app.aspect("default");
+			bladeset = app.bladeset("bs");
+			blade = bladeset.blade("b1");
+	}
+	
+	@Test
+	public void helpfulLoggingMessagesAreEmitted() throws Exception {
+		given(logging).enabled()
+			.and(blade).hasClasses("mypkg.Class1", "mypkg.Class2")
+			.and(aspect).indexPageRefersTo("mypkg.Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+			.and(blade).classRequires("mypkg.Class1", "mypkg.Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/bundle.js", "app1")
+			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/bundle.js")
+			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsBundlerPlugin", "js/dev/en_GB/combined/bundle.js")
+			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'index.html', 'resources/xml/config.xml'"))
+			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/', 'sdk/libs/javascript/caplin'")
+			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "index.html", "'src/mypkg/Class1.js'")
+			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "src/mypkg/Class1.js", "'src/mypkg/Class2.js'")
+			.and(logging).debugMessageReceived(FILE_HAS_NO_DEPENDENCIES_MSG, "src/mypkg/Class2.js")
+			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "resources/xml/config.xml", "'src/mypkg/Class1.js'");
+	}
+	
+	@Test
+	public void helpfulLoggingMessagesAreEmittedWhenThereAreNoSeedFiles() throws Exception {
+		given(logging).enabled()
+			.and(blade).hasClasses("mypkg.Class1", "mypkg.Class2")
+			.and(blade).classRequires("mypkg.Class1", "mypkg.Class2")
+			.and(aspect).hasBeenCreated();
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/bundle.js", "app1")
+			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, unquoted("Aspect"), "default", "js/dev/en_GB/combined/bundle.js")
+			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsBundlerPlugin", "js/dev/en_GB/combined/bundle.js")
+			.and(logging).debugMessageReceived(BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, unquoted("Aspect"), "default")
+			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", unquoted("'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/', 'sdk/libs/javascript/caplin'"));
+	}
+}
