@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.plugin.bundler;
 import org.bladerunnerjs.core.plugin.bundler.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	private Aspect aspect;
 	private StringBuffer pageResponse = new StringBuffer();
 	private StringBuffer requestResponse = new StringBuffer();
+	private JsLib thirdpartyLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -22,6 +24,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			thirdpartyLib = app.jsLib("lib1");
 	}
 	
 	@Test
@@ -102,7 +105,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void caplinStyleClassesThatReferToNonCaplinStyleClassesWillHaveRequiresAutomaticallyAdded() throws Exception {
+	public void caplinStyleClassesThatReferToRequireEncapsulatedClassesWillHaveRequiresAutomaticallyAdded() throws Exception {
 		given(aspect).hasPackageStyle("src/mypkg/namespaced", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.nodejs.Class")
 			.and(aspect).classRefersTo("mypkg.namespaced.Class", "mypkg.nodejs.Class");
@@ -120,6 +123,19 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("mypkg.namespaced.Class = function() {\n};")
 			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
+	}
+	
+	@Test
+	public void requiresAreNotAutomaticallyAddedForThirdpartyLibrariesWhichAreNotEncapsulated() throws Exception {
+		given(aspect).hasPackageStyle("src", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(aspect).hasClasses("mypkg.namespaced.Class")
+			.and(aspect).indexPageRefersTo("mypkg.namespaced.Class")
+			.and(aspect).classRefersToThirdpartyLib("mypkg.namespaced.Class", thirdpartyLib)
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: lib.js")
+			.and(thirdpartyLib).containsFile("lib.js");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("mypkg.namespaced.Class")
+			.and(requestResponse).doesNotContainText("require('");
 	}
 	
 	@Test

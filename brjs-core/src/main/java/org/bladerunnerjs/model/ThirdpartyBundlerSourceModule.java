@@ -123,6 +123,11 @@ public class ThirdpartyBundlerSourceModule implements SourceModule
 	}
 	
 	@Override
+	public boolean isEncapsulatedModule() {
+		return false;
+	}
+	
+	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		return getDependentSourceModules(bundlableNode);

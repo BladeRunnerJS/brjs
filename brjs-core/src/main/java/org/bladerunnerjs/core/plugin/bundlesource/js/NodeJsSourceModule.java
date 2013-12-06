@@ -106,6 +106,11 @@ public class NodeJsSourceModule implements SourceModule {
 	}
 	
 	@Override
+	public boolean isEncapsulatedModule() {
+		return true;
+	}
+	
+	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		return new ArrayList<>();
 	}

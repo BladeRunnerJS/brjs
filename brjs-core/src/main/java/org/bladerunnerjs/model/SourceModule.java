@@ -10,6 +10,9 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
  */
 public interface SourceModule extends LinkedAsset {
 	String getRequirePath();
+	
+	boolean isEncapsulatedModule();
+	
 	/**
 	 * Returns a list of source files that *must* precede this source file in the output 
 	 * @param bundlableNode TODO

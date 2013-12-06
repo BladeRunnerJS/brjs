@@ -63,6 +63,11 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
+	public boolean isEncapsulatedModule() {
+		return false;
+	}
+	
+	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		List<SourceModule> orderDependentSourceModules = new ArrayList<>();
 		
@@ -121,7 +126,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 		try {
 			// TODO: we need to think about the current need to provide a bundlableNode as a result of a getReader() invocation
 			for(SourceModule dependentSourceModule : getDependentSourceModules(null)) {
-				if(!(dependentSourceModule instanceof NamespacedJsSourceModule)) {
+				if(dependentSourceModule.isEncapsulatedModule()) {
 					String moduleNamespace = dependentSourceModule.getRequirePath().replaceAll("/", ".");
 					stringBuffer.append(moduleNamespace + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
 				}

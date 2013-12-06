@@ -145,6 +145,7 @@ void transformFile(Reader reader, Writer writer, TransformInfo info) throws File
     <void property="methods">
      <void property="text">
       <string>String getRequirePath()
+boolean isEncapsulatedModule()
 List&lt;SourceModule&gt; getOrderDependentSourceModules()</string>
      </void>
     </void>
