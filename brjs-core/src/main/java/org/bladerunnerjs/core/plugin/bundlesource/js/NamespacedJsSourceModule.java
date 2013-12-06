@@ -113,14 +113,14 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	private String globalizeNonCaplinJsClasses() {
-		StringBuffer stringBuffer = new StringBuffer();
+		StringBuffer stringBuffer = new StringBuffer("\n");
 		
 		try {
 			// TODO: we need to think about the current need to provide a bundlableNode as a result of a getReader() invocation
-			for(SourceModule dependentSourceModules : getDependentSourceModules(null)) {
-				if(!(dependentSourceModules instanceof NamespacedJsSourceModule)) {
-					String moduleNamespace = dependentSourceModules.getRequirePath().replaceAll("/", ".");
-					stringBuffer.append(moduleNamespace + " = require('" + dependentSourceModules.getRequirePath()  + "');\n");
+			for(SourceModule dependentSourceModule : getDependentSourceModules(null)) {
+				if(!(dependentSourceModule instanceof NamespacedJsSourceModule)) {
+					String moduleNamespace = dependentSourceModule.getRequirePath().replaceAll("/", ".");
+					stringBuffer.append(moduleNamespace + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
 				}
 			}
 		}
