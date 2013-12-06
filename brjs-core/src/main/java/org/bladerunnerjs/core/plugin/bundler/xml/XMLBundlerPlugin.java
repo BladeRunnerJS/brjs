@@ -12,10 +12,10 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 

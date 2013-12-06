@@ -10,19 +10,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.core.plugin.AbstractPlugin;
-import com.caplin.cutlass.LegacyFileBundlerPlugin;
 
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
 import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import com.caplin.cutlass.AppMetaData;
 
+import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.js.minification.Minifier;

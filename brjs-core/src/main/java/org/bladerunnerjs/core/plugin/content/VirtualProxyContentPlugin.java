@@ -6,8 +6,8 @@ import java.util.List;
 import org.bladerunnerjs.core.plugin.VirtualProxyPlugin;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 
 public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements ContentPlugin {
 	private ContentPlugin contentPlugin;

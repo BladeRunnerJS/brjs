@@ -19,20 +19,22 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.core.plugin.AbstractPlugin;
+
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
+
 import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.CutlassConfig;
-
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
 
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;

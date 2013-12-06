@@ -13,17 +13,19 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.core.plugin.AbstractPlugin;
-import com.caplin.cutlass.LegacyFileBundlerPlugin;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ContentPathParser;
-import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import com.caplin.cutlass.AppMetaData;
 
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.request.RequestHandlingException;
+
+import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.SourceFileProvider;
 
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;

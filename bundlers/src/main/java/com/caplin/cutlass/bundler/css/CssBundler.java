@@ -13,19 +13,21 @@ import java.util.Map;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.bladerunnerjs.core.plugin.AbstractPlugin;
+
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
+
 import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.CutlassConfig;
-
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;

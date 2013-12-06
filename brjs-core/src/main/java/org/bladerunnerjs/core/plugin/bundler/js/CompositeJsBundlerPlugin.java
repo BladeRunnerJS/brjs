@@ -19,11 +19,11 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 

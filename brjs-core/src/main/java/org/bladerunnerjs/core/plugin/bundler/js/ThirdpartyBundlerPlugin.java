@@ -20,7 +20,6 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
@@ -32,6 +31,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 

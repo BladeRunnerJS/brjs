@@ -15,10 +15,10 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 
 public class BRJSServletUtils
 {

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.model.utility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 

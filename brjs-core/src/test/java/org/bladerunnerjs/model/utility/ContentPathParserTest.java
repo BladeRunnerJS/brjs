@@ -1,4 +1,4 @@
-package com.caplin.cutlass.bundler.parser;
+package org.bladerunnerjs.model.utility;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -6,9 +6,9 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.model.utility.ContentPathParser;
 import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 public class ContentPathParserTest
