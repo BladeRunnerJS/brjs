@@ -6,6 +6,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -14,7 +15,7 @@ import org.junit.Test;
 public class AspectAppThirdpartyLibBundling extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private JsLib appLegacyThirdparty;
+	private JsLib appLegacyThirdparty, appLegacyThirdparty2;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -28,6 +29,20 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			aspect = app.aspect("default");
 			
 			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty");
+			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty2");
+	}
+	
+	@Ignore
+	@Test
+	public void interLibraryDependenciesAppearAheadOfTheDependentLibrary() throws Exception {
+		given(appLegacyThirdparty).hasClass("appThirdpartyLibName.Class1")
+			.and(aspect).indexPageRefersTo(appLegacyThirdparty)
+			.and(appLegacyThirdparty).containsFileWithContents("library.manifest", "js: lib1.js\ndepends: app-legacy-thirdparty2")
+			.and(appLegacyThirdparty).containsFile("lib1.js")
+			.and(appLegacyThirdparty2).containsFileWithContents("library.manifest", "js: lib2.js")
+			.and(appLegacyThirdparty2).containsFile("lib2.js");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("// app-legacy-thirdparty2\n\n\n\n\n// app-legacy-thirdparty");
 	}
 
 	@Test
