@@ -65,7 +65,7 @@ public class XMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerPl
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
 		throw new RuntimeException("Not implemented!");
 	}

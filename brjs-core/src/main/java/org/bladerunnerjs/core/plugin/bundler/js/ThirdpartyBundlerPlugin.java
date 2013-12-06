@@ -147,10 +147,10 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
 		try {
-			if (request.formName.equals("bundle-request"))
+			if (contentPath.formName.equals("bundle-request"))
 			{
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
 				{
@@ -164,8 +164,8 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 					}
 				}
 			}
-			else if(request.formName.equals("file-request")) {
-				String libName = request.properties.get("module");
+			else if(contentPath.formName.equals("file-request")) {
+				String libName = contentPath.properties.get("module");
 				App app = bundleSet.getBundlableNode().getApp();
 				JsLib lib = app.nonBladeRunnerLib(libName);
 				if (!lib.dirExists())
@@ -173,7 +173,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 					throw new BundlerProcessingException("Library " + lib.getName() + " doesn't exist.");
 				}
 				
-				String filePath = request.properties.get("file-path");
+				String filePath = contentPath.properties.get("file-path");
 				File file = lib.file(filePath);
 				if (!file.exists())
 				{
@@ -182,17 +182,17 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 				
 				IOUtils.copy(new FileInputStream(file), os);
 			}
-			else if(request.formName.equals("single-module-request")) {
+			else if(contentPath.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
 				{
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceFile(request.properties.get("module"));
+					SourceModule jsModule = bundleSet.getBundlableNode().getSourceFile(contentPath.properties.get("module"));
 					writer.write("// " + jsModule.getRequirePath() + "\n");
 					IOUtils.copy(jsModule.getReader(), writer);
 					writer.write("\n\n");
 				}
 			}
 			else {
-				throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
+				throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
 		catch(RequirePathException | ConfigException | IOException ex) {

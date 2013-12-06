@@ -73,14 +73,14 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
-		if(request.formName.equals("dev-bundle-request") || request.formName.equals("prod-bundle-request")) {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+		if(contentPath.formName.equals("dev-bundle-request") || contentPath.formName.equals("prod-bundle-request")) {
 			try {
-				String minifierSetting = request.properties.get("minifier-setting");
+				String minifierSetting = contentPath.properties.get("minifier-setting");
 				MinifierPlugin minifierPlugin = brjs.plugins().minifier(minifierSetting);
 				
 				try(Writer writer = new OutputStreamWriter(os)) {
-					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(request, bundleSet);
+					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet);
 					minifierPlugin.minify(minifierSetting, inputSources, writer);
 				}
 			}
@@ -90,7 +90,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 			
 		}
 		else {
-			throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
+			throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
 		}
 	}
 	
@@ -129,7 +129,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 		return requestPaths;
 	}
 	
-	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath request, BundleSet bundleSet) throws BundlerProcessingException {
+	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet) throws BundlerProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {
@@ -137,16 +137,16 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 			
 			for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
 				if( !bundlerPlugin.equals(this) ) {
-					String locale = request.properties.get("locale");
-					List<String> requestPaths = (request.formName.equals("dev-bundle-request")) ? bundlerPlugin.getValidDevRequestPaths(bundleSet, locale) :
+					String locale = contentPath.properties.get("locale");
+					List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? bundlerPlugin.getValidDevRequestPaths(bundleSet, locale) :
 						bundlerPlugin.getValidProdRequestPaths(bundleSet, locale);
 					ContentPathParser requestParser = bundlerPlugin.getContentPathParser();
 					
 					for(String requestPath : requestPaths) {
-						ParsedContentPath parsedRequest = requestParser.parse(requestPath);
+						ParsedContentPath parsedContentPath = requestParser.parse(requestPath);
 						ByteArrayOutputStream baos = new ByteArrayOutputStream();
 						
-						bundlerPlugin.writeContent(parsedRequest, bundleSet, baos);
+						bundlerPlugin.writeContent(parsedContentPath, bundleSet, baos);
 						inputSources.add(new InputSource(requestPath, baos.toString(charsetName), bundlerPlugin, bundleSet));
 					}
 				}

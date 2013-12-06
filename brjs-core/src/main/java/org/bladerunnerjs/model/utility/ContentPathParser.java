@@ -89,15 +89,15 @@ public class ContentPathParser
 			{
 				if ((requestMatcher.start() == 0) && (requestMatcher.end() == request.length()))
 				{
-					ParsedContentPath parsedRequest = new ParsedContentPath(requestFormName);
+					ParsedContentPath contentPath = new ParsedContentPath(requestFormName);
 					List<String> tokens = requestFormTokens.get(requestFormName);
 
 					for (int gi = 0; gi < requestMatcher.groupCount() && gi < tokens.size(); ++gi)
 					{
-						parsedRequest.properties.put(tokens.get(gi), requestMatcher.group(gi + 1));
+						contentPath.properties.put(tokens.get(gi), requestMatcher.group(gi + 1));
 					}
 
-					return parsedRequest;
+					return contentPath;
 				}
 				else if ((requestMatcher.start() == 0) && (requestMatcher.end() > lastMatchPos))
 				{

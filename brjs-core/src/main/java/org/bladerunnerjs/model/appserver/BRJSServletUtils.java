@@ -66,12 +66,12 @@ public class BRJSServletUtils
 		}
 	}
 	
-	private void handleRequestUsingContentPlugin(BladerunnerUri requestUri, ParsedContentPath parsedRequest, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
+	private void handleRequestUsingContentPlugin(BladerunnerUri requestUri, ParsedContentPath contentPath, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
 	{
 		try
 		{
 			BundlableNode bundlableNode = getBundableNodeForRequest(requestUri, resp);
-			contentPlugin.writeContent(parsedRequest, bundlableNode.getBundleSet(), resp.getOutputStream());
+			contentPlugin.writeContent(contentPath, bundlableNode.getBundleSet(), resp.getOutputStream());
 		}
 		catch (MalformedRequestException ex)
 		{

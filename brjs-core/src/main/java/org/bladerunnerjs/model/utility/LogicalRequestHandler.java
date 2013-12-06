@@ -55,8 +55,8 @@ public class LogicalRequestHandler {
 			
 			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), requestUri.logicalPath);
 			
-			ParsedContentPath parsedRequest = contentProvider.getContentPathParser().parse(requestUri);
-			contentProvider.writeContent(parsedRequest, bundlableNode.getBundleSet(), os);
+			ParsedContentPath contentPath = contentProvider.getContentPathParser().parse(requestUri);
+			contentProvider.writeContent(contentPath, bundlableNode.getBundleSet(), os);
 		}
 		catch(ModelOperationException e) {
 			throw new BundlerProcessingException(e);

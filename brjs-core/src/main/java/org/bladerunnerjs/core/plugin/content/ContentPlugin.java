@@ -13,7 +13,7 @@ public interface ContentPlugin extends Plugin {
 	String getRequestPrefix();
 	String getMimeType();
 	ContentPathParser getContentPathParser();
-	void writeContent(ParsedContentPath path, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException;
+	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException;
 	List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
 	List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
 }

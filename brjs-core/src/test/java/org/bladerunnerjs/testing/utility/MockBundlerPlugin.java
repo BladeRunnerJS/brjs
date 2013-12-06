@@ -44,7 +44,7 @@ public class MockBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath path, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
 	}
 

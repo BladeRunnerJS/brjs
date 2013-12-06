@@ -44,9 +44,9 @@ public class InputSource {
 		try {
 			if(source != filteredSource) {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				ParsedContentPath parsedRequest = bundlerPlugin.getContentPathParser().parse(sourceMappingUrl);
+				ParsedContentPath contentPath = bundlerPlugin.getContentPathParser().parse(sourceMappingUrl);
 				
-				bundlerPlugin.writeContent(parsedRequest, bundleSet, bos);
+				bundlerPlugin.writeContent(contentPath, bundleSet, bos);
 				
 				sourceMap = bos.toString(bundleSet.getBundlableNode().root().bladerunnerConf().getDefaultOutputEncoding());
 			}

@@ -65,7 +65,7 @@ public class HTMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
 		throw new RuntimeException("Not implemented!");
 	}

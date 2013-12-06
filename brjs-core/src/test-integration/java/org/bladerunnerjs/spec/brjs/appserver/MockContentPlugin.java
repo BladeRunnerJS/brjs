@@ -61,7 +61,7 @@ public class MockContentPlugin extends AbstractContentPlugin implements ContentP
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
 		PrintWriter out = new PrintWriter(os);
 		out.print(this.getClass().getCanonicalName());

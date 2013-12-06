@@ -126,15 +126,15 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		try {
-			if(request.formName.equals("single-module-request")) {
+			if(contentPath.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceFile(request.properties.get("module"));
+					SourceModule jsModule = bundleSet.getBundlableNode().getSourceFile(contentPath.properties.get("module"));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
-			else if(request.formName.equals("bundle-request")) {
+			else if(contentPath.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
 								
 					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
@@ -151,14 +151,14 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 					}
 				}
 			}
-			else if(request.formName.equals("package-definitions-request")) {
+			else if(contentPath.formName.equals("package-definitions-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
     				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
     				writePackageStructure(packageStructure, writer);
 				}
 			}
 			else {
-				throw new BundlerProcessingException("unknown request form '" + request.formName + "'.");
+				throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
 		catch(ConfigException | IOException | RequirePathException e) {

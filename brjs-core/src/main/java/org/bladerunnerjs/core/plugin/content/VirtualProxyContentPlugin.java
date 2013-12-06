@@ -34,9 +34,9 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath request, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		initializePlugin();
-		contentPlugin.writeContent(request, bundleSet, os);
+		contentPlugin.writeContent(contentPath, bundleSet, os);
 	}
 
 	@Override
