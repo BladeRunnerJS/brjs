@@ -51,7 +51,11 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public Reader getReader() throws FileNotFoundException {
-		return new ConcatReader(assetFile.getReader(), new StringReader(globalizeNonCaplinJsClasses()));
+		return new ConcatReader(new Reader[] {
+			new StringReader(globalizeNonCaplinJsClasses()),
+			assetFile.getReader(),
+			new StringReader("\n")
+		});
 	}
 	
 	@Override
@@ -113,7 +117,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	private String globalizeNonCaplinJsClasses() {
-		StringBuffer stringBuffer = new StringBuffer("\n");
+		StringBuffer stringBuffer = new StringBuffer();
 		
 		try {
 			// TODO: we need to think about the current need to provide a bundlableNode as a result of a getReader() invocation
