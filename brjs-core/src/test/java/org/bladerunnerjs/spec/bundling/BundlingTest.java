@@ -31,7 +31,7 @@ public class BundlingTest extends SpecTest {
 	private AliasesFile aspectAliasesFile;
 	private Bladeset bladeset;
 	private Blade blade, bladeWithSubstringOfAnotherBlade;
-	private JsLib bootstrapLib, sdkJsLib, userLib, appLegacyThirdparty, sdkLegacyThirdparty, sdkLegacyThirdparty2;
+	private JsLib bootstrapLib, sdkJsLib, userLib, appLegacyThirdparty, appLegacyThirdparty2, sdkLegacyThirdparty, sdkLegacyThirdparty2;
 	private AliasDefinitionsFile bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
 	
@@ -54,6 +54,7 @@ public class BundlingTest extends SpecTest {
 			
 			bootstrapLib = app.jsLib("bootstrap");
 			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty");
+			appLegacyThirdparty2 = app.nonBladeRunnerLib("app-legacy-thirdparty2");
 			userLib = app.jsLib("userLib");
 			sdkJsLib = brjs.sdkLib();
 			sdkLegacyThirdparty = brjs.sdkNonBladeRunnerLib("legacy-thirdparty");
@@ -516,6 +517,19 @@ public class BundlingTest extends SpecTest {
 			.and(aspect).classRequires("mypkg.Class1", "appThirdpartyLibName.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appThirdpartyLibName.Class1");
+	}
+	
+	@Ignore
+	@Test
+	public void interLibraryDependenciesAppearAheadOfTheDependentLibrary() throws Exception {
+		given(appLegacyThirdparty).hasClass("appThirdpartyLibName.Class1")
+			.and(aspect).indexPageRefersTo(appLegacyThirdparty)
+			.and(appLegacyThirdparty).containsFileWithContents("library.manifest", "js: lib1.js\ndepends: app-legacy-thirdparty2")
+			.and(appLegacyThirdparty).containsFile("lib1.js")
+			.and(appLegacyThirdparty2).containsFileWithContents("library.manifest", "js: lib2.js")
+			.and(appLegacyThirdparty2).containsFile("lib2.js");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("// app-legacy-thirdparty2\n\n\n\n\n// app-legacy-thirdparty");
 	}
 	
 	// ------------------------------- J S   P A T C H E S ----------------------------------
