@@ -330,7 +330,7 @@ public class BundlingTest extends SpecTest {
 			.and(response).doesNotContainClasses("mypkg.bs.b1.Class1");
 	}
 	
-	@Test
+	@Test	// blade unhappy paths
 	public void bladeClassesCanOnlyDependOnExistentClassesWhenAspectIsRequested() throws Exception {
 		given(blade).hasClass("mypkg.Class1")
 			.and(aspect).indexPageRefersTo("mypkg.Class1")
@@ -401,7 +401,7 @@ public class BundlingTest extends SpecTest {
 	// ---------------------------------  H T M L -------------------------------------
 	@Test
 	public void classesReferringToABladesetInAspectHTMlFilesAreBundled() throws Exception {
-		given(blade).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
+		given(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 		.and(aspect).resourceFileRefersTo("html/view.html", "mypkg.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("mypkg.bs.Class1");
@@ -594,7 +594,7 @@ public class BundlingTest extends SpecTest {
 			.and(aspect).hasClass("mypkg.Class1")
 			.and(aspect).classRefersTo("mypkg.Class1", "sdkJsLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("sdkJsLib.Class1")
+		then(response).containsClasses("mypkg.Class1", "sdkJsLib.Class1")
 			.and(response).doesNotContainText("require");
 	}
 	
@@ -669,6 +669,18 @@ public class BundlingTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.legacy = { }")
 			.and(response).containsText("window.legacy2 = { }");
+	}
+	
+	@Ignore // TODO understand why this throws an UnknownFormatConversion Exception
+	@Test
+	public void anExceptionIsThrownIfThirdpartyLibHasDependencyOnAFileThatDoesNotExist() throws Exception {
+		given(sdkLegacyThirdparty).hasBeenCreated()
+			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends: blabla")
+			.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
+			.and(aspect).hasClass("mypkg.Class1")
+			.and(aspect).indexPageRefersTo(sdkLegacyThirdparty);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
 	@Test

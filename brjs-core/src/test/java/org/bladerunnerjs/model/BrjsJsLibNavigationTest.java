@@ -15,7 +15,7 @@ public class BrjsJsLibNavigationTest
 	@Before
 	public void setup()
 	{
-		nodeTesterFactory = new NodeTesterFactory<JsLib>((JsLib) BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).sdkLib(), JsLib.class);
+		nodeTesterFactory = new NodeTesterFactory<JsLib>(BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).sdkLib(), JsLib.class);
 	}
 	
 	@After

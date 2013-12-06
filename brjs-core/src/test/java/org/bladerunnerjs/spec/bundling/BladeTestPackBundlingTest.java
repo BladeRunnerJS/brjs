@@ -52,4 +52,32 @@ public class BladeTestPackBundlingTest extends SpecTest
 				blade.src().file("src/mypkg/bs/b1/Class1.js"),
 				blade.src().file("src/mypkg/bs/b1/Class2.js"));
 	}
+	
+	@Ignore
+	@Test
+	public void weBundleBladeSrcTestContentsInUTs() throws Exception {
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", "namespaced-js")
+			.and(blade).hasClasses("mypkg.bs.b1.Class1")
+			.and(bladeUTs).containsFile("src/js-test-driver/src-test/util.js")
+			.and(bladeUTs).testRefersTo("mypkg.bs.b1.Class1");
+		then(bladeUTs).bundledFilesEquals(
+			blade.src().file("src/mypkg/bs/b1/Class1.js"),
+			blade.src().file("src/mypkg/bs/b1/Class2.js"),
+			bladeUTs.testSource().file("util.js"));
+	}
+
+	
+	
+	@Ignore
+	@Test
+	public void noExceptionsAreThrownIfTheBladeSrcFolderHasAHiddenFolder() throws Exception {
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", "namespaced-js")
+			.and(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
+			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
+			.and(blade).hasDir("src/.svn")
+			.and(bladeUTs).testRefersTo("mypkg.bs.b1.Class1");
+		then(bladeATs).bundledFilesEquals(
+			blade.src().file("src/mypkg/bs/b1/Class1.js"),
+			blade.src().file("src/mypkg/bs/b1/Class2.js"));
+	}
 }

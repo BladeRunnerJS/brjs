@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
+import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -27,6 +28,7 @@ import org.bladerunnerjs.specutil.JsLibVerifier;
 import org.bladerunnerjs.specutil.LoggerVerifier;
 import org.bladerunnerjs.specutil.NamedDirNodeVerifier;
 import org.bladerunnerjs.specutil.NamedNodeVerifier;
+import org.bladerunnerjs.specutil.TestPackVerifier;
 import org.bladerunnerjs.specutil.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 
@@ -56,4 +58,5 @@ public class VerifierChainer {
 	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(specTest, appConf); }
 	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(specTest, dir); }
 	public StringVerifier and(StringBuffer stringBuffer) { return new StringVerifier(specTest, stringBuffer); }
+	public TestPackVerifier and(TestPack testPack) { return new TestPackVerifier(specTest, testPack); }
 }
