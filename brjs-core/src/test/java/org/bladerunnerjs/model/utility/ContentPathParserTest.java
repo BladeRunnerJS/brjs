@@ -190,6 +190,17 @@ public class ContentPathParserTest
 		parser.parse("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,.!;#�$%^&@~()+-=[]{}'");
 	}
 	
+	@Test
+	public void useOfCapturingGroupsInTokensDoesntPreventSubsequentTokensFromBeingRetrieved() throws Exception {
+		builder.accepts("<token1>/<token2>").as("request-form")
+			.where("token1").hasForm("foo(bar)?").and("token2").hasForm("baz");
+		parser = builder.build();
+		ParsedContentPath contentPath = parser.parse("foo/baz");
+		
+		assertEquals("foo", contentPath.properties.get("token1"));
+		assertEquals("baz", contentPath.properties.get("token2"));
+	}
+	
 	@Test(expected=MalformedRequestException.class)
 	public void forwardSlashNotAllowedByNameToken() throws MalformedRequestException
 	{

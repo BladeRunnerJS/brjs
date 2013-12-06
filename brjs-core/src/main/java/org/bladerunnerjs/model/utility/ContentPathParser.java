@@ -141,8 +141,12 @@ public class ContentPathParser
 		return 0;
 	}
 	
-	private String convertToPattern(String requestForm) {
+	private String convertRequestFormToPattern(String requestForm) {
 		return requestForm.replaceAll("([.?*+()\\[\\]])", "\\\\$1");
+	}
+	
+	private String convertTokenToPattern(String token) {
+		return token.replaceAll("\\(", "(?:");
 	}
 	
 	private Map<String, Pattern> generateTokenPatterns(Map<String, String> tokens) {
@@ -163,11 +167,11 @@ public class ContentPathParser
 		for (String requestFormName : requestForms.keySet())
 		{
 			String requestForm = requestForms.get(requestFormName);
-			String tokenizedRequestForm = convertToPattern(requestForm);
+			String tokenizedRequestForm = convertRequestFormToPattern(requestForm);
 			
 			for (String token : tokens.keySet())
 			{
-				tokenizedRequestForm = tokenizedRequestForm.replaceAll("<" + token + ">", "(" + tokens.get(token) + ")");
+				tokenizedRequestForm = tokenizedRequestForm.replaceAll("<" + token + ">", "(" + convertTokenToPattern(tokens.get(token)) + ")");
 			}
 			
 			requestFormPatterns.put(requestFormName, Pattern.compile(tokenizedRequestForm));
