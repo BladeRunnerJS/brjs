@@ -32,28 +32,28 @@ public class ContentPathParserTest
 	@Test(expected=IllegalStateException.class)
 	public void throwsExceptionIfAsNotUsedAfterAcceptsAfterAnd() throws MalformedRequestException
 	{
-		builder.accepts("request").as("request-form").and("request2");
+		builder.accepts("request").as("content-form").and("request2");
 		parser = builder.build();
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void throwsExceptionIfHasFormNotUsedAfterWhere() throws MalformedRequestException
 	{
-		builder.accepts("request/<foo>").as("request-form").where("foo");
+		builder.accepts("request/<foo>").as("content-form").where("foo");
 		parser = builder.build();
 	}
 	
 	@Test(expected=IllegalStateException.class)
 	public void throwsExceptionIfHasFormNotUsedAfterWhereAfterAnd() throws MalformedRequestException
 	{
-		builder.accepts("request/<foo>/<bar>").as("request-form").where("foo").hasForm("the-form").and("bar");
+		builder.accepts("request/<foo>/<bar>").as("content-form").where("foo").hasForm("the-form").and("bar");
 		parser = builder.build();
 	}
 	
 	@Test
 	public void simpleRequest() throws MalformedRequestException
 	{
-		builder.accepts("request").as("request-form");
+		builder.accepts("request").as("content-form");
 		parser = builder.build();
 		
 		ParsedContentPath request = parser.parse("request");
@@ -63,7 +63,7 @@ public class ContentPathParserTest
 	@Test
 	public void simpleRequestExceptionHasCorrectDetails()
 	{
-		builder.accepts("request").as("request-form");
+		builder.accepts("request").as("content-form");
 		parser = builder.build();
 		
 		try
@@ -123,7 +123,7 @@ public class ContentPathParserTest
 	@Test
 	public void requestContainingParametersIsProcessedCorrectly() throws MalformedRequestException
 	{
-		builder.accepts("request/<token1>/<token2>").as("request-form").where("token1").hasForm("[0-9]+").and("token2").hasForm("[a-z]+");
+		builder.accepts("request/<token1>/<token2>").as("content-form").where("token1").hasForm("[0-9]+").and("token2").hasForm("[a-z]+");
 		parser = builder.build();
 		
 		ParsedContentPath request = parser.parse("request/33/foo");
@@ -135,7 +135,7 @@ public class ContentPathParserTest
 	@Test
 	public void incorrectlyTypedParameterRequestsCauseException()
 	{
-		builder.accepts("request/<token1>/<token2>").as("request-form").where("token1").hasForm("[0-9]+").and("token2").hasForm("[a-z]+");
+		builder.accepts("request/<token1>/<token2>").as("content-form").where("token1").hasForm("[0-9]+").and("token2").hasForm("[a-z]+");
 		parser = builder.build();
 		
 		try
@@ -169,7 +169,7 @@ public class ContentPathParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void wildcardsAreEscaped() throws MalformedRequestException
 	{
-		builder.accepts("ab*").as("request-form");
+		builder.accepts("ab*").as("content-form");
 		parser = builder.build();
 		parser.parse("abb");
 	}
@@ -177,7 +177,7 @@ public class ContentPathParserTest
 	@Test
 	public void allRegularExpressionCharactersCanBeUsedAsNormalCharacters() throws MalformedRequestException
 	{
-		builder.accepts(".?*+()[]").as("request-form");
+		builder.accepts(".?*+()[]").as("content-form");
 		parser = builder.build();
 		parser.parse(".?*+()[]");
 	}
@@ -192,7 +192,7 @@ public class ContentPathParserTest
 	
 	@Test
 	public void useOfCapturingGroupsInTokensDoesntPreventSubsequentTokensFromBeingRetrieved() throws Exception {
-		builder.accepts("<token1>/<token2>").as("request-form")
+		builder.accepts("<token1>/<token2>").as("content-form")
 			.where("token1").hasForm("foo(bar)?").and("token2").hasForm("baz");
 		parser = builder.build();
 		ParsedContentPath contentPath = parser.parse("foo/baz");
@@ -204,7 +204,7 @@ public class ContentPathParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void forwardSlashNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("content-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse("/");
 	}
@@ -221,7 +221,7 @@ public class ContentPathParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void colonNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("content-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse(":");
 	}
@@ -229,7 +229,7 @@ public class ContentPathParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void wildcardNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("content-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse("*");
 	}
@@ -237,7 +237,7 @@ public class ContentPathParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void questionMarkNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("content-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse("?");
 	}
@@ -245,7 +245,7 @@ public class ContentPathParserTest
 	@Test(expected=MalformedRequestException.class)
 	public void doubleQuotesNotAllowedByNameToken() throws MalformedRequestException
 	{
-		builder.accepts("<name>").as("request-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
+		builder.accepts("<name>").as("content-form").where("name").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		parser = builder.build();
 		parser.parse("\"");
 	}
@@ -253,36 +253,36 @@ public class ContentPathParserTest
 	@Test
 	public void createRequestWorks() throws Exception
 	{
-		builder.accepts("request/<token1>/<token2>").as("request-form").where("token1").hasForm("[0-9]+").and("token2").hasForm("[a-z]+");
+		builder.accepts("request/<token1>/<token2>").as("content-form").where("token1").hasForm("[0-9]+").and("token2").hasForm("[a-z]+");
 		parser = builder.build();
 		
-		assertEquals("request/123/abc", parser.createRequest("request-form", "123", "abc"));
+		assertEquals("request/123/abc", parser.createRequest("content-form", "123", "abc"));
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void createRequestThrowsExceptionWhenNotEnoughArgsAreProvided() throws Exception
 	{
-		builder.accepts("request/<token>").as("request-form").where("token").hasForm("[a-z]+");
+		builder.accepts("request/<token>").as("content-form").where("token").hasForm("[a-z]+");
 		parser = builder.build();
 		
-		parser.createRequest("request-form");
+		parser.createRequest("content-form");
 	}
 	
 	@Test(expected=IllegalArgumentException.class)
 	public void createRequestThrowsExceptionWhenTooManyArgsAreProvided() throws Exception
 	{
-		builder.accepts("request/<token>").as("request-form").where("token").hasForm("[a-z]+");
+		builder.accepts("request/<token>").as("content-form").where("token").hasForm("[a-z]+");
 		parser = builder.build();
 		
-		parser.createRequest("request-form", "abc", "xyz");
+		parser.createRequest("content-form", "abc", "xyz");
 	}
 	
 	@Test(expected=MalformedTokenException.class)
 	public void createRequestWorksThrowsExceptionWhenIncorrectlyTypedArgsAreProvided() throws Exception
 	{
-		builder.accepts("request/<token>").as("request-form").where("token").hasForm("[a-z]+");
+		builder.accepts("request/<token>").as("content-form").where("token").hasForm("[a-z]+");
 		parser = builder.build();
 		
-		parser.createRequest("request-form", "123");
+		parser.createRequest("content-form", "123");
 	}
 }

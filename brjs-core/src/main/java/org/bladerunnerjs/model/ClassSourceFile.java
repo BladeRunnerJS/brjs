@@ -2,17 +2,17 @@ package org.bladerunnerjs.model;
 
 public class ClassSourceFile
 {
-	private final SourceModule sourceFile;
+	private final SourceModule sourceModule;
 	
-	public ClassSourceFile(SourceModule sourceFile) {
-		this.sourceFile = sourceFile;
+	public ClassSourceFile(SourceModule sourceModule) {
+		this.sourceModule = sourceModule;
 	}
 	
-	public SourceModule getSourceFile() {
-		return sourceFile;
+	public SourceModule getSourceModule() {
+		return sourceModule;
 	}
 	
 	public String getClassName() {
-		return sourceFile.getRequirePath().replaceAll("/", ".");
+		return sourceModule.getRequirePath().replaceAll("/", ".");
 	}
 }

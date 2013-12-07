@@ -7,17 +7,17 @@ import java.util.Map;
 
 public class ContentPathParserBuilder
 {
-	private final Map<String, String> requestForms = new LinkedHashMap<>();
+	private final Map<String, String> contentForms = new LinkedHashMap<>();
 	private final Map<String, String> tokens = new HashMap<>();
 	private boolean builderIsMidSentence = false;
 	
 	public static final String NAME_TOKEN = "[^_/:*?\"]+";
 	public static final String PATH_TOKEN = "[^:*?\"]+";
 	
-	public RequestFormNamer accepts(String requestForm)
+	public RequestFormNamer accepts(String contentForm)
 	{
 		builderIsMidSentence = true;
-		return new RequestFormAppender(this, requestForms, tokens).and(requestForm);
+		return new ContentFormAppender(this, contentForms, tokens).and(contentForm);
 	}
 	
 	public TokenValueSetter where(String tokenName)
@@ -32,26 +32,26 @@ public class ContentPathParserBuilder
 			throw new IllegalStateException("build() invoked while RequestParserBuilder was left mid-sentence");
 		}
 		
-		return new ContentPathParser(requestForms, tokens);
+		return new ContentPathParser(contentForms, tokens);
 	}
 	
-	public class RequestFormAppender
+	public class ContentFormAppender
 	{
-		private final Map<String, String> requestForms;
+		private final Map<String, String> contentForms;
 		private Map<String, String> tokens;
 		private final ContentPathParserBuilder builder;
 		
-		public RequestFormAppender(ContentPathParserBuilder builder, Map<String, String> requestForms, Map<String, String> tokens)
+		public ContentFormAppender(ContentPathParserBuilder builder, Map<String, String> contentForms, Map<String, String> tokens)
 		{
 			this.builder = builder;
-			this.requestForms = requestForms;
+			this.contentForms = contentForms;
 			this.tokens = tokens;
 		}
 		
-		public RequestFormNamer and(String requestForm)
+		public RequestFormNamer and(String contentForm)
 		{
 			builder.builderIsMidSentence = true;
-			return new RequestFormNamer(requestForms, requestForm, this);
+			return new RequestFormNamer(contentForms, contentForm, this);
 		}
 		
 		public TokenValueSetter where(String tokenName)
@@ -63,26 +63,26 @@ public class ContentPathParserBuilder
 	
 	public class RequestFormNamer
 	{
-		private final RequestFormAppender requestFormAppender;
-		private final Map<String, String> requestForms;
-		private String requestForm;
+		private final ContentFormAppender contentFormAppender;
+		private final Map<String, String> contentForms;
+		private String contentForm;
 		
-		public RequestFormNamer(Map<String, String> requestForms, String requestForm, RequestFormAppender requestFormNamer)
+		public RequestFormNamer(Map<String, String> contentForms, String contentForm, ContentFormAppender contentFormNamer)
 		{
-			this.requestForms = requestForms;
-			this.requestForm = requestForm;
-			this.requestFormAppender = requestFormNamer;
+			this.contentForms = contentForms;
+			this.contentForm = contentForm;
+			this.contentFormAppender = contentFormNamer;
 		}
 		
-		public RequestFormAppender as(String requestFormName)
+		public ContentFormAppender as(String contentFormName)
 		{
-			requestFormAppender.builder.builderIsMidSentence = false;
-			requestForms.put(requestFormName, requestForm);
-			return requestFormAppender;
+			contentFormAppender.builder.builderIsMidSentence = false;
+			contentForms.put(contentFormName, contentForm);
+			return contentFormAppender;
 		}
 		
-		public void setRequestForm(String requestForm) {
-			this.requestForm = requestForm;
+		public void setRequestForm(String contentForm) {
+			this.contentForm = contentForm;
 		}
 	}
 	

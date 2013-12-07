@@ -32,7 +32,7 @@ import com.caplin.cutlass.structure.BundlePathsFromRoot;
 
 public class JsBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
-	private final ContentPathParser requestParser = RequestParserFactory.createJsBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createJsBundlerContentPathParser();
 	private Minifier minifier;
 	
 	public JsBundler()
@@ -59,13 +59,13 @@ public class JsBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{
-		ParsedContentPath request = requestParser.parse(requestName);
+		ParsedContentPath request = contentPathParser.parse(requestName);
 		
 		if(request.properties.containsKey("path"))
 		{

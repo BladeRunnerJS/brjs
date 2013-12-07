@@ -38,7 +38,7 @@ import com.caplin.cutlass.structure.model.path.BladePath;
 
 public class ImageBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
-	private final ContentPathParser requestParser = RequestParserFactory.createImageBundlerRequestParser();;
+	private final ContentPathParser contentPathParser = RequestParserFactory.createImageBundlerContentPathParser();;
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -54,14 +54,14 @@ public class ImageBundler extends AbstractPlugin implements LegacyFileBundlerPlu
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{
 		Node requestNode = SdkModel.getNode(baseDir);
-		ParsedContentPath request = requestParser.parse(requestName);
+		ParsedContentPath request = contentPathParser.parse(requestName);
 		ScopeLevel imageScope = getImageScope(request.properties);
 		
 		if(!RequestScopeProvider.isValidRequest(requestNode, imageScope))

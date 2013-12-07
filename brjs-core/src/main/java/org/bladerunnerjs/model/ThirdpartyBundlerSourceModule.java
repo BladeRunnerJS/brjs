@@ -99,7 +99,7 @@ public class ThirdpartyBundlerSourceModule implements SourceModule
     			{
     				throw new ConfigException(String.format("Library '%s' depends on '%'s, which doesn't exist.", getAssetName(), dependentLibName)) ;
     			}
-    			dependentLibs.addAll(dependentLib.sourceFiles());
+    			dependentLibs.addAll(dependentLib.sourceModules());
     		}
 		}
 		catch (ConfigException ex)

@@ -48,38 +48,38 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		List<SourceModule> dependentSourceFiles = new ArrayList<>();
+		List<SourceModule> dependentSourceModules = new ArrayList<>();
 		
 		try {
 			if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
 				recalculateDependencies();
 			}
 			
-			Map<String, SourceModule> sourceFileMap = new HashMap<String, SourceModule>();
+			Map<String, SourceModule> sourceModuleMap = new HashMap<String, SourceModule>();
 			
 			for (AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers())
 			{
-				for (SourceModule sourceFile : assetContainer.sourceFiles())
+				for (SourceModule sourceModule : assetContainer.sourceModules())
 				{
-					sourceFileMap.put(sourceFile.getRequirePath(), sourceFile);
+					sourceModuleMap.put(sourceModule.getRequirePath(), sourceModule);
 				}
 			}
 			
 			for(String requirePath : requirePaths) {
-				SourceModule sourceFile = sourceFileMap.get(requirePath);
+				SourceModule sourceModule = sourceModuleMap.get(requirePath);
 				
-				if(sourceFile == null) {
+				if(sourceModule == null) {
 					throw new UnresolvableRequirePathException(requirePath, this.requirePath);
 				}
 				
-				dependentSourceFiles.add(sourceFile);
+				dependentSourceModules.add(sourceModule);
 			}
 		}
 		catch(UnresolvableRequirePathException e) {
 			throw new ModelOperationException(e);
 		}
 		
-		return dependentSourceFiles;
+		return dependentSourceModules;
 	}
 	
 	@Override

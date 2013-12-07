@@ -45,29 +45,29 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public SourceModule getSourceFile(String requirePath) throws RequirePathException {
-		SourceModule sourceFile = null;
+	public SourceModule getSourceModule(String requirePath) throws RequirePathException {
+		SourceModule sourceModule = null;
 		
 		for(AssetContainer assetContainer : getAssetContainers()) {
-			SourceModule locationSourceFile = assetContainer.sourceFile(requirePath);
+			SourceModule locationSourceModule = assetContainer.sourceModule(requirePath);
 			
-			if(locationSourceFile != null) {
-				if(sourceFile == null) {
-					sourceFile = locationSourceFile;
+			if(locationSourceModule != null) {
+				if(sourceModule == null) {
+					sourceModule = locationSourceModule;
 				}
 				else {
-					throw new AmbiguousRequirePathException("'" + sourceFile.getAssetPath() + "' and '" +
-						locationSourceFile.getAssetPath() + "' source files both available via require path '" +
-						sourceFile.getRequirePath() + "'.");
+					throw new AmbiguousRequirePathException("'" + sourceModule.getAssetPath() + "' and '" +
+						locationSourceModule.getAssetPath() + "' source files both available via require path '" +
+						sourceModule.getRequirePath() + "'.");
 				}
 			}
 		}
 		
-		if(sourceFile == null) {
+		if(sourceModule == null) {
 			throw new UnresolvableRequirePathException(requirePath);
 		}
 		
-		return sourceFile;
+		return sourceModule;
 	}
 	
 	@Override

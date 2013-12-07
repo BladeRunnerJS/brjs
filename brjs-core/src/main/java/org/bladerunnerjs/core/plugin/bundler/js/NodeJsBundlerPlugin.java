@@ -32,20 +32,20 @@ import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin {
 	public static final String JS_STYLE = "node.js";
 	
-	private ContentPathParser requestParser;
+	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	private BRJS brjs;
 	
 	{
 		try {
-			ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
-			requestParserBuilder
+			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+			contentPathParserBuilder
 				.accepts("node-js/bundle.js").as("bundle-request")
 					.and("node-js/module/<module>.js").as("single-module-request")
 				.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 			
-			requestParser = requestParserBuilder.build();
-			prodRequestPaths.add(requestParser.createRequest("bundle-request"));
+			contentPathParser = contentPathParserBuilder.build();
+			prodRequestPaths.add(contentPathParser.createRequest("bundle-request"));
 		}
 		catch(MalformedTokenException e) {
 			throw new RuntimeException(e);
@@ -94,7 +94,7 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	
 	@Override
 	public ContentPathParser getContentPathParser() {
-		return requestParser;
+		return contentPathParser;
 	}
 	
 	@Override
@@ -102,9 +102,9 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
-			for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-				if(sourceFile instanceof NodeJsSourceModule) {
-					requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
+			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+				if(sourceModule instanceof NodeJsSourceModule) {
+					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
 				}
 			}
 		}
@@ -125,17 +125,17 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 		try {
 			if(contentPath.formName.equals("single-module-request")) {
 				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceFile(contentPath.properties.get("module"));
+					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
 			else if(contentPath.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-					for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-						if (sourceFile instanceof NodeJsSourceModule)
+					for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+						if (sourceModule instanceof NodeJsSourceModule)
 						{
-							writer.write("// " + sourceFile.getRequirePath() + "\n");
-    						IOUtils.copy(sourceFile.getReader(), writer);
+							writer.write("// " + sourceModule.getRequirePath() + "\n");
+    						IOUtils.copy(sourceModule.getReader(), writer);
     						writer.write("\n\n");
 						}
 					}
@@ -151,7 +151,7 @@ public class NodeJsBundlerPlugin extends AbstractBundlerPlugin implements Bundle
 	}
 	
 	@Override
-	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
 	{ 
 		if (JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE)) {
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceModule.class, "js");

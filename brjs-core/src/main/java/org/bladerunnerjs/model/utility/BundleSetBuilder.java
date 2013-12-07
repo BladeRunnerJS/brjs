@@ -20,7 +20,7 @@ import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
 public class BundleSetBuilder {
 	Set<LinkedAsset> seedFiles = new HashSet<>();
-	Set<SourceModule> sourceFiles = new LinkedHashSet<>();
+	Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	Set<AliasDefinition> activeAliases = new HashSet<>();
 	Set<AssetLocation> resources = new HashSet<>();
 	private BundlableNode bundlableNode;
@@ -39,14 +39,14 @@ public class BundleSetBuilder {
 			
 			for(AliasDefinition aliasDefinition : activeAliases) {
 				String requirePath = aliasDefinition.getClassName().replaceAll("\\.", "/");
-				sourceFiles.add(bundlableNode.getSourceFile(requirePath));
+				sourceModules.add(bundlableNode.getSourceModule(requirePath));
 			}
 		}
 		catch(RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
 		
-		return new BundleSet(bundlableNode, orderSourceFiles(sourceFiles), activeAliasList, resourcesList);
+		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourcesList);
 	}
 	
 	public void addSeedFile(LinkedAsset seedFile) throws ModelOperationException {
@@ -54,13 +54,13 @@ public class BundleSetBuilder {
 		activeAliases.addAll(getAliases(seedFile.getAliasNames()));
 	}
 	
-	public boolean addSourceFile(SourceModule sourceFile) throws ModelOperationException {
+	public boolean addSourceModule(SourceModule sourceModule) throws ModelOperationException {
 		boolean isNewSourceFile = false;
 		
-		if(sourceFiles.add(sourceFile)) {
+		if(sourceModules.add(sourceModule)) {
 			isNewSourceFile = true;
-			activeAliases.addAll(getAliases(sourceFile.getAliasNames()));
-			resources.addAll(sourceFile.getAssetLocation().getAssetContainer().getAllAssetLocations());
+			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
+			resources.addAll(sourceModule.getAssetLocation().getAssetContainer().getAllAssetLocations());
 		}
 		
 		return isNewSourceFile;
@@ -81,35 +81,35 @@ public class BundleSetBuilder {
 		return aliases;
 	}
 
-	private List<SourceModule> orderSourceFiles(Set<SourceModule> sourceFiles) throws ModelOperationException {
-		List<SourceModule> sourceFileList = new ArrayList<>();
+	private List<SourceModule> orderSourceModules(Set<SourceModule> sourceModules) throws ModelOperationException {
+		List<SourceModule> sourceModulesList = new ArrayList<>();
 		Set<LinkedAsset> metDependencies = new HashSet<>();
 		
 		
-		int maxIterations = sourceFiles.size() * sourceFiles.size();
+		int maxIterations = sourceModules.size() * sourceModules.size();
 		int iterationCount = 0;
 		
-		while(!sourceFiles.isEmpty()) {
-			Set<SourceModule> unprocessedSourceFiles = new HashSet<>();
-			for(SourceModule sourceFile : sourceFiles) {
-				if(dependenciesHaveBeenMet(sourceFile, metDependencies)) {
-					sourceFileList.add(sourceFile);
-					metDependencies.add(sourceFile);
+		while(!sourceModules.isEmpty()) {
+			Set<SourceModule> unprocessedSourceModules = new HashSet<>();
+			for(SourceModule sourceModule : sourceModules) {
+				if(dependenciesHaveBeenMet(sourceModule, metDependencies)) {
+					sourceModulesList.add(sourceModule);
+					metDependencies.add(sourceModule);
 				}
 				else {
-					unprocessedSourceFiles.add(sourceFile);
+					unprocessedSourceModules.add(sourceModule);
 				}
 			}
 			
 			if (iterationCount++ > maxIterations)
 			{
-				throw new ModelOperationException("Error satisfying source file dependencies. unprocessedSourceFiles = "+stringifySourceFiles(unprocessedSourceFiles));
+				throw new ModelOperationException("Error satisfying source file dependencies. unprocessedSourceFiles = "+stringifySourceModules(unprocessedSourceModules));
 			}
 			
-			sourceFiles = unprocessedSourceFiles;
+			sourceModules = unprocessedSourceModules;
 		}
 		
-		return sourceFileList;
+		return sourceModulesList;
 	}
 	
 	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
@@ -127,7 +127,7 @@ public class BundleSetBuilder {
 		
 		if(!sourceModule.getRequirePath().equals("bootstrap")) {
 			try {
-				orderDependentSourceModules.add(bundlableNode.getSourceFile("bootstrap"));
+				orderDependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
 			}
 			catch(RequirePathException e) {
 				// do nothing: 'bootstrap' is only an implicit dependency if it exists 
@@ -137,12 +137,12 @@ public class BundleSetBuilder {
 		return orderDependentSourceModules;
 	}
 
-	private String stringifySourceFiles(Set<SourceModule> sourceFiles)
+	private String stringifySourceModules(Set<SourceModule> sourceModules)
 	{
 		StringBuilder builder = new StringBuilder();
-		for (SourceModule sourceFile : sourceFiles)
+		for (SourceModule sourceModule : sourceModules)
 		{
-			builder.append(sourceFile.getRequirePath()+", ");
+			builder.append(sourceModule.getRequirePath()+", ");
 		}
 		builder.setLength(builder.length()-2);
 		return builder.toString();

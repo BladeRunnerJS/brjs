@@ -24,7 +24,7 @@ import org.bladerunnerjs.model.utility.TrieKeyAlreadyExistsException;
 public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private App app;
 	private File assetFile;
-	private List<SourceModule> dependentSourceFiles;
+	private List<SourceModule> dependentSourceModules;
 	private List<String> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private AssetLocation assetLocation;
@@ -48,7 +48,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 			recalculateDependencies();
 		}
 		
-		return dependentSourceFiles;
+		return dependentSourceModules;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	}
 	
 	private void recalculateDependencies() throws ModelOperationException {
-		dependentSourceFiles = new ArrayList<>();
+		dependentSourceModules = new ArrayList<>();
 		aliases = new ArrayList<>();
 		Trie<Object> trie = createTrie();
 		
@@ -84,10 +84,10 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 			try(Reader reader = getReader()) {
 				for(Object match : trie.getMatches(reader)) {
 					if(match instanceof SourceModule) {
-						dependentSourceFiles.add((SourceModule) match);
+						dependentSourceModules.add((SourceModule) match);
 					}
 					else if(match instanceof ClassSourceFile) {
-						dependentSourceFiles.add(((ClassSourceFile) match).getSourceFile());
+						dependentSourceModules.add(((ClassSourceFile) match).getSourceModule());
 					}
 					else {
 						aliases.add((String) match);
@@ -115,12 +115,12 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 					}
 				}
 				
-				for(SourceModule sourceFile : assetContainer.sourceFiles()) {
-					ClassSourceFile classSourceFile = new ClassSourceFile(sourceFile);
+				for(SourceModule sourceModule : assetContainer.sourceModules()) {
+					ClassSourceFile classSourceFile = new ClassSourceFile(sourceModule);
 					
-					if (!sourceFile.getUnderlyingFile().equals(assetFile)) {
-	    				trie.add(sourceFile.getRequirePath(), sourceFile);
-	    				if ( !sourceFile.getRequirePath().equals(classSourceFile.getClassName()) )
+					if (!sourceModule.getUnderlyingFile().equals(assetFile)) {
+	    				trie.add(sourceModule.getRequirePath(), sourceModule);
+	    				if ( !sourceModule.getRequirePath().equals(classSourceFile.getClassName()) )
 	    				{
 	    					trie.add(classSourceFile.getClassName(), classSourceFile);
 	    				}

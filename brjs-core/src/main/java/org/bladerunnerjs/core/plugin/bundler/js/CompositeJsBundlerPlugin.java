@@ -28,18 +28,18 @@ import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 
 public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin {
-	private ContentPathParser requestParser = (new ContentPathParserBuilder()).build();
+	private ContentPathParser contentPathParser = (new ContentPathParserBuilder()).build();
 	private BRJS brjs;
 	
 	{
-		ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
-		requestParserBuilder
+		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+		contentPathParserBuilder
 			.accepts("js/dev/<locale>/<minifier-setting>/bundle.js").as("dev-bundle-request")
 				.and("js/prod/<locale>/<minifier-setting>/bundle.js").as("prod-bundle-request")
 			.where("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
 				.and("minifier-setting").hasForm("[a-z-]+");
 		
-		requestParser = requestParserBuilder.build();
+		contentPathParser = contentPathParserBuilder.build();
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 	
 	@Override
 	public ContentPathParser getContentPathParser() {
-		return requestParser;
+		return contentPathParser;
 	}
 	
 	@Override
@@ -95,7 +95,7 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 	}
 	
 	@Override
-	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}
@@ -140,10 +140,10 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 					String locale = contentPath.properties.get("locale");
 					List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? bundlerPlugin.getValidDevRequestPaths(bundleSet, locale) :
 						bundlerPlugin.getValidProdRequestPaths(bundleSet, locale);
-					ContentPathParser requestParser = bundlerPlugin.getContentPathParser();
+					ContentPathParser contentPathParser = bundlerPlugin.getContentPathParser();
 					
 					for(String requestPath : requestPaths) {
-						ParsedContentPath parsedContentPath = requestParser.parse(requestPath);
+						ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
 						ByteArrayOutputStream baos = new ByteArrayOutputStream();
 						
 						bundlerPlugin.writeContent(parsedContentPath, bundleSet, baos);

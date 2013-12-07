@@ -46,7 +46,7 @@ import com.caplin.cutlass.structure.model.path.ThirdpartyLibPath;
 public class ThirdPartyBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private static final NotFileFilter notManifestFileFilter = new NotFileFilter(new NameFileFilter(CutlassConfig.LIBRARY_MANIFEST_FILENAME, IOCase.INSENSITIVE));
-	private final ContentPathParser requestParser = RequestParserFactory.createThirdPartyBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createThirdPartyBundlerContentPathParser();
 	private final ThirdPartyLibraryFinder libraryFinder = new ThirdPartyLibraryFinder();
 	
 	@Override
@@ -63,7 +63,7 @@ public class ThirdPartyBundler extends AbstractPlugin implements LegacyFileBundl
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class ThirdPartyBundler extends AbstractPlugin implements LegacyFileBundl
 	{
 		String requestPath = StringUtils.substringBeforeLast(requestName, "?");		
 		
-		ParsedContentPath request = requestParser.parse(requestPath);
+		ParsedContentPath request = contentPathParser.parse(requestPath);
 		String resourcePath = getResourcePath(baseDir, request.properties);
 		File file = new File(resourcePath);
 		

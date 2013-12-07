@@ -10,8 +10,8 @@ public interface AssetContainer extends BRJSNode {
 	App getApp();
 	String namespace();
 	String requirePrefix();
-	List<SourceModule> sourceFiles();
-	SourceModule sourceFile(String requirePath);
+	List<SourceModule> sourceModules();
+	SourceModule sourceModule(String requirePath);
 	AssetLocation src();
 	AssetLocation resources();
 	List<AssetLocation> getAllAssetLocations();

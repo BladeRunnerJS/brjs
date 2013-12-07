@@ -37,7 +37,7 @@ public class CssBundler extends AbstractPlugin implements LegacyFileBundlerPlugi
 {
 	private static final String CSS_BUNDLE_EXT = "_css" + BUNDLE_EXT;
 	private final Map<String, BladeRunnerSourceFileProvider> providers = new HashMap<String, BladeRunnerSourceFileProvider>();
-	private final ContentPathParser requestParser = RequestParserFactory.createCssBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createCssBundlerContentPathParser();
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -53,7 +53,7 @@ public class CssBundler extends AbstractPlugin implements LegacyFileBundlerPlugi
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	public List<String> getValidRequestStrings(AppMetaData appMetaData)
@@ -109,7 +109,7 @@ public class CssBundler extends AbstractPlugin implements LegacyFileBundlerPlugi
 
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{		
-		ParsedContentPath request = requestParser.parse(requestName);
+		ParsedContentPath request = contentPathParser.parse(requestName);
 		String theme = request.properties.get("theme");
 		String languageCode = request.properties.get("languageCode");
 		String countryCode = request.properties.get("countryCode");

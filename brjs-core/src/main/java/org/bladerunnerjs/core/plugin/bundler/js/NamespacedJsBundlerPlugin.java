@@ -35,21 +35,21 @@ import org.json.simple.JSONObject;
 public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin {
 	public static final String JS_STYLE = "namespaced-js";
 	
-	private ContentPathParser requestParser;
+	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	private BRJS brjs;
 	
 	{
 		try {
-			ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
-			requestParserBuilder
+			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+			contentPathParserBuilder
 				.accepts("namespaced-js/bundle.js").as("bundle-request")
 					.and("namespaced-js/module/<module>.js").as("single-module-request")
 					.and("namespaced-js/package-definitions.js").as("package-definitions-request")
 				.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 			
-			requestParser = requestParserBuilder.build();
-			prodRequestPaths.add(requestParser.createRequest("bundle-request"));
+			contentPathParser = contentPathParserBuilder.build();
+			prodRequestPaths.add(contentPathParser.createRequest("bundle-request"));
 		}
 		catch(MalformedTokenException e) {
 			throw new RuntimeException(e);
@@ -98,7 +98,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 	
 	@Override
 	public ContentPathParser getContentPathParser() {
-		return requestParser;
+		return contentPathParser;
 	}
 	
 	@Override
@@ -106,10 +106,10 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
-			requestPaths.add(requestParser.createRequest("package-definitions-request"));
-			for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-				if(sourceFile instanceof NamespacedJsSourceModule) {
-					requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
+			requestPaths.add(contentPathParser.createRequest("package-definitions-request"));
+			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+				if(sourceModule instanceof NamespacedJsSourceModule) {
+					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
 				}
 			}
 		}
@@ -130,7 +130,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 		try {
 			if(contentPath.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceFile(contentPath.properties.get("module"));
+					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
@@ -141,11 +141,11 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
     				writePackageStructure(packageStructure, writer);
     				writer.write("\n");
 					
-					for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-						if(sourceFile instanceof NamespacedJsSourceModule)
+					for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+						if(sourceModule instanceof NamespacedJsSourceModule)
 						{
-    						writer.write("// " + sourceFile.getRequirePath() + "\n");
-    						IOUtils.copy(sourceFile.getReader(), writer);
+    						writer.write("// " + sourceModule.getRequirePath() + "\n");
+    						IOUtils.copy(sourceModule.getReader(), writer);
     						writer.write("\n\n");
 						}
 					}
@@ -167,7 +167,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 	}
 	
 	@Override
-	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
 	{
 		if ( !(assetLocation.getAssetContainer() instanceof JsLib) && JsStyleUtility.getJsStyle(assetLocation.dir()).equals(JS_STYLE)) {
 			// TODO: blow up if the package of the assetLocation would not be a valid namespace
@@ -200,9 +200,9 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 	private Map<String, Map<String, ?>> createPackageStructureForCaplinJsClasses(BundleSet bundleSet, Writer writer) {
 		Map<String, Map<String, ?>> packageStructure = new HashMap<>();
 		
-		for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-			if(sourceFile instanceof NamespacedJsSourceModule) {
-				List<String> packageList = Arrays.asList(sourceFile.getRequirePath().split("/"));
+		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+			if(sourceModule instanceof NamespacedJsSourceModule) {
+				List<String> packageList = Arrays.asList(sourceModule.getRequirePath().split("/"));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}

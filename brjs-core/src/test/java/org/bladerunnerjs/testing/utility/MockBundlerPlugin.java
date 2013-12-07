@@ -39,8 +39,8 @@ public class MockBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 	@Override
 	public ContentPathParser getContentPathParser()
 	{
-		ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
-		return requestParserBuilder.build();
+		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+		return contentPathParserBuilder.build();
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class MockBundlerPlugin extends AbstractBundlerPlugin implements BundlerP
 	}
 
 	@Override
-	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}

@@ -25,13 +25,13 @@ import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 
 public class ValidRequestForBundledResourceFilter implements Filter {
 
-	private Map<String, ContentPathParser> requestParsers;
+	private Map<String, ContentPathParser> contentPathParsers;
 	
 	public ValidRequestForBundledResourceFilter()
 	{
-		requestParsers = new HashMap<String, ContentPathParser>();
-		requestParsers.put("css.bundle", RequestParserFactory.createCssBundlerRequestParser());
-		requestParsers.put("i18n.bundle", RequestParserFactory.createI18nBundlerRequestParser());		
+		contentPathParsers = new HashMap<String, ContentPathParser>();
+		contentPathParsers.put("css.bundle", RequestParserFactory.createCssBundlerContentPathParser());
+		contentPathParsers.put("i18n.bundle", RequestParserFactory.createI18nBundlerContentPathParser());		
 	}
 	
 	@Override
@@ -67,12 +67,12 @@ public class ValidRequestForBundledResourceFilter implements Filter {
 	
 	private boolean isValidBundledResourcePath(String bundlePathFromSectionRoot)
 	{
-		ContentPathParser requestParser = getRequestParserForRequest(bundlePathFromSectionRoot);
-		if(requestParser == null) {
+		ContentPathParser contentPathParser = getRequestParserForRequest(bundlePathFromSectionRoot);
+		if(contentPathParser == null) {
 			return false;
 		}
 		try {
-			requestParser.parse(bundlePathFromSectionRoot);
+			contentPathParser.parse(bundlePathFromSectionRoot);
 		} catch (MalformedRequestException e) {
 			return false;
 		}
@@ -92,14 +92,14 @@ public class ValidRequestForBundledResourceFilter implements Filter {
 		
 	}
 
-	private ContentPathParser getRequestParserForRequest(String requestPath)
+	private ContentPathParser getRequestParserForRequest(String contentPath)
 	{
-		String requestFilename = StringUtils.substringAfterLast(requestPath, "/");
-		for (String bundlerFileExtension : requestParsers.keySet())
+		String contentFilename = StringUtils.substringAfterLast(contentPath, "/");
+		for (String bundlerFileExtension : contentPathParsers.keySet())
 		{
-			if (requestFilename.equals(bundlerFileExtension) || requestFilename.endsWith("_" + bundlerFileExtension))
+			if (contentFilename.equals(bundlerFileExtension) || contentFilename.endsWith("_" + bundlerFileExtension))
 			{
-				return requestParsers.get(bundlerFileExtension);
+				return contentPathParsers.get(bundlerFileExtension);
 			}
 		}
 		return null;

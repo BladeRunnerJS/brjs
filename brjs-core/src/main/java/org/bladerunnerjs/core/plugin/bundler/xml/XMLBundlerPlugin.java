@@ -22,12 +22,12 @@ import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 public class XMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin
 {
 
-	private ContentPathParser requestParser;
+	private ContentPathParser contentPathParser;
 	
 	{
-		ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
-		requestParserBuilder.accepts("bundle.xml").as("bundle-request");
-		requestParser = requestParserBuilder.build();
+		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+		contentPathParserBuilder.accepts("bundle.xml").as("bundle-request");
+		contentPathParser = contentPathParserBuilder.build();
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class XMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerPl
 	@Override
 	public ContentPathParser getContentPathParser()
 	{
-		return requestParser;
+		return contentPathParser;
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class XMLBundlerPlugin extends AbstractBundlerPlugin implements BundlerPl
 	}
 	
 	@Override
-	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
 	{
 		return Arrays.asList();
 	}

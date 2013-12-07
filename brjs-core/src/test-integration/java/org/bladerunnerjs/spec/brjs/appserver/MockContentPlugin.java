@@ -19,19 +19,19 @@ import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 public class MockContentPlugin extends AbstractContentPlugin implements ContentPlugin
 {
-	private ContentPathParser requestParser;
+	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	
 	{
 		try {
-			ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
-			requestParserBuilder
+			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+			contentPathParserBuilder
 				.accepts("mock-servlet").as("request")
 				.and("mock-servlet/some/other/path").as("long-request");
 			
-			requestParser = requestParserBuilder.build();
-			prodRequestPaths.add(requestParser.createRequest("request"));
-			prodRequestPaths.add(requestParser.createRequest("long-request"));
+			contentPathParser = contentPathParserBuilder.build();
+			prodRequestPaths.add(contentPathParser.createRequest("request"));
+			prodRequestPaths.add(contentPathParser.createRequest("long-request"));
 		}
 		catch(MalformedTokenException e) {
 			throw new RuntimeException(e);
@@ -57,7 +57,7 @@ public class MockContentPlugin extends AbstractContentPlugin implements ContentP
 	@Override
 	public ContentPathParser getContentPathParser()
 	{
-		return requestParser;
+		return contentPathParser;
 	}
 
 	@Override

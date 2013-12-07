@@ -37,19 +37,19 @@ import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
 
 public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin, TagHandlerPlugin
 {
-	private ContentPathParser requestParser;
+	private ContentPathParser contentPathParser;
 	private BRJS brjs;
 
 	{
-		ContentPathParserBuilder requestParserBuilder = new ContentPathParserBuilder();
-		requestParserBuilder
+		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+		contentPathParserBuilder
     		.accepts("thirdparty/bundle.js").as("bundle-request")
 				.and("thirdparty/<module>/bundle.js").as("single-module-request")
 				.and("thirdparty/file/<module>/<file-path>").as("file-request")
 			.where("module").hasForm(".+")
 				.and("file-path").hasForm(".+");
 		
-		requestParser = requestParserBuilder.build();
+		contentPathParser = contentPathParserBuilder.build();
 	}
 	
 	@Override
@@ -65,22 +65,22 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	}
 
 	@Override
-	public List<SourceModule> getSourceFiles(AssetLocation assetLocation)
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
 	{
 		try
 		{
-    		List<SourceModule> sourceFiles = new ArrayList<SourceModule>();
+    		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
     		if (assetLocation.getAssetContainer() instanceof JsLib)
     		{
     			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
     			if (manifest.fileExists())
     			{
-    				ThirdpartyBundlerSourceModule sourceFile = (ThirdpartyBundlerSourceModule) assetLocation.getAssetContainer().root().getAssetFile(ThirdpartyBundlerSourceModule.class, assetLocation, assetLocation.dir());
-    				sourceFile.initManifest(manifest);
-    				sourceFiles.add( sourceFile );
+    				ThirdpartyBundlerSourceModule sourceModule = (ThirdpartyBundlerSourceModule) assetLocation.getAssetContainer().root().getAssetFile(ThirdpartyBundlerSourceModule.class, assetLocation, assetLocation.dir());
+    				sourceModule.initManifest(manifest);
+    				sourceModules.add( sourceModule );
     			}
     		}
-    		return sourceFiles;
+    		return sourceModules;
 		}
 		catch (ConfigException | UnableToInstantiateAssetFileException ex)
 		{
@@ -143,7 +143,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 	@Override
 	public ContentPathParser getContentPathParser()
 	{
-		return requestParser;
+		return contentPathParser;
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 			{
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
 				{
-					for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
+					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
 						if(sourceFile instanceof ThirdpartyBundlerSourceModule)
 						{
     						writer.write("// " + sourceFile.getRequirePath() + "\n");
@@ -185,7 +185,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 			else if(contentPath.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
 				{
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceFile(contentPath.properties.get("module"));
+					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
 					writer.write("// " + jsModule.getRequirePath() + "\n");
 					IOUtils.copy(jsModule.getReader(), writer);
 					writer.write("\n\n");
@@ -206,9 +206,9 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
-			for(SourceModule sourceFile : bundleSet.getSourceFiles()) {
-				if(sourceFile instanceof ThirdpartyBundlerSourceModule) {
-					requestPaths.add(requestParser.createRequest("single-module-request", sourceFile.getRequirePath()));
+			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+				if(sourceModule instanceof ThirdpartyBundlerSourceModule) {
+					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
 				}
 			}
 		}
@@ -225,7 +225,7 @@ public class ThirdpartyBundlerPlugin extends AbstractBundlerPlugin implements Bu
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
-			requestPaths.add(requestParser.createRequest("bundle-request"));
+			requestPaths.add(contentPathParser.createRequest("bundle-request"));
 		}
 		catch (MalformedTokenException e) {
 			throw new BundlerProcessingException(e);

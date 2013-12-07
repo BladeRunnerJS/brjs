@@ -40,7 +40,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
-	private final ContentPathParser requestParser = RequestParserFactory.createI18nBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createI18nBundlerContentPathParser();
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -56,7 +56,7 @@ public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
@@ -126,7 +126,7 @@ public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 	
 	private String getI18nPropertiesFilePattern(String requestString) throws MalformedRequestException
 	{
-		ParsedContentPath request = requestParser.parse(requestString);
+		ParsedContentPath request = contentPathParser.parse(requestString);
 		String languageCode = request.properties.get("languageCode");
 		String countryCode = request.properties.get("countryCode");
 		

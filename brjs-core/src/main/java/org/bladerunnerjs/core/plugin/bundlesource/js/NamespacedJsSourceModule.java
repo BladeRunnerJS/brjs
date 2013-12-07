@@ -81,7 +81,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 				String requirePath = referencedClass.replaceAll("\\.", "/");
 				
 				try {
-					orderDependentSourceModules.add(bundlableNode.getSourceFile(requirePath));
+					orderDependentSourceModules.add(bundlableNode.getSourceModule(requirePath));
 				}
 				catch(UnresolvableRequirePathException e) {
 					// TODO: log the fact that the thing being extended was not found to be a fully qualified class name (probably a variable name), and so is being ignored for the purposes of bundling.

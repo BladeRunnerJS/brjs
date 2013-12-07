@@ -65,7 +65,7 @@ public class BundleSetCreator {
 		}
 		
 		for(SourceModule sourceModule : moduleDependencies) {
-			if(bundleSetBuilder.addSourceFile(sourceModule)) {
+			if(bundleSetBuilder.addSourceModule(sourceModule)) {
 				processFile(bundlableNode, sourceModule, bundleSetBuilder, logger, processedFiles);
 				
 				for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().getAllAssetLocations()) {
@@ -85,7 +85,7 @@ public class BundleSetCreator {
 			
 			if(!sourceModule.getRequirePath().equals("bootstrap")) {
 				try {
-					dependentSourceModules.add(bundlableNode.getSourceFile("bootstrap"));
+					dependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
 				}
 				catch(RequirePathException e) {
 					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
@@ -117,11 +117,11 @@ public class BundleSetCreator {
 		return "'" + Joiner.on("', '").join(assetContainerPaths) + "'";
 	}
 	
-	private static String sourceFilePaths(List<SourceModule> sourceFiles) {
+	private static String sourceFilePaths(List<SourceModule> sourceModules) {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
-		for(SourceModule sourceFile : sourceFiles) {
-			sourceFilePaths.add(getRelativePath(sourceFile.getAssetLocation().getAssetContainer().dir(), sourceFile.getUnderlyingFile()));
+		for(SourceModule sourceModule : sourceModules) {
+			sourceFilePaths.add(getRelativePath(sourceModule.getAssetLocation().getAssetContainer().dir(), sourceModule.getUnderlyingFile()));
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";

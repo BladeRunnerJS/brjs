@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
 public interface BundlableNode extends Node, AssetContainer {
 	AliasesFile aliasesFile();
-	SourceModule getSourceFile(String requirePath) throws RequirePathException;
+	SourceModule getSourceModule(String requirePath) throws RequirePathException;
 	List<LinkedAsset> seedFiles();
 	List<AssetContainer> getAssetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;

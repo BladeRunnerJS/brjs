@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.SourceModule;
 
 
 public interface BundlerPlugin extends ContentPlugin {
-	List<SourceModule> getSourceFiles(AssetLocation assetLocation);
+	List<SourceModule> getSourceModules(AssetLocation assetLocation);
 	List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation);
 	List<Asset> getResourceFiles(AssetLocation assetLocation);
 }

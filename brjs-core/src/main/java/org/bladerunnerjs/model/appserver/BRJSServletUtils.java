@@ -47,18 +47,18 @@ public class BRJSServletUtils
 		ContentPlugin contentPlugin = getContentPluginForRequest(bladerunnerUri);
 		if (contentPlugin != null)
 		{
-			ContentPathParser requestParser = contentPlugin.getContentPathParser();
-			handleRequestUsingContentPlugin(bladerunnerUri, parse(requestParser, bladerunnerUri), contentPlugin, resp);
+			ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
+			handleRequestUsingContentPlugin(bladerunnerUri, parse(contentPathParser, bladerunnerUri), contentPlugin, resp);
 			return true;
 		}
 		return false;
 	}
 
-	private ParsedContentPath parse(ContentPathParser requestParser, BladerunnerUri bladerunnerUri) throws ServletException
+	private ParsedContentPath parse(ContentPathParser contentPathParser, BladerunnerUri bladerunnerUri) throws ServletException
 	{
 		try
 		{
-			return requestParser.parse(bladerunnerUri);
+			return contentPathParser.parse(bladerunnerUri);
 		}
 		catch (MalformedRequestException ex)
 		{

@@ -56,9 +56,9 @@ public class VirtualProxyBundlerPlugin extends VirtualProxyPlugin implements Bun
 	}
 
 	@Override
-	public List<SourceModule> getSourceFiles(AssetLocation assetLocation) {
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		initializePlugin();
-		return bundlerPlugin.getSourceFiles(assetLocation);
+		return bundlerPlugin.getSourceModules(assetLocation);
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class HtmlBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 	private final IOFileFilter htmlFilter = new SuffixFileFilter(".html");
 	private final IOFileFilter htmFilter = new SuffixFileFilter(".htm");
 	private final IOFileFilter htmlOrHtmFileFilter = new OrFileFilter(htmlFilter, htmFilter);
-	private final ContentPathParser requestParser = RequestParserFactory.createHtmlBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createHtmlBundlerContentPathParser();
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -52,7 +52,7 @@ public class HtmlBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
@@ -60,7 +60,7 @@ public class HtmlBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 	{
 		SourceFileProvider htmlSourceFileProvider = new BladeRunnerSourceFileProvider(new HtmlBundlerFileAppender());
 
-		requestParser.parse(requestName);
+		contentPathParser.parse(requestName);
 		
 		List<File> sourceFiles = htmlSourceFileProvider.getSourceFiles(baseDir, testDir);
 		List<File> htmlSourceFiles = new ArrayList<File>();

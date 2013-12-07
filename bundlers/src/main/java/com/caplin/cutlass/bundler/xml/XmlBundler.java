@@ -41,7 +41,7 @@ public class XmlBundler extends AbstractPlugin implements LegacyFileBundlerPlugi
 {
 	private XmlBundleWriter bundleWriter;
 	private final IOFileFilter xmlFilter = new SuffixFileFilter(".xml");
-	private final ContentPathParser requestParser = RequestParserFactory.createXmlBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createXmlBundlerContentPathParser();
 	
 	public XmlBundler() throws ParserConfigurationException, SAXException, IOException
 	{		
@@ -67,13 +67,13 @@ public class XmlBundler extends AbstractPlugin implements LegacyFileBundlerPlugi
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{
-		requestParser.parse(requestName);
+		contentPathParser.parse(requestName);
 		
 		SourceFileProvider sourceFileProvider = new BladeRunnerSourceFileProvider(new XmlBundlerFileAppender());
 		
