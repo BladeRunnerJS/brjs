@@ -15,13 +15,17 @@ import java.util.zip.GZIPOutputStream;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
+
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
+
 import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.utility.WebXmlCompiler;
+
+import org.bladerunnerjs.utility.WebXmlCompiler;
 import org.xml.sax.SAXException;
 
 import com.caplin.cutlass.bundler.css.CssBundler;

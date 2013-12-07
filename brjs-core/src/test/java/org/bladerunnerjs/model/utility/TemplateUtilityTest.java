@@ -12,8 +12,9 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsException;
-import org.bladerunnerjs.model.utility.TemplateUtility;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
+import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.TemplateUtility;
 import org.junit.Before;
 import org.junit.Test;
 

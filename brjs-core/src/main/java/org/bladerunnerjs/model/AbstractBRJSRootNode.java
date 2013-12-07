@@ -4,8 +4,8 @@ import java.io.File;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.log.LoggerFactory;
+import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 

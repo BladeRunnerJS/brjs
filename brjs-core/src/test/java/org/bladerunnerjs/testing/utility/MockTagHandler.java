@@ -5,10 +5,10 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Map;
 
-import org.bladerunnerjs.core.plugin.taghandler.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.plugin.taghandler.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.plugin.taghandler.TagHandlerPlugin;
 
 
 public class MockTagHandler extends AbstractTagHandlerPlugin implements TagHandlerPlugin

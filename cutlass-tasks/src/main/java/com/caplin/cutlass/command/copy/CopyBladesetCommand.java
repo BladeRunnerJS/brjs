@@ -2,21 +2,25 @@ package com.caplin.cutlass.command.copy;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.plugin.command.AbstractCommandPlugin;
+
+import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.plugin.command.AbstractCommandPlugin;
+
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.command.importing.Renamer;
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.AppStructureVerifier;
 import com.caplin.cutlass.structure.NamespaceCalculator;
-import org.bladerunnerjs.model.utility.NameValidator;
+
+import org.bladerunnerjs.utility.NameValidator;
 
 public class CopyBladesetCommand extends AbstractCommandPlugin implements LegacyCommandPlugin
 {

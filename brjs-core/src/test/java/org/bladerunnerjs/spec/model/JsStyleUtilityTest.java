@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.model;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 

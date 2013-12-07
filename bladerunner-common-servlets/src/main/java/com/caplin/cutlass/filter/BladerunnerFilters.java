@@ -13,9 +13,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import com.caplin.cutlass.ServletModelAccessor;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
+
 import com.caplin.cutlass.filter.bundlerfilter.BundlerTokenFilter;
 import com.caplin.cutlass.filter.bundlerfilter.contenttype.BundlerContentTypeFilter;
 import com.caplin.cutlass.filter.sectionfilter.SectionRedirectFilter;

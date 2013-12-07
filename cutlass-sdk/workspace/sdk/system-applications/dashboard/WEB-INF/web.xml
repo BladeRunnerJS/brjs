@@ -54,7 +54,7 @@
 	
 	<servlet>
 		<servlet-name>BRJSServlet</servlet-name>
-		<servlet-class>org.bladerunnerjs.model.appserver.BRJSServlet</servlet-class>
+		<servlet-class>org.bladerunnerjs.appserver.BRJSServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
@@ -64,7 +64,7 @@
 
 	<filter>
 		<filter-name>BRJSFilter</filter-name> 
-		<filter-class>org.bladerunnerjs.model.appserver.BRJSServletFilter</filter-class>
+		<filter-class>org.bladerunnerjs.appserver.BRJSServletFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>BRJSFilter</filter-name> 

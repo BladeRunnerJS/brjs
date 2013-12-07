@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.app;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.naming.Context;
 
 import org.apache.http.HttpResponse;
@@ -31,7 +32,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+
+import org.bladerunnerjs.utility.ServerUtility;
+
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.filter.tokenfilter.StreamTokeniser;
 import com.caplin.cutlass.test.TestContextFactory;

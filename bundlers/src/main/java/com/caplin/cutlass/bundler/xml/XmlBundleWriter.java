@@ -26,11 +26,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.BRJSAccessor;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
 import com.caplin.cutlass.bundler.exception.UnknownBundlerException;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
 import com.caplin.cutlass.bundler.xml.reader.XmlReaderWriterPipeline;

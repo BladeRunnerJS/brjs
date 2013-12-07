@@ -5,10 +5,10 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.minifier.AbstractMinifierPlugin;
-import org.bladerunnerjs.core.plugin.minifier.InputSource;
-import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.minifier.AbstractMinifierPlugin;
+import org.bladerunnerjs.plugin.minifier.InputSource;
+import org.bladerunnerjs.plugin.minifier.MinifierPlugin;
 
 
 public class MockMinifierPlugin extends AbstractMinifierPlugin implements MinifierPlugin

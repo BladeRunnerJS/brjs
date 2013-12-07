@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.aliasing.AmbiguousAliasException;
-import org.bladerunnerjs.model.aliasing.UnresolvableAliasException;
-import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
-import org.bladerunnerjs.model.aliasing.aliases.AliasesFile;
+import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.aliasing.UnresolvableAliasException;
+import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;

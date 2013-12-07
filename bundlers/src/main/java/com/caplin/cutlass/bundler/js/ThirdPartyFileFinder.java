@@ -11,12 +11,15 @@ import java.util.Set;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.BRJSAccessor;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
+
 import com.caplin.cutlass.bundler.LibraryManifest;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
+
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 

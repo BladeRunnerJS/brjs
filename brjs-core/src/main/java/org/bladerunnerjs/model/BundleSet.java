@@ -3,7 +3,7 @@ package org.bladerunnerjs.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
+import org.bladerunnerjs.aliasing.AliasDefinition;
 
 public class BundleSet {
 	private final List<SourceModule> sourceModules;

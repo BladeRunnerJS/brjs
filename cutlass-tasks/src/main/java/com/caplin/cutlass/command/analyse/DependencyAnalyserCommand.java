@@ -2,12 +2,13 @@ package com.caplin.cutlass.command.analyse;
 
 import java.io.File;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.plugin.command.AbstractCommandPlugin;
+import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.plugin.command.AbstractCommandPlugin;
+
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyser;
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyserFactory;
 import com.caplin.cutlass.bundler.js.analyser.JsonCodeUnitVisitor;

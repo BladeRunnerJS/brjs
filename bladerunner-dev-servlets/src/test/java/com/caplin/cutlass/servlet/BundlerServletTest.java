@@ -33,20 +33,22 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.bladerunnerjs.core.plugin.Plugin;
+
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+
 import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
-
 import com.caplin.cutlass.ServletModelAccessor;
 
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.Plugin;
+import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 

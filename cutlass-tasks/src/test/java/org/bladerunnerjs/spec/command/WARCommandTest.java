@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

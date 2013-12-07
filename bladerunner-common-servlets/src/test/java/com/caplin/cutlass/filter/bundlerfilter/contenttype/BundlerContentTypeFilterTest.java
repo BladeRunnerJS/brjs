@@ -10,8 +10,8 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.bladerunnerjs.utility.ServerUtility;
 
-import org.bladerunnerjs.model.utility.ServerUtility;
 import com.caplin.cutlass.filter.bundlerfilter.contenttype.BundlerContentTypeFilter;
 
 import static org.junit.Assert.assertEquals;

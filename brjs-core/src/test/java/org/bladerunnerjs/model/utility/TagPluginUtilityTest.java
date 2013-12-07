@@ -4,15 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.bladerunnerjs.core.plugin.taghandler.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.plugin.taghandler.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.MockTagHandler;
+import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.NoTagHandlerFoundException;
+import org.bladerunnerjs.utility.TagPluginUtility;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 

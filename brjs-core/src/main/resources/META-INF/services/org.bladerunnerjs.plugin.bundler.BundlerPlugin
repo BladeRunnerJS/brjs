@@ -1,0 +1,6 @@
+org.bladerunnerjs.plugin.compositejs.CompositeJsBundlerPlugin
+org.bladerunnerjs.plugin.bundler.js.ThirdpartyBundlerPlugin
+org.bladerunnerjs.plugin.bundler.js.NodeJsBundlerPlugin
+org.bladerunnerjs.plugin.bundler.js.NamespacedJsBundlerPlugin
+org.bladerunnerjs.plugin.bundler.html.HTMLBundlerPlugin
+org.bladerunnerjs.plugin.bundler.xml.XMLBundlerPlugin

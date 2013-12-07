@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 
 import com.caplin.cutlass.BRJSAccessor;
 
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 import com.caplin.cutlass.bundler.exception.UnknownBundlerException;

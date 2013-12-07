@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.brjs;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

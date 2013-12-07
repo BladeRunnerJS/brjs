@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.content.AbstractContentPlugin;
-import org.bladerunnerjs.core.plugin.content.ContentPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.model.utility.ContentPathParser;
-import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
+import org.bladerunnerjs.plugin.content.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.content.ContentPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
+import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
 public class MockContentPlugin extends AbstractContentPlugin implements ContentPlugin

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

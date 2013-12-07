@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.naming.Context;
 
 import org.apache.http.HttpResponse;
@@ -27,8 +28,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.bladerunnerjs.utility.ServerUtility;
 
-import org.bladerunnerjs.model.utility.ServerUtility;
 import com.caplin.cutlass.filter.DummyServlet;
 import com.caplin.cutlass.test.TestContextFactory;
 

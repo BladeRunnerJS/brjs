@@ -1,8 +1,8 @@
 package org.bladerunnerjs.model;
 
-import org.bladerunnerjs.model.conf.AbstractYamlConfFile;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.utility.ConfigValidationChecker;
+import org.bladerunnerjs.utility.ConfigValidationChecker;
+import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 
 
 public class YamlNonBladerunnerLibManifest extends AbstractYamlConfFile

@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.Map;
+
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -10,7 +11,7 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 
 
 public class Blade extends AbstractComponent implements NamedNode

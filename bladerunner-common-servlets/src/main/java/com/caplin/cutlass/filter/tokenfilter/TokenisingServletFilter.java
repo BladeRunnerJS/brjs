@@ -15,10 +15,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.appserver.CharResponseWrapper;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.appserver.CharResponseWrapper;
 
 import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.ServletModelAccessor;

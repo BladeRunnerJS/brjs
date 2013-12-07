@@ -2,8 +2,8 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.conf.YamlAppConf;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.yaml.YamlAppConf;
 
 public class AppConf extends ConfFile<YamlAppConf> {
 	

@@ -3,10 +3,10 @@ package com.caplin.jstestdriver.plugin;
 import java.io.File;
 import java.io.IOException;
 
-import org.bladerunnerjs.ConsoleLoggerConfigurator;
-import org.bladerunnerjs.core.log.LogConfiguration;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.logger.LogLevel;
+import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
+import org.bladerunnerjs.logging.LogConfiguration;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.BRJSAccessor;

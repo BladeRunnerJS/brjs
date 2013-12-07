@@ -9,16 +9,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.appserver.AppDeploymentObserver;
-import org.bladerunnerjs.model.appserver.ApplicationServer;
+
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+
+import org.bladerunnerjs.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.plugin.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.testing.utility.WebappTester;
+import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
@@ -51,7 +52,7 @@ public class ApplicationEndToEndTests
 		tempSdkInstall = FileUtility.createTemporarySdkInstall(INSTALL_ROOT).getParentFile();
 		brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempSdkInstall));
 		
-		ModelObserverPlugin appDeploymentObserver = new AppDeploymentObserver();
+		ModelObserverPlugin appDeploymentObserver = new AppDeploymentObserverPlugin();
 		appDeploymentObserver.setBRJS(brjs);
 		
 		brjs.bladerunnerConf().setJettyPort(HTTP_PORT);	

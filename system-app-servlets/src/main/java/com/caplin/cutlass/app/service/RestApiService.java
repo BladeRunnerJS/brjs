@@ -12,20 +12,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
-import org.bladerunnerjs.core.plugin.command.standard.CreateApplicationCommand;
-import org.bladerunnerjs.core.plugin.command.standard.CreateBladeCommand;
-import org.bladerunnerjs.core.plugin.command.standard.CreateBladesetCommand;
-import org.bladerunnerjs.core.plugin.command.standard.JsDocCommand;
+import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.engine.NamedNode;
+import org.bladerunnerjs.plugin.command.CommandPlugin;
+import org.bladerunnerjs.plugin.command.standard.CreateApplicationCommand;
+import org.bladerunnerjs.plugin.command.standard.CreateBladeCommand;
+import org.bladerunnerjs.plugin.command.standard.CreateBladesetCommand;
+import org.bladerunnerjs.plugin.command.standard.JsDocCommand;
+
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
 import com.caplin.cutlass.command.importing.ImportApplicationCommand;

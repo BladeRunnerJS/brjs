@@ -8,8 +8,8 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.utility.FileUtility;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
+import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
 import org.junit.Test;
 

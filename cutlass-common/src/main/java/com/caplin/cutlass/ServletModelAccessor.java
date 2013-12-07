@@ -4,8 +4,9 @@ import java.io.File;
 
 import javax.servlet.ServletContext;
 
-import org.bladerunnerjs.core.log.NullLogConfigurator;
+import org.bladerunnerjs.logging.NullLogConfigurator;
 import org.bladerunnerjs.model.BRJS;
+
 import com.caplin.cutlass.BRJSAccessor;
 
 public class ServletModelAccessor {

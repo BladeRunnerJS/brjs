@@ -4,13 +4,13 @@ import java.net.ServerSocket;
 
 import javax.servlet.Servlet;
 
-import org.bladerunnerjs.core.plugin.bundler.js.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.appserver.ApplicationServer;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.bundler.js.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

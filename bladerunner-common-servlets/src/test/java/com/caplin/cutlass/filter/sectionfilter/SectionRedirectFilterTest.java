@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -25,7 +26,8 @@ import org.junit.Test;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+
+import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.testing.BRJSTestFactory;
 import com.caplin.cutlass.util.UrlEchoServlet;

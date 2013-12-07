@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.Plugin;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
+import org.bladerunnerjs.plugin.Plugin;
 
 
 public interface LegacyFileBundlerPlugin extends Plugin

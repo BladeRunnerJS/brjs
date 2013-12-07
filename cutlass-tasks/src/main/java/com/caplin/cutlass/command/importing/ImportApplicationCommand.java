@@ -3,16 +3,17 @@ package com.caplin.cutlass.command.importing;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.plugin.command.AbstractCommandPlugin;
+import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.plugin.command.AbstractCommandPlugin;
+
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.utility.NameValidator;
+
+import org.bladerunnerjs.utility.NameValidator;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.structure.NamespaceCalculator;

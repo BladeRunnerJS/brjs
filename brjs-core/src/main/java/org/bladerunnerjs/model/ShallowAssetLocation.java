@@ -6,11 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.model.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.plugin.bundler.BundlerPlugin;
 
 public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocation {
 	protected AssetContainer assetContainer;

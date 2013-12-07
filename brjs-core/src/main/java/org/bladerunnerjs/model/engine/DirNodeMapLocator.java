@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.utility.FileUtility;
+import org.bladerunnerjs.utility.FileUtility;
 
 public class DirNodeMapLocator implements NodeMapLocator
 {

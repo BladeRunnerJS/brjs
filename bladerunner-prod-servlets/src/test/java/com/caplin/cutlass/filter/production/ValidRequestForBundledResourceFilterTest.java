@@ -12,8 +12,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.bladerunnerjs.model.utility.ServerUtility;
+import org.bladerunnerjs.utility.ServerUtility;
 
 public class ValidRequestForBundledResourceFilterTest {
 

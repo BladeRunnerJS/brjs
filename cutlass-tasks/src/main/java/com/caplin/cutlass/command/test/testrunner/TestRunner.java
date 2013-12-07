@@ -20,21 +20,21 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 
 import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.logger.LogLevel;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
+
 import com.caplin.cutlass.CutlassConfig;
-
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
-
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.utility.ProcessLogger;
+
+import org.bladerunnerjs.utility.ProcessLogger;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.file.RelativePath;

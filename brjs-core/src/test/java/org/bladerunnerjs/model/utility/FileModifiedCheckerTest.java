@@ -2,6 +2,7 @@ package org.bladerunnerjs.model.utility;
 
 import java.io.File;
 
+import org.bladerunnerjs.utility.FileModifiedChecker;
 import org.junit.*;
 
 import static org.junit.Assert.*;

@@ -2,13 +2,12 @@ package org.bladerunnerjs.spec.brjs;
 
 import static org.bladerunnerjs.model.BRJS.Messages.*;
 
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bladerunnerjs.core.plugin.EventObserver;
-import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.core.plugin.PluginLocatorUtils;
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.plugin.PluginLocatorUtils;
+import org.bladerunnerjs.plugin.command.CommandPlugin;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.BRJSEventObserverCreator;
 import org.bladerunnerjs.testing.utility.ExceptionThrowingEventObserver;
 import org.bladerunnerjs.testing.utility.MockCommandPlugin;

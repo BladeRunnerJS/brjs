@@ -13,17 +13,17 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.Event;
-import org.bladerunnerjs.core.plugin.EventObserver;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
-import org.bladerunnerjs.model.utility.NodePathGenerator;
-import org.bladerunnerjs.model.utility.ObserverList;
+import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.utility.NodePathGenerator;
+import org.bladerunnerjs.utility.ObserverList;
 
 
 public abstract class AbstractNode implements Node

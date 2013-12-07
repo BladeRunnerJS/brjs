@@ -7,12 +7,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.CutlassConfig;
-
 import com.caplin.cutlass.BRJSAccessor;
 
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.AssetLocation;
 
 import com.caplin.cutlass.structure.model.Node;

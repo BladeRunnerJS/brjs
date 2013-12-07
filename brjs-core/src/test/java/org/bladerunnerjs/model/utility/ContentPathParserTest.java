@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.model.utility.ContentPathParser;
-import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
+import org.bladerunnerjs.utility.ContentPathParser;
+import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 public class ContentPathParserTest
 {

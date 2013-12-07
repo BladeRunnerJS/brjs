@@ -2,11 +2,11 @@ package org.bladerunnerjs.testing.utility;
 
 import java.util.Arrays;
 
-import org.bladerunnerjs.core.plugin.command.AbstractCommandPlugin;
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.plugin.command.AbstractCommandPlugin;
+import org.bladerunnerjs.plugin.command.CommandPlugin;
 
 
 public class MockCommandPlugin extends AbstractCommandPlugin implements CommandPlugin

@@ -9,13 +9,13 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.aliasing.AliasOverride;
+import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.utility.EmptyTrieKeyException;
-import org.bladerunnerjs.model.utility.FileModifiedChecker;
-import org.bladerunnerjs.model.utility.Trie;
-import org.bladerunnerjs.model.utility.TrieKeyAlreadyExistsException;
+import org.bladerunnerjs.utility.EmptyTrieKeyException;
+import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.Trie;
+import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 
 /**
  * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'

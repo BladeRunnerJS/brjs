@@ -4,7 +4,7 @@ import static org.mockito.Mockito.*;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppNamespaceException;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

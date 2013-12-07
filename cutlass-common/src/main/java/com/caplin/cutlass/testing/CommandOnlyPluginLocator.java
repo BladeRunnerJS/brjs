@@ -3,16 +3,16 @@ package com.caplin.cutlass.testing;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.core.plugin.PluginLoader;
-import org.bladerunnerjs.core.plugin.PluginLocator;
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
-import org.bladerunnerjs.core.plugin.command.VirtualProxyCommandPlugin;
-import org.bladerunnerjs.core.plugin.content.ContentPlugin;
-import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.plugin.PluginLoader;
+import org.bladerunnerjs.plugin.PluginLocator;
+import org.bladerunnerjs.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.plugin.command.CommandPlugin;
+import org.bladerunnerjs.plugin.command.VirtualProxyCommandPlugin;
+import org.bladerunnerjs.plugin.content.ContentPlugin;
+import org.bladerunnerjs.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.plugin.taghandler.TagHandlerPlugin;
 
 public class CommandOnlyPluginLocator implements PluginLocator {
 	private List<CommandPlugin> commandPlugins;

@@ -8,19 +8,15 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.console.PrintStreamConsoleWriter;
-import org.bladerunnerjs.core.log.LogConfiguration;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerFactory;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
-import org.bladerunnerjs.core.plugin.BRJSPluginLocator;
-import org.bladerunnerjs.core.plugin.PluginAccessor;
-import org.bladerunnerjs.core.plugin.PluginLocator;
-import org.bladerunnerjs.core.plugin.command.CommandList;
-import org.bladerunnerjs.model.appserver.ApplicationServer;
-import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
+import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.appserver.BRJSApplicationServer;
+import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.console.PrintStreamConsoleWriter;
+import org.bladerunnerjs.logging.LogConfiguration;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
@@ -29,10 +25,14 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.CommandRunner;
-import org.bladerunnerjs.model.utility.PluginLocatorLogger;
-import org.bladerunnerjs.model.utility.UserCommandRunner;
-import org.bladerunnerjs.model.utility.VersionInfo;
+import org.bladerunnerjs.plugin.BRJSPluginLocator;
+import org.bladerunnerjs.plugin.PluginAccessor;
+import org.bladerunnerjs.plugin.PluginLocator;
+import org.bladerunnerjs.plugin.command.CommandList;
+import org.bladerunnerjs.utility.CommandRunner;
+import org.bladerunnerjs.utility.PluginLocatorLogger;
+import org.bladerunnerjs.utility.UserCommandRunner;
+import org.bladerunnerjs.utility.VersionInfo;
 
 
 public class BRJS extends AbstractBRJSRootNode

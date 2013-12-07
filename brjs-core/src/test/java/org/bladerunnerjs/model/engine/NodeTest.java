@@ -1,17 +1,17 @@
 package org.bladerunnerjs.model.engine;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bladerunnerjs.core.plugin.Event;
-import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.model.engine.BladeRunnerDirectoryException;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.ObserverList;
+import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
+import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.ObserverList;
 import org.junit.Test;
 import org.mockito.InOrder;
 

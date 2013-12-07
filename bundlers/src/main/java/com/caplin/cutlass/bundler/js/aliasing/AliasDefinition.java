@@ -1,6 +1,6 @@
 package com.caplin.cutlass.bundler.js.aliasing;
 
-public class AliasDefinition extends org.bladerunnerjs.model.aliasing.AliasDefinition
+public class AliasDefinition extends org.bladerunnerjs.aliasing.AliasDefinition
 {
 	private String groupName;
 	
@@ -8,7 +8,7 @@ public class AliasDefinition extends org.bladerunnerjs.model.aliasing.AliasDefin
 		super(name, className, interfaceName);
 	}
 	
-	public AliasDefinition(org.bladerunnerjs.model.aliasing.AliasDefinition alias)
+	public AliasDefinition(org.bladerunnerjs.aliasing.AliasDefinition alias)
 	{
 		super(alias.getName(), alias.getClassName(), alias.getInterfaceName());
 	}

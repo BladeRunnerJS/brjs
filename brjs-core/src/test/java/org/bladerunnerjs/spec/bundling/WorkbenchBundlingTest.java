@@ -1,6 +1,5 @@
 package org.bladerunnerjs.spec.bundling;
 
-import org.bladerunnerjs.core.plugin.bundler.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -10,7 +9,8 @@ import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.bundler.js.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

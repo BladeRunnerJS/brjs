@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.bladerunnerjs.model.utility.StringLengthComparator;
+import org.bladerunnerjs.utility.StringLengthComparator;
 import org.junit.Test;
 
 import com.google.common.base.Joiner;

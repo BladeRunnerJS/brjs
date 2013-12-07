@@ -1,0 +1,2 @@
+org.bladerunnerjs.plugin.command.standard.JsDocObserver
+org.bladerunnerjs.plugin.appdeployer.AppDeploymentObserverPlugin

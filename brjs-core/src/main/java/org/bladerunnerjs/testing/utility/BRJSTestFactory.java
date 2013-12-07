@@ -2,10 +2,10 @@ package org.bladerunnerjs.testing.utility;
 
 import java.io.File;
 
-import org.bladerunnerjs.core.log.LoggerFactory;
-import org.bladerunnerjs.core.log.SLF4JLoggerFactory;
-import org.bladerunnerjs.core.plugin.PluginLocator;
+import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.PluginLocator;
 
 public class BRJSTestFactory {
 	

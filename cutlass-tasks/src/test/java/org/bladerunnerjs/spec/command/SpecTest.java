@@ -1,12 +1,12 @@
 package org.bladerunnerjs.spec.command;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.specutil.engine.ConsoleStoreWriter;
+import org.bladerunnerjs.testing.specutility.engine.ConsoleStoreWriter;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 
 import com.caplin.cutlass.BRJSAccessor;
 
-public class SpecTest extends org.bladerunnerjs.specutil.engine.SpecTest {
+public class SpecTest extends org.bladerunnerjs.testing.specutility.engine.SpecTest {
 	
 	// This allows commands which don't use the model to use the spec test format
 	@Override

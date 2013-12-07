@@ -4,8 +4,6 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.bundler.AbstractBundlerPlugin;
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
@@ -14,8 +12,10 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.ContentPathParser;
-import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
+import org.bladerunnerjs.plugin.bundler.AbstractBundlerPlugin;
+import org.bladerunnerjs.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
+import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
 public class MockBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin

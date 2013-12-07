@@ -2,16 +2,16 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.Event;
-import org.bladerunnerjs.core.plugin.EventObserver;
+import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.ObserverList;
+import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.utility.ObserverList;
 
 
 public class MockRootNode implements RootNode

@@ -3,6 +3,7 @@ package com.caplin.cutlass.filter.thirdpartyfilter;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
@@ -16,8 +17,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.bladerunnerjs.model.utility.ServerUtility;
+import org.bladerunnerjs.utility.ServerUtility;
 
 public class ThirdPartyResourceFilterTest
 {

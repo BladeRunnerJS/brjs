@@ -2,7 +2,7 @@ package org.bladerunnerjs.spec.node;
 
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 

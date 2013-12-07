@@ -3,11 +3,11 @@ package org.bladerunnerjs.model.engine;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.core.log.LoggerFactory;
+import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
-import org.bladerunnerjs.testing.model.engine.MockLoggerFactory;
+import org.bladerunnerjs.testing.utility.MockLoggerFactory;
 
 
 public class TestRootNode extends AbstractRootNode

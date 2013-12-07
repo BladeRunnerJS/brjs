@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model;
 
-import org.bladerunnerjs.model.conf.YamlBladerunnerConf;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.yaml.YamlBladerunnerConf;
 
 public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	public BladerunnerConf(BRJS brjs) throws ConfigException {

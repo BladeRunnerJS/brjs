@@ -4,10 +4,10 @@ import java.io.File;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.core.plugin.Event;
-import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.ObserverList;
+import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.utility.ObserverList;
 
 
 public interface Node {

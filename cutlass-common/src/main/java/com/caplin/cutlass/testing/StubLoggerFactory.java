@@ -1,8 +1,8 @@
 package com.caplin.cutlass.testing;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerFactory;
-import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.logging.LoggerType;
 
 public class StubLoggerFactory implements LoggerFactory {
 	@Override

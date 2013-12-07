@@ -4,8 +4,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
+
 import com.caplin.cutlass.CutlassConfig;
-import org.bladerunnerjs.model.utility.DeleteTempFileShutdownHook;
+
+import org.bladerunnerjs.utility.DeleteTempFileShutdownHook;
 
 import java.io.*;
 import java.util.*;
@@ -14,7 +16,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 
-public class FileUtility extends org.bladerunnerjs.model.utility.FileUtility {
+public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 	
 	@SuppressWarnings("rawtypes")
 	public static void unzip(ZipFile zipFile, File targetLocation) throws IOException {			 

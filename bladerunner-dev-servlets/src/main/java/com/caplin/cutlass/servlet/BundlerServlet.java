@@ -16,16 +16,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import com.caplin.cutlass.CutlassConfig;
 
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.bundler.css.CssBundler;
 

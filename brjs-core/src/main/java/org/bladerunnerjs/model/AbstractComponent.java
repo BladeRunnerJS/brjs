@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.utility.TestRunner;
+import org.bladerunnerjs.utility.TestRunner;
 
 
 public abstract class AbstractComponent extends AbstractAssetContainer implements TestableNode

@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.BRJSAccessor;
 
 

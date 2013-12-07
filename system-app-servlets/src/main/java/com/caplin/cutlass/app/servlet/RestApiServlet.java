@@ -34,15 +34,13 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 
 import com.caplin.cutlass.app.service.RestApiService;
-
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
-
 import com.caplin.cutlass.ServletModelAccessor;
 
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
-import com.caplin.cutlass.util.FileUtility;
 
+import com.caplin.cutlass.util.FileUtility;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

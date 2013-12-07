@@ -12,7 +12,6 @@ import java.util.List;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.bladerunnerjs.core.plugin.AbstractPlugin;
 
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
 
@@ -25,7 +24,8 @@ import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.SourceFileProvider;
 
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.ContentPathParser;
+import org.bladerunnerjs.plugin.AbstractPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
 
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;

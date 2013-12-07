@@ -35,7 +35,9 @@ import org.junit.Test;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+
+import org.bladerunnerjs.utility.ServerUtility;
+
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.filter.bundlerfilter.token.CSSBundleTokenProcessor;

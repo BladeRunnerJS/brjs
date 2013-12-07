@@ -1,19 +1,19 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
-import static org.bladerunnerjs.model.appserver.BRJSApplicationServer.Messages.*;
-import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.*;
+import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
+import static org.bladerunnerjs.appserver.ApplicationServerUtils.Messages.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.appserver.AppDeploymentObserver;
-import org.bladerunnerjs.model.appserver.ApplicationServer;
-import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.appdeployer.AppDeploymentObserverPlugin;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class BRJSApplicationServerTest extends SpecTest
 
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasModelObservers(new AppDeploymentObserver());
+		given(brjs).hasModelObservers(new AppDeploymentObserverPlugin());
 		given(brjs).hasBeenCreated();
     		appServer = brjs.applicationServer(appServerPort);
     		app1 = brjs.app("app1");

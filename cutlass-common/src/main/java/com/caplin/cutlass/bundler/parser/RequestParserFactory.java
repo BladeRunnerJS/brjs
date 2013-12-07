@@ -1,7 +1,7 @@
 package com.caplin.cutlass.bundler.parser;
 
-import org.bladerunnerjs.model.utility.ContentPathParser;
-import org.bladerunnerjs.model.utility.ContentPathParserBuilder;
+import org.bladerunnerjs.utility.ContentPathParser;
+import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 public class RequestParserFactory {
 	

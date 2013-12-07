@@ -12,18 +12,19 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import com.caplin.cutlass.EncodingAccessor;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.plugin.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
+
 import com.caplin.cutlass.util.FileUtility;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.plugin.command.ArgsParsingCommandPlugin;
 
 import com.caplin.cutlass.BRJSAccessor;
-
 import com.caplin.cutlass.structure.AppStructureVerifier;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;

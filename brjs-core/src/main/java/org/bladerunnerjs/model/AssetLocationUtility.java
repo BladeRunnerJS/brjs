@@ -11,8 +11,8 @@ import java.util.Map;
 
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.model.utility.FileUtility;
+import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.utility.FileUtility;
 
 
 public class AssetLocationUtility

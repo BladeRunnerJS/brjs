@@ -3,10 +3,10 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 
-import org.bladerunnerjs.model.conf.AbstractYamlConfFile;
-import org.bladerunnerjs.model.conf.ConfFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.yaml.AbstractYamlConfFile;
+import org.bladerunnerjs.yaml.ConfFactory;
 
 
 public class ConfFile<CF extends AbstractYamlConfFile> {

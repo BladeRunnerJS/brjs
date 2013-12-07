@@ -8,7 +8,7 @@ import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 
 
 public class TestGreatGrandChildNode extends AbstractNode implements NamedNode

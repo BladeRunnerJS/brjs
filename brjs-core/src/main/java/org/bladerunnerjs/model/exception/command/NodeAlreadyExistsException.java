@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model.exception.command;
 
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.engine.NamedNode;
+import org.bladerunnerjs.plugin.command.CommandPlugin;
 
 public class NodeAlreadyExistsException extends CommandArgumentsException {
 	private static final long serialVersionUID = 1L;

@@ -14,8 +14,8 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.NameValidator;
-import org.bladerunnerjs.model.utility.TestRunner;
+import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TestRunner;
 
 
 public class Aspect extends AbstractBundlableNode implements TestableNode, NamedNode

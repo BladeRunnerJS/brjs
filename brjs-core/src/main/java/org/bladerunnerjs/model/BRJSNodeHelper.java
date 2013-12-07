@@ -7,8 +7,8 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.model.utility.StringLengthComparator;
-import org.bladerunnerjs.model.utility.TemplateUtility;
+import org.bladerunnerjs.utility.StringLengthComparator;
+import org.bladerunnerjs.utility.TemplateUtility;
 
 
 public class BRJSNodeHelper {

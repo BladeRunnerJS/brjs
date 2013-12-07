@@ -3,8 +3,8 @@ package com.caplin.cutlass.testing;
 import java.io.File;
 import java.io.PrintStream;
 
-import org.bladerunnerjs.core.console.PrintStreamConsoleWriter;
-import org.bladerunnerjs.core.log.LoggerFactory;
+import org.bladerunnerjs.console.PrintStreamConsoleWriter;
+import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.BRJS;
 
 

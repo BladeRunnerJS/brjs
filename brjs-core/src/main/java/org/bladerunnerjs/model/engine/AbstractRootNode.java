@@ -6,11 +6,11 @@ import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.console.PrintStreamConsoleWriter;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerFactory;
-import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.console.PrintStreamConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.logging.LoggerType;
 
 
 public abstract class AbstractRootNode extends AbstractNode implements RootNode

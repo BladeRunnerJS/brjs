@@ -1,10 +1,10 @@
 package org.bladerunnerjs.spec.bundling.aspect;
 
-import org.bladerunnerjs.core.plugin.bundler.js.NamespacedJsBundlerPlugin;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.bundler.js.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

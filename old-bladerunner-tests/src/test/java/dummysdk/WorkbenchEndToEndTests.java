@@ -1,6 +1,7 @@
 package dummysdk;
 
 import java.io.File;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,12 +9,15 @@ import org.junit.Test;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 import com.caplin.cutlass.ServletModelAccessor;
+
+import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.appserver.ApplicationServer;
+
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+
 import org.bladerunnerjs.testing.utility.WebappTester;
+import org.bladerunnerjs.utility.ServerUtility;
 
 
 public class WorkbenchEndToEndTests

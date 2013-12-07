@@ -1,8 +1,8 @@
 package com.caplin.cutlass.conf;
 
-import org.bladerunnerjs.model.conf.YamlAppConf;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.yaml.YamlAppConf;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.esotericsoftware.yamlbeans.YamlException;

@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.utility;
 
-import org.bladerunnerjs.core.log.Logger;
+import org.bladerunnerjs.logging.Logger;
 
 public class TestLogger implements Logger
 {

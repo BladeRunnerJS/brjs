@@ -10,9 +10,8 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
@@ -24,8 +23,9 @@ import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.model.utility.LogicalRequestHandler;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.utility.LogicalRequestHandler;
+import org.bladerunnerjs.utility.NameValidator;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
