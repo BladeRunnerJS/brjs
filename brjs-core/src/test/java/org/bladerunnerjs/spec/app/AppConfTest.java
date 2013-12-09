@@ -119,7 +119,7 @@ public class AppConfTest extends SpecTest {
 	@Test
 	public void readingAnEmptyAppConfFileWillCauseAnException() throws Exception{
 		given(app).hasBeenCreated()
-			.and(app).containsFile("app.conf");
+			.and(app).containsEmptyFile("app.conf");
 		when(app).appConf();
 		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("is empty"));
 	}

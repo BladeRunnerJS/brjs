@@ -37,7 +37,7 @@ public class BladerunnerConfTest extends SpecTest {
 	
 	@Test
 	public void readingAnEmptyBladerunnerConfFileWillCauseAnException() throws Exception {
-		given(brjs).containsFile("conf/bladerunner.conf");
+		given(brjs).containsEmptyFile("conf/bladerunner.conf");
 		when(brjs).bladerunnerConf();
 		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/bladerunner.conf").getPath(), unquoted("is empty"));
 	}

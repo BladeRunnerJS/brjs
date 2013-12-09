@@ -40,7 +40,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			.and(appLegacyThirdparty2).containsFileWithContents("library.manifest", "js: lib2.js")
 			.and(appLegacyThirdparty2).containsFile("lib2.js");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsText("// app-legacy-thirdparty2\n\n\n\n\n// app-legacy-thirdparty");
+		then(response).containsText("// app-legacy-thirdparty2\nlib2.js\n\n\n\n\n// app-legacy-thirdparty");
 	}
 
 	@Test

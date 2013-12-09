@@ -38,7 +38,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFile(String filePath) throws Exception {
-		FileUtils.write(node.file(filePath), "");
+		FileUtils.write(node.file(filePath), filePath + "\n");
 		
 		return builderChainer;
 	}
@@ -53,6 +53,12 @@ public abstract class NodeBuilder<N extends Node> {
 	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		FileUtils.write(node.file(filePath), fileContents);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer containsEmptyFile(String filePath) throws Exception {
+		containsFileWithContents(filePath, "");
 		
 		return builderChainer;
 	}
