@@ -146,7 +146,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/mypkg/namespaced/Class.js", "new mypkg.nodejs.Class();")
 			.and(aspect).containsFileWithContents("src/mypkg/namespaced/AnotherClass.js", "new mypkg.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
-		then(requestResponse).containsTextANumberOfTimes("mypkg.nodejs.Class = require('mypkg/nodejs/Class');", 1);
+		then(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
 	
 	@Test
@@ -155,7 +155,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.nodejs.Class")
 			.and(aspect).classFileHasContent("mypkg.namespaced.Class", "mypkg.nodejs.Class, mypkg.nodejs.Class");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/namespaced/Class.js", requestResponse);
-		then(requestResponse).containsTextANumberOfTimes("mypkg.nodejs.Class = require('mypkg/nodejs/Class');", 1);
+		then(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
 	}
 	
 	@Test
