@@ -38,7 +38,7 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 		return assetLocations;
 	}
 	
-	public AssetLocation getChildAssetLocation(File dir) {
+	private AssetLocation getChildAssetLocation(File dir) {
 		AssetLocation assetLocation = assetLocations.get(dir);
 		
 		if (assetLocation == null) {
