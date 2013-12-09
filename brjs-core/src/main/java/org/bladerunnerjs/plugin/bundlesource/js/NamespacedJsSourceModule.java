@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +19,6 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
-
-import com.Ostermiller.util.ConcatReader;
 
 public class NamespacedJsSourceModule implements SourceModule {
 	private static final Pattern extendPattern = Pattern.compile("(caplin|br)\\.(extend|implement)\\([^,]+,\\s*([^)]+)\\)");
@@ -51,10 +48,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public Reader getReader() throws FileNotFoundException {
-		return new ConcatReader(new Reader[] {
-			new StringReader(globalizeNonCaplinJsClasses()),
-			assetFile.getReader()
-		});
+		return assetFile.getReader();
 	}
 	
 	@Override
@@ -120,22 +114,4 @@ public class NamespacedJsSourceModule implements SourceModule {
 		return getRequirePath().replaceAll("/", ".");
 	}
 	
-	private String globalizeNonCaplinJsClasses() {
-		StringBuffer stringBuffer = new StringBuffer();
-		
-		try {
-			// TODO: we need to think about the current need to provide a bundlableNode as a result of a getReader() invocation
-			for(SourceModule dependentSourceModule : getDependentSourceModules(null)) {
-				if(dependentSourceModule.isEncapsulatedModule()) {
-					String moduleNamespace = dependentSourceModule.getRequirePath().replaceAll("/", ".");
-					stringBuffer.append(moduleNamespace + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
-				}
-			}
-		}
-		catch(ModelOperationException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return stringBuffer.toString();
-	}
 }

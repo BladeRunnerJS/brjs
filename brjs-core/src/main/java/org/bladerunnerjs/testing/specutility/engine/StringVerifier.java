@@ -26,6 +26,15 @@ public class StringVerifier {
 	public VerifierChainer containsText(String substring) {
 		assertContains(substring, string);
 		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer containsTextANumberOfTimes(String substring, int numberOfTimes)
+	{
+		if (StringUtils.countMatches(string, substring) != numberOfTimes) {
+			assertEquals(substring, string);
+		}
+		
 		return verifierChainer;	
 	}
 	

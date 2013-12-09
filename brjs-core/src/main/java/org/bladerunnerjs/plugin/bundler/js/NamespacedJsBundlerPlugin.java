@@ -20,6 +20,7 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -131,6 +132,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 			if(contentPath.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
+					writer.write( globalizeNonNamespacedJsClasses(jsModule, new ArrayList<SourceModule>()) );
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
@@ -141,9 +143,12 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
     				writePackageStructure(packageStructure, writer);
     				writer.write("\n");
 					
+    				List<SourceModule> processedSourceModules = new ArrayList<SourceModule>();
+    				
 					for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 						if(sourceModule instanceof NamespacedJsSourceModule)
 						{
+							writer.write( globalizeNonNamespacedJsClasses(sourceModule, processedSourceModules) );
     						writer.write("// " + sourceModule.getRequirePath() + "\n");
     						IOUtils.copy(sourceModule.getReader(), writer);
     						writer.write("\n\n");
@@ -161,7 +166,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 				throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
-		catch(ConfigException | IOException | RequirePathException e) {
+		catch(ModelOperationException | ConfigException | IOException | RequirePathException e) {
 			throw new BundlerProcessingException(e);
 		}
 	}
@@ -245,5 +250,24 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 			
 			writer.flush();
 		}
+	}
+	
+	private String globalizeNonNamespacedJsClasses(SourceModule sourceModule, List<SourceModule> globalizedModules) throws ModelOperationException {
+		StringBuffer stringBuffer = new StringBuffer();
+		
+		for(SourceModule dependentSourceModule : sourceModule.getDependentSourceModules(null)) 
+		{		
+			if ( !(dependentSourceModule instanceof NamespacedJsSourceModule) && !globalizedModules.contains(dependentSourceModule) ) 
+			{
+ 				if (dependentSourceModule.isEncapsulatedModule()) 
+ 				{
+    				String moduleNamespace = dependentSourceModule.getRequirePath().replaceAll("/", ".");
+    				stringBuffer.append(moduleNamespace + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
+    				globalizedModules.add(dependentSourceModule);
+ 				}
+			}
+		}
+		
+		return stringBuffer.toString();
 	}
 }
