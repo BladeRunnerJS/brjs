@@ -19,4 +19,9 @@ public class JsLibBuilder extends AssetContainerBuilder<JsLib> {
 		
 		return builderChainer;
 	}
+	
+	public BuilderChainer containsPackageJsonWithMainSourceModule(String string) {
+		// TODO Auto-generated method stub
+		return builderChainer;
+	}
 }

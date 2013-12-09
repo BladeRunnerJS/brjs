@@ -43,4 +43,8 @@ public class AssetContainerVerifier {
 	public void assetLocationHasNoDependencies(String assetLocation) {
 		// TODO Auto-generated method stub
 	}
+	
+	public void assetLocationHasDependencies(String assetLocation, String[] assetLocationDependencies) {
+		// TODO Auto-generated method stub
+	}
 }

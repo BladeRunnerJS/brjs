@@ -53,4 +53,10 @@ public class JsLibVerifier extends NodeVerifier<JsLib> {
 		
 		return verifierChainer;
 	}
+	
+	public VerifierChainer assetLocationHasDependencies(String assetLocation, String... assetLocationDependencies) {
+		assetContainerVerifier.assetLocationHasDependencies(assetLocation, assetLocationDependencies);
+		
+		return verifierChainer;
+	}
 }
