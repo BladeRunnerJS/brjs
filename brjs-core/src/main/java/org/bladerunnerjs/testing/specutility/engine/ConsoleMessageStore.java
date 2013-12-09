@@ -1,6 +1,7 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import static org.junit.Assert.*;
+import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -37,9 +38,7 @@ public class ConsoleMessageStore {
 		String actualConsoleOutput = Joiner.on("\n").join(consoleOutput);
 		String expectedConsoleOutput = Joiner.on("\n").join(text);
 		
-		if(!actualConsoleOutput.contains(expectedConsoleOutput)) {
-			assertEquals("", expectedConsoleOutput, actualConsoleOutput);
-		}
+		assertContains(expectedConsoleOutput, actualConsoleOutput);
 	}
 	
 	public void add(String message, Object[] params) {

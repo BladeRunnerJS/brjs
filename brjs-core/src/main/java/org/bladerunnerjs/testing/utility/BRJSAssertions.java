@@ -8,4 +8,10 @@ public class BRJSAssertions {
 			assertEquals("'" + actualString + "' was expected to contain '" + expectedSubstring + "'.", expectedSubstring, actualString);
 		}
 	}
+	
+	public static void assertDoesNotContain(String unexpectedSubstring, String actualString) {
+		if(actualString.contains(unexpectedSubstring)) {
+			assertEquals("'" + actualString + "' was not expected to contain '" + unexpectedSubstring + "'.", unexpectedSubstring, actualString);
+		}
+	}
 }

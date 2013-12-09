@@ -1,6 +1,7 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import static org.junit.Assert.*;
+import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,7 @@ public class StringVerifier {
 	}
 	
 	public VerifierChainer containsText(String substring) {
-		if(!string.contains(substring)) {
-			assertEquals(substring, string);
-		}
+		assertContains(substring, string);
 		
 		return verifierChainer;	
 	}
@@ -105,9 +104,7 @@ public class StringVerifier {
 	}
 
 	public VerifierChainer doesNotContainText(String substring) {
-		if(string.contains(substring)) {
-			assertEquals("Unexpected text:\n" + substring, string);
-		}
+		assertDoesNotContain(substring, string);
 		
 		return verifierChainer;		
 	}
