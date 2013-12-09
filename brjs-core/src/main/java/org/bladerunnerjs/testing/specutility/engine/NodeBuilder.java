@@ -43,6 +43,14 @@ public abstract class NodeBuilder<N extends Node> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer containsFiles(String... filePaths) throws Exception {
+		for(String filePath : filePaths) {
+			containsFile(filePath);
+		}
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		FileUtils.write(node.file(filePath), fileContents);
 		

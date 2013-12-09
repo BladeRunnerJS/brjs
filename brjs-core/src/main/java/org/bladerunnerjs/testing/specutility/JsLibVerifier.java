@@ -11,12 +11,13 @@ import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 
 public class JsLibVerifier extends NodeVerifier<JsLib> {
 	private final JsLib jsLib;
-
-	private VerifierChainer verifierChainer;
+	private final AssetContainerVerifier assetContainerVerifier;
+	private final VerifierChainer verifierChainer;
 	
 	public JsLibVerifier(SpecTest modelTest, JsLib jsLib) {
 		super(modelTest, jsLib);
 		this.jsLib = jsLib;
+		assetContainerVerifier = new AssetContainerVerifier(jsLib);
 		verifierChainer = new VerifierChainer(modelTest);
 	}
 	
@@ -31,6 +32,24 @@ public class JsLibVerifier extends NodeVerifier<JsLib> {
 	public VerifierChainer getAppReturns(App app)
 	{
 		assertSame(app, jsLib.getApp());
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer hasSourceModules(SourceModuleDescriptor... sourceModules) throws Exception {
+		assetContainerVerifier.hasSourceModules(sourceModules);
+		
+		return verifierChainer;
+	}
+
+	public VerifierChainer hasAssetLocations(String... assetLocations) {
+		assetContainerVerifier.hasAssetLocations(assetLocations);
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer assetLocationHasNoDependencies(String assetLocation) {
+		assetContainerVerifier.assetLocationHasNoDependencies(assetLocation);
 		
 		return verifierChainer;
 	}
