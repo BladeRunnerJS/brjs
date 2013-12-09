@@ -17,7 +17,8 @@ public class SourceModuleTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsBundlers()
+			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			brjsLib = app.jsLib("brjsLib");
@@ -30,11 +31,13 @@ public class SourceModuleTest extends SpecTest {
 	public void aspectSourceModulesAndAssetLocationsAreAsExpected() throws Exception {
 		given(aspect).hasClasses("Class1", "Class2", "pkg.Class3")
 			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
-		then(aspect).hasSourceModules(sourceModule("app1/Class1", "Class1"), sourceModule("app1/Class2", "Class2"), sourceModule("app1/pkg/Class3", "pkg.Class3"))
-			.and(aspect).hasAssetLocations("resources", "src", "src/pkg")
-			.and(aspect).assetLocationHasNoDependencies("resources")
-			.and(aspect).assetLocationHasDependencies("src", "resources")
-			.and(aspect).assetLocationHasDependencies("src/pkg", "src");
+		then(aspect).hasSourceModules(sourceModule("Class1", "Class1"), sourceModule("Class2", "Class2"), sourceModule("pkg/Class3", "pkg.Class3"))
+			.and(aspect).hasAssetLocations("resources/", "src/", "src/pkg/")
+			.and(aspect).sourceModuleHasAssetLocation("Class1", "src/")
+			.and(aspect).sourceModuleHasAssetLocation("pkg/Class3", "src/pkg/")
+			.and(aspect).assetLocationHasNoDependencies("resources/")
+			.and(aspect).assetLocationHasDependencies("src/", "resources/")
+			.and(aspect).assetLocationHasDependencies("src/pkg/", "src/");
 	}
 	
 	@Ignore

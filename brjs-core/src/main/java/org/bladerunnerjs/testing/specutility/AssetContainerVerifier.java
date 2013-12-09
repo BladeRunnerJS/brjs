@@ -8,7 +8,9 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.testing.utility.AssetContainerLocationUtility;
 
 public class AssetContainerVerifier {
 	private AssetContainer assetContainer;
@@ -27,7 +29,7 @@ public class AssetContainerVerifier {
 			SourceModuleDescriptor expectedSourceModule = expectedSourceModules[i++];
 			StringWriter sourceModuleContents = new StringWriter();
 			
-			assertEquals("Source module " + (i + 1) + " differs from what's expected.", expectedSourceModule.requirePath, actualSourceModule.getRequirePath());
+			assertEquals("Source module " + i + " differs from what's expected.", expectedSourceModule.requirePath, actualSourceModule.getRequirePath());
 			IOUtils.copy(actualSourceModule.getReader(), sourceModuleContents);
 			
 			for(String expectedFilePath : expectedSourceModule.filePaths) {
@@ -36,15 +38,38 @@ public class AssetContainerVerifier {
 		}
 	}
 	
-	public void hasAssetLocations(String[] assetLocations) {
-		// TODO Auto-generated method stub
+	public void hasAssetLocations(String[] expectedAssetLocations) {
+		List<AssetLocation> actualAssetLocations = assetContainer.getAllAssetLocations();
+		
+		assertEquals("Expected " + expectedAssetLocations.length + " asset locations, but there were only " + actualAssetLocations.size() + ".", expectedAssetLocations.length, actualAssetLocations.size());
+		
+		int i = 0;
+		for(AssetLocation actualAssetLocation : actualAssetLocations) {
+			String expectedAssetLocation = expectedAssetLocations[i++];
+			String actualDependentAssetLocationPath =  assetContainer.dir().toURI().relativize(actualAssetLocation.dir().toURI()).getPath();
+			
+			assertEquals("Asset location " + i + " differs from what's expected.", expectedAssetLocation, actualDependentAssetLocationPath);
+		}
 	}
 	
 	public void assetLocationHasNoDependencies(String assetLocation) {
-		// TODO Auto-generated method stub
+		List<AssetLocation> dependentAssetLocations = AssetContainerLocationUtility.getAssetLocation(assetContainer, assetLocation).getDependentAssetLocations();
+		
+		assertEquals("Asset location '" + assetLocation + "' was not expected to have any dependent asset locations.", 0, dependentAssetLocations.size());
 	}
 	
-	public void assetLocationHasDependencies(String assetLocation, String[] assetLocationDependencies) {
-		// TODO Auto-generated method stub
+	public void assetLocationHasDependencies(String assetLocationPath, String[] expectedAssetLocationDependencies) {
+		List<AssetLocation> actualDependentAssetLocations = AssetContainerLocationUtility.getAssetLocation(assetContainer, assetLocationPath).getDependentAssetLocations();
+		
+		assertEquals("Asset location '" + assetLocationPath + "' was expected to have " + expectedAssetLocationDependencies.length + " dependent asset locations.",
+			expectedAssetLocationDependencies.length, actualDependentAssetLocations.size());
+		
+		int i = 0;
+		for(AssetLocation actualDependentAssetLocation : actualDependentAssetLocations) {
+			String expectedAssetLocationDependency = expectedAssetLocationDependencies[i++];
+			String actualDependentAssetLocationPath =  assetContainer.dir().toURI().relativize(actualDependentAssetLocation.dir().toURI()).getPath();
+			
+			assertEquals(expectedAssetLocationDependency, actualDependentAssetLocationPath);
+		}
 	}
 }

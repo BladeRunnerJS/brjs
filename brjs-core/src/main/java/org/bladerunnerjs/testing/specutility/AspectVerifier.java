@@ -4,9 +4,12 @@ import static org.junit.Assert.*;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.testing.specutility.engine.NodeVerifier;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
+import org.bladerunnerjs.testing.utility.AssetContainerLocationUtility;
 
 
 public class AspectVerifier extends NodeVerifier<Aspect> {
@@ -38,6 +41,15 @@ public class AspectVerifier extends NodeVerifier<Aspect> {
 	
 	public VerifierChainer hasAssetLocations(String... assetLocations) {
 		assetContainerVerifier.hasAssetLocations(assetLocations);
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer sourceModuleHasAssetLocation(String sourceModulePath, String assetLocationPath) throws Exception {
+		SourceModule sourceModule = aspect.getSourceModule(sourceModulePath);
+		AssetLocation assetLocation = AssetContainerLocationUtility.getAssetLocation(aspect, assetLocationPath);
+		
+		assertSame("Source module '" + sourceModulePath + "' did not have the asset location '" + assetLocationPath + "'.", assetLocation, sourceModule.getAssetLocation());
 		
 		return verifierChainer;
 	}
