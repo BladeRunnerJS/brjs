@@ -75,7 +75,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("mypkg.Class1")
 			.and(bladeset).classRequires("mypkg.Class1", "mypkg.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(UnresolvableRequirePathException.class, "mypkg/NonExistentClass")
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "/mypkg/NonExistentClass")
 			.whereTopLevelExceptionIs(BundlerProcessingException.class);
 	}
 	

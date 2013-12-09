@@ -111,7 +111,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).classRefersTo("mypkg.namespaced.Class", "mypkg.nodejs.Class");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/namespaced/Class.js", requestResponse);
 		then(requestResponse).containsText("mypkg.namespaced.Class = function() {\n};")
-			.and(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
+			.and(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('/mypkg/nodejs/Class');");
 	}
 	
 	@Test
@@ -122,7 +122,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).classRefersTo("mypkg.namespaced.Class", "mypkg.nodejs.Class");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("mypkg.namespaced.Class = function() {\n};")
-			.and(requestResponse).containsText("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
+			.and(requestResponse).containsText("mypkg.nodejs.Class = require('/mypkg/nodejs/Class');");
 	}
 	
 	@Test
@@ -146,7 +146,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/mypkg/namespaced/Class.js", "new mypkg.nodejs.Class();")
 			.and(aspect).containsFileWithContents("src/mypkg/namespaced/AnotherClass.js", "new mypkg.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
-		then(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
+		then(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('/mypkg/nodejs/Class');");
 	}
 	
 	@Test
@@ -155,7 +155,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.nodejs.Class")
 			.and(aspect).classFileHasContent("mypkg.namespaced.Class", "mypkg.nodejs.Class, mypkg.nodejs.Class");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/namespaced/Class.js", requestResponse);
-		then(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('mypkg/nodejs/Class');");
+		then(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('/mypkg/nodejs/Class');");
 	}
 	
 	@Test

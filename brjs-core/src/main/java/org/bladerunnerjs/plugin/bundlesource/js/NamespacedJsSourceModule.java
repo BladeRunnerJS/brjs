@@ -26,12 +26,16 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private LinkedAsset assetFile;
 	private AssetLocation assetLocation;
 	private String requirePath;
+	private String className;
 	
 	@Override
 	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
 	{
+		String relativeRequirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
+		
 		this.assetLocation = assetLocation;
-		this.requirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
+		requirePath = /* assetLocation.getAssetContainer().requirePrefix() + */ "/" + relativeRequirePath;
+		className = relativeRequirePath.replaceAll("/", ".");
 		assetFile = new FullyQualifiedLinkedAsset();
 		assetFile.initializeUnderlyingObjects(assetLocation, file);
 	}
@@ -57,6 +61,11 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
+	public String getClassName() {
+		return className;
+	}
+	
+	@Override
 	public boolean isEncapsulatedModule() {
 		return false;
 	}
@@ -72,7 +81,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 			
 			while (matcher.find()) {
 				String referencedClass = matcher.group(3);
-				String requirePath = referencedClass.replaceAll("\\.", "/");
+				String requirePath = "/" + referencedClass.replaceAll("\\.", "/");
 				
 				try {
 					orderDependentSourceModules.add(bundlableNode.getSourceModule(requirePath));
@@ -109,9 +118,4 @@ public class NamespacedJsSourceModule implements SourceModule {
 	{
 		return assetLocation;
 	}
-	
-	public String getClassName() {
-		return getRequirePath().replaceAll("/", ".");
-	}
-	
 }

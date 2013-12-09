@@ -19,6 +19,11 @@ public class AliasDefinition {
 		return className;
 	}
 	
+	public String getRequirePath() {
+		// TODO: we need to make require paths a first class concept in aliasing
+		return "/" + className.replaceAll("\\.", "/");
+	}
+	
 	public String getName() {
 		return name;
 	}

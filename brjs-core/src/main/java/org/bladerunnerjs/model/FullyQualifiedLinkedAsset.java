@@ -86,8 +86,8 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 					if(match instanceof SourceModule) {
 						dependentSourceModules.add((SourceModule) match);
 					}
-					else if(match instanceof ClassSourceFile) {
-						dependentSourceModules.add(((ClassSourceFile) match).getSourceModule());
+					else if(match instanceof ClassSourceModule) {
+						dependentSourceModules.add(((ClassSourceModule) match).getSourceModule());
 					}
 					else {
 						aliases.add((String) match);
@@ -116,13 +116,13 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 				}
 				
 				for(SourceModule sourceModule : assetContainer.sourceModules()) {
-					ClassSourceFile classSourceFile = new ClassSourceFile(sourceModule);
+					ClassSourceModule classSourceModule = new ClassSourceModule(sourceModule);
 					
 					if (!sourceModule.getUnderlyingFile().equals(assetFile)) {
 	    				trie.add(sourceModule.getRequirePath(), sourceModule);
-	    				if ( !sourceModule.getRequirePath().equals(classSourceFile.getClassName()) )
+	    				if (sourceModule.getClassName() != null)
 	    				{
-	    					trie.add(classSourceFile.getClassName(), classSourceFile);
+	    					trie.add(sourceModule.getClassName(), classSourceModule);
 	    				}
 					}
 				}

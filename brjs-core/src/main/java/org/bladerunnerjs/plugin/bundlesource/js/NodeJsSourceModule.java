@@ -35,14 +35,17 @@ public class NodeJsSourceModule implements SourceModule {
 	private List<String> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private String requirePath;
+	private String className;
 	
 	@Override
 	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
 	{
+		String relativeRequirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
+		
 		this.assetLocation = assetLocation;
 		assetFile = file;
-		// TODO: this requirePath should use assetLocation.getAssetContainer().requirePrefix() and not require the 'src' directory to contain the entire namespace to be repeated
-		this.requirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
+		requirePath = /* assetLocation.getAssetContainer().requirePrefix() + */ "/" + relativeRequirePath;
+		className = relativeRequirePath.replaceAll("/", ".");
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
@@ -103,6 +106,11 @@ public class NodeJsSourceModule implements SourceModule {
 	@Override
 	public String getRequirePath() {
 		return requirePath;
+	}
+	
+	@Override
+	public String getClassName() {
+		return className;
 	}
 	
 	@Override

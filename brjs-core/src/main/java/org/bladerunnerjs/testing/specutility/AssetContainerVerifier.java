@@ -22,7 +22,7 @@ public class AssetContainerVerifier {
 	public void hasSourceModules(SourceModuleDescriptor[] expectedSourceModules) throws Exception {
 		List<SourceModule> actualSourceModules = assetContainer.sourceModules();
 		
-		assertEquals("Expected " + expectedSourceModules.length + " source modules, but there were only " + actualSourceModules.size() + ".", expectedSourceModules.length, actualSourceModules.size());
+		assertEquals("Expected " + expectedSourceModules.length + " source modules, but there were actually " + actualSourceModules.size() + ".", expectedSourceModules.length, actualSourceModules.size());
 		
 		int i = 0;
 		for(SourceModule actualSourceModule : actualSourceModules) {
@@ -41,7 +41,7 @@ public class AssetContainerVerifier {
 	public void hasAssetLocations(String[] expectedAssetLocations) {
 		List<AssetLocation> actualAssetLocations = assetContainer.getAllAssetLocations();
 		
-		assertEquals("Expected " + expectedAssetLocations.length + " asset locations, but there were only " + actualAssetLocations.size() + ".", expectedAssetLocations.length, actualAssetLocations.size());
+		assertEquals("Expected " + expectedAssetLocations.length + " asset locations, but there were actually " + actualAssetLocations.size() + ".", expectedAssetLocations.length, actualAssetLocations.size());
 		
 		int i = 0;
 		for(AssetLocation actualAssetLocation : actualAssetLocations) {

@@ -15,9 +15,16 @@ import org.bladerunnerjs.model.engine.RootNode;
 
 public class SourceAssetLocation extends ShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
+	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
 	public SourceAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
+		dependentAssetLocations.add(((AssetContainer) parent).resources());
+	}
+	
+	@Override
+	public List<AssetLocation> getDependentAssetLocations() {
+		return dependentAssetLocations;
 	}
 	
 	public List<AssetLocation> getChildAssetLocations() {
@@ -42,7 +49,8 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 		AssetLocation assetLocation = assetLocations.get(dir);
 		
 		if (assetLocation == null) {
-			assetLocation = new ShallowAssetLocation(assetContainer.root(), assetContainer, dir);
+			AssetLocation parentAssetLocation = assetLocations.containsKey(dir.getParentFile()) ? assetLocations.get(dir.getParentFile()) : this;
+			assetLocation = new ChildSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
 			assetLocations.put(dir, assetLocation);
 		}
 		

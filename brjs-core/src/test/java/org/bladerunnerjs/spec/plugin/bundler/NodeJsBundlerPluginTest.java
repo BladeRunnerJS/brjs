@@ -50,8 +50,8 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).classRequires("novox.Class1", "novox.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(app).requestReceived("/default-aspect/node-js/bundle.js", requestResponse);
-		then(requestResponse).containsText("// novox/Class2\n" + "define('novox/Class2', function(")
-			.and(requestResponse).containsText("// novox/Class1\n" + "define('novox/Class1', function(");
+		then(requestResponse).containsText("// /novox/Class2\n" + "define('/novox/Class2', function(")
+			.and(requestResponse).containsText("// /novox/Class1\n" + "define('/novox/Class1', function(");
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("Class1");
 		when(app).requestReceived("/default-aspect/node-js/module/Class1.js", requestResponse);
 		then(requestResponse).containsLines(
-			"define('Class1', function(require, exports, module) {",
+			"define('/Class1', function(require, exports, module) {",
 			"Class1 = function() {",
 			"};",
 			"module.exports = Class1;",

@@ -45,7 +45,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
 				.accepts("namespaced-js/bundle.js").as("bundle-request")
-					.and("namespaced-js/module/<module>.js").as("single-module-request")
+					.and("namespaced-js/module<module>.js").as("single-module-request")
 					.and("namespaced-js/package-definitions.js").as("package-definitions-request")
 				.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 			
@@ -207,7 +207,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			if(sourceModule instanceof NamespacedJsSourceModule) {
-				List<String> packageList = Arrays.asList(sourceModule.getRequirePath().split("/"));
+				List<String> packageList = Arrays.asList(sourceModule.getClassName().split("\\."));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}
@@ -261,8 +261,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 			{
  				if (dependentSourceModule.isEncapsulatedModule()) 
  				{
-    				String moduleNamespace = dependentSourceModule.getRequirePath().replaceAll("/", ".");
-    				stringBuffer.append(moduleNamespace + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
+    				stringBuffer.append(dependentSourceModule.getClassName() + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
     				globalizedModules.add(dependentSourceModule);
  				}
 			}

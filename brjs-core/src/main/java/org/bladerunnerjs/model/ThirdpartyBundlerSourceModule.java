@@ -123,6 +123,11 @@ public class ThirdpartyBundlerSourceModule implements SourceModule
 	}
 	
 	@Override
+	public String getClassName() {
+		return null;
+	}
+	
+	@Override
 	public boolean isEncapsulatedModule() {
 		return false;
 	}

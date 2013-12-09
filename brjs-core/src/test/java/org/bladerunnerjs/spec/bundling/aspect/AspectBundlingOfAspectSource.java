@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -104,6 +105,8 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 		then(response).doesNotContainClasses("mypkg.Class1");
 	}
 	
+	// TODO: we don't currently support relative require paths, and when we do add this feature we're going to need lots of tests to verify it works
+	@Ignore
 	@Test
 	public void requirePathsCanBeRelative() throws Exception {
 		given(aspect).hasClass("mypkg.Class1")
@@ -116,27 +119,27 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	
 	@Test
 	public void requireCallCanHaveSingleQuotes() throws Exception {
-		given(aspect).containsFileWithContents("src/pkg/Class1.js", "pkg.Class1 = function(){}; require('pkg/Class2')")
+		given(aspect).containsFileWithContents("src/pkg/Class1.js", "pkg.Class1 = function(){}; require('/pkg/Class2')")
 			.and(aspect).containsFileWithContents("src/pkg/Class2.js", "pkg.Class2 = function(){};")
-			.and(aspect).indexPageRefersTo("pkg/Class1");
+			.and(aspect).indexPageRefersTo("/pkg/Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("pkg.Class2 = function(){};");
 	}
 	
 	@Test
 	public void requireCallCanHaveDoubleQuotes() throws Exception {
-		given(aspect).containsFileWithContents("src/pkg/Class1.js", "pkg.Class1 = function(){}; require(\"pkg/Class2\")")
+		given(aspect).containsFileWithContents("src/pkg/Class1.js", "pkg.Class1 = function(){}; require(\"/pkg/Class2\")")
 		.and(aspect).containsFileWithContents("src/pkg/Class2.js", "pkg.Class2 = function(){};")
-		.and(aspect).indexPageRefersTo("pkg/Class1");
+		.and(aspect).indexPageRefersTo("/pkg/Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("pkg.Class2 = function(){};");
 	}
 	
 	@Test
 	public void requireCallCanHaveSpacesBeforeQuotes() throws Exception {
-		given(aspect).containsFileWithContents("src/pkg/Class1.js", "pkg.Class1 = function(){}; require( \"pkg/Class2\")")
+		given(aspect).containsFileWithContents("src/pkg/Class1.js", "pkg.Class1 = function(){}; require( \"/pkg/Class2\")")
 		.and(aspect).containsFileWithContents("src/pkg/Class2.js", "pkg.Class2 = function(){};")
-		.and(aspect).indexPageRefersTo("pkg/Class1");
+		.and(aspect).indexPageRefersTo("/pkg/Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("pkg.Class2 = function(){};");
 	}
@@ -144,7 +147,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	@Test
 	public void weBundleFilesRequiredFromAnAspect() throws Exception {
 		given(aspect).containsFileWithContents("src/pkg/App.js", "var App = function() {};  module.exports = App;")
-			.and(aspect).indexPageHasContent("var App = require('pkg/App')");
+			.and(aspect).indexPageHasContent("var App = require('/pkg/App')");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("var App = function() {};  module.exports = App;");
 	}

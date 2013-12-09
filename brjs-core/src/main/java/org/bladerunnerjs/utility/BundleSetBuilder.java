@@ -38,8 +38,7 @@ public class BundleSetBuilder {
 			resourcesList.addAll(resources);
 			
 			for(AliasDefinition aliasDefinition : activeAliases) {
-				String requirePath = aliasDefinition.getClassName().replaceAll("\\.", "/");
-				sourceModules.add(bundlableNode.getSourceModule(requirePath));
+				sourceModules.add(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
 			}
 		}
 		catch(RequirePathException e) {
