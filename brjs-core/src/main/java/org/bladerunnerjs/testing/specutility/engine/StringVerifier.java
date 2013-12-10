@@ -39,7 +39,7 @@ public class StringVerifier {
 	}
 	
 	public VerifierChainer containsTextOnce(String substring) {
-		assertEquals(1, StringUtils.countMatches(string, substring));
+		containsTextANumberOfTimes(substring, 1);
 		
 		return verifierChainer;	
 	}

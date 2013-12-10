@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
@@ -138,26 +140,39 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 			else if(contentPath.formName.equals("bundle-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
 								
-					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
-    				writePackageStructure(packageStructure, writer);
-    				writer.write("\n");
-					
-    				List<SourceModule> processedSourceModules = new ArrayList<SourceModule>();
-    				
+					StringWriter jsContent = new StringWriter();
+
+					// do this first and buffer the content so we know which modules have been globally namespaced
+					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
 					for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 						if(sourceModule instanceof NamespacedJsSourceModule)
 						{
-							writer.write( globalizeNonNamespacedJsClasses(sourceModule, processedSourceModules) );
-    						writer.write("// " + sourceModule.getRequirePath() + "\n");
-    						IOUtils.copy(sourceModule.getReader(), writer);
-    						writer.write("\n\n");
+							jsContent.write( globalizeNonNamespacedJsClasses(sourceModule, processedGlobalizedSourceModules) );
+							jsContent.write("// " + sourceModule.getRequirePath() + "\n");
+							IOUtils.copy(sourceModule.getReader(), jsContent);
+							jsContent.write("\n\n");
 						}
 					}
+					
+					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
+    				writePackageStructure(packageStructure, writer);
+    				writer.write("\n");
+					
+					writer.write( jsContent.toString() );
 				}
 			}
 			else if(contentPath.formName.equals("package-definitions-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-    				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, writer);
+					
+					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
+					for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+						if(sourceModule instanceof NamespacedJsSourceModule)
+						{
+							globalizeNonNamespacedJsClasses(sourceModule, processedGlobalizedSourceModules);
+						}
+					}
+					
+    				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
     				writePackageStructure(packageStructure, writer);
 				}
 			}
@@ -201,14 +216,22 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 		}
 	}
 	
-	private Map<String, Map<String, ?>> createPackageStructureForCaplinJsClasses(BundleSet bundleSet, Writer writer) {
+	private Map<String, Map<String, ?>> createPackageStructureForCaplinJsClasses(BundleSet bundleSet, List<SourceModule> globalizedModules, Writer writer) {
 		Map<String, Map<String, ?>> packageStructure = new HashMap<>();
 		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-			if(sourceModule instanceof NamespacedJsSourceModule) {
-				List<String> packageList = Arrays.asList(sourceModule.getNamespacedName().split("\\."));
-				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
+			if (sourceModule instanceof NamespacedJsSourceModule)
+			{
+    			List<String> packageList = Arrays.asList(sourceModule.getNamespacedName().split("\\."));
+    			addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
+		}
+		
+		for(SourceModule sourceModule : globalizedModules) {
+			String namespacedName = sourceModule.getRequirePath().replace('/', '.');
+			namespacedName = (namespacedName.startsWith(".")) ? StringUtils.substringAfter(namespacedName, ".") : namespacedName;
+			List<String> packageList = Arrays.asList(namespacedName.split("\\."));
+			addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 		}
 		
 		return packageStructure;

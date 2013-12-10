@@ -139,7 +139,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void requiresAreOnlyAutomaticallyAddedOnce() throws Exception {
+	public void requiresAreOnlyAutomaticallyAddedOnceInABundleForAGivenClass() throws Exception {
 		given(aspect).hasPackageStyle("src/mypkg/namespaced", NamespacedJsBundlerPlugin.JS_STYLE)
 			.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.namespaced.AnotherClass", "mypkg.nodejs.Class")
 			.and(aspect).indexPageRefersTo("new mypkg.namespaced.Class(); new mypkg.namespaced.AnotherClass();")
@@ -156,6 +156,28 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).classFileHasContent("mypkg.namespaced.Class", "mypkg.nodejs.Class, mypkg.nodejs.Class");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/mypkg/namespaced/Class.js", requestResponse);
 		then(requestResponse).containsTextOnce("mypkg.nodejs.Class = require('/mypkg/nodejs/Class');");
+	}
+	
+	@Test
+	public void packageDefinitionsInBundleContainAutomaticRequirePackages() throws Exception {
+		given(aspect).hasPackageStyle("src/mypkg/namespaced", NamespacedJsBundlerPlugin.JS_STYLE)
+        	.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.namespaced.AnotherClass", "mypkg.nodejs.Class")
+        	.and(aspect).indexPageRefersTo("new mypkg.namespaced.Class(); new mypkg.namespaced.AnotherClass();")
+        	.and(aspect).containsFileWithContents("src/mypkg/namespaced/Class.js", "new mypkg.nodejs.Class();")
+        	.and(aspect).containsFileWithContents("src/mypkg/namespaced/AnotherClass.js", "new mypkg.nodejs.Class();");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsTextOnce("window.mypkg = {\"nodejs\":{},\"namespaced\":{}};");
+	}
+	
+	@Test
+	public void packageDefinitionsContainsAutomaticRequirePackages() throws Exception {
+		given(aspect).hasPackageStyle("src/mypkg/namespaced", NamespacedJsBundlerPlugin.JS_STYLE)
+    		.and(aspect).hasClasses("mypkg.namespaced.Class", "mypkg.namespaced.AnotherClass", "mypkg.nodejs.Class")
+    		.and(aspect).indexPageRefersTo("new mypkg.namespaced.Class(); new mypkg.namespaced.AnotherClass();")
+    		.and(aspect).containsFileWithContents("src/mypkg/namespaced/Class.js", "new mypkg.nodejs.Class();")
+    		.and(aspect).containsFileWithContents("src/mypkg/namespaced/AnotherClass.js", "new mypkg.nodejs.Class();");
+		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
+		then(requestResponse).containsTextOnce("window.mypkg = {\"nodejs\":{},\"namespaced\":{}};");
 	}
 	
 	@Test
