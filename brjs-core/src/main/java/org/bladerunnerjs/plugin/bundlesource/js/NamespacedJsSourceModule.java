@@ -61,7 +61,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public String getClassName() {
+	public String getNamespacedName() {
 		return className;
 	}
 	

@@ -123,7 +123,7 @@ public class ThirdpartyBundlerSourceModule implements SourceModule
 	}
 	
 	@Override
-	public String getClassName() {
+	public String getNamespacedName() {
 		return null;
 	}
 	

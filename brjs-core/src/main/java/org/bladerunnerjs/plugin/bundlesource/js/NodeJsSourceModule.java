@@ -109,7 +109,7 @@ public class NodeJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public String getClassName() {
+	public String getNamespacedName() {
 		return className;
 	}
 	

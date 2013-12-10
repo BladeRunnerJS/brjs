@@ -207,7 +207,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			if(sourceModule instanceof NamespacedJsSourceModule) {
-				List<String> packageList = Arrays.asList(sourceModule.getClassName().split("\\."));
+				List<String> packageList = Arrays.asList(sourceModule.getNamespacedName().split("\\."));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}
@@ -261,7 +261,7 @@ public class NamespacedJsBundlerPlugin extends AbstractBundlerPlugin implements 
 			{
  				if (dependentSourceModule.isEncapsulatedModule()) 
  				{
-    				stringBuffer.append(dependentSourceModule.getClassName() + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
+    				stringBuffer.append(dependentSourceModule.getNamespacedName() + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
     				globalizedModules.add(dependentSourceModule);
  				}
 			}

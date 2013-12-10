@@ -120,9 +120,9 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 					
 					if (!sourceModule.getUnderlyingFile().equals(assetFile)) {
 	    				trie.add(sourceModule.getRequirePath(), sourceModule);
-	    				if (sourceModule.getClassName() != null)
+	    				if (sourceModule.getNamespacedName() != null)
 	    				{
-	    					trie.add(sourceModule.getClassName(), classSourceModule);
+	    					trie.add(sourceModule.getNamespacedName(), classSourceModule);
 	    				}
 					}
 				}
