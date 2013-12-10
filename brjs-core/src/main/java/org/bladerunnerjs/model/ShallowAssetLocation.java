@@ -10,7 +10,7 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.plugin.BundlerPlugin;
+import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocation {
 	protected AssetContainer assetContainer;
@@ -40,8 +40,8 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	public List<LinkedAsset> seedResources() {
 		List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
-		for(BundlerPlugin bundlerPlugin : root().plugins().bundlers()) {
-			seedResources.addAll(bundlerPlugin.getLinkedResourceFiles(this));
+		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
+			seedResources.addAll(assetPlugin.getLinkedResourceFiles(this));
 		}
 		
 		return seedResources;
@@ -65,8 +65,8 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	public List<Asset> bundleResources(String fileExtension) {
 		List<Asset> bundleResources = new LinkedList<Asset>();
 		
-		for(BundlerPlugin bundlerPlugin : root().plugins().bundlers()) {
-			bundleResources.addAll(bundlerPlugin.getResourceFiles(this));
+		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
+			bundleResources.addAll(assetPlugin.getResourceFiles(this));
 		}
 		
 		return bundleResources;

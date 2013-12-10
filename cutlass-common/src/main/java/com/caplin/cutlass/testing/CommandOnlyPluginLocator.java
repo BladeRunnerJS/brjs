@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.BundlerPlugin;
+import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.BundlerTagHandlerPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.BundlerContentPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
@@ -33,11 +35,6 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	}
 	
 	@Override
-	public List<BundlerPlugin> getBundlerPlugins() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public List<MinifierPlugin> getMinifierPlugins() {
 		return new ArrayList<>();
 	}
@@ -48,7 +45,22 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	}
 	
 	@Override
+	public List<BundlerContentPlugin> getBundlerContentPlugins() {
+		return new ArrayList<>();
+	}
+	
+	@Override
 	public List<TagHandlerPlugin> getTagHandlerPlugins() {
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<BundlerTagHandlerPlugin> getBundlerTagHandlerPlugins() {
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<AssetPlugin> getAssetPlugins() {
 		return new ArrayList<>();
 	}
 }

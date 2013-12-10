@@ -7,7 +7,7 @@ import java.util.List;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.plugin.BundlerPlugin;
+import org.bladerunnerjs.plugin.AssetPlugin;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
@@ -46,10 +46,10 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	public List<SourceModule> sourceModules() {
 		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
 			
-		for(BundlerPlugin bundlerPlugin : (root()).plugins().bundlers()) {
+		for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 			for (AssetLocation assetLocation : getAllAssetLocations())
 			{
-				sourceModules.addAll(bundlerPlugin.getSourceModules(assetLocation));
+				sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
 			}
 		}
 		

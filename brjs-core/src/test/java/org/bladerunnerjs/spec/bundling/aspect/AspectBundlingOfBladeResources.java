@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Theme;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -56,7 +56,7 @@ public class AspectBundlingOfBladeResources extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladeCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
+		given(aspect).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(blade).hasClass("mypkg.bs.b1.Class1")
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
 			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");

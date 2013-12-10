@@ -11,8 +11,7 @@ public class PluginLocatorLogger {
 		listFoundPlugins(logger, pluginLocator.getModelObserverPlugins());
 		listFoundPlugins(logger, pluginLocator.getCommandPlugins());
 		listFoundPlugins(logger, pluginLocator.getTagHandlerPlugins()); // TODO: add to spec tests
-		listFoundPlugins(logger, pluginLocator.getContentPlugins()); // TODO: add to spec tests
-		listFoundPlugins(logger, pluginLocator.getBundlerPlugins());
+		listFoundPlugins(logger, pluginLocator.getBundlerContentPlugins()); // TODO: add to spec tests
 		listFoundPlugins(logger, pluginLocator.getMinifierPlugins()); // TODO: add to spec tests
 	}
 	

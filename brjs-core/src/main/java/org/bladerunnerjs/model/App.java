@@ -23,7 +23,6 @@ import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.plugin.BundlerPlugin;
 import org.bladerunnerjs.utility.LogicalRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
 
@@ -215,11 +214,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 			logger.error(Messages.APP_DEPLOYMENT_FAILED_LOG_MSG, getName(), dir().getPath());
 			throw new TemplateInstallationException(e);
 		}
-	}
-	
-	public List<BundlerPlugin> bundlerPlugins(String mimeType) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	public String getNamespace() {

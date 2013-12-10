@@ -16,7 +16,6 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsTagHandlers()
 			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");

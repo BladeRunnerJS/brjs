@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -31,9 +31,9 @@ public class BRJSServletTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception {
 		
-		given(brjs).hasContentPlugins( new MockContentPlugin() )
-			.and(brjs).automaticallyFindsBundlers()
+		given(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
+			.and(brjs).hasBundlerContentPlugins(new MockBundlerContentPlugin())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usedForServletModel();
     		appServer = brjs.applicationServer(appServerPort);
@@ -77,7 +77,7 @@ public class BRJSServletTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet", MockContentPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet", MockBundlerContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test
@@ -86,7 +86,7 @@ public class BRJSServletTest extends SpecTest
 		given(app).hasBeenCreated()
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet/some/other/path", MockContentPlugin.class.getCanonicalName())
+		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet/some/other/path", MockBundlerContentPlugin.class.getCanonicalName())
 			.and(appServer).requestForUrlReturns("/app/hello", "Hello World!");
 	}
 	
@@ -112,7 +112,7 @@ public class BRJSServletTest extends SpecTest
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasPackageStyle("src/cjs", NamespacedJsBundlerPlugin.JS_STYLE)
+			.and(blade).hasPackageStyle("src/cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(blade).hasPackageStyle("src/node", "node.js")
 			.and(blade).hasClasses("cjs.Class", "node.Class")
 			.and(aspect).indexPageRefersTo("cjs.Class")

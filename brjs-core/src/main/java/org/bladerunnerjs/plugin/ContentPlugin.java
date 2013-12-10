@@ -10,7 +10,6 @@ import org.bladerunnerjs.utility.ContentPathParser;
 
 public interface ContentPlugin extends Plugin {
 	String getRequestPrefix();
-	String getMimeType();
 	ContentPathParser getContentPathParser();
 	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException;
 	List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;

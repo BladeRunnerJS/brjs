@@ -7,20 +7,23 @@ import java.util.Map;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.BundlerPlugin;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.TagHandlerPlugin;
-import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
+import org.bladerunnerjs.plugin.BundlerContentPlugin;
+import org.bladerunnerjs.plugin.BundlerTagHandlerPlugin;
+import org.bladerunnerjs.plugin.base.AbstractBundlerTagHandlerPlugin;
 
-public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin implements TagHandlerPlugin {
+public class CompositeJsTagHandlerPlugin extends AbstractBundlerTagHandlerPlugin {
 	private BRJS brjs;
-	private ContentPlugin compositeJsBundlerPlugin;
+	private BundlerContentPlugin compositeJsBundlerPlugin;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
-		compositeJsBundlerPlugin = brjs.plugins().contentProvider("js");
+		compositeJsBundlerPlugin = brjs.plugins().bundlerContentProvider("js");
+	}
+	
+	@Override
+	public String getMimeType() {
+		return "text/javascript";
 	}
 	
 	@Override
@@ -45,15 +48,13 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin implem
 			String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
 			
 			if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
-				for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
-					if((bundlerPlugin.instanceOf(TagHandlerPlugin.class)) && !bundlerPlugin.equals(this)) {
-						TagHandlerPlugin tagHandler = (TagHandlerPlugin) ((VirtualProxyPlugin) bundlerPlugin).getUnderlyingPlugin();
-						
+				for(BundlerTagHandlerPlugin bundlerTagHandlerPlugin : brjs.plugins().bundlerTagHandlers("text/javascript")) {
+					if(!bundlerTagHandlerPlugin.equals(this)) {
 						if(isDev) {
-							tagHandler.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
+							bundlerTagHandlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
 						}
 						else {
-							tagHandler.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
+							bundlerTagHandlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
 						}
 					}
 				}

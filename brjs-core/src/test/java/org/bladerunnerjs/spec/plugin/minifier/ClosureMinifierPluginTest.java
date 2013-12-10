@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.plugin.minifier;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +75,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
-		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerPlugin.JS_STYLE)
+		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1")
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2");
@@ -86,7 +86,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
-		given(blade).hasPackageStyle("src/mypkg.cjs", NamespacedJsBundlerPlugin.JS_STYLE)
+		given(blade).hasPackageStyle("src/mypkg.cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(blade).hasPackageStyle("mypkg.node", "node.js")
 			.and(blade).hasClasses("mypkg.cjs.Class", "mypkg.node.Class")
 			.and(aspect).indexPageRefersTo("mypkg.cjs.Class")
@@ -98,7 +98,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierStillAddsPackageDefinitionsBlock() throws Exception
 	{
-		given(blade).hasPackageStyle("src/mypkg.cjs", NamespacedJsBundlerPlugin.JS_STYLE)
+		given(blade).hasPackageStyle("src/mypkg.cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
     		.and(blade).hasClasses("mypkg.cjs.Class", "mypkg.node.Class")
     		.and(aspect).indexPageRefersTo("mypkg.cjs.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);

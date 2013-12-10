@@ -11,13 +11,13 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.BundlerContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class MockContentPlugin extends AbstractContentPlugin implements ContentPlugin
+public class MockBundlerContentPlugin extends AbstractBundlerContentPlugin implements BundlerContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();

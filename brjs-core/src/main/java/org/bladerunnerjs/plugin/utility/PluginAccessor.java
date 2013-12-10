@@ -1,16 +1,15 @@
 package org.bladerunnerjs.plugin.utility;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.plugin.BundlerPlugin;
+import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.BundlerTagHandlerPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.BundlerContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.PluginLocator;
@@ -34,16 +33,16 @@ public class PluginAccessor {
 		return commandList.getPluginCommands();
 	}
 	
-	public ContentPlugin contentProvider(BladerunnerUri requestUri) {
+	public BundlerContentPlugin bundlerContentProvider(BladerunnerUri requestUri) {
 		String requestPrefix = (requestUri.logicalPath.indexOf('/') == -1) ? requestUri.logicalPath : requestUri.logicalPath.substring(0, requestUri.logicalPath.indexOf('/'));
 		
-		return contentProvider(requestPrefix);
+		return bundlerContentProvider(requestPrefix);
 	}
 	
-	public ContentPlugin contentProvider(String requestPrefix) {
-		ContentPlugin contentPlugin = null;
+	public BundlerContentPlugin bundlerContentProvider(String requestPrefix) {
+		BundlerContentPlugin contentPlugin = null;
 		
-		for (ContentPlugin nextContentPlugin : contentProviders()) {
+		for (BundlerContentPlugin nextContentPlugin : bundlerContentProviders()) {
 			if(nextContentPlugin.getRequestPrefix().equals(requestPrefix)) {
 				contentPlugin = nextContentPlugin;
 				break;
@@ -53,31 +52,44 @@ public class PluginAccessor {
 		return contentPlugin;
 	}
 	
-	public List<ContentPlugin> contentProviders() {
-		Set<ContentPlugin> contentPlugins = new HashSet<ContentPlugin>();
-		contentPlugins.addAll(pluginLocator.getContentPlugins());
-		contentPlugins.addAll(bundlers());
-		return new ArrayList<ContentPlugin>(contentPlugins);
+	public List<BundlerContentPlugin> bundlerContentProviders() {
+		return pluginLocator.getBundlerContentPlugins();
 	}
 	
-	public List<BundlerPlugin> bundlers() {
-		return pluginLocator.getBundlerPlugins();
-	}
-	
-	public List<BundlerPlugin> bundlers(String mimeType) {
-		List<BundlerPlugin> bundlerPlugins = new ArrayList<>();
+	public List<BundlerContentPlugin> bundlerContentProviders(String mimeType) {
+		List<BundlerContentPlugin> bundlerContentPlugins = new ArrayList<>();
 		
-		for (BundlerPlugin bundlerPlugin : bundlers()) {
-			if (bundlerPlugin.getMimeType().equals(mimeType)) {
-				bundlerPlugins.add(bundlerPlugin);
+		for (BundlerContentPlugin bundlerContentPlugin : bundlerContentProviders()) {
+			if (bundlerContentPlugin.getMimeType().equals(mimeType)) {
+				bundlerContentPlugins.add(bundlerContentPlugin);
 			}
 		}
 		
-		return bundlerPlugins;
+		return bundlerContentPlugins;
 	}
 	
 	public List<TagHandlerPlugin> tagHandlers() {
-		return pluginLocator.getTagHandlerPlugins();
+		List<TagHandlerPlugin> tagHandlers = new ArrayList<>();
+		tagHandlers.addAll(pluginLocator.getTagHandlerPlugins());
+		tagHandlers.addAll(pluginLocator.getBundlerTagHandlerPlugins());
+		
+		return tagHandlers;
+	}
+	
+	public List<BundlerTagHandlerPlugin> bundlerTagHandlers() {
+		return pluginLocator.getBundlerTagHandlerPlugins();
+	}
+	
+	public List<BundlerTagHandlerPlugin> bundlerTagHandlers(String mimeType) {
+		List<BundlerTagHandlerPlugin> bundlerTagHandlerPlugins = new ArrayList<>();
+		
+		for (BundlerTagHandlerPlugin bundlerTagHandlerPlugin : bundlerTagHandlers()) {
+			if (bundlerTagHandlerPlugin.getMimeType().equals(mimeType)) {
+				bundlerTagHandlerPlugins.add(bundlerTagHandlerPlugin);
+			}
+		}
+		
+		return bundlerTagHandlerPlugins;
 	}
 	
 	public List<MinifierPlugin> minifiers() {
@@ -108,5 +120,9 @@ public class PluginAccessor {
 	
 	public List<ModelObserverPlugin> modelObservers() {
 		return pluginLocator.getModelObserverPlugins();
+	}
+	
+	public List<AssetPlugin> assetProducers() {
+		return pluginLocator.getAssetPlugins();
 	}
 }

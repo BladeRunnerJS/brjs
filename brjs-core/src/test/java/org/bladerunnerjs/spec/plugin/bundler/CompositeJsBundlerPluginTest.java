@@ -16,7 +16,6 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	{
 		given(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
-			.and(brjs).automaticallyFindsTagHandlers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -30,7 +29,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).indexPageHasContent("<@new-js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/mypkg/Class1.js", "namespaced-js/package-definitions.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
 	}
 	
 	@Test
@@ -58,10 +57,12 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {
+		given(exceptions).arentCaught();
+		
 		given(aspect).hasClass("mypkg.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
 			.and(aspect).indexPageHasContent("<@new-js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/mypkg/Class1.js", "namespaced-js/package-definitions.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
 	}
 }

@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABladeset() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg", NamespacedJsBundlerPlugin.JS_STYLE)
+		given(bladeset).hasPackageStyle("src/mypkg", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(aspect).indexPageRefersTo("mypkg.bs.Class1");
@@ -60,7 +60,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	
 	@Test	// bladeset unhappy paths
 	public void weDontBundleABladesetClassIfItIsNotReferredToByAnAspect() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerPlugin.JS_STYLE)
+		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
 			.and(aspect).indexPageRefersTo("mypkg.bs.Class2");
@@ -81,7 +81,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	
 	@Test
 	public void bladesetClassesThatReferToNonExistentClassesWontCauseAnExceptionWhenAspectIsRequested() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerPlugin.JS_STYLE)
+		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(bladeset).hasClass("mypkg.bs.Class1")
 			.and(aspect).indexPageRefersTo("mypkg.bs.Class1")
 			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.NonExistentClass");

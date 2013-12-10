@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.BundlerContentPlugin;
 
 
 public class LogicalRequestHandler {
@@ -47,7 +47,7 @@ public class LogicalRequestHandler {
 			String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 			logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getClass().getSimpleName(), name, requestUri.logicalPath);
 			
-			ContentPlugin contentProvider = app.root().plugins().contentProvider(requestUri);
+			BundlerContentPlugin contentProvider = app.root().plugins().bundlerContentProvider(requestUri);
 			
 			if(contentProvider == null) {
 				throw new ResourceNotFoundException("No content provider could be found found the logical request path '" + requestUri.logicalPath + "'");

@@ -21,7 +21,6 @@ public class ThirdpartyBundlerPluginTest extends SpecTest {
 	{
 		given(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
-			.and(brjs).automaticallyFindsTagHandlers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");

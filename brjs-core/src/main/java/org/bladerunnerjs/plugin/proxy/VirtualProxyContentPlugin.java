@@ -23,11 +23,6 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public String getMimeType() {
-		return contentPlugin.getMimeType();
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser() {
 		initializePlugin();
 		return contentPlugin.getContentPathParser();

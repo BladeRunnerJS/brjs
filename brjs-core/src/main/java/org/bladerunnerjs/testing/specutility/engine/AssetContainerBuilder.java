@@ -5,8 +5,8 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsBundlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsBundlerContentPlugin;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
@@ -53,8 +53,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerPlugin.JS_STYLE + "'");
+		if(!jsStyle.equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
+			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerContentPlugin.JS_STYLE + "'");
 		}
 		
 		FileUtils.write(sourceFile, getClassBody(sourceClass) + "var obj = new " + referencedClass + "();\n");
@@ -66,8 +66,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File dependentSourceFile = getSourceFile(dependentClass);
 		String jsStyle = JsStyleUtility.getJsStyle(dependentSourceFile.getParentFile());
 		
-		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
-			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerPlugin.JS_STYLE + "'");
+		if(!jsStyle.equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
+			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerContentPlugin.JS_STYLE + "'");
 		}
 		
 		FileUtils.write(dependentSourceFile, getCaplinJsClassBody(dependentClass, referencedClass));
@@ -79,7 +79,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
+		if(!jsStyle.equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
@@ -101,8 +101,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerPlugin.JS_STYLE + "'");
+		if(!jsStyle.equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
+			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerContentPlugin.JS_STYLE + "'");
 		}
 		
 		FileUtils.write(sourceFile, "br.thirdparty('"+thirdpartyLib.getName()+"');", true);
@@ -115,7 +115,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
-		if(!jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
+		if(!jsStyle.equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
@@ -139,10 +139,10 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		String classBody;
 		
-		if(jsStyle.equals(NodeJsBundlerPlugin.JS_STYLE)) {
+		if(jsStyle.equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
 			classBody = className + " = function() {\n};\nmodule.exports = " + className + ";\n";
 		}
-		else if(jsStyle.equals(NamespacedJsBundlerPlugin.JS_STYLE)) {
+		else if(jsStyle.equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
 			classBody = className + " = function() {\n};\n";
 		}
 		else {

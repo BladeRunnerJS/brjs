@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.BundlerPlugin;
+import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.BundlerTagHandlerPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.BundlerContentPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
@@ -20,26 +22,24 @@ import org.bladerunnerjs.plugin.utility.PluginLocatorUtils;
 
 public class MockPluginLocator implements PluginLocator
 {
-	public List<BundlerPlugin> bundlers = new ArrayList<BundlerPlugin>();
 	public List<CommandPlugin> pluginCommands = new ArrayList<CommandPlugin>();
 	public List<ModelObserverPlugin> modelObservers = new ArrayList<ModelObserverPlugin>();
 	public List<MinifierPlugin> minifiers = new ArrayList<MinifierPlugin>();
 	public List<ContentPlugin> contentPlugins = new ArrayList<ContentPlugin>();
+	public List<BundlerContentPlugin> bundlerContentPlugins = new ArrayList<BundlerContentPlugin>();
 	public List<TagHandlerPlugin> tagHandlers = new ArrayList<TagHandlerPlugin>();
+	public List<BundlerTagHandlerPlugin> bundlerTagHandlers = new ArrayList<BundlerTagHandlerPlugin>();
+	public List<AssetPlugin> assetPlugins = new ArrayList<AssetPlugin>();
 	
 	public void createPlugins(BRJS brjs) {
-		setBRJSForPlugins(brjs, bundlers);
 		setBRJSForPlugins(brjs, pluginCommands);
 		setBRJSForPlugins(brjs, modelObservers);
 		setBRJSForPlugins(brjs, minifiers);
 		setBRJSForPlugins(brjs, contentPlugins);
+		setBRJSForPlugins(brjs, bundlerContentPlugins);
 		setBRJSForPlugins(brjs, tagHandlers);
-	}
-	
-	@Override
-	public List<BundlerPlugin> getBundlerPlugins()
-	{
-		return bundlers;
+		setBRJSForPlugins(brjs, bundlerTagHandlers);
+		setBRJSForPlugins(brjs, assetPlugins);
 	}
 	
 	@Override
@@ -65,10 +65,24 @@ public class MockPluginLocator implements PluginLocator
 	}
 	
 	@Override
+	public List<BundlerContentPlugin> getBundlerContentPlugins() {
+		return bundlerContentPlugins;
+	}
+	
+	@Override
 	public List<TagHandlerPlugin> getTagHandlerPlugins() {
 		return tagHandlers;
 	}
 	
+	@Override
+	public List<BundlerTagHandlerPlugin> getBundlerTagHandlerPlugins() {
+		return bundlerTagHandlers;
+	}
+	
+	@Override
+	public List<AssetPlugin> getAssetPlugins() {
+		return assetPlugins;
+	}
 	
 	public static List<? extends Plugin> setBRJSForPlugins(BRJS brjs, List<? extends Plugin> plugins)
 	{
@@ -82,5 +96,4 @@ public class MockPluginLocator implements PluginLocator
 		PluginLocatorUtils.setBRJSForPlugins(brjs, plugins);
 		return plugins;
 	}
-	
 }

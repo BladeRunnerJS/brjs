@@ -6,28 +6,23 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.plugin.BundlerPlugin;
+import org.bladerunnerjs.plugin.BundlerContentPlugin;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.MinifierPlugin;
-import org.bladerunnerjs.plugin.base.AbstractBundlerPlugin;
+import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements BundlerPlugin {
+public class CompositeJsBundlerContentPlugin extends AbstractBundlerContentPlugin {
 	private ContentPathParser contentPathParser = (new ContentPathParserBuilder()).build();
 	private BRJS brjs;
 	
@@ -94,34 +89,16 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 		}
 	}
 	
-	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
-	{
-		return Arrays.asList();
-	}
-	
-	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation)
-	{
-		return Arrays.asList();
-	}
-	
-	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation)
-	{
-		return Arrays.asList();
-	}
-	
 	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
-			if( !bundlerPlugin.equals(this) ) {
+		for(BundlerContentPlugin bundlerContentPlugin : brjs.plugins().bundlerContentProviders("text/javascript")) {
+			if( !bundlerContentPlugin.equals(this) ) {
 				if(isDev) {
-					requestPaths.addAll(bundlerPlugin.getValidDevRequestPaths(bundleSet, locale));
+					requestPaths.addAll(bundlerContentPlugin.getValidDevRequestPaths(bundleSet, locale));
 				}
 				else {
-					requestPaths.addAll(bundlerPlugin.getValidProdRequestPaths(bundleSet, locale));
+					requestPaths.addAll(bundlerContentPlugin.getValidProdRequestPaths(bundleSet, locale));
 				}
 			}
 		}
@@ -135,19 +112,19 @@ public class CompositeJsBundlerPlugin extends AbstractBundlerPlugin implements B
 		try {
 			String charsetName = brjs.bladerunnerConf().getDefaultOutputEncoding();
 			
-			for(BundlerPlugin bundlerPlugin : brjs.plugins().bundlers("text/javascript")) {
-				if( !bundlerPlugin.equals(this) ) {
+			for(BundlerContentPlugin bundlerContentPlugin : brjs.plugins().bundlerContentProviders("text/javascript")) {
+				if( !bundlerContentPlugin.equals(this) ) {
 					String locale = contentPath.properties.get("locale");
-					List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? bundlerPlugin.getValidDevRequestPaths(bundleSet, locale) :
-						bundlerPlugin.getValidProdRequestPaths(bundleSet, locale);
-					ContentPathParser contentPathParser = bundlerPlugin.getContentPathParser();
+					List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? bundlerContentPlugin.getValidDevRequestPaths(bundleSet, locale) :
+						bundlerContentPlugin.getValidProdRequestPaths(bundleSet, locale);
+					ContentPathParser contentPathParser = bundlerContentPlugin.getContentPathParser();
 					
 					for(String requestPath : requestPaths) {
 						ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
 						ByteArrayOutputStream baos = new ByteArrayOutputStream();
 						
-						bundlerPlugin.writeContent(parsedContentPath, bundleSet, baos);
-						inputSources.add(new InputSource(requestPath, baos.toString(charsetName), bundlerPlugin, bundleSet));
+						bundlerContentPlugin.writeContent(parsedContentPath, bundleSet, baos);
+						inputSources.add(new InputSource(requestPath, baos.toString(charsetName), bundlerContentPlugin, bundleSet));
 					}
 				}
 			}
