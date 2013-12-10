@@ -26,9 +26,9 @@ public class SourceModuleTest extends SpecTest {
 			nodeJsLib = app.jsLib("nodeJsLib");
 	}
 	
-	// TODO: prefix all require paths with /appns
+	// TODO: replace with non temporary version
 	@Test
-	public void aspectSourceModulesAndAssetLocationsAreAsExpected() throws Exception {
+	public void TEMP_aspectSourceModulesAndAssetLocationsAreAsExpected() throws Exception {
 		given(aspect).hasClasses("Class1", "Class2", "pkg.Class3")
 			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
 		then(aspect).hasSourceModules(sourceModule("/Class1", "Class1"), sourceModule("/Class2", "Class2"), sourceModule("/pkg/Class3", "pkg.Class3"))
@@ -40,9 +40,9 @@ public class SourceModuleTest extends SpecTest {
 			.and(aspect).assetLocationHasDependencies("src/pkg/", "src/");
 	}
 	
-	// TODO: prefix all require paths with /appns
+	// TODO: replace with non temporary version
 	@Test
-	public void aspectSourceModulesCanHandleDeepDirectoryStructures() throws Exception {
+	public void TEMP_aspectSourceModulesCanHandleDeepDirectoryStructures() throws Exception {
 		given(aspect).hasClasses("Class1", "pkg1.Class2", "pkg1.pkg2.Class3")
 			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
 		then(aspect).hasSourceModules(sourceModule("/Class1", "Class1"), sourceModule("/pkg1/Class2", "pkg1.Class2"), sourceModule("/pkg1/pkg2/Class3", "pkg1.pkg2.Class3"))
@@ -56,12 +56,54 @@ public class SourceModuleTest extends SpecTest {
 			.and(aspect).assetLocationHasDependencies("src/pkg1/pkg2/", "src/pkg1/");
 	}
 	
-	// TODO: prefix all require paths with /brjsLib
+	// TODO: replace with non temporary version
+	@Test
+	public void TEMP_brjsLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
+		given(brjsLib).hasClasses("Class1", "Class2", "pkg.Class3")
+			.and(brjsLib).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
+		then(brjsLib).hasSourceModules(sourceModule("/Class1", "Class1"), sourceModule("/Class2", "Class2"), sourceModule("/pkg/Class3", "pkg.Class3"))
+			.and(brjsLib).hasAssetLocations("", "resources/", "src/", "src/pkg/")
+			.and(brjsLib).assetLocationHasNoDependencies("resources/")
+			.and(brjsLib).assetLocationHasDependencies("src/", "resources/")
+			.and(brjsLib).assetLocationHasDependencies("src/pkg/", "src/");
+	}
+	
+	@Ignore
+	@Test
+	public void aspectSourceModulesAndAssetLocationsAreAsExpected() throws Exception {
+		given(aspect).hasClasses("Class1", "Class2", "pkg.Class3")
+			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
+		then(aspect).hasSourceModules(sourceModule("/appns/Class1", "Class1"), sourceModule("/appns/Class2", "Class2"), sourceModule("/appns/pkg/Class3", "pkg.Class3"))
+			.and(aspect).hasAssetLocations("resources/", "src/", "src/pkg/")
+			.and(aspect).sourceModuleHasAssetLocation("/appns/Class1", "src/")
+			.and(aspect).sourceModuleHasAssetLocation("/appns/pkg/Class3", "src/pkg/")
+			.and(aspect).assetLocationHasNoDependencies("resources/")
+			.and(aspect).assetLocationHasDependencies("src/", "resources/")
+			.and(aspect).assetLocationHasDependencies("src/pkg/", "src/");
+	}
+	
+	@Ignore
+	@Test
+	public void aspectSourceModulesCanHandleDeepDirectoryStructures() throws Exception {
+		given(aspect).hasClasses("Class1", "pkg1.Class2", "pkg1.pkg2.Class3")
+			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
+		then(aspect).hasSourceModules(sourceModule("/appns/Class1", "Class1"), sourceModule("/appns/pkg1/Class2", "pkg1.Class2"), sourceModule("/appns/pkg1/pkg2/Class3", "pkg1.pkg2.Class3"))
+			.and(aspect).hasAssetLocations("resources/", "src/", "src/pkg1/", "src/pkg1/pkg2/")
+			.and(aspect).sourceModuleHasAssetLocation("/appns/Class1", "src/")
+			.and(aspect).sourceModuleHasAssetLocation("/appns/pkg1/Class2", "src/pkg1/")
+			.and(aspect).sourceModuleHasAssetLocation("/appns/pkg1/pkg2/Class3", "src/pkg1/pkg2/")
+			.and(aspect).assetLocationHasNoDependencies("resources/")
+			.and(aspect).assetLocationHasDependencies("src/", "resources/")
+			.and(aspect).assetLocationHasDependencies("src/pkg1/", "src/")
+			.and(aspect).assetLocationHasDependencies("src/pkg1/pkg2/", "src/pkg1/");
+	}
+	
+	@Ignore
 	@Test
 	public void brjsLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
 		given(brjsLib).hasClasses("Class1", "Class2", "pkg.Class3")
 			.and(brjsLib).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
-		then(brjsLib).hasSourceModules(sourceModule("/Class1", "Class1"), sourceModule("/Class2", "Class2"), sourceModule("/pkg/Class3", "pkg.Class3"))
+		then(brjsLib).hasSourceModules(sourceModule("/brjsLib/Class1", "Class1"), sourceModule("/brjsLib/Class2", "Class2"), sourceModule("/brjsLib/pkg/Class3", "pkg.Class3"))
 			.and(brjsLib).hasAssetLocations("", "resources/", "src/", "src/pkg/")
 			.and(brjsLib).assetLocationHasNoDependencies("resources/")
 			.and(brjsLib).assetLocationHasDependencies("src/", "resources/")
