@@ -11,7 +11,7 @@ import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.command.AbstractCommandPlugin;
+import org.bladerunnerjs.plugin.base.AbstractCommandPlugin;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.LegacyCommandPlugin;

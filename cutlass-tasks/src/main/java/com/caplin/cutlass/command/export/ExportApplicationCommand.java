@@ -22,7 +22,7 @@ import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.structure.AppStructureVerifier;

@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.bladerunnerjs.plugin.content.ContentPlugin;
+import org.bladerunnerjs.plugin.ContentPlugin;
 
 
 public class LogicalRequestHandler {

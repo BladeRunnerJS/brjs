@@ -12,8 +12,8 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.bundler.AbstractBundlerPlugin;
-import org.bladerunnerjs.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.plugin.BundlerPlugin;
+import org.bladerunnerjs.plugin.base.AbstractBundlerPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 

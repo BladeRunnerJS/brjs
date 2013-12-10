@@ -3,9 +3,9 @@ package org.bladerunnerjs.plugin;
 import static org.junit.Assert.*;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.AbstractPlugin;
 import org.bladerunnerjs.plugin.Plugin;
-import org.bladerunnerjs.plugin.VirtualProxyPlugin;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
 import org.junit.Test;
 
 public class VirtualProxyPluginTest {

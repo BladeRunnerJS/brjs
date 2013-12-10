@@ -9,9 +9,9 @@ import org.bladerunnerjs.model.LogLevelAccessor;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
-import org.bladerunnerjs.plugin.command.CommandList;
-import org.bladerunnerjs.plugin.command.core.HelpCommand;
-import org.bladerunnerjs.plugin.command.core.VersionCommand;
+import org.bladerunnerjs.plugin.plugins.commands.core.HelpCommand;
+import org.bladerunnerjs.plugin.plugins.commands.core.VersionCommand;
+import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class UserCommandRunner {
 	public static void run(BRJS brjs, CommandList commandList, LogLevelAccessor logLevelAccessor, String args[]) throws CommandOperationException {

@@ -5,8 +5,8 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.bundler.js.NamespacedJsBundlerPlugin;
-import org.bladerunnerjs.plugin.bundler.js.NodeJsBundlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsBundlerPlugin;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 

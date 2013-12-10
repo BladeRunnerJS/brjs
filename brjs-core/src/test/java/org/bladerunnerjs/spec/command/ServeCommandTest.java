@@ -1,14 +1,14 @@
 package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
-import static org.bladerunnerjs.plugin.command.standard.ServeCommand.Messages.*;
+import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Messages.*;
 
 import java.io.IOException;
 
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.command.standard.ServeCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;

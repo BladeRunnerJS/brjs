@@ -27,7 +27,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.plugin.AbstractPlugin;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
 import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.util.FileUtility;

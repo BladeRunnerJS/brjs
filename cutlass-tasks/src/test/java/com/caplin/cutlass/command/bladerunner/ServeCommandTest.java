@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import com.caplin.cutlass.command.CommandTaskTest;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.command.standard.ServeCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;

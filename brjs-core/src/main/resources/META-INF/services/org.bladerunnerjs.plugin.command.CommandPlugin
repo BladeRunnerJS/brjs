@@ -1,7 +1,0 @@
-org.bladerunnerjs.plugin.command.standard.CreateLibraryCommand
-org.bladerunnerjs.plugin.command.standard.CreateApplicationCommand
-org.bladerunnerjs.plugin.command.standard.CreateAspectCommand
-org.bladerunnerjs.plugin.command.standard.CreateBladesetCommand
-org.bladerunnerjs.plugin.command.standard.CreateBladeCommand
-org.bladerunnerjs.plugin.command.standard.JsDocCommand
-org.bladerunnerjs.plugin.command.standard.ServeCommand

@@ -13,7 +13,7 @@ import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.AbstractPlugin;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.command.LegacyCommandPlugin;

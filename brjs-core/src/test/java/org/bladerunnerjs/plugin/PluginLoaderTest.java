@@ -1,17 +1,17 @@
 package org.bladerunnerjs.plugin;
 
 import static org.junit.Assert.*;
-import static org.bladerunnerjs.plugin.PluginLoader.Messages.*;
+import static org.bladerunnerjs.plugin.utility.PluginLoader.Messages.*;
 
 import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.PluginLoader;
 import org.bladerunnerjs.plugin.utilClasses.AnotherTestInterface;
 import org.bladerunnerjs.plugin.utilClasses.ClassImplementingNestedInterface;
 import org.bladerunnerjs.plugin.utilClasses.MyTestInterface;
 import org.bladerunnerjs.plugin.utilClasses.MyTestInterfaceImplementer;
+import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;

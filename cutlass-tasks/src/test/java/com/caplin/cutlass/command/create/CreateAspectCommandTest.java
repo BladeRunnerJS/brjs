@@ -16,7 +16,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import com.caplin.cutlass.CutlassConfig;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.command.standard.CreateAspectCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCommand;
 
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.BRJSAccessor;

@@ -16,7 +16,7 @@ import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.command.standard.CreateApplicationCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
 import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.BRJSAccessor;

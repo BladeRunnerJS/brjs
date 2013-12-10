@@ -1,6 +1,6 @@
 package org.bladerunnerjs.model.exception.command;
 
-import org.bladerunnerjs.plugin.command.CommandPlugin;
+import org.bladerunnerjs.plugin.CommandPlugin;
 
 
 public class CommandArgumentsException extends Exception

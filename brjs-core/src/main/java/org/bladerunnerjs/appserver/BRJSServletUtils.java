@@ -17,7 +17,7 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.plugin.content.ContentPlugin;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
 public class BRJSServletUtils

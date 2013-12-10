@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.plugin.taghandler.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;

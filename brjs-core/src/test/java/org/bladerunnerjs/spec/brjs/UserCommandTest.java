@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.brjs;
 
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.plugin.command.standard.CreateBladeCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.ExplodingCommand;
 import org.junit.Before;

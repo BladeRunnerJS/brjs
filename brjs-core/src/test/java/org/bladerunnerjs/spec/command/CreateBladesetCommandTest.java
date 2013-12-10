@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
-import static org.bladerunnerjs.plugin.command.standard.CreateBladesetCommand.Messages.*;
+import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand.Messages.*;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Bladeset;
@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.plugin.command.standard.CreateBladesetCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;

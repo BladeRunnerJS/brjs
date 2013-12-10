@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
-import org.bladerunnerjs.plugin.command.CommandPlugin;
+import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 
 public class PluginLocatorBuilder {

@@ -6,16 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.BundlerPlugin;
+import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.PluginLocator;
-import org.bladerunnerjs.plugin.PluginLocatorUtils;
-import org.bladerunnerjs.plugin.VirtualProxyPlugin;
-import org.bladerunnerjs.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.plugin.command.CommandPlugin;
-import org.bladerunnerjs.plugin.content.ContentPlugin;
-import org.bladerunnerjs.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.plugin.taghandler.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
+import org.bladerunnerjs.plugin.utility.PluginLocatorUtils;
 
 
 public class MockPluginLocator implements PluginLocator

@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.plugin.bundler.js.NodeJsBundlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsBundlerPlugin;
 
 public class JsStyleUtility {
 		

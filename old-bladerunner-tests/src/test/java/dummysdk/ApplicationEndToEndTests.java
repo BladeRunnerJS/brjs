@@ -17,7 +17,7 @@ import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.plugin.appdeployer.AppDeploymentObserverPlugin;
+import org.bladerunnerjs.plugin.plugins.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.testing.utility.WebappTester;
 import org.bladerunnerjs.utility.ServerUtility;
 

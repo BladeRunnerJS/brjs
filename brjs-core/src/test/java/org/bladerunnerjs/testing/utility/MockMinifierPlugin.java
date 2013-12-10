@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.minifier.AbstractMinifierPlugin;
-import org.bladerunnerjs.plugin.minifier.InputSource;
-import org.bladerunnerjs.plugin.minifier.MinifierPlugin;
+import org.bladerunnerjs.plugin.InputSource;
+import org.bladerunnerjs.plugin.MinifierPlugin;
+import org.bladerunnerjs.plugin.base.AbstractMinifierPlugin;
 
 
 public class MockMinifierPlugin extends AbstractMinifierPlugin implements MinifierPlugin

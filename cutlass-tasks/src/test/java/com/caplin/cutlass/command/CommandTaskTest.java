@@ -12,8 +12,8 @@ import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.AbstractPlugin;
-import org.bladerunnerjs.plugin.command.CommandPlugin;
+import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
 /* 
  * This class does not actually test the abstract CommandTask class.

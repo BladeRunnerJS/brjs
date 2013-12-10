@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.plugin.taghandler.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.plugin.taghandler.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 
 public class MockTagHandler extends AbstractTagHandlerPlugin implements TagHandlerPlugin

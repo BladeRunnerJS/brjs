@@ -20,7 +20,7 @@ import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.plugin.AbstractPlugin;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
 public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 {

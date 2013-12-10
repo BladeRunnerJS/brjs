@@ -4,8 +4,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
-import org.bladerunnerjs.plugin.command.CommandList;
-import org.bladerunnerjs.plugin.command.CommandPlugin;
+import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 
 public class CommandRunner

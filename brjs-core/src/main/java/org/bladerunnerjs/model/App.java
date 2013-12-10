@@ -23,7 +23,7 @@ import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.plugin.bundler.BundlerPlugin;
+import org.bladerunnerjs.plugin.BundlerPlugin;
 import org.bladerunnerjs.utility.LogicalRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
 

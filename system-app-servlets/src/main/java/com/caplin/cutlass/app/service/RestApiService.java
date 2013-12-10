@@ -20,11 +20,11 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.engine.NamedNode;
-import org.bladerunnerjs.plugin.command.CommandPlugin;
-import org.bladerunnerjs.plugin.command.standard.CreateApplicationCommand;
-import org.bladerunnerjs.plugin.command.standard.CreateBladeCommand;
-import org.bladerunnerjs.plugin.command.standard.CreateBladesetCommand;
-import org.bladerunnerjs.plugin.command.standard.JsDocCommand;
+import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
