@@ -65,8 +65,8 @@ public class BRJSNavigationTest
 	public void sdkNonBladeRunnerLibs()
 	{
 		nodeTesterFactory.createSetTester(JsLib.class, "sdkNonBladeRunnerLibs", "sdkNonBladeRunnerLib")
-			.addChild("l1", "sdk/libs/javascript/thirdparty/l1")
-			.addChild("l2", "sdk/libs/javascript/thirdparty/l2")
+			.addChild("thirdparty-l1", "sdk/libs/javascript/thirdparty/thirdparty-l1")
+			.addChild("thirdparty-l2", "sdk/libs/javascript/thirdparty/thirdparty-l2")
 			.assertModelIsOK();
 	}
 	

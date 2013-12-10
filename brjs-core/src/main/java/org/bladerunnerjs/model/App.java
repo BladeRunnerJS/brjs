@@ -165,6 +165,14 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public JsLib jsLib(String jsLibName)
 	{
+		for (JsLib lib : jsLibs()) 
+		{
+			if (lib.getName().equals(jsLibName))
+			{
+				return lib;
+			}
+		}
+		
 		return child(jsLibs, jsLibName);
 	}
 	

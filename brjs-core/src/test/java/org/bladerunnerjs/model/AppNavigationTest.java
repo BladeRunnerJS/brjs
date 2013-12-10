@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AppNavigationTest
@@ -44,13 +43,14 @@ public class AppNavigationTest
 		nodeTesterFactory.createSetTester(Aspect.class, "aspects", "aspect").addChild("a1", "a1-aspect").addChild("a2", "a2-aspect").assertModelIsOK();
 	}
 	
-	@Ignore //TODO: talk to Dom about fixing this test
 	@Test
 	public void jsLibs()
 	{
 		nodeTesterFactory.createSetTester(JsLib.class, "jsLibs", "jsLib")
 			.addChild("l1", "libs/l1")
 			.addChild("caplin", "../../sdk/libs/javascript/caplin")
+			.addChild("thirdparty-l2", "../../sdk/libs/javascript/thirdparty/thirdparty-l2")
+			.addChild("thirdparty-l1", "../../sdk/libs/javascript/thirdparty/thirdparty-l1")
 			.assertModelIsOK();
 	}
 }
