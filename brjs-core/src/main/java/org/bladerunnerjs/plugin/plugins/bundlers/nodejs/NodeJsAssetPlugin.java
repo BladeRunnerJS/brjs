@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
-import org.bladerunnerjs.utility.JsStyleUtility;
 
 public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
@@ -18,7 +17,7 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
-		if (JsStyleUtility.getJsStyle(assetLocation.dir()).equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
+		if (assetLocation.getJsStyle().equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
 			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceModule.class, "js");
 		}
 		else {

@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.utility.JsStyleUtility;
 
 public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocation {
 	protected AssetContainer assetContainer;
@@ -25,6 +26,11 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	@Override
 	public File dir() {
 		return super.dir();
+	}
+	
+	@Override
+	public String getJsStyle() {
+		return JsStyleUtility.getJsStyle(dir());
 	}
 	
 	@Override
