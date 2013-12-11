@@ -483,7 +483,7 @@ public class CutlassDirectoryLocator
 			return null;
 		}
 
-		AssetLocation resourcesDir = BRJSAccessor.root.sdkLib().resources();
+		AssetLocation resourcesDir = BRJSAccessor.root.sdkLib().assetLocation("resources");
 
 		if(resourcesDir.dirExists())
 		{
@@ -501,7 +501,7 @@ public class CutlassDirectoryLocator
 			return null;
 		}
 
-		AssetLocation srcDir = BRJSAccessor.root.sdkLib().src();
+		AssetLocation srcDir = BRJSAccessor.root.sdkLib().assetLocation("src");
 		
 		if(srcDir.dirExists())
 		{

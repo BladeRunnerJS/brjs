@@ -37,8 +37,8 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
 			.and(bladeUTs).testRefersTo("mypkg.bs.b1.Class1");
 		then(bladeUTs).bundledFilesEquals(
-				blade.src().file("src/mypkg/bs/b1/Class1.js"),
-				blade.src().file("src/mypkg/bs/b1/Class2.js"));
+				blade.assetLocation("src").file("src/mypkg/bs/b1/Class1.js"),
+				blade.assetLocation("src").file("src/mypkg/bs/b1/Class2.js"));
 	}
 	
 	@Ignore
@@ -49,8 +49,8 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
 			.and(bladeUTs).testRefersTo("mypkg.bs.b1.Class1");
 		then(bladeATs).bundledFilesEquals(
-				blade.src().file("src/mypkg/bs/b1/Class1.js"),
-				blade.src().file("src/mypkg/bs/b1/Class2.js"));
+				blade.assetLocation("src").file("src/mypkg/bs/b1/Class1.js"),
+				blade.assetLocation("src").file("src/mypkg/bs/b1/Class2.js"));
 	}
 	
 	@Ignore
@@ -61,8 +61,8 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(bladeUTs).containsFile("src/js-test-driver/src-test/util.js")
 			.and(bladeUTs).testRefersTo("mypkg.bs.b1.Class1");
 		then(bladeUTs).bundledFilesEquals(
-			blade.src().file("src/mypkg/bs/b1/Class1.js"),
-			blade.src().file("src/mypkg/bs/b1/Class2.js"),
+			blade.assetLocation("src").file("src/mypkg/bs/b1/Class1.js"),
+			blade.assetLocation("src").file("src/mypkg/bs/b1/Class2.js"),
 			bladeUTs.testSource().file("util.js"));
 	}
 
@@ -77,7 +77,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(blade).hasDir("src/.svn")
 			.and(bladeUTs).testRefersTo("mypkg.bs.b1.Class1");
 		then(bladeATs).bundledFilesEquals(
-			blade.src().file("src/mypkg/bs/b1/Class1.js"),
-			blade.src().file("src/mypkg/bs/b1/Class2.js"));
+			blade.assetLocation("src").file("src/mypkg/bs/b1/Class1.js"),
+			blade.assetLocation("src").file("src/mypkg/bs/b1/Class2.js"));
 	}
 }

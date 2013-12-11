@@ -25,7 +25,7 @@ public class WorkbenchBuilder extends AssetContainerBuilder<Workbench>
 	
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String className) throws Exception 
 	{
-		FileUtils.write(workbench.resources().file(resourceFileName), "<root refs='" + className + "'/>");
+		FileUtils.write(workbench.assetLocation("resources").file(resourceFileName), "<root refs='" + className + "'/>");
 		
 		return builderChainer;
 	}

@@ -83,7 +83,7 @@ public class RestApiServletEndToEndTests
 		createApp("newApp","appx");
 		
 		assertTrue( brjs.app("newApp").dirExists() );
-		assertTrue( brjs.app("newApp").aspect("default").src().file("appx").exists() );
+		assertTrue( brjs.app("newApp").aspect("default").assetLocation("src").file("appx").exists() );
 	}
 	
 	@Test

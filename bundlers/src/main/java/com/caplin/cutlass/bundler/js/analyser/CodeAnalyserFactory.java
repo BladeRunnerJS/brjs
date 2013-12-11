@@ -53,7 +53,7 @@ public class CodeAnalyserFactory
 		
 		for(JsLib jsLibrary: appNode.jsLibs())
 		{
-			File libraryRoot = jsLibrary.src().dir();
+			File libraryRoot = jsLibrary.assetLocation("src").dir();
 			if(libraryRoot.exists())
 			{
 				libraryRootDirs.addAll(Arrays.asList(libraryRoot));

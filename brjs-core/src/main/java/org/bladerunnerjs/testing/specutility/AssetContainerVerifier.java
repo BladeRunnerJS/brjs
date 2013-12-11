@@ -39,7 +39,7 @@ public class AssetContainerVerifier {
 	}
 	
 	public void hasAssetLocations(String[] expectedAssetLocations) {
-		List<AssetLocation> actualAssetLocations = assetContainer.getAllAssetLocations();
+		List<AssetLocation> actualAssetLocations = assetContainer.assetLocations();
 		
 		assertEquals("Expected " + expectedAssetLocations.length + " asset locations, but there were actually " + actualAssetLocations.size() + ".", expectedAssetLocations.length, actualAssetLocations.size());
 		

@@ -30,7 +30,7 @@ public class JsSeedBundlerFileAppenderTest {
 		
 		List<File> foundFiles = new ArrayList<File>();
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(testBase)));
-		fileAppender.appendLibraryResourceFiles(BRJSAccessor.root.sdkLib().resources().dir(), foundFiles);
+		fileAppender.appendLibraryResourceFiles(BRJSAccessor.root.sdkLib().assetLocation("resources").dir(), foundFiles);
 		
 		assertEquals( expectedFiles, foundFiles );
 	}

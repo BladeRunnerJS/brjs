@@ -127,7 +127,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 					}
 				}
 				
-				for(AssetLocation assetLocation : assetContainer.getAllAssetLocations()) {
+				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 					for(String aliasName : assetLocation.aliasDefinitionsFile().aliasNames()) {
 						if(!trie.containsKey(aliasName)) {
 							trie.add(aliasName, aliasName);

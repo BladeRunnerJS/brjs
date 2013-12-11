@@ -30,7 +30,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
 		seedFiles.addAll(getSeedFiles());
-		seedFiles.addAll(resources().seedResources());
+		seedFiles.addAll(assetLocation("resources").seedResources());
 		
 		return seedFiles;
 	}
@@ -85,7 +85,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : getAssetContainers()) {
-			for(AssetLocation assetLocation : assetContainer.getAllAssetLocations()) {
+			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 				aliasDefinitionFiles.add(assetLocation.aliasDefinitionsFile());
 			}
 		}

@@ -60,7 +60,7 @@ public class PackageDepsConfig
 
 		for(JsLib jsLibrary: app.jsLibs())
 		{
-			File targetDirectory = new File(jsLibrary.src().dir(), packageName.replaceAll("\\.", "/"));
+			File targetDirectory = new File(jsLibrary.assetLocation("src").dir(), packageName.replaceAll("\\.", "/"));
 			
 			visitedPackageLocations.add(targetDirectory);
 			

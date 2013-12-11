@@ -125,7 +125,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 
 	private File getSourceFile(String sourceClass) {
-		return node.src().file(sourceClass.replaceAll("\\.", "/") + ".js");
+		return node.assetLocation("src").file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 	
 	public BuilderChainer hasBeenPopulated() throws Exception

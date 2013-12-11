@@ -19,7 +19,7 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 	
 	public SourceAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
-		dependentAssetLocations.add(((AssetContainer) parent).resources());
+		dependentAssetLocations.add(((AssetContainer) parent).assetLocation("resources"));
 	}
 	
 	@Override

@@ -116,7 +116,7 @@ public class TargetPathCreator
 	{
 		JsLib jslib = BRJSAccessor.root.locateAncestorNodeOfClass(imageFile, JsLib.class);
 
-		Path resources = jslib.resources().dir().getAbsoluteFile().toPath();
+		Path resources = jslib.assetLocation("resources").dir().getAbsoluteFile().toPath();
 		Path relativised = resources.relativize(imageFile.getAbsoluteFile().toPath());
 		
 		String relativePath = "/" + relativised.toString();

@@ -42,7 +42,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			blade = bladeset.blade("b1");
 			
 			bootstrapLib = app.jsLib("bootstrap");
-			bladeAliasDefinitionsFile = blade.src().aliasDefinitionsFile();
+			bladeAliasDefinitionsFile = blade.assetLocation("src").aliasDefinitionsFile();
 	}
 	
 	@Test

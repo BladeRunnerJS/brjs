@@ -39,7 +39,7 @@ public class XmlBundlerFileAppenderTest
 	@Test
 	public void appendSdkFilesAddsAnyXmlResources()
 	{
-		File resourcesDir = brjs.sdkLib().resources().dir();
+		File resourcesDir = brjs.sdkLib().assetLocation("resources").dir();
 		File resourceDir = new File(resourcesDir, "caplin/grid");
 		File speculativeFile = new File(resourceDir, "gridDefinitions.xml");
 

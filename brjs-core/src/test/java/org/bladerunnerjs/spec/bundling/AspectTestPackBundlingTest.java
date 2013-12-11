@@ -32,7 +32,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 		given(aspect).hasPackageStyle("src/mypkg", "namespaced-js")
 			.and(aspect).hasClass("mypkg.Class1")
 			.and(aspectUTs).testRefersTo("mypkg.Class1");
-		then(aspectUTs).bundledFilesEquals(aspect.src().file("mypkg/Class1.js"));
+		then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("mypkg/Class1.js"));
 	}
 	
 	@Ignore
@@ -41,7 +41,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 		given(aspect).hasPackageStyle("src/mypkg", "namespaced-js")
 			.and(aspect).hasClass("mypkg.Class1")
 			.and(aspectUTs).testRefersTo("mypkg.Class1");
-		then(aspectATs).bundledFilesEquals(aspect.src().file("mypkg/Class1.js"));
+		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("mypkg/Class1.js"));
 	}
 	
 	@Ignore
@@ -51,6 +51,6 @@ public class AspectTestPackBundlingTest extends SpecTest
 			.and(aspect).hasClass("mypkg.Class1")
 			.and(aspect).hasDir("src/.svn")
 			.and(aspectUTs).testRefersTo("mypkg.Class1");
-		then(aspectATs).bundledFilesEquals(aspect.src().file("mypkg/Class1.js"));
+		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("mypkg/Class1.js"));
 	}
 }

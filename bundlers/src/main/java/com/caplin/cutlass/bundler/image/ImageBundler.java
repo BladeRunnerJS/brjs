@@ -171,7 +171,7 @@ public class ImageBundler extends AbstractPlugin implements LegacyFileBundlerPlu
 		// Branching sdk scoped requests via the new model
 		if(imageScope == ScopeLevel.SDK_SCOPE)
 		{
-			File resourcesDir = BRJSAccessor.root.sdkLib().resources().dir();
+			File resourcesDir = BRJSAccessor.root.sdkLib().assetLocation("resources").dir();
 			
 			if(resourcesDir != null)
 			{

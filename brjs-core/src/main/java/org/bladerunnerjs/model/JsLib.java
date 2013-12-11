@@ -161,10 +161,10 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 	}
 	
 	@Override
-	public List<AssetLocation> getAllAssetLocations() {
+	public List<AssetLocation> assetLocations() {
 		List<AssetLocation> assetLocations = new ArrayList<>();
 		assetLocations.add(getRootAssetLocation());
-		assetLocations.addAll( super.getAllAssetLocations() );
+		assetLocations.addAll( super.assetLocations() );
 		return assetLocations;
 	}
 }

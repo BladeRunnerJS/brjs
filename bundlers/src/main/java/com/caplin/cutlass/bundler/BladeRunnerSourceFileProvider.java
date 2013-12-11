@@ -140,8 +140,8 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	{
 		JsLib jsLib = BRJSAccessor.root.sdkLib();
 		
-		AssetLocation libSrcRoot = jsLib.src();
-		AssetLocation libResourcesRoot = jsLib.resources();
+		AssetLocation libSrcRoot = jsLib.assetLocation("src");
+		AssetLocation libResourcesRoot = jsLib.assetLocation("resources");
 
 		if(libSrcRoot.dirExists())
 		{
@@ -163,12 +163,12 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	{
 		App app = BRJSAccessor.root.locateAncestorNodeOfClass(contextDir, App.class);
 		
-		Path sdkLibPath = BRJSAccessor.root.sdkLib().src().dir().toPath();
+		Path sdkLibPath = BRJSAccessor.root.sdkLib().assetLocation("src").dir().toPath();
 
 		for(JsLib jsLib: app.jsLibs())
 		{
-			AssetLocation libSrcRoot = jsLib.src();
-			AssetLocation libResourcesRoot = jsLib.resources();
+			AssetLocation libSrcRoot = jsLib.assetLocation("src");
+			AssetLocation libResourcesRoot = jsLib.assetLocation("resources");
 			
 			if(libSrcRoot.dirExists())
 			{

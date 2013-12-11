@@ -68,7 +68,7 @@ public class BundleSetCreator {
 			if(bundleSetBuilder.addSourceModule(sourceModule)) {
 				processFile(bundlableNode, sourceModule, bundleSetBuilder, logger, processedFiles);
 				
-				for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().getAllAssetLocations()) {
+				for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().assetLocations()) {
 					for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
 						processFile(bundlableNode, resourceSeedFile, bundleSetBuilder, logger, processedFiles);
 					}
