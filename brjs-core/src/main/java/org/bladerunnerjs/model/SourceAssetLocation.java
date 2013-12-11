@@ -12,6 +12,7 @@ import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.utility.FileUtility;
 
 public class SourceAssetLocation extends ShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
@@ -30,15 +31,10 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 	public List<AssetLocation> getChildAssetLocations() {
 		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
 		
-		if (dir().isDirectory()) {
-			Iterator<File> fileIterator = FileUtils.iterateFilesAndDirs(dir(), FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-			
-			while (fileIterator.hasNext()) {
-				File nextDir = fileIterator.next();
-				
-				if (!nextDir.equals(dir())) {
-					assetLocations.add(getChildAssetLocation(nextDir));
-				}
+		for (File dir : FileUtility.recursiveListDirs(dir()))
+		{
+			if (!dir.equals(dir())) {
+				assetLocations.add(getChildAssetLocation(dir));
 			}
 		}
 		
