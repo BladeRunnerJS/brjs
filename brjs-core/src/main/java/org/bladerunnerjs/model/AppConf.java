@@ -22,7 +22,7 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	
 	public void setAppNamespace(String appNamespace) throws ConfigException {
 		conf.appNamespace = appNamespace;
-		conf.verify();
+		verifyAndAutoWrite();
 	}
 	
 	public String getLocales() throws ConfigException {
@@ -32,6 +32,6 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	
 	public void setLocales(String locales) throws ConfigException {
 		conf.locales = locales;
-		conf.verify();
+		verifyAndAutoWrite();
 	}
 }

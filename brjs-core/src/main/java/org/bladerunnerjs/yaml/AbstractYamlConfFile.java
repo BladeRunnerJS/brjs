@@ -63,4 +63,5 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 		verify();
 		FileUtils.write(confFile, getRenderedConfig());
 	}
+	
 }

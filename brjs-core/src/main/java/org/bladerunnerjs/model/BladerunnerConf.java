@@ -14,8 +14,8 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	}
 	
 	public void setJettyPort(int jettyPort) throws ConfigException {
-		conf.jettyPort = jettyPort;
-		conf.verify();
+		conf.jettyPort = jettyPort;;
+		verifyAndAutoWrite();
 	}
 	
 	public String getDefaultInputEncoding() throws ConfigException {
@@ -25,7 +25,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	
 	public void setDefaultInputEncoding(String defaultInputEncoding) throws ConfigException {
 		conf.defaultInputEncoding = defaultInputEncoding;
-		conf.verify();
+		verifyAndAutoWrite();
 	}
 	
 	public String getDefaultOutputEncoding() throws ConfigException {
@@ -35,7 +35,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	
 	public void setDefaultOutputEncoding(String defaultOutputEncoding) throws ConfigException {
 		conf.defaultOutputEncoding = defaultOutputEncoding;
-		conf.verify();
+		verifyAndAutoWrite();
 	}
 
 	public String getLoginRealm() throws ConfigException
