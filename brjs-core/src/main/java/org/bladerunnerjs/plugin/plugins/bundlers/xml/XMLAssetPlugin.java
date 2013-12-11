@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
@@ -14,6 +15,11 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 public class XMLAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
+	}
+	
+	@Override
+	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
+		return null;
 	}
 	
 	@Override

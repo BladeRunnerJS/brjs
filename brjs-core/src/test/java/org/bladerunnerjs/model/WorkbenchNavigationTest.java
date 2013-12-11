@@ -38,18 +38,6 @@ public class WorkbenchNavigationTest
 	}
 	
 	@Test
-	public void src()
-	{
-		nodeTesterFactory.createItemTester(SourceAssetLocation.class, "src", "src").assertModelIsOK();
-	}
-	
-	@Test
-	public void resources()
-	{
-		nodeTesterFactory.createItemTester(DeepAssetLocation.class, "resources", "resources").assertModelIsOK();
-	}
-	
-	@Test
 	public void styleResources()
 	{
 		nodeTesterFactory.createItemTester(DirNode.class, "styleResources", "resources/style").assertModelIsOK();

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +26,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class ThirdpartyBundlerContentPlugin extends AbstractBundlerContentPlugin
+public class BRJSThirdpartyBundlerContentPlugin extends AbstractBundlerContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;

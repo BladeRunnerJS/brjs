@@ -9,6 +9,8 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
@@ -47,6 +49,9 @@ public class TagPluginUtilityTest
 		/* invalid valid tags */
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("1tag", "replaced tag!", "") ) );
 		mockPluginLocator.tagHandlers.add( new VirtualProxyTagHandlerPlugin( new MockTagHandler("-tag", "replaced tag!", "") ) );
+		
+		/* asset location support */
+		mockPluginLocator.assetPlugins.add(new VirtualProxyAssetPlugin(new BRJSConformantAssetPlugin()));
 		
 		File tempDir = createTestSdkDirectory();
 		brjs = BRJSTestFactory.createBRJS(tempDir, mockPluginLocator);

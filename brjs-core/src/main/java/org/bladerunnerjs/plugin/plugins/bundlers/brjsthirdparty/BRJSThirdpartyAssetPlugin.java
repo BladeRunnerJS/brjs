@@ -1,9 +1,10 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
@@ -15,9 +16,14 @@ import org.bladerunnerjs.model.UnableToInstantiateAssetFileException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
-public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
+public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
+	}
+	
+	@Override
+	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
+		return null;
 	}
 	
 	@Override

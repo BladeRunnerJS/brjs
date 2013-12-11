@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.plugin.BundlerContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractBundlerTagHandlerPlugin;
 
-public class ThirdpartyTagHandlerPlugin extends AbstractBundlerTagHandlerPlugin {
+public class BRJSThirdpartyTagHandlerPlugin extends AbstractBundlerTagHandlerPlugin {
 	private BundlerContentPlugin thirdpartyTagHandlerPlugin;
 	
 	@Override

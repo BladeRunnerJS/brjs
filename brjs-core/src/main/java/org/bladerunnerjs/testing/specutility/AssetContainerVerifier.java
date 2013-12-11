@@ -10,7 +10,6 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.testing.utility.AssetContainerLocationUtility;
 
 public class AssetContainerVerifier {
 	private AssetContainer assetContainer;
@@ -53,13 +52,13 @@ public class AssetContainerVerifier {
 	}
 	
 	public void assetLocationHasNoDependencies(String assetLocation) {
-		List<AssetLocation> dependentAssetLocations = AssetContainerLocationUtility.getAssetLocation(assetContainer, assetLocation).getDependentAssetLocations();
+		List<AssetLocation> dependentAssetLocations = assetContainer.assetLocation(assetLocation).getDependentAssetLocations();
 		
 		assertEquals("Asset location '" + assetLocation + "' was not expected to have any dependent asset locations.", 0, dependentAssetLocations.size());
 	}
 	
 	public void assetLocationHasDependencies(String assetLocationPath, String[] expectedAssetLocationDependencies) {
-		List<AssetLocation> actualDependentAssetLocations = AssetContainerLocationUtility.getAssetLocation(assetContainer, assetLocationPath).getDependentAssetLocations();
+		List<AssetLocation> actualDependentAssetLocations = assetContainer.assetLocation(assetLocationPath).getDependentAssetLocations();
 		
 		assertEquals("Asset location '" + assetLocationPath + "' was expected to have " + expectedAssetLocationDependencies.length + " dependent asset locations.",
 			expectedAssetLocationDependencies.length, actualDependentAssetLocations.size());

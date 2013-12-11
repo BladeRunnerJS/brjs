@@ -13,15 +13,22 @@ import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 
 public class CommandOnlyPluginLocator implements PluginLocator {
 	private List<CommandPlugin> commandPlugins;
+	private List<AssetPlugin> assetPlugins = new ArrayList<>();
 	
 	@Override
 	public void createPlugins(BRJS brjs) {
 		commandPlugins = PluginLoader.createPluginsOfType(brjs, CommandPlugin.class, VirtualProxyCommandPlugin.class);
+		
+		AssetPlugin brjsConformantAssetPlugin = new VirtualProxyAssetPlugin(new BRJSConformantAssetPlugin());
+		brjsConformantAssetPlugin.setBRJS(brjs);
+		assetPlugins.add(brjsConformantAssetPlugin);
 	}
 	
 	@Override
@@ -61,6 +68,6 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	
 	@Override
 	public List<AssetPlugin> getAssetPlugins() {
-		return new ArrayList<>();
+		return assetPlugins;
 	}
 }

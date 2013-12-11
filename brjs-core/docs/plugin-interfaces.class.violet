@@ -41,10 +41,10 @@ TestServer startTestServer()
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode1">
     <void property="methods">
      <void property="text">
-      <string>List&lt;Asset&gt; getAssetFiles(Resources resources)
-List&lt;LinkedAsset&gt; getLinkedAsetFiles(Resources resources)
-List&lt;SourceModule&gt; getSourceModules(SourceLocation sourceLocation)
-</string>
+      <string>List&lt;AssetLocation&gt; getAssetLocations(AssetContainer assetContainer)
+List&lt;SourceModule&gt; getSourceModules(AssetLocation assetLocation)
+List&lt;LinkedAsset&gt; getLinkedResourceFiles(AssetLocation assetLocation)
+List&lt;Asset&gt; getResourceFiles(AssetLocation assetLocation)</string>
      </void>
     </void>
     <void property="name">

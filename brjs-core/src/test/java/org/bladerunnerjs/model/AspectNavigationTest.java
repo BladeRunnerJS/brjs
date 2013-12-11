@@ -53,16 +53,4 @@ public class AspectNavigationTest
 			.addChild("type2", "tests/test-type2")
 			.assertModelIsOK();
 	}
-	
-	@Test
-	public void src()
-	{
-		nodeTesterFactory.createItemTester(SourceAssetLocation.class, "src", "src").assertModelIsOK();
-	}
-	
-	@Test
-	public void resources()
-	{
-		nodeTesterFactory.createItemTester(DeepAssetLocation.class, "resources", "resources").assertModelIsOK();
-	}
 }
