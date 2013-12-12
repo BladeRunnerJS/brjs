@@ -12,7 +12,7 @@ public class DirNode extends AbstractBRJSNode
 {
 	public DirNode(RootNode rootNode, Node parent, File dir)
 	{
-		init(rootNode, parent, dir);
+		super(rootNode, parent, dir);
 	}
 	
 	@Override

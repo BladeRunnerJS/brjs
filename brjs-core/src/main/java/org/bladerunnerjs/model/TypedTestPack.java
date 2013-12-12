@@ -21,8 +21,8 @@ public class TypedTestPack extends SourceResources implements NamedNode
 	
 	public TypedTestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
 	}
 	
 	public static NodeMap<TypedTestPack> createNodeSet()

@@ -19,8 +19,8 @@ public class Theme extends AbstractBRJSNode implements NamedNode
 	
 	public Theme(RootNode rootNode, Node parent, File dir, String name)
 	{
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
 	}
 	
 	public static NodeMap<Theme> createNodeSet()

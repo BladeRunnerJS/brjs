@@ -20,8 +20,8 @@ public class TestGrandChildNode extends AbstractNode implements NamedNode
 	
 	public TestGrandChildNode(RootNode rootNode, Node parent, File dir, String name)
 	{
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
 	}
 	
 	@Override

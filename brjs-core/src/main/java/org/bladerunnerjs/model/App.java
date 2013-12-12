@@ -46,8 +46,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public App(RootNode rootNode, Node parent, File dir, String name)
 	{
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
 		requestHandler = new LogicalRequestHandler(this);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 	}

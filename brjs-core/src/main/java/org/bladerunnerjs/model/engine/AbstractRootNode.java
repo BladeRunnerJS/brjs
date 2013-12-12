@@ -21,7 +21,9 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	public AbstractRootNode(File dir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
-		init(this, null, locateRootDir(dir));
+		super();
+		this.dir = locateRootDir(dir);
+		init();
 		this.loggerFactory = loggerFactory;
 		this.consoleWriter = consoleWriter;
 	}
@@ -52,9 +54,19 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public void registerNode(Node node)
 	{
-		nodeCache.put(getNormalizedPath(node.dir()), node);
+		String normalizedPath = getNormalizedPath(node.dir());
+		
+		if(normalizedPath.endsWith("/apps/app1/default-aspect")) {
+//			System.out.println("first registration of default aspect");
+		}
+		
+		if(nodeCache.containsKey(normalizedPath)) {
+//			throw new RuntimeException("A node has already been registered for path '" + normalizedPath + "'");
+		}
+		
+		nodeCache.put(normalizedPath, node);
 	}
-
+	
 	@Override
 	public Node getRegisteredNode(File childPath)
 	{

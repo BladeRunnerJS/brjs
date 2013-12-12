@@ -10,6 +10,6 @@ public class TestMultiLocationItemNode extends AbstractNode
 {
 	public TestMultiLocationItemNode(RootNode rootNode, Node parent, File dir)
 	{
-		init(rootNode, parent, dir);
+		super(rootNode, parent, dir);
 	}
 }

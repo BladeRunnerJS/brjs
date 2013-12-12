@@ -10,6 +10,6 @@ public class TestItemNode extends AbstractNode
 {
 	public TestItemNode(RootNode rootNode, Node parent, File dir)
 	{
-		init(rootNode, parent, dir);
+		super(rootNode, parent, dir);
 	}
 }

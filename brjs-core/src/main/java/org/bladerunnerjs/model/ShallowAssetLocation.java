@@ -19,7 +19,7 @@ public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocat
 	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
-		init(rootNode, parent, dir);
+		super(rootNode, parent, dir);
 		this.assetContainer = (AssetContainer) parent;
 	}
 	

@@ -40,7 +40,19 @@ public abstract class AbstractNode implements Node
 	
 	private RootNode rootNode;
 	private Node parent;
-	private File dir;
+	protected File dir;
+	
+	public AbstractNode(RootNode rootNode, Node parent, File dir) {
+		this.rootNode = rootNode;
+		this.parent = parent;
+		this.dir = dir;
+		
+		init();
+	}
+	
+	public AbstractNode() {
+		this.rootNode = (RootNode) this;
+	}
 	
 	@Override
 	public RootNode root()
@@ -195,12 +207,8 @@ public abstract class AbstractNode implements Node
 		}
 	}
 	
-	protected void init(RootNode rootNode, Node parent, File dir)
+	protected void init()
 	{
-		this.rootNode = rootNode;
-		this.parent = parent;
-		this.dir = dir;
-		
 		if(dir != null)
 		{
 			rootNode.registerNode(this);

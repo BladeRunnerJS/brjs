@@ -828,7 +828,7 @@ public class NodeTest
 		rootNode.addObserver(observer);
 		
 		assertTrue(nodeDir.exists());
-		rootNode.init(mock(RootNode.class), mock(Node.class), nodeDir);
+		rootNode.init();
 		
 		verify(observer).onEventEmitted( any(NodeReadyEvent.class), eq(rootNode) );
 	}
@@ -843,7 +843,7 @@ public class NodeTest
 		rootNode.addObserver(observer);
 		
 		assertFalse(nodeDir.exists());
-		rootNode.init(mock(RootNode.class), mock(Node.class), nodeDir);
+		rootNode.init();
 		
 		verifyNoMoreInteractions(observer);
 	}
