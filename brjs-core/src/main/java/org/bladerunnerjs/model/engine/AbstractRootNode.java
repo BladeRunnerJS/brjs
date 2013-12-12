@@ -11,6 +11,7 @@ import org.bladerunnerjs.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
 public abstract class AbstractRootNode extends AbstractNode implements RootNode
@@ -23,7 +24,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	{
 		super();
 		this.dir = locateRootDir(dir);
-		init();
+		registerNode();
 		this.loggerFactory = loggerFactory;
 		this.consoleWriter = consoleWriter;
 	}
@@ -52,16 +53,12 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
-	public void registerNode(Node node)
+	public void registerNode(Node node) throws NodeAlreadyRegisteredException
 	{
 		String normalizedPath = getNormalizedPath(node.dir());
 		
-		if(normalizedPath.endsWith("/apps/app1/default-aspect")) {
-//			System.out.println("first registration of default aspect");
-		}
-		
 		if(nodeCache.containsKey(normalizedPath)) {
-//			throw new RuntimeException("A node has already been registered for path '" + normalizedPath + "'");
+			throw new NodeAlreadyRegisteredException("A node has already been registered for path '" + normalizedPath + "'");
 		}
 		
 		nodeCache.put(normalizedPath, node);

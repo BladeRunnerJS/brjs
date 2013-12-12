@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
-public class ShallowAssetLocation extends AbstractBRJSNode implements AssetLocation {
+public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
 	protected AssetContainer assetContainer;
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	

@@ -5,6 +5,7 @@ import java.io.File;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
 public interface RootNode extends Node {
@@ -16,6 +17,6 @@ public interface RootNode extends Node {
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);
 	
 	// these two methods, implemented by AbstractRootNode, are used by AbstractNode
-	void registerNode(Node node);
+	void registerNode(Node node) throws NodeAlreadyRegisteredException;
 	Node getRegisteredNode(File childPath);
 }

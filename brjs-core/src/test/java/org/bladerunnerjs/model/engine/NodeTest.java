@@ -187,16 +187,17 @@ public class NodeTest
 		File rootDir = FileUtility.createTemporaryDirectory("root");
 		File childDir = new File(rootDir, "child");
 		File grandchildDir = new File(childDir, "grandchild");
+		File greatGrandchildDir = new File(grandchildDir, "greatgrandchild");
 		
 		childDir.mkdir();
 		grandchildDir.mkdir();
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
 		// add node to cache
-		new TestNode(rootNode, null, rootDir);
+		new TestNode(rootNode, null, childDir);
 		
-		assertEquals(rootDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(childDir, TestNode.class).dir().getAbsolutePath());
-		assertEquals(rootDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestNode.class).dir().getAbsolutePath());
+		assertEquals(childDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestNode.class).dir().getAbsolutePath());
+		assertEquals(childDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestNode.class).dir().getAbsolutePath());
 	}
 	
 	@Test
@@ -828,7 +829,7 @@ public class NodeTest
 		rootNode.addObserver(observer);
 		
 		assertTrue(nodeDir.exists());
-		rootNode.init();
+		rootNode.registerNode();
 		
 		verify(observer).onEventEmitted( any(NodeReadyEvent.class), eq(rootNode) );
 	}
@@ -843,7 +844,7 @@ public class NodeTest
 		rootNode.addObserver(observer);
 		
 		assertFalse(nodeDir.exists());
-		rootNode.init();
+		rootNode.registerNode();
 		
 		verifyNoMoreInteractions(observer);
 	}

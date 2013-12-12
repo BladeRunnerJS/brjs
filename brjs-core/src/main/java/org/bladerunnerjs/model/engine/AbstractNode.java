@@ -17,6 +17,7 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
@@ -47,7 +48,7 @@ public abstract class AbstractNode implements Node
 		this.parent = parent;
 		this.dir = dir;
 		
-		init();
+		registerNode();
 	}
 	
 	public AbstractNode() {
@@ -207,16 +208,19 @@ public abstract class AbstractNode implements Node
 		}
 	}
 	
-	protected void init()
+	protected void registerNode()
 	{
-		if(dir != null)
-		{
-			rootNode.registerNode(this);
-			
-			if (dir.exists())
-			{
-				ready();
+		try {
+			if(dir != null) {
+				rootNode.registerNode(this);
+				
+				if (dir.exists()) {
+					ready();
+				}
 			}
+		}
+		catch(NodeAlreadyRegisteredException e) {
+			throw new RuntimeException(e);
 		}
 	}
 	

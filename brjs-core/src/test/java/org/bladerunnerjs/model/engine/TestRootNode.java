@@ -7,6 +7,7 @@ import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.testing.utility.MockLoggerFactory;
 
 
@@ -30,6 +31,17 @@ public class TestRootNode extends AbstractRootNode
 		multiLocationChildNodes.addAdditionalNamedLocation("X", "set-single-item-location");
 		multiLocationItemNode.addLegacyLocation("single-item-secondary-location");
 	}
+	
+	@Override
+	public void registerNode(Node node) {
+		try {
+			super.registerNode(node);
+		}
+		catch(NodeAlreadyRegisteredException e) {
+			// do nothing -- the node engine test code was designed at a time when we didn't fail fast if you registered multiple nodes for the same directory path
+			// additionally, these tests are now of less importance now that the domain model is more thoroughly tested
+		}
+	};
 	
 	@Override
 	public boolean isRootDir(File dir)
