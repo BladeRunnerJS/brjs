@@ -52,20 +52,13 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public void registerNode(Node node)
 	{
-		nodeCache.put(node.dir().getAbsolutePath(), node);
-		try {
-			nodeCache.put(node.dir().getCanonicalPath(), node);
-		}
-		catch (IOException ex)
-		{
-			root().logger(LoggerType.CORE, this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
-		}
+		nodeCache.put(getNormalizedPath(node.dir()), node);
 	}
-	
+
 	@Override
 	public Node getRegisteredNode(File childPath)
 	{
-		return nodeCache.get(childPath.getAbsolutePath());
+		return nodeCache.get(getNormalizedPath(childPath));
 	}
 	
 	@Override
@@ -134,11 +127,11 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		do
 		{
-			String filePath = nextFile.getAbsolutePath();
+			String normalizedFilePath = getNormalizedPath(nextFile);
 			
-			if(nodeCache.containsKey(filePath))
+			if(nodeCache.containsKey(normalizedFilePath))
 			{
-				node = nodeCache.get(filePath);
+				node = nodeCache.get(normalizedFilePath);
 			}
 			else
 			{
@@ -149,4 +142,19 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		return node;
 	}
 	
+	private String getNormalizedPath(File dir) {
+		String normalizedPath;
+		
+		try {
+			normalizedPath = dir.getCanonicalPath();
+		}
+		catch (IOException ex)
+		{
+			root().logger(LoggerType.CORE, this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
+			
+			normalizedPath = dir.getAbsolutePath();
+		}
+		
+		return normalizedPath;
+	}
 }
