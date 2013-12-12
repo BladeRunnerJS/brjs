@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
@@ -27,7 +28,7 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<File> files)
 	{
 		try
 		{
@@ -51,12 +52,12 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation, List<File> files) {
 		return new ArrayList<>();
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
+	public List<Asset> getResourceFiles(AssetLocation assetLocation, List<File> files) {
 		return new ArrayList<>();
 	}
 }

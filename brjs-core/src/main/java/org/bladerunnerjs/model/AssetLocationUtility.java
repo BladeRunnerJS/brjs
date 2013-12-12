@@ -1,7 +1,9 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,31 +22,42 @@ public class AssetLocationUtility
 	
 	private final Map<String, Asset> assetFiles = new HashMap<>();
 	
-	<AF extends Asset> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... fileNames)
+	<AF extends Asset> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends Asset> assetFileType, List<File> files, String... fileNames)
 	{
 		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
 		
-		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new NameFileFilter(fileNames)) );
+		
+		
+		return createAssetFileListFromFiles( assetLocation, assetFileType, files, new NameFileFilter(fileNames));
 	}
 	
-	<AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... extensions)
+	<AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, List<File> files, String... extensions)
 	{
 		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
 		
-		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new SuffixFileFilter(extensions)) );
+		return createAssetFileListFromFiles( assetLocation, assetFileType, files, new SuffixFileFilter(extensions) );
 	}
 	
 	
 	
 	
 	@SuppressWarnings("unchecked")
-	private <AF extends Asset> List<AF> createAssetFileListFromFiles(AssetLocation assetLocation, Class<? extends Asset> assetFileType, Collection<File> files)
+	private <AF extends Asset> List<AF> createAssetFileListFromFiles(AssetLocation assetLocation, Class<? extends Asset> assetFileType, List<File> files, FileFilter fileFilter)
 	{
 		List<AF> assetFiles = new LinkedList<AF>();		
+	
+		List<File> filteredFiles = new ArrayList<File>();
+		for (File f : files)
+		{
+			if (fileFilter.accept(f.getAbsoluteFile()))
+			{
+				filteredFiles.add(f);
+			}
+		}
 		
-		for (File file : files)
+		for (File file : filteredFiles)
 		{
 			try
 			{

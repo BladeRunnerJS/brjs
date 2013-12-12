@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
@@ -23,12 +24,12 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<File> files) {
 		if (!(assetLocation.getAssetContainer() instanceof JsLib) && assetLocation.getJsStyle().equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
 			// TODO: blow up if the package of the assetLocation would not be a
 			// valid namespace
 			
-			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NamespacedJsSourceModule.class, "js");
+			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NamespacedJsSourceModule.class, files, "js");
 		}
 		else {
 			return new ArrayList<>();
@@ -36,12 +37,12 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation, List<File> files) {
 		return new ArrayList<>();
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
+	public List<Asset> getResourceFiles(AssetLocation assetLocation, List<File> files) {
 		return new ArrayList<>();
 	}
 }

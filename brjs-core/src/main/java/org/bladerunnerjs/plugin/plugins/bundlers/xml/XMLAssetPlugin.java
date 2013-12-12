@@ -24,17 +24,17 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<File> files) {
 		return new ArrayList<>();
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
-		return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, FullyQualifiedLinkedAsset.class, "xml");
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation, List<File> files) {
+		return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, FullyQualifiedLinkedAsset.class, files, "xml");
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
+	public List<Asset> getResourceFiles(AssetLocation assetLocation, List<File> files) {
 		return new ArrayList<>();
 	}
 }

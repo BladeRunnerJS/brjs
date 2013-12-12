@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.html;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
@@ -23,17 +24,17 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<File> files) {
 		return new ArrayList<>();
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
-		return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, FullyQualifiedLinkedAsset.class, "html");
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation, List<File> files) {
+		return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, FullyQualifiedLinkedAsset.class, files, "html");
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
+	public List<Asset> getResourceFiles(AssetLocation assetLocation, List<File> files) {
 		return new ArrayList<>();
 	}
 }

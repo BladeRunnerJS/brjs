@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin.proxy;
 
 import java.util.List;
+import java.io.File;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
@@ -24,20 +25,20 @@ public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements Asset
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<File> files) {
 		initializePlugin();
-		return assetPlugin.getSourceModules(assetLocation);
+		return assetPlugin.getSourceModules(assetLocation, files);
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation, List<File> files) {
 		initializePlugin();
-		return assetPlugin.getLinkedResourceFiles(assetLocation);
+		return assetPlugin.getLinkedResourceFiles(assetLocation, files);
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
+	public List<Asset> getResourceFiles(AssetLocation assetLocation, List<File> files) {
 		initializePlugin();
-		return assetPlugin.getResourceFiles(assetLocation);
+		return assetPlugin.getResourceFiles(assetLocation, files);
 	}
 }

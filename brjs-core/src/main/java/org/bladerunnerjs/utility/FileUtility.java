@@ -72,6 +72,10 @@ public class FileUtility {
 	}
 	
 	public static List<File> listFiles(File dir, IOFileFilter fileFilter) {
+		if (!dir.isDirectory())
+		{
+			return new ArrayList<>();
+		}
 		List<File> files = new ArrayList<File>(FileUtils.listFiles(dir, fileFilter, FalseFileFilter.INSTANCE));
 		Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
 		
