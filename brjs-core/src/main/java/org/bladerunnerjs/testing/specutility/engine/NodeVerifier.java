@@ -11,10 +11,12 @@ import org.bladerunnerjs.utility.JsStyleUtility;
 public abstract class NodeVerifier<N extends Node> {
 	protected final VerifierChainer verifierChainer;
 	private final N node;
+	private SpecTest specTest;
 	
 	public NodeVerifier(SpecTest specTest, N node) {
 		this.node = node;
 		verifierChainer = new VerifierChainer(specTest);
+		this.specTest = specTest;
 	}
 	
 	public VerifierChainer isSameAs(N node) {
@@ -74,7 +76,7 @@ public abstract class NodeVerifier<N extends Node> {
 	}
 	
 	public VerifierChainer jsStyleIs(String jsStyle) {
-		assertEquals(jsStyle, JsStyleUtility.getJsStyle(node.dir()));
+		assertEquals(jsStyle, JsStyleUtility.getJsStyle(specTest.brjs, node.dir()));
 		
 		return verifierChainer;
 	}

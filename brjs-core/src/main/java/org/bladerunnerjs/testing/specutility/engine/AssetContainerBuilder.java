@@ -51,7 +51,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer classRefersTo(String sourceClass, String referencedClass) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerContentPlugin.JS_STYLE + "'");
@@ -64,7 +64,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer classDependsOn(String dependentClass, String referencedClass) throws Exception {
 		File dependentSourceFile = getSourceFile(dependentClass);
-		String jsStyle = JsStyleUtility.getJsStyle(dependentSourceFile.getParentFile());
+		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, dependentSourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
 			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerContentPlugin.JS_STYLE + "'");
@@ -77,7 +77,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer classRequires(String sourceClass, String dependencyClass) throws Exception {
 		File sourceFile = getSourceFile(sourceClass);
-		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
@@ -99,7 +99,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer classRefersToThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerContentPlugin.JS_STYLE + "'");
@@ -113,7 +113,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer classRequiresThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
 			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
@@ -136,7 +136,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	private String getClassBody(String className) {
 		File sourceFile = getSourceFile(className);
-		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
+		String jsStyle = JsStyleUtility.getJsStyle(specTest.brjs, sourceFile.getParentFile());
 		String classBody;
 		
 		if(jsStyle.equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
