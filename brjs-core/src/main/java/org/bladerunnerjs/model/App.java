@@ -34,10 +34,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeMap<JsLib> nonBladeRunnerLibs = JsLib.createAppNonBladeRunnerLibNodeSet();
+	private final NodeMap<StandardJsLib> nonBladeRunnerLibs = StandardJsLib.createAppNonBladeRunnerLibNodeSet();
 	private final NodeMap<Bladeset> bladesets = Bladeset.createNodeSet();
 	private final NodeMap<Aspect> aspects = Aspect.createNodeSet();
-	private final NodeMap<JsLib> jsLibs = JsLib.createAppNodeSet();
+	private final NodeMap<StandardJsLib> jsLibs = StandardJsLib.createAppNodeSet();
 	private final LogicalRequestHandler requestHandler;
 	
 	private String name;
