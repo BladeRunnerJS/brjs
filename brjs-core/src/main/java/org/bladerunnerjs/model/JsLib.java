@@ -25,8 +25,7 @@ public class JsLib extends AbstractAssetContainer implements AssetContainer, Nam
 	
 	public JsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(rootNode, dir);
-		init(rootNode, parent, dir);
+		super(rootNode, parent, dir);
 		this.name = name;
 		this.parent = parent;
 	}

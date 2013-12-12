@@ -60,6 +60,8 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test
 	public void canBundleLegacyThirdpartyLibsIfTheyAreReferencedInABladeset() throws Exception {		
+		given(exceptions).arentCaught();
+		
 		given(sdkLegacyThirdparty).hasBeenCreated()
 			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:")
     		.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")

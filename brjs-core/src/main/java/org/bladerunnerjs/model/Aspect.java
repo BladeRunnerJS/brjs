@@ -30,10 +30,9 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(rootNode, dir);
+		super(rootNode, parent, dir);
 		this.name = name;
 		thisAssetLocation = new ShallowAssetLocation(root(), this, dir);
-		init(rootNode, parent, dir);
 	}
 	
 	public static NodeMap<Aspect> createNodeSet()

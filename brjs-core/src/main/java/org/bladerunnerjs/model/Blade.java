@@ -21,9 +21,8 @@ public class Blade extends AbstractComponent implements NamedNode
 
 	public Blade(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(rootNode, dir);
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
 	}
 	
 	public static NodeMap<Blade> createNodeSet()

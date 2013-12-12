@@ -10,8 +10,8 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	public AbstractAssetContainer(RootNode rootNode, File dir) {
-		init(rootNode, rootNode, dir);
+	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
+		init(rootNode, parent, dir);
 	}
 	
 	@Override

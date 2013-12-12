@@ -9,6 +9,7 @@ import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
+import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -19,8 +20,8 @@ import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private AliasesFile aliasesFile;
 	
-	public AbstractBundlableNode(RootNode rootNode, File dir) {
-		super(rootNode, dir);
+	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
+		super(rootNode, parent, dir);
 	}
 	
 	public abstract List<LinkedAsset> getSeedFiles();
