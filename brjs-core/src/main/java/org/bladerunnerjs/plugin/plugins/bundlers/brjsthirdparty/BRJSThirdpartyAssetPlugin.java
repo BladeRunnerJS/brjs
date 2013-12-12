@@ -23,7 +23,7 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
-		return null;
+		return new ArrayList<>();
 	}
 	
 	@Override

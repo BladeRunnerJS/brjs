@@ -1,5 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
-		return null;
+		return new ArrayList<>();
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
-		return null;
+		return new ArrayList<>();
 	}
 	
 	@Override
