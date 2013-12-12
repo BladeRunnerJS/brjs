@@ -23,7 +23,7 @@ public class NamedNodeVerifier extends NodeVerifier<NamedNode> {
 	}
 	
 	public VerifierChainer nameIsInvalid() {
-		assertFalse(namedNode.getName() + " is a valid Node name, but it shouldn't", namedNode.isValidName());
+		assertFalse(namedNode.getName() + " is a valid Node name, but it shouldn't be", namedNode.isValidName());
 		
 		return verifierChainer;
 	}
