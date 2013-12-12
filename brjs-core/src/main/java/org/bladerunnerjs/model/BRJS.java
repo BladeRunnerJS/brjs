@@ -307,7 +307,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return assetLocator.getAssetFilesWithExtension(assetLocation, assetFileType, extensions);
 	}
 	
-	public <AF extends Asset> Asset getAssetFile(Class<? extends Asset> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException
+	public <AF extends Asset> AF getAssetFile(Class<? extends AF> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException
 	{
 		return assetLocator.getAssetFile(assetFileType, assetLocation, file);
 	}

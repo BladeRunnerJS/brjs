@@ -59,12 +59,13 @@ public class AssetLocationUtility
 		return assetFiles;
 	}
 	
-	public <AF extends Asset> Asset getAssetFile(Class<? extends Asset> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException {
+	@SuppressWarnings("unchecked")
+	public <AF extends Asset> AF getAssetFile(Class<? extends AF> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException {
 		String absolutePath = file.getAbsolutePath();
-		Asset assetFile;
+		AF assetFile;
 		
 		if(assetFiles.containsKey(absolutePath)) {
-			assetFile = assetFiles.get(absolutePath);
+			assetFile = (AF) assetFiles.get(absolutePath);
 		}
 		else {
 			assetFile = createAssetFileObjectForFile(assetFileType, assetLocation, file);

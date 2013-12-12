@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -11,22 +10,19 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.utility.IndexPageSeedFileLocator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
 public class Workbench extends AbstractBundlableNode implements TestableNode 
 {
-	private static final List<String> seedFilenames = Arrays.asList("index.html", "index.jsp");
-	
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
 	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
 	private final NodeMap<Theme> themes = Theme.createNodeSet();
-	private AssetLocation thisAssetLocation;
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
-		thisAssetLocation = new ShallowAssetLocation(rootNode, this, dir);
 	}
 
 	public DirNode styleResources()
@@ -41,17 +37,7 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 		
 	@Override
 	public List<LinkedAsset> getSeedFiles() {
-		List<LinkedAsset> assetFiles = new ArrayList<LinkedAsset>();
-		
-		for (LinkedAsset assetFile : thisAssetLocation.seedResources())
-		{
-			if ( seedFilenames.contains( assetFile.getAssetName() ) )
-			{
-				assetFiles.add(assetFile);
-			}
-		}
-		
-		return assetFiles;
+		return IndexPageSeedFileLocator.getSeedFiles(this);
 	}
 	
 	@Override
