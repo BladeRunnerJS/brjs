@@ -299,15 +299,25 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public <AF extends Asset> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... fileNames)
 	{
-		return assetLocator.getAssetFilesNamed(assetLocation, assetFileType, fileNames);
+		try {
+			return assetLocator.getAssetFilesNamed(assetLocation, assetFileType, fileNames);
+		}
+		catch (AssetFileInstantationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public <AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... extensions)
 	{
-		return assetLocator.getAssetFilesWithExtension(assetLocation, assetFileType, extensions);
+		try {
+			return assetLocator.getAssetFilesWithExtension(assetLocation, assetFileType, extensions);
+		}
+		catch (AssetFileInstantationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
-	public <AF extends Asset> AF getAssetFile(Class<? extends AF> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException
+	public <AF extends Asset> AF getAssetFile(Class<? extends AF> assetFileType, AssetLocation assetLocation, File file) throws AssetFileInstantationException
 	{
 		return assetLocator.getAssetFile(assetFileType, assetLocation, file);
 	}

@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.utility.FileUtility;
 
 
@@ -20,7 +19,7 @@ public class AssetLocationUtility
 	
 	private final Map<String, Asset> assetFiles = new HashMap<>();
 	
-	<AF extends Asset> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... fileNames)
+	<AF extends Asset> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... fileNames) throws AssetFileInstantationException
 	{
 		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
@@ -28,7 +27,7 @@ public class AssetLocationUtility
 		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new NameFileFilter(fileNames)) );
 	}
 	
-	<AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... extensions)
+	<AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... extensions) throws AssetFileInstantationException
 	{
 		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
@@ -36,31 +35,21 @@ public class AssetLocationUtility
 		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new SuffixFileFilter(extensions)) );
 	}
 	
-	
-	
-	
 	@SuppressWarnings("unchecked")
-	private <AF extends Asset> List<AF> createAssetFileListFromFiles(AssetLocation assetLocation, Class<? extends Asset> assetFileType, Collection<File> files)
+	private <AF extends Asset> List<AF> createAssetFileListFromFiles(AssetLocation assetLocation, Class<? extends Asset> assetFileType, Collection<File> files) throws AssetFileInstantationException
 	{
 		List<AF> assetFiles = new LinkedList<AF>();		
 		
 		for (File file : files)
 		{
-			try
-			{
-				assetFiles.add( (AF) getAssetFile(assetFileType, assetLocation, file) );
-			}
-			catch (UnableToInstantiateAssetFileException e)
-			{
-				assetLocation.getAssetContainer().root().logger(LoggerType.UTIL, AssetLocationUtility.class).error(e.getMessage());
-			}
+			assetFiles.add( (AF) getAssetFile(assetFileType, assetLocation, file) );
 		}
 		
 		return assetFiles;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <AF extends Asset> AF getAssetFile(Class<? extends AF> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException {
+	public <AF extends Asset> AF getAssetFile(Class<? extends AF> assetFileType, AssetLocation assetLocation, File file) throws AssetFileInstantationException {
 		String absolutePath = file.getAbsolutePath();
 		AF assetFile;
 		
@@ -76,7 +65,7 @@ public class AssetLocationUtility
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <AF extends Asset> AF createAssetFileObjectForFile(Class<? extends Asset> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException
+	private <AF extends Asset> AF createAssetFileObjectForFile(Class<? extends Asset> assetFileType, AssetLocation assetLocation, File file) throws AssetFileInstantationException
 	{
 		try
 		{
@@ -97,7 +86,7 @@ public class AssetLocationUtility
 		}
 		catch (Exception ex)
 		{
-			throw new UnableToInstantiateAssetFileException(ex, assetFileType);
+			throw new AssetFileInstantationException(ex, assetFileType);
 		}		
 	}
 	

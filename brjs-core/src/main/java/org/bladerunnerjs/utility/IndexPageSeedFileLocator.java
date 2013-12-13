@@ -7,7 +7,7 @@ import java.util.List;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.UnableToInstantiateAssetFileException;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 
 public class IndexPageSeedFileLocator {
 	public static List<LinkedAsset> getSeedFiles(BundlableNode viewableBundlableNode) {
@@ -22,7 +22,7 @@ public class IndexPageSeedFileLocator {
 				seedFiles.add(indexFileAsset);
 			}
 		}
-		catch(UnableToInstantiateAssetFileException e) {
+		catch(AssetFileInstantationException e) {
 			throw new RuntimeException(e);
 		}
 		

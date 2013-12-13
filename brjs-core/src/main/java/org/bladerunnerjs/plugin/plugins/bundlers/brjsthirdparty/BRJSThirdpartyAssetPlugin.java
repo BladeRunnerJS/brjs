@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.ThirdpartyBundlerSourceModule;
-import org.bladerunnerjs.model.UnableToInstantiateAssetFileException;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
@@ -44,7 +44,7 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
     		}
     		return sourceModules;
 		}
-		catch (ConfigException | UnableToInstantiateAssetFileException ex)
+		catch (ConfigException | AssetFileInstantationException ex)
 		{
 			throw new RuntimeException(ex);
 		}
