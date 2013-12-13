@@ -26,7 +26,7 @@ public class ChildSourceAssetLocation extends ShallowAssetLocation {
 			throw new InvalidRequirePathException("Source module containing directory '" + locationRequirePrefix + "' does not start with correct require prefix '" + containerRequirePrefix + "'.");
 		}
 		
-		return assetContainer.requirePrefix() + "/" + locationRequirePrefix;
+		return locationRequirePrefix;
 	}
 	
 	@Override
