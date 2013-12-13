@@ -25,17 +25,17 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGeneratedByDefault() throws Exception {
-		given(aspect).hasClass("mypkg.Class1")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@new-js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/appns/Class1.js");
 	}
 	
 	@Test
 	public void inProdASingleBundlerRequestIsGeneratedByDefault() throws Exception {
-		given(aspect).hasClass("mypkg.Class1")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@new-js.bundle@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/prod/en_GB/combined/bundle.js");
@@ -59,10 +59,10 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {
 		given(exceptions).arentCaught();
 		
-		given(aspect).hasClass("mypkg.Class1")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@new-js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/mypkg/Class1.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/appns/Class1.js");
 	}
 }

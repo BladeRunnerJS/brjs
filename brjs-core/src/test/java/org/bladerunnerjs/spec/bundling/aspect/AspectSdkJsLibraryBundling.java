@@ -12,7 +12,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
-//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'mypkg' when the default namespace is 'appns')?
+//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'appns' when the default namespace is 'appns')?
 //TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
 public class AspectSdkJsLibraryBundling extends SpecTest {
 	private App app;
@@ -56,21 +56,21 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			.and(sdkJsLib).hasPackageStyle("src/sdkJsLib", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(sdkJsLib).hasClass("sdkJsLib.Class1")
 			.and(aspect).hasBeenCreated()
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspect).classRefersTo("mypkg.Class1", "sdkJsLib.Class1");
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasPackageStyle("src/appns", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).classRefersTo("appns.Class1", "sdkJsLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.Class1", "sdkJsLib.Class1")
+		then(response).containsClasses("appns.Class1", "sdkJsLib.Class1")
 			.and(response).doesNotContainText("require");
 	}
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreRequiredInAClass() throws Exception {
 		given(sdkJsLib).hasClass("sdkJsLib.Class1")
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspect).classRequires("mypkg.Class1", "sdkJsLib.Class1");
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).classRequires("appns.Class1", "sdkJsLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("sdkJsLib.Class1");
 	}
@@ -93,9 +93,9 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		given(sdkLegacyThirdparty).hasBeenCreated()
 			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:")
     		.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
-    		.and(aspect).hasClass("mypkg.Class1")
-    		.and(aspect).classRequiresThirdpartyLib("mypkg.Class1", sdkLegacyThirdparty)
-    		.and(aspect).indexPageRefersTo("mypkg.Class1");
+    		.and(aspect).hasClass("appns.Class1")
+    		.and(aspect).classRequiresThirdpartyLib("appns.Class1", sdkLegacyThirdparty)
+    		.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
 	}
@@ -105,9 +105,9 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		given(sdkLegacyThirdparty).hasBeenCreated()
 			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:")
     		.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
-    		.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
-    		.and(bladeset).classRequiresThirdpartyLib("mypkg.bs.Class1", sdkLegacyThirdparty)
-    		.and(aspect).indexPageRefersTo("mypkg.bs.Class1");
+    		.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+    		.and(bladeset).classRequiresThirdpartyLib("appns.bs.Class1", sdkLegacyThirdparty)
+    		.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
 	}
@@ -117,9 +117,9 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		given(sdkLegacyThirdparty).hasBeenCreated()
 			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:")
     		.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
-    		.and(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
-    		.and(blade).classRequiresThirdpartyLib("mypkg.bs.b1.Class1", sdkLegacyThirdparty)
-    		.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");
+    		.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+    		.and(blade).classRequiresThirdpartyLib("appns.bs.b1.Class1", sdkLegacyThirdparty)
+    		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
 	}
@@ -144,7 +144,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		given(sdkLegacyThirdparty).hasBeenCreated()
 			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends: blabla")
 			.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
-			.and(aspect).hasClass("mypkg.Class1")
+			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo(sdkLegacyThirdparty);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyNoOutstandingExceptions();

@@ -51,14 +51,14 @@ public class WorkbenchBundlingTest extends SpecTest {
 	// ------------------------------------ J S ---------------------------------------
 	@Test
 	public void workbenchPageDoesNotBundleAspectJSClassFilesWhenReferenced() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(aspect).hasClasses("mypkg.Class1")
-			.and(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(blade).hasClass("mypkg.bs.b1.Class1")
-			.and(workbench).indexPageRefersTo("mypkg.bs.b1.Class1")
-			.and(workbench).indexPageRefersTo("mypkg.Class1");
+		given(aspect).hasPackageStyle("src/appns", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(aspect).hasClasses("appns.Class1")
+			.and(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1")
+			.and(workbench).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(UnresolvableRequirePathException.class, "/mypkg/Class1")
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "/appns/Class1")
 			.whereTopLevelExceptionIs(BundlerProcessingException.class);
 	}
 
@@ -76,10 +76,10 @@ public class WorkbenchBundlingTest extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladesetCssFilesAreBundledWhenReferencedInTheWorkbench() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(bladeset).hasClass("mypkg.bs.Class1")
+		given(bladeset).hasPackageStyle("src/appns/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(bladeset).hasClass("appns.bs.Class1")
 			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
-			.and(workbench).indexPageRefersTo("mypkg.bs.Class1");
+			.and(workbench).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard_css.bundle", response);
  		then(response).containsText("BLADESET theme content");
  	}
@@ -87,10 +87,10 @@ public class WorkbenchBundlingTest extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladeCssFilesAreBundledWhenReferencedInTheWorkbench() throws Exception {
-		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(blade).hasClass("mypkg.bs.b1.Class1")
+		given(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
-			.and(workbench).indexPageRefersTo("mypkg.bs.b1.Class1");
+			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard_css.bundle", response);
  		then(response).containsText("BLADE theme content");
  	}

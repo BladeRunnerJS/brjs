@@ -29,28 +29,28 @@ public class AspectTestPackBundlingTest extends SpecTest
 	@Ignore
 	@Test
 	public void weBundleAspectFilesInUTs() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg", "namespaced-js")
-			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspectUTs).testRefersTo("mypkg.Class1");
-		then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("mypkg/Class1.js"));
+		given(aspect).hasPackageStyle("src/appns", "namespaced-js")
+			.and(aspect).hasClass("appns.Class1")
+			.and(aspectUTs).testRefersTo("appns.Class1");
+		then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
 	}
 	
 	@Ignore
 	@Test
 	public void weBundleAspectFilesInATs() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg", "namespaced-js")
-			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspectUTs).testRefersTo("mypkg.Class1");
-		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("mypkg/Class1.js"));
+		given(aspect).hasPackageStyle("src/appns", "namespaced-js")
+			.and(aspect).hasClass("appns.Class1")
+			.and(aspectUTs).testRefersTo("appns.Class1");
+		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
 	}
 	
 	@Ignore
 	@Test
 	public void noExceptionsAreThrownIfTheBladesetSrcFolderHasAHiddenFolder() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg", "namespaced-js")
-			.and(aspect).hasClass("mypkg.Class1")
+		given(aspect).hasPackageStyle("src/appns", "namespaced-js")
+			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).hasDir("src/.svn")
-			.and(aspectUTs).testRefersTo("mypkg.Class1");
-		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("mypkg/Class1.js"));
+			.and(aspectUTs).testRefersTo("appns.Class1");
+		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
 	}
 }

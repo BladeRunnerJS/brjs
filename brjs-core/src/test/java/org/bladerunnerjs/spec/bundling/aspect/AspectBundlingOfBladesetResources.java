@@ -33,19 +33,19 @@ public class AspectBundlingOfBladesetResources extends SpecTest {
 	// ----------------------------------- X M L -------------------------------------- 
 	@Test
 	public void bladesetClassesReferredToInAspectXMlFilesAreBundled() throws Exception {
-		given(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
-    		.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.bs.Class1");
+		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+    		.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.bs.Class1");
+		then(response).containsClasses("appns.bs.Class1");
 	}
 
 	// ---------------------------------  H T M L -------------------------------------
 	@Test
 	public void bladesetClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
-		given(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(aspect).resourceFileRefersTo("html/view.html", "mypkg.bs.Class1");
+		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.bs.Class1");
+		then(response).containsClasses("appns.bs.Class1");
 	}
 	
 	// ----------------------------------- C S S  -------------------------------------
@@ -53,10 +53,10 @@ public class AspectBundlingOfBladesetResources extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladesetCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(bladeset).hasClass("mypkg.bs.Class1")
+		given(aspect).hasPackageStyle("src/appns/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(bladeset).hasClass("appns.bs.Class1")
 			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
-			.and(aspect).indexPageRefersTo("mypkg.bs.Class1");
+			.and(aspect).indexPageRefersTo("appns.bs.Class1");
  		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
  		then(response).containsText("BLADESET theme content");
  	}

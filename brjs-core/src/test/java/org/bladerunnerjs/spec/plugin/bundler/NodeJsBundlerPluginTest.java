@@ -24,19 +24,19 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGenerated() throws Exception {
-		given(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
-			.and(aspect).classRequires("mypkg.Class1", "mypkg.Class2")
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
+			.and(aspect).classRequires("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/mypkg/Class1.js", "node-js/module/mypkg/Class2.js");
+		then(pageResponse).containsRequests("node-js/module/appns/Class1.js", "node-js/module/appns/Class2.js");
 	}
 	
 	@Test
 	public void inProdASingleBundleRequestIsGenerated() throws Exception {
-		given(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
-			.and(aspect).classRequires("mypkg.Class1", "mypkg.Class2")
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
+			.and(aspect).classRequires("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("node-js/bundle.js");

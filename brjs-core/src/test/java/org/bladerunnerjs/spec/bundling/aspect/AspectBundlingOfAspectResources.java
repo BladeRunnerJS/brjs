@@ -30,19 +30,19 @@ public class AspectBundlingOfAspectResources extends SpecTest {
 	// ----------------------------------- X M L -------------------------------------- 
 	@Test
 	public void aspectClassesReferredToInAspectXMlFilesAreBundled() throws Exception {
-		given(aspect).hasClasses("mypkg.Class1")
-    		.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1");
+		given(aspect).hasClasses("appns.Class1")
+    		.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.Class1");
+		then(response).containsClasses("appns.Class1");
 	}
 	
 	// ---------------------------------  H T M L -------------------------------------
 	@Test
 	public void aspectClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
-		given(aspect).hasClasses("mypkg.Class1")
-			.and(aspect).resourceFileRefersTo("html/view.html", "mypkg.Class1");
+		given(aspect).hasClasses("appns.Class1")
+			.and(aspect).resourceFileRefersTo("html/view.html", "appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.Class1");
+		then(response).containsClasses("appns.Class1");
 	}
 	
 	// ----------------------------------- C S S  -------------------------------------
@@ -50,7 +50,7 @@ public class AspectBundlingOfAspectResources extends SpecTest {
 	@Ignore 
  	@Test
  	public void aspectCssFilesAreBundled() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerContentPlugin.JS_STYLE)
+		given(aspect).hasPackageStyle("src/appns", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content");
  		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
  		then(response).containsText("ASPECT theme content");

@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'mypkg' when the default namespace is 'appns')?
+//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'appns' when the default namespace is 'appns')?
 //TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
 public class AspectBundlingOfBladesetSource extends SpecTest {
 	private App app;
@@ -33,58 +33,58 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	
 	@Test
 	public void weBundleABladesetClassIfItIsReferredToInTheIndexPage() throws Exception {
-		given(bladeset).hasClass("mypkg.bs.Class1")
-			.and(aspect).indexPageRefersTo("mypkg.bs.Class1");
+		given(bladeset).hasClass("appns.bs.Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.bs.Class1");
+		then(response).containsClasses("appns.bs.Class1");
 	}
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABladeset() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(aspect).indexPageRefersTo("mypkg.bs.Class1");
+		given(bladeset).hasPackageStyle("src/appns", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.bs.Class1", "mypkg.bs.Class2");
+		then(response).containsClasses("appns.bs.Class1", "appns.bs.Class2");
 	}
 	
 	@Test
 	public void weBundleExplicitTransitiveDependenciesForFromABladeset() throws Exception {
-		given(bladeset).hasClasses("mypkg.Class1", "mypkg.Class2")
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(bladeset).classRequires("mypkg.Class1", "mypkg.Class2");
+		given(bladeset).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(bladeset).classRequires("appns.Class1", "appns.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.Class1", "mypkg.Class2");
+		then(response).containsClasses("appns.Class1", "appns.Class2");
 	}
 	
 	@Test	// bladeset unhappy paths
 	public void weDontBundleABladesetClassIfItIsNotReferredToByAnAspect() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(aspect).indexPageRefersTo("mypkg.bs.Class2");
+		given(bladeset).hasPackageStyle("src/appns/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(aspect).indexPageRefersTo("appns.bs.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.bs.Class2")
-			.and(response).doesNotContainClasses("mypkg.bs.Class1");
+		then(response).containsClasses("appns.bs.Class2")
+			.and(response).doesNotContainClasses("appns.bs.Class1");
 	}
 	
 	@Test
 	public void bladesetClassesCanOnlyDependOnExistentClasses() throws Exception {
-		given(bladeset).hasClass("mypkg.Class1")
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(bladeset).classRequires("mypkg.Class1", "mypkg.NonExistentClass");
+		given(bladeset).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(bladeset).classRequires("appns.Class1", "appns.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(UnresolvableRequirePathException.class, "/mypkg/NonExistentClass")
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "/appns/NonExistentClass")
 			.whereTopLevelExceptionIs(BundlerProcessingException.class);
 	}
 	
 	@Test
 	public void bladesetClassesThatReferToNonExistentClassesWontCauseAnExceptionWhenAspectIsRequested() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(bladeset).hasClass("mypkg.bs.Class1")
-			.and(aspect).indexPageRefersTo("mypkg.bs.Class1")
-			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.NonExistentClass");
+		given(bladeset).hasPackageStyle("src/appns/bs", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(bladeset).hasClass("appns.bs.Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.Class1")
+			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
