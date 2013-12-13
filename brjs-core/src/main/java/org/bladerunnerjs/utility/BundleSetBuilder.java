@@ -24,9 +24,11 @@ public class BundleSetBuilder {
 	Set<AliasDefinition> activeAliases = new HashSet<>();
 	Set<AssetLocation> resources = new HashSet<>();
 	private BundlableNode bundlableNode;
+	private SourceModule bootstrapSourceModule;
 	
-	public BundleSetBuilder(BundlableNode bundlableNode) {
+	public BundleSetBuilder(BundlableNode bundlableNode, SourceModule bootstrapSourceModule) {
 		this.bundlableNode = bundlableNode;
+		this.bootstrapSourceModule = bootstrapSourceModule;
 	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
@@ -112,7 +114,7 @@ public class BundleSetBuilder {
 	}
 	
 	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
-		for(LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule, bundlableNode)) {
+		for(LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule)) {
 			if(!metDependencies.contains(dependentSourceModule)) {
 				return false;
 			}
@@ -121,16 +123,11 @@ public class BundleSetBuilder {
 		return true;
 	}
 	
-	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException {
+	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule) throws ModelOperationException {
 		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
 		
-		if(!sourceModule.getRequirePath().equals("bootstrap")) {
-			try {
-				orderDependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
-			}
-			catch(RequirePathException e) {
-				// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-			}
+		if(!sourceModule.getRequirePath().equals("bootstrap") && bootstrapSourceModule != null) {
+			orderDependentSourceModules.add(bootstrapSourceModule);
 		}
 		
 		return orderDependentSourceModules;

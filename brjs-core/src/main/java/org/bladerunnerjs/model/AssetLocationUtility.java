@@ -5,7 +5,6 @@ import java.io.FileFilter;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.Map;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.logging.LoggerType;
-import org.bladerunnerjs.utility.FileUtility;
 
 
 public class AssetLocationUtility
@@ -26,8 +24,6 @@ public class AssetLocationUtility
 	{
 		File dir = assetLocation.dir();
 		if (!dir.isDirectory()) { return Arrays.asList(); }
-		
-		
 		
 		return createAssetFileListFromFiles( assetLocation, assetFileType, files, new NameFileFilter(fileNames));
 	}

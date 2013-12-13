@@ -78,7 +78,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
-		return BundleSetCreator.createBundleSet(this);
+		return new BundleSetCreator(this).createBundleSet();
 	}
 	
 	@Override
