@@ -7,6 +7,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.DeepAssetLocation;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
@@ -23,7 +24,14 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
-		return null;
+		List<AssetLocation> assetLocations = null;
+		
+		if((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists())) {
+			assetLocations = new ArrayList<>();
+			assetLocations.add(new DeepAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")));
+		}
+		
+		return assetLocations;
 	}
 	
 	@Override
