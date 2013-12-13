@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -29,7 +30,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private String className;
 	
 	@Override
-	public void initialize(AssetLocation assetLocation, File assetFile)
+	public void initialize(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException
 	{
 		String relativeRequirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
 		
