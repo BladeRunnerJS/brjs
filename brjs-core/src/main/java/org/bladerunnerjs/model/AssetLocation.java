@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.exception.RequirePathException;
 
 /**
  * Represents the parent directory of any AssetFile, so in the example src/a/b/c/someFile.xml it would represent the src/a/b/c directory.
@@ -11,7 +12,7 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
  */
 public interface AssetLocation extends BRJSNode {
 	String getJsStyle();
-	String requirePrefix();
+	String requirePrefix() throws RequirePathException;
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAsset> seedResources();
 	List<LinkedAsset> seedResources(String fileExtension);

@@ -74,6 +74,9 @@ public class AssetLocationUtility
 			
 			return assetFile;
 		}
+		catch(AssetFileInstantationException ex) {
+			throw ex;
+		}
 		catch (SecurityException ex)
 		{
 			throw new RuntimeException(ex);
