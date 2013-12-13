@@ -38,12 +38,12 @@ public class NodeJsSourceModule implements SourceModule {
 	private String className;
 	
 	@Override
-	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
+	public void initialize(AssetLocation assetLocation, File assetFile)
 	{
-		String relativeRequirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
+		String relativeRequirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
 		
 		this.assetLocation = assetLocation;
-		assetFile = file;
+		this.assetFile = assetFile;
 		requirePath = /* assetLocation.getAssetContainer().requirePrefix() + */ "/" + relativeRequirePath;
 		className = relativeRequirePath.replaceAll("/", ".");
 		fileModifiedChecker = new FileModifiedChecker(assetFile);

@@ -71,7 +71,7 @@ public class ThirdpartyBundlerSourceModule implements SourceModule
 	}
 	
 	@Override
-	public void initializeUnderlyingObjects(AssetLocation assetLocation, File dir)
+	public void initialize(AssetLocation assetLocation, File dir)
 	{
 		this.assetLocation = assetLocation;
 		this.dir = dir;

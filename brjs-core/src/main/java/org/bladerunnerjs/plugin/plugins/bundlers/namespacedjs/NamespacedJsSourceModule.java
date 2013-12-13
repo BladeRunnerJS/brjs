@@ -23,36 +23,36 @@ import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 public class NamespacedJsSourceModule implements SourceModule {
 	private static final Pattern extendPattern = Pattern.compile("(caplin|br)\\.(extend|implement)\\([^,]+,\\s*([^)]+)\\)");
 	
-	private LinkedAsset assetFile;
+	private LinkedAsset linkedAsset;
 	private AssetLocation assetLocation;
 	private String requirePath;
 	private String className;
 	
 	@Override
-	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
+	public void initialize(AssetLocation assetLocation, File assetFile)
 	{
-		String relativeRequirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(file.toURI()).getPath().replaceAll("\\.js$", "");
+		String relativeRequirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
 		
 		this.assetLocation = assetLocation;
 		requirePath = /* assetLocation.getAssetContainer().requirePrefix() + */ "/" + relativeRequirePath;
 		className = relativeRequirePath.replaceAll("/", ".");
-		assetFile = new FullyQualifiedLinkedAsset();
-		assetFile.initializeUnderlyingObjects(assetLocation, file);
+		linkedAsset = new FullyQualifiedLinkedAsset();
+		linkedAsset.initialize(assetLocation, assetFile);
 	}
 	
 	@Override
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return assetFile.getDependentSourceModules(bundlableNode);
+		return linkedAsset.getDependentSourceModules(bundlableNode);
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return assetFile.getAliasNames();
+		return linkedAsset.getAliasNames();
 	}
 	
 	@Override
 	public Reader getReader() throws FileNotFoundException {
-		return assetFile.getReader();
+		return linkedAsset.getReader();
 	}
 	
 	@Override
@@ -76,7 +76,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 		
 		try {
 			StringWriter stringWriter = new StringWriter();
-			IOUtils.copy(assetFile.getReader(), stringWriter);
+			IOUtils.copy(linkedAsset.getReader(), stringWriter);
 			Matcher matcher = extendPattern.matcher(stringWriter.toString());
 			
 			while (matcher.find()) {
@@ -100,17 +100,17 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public File getUnderlyingFile() {
-		return assetFile.getUnderlyingFile();
+		return linkedAsset.getUnderlyingFile();
 	}
 	
 	@Override
 	public String getAssetName() {
-		return assetFile.getAssetName();
+		return linkedAsset.getAssetName();
 	}
 	
 	@Override
 	public String getAssetPath() {
-		return assetFile.getAssetPath();
+		return linkedAsset.getAssetPath();
 	}
 	
 	@Override

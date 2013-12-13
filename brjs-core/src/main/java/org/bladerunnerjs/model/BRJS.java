@@ -297,28 +297,18 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
-	public <AF extends Asset> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... fileNames)
+	public <AF extends Asset> AF createAssetFile(Class<? extends AF> assetFileClass, AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException
 	{
-		try {
-			return assetLocator.getAssetFilesNamed(assetLocation, assetFileType, fileNames);
-		}
-		catch (AssetFileInstantationException e) {
-			throw new RuntimeException(e);
-		}
+		return assetLocator.createAssetFile(assetFileClass, assetLocation, assetFile);
 	}
 	
-	public <AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... extensions)
+	public <AF extends Asset> List<AF> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... extensions) throws AssetFileInstantationException
 	{
-		try {
-			return assetLocator.getAssetFilesWithExtension(assetLocation, assetFileType, extensions);
-		}
-		catch (AssetFileInstantationException e) {
-			throw new RuntimeException(e);
-		}
+		return assetLocator.createAssetFilesWithExtension(assetFileClass, assetLocation, extensions);
 	}
 	
-	public <AF extends Asset> AF getAssetFile(Class<? extends AF> assetFileType, AssetLocation assetLocation, File file) throws AssetFileInstantationException
+	public <AF extends Asset> List<AF> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... fileNames) throws AssetFileInstantationException
 	{
-		return assetLocator.getAssetFile(assetFileType, assetLocation, file);
+		return assetLocator.createAssetFilesWithName(assetFileClass, assetLocation, fileNames);
 	}
 }

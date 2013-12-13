@@ -29,12 +29,12 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private FileModifiedChecker fileModifiedChecker;
 	private AssetLocation assetLocation;
 	
-	public void initializeUnderlyingObjects(AssetLocation assetLocation, File file)
+	public void initialize(AssetLocation assetLocation, File assetFile)
 	{
 		this.assetLocation = assetLocation;
 		app = assetLocation.getAssetContainer().getApp();
-		this.assetFile = file;
-		fileModifiedChecker = new FileModifiedChecker(file);
+		this.assetFile = assetFile;
+		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
 	@Override

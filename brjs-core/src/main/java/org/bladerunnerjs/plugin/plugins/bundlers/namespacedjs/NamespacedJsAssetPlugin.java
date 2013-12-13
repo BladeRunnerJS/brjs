@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
@@ -24,14 +25,16 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
-		if (!(assetLocation.getAssetContainer() instanceof JsLib) && assetLocation.getJsStyle().equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
-			// TODO: blow up if the package of the assetLocation would not be a
-			// valid namespace
-			
-			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NamespacedJsSourceModule.class, "js");
+		try {
+			if (!(assetLocation.getAssetContainer() instanceof JsLib) && assetLocation.getJsStyle().equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
+				return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(NamespacedJsSourceModule.class, assetLocation, "js");
+			}
+			else {
+				return new ArrayList<>();
+			}
 		}
-		else {
-			return new ArrayList<>();
+		catch (AssetFileInstantationException e) {
+			throw new RuntimeException(e);
 		}
 	}
 	

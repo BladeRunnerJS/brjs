@@ -16,67 +16,61 @@ import org.bladerunnerjs.utility.FileUtility;
 
 public class AssetLocationUtility
 {
-	
 	private final Map<String, Asset> assetFiles = new HashMap<>();
 	
-	<AF extends Asset> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... fileNames) throws AssetFileInstantationException
-	{
-		File dir = assetLocation.dir();
-		if (!dir.isDirectory()) { return Arrays.asList(); }
-		
-		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new NameFileFilter(fileNames)) );
-	}
-	
-	<AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, String... extensions) throws AssetFileInstantationException
-	{
-		File dir = assetLocation.dir();
-		if (!dir.isDirectory()) { return Arrays.asList(); }
-		
-		return createAssetFileListFromFiles( assetLocation, assetFileType, FileUtility.listFiles(dir, new SuffixFileFilter(extensions)) );
-	}
-	
 	@SuppressWarnings("unchecked")
-	private <AF extends Asset> List<AF> createAssetFileListFromFiles(AssetLocation assetLocation, Class<? extends Asset> assetFileType, Collection<File> files) throws AssetFileInstantationException
-	{
-		List<AF> assetFiles = new LinkedList<AF>();		
-		
-		for (File file : files)
-		{
-			assetFiles.add( (AF) getAssetFile(assetFileType, assetLocation, file) );
-		}
-		
-		return assetFiles;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <AF extends Asset> AF getAssetFile(Class<? extends AF> assetFileType, AssetLocation assetLocation, File file) throws AssetFileInstantationException {
-		String absolutePath = file.getAbsolutePath();
-		AF assetFile;
+	public <A extends Asset> A createAssetFile(Class<? extends A> assetFileClass, AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
+		String absolutePath = assetFile.getAbsolutePath();
+		A asset;
 		
 		if(assetFiles.containsKey(absolutePath)) {
-			assetFile = (AF) assetFiles.get(absolutePath);
+			asset = (A) assetFiles.get(absolutePath);
 		}
 		else {
-			assetFile = createAssetFileObjectForFile(assetFileType, assetLocation, file);
-			assetFiles.put(absolutePath, assetFile);
+			asset = createAssetInstance(assetFileClass, assetLocation, assetFile);
+			assetFiles.put(absolutePath, asset);
 		}
 		
-		return assetFile;
+		return asset;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <AF extends Asset> AF createAssetFileObjectForFile(Class<? extends Asset> assetFileType, AssetLocation assetLocation, File file) throws AssetFileInstantationException
+	public <A extends Asset> List<A> createAssetFiles(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, Collection<File> assetFiles) throws AssetFileInstantationException
+	{
+		List<A> assets = new LinkedList<A>();		
+		
+		for (File file : assetFiles)
+		{
+			assets.add( (A) createAssetFile(assetFileClass, assetLocation, file) );
+		}
+		
+		return assets;
+	}
+	
+	public <A extends Asset> List<A> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... extensions) throws AssetFileInstantationException
+	{
+		File dir = assetLocation.dir();
+		if (!dir.isDirectory()) { return Arrays.asList(); }
+		
+		return createAssetFiles( assetFileClass, assetLocation, FileUtility.listFiles(dir, new SuffixFileFilter(extensions)) );
+	}
+	
+	public <A extends Asset> List<A> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... fileNames) throws AssetFileInstantationException
+	{
+		File dir = assetLocation.dir();
+		if (!dir.isDirectory()) { return Arrays.asList(); }
+		
+		return createAssetFiles( assetFileClass, assetLocation, FileUtility.listFiles(dir, new NameFileFilter(fileNames)) );
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <A extends Asset> A createAssetInstance(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, File file) throws AssetFileInstantationException
 	{
 		try
 		{
-			//TODO: discuss whether we *really* want to use a non-default constructor or an interface method gives a better dev experience
-			//		if we use this constructor delete the setters on AssetFile interface
-//			Constructor<? extends AssetFile> ctor = assetFileType.getConstructor(AssetContainer.class, File.class);
-			Constructor<? extends Asset> ctor = assetFileType.getConstructor();
-			
-			AF assetFile = (AF) ctor.newInstance();
-			
-			assetFile.initializeUnderlyingObjects(assetLocation, file);
+			Constructor<? extends Asset> ctor = assetFileClass.getConstructor();
+			A assetFile = (A) ctor.newInstance();
+			assetFile.initialize(assetLocation, file);
 			
 			return assetFile;
 		}
@@ -86,9 +80,7 @@ public class AssetLocationUtility
 		}
 		catch (Exception ex)
 		{
-			throw new AssetFileInstantationException(ex, assetFileType);
+			throw new AssetFileInstantationException(ex, assetFileClass);
 		}		
 	}
-	
-	
 }

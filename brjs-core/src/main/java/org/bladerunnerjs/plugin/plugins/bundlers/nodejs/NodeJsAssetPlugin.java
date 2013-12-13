@@ -1,10 +1,12 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -23,11 +25,16 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
-		if (assetLocation.getJsStyle().equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
-			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceModule.class, "js");
+		try {
+			if (assetLocation.getJsStyle().equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
+				return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(NodeJsSourceModule.class, assetLocation, "js");
+			}
+			else {
+				return new ArrayList<>();
+			}
 		}
-		else {
-			return Arrays.asList();
+		catch (AssetFileInstantationException e) {
+			throw new RuntimeException(e);
 		}
 	}
 	
