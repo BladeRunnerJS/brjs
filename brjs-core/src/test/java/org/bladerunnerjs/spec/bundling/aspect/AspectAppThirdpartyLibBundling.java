@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'mypkg' when the default namespace is 'appns')?
+//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'appns' when the default namespace is 'appns')?
 //TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
 public class AspectAppThirdpartyLibBundling extends SpecTest {
 	private App app;
@@ -58,10 +58,10 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			.and(appLegacyThirdparty).hasPackageStyle("appThirdpartyLibName", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(appLegacyThirdparty).hasClass("appThirdparty.Class1")
 			.and(aspect).hasBeenCreated()
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspect).classRefersTo("mypkg.Class1", "appThirdparty.Class1");
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasPackageStyle("src/appns", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).classRefersTo("appns.Class1", "appThirdparty.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appThirdparty.Class1");
 	}
@@ -69,9 +69,9 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 	@Test
 	public void aspectBundlesContainAppLegacyThirdpartyLibsIfTheyAreRequiredInAClass() throws Exception {
 		given(appLegacyThirdparty).hasClass("appThirdpartyLibName.Class1")
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspect).classRequires("mypkg.Class1", "appThirdpartyLibName.Class1");
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).classRequires("appns.Class1", "appThirdpartyLibName.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appThirdpartyLibName.Class1");
 	}
