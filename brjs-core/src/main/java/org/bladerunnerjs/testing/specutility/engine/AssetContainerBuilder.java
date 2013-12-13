@@ -26,6 +26,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 	
 	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
+		// TODO: delete this replaceAll() line, and make tests just use normal paths
 		String path = packagePath.replaceAll("\\.", "/");
 		JsStyleUtility.setJsStyle(node.file(path), jsStyle);
 		
