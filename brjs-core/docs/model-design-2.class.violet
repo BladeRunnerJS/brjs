@@ -498,7 +498,8 @@ AliasDefinition getAlias(AliasName aliasName)</string>
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode5">
     <void property="methods">
      <void property="text">
-      <string>AliasDefinitionsFile aliasDefinitionsFile()
+      <string>String requirePrefix()
+AliasDefinitionsFile aliasDefinitionsFile()
 List&lt;LinkedAssetFile&gt; seedResources()
 List&lt;LinkedAssetFile&gt; seedResources(String fileExt)
 List&lt;AssetFile&gt; bundleResources(String fileExt)

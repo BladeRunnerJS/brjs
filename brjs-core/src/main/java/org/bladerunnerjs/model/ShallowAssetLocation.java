@@ -34,6 +34,13 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	}
 	
 	@Override
+	public String requirePrefix() {
+		String relativeRequirePath = assetContainer.dir().toURI().relativize(dir().toURI()).getPath();
+		
+		return assetContainer.requirePrefix() + "/" + relativeRequirePath;
+	}
+	
+	@Override
 	public AliasDefinitionsFile aliasDefinitionsFile() {		
 		if(aliasDefinitionsFile == null) {
 			aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, dir(), "aliasDefinitions.xml");

@@ -11,6 +11,7 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
  */
 public interface AssetLocation extends BRJSNode {
 	String getJsStyle();
+	String requirePrefix();
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAsset> seedResources();
 	List<LinkedAsset> seedResources(String fileExtension);

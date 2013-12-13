@@ -23,6 +23,11 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 	}
 	
 	@Override
+	public String requirePrefix() {
+		return assetContainer.requirePrefix();
+	}
+	
+	@Override
 	public List<AssetLocation> getDependentAssetLocations() {
 		return dependentAssetLocations;
 	}
