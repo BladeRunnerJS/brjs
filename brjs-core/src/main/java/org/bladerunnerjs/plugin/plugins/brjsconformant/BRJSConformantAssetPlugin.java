@@ -20,9 +20,10 @@ public class BRJSConformantAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
+		List<AssetLocation> assetLocations = new ArrayList<>();
+		
 		DeepAssetLocation resources = new DeepAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources"));
 		SourceAssetLocation source = new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src"), resources);
-		List<AssetLocation> assetLocations = new ArrayList<>();
 		
 		assetLocations.add(resources);
 		assetLocations.add(source);
