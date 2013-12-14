@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,11 +17,16 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 
-public class ThirdpartyBundlerSourceModule implements SourceModule
+public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 {
 
 	private AssetLocation assetLocation;

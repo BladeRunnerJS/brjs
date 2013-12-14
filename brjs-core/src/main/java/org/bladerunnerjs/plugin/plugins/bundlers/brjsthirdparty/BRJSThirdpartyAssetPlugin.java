@@ -12,7 +12,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.ThirdpartyBundlerSourceModule;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
@@ -46,7 +45,7 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
     			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
     			if (manifest.fileExists())
     			{
-    				ThirdpartyBundlerSourceModule sourceModule = (ThirdpartyBundlerSourceModule) assetLocation.getAssetContainer().root().createAssetFile(ThirdpartyBundlerSourceModule.class, assetLocation, assetLocation.dir());
+    				BRJSThirdpartyBundlerSourceModule sourceModule = (BRJSThirdpartyBundlerSourceModule) assetLocation.getAssetContainer().root().createAssetFile(BRJSThirdpartyBundlerSourceModule.class, assetLocation, assetLocation.dir());
     				sourceModule.initManifest(manifest);
     				sourceModules.add( sourceModule );
     			}
