@@ -117,4 +117,10 @@ public class StringVerifier {
 		
 		return verifierChainer;		
 	}
+
+	public void containsOrderedTextFragments(String... textFragments) {
+		if(!string.matches("(?s)^.*" + Joiner.on(".*").join(textFragments) + ".*$")) {
+			assertEquals(Joiner.on("\n<snip/>\n").join(textFragments), string);
+		}
+	}
 }
