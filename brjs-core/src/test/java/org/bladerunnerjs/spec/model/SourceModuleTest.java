@@ -52,7 +52,6 @@ public class SourceModuleTest extends SpecTest {
 			.and(brjsLib).assetLocationHasDependencies("src/brjslib/pkg/", "src/brjslib/");
 	}
 	
-	@Ignore
 	@Test
 	public void brjsThirdpartyLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
 		given(brjsThirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js, file2.js")
