@@ -58,7 +58,12 @@ public class AssetContainerVerifier {
 	}
 	
 	public void assetLocationHasDependencies(String assetLocationPath, String[] expectedAssetLocationDependencies) {
-		List<AssetLocation> actualDependentAssetLocations = assetContainer.assetLocation(assetLocationPath).getDependentAssetLocations();
+		AssetLocation assetLocation = assetContainer.assetLocation(assetLocationPath);
+		if(assetLocation == null) {
+			throw new RuntimeException("asset location '" + assetLocationPath + "' does not exist.");
+		}
+		
+		List<AssetLocation> actualDependentAssetLocations = assetLocation.getDependentAssetLocations();
 		
 		assertEquals("Asset location '" + assetLocationPath + "' was expected to have " + expectedAssetLocationDependencies.length + " dependent asset locations.",
 			expectedAssetLocationDependencies.length, actualDependentAssetLocations.size());
