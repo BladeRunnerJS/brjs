@@ -26,8 +26,7 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		try {
-			// TODO: get rid of the `instanceof JsLib` check once asset locations start overriding this
-			if (!(assetLocation.getAssetContainer() instanceof JsLib) && assetLocation.getJsStyle().equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
+			if (assetLocation.getJsStyle().equals(NamespacedJsBundlerContentPlugin.JS_STYLE)) {
 				return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(NamespacedJsSourceModule.class, assetLocation, "js");
 			}
 			else {
