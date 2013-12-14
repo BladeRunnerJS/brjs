@@ -1,8 +1,6 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
@@ -159,13 +157,5 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	public String getTemplateName()
 	{
 		return "jslib";
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		List<AssetLocation> assetLocations = new ArrayList<>();
-		assetLocations.add(getRootAssetLocation());
-		assetLocations.addAll( super.assetLocations() );
-		return assetLocations;
 	}
 }

@@ -45,8 +45,7 @@ public class SourceModuleTest extends SpecTest {
 		given(brjsLib).hasClasses("brjslib.Class1", "brjslib.Class2", "brjslib.pkg.Class3")
 			.and(brjsLib).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
 		then(brjsLib).hasSourceModules(sourceModule("brjslib/Class1", "brjslib.Class1"), sourceModule("brjslib/Class2", "brjslib.Class2"), sourceModule("brjslib/pkg/Class3", "brjslib.pkg.Class3"))
-			// TODO: this should not need the empty asset location we currently have -- delete JsLib.assetLocations() override and put root functionality into plugin
-			.and(brjsLib).hasAssetLocations("", "resources/", "src/", "src/brjslib/", "src/brjslib/pkg/")
+			.and(brjsLib).hasAssetLocations("resources/", "src/", "src/brjslib/", "src/brjslib/pkg/")
 			.and(brjsLib).assetLocationHasNoDependencies("resources/")
 			.and(brjsLib).assetLocationHasDependencies("src/", "resources/")
 			.and(brjsLib).assetLocationHasDependencies("src/brjslib/", "src/")

@@ -27,8 +27,7 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 		
 		if((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists())) {
 			assetLocations = new ArrayList<>();
-			
-			assetLocations.add(new DeepAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")));
+			assetLocations.add(new DeepAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
 		}
 		
 		return assetLocations;
