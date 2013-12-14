@@ -73,11 +73,6 @@ public class JsLibAppWrapper implements JsLib {
 	}
 	
 	@Override
-	public AssetLocation getRootAssetLocation() {
-		return wrappedJsLib.getRootAssetLocation();
-	}
-	
-	@Override
 	public SourceModule sourceModule(String requirePath) {
 		return wrappedJsLib.sourceModule(requirePath);
 	}

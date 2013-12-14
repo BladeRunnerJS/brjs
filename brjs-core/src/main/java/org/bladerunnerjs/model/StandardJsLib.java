@@ -15,7 +15,6 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class StandardJsLib extends AbstractAssetContainer implements JsLib
 {
-	private final NodeItem<DeepAssetLocation> assetLocationNodeItem = new NodeItem<>(DeepAssetLocation.class, "");
 	private String name;
 	private JsLibConf libConf;
 	private Node parent;
@@ -103,12 +102,6 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 			return root().systemApp("SDK");			
 		}
 		return super.getApp();
-	}
-	
-	@Override
-	public AssetLocation getRootAssetLocation()
-	{
-		return item(assetLocationNodeItem);
 	}
 	
 	@Override
