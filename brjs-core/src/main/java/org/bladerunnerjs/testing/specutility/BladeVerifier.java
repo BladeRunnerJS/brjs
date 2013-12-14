@@ -20,7 +20,7 @@ public class BladeVerifier extends NodeVerifier<Blade> {
 		return verifierChainer;
 	}
 	
-	public VerifierChainer hasAssetLocations(String... assetLocations) {
+	public VerifierChainer hasAssetLocations(String... assetLocations) throws Exception {
 		assetContainerVerifier.hasAssetLocations(assetLocations);
 		
 		return verifierChainer;

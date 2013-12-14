@@ -38,7 +38,7 @@ public class AspectVerifier extends NodeVerifier<Aspect> {
 		return verifierChainer;
 	}
 	
-	public VerifierChainer hasAssetLocations(String... assetLocations) {
+	public VerifierChainer hasAssetLocations(String... assetLocations) throws Exception {
 		assetContainerVerifier.hasAssetLocations(assetLocations);
 		
 		return verifierChainer;

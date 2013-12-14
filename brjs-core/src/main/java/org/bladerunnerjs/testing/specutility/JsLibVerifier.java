@@ -42,7 +42,7 @@ public class JsLibVerifier extends NodeVerifier<JsLib> {
 		return verifierChainer;
 	}
 
-	public VerifierChainer hasAssetLocations(String... assetLocations) {
+	public VerifierChainer hasAssetLocations(String... assetLocations) throws Exception {
 		assetContainerVerifier.hasAssetLocations(assetLocations);
 		
 		return verifierChainer;
