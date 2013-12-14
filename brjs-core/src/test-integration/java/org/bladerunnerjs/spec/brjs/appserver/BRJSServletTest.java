@@ -112,15 +112,14 @@ public class BRJSServletTest extends SpecTest
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasPackageStyle("src/cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(blade).hasPackageStyle("src/node", "node.js")
-			.and(blade).hasClasses("cjs.Class", "node.Class")
-			.and(aspect).indexPageRefersTo("cjs.Class")
-			.and(blade).classRefersTo("cjs.Class",  "node.Class")
+			.and(blade).hasPackageStyle("src/appns/bs/b1/cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(blade).hasClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.cjs.Class")
+			.and(blade).classRefersTo("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
     		.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).containsMinifiedClasses("cjs.Class", "node.Class");
+		then(response).containsMinifiedClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class");
 	}
 	
 }

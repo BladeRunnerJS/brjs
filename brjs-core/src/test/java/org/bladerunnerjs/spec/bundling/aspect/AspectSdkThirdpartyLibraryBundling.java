@@ -17,7 +17,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
-	private JsLib sdkLegacyThirdparty, sdkLegacyThirdparty2;
+	private JsLib thirdpartyLib, thirdpartyLib2;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -31,28 +31,27 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
-			
-			sdkLegacyThirdparty = brjs.sdkNonBladeRunnerLib("legacy-thirdparty");
-			sdkLegacyThirdparty2 = brjs.sdkNonBladeRunnerLib("legacy-thirdparty2");
+			thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdparty-lib1");
+			thirdpartyLib2 = brjs.sdkNonBladeRunnerLib("thirdparty-lib2");
 	}
 
 	@Test
 	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(sdkLegacyThirdparty).hasBeenCreated()
-			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:")
-			.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
-			.and(aspect).indexPageRefersTo(sdkLegacyThirdparty);
+		given(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
+			.and(aspect).indexPageRefersTo(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
 	}
 	
 	@Test
 	public void aspectBundlesContainLegacyThirdpartyLibsIfTheyAreReferencedInAnAspectClass() throws Exception {		
-		given(sdkLegacyThirdparty).hasBeenCreated()
-			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:")
-    		.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
+		given(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+    		.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
     		.and(aspect).hasClass("appns.Class1")
-    		.and(aspect).classRequiresThirdpartyLib("appns.Class1", sdkLegacyThirdparty)
+    		.and(aspect).classRequiresThirdpartyLib("appns.Class1", thirdpartyLib)
     		.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
@@ -60,13 +59,11 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test
 	public void canBundleLegacyThirdpartyLibsIfTheyAreReferencedInABladeset() throws Exception {		
-		given(exceptions).arentCaught();
-		
-		given(sdkLegacyThirdparty).hasBeenCreated()
-			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:")
-    		.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
+		given(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+    		.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
     		.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-    		.and(bladeset).classRequiresThirdpartyLib("appns.bs.Class1", sdkLegacyThirdparty)
+    		.and(bladeset).classRequiresThirdpartyLib("appns.bs.Class1", thirdpartyLib)
     		.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
@@ -74,11 +71,11 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test
 	public void canBundleLegacyThirdpartyLibsIfTheyAreReferencedInABlade() throws Exception {		
-		given(sdkLegacyThirdparty).hasBeenCreated()
-			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:")
-    		.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
+		given(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+    		.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
     		.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-    		.and(blade).classRequiresThirdpartyLib("appns.bs.b1.Class1", sdkLegacyThirdparty)
+    		.and(blade).classRequiresThirdpartyLib("appns.bs.b1.Class1", thirdpartyLib)
     		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
@@ -86,13 +83,13 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test
 	public void canBundleLegacyThirdpartyLibAndItsOtherDependencyLibsIfTheyAreReferencedInABlade() throws Exception {		
-		given(sdkLegacyThirdparty).hasBeenCreated()
-			.and(sdkLegacyThirdparty2).hasBeenCreated()
-			.and(sdkLegacyThirdparty2).containsFileWithContents("library.manifest", "depends: ")
-			.and(sdkLegacyThirdparty2).containsFileWithContents("src.js", "window.legacy2 = { }")
-			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends: legacy-thirdparty2")
-			.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.legacy = { }")
-			.and(aspect).indexPageRefersTo(sdkLegacyThirdparty);
+		given(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib2).hasBeenCreated()
+			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "depends: ")
+			.and(thirdpartyLib2).containsFileWithContents("src.js", "window.legacy2 = { }")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends: thirdparty-lib2")
+			.and(thirdpartyLib).containsFileWithContents("src.js", "window.legacy = { }")
+			.and(aspect).indexPageRefersTo(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.legacy = { }")
 			.and(response).containsText("window.legacy2 = { }");
@@ -101,24 +98,24 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	@Ignore // TODO understand why this throws an UnknownFormatConversion Exception
 	@Test
 	public void anExceptionIsThrownIfThirdpartyLibHasDependencyOnAFileThatDoesNotExist() throws Exception {
-		given(sdkLegacyThirdparty).hasBeenCreated()
-			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends: blabla")
-			.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.lib = { }")
+		given(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends: blabla")
+			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
 			.and(aspect).hasClass("appns.Class1")
-			.and(aspect).indexPageRefersTo(sdkLegacyThirdparty);
+			.and(aspect).indexPageRefersTo(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
 	@Test
 	public void legacyThirdpartyLibWhichIsASubstringOfAnotherLibDoesNotGetBundledWhenReferencedInAspectIndexPage() throws Exception {		
-		given(sdkLegacyThirdparty).hasBeenCreated()
-			.and(sdkLegacyThirdparty).containsFileWithContents("library.manifest", "depends:\n")
-			.and(sdkLegacyThirdparty).containsFileWithContents("src.js", "window.legacy = { }")
-			.and(sdkLegacyThirdparty2).hasBeenCreated()
-			.and(sdkLegacyThirdparty2).containsFileWithContents("library.manifest", "depends:\n")
-			.and(sdkLegacyThirdparty2).containsFileWithContents("src.js", "window.legacy2 = { }")
-			.and(aspect).indexPageRefersTo(sdkLegacyThirdparty2);
+		given(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends:\n")
+			.and(thirdpartyLib).containsFileWithContents("src.js", "window.legacy = { }")
+			.and(thirdpartyLib2).hasBeenCreated()
+			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "depends:\n")
+			.and(thirdpartyLib2).containsFileWithContents("src.js", "window.legacy2 = { }")
+			.and(aspect).indexPageRefersTo(thirdpartyLib2);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.legacy2 = { }")
 			.and(response).doesNotContainText("window.legacy = { }");

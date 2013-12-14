@@ -27,7 +27,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public String requirePrefix() {
-		return "/" + namespace().replaceAll("\\.", "/");
+		return namespace().replaceAll("\\.", "/");
 	}
 	
 	@Override

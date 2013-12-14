@@ -57,11 +57,11 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	
 	@Test
 	public void weBundleExplicitTransitiveDependenciesForFromABlade() throws Exception {
-		given(blade).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(blade).classRequires("appns.Class1", "appns.Class2");
+		given(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+			.and(blade).classRequires("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1", "appns.Class2");
+		then(response).containsClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 	}
 	
 	@Test
@@ -138,11 +138,11 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	
 	@Test	// blade unhappy paths
 	public void bladeClassesCanOnlyDependOnExistentClassesWhenAspectIsRequested() throws Exception {
-		given(blade).hasClass("appns.Class1")
-			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(blade).classRequires("appns.Class1", "appns.NonExistentClass");
+		given(blade).hasClass("appns.bs.b1.Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+			.and(blade).classRequires("appns.bs.b1.Class1", "appns.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(UnresolvableRequirePathException.class, "/appns/NonExistentClass")
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/NonExistentClass")
 			.whereTopLevelExceptionIs(BundlerProcessingException.class);
 	}
 	

@@ -39,7 +39,7 @@ public class NamespacedJsBundlerContentPlugin extends AbstractBundlerContentPlug
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
 				.accepts("namespaced-js/bundle.js").as("bundle-request")
-					.and("namespaced-js/module<module>.js").as("single-module-request")
+					.and("namespaced-js/module/<module>.js").as("single-module-request")
 					.and("namespaced-js/package-definitions.js").as("package-definitions-request")
 				.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 			

@@ -58,7 +58,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(UnresolvableRequirePathException.class, "/appns/Class1")
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/Class1")
 			.whereTopLevelExceptionIs(BundlerProcessingException.class);
 	}
 

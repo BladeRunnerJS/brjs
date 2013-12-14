@@ -32,13 +32,16 @@ public class NamespacedJsSourceModule implements SourceModule {
 	@Override
 	public void initialize(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException
 	{
-		String relativeRequirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
-		
-		this.assetLocation = assetLocation;
-		requirePath = /* assetLocation.getAssetContainer().requirePrefix() + */ "/" + relativeRequirePath;
-		className = relativeRequirePath.replaceAll("/", ".");
-		linkedAsset = new FullyQualifiedLinkedAsset();
-		linkedAsset.initialize(assetLocation, assetFile);
+		try {
+			this.assetLocation = assetLocation;
+			requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
+			className = requirePath.replaceAll("/", ".");
+			linkedAsset = new FullyQualifiedLinkedAsset();
+			linkedAsset.initialize(assetLocation, assetFile);
+		}
+		catch(RequirePathException e) {
+			throw new AssetFileInstantationException(e);
+		}
 	}
 	
 	@Override
@@ -82,7 +85,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 			
 			while (matcher.find()) {
 				String referencedClass = matcher.group(3);
-				String requirePath = "/" + referencedClass.replaceAll("\\.", "/");
+				String requirePath = referencedClass.replaceAll("\\.", "/");
 				
 				try {
 					orderDependentSourceModules.add(bundlableNode.getSourceModule(requirePath));

@@ -18,10 +18,12 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
 
@@ -38,15 +40,18 @@ public class NodeJsSourceModule implements SourceModule {
 	private String className;
 	
 	@Override
-	public void initialize(AssetLocation assetLocation, File assetFile)
+	public void initialize(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException
 	{
-		String relativeRequirePath = assetLocation.getAssetContainer().file("src").toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
-		
-		this.assetLocation = assetLocation;
-		this.assetFile = assetFile;
-		requirePath = /* assetLocation.getAssetContainer().requirePrefix() + */ "/" + relativeRequirePath;
-		className = relativeRequirePath.replaceAll("/", ".");
-		fileModifiedChecker = new FileModifiedChecker(assetFile);
+		try {
+			this.assetLocation = assetLocation;
+			this.assetFile = assetFile;
+			requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
+			className = requirePath.replaceAll("/", ".");
+			fileModifiedChecker = new FileModifiedChecker(assetFile);
+		}
+		catch(RequirePathException e) {
+			throw new AssetFileInstantationException(e);
+		}
 	}
 	
 	@Override
@@ -154,6 +159,7 @@ public class NodeJsSourceModule implements SourceModule {
 				
 				if(isRequirePath) {
 					String requirePath = methodArgument;
+					// TODO: delete this code as relative require path handling will need to be handled in the model so it works with all plug-ins
 					if (requirePath.startsWith("./"))
 					{
 						String thisRequirePathRoot = StringUtils.substringBeforeLast(getRequirePath(), "/");
