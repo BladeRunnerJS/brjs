@@ -30,30 +30,30 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(sdkLib).hasClass("caplin.SdkClass")
-			.and(aspect).indexPageRefersTo("caplin.SdkClass");
+		given(sdkLib).hasClass("br.SdkClass")
+			.and(aspect).indexPageRefersTo("br.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("caplin.SdkClass");
+		then(response).containsClasses("br.SdkClass");
 	}
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(aspect).hasClass("appns.AspectClass")
-			.and(sdkLib).hasClass("caplin.SdkClass")
+			.and(sdkLib).hasClass("br.SdkClass")
 			.and(aspect).hasPackageStyle(NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRefersTo("appns.AspectClass", "caplin.SdkClass");
+			.and(aspect).classRefersTo("appns.AspectClass", "br.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("caplin.SdkClass");
+		then(response).containsClasses("br.SdkClass");
 	}
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreRequiredInAClass() throws Exception {
 		given(aspect).hasClass("appns.AspectClass")
-			.and(sdkLib).hasClass("caplin.SdkClass")
+			.and(sdkLib).hasClass("br.SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns.AspectClass", "caplin.SdkClass");
+			.and(aspect).classRequires("appns.AspectClass", "br.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("caplin.SdkClass");
+		then(response).containsClasses("br.SdkClass");
 	}
 }

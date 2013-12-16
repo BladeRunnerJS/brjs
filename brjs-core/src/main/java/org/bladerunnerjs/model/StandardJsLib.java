@@ -69,11 +69,8 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	@Override
 	public String getName()
 	{
-		if (name != null)
-		{
-			return name;			
-		}
-		return dir().getName();
+		// TODO: remove this 'caplin' to 'br' hack once all the code is using the new model
+		return (name != null) ? name : dir().getName().replaceAll("^caplin$", "br");
 	}
 	
 	@Override

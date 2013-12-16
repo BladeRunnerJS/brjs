@@ -48,7 +48,7 @@ public class AppNavigationTest
 	{
 		nodeTesterFactory.createSetTester(JsLib.class, "jsLibs", "jsLib")
 			.addChild("l1", "libs/l1")
-			.addChild("caplin", "../../sdk/libs/javascript/caplin")
+			.addChild("br", "../../sdk/libs/javascript/caplin")
 			.addChild("thirdparty-l2", "../../sdk/libs/javascript/thirdparty/thirdparty-l2")
 			.addChild("thirdparty-l1", "../../sdk/libs/javascript/thirdparty/thirdparty-l1")
 			.assertModelIsOK();
