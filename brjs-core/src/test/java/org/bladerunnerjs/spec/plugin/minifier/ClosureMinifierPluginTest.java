@@ -45,9 +45,9 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureWhitespaceOption() throws Exception
 	{
-		given(aspect).hasClass("mypkg.Class1")
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).classFileHasContent("mypkg.Class1", unminifiedContent);
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1", unminifiedContent);
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).containsText(minifyWhitespaceContent);
 	}
@@ -55,9 +55,9 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureSimpleOption() throws Exception
 	{
-		given(aspect).hasClass("mypkg.Class1")
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).classFileHasContent("mypkg.Class1", unminifiedContent);
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1", unminifiedContent);
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-simple/bundle.js", response);
 		then(response).containsText(minifySimpleContent);
 	}
@@ -65,9 +65,9 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierRunsForRequestsWithClosureAdvancedOption() throws Exception
 	{
-		given(aspect).hasClass("mypkg.Class1")
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).classFileHasContent("mypkg.Class1", unminifiedContent);
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1", unminifiedContent);
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-advanced/bundle.js", response);
 		then(response).containsText(minifyAdvancedContent);
 	}
@@ -75,35 +75,35 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
-		given(blade).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
-			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1")
-			.and(blade).classRefersTo("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2");
+		given(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).containsMinifiedClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2");
+		then(response).containsMinifiedClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 	}
 	
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
-		given(blade).hasPackageStyle("src/mypkg.cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(blade).hasPackageStyle("mypkg.node", "node.js")
-			.and(blade).hasClasses("mypkg.cjs.Class", "mypkg.node.Class")
-			.and(aspect).indexPageRefersTo("mypkg.cjs.Class")
-			.and(blade).classRefersTo("mypkg.cjs.Class",  "mypkg.node.Class");
+		given(aspect).hasPackageStyle("src/appns.cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(aspect).hasPackageStyle("appns.node", "node.js")
+			.and(aspect).hasClasses("appns.cjs.Class", "appns.node.Class")
+			.and(aspect).indexPageRefersTo("appns.cjs.Class")
+			.and(aspect).classRefersTo("appns.cjs.Class",  "appns.node.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).containsMinifiedClasses("mypkg.cjs.Class", "mypkg.node.Class");
+		then(response).containsMinifiedClasses("appns.cjs.Class", "appns.node.Class");
 	}
 	
 	@Test
 	public void closureMinifierStillAddsPackageDefinitionsBlock() throws Exception
 	{
-		given(blade).hasPackageStyle("src/mypkg.cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
-    		.and(blade).hasClasses("mypkg.cjs.Class", "mypkg.node.Class")
-    		.and(aspect).indexPageRefersTo("mypkg.cjs.Class");
+		given(aspect).hasPackageStyle("src/appns/cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
+    		.and(aspect).hasClasses("appns.cjs.Class", "appns.node.Class")
+    		.and(aspect).indexPageRefersTo("appns.cjs.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).containsMinifiedClasses("mypkg.cjs.Class")
-			.and(response).containsText("window.mypkg={\"cjs\":{}};");
+		then(response).containsMinifiedClasses("appns.cjs.Class")
+			.and(response).containsText("window.appns={\"cjs\":{}};");
 	}
 	
 }

@@ -29,50 +29,50 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	@Ignore
 	@Test
 	public void weBundleBladesetFilesInUTs() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", "namespaced-js")
-			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(bladesetUTs).testRefersTo("mypkg.bs.Class1");
+		given(bladeset).hasPackageStyle("src/appns/bs", "namespaced-js")
+			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladesetUTs).testRefersTo("appns.bs.Class1");
 		then(bladesetUTs).bundledFilesEquals(
-				bladeset.assetLocation("src").file("src/mypkg/bs/b1/Class1.js"),
-				bladeset.assetLocation("src").file("src/mypkg/bs/b1/Class2.js"));
+				bladeset.assetLocation("src").file("src/appns/bs/b1/Class1.js"),
+				bladeset.assetLocation("src").file("src/appns/bs/b1/Class2.js"));
 	}
 	
 	@Ignore
 	@Test
 	public void weBundleBladesetFilesInATs() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", "namespaced-js")
-			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(bladesetATs).testRefersTo("mypkg.bs.Class1");
+		given(bladeset).hasPackageStyle("src/appns/bs", "namespaced-js")
+			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladesetATs).testRefersTo("appns.bs.Class1");
 		then(bladesetATs).bundledFilesEquals(
-				bladeset.assetLocation("src").file("src/mypkg/bs/b1/Class1.js"),
-				bladeset.assetLocation("src").file("src/mypkg/bs/b1/Class2.js"));
+				bladeset.assetLocation("src").file("src/appns/bs/b1/Class1.js"),
+				bladeset.assetLocation("src").file("src/appns/bs/b1/Class2.js"));
 	}
 	
 	@Ignore
 	@Test
 	public void weBundleBladesetSrcTestContentsInUTs() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs/b1", "namespaced-js")
-			.and(bladeset).hasClasses("mypkg.bs.b1.Class1")
+		given(bladeset).hasPackageStyle("src/appns/bs/b1", "namespaced-js")
+			.and(bladeset).hasClasses("appns.bs.b1.Class1")
 			.and(bladesetUTs).containsFile("src/js-test-driver/src-test/util.js")
-			.and(bladesetUTs).testRefersTo("mypkg.bs.b1.Class1");
+			.and(bladesetUTs).testRefersTo("appns.bs.b1.Class1");
 		then(bladesetUTs).bundledFilesEquals(
-			bladeset.assetLocation("src").file("src/mypkg/bs/b1/Class1.js"),
-			bladeset.assetLocation("src").file("src/mypkg/bs/b1/Class2.js"),
+			bladeset.assetLocation("src").file("src/appns/bs/b1/Class1.js"),
+			bladeset.assetLocation("src").file("src/appns/bs/b1/Class2.js"),
 			bladesetUTs.testSource().file("util.js"));
 	}
 	
 	@Ignore
 	@Test
 	public void noExceptionsAreThrownIfTheBladesetSrcFolderHasAHiddenFolder() throws Exception {
-		given(bladeset).hasPackageStyle("src/mypkg/bs", "namespaced-js")
-			.and(bladeset).hasClasses("mypkg.bs.Class1", "mypkg.bs.Class2")
-			.and(bladeset).classRefersTo("mypkg.bs.Class1", "mypkg.bs.Class2")
+		given(bladeset).hasPackageStyle("src/appns/bs", "namespaced-js")
+			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).hasDir("src/.svn")
-			.and(bladesetATs).testRefersTo("mypkg.bs.Class1");
+			.and(bladesetATs).testRefersTo("appns.bs.Class1");
 		then(bladesetATs).bundledFilesEquals(
-			bladeset.assetLocation("src").file("src/mypkg/bs/b1/Class1.js"),
-			bladeset.assetLocation("src").file("src/mypkg/bs/b1/Class2.js"));
+			bladeset.assetLocation("src").file("src/appns/bs/b1/Class1.js"),
+			bladeset.assetLocation("src").file("src/appns/bs/b1/Class2.js"));
 	}
 }

@@ -7,6 +7,7 @@ import java.io.File;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -25,11 +26,16 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<File> files) {
-		if (assetLocation.getJsStyle().equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
-			return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, NodeJsSourceModule.class, files, "js");
+		try {
+			if (assetLocation.getJsStyle().equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
+				return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(NodeJsSourceModule.class, assetLocation, files, "js");
+			}
+			else {
+				return new ArrayList<>();
+			}
 		}
-		else {
-			return Arrays.asList();
+		catch (AssetFileInstantationException e) {
+			throw new RuntimeException(e);
 		}
 	}
 	

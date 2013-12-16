@@ -24,19 +24,19 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGenerated() throws Exception {
-		given(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
-			.and(aspect).classRequires("mypkg.Class1", "mypkg.Class2")
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
+			.and(aspect).classRequires("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/mypkg/Class1.js", "node-js/module/mypkg/Class2.js");
+		then(pageResponse).containsRequests("node-js/module/appns/Class1.js", "node-js/module/appns/Class2.js");
 	}
 	
 	@Test
 	public void inProdASingleBundleRequestIsGenerated() throws Exception {
-		given(aspect).hasClasses("mypkg.Class1", "mypkg.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.Class1")
-			.and(aspect).classRequires("mypkg.Class1", "mypkg.Class2")
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
+			.and(aspect).classRequires("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("node-js/bundle.js");
@@ -44,20 +44,20 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 
 	@Test
 	public void appendsCommentToTheTopOfRequiredClassesWhenNodeJsStyleIsRequested() throws Exception {
-		given(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).classRequires("novox.Class1", "novox.Class2")
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
+			.and(aspect).classRequires("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(app).requestReceived("/default-aspect/node-js/bundle.js", requestResponse);
-		then(requestResponse).containsText("// /novox/Class2\n" + "define('/novox/Class2', function(")
-			.and(requestResponse).containsText("// /novox/Class1\n" + "define('/novox/Class1', function(");
+		then(requestResponse).containsText("// appns/Class2\n" + "define('appns/Class2', function(")
+			.and(requestResponse).containsText("// appns/Class1\n" + "define('appns/Class1', function(");
 	}
 	
 	@Test
 	public void theBundleIsEmptyIfWeDontReferToAnyOfTheClasses() throws Exception {
-		given(aspect).hasClasses("novox.Class1", "novox.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "novox.Class1")
-			.and(aspect).classRequires("novox.Class1", "novox.Class2")
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
+			.and(aspect).classRequires("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(requestResponse).isEmpty();
@@ -65,14 +65,14 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void classesAreAutomaticallyWrappedInAClosure() throws Exception {
-		given(aspect).hasClasses("Class1")
-			.and(aspect).indexPageRefersTo("Class1");
-		when(app).requestReceived("/default-aspect/node-js/module/Class1.js", requestResponse);
+		given(aspect).hasClasses("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/node-js/module/appns/Class1.js", requestResponse);
 		then(requestResponse).containsLines(
-			"define('/Class1', function(require, exports, module) {",
-			"Class1 = function() {",
+			"define('appns/Class1', function(require, exports, module) {",
+			"appns.Class1 = function() {",
 			"};",
-			"module.exports = Class1;",
+			"module.exports = appns.Class1;",
 			"});");
 	}
 }

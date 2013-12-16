@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
@@ -30,7 +31,12 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation, List<File> files) {
-		return assetLocation.getAssetContainer().root().getAssetFilesWithExtension(assetLocation, FullyQualifiedLinkedAsset.class, files, "xml");
+		try {
+			return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(FullyQualifiedLinkedAsset.class, assetLocation, files, "xml");
+		}
+		catch (AssetFileInstantationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override

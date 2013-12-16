@@ -1,8 +1,6 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
@@ -17,7 +15,6 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class StandardJsLib extends AbstractAssetContainer implements JsLib
 {
-	private final NodeItem<DeepAssetLocation> assetLocationNodeItem = new NodeItem<>(DeepAssetLocation.class, "");
 	private String name;
 	private JsLibConf libConf;
 	private Node parent;
@@ -108,12 +105,6 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	}
 	
 	@Override
-	public AssetLocation getRootAssetLocation()
-	{
-		return item(assetLocationNodeItem);
-	}
-	
-	@Override
 	public JsLibConf libConf() throws ConfigException
 	{
 		if(libConf == null) {
@@ -159,13 +150,5 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	public String getTemplateName()
 	{
 		return "jslib";
-	}
-	
-	@Override
-	public List<AssetLocation> assetLocations() {
-		List<AssetLocation> assetLocations = new ArrayList<>();
-		assetLocations.add(getRootAssetLocation());
-		assetLocations.addAll( super.assetLocations() );
-		return assetLocations;
 	}
 }

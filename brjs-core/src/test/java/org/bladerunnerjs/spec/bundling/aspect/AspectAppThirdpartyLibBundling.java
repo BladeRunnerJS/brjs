@@ -9,12 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'mypkg' when the default namespace is 'appns')?
+//TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'appns' when the default namespace is 'appns')?
 //TODO: we should fail-fast if somebody uses unquoted() in a logging assertion as it is only meant for exceptions where we can't easily ascertain the parameters
 public class AspectAppThirdpartyLibBundling extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private JsLib appLegacyThirdparty, appLegacyThirdparty2;
+	private JsLib appThirdparty, appThirdparty2;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -27,52 +27,50 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			
-			appLegacyThirdparty = app.nonBladeRunnerLib("app-legacy-thirdparty");
-			appLegacyThirdparty2 = app.nonBladeRunnerLib("app-legacy-thirdparty2");
+			appThirdparty = app.nonBladeRunnerLib("app-thirdparty");
+			appThirdparty2 = app.nonBladeRunnerLib("app-thirdparty2");
 	}
 	
 	@Test
 	public void interLibraryDependenciesAppearAheadOfTheDependentLibrary() throws Exception {
-		given(appLegacyThirdparty).hasClass("appThirdpartyLibName.Class1")
-			.and(aspect).indexPageRefersTo(appLegacyThirdparty)
-			.and(appLegacyThirdparty).containsFileWithContents("library.manifest", "js: lib1.js\ndepends: app-legacy-thirdparty2")
-			.and(appLegacyThirdparty).containsFile("lib1.js")
-			.and(appLegacyThirdparty2).containsFileWithContents("library.manifest", "js: lib2.js")
-			.and(appLegacyThirdparty2).containsFile("lib2.js");
+		given(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js\ndepends: app-thirdparty2")
+			.and(appThirdparty).containsFile("src1.js")
+			.and(appThirdparty2).containsFileWithContents("library.manifest", "js: src2.js")
+			.and(appThirdparty2).containsFile("src2.js")
+			.and(aspect).indexPageRefersTo(appThirdparty);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsText("// app-legacy-thirdparty2\nlib2.js\n\n\n\n\n// app-legacy-thirdparty");
+		then(response).containsText("// app-thirdparty2\nsrc2.js\n\n\n\n\n// app-thirdparty");
 	}
 
 	@Test
 	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(appLegacyThirdparty).hasClasses("appThirdparty.Class1", "appThirdparty.Class2")
-			.and(aspect).indexPageRefersTo("appThirdparty.Class1");
+		given(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js, src2.js")
+			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
+			.and(aspect).indexPageRefersTo(appThirdparty);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appThirdparty.Class1")
-			.and(response).doesNotContainClasses("appThirdparty.Class2");
+		then(response).containsText("src1.js")
+			.and(response).containsText("src2.js")
+			.and(response).doesNotContainText("src3.js");
 	}
 	
 	@Test
-	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreReferencedInAClass() throws Exception {
-		given(appLegacyThirdparty).hasBeenCreated()
-			.and(appLegacyThirdparty).hasPackageStyle("appThirdpartyLibName", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(appLegacyThirdparty).hasClass("appThirdparty.Class1")
-			.and(aspect).hasBeenCreated()
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).hasPackageStyle("src/mypkg", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspect).classRefersTo("mypkg.Class1", "appThirdparty.Class1");
+	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreIncludedInAClass() throws Exception {
+		given(appThirdparty).containsFileWithContents("library.manifest", "js: src.js")
+			.and(appThirdparty).containsFile("src.js")
+			.and(aspect).hasPackageStyle(NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(aspect).classRefersToThirdpartyLib("appns.Class1", appThirdparty)
+			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appThirdparty.Class1");
+		then(response).containsText("src.js");
 	}
 	
 	@Test
 	public void aspectBundlesContainAppLegacyThirdpartyLibsIfTheyAreRequiredInAClass() throws Exception {
-		given(appLegacyThirdparty).hasClass("appThirdpartyLibName.Class1")
-			.and(aspect).indexPageRefersTo("mypkg.Class1")
-			.and(aspect).hasClass("mypkg.Class1")
-			.and(aspect).classRequires("mypkg.Class1", "appThirdpartyLibName.Class1");
+		given(appThirdparty).containsFileWithContents("library.manifest", "js: src.js")
+			.and(appThirdparty).containsFile("src.js")
+			.and(aspect).classRequires("appns.Class1", "app-thirdparty")
+			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appThirdpartyLibName.Class1");
+		then(response).containsText("src.js");
 	}
 }

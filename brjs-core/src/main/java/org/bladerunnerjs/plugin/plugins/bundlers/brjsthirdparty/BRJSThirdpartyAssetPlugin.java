@@ -12,8 +12,7 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.ThirdpartyBundlerSourceModule;
-import org.bladerunnerjs.model.UnableToInstantiateAssetFileException;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
@@ -24,7 +23,13 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
-		return new ArrayList<>();
+		List<AssetLocation> assetLocations = new ArrayList<>();
+		
+		if((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists())) {
+			assetLocations.add(new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
+		}
+		
+		return assetLocations;
 	}
 	
 	@Override
@@ -38,14 +43,14 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
     			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
     			if (manifest.fileExists())
     			{
-    				ThirdpartyBundlerSourceModule sourceModule = (ThirdpartyBundlerSourceModule) assetLocation.getAssetContainer().root().getAssetFile(ThirdpartyBundlerSourceModule.class, assetLocation, assetLocation.dir());
+    				BRJSThirdpartyBundlerSourceModule sourceModule = (BRJSThirdpartyBundlerSourceModule) assetLocation.getAssetContainer().root().createAssetFile(BRJSThirdpartyBundlerSourceModule.class, assetLocation, assetLocation.dir());
     				sourceModule.initManifest(manifest);
     				sourceModules.add( sourceModule );
     			}
     		}
     		return sourceModules;
 		}
-		catch (ConfigException | UnableToInstantiateAssetFileException ex)
+		catch (ConfigException | AssetFileInstantationException ex)
 		{
 			throw new RuntimeException(ex);
 		}

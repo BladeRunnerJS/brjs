@@ -10,6 +10,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.FileUtility;
@@ -33,6 +34,13 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	@Override
 	public String getJsStyle() {
 		return JsStyleUtility.getJsStyle(root(), dir());
+	}
+	
+	@Override
+	public String requirePrefix() throws RequirePathException {
+		String relativeRequirePath = assetContainer.dir().toURI().relativize(dir().toURI()).getPath();
+		
+		return assetContainer.requirePrefix() + "/" + relativeRequirePath;
 	}
 	
 	@Override

@@ -36,19 +36,19 @@ public class AspectBundlingOfBladeResources extends SpecTest {
 	// ----------------------------------- X M L -------------------------------------- 
 	@Test
 	public void classesReferringToABladeInAspectXMlFilesAreBundled() throws Exception {
-		given(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
-    		.and(aspect).resourceFileRefersTo("xml/config.xml", "mypkg.bs.b1.Class1");
+		given(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+    		.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.bs.b1.Class1");
+		then(response).containsClasses("appns.bs.b1.Class1");
 	}
 
 	// ---------------------------------  H T M L -------------------------------------
 	@Test
 	public void classesReferringToABladeInAspectHTMlFilesAreBundled() throws Exception {
-		given(blade).hasClasses("mypkg.bs.b1.Class1", "mypkg.bs.b1.Class2")
-			.and(aspect).resourceFileRefersTo("html/view.html", "mypkg.bs.b1.Class1");
+		given(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("mypkg.bs.b1.Class1");
+		then(response).containsClasses("appns.bs.b1.Class1");
 	}
 	
 	// ----------------------------------- C S S  -------------------------------------
@@ -56,10 +56,10 @@ public class AspectBundlingOfBladeResources extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladeCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
-		given(aspect).hasPackageStyle("src/mypkg/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
-			.and(blade).hasClass("mypkg.bs.b1.Class1")
+		given(aspect).hasPackageStyle("src/appns/bs/b1", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
-			.and(aspect).indexPageRefersTo("mypkg.bs.b1.Class1");
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
  		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
  		then(response).containsText("BLADE theme content");
  	}

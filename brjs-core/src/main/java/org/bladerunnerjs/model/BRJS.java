@@ -297,18 +297,29 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
-	public <AF extends Asset> List<AF> getAssetFilesNamed(AssetLocation assetLocation, Class<? extends Asset> assetFileType, List<File> files, String... fileNames)
+	public <AF extends Asset> AF createAssetFile(Class<? extends AF> assetFileClass, AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException
 	{
-		return assetLocator.getAssetFilesNamed(assetLocation, assetFileType, files, fileNames);
+		return assetLocator.createAssetFile(assetFileClass, assetLocation, assetFile);
+	}
+	public <AF extends Asset> List<AF> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... extensions) throws AssetFileInstantationException
+	{
+		return assetLocator.createAssetFilesWithExtension(assetFileClass, assetLocation, extensions);
 	}
 	
-	public <AF extends Asset> List<AF> getAssetFilesWithExtension(AssetLocation assetLocation, Class<? extends Asset> assetFileType, List<File> files, String... extensions)
+	public <AF extends Asset> List<AF> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... fileNames) throws AssetFileInstantationException
 	{
-		return assetLocator.getAssetFilesWithExtension(assetLocation, assetFileType, files, extensions);
+		return assetLocator.createAssetFilesWithName(assetFileClass, assetLocation, fileNames);
 	}
 	
-	public <AF extends Asset> AF getAssetFile(Class<? extends AF> assetFileType, AssetLocation assetLocation, File file) throws UnableToInstantiateAssetFileException
+	//TODO: remove these two methods after formalising the plugin API performance changes
+	
+	public <AF extends Asset> List<AF> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, List<File> files, String... extensions) throws AssetFileInstantationException
 	{
-		return assetLocator.getAssetFile(assetFileType, assetLocation, file);
+		return assetLocator.createAssetFilesWithExtension(assetFileClass, assetLocation, extensions);
+	}
+	
+	public <AF extends Asset> List<AF> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, List<File> files, String... fileNames) throws AssetFileInstantationException
+	{
+		return assetLocator.createAssetFilesWithName(assetFileClass, assetLocation, fileNames);
 	}
 }

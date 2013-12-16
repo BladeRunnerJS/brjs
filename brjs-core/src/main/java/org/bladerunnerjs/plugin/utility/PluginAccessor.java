@@ -1,6 +1,8 @@
 package org.bladerunnerjs.plugin.utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +16,9 @@ import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyBundlerContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class PluginAccessor {
@@ -53,9 +58,13 @@ public class PluginAccessor {
 	}
 	
 	public List<BundlerContentPlugin> bundlerContentProviders() {
-		return pluginLocator.getBundlerContentPlugins();
+		List<BundlerContentPlugin> bundlerContentProviders = pluginLocator.getBundlerContentPlugins();
+		
+		putNonModularContentPluginsToEndOfList(bundlerContentProviders);
+		
+		return bundlerContentProviders;
 	}
-	
+
 	public List<BundlerContentPlugin> bundlerContentProviders(String mimeType) {
 		List<BundlerContentPlugin> bundlerContentPlugins = new ArrayList<>();
 		
@@ -123,6 +132,45 @@ public class PluginAccessor {
 	}
 	
 	public List<AssetPlugin> assetProducers() {
-		return pluginLocator.getAssetPlugins();
+		List<AssetPlugin> plugins = pluginLocator.getAssetPlugins();
+		
+		putDefaultAssetPluginToEndOfList(plugins);
+		
+		return plugins;
+	}
+	
+	private void putNonModularContentPluginsToEndOfList(List<BundlerContentPlugin> bundlerContentProviders) {
+		Collections.sort(bundlerContentProviders, new Comparator<BundlerContentPlugin>() {
+			@Override
+			public int compare(BundlerContentPlugin bundlerContentPlugin1, BundlerContentPlugin bundlerContentPlugin2) {
+				return score(bundlerContentPlugin1) - score(bundlerContentPlugin2);
+			}
+			
+			private int score(BundlerContentPlugin bundlerContentPlugin) {
+				int score = 0;
+				
+				if(bundlerContentPlugin.instanceOf(BRJSThirdpartyBundlerContentPlugin.class)) {
+					score = 1;
+				}
+				else if(bundlerContentPlugin.instanceOf(NamespacedJsBundlerContentPlugin.class)) {
+					score = 2;
+				}
+				
+				return score;
+			}
+		});
+	}
+	
+	private void putDefaultAssetPluginToEndOfList(List<AssetPlugin> plugins) {
+		Collections.sort(plugins, new Comparator<AssetPlugin>() {
+			@Override
+			public int compare(AssetPlugin assetPlugin1, AssetPlugin assetPlugin2) {
+				return score(assetPlugin1) - score(assetPlugin2);
+			}
+			
+			private int score(AssetPlugin assetPlugin) {
+				return (assetPlugin.instanceOf(BRJSConformantAssetPlugin.class)) ? 1 : 0;
+			}
+		});
 	}
 }

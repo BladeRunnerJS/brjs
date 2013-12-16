@@ -32,7 +32,7 @@ public class NodeJsBundlerContentPlugin extends AbstractBundlerContentPlugin {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
 				.accepts("node-js/bundle.js").as("bundle-request")
-					.and("node-js/module<module>.js").as("single-module-request")
+					.and("node-js/module/<module>.js").as("single-module-request")
 				.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
 			
 			contentPathParser = contentPathParserBuilder.build();

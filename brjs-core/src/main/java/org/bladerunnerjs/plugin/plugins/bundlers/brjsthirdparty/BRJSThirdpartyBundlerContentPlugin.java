@@ -14,7 +14,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.ThirdpartyBundlerSourceModule;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -76,7 +75,7 @@ public class BRJSThirdpartyBundlerContentPlugin extends AbstractBundlerContentPl
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
 				{
 					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
-						if(sourceFile instanceof ThirdpartyBundlerSourceModule)
+						if(sourceFile instanceof BRJSThirdpartyBundlerSourceModule)
 						{
     						writer.write("// " + sourceFile.getRequirePath() + "\n");
     						IOUtils.copy(sourceFile.getReader(), writer);
@@ -128,7 +127,7 @@ public class BRJSThirdpartyBundlerContentPlugin extends AbstractBundlerContentPl
 		
 		try {
 			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-				if(sourceModule instanceof ThirdpartyBundlerSourceModule) {
+				if(sourceModule instanceof BRJSThirdpartyBundlerSourceModule) {
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
 				}
 			}
