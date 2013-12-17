@@ -105,16 +105,32 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 		then(response).doesNotContainClasses("appns.Class1");
 	}
 	
-	// TODO: we don't currently support relative require paths, and when we do add this feature we're going to need lots of tests to verify it works
-	@Ignore
 	@Test
 	public void requirePathsCanBeRelative() throws Exception {
-		given(aspect).hasClass("appns.Class1")
-			.and(aspect).hasClass("appns.Class2")
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classRequires("appns.Class1", "./Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.Class1", "appns.Class2");
+	}
+	
+	@Test
+	public void relativeRequirePathsWorkInChildPackages() throws Exception {
+		given(aspect).hasClasses("appns.pkg.Class1", "appns.pkg.Class2")
+			.and(aspect).indexPageRefersTo("appns.pkg.Class1")
+			.and(aspect).classRequires("appns.pkg.Class1", "./Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.pkg.Class1", "appns.pkg.Class2");
+	}
+	
+	@Ignore
+	@Test
+	public void relativeRequirePathsCanPointToTheParentDirectory() throws Exception {
+		given(aspect).hasClasses("appns.pkg.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.pkg.Class1")
+			.and(aspect).classRequires("appns.pkg.Class1", "../Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.pkg.Class1", "appns.Class2");
 	}
 	
 	@Test

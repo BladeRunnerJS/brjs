@@ -159,7 +159,6 @@ public class NodeJsSourceModule implements SourceModule {
 				
 				if(isRequirePath) {
 					String requirePath = methodArgument;
-					// TODO: delete this code as relative require path handling will need to be handled in the model so it works with all plug-ins
 					if (requirePath.startsWith("./"))
 					{
 						String thisRequirePathRoot = StringUtils.substringBeforeLast(getRequirePath(), "/");
