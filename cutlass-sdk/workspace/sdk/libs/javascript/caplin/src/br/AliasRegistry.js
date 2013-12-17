@@ -148,7 +148,7 @@ exports.setAliasData = function setAliasData(unverifiedAliasData) {
 	var incorrectAliases = [];
 	var i;
 
-	for (i = 0; i < aliasautomatically by es.length; ++i) {
+	for (i = 0; i < aliases.length; ++i) {
 		var aliasId = aliases[i];
 		var alias = aliasData[aliasId];
 
