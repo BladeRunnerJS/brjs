@@ -60,7 +60,7 @@ public class PluginAccessor {
 	public List<BundlerContentPlugin> bundlerContentProviders() {
 		List<BundlerContentPlugin> bundlerContentProviders = pluginLocator.getBundlerContentPlugins();
 		
-		putNonModularContentPluginsToEndOfList(bundlerContentProviders);
+		orderNonModularContentPlugins(bundlerContentProviders);
 		
 		return bundlerContentProviders;
 	}
@@ -139,7 +139,7 @@ public class PluginAccessor {
 		return plugins;
 	}
 	
-	private void putNonModularContentPluginsToEndOfList(List<BundlerContentPlugin> bundlerContentProviders) {
+	private void orderNonModularContentPlugins(List<BundlerContentPlugin> bundlerContentProviders) {
 		Collections.sort(bundlerContentProviders, new Comparator<BundlerContentPlugin>() {
 			@Override
 			public int compare(BundlerContentPlugin bundlerContentPlugin1, BundlerContentPlugin bundlerContentPlugin2) {
@@ -150,10 +150,10 @@ public class PluginAccessor {
 				int score = 0;
 				
 				if(bundlerContentPlugin.instanceOf(BRJSThirdpartyBundlerContentPlugin.class)) {
-					score = 1;
+					score = -1;
 				}
 				else if(bundlerContentPlugin.instanceOf(NamespacedJsBundlerContentPlugin.class)) {
-					score = 2;
+					score = 1;
 				}
 				
 				return score;

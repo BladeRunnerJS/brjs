@@ -72,13 +72,13 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void thirdpartyAndNamespacedModulesAppearLastInTheBundle() throws Exception {
+	public void thirdpartyAndNamespacedModulesAppearFirstAndLastInTheBundle() throws Exception {
 		given(aspect).hasPackageStyle("src/appns/namespaced", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(aspect).hasClasses("appns.node.NodeClass", "appns.namespaced.NamespacedClass")
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js")
 			.and(thirdpartyLib).containsFile("src.js")
 			.and(aspect).indexPageRefersTo("thirdparty-lib, appns.namespaced.NamespacedClass, appns.node.NodeClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("module.exports = appns.node.NodeClass", "// thirdparty-lib", "appns.namespaced.NamespacedClass = function");
+		then(requestResponse).containsOrderedTextFragments("// thirdparty-lib", "module.exports = appns.node.NodeClass", "appns.namespaced.NamespacedClass = function");
 	}
 }
