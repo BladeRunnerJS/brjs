@@ -170,7 +170,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 			AssetLocation libSrcRoot = jsLib.assetLocation("src");
 			AssetLocation libResourcesRoot = jsLib.assetLocation("resources");
 			
-			if(libSrcRoot.dirExists())
+			if((libSrcRoot != null) && libSrcRoot.dirExists())
 			{
 				if(libSrcRoot.dir().toPath().normalize().equals(sdkLibPath))
 				{
@@ -179,7 +179,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 				bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
 			}
 			
-			if(libResourcesRoot.dirExists())
+			if((libResourcesRoot != null) && libResourcesRoot.dirExists())
 			{
 				List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
 				
