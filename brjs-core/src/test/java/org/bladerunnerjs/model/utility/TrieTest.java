@@ -9,6 +9,7 @@ import org.bladerunnerjs.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -131,6 +132,20 @@ public class TrieTest
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(1, foundObjects.size());
 		assertEquals(test_object_1_extraStuff, foundObjects.get(0));
+	}
+	
+	@Ignore
+	@Test
+	public void addingQuotesToATrieShouldntCauseOtherKeysToNotBeMatched() throws Exception
+	{
+		trie.add("foo", test_object_1);
+		trie.add("'bar'", test_object_2);
+		
+		StringReader reader = new StringReader("'foo'");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(1, foundObjects.size());
+		assertEquals(test_object_1, foundObjects.get(0));
 	}
 	
 	@Test
