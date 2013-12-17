@@ -215,14 +215,11 @@ public class NamespacedJsBundlerContentPlugin extends AbstractBundlerContentPlug
 		StringBuffer stringBuffer = new StringBuffer();
 		
 		for(SourceModule dependentSourceModule : sourceModule.getDependentSourceModules(null)) 
-		{		
-			if ( !(dependentSourceModule instanceof NamespacedJsSourceModule) && !globalizedModules.contains(dependentSourceModule) ) 
+		{
+			if (dependentSourceModule.isEncapsulatedModule() && !globalizedModules.contains(dependentSourceModule) ) 
 			{
- 				if (dependentSourceModule.isEncapsulatedModule()) 
- 				{
-    				stringBuffer.append(dependentSourceModule.getNamespacedName() + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
-    				globalizedModules.add(dependentSourceModule);
- 				}
+   				stringBuffer.append(dependentSourceModule.getNamespacedName() + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
+   				globalizedModules.add(dependentSourceModule);
 			}
 		}
 		
