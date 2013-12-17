@@ -4,7 +4,7 @@ br.thirdparty("caplin-br");
 (function() {
 	"use strict";
 	
-	var br = require('br');
+	var br = require('br/index');
 	var Utility = require('br/core/Utility');
 	var Errors = require('br/Errors');
 	var ServiceRegistry = require('br/ServiceRegistry');

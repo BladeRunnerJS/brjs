@@ -1,4 +1,4 @@
-var br = require('br');
+var br = require('br/index');
 var File = require('br/core/File');
 var HtmlResourceService = require('br/services/HtmlResourceService');
 var i18n = require('br/i18n');

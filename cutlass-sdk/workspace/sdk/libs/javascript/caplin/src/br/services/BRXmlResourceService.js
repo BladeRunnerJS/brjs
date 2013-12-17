@@ -1,4 +1,4 @@
-var br = require('br');
+var br = require('br/index');
 var Errors = require('br/Errors');
 var XmlResourceService = require('./XmlResourceService ');
 

@@ -1,6 +1,6 @@
 "use strict";
 
-var br = require('br');
+var br = require('br/index');
 /** @module br/Errors */
 
 /**
