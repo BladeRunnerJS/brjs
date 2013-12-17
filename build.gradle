@@ -177,13 +177,18 @@ task generateReleaseNotes, {
     	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
 		
 		def releaseNoteFile = file("releases/${tagVersion}.md")
-		def milestoneId = getReleaseNoteJson(project,tagVersion).milestone
+		def milestoneJson = getReleaseNoteJson(project,tagVersion).milestone
+		def milestoneIds = (milestoneJson instanceof Integer) ? [milestoneJson] : milestoneJson.split(",").collect { it.trim().toInteger()  }
 		def includeIssueLabels = ["bug", "feature", "enhancement", "experience"]
 		def issueIncludeLabelsString = includeIssueLabels.join(", ").replaceAll(/^(.*),(.*)$/,'$1 or$2'); /* regex replaces the last ',' with 'or' */	
 		
 		def excludeIssueLabels = ["invalid", "duplicate"]
 		
-		List<Issue> issues = githubApi.getClosedIssuesForMilestone(milestoneId)
+		List<Issue> issues = new ArrayList<Issue>();
+		milestoneIds.each { milestoneId ->
+			issues.addAll( githubApi.getClosedIssuesForMilestone(milestoneId) )
+		}
+		
 		List<Issue> releaseNoteIssues = new LinkedList<Issue>()
 		issues.each {
 			if (it.labels.intersect(includeIssueLabels) && !it.labels.intersect(excludeIssueLabels)) {
@@ -197,7 +202,13 @@ task generateReleaseNotes, {
 		assembledReleaseNotesFile.text += "\n\n"
 		assembledReleaseNotesFile.text += "-------------\n"
 		assembledReleaseNotesFile.text += "### Closed Issues\n"
-		assembledReleaseNotesFile.text += "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} - <a href=\"@milestoneURL@\">@milestoneURL@</a><sup>\n\n"
+		assembledReleaseNotesFile.text += "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} - "
+		milestoneIds.each { milestoneId ->
+			if (milestoneId != milestoneIds.first()) { assembledReleaseNotesFile.text += ", " }
+			def milestoneUrl = githubApi.getMilestoneUrl(milestoneId)
+			assembledReleaseNotesFile.text += "<a href=\"${milestoneUrl}\">${milestoneUrl}</a><sup>"
+		}
+		assembledReleaseNotesFile.text += "\n\n"
 		releaseNoteIssues.each {
 			assembledReleaseNotesFile.text += "- ${it.toString()}\n"
 		}
@@ -207,8 +218,6 @@ task generateReleaseNotes, {
     	ant.replace(file: assembledReleaseNotesFile) {
     		replacefilter(token:"@tagVersion@", value:tagVersion)
     		replacefilter(token:"@buildVersion@", value:buildVersion)
-    		replacefilter(token:"@milestonesURL@", value:githubApi.getMilestonesUrl())
-    		replacefilter(token:"@milestoneURL@", value:githubApi.getMilestoneUrl(milestoneId))
     	}
 	}
 }
