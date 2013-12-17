@@ -39,7 +39,7 @@ public class AssetLocationUtility
 	<A extends Asset> List<A> createAssetFiles(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, Collection<File> assetFiles) throws AssetFileInstantationException
 	{
 		List<A> assets = new LinkedList<A>();		
-		
+				
 		for (File file : assetFiles)
 		{
 			assets.add( (A) createAssetFile(assetFileClass, assetLocation, file) );
@@ -79,6 +79,11 @@ public class AssetLocationUtility
 	@SuppressWarnings("unchecked")
 	private <A extends Asset> A createAssetInstance(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, File file) throws AssetFileInstantationException
 	{
+		if (assetLocation instanceof CachingAssetLocationWrapper)
+		{
+			assetLocation = ((CachingAssetLocationWrapper) assetLocation).getWrappedAssetLocation();
+		}
+		
 		try
 		{
 			Constructor<? extends Asset> ctor = assetFileClass.getConstructor();

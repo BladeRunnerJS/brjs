@@ -5,12 +5,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.UnhandledAssetContainerException;
 import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.utility.FileUtility;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
@@ -41,10 +39,10 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		
 		for (AssetLocation assetLocation : assetLocations())
 		{
-			List<File> files = FileUtility.listFiles(assetLocation.dir(), TrueFileFilter.INSTANCE);
+			CachingAssetLocationWrapper cachingAssetLocation = new CachingAssetLocationWrapper(assetLocation);
 			for(AssetPlugin assetPlugin : assetProducers)
 			{
-				sourceModules.addAll(assetPlugin.getSourceModules(assetLocation, files));
+				sourceModules.addAll(assetPlugin.getSourceModules(cachingAssetLocation));
 			}
 		}
 		

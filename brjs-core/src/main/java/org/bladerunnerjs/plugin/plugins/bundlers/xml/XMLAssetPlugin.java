@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +25,14 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<File> files) {
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		return new ArrayList<>();
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation, List<File> files) {
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
 		try {
-			return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(FullyQualifiedLinkedAsset.class, assetLocation, files, "xml");
+			return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(FullyQualifiedLinkedAsset.class, assetLocation, assetLocation.getFiles(), "xml");
 		}
 		catch (AssetFileInstantationException e) {
 			throw new RuntimeException(e);
@@ -41,7 +40,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation, List<File> files) {
+	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
 		return new ArrayList<>();
 	}
 }

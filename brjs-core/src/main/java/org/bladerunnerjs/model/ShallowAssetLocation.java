@@ -56,10 +56,9 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	public List<LinkedAsset> seedResources() {
 		List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
-		List<File> files = FileUtility.listFiles(dir(), TrueFileFilter.INSTANCE);
-		
+		CachingAssetLocationWrapper cachingAssetLocation = new CachingAssetLocationWrapper(this);
 		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			seedResources.addAll(assetPlugin.getLinkedResourceFiles(this, files));
+			seedResources.addAll(assetPlugin.getLinkedResourceFiles(cachingAssetLocation));
 		}
 		
 		return seedResources;
@@ -84,7 +83,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 		List<Asset> bundleResources = new LinkedList<Asset>();
 		
 		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			bundleResources.addAll(assetPlugin.getResourceFiles(this, null));
+			bundleResources.addAll(assetPlugin.getResourceFiles(this));
 		}
 		
 		return bundleResources;
@@ -105,5 +104,11 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException {
 		// do nothing
+	}
+
+	@Override
+	public List<File> getFiles()
+	{
+		return FileUtility.listFiles(dir(), TrueFileFilter.INSTANCE);
 	}
 }

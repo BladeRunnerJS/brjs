@@ -3,8 +3,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.io.File;
-
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetFileInstantationException;
@@ -26,10 +24,10 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<File> files) {
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		try {
 			if (assetLocation.getJsStyle().equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
-				return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(NodeJsSourceModule.class, assetLocation, files, "js");
+				return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(NodeJsSourceModule.class, assetLocation, assetLocation.getFiles(), "js");
 			}
 			else {
 				return new ArrayList<>();
@@ -41,12 +39,12 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation, List<File> files) {
+	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
 		return Arrays.asList();
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation, List<File> files) {
+	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
 		return Arrays.asList();
 	}
 }

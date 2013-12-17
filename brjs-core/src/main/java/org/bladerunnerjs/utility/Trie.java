@@ -41,7 +41,7 @@ public class Trie<T>
 		return (get(key) == null) ? false : true;
 	}
 	
-	public Object get(String key)
+	public T get(String key)
 	{
 		TrieNode<T> node = root;
 		
