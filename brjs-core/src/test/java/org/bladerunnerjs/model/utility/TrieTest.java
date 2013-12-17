@@ -148,6 +148,19 @@ public class TrieTest
 		assertEquals(test_object_1, foundObjects.get(0));
 	}
 	
+	@Ignore
+	@Test
+	public void invokingAMethodOnAMatchedObjectShouldWork() throws Exception
+	{
+		trie.add("pkg.MyClass", test_object_1);
+		
+		StringReader reader = new StringReader("pkg.MyClass.doStuff()");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(1, foundObjects.size());
+		assertEquals(test_object_1, foundObjects.get(0));
+	}
+	
 	@Test
 	public void throwsExceptionIfKeyHasAlreadyBeenAdded() throws Exception
 	{
