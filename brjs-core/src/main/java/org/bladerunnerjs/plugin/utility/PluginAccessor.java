@@ -60,7 +60,7 @@ public class PluginAccessor {
 	public List<BundlerContentPlugin> bundlerContentProviders() {
 		List<BundlerContentPlugin> bundlerContentProviders = pluginLocator.getBundlerContentPlugins();
 		
-		orderNonModularContentPlugins(bundlerContentProviders);
+		orderContentPlugins(bundlerContentProviders);
 		
 		return bundlerContentProviders;
 	}
@@ -134,12 +134,12 @@ public class PluginAccessor {
 	public List<AssetPlugin> assetProducers() {
 		List<AssetPlugin> plugins = pluginLocator.getAssetPlugins();
 		
-		putDefaultAssetPluginToEndOfList(plugins);
+		orderAssetPlugins(plugins);
 		
 		return plugins;
 	}
 	
-	private void orderNonModularContentPlugins(List<BundlerContentPlugin> bundlerContentProviders) {
+	private void orderContentPlugins(List<BundlerContentPlugin> bundlerContentProviders) {
 		Collections.sort(bundlerContentProviders, new Comparator<BundlerContentPlugin>() {
 			@Override
 			public int compare(BundlerContentPlugin bundlerContentPlugin1, BundlerContentPlugin bundlerContentPlugin2) {
@@ -161,7 +161,7 @@ public class PluginAccessor {
 		});
 	}
 	
-	private void putDefaultAssetPluginToEndOfList(List<AssetPlugin> plugins) {
+	private void orderAssetPlugins(List<AssetPlugin> plugins) {
 		Collections.sort(plugins, new Comparator<AssetPlugin>() {
 			@Override
 			public int compare(AssetPlugin assetPlugin1, AssetPlugin assetPlugin2) {

@@ -72,7 +72,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void thirdpartyAndNamespacedModulesAppearFirstAndLastInTheBundle() throws Exception {
+	public void thirdpartyAppearsFirstAndNamespacedModulesAppearLastInTheBundle() throws Exception {
 		given(aspect).hasPackageStyle("src/appns/namespaced", NamespacedJsBundlerContentPlugin.JS_STYLE)
 			.and(aspect).hasClasses("appns.node.NodeClass", "appns.namespaced.NamespacedClass")
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js")
