@@ -61,9 +61,9 @@ public class AssetLocationUtility
 	@SuppressWarnings("unchecked")
 	private <A extends Asset> A createAssetInstance(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, File file) throws AssetFileInstantationException
 	{
-		if (assetLocation instanceof CachingAssetLocationWrapper)
+		if (assetLocation instanceof CachedAssetLocation)
 		{
-			assetLocation = ((CachingAssetLocationWrapper) assetLocation).getWrappedAssetLocation();
+			assetLocation = ((CachedAssetLocation) assetLocation).getWrappedAssetLocation();
 		}
 		
 		try

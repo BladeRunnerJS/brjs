@@ -39,10 +39,10 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		
 		for (AssetLocation assetLocation : assetLocations())
 		{
-			CachingAssetLocationWrapper cachingAssetLocation = new CachingAssetLocationWrapper(assetLocation);
+			CachedAssetLocation cachedAssetLocation = new CachedAssetLocation(assetLocation);
 			for(AssetPlugin assetPlugin : assetProducers)
 			{
-				sourceModules.addAll(assetPlugin.getSourceModules(cachingAssetLocation));
+				sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
 			}
 		}
 		

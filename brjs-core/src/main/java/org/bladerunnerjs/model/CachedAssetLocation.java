@@ -19,7 +19,7 @@ import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 
 
-public class CachingAssetLocationWrapper implements AssetLocation
+public class CachedAssetLocation implements AssetLocation
 {
 	
 	private AssetLocation assetLocation;
@@ -30,7 +30,7 @@ public class CachingAssetLocationWrapper implements AssetLocation
 	private Trie<List<Asset>> bundleResourcesForExtension = new Trie<>();
 	
 	
-	public CachingAssetLocationWrapper(AssetLocation assetLocation)
+	public CachedAssetLocation(AssetLocation assetLocation)
 	{
 		this.assetLocation = assetLocation;
 	}

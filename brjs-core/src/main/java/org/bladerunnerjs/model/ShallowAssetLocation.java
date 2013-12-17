@@ -56,7 +56,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	public List<LinkedAsset> seedResources() {
 		List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
-		CachingAssetLocationWrapper cachingAssetLocation = new CachingAssetLocationWrapper(this);
+		CachedAssetLocation cachingAssetLocation = new CachedAssetLocation(this);
 		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
 			seedResources.addAll(assetPlugin.getLinkedResourceFiles(cachingAssetLocation));
 		}
