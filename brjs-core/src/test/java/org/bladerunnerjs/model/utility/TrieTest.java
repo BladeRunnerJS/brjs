@@ -148,7 +148,6 @@ public class TrieTest
 		assertEquals(test_object_1, foundObjects.get(0));
 	}
 	
-	@Ignore
 	@Test
 	public void invokingAMethodOnAMatchedObjectShouldWork() throws Exception
 	{
