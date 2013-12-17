@@ -310,16 +310,4 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		return assetLocator.createAssetFilesWithName(assetFileClass, assetLocation, fileNames);
 	}
-	
-	//TODO: remove these two methods after formalising the plugin API performance changes
-	
-	public <AF extends Asset> List<AF> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, List<File> files, String... extensions) throws AssetFileInstantationException
-	{
-		return assetLocator.createAssetFilesWithExtension(assetFileClass, assetLocation, extensions);
-	}
-	
-	public <AF extends Asset> List<AF> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, List<File> files, String... fileNames) throws AssetFileInstantationException
-	{
-		return assetLocator.createAssetFilesWithName(assetFileClass, assetLocation, fileNames);
-	}
 }

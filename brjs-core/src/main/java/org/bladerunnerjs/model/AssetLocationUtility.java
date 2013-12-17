@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,7 +12,6 @@ import java.util.Map;
 
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.bladerunnerjs.utility.FileUtility;
 
 public class AssetLocationUtility
 {
@@ -48,30 +46,14 @@ public class AssetLocationUtility
 		return assets;
 	}
 	
-	<A extends Asset> List<A> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, List<File> files, String... extensions) throws AssetFileInstantationException
-	{
-		return createAssetFiles( assetFileClass, assetLocation, filterFilesList(files, new SuffixFileFilter(extensions)) );
-	}
-	
 	<A extends Asset> List<A> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... extensions) throws AssetFileInstantationException
 	{
-		File dir = assetLocation.dir();
-		if (!dir.isDirectory()) { return Arrays.asList(); }
-		
-		return createAssetFiles( assetFileClass, assetLocation, FileUtility.listFiles(dir, new SuffixFileFilter(extensions)) );
-	}
-	
-	<A extends Asset> List<A> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, List<File> files, String... fileNames) throws AssetFileInstantationException
-	{
-		return createAssetFiles( assetFileClass, assetLocation, filterFilesList(files, new NameFileFilter(fileNames)) );
+		return createAssetFiles( assetFileClass, assetLocation, filterFilesList(assetLocation.getFiles(), new SuffixFileFilter(extensions)) );
 	}
 	
 	<A extends Asset> List<A> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... fileNames) throws AssetFileInstantationException
 	{
-		File dir = assetLocation.dir();
-		if (!dir.isDirectory()) { return Arrays.asList(); }
-		
-		return createAssetFiles( assetFileClass, assetLocation, FileUtility.listFiles(dir, new NameFileFilter(fileNames)) );
+		return createAssetFiles( assetFileClass, assetLocation, filterFilesList(assetLocation.getFiles(), new NameFileFilter(fileNames)) );
 	}
 	
 	

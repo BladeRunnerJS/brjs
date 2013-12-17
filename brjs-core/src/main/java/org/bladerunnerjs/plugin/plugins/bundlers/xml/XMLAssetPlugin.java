@@ -32,7 +32,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
 		try {
-			return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(FullyQualifiedLinkedAsset.class, assetLocation, assetLocation.getFiles(), "xml");
+			return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(FullyQualifiedLinkedAsset.class, assetLocation, "xml");
 		}
 		catch (AssetFileInstantationException e) {
 			throw new RuntimeException(e);
