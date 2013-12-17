@@ -7,9 +7,10 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.exception.UnhandledAssetContainerException;
 
 public interface AssetPlugin extends Plugin {
-	List<AssetLocation> getAssetLocations(AssetContainer assetContainer);
+	List<AssetLocation> getAssetLocations(AssetContainer assetContainer) throws UnhandledAssetContainerException;
 	List<SourceModule> getSourceModules(AssetLocation assetLocation);
 	List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation);
 	List<Asset> getResourceFiles(AssetLocation assetLocation);

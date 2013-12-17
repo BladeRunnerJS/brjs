@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetFileInstantationException;
@@ -10,6 +9,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.exception.UnhandledAssetContainerException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
@@ -18,8 +18,8 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
-		return null;
+	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) throws UnhandledAssetContainerException {
+		throw new UnhandledAssetContainerException();
 	}
 	
 	@Override

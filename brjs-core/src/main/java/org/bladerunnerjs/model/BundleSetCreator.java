@@ -2,7 +2,9 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
@@ -22,10 +24,18 @@ public class BundleSetCreator {
 		public static final String FILE_HAS_NO_DEPENDENCIES_MSG = "File '%s' has no dependencies.";
 		public static final String FILE_DEPENDENCIES_MSG = "File '%s' depends on %s.";
 	}
+
+	private final BundlableNode bundlableNode;
+	private Map<LinkedAsset, List<SourceModule>> cachedDependentSourceModules = new HashMap<LinkedAsset, List<SourceModule>>();
 	
-	public static BundleSet createBundleSet(BundlableNode bundlableNode) throws ModelOperationException {
+	public BundleSetCreator(BundlableNode bundlableNode)
+	{
+		this.bundlableNode = bundlableNode;
+	}
+	
+	public BundleSet createBundleSet() throws ModelOperationException {
 		Logger logger = bundlableNode.root().logger(LoggerType.BUNDLER, BundleSetCreator.class);
-		
+				
 		BundleSetBuilder bundleSetBuilder = new BundleSetBuilder(bundlableNode);
 		List<LinkedAsset> seedFiles = bundlableNode.seedFiles();
 		
@@ -34,20 +44,20 @@ public class BundleSetCreator {
 			logger.debug(Messages.BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, bundlableNode.getClass().getSimpleName(), name);
 		}
 		else {
-			logger.debug(Messages.BUNDLABLE_NODE_SEED_FILES_MSG, bundlableNode.getClass().getSimpleName(), name, seedFilePaths(bundlableNode, seedFiles));
+			logger.debug(Messages.BUNDLABLE_NODE_SEED_FILES_MSG, bundlableNode.getClass().getSimpleName(), name, seedFilePaths(seedFiles));
 		}
 		
 		logger.debug(Messages.APP_SOURCE_LOCATIONS_MSG, bundlableNode.getApp().getName(), assetContainerPaths(bundlableNode.getApp()));
 		
 		for(LinkedAsset seedFile : seedFiles) {
 			bundleSetBuilder.addSeedFile(seedFile);
-			processFile(bundlableNode, seedFile, bundleSetBuilder, logger, new ArrayList<LinkedAsset>());
+			processFile(seedFile, bundleSetBuilder, logger, new ArrayList<LinkedAsset>());
 		}
 		
 		return bundleSetBuilder.createBundleSet();
 	}
 	
-	private static void processFile(BundlableNode bundlableNode, LinkedAsset file, BundleSetBuilder bundleSetBuilder, Logger logger, List<LinkedAsset> processedFiles) throws ModelOperationException {
+	private void processFile(LinkedAsset file, BundleSetBuilder bundleSetBuilder, Logger logger, List<LinkedAsset> processedFiles) throws ModelOperationException {
 
 		if (processedFiles.contains(file))
 		{
@@ -55,7 +65,7 @@ public class BundleSetCreator {
 		}
 		processedFiles.add(file);
 
-		List<SourceModule> moduleDependencies = getDependentSourceModules(file, bundlableNode);
+		List<SourceModule> moduleDependencies = getDependentSourceModules(file);
 		
 		if(moduleDependencies.isEmpty()) {
 			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
@@ -66,38 +76,50 @@ public class BundleSetCreator {
 		
 		for(SourceModule sourceModule : moduleDependencies) {
 			if(bundleSetBuilder.addSourceModule(sourceModule)) {
-				processFile(bundlableNode, sourceModule, bundleSetBuilder, logger, processedFiles);
+				processFile(sourceModule, bundleSetBuilder, logger, processedFiles);
 				
 				for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().assetLocations()) {
 					for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
-						processFile(bundlableNode, resourceSeedFile, bundleSetBuilder, logger, processedFiles);
+						processFile(resourceSeedFile, bundleSetBuilder, logger, processedFiles);
 					}
 				}
 			}
 		}
 	}
 	
-	private static List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException {
-		List<SourceModule> dependentSourceModules = file.getDependentSourceModules(bundlableNode);
+	private List<SourceModule> getDependentSourceModules(LinkedAsset file) throws ModelOperationException {
 		
-		if(file instanceof SourceModule) {
-			SourceModule sourceModule = (SourceModule) file;
-			
-			// TODO: should these be '/bootstrap'?
-			if(!sourceModule.getRequirePath().equals("bootstrap")) {
-				try {
-					dependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
-				}
-				catch(RequirePathException e) {
-					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-				}
-			}
+		List<SourceModule> dependentSourceModules;
+		if (cachedDependentSourceModules.containsKey(file))
+		{
+			dependentSourceModules = cachedDependentSourceModules.get(file);
+		}
+		else
+		{
+			dependentSourceModules = file.getDependentSourceModules(bundlableNode);
+		
+    		if(file instanceof SourceModule) {
+    			SourceModule sourceModule = (SourceModule) file;
+    			if (!sourceModule.getRequirePath().equals("bootstrap")) 
+    			{
+    				try
+    				{
+    					dependentSourceModules.add( bundlableNode.getSourceModule("bootstrap") );
+    				}
+    				catch (RequirePathException e)
+    				{
+    					// do nothing, bootstrap is an implicit dependency if it exists
+    				}
+    			}
+    		}
+    		
+    		cachedDependentSourceModules.put(file, dependentSourceModules);
 		}
 		
 		return dependentSourceModules;
 	}
 	
-	private static String seedFilePaths(BundlableNode bundlableNode, List<LinkedAsset> seedFiles) {
+	private String seedFilePaths(List<LinkedAsset> seedFiles) {
 		List<String> seedFilePaths = new ArrayList<>();
 		
 		for(Asset seedFile : seedFiles) {
@@ -107,7 +129,7 @@ public class BundleSetCreator {
 		return "'" + Joiner.on("', '").join(seedFilePaths) + "'";
 	}
 	
-	private static String assetContainerPaths(App app) {
+	private String assetContainerPaths(App app) {
 		List<String> assetContainerPaths = new ArrayList<>();
 		
 		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
@@ -118,7 +140,7 @@ public class BundleSetCreator {
 		return "'" + Joiner.on("', '").join(assetContainerPaths) + "'";
 	}
 	
-	private static String sourceFilePaths(List<SourceModule> sourceModules) {
+	private String sourceFilePaths(List<SourceModule> sourceModules) {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
 		for(SourceModule sourceModule : sourceModules) {
@@ -128,7 +150,7 @@ public class BundleSetCreator {
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
 	}
 	
-	private static String getRelativePath(File baseFile, File sourceFile) {
+	private String getRelativePath(File baseFile, File sourceFile) {
 		return baseFile.toURI().relativize(sourceFile.toURI()).getPath();
 	}
 }

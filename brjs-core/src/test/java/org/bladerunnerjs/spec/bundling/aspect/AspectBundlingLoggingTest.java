@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 //TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'appns' when the default namespace is 'appns')?
@@ -52,6 +53,7 @@ public class AspectBundlingLoggingTest extends SpecTest {
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "resources/xml/config.xml", "'src/appns/bs/b1/Class1.js'");
 	}
 	
+	@Ignore
 	@Test
 	public void helpfulLoggingMessagesAreEmittedWhenThereAreNoSeedFiles() throws Exception {
 		given(logging).enabled()

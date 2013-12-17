@@ -6,12 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
@@ -54,8 +56,9 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	public List<LinkedAsset> seedResources() {
 		List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
+		CachedAssetLocation cachingAssetLocation = new CachedAssetLocation(this);
 		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			seedResources.addAll(assetPlugin.getLinkedResourceFiles(this));
+			seedResources.addAll(assetPlugin.getLinkedResourceFiles(cachingAssetLocation));
 		}
 		
 		return seedResources;
@@ -101,5 +104,11 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException {
 		// do nothing
+	}
+
+	@Override
+	public List<File> getFiles()
+	{
+		return FileUtility.listFiles(dir(), TrueFileFilter.INSTANCE);
 	}
 }

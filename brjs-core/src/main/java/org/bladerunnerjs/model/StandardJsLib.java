@@ -133,6 +133,10 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	
 	@Override
 	public String namespace() {
+		if (this == root().sdkLib())
+		{
+			return "";
+		}
 		return getName();
 	}
 	

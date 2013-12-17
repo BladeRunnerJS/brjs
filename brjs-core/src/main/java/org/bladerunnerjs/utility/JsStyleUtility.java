@@ -15,7 +15,7 @@ public class JsStyleUtility {
 			jsStyle = readJsStyleFile(dir);
 			
 			dir = dir.getParentFile();
-		} while((jsStyle == null) && (dir != null));
+		} while (jsStyle == null && dir != null);
 		
 		return (jsStyle != null) ? jsStyle : NodeJsBundlerContentPlugin.JS_STYLE;
 	}

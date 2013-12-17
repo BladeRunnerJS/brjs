@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -41,7 +42,40 @@ public class FileUtility {
 		return files;
 	}
 	
+	public static List<File> recursiveListDirs(File dir)
+	{
+		List<File> dirs = new LinkedList<File>();
+		if (!dir.isDirectory())
+		{
+			return dirs;
+		}
+		recursiveListDirs(dir, dirs);
+		return dirs;
+	}
+	
+	private static void recursiveListDirs(File rootDir, List<File> dirs)
+	{
+		File[] children = rootDir.listFiles();
+		if (children == null)
+		{
+			return;
+		}
+		
+		for (File child : children)
+		{
+			if (child.isDirectory())
+			{
+				dirs.add(child);
+				recursiveListDirs(child, dirs);
+			}
+		}
+	}
+	
 	public static List<File> listFiles(File dir, IOFileFilter fileFilter) {
+		if (!dir.isDirectory())
+		{
+			return new ArrayList<>();
+		}
 		List<File> files = new ArrayList<File>(FileUtils.listFiles(dir, fileFilter, FalseFileFilter.INSTANCE));
 		Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
 		

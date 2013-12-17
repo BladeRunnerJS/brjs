@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.plugins.brjsconformant;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.UnhandledAssetContainerException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
@@ -33,9 +34,13 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	@Override
 	public List<SourceModule> sourceModules() {
 		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
-			
-		for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
-			for (AssetLocation assetLocation : assetLocations())
+		
+		List<AssetPlugin> assetProducers = (root()).plugins().assetProducers();
+		
+		for (AssetLocation assetLocation : assetLocations())
+		{
+			CachedAssetLocation cachedAssetLocation = new CachedAssetLocation(assetLocation);
+			for(AssetPlugin assetPlugin : assetProducers)
 			{
 				sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
 			}
@@ -75,16 +80,19 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		List<AssetLocation> assetLocations = null;
 		
 		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			assetLocations = assetPlugin.getAssetLocations(this);
-			if(assetLocations != null) {
-				break;
+			try 
+			{
+				return new ArrayList<AssetLocation>( assetPlugin.getAssetLocations(this) );
+			}
+			catch (UnhandledAssetContainerException ex)
+			{
+				continue;
 			}
 		}
 		
-		return assetLocations;
+		return null;
 	}
 	
 	private String normalizePath(String path) {
