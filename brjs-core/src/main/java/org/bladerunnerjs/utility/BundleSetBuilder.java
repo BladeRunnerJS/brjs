@@ -24,11 +24,9 @@ public class BundleSetBuilder {
 	Set<AliasDefinition> activeAliases = new HashSet<>();
 	Set<AssetLocation> resources = new HashSet<>();
 	private BundlableNode bundlableNode;
-	private SourceModule bootstrapSourceModule;
 	
-	public BundleSetBuilder(BundlableNode bundlableNode, SourceModule bootstrapSourceModule) {
+	public BundleSetBuilder(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
-		this.bootstrapSourceModule = bootstrapSourceModule;
 	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
@@ -126,8 +124,15 @@ public class BundleSetBuilder {
 	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule) throws ModelOperationException {
 		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
 		
-		if(!sourceModule.getRequirePath().equals("bootstrap") && bootstrapSourceModule != null) {
-			orderDependentSourceModules.add(bootstrapSourceModule);
+		if(!sourceModule.getRequirePath().equals("bootstrap")) {
+			try
+			{
+				orderDependentSourceModules.add( bundlableNode.getSourceModule("bootstrap") );
+			}
+			catch (RequirePathException e)
+			{
+				// do nothing, bootstrap is an implicit dependency if it exists
+			}
 		}
 		
 		return orderDependentSourceModules;

@@ -27,7 +27,6 @@ public class BundleSetCreator {
 
 	private final BundlableNode bundlableNode;
 	private Map<LinkedAsset, List<SourceModule>> cachedDependentSourceModules = new HashMap<LinkedAsset, List<SourceModule>>();
-	private SourceModule bootstrapSourceModule;
 	
 	public BundleSetCreator(BundlableNode bundlableNode)
 	{
@@ -36,17 +35,8 @@ public class BundleSetCreator {
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
 		Logger logger = bundlableNode.root().logger(LoggerType.BUNDLER, BundleSetCreator.class);
-		
-		try
-		{
-			bootstrapSourceModule = bundlableNode.getSourceModule("bootstrap");
-		}
-		catch (RequirePathException e)
-		{
-			// do nothing, bootstrap is an implicit dependency if it exists
-		}
-		
-		BundleSetBuilder bundleSetBuilder = new BundleSetBuilder(bundlableNode, bootstrapSourceModule);
+				
+		BundleSetBuilder bundleSetBuilder = new BundleSetBuilder(bundlableNode);
 		List<LinkedAsset> seedFiles = bundlableNode.seedFiles();
 		
 		String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
@@ -110,9 +100,16 @@ public class BundleSetCreator {
 		
     		if(file instanceof SourceModule) {
     			SourceModule sourceModule = (SourceModule) file;
-    			if(!sourceModule.getRequirePath().equals("bootstrap") && bootstrapSourceModule != null) 
+    			if (!sourceModule.getRequirePath().equals("bootstrap")) 
     			{
-    				dependentSourceModules.add(bootstrapSourceModule);
+    				try
+    				{
+    					dependentSourceModules.add( bundlableNode.getSourceModule("bootstrap") );
+    				}
+    				catch (RequirePathException e)
+    				{
+    					// do nothing, bootstrap is an implicit dependency if it exists
+    				}
     			}
     		}
     		
