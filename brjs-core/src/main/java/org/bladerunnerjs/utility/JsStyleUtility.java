@@ -4,20 +4,18 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsBundlerContentPlugin;
 
 public class JsStyleUtility {
 		
-	public static String getJsStyle(BRJS brjs, File dir) {
+	public static String getJsStyle(File dir) {
 		String jsStyle = null;
 		
-		File brjsParentRoot = brjs.dir().getParentFile();
 		do {
 			jsStyle = readJsStyleFile(dir);
 			
 			dir = dir.getParentFile();
-		} while (jsStyle == null && dir != null && dir != brjsParentRoot);
+		} while (jsStyle == null && dir != null);
 		
 		return (jsStyle != null) ? jsStyle : NodeJsBundlerContentPlugin.JS_STYLE;
 	}

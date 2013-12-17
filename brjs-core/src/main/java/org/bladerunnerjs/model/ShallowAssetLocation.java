@@ -33,7 +33,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	
 	@Override
 	public String getJsStyle() {
-		return JsStyleUtility.getJsStyle(root(), dir());
+		return JsStyleUtility.getJsStyle(dir());
 	}
 	
 	@Override
