@@ -2,7 +2,7 @@ ControlPluginFixtureFactory = function()
 {
 };
 
-br.implement(ControlPluginFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(ControlPluginFixtureFactory, br.test.FixtureFactory);
 
 ControlPluginFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

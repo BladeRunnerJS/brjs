@@ -9,7 +9,7 @@ br.test.viewhandler.ScrolledVertical = function()
 {
 };
 
-br.implement(br.test.viewhandler.ScrolledVertical, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.ScrolledVertical, br.test.viewhandler.ViewFixtureHandler);
 
 
 br.test.viewhandler.ScrolledVertical.prototype.set = function(eElement, nOffset)

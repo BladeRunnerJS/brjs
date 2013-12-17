@@ -23,8 +23,8 @@ br.presenter.control.selectionfield.ToggleSwitchControl = function()
 {
 };
 
-br.inherit(br.presenter.control.selectionfield.ToggleSwitchControl, br.presenter.property.PropertyListener);
-br.inherit(br.presenter.control.selectionfield.ToggleSwitchControl, br.presenter.control.ControlAdaptor);
+br.Core.inherit(br.presenter.control.selectionfield.ToggleSwitchControl, br.presenter.property.PropertyListener);
+br.Core.inherit(br.presenter.control.selectionfield.ToggleSwitchControl, br.presenter.control.ControlAdaptor);
 
 // *********************** PropertyListener Interface ***********************
 

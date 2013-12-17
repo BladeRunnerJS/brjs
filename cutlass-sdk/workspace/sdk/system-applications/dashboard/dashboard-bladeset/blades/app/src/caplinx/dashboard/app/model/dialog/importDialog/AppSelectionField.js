@@ -13,7 +13,7 @@ caplinx.dashboard.app.model.dialog.importDialog.AppSelectionField = function(oPr
 	this._.sourceApps.addListener(new caplinx.dashboard.app.model.ConditionalChangeListener(
 		this, "_onChange", oPresentationModel.dialog.type, "importBladesFromAppDialog"));
 };
-br.extend(caplinx.dashboard.app.model.dialog.importDialog.AppSelectionField, br.presenter.node.SelectionField);
+br.Core.extend(caplinx.dashboard.app.model.dialog.importDialog.AppSelectionField, br.presenter.node.SelectionField);
 
 caplinx.dashboard.app.model.dialog.importDialog.AppSelectionField.prototype._onChange = function()
 {

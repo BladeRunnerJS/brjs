@@ -2,7 +2,7 @@ testing.TestFixtureFactory = function()
 {
 	this.m_mFixtures = {};
 };
-br.implement(testing.TestFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(testing.TestFixtureFactory, br.test.FixtureFactory);
 
 testing.TestFixtureFactory.createMockFixture = function(bCanHandleExactMatch, bApplyTearDownStub)
 {

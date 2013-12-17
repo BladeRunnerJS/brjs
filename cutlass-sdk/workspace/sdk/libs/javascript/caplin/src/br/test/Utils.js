@@ -1,5 +1,5 @@
-br.thirdparty("jquery");
-br.thirdparty("knockout");
+br.Core.thirdparty("jquery");
+br.Core.thirdparty("knockout");
 
 /**
  * @class

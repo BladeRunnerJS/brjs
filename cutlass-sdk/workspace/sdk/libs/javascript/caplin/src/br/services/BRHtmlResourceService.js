@@ -1,4 +1,4 @@
-var br = require('br/index');
+var br = require('br/Core');
 var File = require('br/core/File');
 var HtmlResourceService = require('br/services/HtmlResourceService');
 var i18n = require('br/i18n');
@@ -73,6 +73,6 @@ function sanitizeHtml(html) {
 };
 
 
-br.implement(BRHtmlResourceService, HtmlResourceService);
+br.Core.implement(BRHtmlResourceService, HtmlResourceService);
 
 module.exports = BRHtmlResourceService;

@@ -9,7 +9,7 @@ br.presenter.testing.NodeListLengthProperty = function(oNodeList)
 	this.m_oNodeList = oNodeList;
 	this.addChangeListener(this, "_onPropertyChanged");
 };
-br.extend(br.presenter.testing.NodeListLengthProperty, br.presenter.property.WritableProperty);
+br.Core.extend(br.presenter.testing.NodeListLengthProperty, br.presenter.property.WritableProperty);
 
 br.presenter.testing.NodeListLengthProperty.prototype._onPropertyChanged = function()
 {

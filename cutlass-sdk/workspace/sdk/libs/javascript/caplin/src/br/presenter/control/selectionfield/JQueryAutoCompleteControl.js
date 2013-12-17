@@ -1,5 +1,5 @@
 
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @constructor
@@ -42,8 +42,8 @@ br.presenter.control.selectionfield.JQueryAutoCompleteControl = function()
 	this.m_sAppendTo = 'body';
 };
 
-br.inherit(br.presenter.control.selectionfield.JQueryAutoCompleteControl, br.presenter.control.ControlAdaptor);
-br.inherit(br.presenter.control.selectionfield.JQueryAutoCompleteControl, br.presenter.property.PropertyListener);
+br.Core.inherit(br.presenter.control.selectionfield.JQueryAutoCompleteControl, br.presenter.control.ControlAdaptor);
+br.Core.inherit(br.presenter.control.selectionfield.JQueryAutoCompleteControl, br.presenter.property.PropertyListener);
 
 /**
  * @private

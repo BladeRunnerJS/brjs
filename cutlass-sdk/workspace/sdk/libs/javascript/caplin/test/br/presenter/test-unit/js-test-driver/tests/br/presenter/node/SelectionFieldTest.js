@@ -12,7 +12,7 @@ SelectionFieldTest.prototype.getTestValidator = function()
 	{
 	};
 	
-	br.extend(fValidator, br.presenter.validator.Validator);
+	br.Core.extend(fValidator, br.presenter.validator.Validator);
 	fValidator.prototype.validate = function(sText, mAttributes, oValidationResult)
 	{
 		var bIsValid = (sText == "goodvalue");

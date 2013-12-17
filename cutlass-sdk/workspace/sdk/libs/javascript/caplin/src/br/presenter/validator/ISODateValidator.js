@@ -12,7 +12,7 @@ br.presenter.validator.ISODateValidator = function()
 	/** @private */
 	this.m_oSplitterNoDashesRegex = /^(\d{4})(\d{2})(\d{2})$/;
 };
-br.implement(br.presenter.validator.ISODateValidator, br.presenter.validator.Validator);
+br.Core.implement(br.presenter.validator.ISODateValidator, br.presenter.validator.Validator);
 
 /**
  * @private

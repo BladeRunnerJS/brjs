@@ -12,7 +12,7 @@ br.presenter.validator.EmailValidator = function()
 	// a character other than @ . or -, and may be followed by none or more of anything except @.
 };
 
-br.implement(br.presenter.validator.EmailValidator, br.presenter.validator.Validator);
+br.Core.implement(br.presenter.validator.EmailValidator, br.presenter.validator.Validator);
 
 br.presenter.validator.EmailValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {

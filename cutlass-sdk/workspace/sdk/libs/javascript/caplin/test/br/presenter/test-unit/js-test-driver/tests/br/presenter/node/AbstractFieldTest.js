@@ -13,7 +13,7 @@ AbstractFieldTest.inheritMethods = function(fFieldTest)
 AbstractFieldTest.prototype._getTestValidator = function()
 {
 	var fValidator = function(){};
-	br.implement(fValidator, br.presenter.validator.Validator);
+	br.Core.implement(fValidator, br.presenter.validator.Validator);
 
 	fValidator.prototype.validate = function(sText, mConfig, oValidationResult)
 	{

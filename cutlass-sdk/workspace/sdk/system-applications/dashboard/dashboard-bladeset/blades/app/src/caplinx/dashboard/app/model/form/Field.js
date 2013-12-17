@@ -9,4 +9,4 @@ caplinx.dashboard.app.model.form.Field = function(sPlaceholder, vValue)
 	this.placeholder = new br.presenter.property.WritableProperty(sPlaceholder);
 	this.hasFocus = new br.presenter.property.EditableProperty(false);
 };
-br.extend(caplinx.dashboard.app.model.form.Field, br.presenter.node.Field);
+br.Core.extend(caplinx.dashboard.app.model.form.Field, br.presenter.node.Field);

@@ -1,4 +1,4 @@
-br.thirdparty("knockout");
+br.Core.thirdparty("knockout");
 
 /**
  * @private
@@ -8,7 +8,7 @@ br.presenter.view.knockout.KnockoutProperty = function()
 	// call super constructor
 	br.presenter.view.knockout.KnockoutObservable.call(this);
 };
-br.extend(br.presenter.view.knockout.KnockoutProperty, br.presenter.view.knockout.KnockoutObservable);
+br.Core.extend(br.presenter.view.knockout.KnockoutProperty, br.presenter.view.knockout.KnockoutObservable);
 
 /**
  * @private

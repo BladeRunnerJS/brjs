@@ -12,7 +12,7 @@ br.test.viewhandler.HasClass = function()
 {
 };
 
-br.implement(br.test.viewhandler.HasClass, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.HasClass, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.HasClass.prototype.get = function(eElement, sClassName)
 {

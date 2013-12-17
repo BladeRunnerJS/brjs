@@ -11,7 +11,7 @@ br.presenter.testing.LetterShifterParser = function()
 	//			"y","z","a"]; // the last "a" is not a mistake
 };
 
-br.extend(br.presenter.testing.LetterShifterParser, br.presenter.parser.Parser);
+br.Core.extend(br.presenter.testing.LetterShifterParser, br.presenter.parser.Parser);
 
 /**
  * @type String

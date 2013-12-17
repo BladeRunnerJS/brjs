@@ -19,7 +19,7 @@
 br.presenter.PresentationModel = function()
 {
 };
-br.extend(br.presenter.PresentationModel, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.PresentationModel, br.presenter.node.PresentationNode);
 
 /**
  * Presentation models can use the {@link br.presenter.PresentationModel#getComponentFrame}

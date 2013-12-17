@@ -2,7 +2,7 @@ ViewFixtureTestsFixtureFactory = function()
 {
 };
 
-br.implement(ViewFixtureTestsFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(ViewFixtureTestsFixtureFactory, br.test.FixtureFactory);
 
 ViewFixtureTestsFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

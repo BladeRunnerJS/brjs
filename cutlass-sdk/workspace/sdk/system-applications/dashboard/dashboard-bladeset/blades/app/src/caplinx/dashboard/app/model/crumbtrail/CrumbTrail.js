@@ -5,7 +5,7 @@ caplinx.dashboard.app.model.crumbtrail.CrumbTrail = function(oPresentationModel)
 	
 	oPresentationModel.getPageUrlService().addPageUrlListener(this._onPageUrlUpdated.bind(this), true);
 };
-br.extend(caplinx.dashboard.app.model.crumbtrail.CrumbTrail, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.crumbtrail.CrumbTrail, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.crumbtrail.CrumbTrail.prototype._onPageUrlUpdated = function(sPageUrl)
 {

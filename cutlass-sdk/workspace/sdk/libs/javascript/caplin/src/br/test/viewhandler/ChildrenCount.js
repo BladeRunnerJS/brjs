@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -14,7 +14,7 @@ br.test.viewhandler.ChildrenCount = function()
 {
 };
 
-br.implement(br.test.viewhandler.ChildrenCount, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.ChildrenCount, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.ChildrenCount.prototype.get = function(eElement)
 {

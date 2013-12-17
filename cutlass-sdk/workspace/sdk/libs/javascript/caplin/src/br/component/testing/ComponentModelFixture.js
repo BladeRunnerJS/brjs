@@ -12,7 +12,7 @@
 	 */
 	function ComponentModelFixture() {};
 
-	br.extend(ComponentModelFixture, br.test.Fixture);
+	br.Core.extend(ComponentModelFixture, br.test.Fixture);
 
 	/**
 	 * This method is called be the {@link br.component.testing.ComponentFixture} after

@@ -2,4 +2,4 @@ TooltipPresentationModel = function()
 {
 	this.theField = new br.presenter.node.Field(1234);
 };
-br.extend(TooltipPresentationModel, br.presenter.PresentationModel);
+br.Core.extend(TooltipPresentationModel, br.presenter.PresentationModel);

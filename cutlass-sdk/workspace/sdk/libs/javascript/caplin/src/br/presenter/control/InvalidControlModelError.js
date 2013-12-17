@@ -14,4 +14,4 @@ br.presenter.control.InvalidControlModelError = function(sControlAdaptor, sAccep
 	br.Errors.CustomError.call(this, "InvalidControlModelError", message);
 };
 
-br.extend(br.presenter.control.InvalidControlModelError, br.Errors.CustomError);
+br.Core.extend(br.presenter.control.InvalidControlModelError, br.Errors.CustomError);

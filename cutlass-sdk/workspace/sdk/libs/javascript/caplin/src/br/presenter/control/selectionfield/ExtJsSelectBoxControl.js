@@ -34,4 +34,4 @@ br.presenter.control.selectionfield.ExtJsSelectBoxControl = function()
 	delete this.m_mExtSettings.listeners.blur;
 };
 
-br.extend(br.presenter.control.selectionfield.ExtJsSelectBoxControl, br.presenter.control.selectionfield.ExtJsComboBoxControl);
+br.Core.extend(br.presenter.control.selectionfield.ExtJsSelectBoxControl, br.presenter.control.selectionfield.ExtJsComboBoxControl);

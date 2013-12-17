@@ -46,7 +46,7 @@ br.presenter.validator.CrossPropertyValidatorProxy = function(mProperties, oCros
 		this.m_mCrossValidationPropertyListeners[sPropId] = oListener;
 	}
 };
-br.implement(br.presenter.validator.CrossPropertyValidatorProxy, br.presenter.validator.Validator);
+br.Core.implement(br.presenter.validator.CrossPropertyValidatorProxy, br.presenter.validator.Validator);
 
 /**
  * @private

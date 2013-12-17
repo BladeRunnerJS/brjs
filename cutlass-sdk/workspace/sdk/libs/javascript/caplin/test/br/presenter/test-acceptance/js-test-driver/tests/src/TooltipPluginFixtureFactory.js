@@ -2,7 +2,7 @@ TooltipPluginFixtureFactory = function()
 {
 };
 
-br.implement(TooltipPluginFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(TooltipPluginFixtureFactory, br.test.FixtureFactory);
 
 TooltipPluginFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

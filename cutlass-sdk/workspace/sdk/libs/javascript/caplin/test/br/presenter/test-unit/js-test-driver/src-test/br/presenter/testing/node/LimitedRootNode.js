@@ -6,4 +6,4 @@ br.presenter.testing.node.LimitedRootNode = function()
 	this.descendantNode1 = new br.presenter.testing.node.LimitedDescendantNode();
 	this.descendantNode2 = new br.presenter.testing.node.LimitedDescendantNode();
 };
-br.extend(br.presenter.testing.node.LimitedRootNode, br.presenter.PresentationModel);
+br.Core.extend(br.presenter.testing.node.LimitedRootNode, br.presenter.PresentationModel);

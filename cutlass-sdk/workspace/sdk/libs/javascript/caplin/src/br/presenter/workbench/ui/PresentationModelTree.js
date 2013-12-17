@@ -1,4 +1,4 @@
-br.thirdparty("extjs");
+br.Core.thirdparty("extjs");
 
 /**
  * 
@@ -17,7 +17,7 @@ br.presenter.workbench.ui.PresentationModelTree = function(oPresentationModel)
 	oTree.render(this.m_eElement);
 };
 
-br.implement(br.presenter.workbench.ui.PresentationModelTree, br.workbench.ui.WorkbenchComponent);
+br.Core.implement(br.presenter.workbench.ui.PresentationModelTree, br.workbench.ui.WorkbenchComponent);
 
 br.presenter.workbench.ui.PresentationModelTree.prototype.search = function(sValue)
 {

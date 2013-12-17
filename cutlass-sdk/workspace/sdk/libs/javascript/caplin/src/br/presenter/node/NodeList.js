@@ -43,8 +43,8 @@ br.presenter.node.NodeList = function(pPresentationNodes, fNodeClass)
 	
 	this._copiesAndChecksNodesAndClearsNodePaths(pPresentationNodes);
 };
-br.extend(br.presenter.node.NodeList, br.presenter.node.PresentationNode);
-br.inherit(br.presenter.node.NodeList, br.presenter.view.knockout.KnockoutNodeList);
+br.Core.extend(br.presenter.node.NodeList, br.presenter.node.PresentationNode);
+br.Core.inherit(br.presenter.node.NodeList, br.presenter.view.knockout.KnockoutNodeList);
 
 /**
  * Returns the list of {@link br.presenter.node.PresentationNode} instances as an array.

@@ -2,7 +2,7 @@ OrderOfClickAndBlurFixtureFactory = function()
 {
 };
 
-br.implement(OrderOfClickAndBlurFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(OrderOfClickAndBlurFixtureFactory, br.test.FixtureFactory);
 
 OrderOfClickAndBlurFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

@@ -1,6 +1,6 @@
 "use strict";
 
-var br = require('br/index');
+var br = require('br/Core');
 /** @module br/Errors */
 
 /**
@@ -31,7 +31,7 @@ function CustomError(type, message, fileName, lineNumber) {
 	}
 }
 
-br.extend(CustomError, Error);
+br.Core.extend(CustomError, Error);
 
 CustomError.prototype.toString = function toString() {
 	return this.stack || this.message;
@@ -95,7 +95,7 @@ function getCustomErrorConstructor(type) {
 	var customErrorConstructor = function(message, filename, lineNumber) {
 		CustomError.call(this, type, message, filename, lineNumber);
 	};
-	br.extend(customErrorConstructor, CustomError);
+	br.Core.extend(customErrorConstructor, CustomError);
 	return customErrorConstructor;
 }
 

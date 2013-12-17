@@ -106,7 +106,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsBundlerContentPlugin.JS_STYLE + "'");
 		}
 		
-		FileUtils.write(sourceFile, "br.thirdparty('"+thirdpartyLib.getName()+"');", true);
+		FileUtils.write(sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');", true);
 		
 		return builderChainer;
 	}
@@ -165,7 +165,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 	
 	private String getCaplinJsClassBody(String sourceClass, String destClass) {
-		return getClassBody(sourceClass) + "br.extend(" + sourceClass + ", " + destClass + ");\n";
+		return getClassBody(sourceClass) + "br.Core.extend(" + sourceClass + ", " + destClass + ");\n";
 	}
 	
 }

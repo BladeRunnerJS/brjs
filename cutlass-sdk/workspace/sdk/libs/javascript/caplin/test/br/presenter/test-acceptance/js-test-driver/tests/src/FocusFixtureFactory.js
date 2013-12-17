@@ -1,7 +1,7 @@
 FocusFixtureFactory = function()
 {
 };
-br.implement(FocusFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(FocusFixtureFactory, br.test.FixtureFactory);
 
 FocusFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

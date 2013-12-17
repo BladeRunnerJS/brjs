@@ -12,7 +12,7 @@ br.test.viewhandler.MouseMove = function()
 {
 };
 
-br.implement(br.test.viewhandler.MouseMove, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.MouseMove, br.test.viewhandler.ViewFixtureHandler);
 
 
 br.test.viewhandler.MouseMove.prototype.set = function(eElement, mValues)

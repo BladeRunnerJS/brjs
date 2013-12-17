@@ -1,4 +1,4 @@
-br.thirdparty('mock4js');
+br.Core.thirdparty('mock4js');
 
 PropertyTest = TestCase("PropertyTest");
 
@@ -16,7 +16,7 @@ PropertyTest.prototype.tearDown = function()
 PropertyTest.prototype._getTestFormatter = function(){
 	
 	var fFormatter = function(){};
-	br.implement(fFormatter, br.presenter.formatter.Formatter);
+	br.Core.implement(fFormatter, br.presenter.formatter.Formatter);
 	fFormatter.prototype.format = function(sValue, mConfig){
 		return sValue + mConfig.c;
 	};

@@ -1,5 +1,5 @@
-br.thirdparty("jasmine");
-br.thirdparty('mock4js');
+br.Core.thirdparty("jasmine");
+br.Core.thirdparty('mock4js');
 
 GwtTestRunnerTest = TestCase("GwtTestRunnerTest");
 

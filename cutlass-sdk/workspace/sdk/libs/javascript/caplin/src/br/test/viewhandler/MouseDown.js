@@ -12,7 +12,7 @@ br.test.viewhandler.MouseDown = function()
 {
 };
 
-br.implement(br.test.viewhandler.MouseDown, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.MouseDown, br.test.viewhandler.ViewFixtureHandler);
 
 
 br.test.viewhandler.MouseDown.prototype.set = function(eElement, mValues)

@@ -6,4 +6,4 @@ br.presenter.testing.node.ChildPresentationNode = function()
 	this.property3 = new br.presenter.property.WritableProperty("p3");
 	this.grandchild = new br.presenter.testing.node.GrandChildPresentationNode();
 };
-br.extend(br.presenter.testing.node.ChildPresentationNode, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.testing.node.ChildPresentationNode, br.presenter.node.PresentationNode);

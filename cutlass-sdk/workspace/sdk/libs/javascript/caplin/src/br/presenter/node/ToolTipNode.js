@@ -14,7 +14,7 @@ br.presenter.node.ToolTipNode = function(tooltipClassname)
 
 	this.hasMoved = new br.presenter.property.EditableProperty("");
 };
-br.extend(br.presenter.node.ToolTipNode, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.node.ToolTipNode, br.presenter.node.PresentationNode);
 
 br.presenter.node.ToolTipNode.prototype.setMessage = function(sMessage)
 {

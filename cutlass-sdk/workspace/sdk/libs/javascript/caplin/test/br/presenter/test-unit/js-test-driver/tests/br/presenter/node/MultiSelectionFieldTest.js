@@ -12,7 +12,7 @@ MultiSelectionFieldTest.prototype.getTestValidator = function()
 	{
 	};
 	
-	br.extend(fValidator, br.presenter.validator.Validator);
+	br.Core.extend(fValidator, br.presenter.validator.Validator);
 	fValidator.prototype.validate = function(pOptions, mAttributes, oValidationResult)
 	{
 		var bIsValid = (pOptions.length == 2);

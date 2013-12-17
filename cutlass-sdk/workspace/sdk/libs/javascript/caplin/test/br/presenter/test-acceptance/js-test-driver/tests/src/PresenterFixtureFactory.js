@@ -2,7 +2,7 @@ PresenterFixtureFactory = function()
 {
 };
 
-br.implement(PresenterFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(PresenterFixtureFactory, br.test.FixtureFactory);
 
 PresenterFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

@@ -22,7 +22,7 @@ br.presenter.formatter.LocalisedAmountFormatter = function()
 	
 };
 
-br.implement(br.presenter.formatter.LocalisedAmountFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.LocalisedAmountFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Formats a number into an localised string representation.

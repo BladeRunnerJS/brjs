@@ -14,7 +14,7 @@
 br.presenter.formatter.SignificantFiguresFormatter = function() {
 };
 
-br.implement(br.presenter.formatter.SignificantFiguresFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.SignificantFiguresFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Formats a number to the specified number of significant figures.

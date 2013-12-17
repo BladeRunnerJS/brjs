@@ -79,4 +79,4 @@ TestPresentationModel = function()
 	this.aliasPlain = new br.presenter.property.Alias(this.plainProperty);
 	this.aliasFormatted = new br.presenter.property.Alias(this.formattedProperty);
 };
-br.extend(TestPresentationModel, br.presenter.PresentationModel);
+br.Core.extend(TestPresentationModel, br.presenter.PresentationModel);

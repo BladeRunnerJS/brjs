@@ -1,4 +1,4 @@
-var br = require('br/index');
+var br = require('br/Core');
 var Errors = require('br/Errors');
 var XmlResourceService = require('./XmlResourceService ');
 
@@ -47,6 +47,6 @@ BRXmlResourceService.prototype._loadXml = function() {
 	}
 };
 
-br.implement(BRXmlResourceService, XmlResourceService);
+br.Core.implement(BRXmlResourceService, XmlResourceService);
 
 module.exports = BRXmlResourceService;

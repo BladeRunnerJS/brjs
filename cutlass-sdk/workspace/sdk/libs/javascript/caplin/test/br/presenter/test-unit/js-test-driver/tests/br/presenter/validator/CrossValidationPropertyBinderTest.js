@@ -1,4 +1,4 @@
-br.thirdparty('mock4js');
+br.Core.thirdparty('mock4js');
 
 CrossValidationPropertyBinderTest = TestCase("CrossValidationPropertyBinderTest");
 
@@ -25,7 +25,7 @@ CrossValidationPropertyBinderTest.prototype._getLessThanTenValidator = function(
 	{
 		// nothing
 	};
-	br.implement(fValidator, br.presenter.validator.Validator);
+	br.Core.implement(fValidator, br.presenter.validator.Validator);
 
 	fValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 	{
@@ -48,7 +48,7 @@ CrossValidationPropertyBinderTest.prototype._getOrderedPropertiesValidator = fun
 	{
 		// nothing
 	};
-	br.implement(fCPValidator, br.presenter.validator.CrossPropertyValidator);
+	br.Core.implement(fCPValidator, br.presenter.validator.CrossPropertyValidator);
 
 	fCPValidator.prototype.validate = function(mProperties, oValidationResult)
 	{
@@ -77,7 +77,7 @@ CrossValidationPropertyBinderTest.prototype._getSumOfPropertiesValidator = funct
 	{
 		// nothing
 	};
-	br.implement(fCPValidator, br.presenter.validator.CrossPropertyValidator);
+	br.Core.implement(fCPValidator, br.presenter.validator.CrossPropertyValidator);
 
 	fCPValidator.prototype.validate = function(mProperties, oValidationResult)
 	{

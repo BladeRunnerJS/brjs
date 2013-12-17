@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -82,7 +82,7 @@ br.test.ViewFixture = function(sViewSelector)
 	};
 };
 
-br.inherit(br.test.ViewFixture, br.test.Fixture);
+br.Core.inherit(br.test.ViewFixture, br.test.Fixture);
 
 br.test.ViewFixture.prototype.setUp = function()
 {

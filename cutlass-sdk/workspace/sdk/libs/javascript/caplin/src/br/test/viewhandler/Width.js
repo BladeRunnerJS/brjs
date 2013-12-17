@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -14,7 +14,7 @@ br.test.viewhandler.Width = function()
 {
 };
 
-br.implement(br.test.viewhandler.Width, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.Width, br.test.viewhandler.ViewFixtureHandler);
 
 
 br.test.viewhandler.Width.prototype.set = function(eElement)

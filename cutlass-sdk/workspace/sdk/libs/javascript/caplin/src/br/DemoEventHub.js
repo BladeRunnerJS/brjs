@@ -20,7 +20,7 @@ DemoEventHub.prototype.channel = function( channel ) {
 var DemoEmitter = function(name) {
 	this.name = name;
 };
-br.extend( DemoEmitter, Emitter );
+br.Core.extend( DemoEmitter, Emitter );
 
 DemoEmitter.prototype.trigger = function() {
 	console.log( 'trigger', this.name, arguments );

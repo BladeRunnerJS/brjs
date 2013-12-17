@@ -1,4 +1,4 @@
-br.thirdparty('jsunitextensions');
+br.Core.thirdparty('jsunitextensions');
 
 MapUtilityTest = TestCase("MapUtilityTest");
 

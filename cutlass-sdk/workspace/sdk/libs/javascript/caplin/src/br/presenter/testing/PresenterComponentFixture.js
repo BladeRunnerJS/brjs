@@ -1,4 +1,4 @@
-br.thirdparty("knockout");
+br.Core.thirdparty("knockout");
 
 /**
  * Constructs a <code>br.presenter.testing.PresenterComponentFixture</code>.
@@ -63,7 +63,7 @@ br.presenter.testing.PresenterComponentFixture = function(sTemplateId, sPresenta
 };
 
 
-br.extend(br.presenter.testing.PresenterComponentFixture, br.component.testing.ComponentFixture);
+br.Core.extend(br.presenter.testing.PresenterComponentFixture, br.component.testing.ComponentFixture);
 
 
 /**

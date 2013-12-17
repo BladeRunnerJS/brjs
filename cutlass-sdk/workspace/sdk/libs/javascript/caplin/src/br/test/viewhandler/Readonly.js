@@ -11,7 +11,7 @@
 br.test.viewhandler.Readonly = function()
 {
 };
-br.implement(br.test.viewhandler.Readonly, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.Readonly, br.test.viewhandler.ViewFixtureHandler);
 br.test.viewhandler.Readonly.prototype.set = function(eElement, vValue)
 {
 	eElement.readOnly= (vValue === true);

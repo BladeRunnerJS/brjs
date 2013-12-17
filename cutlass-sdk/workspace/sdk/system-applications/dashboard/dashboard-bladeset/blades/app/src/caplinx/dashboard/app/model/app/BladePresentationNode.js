@@ -15,7 +15,7 @@ caplinx.dashboard.app.model.app.BladePresentationNode = function(sBladeName, oPa
 		this.workbenchUrl.setValue(sWorkbenchScreenUrl);
 	}
 };
-br.extend(caplinx.dashboard.app.model.app.BladePresentationNode, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.app.BladePresentationNode, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.app.BladePresentationNode.prototype.runTests = function()
 {

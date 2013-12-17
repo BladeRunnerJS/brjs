@@ -12,7 +12,7 @@ br.test.viewhandler.DoesNotHaveClass = function()
 {
 };
 
-br.implement(br.test.viewhandler.DoesNotHaveClass, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.DoesNotHaveClass, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.DoesNotHaveClass.prototype.get = function(eElement, sClassName)
 {

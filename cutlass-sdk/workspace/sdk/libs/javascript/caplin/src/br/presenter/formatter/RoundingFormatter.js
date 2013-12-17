@@ -14,7 +14,7 @@
 br.presenter.formatter.RoundingFormatter = function() {
 };
 
-br.implement(br.presenter.formatter.RoundingFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.RoundingFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Formats the number to the specified precision.

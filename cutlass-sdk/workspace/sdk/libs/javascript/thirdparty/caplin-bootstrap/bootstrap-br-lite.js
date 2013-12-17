@@ -20,10 +20,10 @@ caplin.extend = function(subClass, superClass) {
 	}
 
 	if (isFirstInheritance) {
-		return br.extend(subClass, superClass);
+		return br.Core.extend(subClass, superClass);
 	}
 
-	return br.inherit(subClass, superClass);
+	return br.Core.inherit(subClass, superClass);
 };
 
 /**
@@ -39,7 +39,7 @@ caplin.implement = function(fClass, fInterface) {
 			fClass.prototype[attribute] = fInterface.prototype[attribute];
 		}
 	}
-	br.implement(fClass, fInterface);
+	br.Core.implement(fClass, fInterface);
 };
 
 /**

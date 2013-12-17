@@ -8,7 +8,7 @@ br.presenter.validator.DateRangeCrossPropertyValidator = function()
 {
 	// nothing
 };
-br.implement(br.presenter.validator.DateRangeCrossPropertyValidator, br.presenter.validator.CrossPropertyValidator);
+br.Core.implement(br.presenter.validator.DateRangeCrossPropertyValidator, br.presenter.validator.CrossPropertyValidator);
 
 /**
  * @private

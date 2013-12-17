@@ -32,7 +32,7 @@ br.presenter.node.MappedNodeList = function(mPresentationNodes, fNodeClass)
 	br.presenter.node.NodeList.call(this, pPresentationNodes, fNodeClass);
 };
 
-br.extend(br.presenter.node.MappedNodeList, br.presenter.node.NodeList);
+br.Core.extend(br.presenter.node.MappedNodeList, br.presenter.node.NodeList);
 
 /**
  * Returns the string-to-node mapping. Treat as immutable.

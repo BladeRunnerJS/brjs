@@ -19,7 +19,7 @@ caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNo
 
 	this.isSelected.setValue(false);
 };
-br.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNode, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNode, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetPresentationNode.prototype._onSelectedChanged = function()
 {

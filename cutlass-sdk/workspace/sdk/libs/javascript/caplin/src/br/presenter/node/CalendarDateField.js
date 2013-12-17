@@ -58,7 +58,7 @@ br.presenter.node.CalendarDateField = function(vDate, vStartDate, vEndDate)
 	this.currentYear.addChangeListener(this,"_updateValidDates");
 };
 
-br.extend(br.presenter.node.CalendarDateField, br.presenter.node.DateField);
+br.Core.extend(br.presenter.node.CalendarDateField, br.presenter.node.DateField);
 
 /**
  * Represents the ALL days strategy

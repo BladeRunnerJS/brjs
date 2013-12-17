@@ -2,7 +2,7 @@ NodeListFixtureFactory = function()
 {
 };
 
-br.implement(NodeListFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(NodeListFixtureFactory, br.test.FixtureFactory);
 
 NodeListFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

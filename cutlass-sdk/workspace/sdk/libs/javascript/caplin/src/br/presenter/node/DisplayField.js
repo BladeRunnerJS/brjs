@@ -35,4 +35,4 @@ br.presenter.node.DisplayField = function(vValue)
 	this.value = vValue;
 };
 
-br.extend(br.presenter.node.DisplayField, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.node.DisplayField, br.presenter.node.PresentationNode);

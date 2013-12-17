@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -14,7 +14,7 @@ br.thirdparty("jquery");
 br.test.viewhandler.Enabled = function(){
 };
 
-br.implement(br.test.viewhandler.Enabled, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.Enabled, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.Enabled.prototype.get = function(eElement)
 {

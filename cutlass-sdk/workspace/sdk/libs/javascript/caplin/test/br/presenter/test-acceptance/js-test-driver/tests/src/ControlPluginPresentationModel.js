@@ -8,7 +8,7 @@ ControlPluginPresentationModel = function()
 	}
 	this.nodeList = new br.presenter.node.NodeList([this.nested.oNode1]);
 };
-br.extend(ControlPluginPresentationModel, br.presenter.PresentationModel);
+br.Core.extend(ControlPluginPresentationModel, br.presenter.PresentationModel);
 
 ControlPluginPresentationModel.prototype.showZeroNodeListItems = function()
 {

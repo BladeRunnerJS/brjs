@@ -20,4 +20,4 @@ br.presenter.node.ToolTipField = function(vValue)
 	br.presenter.node.Field.call(this, vValue);
 	this.tooltipClassName = new br.presenter.property.WritableProperty(false);
 };
-br.extend(br.presenter.node.ToolTipField, br.presenter.node.Field);
+br.Core.extend(br.presenter.node.ToolTipField, br.presenter.node.Field);

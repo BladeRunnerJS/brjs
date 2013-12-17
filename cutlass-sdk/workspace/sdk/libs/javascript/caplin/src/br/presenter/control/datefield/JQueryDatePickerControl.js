@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * This class is constructed by presenter automatically on your behalf.
@@ -32,7 +32,7 @@ br.presenter.control.datefield.JQueryDatePickerControl = function()
 	this.m_mOptions = {};
 };
 
-br.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.presenter.control.ControlAdaptor);
+br.Core.inherit(br.presenter.control.datefield.JQueryDatePickerControl, br.presenter.control.ControlAdaptor);
 
 // *********************** ControlAdaptor Interface ***********************
 

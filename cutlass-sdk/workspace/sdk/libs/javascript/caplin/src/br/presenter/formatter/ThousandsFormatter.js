@@ -27,7 +27,7 @@ br.presenter.formatter.ThousandsFormatter = function() {
 	this.nullValueFormatter = new br.presenter.formatter.NullValueFormatter();
 };
 
-br.implement(br.presenter.formatter.ThousandsFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.ThousandsFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Adds a separator character for each 'thousand' position in a number. eg 1000000 becomes 1,000,000

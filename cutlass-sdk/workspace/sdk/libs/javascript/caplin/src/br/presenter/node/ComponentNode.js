@@ -22,7 +22,7 @@ br.presenter.node.ComponentNode = function(oComponent)
 	this.m_oComponent = oComponent;
 };
 
-br.extend(br.presenter.node.ComponentNode, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.node.ComponentNode, br.presenter.node.PresentationNode);
 
 /**
  * Retrieve the component stored within this node.

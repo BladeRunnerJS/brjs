@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -14,7 +14,7 @@ br.test.viewhandler.Top = function()
 {
 };
 
-br.implement(br.test.viewhandler.Top, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.Top, br.test.viewhandler.ViewFixtureHandler);
 
 
 br.test.viewhandler.Top.prototype.set = function(eElement)

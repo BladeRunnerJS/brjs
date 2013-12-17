@@ -1,10 +1,10 @@
-br.thirdparty("knockout");
-br.thirdparty("caplin-br");
+br.Core.thirdparty("knockout");
+br.Core.thirdparty("caplin-br");
 
 (function() {
 	"use strict";
 	
-	var br = require('br/index');
+	var br = require('br/Core');
 	var Utility = require('br/core/Utility');
 	var Errors = require('br/Errors');
 	var ServiceRegistry = require('br/ServiceRegistry');
@@ -58,8 +58,8 @@ br.thirdparty("caplin-br");
 		this.m_oPresentationModel._$setPath(this);
 	};
 	
-	br.implement(PresenterComponent, br.component.Component);
-	br.implement(PresenterComponent, br.component.Serializable);
+	br.Core.implement(PresenterComponent, br.component.Component);
+	br.Core.implement(PresenterComponent, br.component.Serializable);
 
 	/**
 	 * @private
@@ -68,7 +68,7 @@ br.thirdparty("caplin-br");
 	PresenterComponent.TemplateNotFoundError = function(message, filename, lineNumber) {
 		Errors.CustomError.call(this, PresenterComponent.TEMPLATE_NOT_FOUND, message, filename, lineNumber);
 	};
-	br.extend(PresenterComponent.TemplateNotFoundError, Errors.CustomError);
+	br.Core.extend(PresenterComponent.TemplateNotFoundError, Errors.CustomError);
 
 	/**
 	 * @private

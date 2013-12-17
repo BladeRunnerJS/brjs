@@ -29,7 +29,7 @@
  * @requires br
  * @requires br/Errors
  */
-var br = require('br/index');
+var br = require('br/Core');
 var Errors = require('./Errors');
 
 var aliasData = null;

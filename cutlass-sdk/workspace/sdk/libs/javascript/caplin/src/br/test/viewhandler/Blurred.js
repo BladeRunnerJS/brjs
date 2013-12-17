@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -15,7 +15,7 @@ br.test.viewhandler.Blurred = function()
 {
 };
 
-br.implement(br.test.viewhandler.Blurred, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.Blurred, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.Blurred.prototype.set = function(eElement, vValue)
 {

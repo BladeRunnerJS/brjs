@@ -14,7 +14,7 @@
 br.presenter.formatter.TruncateDecimalFormatter = function() {
 };
 
-br.implement(br.presenter.formatter.TruncateDecimalFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.TruncateDecimalFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Truncates the value to the specified number of decimal places.  If the value has already fewer

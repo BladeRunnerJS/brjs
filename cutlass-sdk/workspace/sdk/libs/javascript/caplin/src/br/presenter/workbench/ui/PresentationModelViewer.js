@@ -17,7 +17,7 @@ br.presenter.workbench.ui.PresentationModelViewer = function(oPresentationModel)
 	this.m_eElement.appendChild(this.m_oTree.getElement());
 };
 
-br.implement(br.presenter.workbench.ui.PresentationModelViewer, br.workbench.ui.WorkbenchComponent);
+br.Core.implement(br.presenter.workbench.ui.PresentationModelViewer, br.workbench.ui.WorkbenchComponent);
 
 br.presenter.workbench.ui.PresentationModelViewer.prototype._getFormElement = function()
 {

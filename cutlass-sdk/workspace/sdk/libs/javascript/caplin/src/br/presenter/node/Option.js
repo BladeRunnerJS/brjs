@@ -21,7 +21,7 @@ br.presenter.node.Option = function(sValue, sLabel)
 	this.label = new br.presenter.property.WritableProperty(sLabel);
 };
 
-br.extend(br.presenter.node.Option, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.node.Option, br.presenter.node.PresentationNode);
 
 /**
  * Returns the option label.

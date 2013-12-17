@@ -10,7 +10,7 @@ br.presenter.view.knockout.ControlPluginNodeListListener = function(fControlHand
 	this.m_fControlHandler = fControlHandler;
 };
 
-br.inherit(br.presenter.view.knockout.ControlPluginNodeListListener, br.presenter.node.NodeListListener);
+br.Core.inherit(br.presenter.view.knockout.ControlPluginNodeListListener, br.presenter.node.NodeListListener);
 
 br.presenter.view.knockout.ControlPluginNodeListListener.prototype.onNodeListRendered = function()
 {

@@ -1,7 +1,7 @@
 caplinx.dashboard.app.testing.DashboardFixtureFactory = function ()
 {
 };
-br.inherit(caplinx.dashboard.app.testing.DashboardFixtureFactory, br.test.FixtureFactory);
+br.Core.inherit(caplinx.dashboard.app.testing.DashboardFixtureFactory, br.test.FixtureFactory);
 
 caplinx.dashboard.app.testing.DashboardFixtureFactory.prototype.addFixtures = function(oTestRunner)
 {

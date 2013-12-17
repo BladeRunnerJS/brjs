@@ -22,7 +22,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 
 public class NamespacedJsSourceModule implements SourceModule {
-	private static final Pattern extendPattern = Pattern.compile("(caplin|br)\\.(extend|implement)\\([^,]+,\\s*([^)]+)\\)");
+	private static final Pattern extendPattern = Pattern.compile("(caplin|br\\.Core)\\.(extend|implement)\\([^,]+,\\s*([^)]+)\\)");
 	
 	private LinkedAsset linkedAsset;
 	private AssetLocation assetLocation;

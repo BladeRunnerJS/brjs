@@ -10,7 +10,7 @@ br.test.SubFixtureRegistry = function(oParentFixtureRegistry, sScope)
 	this.m_sScope = sScope;
 };
 
-br.inherit(br.test.SubFixtureRegistry, br.test.FixtureRegistry);
+br.Core.inherit(br.test.SubFixtureRegistry, br.test.FixtureRegistry);
 
 //*** FixtureRegistry Interface ***
 

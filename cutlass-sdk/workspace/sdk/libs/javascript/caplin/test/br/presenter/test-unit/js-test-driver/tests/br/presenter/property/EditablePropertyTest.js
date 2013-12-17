@@ -1,4 +1,4 @@
-br.thirdparty('mock4js');
+br.Core.thirdparty('mock4js');
 
 EditablePropertyTest = TestCase("EditablePropertyTest");
 
@@ -21,7 +21,7 @@ EditablePropertyTest.prototype._getTestValidator = function(bAsync)
 		this.m_sResultMessage = bAsync ? "async" : "sync";
 		this.m_pValidationRequests = [];
 	};
-	br.implement(fValidator, br.presenter.validator.Validator);
+	br.Core.implement(fValidator, br.presenter.validator.Validator);
 	
 	fValidator.prototype.validate = function(sText, mConfig, oValidationResult)
 	{
@@ -68,7 +68,7 @@ EditablePropertyTest.prototype.test_setUserEnteredValueSetsValue = function()
 EditablePropertyTest.prototype.test_setUserEnteredValueSetsParsedValueWhenParsersAreAdded = function()
 {
 	var fParser = function(){};
-	br.implement(fParser, br.presenter.parser.Parser);
+	br.Core.implement(fParser, br.presenter.parser.Parser);
 
 	fParser.prototype.parse = function(sText, mConfig){
 		return sText.replace(mConfig.find, mConfig.replace);

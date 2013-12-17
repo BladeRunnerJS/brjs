@@ -6,7 +6,7 @@ br.test.viewhandler.OnKeyUp = function()
 {
 };
 
-br.implement(br.test.viewhandler.OnKeyUp, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.OnKeyUp, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.OnKeyUp.prototype.set = function(eElement, mValues)
 {

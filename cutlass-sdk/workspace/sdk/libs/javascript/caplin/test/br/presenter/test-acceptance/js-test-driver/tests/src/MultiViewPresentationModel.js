@@ -6,4 +6,4 @@ MultiViewPresentationModel = function()
 	this.multiSelectField = new br.presenter.node.MultiSelectionField(["A","B","C"], ["A","C"]);
 	this.multiSelectField.controlName.setValue("aMultiSelectionField");
 };
-br.extend(MultiViewPresentationModel, br.presenter.PresentationModel);
+br.Core.extend(MultiViewPresentationModel, br.presenter.PresentationModel);

@@ -18,7 +18,7 @@
 br.presenter.formatter.DecimalFormatter = function() {
 };
 
-br.implement(br.presenter.formatter.DecimalFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.DecimalFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Formats the value to the specified number of decimal places.

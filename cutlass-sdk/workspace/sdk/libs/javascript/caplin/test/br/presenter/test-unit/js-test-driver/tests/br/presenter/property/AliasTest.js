@@ -13,7 +13,7 @@ AliasTest.prototype.tearDown = function()
 AliasTest.prototype._getFormatter = function()
 {
 	var fFormatter = function(){};
-	br.implement(fFormatter, br.presenter.formatter.Formatter);
+	br.Core.implement(fFormatter, br.presenter.formatter.Formatter);
 	fFormatter.prototype.format = function(vValue, mAttributes)
 	{
 		return vValue.toUpperCase();

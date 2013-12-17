@@ -11,7 +11,7 @@ br.test.viewhandler.ClassName = function()
 {
 };
 
-br.implement(br.test.viewhandler.ClassName, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.ClassName, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.ClassName.prototype.get = function(eElement)
 {

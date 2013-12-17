@@ -50,7 +50,7 @@
 		this.m_fOnOpenCallback = null;
 	};
 
-	br.implement(ComponentFixture, br.test.Fixture);
+	br.Core.implement(ComponentFixture, br.test.Fixture);
 
 	/**
 	 * Upon set-up of the ComponentFixture, the ComponentFactory is configured not to create an ErrorComponent. If 
@@ -265,7 +265,7 @@
 		br.component.Frame.call(this);
 	};
 
-	br.extend(ComponentFrame, br.component.Frame);
+	br.Core.extend(ComponentFrame, br.component.Frame);
 
 	ComponentFrame.prototype.setContent = function(element) {
 		this._fixture._setElement(element);
@@ -287,7 +287,7 @@
 		this.m_oComponentFrame = oComponentFrame;
 	};
 
-	br.extend(ComponentFrameFixture, br.test.Fixture);
+	br.Core.extend(ComponentFrameFixture, br.test.Fixture);
 
 	ComponentFrameFixture.prototype.canHandleProperty = function(sProperty) {
 		return sProperty === "isDirty";

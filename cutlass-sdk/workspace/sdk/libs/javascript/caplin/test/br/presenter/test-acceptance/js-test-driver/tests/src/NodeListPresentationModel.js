@@ -17,14 +17,14 @@ NodeListPresentationModel = function()
 	this.nodeList = new br.presenter.node.NodeList([this.nested.oNode1]);
 	this.anotherNodeList = new br.presenter.node.NodeList([]);
 };
-br.extend(NodeListPresentationModel, br.presenter.PresentationModel);
+br.Core.extend(NodeListPresentationModel, br.presenter.PresentationModel);
 
 TemplateAwarePresentationNode = function(sNodeText)
 {
 	this.itemProperty = new br.presenter.property.WritableProperty(sNodeText);
 };
-br.extend(TemplateAwarePresentationNode, br.presenter.node.PresentationNode);
-br.implement(TemplateAwarePresentationNode, br.presenter.node.TemplateAware);
+br.Core.extend(TemplateAwarePresentationNode, br.presenter.node.PresentationNode);
+br.Core.implement(TemplateAwarePresentationNode, br.presenter.node.TemplateAware);
 
 TemplateAwarePresentationNode.prototype.getTemplateName = function()
 {

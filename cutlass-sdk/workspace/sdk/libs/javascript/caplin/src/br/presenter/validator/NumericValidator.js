@@ -7,7 +7,7 @@ br.presenter.validator.NumericValidator = function(sFailureMessage)
 	this.m_oRegex = new RegExp(/^\d+$/);
 };
 
-br.implement(br.presenter.validator.NumericValidator, br.presenter.validator.Validator);
+br.Core.implement(br.presenter.validator.NumericValidator, br.presenter.validator.Validator);
 
 br.presenter.validator.NumericValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {

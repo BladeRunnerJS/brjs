@@ -25,7 +25,7 @@ br.presenter.property.Alias = function(oProperty)
 	br.presenter.property.Property.call(this, vInitial);
 };
 
-br.extend(br.presenter.property.Alias, br.presenter.property.Property);
+br.Core.extend(br.presenter.property.Alias, br.presenter.property.Property);
 
 /**
  * @private

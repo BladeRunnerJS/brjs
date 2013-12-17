@@ -2,7 +2,7 @@ br.presenter.testing.UpperCaseFormatter = function()
 {
 	// nothing
 };
-br.implement(br.presenter.testing.UpperCaseFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.testing.UpperCaseFormatter, br.presenter.formatter.Formatter);
 
 br.presenter.testing.UpperCaseFormatter.prototype.format = function(vValue, mAttributes)
 {

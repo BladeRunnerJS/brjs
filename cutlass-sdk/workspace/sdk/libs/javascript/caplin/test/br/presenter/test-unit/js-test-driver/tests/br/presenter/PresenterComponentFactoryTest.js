@@ -16,7 +16,7 @@ PresenterComponentFactoryTest.MockPresentationModel = function()
 {
 	// nothing
 };
-br.extend(PresenterComponentFactoryTest.MockPresentationModel, br.presenter.PresentationModel);
+br.Core.extend(PresenterComponentFactoryTest.MockPresentationModel, br.presenter.PresentationModel);
 
 PresenterComponentFactoryTest.BadPresentationModel = function()
 {

@@ -15,7 +15,7 @@ br.presenter.formatter.PercentFormatter = function() {
 	this.roundingFormatter = new br.presenter.formatter.RoundingFormatter();
 };
 
-br.implement(br.presenter.formatter.PercentFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.PercentFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Converts a decimal number to a percentage.

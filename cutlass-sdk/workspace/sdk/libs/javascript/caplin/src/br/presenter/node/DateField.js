@@ -1,4 +1,4 @@
-br.thirdparty("momentjs");
+br.Core.thirdparty("momentjs");
 
 /**
  * Constructs a new instance of <code>DateField</code>.
@@ -65,4 +65,4 @@ br.presenter.node.DateField = function(vDate, vStartDate, vEndDate)
 	}, new br.presenter.validator.DateRangeCrossPropertyValidator());
 	this.value.forceValidation();
 };
-br.extend(br.presenter.node.DateField, br.presenter.node.Field);
+br.Core.extend(br.presenter.node.DateField, br.presenter.node.Field);

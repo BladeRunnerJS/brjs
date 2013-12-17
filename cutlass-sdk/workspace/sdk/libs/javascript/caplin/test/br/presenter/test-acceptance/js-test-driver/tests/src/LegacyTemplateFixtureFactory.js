@@ -2,7 +2,7 @@ LegacyTemplateFixtureFactory = function()
 {
 };
 
-br.implement(LegacyTemplateFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(LegacyTemplateFixtureFactory, br.test.FixtureFactory);
 
 LegacyTemplateFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

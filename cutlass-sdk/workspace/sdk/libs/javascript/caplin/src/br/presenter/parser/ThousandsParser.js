@@ -20,7 +20,7 @@
 br.presenter.parser.ThousandsParser = function() {
 };
 
-br.implement(br.presenter.parser.ThousandsParser, br.presenter.parser.Parser);
+br.Core.implement(br.presenter.parser.ThousandsParser, br.presenter.parser.Parser);
 
 /**
  * Parses an amount, strips any thousands separators and changes the local radix (decimal point) char

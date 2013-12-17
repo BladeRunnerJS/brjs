@@ -16,7 +16,7 @@ caplinx.dashboard.app.model.app.AppDetailScreen = function(oPresentationModel)
 	oPresentationModel.appsScreen.apps.addListener(new caplinx.dashboard.app.model.ConditionalChangeListener(
 		this, "_updateImportBladesFromAppButton", this.visible, true), true);
 };
-br.extend(caplinx.dashboard.app.model.app.AppDetailScreen, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.app.AppDetailScreen, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.app.AppDetailScreen.prototype.displayApp = function(sApp)
 {

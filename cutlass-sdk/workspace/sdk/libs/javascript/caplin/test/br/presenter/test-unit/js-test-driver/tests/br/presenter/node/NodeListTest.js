@@ -1,4 +1,4 @@
-br.thirdparty('mock4js');
+br.Core.thirdparty('mock4js');
 
 NodeListTest = TestCase("NodeListTest");
 

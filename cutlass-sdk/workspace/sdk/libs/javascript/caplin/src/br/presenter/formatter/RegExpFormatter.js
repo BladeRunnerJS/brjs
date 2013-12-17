@@ -18,7 +18,7 @@ br.presenter.formatter.RegExpFormatter = function()
 	this.m_oRegExps = {};
 };
 
-br.implement(br.presenter.formatter.RegExpFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.RegExpFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Transforms a string using a standard JavaScript regular expression.

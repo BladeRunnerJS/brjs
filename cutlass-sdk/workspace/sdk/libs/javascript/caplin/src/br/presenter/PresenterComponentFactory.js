@@ -10,5 +10,5 @@ br.presenter.PresenterComponentFactory = function() {};
 br.presenter.PresenterComponentFactory.prototype.createFromXml = br.presenter.component.PresenterComponent.deserialize;
 
 function onlyUsedToEnsureBundlerOrder_untilWeHaveTheNewBundler_doesNotActuallyRun() {
-	br.extend(br.presenter.PresenterComponentFactory, br.presenter.component.PresenterComponent);
+	br.Core.extend(br.presenter.PresenterComponentFactory, br.presenter.component.PresenterComponent);
 }

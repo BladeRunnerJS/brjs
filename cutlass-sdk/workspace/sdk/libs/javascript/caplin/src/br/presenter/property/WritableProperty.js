@@ -13,7 +13,7 @@ br.presenter.property.WritableProperty = function(vValue)
 {
 	br.presenter.property.Property.call(this, vValue);
 };
-br.extend(br.presenter.property.WritableProperty, br.presenter.property.Property);
+br.Core.extend(br.presenter.property.WritableProperty, br.presenter.property.Property);
 
 /**
  * Sets the unformatted value for this property and notifies listeners of the

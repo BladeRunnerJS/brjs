@@ -13,7 +13,7 @@ br.presenter.testing.PresentationModelFixture = function()
 {
 	this._initializePlugins();
 };
-br.inherit(br.presenter.testing.PresentationModelFixture, br.component.testing.ComponentModelFixture);
+br.Core.inherit(br.presenter.testing.PresentationModelFixture, br.component.testing.ComponentModelFixture);
 
 /**
  * @private

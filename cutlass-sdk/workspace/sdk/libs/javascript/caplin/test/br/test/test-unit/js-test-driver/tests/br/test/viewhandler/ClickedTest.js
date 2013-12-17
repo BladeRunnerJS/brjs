@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 ClickedTest = TestCase("ClickedTest");
 

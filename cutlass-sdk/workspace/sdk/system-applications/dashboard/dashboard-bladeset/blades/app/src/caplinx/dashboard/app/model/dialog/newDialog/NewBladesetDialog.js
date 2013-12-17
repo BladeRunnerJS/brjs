@@ -14,7 +14,7 @@ caplinx.dashboard.app.model.dialog.newDialog.NewBladesetDialog = function(oPrese
 	
 	this.bladesetName.value.addValidationCompleteListener(this, "_updateDialog");
 };
-br.extend(caplinx.dashboard.app.model.dialog.newDialog.NewBladesetDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.Core.extend(caplinx.dashboard.app.model.dialog.newDialog.NewBladesetDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.newDialog.NewBladesetDialog.prototype.initializeForm = function()
 {

@@ -12,7 +12,7 @@ caplinx.dashboard.app.model.form.Button = function(vValue, oActionObject, sActio
 	this.m_oActionObject = oActionObject;
 	this.m_sActionMethod = sActionMethod;
 };
-br.extend(caplinx.dashboard.app.model.form.Button, br.presenter.node.Field);
+br.Core.extend(caplinx.dashboard.app.model.form.Button, br.presenter.node.Field);
 
 caplinx.dashboard.app.model.form.Button.prototype.action = function()
 {

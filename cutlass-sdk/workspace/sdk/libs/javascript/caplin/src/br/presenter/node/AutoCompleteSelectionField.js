@@ -19,7 +19,7 @@ br.presenter.node.AutoCompleteSelectionField = function(oProperty, oAutoComplete
 	this.m_oAutoCompleteProvider = oAutoCompleteProvider;
 };
 
-br.extend(br.presenter.node.AutoCompleteSelectionField, br.presenter.node.SelectionField);
+br.Core.extend(br.presenter.node.AutoCompleteSelectionField, br.presenter.node.SelectionField);
 
 /**
  * @private

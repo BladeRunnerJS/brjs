@@ -10,7 +10,7 @@ br.presenter.formatter.TrimFormatter = function() {
 	this.regExpFormatter = new br.presenter.formatter.RegExpFormatter();
 };
 
-br.implement(br.presenter.formatter.TrimFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.TrimFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Trims whitespace from boths ends of the string.

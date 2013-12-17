@@ -95,7 +95,7 @@ br.presenter.node.MultiSelectionField = function(vOptions, vValues)
 	// validate the initial values
 	this.value.forceValidation();
 };
-br.extend(br.presenter.node.MultiSelectionField, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.node.MultiSelectionField, br.presenter.node.PresentationNode);
 
 /**
  * Whether the multi-selection field displays a validation error if the selected values (within {@link #value})

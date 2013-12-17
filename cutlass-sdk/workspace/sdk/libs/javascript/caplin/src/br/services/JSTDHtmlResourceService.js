@@ -18,6 +18,6 @@ function JSTDHtmlResourceService(sUrl) {
 	BRHtmlResourceService.call(this, sUrl || sDefaultUrl);
 }
 
-br.extend(JSTDHtmlResourceService, BRHtmlResourceService);
+br.Core.extend(JSTDHtmlResourceService, BRHtmlResourceService);
 
 module.exports = JSTDHtmlResourceService;

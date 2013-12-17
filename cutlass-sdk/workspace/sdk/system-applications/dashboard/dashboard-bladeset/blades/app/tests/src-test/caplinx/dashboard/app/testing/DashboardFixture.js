@@ -11,7 +11,7 @@ caplinx.dashboard.app.testing.DashboardFixture = function(oViewFixture, oPageUrl
 	this.oApp = null;
 };
 
-br.inherit(caplinx.dashboard.app.testing.DashboardFixture, br.test.Fixture);
+br.Core.inherit(caplinx.dashboard.app.testing.DashboardFixture, br.test.Fixture);
 
 caplinx.dashboard.app.testing.DashboardFixture.prototype.setUp = function() 
 {

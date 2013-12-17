@@ -1,4 +1,4 @@
-br.thirdparty("extjs");
+br.Core.thirdparty("extjs");
 
 /**
  * This class is constructed by presenter automatically on your behalf.
@@ -54,7 +54,7 @@ br.presenter.control.selectionfield.ExtJsComboBoxControl = function()
 		}
 	};
 };
-br.inherit(br.presenter.control.selectionfield.ExtJsComboBoxControl, br.presenter.control.ControlAdaptor);
+br.Core.inherit(br.presenter.control.selectionfield.ExtJsComboBoxControl, br.presenter.control.ControlAdaptor);
 
 // *********************** ControlAdaptor Interface ***********************
 

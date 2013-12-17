@@ -14,7 +14,7 @@ br.presenter.validator.ValidSelectionValidator = function(oOptions)
 	this.m_oOptions = oOptions;
 	this.m_bAllowInvalidSelections = false;
 };
-br.implement(br.presenter.validator.ValidSelectionValidator, br.presenter.validator.Validator);
+br.Core.implement(br.presenter.validator.ValidSelectionValidator, br.presenter.validator.Validator);
 
 br.presenter.validator.ValidSelectionValidator.prototype.allowInvalidSelections = function(bAllowInvalidSelections)
 {

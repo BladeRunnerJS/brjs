@@ -17,8 +17,8 @@ br.presenter.node.TemplateNode = function(sTemplateName)
 	this.m_sTemplateName = sTemplateName;
 };
 
-br.extend(br.presenter.node.TemplateNode, br.presenter.node.PresentationNode);
-br.implement(br.presenter.node.TemplateNode, br.presenter.node.TemplateAware);
+br.Core.extend(br.presenter.node.TemplateNode, br.presenter.node.PresentationNode);
+br.Core.implement(br.presenter.node.TemplateNode, br.presenter.node.TemplateAware);
 
 /**
  * @private

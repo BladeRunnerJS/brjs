@@ -22,7 +22,7 @@ br.presenter.parser.DateParser = function()
 	this.m_sSeparatorsDefault = "\\/.-";
 	this.m_oDateFormatter = new br.presenter.formatter.DateFormatter();
 };
-br.implement(br.presenter.parser.DateParser, br.presenter.parser.Parser);
+br.Core.implement(br.presenter.parser.DateParser, br.presenter.parser.Parser);
 
 /**
  * Matches a date string and converts it to a specified output format.

@@ -6,7 +6,7 @@ br.presenter.validator.NotEmptyValidator = function(sFailureMessage)
 	this.sMessage = sFailureMessage;
 };
 
-br.implement(br.presenter.validator.NotEmptyValidator, br.presenter.validator.Validator);
+br.Core.implement(br.presenter.validator.NotEmptyValidator, br.presenter.validator.Validator);
 
 br.presenter.validator.NotEmptyValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {

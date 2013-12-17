@@ -1,4 +1,4 @@
-br.thirdparty("momentjs");
+br.Core.thirdparty("momentjs");
 /**
  * Constructs a new <code>ISODateProperty</code> instance.
  * 
@@ -21,7 +21,7 @@ br.presenter.property.ISODateProperty = function(vValue)
 	br.presenter.property.WritableProperty.call(this, vValue);
 };
 
-br.extend(br.presenter.property.ISODateProperty, br.presenter.property.WritableProperty);
+br.Core.extend(br.presenter.property.ISODateProperty, br.presenter.property.WritableProperty);
 
 /**
  * Gets the date object that is property represents

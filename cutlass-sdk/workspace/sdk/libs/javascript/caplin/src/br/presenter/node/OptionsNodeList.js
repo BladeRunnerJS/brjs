@@ -15,7 +15,7 @@ br.presenter.node.OptionsNodeList = function(vOptions)
 	var pOptions = this._getOptionObjects(vOptions);
 	br.presenter.node.NodeList.call(this, pOptions, br.presenter.node.Option);
 };
-br.extend(br.presenter.node.OptionsNodeList, br.presenter.node.NodeList);
+br.Core.extend(br.presenter.node.OptionsNodeList, br.presenter.node.NodeList);
 
 /**
  * Retrieve the array of {@link br.presenter.node.Option} instances contained by this object.

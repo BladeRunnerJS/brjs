@@ -4,7 +4,7 @@ caplinx.dashboard.app.testing.RequestUrlFixture = function()
 	
 	this.m_pCannedResponses = [];
 };
-br.inherit(caplinx.dashboard.app.testing.RequestUrlFixture, br.test.Fixture);
+br.Core.inherit(caplinx.dashboard.app.testing.RequestUrlFixture, br.test.Fixture);
 
 caplinx.dashboard.app.testing.RequestUrlFixture.prototype.setXhrFactory = function(oXhrFactory)
 {

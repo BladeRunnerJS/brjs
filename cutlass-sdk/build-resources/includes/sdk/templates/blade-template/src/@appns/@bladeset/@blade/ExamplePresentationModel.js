@@ -9,7 +9,7 @@ caplin.thirdparty( 'caplin-br' );
     
     this.message = new Property( 'Hello World!' );
   };
-  br.extend( ExamplePresentationModel, br.presenter.PresentationModel );
+  br.Core.extend( ExamplePresentationModel, br.presenter.PresentationModel );
 
   ExamplePresentationModel.prototype.buttonClicked = function() {
     console.log( 'button clicked' );

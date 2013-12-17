@@ -7,7 +7,7 @@ br.presenter.workbench.model.TreeViewerPM = function(oSearchTarget)
 	this.m_oSearchTarget = oSearchTarget
 };
 
-br.extend(br.presenter.workbench.model.TreeViewerPM, br.presenter.PresentationModel);
+br.Core.extend(br.presenter.workbench.model.TreeViewerPM, br.presenter.PresentationModel);
 
 br.presenter.workbench.model.TreeViewerPM.prototype.close = function()
 {

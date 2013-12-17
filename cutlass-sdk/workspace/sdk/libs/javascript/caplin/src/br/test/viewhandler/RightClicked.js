@@ -11,7 +11,7 @@
 br.test.viewhandler.RightClicked = function()
 {
 };
-br.implement(br.test.viewhandler.RightClicked, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.RightClicked, br.test.viewhandler.ViewFixtureHandler);
 
 
 br.test.viewhandler.RightClicked.prototype.set = function(eElement)

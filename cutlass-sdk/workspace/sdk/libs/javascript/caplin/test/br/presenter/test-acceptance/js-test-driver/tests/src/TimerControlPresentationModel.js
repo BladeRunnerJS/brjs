@@ -5,7 +5,7 @@ TimerControlPresentationModel = function()
 	this.name = new br.presenter.property.EditableProperty("Caplin");
 
 };
-br.extend(TimerControlPresentationModel, br.presenter.PresentationModel);
+br.Core.extend(TimerControlPresentationModel, br.presenter.PresentationModel);
 
 /*
  * Set interval not fully supported

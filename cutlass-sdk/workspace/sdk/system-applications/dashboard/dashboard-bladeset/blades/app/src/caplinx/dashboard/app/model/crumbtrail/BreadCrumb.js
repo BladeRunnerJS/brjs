@@ -7,4 +7,4 @@ caplinx.dashboard.app.model.crumbtrail.BreadCrumb = function(sClass, sName, sUrl
 	this.name = new br.presenter.property.WritableProperty(sName);
 	this.url = new br.presenter.property.WritableProperty(sUrl);
 };
-br.extend(caplinx.dashboard.app.model.crumbtrail.BreadCrumb, br.presenter.node.TemplateNode);
+br.Core.extend(caplinx.dashboard.app.model.crumbtrail.BreadCrumb, br.presenter.node.TemplateNode);

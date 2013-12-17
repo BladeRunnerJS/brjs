@@ -9,4 +9,4 @@ FocusPresentationModel = function()
 	this.inputA.hasFocus.setValue(false);
 	this.inputB.hasFocus.setValue(false);
 };
-br.extend(FocusPresentationModel, br.presenter.PresentationModel);
+br.Core.extend(FocusPresentationModel, br.presenter.PresentationModel);

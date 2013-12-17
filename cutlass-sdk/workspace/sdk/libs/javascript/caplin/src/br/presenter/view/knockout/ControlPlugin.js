@@ -1,4 +1,4 @@
-br.thirdparty("knockout");
+br.Core.thirdparty("knockout");
 
 /**
  * @private

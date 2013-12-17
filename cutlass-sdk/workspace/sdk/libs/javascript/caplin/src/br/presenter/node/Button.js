@@ -34,4 +34,4 @@ br.presenter.node.Button = function(vLabel)
 	this.visible = new br.presenter.property.WritableProperty(true);
 };
 
-br.extend(br.presenter.node.Button, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.node.Button, br.presenter.node.PresentationNode);

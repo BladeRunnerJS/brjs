@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -15,7 +15,7 @@ br.test.viewhandler.LeftMarginWidth = function()
 {
 };
 
-br.implement(br.test.viewhandler.LeftMarginWidth, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.LeftMarginWidth, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.LeftMarginWidth.prototype.set = function(eElement)
 {

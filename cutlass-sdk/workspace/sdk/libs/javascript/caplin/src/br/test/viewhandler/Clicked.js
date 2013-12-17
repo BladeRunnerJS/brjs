@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -14,7 +14,7 @@ br.test.viewhandler.Clicked = function()
 {
 };
 
-br.implement(br.test.viewhandler.Clicked, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.Clicked, br.test.viewhandler.ViewFixtureHandler);
 
 
 br.test.viewhandler.Clicked.prototype.set = function(eElement, mArgs)

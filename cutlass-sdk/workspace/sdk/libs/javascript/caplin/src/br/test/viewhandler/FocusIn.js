@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -14,7 +14,7 @@ br.test.viewhandler.FocusIn = function()
 {
 };
 
-br.implement(br.test.viewhandler.FocusIn, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.FocusIn, br.test.viewhandler.ViewFixtureHandler);
 
 
 br.test.viewhandler.FocusIn.prototype.set = function(eElement)

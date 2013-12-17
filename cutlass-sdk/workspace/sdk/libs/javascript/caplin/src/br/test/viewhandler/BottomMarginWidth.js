@@ -1,4 +1,4 @@
-br.thirdparty("jquery");
+br.Core.thirdparty("jquery");
 
 /**
  * @class
@@ -15,7 +15,7 @@ br.test.viewhandler.BottomMarginWidth = function()
 {
 };
 
-br.implement(br.test.viewhandler.BottomMarginWidth, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.BottomMarginWidth, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.BottomMarginWidth.prototype.set = function(eElement)
 {

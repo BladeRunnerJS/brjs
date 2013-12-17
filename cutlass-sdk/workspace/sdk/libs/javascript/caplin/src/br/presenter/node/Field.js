@@ -67,4 +67,4 @@ br.presenter.node.Field = function(vValue)
 	/** @private */
 	this.m_oValueListener = new br.presenter.node.FieldValuePropertyListener(this);
 };
-br.extend(br.presenter.node.Field, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.node.Field, br.presenter.node.PresentationNode);

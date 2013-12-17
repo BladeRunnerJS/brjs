@@ -114,7 +114,7 @@ br.presenter.node.SelectionField = function(vOptions, vValue)
 	// validate the initial values
 	this.value.forceValidation();
 };
-br.extend(br.presenter.node.SelectionField, br.presenter.node.PresentationNode);
+br.Core.extend(br.presenter.node.SelectionField, br.presenter.node.PresentationNode);
 
 /**
  * Whether the selection field displays a validation error if the selected {@link #value} is not a member of

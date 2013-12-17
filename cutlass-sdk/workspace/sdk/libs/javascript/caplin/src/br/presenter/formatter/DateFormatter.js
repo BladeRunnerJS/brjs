@@ -1,4 +1,4 @@
-br.thirdparty("momentjs");
+br.Core.thirdparty("momentjs");
 
 /**
  * @class
@@ -22,7 +22,7 @@ br.presenter.formatter.DateFormatter = function()
 	this.m_sFormatDefault = "DD-MM-YYYY HH:mm:ss";
 };
 
-br.implement(br.presenter.formatter.DateFormatter, br.presenter.formatter.Formatter);
+br.Core.implement(br.presenter.formatter.DateFormatter, br.presenter.formatter.Formatter);
 
 /**
  * Formats a date by converting it from a specified input format to a new output format.

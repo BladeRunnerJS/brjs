@@ -1,4 +1,4 @@
-br.thirdparty('mock4js');
+br.Core.thirdparty('mock4js');
 
 PresenterComponentTest = TestCase("PresenterComponentTest");
 
@@ -24,13 +24,13 @@ PresenterComponentTest.prototype.tearDown = function()
 PresenterComponentTest.FakePresentationModel = function()
 {
 };
-br.extend(PresenterComponentTest.FakePresentationModel, br.presenter.PresentationModel);
+br.Core.extend(PresenterComponentTest.FakePresentationModel, br.presenter.PresentationModel);
 
 PresenterComponentTest.MockPresentationModel = function()
 {
 };
-br.extend(PresenterComponentTest.MockPresentationModel, br.presenter.PresentationModel);
-br.implement(PresenterComponentTest.MockPresentationModel, br.presenter.SerializablePresentationModel);
+br.Core.extend(PresenterComponentTest.MockPresentationModel, br.presenter.PresentationModel);
+br.Core.implement(PresenterComponentTest.MockPresentationModel, br.presenter.SerializablePresentationModel);
 
 PresenterComponentTest.MockPresentationModel.prototype.serialize = function()
 {

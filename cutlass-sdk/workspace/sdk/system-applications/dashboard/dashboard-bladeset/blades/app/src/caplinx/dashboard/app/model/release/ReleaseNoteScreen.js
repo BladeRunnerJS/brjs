@@ -7,7 +7,7 @@ caplinx.dashboard.app.model.release.ReleaseNoteScreen = function(oPresentationMo
 	this.visible = new br.presenter.property.WritableProperty(false);
 	this.content = new br.presenter.property.WritableProperty();
 };
-br.extend(caplinx.dashboard.app.model.release.ReleaseNoteScreen, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.release.ReleaseNoteScreen, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.release.ReleaseNoteScreen.prototype.displayReleaseNote = function()
 {

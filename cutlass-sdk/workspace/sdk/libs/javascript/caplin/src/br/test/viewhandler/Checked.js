@@ -12,7 +12,7 @@ br.test.viewhandler.Checked = function()
 {
 };
 
-br.implement(br.test.viewhandler.Checked, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.Checked, br.test.viewhandler.ViewFixtureHandler);
 
 br.test.viewhandler.Checked.prototype.get = function(eElement)
 {

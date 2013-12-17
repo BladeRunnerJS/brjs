@@ -1,5 +1,5 @@
-br.thirdparty("jasmine");
-br.thirdparty("caplin-br");
+br.Core.thirdparty("jasmine");
+br.Core.thirdparty("caplin-br");
 
 /**
  * @private
@@ -44,7 +44,7 @@ br.test.GwtTestRunner = function(sFixtureFactoryClass) {
 	this.m_fFinishedContinuesFrom = br.test.GwtTestRunner.createTestMethod(this, "finishedContinuesFrom");
 };
 
-br.inherit(br.test.GwtTestRunner, br.test.FixtureRegistry);
+br.Core.inherit(br.test.GwtTestRunner, br.test.FixtureRegistry);
 
 br.test.GwtTestRunner.m_mTests = {};
 br.test.GwtTestRunner.m_mSuites = {};

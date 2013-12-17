@@ -2,7 +2,7 @@ caplinx.dashboard.app.testing.LocalStorageFixture = function()
 {
 	this.m_oLocalStorage = null;
 };
-br.inherit(caplinx.dashboard.app.testing.LocalStorageFixture, br.test.Fixture);
+br.Core.inherit(caplinx.dashboard.app.testing.LocalStorageFixture, br.test.Fixture);
 
 caplinx.dashboard.app.testing.LocalStorageFixture.prototype.setLocalStorage = function(oLocalStorage) {
 	this.m_oLocalStorage = oLocalStorage;

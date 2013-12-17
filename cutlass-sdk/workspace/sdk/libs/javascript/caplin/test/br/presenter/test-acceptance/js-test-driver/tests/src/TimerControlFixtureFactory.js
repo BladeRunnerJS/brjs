@@ -2,7 +2,7 @@ TimerControlFixtureFactory = function()
 {
 };
 
-br.implement(TimerControlFixtureFactory, br.test.FixtureFactory);
+br.Core.implement(TimerControlFixtureFactory, br.test.FixtureFactory);
 
 TimerControlFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {

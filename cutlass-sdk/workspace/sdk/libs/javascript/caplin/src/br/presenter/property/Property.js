@@ -53,7 +53,7 @@ br.presenter.property.Property = function(vValue)
 	/** @private */
 	this.m_oUpdateListenerFactory = new br.util.ListenerFactory(br.presenter.property.PropertyListener, "onPropertyUpdated");
 };
-br.extend(br.presenter.property.Property, br.presenter.view.knockout.KnockoutProperty);
+br.Core.extend(br.presenter.property.Property, br.presenter.view.knockout.KnockoutProperty);
 
 /**
  * Returns the unformatted value for this property.

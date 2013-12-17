@@ -12,7 +12,7 @@ br.test.viewhandler.MouseOver = function()
 {
 };
 
-br.implement(br.test.viewhandler.MouseOver, br.test.viewhandler.ViewFixtureHandler);
+br.Core.implement(br.test.viewhandler.MouseOver, br.test.viewhandler.ViewFixtureHandler);
 
 
 br.test.viewhandler.MouseOver.prototype.set = function(eElement, mValues)

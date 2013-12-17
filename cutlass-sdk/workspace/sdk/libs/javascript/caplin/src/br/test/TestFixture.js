@@ -8,7 +8,7 @@ br.test.TestFixture = function(oGwtTestRunner)
 	this.m_oGwtTestRunner = oGwtTestRunner;
 };
 
-br.inherit(br.test.TestFixture, br.test.Fixture);
+br.Core.inherit(br.test.TestFixture, br.test.Fixture);
 
 br.test.TestFixture.prototype.canHandleExactMatch = function()
 {

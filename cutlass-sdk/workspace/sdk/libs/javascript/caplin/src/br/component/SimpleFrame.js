@@ -5,7 +5,7 @@ br.component.SimpleFrame = function(component, width, height) {
 	this.frameElement.className = "component-frame simple";
 	component.setDisplayFrame(this);
 };
-br.extend(br.component.SimpleFrame, br.component.Frame);
+br.Core.extend(br.component.SimpleFrame, br.component.Frame);
 
 br.component.SimpleFrame.prototype.setContent = function(contentElement) {
 	this.frameElement.appendChild(contentElement);
