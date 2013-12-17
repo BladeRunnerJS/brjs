@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.UnhandledAssetContainerException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.FileUtility;
 
@@ -81,13 +82,19 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
 		
 		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			assetLocations.addAll( assetPlugin.getAssetLocations(this) );
+			try 
+			{
+				return new ArrayList<AssetLocation>( assetPlugin.getAssetLocations(this) );
+			}
+			catch (UnhandledAssetContainerException ex)
+			{
+				continue;
+			}
 		}
 		
-		return assetLocations;
+		return null;
 	}
 	
 	private String normalizePath(String path) {

@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.UnhandledAssetContainerException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
@@ -22,14 +23,16 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
-		List<AssetLocation> assetLocations = new ArrayList<>();
+	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) throws UnhandledAssetContainerException 
+	{
 		
 		if((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists())) {
+			List<AssetLocation> assetLocations = new ArrayList<>();
 			assetLocations.add(new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
+			return assetLocations;
 		}
 		
-		return assetLocations;
+		throw new UnhandledAssetContainerException();
 	}
 	
 	@Override

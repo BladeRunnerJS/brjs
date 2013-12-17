@@ -8,13 +8,14 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.exception.UnhandledAssetContainerException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements AssetPlugin {
 	private AssetPlugin assetPlugin;
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
+	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) throws UnhandledAssetContainerException {
 		initializePlugin();
 		return assetPlugin.getAssetLocations(assetContainer);
 	}

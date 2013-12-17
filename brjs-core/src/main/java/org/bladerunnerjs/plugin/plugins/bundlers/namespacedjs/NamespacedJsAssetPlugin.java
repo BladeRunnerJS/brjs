@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.exception.UnhandledAssetContainerException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
@@ -19,8 +20,8 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
-		return new ArrayList<>();
+	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) throws UnhandledAssetContainerException {
+		throw new UnhandledAssetContainerException();
 	}
 	
 	@Override
