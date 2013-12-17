@@ -3,12 +3,16 @@
 	<head>
 		<base href="@APP.VERSION@"/>
 		<title>BladeRunner Dashboard</title>
-		<@css.bundle theme="standard"@/>
-		<@new-js.bundle dev-minifier="combined"@/>
 		<link rel="shortcut icon" href="favicon.ico">
+		
+		<@css.bundle theme="standard"@/>
 		<link type="text/css" rel="stylesheet" media="screen" href="unbundled-resources/standard-theme/typography.css" />
+		
+		<script type="text/javascript" src="unbundled-resources/bootstrap.js"></script>
+		<@new-js.bundle dev-minifier="combined"@/>
 		<script type="text/javascript" src="unbundled-resources/browserCheck.js"></script>
 		<script type="text/javascript" src="unbundled-resources/releaseNoteUtils.js"></script>
+		
 		<script type="text/javascript">
 			var br = require('br/index');
 			
