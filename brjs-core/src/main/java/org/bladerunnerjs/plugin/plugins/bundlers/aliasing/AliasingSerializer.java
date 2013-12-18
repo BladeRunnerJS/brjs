@@ -25,7 +25,7 @@ public class AliasingSerializer {
 			
 			if(aliasDefinition.getClassName() != null)
 			{
-				jsonData.append("'class':" + aliasDefinition.getClassName() + ",'className':'" + aliasDefinition.getClassName() + "'");
+				jsonData.append("'class':require('" + aliasDefinition.getRequirePath() + "'),'className':'" + aliasDefinition.getClassName() + "'");
 			}
 			
 			if(aliasDefinition.getInterfaceName() != null)

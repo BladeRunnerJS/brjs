@@ -41,7 +41,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageRefersTo("the-alias");
 		when(app).requestReceived("/default-aspect/aliasing/bundle.js", response);
-		then(response).containsText("setAliasData({'the-alias':{'class':appns.Class1,'className':'appns.Class1'}})");
+		then(response).containsText("setAliasData({'the-alias':{'class':require('appns/Class1'),'className':'appns.Class1'}})");
 	}
 	
 	// TODO: we need lots more tests...
