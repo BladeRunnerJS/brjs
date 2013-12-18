@@ -154,10 +154,10 @@ public class PluginAccessor {
 				if(bundlerContentPlugin.instanceOf(BRJSThirdpartyBundlerContentPlugin.class)) {
 					score = -1;
 				}
-				else if(bundlerContentPlugin.instanceOf(AliasingBundlerContentPlugin.class)) {
+				else if(bundlerContentPlugin.instanceOf(NamespacedJsBundlerContentPlugin.class)) {
 					score = 1;
 				}
-				else if(bundlerContentPlugin.instanceOf(NamespacedJsBundlerContentPlugin.class)) {
+				else if(bundlerContentPlugin.instanceOf(AliasingBundlerContentPlugin.class)) {
 					score = 2;
 				}
 				
