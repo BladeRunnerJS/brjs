@@ -8,7 +8,6 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.BundleSetBuilder;
 
 import com.google.common.base.Joiner;
@@ -41,59 +40,9 @@ public class BundleSetCreator {
 		
 		for(LinkedAsset seedFile : seedFiles) {
 			bundleSetBuilder.addSeedFile(seedFile);
-			processFile(bundlableNode, seedFile, bundleSetBuilder, logger, new ArrayList<LinkedAsset>());
 		}
 		
 		return bundleSetBuilder.createBundleSet();
-	}
-	
-	private static void processFile(BundlableNode bundlableNode, LinkedAsset file, BundleSetBuilder bundleSetBuilder, Logger logger, List<LinkedAsset> processedFiles) throws ModelOperationException {
-
-		if (processedFiles.contains(file))
-		{
-			return;
-		}
-		processedFiles.add(file);
-
-		List<SourceModule> moduleDependencies = getDependentSourceModules(file, bundlableNode);
-		
-		if(moduleDependencies.isEmpty()) {
-			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
-		}
-		else {
-			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(moduleDependencies));
-		}
-		
-		for(SourceModule sourceModule : moduleDependencies) {
-			if(bundleSetBuilder.addSourceModule(sourceModule)) {
-				processFile(bundlableNode, sourceModule, bundleSetBuilder, logger, processedFiles);
-				
-				for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().assetLocations()) {
-					for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
-						processFile(bundlableNode, resourceSeedFile, bundleSetBuilder, logger, processedFiles);
-					}
-				}
-			}
-		}
-	}
-	
-	private static List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException {
-		List<SourceModule> dependentSourceModules = file.getDependentSourceModules(bundlableNode);
-		
-		if(file instanceof SourceModule) {
-			SourceModule sourceModule = (SourceModule) file;
-			
-			if(!sourceModule.getRequirePath().equals("bootstrap")) {
-				try {
-					dependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
-				}
-				catch(RequirePathException e) {
-					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-				}
-			}
-		}
-		
-		return dependentSourceModules;
 	}
 	
 	private static String seedFilePaths(BundlableNode bundlableNode, List<LinkedAsset> seedFiles) {
@@ -115,16 +64,6 @@ public class BundleSetCreator {
 		}
 		
 		return "'" + Joiner.on("', '").join(assetContainerPaths) + "'";
-	}
-	
-	private static String sourceFilePaths(List<SourceModule> sourceModules) {
-		List<String> sourceFilePaths = new ArrayList<>();
-		
-		for(SourceModule sourceModule : sourceModules) {
-			sourceFilePaths.add(getRelativePath(sourceModule.getAssetLocation().getAssetContainer().dir(), sourceModule.getUnderlyingFile()));
-		}
-		
-		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
 	}
 	
 	private static String getRelativePath(File baseFile, File sourceFile) {

@@ -82,6 +82,16 @@ public class AliasBundlingTest extends SpecTest {
 	}
 	
 	@Test
+	public void weBundleTheDependenciesOfClassesIncludedViaAlias() throws Exception {
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classRequires("appns.Class1", "appns.Class2")
+			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
+			.and(aspect).indexPageRefersTo("the-alias");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.Class1", "appns.Class2");
+	}
+	
+	@Test
 	public void weDoNotBundleAClassIfADefinedAliasIsNotReferenced() throws Exception {
 		given(appConf).hasNamespace("appns")
 			.and(aspect).hasClass("appns.Class1")

@@ -1,5 +1,6 @@
 package org.bladerunnerjs.utility;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -8,25 +9,34 @@ import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.BundleSetCreator;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.BundleSetCreator.Messages;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 
+import com.google.common.base.Joiner;
+
 
 public class BundleSetBuilder {
-	Set<LinkedAsset> seedFiles = new HashSet<>();
-	Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	Set<AliasDefinition> activeAliases = new HashSet<>();
-	Set<AssetLocation> resources = new HashSet<>();
-	private BundlableNode bundlableNode;
+	private final Set<LinkedAsset> seedFiles = new HashSet<>();
+	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
+	private final Set<AliasDefinition> activeAliases = new HashSet<>();
+	private final Set<AssetLocation> resources = new HashSet<>();
+	private final List<LinkedAsset> processedFiles = new ArrayList<LinkedAsset>();
+	private final BundlableNode bundlableNode;
+	private final Logger logger;
 	
 	public BundleSetBuilder(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
+		logger = bundlableNode.root().logger(LoggerType.BUNDLER, BundleSetCreator.class);
 	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
@@ -38,7 +48,7 @@ public class BundleSetBuilder {
 			resourcesList.addAll(resources);
 			
 			for(AliasDefinition aliasDefinition : activeAliases) {
-				sourceModules.add(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
+				addSourceModule(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
 			}
 		}
 		catch(RequirePathException e) {
@@ -51,18 +61,22 @@ public class BundleSetBuilder {
 	public void addSeedFile(LinkedAsset seedFile) throws ModelOperationException {
 		seedFiles.add(seedFile);
 		activeAliases.addAll(getAliases(seedFile.getAliasNames()));
+		addLinkedAsset(seedFile);
 	}
 	
-	public boolean addSourceModule(SourceModule sourceModule) throws ModelOperationException {
-		boolean isNewSourceFile = false;
-		
+	public void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
 		if(sourceModules.add(sourceModule)) {
-			isNewSourceFile = true;
 			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
 			resources.addAll(sourceModule.getAssetLocation().getDependentAssetLocations());
+			
+			addLinkedAsset(sourceModule);
+			
+			for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().assetLocations()) {
+				for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
+					addLinkedAsset(resourceSeedFile);
+				}
+			}
 		}
-		
-		return isNewSourceFile;
 	}
 	
 	private List<AliasDefinition> getAliases(List<String> aliasNames) throws ModelOperationException {
@@ -146,5 +160,62 @@ public class BundleSetBuilder {
 		builder.setLength(builder.length()-2);
 		return builder.toString();
 		
+	}
+	
+	// ---
+	
+	private void addLinkedAsset(LinkedAsset file) throws ModelOperationException {
+
+		if (processedFiles.contains(file))
+		{
+			return;
+		}
+		processedFiles.add(file);
+
+		List<SourceModule> moduleDependencies = getDependentSourceModules(file, bundlableNode);
+		
+		if(moduleDependencies.isEmpty()) {
+			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
+		}
+		else {
+			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(moduleDependencies));
+		}
+		
+		for(SourceModule sourceModule : moduleDependencies) {
+			addSourceModule(sourceModule);
+		}
+	}
+	
+	private List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException {
+		List<SourceModule> dependentSourceModules = file.getDependentSourceModules(bundlableNode);
+		
+		if(file instanceof SourceModule) {
+			SourceModule sourceModule = (SourceModule) file;
+			
+			if(!sourceModule.getRequirePath().equals("bootstrap")) {
+				try {
+					dependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
+				}
+				catch(RequirePathException e) {
+					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+				}
+			}
+		}
+		
+		return dependentSourceModules;
+	}
+	
+	private String sourceFilePaths(List<SourceModule> sourceModules) {
+		List<String> sourceFilePaths = new ArrayList<>();
+		
+		for(SourceModule sourceModule : sourceModules) {
+			sourceFilePaths.add(getRelativePath(sourceModule.getAssetLocation().getAssetContainer().dir(), sourceModule.getUnderlyingFile()));
+		}
+		
+		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
+	}
+	
+	private String getRelativePath(File baseFile, File sourceFile) {
+		return baseFile.toURI().relativize(sourceFile.toURI()).getPath();
 	}
 }
