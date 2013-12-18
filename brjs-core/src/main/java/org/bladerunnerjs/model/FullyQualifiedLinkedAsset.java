@@ -129,13 +129,9 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 				
 				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 					for(String aliasName : assetLocation.aliasDefinitionsFile().aliasNames()) {
-						String doubleQuotedAliasName = "\""+aliasName+"\"";
-						String singleQuotedAliasName = "\""+aliasName+"\"";
-						if(!trie.containsKey(doubleQuotedAliasName)) {
-							trie.add(doubleQuotedAliasName, aliasName);
-						}
-						if(!trie.containsKey(singleQuotedAliasName)) {
-							trie.add(singleQuotedAliasName, aliasName);
+						if(!trie.containsKey("'" + aliasName + "'")) {
+							trie.add("'" + aliasName + "'", aliasName);
+							trie.add("\"" + aliasName + "\"", aliasName);
 						}
 					}
 				}
