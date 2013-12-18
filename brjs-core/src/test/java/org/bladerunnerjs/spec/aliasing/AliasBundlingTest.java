@@ -32,7 +32,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/aliasing/bundle.js", response);
-		then(response).containsText("setAliasData({})");
+		then(response).containsText("setAliasData({});\n");
 	}
 	
 	@Test

@@ -65,7 +65,7 @@ public class AliasingBundlerContentPlugin extends AbstractBundlerContentPlugin {
 			if (contentPath.formName.equals("aliasing-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
 					String aliasData = AliasingSerializer.createJson(bundleSet);
-					writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ")");
+					writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
 				}
 			}
 			else {
