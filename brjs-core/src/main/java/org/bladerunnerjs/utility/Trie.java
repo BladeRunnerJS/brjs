@@ -11,6 +11,7 @@ public class Trie<T>
 {
 	CharMatcher charMatcher = CharMatcher.anyOf(" \t\r\n.,(){}<>[]+-*/'\"");
 	private TrieNode<T> root = new TrieNode<T>();
+	private int largestKeyLength = 0;
 	
 	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException {
 		if (key.length() < 1)
@@ -29,6 +30,7 @@ public class Trie<T>
 			throw new TrieKeyAlreadyExistsException(key);
 		}
 		node.setValue(value);
+		largestKeyLength = Math.max(largestKeyLength, key.length());
 	}
 	
 	public boolean containsKey(String key) {
@@ -66,19 +68,19 @@ public class Trie<T>
 			throw new RuntimeException(this.getClass().getSimpleName() + " only supports readers that support 'marks' - (reader.markSupported() == true)");
 		}
 		
-		reader.mark(0);
+		reader.mark(largestKeyLength+1);
 		while ((latestCharVal = readNextChar(reader, matcher, foundCompleteMatch)) != -1)
 		{
 			if (matcher.startedReadingNewChars)
 			{
-				reader.mark(0);
+				reader.mark(largestKeyLength+1);
 			}
 			char latestChar = (char) latestCharVal;
 			
 			foundCompleteMatch = processChar(matches, latestChar, matcher);
 			if (foundCompleteMatch)
 			{
-				reader.mark(0);
+				reader.mark(largestKeyLength+1);
 			}
 		}
 		processChar(matches, '\n', matcher);
