@@ -35,7 +35,7 @@ public class Trie<T>
 		return (get(key) == null) ? false : true;
 	}
 	
-	public Object get(String key)
+	public T get(String key)
 	{
 		TrieNode<T> node = root;
 		
@@ -59,18 +59,46 @@ public class Trie<T>
 		TrieMatcher matcher = new TrieMatcher();
 		
 		int latestCharVal;
-		while ((latestCharVal = reader.read()) != -1)
+		boolean foundCompleteMatch = true;
+		
+		if (!reader.markSupported())
 		{
+			throw new RuntimeException(this.getClass().getSimpleName() + " only supports readers that support 'marks' - (reader.markSupported() == true)");
+		}
+		
+		reader.mark(0);
+		while ((latestCharVal = readNextChar(reader, matcher, foundCompleteMatch)) != -1)
+		{
+			if (matcher.startedReadingNewChars)
+			{
+				reader.mark(0);
+			}
 			char latestChar = (char) latestCharVal;
-			processChar(matches, latestChar, matcher);
+			
+			foundCompleteMatch = processChar(matches, latestChar, matcher);
+			if (foundCompleteMatch)
+			{
+				reader.mark(0);
+			}
 		}
 		processChar(matches, '\n', matcher);
 		
 		return matches;	
 	}
-	
-	private void processChar(List<T> matches, char nextChar, TrieMatcher matcher)
+
+	private int readNextChar(Reader reader, TrieMatcher matcher, boolean foundCompleteMatch) throws IOException
 	{
+		if (matcher.currentNode == root)
+		{
+			reader.reset();
+		}
+		return reader.read();
+	}
+	
+	private boolean processChar(List<T> matches, char nextChar, TrieMatcher matcher)
+	{
+		boolean foundCompleteMatch = false;
+		
 		TrieNode<T> nextNode = matcher.next(nextChar);
 		
 		if (nextNode == null)
@@ -79,17 +107,24 @@ public class Trie<T>
 			if (matcherValue != null && charMatcher.apply(nextChar))
 			{
 				matches.add(matcherValue);
+				foundCompleteMatch = true;
 			}
 			matcher.reset();
 		}
 		
-		return;
+		if (matcher.startedReadingNewChars && !charMatcher.apply(nextChar))
+		{
+			matcher.reset();			
+		}
+		
+		return foundCompleteMatch;
 	}
 
 
 	private class TrieMatcher {
 		TrieNode<T> currentNode;
 		TrieNode<T> previousNode;
+		boolean startedReadingNewChars;
 		
 		TrieMatcher()
 		{
@@ -100,6 +135,7 @@ public class Trie<T>
 		{
 			previousNode = currentNode;
 			currentNode = currentNode.getNextNode(nextChar);
+			startedReadingNewChars = false;
 			return currentNode;
 		}
 		
@@ -107,6 +143,7 @@ public class Trie<T>
 		{
 			currentNode = root;
 			previousNode = null;
+			startedReadingNewChars = true;
 		}
 	}
 }
