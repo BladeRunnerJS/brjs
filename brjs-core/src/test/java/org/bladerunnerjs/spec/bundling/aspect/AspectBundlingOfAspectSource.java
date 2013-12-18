@@ -95,7 +95,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 		given(appConf).hasNamespace("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
-			.and(aspect).indexPageRefersTo("appns.bs.b1.the-alias");
+			.and(aspect).indexPageRefersTo("\"appns.bs.b1.the-alias\"");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.Class1");
 	}
