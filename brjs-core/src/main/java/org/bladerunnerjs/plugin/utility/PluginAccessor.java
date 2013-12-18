@@ -17,6 +17,7 @@ import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingBundlerContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyBundlerContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
@@ -139,6 +140,7 @@ public class PluginAccessor {
 		return plugins;
 	}
 	
+	// TODO: it's becoming more and more obvious that we need a proper ordering mechanism for bundler content plug-ins, so external plug-in developers can have their plug-ins correctly ordered too
 	private void orderContentPlugins(List<BundlerContentPlugin> bundlerContentProviders) {
 		Collections.sort(bundlerContentProviders, new Comparator<BundlerContentPlugin>() {
 			@Override
@@ -152,8 +154,11 @@ public class PluginAccessor {
 				if(bundlerContentPlugin.instanceOf(BRJSThirdpartyBundlerContentPlugin.class)) {
 					score = -1;
 				}
-				else if(bundlerContentPlugin.instanceOf(NamespacedJsBundlerContentPlugin.class)) {
+				else if(bundlerContentPlugin.instanceOf(AliasingBundlerContentPlugin.class)) {
 					score = 1;
+				}
+				else if(bundlerContentPlugin.instanceOf(NamespacedJsBundlerContentPlugin.class)) {
+					score = 2;
 				}
 				
 				return score;
