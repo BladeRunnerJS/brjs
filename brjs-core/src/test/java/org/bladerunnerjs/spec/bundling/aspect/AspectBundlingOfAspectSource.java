@@ -147,7 +147,6 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 		then(response).containsClasses("appns.pkg.Class1", "appns.pkg.Class2");
 	}
 	
-	@Ignore
 	@Test
 	public void relativeRequirePathsCanPointToTheParentDirectory() throws Exception {
 		given(aspect).hasClasses("appns.pkg.Class1", "appns.Class2")
@@ -155,6 +154,15 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).classRequires("appns.pkg.Class1", "../Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.pkg.Class1", "appns.Class2");
+	}
+	
+	@Test
+	public void relativeRequirePathsCanPointToAnyLevelParentDirectory() throws Exception {
+		given(aspect).hasClasses("appns.pkg.pkg2.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.pkg.pkg2.Class1")
+			.and(aspect).classRequires("appns.pkg.pkg2.Class1", "../../Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.pkg.pkg2.Class1", "appns.Class2");
 	}
 	
 	@Test

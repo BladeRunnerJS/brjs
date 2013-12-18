@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 public interface AssetLocation extends BRJSNode {
 	String getJsStyle();
 	String requirePrefix() throws RequirePathException;
+	SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException;
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAsset> seedResources();
 	List<LinkedAsset> seedResources(String fileExtension);

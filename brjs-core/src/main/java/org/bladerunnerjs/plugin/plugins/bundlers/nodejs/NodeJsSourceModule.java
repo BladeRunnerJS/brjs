@@ -9,15 +9,11 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
@@ -63,18 +59,8 @@ public class NodeJsSourceModule implements SourceModule {
 				recalculateDependencies();
 			}
 			
-			Map<String, SourceModule> sourceModuleMap = new HashMap<String, SourceModule>();
-			
-			for (AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers())
-			{
-				for (SourceModule sourceModule : assetContainer.sourceModules())
-				{
-					sourceModuleMap.put(sourceModule.getRequirePath(), sourceModule);
-				}
-			}
-			
 			for(String requirePath : requirePaths) {
-				SourceModule sourceModule = sourceModuleMap.get(requirePath);
+				SourceModule sourceModule = assetLocation.getSourceModuleWithRequirePath(requirePath);
 				
 				if(sourceModule == null) {
 					throw new UnresolvableRequirePathException(requirePath, this.requirePath);
@@ -83,7 +69,7 @@ public class NodeJsSourceModule implements SourceModule {
 				dependentSourceModules.add(sourceModule);
 			}
 		}
-		catch(UnresolvableRequirePathException e) {
+		catch(RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
 		
@@ -159,11 +145,6 @@ public class NodeJsSourceModule implements SourceModule {
 				
 				if(isRequirePath) {
 					String requirePath = methodArgument;
-					if (requirePath.startsWith("./"))
-					{
-						String thisRequirePathRoot = StringUtils.substringBeforeLast(getRequirePath(), "/");
-						requirePath = thisRequirePathRoot + requirePath.replaceFirst("^./", "/");
-					}
 					requirePaths.add(requirePath);
 				}
 				else {

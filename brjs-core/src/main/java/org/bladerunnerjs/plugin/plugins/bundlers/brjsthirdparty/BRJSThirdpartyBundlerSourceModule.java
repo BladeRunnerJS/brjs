@@ -102,7 +102,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
     			JsLib dependentLib = assetLocation.getAssetContainer().getApp().nonBladeRunnerLib(dependentLibName);
     			if (!dependentLib.dirExists())
     			{
-    				throw new ConfigException(String.format("Library '%s' depends on '%'s, which doesn't exist.", getAssetName(), dependentLibName)) ;
+    				throw new ConfigException(String.format("Library '%s' depends on '%s', which doesn't exist.", getAssetName(), dependentLibName)) ;
     			}
     			dependentLibs.addAll(dependentLib.sourceModules());
     		}
