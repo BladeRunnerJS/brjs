@@ -8,6 +8,9 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
+import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -163,6 +166,16 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).classRequires("appns.pkg.pkg2.Class1", "../../Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.pkg.pkg2.Class1", "appns.Class2");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfRelativeRequirePathGoesAboveRoot() throws Exception {
+		given(aspect).hasClasses("appns.pkg.pkg2.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.pkg.pkg2.Class1")
+			.and(aspect).classRequires("appns.pkg.pkg2.Class1", "../../../../Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(exceptions).verifyException(UnresolvableRelativeRequirePathException.class, "appns/pkg/pkg2", "../../../../Class2")
+			.whereTopLevelExceptionIs(BundlerProcessingException.class);
 	}
 	
 	@Test
