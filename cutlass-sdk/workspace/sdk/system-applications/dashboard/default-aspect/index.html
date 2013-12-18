@@ -7,6 +7,17 @@
 		
 		<@css.bundle theme="standard"@/>
 		<link type="text/css" rel="stylesheet" media="screen" href="unbundled-resources/standard-theme/typography.css" />
+		
+		<!-- TODO: remove this script block once we have a more reliable way of determining whether libraries have been required using a trie -->
+		<script type="text/javascript">
+			function TestCase() {
+			}
+			jstestdriver = {
+				pluginRegistrar:{
+					register:function(){}
+				}
+			};
+		</script>
 		<@new-js.bundle dev-minifier="combined"@/>
 		<script type="text/javascript" src="unbundled-resources/browserCheck.js"></script>
 		<script type="text/javascript" src="unbundled-resources/releaseNoteUtils.js"></script>
