@@ -99,7 +99,7 @@ br.presenter.node.NodeList.prototype.updateList = function(pPresentationNodes)
  */
 br.presenter.node.NodeList.prototype.addListener = function(oListener, bNotifyImmediately)
 {
-	if(!br.fulfills(oListener, br.presenter.node.NodeListListener))
+	if(!br.Core.fulfills(oListener, br.presenter.node.NodeListListener))
 	{
 		throw new br.Errors.CustomError(br.Errors.LEGACY, "oListener was not an instance of NodeListListener");
 	}

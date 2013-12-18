@@ -27,7 +27,7 @@ br.test.GwtTestRunner = function(sFixtureFactoryClass) {
 				"(" + sFixtureFactoryClass + "): " + e.message);
 	}
 
-	if(!br.fulfills(this.m_oFixtureFactory, br.test.FixtureFactory)) {
+	if(!br.Core.fulfills(this.m_oFixtureFactory, br.test.FixtureFactory)) {
 		throw new br.Errors.CustomError("InvalidFactoryError", "The provided fixture factory (" + sFixtureFactoryClass +
 				") does not implement br.test.FixtureFactory");
 	}

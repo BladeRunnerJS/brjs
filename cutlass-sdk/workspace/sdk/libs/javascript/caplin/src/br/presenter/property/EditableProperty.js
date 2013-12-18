@@ -70,7 +70,7 @@ br.Core.implement(br.presenter.property.EditableProperty, br.presenter.validator
  */
 br.presenter.property.EditableProperty.prototype.addParser = function(oParser, mConfig)
 {
-	if(!br.fulfills(oParser, br.presenter.parser.Parser))
+	if(!br.Core.fulfills(oParser, br.presenter.parser.Parser))
 	{
 		throw new br.Errors.CustomError(br.Errors.LEGACY, "oParser was not an instance of Parser");
 	}
@@ -98,7 +98,7 @@ br.presenter.property.EditableProperty.prototype.addParser = function(oParser, m
  */
 br.presenter.property.EditableProperty.prototype.addValidator = function(oValidator, mConfig)
 {
-	if(!br.fulfills(oValidator, br.presenter.validator.Validator))
+	if(!br.Core.fulfills(oValidator, br.presenter.validator.Validator))
 	{
 		throw new br.Errors.CustomError(br.Errors.LEGACY, "oValidator was not an instance of Validator");
 	}

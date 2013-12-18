@@ -24,7 +24,7 @@
 	 */
 	function ComponentFixture(sXml, oModelFixture, oViewFixture) {
 		//TODO: This check should be an isA instead of a fulfills.
-		if (!sXml || !oModelFixture || !(br.fulfills(oModelFixture, br.component.testing.ComponentModelFixture))) {
+		if (!sXml || !oModelFixture || !(br.Core.fulfills(oModelFixture, br.component.testing.ComponentModelFixture))) {
 			throw new Errors.InvalidParametersError("The ComponentFixture must be provided with the component XML " +
 					"and with a valid presentation model fixture which is an instance of " +
 					"br.component.testing.ComponentModelFixture.");

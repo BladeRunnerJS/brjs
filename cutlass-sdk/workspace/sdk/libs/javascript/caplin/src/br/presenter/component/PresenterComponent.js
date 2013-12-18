@@ -141,7 +141,7 @@ br.Core.thirdparty("caplin-br");
 			this.m_sPresentationModel = this.m_oPresentationModel.getClassName();
 		}
 		
-		if (br.fulfills(this.m_oPresentationModel, br.presenter.SerializablePresentationModel)) {
+		if (br.Core.fulfills(this.m_oPresentationModel, br.presenter.SerializablePresentationModel)) {
 			sSerializedState = this.m_oPresentationModel.serialize();
 		}
 		
@@ -159,7 +159,7 @@ br.Core.thirdparty("caplin-br");
 	 * @param {String} sPresenterData The presenter xml node in string format
 	 */
 	PresenterComponent.prototype.deserialize = function(sPresenterData) {
-		if (br.fulfills(this.m_oPresentationModel, br.presenter.SerializablePresentationModel)) {
+		if (br.Core.fulfills(this.m_oPresentationModel, br.presenter.SerializablePresentationModel)) {
 			var vOffsetPresenterOpeningTag = sPresenterData.indexOf('>');
 			var vOffsetPresenterClosingTag = sPresenterData.indexOf('</presenter>');
 

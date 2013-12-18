@@ -143,7 +143,7 @@ br.presenter.property.Property.prototype.getPath = function()
  */
 br.presenter.property.Property.prototype.addFormatter = function(oFormatter, mConfig)
 {
-	if(!br.fulfills(oFormatter, br.presenter.formatter.Formatter))
+	if(!br.Core.fulfills(oFormatter, br.presenter.formatter.Formatter))
 	{
 		throw new br.Errors.CustomError(br.Errors.LEGACY, "oFormatter was not an instance of Formatter");
 	}
@@ -163,7 +163,7 @@ br.presenter.property.Property.prototype.addFormatter = function(oFormatter, mCo
  */
 br.presenter.property.Property.prototype.addListener = function(oListener, bNotifyImmediately)
 {
-	if(!br.fulfills(oListener, br.presenter.property.PropertyListener))
+	if(!br.Core.fulfills(oListener, br.presenter.property.PropertyListener))
 	{
 		throw new br.Errors.CustomError(br.Errors.LEGACY, "oListener was not an instance of PropertyListener");
 	}
