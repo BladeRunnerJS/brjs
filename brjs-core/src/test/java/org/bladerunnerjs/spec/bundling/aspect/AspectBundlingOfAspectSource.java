@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -96,6 +97,29 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 		then(response).containsClasses("appns.Class1");
 	}
 	
+	// TODO: get this class working once we add support for requiring aliases (Adam I suggests we can do the same for services and HTML templates too)
+	@Ignore
+	@Test
+	public void weBundleAClassIfItsAliasIsReferredToFromAnotherNodeJsClass() throws Exception {
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classRequires("appns.Class1", "the-alias");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.Class1", "appns.Class2");
+	}
+	
+	@Test
+	public void weBundleAClassIfItsAliasIsReferredToFromAnotherNamespacedClass() throws Exception {
+		given(aspect).hasPackageStyle(NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classRefersTo("appns.Class1", "the-alias");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.Class1", "appns.Class2");
+	}
+	
 	@Test
 	public void weDoNotBundleAClassIfADefinedAliasIsNotReferenced() throws Exception {
 		given(appConf).hasNamespace("appns")
@@ -144,8 +168,6 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	
 	@Test
 	public void requireCallCanHaveDoubleQuotes() throws Exception {
-		given(exceptions).arentCaught();
-		
 		given(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function(){}; require(\"appns/Class2\")")
 		.and(aspect).containsFileWithContents("src/appns/Class2.js", "appns.Class2 = function(){};")
 		.and(aspect).indexPageRefersTo("appns/Class1");
