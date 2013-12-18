@@ -180,7 +180,6 @@
 		var scopes = moduleId.split("/");
 		for (var i = 0, length = scopes.length; i < length; ++i) {
 			var scope = scopes[i];
-			debugger;
 			if (scope in result) {
 				result = result[scope];
 			} else {
