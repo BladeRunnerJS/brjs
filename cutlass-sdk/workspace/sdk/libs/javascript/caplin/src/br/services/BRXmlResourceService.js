@@ -47,6 +47,6 @@ BRXmlResourceService.prototype._loadXml = function() {
 	}
 };
 
-br.Core.implement(BRXmlResourceService, XmlResourceService);
+br.implement(BRXmlResourceService, XmlResourceService);
 
 module.exports = BRXmlResourceService;

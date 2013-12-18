@@ -31,7 +31,7 @@ function CustomError(type, message, fileName, lineNumber) {
 	}
 }
 
-br.Core.extend(CustomError, Error);
+br.extend(CustomError, Error);
 
 CustomError.prototype.toString = function toString() {
 	return this.stack || this.message;
@@ -95,7 +95,7 @@ function getCustomErrorConstructor(type) {
 	var customErrorConstructor = function(message, filename, lineNumber) {
 		CustomError.call(this, type, message, filename, lineNumber);
 	};
-	br.Core.extend(customErrorConstructor, CustomError);
+	br.extend(customErrorConstructor, CustomError);
 	return customErrorConstructor;
 }
 

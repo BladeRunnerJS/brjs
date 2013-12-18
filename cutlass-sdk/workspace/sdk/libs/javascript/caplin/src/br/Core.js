@@ -7,7 +7,7 @@ exports.implement = function(implementor, interface) {
 	var error = new Error();
 	setTimeout(function() {
 		try {
-			br.Core.implement(implementor, interface);
+			br.implement(implementor, interface);
 		} catch (e) {
 			error.message = e.message;
 			error.name = e.name;

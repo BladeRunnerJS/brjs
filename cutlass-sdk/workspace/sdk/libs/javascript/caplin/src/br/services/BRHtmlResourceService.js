@@ -73,6 +73,6 @@ function sanitizeHtml(html) {
 };
 
 
-br.Core.implement(BRHtmlResourceService, HtmlResourceService);
+br.implement(BRHtmlResourceService, HtmlResourceService);
 
 module.exports = BRHtmlResourceService;
