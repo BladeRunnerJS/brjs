@@ -83,7 +83,6 @@ public class BundleSetCreator {
 		if(file instanceof SourceModule) {
 			SourceModule sourceModule = (SourceModule) file;
 			
-			// TODO: should these be '/bootstrap'?
 			if(!sourceModule.getRequirePath().equals("bootstrap")) {
 				try {
 					dependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
