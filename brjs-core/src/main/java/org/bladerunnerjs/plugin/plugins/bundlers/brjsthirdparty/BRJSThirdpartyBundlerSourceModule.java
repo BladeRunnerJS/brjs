@@ -1,8 +1,10 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -32,6 +34,16 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	private AssetLocation assetLocation;
 	private File dir;
 	private NonBladerunnerJsLibManifest manifest;
+	private byte[] delimiterBytes;
+	
+	{
+		try {
+			delimiterBytes = "\n\n".getBytes("UTF-8");
+		}
+		catch(IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	@Override
 	public Reader getReader() throws FileNotFoundException
@@ -42,6 +54,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 			for (File file : getFilesMatchingFilePaths(manifest.getJs()))
 			{
 				fileFileInputStreams.add( new FileInputStream(file) );
+				fileFileInputStreams.add(new ByteArrayInputStream(delimiterBytes));
 			}
 		}
 		catch (ConfigException ex)
