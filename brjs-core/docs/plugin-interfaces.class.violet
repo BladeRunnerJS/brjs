@@ -253,7 +253,9 @@ void runTests(TestableNode node) throws TestException</string>
    <object class="com.horstmann.violet.InterfaceNode" id="InterfaceNode7">
     <void property="methods">
      <void property="text">
-      <string>setBRJS(BRJS brjs)</string>
+      <string>setBRJS(BRJS brjs)
+instanceOf(Class&lt;?&gt; cLass)
+Class&lt;?&gt; getPluginClass()</string>
      </void>
     </void>
     <void property="name">
@@ -267,19 +269,19 @@ void runTests(TestableNode node) throws TestException</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>592.0</double>
+      <double>562.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>181.0</double>
+      <double>171.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>592.0</double>
-     <double>181.0</double>
+     <double>562.0</double>
+     <double>171.0</double>
     </void>
    </object>
   </void>
