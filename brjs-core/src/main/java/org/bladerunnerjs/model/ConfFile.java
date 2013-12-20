@@ -38,7 +38,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		}
 	}
 	
-	protected void reloadConf() throws ConfigException {
+	protected void reloadConfIfChanged() throws ConfigException {
 		if (fileModifiedChecker.fileModifiedSinceLastCheck() && !hasUnwrittenChanges) {
 			conf = ConfFactory.createConfFile(node, confClass, confFile);
 		}

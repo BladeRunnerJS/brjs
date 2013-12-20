@@ -16,7 +16,7 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	}
 	
 	public String getAppNamespace() throws ConfigException {
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.appNamespace;
 	}
 	
@@ -26,7 +26,7 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	}
 	
 	public String getLocales() throws ConfigException {
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.locales;
 	}
 	

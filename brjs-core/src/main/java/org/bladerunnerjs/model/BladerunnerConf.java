@@ -9,7 +9,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	}
 	
 	public int getJettyPort() throws ConfigException {
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.jettyPort;
 	}
 	
@@ -19,7 +19,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	}
 	
 	public String getDefaultInputEncoding() throws ConfigException {
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.defaultInputEncoding;
 	}
 	
@@ -29,7 +29,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	}
 	
 	public String getDefaultOutputEncoding() throws ConfigException {
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.defaultOutputEncoding;
 	}
 	
@@ -40,13 +40,13 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 
 	public String getLoginRealm() throws ConfigException
 	{
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.loginRealm;
 	}
 
 	public String getLoginModuleName() throws ConfigException
 	{
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.LOGIN_MODULE_NAME;
 	}
 }

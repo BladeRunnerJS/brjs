@@ -17,20 +17,20 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	
 	public List<String> getDepends() throws ConfigException
 	{
-		reloadConf();
+		reloadConfIfChanged();
 		return listify(conf.depends, null);
 	}
 	
 	public List<String> getJs() throws ConfigException
 	{
-		reloadConf();
+		reloadConfIfChanged();
 		return listify(conf.js, ".*\\.js");
 	}
 	
 
 	public List<String> getCss() throws ConfigException
 	{
-		reloadConf();
+		reloadConfIfChanged();
 		return listify(conf.css, ".*\\.css");
 	}
 	
