@@ -31,6 +31,7 @@ public class BundleSetBuilder {
 	private final Set<AliasDefinition> activeAliases = new HashSet<>();
 	private final Set<AssetLocation> resources = new HashSet<>();
 	private final List<LinkedAsset> linkedAssets = new ArrayList<LinkedAsset>();
+	private final Set<AssetLocation> assetLocations = new HashSet<>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
 	
@@ -71,12 +72,6 @@ public class BundleSetBuilder {
 			resources.addAll(sourceModule.getAssetLocation().getDependentAssetLocations());
 			
 			addLinkedAsset(sourceModule);
-			
-			for(AssetLocation assetLocation : sourceModule.getAssetLocation().getAssetContainer().assetLocations()) {
-				for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
-					addLinkedAsset(resourceSeedFile);
-				}
-			}
 		}
 	}
 	
@@ -94,9 +89,23 @@ public class BundleSetBuilder {
 			for(SourceModule sourceModule : moduleDependencies) {
 				addSourceModule(sourceModule);
 			}
+			
+			addAssetLocation(linkedAsset.getAssetLocation());
 		}
 	}
 	
+	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
+		if(assetLocations.add(assetLocation)) {
+			for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
+				addLinkedAsset(resourceSeedFile);
+			}
+			
+			for(AssetLocation dependentAssetLocation : assetLocation.getDependentAssetLocations()) {
+				addAssetLocation(dependentAssetLocation);
+			}
+		}
+	}
+
 	private List<AliasDefinition> getAliases(List<String> aliasNames) throws ModelOperationException {
 		List<AliasDefinition> aliases = new ArrayList<>();
 		

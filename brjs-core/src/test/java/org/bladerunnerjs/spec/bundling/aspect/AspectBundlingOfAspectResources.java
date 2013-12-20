@@ -27,7 +27,6 @@ public class AspectBundlingOfAspectResources extends SpecTest {
 			standardAspectTheme = aspect.theme("standard");
 	}
 	
-	// ----------------------------------- X M L -------------------------------------- 
 	@Test
 	public void aspectClassesReferredToInAspectXMlFilesAreBundled() throws Exception {
 		given(aspect).hasClasses("appns.Class1")
@@ -36,7 +35,6 @@ public class AspectBundlingOfAspectResources extends SpecTest {
 		then(response).containsClasses("appns.Class1");
 	}
 	
-	// ---------------------------------  H T M L -------------------------------------
 	@Test
 	public void aspectClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(aspect).hasClasses("appns.Class1")
@@ -45,7 +43,6 @@ public class AspectBundlingOfAspectResources extends SpecTest {
 		then(response).containsClasses("appns.Class1");
 	}
 	
-	// ----------------------------------- C S S  -------------------------------------
 	// TODO enable when we work on CSS Bundler
 	@Ignore 
  	@Test
@@ -55,4 +52,31 @@ public class AspectBundlingOfAspectResources extends SpecTest {
  		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
  		then(response).containsText("ASPECT theme content");
  	}
+	
+	@Test
+	public void weBundleClassesReferredToByResourcesInAssetLocationsOfTheClassesWeAreBundling() throws Exception {
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+    		.and(aspect).sourceResourceFileRefersTo("appns/config.xml", "appns.Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.Class1", "appns.Class2");
+	}
+	
+	@Test
+	public void weDontBundleClassesReferredToByResourcesInAssetLocationsThatDoNotContainClassesWeAreBundling() throws Exception {
+		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+    		.and(aspect).sourceResourceFileRefersTo("appns/pkg/config.xml", "appns.Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.Class1");
+	}
+	
+	@Test
+	public void weBundleClassesReferredToByResourcesInAncestorAssetLocationsOfTheClassesWeAreBundling() throws Exception {
+		given(aspect).hasClasses("appns.pkg.Class1", "appns.pkg.Class2")
+			.and(aspect).indexPageRefersTo("appns.pkg.Class1")
+    		.and(aspect).sourceResourceFileRefersTo("appns/config.xml", "appns.pkg.Class2");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.pkg.Class1", "appns.pkg.Class2");
+	}
 }

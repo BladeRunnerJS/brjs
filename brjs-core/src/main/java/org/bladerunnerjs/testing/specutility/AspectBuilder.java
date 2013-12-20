@@ -29,6 +29,12 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String className) throws Exception {
+		FileUtils.write(aspect.assetLocation("src").file(resourceFileName), "<root refs='" + className + "'/>");
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer indexPageHasContent(String content) throws Exception {
 		return indexPageRefersTo(content);
 	}
