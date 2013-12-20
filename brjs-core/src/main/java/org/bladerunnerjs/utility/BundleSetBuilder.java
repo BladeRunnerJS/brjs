@@ -30,7 +30,7 @@ public class BundleSetBuilder {
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Set<AliasDefinition> activeAliases = new HashSet<>();
 	private final Set<AssetLocation> resources = new HashSet<>();
-	private final List<LinkedAsset> processedFiles = new ArrayList<LinkedAsset>();
+	private final List<LinkedAsset> linkedAssets = new ArrayList<LinkedAsset>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
 	
@@ -59,9 +59,10 @@ public class BundleSetBuilder {
 	}
 	
 	public void addSeedFile(LinkedAsset seedFile) throws ModelOperationException {
-		seedFiles.add(seedFile);
-		activeAliases.addAll(getAliases(seedFile.getAliasNames()));
-		addLinkedAsset(seedFile);
+		if(seedFiles.add(seedFile)) {
+			activeAliases.addAll(getAliases(seedFile.getAliasNames()));
+			addLinkedAsset(seedFile);
+		}
 	}
 	
 	public void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
@@ -75,6 +76,23 @@ public class BundleSetBuilder {
 				for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
 					addLinkedAsset(resourceSeedFile);
 				}
+			}
+		}
+	}
+	
+	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
+		if(linkedAssets.add(linkedAsset)) {
+			List<SourceModule> moduleDependencies = getDependentSourceModules(linkedAsset, bundlableNode);
+			
+			if(moduleDependencies.isEmpty()) {
+				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(linkedAsset.getAssetLocation().getAssetContainer().dir(), linkedAsset.getUnderlyingFile()));
+			}
+			else {
+				logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(linkedAsset.getAssetLocation().getAssetContainer().dir(), linkedAsset.getUnderlyingFile()), sourceFilePaths(moduleDependencies));
+			}
+			
+			for(SourceModule sourceModule : moduleDependencies) {
+				addSourceModule(sourceModule);
 			}
 		}
 	}
@@ -160,30 +178,6 @@ public class BundleSetBuilder {
 		builder.setLength(builder.length()-2);
 		return builder.toString();
 		
-	}
-	
-	// ---
-	
-	private void addLinkedAsset(LinkedAsset file) throws ModelOperationException {
-
-		if (processedFiles.contains(file))
-		{
-			return;
-		}
-		processedFiles.add(file);
-
-		List<SourceModule> moduleDependencies = getDependentSourceModules(file, bundlableNode);
-		
-		if(moduleDependencies.isEmpty()) {
-			logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()));
-		}
-		else {
-			logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(file.getAssetLocation().getAssetContainer().dir(), file.getUnderlyingFile()), sourceFilePaths(moduleDependencies));
-		}
-		
-		for(SourceModule sourceModule : moduleDependencies) {
-			addSourceModule(sourceModule);
-		}
 	}
 	
 	private List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException {
