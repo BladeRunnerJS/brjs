@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
+import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
@@ -123,14 +124,13 @@ public class BundleSetBuilder {
 		List<SourceModule> sourceModulesList = new ArrayList<>();
 		Set<LinkedAsset> metDependencies = new HashSet<>();
 		
-		
-		int maxIterations = sourceModules.size() * sourceModules.size();
-		int iterationCount = 0;
-		
 		while(!sourceModules.isEmpty()) {
 			Set<SourceModule> unprocessedSourceModules = new HashSet<>();
+			boolean progressMade = false;
+			
 			for(SourceModule sourceModule : sourceModules) {
 				if(dependenciesHaveBeenMet(sourceModule, metDependencies)) {
+					progressMade = true;
 					sourceModulesList.add(sourceModule);
 					metDependencies.add(sourceModule);
 				}
@@ -139,9 +139,9 @@ public class BundleSetBuilder {
 				}
 			}
 			
-			if (iterationCount++ > maxIterations)
+			if (!progressMade)
 			{
-				throw new ModelOperationException("Error satisfying source file dependencies. unprocessedSourceFiles = "+stringifySourceModules(unprocessedSourceModules));
+				throw new CircularDependencyException(unprocessedSourceModules);
 			}
 			
 			sourceModules = unprocessedSourceModules;
@@ -173,18 +173,6 @@ public class BundleSetBuilder {
 		}
 		
 		return orderDependentSourceModules;
-	}
-
-	private String stringifySourceModules(Set<SourceModule> sourceModules)
-	{
-		StringBuilder builder = new StringBuilder();
-		for (SourceModule sourceModule : sourceModules)
-		{
-			builder.append(sourceModule.getRequirePath()+", ");
-		}
-		builder.setLength(builder.length()-2);
-		return builder.toString();
-		
 	}
 	
 	private List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException {
