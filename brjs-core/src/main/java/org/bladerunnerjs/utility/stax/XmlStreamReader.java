@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model.utility.stax;
+package org.bladerunnerjs.utility.stax;
 
 import java.io.FileReader;
 import java.io.IOException;

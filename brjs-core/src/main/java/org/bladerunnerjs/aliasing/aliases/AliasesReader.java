@@ -13,8 +13,8 @@ import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.utility.stax.XmlStreamReader;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
+import org.bladerunnerjs.utility.stax.XmlStreamReader;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 

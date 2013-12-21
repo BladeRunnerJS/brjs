@@ -1,4 +1,4 @@
-package org.bladerunnerjs.model.utility;
+package org.bladerunnerjs.utility;
 
 import java.io.File;
 
