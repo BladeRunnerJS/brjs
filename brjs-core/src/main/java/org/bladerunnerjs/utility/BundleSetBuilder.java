@@ -26,7 +26,6 @@ import com.google.common.base.Joiner;
 
 
 public class BundleSetBuilder {
-	private final Set<LinkedAsset> seedFiles = new HashSet<>();
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Set<AliasDefinition> activeAliases = new HashSet<>();
 	private final Set<AssetLocation> resources = new HashSet<>();
@@ -60,17 +59,12 @@ public class BundleSetBuilder {
 	}
 	
 	public void addSeedFile(LinkedAsset seedFile) throws ModelOperationException {
-		if(seedFiles.add(seedFile)) {
-			activeAliases.addAll(getAliases(seedFile.getAliasNames()));
-			addLinkedAsset(seedFile);
-		}
+		addLinkedAsset(seedFile);
 	}
 	
-	public void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
+	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
 		if(sourceModules.add(sourceModule)) {
 			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
-			resources.addAll(sourceModule.getAssetLocation().getDependentAssetLocations());
-			
 			addLinkedAsset(sourceModule);
 		}
 	}
@@ -78,6 +72,8 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		if(linkedAssets.add(linkedAsset)) {
 			List<SourceModule> moduleDependencies = getDependentSourceModules(linkedAsset, bundlableNode);
+			
+			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			
 			if(moduleDependencies.isEmpty()) {
 				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(linkedAsset.getAssetLocation().getAssetContainer().dir(), linkedAsset.getUnderlyingFile()));
