@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathExceptio
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.JsStyleUtility;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
 	protected AssetContainer assetContainer;
@@ -40,7 +41,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	
 	@Override
 	public String requirePrefix() throws RequirePathException {
-		String relativeRequirePath = assetContainer.dir().toURI().relativize(dir().toURI()).getPath();
+		String relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir());
 		
 		return assetContainer.requirePrefix() + "/" + relativeRequirePath;
 	}

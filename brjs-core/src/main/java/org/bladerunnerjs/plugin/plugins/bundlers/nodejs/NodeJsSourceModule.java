@@ -22,6 +22,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.Ostermiller.util.ConcatReader;
 
@@ -41,7 +42,7 @@ public class NodeJsSourceModule implements SourceModule {
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = assetFile;
-			requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
+			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
 			fileModifiedChecker = new FileModifiedChecker(assetFile);
 		}

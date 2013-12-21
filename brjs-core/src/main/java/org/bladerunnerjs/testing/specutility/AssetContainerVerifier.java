@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.google.common.base.Joiner;
 
@@ -48,7 +49,7 @@ public class AssetContainerVerifier {
 		int i = 0;
 		for(AssetLocation actualAssetLocation : actualAssetLocations) {
 			String expectedAssetLocation = expectedAssetLocations[i++];
-			String actualDependentAssetLocationPath =  assetContainer.dir().toURI().relativize(actualAssetLocation.dir().toURI()).getPath();
+			String actualDependentAssetLocationPath = RelativePathUtility.get(assetContainer.dir(), actualAssetLocation.dir());
 			
 			assertEquals("Asset location " + i + " differs from what's expected.", expectedAssetLocation, actualDependentAssetLocationPath);
 		}
@@ -74,7 +75,7 @@ public class AssetContainerVerifier {
 		int i = 0;
 		for(AssetLocation actualDependentAssetLocation : actualDependentAssetLocations) {
 			String expectedAssetLocationDependency = expectedAssetLocationDependencies[i++];
-			String actualDependentAssetLocationPath =  assetContainer.dir().toURI().relativize(actualDependentAssetLocation.dir().toURI()).getPath();
+			String actualDependentAssetLocationPath =  RelativePathUtility.get(assetContainer.dir(), actualDependentAssetLocation.dir());
 			
 			assertEquals(expectedAssetLocationDependency, actualDependentAssetLocationPath);
 		}
@@ -94,7 +95,7 @@ public class AssetContainerVerifier {
 		List<String> assetLocationPaths = new ArrayList<>();
 		
 		for(AssetLocation assetLocation : assetLocations) {
-			assetLocationPaths.add(assetLocation.getAssetContainer().dir().toURI().relativize(assetLocation.dir().toURI()).getPath());
+			assetLocationPaths.add(RelativePathUtility.get(assetLocation.getAssetContainer().dir(), assetLocation.dir()));
 		}
 		
 		return Joiner.on(", ").join(assetLocationPaths);

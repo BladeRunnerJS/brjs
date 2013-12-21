@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class ChildSourceAssetLocation extends ShallowAssetLocation {
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
@@ -20,7 +21,7 @@ public class ChildSourceAssetLocation extends ShallowAssetLocation {
 	@Override
 	public String requirePrefix() throws RequirePathException {
 		String containerRequirePrefix = assetContainer.requirePrefix();
-		String locationRequirePrefix = assetContainer.file("src").toURI().relativize(dir().toURI()).getPath().replaceAll("/$", "");
+		String locationRequirePrefix = RelativePathUtility.get(assetContainer.file("src"), dir()).replaceAll("/$", "");
 		
 		if(!locationRequirePrefix.startsWith(containerRequirePrefix)) {
 			throw new InvalidRequirePathException("Source module containing directory '" + locationRequirePrefix + "' does not start with correct require prefix '" + containerRequirePrefix + "'.");

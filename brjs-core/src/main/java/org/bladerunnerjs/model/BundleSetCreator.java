@@ -9,6 +9,7 @@ import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.BundleSetBuilder;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.google.common.base.Joiner;
 
@@ -47,7 +48,7 @@ public class BundleSetCreator {
 		List<String> seedFilePaths = new ArrayList<>();
 		
 		for(Asset seedFile : seedFiles) {
-			seedFilePaths.add(getRelativePath(bundlableNode.dir(), seedFile.getUnderlyingFile()));
+			seedFilePaths.add(RelativePathUtility.get(bundlableNode.dir(), seedFile.getUnderlyingFile()));
 		}
 		
 		return "'" + Joiner.on("', '").join(seedFilePaths) + "'";
@@ -58,13 +59,9 @@ public class BundleSetCreator {
 		
 		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
 			File baseDir = assetContainer instanceof JsLibAppWrapper ? app.root().dir() : app.dir();
-			assetContainerPaths.add(getRelativePath(baseDir, assetContainer.dir()));
+			assetContainerPaths.add(RelativePathUtility.get(baseDir, assetContainer.dir()));
 		}
 		
 		return "'" + Joiner.on("', '").join(assetContainerPaths) + "'";
-	}
-	
-	private static String getRelativePath(File baseFile, File sourceFile) {
-		return baseFile.toURI().relativize(sourceFile.toURI()).getPath();
 	}
 }

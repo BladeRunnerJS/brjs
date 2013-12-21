@@ -1,13 +1,13 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
@@ -59,10 +59,9 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	public AssetLocation assetLocation(String locationPath) {
 		String normalizedLocationPath = normalizePath(locationPath);
 		AssetLocation assetLocation = null;
-		URI assetContainerUri = dir().toURI();
 		
 		for(AssetLocation nextAssetLocation : assetLocations()) {
-			String nextLocationPath = normalizePath(assetContainerUri.relativize(nextAssetLocation.dir().toURI()).getPath());
+			String nextLocationPath = normalizePath(RelativePathUtility.get(dir(), nextAssetLocation.dir()));
 			
 			if(nextLocationPath.equals(normalizedLocationPath)) {
 				assetLocation = nextAssetLocation;

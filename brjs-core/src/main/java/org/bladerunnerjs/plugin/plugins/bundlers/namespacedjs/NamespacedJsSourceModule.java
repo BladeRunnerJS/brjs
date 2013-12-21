@@ -20,6 +20,7 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class NamespacedJsSourceModule implements SourceModule {
 	private static final Pattern extendPattern = Pattern.compile("(caplin|br\\.Core)\\.(extend|implement|inherit)\\([^,]+,\\s*([^)]+)\\)");
@@ -34,7 +35,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	{
 		try {
 			this.assetLocation = assetLocation;
-			requirePath = assetLocation.requirePrefix() + "/" + assetLocation.dir().toURI().relativize(assetFile.toURI()).getPath().replaceAll("\\.js$", "");
+			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
 			linkedAsset = new FullyQualifiedLinkedAsset();
 			linkedAsset.initialize(assetLocation, assetFile);

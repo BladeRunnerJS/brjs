@@ -1,6 +1,5 @@
 package org.bladerunnerjs.utility;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -79,10 +78,10 @@ public class BundleSetBuilder {
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			
 			if(moduleDependencies.isEmpty()) {
-				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, getRelativePath(linkedAsset.getAssetLocation().getAssetContainer().dir(), linkedAsset.getUnderlyingFile()));
+				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, RelativePathUtility.get(linkedAsset.getAssetLocation().getAssetContainer().dir(), linkedAsset.getUnderlyingFile()));
 			}
 			else {
-				logger.debug(Messages.FILE_DEPENDENCIES_MSG, getRelativePath(linkedAsset.getAssetLocation().getAssetContainer().dir(), linkedAsset.getUnderlyingFile()), sourceFilePaths(moduleDependencies));
+				logger.debug(Messages.FILE_DEPENDENCIES_MSG, RelativePathUtility.get(linkedAsset.getAssetLocation().getAssetContainer().dir(), linkedAsset.getUnderlyingFile()), sourceFilePaths(moduleDependencies));
 			}
 			
 			for(SourceModule sourceModule : moduleDependencies) {
@@ -198,13 +197,9 @@ public class BundleSetBuilder {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
 		for(SourceModule sourceModule : sourceModules) {
-			sourceFilePaths.add(getRelativePath(sourceModule.getAssetLocation().getAssetContainer().dir(), sourceModule.getUnderlyingFile()));
+			sourceFilePaths.add(RelativePathUtility.get(sourceModule.getAssetLocation().getAssetContainer().dir(), sourceModule.getUnderlyingFile()));
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
-	}
-	
-	private String getRelativePath(File baseFile, File sourceFile) {
-		return baseFile.toURI().relativize(sourceFile.toURI()).getPath();
 	}
 }

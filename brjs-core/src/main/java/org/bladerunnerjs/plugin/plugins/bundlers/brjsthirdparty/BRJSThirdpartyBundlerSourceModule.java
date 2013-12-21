@@ -26,6 +26,7 @@ import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public class BRJSThirdpartyBundlerSourceModule implements SourceModule
@@ -164,7 +165,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 		{
 			for (String pattern : matchFilePaths)
 			{
-				String relativePath = dir.toURI().relativize(f.toURI()).getPath();
+				String relativePath = RelativePathUtility.get(dir, f);
 				if ( Pattern.matches(pattern, relativePath) )
 				{
 					filesMatching.add(f);
