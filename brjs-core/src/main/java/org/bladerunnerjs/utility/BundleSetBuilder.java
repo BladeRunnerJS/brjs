@@ -58,8 +58,10 @@ public class BundleSetBuilder {
 		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourcesList);
 	}
 	
-	public void addSeedFile(LinkedAsset seedFile) throws ModelOperationException {
-		addLinkedAsset(seedFile);
+	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
+		for(LinkedAsset seedFile : seedFiles) {
+			addLinkedAsset(seedFile);
+		}
 	}
 	
 	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
