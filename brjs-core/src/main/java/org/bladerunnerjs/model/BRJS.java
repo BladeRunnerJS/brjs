@@ -29,6 +29,8 @@ import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
+import org.bladerunnerjs.plugin.utility.filechange.FileObserverFactory;
+import org.bladerunnerjs.plugin.utility.filechange.PerformantObserverFactory;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
@@ -68,11 +70,13 @@ public class BRJS extends AbstractBRJSRootNode
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
 	private final PluginAccessor pluginAccessor;
+	private FileObserverFactory fileObserverFactory;
 	
-	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
+	public BRJS(File brjsDir, PluginLocator pluginLocator, FileObserverFactory fileObserverFactory, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
 		
+		this.fileObserverFactory = fileObserverFactory;
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
@@ -90,7 +94,7 @@ public class BRJS extends AbstractBRJSRootNode
 
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
-		this(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new BRJSPluginLocator(), new PerformantObserverFactory(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
 
 	@Override
@@ -269,6 +273,10 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public PluginAccessor plugins() {
 		return pluginAccessor;
+	}
+	
+	public FileObserverFactory fileObserverFactory() {
+		return fileObserverFactory;
 	}
 	
 	public void runCommand(String... args) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
