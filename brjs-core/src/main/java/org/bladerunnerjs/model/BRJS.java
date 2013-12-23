@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.console.ConsoleWriter;
@@ -32,6 +33,8 @@ import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.plugin.utility.filechange.FileObserverFactory;
 import org.bladerunnerjs.plugin.utility.filechange.PerformantObserverFactory;
 import org.bladerunnerjs.utility.CommandRunner;
+import org.bladerunnerjs.utility.DirectoryIterator;
+import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -69,6 +72,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
+	private final Map<String, DirectoryIterator> directoryIterators = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private FileObserverFactory fileObserverFactory;
 	
@@ -128,6 +132,25 @@ public class BRJS extends AbstractBRJSRootNode
 				throw new ModelUpdateException(e);
 			}
 		}
+	}
+	
+	@Override
+	public DirectoryIterator getDirectoryIterator(File dir) {
+		// TODO: should this be the canonical path again to support symbolic links?
+		String dirPath = dir.getAbsolutePath();
+		DirectoryIterator directoryIterator = directoryIterators.get(dirPath);
+		
+		if(directoryIterator == null) {
+			directoryIterator = new DirectoryIterator(fileObserverFactory, dir);
+			directoryIterators.put(dirPath, directoryIterator);
+		}
+		
+		return directoryIterator;
+	}
+	
+	@Override
+	public FileIterator createFileIterator(File dir, IOFileFilter fileFilter) {
+		return new FileIterator(fileObserverFactory, dir, fileFilter);
 	}
 	
 	// TODO: this needs unit testing
@@ -273,10 +296,6 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public PluginAccessor plugins() {
 		return pluginAccessor;
-	}
-	
-	public FileObserverFactory fileObserverFactory() {
-		return fileObserverFactory;
 	}
 	
 	public void runCommand(String... args) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
