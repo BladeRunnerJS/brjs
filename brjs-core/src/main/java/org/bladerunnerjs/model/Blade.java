@@ -25,9 +25,9 @@ public class Blade extends AbstractComponent implements NamedNode
 		this.name = name;
 	}
 	
-	public static NodeMap<Blade> createNodeSet()
+	public static NodeMap<Blade> createNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(Blade.class, "blades", null);
+		return new NodeMap<>(rootNode, Blade.class, "blades", null);
 	}
 	
 	@Override

@@ -11,7 +11,7 @@ public class DirNodeMapLocator implements NodeMapLocator
 	private String subDirPath;
 	private String dirNameFilter;
 	
-	public DirNodeMapLocator(String subDirPath, String dirNameFilter)
+	public DirNodeMapLocator(RootNode rootNode, String subDirPath, String dirNameFilter)
 	{
 		this.subDirPath = subDirPath;
 		this.dirNameFilter = dirNameFilter;

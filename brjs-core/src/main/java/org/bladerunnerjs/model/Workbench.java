@@ -17,12 +17,14 @@ import org.bladerunnerjs.utility.TestRunner;
 public class Workbench extends AbstractBundlableNode implements TestableNode 
 {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
-	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
-	private final NodeMap<Theme> themes = Theme.createNodeSet();
+	private final NodeMap<TypedTestPack> testTypes;
+	private final NodeMap<Theme> themes;
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
+		testTypes = TypedTestPack.createNodeSet(rootNode);
+		themes = Theme.createNodeSet(rootNode);
 	}
 
 	public DirNode styleResources()

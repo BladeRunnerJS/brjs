@@ -51,12 +51,12 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String PLUGIN_FOUND_MSG = "found plugin %s";
 	}
 	
-	private final NodeMap<App> apps = App.createAppNodeSet();
-	private final NodeMap<App> systemApps = App.createSystemAppNodeSet();
+	private final NodeMap<App> apps = App.createAppNodeSet(this);
+	private final NodeMap<App> systemApps = App.createSystemAppNodeSet(this);
 	private final NodeItem<StandardJsLib> sdkLib = StandardJsLib.createSdkNodeItem();
-	private final NodeMap<StandardJsLib> sdkNonBladeRunnerLibs = StandardJsLib.createSdkNonBladeRunnerLibNodeSet();
+	private final NodeMap<StandardJsLib> sdkNonBladeRunnerLibs = StandardJsLib.createSdkNonBladeRunnerLibNodeSet(this);
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(DirNode.class, "js-patches");
-	private final NodeMap<NamedDirNode> templates = new NodeMap<>(NamedDirNode.class, "sdk/templates", "-template$");
+	private final NodeMap<NamedDirNode> templates = new NodeMap<>(this, NamedDirNode.class, "sdk/templates", "-template$");
 	private final NodeItem<DirNode> appJars = new NodeItem<>(DirNode.class, "sdk/libs/java/application");
 	private final NodeItem<DirNode> systemJars = new NodeItem<>(DirNode.class, "sdk/libs/java/system");
 	private final NodeItem<DirNode> testJars = new NodeItem<>(DirNode.class, "sdk/libs/java/testRunner");

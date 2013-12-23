@@ -34,10 +34,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeMap<StandardJsLib> nonBladeRunnerLibs = StandardJsLib.createAppNonBladeRunnerLibNodeSet();
-	private final NodeMap<Bladeset> bladesets = Bladeset.createNodeSet();
-	private final NodeMap<Aspect> aspects = Aspect.createNodeSet();
-	private final NodeMap<StandardJsLib> jsLibs = StandardJsLib.createAppNodeSet();
+	private final NodeMap<StandardJsLib> nonBladeRunnerLibs;
+	private final NodeMap<Bladeset> bladesets;
+	private final NodeMap<Aspect> aspects;
+	private final NodeMap<StandardJsLib> jsLibs;
 	private final LogicalRequestHandler requestHandler;
 	
 	private String name;
@@ -48,18 +48,22 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		nonBladeRunnerLibs = StandardJsLib.createAppNonBladeRunnerLibNodeSet(rootNode);
+		bladesets = Bladeset.createNodeSet(rootNode);
+		aspects = Aspect.createNodeSet(rootNode);
+		jsLibs = StandardJsLib.createAppNodeSet(rootNode);
 		requestHandler = new LogicalRequestHandler(this);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 	}
 	
-	public static NodeMap<App> createAppNodeSet()
+	public static NodeMap<App> createAppNodeSet(BRJS brjs)
 	{
-		return new NodeMap<>(App.class, "apps", null);
+		return new NodeMap<>(brjs, App.class, "apps", null);
 	}
 	
-	public static NodeMap<App> createSystemAppNodeSet()
+	public static NodeMap<App> createSystemAppNodeSet(BRJS brjs)
 	{
-		return new NodeMap<>(App.class, "sdk/system-applications", null);
+		return new NodeMap<>(brjs, App.class, "sdk/system-applications", null);
 	}
 	
 	public List<AssetContainer> getAllAssetContainers() {

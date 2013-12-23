@@ -16,8 +16,8 @@ import org.bladerunnerjs.utility.FileIterator;
 
 public class TestRootNode extends AbstractRootNode
 {
-	NodeMap<TestChildNode> childNodes = new NodeMap<>(TestChildNode.class, null, "^child-");
-	NodeMap<TestChildNode> multiLocationChildNodes = new NodeMap<>(TestChildNode.class, "set-primary-location", "^child-");
+	NodeMap<TestChildNode> childNodes = new NodeMap<>(this, TestChildNode.class, null, "^child-");
+	NodeMap<TestChildNode> multiLocationChildNodes = new NodeMap<>(this, TestChildNode.class, "set-primary-location", "^child-");
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(TestMultiLocationItemNode.class, "single-item-primary-location");
 	

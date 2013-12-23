@@ -16,18 +16,19 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class TypedTestPack extends SourceResources implements NamedNode
 {
-	private final NodeMap<TestPack> technologyTestPacks = TestPack.createNodeSet();
+	private final NodeMap<TestPack> technologyTestPacks;
 	private String name;
 	
 	public TypedTestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		technologyTestPacks = TestPack.createNodeSet(rootNode);
 	}
 	
-	public static NodeMap<TypedTestPack> createNodeSet()
+	public static NodeMap<TypedTestPack> createNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(TypedTestPack.class, "tests", "^test-");
+		return new NodeMap<>(rootNode, TypedTestPack.class, "tests", "^test-");
 	}
 	
 	@Override

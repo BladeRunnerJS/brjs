@@ -15,13 +15,14 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class TestChildNode extends AbstractNode implements NamedNode
 {
-	NodeMap<TestGrandChildNode> grandChildNodes = new NodeMap<>(TestGrandChildNode.class, "grandchild", null);
+	NodeMap<TestGrandChildNode> grandChildNodes;
 	private String name;
 	
 	public TestChildNode(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		grandChildNodes = new NodeMap<>(rootNode, TestGrandChildNode.class, "grandchild", null);
 	}
 	
 	@Override
