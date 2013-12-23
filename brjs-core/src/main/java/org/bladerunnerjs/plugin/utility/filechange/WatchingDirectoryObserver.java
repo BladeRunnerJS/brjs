@@ -23,7 +23,7 @@ public class WatchingDirectoryObserver implements DirectoryObserver {
 	
 	@Override
 	public boolean hasChangedSinceLastCheck() {
-		boolean hasChanged = !watcher.poll().pollEvents().isEmpty() || firstInvocation;
+		boolean hasChanged = (watcher.poll() == null) || firstInvocation;
 		firstInvocation = false;
 		
 		return hasChanged;

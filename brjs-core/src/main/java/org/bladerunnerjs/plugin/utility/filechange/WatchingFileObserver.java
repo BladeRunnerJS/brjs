@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 
 public class WatchingFileObserver implements FileObserver {
@@ -39,14 +40,17 @@ public class WatchingFileObserver implements FileObserver {
 	
 	private boolean fileEventsExists() {
 		boolean fileEventExists = false;
+		WatchKey watchKey = watcher.poll();
 		
-		for(WatchEvent<?> watchEvent : watcher.poll().pollEvents()) {
-			@SuppressWarnings("unchecked")
-			String eventFileName = ((WatchEvent<Path>) watchEvent).context().toFile().getName();
-			
-			if(eventFileName.equals(fileName)) {
-				fileEventExists = true;
-				break;
+		if(watchKey != null) {
+			for(WatchEvent<?> watchEvent : watchKey.pollEvents()) {
+				@SuppressWarnings("unchecked")
+				String eventFileName = ((WatchEvent<Path>) watchEvent).context().toFile().getName();
+				
+				if(eventFileName.equals(fileName)) {
+					fileEventExists = true;
+					break;
+				}
 			}
 		}
 		

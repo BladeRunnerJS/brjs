@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
+import org.bladerunnerjs.plugin.utility.filechange.AccurateObserverFactory;
 import org.bladerunnerjs.testing.utility.MockLoggerFactory;
 import org.bladerunnerjs.utility.DirectoryIterator;
 import org.bladerunnerjs.utility.FileIterator;
@@ -89,6 +90,6 @@ public class TestRootNode extends AbstractRootNode
 	
 	@Override
 	public DirectoryIterator getDirectoryIterator(File dir) {
-		return null;
+ 		return new DirectoryIterator(new AccurateObserverFactory(), dir);
 	}
 }
