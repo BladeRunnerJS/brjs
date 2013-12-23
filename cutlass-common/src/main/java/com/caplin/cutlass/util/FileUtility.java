@@ -2,6 +2,7 @@ package com.caplin.cutlass.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.comparator.PathFileComparator;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 
@@ -17,6 +18,17 @@ import java.util.zip.ZipOutputStream;
 
 
 public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
+	public static Collection<File> sortFiles(Collection<File> files)
+	{		
+		ArrayList<File> filesCopy = new ArrayList<File>(files);
+		Collections.sort( filesCopy, PathFileComparator.PATH_COMPARATOR );
+		return filesCopy;
+	}
+	
+	public static File[] sortFiles(File[] files)
+	{
+		return sortFiles( Arrays.asList(files) ).toArray(new File[0]);
+	}
 	
 	@SuppressWarnings("rawtypes")
 	public static void unzip(ZipFile zipFile, File targetLocation) throws IOException {			 

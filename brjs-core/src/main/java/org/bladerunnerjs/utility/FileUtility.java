@@ -5,13 +5,11 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.NameFileComparator;
-import org.apache.commons.io.comparator.PathFileComparator;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -46,17 +44,5 @@ public class FileUtility {
 		Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
 		
 		return files;
-	}
-	
-	public static Collection<File> sortFiles(Collection<File> files)
-	{		
-		ArrayList<File> filesCopy = new ArrayList<File>(files);
-		Collections.sort( filesCopy, PathFileComparator.PATH_COMPARATOR );
-		return filesCopy;
-	}
-	
-	public static File[] sortFiles(File[] files)
-	{
-		return sortFiles( Arrays.asList(files) ).toArray(new File[0]);
 	}
 }
