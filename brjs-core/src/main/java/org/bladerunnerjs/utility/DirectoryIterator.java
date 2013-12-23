@@ -32,4 +32,8 @@ public class DirectoryIterator {
 		
 		return dirs;
 	}
+	
+	public void close() {
+		directoryObserver.close();
+	}
 }

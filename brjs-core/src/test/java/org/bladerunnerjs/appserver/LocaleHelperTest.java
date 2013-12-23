@@ -19,6 +19,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,6 +29,7 @@ public class LocaleHelperTest
 {
 	private HttpServletRequest request;
 	private Vector<Locale> preferedLocales;
+	private BRJS brjs;
 	private App app;
 	private AppConf appConf;
 	
@@ -38,9 +40,14 @@ public class LocaleHelperTest
 		preferedLocales = new Vector<Locale>();
 		
 		File tempDir = createTestSdkDirectory();
-		BRJS brjs = BRJSTestFactory.createBRJS(tempDir);
+		brjs = BRJSTestFactory.createBRJS(tempDir);
 		app = brjs.app("app");
 		appConf = app.appConf();
+	}
+	
+	@After
+	public void tearDown() {
+		brjs.close();
 	}
 	
 	@Test

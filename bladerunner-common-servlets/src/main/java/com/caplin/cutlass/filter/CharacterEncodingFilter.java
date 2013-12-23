@@ -41,6 +41,6 @@ public class CharacterEncodingFilter implements Filter
 	@Override
 	public void destroy()
 	{
-		// do nothing
+		ServletModelAccessor.destroy();
 	}
 }

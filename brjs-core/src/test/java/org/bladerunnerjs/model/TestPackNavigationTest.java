@@ -5,12 +5,27 @@ import java.io.File;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TestPackNavigationTest
 {
-	private TestPack technologyTestPack = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).app("a1").bladeset("bs1").testType("type1").testTech("tech1");
-	private NodeTesterFactory<TestPack> nodeTesterFactory = new NodeTesterFactory<>(technologyTestPack, TestPack.class);
+	private BRJS brjs;
+	private TestPack technologyTestPack;
+	private NodeTesterFactory<TestPack> nodeTesterFactory;
+	
+	@Before
+	public void setUp() {
+		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
+		technologyTestPack = brjs.app("a1").bladeset("bs1").testType("type1").testTech("tech1");
+		nodeTesterFactory = new NodeTesterFactory<>(technologyTestPack, TestPack.class);
+	}
+	
+	@After
+	public void tearDown() {
+		brjs.close();
+	}
 	
 	@Test
 	public void testSource()

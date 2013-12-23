@@ -5,4 +5,9 @@ public class PessimisticDirectoryObserver implements DirectoryObserver {
 	public boolean hasChangedSinceLastCheck() {
 		return true;
 	}
+	
+	@Override
+	public void close() {
+		// do nothing
+	}
 }

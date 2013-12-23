@@ -15,19 +15,20 @@ public class AspectNavigationTest
 {
 	private NodeTesterFactory<Aspect> nodeTesterFactory;
 	private Aspect aspect;
+	private BRJS brjs;
 	
 	@Before
 	public void setup()
 	{
-		aspect = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).app("a1").aspect("a1");
+		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
+		aspect = brjs.app("a1").aspect("a1");
 		nodeTesterFactory = new NodeTesterFactory<>(aspect, Aspect.class);
 	}
 	
 	@After
 	public void teardown()
 	{
-		aspect = null;
-		nodeTesterFactory = null;
+		brjs.close();
 	}
 	
 	@Test

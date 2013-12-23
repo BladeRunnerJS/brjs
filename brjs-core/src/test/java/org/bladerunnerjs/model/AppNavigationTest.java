@@ -13,22 +13,24 @@ import org.junit.Test;
 
 public class AppNavigationTest
 {
+	private BRJS brjs;
 	private App app;
 
 	private NodeTesterFactory<App> nodeTesterFactory;
+
 	
 	@Before
 	public void setup()
 	{
-		app = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).app("a1");
+		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
+		app = brjs.app("a1");
 		nodeTesterFactory = new NodeTesterFactory<>(app, App.class);
 	}
 	
 	@After
 	public void teardown()
 	{
-		app = null;
-		nodeTesterFactory = null;
+		brjs.close();
 	}
 
 	@Test

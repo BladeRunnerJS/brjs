@@ -28,8 +28,14 @@ public class WatchingDirectoryObserver implements DirectoryObserver {
 		
 		return hasChanged;
 	}
-	
-	public void destroy() throws IOException {
-		watcher.close();
+
+	@Override
+	public void close() {
+		try {
+			watcher.close();
+		}
+		catch(IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

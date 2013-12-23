@@ -12,21 +12,22 @@ import org.junit.Test;
 
 public class WorkbenchNavigationTest
 {
+	private BRJS brjs;
 	private NodeTesterFactory<Workbench> nodeTesterFactory;
 	private Workbench workbench;
 	
 	@Before
 	public void setup()
 	{
-		workbench = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).app("a1").bladeset("bs1").blade("b1").workbench();
+		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
+		workbench = brjs.app("a1").bladeset("bs1").blade("b1").workbench();
 		nodeTesterFactory = new NodeTesterFactory<>(workbench, Workbench.class);
 	}
 	
 	@After
 	public void teardown()
 	{
-		workbench = null;
-		nodeTesterFactory = null;
+		brjs.close();
 	}
 	
 	@Test

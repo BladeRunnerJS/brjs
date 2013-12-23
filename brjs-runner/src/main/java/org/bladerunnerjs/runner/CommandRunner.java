@@ -57,6 +57,8 @@ public class CommandRunner {
 	}
 	
 	public void run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
+		BRJS brjs = null;
+		
 		try {
 			if (args.length < 1 || args[0] == null) throw new NoSdkArgumentException("No SDK base directory was provided");
 			
@@ -67,7 +69,7 @@ public class CommandRunner {
 			sdkBaseDir = sdkBaseDir.getCanonicalFile();
 			
 			args = processGlobalCommandFlags(args);
-			BRJS brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
+			brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
 			
 			if (!brjs.dirExists()) throw new InvalidSdkDirectoryException("'" + sdkBaseDir.getPath() + "' is not a valid SDK directory");
 			
@@ -78,6 +80,11 @@ public class CommandRunner {
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);
+		}
+		finally {
+			if(brjs != null) {
+				brjs.close();
+			}
 		}
 	}
 	

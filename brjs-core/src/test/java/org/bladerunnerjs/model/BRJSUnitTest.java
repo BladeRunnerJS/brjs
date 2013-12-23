@@ -6,19 +6,25 @@ import java.io.IOException;
 
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
 public class BRJSUnitTest
 {
-
-	BRJS brjs;
+	private BRJS brjs;
 	
 	@Before
 	public void setup() throws IOException
 	{
 		brjs = BRJSTestFactory.createBRJS( FileUtility.createTemporaryDirectory( this.getClass().getCanonicalName() ) );
+	}
+	
+	@After
+	public void teardown()
+	{
+		brjs.close();
 	}
 	
 	@Test

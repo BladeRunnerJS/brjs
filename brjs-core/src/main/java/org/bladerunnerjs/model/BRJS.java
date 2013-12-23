@@ -49,6 +49,7 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CREATING_PLUGINS_LOG_MSG = "creating plugins";
 		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "making plugins available via model";
 		public static final String PLUGIN_FOUND_MSG = "found plugin %s";
+		public static final String CLOSE_METHOD_NOT_INVOKED = "the BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 	}
 	
 	private final NodeMap<App> apps = App.createAppNodeSet(this);
@@ -75,6 +76,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Map<String, DirectoryIterator> directoryIterators = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private FileObserverFactory fileObserverFactory;
+	private boolean closed = false;
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, FileObserverFactory fileObserverFactory, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
@@ -151,6 +153,22 @@ public class BRJS extends AbstractBRJSRootNode
 	@Override
 	public FileIterator createFileIterator(File dir, IOFileFilter fileFilter) {
 		return new FileIterator(fileObserverFactory, dir, fileFilter);
+	}
+	
+	@Override
+	public void finalize() {
+		if(!closed) {
+			logger.error(Messages.CLOSE_METHOD_NOT_INVOKED);
+			close();
+		}
+	}
+	
+	public void close() {
+		closed  = true;
+		
+		for(DirectoryIterator directoryIterator : directoryIterators.values()) {
+			directoryIterator.close();
+		}
 	}
 	
 	// TODO: this needs unit testing
