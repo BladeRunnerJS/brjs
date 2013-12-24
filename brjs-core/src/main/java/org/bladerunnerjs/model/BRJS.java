@@ -31,7 +31,7 @@ import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.plugin.utility.filechange.FileObserverFactory;
-import org.bladerunnerjs.plugin.utility.filechange.PerformantObserverFactory;
+import org.bladerunnerjs.plugin.utility.filechange.PerformantFileObserverFactory;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.DirectoryIterator;
 import org.bladerunnerjs.utility.FileIterator;
@@ -100,7 +100,7 @@ public class BRJS extends AbstractBRJSRootNode
 
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
-		this(brjsDir, new BRJSPluginLocator(), new PerformantObserverFactory(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new BRJSPluginLocator(), new PerformantFileObserverFactory(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
 
 	@Override

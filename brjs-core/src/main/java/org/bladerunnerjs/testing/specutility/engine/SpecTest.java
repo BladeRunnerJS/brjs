@@ -25,8 +25,8 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
-import org.bladerunnerjs.plugin.utility.filechange.AccurateObserverFactory;
-import org.bladerunnerjs.plugin.utility.filechange.PerformantObserverFactory;
+import org.bladerunnerjs.plugin.utility.filechange.AccurateFileObserverFactory;
+import org.bladerunnerjs.plugin.utility.filechange.PerformantFileObserverFactory;
 import org.bladerunnerjs.testing.specutility.AppBuilder;
 import org.bladerunnerjs.testing.specutility.AppCommander;
 import org.bladerunnerjs.testing.specutility.AppConfCommander;
@@ -113,11 +113,11 @@ public abstract class SpecTest
 	
 	public BRJS createModel() 
 	{	
-		return new BRJS(testSdkDirectory, pluginLocator, new AccurateObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return new BRJS(testSdkDirectory, pluginLocator, new AccurateFileObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 	}
 	
 	public BRJS createNonTestModel() {
-		return new BRJS(testSdkDirectory, new BRJSPluginLocator(), new PerformantObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return new BRJS(testSdkDirectory, new BRJSPluginLocator(), new PerformantFileObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 	}
 	
 	@After

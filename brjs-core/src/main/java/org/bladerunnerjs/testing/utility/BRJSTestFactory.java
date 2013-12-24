@@ -6,16 +6,16 @@ import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.PluginLocator;
-import org.bladerunnerjs.plugin.utility.filechange.AccurateObserverFactory;
+import org.bladerunnerjs.plugin.utility.filechange.AccurateFileObserverFactory;
 
 public class BRJSTestFactory {
 	
 	public static BRJS createBRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory) {
-		return new BRJS(brjsDir, pluginLocator, new AccurateObserverFactory(), loggerFactory, new StubConsoleWriter());
+		return new BRJS(brjsDir, pluginLocator, new AccurateFileObserverFactory(), loggerFactory, new StubConsoleWriter());
 	}
 	
 	public static BRJS createBRJS(File brjsDir, PluginLocator pluginLocator) {
-		return new BRJS(brjsDir, pluginLocator, new AccurateObserverFactory(), new SLF4JLoggerFactory(), new StubConsoleWriter());
+		return new BRJS(brjsDir, pluginLocator, new AccurateFileObserverFactory(), new SLF4JLoggerFactory(), new StubConsoleWriter());
 	}
 
 	public static BRJS createBRJS(File brjsDir, LoggerFactory loggerFactory) {

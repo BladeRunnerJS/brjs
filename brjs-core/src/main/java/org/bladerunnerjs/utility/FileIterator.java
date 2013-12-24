@@ -24,7 +24,7 @@ public class FileIterator {
 		directoryObserver = fileObserverFactory.createDirectoryObserver(dir);
 	}
 	
-	public List<File> dirs() {
+	public List<File> files() {
 		if((directoryObserver.hasChangedSinceLastCheck()) || (files == null)) {
 			files = new ArrayList<File>(FileUtils.listFiles(dir, fileFilter, FalseFileFilter.INSTANCE));
 			Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
