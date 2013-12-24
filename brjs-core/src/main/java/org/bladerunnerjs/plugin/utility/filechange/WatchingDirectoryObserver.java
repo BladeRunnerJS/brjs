@@ -4,16 +4,15 @@ import static java.nio.file.StandardWatchEventKinds.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.WatchService;
 
 public class WatchingDirectoryObserver implements DirectoryObserver {
 	private final WatchService watcher;
 	private boolean firstInvocation = true;
 	
-	public WatchingDirectoryObserver(File dir) {
+	public WatchingDirectoryObserver(WatchService watcher, File dir) {
 		try {
-			watcher = FileSystems.getDefault().newWatchService();
+			this.watcher = watcher;
 			dir.toPath().register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
 		}
 		catch(IOException e) {
@@ -28,14 +27,9 @@ public class WatchingDirectoryObserver implements DirectoryObserver {
 		
 		return hasChanged;
 	}
-
+	
 	@Override
-	public void close() {
-		try {
-			watcher.close();
-		}
-		catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+	public void reset() {
+		firstInvocation = true;
 	}
 }

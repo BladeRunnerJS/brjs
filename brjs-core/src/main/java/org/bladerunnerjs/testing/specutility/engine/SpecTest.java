@@ -108,7 +108,9 @@ public abstract class SpecTest
 	
 	@After
 	public void cleanUp() {
-		brjs.close();
+		if(brjs != null) {
+			brjs.close();
+		}
 	}
 	
 	public BRJS createModel() 

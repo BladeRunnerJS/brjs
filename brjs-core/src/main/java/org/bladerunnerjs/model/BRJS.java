@@ -165,10 +165,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public void close() {
 		closed  = true;
-		
-		for(DirectoryIterator directoryIterator : directoryIterators.values()) {
-			directoryIterator.close();
-		}
+		fileObserverFactory.close();
 	}
 	
 	// TODO: this needs unit testing

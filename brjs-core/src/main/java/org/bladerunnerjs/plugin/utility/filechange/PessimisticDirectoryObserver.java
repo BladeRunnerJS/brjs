@@ -7,7 +7,7 @@ public class PessimisticDirectoryObserver implements DirectoryObserver {
 	}
 	
 	@Override
-	public void close() {
+	public void reset() {
 		// do nothing
 	}
 }

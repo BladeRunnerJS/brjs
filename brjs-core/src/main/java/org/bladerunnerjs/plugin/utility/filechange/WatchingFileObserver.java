@@ -4,7 +4,6 @@ import static java.nio.file.StandardWatchEventKinds.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
@@ -15,9 +14,9 @@ public class WatchingFileObserver implements FileObserver {
 	private final String fileName;
 	private boolean firstInvocation = true;
 	
-	public WatchingFileObserver(File file) {
+	public WatchingFileObserver(WatchService watcher, File file) {
 		try {
-			watcher = FileSystems.getDefault().newWatchService();
+			this.watcher = watcher;
 			fileName = file.getName();
 			file.getParentFile().toPath().register(watcher, ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY);
 		}
@@ -32,10 +31,6 @@ public class WatchingFileObserver implements FileObserver {
 		firstInvocation = false;
 		
 		return hasChanged;
-	}
-	
-	public void destroy() throws IOException {
-		watcher.close();
 	}
 	
 	private boolean fileEventsExists() {

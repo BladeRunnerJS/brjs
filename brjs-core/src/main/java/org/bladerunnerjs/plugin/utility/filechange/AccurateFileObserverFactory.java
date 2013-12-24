@@ -15,4 +15,9 @@ public class AccurateFileObserverFactory implements FileObserverFactory {
 	public DirectoryObserver createDirectoryObserver(File dir) {
 		return pessimisticDirectoryObserver;
 	}
+	
+	@Override
+	public void close() {
+		// do nothing
+	}
 }

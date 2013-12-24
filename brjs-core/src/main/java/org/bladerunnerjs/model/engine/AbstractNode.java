@@ -103,6 +103,8 @@ public abstract class AbstractNode implements Node
 			try {
 				FileUtils.forceMkdir(dir);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
+				
+				rootNode.getDirectoryIterator(parent.dir()).reset();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);

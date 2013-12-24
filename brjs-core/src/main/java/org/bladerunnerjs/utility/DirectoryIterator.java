@@ -33,7 +33,7 @@ public class DirectoryIterator {
 		return dirs;
 	}
 	
-	public void close() {
-		directoryObserver.close();
+	public void reset() {
+		directoryObserver.reset();
 	}
 }
