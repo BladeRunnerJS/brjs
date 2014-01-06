@@ -30,6 +30,7 @@ public class AppDeploymentFileWatcher extends Thread
 	private BRJS brjs;
 
 	private File[] rootWatchDirs;
+	private volatile boolean running = true;
 	
 	// TODO: replace this with file watcher - recusive watching info here http://docs.oracle.com/javase/tutorial/essential/io/examples/WatchDir.java
 	public AppDeploymentFileWatcher(BRJS brjs, BRJSApplicationServer appServer, File... rootWatchDirs)
@@ -40,24 +41,29 @@ public class AppDeploymentFileWatcher extends Thread
 		this.brjs = brjs;
 		this.rootWatchDirs = rootWatchDirs;
 	}
-
+	
+	@Override
 	public void run()
-	{	
-		try
+	{
+		while(running)
 		{
-    		while(true)
-    		{
-    			for (File rootWatchDir : rootWatchDirs)
-    			{
-    				checkForNewApps(rootWatchDir);
-    			}
+			try
+			{
+	    		for (File rootWatchDir : rootWatchDirs)
+	    		{
+	    			checkForNewApps(rootWatchDir);
+	    		}
 				Thread.sleep(CHECK_INTERVAL);
-    		}
+			}
+			catch (InterruptedException e)
+			{
+				logger.warn(WATCHING_INTERUPTED_MSG, this.getClass().getSimpleName());
+			}
 		}
-		catch (InterruptedException e)
-		{
-			logger.warn(WATCHING_INTERUPTED_MSG, this.getClass().getSimpleName());
-		}
+	}
+	
+	public void terminate() {
+		running = false;
 	}
 
 	private void checkForNewApps(File rootWatchDir)

@@ -44,6 +44,7 @@ public class BRJSApplicationServer implements ApplicationServer
 	private Server server;
 	private ContextHandlerCollection contexts;
 	private Map<App,WebAppContext> contextMap;
+	private AppDeploymentFileWatcher fileWatcher;
 	
 	public BRJSApplicationServer(BRJS brjs, int port)
 	{
@@ -76,8 +77,9 @@ public class BRJSApplicationServer implements ApplicationServer
 		
 		File appsDir = new File(brjs.dir(), "apps"); //TODO: this needs to change to current working dir once we have a global install
 		File sysAppsDir = brjs.systemApp("no-such-app").dir().getParentFile();
-		new AppDeploymentFileWatcher(brjs, this, appsDir, sysAppsDir).start();
+		fileWatcher = new AppDeploymentFileWatcher(brjs, this, appsDir, sysAppsDir);
 		
+		fileWatcher.start();
 		server.start();
 		logger.info(SERVER_STARTED_LOG_MESSAGE, getPort());
 	}
@@ -85,8 +87,11 @@ public class BRJSApplicationServer implements ApplicationServer
 	@Override
 	public void stop() throws Exception
 	{
-		server.stop();
-		logger.info(SERVER_STOPPED_LOG_MESSAGE, getPort());
+		if(fileWatcher != null) {
+			fileWatcher.terminate();
+			server.stop();
+			logger.info(SERVER_STOPPED_LOG_MESSAGE, getPort());
+		}
 	}
 
 	@Override
