@@ -9,6 +9,9 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.console.ConsoleWriter;
@@ -346,11 +349,26 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public <AF extends Asset> List<AF> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... extensions) throws AssetFileInstantationException
 	{
-		return assetLocator.createAssetFilesWithExtension(assetFileClass, assetLocation, extensions);
+		return createAssetFiles(assetFileClass, assetLocation, new SuffixFileFilter(extensions));
 	}
 	
 	public <AF extends Asset> List<AF> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... fileNames) throws AssetFileInstantationException
 	{
-		return assetLocator.createAssetFilesWithName(assetFileClass, assetLocation, fileNames);
+		return createAssetFiles(assetFileClass, assetLocation, new NameFileFilter(fileNames));
+	}
+	
+	private <AF extends Asset> List<AF> createAssetFiles(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, IOFileFilter fileFilter) throws AssetFileInstantationException
+	{
+		File dir = assetLocation.dir();
+		List<AF> files = null;
+		
+		if (!dir.isDirectory()) {
+			files = new ArrayList<>();
+		}
+		else {
+			files = assetLocator.createAssetFiles(assetFileClass, assetLocation, getFileIterator(dir).files(fileFilter));
+		}
+		
+		return files;
 	}
 }

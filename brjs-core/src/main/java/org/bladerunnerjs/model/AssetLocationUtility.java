@@ -2,16 +2,11 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.io.filefilter.NameFileFilter;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
-import org.bladerunnerjs.utility.FileUtility;
 
 
 public class AssetLocationUtility
@@ -45,22 +40,6 @@ public class AssetLocationUtility
 		}
 		
 		return assets;
-	}
-	
-	public <A extends Asset> List<A> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... extensions) throws AssetFileInstantationException
-	{
-		File dir = assetLocation.dir();
-		if (!dir.isDirectory()) { return Arrays.asList(); }
-		
-		return createAssetFiles( assetFileClass, assetLocation, FileUtility.listFiles(dir, new SuffixFileFilter(extensions)) );
-	}
-	
-	public <A extends Asset> List<A> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... fileNames) throws AssetFileInstantationException
-	{
-		File dir = assetLocation.dir();
-		if (!dir.isDirectory()) { return Arrays.asList(); }
-		
-		return createAssetFiles( assetFileClass, assetLocation, FileUtility.listFiles(dir, new NameFileFilter(fileNames)) );
 	}
 	
 	@SuppressWarnings("unchecked")

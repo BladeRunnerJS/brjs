@@ -3,17 +3,13 @@ package org.bladerunnerjs.utility;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.NameFileComparator;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 
 public class FileUtility {
@@ -34,13 +30,6 @@ public class FileUtility {
 	{
 		FileFilter filter = FileFilterUtils.and( DirectoryFileFilter.INSTANCE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")) );
 		List<File> files = Arrays.asList( dir.listFiles(filter) );
-		Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
-		
-		return files;
-	}
-	
-	public static List<File> listFiles(File dir, IOFileFilter fileFilter) {
-		List<File> files = new ArrayList<File>(FileUtils.listFiles(dir, fileFilter, FalseFileFilter.INSTANCE));
 		Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
 		
 		return files;
