@@ -1,3 +1,3 @@
-depends: jquery
+depends: jquery-browser
 js: WolfSimpleBox.js
 css: WolfSimpleBox.css

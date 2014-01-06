@@ -408,7 +408,7 @@
 					},
 
 					unwrapObservable: function (value) {
-						return ko.isObservable(value) ? value.getValueForKnockout() : value; //Caplin change
+						return ko.isObservable(value) ? value.getValueForKnockout() : value; //BRJS change
 					},
 
 					peekObservable: function (value) {
@@ -1135,7 +1135,7 @@
 			}
 			ko.isWriteableObservable = function (instance) {
 				// Observable
-				if (instance[protoProperty] === ko.observable && instance instanceof caplin.presenter.property.WritableProperty) //Caplin change
+				if (instance[protoProperty] === ko.observable && instance instanceof br.presenter.property.WritableProperty) //BRJS change
 					return true;
 				// Writeable dependent observable
 				if ((typeof instance == "function") && (instance[protoProperty] === ko.dependentObservable) && (instance.hasWriteFunction))
@@ -1939,7 +1939,7 @@
 							if (propWriters && propWriters[key])
 								propWriters[key](value);
 						} else if (ko.isWriteableObservable(property) && (!checkIfDifferent || property.peek() !== value)) {
-							if (property instanceof caplin.presenter.property.EditableProperty) //Caplin change
+							if (property instanceof br.presenter.property.EditableProperty) //BRJS change
 							{
 								property.setUserEnteredValue(value);
 							}
@@ -2727,7 +2727,7 @@
 				}
 			};
 
-			//Added by Caplin
+			//Added by BRJS
 			ko.bindingHandlers['prop'] = {
 				update: function(element, valueAccessor, allBindingsAccessor) {
 					var value = ko.utils.unwrapObservable(valueAccessor()) || {};
@@ -3409,7 +3409,7 @@
 				// Named template
 				if (typeof template == "string") {
 					templateDocument = templateDocument || document;
-					var elem = caplin.core.ServiceRegistry.getService("br.html-service").getHTMLTemplate(template); //Caplin change
+					var elem = br.ServiceRegistry.getService("br.html-service").getHTMLTemplate(template); //BRJS change
 					if (!elem)
 						throw new Error("Cannot find template with ID " + template);
 					return new ko.templateSources.domElement(elem);
@@ -3442,7 +3442,7 @@
 			ko.exportSymbol('templateEngine', ko.templateEngine);
 
 			ko.templateRewriting = (function () {
-				var memoizeDataBindingAttributeSyntaxRegex = /(<([a-zA-Z]+\d*)(?:\s+(?!data-bind\s*=\s*)[a-z0-9\-]+(?:=(?:\"[^\"]*\"|\'[^\']*\'|[^>]*))?)*\s+)data-bind\s*=\s*(["'])([\s\S]*?)\3/gi; //Caplin change
+				var memoizeDataBindingAttributeSyntaxRegex = /(<([a-zA-Z]+\d*)(?:\s+(?!data-bind\s*=\s*)[a-z0-9\-]+(?:=(?:\"[^\"]*\"|\'[^\']*\'|[^>]*))?)*\s+)data-bind\s*=\s*(["'])([\s\S]*?)\3/gi; //BRJS change
 				var memoizeVirtualContainerBindingSyntaxRegex = /<!--\s*ko\b\s*([\s\S]*?)\s*-->/g;
 
 				function validateDataBindValuesForRewriting(keyValueArray) {
@@ -4236,7 +4236,7 @@
 				var jqueryTmplTemplateEngineInstance = new ko.jqueryTmplTemplateEngine();
 				if (jqueryTmplTemplateEngineInstance.jQueryTmplVersion > 0)
 
-				//Comment out use of jquery template Caplin change
+				//Comment out use of jquery template BRJS change
 				//ko.setTemplateEngine(jqueryTmplTemplateEngineInstance);
 
 					ko.exportSymbol('jqueryTmplTemplateEngine', ko.jqueryTmplTemplateEngine);
