@@ -3,7 +3,6 @@ package org.bladerunnerjs.model.engine;
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -11,7 +10,6 @@ import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.plugin.utility.filechange.AccurateFileObserverFactory;
 import org.bladerunnerjs.testing.utility.MockLoggerFactory;
-import org.bladerunnerjs.utility.DirectoryIterator;
 import org.bladerunnerjs.utility.FileIterator;
 
 
@@ -84,12 +82,7 @@ public class TestRootNode extends AbstractRootNode
 	}
 	
 	@Override
-	public FileIterator createFileIterator(File dir, IOFileFilter fileFilter) {
-		return null;
-	}
-	
-	@Override
-	public DirectoryIterator getDirectoryIterator(File dir) {
- 		return new DirectoryIterator(new AccurateFileObserverFactory(), dir);
+	public FileIterator getFileIterator(File dir) {
+		return new FileIterator(new AccurateFileObserverFactory(), dir);
 	}
 }

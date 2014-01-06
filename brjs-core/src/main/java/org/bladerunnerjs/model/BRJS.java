@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.console.ConsoleWriter;
@@ -34,7 +33,6 @@ import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.plugin.utility.filechange.FileObserverFactory;
 import org.bladerunnerjs.plugin.utility.filechange.PerformantFileObserverFactory;
 import org.bladerunnerjs.utility.CommandRunner;
-import org.bladerunnerjs.utility.DirectoryIterator;
 import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
@@ -74,7 +72,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
-	private final Map<String, DirectoryIterator> directoryIterators = new HashMap<>();
+	private final Map<String, FileIterator> fileIterators = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private FileObserverFactory fileObserverFactory;
 	private boolean closed = false;
@@ -138,28 +136,23 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	@Override
-	public DirectoryIterator getDirectoryIterator(File dir) {
-		DirectoryIterator directoryIterator = null;
+	public FileIterator getFileIterator(File dir) {
+		FileIterator fileIterator = null;
 		
 		try {
 			String dirPath = dir.getCanonicalPath();
 			
-			if(!directoryIterators.containsKey(dirPath)) {
-				directoryIterators.put(dirPath, new DirectoryIterator(fileObserverFactory, dir));
+			if(!fileIterators.containsKey(dirPath)) {
+				fileIterators.put(dirPath, new FileIterator(fileObserverFactory, dir));
 			}
 			
-			directoryIterator = directoryIterators.get(dirPath);
+			fileIterator = fileIterators.get(dirPath);
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);
 		}
 		
-		return directoryIterator;
-	}
-	
-	@Override
-	public FileIterator createFileIterator(File dir, IOFileFilter fileFilter) {
-		return new FileIterator(fileObserverFactory, dir, fileFilter);
+		return fileIterator;
 	}
 	
 	@Override
