@@ -82,9 +82,10 @@ public class CommandRunner {
 			throw new RuntimeException(e);
 		}
 		finally {
-			if(brjs != null) {
-				brjs.close();
-			}
+			// TODO: we probably should invoke brjs.close() using a shutdown hook (as the process is closing), and we should also create a Plugin.close() method that can be invoked on all plug-ins, in case any of them need to do any clean up
+//			if(brjs != null) {
+//				brjs.close();
+//			}
 		}
 	}
 	
