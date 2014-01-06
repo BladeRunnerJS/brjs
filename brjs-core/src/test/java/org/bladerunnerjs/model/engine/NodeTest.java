@@ -121,7 +121,7 @@ public class NodeTest
 		assertFalse("grandchild dir does not exist", grandchildDir.exists());
 		assertFalse("great grandchild dir does not exist", greatGrandchildDir.exists());
 		
-		Node node = new TestNode(mockRootNode, null, grandchildDir);
+		Node node = new TestNode(mockRootNode, mockRootNode, grandchildDir);
 		node.create();
 		
 		assertTrue("temp dir exists", tempDir.exists());
