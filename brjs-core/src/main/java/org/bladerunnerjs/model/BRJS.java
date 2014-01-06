@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,13 +139,19 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	@Override
 	public DirectoryIterator getDirectoryIterator(File dir) {
-		// TODO: should this be the canonical path again to support symbolic links?
-		String dirPath = dir.getAbsolutePath();
-		DirectoryIterator directoryIterator = directoryIterators.get(dirPath);
+		DirectoryIterator directoryIterator = null;
 		
-		if(directoryIterator == null) {
-			directoryIterator = new DirectoryIterator(fileObserverFactory, dir);
-			directoryIterators.put(dirPath, directoryIterator);
+		try {
+			String dirPath = dir.getCanonicalPath();
+			
+			if(!directoryIterators.containsKey(dirPath)) {
+				directoryIterators.put(dirPath, new DirectoryIterator(fileObserverFactory, dir));
+			}
+			
+			directoryIterator = directoryIterators.get(dirPath);
+		}
+		catch(IOException e) {
+			throw new RuntimeException(e);
 		}
 		
 		return directoryIterator;
