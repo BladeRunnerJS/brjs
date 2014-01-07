@@ -9,6 +9,7 @@ import org.bladerunnerjs.core.plugin.command.standard.ServeCommand;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -68,5 +69,29 @@ public class ServeCommandTest extends SpecTest
 		given(appServer).started();
 		when(brjs).runCommand("serve");
 		then(exceptions).verifyException(IOException.class, "7070");
+	}
+	
+	@Test
+	public void canOverridePortValueWithArgument() throws Exception
+	{
+		appServerPort = 7777;
+		appServer = brjs.applicationServer(appServerPort);
+		
+		given(logging).enabled();
+		when(brjs).runCommand("serve", "-p", "7777");
+		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
+			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")
+			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + "7777/")
+			.and(logging).infoMessageReceived("\t" + SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
+			.and(appServer).requestIsRedirected("/","/dashboard");
+	}
+	
+	@Test
+	public void providingInvalidPortValueThrowsException() throws Exception
+	{
+		given(brjs).hasBeenAuthenticallyCreated();
+		when(brjs).runCommand("serve", "-p", "invalid-port");
+		then(exceptions).verifyException(NumberFormatException.class)
+			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 }

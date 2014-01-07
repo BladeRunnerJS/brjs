@@ -7,9 +7,11 @@ import org.bladerunnerjs.core.log.LoggerType;
 import org.bladerunnerjs.core.plugin.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
+import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
@@ -19,6 +21,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	public class Messages {
 		public static final String SERVER_STARTUP_MESSAGE = "BladerunnerJS server is now running and can be accessed at http://localhost:";
 		public static final String SERVER_STOP_INSTRUCTION_MESSAGE = "Press Ctrl + C to stop the server";
+		public static final String INVALID_PORT_MESSAGE = "Unable to serve BladeRunnerJS with invalid port value";
 	}
 	
 	private ApplicationServer appServer;
@@ -63,22 +66,17 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException
 	{
+		argsParser.registerParameter(new FlaggedOption("port").setShortFlag('p').setRequired(false).setHelp("the port number to run the BRJS application (overrides config)"));
 	}
 
 	@Override
 	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException
 	{
-		startAppServer();
-	}
-	
-	
-	private void startAppServer() throws CommandOperationException
-	{
 		try
-		{
+		{	
 			if (appServer == null)
 			{
-				appServer = brjs.applicationServer();
+				appServer = getApplicationServer(parsedArgs);
 			}
 			
 			appServer.start();
@@ -86,6 +84,11 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 			logger.info("\n\t" + Messages.SERVER_STARTUP_MESSAGE + appServer.getPort() + "/");
 			logger.info("\t" + Messages.SERVER_STOP_INSTRUCTION_MESSAGE + "\n");
 		}
+		catch(NumberFormatException e)
+		{
+			throw new CommandArgumentsException(Messages.INVALID_PORT_MESSAGE + " '" + parsedArgs.getString("port") + "' ", e, this);
+		}
+		
 		catch (IOException e)
 		{
 			throw new CommandOperationException(e);
@@ -96,4 +99,14 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 		}
 	}
 	
+	private ApplicationServer getApplicationServer(JSAPResult parsedArgs) throws NumberFormatException, ConfigException
+	{
+	    if(parsedArgs.contains("port"))
+	    {
+	    	int port = Integer.parseInt(parsedArgs.getString("port")); 
+	    	return brjs.applicationServer(port); 
+	    }
+       
+	    return brjs.applicationServer();
+	}
 }
