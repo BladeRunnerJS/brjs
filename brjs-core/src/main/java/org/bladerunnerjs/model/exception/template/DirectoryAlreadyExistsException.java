@@ -6,6 +6,6 @@ public class DirectoryAlreadyExistsException extends TemplateInstallationExcepti
 	private static final long serialVersionUID = 1L;
 	
 	public DirectoryAlreadyExistsException(Node node) {
-		super("unable to install template into '" + node.dir().getAbsolutePath() + "' as directory already exists");
+		super("unable to install template into '" + node.dir().getPath() + "' as directory already exists");
 	}
 }

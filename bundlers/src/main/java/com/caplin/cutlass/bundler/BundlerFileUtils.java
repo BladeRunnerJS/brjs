@@ -84,7 +84,7 @@ public class BundlerFileUtils
 			}
 			else if (root.isFile() && filter.accept(root, root.getName()))
 			{
-				files.add(root);
+				files.add(root.getAbsoluteFile());
 			}
 		}
 	}

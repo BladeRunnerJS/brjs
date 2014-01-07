@@ -47,8 +47,8 @@ public class BundlerSourceFileProviderTest {
 		
 		sourceFileProvider.getSourceFiles(baseDir, null);
 		
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src")), any(List.class));
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src")), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src").getAbsoluteFile()), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src").getAbsoluteFile()), any(List.class));
 		inOrder.verify(mockFileAppender).appendThirdPartyLibraryFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/another-bladeset")), any(List.class));
@@ -66,8 +66,8 @@ public class BundlerSourceFileProviderTest {
 		
 		sourceFileProvider.getSourceFiles(baseDir, null);
 		
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src")), any(List.class));
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src")), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src").getAbsoluteFile()), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src").getAbsoluteFile()), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset")), any(List.class));
 	}
 	
@@ -78,8 +78,8 @@ public class BundlerSourceFileProviderTest {
 		
 		sourceFileProvider.getSourceFiles(baseDir, null);
 		
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src")), any(List.class));
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src")), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src").getAbsoluteFile()), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src").getAbsoluteFile()), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladeFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")), any(List.class));
 	}
@@ -91,8 +91,8 @@ public class BundlerSourceFileProviderTest {
 		
 		sourceFileProvider.getSourceFiles(baseDir, null);
 		
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src")), any(List.class));
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src")), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src").getAbsoluteFile()), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src").getAbsoluteFile()), any(List.class));
 		inOrder.verify(mockFileAppender).appendThirdPartyLibraryFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladeFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")), any(List.class));
@@ -108,8 +108,8 @@ public class BundlerSourceFileProviderTest {
 		
 		sourceFileProvider.getSourceFiles(baseDir, testDir);
 		
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src")), any(List.class));
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src")), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src").getAbsoluteFile()), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src").getAbsoluteFile()), any(List.class));
 		inOrder.verify(mockFileAppender).appendThirdPartyLibraryFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/another-bladeset")), any(List.class));
@@ -129,8 +129,8 @@ public class BundlerSourceFileProviderTest {
 		
 		sourceFileProvider.getSourceFiles(baseDir, testDir);
 		
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src")), any(List.class));
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src")), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src").getAbsoluteFile()), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src").getAbsoluteFile()), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset")), any(List.class));
 		inOrder.verify(mockFileAppender).appendTestFiles(eq(testDir), any(List.class));
 	}
@@ -143,8 +143,8 @@ public class BundlerSourceFileProviderTest {
 		
 		sourceFileProvider.getSourceFiles(baseDir, testDir);
 		
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src")), any(List.class));
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src")), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src").getAbsoluteFile()), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src").getAbsoluteFile()), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladeFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")), any(List.class));
 		inOrder.verify(mockFileAppender).appendTestFiles(eq(testDir), any(List.class));
@@ -158,8 +158,8 @@ public class BundlerSourceFileProviderTest {
 		
 		sourceFileProvider.getSourceFiles(baseDir, testDir);
 		
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src")), any(List.class));
-		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src")), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + SDK_DIR + "/libs/javascript/caplin/src").getAbsoluteFile()), any(List.class));
+		inOrder.verify(mockFileAppender).appendLibrarySourceFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/libs/lib/src").getAbsoluteFile()), any(List.class));
 		inOrder.verify(mockFileAppender).appendThirdPartyLibraryFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladesetFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset")), any(List.class));
 		inOrder.verify(mockFileAppender).appendBladeFiles(eq(new File(testRoot+"/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")), any(List.class));

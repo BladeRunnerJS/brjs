@@ -72,7 +72,7 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 			File entryPath = entry.getValue();
 			CN childNode = childrenNodes.get(nextChild++);
 			
-			assertEquals(entryPath.getAbsolutePath(), childNode.dir().getAbsolutePath());
+			assertEquals(entryPath.getAbsolutePath(), childNode.dir().getPath());
 		}
 		
 		assertEquals("list lengths differ", childPaths.size(), childrenNodes.size());
@@ -89,7 +89,7 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 			@SuppressWarnings("unchecked")
 			CN childNode = (CN) getNamedItemMethod.invoke(parentNode, entryName);
 			
-			assertEquals(entryPath.getAbsolutePath(), childNode.dir().getAbsolutePath());
+			assertEquals(entryPath.getAbsolutePath(), childNode.dir().getPath());
 		}
 	}
 }

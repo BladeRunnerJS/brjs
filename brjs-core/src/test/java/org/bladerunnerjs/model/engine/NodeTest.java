@@ -178,7 +178,7 @@ public class NodeTest
 		File rootDir = FileUtility.createTemporaryDirectory("root");
 		TestRootNode rootNode = new TestRootNode(new File(rootDir, "child-dir"));
 		
-		assertEquals(rootDir.getAbsolutePath(), rootNode.dir().getAbsolutePath());
+		assertEquals(rootDir.getAbsolutePath(), rootNode.dir().getPath());
 	}
 	
 	@Test
@@ -196,8 +196,8 @@ public class NodeTest
 		// add node to cache
 		new TestNode(rootNode, null, childDir);
 		
-		assertEquals(childDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestNode.class).dir().getAbsolutePath());
-		assertEquals(childDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestNode.class).dir().getAbsolutePath());
+		assertEquals(childDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestNode.class).dir().getPath());
+		assertEquals(childDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestNode.class).dir().getPath());
 	}
 	
 	@Test
@@ -222,7 +222,7 @@ public class NodeTest
 		File childDir = new File(rootNode.dir(), "child-1");
 		
 		assertTrue(childDir.exists());
-		assertEquals(childDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(childDir, TestChildNode.class).dir().getAbsolutePath());
+		assertEquals(childDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(childDir, TestChildNode.class).dir().getPath());
 	}
 	
 	@Test
@@ -232,7 +232,7 @@ public class NodeTest
 		File grandchildDir = new File(TEST_DIR, "root/child-1/grandchild/1");
 		
 		assertTrue(grandchildDir.exists());
-		assertEquals(grandchildDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestGrandChildNode.class).dir().getAbsolutePath());
+		assertEquals(grandchildDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestGrandChildNode.class).dir().getPath());
 	}
 	
 	@Test
@@ -242,7 +242,7 @@ public class NodeTest
 		File greatGrandchildDir = new File(TEST_DIR, "root/child-1/grandchild/1/2-greatgrandchild");
 		
 		assertTrue(greatGrandchildDir.exists());
-		assertEquals(greatGrandchildDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestGreatGrandChildNode.class).dir().getAbsolutePath());
+		assertEquals(greatGrandchildDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestGreatGrandChildNode.class).dir().getPath());
 	}
 	
 	@Test
@@ -259,7 +259,7 @@ public class NodeTest
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		
-		assertEquals(rootNode.dir().getAbsolutePath(), rootNode.locateFirstAncestorNode(rootNode.dir()).dir().getAbsolutePath());
+		assertEquals(rootNode.dir().getPath(), rootNode.locateFirstAncestorNode(rootNode.dir()).dir().getPath());
 	}
 	
 	@Test
@@ -267,7 +267,7 @@ public class NodeTest
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		
-		assertEquals(rootNode.dir().getAbsolutePath(), rootNode.locateFirstAncestorNode(rootNode.file("child")).dir().getAbsolutePath());
+		assertEquals(rootNode.dir().getPath(), rootNode.locateFirstAncestorNode(rootNode.file("child")).dir().getPath());
 	}
 	
 	@Test
@@ -275,7 +275,7 @@ public class NodeTest
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
 		
-		assertEquals(rootNode.dir().getAbsolutePath(), rootNode.locateFirstAncestorNode(rootNode.file("child")).dir().getAbsolutePath());
+		assertEquals(rootNode.dir().getPath(), rootNode.locateFirstAncestorNode(rootNode.file("child")).dir().getPath());
 	}
 	
 	@Test
@@ -456,7 +456,7 @@ public class NodeTest
 		
 		Node itemNode = rootNode.locateAncestorNodeOfClass(itemDir, TestItemNode.class);
 		
-		assertEquals(itemDir.getAbsolutePath(), rootNode.itemNode().dir().getAbsolutePath());
+		assertEquals(itemDir.getAbsolutePath(), rootNode.itemNode().dir().getPath());
 		assertSame(itemNode, rootNode.itemNode());
 	}
 	
@@ -469,7 +469,7 @@ public class NodeTest
 		rootDir.mkdir();
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
-		assertEquals(itemDir.getAbsolutePath(), rootNode.itemNode().dir().getAbsolutePath());
+		assertEquals(itemDir.getAbsolutePath(), rootNode.itemNode().dir().getPath());
 	}
 	
 	@Test
@@ -497,7 +497,7 @@ public class NodeTest
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
 		Node singleItemNode = rootNode.locateAncestorNodeOfClass(itemDir, TestItemNode.class);
-		assertEquals(itemDir.getAbsolutePath(), singleItemNode.dir().getAbsolutePath());
+		assertEquals(itemDir.getAbsolutePath(), singleItemNode.dir().getPath());
 	}
 	
 	@Test
@@ -509,7 +509,7 @@ public class NodeTest
 		rootDir.mkdir();
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
-		assertEquals(primaryItemDir.getAbsolutePath(), rootNode.multiLocationItemNode().dir().getAbsolutePath());
+		assertEquals(primaryItemDir.getAbsolutePath(), rootNode.multiLocationItemNode().dir().getPath());
 	}
 	
 	@Test
@@ -522,7 +522,7 @@ public class NodeTest
 		
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
-		assertEquals(primaryItemDir.getAbsolutePath(), rootNode.multiLocationItemNode().dir().getAbsolutePath());
+		assertEquals(primaryItemDir.getAbsolutePath(), rootNode.multiLocationItemNode().dir().getPath());
 	}
 	
 	@Test
@@ -535,7 +535,7 @@ public class NodeTest
 		
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
-		assertEquals(secondaryItemDir.getAbsolutePath(), rootNode.multiLocationItemNode().dir().getAbsolutePath());
+		assertEquals(secondaryItemDir.getAbsolutePath(), rootNode.multiLocationItemNode().dir().getPath());
 	}
 	
 	@Test(expected=BladeRunnerDirectoryException.class)
@@ -578,7 +578,7 @@ public class NodeTest
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		Node itemNode = rootNode.locateAncestorNodeOfClass(primaryItemDir, TestMultiLocationItemNode.class);
 		
-		assertEquals(primaryItemDir.getAbsolutePath(), itemNode.dir().getAbsolutePath());
+		assertEquals(primaryItemDir.getAbsolutePath(), itemNode.dir().getPath());
 	}
 	
 	@Test
@@ -592,7 +592,7 @@ public class NodeTest
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		Node itemNode = rootNode.locateAncestorNodeOfClass(secondaryItemDir, TestMultiLocationItemNode.class);
 		
-		assertEquals(secondaryItemDir.getAbsolutePath(), itemNode.dir().getAbsolutePath());
+		assertEquals(secondaryItemDir.getAbsolutePath(), itemNode.dir().getPath());
 	}
 	
 	@Test
@@ -610,8 +610,8 @@ public class NodeTest
 		List<TestChildNode> childNodes = rootNode.multiLocationChildNodes();
 		
 		assertEquals(2, childNodes.size());
-		assertEquals(child1Dir.getAbsolutePath(), childNodes.get(0).dir().getAbsolutePath());
-		assertEquals(child2Dir.getAbsolutePath(), childNodes.get(1).dir().getAbsolutePath());
+		assertEquals(child1Dir.getAbsolutePath(), childNodes.get(0).dir().getPath());
+		assertEquals(child2Dir.getAbsolutePath(), childNodes.get(1).dir().getPath());
 	}
 	
 	@Test
@@ -634,10 +634,10 @@ public class NodeTest
 		List<TestChildNode> childNodes = rootNode.multiLocationChildNodes();
 		
 		assertEquals(4, childNodes.size());
-		assertEquals(child1Dir.getAbsolutePath(), childNodes.get(0).dir().getAbsolutePath());
-		assertEquals(child2Dir.getAbsolutePath(), childNodes.get(1).dir().getAbsolutePath());
-		assertEquals(childADir.getAbsolutePath(), childNodes.get(2).dir().getAbsolutePath());
-		assertEquals(childBDir.getAbsolutePath(), childNodes.get(3).dir().getAbsolutePath());
+		assertEquals(child1Dir.getAbsolutePath(), childNodes.get(0).dir().getPath());
+		assertEquals(child2Dir.getAbsolutePath(), childNodes.get(1).dir().getPath());
+		assertEquals(childADir.getAbsolutePath(), childNodes.get(2).dir().getPath());
+		assertEquals(childBDir.getAbsolutePath(), childNodes.get(3).dir().getPath());
 	}
 	
 	@Test
@@ -657,9 +657,9 @@ public class NodeTest
 		List<TestChildNode> childNodes = rootNode.multiLocationChildNodes();
 		
 		assertEquals(3, childNodes.size());
-		assertEquals(child1Dir.getAbsolutePath(), childNodes.get(0).dir().getAbsolutePath());
-		assertEquals(child2Dir.getAbsolutePath(), childNodes.get(1).dir().getAbsolutePath());
-		assertEquals(singleItemSetDir.getAbsolutePath(), childNodes.get(2).dir().getAbsolutePath());
+		assertEquals(child1Dir.getAbsolutePath(), childNodes.get(0).dir().getPath());
+		assertEquals(child2Dir.getAbsolutePath(), childNodes.get(1).dir().getPath());
+		assertEquals(singleItemSetDir.getAbsolutePath(), childNodes.get(2).dir().getPath());
 		assertSame(childNodes.get(2), rootNode.multiLocationChildNode("X"));
 	}
 	

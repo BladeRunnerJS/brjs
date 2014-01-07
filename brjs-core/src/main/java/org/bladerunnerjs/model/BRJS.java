@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -146,18 +145,13 @@ public class BRJS extends AbstractBRJSRootNode
 			throw new IllegalStateException("a file iterator can not be created for the non-existent directory '" + dir.getPath() + "' ");
 		}
 		
-		try {
-			String dirPath = dir.getCanonicalPath();
-			
-			if(!fileIterators.containsKey(dirPath)) {
-				fileIterators.put(dirPath, new FileIterator(fileObserverFactory, dir));
-			}
-			
-			fileIterator = fileIterators.get(dirPath);
+		String dirPath = dir.getPath();
+		
+		if(!fileIterators.containsKey(dirPath)) {
+			fileIterators.put(dirPath, new FileIterator(fileObserverFactory, dir));
 		}
-		catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+		
+		fileIterator = fileIterators.get(dirPath);
 		
 		return fileIterator;
 	}

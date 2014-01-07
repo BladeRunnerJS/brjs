@@ -46,7 +46,7 @@ public abstract class AbstractNode implements Node
 	public AbstractNode(RootNode rootNode, Node parent, File dir) {
 		this.rootNode = rootNode;
 		this.parent = parent;
-		this.dir = dir;
+		this.dir = (dir == null) ? null : new File(getNormalizedPath(dir));
 		
 		registerNode();
 	}
@@ -132,7 +132,7 @@ public abstract class AbstractNode implements Node
 			
 			try {
 				FileUtils.deleteDirectory(dir);
-				logger.debug(Messages.NODE_DELETED_LOG_MSG, getClass().getSimpleName(), dir.getAbsolutePath());
+				logger.debug(Messages.NODE_DELETED_LOG_MSG, getClass().getSimpleName(), dir.getPath());
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -288,6 +288,22 @@ public abstract class AbstractNode implements Node
 		}
 		
 		return nodeItem.item;
+	}
+	
+	protected String getNormalizedPath(File dir) {
+		String normalizedPath;
+		
+		try {
+			normalizedPath = dir.getCanonicalPath();
+		}
+		catch (IOException ex)
+		{
+			root().logger(LoggerType.CORE, this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
+			
+			normalizedPath = dir.getAbsolutePath();
+		}
+		
+		return normalizedPath;
 	}
 	
 	private void discoverAllChildren(List<Node> nodes)

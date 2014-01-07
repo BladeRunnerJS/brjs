@@ -46,15 +46,15 @@ public class AnalyserConfigTest
 		
 		config = new AnalyserConfig(new String[] {"app1"}, null);
 		
-		assertTrue(config.getApplicationDirectory().equals(appPath.getDir()));
-		assertTrue(config.getAspectDirectory().equals(aspectPath.getDir()));
-		assertTrue(config.getOutputFormatInJson() == false);
+		assertEquals(config.getApplicationDirectory(), appPath.getDir().getAbsoluteFile());
+		assertEquals(config.getAspectDirectory(), aspectPath.getDir().getAbsoluteFile());
+		assertFalse(config.getOutputFormatInJson());
 	}
 
 	@Test
 	public void testAnalyserConfigWhenProvidingAspect() throws CommandArgumentsException
 	{
-		File appDir = new File(sdkBaseDir.getParentFile(), CutlassConfig.APPLICATIONS_DIR + "/app2");
+		File appDir = new File(sdkBaseDir.getParentFile(), CutlassConfig.APPLICATIONS_DIR + "/app2").getAbsoluteFile();
 		File aspectDir = new File(appDir, "xtra-aspect");
 		
 		assertTrue(appDir.exists());

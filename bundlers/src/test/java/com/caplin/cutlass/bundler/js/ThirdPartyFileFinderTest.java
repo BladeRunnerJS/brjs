@@ -30,9 +30,9 @@ public class ThirdPartyFileFinderTest {
 		
 		List<File> libraryFiles = fileFinder.getThirdPartyLibraryFiles(new File(appDir), thirdPartyLibraries);
 		assertEquals(3, libraryFiles.size());
-		assertTrue(libraryFiles.contains(new File(base, CutlassConfig.SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js")));
-		assertTrue(libraryFiles.contains(new File(base, APPLICATIONS_DIR + "/test-app1/thirdparty-libraries/lib1/lib1_1.js")));
-		assertTrue(libraryFiles.contains(new File(base, APPLICATIONS_DIR + "/test-app1/thirdparty-libraries/lib1/lib1_2.js")));
+		assertTrue(libraryFiles.contains(new File(base, CutlassConfig.SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js").getAbsoluteFile()));
+		assertTrue(libraryFiles.contains(new File(base, APPLICATIONS_DIR + "/test-app1/thirdparty-libraries/lib1/lib1_1.js").getAbsoluteFile()));
+		assertTrue(libraryFiles.contains(new File(base, APPLICATIONS_DIR + "/test-app1/thirdparty-libraries/lib1/lib1_2.js").getAbsoluteFile()));
 	}
 
 	@Test(expected=Exception.class)

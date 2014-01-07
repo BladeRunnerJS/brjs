@@ -24,7 +24,7 @@ public class BundlerFileTester
 	public BundlerFileTester(LegacyFileBundlerPlugin bundler, String pathPrefix)
 	{
 		this.bundler = bundler;
-		this.pathPrefix = pathPrefix.replaceAll("\\\\", "/");
+		this.pathPrefix = new File(pathPrefix).getAbsolutePath().replaceAll("\\\\", "/");
 		
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(pathPrefix)));
 	}
