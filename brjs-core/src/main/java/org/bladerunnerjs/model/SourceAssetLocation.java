@@ -3,13 +3,9 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.FalseFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
@@ -33,24 +29,29 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 	}
 	
 	public List<AssetLocation> getChildAssetLocations() {
-		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
+		return getChildAssetLocations(new ArrayList<AssetLocation>(), dir());
+	}
+	
+	private List<AssetLocation> getChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
+	{
+		if (!findInDir.isDirectory())
+		{
+			return assetLocations;
+		}
 		
-		if (dir().isDirectory()) {
-			Iterator<File> fileIterator = FileUtils.iterateFilesAndDirs(dir(), FalseFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-			
-			while (fileIterator.hasNext()) {
-				File nextDir = fileIterator.next();
-				
-				if (!nextDir.equals(dir())) {
-					assetLocations.add(getChildAssetLocation(nextDir));
-				}
+		for (File childDir : root().getFileIterator(findInDir).files())
+		{
+			if (childDir.isDirectory() && childDir != dir())
+			{
+				assetLocations.add(createAssetLocationForChildDir(childDir));
+				getChildAssetLocations(assetLocations, childDir);
 			}
 		}
 		
 		return assetLocations;
 	}
 	
-	private AssetLocation getChildAssetLocation(File dir) {
+	private AssetLocation createAssetLocationForChildDir(File dir) {
 		AssetLocation assetLocation = assetLocations.get(dir);
 		
 		if (assetLocation == null) {
