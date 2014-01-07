@@ -34,7 +34,9 @@ public class BRJSServletFilterTest extends SpecTest
 		given(brjs).hasTagPlugins( new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true) )
 			.and(brjs).automaticallyFindsAssetProducers()
 			.and(brjs).hasBeenCreated()
-			.and(brjs).usedForServletModel();
+			.and(brjs).usedForServletModel()
+			.and(brjs).containsFolder("apps")
+			.and(brjs).containsFolder("sdk/system-applications");
     		appServer = brjs.applicationServer(appServerPort);
     		app = brjs.app("app");
     		aspect = app.aspect("default");

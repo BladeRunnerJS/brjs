@@ -22,7 +22,9 @@ public class ServeCommandTest extends SpecTest
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasCommands(new ServeCommand())
-			.and(brjs).hasBeenCreated();
+			.and(brjs).hasBeenCreated()
+			.and(brjs).containsFolder("apps")
+			.and(brjs).containsFolder("sdk/system-applications");
 		appServer = brjs.applicationServer(appServerPort);
 		brjs.bladerunnerConf().setJettyPort(appServerPort);
 	}

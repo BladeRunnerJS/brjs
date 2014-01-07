@@ -34,7 +34,9 @@ public class BRJSApplicationServerTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).hasModelObservers(new AppDeploymentObserverPlugin());
-		given(brjs).hasBeenCreated();
+		given(brjs).hasBeenCreated()
+			.and(brjs).containsFolder("apps")
+			.and(brjs).containsFolder("sdk/system-applications");
     		appServer = brjs.applicationServer(appServerPort);
     		app1 = brjs.app("app1");
     		app2 = brjs.app("app2");

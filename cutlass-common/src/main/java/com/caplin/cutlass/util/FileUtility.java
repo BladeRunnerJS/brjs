@@ -2,9 +2,13 @@ package com.caplin.cutlass.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.comparator.NameFileComparator;
 import org.apache.commons.io.comparator.PathFileComparator;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
+import org.apache.commons.io.filefilter.PrefixFileFilter;
 
 import com.caplin.cutlass.CutlassConfig;
 
@@ -18,6 +22,15 @@ import java.util.zip.ZipOutputStream;
 
 
 public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
+	public static List<File> listDirs(File dir)
+	{
+		FileFilter filter = FileFilterUtils.and( DirectoryFileFilter.INSTANCE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")) );
+		List<File> files = Arrays.asList( dir.listFiles(filter) );
+		Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
+		
+		return files;
+	}
+	
 	public static Collection<File> sortFiles(Collection<File> files)
 	{		
 		ArrayList<File> filesCopy = new ArrayList<File>(files);

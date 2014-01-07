@@ -20,7 +20,6 @@ import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.utility.FileUtility;
 
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.ScopeLevel;
@@ -28,6 +27,7 @@ import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.SdkModel;
 import com.caplin.cutlass.structure.model.path.AppPath;
 import com.caplin.cutlass.structure.model.path.AspectPath;
+import com.caplin.cutlass.util.FileUtility;
 
 public class BladeRunnerSourceFileProvider implements SourceFileProvider
 {

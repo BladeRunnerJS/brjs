@@ -10,15 +10,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.SequenceInputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.JsLib;
@@ -26,6 +23,7 @@ import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 
@@ -36,6 +34,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	private File dir;
 	private NonBladerunnerJsLibManifest manifest;
 	private byte[] delimiterBytes;
+	private FileIterator fileIterator;
 	
 	{
 		try {
@@ -44,6 +43,14 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 		catch(IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public void initialize(AssetLocation assetLocation, File dir)
+	{
+		this.assetLocation = assetLocation;
+		this.dir = dir;
+		fileIterator = assetLocation.root().getFileIterator(dir);
 	}
 	
 	@Override
@@ -87,13 +94,6 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	@Override
 	public String getAssetPath() {
 		return dir.getPath(); // TODO: this seems wrong
-	}
-	
-	@Override
-	public void initialize(AssetLocation assetLocation, File dir)
-	{
-		this.assetLocation = assetLocation;
-		this.dir = dir;
 	}
 	
 	public void initManifest(NonBladerunnerJsLibManifest manifest)
@@ -160,8 +160,8 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	private List<File> getFilesMatchingFilePaths(List<String> matchFilePaths)
 	{
 		List<File> filesMatching = new ArrayList<File>();
-		Collection<File> foundFiles = FileUtils.listFiles(assetLocation.dir(), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-		for (File f : foundFiles)
+		
+		for (File f : fileIterator.files())
 		{
 			for (String pattern : matchFilePaths)
 			{
