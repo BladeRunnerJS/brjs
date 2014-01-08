@@ -118,6 +118,17 @@ public class ThirdpartyBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void fileNamesThatEndWithADesiredFileNameAreNotIncluded() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: lib.js")
+			.and(thirdpartyLib).containsFiles("lib.js", "X-lib.js", "Y-lib.js")
+			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
+		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
+		then(pageResponse).containsText("lib.js")
+			.and(pageResponse).doesNotContainText("X-lib.js")
+			.and(pageResponse).doesNotContainText("Y-lib.js");
+	}
+	
+	@Test
 	public void assetsInALibCanBeRequestedIndividually() throws Exception {
 		given(thirdpartyLib).containsFileWithContents("/some/lib/dirs/some-file.ext", "some file contents");
 		when(app).requestReceived("/default-aspect/thirdparty/file/thirdparty-lib/some/lib/dirs/some-file.ext", pageResponse);
