@@ -9,7 +9,6 @@ import org.bladerunnerjs.core.plugin.command.standard.ServeCommand;
 import org.bladerunnerjs.model.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.specutil.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -92,6 +91,6 @@ public class ServeCommandTest extends SpecTest
 		given(brjs).hasBeenAuthenticallyCreated();
 		when(brjs).runCommand("serve", "-p", "invalid-port");
 		then(exceptions).verifyException(NumberFormatException.class)
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
+			.whereTopLevelExceptionContainsString(CommandArgumentsException.class, INVALID_PORT_MESSAGE + " 'invalid-port'");
 	}
 }

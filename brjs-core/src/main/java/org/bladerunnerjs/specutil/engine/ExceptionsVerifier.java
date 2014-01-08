@@ -10,9 +10,11 @@ import com.google.common.base.Joiner;
 
 public class ExceptionsVerifier {
 	private final List<Throwable> exceptions;
+	private SpecTest specTest;
 	
-	public ExceptionsVerifier(List<Throwable> exceptions) {
+	public ExceptionsVerifier(SpecTest specTest, List<Throwable> exceptions) {
 		this.exceptions = exceptions;
+		this.specTest = specTest;
 	}
 	
 	public <T extends Throwable> TopLevelExceptionVerifier verifyFormattedException(Class<T> exceptionClass, String message, Object... args) {
@@ -26,7 +28,7 @@ public class ExceptionsVerifier {
 			if(rootCause.getClass() == exceptionClass) {
 				if(argsMatch(rootCause, args)) {
 					exceptions.remove(exception);
-					return new TopLevelExceptionVerifier(exception);
+					return new TopLevelExceptionVerifier(this.specTest, exception);
 				}
 			}
 		}
@@ -68,5 +70,9 @@ public class ExceptionsVerifier {
 		}
 		
 		return argsMatch;
+	}
+	
+	static boolean containsString(Throwable exception, String expectedString) {
+		return exception.getMessage().contains(expectedString);
 	}
 }

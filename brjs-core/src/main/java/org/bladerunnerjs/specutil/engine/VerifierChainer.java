@@ -38,7 +38,7 @@ public class VerifierChainer {
 		this.modelTest = modelTest;
 	}
 	
-	public ExceptionsVerifier and(List<Throwable> exceptions) { return new ExceptionsVerifier(exceptions); }
+	public ExceptionsVerifier and(List<Throwable> exceptions) { return new ExceptionsVerifier(modelTest, exceptions); }
 	public NodeObserverVerifier and(EventObserver observer) { return new NodeObserverVerifier(modelTest, observer); }
 	public NamedNodeVerifier and(NamedNode namedDirNode) { return new NamedNodeVerifier(modelTest, namedDirNode); }
 	public BRJSVerifier and(BRJS brjs) { return new BRJSVerifier(modelTest, brjs); }
