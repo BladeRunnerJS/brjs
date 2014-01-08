@@ -11,7 +11,7 @@ public class NodePropertiesCommander {
 		this.nodeProperties = nodeProperties;
 	}
 	
-	public void setProperty(String propertyName, String propertyValue) throws Exception {
-		nodeProperties.setProperty(propertyName, propertyValue);
+	public void setPersisentProperty(String propertyName, String propertyValue) throws Exception {
+		nodeProperties.setPersisentProperty(propertyName, propertyValue);
 	}
 }

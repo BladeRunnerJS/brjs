@@ -13,7 +13,7 @@ public class NodePropertiesVerifier {
 		this.nodeProperties = nodeProperties;
 	}
 	
-	public void propertyHasValue(String propertyName, String propertyValue) throws Exception {
-		assertEquals(propertyValue, nodeProperties.getProperty(propertyName));
+	public void persistentPropertyHasValue(String propertyName, String propertyValue) throws Exception {
+		assertEquals(propertyValue, nodeProperties.getPersisentProperty(propertyName));
 	}
 }

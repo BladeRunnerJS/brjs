@@ -29,7 +29,7 @@ public class PluginProperties implements NodeProperties
 	}
 
 	@Override
-	public void setProperty(String name, String value) throws PropertiesException
+	public void setPersisentProperty(String name, String value) throws PropertiesException
 	{
 		try {
 			Properties properties = getProperties();
@@ -42,7 +42,7 @@ public class PluginProperties implements NodeProperties
 	}
 
 	@Override
-	public String getProperty(String name) throws PropertiesException
+	public String getPersisentProperty(String name) throws PropertiesException
 	{
 		try {
 			Properties properties = getProperties();

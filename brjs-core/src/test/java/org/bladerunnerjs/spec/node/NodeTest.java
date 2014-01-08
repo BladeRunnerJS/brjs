@@ -27,15 +27,19 @@ public class NodeTest extends SpecTest {
 	}
 	
 	@Test
-	public void propertiesStoredOnNodesCanBeRetrievedImmedidately() throws Exception {
-		when(nodeProperties).setProperty("property-name", "property-value");
-		then(nodeProperties).propertyHasValue("property-name", "property-value");
+	public void persistentPropertiesStoredOnNodesCanBeRetrievedImmedidately() throws Exception {
+		when(nodeProperties).setPersisentProperty("property-name", "property-value");
+		then(nodeProperties).persistentPropertyHasValue("property-name", "property-value");
 	}
 	
 	@Test
-	public void propertiesStoredOnNodesCanBeRetrievedOnAFreshCopyOfTheModel() throws Exception {
-		given(nodeProperties).propertyHasBeenSet("property-name", "property-value");
+	public void persistentPropertiesStoredOnNodesCanBeRetrievedOnAFreshCopyOfTheModel() throws Exception {
+		given(nodeProperties).persistentPropertyHasBeenSet("property-name", "property-value");
 		when(brjs).hasBeenCreated();
-		then(nodeProperties).propertyHasValue("property-name", "property-value");
+		then(nodeProperties).persistentPropertyHasValue("property-name", "property-value");
 	}
+	
+	
+	
+	
 }
