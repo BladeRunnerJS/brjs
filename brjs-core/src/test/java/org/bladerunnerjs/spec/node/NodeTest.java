@@ -39,7 +39,24 @@ public class NodeTest extends SpecTest {
 		then(nodeProperties).persistentPropertyHasValue("property-name", "property-value");
 	}
 	
+	@Test
+	public void transientPropertiesStoredOnNodesCanBeRetrievedImmedidately() throws Exception {
+		when(nodeProperties).setTransientProperty("property-name", "property-value");
+		then(nodeProperties).transientPropertyHasValue("property-name", "property-value");
+	}
 	
+	@Test
+	public void transientPropertiesStoredOnNodesCannotBeRetrievedOnAFreshCopyOfTheModel() throws Exception {
+		given(nodeProperties).transientPropertyHasBeenSet("property-name", "property-value");
+		when(brjs).hasBeenCreated();
+		then(nodeProperties).transientPropertyHasValue("property-value", null);
+	}
 	
+	@Test
+	public void transientPropertiesCanBeObjectsAndTheSameObjectIsReturned() throws Exception {
+		Object myObj = new Object();
+		given(nodeProperties).transientPropertyHasBeenSet("property-name", myObj);
+		then(nodeProperties).transientPropertyIsSameAs("property-name", myObj);
+	}
 	
 }

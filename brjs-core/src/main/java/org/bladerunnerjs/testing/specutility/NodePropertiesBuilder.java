@@ -14,4 +14,9 @@ public class NodePropertiesBuilder {
 	public void persistentPropertyHasBeenSet(String propertyName, String propertyValue) throws Exception {
 		nodeProperties.setPersisentProperty(propertyName, propertyValue);
 	}
+
+	public void transientPropertyHasBeenSet(String propertyName, Object propertyValue)
+	{
+		nodeProperties.setTransientProperty(propertyName, propertyValue);
+	}
 }
