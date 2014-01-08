@@ -160,16 +160,16 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	private List<File> getFilesMatchingFilePaths(List<String> matchFilePaths)
 	{
 		List<File> filesMatching = new ArrayList<File>();
+		List<File> files = fileIterator.files();
 		
-		for (File f : fileIterator.files())
+		for (String pattern : matchFilePaths)
 		{
-			for (String pattern : matchFilePaths)
+			for (File f : files)
 			{
 				String relativePath = RelativePathUtility.get(dir, f);
 				if ( Pattern.matches(pattern, relativePath) )
 				{
 					filesMatching.add(f);
-					break;
 				}
 			}
 		}
