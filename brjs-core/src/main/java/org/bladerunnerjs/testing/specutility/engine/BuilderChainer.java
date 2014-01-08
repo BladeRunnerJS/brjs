@@ -28,6 +28,7 @@ import org.bladerunnerjs.testing.specutility.NamedNodeBuilder;
 import org.bladerunnerjs.testing.specutility.TestPackNodeBuilder;
 import org.bladerunnerjs.testing.specutility.WorkbenchBuilder;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
+import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
 
 
 public class BuilderChainer {
@@ -53,4 +54,6 @@ public class BuilderChainer {
 	public AppServerBuilder and(ApplicationServer appServer) { return new AppServerBuilder(modelTest, appServer); }
 	public AliasesFileBuilder and(AliasesFile aliasesFile) { return new AliasesFileBuilder(modelTest, aliasesFile); }
 	public AliasDefinitionsFileBuilder and(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(modelTest, aliasDefinitionsFile); }
+	public SpecTestDirObserverBuilder and(SpecTestDirObserver observer) { return new SpecTestDirObserverBuilder(modelTest, observer); }
+	
 }

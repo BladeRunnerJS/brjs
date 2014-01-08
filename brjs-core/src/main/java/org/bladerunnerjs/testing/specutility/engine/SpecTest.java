@@ -67,6 +67,7 @@ import org.bladerunnerjs.testing.specutility.WorkbenchCommander;
 import org.bladerunnerjs.testing.specutility.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
+import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
 import org.bladerunnerjs.utility.FileUtility;
@@ -236,6 +237,10 @@ public abstract class SpecTest
 	
 	// AliasDefinitionsFile
 	public AliasDefinitionsFileBuilder given(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile); }
+	
+	// Dir Observer
+	public SpecTestDirObserverBuilder given(SpecTestDirObserver observer) { return new SpecTestDirObserverBuilder(this, observer); }
+	public SpecTestDirObserverCommander then(SpecTestDirObserver observer) { return new SpecTestDirObserverCommander(this, observer); }
 	
 	private File createTestSdkDirectory() {
 		File sdkDir;
