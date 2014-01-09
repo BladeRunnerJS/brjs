@@ -62,11 +62,6 @@ public class TagPluginUtilityTest
 			aspect.create();
 	}
 	
-	@After
-	public void tearDown() {
-		brjs.close();
-	}
-	
 	@Test
 	public void testFilteringContentWithoutAnyTags() throws Exception
 	{

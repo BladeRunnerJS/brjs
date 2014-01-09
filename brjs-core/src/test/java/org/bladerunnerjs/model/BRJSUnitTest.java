@@ -21,12 +21,6 @@ public class BRJSUnitTest
 		brjs = BRJSTestFactory.createBRJS( FileUtility.createTemporaryDirectory( this.getClass().getCanonicalName() ) );
 	}
 	
-	@After
-	public void teardown()
-	{
-		brjs.close();
-	}
-	
 	@Test
 	public void getApplicationServerReturnsSameInstance() throws Exception
 	{

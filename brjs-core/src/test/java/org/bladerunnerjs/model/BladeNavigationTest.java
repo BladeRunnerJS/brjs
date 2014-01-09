@@ -25,12 +25,6 @@ public class BladeNavigationTest
 		nodeTesterFactory = new NodeTesterFactory<>(blade, Blade.class);
 	}
 	
-	@After
-	public void teardown()
-	{
-		brjs.close();
-	}
-	
 	@Test
 	public void themes()
 	{

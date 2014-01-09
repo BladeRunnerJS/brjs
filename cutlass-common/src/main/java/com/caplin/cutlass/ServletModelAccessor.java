@@ -24,13 +24,6 @@ public class ServletModelAccessor {
 		return model;
 	}
 	
-	public static synchronized void destroy() {
-		if(model != null) {
-			model.close();
-			model = null;
-		}
-	}
-	
 	// for testing purposes only
 	public static void reset() {
 		model = null;

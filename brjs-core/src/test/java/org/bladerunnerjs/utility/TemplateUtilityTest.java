@@ -33,11 +33,6 @@ public class TemplateUtilityTest
 		brjs = BRJSTestFactory.createBRJS(tempDir);
 	}
 	
-	@After
-	public void tearDown() {
-		brjs.close();
-	}
-	
 	@Test(expected=DirectoryAlreadyExistsException.class)
 	public void installingATemplateToAPreExistingDirectoryCausesAnException() throws Exception
 	{

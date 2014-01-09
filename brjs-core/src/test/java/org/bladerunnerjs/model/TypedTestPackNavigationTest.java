@@ -22,11 +22,6 @@ public class TypedTestPackNavigationTest
 		nodeTesterFactory = new NodeTesterFactory<>(typedTestPack, TypedTestPack.class);
 	}
 	
-	@After
-	public void tearDown() {
-		brjs.close();
-	}
-	
 	@Test
 	public void testTechPacks()
 	{

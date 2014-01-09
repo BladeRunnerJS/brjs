@@ -25,12 +25,6 @@ public class AspectNavigationTest
 		nodeTesterFactory = new NodeTesterFactory<>(aspect, Aspect.class);
 	}
 	
-	@After
-	public void teardown()
-	{
-		brjs.close();
-	}
-	
 	@Test
 	public void unbundledResources()
 	{

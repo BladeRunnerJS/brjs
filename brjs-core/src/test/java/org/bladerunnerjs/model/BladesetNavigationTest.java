@@ -25,12 +25,6 @@ public class BladesetNavigationTest
 		nodeTesterFactory = new NodeTesterFactory<>(bladeset, Bladeset.class);
 	}
 	
-	@After
-	public void teardown()
-	{
-		brjs.close();
-	}
-	
 	@Test
 	public void themes()
 	{
