@@ -46,8 +46,7 @@ public class NodeMap<N extends Node>
 			{
 				if(visitedLocatorNames.contains(name))
 				{
-					// TODO: this is a really bad exception since it doesn't point to the actual directories -- consider how it can be fixed
-					throw new BladeRunnerDirectoryException("There are two directories that both have the logical name '" + name + "'");
+					throw new BladeRunnerDirectoryException("There are two directories that both have the logical name '" + name + "' within the directory '" + dir.getPath() + "'");
 				}
 				
 				visitedLocatorNames.add(name);
