@@ -7,6 +7,7 @@ import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -20,6 +21,7 @@ public class AliasBundlingTest extends SpecTest {
 	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
+	private JsLib brLib;
 	private AliasesFile aspectAliasesFile;
 	private AliasDefinitionsFile bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
@@ -37,6 +39,7 @@ public class AliasBundlingTest extends SpecTest {
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			bladeAliasDefinitionsFile = blade.assetLocation("src").aliasDefinitionsFile();
+			brLib = app.jsLib("br");
 	}
 	
 	@Test
@@ -101,8 +104,27 @@ public class AliasBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void theAliasBlobIsEmptyIfNoAliasesAreUsed() throws Exception {
+	public void aliasesAreNotSetIfTheAliasRegistryClassDoesntExist() throws Exception {
 		given(aspect).hasClass("appns.Class1")
+			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/aliasing/bundle.js", response);
+		then(response).doesNotContainText("setAliasData(");
+	}
+	
+	@Test
+	public void aliasesAreNotSetIfTheAliasRegistryClassIsNotUsed() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(brLib).hasClass("br.AliasRegistry")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/aliasing/bundle.js", response);
+		then(response).doesNotContainText("setAliasData(");
+	}
+	
+	@Test
+	public void theAliasBlobIsEmptyIfNoAliasesAreUsed() throws Exception {
+		given(aspect).classRequires("appns.Class1", "br/AliasRegistry")
+			.and(brLib).hasClass("br.AliasRegistry")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/aliasing/bundle.js", response);
@@ -111,7 +133,8 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void theAliasBlobContainsAClassReferencedByAlias() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).classRequires("appns.Class1", "br/AliasRegistry")
+			.and(brLib).hasClass("br.AliasRegistry")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageRefersTo("the-alias");
 		when(app).requestReceived("/default-aspect/aliasing/bundle.js", response);

@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
@@ -63,14 +64,21 @@ public class AliasingBundlerContentPlugin extends AbstractBundlerContentPlugin {
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
 		try {
 			if (contentPath.formName.equals("aliasing-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-					String aliasData = AliasingSerializer.createJson(bundleSet);
-					writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
+				boolean aliasRegistryLoaded = bundleSet.getSourceModules().contains(bundleSet.getBundlableNode().getSourceModule("br/AliasRegistry"));
+				
+				if(aliasRegistryLoaded) {
+					try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+						String aliasData = AliasingSerializer.createJson(bundleSet);
+						writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
+					}
 				}
 			}
 			else {
 				throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
+		}
+		catch (RequirePathException e) {
+			// do nothing: if 'br/AliasRegistry' doesn't exist then we definitely need to configure it
 		}
 		catch(IOException | ConfigException e) {
 			throw new BundlerProcessingException(e);
