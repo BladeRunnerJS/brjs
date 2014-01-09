@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,12 +22,6 @@ public class BladeNavigationTest
 		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
 		blade = brjs.app("a1").bladeset("bs1").blade("b1");
 		nodeTesterFactory = new NodeTesterFactory<>(blade, Blade.class);
-	}
-	
-	@After
-	public void teardown()
-	{
-		brjs.close();
 	}
 	
 	@Test

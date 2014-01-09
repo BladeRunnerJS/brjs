@@ -19,7 +19,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,11 +42,6 @@ public class LocaleHelperTest
 		brjs = BRJSTestFactory.createBRJS(tempDir);
 		app = brjs.app("app");
 		appConf = app.appConf();
-	}
-	
-	@After
-	public void tearDown() {
-		brjs.close();
 	}
 	
 	@Test

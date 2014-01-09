@@ -77,7 +77,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Map<String, FileIterator> fileIterators = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private FileObserverFactory fileObserverFactory;
-	private boolean closed = false;
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, FileObserverFactory fileObserverFactory, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
@@ -150,19 +149,6 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		return fileIterators.get(dirPath);
-	}
-	
-	@Override
-	public void finalize() {
-		if(!closed) {
-			logger.error(Messages.CLOSE_METHOD_NOT_INVOKED);
-			close();
-		}
-	}
-	
-	public void close() {
-		closed  = true;
-		fileObserverFactory.close();
 	}
 	
 	// TODO: this needs unit testing

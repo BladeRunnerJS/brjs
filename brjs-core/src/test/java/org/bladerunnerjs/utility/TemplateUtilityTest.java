@@ -15,7 +15,6 @@ import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsExceptio
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.TemplateUtility;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,11 +30,6 @@ public class TemplateUtilityTest
 		File tempDir = FileUtility.createTemporaryDirectory("TemplateUtilityTest");
 		FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
 		brjs = BRJSTestFactory.createBRJS(tempDir);
-	}
-	
-	@After
-	public void tearDown() {
-		brjs.close();
 	}
 	
 	@Test(expected=DirectoryAlreadyExistsException.class)

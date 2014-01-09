@@ -5,7 +5,6 @@ import java.io.File;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,11 +19,6 @@ public class TestPackNavigationTest
 		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
 		technologyTestPack = brjs.app("a1").bladeset("bs1").testType("type1").testTech("tech1");
 		nodeTesterFactory = new NodeTesterFactory<>(technologyTestPack, TestPack.class);
-	}
-	
-	@After
-	public void tearDown() {
-		brjs.close();
 	}
 	
 	@Test
