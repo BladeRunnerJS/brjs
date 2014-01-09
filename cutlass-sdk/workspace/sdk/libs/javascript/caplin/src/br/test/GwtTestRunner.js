@@ -1,5 +1,4 @@
 br.Core.thirdparty("jasmine");
-br.Core.thirdparty("caplin-br");
 
 /**
  * @private
