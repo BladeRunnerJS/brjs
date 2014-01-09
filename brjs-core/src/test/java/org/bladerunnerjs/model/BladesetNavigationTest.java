@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

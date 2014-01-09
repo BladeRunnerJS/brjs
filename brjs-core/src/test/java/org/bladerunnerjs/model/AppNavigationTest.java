@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

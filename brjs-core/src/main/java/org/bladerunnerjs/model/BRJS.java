@@ -77,7 +77,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Map<String, FileIterator> fileIterators = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private FileObserverFactory fileObserverFactory;
-	private boolean closed = false;
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, FileObserverFactory fileObserverFactory, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{

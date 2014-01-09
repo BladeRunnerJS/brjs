@@ -5,7 +5,6 @@ import java.io.File;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

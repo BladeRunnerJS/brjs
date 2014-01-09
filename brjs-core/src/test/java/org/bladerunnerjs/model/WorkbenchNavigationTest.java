@@ -6,7 +6,6 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

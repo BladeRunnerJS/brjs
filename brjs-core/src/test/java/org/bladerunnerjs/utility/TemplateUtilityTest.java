@@ -15,7 +15,6 @@ import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsExceptio
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.TemplateUtility;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
