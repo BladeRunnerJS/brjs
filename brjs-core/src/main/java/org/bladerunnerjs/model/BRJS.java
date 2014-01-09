@@ -152,19 +152,6 @@ public class BRJS extends AbstractBRJSRootNode
 		return fileIterators.get(dirPath);
 	}
 	
-	@Override
-	public void finalize() {
-		if(!closed) {
-			logger.error(Messages.CLOSE_METHOD_NOT_INVOKED);
-			close();
-		}
-	}
-	
-	public void close() {
-		closed  = true;
-		fileObserverFactory.close();
-	}
-	
 	// TODO: this needs unit testing
 	public BundlableNode locateFirstBundlableAncestorNode(File file)
 	{
