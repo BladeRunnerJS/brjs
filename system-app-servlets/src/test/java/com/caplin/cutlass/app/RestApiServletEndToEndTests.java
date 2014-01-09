@@ -49,7 +49,9 @@ public class RestApiServletEndToEndTests
 	
 	@After
 	public void tearDown() throws Exception
-	{		
+	{
+		ServletModelAccessor.destroy();
+		
 		if (server != null)
 		{
 			server.stop();
