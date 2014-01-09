@@ -25,6 +25,12 @@ public class AppNavigationTest
 		app = brjs.app("a1");
 		nodeTesterFactory = new NodeTesterFactory<>(app, App.class);
 	}
+	
+	@After
+	public void teardown()
+	{
+		brjs.close();
+	}
 
 	@Test
 	public void bladesets()

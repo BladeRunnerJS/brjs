@@ -107,6 +107,13 @@ public abstract class SpecTest
 		webappTester = new WebappTester(testSdkDirectory);
 	}
 	
+	@After
+	public void cleanUp() {
+		if(brjs != null) {
+			brjs.close();
+		}
+	}
+	
 	public BRJS createModel() 
 	{	
 		return new BRJS(testSdkDirectory, pluginLocator, new AccurateFileObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));

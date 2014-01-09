@@ -28,6 +28,12 @@ public class BRJSNavigationTest
 		brjs = BRJSTestFactory.createBRJS(testBase);
 		nodeTesterFactory = new NodeTesterFactory<>(brjs, BRJS.class);
 	}
+	
+	@After
+	public void teardown()
+	{
+		brjs.close();
+	}
 
 	@Test
 	public void apps()

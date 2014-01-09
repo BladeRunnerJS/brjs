@@ -31,6 +31,12 @@ public class BladerunnerUriTest
 		FileUtils.write(app.bladeset("another").blade("blade1").workbench().file("empty.txt"), "");
 	}
 	
+	@After
+	public void teardown()
+	{
+		brjs.close();
+	}
+	
 	@Test
 	public void eachComponentOfTheUrlShouldBeAvailableSeparatelyAndCanBeRecombined() throws Exception
 	{

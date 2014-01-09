@@ -21,6 +21,11 @@ public class TestPackNavigationTest
 		nodeTesterFactory = new NodeTesterFactory<>(technologyTestPack, TestPack.class);
 	}
 	
+	@After
+	public void tearDown() {
+		brjs.close();
+	}
+	
 	@Test
 	public void testSource()
 	{

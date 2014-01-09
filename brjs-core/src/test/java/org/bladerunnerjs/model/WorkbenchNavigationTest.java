@@ -23,6 +23,12 @@ public class WorkbenchNavigationTest
 		nodeTesterFactory = new NodeTesterFactory<>(workbench, Workbench.class);
 	}
 	
+	@After
+	public void teardown()
+	{
+		brjs.close();
+	}
+	
 	@Test
 	public void testTypes()
 	{

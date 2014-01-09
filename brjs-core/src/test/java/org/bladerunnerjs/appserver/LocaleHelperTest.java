@@ -44,6 +44,11 @@ public class LocaleHelperTest
 		appConf = app.appConf();
 	}
 	
+	@After
+	public void tearDown() {
+		brjs.close();
+	}
+	
 	@Test
 	public void getLanguageFromLocale()
 	{
