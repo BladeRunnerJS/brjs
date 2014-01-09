@@ -1,31 +1,47 @@
 package com.caplin.cutlass;
 
 import java.io.File;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.ServletContext;
 
 import org.bladerunnerjs.logging.NullLogConfigurator;
 import org.bladerunnerjs.model.BRJS;
 
-import com.caplin.cutlass.BRJSAccessor;
-
+/**
+ * A utility class so Servlets and Filters can share a single BRJS model instance.
+ * 
+ * WARNING: Do not use this class. Any plugins that should have a reference to the BRJS instance will be provided it in the setBRJS() method. 
+ *
+ */
 public class ServletModelAccessor {
 	private static BRJS model;
+	private static ReentrantLock lock = new ReentrantLock();
 	
-	public static synchronized BRJS initializeModel(ServletContext servletContext) {
-		return initializeModel( new File(servletContext.getRealPath("/")) );
+	public static synchronized void initializeModel(ServletContext servletContext) {
+		initializeModel( new File(servletContext.getRealPath("/")) );
 	}
 	
-	public static synchronized BRJS initializeModel(File path) {
+	public static synchronized void initializeModel(File path) {
+		initializeModel( new BRJS(path, new NullLogConfigurator()) );
+	}
+	
+	public static synchronized void initializeModel(BRJS brjs) {
 		if(model == null) {
-			model = BRJSAccessor.initialize( new BRJS(path, new NullLogConfigurator()) );
+			model = brjs;
 		}
-		
+	}
+	
+	public static void reset() {
+		model = null;		
+	}
+	
+	public static BRJS aquireModel() {
+		lock.lock();
 		return model;
 	}
 	
-	// for testing purposes only
-	public static void reset() {
-		model = null;
+	public static void releaseModel() {
+		lock.unlock();
 	}
 }
