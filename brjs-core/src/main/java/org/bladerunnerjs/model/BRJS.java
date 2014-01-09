@@ -139,8 +139,6 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	@Override
 	public FileIterator getFileIterator(File dir) {
-		FileIterator fileIterator = null;
-		
 		if(!dir.exists()) {
 			throw new IllegalStateException("a file iterator can not be created for the non-existent directory '" + dir.getPath() + "' ");
 		}
@@ -151,9 +149,7 @@ public class BRJS extends AbstractBRJSRootNode
 			fileIterators.put(dirPath, new FileIterator(this, fileObserverFactory, dir));
 		}
 		
-		fileIterator = fileIterators.get(dirPath);
-		
-		return fileIterator;
+		return fileIterators.get(dirPath);
 	}
 	
 	@Override
