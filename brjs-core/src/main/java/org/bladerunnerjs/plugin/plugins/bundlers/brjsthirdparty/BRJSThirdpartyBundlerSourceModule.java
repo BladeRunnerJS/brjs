@@ -160,7 +160,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	private List<File> getFilesMatchingFilePaths(List<String> matchFilePaths)
 	{
 		List<File> filesMatching = new ArrayList<File>();
-		List<File> files = fileIterator.files();
+		List<File> files = fileIterator.nestedFiles();
 		
 		for (String pattern : matchFilePaths)
 		{

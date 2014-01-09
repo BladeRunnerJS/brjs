@@ -196,6 +196,6 @@ public class MockRootNode implements RootNode
 
 	@Override
 	public FileIterator getFileIterator(File dir) {
-		return new FileIterator(new AccurateFileObserverFactory(), null);
+		return new FileIterator(this, new AccurateFileObserverFactory(), null);
 	}
 }

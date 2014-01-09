@@ -148,7 +148,7 @@ public class BRJS extends AbstractBRJSRootNode
 		String dirPath = dir.getPath();
 		
 		if(!fileIterators.containsKey(dirPath)) {
-			fileIterators.put(dirPath, new FileIterator(fileObserverFactory, dir));
+			fileIterators.put(dirPath, new FileIterator(this, fileObserverFactory, dir));
 		}
 		
 		fileIterator = fileIterators.get(dirPath);

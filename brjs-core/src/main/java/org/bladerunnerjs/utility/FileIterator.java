@@ -11,6 +11,7 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
+import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.plugin.utility.filechange.DirectoryObserver;
 import org.bladerunnerjs.plugin.utility.filechange.FileObserverFactory;
 
@@ -18,9 +19,11 @@ public class FileIterator {
 	private final IOFileFilter dirFilter = FileFilterUtils.and(DirectoryFileFilter.INSTANCE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
 	private final DirectoryObserver directoryObserver;
 	private final File dir;
+	private final RootNode brjs;
 	private List<File> files;
 	
-	public FileIterator(FileObserverFactory fileObserverFactory, File dir) {
+	public FileIterator(RootNode rootNode, FileObserverFactory fileObserverFactory, File dir) {
+		this.brjs = rootNode;
 		this.dir = dir;
 		directoryObserver = fileObserverFactory.createDirectoryObserver(dir);
 	}
@@ -52,5 +55,19 @@ public class FileIterator {
 	
 	public List<File> dirs() {
 		return files(dirFilter);
+	}
+	
+	public List<File> nestedFiles() {
+		List<File> nestedFiles = new ArrayList<>();
+		populateNestedFiles(nestedFiles);
+		return nestedFiles;
+	}
+	
+	private void populateNestedFiles(List<File> nestedFiles) {
+		nestedFiles.addAll(files());
+		
+		for(File dir : dirs()) {
+			brjs.getFileIterator(dir).populateNestedFiles(nestedFiles);
+		}
 	}
 }

@@ -83,6 +83,6 @@ public class TestRootNode extends AbstractRootNode
 	
 	@Override
 	public FileIterator getFileIterator(File dir) {
-		return new FileIterator(new AccurateFileObserverFactory(), dir);
+		return new FileIterator(this, new AccurateFileObserverFactory(), dir);
 	}
 }
