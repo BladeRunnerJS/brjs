@@ -1,6 +1,7 @@
 package org.bladerunnerjs.appserver;
 
 import java.io.File;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.ServletContext;
 
@@ -15,25 +16,32 @@ import org.bladerunnerjs.model.BRJS;
  */
 public class ServletModelAccessor {
 	private static BRJS model;
+	private static ReentrantLock lock = new ReentrantLock();
 	
-	public static synchronized BRJS initializeModel(ServletContext servletContext) {
-		return initializeModel( new File(servletContext.getRealPath("/")) );
+	public static synchronized void initializeModel(ServletContext servletContext) {
+		initializeModel( new File(servletContext.getRealPath("/")) );
 	}
 	
-	public static synchronized BRJS initializeModel(File path) {
-		return initializeModel( new BRJS(path, new NullLogConfigurator()) );
+	public static synchronized void initializeModel(File path) {
+		initializeModel( new BRJS(path, new NullLogConfigurator()) );
 	}
 	
-	public static synchronized BRJS initializeModel(BRJS brjs) {
+	public static synchronized void initializeModel(BRJS brjs) {
 		if(model == null) {
 			model = brjs;
 		}
-		
+	}
+	
+	public static void reset() {
+		model = null;		
+	}
+	
+	public static BRJS aquireModel() {
+		lock.lock();
 		return model;
 	}
-
-	public static void reset()
-	{
-		model = null;		
+	
+	public static void releaseModel() {
+		lock.unlock();
 	}
 }
