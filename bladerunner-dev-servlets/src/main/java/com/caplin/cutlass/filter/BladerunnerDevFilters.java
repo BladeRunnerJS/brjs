@@ -37,8 +37,6 @@ public class BladerunnerDevFilters implements Filter
 	
 	public void destroy()
 	{
-		ServletModelAccessor.destroy();
-		
 		for (Filter filter : immutableFilters)
 		{
 			filter.destroy();

@@ -107,12 +107,6 @@ public class RestApiServlet extends HttpServlet
 	}
 	
 	@Override
-	public void destroy()
-	{
-		ServletModelAccessor.destroy();
-	}
-	
-	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException
 	{
 		boolean responseHandled = false;

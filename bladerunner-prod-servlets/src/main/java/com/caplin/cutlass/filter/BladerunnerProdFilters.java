@@ -35,8 +35,6 @@ public class BladerunnerProdFilters implements Filter
 	@Override
 	public void destroy()
 	{
-		ServletModelAccessor.destroy();
-		
 		for (Filter filter : filters)
 		{
 			filter.destroy();

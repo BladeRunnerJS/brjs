@@ -67,7 +67,6 @@ public class ApplicationEndToEndTests
 	public void teardown() throws Exception
 	{
 		appServer.stop();
-		brjs.close();
 		assertFalse( "port is still bound!", ServerUtility.isPortBound(HTTP_PORT) );
 	}
 	

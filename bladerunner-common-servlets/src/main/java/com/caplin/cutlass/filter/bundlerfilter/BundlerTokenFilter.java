@@ -59,7 +59,6 @@ public class BundlerTokenFilter implements Filter
 	@Override
 	public void destroy()
 	{
-		ServletModelAccessor.destroy();
 	}
 	
 	@Override
