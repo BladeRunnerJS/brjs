@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

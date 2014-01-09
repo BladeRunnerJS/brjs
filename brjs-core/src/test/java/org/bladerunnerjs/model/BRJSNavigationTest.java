@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
