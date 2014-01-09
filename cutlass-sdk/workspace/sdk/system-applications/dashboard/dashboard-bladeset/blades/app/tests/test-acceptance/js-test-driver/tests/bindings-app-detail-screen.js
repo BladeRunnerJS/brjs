@@ -14,10 +14,10 @@ describe("App Detail Screen", function() {
 			and("dash.model.appDetailScreen.bladesets[0].bladesetName = 'mybladeset'");
 			and("dash.model.appDetailScreen.bladesets[0].blades.length = 1");
 			and("dash.model.appDetailScreen.bladesets[0].blades[0].bladeName = 'myblade'");
-		then("dash.view.(#appDetailScreen .newBladeSetBtn button).text = '   new-bladeset-button     '");
-			and("dash.view.(#appDetailScreen .importBladesFromAppBtn button).text = '   import-blades-from-app-button     '");
-			and("dash.view.(#appDetailScreen .launchAppBtn button).text = '      launch-app-button  '");
-			and("dash.view.(#appDetailScreen .exportWarBtn button).text = '      export-war-button  '");
+		then("dash.view.(#appDetailScreen .newBladeSetBtn button .button-text).text = 'new-bladeset-button'");
+			and("dash.view.(#appDetailScreen .importBladesFromAppBtn button .button-text).text = 'import-blades-from-app-button'");
+			and("dash.view.(#appDetailScreen .launchAppBtn button .tooltip).text = 'launch-app-button'");
+			and("dash.view.(#appDetailScreen .exportWarBtn button .tooltip).text = 'export-war-button'");
 			and("dash.view.(#appDetailScreen .bladeset .bladeset-title .bladeset-title-text).text = 'mybladeset'");
 			and("dash.view.(#appDetailScreen .bladeset .blades .blade .blade-title).text = 'myblade'");
 	});
