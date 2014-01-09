@@ -127,7 +127,7 @@ public abstract class SpecTest
 	
 	// exceptions
 	protected ExceptionsBuilder given(List<Throwable> exceptions) { return new ExceptionsBuilder(this, exceptions); }
-	public ExceptionsVerifier then(List<Throwable> exceptions) { return new ExceptionsVerifier(exceptions); }
+	public ExceptionsVerifier then(List<Throwable> exceptions) { return new ExceptionsVerifier(this, exceptions); }
 	public StringBuilder unquoted(String string) { return new StringBuilder(string); }
 	
 	// logging
