@@ -71,6 +71,8 @@ public class CommandRunner {
 			args = processGlobalCommandFlags(args);
 			brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
 			
+			Runtime.getRuntime().addShutdownHook(new BRJSShutdownHook(brjs));
+			
 			if (!brjs.dirExists()) throw new InvalidSdkDirectoryException("'" + sdkBaseDir.getPath() + "' is not a valid SDK directory");
 			
 			brjs.populate();
@@ -170,6 +172,22 @@ public class CommandRunner {
 		
 		public InvalidSdkDirectoryException(String msg) {
 			super(msg);
+		}
+	}
+	
+	
+	
+	public class BRJSShutdownHook extends Thread
+	{			
+		private final BRJS brjs;
+		
+		public BRJSShutdownHook(BRJS brjs)
+		{
+			this.brjs = brjs;
+		}
+		
+		public void run() {
+			brjs.close();
 		}
 	}
 }
