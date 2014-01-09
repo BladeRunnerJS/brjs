@@ -23,7 +23,9 @@ public class ServletModelAccessor {
 	}
 	
 	public static synchronized void initializeModel(File path) {
-		initializeModel( new BRJS(path, new NullLogConfigurator()) );
+		if(model == null) {
+			model = new BRJS(path, new NullLogConfigurator());
+		}
 	}
 	
 	public static synchronized void initializeModel(BRJS brjs) {
