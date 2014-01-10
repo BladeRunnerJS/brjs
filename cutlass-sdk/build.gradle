@@ -12,6 +12,7 @@ configurations {
 	jsLibsAndDocs
 	testRunner
 	javadocs
+	srcJars
 	
 	browsers_dep
 	browsers_webdriver
@@ -34,6 +35,8 @@ dependencies {
 	}
 	
 	javadocs project(path: ':brjs-core', configuration:'javadocs')
+	
+	srcJars project(path: ':brjs-core', configuration:'srcJar')
 	
 	systemApp (project(path: ':system-app-servlets'))
 
@@ -80,7 +83,7 @@ task copyBrowsers(type: Sync) {
 		}
 }
 
-task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner, configurations.javadocs], {
+task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner, configurations.javadocs, configurations.srcJars], {
 	def includesDir = "build-resources/includes"
 	
 	destinationDir file("${projectDir.path}/workspace")
@@ -131,6 +134,9 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	}
 	from (configurations.javadocs.collect { zipTree(it) }) {
 		into "sdk/docs"
+	}
+	from (configurations.srcJars.collect { it } ) {
+		into "sdk/docs/src"
 	}
 	from (configurations.application)
 	{
