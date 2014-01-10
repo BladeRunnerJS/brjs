@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.comparator.NameFileComparator;
@@ -21,6 +22,7 @@ public class FileIterator {
 	private final File dir;
 	private final RootNode brjs;
 	private List<File> files;
+	private long lastModified;
 	
 	public FileIterator(RootNode rootNode, FileObserverFactory fileObserverFactory, File dir) {
 		this.brjs = rootNode;
@@ -33,11 +35,7 @@ public class FileIterator {
 	}
 	
 	public List<File> files() {
-		if((directoryObserver.hasChangedSinceLastCheck()) || (files == null)) {
-			files = Arrays.asList(dir.listFiles());
-			Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
-		}
-		
+		updateIfChangeDetected();
 		return files;
 	}
 	
@@ -61,6 +59,34 @@ public class FileIterator {
 		List<File> nestedFiles = new ArrayList<>();
 		populateNestedFiles(nestedFiles);
 		return nestedFiles;
+	}
+	
+	public long getLastModified() {
+		updateIfChangeDetected();
+		
+		// TODO: stop recursively scanning downwards as its worse than the problem it's trying to solve
+		// instead, consider adding a DirectoryObserver.haveChildrenChangedSinceLastCheck() method, so that the file watch service can be used for all child
+		// directories, allowing the parent directory observers to be informed at very little cost when a change occurs within a child directory.
+		long mostRecentLastModified = lastModified;
+		
+		for(File childDir : dirs()) {
+			FileIterator childFileIterator = brjs.getFileIterator(childDir);
+			long childLastModified = childFileIterator.getLastModified();
+			
+			if(childLastModified > mostRecentLastModified) {
+				mostRecentLastModified = childLastModified;
+			}
+		}
+		
+		return mostRecentLastModified;
+	}
+	
+	private void updateIfChangeDetected() {
+		if((directoryObserver.hasChangedSinceLastCheck()) || (files == null)) {
+			lastModified = new Date().getTime();
+			files = Arrays.asList(dir.listFiles());
+			Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
+		}
 	}
 	
 	private void populateNestedFiles(List<File> nestedFiles) {

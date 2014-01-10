@@ -26,6 +26,11 @@ public abstract class AbstractBRJSRootNode extends AbstractRootNode implements B
 	}
 	
 	@Override
+	public long lastModified() {
+		return (dir.exists()) ? root().getFileIterator(dir).getLastModified() : 0;
+	}
+	
+	@Override
 	public String getTemplateName() {
 		return BRJSNodeHelper.getTemplateName(this);
 	}
