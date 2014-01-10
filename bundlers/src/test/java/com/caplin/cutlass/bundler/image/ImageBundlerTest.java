@@ -45,7 +45,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/theme_noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "default-aspect/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "default-aspect/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -53,7 +53,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(ALTERNATE_ASPECT, null, "images/theme_noir/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "xtra-aspect/themes/noir/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "xtra-aspect/themes/noir/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(BLADESET, null, "images/bladeset_fx/theme_noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -69,7 +69,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(BLADE, null, "images/bladeset_fx/blade_fx-blade1/theme_noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(WORKBENCH, null, "images/bladeset_fx/blade_fx-blade1/workbench/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -85,7 +85,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/bladeset_fx/theme_noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/bladeset_fx/blade_fx-blade1/theme_noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -101,7 +101,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(BLADE, null, "images/bladeset_fx/theme_noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	} 
 	
 	@Test
@@ -109,7 +109,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(WORKBENCH, null, "images/theme_noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "default-aspect/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "default-aspect/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	} 
 	
 	@Test
@@ -117,7 +117,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(WORKBENCH, null, "images/bladeset_fx/theme_noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	} 
 	
 	@Test
@@ -125,7 +125,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(WORKBENCH, null, "images/bladeset_fx/blade_fx-blade1/theme_noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	} 
 	
 	@Test
@@ -133,7 +133,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/bladeset_fx/blade_fx-blade1/theme_noir/picture.jpg_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/picture.jpg")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/picture.jpg").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -141,7 +141,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/bladeset_fx/blade_fx-blade1/theme_noir/picture.JPEG_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/picture.JPEG")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/themes/noir/picture.JPEG").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -149,7 +149,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/theme_common/img/imageWithGifExtension.gif_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "default-aspect/themes/common/img/imageWithGifExtension.gif")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "default-aspect/themes/common/img/imageWithGifExtension.gif").getAbsoluteFile()), files);
 	}
 
 	@Test
@@ -206,7 +206,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/bladeset_fx/../default-aspect/themes/noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/../default-aspect/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/../default-aspect/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test(expected = RequestHandlingException.class)
@@ -214,7 +214,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/bladeset_fx/blade_fx-blade1/../../../default-aspect/themes/noir/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/../../../default-aspect/themes/noir/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/../../../default-aspect/themes/noir/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test(expected = RequestHandlingException.class)
@@ -222,7 +222,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/bladeset_fx/blade_fx-blade1/workbench/../../../../../../default-aspect/themes/noir/my/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/../../../../../../default-aspect/themes/noir/my/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/../../../../../../default-aspect/themes/noir/my/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test(expected = RequestHandlingException.class)
@@ -230,7 +230,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/bladeset_fx/blade_fx-blade1/workbench/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test(expected = RequestHandlingException.class)
@@ -238,7 +238,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/bladeset_fx/blade_fx-blade1/workbench/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/my/own/image.png").getAbsoluteFile()), files);
 	}
 
 	@Test(expected = RequestHandlingException.class)
@@ -246,7 +246,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(ALTERNATE_ASPECT, null, "images/bladeset_fx/blade_fx-blade1/workbench/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(APP_BASE, "fx-bladeset/blades/fx-blade1/workbench/resources/style/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test(expected = ResourceNotFoundException.class)
