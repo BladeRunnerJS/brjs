@@ -93,7 +93,7 @@ public class ApplicationServerUtils
 			webappContext.setDescriptor(webXml.getAbsolutePath());
 		}
 		
-		webappContext.setResourceBase(app.dir().getAbsolutePath());
+		webappContext.setResourceBase(app.dir().getPath());
 		webappContext.setContextPath("/"+app.getName());
 		webappContext.setServerClasses(new String[] {"org.slf4j."});
 		webappContext.setParentLoaderPriority(false);

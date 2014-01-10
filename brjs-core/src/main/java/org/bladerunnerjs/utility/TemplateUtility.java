@@ -2,6 +2,7 @@ package org.bladerunnerjs.utility;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -20,9 +21,9 @@ public class TemplateUtility
 	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations) throws TemplateInstallationException {
 		try {
 			if(node.dirExists() && !(node instanceof BRJS)) {
-				File[] dirContents = node.dir().listFiles();
+				List<File> dirContents = node.root().getFileIterator(node.dir()).files();
 				
-				if(dirContents.length != 0) {
+				if(dirContents.size() != 0) {
 					throw new DirectoryAlreadyExistsException(node);
 				}
 			}

@@ -10,12 +10,14 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
 public class BladerunnerUriTest
 {
+	private BRJS brjs;
 	private App app;
 	
 	@Before
@@ -23,11 +25,17 @@ public class BladerunnerUriTest
 	{
 		File tempDir = FileUtility.createTemporaryDirectory("BladerunnerUri-test");
 		new File(tempDir, "sdk").mkdir();
-		BRJS brjs = BRJSTestFactory.createBRJS(tempDir);
+		brjs = BRJSTestFactory.createBRJS(tempDir);
 		app = brjs.app("the-app");
 		
 		FileUtils.write(app.bladeset("another").file("js/empty.txt"), "");
 		FileUtils.write(app.bladeset("another").blade("blade1").workbench().file("empty.txt"), "");
+	}
+	
+	@After
+	public void teardown()
+	{
+		brjs.close();
 	}
 	
 	@Test

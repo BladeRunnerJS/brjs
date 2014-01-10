@@ -27,15 +27,36 @@ public class NodeTest extends SpecTest {
 	}
 	
 	@Test
-	public void propertiesStoredOnNodesCanBeRetrievedImmedidately() throws Exception {
-		when(nodeProperties).setProperty("property-name", "property-value");
-		then(nodeProperties).propertyHasValue("property-name", "property-value");
+	public void persistentPropertiesStoredOnNodesCanBeRetrievedImmedidately() throws Exception {
+		when(nodeProperties).setPersisentProperty("property-name", "property-value");
+		then(nodeProperties).persistentPropertyHasValue("property-name", "property-value");
 	}
 	
 	@Test
-	public void propertiesStoredOnNodesCanBeRetrievedOnAFreshCopyOfTheModel() throws Exception {
-		given(nodeProperties).propertyHasBeenSet("property-name", "property-value");
+	public void persistentPropertiesStoredOnNodesCanBeRetrievedOnAFreshCopyOfTheModel() throws Exception {
+		given(nodeProperties).persistentPropertyHasBeenSet("property-name", "property-value");
 		when(brjs).hasBeenCreated();
-		then(nodeProperties).propertyHasValue("property-name", "property-value");
+		then(nodeProperties).persistentPropertyHasValue("property-name", "property-value");
 	}
+	
+	@Test
+	public void transientPropertiesStoredOnNodesCanBeRetrievedImmedidately() throws Exception {
+		when(nodeProperties).setTransientProperty("property-name", "property-value");
+		then(nodeProperties).transientPropertyHasValue("property-name", "property-value");
+	}
+	
+	@Test
+	public void transientPropertiesStoredOnNodesCannotBeRetrievedOnAFreshCopyOfTheModel() throws Exception {
+		given(nodeProperties).transientPropertyHasBeenSet("property-name", "property-value");
+		when(brjs).hasBeenCreated();
+		then(nodeProperties).transientPropertyHasValue("property-value", null);
+	}
+	
+	@Test
+	public void transientPropertiesCanBeObjectsAndTheSameObjectIsReturned() throws Exception {
+		Object myObj = new Object();
+		given(nodeProperties).transientPropertyHasBeenSet("property-name", myObj);
+		then(nodeProperties).transientPropertyIsSameAs("property-name", myObj);
+	}
+	
 }

@@ -35,19 +35,19 @@ public class JsSourceFileFinderGetSourceFilesTest
 		File testDir = null;
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js"), 
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/dir1/file.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/file.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/file.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/file.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/file.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/src/dir1/file.js")
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js").getAbsoluteFile(), 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/dir1/file.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/file.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/file.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/file.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/file.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/src/dir1/file.js").getAbsoluteFile()
 		);
 		
 		List<ClassnameFileMapping> actualFiles = SourceFileLocator.getAllSourceFiles(baseDir, testDir);
@@ -61,21 +61,21 @@ public class JsSourceFileFinderGetSourceFilesTest
 		File testDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-unit/js-test-driver");
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js"), 
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/file.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-unit/js-test-driver/src-test/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-unit/js-test-driver/src-test/file.js") 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js").getAbsoluteFile(), 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/file.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-unit/js-test-driver/src-test/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-unit/js-test-driver/src-test/file.js").getAbsoluteFile() 
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
@@ -88,9 +88,9 @@ public class JsSourceFileFinderGetSourceFilesTest
 		File testDir = null;
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js"), 
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js")
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js").getAbsoluteFile(), 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
@@ -103,11 +103,11 @@ public class JsSourceFileFinderGetSourceFilesTest
 		File testDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-unit/js-test-driver");
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js"), 
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-unit/js-test-driver/src-test/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-unit/js-test-driver/src-test/file.js")
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js").getAbsoluteFile(), 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-unit/js-test-driver/src-test/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-unit/js-test-driver/src-test/file.js").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
@@ -120,10 +120,10 @@ public class JsSourceFileFinderGetSourceFilesTest
 		File testDir = null;
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js"), 
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js") 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js").getAbsoluteFile(), 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
@@ -136,12 +136,12 @@ public class JsSourceFileFinderGetSourceFilesTest
 		File testDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-unit/js-test-driver");
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js"), 
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-unit/js-test-driver/src-test/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-unit/js-test-driver/src-test/file.js")
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js").getAbsoluteFile(), 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-unit/js-test-driver/src-test/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-unit/js-test-driver/src-test/file.js").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
@@ -154,12 +154,12 @@ public class JsSourceFileFinderGetSourceFilesTest
 		File testDir = null;
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js"), 
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/src/file.js")
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js").getAbsoluteFile(), 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/src/file.js").getAbsoluteFile()
 		);
 		
 		List<ClassnameFileMapping> sourceFiles = SourceFileLocator.getAllSourceFiles(baseDir, testDir);
@@ -173,14 +173,14 @@ public class JsSourceFileFinderGetSourceFilesTest
 		File testDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-unit/js-test-driver");
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js"), 
-				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/src/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/src/file.js"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-unit/js-test-driver/src-test/dir1/file.js"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-unit/js-test-driver/src-test/file.js")
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js").getAbsoluteFile(), 
+				new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/src/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/src/file.js").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-unit/js-test-driver/src-test/dir1/file.js").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-unit/js-test-driver/src-test/file.js").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
@@ -193,19 +193,19 @@ public class JsSourceFileFinderGetSourceFilesTest
 		File testDir = null;
 		
 		List<ClassnameFileMapping> expectedFiles = Arrays.asList(
-				new ClassnameFileMapping("caplin.pkg1.class", new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js")), 
-				new ClassnameFileMapping("caplin.pkg1.pkg2.class", new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js")), 
-				new ClassnameFileMapping("dir1.a.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js")),
-				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/dir1/file.js")),
-				new ClassnameFileMapping("file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/file.js")),
-				new ClassnameFileMapping("dir1.a.blade1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js")), 
-				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/dir1/file.js")), 
-				new ClassnameFileMapping("file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/file.js")),
-				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/dir1/file.js")), 
-				new ClassnameFileMapping("file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/file.js")),
-				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/dir1/file.js")), 
-				new ClassnameFileMapping("file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/file.js")),
-				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/src/dir1/file.js"))
+				new ClassnameFileMapping("caplin.pkg1.class", new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/class.js").getAbsoluteFile()), 
+				new ClassnameFileMapping("caplin.pkg1.pkg2.class", new File(testBase, SDK_DIR + "/libs/javascript/caplin/src/caplin/pkg1/pkg2/class.js").getAbsoluteFile()), 
+				new ClassnameFileMapping("dir1.a.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/src/dir1/a/file.js").getAbsoluteFile()),
+				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/dir1/file.js").getAbsoluteFile()),
+				new ClassnameFileMapping("file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/src/file.js").getAbsoluteFile()),
+				new ClassnameFileMapping("dir1.a.blade1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/src/dir1/a/blade1/file.js").getAbsoluteFile()), 
+				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/dir1/file.js").getAbsoluteFile()), 
+				new ClassnameFileMapping("file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/src/file.js").getAbsoluteFile()),
+				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/dir1/file.js").getAbsoluteFile()), 
+				new ClassnameFileMapping("file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/src/file.js").getAbsoluteFile()),
+				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/dir1/file.js").getAbsoluteFile()), 
+				new ClassnameFileMapping("file", new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/src/file.js").getAbsoluteFile()),
+				new ClassnameFileMapping("dir1.file", new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/src/dir1/file.js").getAbsoluteFile())
 		);
 		
 		List<ClassnameFileMapping> actualFiles = SourceFileLocator.getAllSourceFiles(baseDir, testDir);

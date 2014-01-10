@@ -77,6 +77,6 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		}
 		
 		out.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
-		out.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getAbsolutePath());
+		out.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
 	}
 }

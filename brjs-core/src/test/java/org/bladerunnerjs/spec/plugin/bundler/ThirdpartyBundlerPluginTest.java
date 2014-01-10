@@ -110,11 +110,31 @@ public class ThirdpartyBundlerPluginTest extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("file2.js", "lib1.file2 = {}\n")
 			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "js:")
 			.and(thirdpartyLib2).containsFileWithContents("file1.js", "lib2.file1 = {}\n")
-			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
+			.and(aspect).indexPageRefersTo(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("lib1.file1 = {}")
 			.and(pageResponse).containsText("lib1.file2 = {}")
 			.and(pageResponse).containsText("lib2.file1 = {}");
+	}
+	
+	@Test
+	public void scriptsCanResideWithDirectories() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: src1.js, lib/src2.js, lib/dir/src3.js")
+			.and(thirdpartyLib).containsFiles("src1.js", "lib/src2.js", "lib/dir/src3.js")
+			.and(aspect).indexPageRefersTo(thirdpartyLib);
+		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
+		then(pageResponse).containsOrderedTextFragments("src1.js", "lib/src2.js", "lib/dir/src3.js");
+	}
+	
+	@Test
+	public void fileNamesThatEndWithADesiredFileNameAreNotIncluded() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: lib.js")
+			.and(thirdpartyLib).containsFiles("lib.js", "X-lib.js", "Y-lib.js")
+			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
+		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
+		then(pageResponse).containsText("lib.js")
+			.and(pageResponse).doesNotContainText("X-lib.js")
+			.and(pageResponse).doesNotContainText("Y-lib.js");
 	}
 	
 	@Test

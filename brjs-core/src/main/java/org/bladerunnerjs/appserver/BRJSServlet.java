@@ -21,34 +21,40 @@ public class BRJSServlet extends DefaultServlet
 
 	private static final Pattern VERSION_REGEX = Pattern.compile("/brjs/version/?");
 	
-	BRJS brjs;
 	BRJSServletUtils servletUtils;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException
 	{
 		super.init(config);
-		brjs = ServletModelAccessor.initializeModel(config.getServletContext());
-		servletUtils = new BRJSServletUtils(brjs);
+		ServletModelAccessor.initializeModel(config.getServletContext());
+		servletUtils = new BRJSServletUtils();
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		String requestPath = request.getRequestURI();
-		String pathRelativeToApp = StringUtils.substringAfter(requestPath, request.getContextPath());
-
-		if (matchesRegex(pathRelativeToApp, VERSION_REGEX))
-		{
-			response.getWriter().print(brjs.versionInfo().getVersionNumber());
-		}
-		else
-		{
-			boolean foundHandler = servletUtils.passRequestToApropriateContentPlugin(getServletContext(), request, response);
-			if (!foundHandler)
+		try {
+			BRJS brjs = ServletModelAccessor.aquireModel();
+			
+			String requestPath = request.getRequestURI();
+			String pathRelativeToApp = StringUtils.substringAfter(requestPath, request.getContextPath());
+			
+			if (matchesRegex(pathRelativeToApp, VERSION_REGEX))
 			{
-				servletUtils.sendErrorResponse(response, 404, new ResourceNotFoundException("No content plugin could be found for the request: " + pathRelativeToApp) );
+				response.getWriter().print(brjs.versionInfo().getVersionNumber());
 			}
+			else
+			{
+				boolean foundHandler = servletUtils.passRequestToApropriateContentPlugin(brjs, getServletContext(), request, response);
+				if (!foundHandler)
+				{
+					servletUtils.sendErrorResponse(response, 404, new ResourceNotFoundException("No content plugin could be found for the request: " + pathRelativeToApp) );
+				}
+			}
+		}
+		finally {
+			ServletModelAccessor.releaseModel();
 		}
 	}
 

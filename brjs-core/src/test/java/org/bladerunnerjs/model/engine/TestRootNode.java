@@ -8,13 +8,15 @@ import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
+import org.bladerunnerjs.plugin.utility.filechange.AccurateFileObserverFactory;
 import org.bladerunnerjs.testing.utility.MockLoggerFactory;
+import org.bladerunnerjs.utility.FileIterator;
 
 
 public class TestRootNode extends AbstractRootNode
 {
-	NodeMap<TestChildNode> childNodes = new NodeMap<>(TestChildNode.class, null, "^child-");
-	NodeMap<TestChildNode> multiLocationChildNodes = new NodeMap<>(TestChildNode.class, "set-primary-location", "^child-");
+	NodeMap<TestChildNode> childNodes = new NodeMap<>(this, TestChildNode.class, null, "^child-");
+	NodeMap<TestChildNode> multiLocationChildNodes = new NodeMap<>(this, TestChildNode.class, "set-primary-location", "^child-");
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(TestMultiLocationItemNode.class, "single-item-primary-location");
 	
@@ -77,5 +79,10 @@ public class TestRootNode extends AbstractRootNode
 	public TestMultiLocationItemNode multiLocationItemNode()
 	{
 		return item(multiLocationItemNode);
+	}
+	
+	@Override
+	public FileIterator getFileIterator(File dir) {
+		return new FileIterator(this, new AccurateFileObserverFactory(), dir);
 	}
 }

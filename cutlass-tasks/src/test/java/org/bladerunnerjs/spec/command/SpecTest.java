@@ -1,6 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.utility.filechange.AccurateFileObserverFactory;
 import org.bladerunnerjs.testing.specutility.engine.ConsoleStoreWriter;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 
@@ -12,7 +13,7 @@ public class SpecTest extends org.bladerunnerjs.testing.specutility.engine.SpecT
 	@Override
 	public BRJS createModel() 
 	{	
-		return BRJSAccessor.initialize(new BRJS (testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), new ConsoleStoreWriter(output)));
+		return BRJSAccessor.initialize(new BRJS (testSdkDirectory, pluginLocator, new AccurateFileObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output)));
 	}
 
 }

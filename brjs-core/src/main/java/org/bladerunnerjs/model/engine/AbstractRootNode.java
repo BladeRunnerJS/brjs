@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +22,9 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	public AbstractRootNode(File dir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
 		super();
-		this.dir = locateRootDir(dir);
+		
+		File rootDir = locateRootDir(dir);
+		this.dir = (rootDir == null) ? null : new File(getNormalizedPath(rootDir));
 		registerNode();
 		this.loggerFactory = loggerFactory;
 		this.consoleWriter = consoleWriter;
@@ -55,7 +56,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public void registerNode(Node node) throws NodeAlreadyRegisteredException
 	{
-		String normalizedPath = getNormalizedPath(node.dir());
+		String normalizedPath = node.dir().getPath();
 		
 		if(nodeCache.containsKey(normalizedPath)) {
 			throw new NodeAlreadyRegisteredException("A node has already been registered for path '" + normalizedPath + "'");
@@ -149,21 +150,5 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		} while((node == null) && (nextFile != null));
 		
 		return node;
-	}
-	
-	private String getNormalizedPath(File dir) {
-		String normalizedPath;
-		
-		try {
-			normalizedPath = dir.getCanonicalPath();
-		}
-		catch (IOException ex)
-		{
-			root().logger(LoggerType.CORE, this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
-			
-			normalizedPath = dir.getAbsolutePath();
-		}
-		
-		return normalizedPath;
 	}
 }

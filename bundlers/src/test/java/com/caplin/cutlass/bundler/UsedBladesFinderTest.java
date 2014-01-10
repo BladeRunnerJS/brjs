@@ -48,7 +48,7 @@ public class UsedBladesFinderTest
 		List<File> files = finder.findUsedBlades(new File(APP1_BASE, "main-aspect"));
 		assertEquals(1, files.size());
 		assertTrue( fileContainsText(new File(APP1_BASE,"main-aspect/src/section/app/main2.js"), "section.a.blade1") ); 
-		assertEquals( new File(APP1_BASE,"a-bladeset/blades/blade1"), files.get(0) );
+		assertEquals( new File(APP1_BASE,"a-bladeset/blades/blade1").getCanonicalPath(), files.get(0).getCanonicalPath() );
 	}
 	
 	@Test
@@ -56,7 +56,7 @@ public class UsedBladesFinderTest
 	{
 		List<File> files = finder.findUsedBlades(new File(XML_SEED_BASE, "default-aspect"));
 		assertEquals(1, files.size());
-		assertEquals( new File(XML_SEED_BASE,"a-bladeset/blades/blade1"), files.get(0) );
+		assertEquals( new File(XML_SEED_BASE,"a-bladeset/blades/blade1").getCanonicalPath(), files.get(0).getCanonicalPath() );
 	}
 	
 	@Test
@@ -64,8 +64,8 @@ public class UsedBladesFinderTest
 	{
 		List<File> files = finder.findUsedBlades(new File(INDEX_HTML_SEED_BASE, "default-aspect"));
 		assertEquals(2, files.size());
-		assertEquals( new File(INDEX_HTML_SEED_BASE,"a-bladeset/blades/blade1"), files.get(0) );
-		assertEquals( new File(INDEX_HTML_SEED_BASE,"a-bladeset/blades/blade2"), files.get(1) );
+		assertEquals( new File(INDEX_HTML_SEED_BASE,"a-bladeset/blades/blade1").getCanonicalPath(), files.get(0).getCanonicalPath() );
+		assertEquals( new File(INDEX_HTML_SEED_BASE,"a-bladeset/blades/blade2").getCanonicalPath(), files.get(1).getCanonicalPath() );
 	}
 	
 	@Test
@@ -82,8 +82,8 @@ public class UsedBladesFinderTest
 		assertEquals(2, files.size());
 		assertTrue( fileContainsText(new File(UNUSED_BLADES_APP_BASE,"main-aspect/src/section/app/main2.js"), "section.fi.fi-blade1") ); ;
 		assertTrue( fileContainsText(new File(UNUSED_BLADES_APP_BASE,"main-aspect/src/section/app/main2.js"), "section.fx.fx-blade2") ); ;
-		assertEquals( new File(UNUSED_BLADES_APP_BASE,"fi-bladeset/blades/fi-blade1"), files.get(0) );
-		assertEquals( new File(UNUSED_BLADES_APP_BASE,"fx-bladeset/blades/fx-blade2"), files.get(1) );
+		assertEquals( new File(UNUSED_BLADES_APP_BASE,"fi-bladeset/blades/fi-blade1").getCanonicalPath(), files.get(0).getCanonicalPath() );
+		assertEquals( new File(UNUSED_BLADES_APP_BASE,"fx-bladeset/blades/fx-blade2").getCanonicalPath(), files.get(1).getCanonicalPath() );
 	}
 	
 	@Test
@@ -93,8 +93,8 @@ public class UsedBladesFinderTest
 		assertEquals(2, files.size());
 		assertTrue( fileContainsText(new File(UNUSED_BLADESETS_APP_BASE,"main-aspect/src/section/app/main2.js"), "section.fi.fi-blade1") ); ;
 		assertTrue( fileContainsText(new File(UNUSED_BLADESETS_APP_BASE,"main-aspect/src/section/app/main2.js"), "section.fi.fi-blade2") ); ;
-		assertEquals( new File(UNUSED_BLADESETS_APP_BASE,"fi-bladeset/blades/fi-blade1"), files.get(0) );
-		assertEquals( new File(UNUSED_BLADESETS_APP_BASE,"fi-bladeset/blades/fi-blade2"), files.get(1) );
+		assertEquals( new File(UNUSED_BLADESETS_APP_BASE,"fi-bladeset/blades/fi-blade1").getCanonicalPath(), files.get(0).getCanonicalPath() );
+		assertEquals( new File(UNUSED_BLADESETS_APP_BASE,"fi-bladeset/blades/fi-blade2").getCanonicalPath(), files.get(1).getCanonicalPath() );
 	}
 
 	@Test

@@ -57,6 +57,8 @@ public class CommandRunner {
 	}
 	
 	public void run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
+		BRJS brjs = null;
+		
 		try {
 			if (args.length < 1 || args[0] == null) throw new NoSdkArgumentException("No SDK base directory was provided");
 			
@@ -67,7 +69,9 @@ public class CommandRunner {
 			sdkBaseDir = sdkBaseDir.getCanonicalFile();
 			
 			args = processGlobalCommandFlags(args);
-			BRJS brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
+			brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
+			
+			Runtime.getRuntime().addShutdownHook(new BRJSShutdownHook(brjs));
 			
 			if (!brjs.dirExists()) throw new InvalidSdkDirectoryException("'" + sdkBaseDir.getPath() + "' is not a valid SDK directory");
 			
@@ -78,6 +82,12 @@ public class CommandRunner {
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);
+		}
+		finally {
+			// TODO: we probably should invoke brjs.close() using a shutdown hook (as the process is closing), and we should also create a Plugin.close() method that can be invoked on all plug-ins, in case any of them need to do any clean up
+//			if(brjs != null) {
+//				brjs.close();
+//			}
 		}
 	}
 	
@@ -162,6 +172,22 @@ public class CommandRunner {
 		
 		public InvalidSdkDirectoryException(String msg) {
 			super(msg);
+		}
+	}
+	
+	
+	
+	public class BRJSShutdownHook extends Thread
+	{			
+		private final BRJS brjs;
+		
+		public BRJSShutdownHook(BRJS brjs)
+		{
+			this.brjs = brjs;
+		}
+		
+		public void run() {
+			brjs.close();
 		}
 	}
 }

@@ -14,16 +14,18 @@ public class NodeMap<N extends Node>
 	public Class<N> nodeClass;
 	
 	private List<NodeMapLocator> nodeMapLocators = new ArrayList<>();
+	private final RootNode rootNode;
 	
-	public NodeMap(Class<N> nodeClass, String subDirPath, String dirNameFilter)
+	public NodeMap(RootNode rootNode, Class<N> nodeClass, String subDirPath, String dirNameFilter)
 	{
 		this.nodeClass = nodeClass;
-		nodeMapLocators.add(new DirNodeMapLocator(subDirPath, dirNameFilter));
+		nodeMapLocators.add(new DirNodeMapLocator(rootNode, subDirPath, dirNameFilter));
+		this.rootNode = rootNode;
 	}
 	
 	public void addAlternateLocation(String subDirPath, String dirNameFilter)
 	{
-		nodeMapLocators.add(new DirNodeMapLocator(subDirPath, dirNameFilter));
+		nodeMapLocators.add(new DirNodeMapLocator(rootNode, subDirPath, dirNameFilter));
 	}
 	
 	public void addAdditionalNamedLocation(String itemName, String subDirPath)
@@ -44,8 +46,7 @@ public class NodeMap<N extends Node>
 			{
 				if(visitedLocatorNames.contains(name))
 				{
-					// TODO: this is a really bad exception since it doesn't point to the actual directories -- consider how it can be fixed
-					throw new BladeRunnerDirectoryException("There are two directories that both have the logical name '" + name + "'");
+					throw new BladeRunnerDirectoryException("There are two directories that both have the logical name '" + name + "' within the directory '" + dir.getPath() + "'");
 				}
 				
 				visitedLocatorNames.add(name);

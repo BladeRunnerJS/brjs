@@ -13,7 +13,17 @@ public class NodePropertiesVerifier {
 		this.nodeProperties = nodeProperties;
 	}
 	
-	public void propertyHasValue(String propertyName, String propertyValue) throws Exception {
-		assertEquals(propertyValue, nodeProperties.getProperty(propertyName));
+	public void persistentPropertyHasValue(String propertyName, String propertyValue) throws Exception {
+		assertEquals(propertyValue, nodeProperties.getPersisentProperty(propertyName));
+	}
+
+	public void transientPropertyHasValue(String propertyName, String propertyValue)
+	{
+		assertEquals(propertyValue, nodeProperties.getTransientProperty(propertyName));
+	}
+
+	public void transientPropertyIsSameAs(String propertyName, Object propertyValue)
+	{
+		assertSame(propertyValue, nodeProperties.getTransientProperty(propertyName));
 	}
 }

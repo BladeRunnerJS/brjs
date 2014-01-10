@@ -1,11 +1,14 @@
 package org.bladerunnerjs.appserver;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.utility.FileIterator;
 
 import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.*;
 
@@ -29,7 +32,8 @@ public class AppDeploymentFileWatcher extends Thread
 	private BRJSApplicationServer appServer;
 	private BRJS brjs;
 
-	private File[] rootWatchDirs;
+	private List<FileIterator> watchDirIterators = new ArrayList<>();
+	private volatile boolean running = true;
 	
 	// TODO: replace this with file watcher - recusive watching info here http://docs.oracle.com/javase/tutorial/essential/io/examples/WatchDir.java
 	public AppDeploymentFileWatcher(BRJS brjs, BRJSApplicationServer appServer, File... rootWatchDirs)
@@ -38,35 +42,39 @@ public class AppDeploymentFileWatcher extends Thread
 		
 		this.appServer = appServer;
 		this.brjs = brjs;
-		this.rootWatchDirs = rootWatchDirs;
+		
+		for(File rootWatchDir : rootWatchDirs) {
+			watchDirIterators.add(brjs.getFileIterator(rootWatchDir));
+		}
 	}
-
+	
+	@Override
 	public void run()
-	{	
-		try
+	{
+		while(running)
 		{
-    		while(true)
-    		{
-    			for (File rootWatchDir : rootWatchDirs)
-    			{
-    				checkForNewApps(rootWatchDir);
-    			}
+			try
+			{
+	    		for (FileIterator watchDirIterator : watchDirIterators)
+	    		{
+	    			checkForNewApps(watchDirIterator);
+	    		}
 				Thread.sleep(CHECK_INTERVAL);
-    		}
-		}
-		catch (InterruptedException e)
-		{
-			logger.warn(WATCHING_INTERUPTED_MSG, this.getClass().getSimpleName());
+			}
+			catch (InterruptedException e)
+			{
+				logger.warn(WATCHING_INTERUPTED_MSG, this.getClass().getSimpleName());
+			}
 		}
 	}
+	
+	public void terminate() {
+		running = false;
+	}
 
-	private void checkForNewApps(File rootWatchDir)
+	private void checkForNewApps(FileIterator watchDirIterator)
 	{
-		File[] children = rootWatchDir.listFiles();
-		if (children == null)
-		{
-			return;
-		}
+		List<File> children = watchDirIterator.files();
 		
 		for (File child : children)
 		{

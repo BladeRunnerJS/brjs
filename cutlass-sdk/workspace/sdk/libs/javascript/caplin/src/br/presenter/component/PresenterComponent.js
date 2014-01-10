@@ -1,5 +1,4 @@
 br.Core.thirdparty("knockout");
-br.Core.thirdparty("caplin-br");
 
 (function() {
 	"use strict";

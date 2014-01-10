@@ -299,7 +299,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/sdk/caplin/alerts/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -307,7 +307,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(DEFAULT_ASPECT, null, "images/sdk/caplin/alerts/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -315,7 +315,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(BLADESET, null, "images/sdk/caplin/alerts/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png").getAbsoluteFile()), files);
 	}
 
 	@Test
@@ -323,7 +323,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(BLADE, null, "images/sdk/caplin/alerts/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test
@@ -331,7 +331,7 @@ public class ImageBundlerTest
 	{
 		ImageBundler bundler = new ImageBundler();
 		List<File> files = bundler.getBundleFiles(WORKBENCH, null, "images/sdk/caplin/alerts/my/own/image.png_image.bundle");
-		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png")), files);
+		assertEquals(Arrays.asList(new File(BASE_DIR, SDK_DIR + "/libs/javascript/caplin/resources/caplin/alerts/my/own/image.png").getAbsoluteFile()), files);
 	}
 	
 	@Test(expected = RequestHandlingException.class)

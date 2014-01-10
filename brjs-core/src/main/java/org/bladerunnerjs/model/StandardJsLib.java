@@ -37,21 +37,21 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		return new NodeItem<>(StandardJsLib.class, "sdk/libs/javascript/caplin");
 	}
 	
-	public static NodeMap<StandardJsLib> createAppNodeSet()
+	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)
 	{
-		NodeMap<StandardJsLib> appNodeSet = new NodeMap<>(StandardJsLib.class, "libs", null);
+		NodeMap<StandardJsLib> appNodeSet = new NodeMap<>(rootNode, StandardJsLib.class, "libs", null);
 		
 		return appNodeSet;
 	}
 	
-	public static NodeMap<StandardJsLib> createSdkNonBladeRunnerLibNodeSet()
+	public static NodeMap<StandardJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(StandardJsLib.class, "sdk/libs/javascript/thirdparty", null);
+		return new NodeMap<>(rootNode, StandardJsLib.class, "sdk/libs/javascript/thirdparty", null);
 	}
 	
-	public static NodeMap<StandardJsLib> createAppNonBladeRunnerLibNodeSet()
+	public static NodeMap<StandardJsLib> createAppNonBladeRunnerLibNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(StandardJsLib.class, "thirdparty-libraries", null);
+		return new NodeMap<>(rootNode, StandardJsLib.class, "thirdparty-libraries", null);
 	}
 	
 	

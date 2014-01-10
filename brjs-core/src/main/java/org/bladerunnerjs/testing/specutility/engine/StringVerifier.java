@@ -115,12 +115,14 @@ public class StringVerifier {
 	public VerifierChainer doesNotContainText(String substring) {
 		assertDoesNotContain(substring, string);
 		
-		return verifierChainer;		
+		return verifierChainer;	
 	}
 
-	public void containsOrderedTextFragments(String... textFragments) {
+	public VerifierChainer containsOrderedTextFragments(String... textFragments) {
 		if(!string.matches("(?s)^.*" + Joiner.on(".*").join(textFragments) + ".*$")) {
 			assertEquals(Joiner.on("\n<snip/>\n").join(textFragments), string);
 		}
+		
+		return verifierChainer;
 	}
 }

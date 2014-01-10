@@ -21,7 +21,7 @@ public class NodeModelTester
 			
 			assertNotNull("no node of class " + childNodeClass + " found for location " + possibleNodeLocation, locatedNode);
 			assertNotNull("no '" + childNodeClass.getSimpleName() + "' node located for '" + possibleNodeLocation.getAbsolutePath() + "'", locatedNode.dir());
-			assertEquals("located node was found at given directory, but .dir() returns different location", possibleNodeLocation.getAbsolutePath(), locatedNode.dir().getAbsolutePath());
+			assertEquals("located node was found at given directory, but .dir() returns different location", possibleNodeLocation.getAbsolutePath(), locatedNode.dir().getPath());
 			
 			
 			if (locatedNode instanceof JsLib && !possibleNodeLocation.getAbsolutePath().contains("/apps/"))

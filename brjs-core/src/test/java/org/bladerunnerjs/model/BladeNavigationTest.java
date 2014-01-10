@@ -13,21 +13,22 @@ import org.junit.Test;
 
 public class BladeNavigationTest
 {
+	private BRJS brjs;
 	private NodeTesterFactory<Blade> nodeTesterFactory;
 	private Blade blade;
 	
 	@Before
 	public void setup()
 	{
-		blade = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).app("a1").bladeset("bs1").blade("b1");
+		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
+		blade = brjs.app("a1").bladeset("bs1").blade("b1");
 		nodeTesterFactory = new NodeTesterFactory<>(blade, Blade.class);
 	}
 	
 	@After
 	public void teardown()
 	{
-		blade = null;
-		nodeTesterFactory = null;
+		brjs.close();
 	}
 	
 	@Test

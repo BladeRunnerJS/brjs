@@ -15,18 +15,19 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class Bladeset extends AbstractComponent implements NamedNode
 {
-	private final NodeMap<Blade> blades = Blade.createNodeSet();
+	private final NodeMap<Blade> blades;
 	private String name;
 
 	public Bladeset(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		blades = Blade.createNodeSet(rootNode);
 	}
 	
-	public static NodeMap<Bladeset> createNodeSet()
+	public static NodeMap<Bladeset> createNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(Bladeset.class, null, "-bladeset$");
+		return new NodeMap<>(rootNode, Bladeset.class, null, "-bladeset$");
 	}
 	
 	@Override

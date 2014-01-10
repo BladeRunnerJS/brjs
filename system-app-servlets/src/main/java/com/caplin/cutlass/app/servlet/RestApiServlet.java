@@ -105,7 +105,13 @@ public class RestApiServlet extends HttpServlet
 		if (apiService == null) { apiService = new RestApiService(brjs); };
 		logger = brjs.logger(LoggerType.SERVLET, this.getClass());
 	}
-
+	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+	}
+	
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException
 	{

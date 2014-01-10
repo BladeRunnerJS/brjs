@@ -8,6 +8,9 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.console.ConsoleWriter;
@@ -29,7 +32,10 @@ import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
+import org.bladerunnerjs.plugin.utility.filechange.FileObserverFactory;
+import org.bladerunnerjs.plugin.utility.filechange.PerformantFileObserverFactory;
 import org.bladerunnerjs.utility.CommandRunner;
+import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -44,14 +50,15 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CREATING_PLUGINS_LOG_MSG = "creating plugins";
 		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "making plugins available via model";
 		public static final String PLUGIN_FOUND_MSG = "found plugin %s";
+		public static final String CLOSE_METHOD_NOT_INVOKED = "the BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 	}
 	
-	private final NodeMap<App> apps = App.createAppNodeSet();
-	private final NodeMap<App> systemApps = App.createSystemAppNodeSet();
+	private final NodeMap<App> apps = App.createAppNodeSet(this);
+	private final NodeMap<App> systemApps = App.createSystemAppNodeSet(this);
 	private final NodeItem<StandardJsLib> sdkLib = StandardJsLib.createSdkNodeItem();
-	private final NodeMap<StandardJsLib> sdkNonBladeRunnerLibs = StandardJsLib.createSdkNonBladeRunnerLibNodeSet();
+	private final NodeMap<StandardJsLib> sdkNonBladeRunnerLibs = StandardJsLib.createSdkNonBladeRunnerLibNodeSet(this);
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(DirNode.class, "js-patches");
-	private final NodeMap<NamedDirNode> templates = new NodeMap<>(NamedDirNode.class, "sdk/templates", "-template$");
+	private final NodeMap<NamedDirNode> templates = new NodeMap<>(this, NamedDirNode.class, "sdk/templates", "-template$");
 	private final NodeItem<DirNode> appJars = new NodeItem<>(DirNode.class, "sdk/libs/java/application");
 	private final NodeItem<DirNode> systemJars = new NodeItem<>(DirNode.class, "sdk/libs/java/system");
 	private final NodeItem<DirNode> testJars = new NodeItem<>(DirNode.class, "sdk/libs/java/testRunner");
@@ -67,12 +74,16 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
+	private final Map<String, FileIterator> fileIterators = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
+	private FileObserverFactory fileObserverFactory;
+	private boolean closed = false;
 	
-	public BRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
+	public BRJS(File brjsDir, PluginLocator pluginLocator, FileObserverFactory fileObserverFactory, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
 		
+		this.fileObserverFactory = fileObserverFactory;
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
@@ -90,7 +101,7 @@ public class BRJS extends AbstractBRJSRootNode
 
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
-		this(brjsDir, new BRJSPluginLocator(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new BRJSPluginLocator(), new PerformantFileObserverFactory(), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
 
 	@Override
@@ -124,6 +135,34 @@ public class BRJS extends AbstractBRJSRootNode
 				throw new ModelUpdateException(e);
 			}
 		}
+	}
+	
+	@Override
+	public FileIterator getFileIterator(File dir) {
+		if(!dir.exists()) {
+			throw new IllegalStateException("a file iterator can not be created for the non-existent directory '" + dir.getPath() + "' ");
+		}
+		
+		String dirPath = dir.getPath();
+		
+		if(!fileIterators.containsKey(dirPath)) {
+			fileIterators.put(dirPath, new FileIterator(this, fileObserverFactory, dir));
+		}
+		
+		return fileIterators.get(dirPath);
+	}
+	
+	@Override
+	public void finalize() {
+		if(!closed) {
+			logger.error(Messages.CLOSE_METHOD_NOT_INVOKED);
+			close();
+		}
+	}
+	
+	public void close() {
+		closed  = true;
+		fileObserverFactory.close();
 	}
 	
 	// TODO: this needs unit testing
@@ -304,11 +343,26 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public <AF extends Asset> List<AF> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... extensions) throws AssetFileInstantationException
 	{
-		return assetLocator.createAssetFilesWithExtension(assetFileClass, assetLocation, extensions);
+		return createAssetFiles(assetFileClass, assetLocation, new SuffixFileFilter(extensions));
 	}
 	
 	public <AF extends Asset> List<AF> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... fileNames) throws AssetFileInstantationException
 	{
-		return assetLocator.createAssetFilesWithName(assetFileClass, assetLocation, fileNames);
+		return createAssetFiles(assetFileClass, assetLocation, new NameFileFilter(fileNames));
+	}
+	
+	private <AF extends Asset> List<AF> createAssetFiles(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, IOFileFilter fileFilter) throws AssetFileInstantationException
+	{
+		File dir = assetLocation.dir();
+		List<AF> files = null;
+		
+		if (!dir.isDirectory()) {
+			files = new ArrayList<>();
+		}
+		else {
+			files = assetLocator.createAssetFiles(assetFileClass, assetLocation, getFileIterator(dir).files(fileFilter));
+		}
+		
+		return files;
 	}
 }

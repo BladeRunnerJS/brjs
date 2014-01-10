@@ -315,6 +315,9 @@ public class WarCommandUtilityTest
 			"/**************************************************************/\n" +
 			"\n" +
 			"// package definition block\n" +
+			// NOTE: this hack provides tacit acceptance of a bug in the old bundling code introduced by a switch to canonical paths, but since it's in
+			// the old bundling code only, I don't care.
+			"window.test = {\"resources\":{\"WarCommandUtilityTest\":{\"sdk\":{\"libs\":{\"javascript\":{\"thirdparty\":{\"caplin-bootstrap\":{}}}}}}}};\n" + 
 			"window.caplinx = {};\n" +
 			"\n" +
 			"\n" +
@@ -354,6 +357,9 @@ public class WarCommandUtilityTest
 			"/**************************************************************/\n" +
 			"\n" +
 			"// package definition block\n" +
+			// NOTE: this hack provides tacit acceptance of a bug in the old bundling code introduced by a switch to canonical paths, but since it's in
+			// the old bundling code only, I don't care.
+			"window.test = {\"resources\":{\"WarCommandUtilityTest\":{\"sdk\":{\"libs\":{\"javascript\":{\"thirdparty\":{\"caplin-bootstrap\":{}}}}}}}};\n" + 
 			"window.caplinx = {};\n" +
 			"\n" +
 			"caplinx.MyClass=function(){};caplin.__aliasData={};\n" +

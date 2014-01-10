@@ -47,7 +47,7 @@ public class ThirdPartyFileFinder
 			String libraryName = libraryWithManifest.getKey();
 			LibraryManifest manifest = libraryWithManifest.getValue();
 			List<String> libraryFilePaths = manifest.getJavascriptFiles();
-			File libraryDirectory = libraryFinder.getThirdPartyLibraryDirectory(baseDir, libraryName);
+			File libraryDirectory = libraryFinder.getThirdPartyLibraryDirectory(baseDir, libraryName).getAbsoluteFile();
 			filesOfLibraries.addAll(getLibraryFiles(libraryDirectory, libraryFilePaths));
 		}
 		return filesOfLibraries;

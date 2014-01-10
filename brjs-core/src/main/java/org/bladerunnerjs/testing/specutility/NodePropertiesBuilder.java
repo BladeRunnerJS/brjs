@@ -11,7 +11,12 @@ public class NodePropertiesBuilder {
 		this.nodeProperties = nodeProperties;
 	}
 	
-	public void propertyHasBeenSet(String propertyName, String propertyValue) throws Exception {
-		nodeProperties.setProperty(propertyName, propertyValue);
+	public void persistentPropertyHasBeenSet(String propertyName, String propertyValue) throws Exception {
+		nodeProperties.setPersisentProperty(propertyName, propertyValue);
+	}
+
+	public void transientPropertyHasBeenSet(String propertyName, Object propertyValue)
+	{
+		nodeProperties.setTransientProperty(propertyName, propertyValue);
 	}
 }

@@ -1,5 +1,3 @@
-caplin.thirdparty("caplin-br");
-
 (function() {
 	
 	var Utility = require('br/core/Utility');

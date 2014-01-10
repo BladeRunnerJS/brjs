@@ -21,19 +21,21 @@ import org.bladerunnerjs.utility.TestRunner;
 public class Aspect extends AbstractBundlableNode implements TestableNode, NamedNode
 {
 	private final NodeItem<DirNode> unbundledResources = new NodeItem<>(DirNode.class, "unbundled-resources");
-	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
-	private final NodeMap<Theme> themes = Theme.createNodeSet();
+	private final NodeMap<TypedTestPack> testTypes;
+	private final NodeMap<Theme> themes;
 	private String name;
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		testTypes = TypedTestPack.createNodeSet(rootNode);
+		themes = Theme.createNodeSet(rootNode);
 	}
 	
-	public static NodeMap<Aspect> createNodeSet()
+	public static NodeMap<Aspect> createNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(Aspect.class, null, "-aspect$");
+		return new NodeMap<>(rootNode, Aspect.class, null, "-aspect$");
 	}
 	
 	@Override

@@ -119,7 +119,7 @@ public class RestApiServiceTest
 	public void testGettingThumnailLocationForApp_thumbExists() throws Exception
 	{
 		setupService(new File(THREE_APPS_PATH));
-		assertEquals( new File("src/test/resources/RestApiServiceTest/three-apps/apps/app1/thumb.png"), service.getAppImageLocation("app1") );
+		assertEquals( new File("src/test/resources/RestApiServiceTest/three-apps/apps/app1/thumb.png").getAbsoluteFile(), service.getAppImageLocation("app1") );
 	}
 	
 	@Test

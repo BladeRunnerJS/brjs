@@ -33,7 +33,7 @@ public class BRJSNavigationTest
 	@After
 	public void teardown()
 	{
-		nodeTesterFactory = null;
+		brjs.close();
 	}
 
 	@Test

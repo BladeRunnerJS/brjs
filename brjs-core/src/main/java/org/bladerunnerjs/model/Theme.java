@@ -23,9 +23,9 @@ public class Theme extends AbstractBRJSNode implements NamedNode
 		this.name = name;
 	}
 	
-	public static NodeMap<Theme> createNodeSet()
+	public static NodeMap<Theme> createNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(Theme.class, "themes", null);
+		return new NodeMap<>(rootNode, Theme.class, "themes", null);
 	}
 	
 	@Override

@@ -25,6 +25,8 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
+import org.bladerunnerjs.plugin.utility.filechange.AccurateFileObserverFactory;
+import org.bladerunnerjs.plugin.utility.filechange.PerformantFileObserverFactory;
 import org.bladerunnerjs.testing.specutility.AppBuilder;
 import org.bladerunnerjs.testing.specutility.AppCommander;
 import org.bladerunnerjs.testing.specutility.AppConfCommander;
@@ -65,6 +67,7 @@ import org.bladerunnerjs.testing.specutility.WorkbenchCommander;
 import org.bladerunnerjs.testing.specutility.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
+import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
 import org.bladerunnerjs.utility.FileUtility;
@@ -104,13 +107,20 @@ public abstract class SpecTest
 		webappTester = new WebappTester(testSdkDirectory);
 	}
 	
+	@After
+	public void cleanUp() {
+		if(brjs != null) {
+			brjs.close();
+		}
+	}
+	
 	public BRJS createModel() 
 	{	
-		return new BRJS(testSdkDirectory, pluginLocator, new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return new BRJS(testSdkDirectory, pluginLocator, new AccurateFileObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 	}
 	
 	public BRJS createNonTestModel() {
-		return new BRJS(testSdkDirectory, new BRJSPluginLocator(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return new BRJS(testSdkDirectory, new BRJSPluginLocator(), new PerformantFileObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 	}
 	
 	@After
@@ -227,6 +237,10 @@ public abstract class SpecTest
 	
 	// AliasDefinitionsFile
 	public AliasDefinitionsFileBuilder given(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(this, aliasDefinitionsFile); }
+	
+	// Dir Observer
+	public SpecTestDirObserverBuilder given(SpecTestDirObserver observer) { return new SpecTestDirObserverBuilder(this, observer); }
+	public SpecTestDirObserverCommander then(SpecTestDirObserver observer) { return new SpecTestDirObserverCommander(this, observer); }
 	
 	private File createTestSdkDirectory() {
 		File sdkDir;
