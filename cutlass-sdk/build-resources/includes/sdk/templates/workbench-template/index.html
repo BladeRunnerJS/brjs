@@ -7,11 +7,16 @@
 		<@new-js.bundle dev-minifier="combined"@/>
 		
 		<script type="text/javascript">
+			var Workbench = require( 'br/workbench.ui.Workbench' );
+			var ExamplePresentationModel = require( '@appns/@bladeset/@blade/ExamplePresentationModel' );
+			var PresentationModel = require( 'br/presenter/component/PresenterComponent' );
+			var PresentationModelViewer = require( 'br/presenter/workbench/ui/PresentationModelViewer' );
+
 			function initialize() {
-				var workbench = new br.workbench.ui.Workbench(250, 310);
-				var model = new @appns.@bladeset.@blade.ExamplePresentationModel();
-				var component = new br.presenter.component.PresenterComponent("@appns.@bladeset.@blade.view-template", model);
-				var presentationModelViewer = new br.presenter.workbench.ui.PresentationModelViewer(model);
+				var workbench = new Workbench(250, 310);
+				var model = new ExamplePresentationModel();
+				var component = new PresenterComponent("@appns.@bladeset.@blade.view-template", model);
+				var presentationModelViewer = new PresentationModelViewer(model);
 				
 				workbench.addToRightWing(presentationModelViewer, "Visualise Presentation Model", false);
 				workbench.displayComponent(component, 200, 100);

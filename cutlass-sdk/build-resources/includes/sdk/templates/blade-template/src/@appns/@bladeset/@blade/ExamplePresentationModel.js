@@ -1,20 +1,14 @@
-caplin.thirdparty( 'caplin-br' );
+var br = require( 'br/Core' );
+var Property = require( 'br/presenter/property/Property' );
+var PresentationModel = require( 'br/presenter/PresentationModel' );
 
-( function() {
+function ExamplePresentationModel() {
+  this.message = new Property( 'Hello World!' );
+}
+br.extend( ExamplePresentationModel, PresentationModel );
 
-  var br = require( 'br' );
+ExamplePresentationModel.prototype.buttonClicked = function() {
+  console.log( 'button clicked' );
+};
 
-  function ExamplePresentationModel() {
-    var Property = br.presenter.property.Property;
-    
-    this.message = new Property( 'Hello World!' );
-  };
-  br.Core.extend( ExamplePresentationModel, br.presenter.PresentationModel );
-
-  ExamplePresentationModel.prototype.buttonClicked = function() {
-    console.log( 'button clicked' );
-  }
-
-  @appns.@bladeset.@blade.ExamplePresentationModel = ExamplePresentationModel;
-
-} )();
+module.exports = ExamplePresentationModel;
