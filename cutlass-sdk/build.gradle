@@ -178,6 +178,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	
 	doFirst {
 		delete file("workspace/sdk/libs/java")
+		delete file("workspace/sdk/docs")
 		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
