@@ -119,6 +119,15 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	}
 	
 	@Test
+	public void requireCallCanHaveSingleQuotesWithSpaces() throws Exception {
+		given(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function(){}; require( 'appns/Class2' )")
+		.and(aspect).containsFileWithContents("src/appns/Class2.js", "appns.Class2 = function(){};")
+		.and(aspect).indexPageRefersTo("appns/Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("appns.Class2 = function(){};");
+	}
+	
+	@Test
 	public void requireCallCanHaveDoubleQuotes() throws Exception {
 		given(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function(){}; require(\"appns/Class2\")")
 		.and(aspect).containsFileWithContents("src/appns/Class2.js", "appns.Class2 = function(){};")
@@ -128,8 +137,26 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	}
 	
 	@Test
-	public void requireCallCanHaveSpacesBeforeQuotes() throws Exception {
+	public void requireCallCanHaveSpacesBeforeOpenQuotes() throws Exception {
 		given(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function(){}; require( \"appns/Class2\")")
+		.and(aspect).containsFileWithContents("src/appns/Class2.js", "appns.Class2 = function(){};")
+		.and(aspect).indexPageRefersTo("appns/Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("appns.Class2 = function(){};");
+	}
+	
+	@Test
+	public void requireCallCanHaveSpacesBeforeCloseQuotes() throws Exception {
+		given(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function(){}; require(\"appns/Class2\" )")
+		.and(aspect).containsFileWithContents("src/appns/Class2.js", "appns.Class2 = function(){};")
+		.and(aspect).indexPageRefersTo("appns/Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("appns.Class2 = function(){};");
+	}
+	
+	@Test
+	public void requireCallCanHaveSpacesBeforeOpenAndCloseQuotes() throws Exception {
+		given(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function(){}; require( \"appns/Class2\" )")
 		.and(aspect).containsFileWithContents("src/appns/Class2.js", "appns.Class2 = function(){};")
 		.and(aspect).indexPageRefersTo("appns/Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);

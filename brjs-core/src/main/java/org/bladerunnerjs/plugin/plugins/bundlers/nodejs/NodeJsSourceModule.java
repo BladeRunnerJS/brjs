@@ -138,7 +138,7 @@ public class NodeJsSourceModule implements SourceModule {
 			StringWriter stringWriter = new StringWriter();
 			IOUtils.copy(getReader(), stringWriter);
 			
-			Matcher m = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"']\\)").matcher(stringWriter.toString());
+			Matcher m = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)").matcher(stringWriter.toString());
 			
 			while(m.find()) {
 				boolean isRequirePath = m.group(1).startsWith("require");
