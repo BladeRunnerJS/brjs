@@ -1,1 +1,2 @@
 depends: jquery
+js: jquery.browser-shim.js, jquery.browser.js

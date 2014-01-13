@@ -40,7 +40,7 @@ public class VerifierChainer {
 		this.specTest = specTest;
 	}
 	
-	public ExceptionsVerifier and(List<Throwable> exceptions) { return new ExceptionsVerifier(exceptions); }
+	public ExceptionsVerifier and(List<Throwable> exceptions) { return new ExceptionsVerifier(specTest, exceptions); }
 	public NodeObserverVerifier and(EventObserver observer) { return new NodeObserverVerifier(specTest, observer); }
 	public NamedNodeVerifier and(NamedNode namedDirNode) { return new NamedNodeVerifier(specTest, namedDirNode); }
 	public BRJSVerifier and(BRJS brjs) { return new BRJSVerifier(specTest, brjs); }

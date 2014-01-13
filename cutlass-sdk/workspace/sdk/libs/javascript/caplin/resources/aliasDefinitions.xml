@@ -3,7 +3,7 @@
 	<alias 	name="br.html-service" defaultClass="br.services.BRHtmlResourceService">
 		<scenario name="dev" class="br.services.JSTDHtmlResourceService" />
 	</alias>
-	<alias name="br.demo-event-hub" defaultClass="br.DemoEventHub"/>
+	<alias name="br.event-hub" defaultClass="br.EventHub"/>
 	
 	<alias name="br.presenter-component" defaultClass="br.presenter.PresenterComponentFactory" />
 	<alias name="br.date-picker" defaultClass="br.presenter.control.datefield.JQueryDatePickerControl" />
