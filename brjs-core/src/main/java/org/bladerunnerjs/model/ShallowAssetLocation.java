@@ -79,7 +79,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 		List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
 		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			seedResources.addAll(assetPlugin.getLinkedResourceFiles(this));
+			seedResources.addAll(assetPlugin.getLinkedAssets(this));
 		}
 		
 		return seedResources;
@@ -104,7 +104,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 		List<Asset> bundleResources = new LinkedList<Asset>();
 		
 		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			bundleResources.addAll(assetPlugin.getResourceFiles(this));
+			bundleResources.addAll(assetPlugin.getAssets(this));
 		}
 		
 		return bundleResources;

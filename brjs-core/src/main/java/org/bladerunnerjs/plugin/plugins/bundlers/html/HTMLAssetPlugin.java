@@ -29,7 +29,7 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
+	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
 		try {
 			return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(FullyQualifiedLinkedAsset.class, assetLocation, "html");
 		}
@@ -39,7 +39,7 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
+	public List<Asset> getAssets(AssetLocation assetLocation) {
 		return new ArrayList<>();
 	}
 }

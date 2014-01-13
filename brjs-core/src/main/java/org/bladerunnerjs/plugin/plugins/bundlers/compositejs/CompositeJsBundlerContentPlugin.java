@@ -58,12 +58,12 @@ public class CompositeJsBundlerContentPlugin extends AbstractBundlerContentPlugi
 	}
 	
 	@Override
-	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		return generateRequiredRequestPaths(true, bundleSet, locale);
 	}
 	
 	@Override
-	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		return generateRequiredRequestPaths(false, bundleSet, locale);
 	}
 	
@@ -95,10 +95,10 @@ public class CompositeJsBundlerContentPlugin extends AbstractBundlerContentPlugi
 		for(BundlerContentPlugin bundlerContentPlugin : brjs.plugins().bundlerContentProviders("text/javascript")) {
 			if( !bundlerContentPlugin.equals(this) ) {
 				if(isDev) {
-					requestPaths.addAll(bundlerContentPlugin.getValidDevRequestPaths(bundleSet, locale));
+					requestPaths.addAll(bundlerContentPlugin.getValidDevContentPaths(bundleSet, locale));
 				}
 				else {
-					requestPaths.addAll(bundlerContentPlugin.getValidProdRequestPaths(bundleSet, locale));
+					requestPaths.addAll(bundlerContentPlugin.getValidProdContentPaths(bundleSet, locale));
 				}
 			}
 		}
@@ -115,8 +115,8 @@ public class CompositeJsBundlerContentPlugin extends AbstractBundlerContentPlugi
 			for(BundlerContentPlugin bundlerContentPlugin : brjs.plugins().bundlerContentProviders("text/javascript")) {
 				if( !bundlerContentPlugin.equals(this) ) {
 					String locale = contentPath.properties.get("locale");
-					List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? bundlerContentPlugin.getValidDevRequestPaths(bundleSet, locale) :
-						bundlerContentPlugin.getValidProdRequestPaths(bundleSet, locale);
+					List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? bundlerContentPlugin.getValidDevContentPaths(bundleSet, locale) :
+						bundlerContentPlugin.getValidProdContentPaths(bundleSet, locale);
 					ContentPathParser contentPathParser = bundlerContentPlugin.getContentPathParser();
 					
 					for(String requestPath : requestPaths) {

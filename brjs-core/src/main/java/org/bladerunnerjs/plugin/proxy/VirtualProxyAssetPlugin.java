@@ -30,14 +30,14 @@ public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements Asset
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
+	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
 		initializePlugin();
-		return assetPlugin.getLinkedResourceFiles(assetLocation);
+		return assetPlugin.getLinkedAssets(assetLocation);
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
+	public List<Asset> getAssets(AssetLocation assetLocation) {
 		initializePlugin();
-		return assetPlugin.getResourceFiles(assetLocation);
+		return assetPlugin.getAssets(assetLocation);
 	}
 }

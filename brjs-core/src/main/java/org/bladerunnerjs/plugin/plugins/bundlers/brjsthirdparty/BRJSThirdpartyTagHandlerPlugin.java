@@ -33,7 +33,7 @@ public class BRJSThirdpartyTagHandlerPlugin extends AbstractBundlerTagHandlerPlu
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
 		try {
-			for (String requestPath : thirdpartyTagHandlerPlugin.getValidDevRequestPaths(bundleSet, locale))
+			for (String requestPath : thirdpartyTagHandlerPlugin.getValidDevContentPaths(bundleSet, locale))
 			{
 				writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 			}
@@ -47,7 +47,7 @@ public class BRJSThirdpartyTagHandlerPlugin extends AbstractBundlerTagHandlerPlu
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
 		try {
-			for (String requestPath : thirdpartyTagHandlerPlugin.getValidProdRequestPaths(bundleSet, locale))
+			for (String requestPath : thirdpartyTagHandlerPlugin.getValidProdContentPaths(bundleSet, locale))
 			{
 				writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 			}

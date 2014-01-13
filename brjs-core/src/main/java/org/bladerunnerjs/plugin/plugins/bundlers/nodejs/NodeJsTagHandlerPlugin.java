@@ -33,7 +33,7 @@ public class NodeJsTagHandlerPlugin extends AbstractBundlerTagHandlerPlugin impl
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
-			writeTagContent(bundleSet, nodeJsTagHandlerPlugin.getValidDevRequestPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, nodeJsTagHandlerPlugin.getValidDevContentPaths(bundleSet, locale), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
@@ -43,7 +43,7 @@ public class NodeJsTagHandlerPlugin extends AbstractBundlerTagHandlerPlugin impl
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
-			writeTagContent(bundleSet, nodeJsTagHandlerPlugin.getValidProdRequestPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, nodeJsTagHandlerPlugin.getValidProdContentPaths(bundleSet, locale), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);

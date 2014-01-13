@@ -57,12 +57,12 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedResourceFiles(AssetLocation assetLocation) {
+	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
 		return new ArrayList<>();
 	}
 	
 	@Override
-	public List<Asset> getResourceFiles(AssetLocation assetLocation) {
+	public List<Asset> getAssets(AssetLocation assetLocation) {
 		return new ArrayList<>();
 	}
 }

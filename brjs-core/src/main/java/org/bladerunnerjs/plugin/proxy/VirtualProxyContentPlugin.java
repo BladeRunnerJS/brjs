@@ -35,16 +35,16 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 
 	@Override
-	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
 		initializePlugin();
-		return contentPlugin.getValidDevRequestPaths(bundleSet, locale);
+		return contentPlugin.getValidDevContentPaths(bundleSet, locale);
 	}
 
 	@Override
-	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
 		initializePlugin();
-		return contentPlugin.getValidProdRequestPaths(bundleSet, locale);
+		return contentPlugin.getValidProdContentPaths(bundleSet, locale);
 	}
 }

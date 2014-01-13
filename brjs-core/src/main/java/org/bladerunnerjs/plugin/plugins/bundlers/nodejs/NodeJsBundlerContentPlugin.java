@@ -64,7 +64,7 @@ public class NodeJsBundlerContentPlugin extends AbstractBundlerContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
@@ -82,7 +82,7 @@ public class NodeJsBundlerContentPlugin extends AbstractBundlerContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidProdRequestPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		return prodRequestPaths;
 	}
 	
