@@ -9,7 +9,7 @@ import com.google.common.base.CharMatcher;
 
 public class Trie<T>
 {
-	CharMatcher charMatcher = CharMatcher.anyOf(" \t\r\n.,(){}<>[]+-*/'\"");
+	CharMatcher charMatcher = CharMatcher.anyOf(" \t\r\n.,;(){}<>[]+-*/'\"");
 	private TrieNode<T> root = new TrieNode<T>();
 	private int largestKeyLength = 0;
 	
