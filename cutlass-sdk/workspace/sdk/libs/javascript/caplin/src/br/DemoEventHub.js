@@ -1,6 +1,6 @@
 "use strict";
 
-var br = require( 'br' );
+var br = require( 'br/Core' );
 var ServiceRegistry = require( './ServiceRegistry' );
 
 var Emitter = require( 'emitr' );
@@ -20,7 +20,7 @@ DemoEventHub.prototype.channel = function( channel ) {
 var DemoEmitter = function(name) {
 	this.name = name;
 };
-br.Core.extend( DemoEmitter, Emitter );
+br.extend( DemoEmitter, Emitter );
 
 DemoEmitter.prototype.trigger = function() {
 	console.log( 'trigger', this.name, arguments );
