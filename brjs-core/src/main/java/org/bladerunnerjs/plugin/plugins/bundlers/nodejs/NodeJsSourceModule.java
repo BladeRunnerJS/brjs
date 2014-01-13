@@ -9,7 +9,9 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +30,7 @@ import com.Ostermiller.util.ConcatReader;
 
 public class NodeJsSourceModule implements SourceModule {
 	private File assetFile;
-	private List<String> requirePaths;
+	private Set<String> requirePaths;
 	private List<String> aliasNames;
 	private AssetLocation assetLocation;
 	private List<String> aliases;
@@ -53,7 +55,7 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		List<SourceModule> dependentSourceModules = new ArrayList<>();
+		Set<SourceModule> dependentSourceModules = new HashSet<>();
 		
 		try {
 			if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
@@ -74,7 +76,7 @@ public class NodeJsSourceModule implements SourceModule {
 			throw new ModelOperationException(e);
 		}
 		
-		return dependentSourceModules;
+		return new ArrayList<SourceModule>( dependentSourceModules );
 	}
 	
 	@Override
@@ -131,7 +133,7 @@ public class NodeJsSourceModule implements SourceModule {
 	}
 	
 	private void recalculateDependencies() throws ModelOperationException {
-		requirePaths = new ArrayList<>();
+		requirePaths = new HashSet<>();
 		aliasNames = new ArrayList<>();
 		
 		try {

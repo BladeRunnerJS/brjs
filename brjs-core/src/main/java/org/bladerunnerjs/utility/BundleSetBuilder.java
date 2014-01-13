@@ -1,5 +1,6 @@
 package org.bladerunnerjs.utility;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -77,11 +78,24 @@ public class BundleSetBuilder {
 			
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			
+			 
+			File linkedAssetFile = linkedAsset.getUnderlyingFile();
+			File assetLocationDir = linkedAsset.getAssetLocation().getAssetContainer().dir();
+			String linkedAssetRelativePath = "";
+			if (linkedAssetFile.getAbsolutePath().equals( assetLocationDir.getAbsolutePath()))
+			{
+				linkedAssetRelativePath = RelativePathUtility.get(linkedAsset.getAssetLocation().root().dir(), linkedAssetFile);
+			}
+			else
+			{
+				linkedAssetRelativePath = RelativePathUtility.get(assetLocationDir, linkedAssetFile);				
+			}
+			
 			if(moduleDependencies.isEmpty()) {
-				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, RelativePathUtility.get(linkedAsset.getAssetLocation().getAssetContainer().dir(), linkedAsset.getUnderlyingFile()));
+				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAssetRelativePath);
 			}
 			else {
-				logger.debug(Messages.FILE_DEPENDENCIES_MSG, RelativePathUtility.get(linkedAsset.getAssetLocation().getAssetContainer().dir(), linkedAsset.getUnderlyingFile()), sourceFilePaths(moduleDependencies));
+				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAssetRelativePath, sourceFilePaths(moduleDependencies));
 			}
 			
 			for(SourceModule sourceModule : moduleDependencies) {
@@ -197,7 +211,16 @@ public class BundleSetBuilder {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
 		for(SourceModule sourceModule : sourceModules) {
-			sourceFilePaths.add(RelativePathUtility.get(sourceModule.getAssetLocation().getAssetContainer().dir(), sourceModule.getUnderlyingFile()));
+			File assetContainerDir = sourceModule.getAssetLocation().getAssetContainer().dir();
+			File sourceModuleFile = sourceModule.getUnderlyingFile();
+			if (assetContainerDir.getAbsolutePath().equals( sourceModuleFile.getAbsolutePath() ))
+			{
+				sourceFilePaths.add( RelativePathUtility.get(sourceModule.getAssetLocation().root().dir(), sourceModuleFile) );
+			}
+			else
+			{
+				sourceFilePaths.add( RelativePathUtility.get(assetContainerDir, sourceModuleFile) );
+			}
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";

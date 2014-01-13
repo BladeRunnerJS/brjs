@@ -7,7 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -24,7 +26,7 @@ import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private App app;
 	private File assetFile;
-	private List<SourceModule> dependentSourceModules;
+	private Set<SourceModule> dependentSourceModules;
 	private List<String> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private AssetLocation assetLocation;
@@ -48,7 +50,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 			recalculateDependencies();
 		}
 		
-		return dependentSourceModules;
+		return new ArrayList<SourceModule>( dependentSourceModules );
 	}
 
 	@Override
@@ -76,7 +78,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	}
 	
 	private void recalculateDependencies() throws ModelOperationException {
-		dependentSourceModules = new ArrayList<>();
+		dependentSourceModules = new HashSet<>();
 		aliases = new ArrayList<>();
 		Trie<Object> trie = createTrie();
 		
@@ -90,7 +92,11 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 						dependentSourceModules.add(((ClassSourceModule) match).getSourceModule());
 					}
 					else {
-						aliases.add((String) match);
+						String matchString = (String) match;
+						if (matchString.length() > 0)
+						{
+							aliases.add((String) match);							
+						}
 					}
 				}
 			}

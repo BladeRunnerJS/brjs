@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.io.SequenceInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -107,7 +108,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		List<SourceModule> dependentLibs = new ArrayList<SourceModule>();
+		Set<SourceModule> dependentLibs = new HashSet<SourceModule>();
 		
 		try 
 		{
@@ -126,7 +127,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 			new ModelOperationException( ex );
 		}
 		
-		return dependentLibs;
+		return new ArrayList<SourceModule>( dependentLibs );
 	}
 
 	@Override
