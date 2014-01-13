@@ -14,7 +14,10 @@
 		<@new-js.bundle dev-minifier="combined"@/>
 		<script>
 			( function() {
-				var oApp = new @appns.App();
+
+				var App = require( '@appns/App' );
+				var app = new App();
+
 			} )();
 		</script>
 	</body>
