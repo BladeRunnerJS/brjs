@@ -6,6 +6,7 @@
     <void property="methods">
      <void property="text">
       <string>boolean hasChangedSinceLastCheck()
+boolean haveChildrenChangedSinceLastCheck()
 void reset()</string>
      </void>
     </void>
@@ -177,12 +178,12 @@ DirectoryObserver createDirectoryObserver(File dir)</string>
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>634.0</double>
+      <double>647.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>0.0</double>
-     <double>634.0</double>
+     <double>647.0</double>
     </void>
    </object>
   </void>
@@ -206,12 +207,12 @@ DirectoryObserver createDirectoryObserver(File dir)</string>
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double6"/>
-      <double>632.0</double>
+      <double>645.0</double>
      </void>
     </void>
     <void method="setLocation">
      <double>259.0</double>
-     <double>632.0</double>
+     <double>645.0</double>
     </void>
    </object>
   </void>
