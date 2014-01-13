@@ -78,7 +78,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
-		return aliasesFile.getAlias(aliasName);
+		return aliasesFile().getAlias(aliasName);
 	}
 	
 	@Override
