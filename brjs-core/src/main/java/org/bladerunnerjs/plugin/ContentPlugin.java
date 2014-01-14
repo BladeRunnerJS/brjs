@@ -18,8 +18,8 @@ import org.bladerunnerjs.utility.ContentPathParser;
  *   <dd>The same response must always be returned given the same request and the same set of files on disk.</dd>
  *   
  *   <dt>Discoverability</dt>
- *   <dd>The complete list of valid content paths must be provided by content plug-ins on demand (using {@link #getValidDevRequestPaths getValidDevRequestPaths()} &
- *   {@link #getValidProdRequestPaths getValidProdRequestPaths()}), such that any requests from the browser that are not included in this list are considered to be an
+ *   <dd>The complete list of valid content paths must be provided by content plug-ins on demand (using {@link #getValidDevContentPaths getValidDevContentPaths()} &
+ *   {@link #getValidProdContentPaths getValidProdContentPaths()}), such that any requests from the browser that are not included in this list are considered to be an
  *   error.</dd>
  * </dl>
  * 
