@@ -120,4 +120,20 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		then(response).containsText("window.legacy2 = { }")
 			.and(response).doesNotContainText("window.legacy = { }");
 	}
+	
+	@Ignore //this test should fail
+	@Test
+	public void thirdpartyLibWithHtmlDoesNotGetScannedForDependenciesInAspectIndexPage() throws Exception {
+		given(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends:\n")
+			.and(thirdpartyLib).containsFileWithContents("src.js", "window.legacy = { }")
+			.and(thirdpartyLib).containsFileWithContents("html/doNotScan.html", "require('thirdparty-lib2');")
+			.and(thirdpartyLib2).hasBeenCreated()
+			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "depends:\n")
+			.and(thirdpartyLib2).containsFileWithContents("src.js", "window.legacy2 = { }")
+			.and(aspect).indexPageRefersTo(thirdpartyLib);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("window.legacy = { }")
+			.and(response).doesNotContainText("window.legacy2 = { }");
+	}
 }
