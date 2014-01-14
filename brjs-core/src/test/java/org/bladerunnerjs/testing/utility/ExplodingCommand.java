@@ -32,7 +32,7 @@ public class ExplodingCommand extends AbstractCommandPlugin implements CommandPl
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException {
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
 		throw new CommandOperationException("Bang!");
 	}
 }

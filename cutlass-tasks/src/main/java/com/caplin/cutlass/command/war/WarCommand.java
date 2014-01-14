@@ -97,7 +97,7 @@ public class WarCommand extends AbstractPlugin implements LegacyCommandPlugin
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException  {
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException  {
 		// TODO: remove the need for these two lines by doing the argument parsing in BRJS.runCommand()
 		JSAPResult config = argsParser.parse(args);
 		if(!config.success()) throw new CommandArgumentsException("Invalid arguments provided.", this);

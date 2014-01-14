@@ -36,7 +36,7 @@ public class VirtualProxyCommandPlugin extends VirtualProxyPlugin implements Com
 	}
 
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException {
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
 		initializePlugin();
 		commandPlugin.doCommand(args);
 	}

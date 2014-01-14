@@ -61,7 +61,7 @@ public class ImportApplicationCommand extends AbstractCommandPlugin implements L
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		assertValidArgs(args);
 		

@@ -40,7 +40,7 @@ public abstract class ArgsParsingCommandPlugin extends AbstractCommandPlugin imp
 	}
 	
 	@Override
-	public final void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException {
+	public final void doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
 		JSAPResult parsedArgs = parseArgs(args);
 		doCommand(parsedArgs);
 	}
