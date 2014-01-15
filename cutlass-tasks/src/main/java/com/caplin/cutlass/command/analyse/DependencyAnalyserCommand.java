@@ -54,7 +54,7 @@ public class DependencyAnalyserCommand extends AbstractCommandPlugin implements 
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException 
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{	
 		AnalyserConfig config = new AnalyserConfig(args, this);
 		File seedFileDir = config.getAspectDirectory();

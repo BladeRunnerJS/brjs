@@ -53,7 +53,7 @@ public class PackageDepsCommand extends AbstractPlugin implements LegacyCommandP
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException {
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
 		
 		PackageDepsConfig config = new PackageDepsConfig(args, this);
 		File packageDirectory = config.getPackageDirectory();

@@ -63,7 +63,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		validateArguments(args);
 		File testRoot = getTestRoot(args);
