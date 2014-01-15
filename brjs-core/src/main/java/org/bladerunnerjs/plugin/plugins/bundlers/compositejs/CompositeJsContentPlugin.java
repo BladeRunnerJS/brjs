@@ -49,7 +49,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 
 	@Override
 	public String getGroupName() {
-		return "text/javascript";
+		return null;
 	}
 	
 	@Override
@@ -93,13 +93,11 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		List<String> requestPaths = new ArrayList<>();
 		
 		for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
-			if( !contentPlugin.equals(this) ) {
-				if(isDev) {
-					requestPaths.addAll(contentPlugin.getValidDevContentPaths(bundleSet, locale));
-				}
-				else {
-					requestPaths.addAll(contentPlugin.getValidProdContentPaths(bundleSet, locale));
-				}
+			if(isDev) {
+				requestPaths.addAll(contentPlugin.getValidDevContentPaths(bundleSet, locale));
+			}
+			else {
+				requestPaths.addAll(contentPlugin.getValidProdContentPaths(bundleSet, locale));
 			}
 		}
 		
@@ -113,19 +111,17 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			String charsetName = brjs.bladerunnerConf().getDefaultOutputEncoding();
 			
 			for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
-				if( !contentPlugin.equals(this) ) {
-					String locale = contentPath.properties.get("locale");
-					List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? contentPlugin.getValidDevContentPaths(bundleSet, locale) :
-						contentPlugin.getValidProdContentPaths(bundleSet, locale);
-					ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
+				String locale = contentPath.properties.get("locale");
+				List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? contentPlugin.getValidDevContentPaths(bundleSet, locale) :
+					contentPlugin.getValidProdContentPaths(bundleSet, locale);
+				ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
+				
+				for(String requestPath : requestPaths) {
+					ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					
-					for(String requestPath : requestPaths) {
-						ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
-						ByteArrayOutputStream baos = new ByteArrayOutputStream();
-						
-						contentPlugin.writeContent(parsedContentPath, bundleSet, baos);
-						inputSources.add(new InputSource(requestPath, baos.toString(charsetName), contentPlugin, bundleSet));
-					}
+					contentPlugin.writeContent(parsedContentPath, bundleSet, baos);
+					inputSources.add(new InputSource(requestPath, baos.toString(charsetName), contentPlugin, bundleSet));
 				}
 			}
 		}

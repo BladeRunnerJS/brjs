@@ -23,7 +23,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 
 	@Override
 	public String getGroupName() {
-		return "text/javascript";
+		return null;
 	}
 	
 	@Override
@@ -49,13 +49,11 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			
 			if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
 				for(TagHandlerPlugin tagHandlerPlugin : brjs.plugins().tagHandlers("text/javascript")) {
-					if(!tagHandlerPlugin.equals(this)) {
-						if(isDev) {
-							tagHandlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
-						}
-						else {
-							tagHandlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
-						}
+					if(isDev) {
+						tagHandlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
+					}
+					else {
+						tagHandlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
 					}
 				}
 			}

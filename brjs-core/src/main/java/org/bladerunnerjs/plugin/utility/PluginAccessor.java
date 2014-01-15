@@ -69,7 +69,7 @@ public class PluginAccessor {
 		List<ContentPlugin> contentProviders = new ArrayList<>();
 		
 		for (ContentPlugin contentPlugin : contentProviders()) {
-			if (contentPlugin.getGroupName().equals(groupName)) {
+			if (groupName.equals(contentPlugin.getGroupName())) {
 				contentProviders.add(contentPlugin);
 			}
 		}
@@ -85,7 +85,7 @@ public class PluginAccessor {
 		List<TagHandlerPlugin> tagHandlerPlugins = new ArrayList<>();
 		
 		for (TagHandlerPlugin tagHandlerPlugin : tagHandlers()) {
-			if (tagHandlerPlugin.getGroupName().equals(groupName)) {
+			if (groupName.equals(tagHandlerPlugin.getGroupName())) {
 				tagHandlerPlugins.add(tagHandlerPlugin);
 			}
 		}
