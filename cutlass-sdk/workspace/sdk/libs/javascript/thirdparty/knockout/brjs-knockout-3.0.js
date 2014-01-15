@@ -2601,7 +2601,6 @@
 								if (typeof handlerUpdateFn == "function") {
 									ko.dependentObservable(
 										function() {
-											if(node.outerHTML === '<div class="tradeControls" data-bind="template:{name: getSetupTemplateName , foreach:tradeTypeNodes}"></div>') window.debugme = true;
 											handlerUpdateFn(node, getValueAccessor(bindingKey), allBindings, bindingContext['$data'], bindingContext);
 										},
 										null,
@@ -2609,7 +2608,6 @@
 									);
 								}
 							} catch (ex) {
-								window.debugme = false;
 								ex.message = "Unable to process binding \"" + bindingKey + ": " + bindings[bindingKey] + "\"\nMessage: " + ex.message;
 								throw ex;
 							}
