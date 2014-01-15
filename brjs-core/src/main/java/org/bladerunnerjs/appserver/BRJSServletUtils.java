@@ -17,14 +17,14 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.plugin.BundlerContentPlugin;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
 public class BRJSServletUtils
 {
-	public BundlerContentPlugin getContentPluginForRequest(BRJS brjs, BladerunnerUri bladerunnerUri) {
-		BundlerContentPlugin potentialContentPlugin = brjs.plugins().bundlerContentProvider(bladerunnerUri);
-		BundlerContentPlugin contentPlugin = null;
+	public ContentPlugin getContentPluginForRequest(BRJS brjs, BladerunnerUri bladerunnerUri) {
+		ContentPlugin potentialContentPlugin = brjs.plugins().contentProvider(bladerunnerUri);
+		ContentPlugin contentPlugin = null;
 		
 		if((potentialContentPlugin != null) && potentialContentPlugin.getContentPathParser().canParseRequest(bladerunnerUri)) {
 			contentPlugin = potentialContentPlugin;
@@ -37,7 +37,7 @@ public class BRJSServletUtils
 	{
 		BladerunnerUri bladerunnerUri = createBladeRunnerUri(brjs, context, req);
 		
-		BundlerContentPlugin contentPlugin = getContentPluginForRequest(brjs, bladerunnerUri);
+		ContentPlugin contentPlugin = getContentPluginForRequest(brjs, bladerunnerUri);
 		if (contentPlugin != null)
 		{
 			ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
@@ -59,7 +59,7 @@ public class BRJSServletUtils
 		}
 	}
 	
-	private void handleRequestUsingContentPlugin(BRJS brjs, BladerunnerUri requestUri, ParsedContentPath contentPath, BundlerContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
+	private void handleRequestUsingContentPlugin(BRJS brjs, BladerunnerUri requestUri, ParsedContentPath contentPath, ContentPlugin contentPlugin, HttpServletResponse resp) throws ServletException
 	{
 		try
 		{

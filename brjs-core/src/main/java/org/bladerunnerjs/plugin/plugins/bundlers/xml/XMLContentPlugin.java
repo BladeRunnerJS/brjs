@@ -7,12 +7,12 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class XMLBundlerContentPlugin extends AbstractBundlerContentPlugin
+public class XMLContentPlugin extends AbstractContentPlugin
 {
 
 	private ContentPathParser contentPathParser;
@@ -34,8 +34,7 @@ public class XMLBundlerContentPlugin extends AbstractBundlerContentPlugin
 	}
 	
 	@Override
-	public String getMimeType()
-	{
+	public String getGroupName() {
 		return "application/xml";
 	}
 	

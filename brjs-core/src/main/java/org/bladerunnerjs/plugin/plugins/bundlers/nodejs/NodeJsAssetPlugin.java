@@ -26,7 +26,7 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		try {
-			if (assetLocation.getJsStyle().equals(NodeJsBundlerContentPlugin.JS_STYLE)) {
+			if (assetLocation.getJsStyle().equals(NodeJsContentPlugin.JS_STYLE)) {
 				return assetLocation.getAssetContainer().root().createAssetFilesWithExtension(NodeJsSourceModule.class, assetLocation, "js");
 			}
 			else {

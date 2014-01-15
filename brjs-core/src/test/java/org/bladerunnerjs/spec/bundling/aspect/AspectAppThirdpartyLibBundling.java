@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +66,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreIncludedInAClass() throws Exception {
 		given(appThirdparty).containsFileWithContents("library.manifest", "js: src.js")
 			.and(appThirdparty).containsFile("src.js")
-			.and(aspect).hasPackageStyle(NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(aspect).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)
 			.and(aspect).classRefersToThirdpartyLib("appns.Class1", appThirdparty)
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);

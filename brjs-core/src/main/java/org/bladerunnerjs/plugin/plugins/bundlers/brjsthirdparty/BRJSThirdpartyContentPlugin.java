@@ -20,12 +20,12 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class BRJSThirdpartyBundlerContentPlugin extends AbstractBundlerContentPlugin
+public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
@@ -55,8 +55,7 @@ public class BRJSThirdpartyBundlerContentPlugin extends AbstractBundlerContentPl
 	}
 	
 	@Override
-	public String getMimeType()
-	{
+	public String getGroupName() {
 		return "text/javascript";
 	}
 

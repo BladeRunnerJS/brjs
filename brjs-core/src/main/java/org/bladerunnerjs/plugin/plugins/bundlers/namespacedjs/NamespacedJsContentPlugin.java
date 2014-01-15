@@ -22,12 +22,12 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.json.simple.JSONObject;
 
-public class NamespacedJsBundlerContentPlugin extends AbstractBundlerContentPlugin {
+public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 	public static final String JS_STYLE = "namespaced-js";
 	
 	private ContentPathParser contentPathParser;
@@ -60,9 +60,9 @@ public class NamespacedJsBundlerContentPlugin extends AbstractBundlerContentPlug
 	public String getRequestPrefix() {
 		return "namespaced-js";
 	}
-	
+
 	@Override
-	public String getMimeType() {
+	public String getGroupName() {
 		return "text/javascript";
 	}
 	

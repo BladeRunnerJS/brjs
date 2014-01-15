@@ -21,6 +21,11 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 	}
 	
 	@Override
+	public String getGroupName() {
+		return tagHandlerPlugin.getGroupName();
+	}
+	
+	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		initializePlugin();
 		tagHandlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);

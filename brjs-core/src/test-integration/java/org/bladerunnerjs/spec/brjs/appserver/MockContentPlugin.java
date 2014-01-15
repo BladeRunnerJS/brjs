@@ -11,13 +11,12 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.BundlerContentPlugin;
-import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class MockBundlerContentPlugin extends AbstractBundlerContentPlugin implements BundlerContentPlugin
+public class MockContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
@@ -47,10 +46,9 @@ public class MockBundlerContentPlugin extends AbstractBundlerContentPlugin imple
 	public String getRequestPrefix() {
 		return "mock-servlet";
 	}
-	
+
 	@Override
-	public String getMimeType()
-	{
+	public String getGroupName() {
 		return "some/mime";
 	}
 

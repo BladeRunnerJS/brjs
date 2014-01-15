@@ -12,15 +12,15 @@ import java.util.List;
  * 
  * <dl>
  *   <dt>No source-map support</dt>
- *   <dd>Minifiers do not themselves support source-maps, and do not interfere with instances of {@link BundlerContentPlugin} that are capable of generating source-maps.</dd>
+ *   <dd>Minifiers do not themselves support source-maps, and do not interfere with instances of {@link ContentPlugin} that are capable of generating source-maps.</dd>
  *   
  *   <dt>Single-level source-map support</dt>
  *   <dd>Minifiers support source-map generation for the minified content they generate, but neither preserve nor interfere with source-maps that can be generated from instances of
- *   {@link BundlerContentPlugin} that are capable of generating source-maps.</dd>
+ *   {@link ContentPlugin} that are capable of generating source-maps.</dd>
  *   
  *   <dt>Multi-level source-map support</dt>
  *   <dd>Minifiers support source-map generation for the minified content while preserving any source-maps generated from instances of
- *   {@link BundlerContentPlugin} that are capable of generating source-maps.</dd>
+ *   {@link ContentPlugin} that are capable of generating source-maps.</dd>
  * </dl>
  * 
  * <p><b>Note:</b> This interface is <i>beta</i>, and likely to change.</p>

@@ -8,20 +8,19 @@ import java.util.Map;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.BundlerContentPlugin;
-import org.bladerunnerjs.plugin.BundlerTagHandlerPlugin;
-import org.bladerunnerjs.plugin.base.AbstractBundlerTagHandlerPlugin;
+import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
-public class NamespacedJsTagHandlerPlugin extends AbstractBundlerTagHandlerPlugin implements BundlerTagHandlerPlugin {
-	private BundlerContentPlugin namespacedJsTagHandlerPlugin;
+public class NamespacedJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
+	private ContentPlugin namespacedJsTagHandlerPlugin;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		namespacedJsTagHandlerPlugin = brjs.plugins().bundlerContentProvider("namespaced-js");
+		namespacedJsTagHandlerPlugin = brjs.plugins().contentProvider("namespaced-js");
 	}
-	
+
 	@Override
-	public String getMimeType() {
+	public String getGroupName() {
 		return "text/javascript";
 	}
 	

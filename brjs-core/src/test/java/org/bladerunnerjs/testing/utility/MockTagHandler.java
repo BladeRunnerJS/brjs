@@ -42,7 +42,12 @@ public class MockTagHandler extends AbstractTagHandlerPlugin implements TagHandl
 	{
 		return name;
 	}
-
+	
+	@Override
+	public String getGroupName() {
+		return null;
+	}
+	
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{

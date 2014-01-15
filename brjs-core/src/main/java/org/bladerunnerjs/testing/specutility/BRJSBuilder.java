@@ -5,18 +5,14 @@ import java.util.List;
 import org.bladerunnerjs.appserver.ServletModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.plugin.BundlerTagHandlerPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.BundlerContentPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyBundlerTagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyBundlerContentPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyMinifierPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyModelObserverPlugin;
@@ -70,13 +66,13 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBundlerContentPlugins(BundlerContentPlugin... contentPlugins)
+	public BuilderChainer hasContentPlugins(ContentPlugin... contentPlugins)
 	{
 		verifyBrjsIsSet();
 		
-		for(BundlerContentPlugin contentPlugin : contentPlugins)
+		for(ContentPlugin contentPlugin : contentPlugins)
 		{
-			specTest.pluginLocator.bundlerContentPlugins.add( new VirtualProxyBundlerContentPlugin(contentPlugin) );
+			specTest.pluginLocator.contentPlugins.add( new VirtualProxyContentPlugin(contentPlugin) );
 		}
 		
 		return builderChainer;
@@ -134,17 +130,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		verifyPluginsUnitialized(specTest.pluginLocator.contentPlugins);
 		
 		specTest.pluginLocator.contentPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class, VirtualProxyContentPlugin.class) );
-		automaticallyFindsBundlerContentPlugins();
-		
-		return builderChainer;
-	}
-	
-	public BuilderChainer automaticallyFindsBundlerContentPlugins() 
-	{
-		verifyBrjsIsSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.bundlerContentPlugins);
-		
-		specTest.pluginLocator.bundlerContentPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), BundlerContentPlugin.class, VirtualProxyBundlerContentPlugin.class) );
 		
 		return builderChainer;
 	}
@@ -155,17 +140,6 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		verifyPluginsUnitialized(specTest.pluginLocator.tagHandlers);
 		
 		specTest.pluginLocator.tagHandlers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class) );
-		automaticallyFindsBundlerTagHandlers();
-		
-		return builderChainer;
-	}
-	
-	public BuilderChainer automaticallyFindsBundlerTagHandlers() 
-	{
-		verifyBrjsIsSet();
-		verifyPluginsUnitialized(specTest.pluginLocator.bundlerTagHandlers);
-		
-		specTest.pluginLocator.bundlerTagHandlers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), BundlerTagHandlerPlugin.class, VirtualProxyBundlerTagHandlerPlugin.class) );
 		
 		return builderChainer;
 	}
@@ -181,8 +155,8 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 
 	public BuilderChainer automaticallyFindsBundlers()
 	{
-		automaticallyFindsBundlerContentPlugins();
-		automaticallyFindsBundlerTagHandlers();
+		automaticallyFindsContentPlugins();
+		automaticallyFindsTagHandlers();
 		automaticallyFindsAssetProducers();
 		
 		return builderChainer;

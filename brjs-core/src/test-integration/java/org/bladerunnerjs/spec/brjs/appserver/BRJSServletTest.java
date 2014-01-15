@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class BRJSServletTest extends SpecTest
 		
 		given(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
-			.and(brjs).hasBundlerContentPlugins(new MockBundlerContentPlugin())
+			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usedForServletModel()
 			.and(brjs).containsFolder("apps")
@@ -79,7 +79,7 @@ public class BRJSServletTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet", MockBundlerContentPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test
@@ -88,7 +88,7 @@ public class BRJSServletTest extends SpecTest
 		given(app).hasBeenCreated()
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet/some/other/path", MockBundlerContentPlugin.class.getCanonicalName())
+		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet/some/other/path", MockContentPlugin.class.getCanonicalName())
 			.and(appServer).requestForUrlReturns("/app/hello", "Hello World!");
 	}
 	
@@ -114,7 +114,7 @@ public class BRJSServletTest extends SpecTest
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(blade).hasPackageStyle("src/appns/bs/b1/cjs", NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(blade).hasPackageStyle("src/appns/bs/b1/cjs", NamespacedJsContentPlugin.JS_STYLE)
 			.and(blade).hasClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.cjs.Class")
 			.and(blade).classRefersTo("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")

@@ -32,6 +32,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
  * 
  * <ul>
  *   <li>{@link #getRequestPrefix}</li>
+ *   <li>{@link #getGroupName}</li>
  * </ul>
  */
 public interface ContentPlugin extends Plugin {
@@ -43,6 +44,17 @@ public interface ContentPlugin extends Plugin {
 	 * invoked.</p>
 	 */
 	String getRequestPrefix();
+	
+	/**
+	 * Returns the group name of content plug-in, which allow composite content plug-ins that compose a number of related plug-ins.
+	 * 
+	 * <p><b>Note:</b> Developers should not rely on any class initialization performed within {@link Plugin#setBRJS Plugin.setBRJS()} as this
+	 * method is an <i>identifier-method</i> which may be invoked before {@link Plugin#setBRJS Plugin.setBRJS()} has itself been
+	 * invoked.</p>
+	 * 
+	 * @return the group name if one exists, or <code>null</code> otherwise.
+	 */
+	String getGroupName();
 	
 	/**
 	 * Returns the content-path parser that will be used to parse all requests for this plug-in.

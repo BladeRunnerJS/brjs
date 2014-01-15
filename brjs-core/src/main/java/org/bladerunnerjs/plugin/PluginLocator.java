@@ -11,9 +11,7 @@ public interface PluginLocator
 	List<CommandPlugin> getCommandPlugins();
 	List<ModelObserverPlugin> getModelObserverPlugins();
 	List<ContentPlugin> getContentPlugins();
-	List<BundlerContentPlugin> getBundlerContentPlugins();
 	List<TagHandlerPlugin> getTagHandlerPlugins();
-	List<BundlerTagHandlerPlugin> getBundlerTagHandlerPlugins();
 	List<AssetPlugin> getAssetPlugins();
 	List<MinifierPlugin> getMinifierPlugins();
 }

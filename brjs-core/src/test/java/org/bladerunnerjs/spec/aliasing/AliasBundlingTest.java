@@ -8,7 +8,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -75,7 +75,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleAClassIfItsAliasIsReferredToFromAnotherNamespacedClass() throws Exception {
-		given(aspect).hasPackageStyle(NamespacedJsBundlerContentPlugin.JS_STYLE)
+		given(aspect).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1")

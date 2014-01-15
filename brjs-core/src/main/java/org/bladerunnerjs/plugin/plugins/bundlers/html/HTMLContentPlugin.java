@@ -1,18 +1,19 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.html;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class HTMLBundlerContentPlugin extends AbstractBundlerContentPlugin
+public class HTMLContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	
@@ -31,13 +32,12 @@ public class HTMLBundlerContentPlugin extends AbstractBundlerContentPlugin
 	public String getRequestPrefix() {
 		return "html";
 	}
-	
-	@Override
-	public String getMimeType()
-	{
-		return "text/html";
-	}
 
+	@Override
+	public String getGroupName() {
+		return "text/javascript";
+	}
+	
 	@Override
 	public ContentPathParser getContentPathParser()
 	{
@@ -47,13 +47,13 @@ public class HTMLBundlerContentPlugin extends AbstractBundlerContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
-		throw new RuntimeException("Not implemented!");
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
 	{
-		throw new RuntimeException("Not implemented!");
+		return new ArrayList<>();
 	}
 
 	@Override

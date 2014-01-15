@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(aspect).hasClass("appns.AspectClass")
 			.and(sdkLib).hasClass("br.SdkClass")
-			.and(aspect).hasPackageStyle(NamespacedJsBundlerContentPlugin.JS_STYLE)
+			.and(aspect).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRefersTo("appns.AspectClass", "br.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);

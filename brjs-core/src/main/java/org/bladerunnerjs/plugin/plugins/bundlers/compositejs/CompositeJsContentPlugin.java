@@ -14,15 +14,15 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.plugin.BundlerContentPlugin;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.MinifierPlugin;
-import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class CompositeJsBundlerContentPlugin extends AbstractBundlerContentPlugin {
+public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	private ContentPathParser contentPathParser = (new ContentPathParserBuilder()).build();
 	private BRJS brjs;
 	
@@ -46,9 +46,9 @@ public class CompositeJsBundlerContentPlugin extends AbstractBundlerContentPlugi
 	public String getRequestPrefix() {
 		return "js";
 	}
-	
+
 	@Override
-	public String getMimeType() {
+	public String getGroupName() {
 		return "text/javascript";
 	}
 	
@@ -92,13 +92,13 @@ public class CompositeJsBundlerContentPlugin extends AbstractBundlerContentPlugi
 	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, String locale) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(BundlerContentPlugin bundlerContentPlugin : brjs.plugins().bundlerContentProviders("text/javascript")) {
-			if( !bundlerContentPlugin.equals(this) ) {
+		for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
+			if( !contentPlugin.equals(this) ) {
 				if(isDev) {
-					requestPaths.addAll(bundlerContentPlugin.getValidDevContentPaths(bundleSet, locale));
+					requestPaths.addAll(contentPlugin.getValidDevContentPaths(bundleSet, locale));
 				}
 				else {
-					requestPaths.addAll(bundlerContentPlugin.getValidProdContentPaths(bundleSet, locale));
+					requestPaths.addAll(contentPlugin.getValidProdContentPaths(bundleSet, locale));
 				}
 			}
 		}
@@ -112,19 +112,19 @@ public class CompositeJsBundlerContentPlugin extends AbstractBundlerContentPlugi
 		try {
 			String charsetName = brjs.bladerunnerConf().getDefaultOutputEncoding();
 			
-			for(BundlerContentPlugin bundlerContentPlugin : brjs.plugins().bundlerContentProviders("text/javascript")) {
-				if( !bundlerContentPlugin.equals(this) ) {
+			for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
+				if( !contentPlugin.equals(this) ) {
 					String locale = contentPath.properties.get("locale");
-					List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? bundlerContentPlugin.getValidDevContentPaths(bundleSet, locale) :
-						bundlerContentPlugin.getValidProdContentPaths(bundleSet, locale);
-					ContentPathParser contentPathParser = bundlerContentPlugin.getContentPathParser();
+					List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? contentPlugin.getValidDevContentPaths(bundleSet, locale) :
+						contentPlugin.getValidProdContentPaths(bundleSet, locale);
+					ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
 					
 					for(String requestPath : requestPaths) {
 						ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
 						ByteArrayOutputStream baos = new ByteArrayOutputStream();
 						
-						bundlerContentPlugin.writeContent(parsedContentPath, bundleSet, baos);
-						inputSources.add(new InputSource(requestPath, baos.toString(charsetName), bundlerContentPlugin, bundleSet));
+						contentPlugin.writeContent(parsedContentPath, bundleSet, baos);
+						inputSources.add(new InputSource(requestPath, baos.toString(charsetName), contentPlugin, bundleSet));
 					}
 				}
 			}

@@ -8,12 +8,12 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class MockBundlerContentPlugin extends AbstractBundlerContentPlugin
+public class MockContentPlugin extends AbstractContentPlugin
 {
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -24,10 +24,9 @@ public class MockBundlerContentPlugin extends AbstractBundlerContentPlugin
 	public String getRequestPrefix() {
 		return "mock";
 	}
-	
+
 	@Override
-	public String getMimeType()
-	{
+	public String getGroupName() {
 		return "";
 	}
 

@@ -9,17 +9,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.plugin.BundlerTagHandlerPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.BundlerContentPlugin;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingBundlerContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyBundlerContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class PluginAccessor {
@@ -39,67 +38,59 @@ public class PluginAccessor {
 		return commandList.getPluginCommands();
 	}
 	
-	public BundlerContentPlugin bundlerContentProvider(BladerunnerUri requestUri) {
+	public ContentPlugin contentProvider(BladerunnerUri requestUri) {
 		String requestPrefix = (requestUri.logicalPath.indexOf('/') == -1) ? requestUri.logicalPath : requestUri.logicalPath.substring(0, requestUri.logicalPath.indexOf('/'));
 		
-		return bundlerContentProvider(requestPrefix);
+		return contentProvider(requestPrefix);
 	}
 	
-	public BundlerContentPlugin bundlerContentProvider(String requestPrefix) {
-		BundlerContentPlugin contentPlugin = null;
+	public ContentPlugin contentProvider(String requestPrefix) {
+		ContentPlugin contentProvider = null;
 		
-		for (BundlerContentPlugin nextContentPlugin : bundlerContentProviders()) {
+		for (ContentPlugin nextContentPlugin : contentProviders()) {
 			if(nextContentPlugin.getRequestPrefix().equals(requestPrefix)) {
-				contentPlugin = nextContentPlugin;
+				contentProvider = nextContentPlugin;
 				break;
 			}
 		}
 		
-		return contentPlugin;
+		return contentProvider;
 	}
 	
-	public List<BundlerContentPlugin> bundlerContentProviders() {
-		List<BundlerContentPlugin> bundlerContentProviders = pluginLocator.getBundlerContentPlugins();
+	public List<ContentPlugin> contentProviders() {
+		List<ContentPlugin> contentProviders = pluginLocator.getContentPlugins();
 		
-		orderContentPlugins(bundlerContentProviders);
+		orderContentPlugins(contentProviders);
 		
-		return bundlerContentProviders;
+		return contentProviders;
 	}
 
-	public List<BundlerContentPlugin> bundlerContentProviders(String mimeType) {
-		List<BundlerContentPlugin> bundlerContentPlugins = new ArrayList<>();
+	public List<ContentPlugin> contentProviders(String groupName) {
+		List<ContentPlugin> contentProviders = new ArrayList<>();
 		
-		for (BundlerContentPlugin bundlerContentPlugin : bundlerContentProviders()) {
-			if (bundlerContentPlugin.getMimeType().equals(mimeType)) {
-				bundlerContentPlugins.add(bundlerContentPlugin);
+		for (ContentPlugin contentPlugin : contentProviders()) {
+			if (contentPlugin.getGroupName().equals(groupName)) {
+				contentProviders.add(contentPlugin);
 			}
 		}
 		
-		return bundlerContentPlugins;
+		return contentProviders;
 	}
 	
 	public List<TagHandlerPlugin> tagHandlers() {
-		List<TagHandlerPlugin> tagHandlers = new ArrayList<>();
-		tagHandlers.addAll(pluginLocator.getTagHandlerPlugins());
-		tagHandlers.addAll(pluginLocator.getBundlerTagHandlerPlugins());
-		
-		return tagHandlers;
+		return pluginLocator.getTagHandlerPlugins();
 	}
 	
-	public List<BundlerTagHandlerPlugin> bundlerTagHandlers() {
-		return pluginLocator.getBundlerTagHandlerPlugins();
-	}
-	
-	public List<BundlerTagHandlerPlugin> bundlerTagHandlers(String mimeType) {
-		List<BundlerTagHandlerPlugin> bundlerTagHandlerPlugins = new ArrayList<>();
+	public List<TagHandlerPlugin> tagHandlers(String groupName) {
+		List<TagHandlerPlugin> tagHandlerPlugins = new ArrayList<>();
 		
-		for (BundlerTagHandlerPlugin bundlerTagHandlerPlugin : bundlerTagHandlers()) {
-			if (bundlerTagHandlerPlugin.getMimeType().equals(mimeType)) {
-				bundlerTagHandlerPlugins.add(bundlerTagHandlerPlugin);
+		for (TagHandlerPlugin tagHandlerPlugin : tagHandlers()) {
+			if (tagHandlerPlugin.getGroupName().equals(groupName)) {
+				tagHandlerPlugins.add(tagHandlerPlugin);
 			}
 		}
 		
-		return bundlerTagHandlerPlugins;
+		return tagHandlerPlugins;
 	}
 	
 	public List<MinifierPlugin> minifiers() {
@@ -141,23 +132,23 @@ public class PluginAccessor {
 	}
 	
 	// TODO: it's becoming more and more obvious that we need a proper ordering mechanism for bundler content plug-ins, so external plug-in developers can have their plug-ins correctly ordered too
-	private void orderContentPlugins(List<BundlerContentPlugin> bundlerContentProviders) {
-		Collections.sort(bundlerContentProviders, new Comparator<BundlerContentPlugin>() {
+	private void orderContentPlugins(List<ContentPlugin> bundlerContentProviders) {
+		Collections.sort(bundlerContentProviders, new Comparator<ContentPlugin>() {
 			@Override
-			public int compare(BundlerContentPlugin bundlerContentPlugin1, BundlerContentPlugin bundlerContentPlugin2) {
-				return score(bundlerContentPlugin1) - score(bundlerContentPlugin2);
+			public int compare(ContentPlugin contentPlugin1, ContentPlugin contentPlugin2) {
+				return score(contentPlugin1) - score(contentPlugin2);
 			}
 			
-			private int score(BundlerContentPlugin bundlerContentPlugin) {
+			private int score(ContentPlugin contentPlugin) {
 				int score = 0;
 				
-				if(bundlerContentPlugin.instanceOf(BRJSThirdpartyBundlerContentPlugin.class)) {
+				if(contentPlugin.instanceOf(BRJSThirdpartyContentPlugin.class)) {
 					score = -1;
 				}
-				else if(bundlerContentPlugin.instanceOf(NamespacedJsBundlerContentPlugin.class)) {
+				else if(contentPlugin.instanceOf(NamespacedJsContentPlugin.class)) {
 					score = 1;
 				}
-				else if(bundlerContentPlugin.instanceOf(AliasingBundlerContentPlugin.class)) {
+				else if(contentPlugin.instanceOf(AliasingContentPlugin.class)) {
 					score = 2;
 				}
 				

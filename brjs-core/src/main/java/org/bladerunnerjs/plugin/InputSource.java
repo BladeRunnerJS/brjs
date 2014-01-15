@@ -16,16 +16,16 @@ public class InputSource {
 	private final String source;
 	private String sourceMappingUrl;
 	private final String filteredSource;
-	private final BundlerContentPlugin bundlerContentPlugin;
+	private final ContentPlugin contentPlugin;
 	private BundleSet bundleSet;
 	private Pattern sourceMappingUrlPattern = Pattern.compile("\n//# sourceMappingURL=(.*)$");
 	
-	public InputSource(String requestName, String source, BundlerContentPlugin bundlerContentPlugin, BundleSet bundleSet) {
+	public InputSource(String requestName, String source, ContentPlugin contentPlugin, BundleSet bundleSet) {
 		this.requestName = requestName;
 		this.source = source;
 		this.sourceMappingUrl = getSourceMappingUrl(source);
 		this.filteredSource = source.replaceFirst(sourceMappingUrlPattern.pattern(), "");
-		this.bundlerContentPlugin = bundlerContentPlugin;
+		this.contentPlugin = contentPlugin;
 		this.bundleSet = bundleSet;
 	}
 	
@@ -43,9 +43,9 @@ public class InputSource {
 		try {
 			if(source != filteredSource) {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				ParsedContentPath contentPath = bundlerContentPlugin.getContentPathParser().parse(sourceMappingUrl);
+				ParsedContentPath contentPath = contentPlugin.getContentPathParser().parse(sourceMappingUrl);
 				
-				bundlerContentPlugin.writeContent(contentPath, bundleSet, bos);
+				contentPlugin.writeContent(contentPath, bundleSet, bos);
 				
 				sourceMap = bos.toString(bundleSet.getBundlableNode().root().bladerunnerConf().getDefaultOutputEncoding());
 			}

@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsBundlerContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -203,7 +203,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	
 	@Test
 	public void circularDependenciesCauseAnExceptionToBeThrown() throws Exception {
-		given(aspect).hasPackageStyle(NamespacedJsBundlerContentPlugin.JS_STYLE)
+		given(aspect).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)
 			.and(aspect).indexPageHasContent("appns.Class1")
 			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
 			.and(aspect).classDependsOn("appns.Class2", "appns.Class1");
@@ -213,7 +213,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	
 	@Test
 	public void indirectCircularDependenciesCauseAnExceptionToBeThrown() throws Exception {
-		given(aspect).hasPackageStyle(NamespacedJsBundlerContentPlugin.JS_STYLE)
+		given(aspect).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)
 			.and(aspect).indexPageHasContent("appns.Class1")
 			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
 			.and(aspect).classDependsOn("appns.Class2", "appns.Class3")

@@ -7,9 +7,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.plugin.BundlerTagHandlerPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.BundlerContentPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
@@ -22,23 +20,19 @@ import org.bladerunnerjs.plugin.utility.PluginLocatorUtils;
 
 public class MockPluginLocator implements PluginLocator
 {
-	public List<CommandPlugin> pluginCommands = new ArrayList<CommandPlugin>();
-	public List<ModelObserverPlugin> modelObservers = new ArrayList<ModelObserverPlugin>();
-	public List<MinifierPlugin> minifiers = new ArrayList<MinifierPlugin>();
-	public List<ContentPlugin> contentPlugins = new ArrayList<ContentPlugin>();
-	public List<BundlerContentPlugin> bundlerContentPlugins = new ArrayList<BundlerContentPlugin>();
-	public List<TagHandlerPlugin> tagHandlers = new ArrayList<TagHandlerPlugin>();
-	public List<BundlerTagHandlerPlugin> bundlerTagHandlers = new ArrayList<BundlerTagHandlerPlugin>();
-	public List<AssetPlugin> assetPlugins = new ArrayList<AssetPlugin>();
+	public List<CommandPlugin> pluginCommands = new ArrayList<>();
+	public List<ModelObserverPlugin> modelObservers = new ArrayList<>();
+	public List<MinifierPlugin> minifiers = new ArrayList<>();
+	public List<ContentPlugin> contentPlugins = new ArrayList<>();
+	public List<TagHandlerPlugin> tagHandlers = new ArrayList<>();
+	public List<AssetPlugin> assetPlugins = new ArrayList<>();
 	
 	public void createPlugins(BRJS brjs) {
 		setBRJSForPlugins(brjs, pluginCommands);
 		setBRJSForPlugins(brjs, modelObservers);
 		setBRJSForPlugins(brjs, minifiers);
 		setBRJSForPlugins(brjs, contentPlugins);
-		setBRJSForPlugins(brjs, bundlerContentPlugins);
 		setBRJSForPlugins(brjs, tagHandlers);
-		setBRJSForPlugins(brjs, bundlerTagHandlers);
 		setBRJSForPlugins(brjs, assetPlugins);
 	}
 	
@@ -65,18 +59,8 @@ public class MockPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<BundlerContentPlugin> getBundlerContentPlugins() {
-		return bundlerContentPlugins;
-	}
-	
-	@Override
 	public List<TagHandlerPlugin> getTagHandlerPlugins() {
 		return tagHandlers;
-	}
-	
-	@Override
-	public List<BundlerTagHandlerPlugin> getBundlerTagHandlerPlugins() {
-		return bundlerTagHandlers;
 	}
 	
 	@Override

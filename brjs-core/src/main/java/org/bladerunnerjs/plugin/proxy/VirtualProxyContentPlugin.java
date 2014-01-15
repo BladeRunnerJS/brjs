@@ -23,6 +23,11 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
+	public String getGroupName() {
+		return contentPlugin.getGroupName();
+	}
+	
+	@Override
 	public ContentPathParser getContentPathParser() {
 		initializePlugin();
 		return contentPlugin.getContentPathParser();

@@ -16,11 +16,11 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
-import org.bladerunnerjs.plugin.base.AbstractBundlerContentPlugin;
+import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-public class NodeJsBundlerContentPlugin extends AbstractBundlerContentPlugin {
+public class NodeJsContentPlugin extends AbstractContentPlugin {
 	public static final String JS_STYLE = "node.js";
 	
 	private ContentPathParser contentPathParser;
@@ -52,9 +52,9 @@ public class NodeJsBundlerContentPlugin extends AbstractBundlerContentPlugin {
 	public String getRequestPrefix() {
 		return "node-js";
 	}
-	
+
 	@Override
-	public String getMimeType() {
+	public String getGroupName() {
 		return "text/javascript";
 	}
 	
