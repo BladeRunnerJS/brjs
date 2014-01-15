@@ -53,10 +53,9 @@ public interface CommandPlugin extends Plugin
 	/**
 	 * Runs the command using the provided user arguments.
 	 * 
-	 *
-     * @param args The list of arguments provided by the user.
-     *
-     * @throws CommandArgumentsException if any invalid arguments were provided.
+	 * @param args The list of arguments provided by the user.
+	 * 
+	 * @throws CommandArgumentsException if any invalid arguments were provided.
 	 * @throws CommandOperationException if a problem was encountered while running the command.
 	 */
 	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException;
