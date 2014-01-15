@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
@@ -22,6 +23,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;
+	private JsLib thirdpartyLib;
 	private NamedDirNode workbenchTemplate;
 	private StringBuffer response;
 	
@@ -41,6 +43,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 		standardBladeTheme = blade.theme("standard");
 		workbench = blade.workbench();
 		workbenchTemplate = brjs.template("workbench");
+		thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdparty-lib1");
 		
 		response = new StringBuffer();
 
@@ -49,6 +52,17 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbenchTemplate).containsFolder("src");
 	}
 	// ------------------------------------ J S ---------------------------------------
+	@Test
+	public void workbenchPageCanBundleAnSdkJsLibraryClass() throws Exception {
+		given(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
+			.and(workbench).indexPageRefersTo("thirdparty-lib1");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("window.lib = { }")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
 	@Test
 	public void workbenchPageDoesNotBundleAspectJSClassFilesWhenReferenced() throws Exception {
 		given(aspect).hasPackageStyle("src/appns", NamespacedJsBundlerContentPlugin.JS_STYLE)
