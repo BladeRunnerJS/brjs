@@ -38,15 +38,12 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
 		try
 		{
     		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
-    		if (assetLocation.getAssetContainer() instanceof JsLib)
+    		if (assetLocation instanceof ThirdpartyAssetLocation)
     		{
     			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
-    			if (manifest.fileExists())
-    			{
-    				BRJSThirdpartyBundlerSourceModule sourceModule = assetLocation.getAssetContainer().root().createAssetFile(BRJSThirdpartyBundlerSourceModule.class, assetLocation, assetLocation.dir());
-    				sourceModule.initManifest(manifest);
-    				sourceModules.add( sourceModule );
-    			}
+				BRJSThirdpartyBundlerSourceModule sourceModule = assetLocation.getAssetContainer().root().createAssetFile(BRJSThirdpartyBundlerSourceModule.class, assetLocation, assetLocation.dir());
+				sourceModule.initManifest(manifest);
+				sourceModules.add( sourceModule );
     		}
     		return sourceModules;
 		}
