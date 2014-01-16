@@ -24,6 +24,8 @@ import com.google.common.base.Joiner;
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private AliasesFile aliasesFile;
 	private Map<String, AssetContainer> assetContainers = new HashMap<>();
+	private BundleSet bundleSet;
+	private long bundleSetLastUpdated;
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -83,7 +85,14 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
-		return BundleSetCreator.createBundleSet(this);
+		long lastModified = lastModified();
+		
+		if((bundleSet == null) || (lastModified > bundleSetLastUpdated)) {
+			bundleSetLastUpdated  = lastModified;
+			bundleSet = BundleSetCreator.createBundleSet(this);
+		}
+		
+		return bundleSet;
 	}
 	
 	@Override
