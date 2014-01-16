@@ -64,25 +64,11 @@ public class FileIterator {
 	public long getLastModified() {
 		updateIfChangeDetected();
 		
-		// TODO: stop recursively scanning downwards as its worse than the problem it's trying to solve
-		// instead, consider adding a DirectoryObserver.haveChildrenChangedSinceLastCheck() method, so that the file watch service can be used for all child
-		// directories, allowing the parent directory observers to be informed at very little cost when a change occurs within a child directory.
-		long mostRecentLastModified = lastModified;
-		
-		for(File childDir : dirs()) {
-			FileIterator childFileIterator = brjs.getFileIterator(childDir);
-			long childLastModified = childFileIterator.getLastModified();
-			
-			if(childLastModified > mostRecentLastModified) {
-				mostRecentLastModified = childLastModified;
-			}
-		}
-		
-		return mostRecentLastModified;
+		return lastModified;
 	}
 	
 	private void updateIfChangeDetected() {
-		if((directoryObserver.hasChangedSinceLastCheck()) || (files == null)) {
+		if((directoryObserver.hasRecursivelyChangedSinceLastCheck()) || (files == null)) {
 			lastModified = new Date().getTime();
 			files = Arrays.asList(dir.listFiles());
 			Collections.sort(files, NameFileComparator.NAME_COMPARATOR);

@@ -29,6 +29,12 @@ public class WatchingDirectoryObserver implements DirectoryObserver {
 	}
 	
 	@Override
+	public boolean hasRecursivelyChangedSinceLastCheck() {
+		// TODO: we need to update the watch to inform parents when there has been a change
+		return hasChangedSinceLastCheck();
+	}
+	
+	@Override
 	public void reset() {
 		firstInvocation = true;
 	}

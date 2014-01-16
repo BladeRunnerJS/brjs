@@ -7,6 +7,11 @@ public class PessimisticDirectoryObserver implements DirectoryObserver {
 	}
 	
 	@Override
+	public boolean hasRecursivelyChangedSinceLastCheck() {
+		return true;
+	}
+	
+	@Override
 	public void reset() {
 		// do nothing
 	}
