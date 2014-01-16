@@ -29,6 +29,8 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 import com.Ostermiller.util.ConcatReader;
 
 public class NodeJsSourceModule implements SourceModule {
+	private static Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
+	
 	private File assetFile;
 	private Set<String> requirePaths;
 	private List<String> aliasNames;
@@ -140,7 +142,7 @@ public class NodeJsSourceModule implements SourceModule {
 			StringWriter stringWriter = new StringWriter();
 			IOUtils.copy(getReader(), stringWriter);
 			
-			Matcher m = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)").matcher(stringWriter.toString());
+			Matcher m = matcherPattern.matcher(stringWriter.toString());
 			
 			while(m.find()) {
 				boolean isRequirePath = m.group(1).startsWith("require");
