@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.bladerunnerjs.appserver.ServletModelAccessor;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
@@ -11,6 +12,7 @@ import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
@@ -152,12 +154,22 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		
 		return builderChainer;
 	}
-
+	
+	public BuilderChainer automaticallyFindsAssetLocationProducers() {
+		verifyBrjsIsSet();
+		verifyPluginsUnitialized(specTest.pluginLocator.assetLocationPlugins);
+		
+		specTest.pluginLocator.assetLocationPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class) );
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer automaticallyFindsBundlers()
 	{
 		automaticallyFindsContentPlugins();
 		automaticallyFindsTagHandlers();
 		automaticallyFindsAssetProducers();
+		automaticallyFindsAssetLocationProducers();
 		
 		return builderChainer;
 	}

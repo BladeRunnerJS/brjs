@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -76,8 +77,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	public List<AssetLocation> assetLocations() {
 		List<AssetLocation> assetLocations = null;
 		
-		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			assetLocations = assetPlugin.getAssetLocations(this);
+		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+			assetLocations = assetLocationPlugin.getAssetLocations(this);
 			if(assetLocations != null) {
 				break;
 			}

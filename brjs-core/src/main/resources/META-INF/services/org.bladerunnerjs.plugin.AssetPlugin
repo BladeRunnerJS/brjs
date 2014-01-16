@@ -1,4 +1,3 @@
-org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsAssetPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsAssetPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyAssetPlugin

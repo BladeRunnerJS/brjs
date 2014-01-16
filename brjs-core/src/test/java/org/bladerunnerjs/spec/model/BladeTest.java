@@ -29,7 +29,8 @@ public class BladeTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetProducers()
+		given(brjs).automaticallyFindsAssetLocationProducers()
+			.and(brjs).automaticallyFindsAssetProducers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");

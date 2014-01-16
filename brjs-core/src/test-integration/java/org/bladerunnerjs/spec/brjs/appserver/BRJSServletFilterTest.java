@@ -32,6 +32,7 @@ public class BRJSServletFilterTest extends SpecTest
 	public void initTestObjects() throws Exception {
 		
 		given(brjs).hasTagPlugins( new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true) )
+			.and(brjs).automaticallyFindsAssetLocationProducers()
 			.and(brjs).automaticallyFindsAssetProducers()
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usedForServletModel()

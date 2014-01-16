@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
@@ -11,22 +12,22 @@ import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetPlugin;
+import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyCommandPlugin;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
 
 public class CommandOnlyPluginLocator implements PluginLocator {
 	private List<CommandPlugin> commandPlugins;
-	private List<AssetPlugin> assetPlugins = new ArrayList<>();
+	private List<AssetLocationPlugin> assetLocationPlugins = new ArrayList<>();
 	
 	@Override
 	public void createPlugins(BRJS brjs) {
 		commandPlugins = PluginLoader.createPluginsOfType(brjs, CommandPlugin.class, VirtualProxyCommandPlugin.class);
 		
-		AssetPlugin brjsConformantAssetPlugin = new VirtualProxyAssetPlugin(new BRJSConformantAssetPlugin());
+		AssetLocationPlugin brjsConformantAssetPlugin = new VirtualProxyAssetLocationPlugin(new BRJSConformantAssetLocationPlugin());
 		brjsConformantAssetPlugin.setBRJS(brjs);
-		assetPlugins.add(brjsConformantAssetPlugin);
+		assetLocationPlugins.add(brjsConformantAssetPlugin);
 	}
 	
 	@Override
@@ -56,6 +57,11 @@ public class CommandOnlyPluginLocator implements PluginLocator {
 	
 	@Override
 	public List<AssetPlugin> getAssetPlugins() {
-		return assetPlugins;
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<AssetLocationPlugin> getAssetLocationPlugins() {
+		return assetLocationPlugins;
 	}
 }

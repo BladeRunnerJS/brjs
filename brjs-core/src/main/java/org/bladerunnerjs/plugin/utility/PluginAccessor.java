@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
@@ -15,7 +16,7 @@ import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetPlugin;
+import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
@@ -124,9 +125,13 @@ public class PluginAccessor {
 	}
 	
 	public List<AssetPlugin> assetProducers() {
-		List<AssetPlugin> plugins = pluginLocator.getAssetPlugins();
+		return pluginLocator.getAssetPlugins();
+	}
+	
+	public List<AssetLocationPlugin> assetLocationProducers() {
+		List<AssetLocationPlugin> plugins = pluginLocator.getAssetLocationPlugins();
 		
-		orderAssetPlugins(plugins);
+		orderAssetLocationPlugins(plugins);
 		
 		return plugins;
 	}
@@ -157,15 +162,15 @@ public class PluginAccessor {
 		});
 	}
 	
-	private void orderAssetPlugins(List<AssetPlugin> plugins) {
-		Collections.sort(plugins, new Comparator<AssetPlugin>() {
+	private void orderAssetLocationPlugins(List<AssetLocationPlugin> plugins) {
+		Collections.sort(plugins, new Comparator<AssetLocationPlugin>() {
 			@Override
-			public int compare(AssetPlugin assetPlugin1, AssetPlugin assetPlugin2) {
-				return score(assetPlugin1) - score(assetPlugin2);
+			public int compare(AssetLocationPlugin assetLocationPlugin1, AssetLocationPlugin assetLocationPlugin2) {
+				return score(assetLocationPlugin1) - score(assetLocationPlugin2);
 			}
 			
-			private int score(AssetPlugin assetPlugin) {
-				return (assetPlugin.instanceOf(BRJSConformantAssetPlugin.class)) ? 1 : 0;
+			private int score(AssetLocationPlugin assetLocationPlugin) {
+				return (assetLocationPlugin.instanceOf(BRJSConformantAssetLocationPlugin.class)) ? 1 : 0;
 			}
 		});
 	}

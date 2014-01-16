@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
@@ -42,7 +41,4 @@ public interface AssetPlugin extends Plugin {
 	 * @return A list of all assets discovered at this location, or an empty list if none were discovered.
 	 */
 	List<Asset> getAssets(AssetLocation assetLocation);
-	
-	// TODO: make this method part of a new AssetLocationPlugin?
-	List<AssetLocation> getAssetLocations(AssetContainer assetContainer);
 }
