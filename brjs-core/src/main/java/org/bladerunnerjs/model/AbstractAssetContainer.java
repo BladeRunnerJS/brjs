@@ -78,8 +78,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		List<AssetLocation> assetLocations = null;
 		
 		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
-			assetLocations = assetLocationPlugin.getAssetLocations(this);
-			if(assetLocations != null) {
+			if(assetLocationPlugin.canHandleAssetContainer(this)) {
+				assetLocations = assetLocationPlugin.getAssetLocations(this);
 				break;
 			}
 		}

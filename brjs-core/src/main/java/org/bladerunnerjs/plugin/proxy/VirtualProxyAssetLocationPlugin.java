@@ -15,6 +15,12 @@ public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implemen
 	}
 	
 	@Override
+	public boolean canHandleAssetContainer(AssetContainer assetContainer) {
+		initializePlugin();
+		return assetLocationPlugin.canHandleAssetContainer(assetContainer);
+	}
+	
+	@Override
 	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
 		initializePlugin();
 		return assetLocationPlugin.getAssetLocations(assetContainer);

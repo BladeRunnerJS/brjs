@@ -15,13 +15,16 @@ public class BRJSThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlug
 	}
 	
 	@Override
+	public boolean canHandleAssetContainer(AssetContainer assetContainer) {
+		return ((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists()));
+	}
+	
+	@Override
 	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
 		List<AssetLocation> assetLocations = null;
 		
-		if((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists())) {
-			assetLocations = new ArrayList<>();
-			assetLocations.add(new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
-		}
+		assetLocations = new ArrayList<>();
+		assetLocations.add(new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
 		
 		return assetLocations;
 	}

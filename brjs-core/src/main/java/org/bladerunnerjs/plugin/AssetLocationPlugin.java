@@ -15,10 +15,16 @@ import org.bladerunnerjs.model.AssetLocation;
  */
 public interface AssetLocationPlugin extends Plugin {
 	/**
+	 * Returns <code>true</code> if this plug-in is able to generate asset locations for the given asset-container.
+	 * 
+	 * @param assetContainer The asset-container that asset-locations will need to be generated for.
+	 */
+	boolean canHandleAssetContainer(AssetContainer assetContainer);
+	
+	/**
 	 * Return a list of asset locations for the given asset-container.
 	 * 
 	 * @param assetContainer The asset-container to provide asset-locations for.
-	 * @return an array of asset-locations if the plug-in recognizes the given asset-container, or <code>null</code> otherwise.
 	 */
 	List<AssetLocation> getAssetLocations(AssetContainer assetContainer);
 }

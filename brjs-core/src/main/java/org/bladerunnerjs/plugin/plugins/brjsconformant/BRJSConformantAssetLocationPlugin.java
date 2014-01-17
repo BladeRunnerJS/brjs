@@ -16,6 +16,11 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	}
 	
 	@Override
+	public boolean canHandleAssetContainer(AssetContainer assetContainer) {
+		return true;
+	}
+	
+	@Override
 	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
 		List<AssetLocation> assetLocations = new ArrayList<>();
 		
