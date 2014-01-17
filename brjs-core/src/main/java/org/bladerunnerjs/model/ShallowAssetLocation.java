@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
 	protected AssetContainer assetContainer;
 	private AliasDefinitionsFile aliasDefinitionsFile;
+	private Map<String, SourceModule> sourceModules = new HashMap<>();
 	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
@@ -49,20 +51,23 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	@Override
 	public SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException
 	{
-		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
-		
-		for (AssetContainer assetContainer : getAssetContainer().getApp().getAllAssetContainers())
-		{
-			for (SourceModule sourceModule : assetContainer.sourceModules())
+		if(!sourceModules.containsKey(requirePath)) {
+			String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
+			
+			for (AssetContainer assetContainer : getAssetContainer().getApp().getAllAssetContainers())
 			{
-				if (sourceModule.getRequirePath().equals(canonicalRequirePath))
+				for (SourceModule sourceModule : assetContainer.sourceModules())
 				{
-					return sourceModule;
+					if (sourceModule.getRequirePath().equals(canonicalRequirePath))
+					{
+						sourceModules.put(requirePath, sourceModule);
+						return sourceModule;
+					}
 				}
 			}
 		}
 		
-		return null;
+		return sourceModules.get(requirePath);
 	}
 
 	@Override
