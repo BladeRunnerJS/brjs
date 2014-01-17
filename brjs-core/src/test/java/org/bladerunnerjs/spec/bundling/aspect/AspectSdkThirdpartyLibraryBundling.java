@@ -121,7 +121,6 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(response).doesNotContainText("window.legacy = { }");
 	}
 	
-	@Ignore //this test should pass
 	@Test
 	public void thirdpartyLibWithHtmlDoesNotGetScannedForDependenciesInAspectIndexPage() throws Exception {
 		given(thirdpartyLib).hasBeenCreated()
