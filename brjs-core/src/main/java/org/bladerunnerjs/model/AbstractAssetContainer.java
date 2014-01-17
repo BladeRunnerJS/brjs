@@ -16,6 +16,11 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private AssetLocationPlugin previousAssetLocationPlugin;
 	private Map<String, AssetLocation> assetLocationCache;
 	
+	private List<AssetLocation> assetLocations;
+	private long assetLocationsCreationDate;
+	private List<SourceModule> sourceModules;
+	private long sourceModulesCreationDate;
+	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 	}
@@ -38,12 +43,15 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<SourceModule> sourceModules() {
-		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
+		if((lastModified() > sourceModulesCreationDate) || (sourceModules == null)) {
+			sourceModules = new ArrayList<SourceModule>();
+			sourceModulesCreationDate = lastModified();
 			
-		for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
-			for (AssetLocation assetLocation : assetLocations())
-			{
-				sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
+			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
+				for (AssetLocation assetLocation : assetLocations())
+				{
+					sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
+				}
 			}
 		}
 		
@@ -80,17 +88,19 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		List<AssetLocation> assetLocations = null;
-		
-		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
-			if(assetLocationPlugin.canHandleAssetContainer(this)) {
-				if(assetLocationPlugin != previousAssetLocationPlugin) {
-					previousAssetLocationPlugin = assetLocationPlugin;
-					assetLocationCache = new HashMap<>();
+		if((lastModified() > assetLocationsCreationDate) || (assetLocations == null)) {
+			assetLocationsCreationDate = lastModified();
+			
+			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+				if(assetLocationPlugin.canHandleAssetContainer(this)) {
+					if(assetLocationPlugin != previousAssetLocationPlugin) {
+						previousAssetLocationPlugin = assetLocationPlugin;
+						assetLocationCache = new HashMap<>();
+					}
+					
+					assetLocations = assetLocationPlugin.getAssetLocations(this, assetLocationCache);
+					break;
 				}
-				
-				assetLocations = assetLocationPlugin.getAssetLocations(this, assetLocationCache);
-				break;
 			}
 		}
 		
