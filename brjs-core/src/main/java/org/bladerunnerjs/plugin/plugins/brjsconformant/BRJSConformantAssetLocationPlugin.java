@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.brjsconformant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
@@ -21,15 +22,17 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
+	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache) {
+		if(!assetLocationCache.containsKey("resources")) {
+			assetLocationCache.put("resources", new DeepAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")));
+			assetLocationCache.put("src", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src"), assetLocationCache.get("resources")));
+		}
+		
 		List<AssetLocation> assetLocations = new ArrayList<>();
 		
-		DeepAssetLocation resources = new DeepAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources"));
-		SourceAssetLocation source = new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src"), resources);
-		
-		assetLocations.add(resources);
-		assetLocations.add(source);
-		assetLocations.addAll(source.getChildAssetLocations());
+		assetLocations.add(assetLocationCache.get("resources"));
+		assetLocations.add(assetLocationCache.get("src"));
+		((SourceAssetLocation) assetLocationCache.get("src")).addChildAssetLocations(assetLocations);
 		
 		return assetLocations;
 	}

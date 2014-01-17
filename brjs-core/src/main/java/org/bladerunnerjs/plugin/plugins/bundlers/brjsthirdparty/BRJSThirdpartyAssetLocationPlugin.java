@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
@@ -20,11 +21,13 @@ public class BRJSThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlug
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
-		List<AssetLocation> assetLocations = null;
+	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache) {
+		if(!assetLocationCache.containsKey("root")) {
+			assetLocationCache.put("root", new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
+		}
 		
-		assetLocations = new ArrayList<>();
-		assetLocations.add(new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
+		List<AssetLocation> assetLocations = new ArrayList<>();
+		assetLocations.add(assetLocationCache.get("root"));
 		
 		return assetLocations;
 	}

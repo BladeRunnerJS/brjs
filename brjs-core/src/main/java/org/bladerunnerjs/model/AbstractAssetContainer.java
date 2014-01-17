@@ -2,7 +2,9 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -11,6 +13,9 @@ import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
+	private AssetLocationPlugin previousAssetLocationPlugin;
+	private Map<String, AssetLocation> assetLocationCache;
+	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 	}
@@ -79,7 +84,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		
 		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
 			if(assetLocationPlugin.canHandleAssetContainer(this)) {
-				assetLocations = assetLocationPlugin.getAssetLocations(this);
+				if(assetLocationPlugin != previousAssetLocationPlugin) {
+					previousAssetLocationPlugin = assetLocationPlugin;
+					assetLocationCache = new HashMap<>();
+				}
+				
+				assetLocations = assetLocationPlugin.getAssetLocations(this, assetLocationCache);
 				break;
 			}
 		}

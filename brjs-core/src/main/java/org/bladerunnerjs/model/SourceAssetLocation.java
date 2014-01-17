@@ -28,27 +28,23 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 		return dependentAssetLocations;
 	}
 	
-	public List<AssetLocation> getChildAssetLocations() {
-		return getChildAssetLocations(new ArrayList<AssetLocation>(), dir());
+	public void addChildAssetLocations(List<AssetLocation> assetLocations) {
+		addChildAssetLocations(assetLocations, dir());
 	}
 	
-	private List<AssetLocation> getChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
+	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
 	{
-		if (!findInDir.isDirectory())
+		if (findInDir.isDirectory())
 		{
-			return assetLocations;
-		}
-		
-		for (File childDir : root().getFileIterator(findInDir).files())
-		{
-			if (childDir.isDirectory() && childDir != dir())
+			for (File childDir : root().getFileIterator(findInDir).files())
 			{
-				assetLocations.add(createAssetLocationForChildDir(childDir));
-				getChildAssetLocations(assetLocations, childDir);
+				if (childDir.isDirectory() && childDir != dir())
+				{
+					assetLocations.add(createAssetLocationForChildDir(childDir));
+					addChildAssetLocations(assetLocations, childDir);
+				}
 			}
 		}
-		
-		return assetLocations;
 	}
 	
 	private AssetLocation createAssetLocationForChildDir(File dir) {

@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
@@ -25,6 +26,7 @@ public interface AssetLocationPlugin extends Plugin {
 	 * Return a list of asset locations for the given asset-container.
 	 * 
 	 * @param assetContainer The asset-container to provide asset-locations for.
+	 * @param assetLocationCache A map of potentially re-usable asset-locations previously created by this plug-in.
 	 */
-	List<AssetLocation> getAssetLocations(AssetContainer assetContainer);
+	List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache);
 }

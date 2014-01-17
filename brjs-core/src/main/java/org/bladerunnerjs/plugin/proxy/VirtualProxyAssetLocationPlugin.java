@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin.proxy;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
@@ -21,8 +22,8 @@ public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implemen
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer) {
+	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache) {
 		initializePlugin();
-		return assetLocationPlugin.getAssetLocations(assetContainer);
+		return assetLocationPlugin.getAssetLocations(assetContainer, assetLocationCache);
 	}
 }
