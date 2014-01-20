@@ -25,8 +25,6 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
-import org.bladerunnerjs.plugin.utility.filechange.AccurateFileObserverFactory;
-import org.bladerunnerjs.plugin.utility.filechange.PerformantFileObserverFactory;
 import org.bladerunnerjs.testing.specutility.AppBuilder;
 import org.bladerunnerjs.testing.specutility.AppCommander;
 import org.bladerunnerjs.testing.specutility.AppConfCommander;
@@ -72,6 +70,8 @@ import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.testing.utility.WebappTester;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ServerUtility;
+import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 import org.junit.After;
 import org.junit.Before;
 
@@ -116,11 +116,11 @@ public abstract class SpecTest
 	
 	public BRJS createModel() 
 	{	
-		return new BRJS(testSdkDirectory, pluginLocator, new AccurateFileObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return new BRJS(testSdkDirectory, pluginLocator, new PessimisticFileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 	}
 	
 	public BRJS createNonTestModel() {
-		return new BRJS(testSdkDirectory, new BRJSPluginLocator(), new PerformantFileObserverFactory(testSdkDirectory), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return new BRJS(testSdkDirectory, new BRJSPluginLocator(), new Java7FileModificationService(testSdkDirectory), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 	}
 	
 	@After

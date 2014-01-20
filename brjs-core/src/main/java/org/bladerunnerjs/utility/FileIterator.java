@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.comparator.NameFileComparator;
@@ -13,21 +12,21 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.plugin.utility.filechange.DirectoryObserver;
-import org.bladerunnerjs.plugin.utility.filechange.FileObserverFactory;
+import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
+import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
+import org.bladerunnerjs.utility.filemodification.FileModificationService;
 
 public class FileIterator {
 	private final IOFileFilter dirFilter = FileFilterUtils.and(DirectoryFileFilter.INSTANCE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
-	private final DirectoryObserver directoryObserver;
+	private final FileModifiedChecker fileModificationChecker;
 	private final File dir;
 	private final RootNode brjs;
 	private List<File> files;
-	private long lastModified;
 	
-	public FileIterator(RootNode rootNode, FileObserverFactory fileObserverFactory, File dir) {
+	public FileIterator(RootNode rootNode, FileModificationService fileModificationService, File dir) {
 		this.brjs = rootNode;
 		this.dir = dir;
-		directoryObserver = fileObserverFactory.createDirectoryObserver(dir);
+		fileModificationChecker = new InfoFileModifiedChecker(fileModificationService.getModificationInfo(dir));
 	}
 	
 	public void refresh() {
@@ -61,15 +60,8 @@ public class FileIterator {
 		return nestedFiles;
 	}
 	
-	public long getLastModified() {
-		updateIfChangeDetected();
-		
-		return lastModified;
-	}
-	
 	private void updateIfChangeDetected() {
-		if((directoryObserver.hasRecursivelyChangedSinceLastCheck()) || (files == null)) {
-			lastModified = new Date().getTime();
+		if((fileModificationChecker.hasChangedSinceLastCheck()) || (files == null)) {
 			files = Arrays.asList(dir.listFiles());
 			Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
 		}

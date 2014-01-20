@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.utility.filemodification.NodeFileModifiedChecker;
 
 import com.google.common.base.Joiner;
 
@@ -25,7 +26,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	private AliasesFile aliasesFile;
 	private Map<String, AssetContainer> assetContainers = new HashMap<>();
 	private BundleSet bundleSet;
-	private long bundleSetLastUpdated;
+	private NodeFileModifiedChecker bundleSetFileModifiedChecker = new NodeFileModifiedChecker(this);
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -85,10 +86,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
-		long lastModified = lastModified();
-		
-		if((bundleSet == null) || (lastModified > bundleSetLastUpdated)) {
-			bundleSetLastUpdated  = lastModified;
+		if(bundleSetFileModifiedChecker.hasChangedSinceLastCheck() || (bundleSet == null)) {
 			bundleSet = BundleSetCreator.createBundleSet(this);
 		}
 		

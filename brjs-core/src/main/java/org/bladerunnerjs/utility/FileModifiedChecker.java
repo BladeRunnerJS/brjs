@@ -5,7 +5,6 @@ import java.io.File;
 
 public class FileModifiedChecker
 {
-	
 	private File file;
 	private Long previousModified = (long) -1;
 	private Long previousFileSize = (long) -1;

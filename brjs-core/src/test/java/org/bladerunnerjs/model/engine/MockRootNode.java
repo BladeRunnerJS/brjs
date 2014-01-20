@@ -11,9 +11,9 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
-import org.bladerunnerjs.plugin.utility.filechange.AccurateFileObserverFactory;
 import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.ObserverList;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 
 public class MockRootNode implements RootNode
@@ -196,6 +196,6 @@ public class MockRootNode implements RootNode
 
 	@Override
 	public FileIterator getFileIterator(File dir) {
-		return new FileIterator(this, new AccurateFileObserverFactory(), null);
+		return new FileIterator(this, new PessimisticFileModificationService(), null);
 	}
 }

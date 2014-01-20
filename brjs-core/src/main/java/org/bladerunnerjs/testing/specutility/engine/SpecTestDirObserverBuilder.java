@@ -1,27 +1,13 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.WatchService;
 
-import org.bladerunnerjs.plugin.utility.filechange.WatchingDirectoryObserver;
 import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
+import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 
 
 public class SpecTestDirObserverBuilder
 {
-
-	private WatchService watcher;
-	{
-		try {
-			watcher = FileSystems.getDefault().newWatchService();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	private SpecTestDirObserver observer;
 	private BuilderChainer builderChainer;
 	
@@ -34,8 +20,7 @@ public class SpecTestDirObserverBuilder
 
 	public BuilderChainer isObservingDir(File dir)
 	{
-		WatchingDirectoryObserver dirObserver = new WatchingDirectoryObserver(watcher, dir);
-		observer.setDirObserver( dirObserver );
+		observer.setDirObserver( new Java7FileModificationService(dir).getModificationInfo(dir) );
 		
 		return builderChainer;
 	}

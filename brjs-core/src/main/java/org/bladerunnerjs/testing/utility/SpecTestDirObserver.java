@@ -1,22 +1,21 @@
 package org.bladerunnerjs.testing.utility;
 
-import org.bladerunnerjs.plugin.utility.filechange.DirectoryObserver;
-import org.bladerunnerjs.plugin.utility.filechange.WatchingDirectoryObserver;
+import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
+import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
+import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 
 
 public class SpecTestDirObserver
 {
-
-	private DirectoryObserver dirObserver;
-
-	public DirectoryObserver getDirObserver()
+	private FileModifiedChecker fileModificationChecker;
+	
+	public FileModifiedChecker getDirObserver()
 	{
-		return dirObserver;
+		return fileModificationChecker;
 	}
-
-	public void setDirObserver(WatchingDirectoryObserver dirObserver)
+	
+	public void setDirObserver(FileModificationInfo fileModificationInfo)
 	{
-		this.dirObserver = dirObserver;
+		this.fileModificationChecker = new InfoFileModifiedChecker(fileModificationInfo);
 	}
-
 }

@@ -8,11 +8,11 @@ import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.utility.FileIterator;
+import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 
 
 public abstract class AbstractBRJSNode extends AbstractNode implements BRJSNode {
-	private FileIterator fileIterator;
+	private FileModificationInfo fileModificationInfo;
 	
 	public AbstractBRJSNode(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -30,11 +30,11 @@ public abstract class AbstractBRJSNode extends AbstractNode implements BRJSNode 
 	
 	@Override
 	public long lastModified() {
-		if((fileIterator == null) && dir.exists()) {
-			fileIterator = root().getFileIterator(dir);
+		if((fileModificationInfo == null) && dir.exists()) {
+			fileModificationInfo = root().getModificationInfo(dir);
 		}
 		
-		return (fileIterator != null) ? fileIterator.getLastModified() : 0;
+		return (fileModificationInfo != null) ? fileModificationInfo.getLastModified() : 0;
 	}
 	
 	@Override

@@ -32,13 +32,14 @@ import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
-import org.bladerunnerjs.plugin.utility.filechange.FileObserverFactory;
-import org.bladerunnerjs.plugin.utility.filechange.PerformantFileObserverFactory;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
+import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
+import org.bladerunnerjs.utility.filemodification.FileModificationService;
+import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 
 
 public class BRJS extends AbstractBRJSRootNode
@@ -76,14 +77,14 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
 	private final Map<String, FileIterator> fileIterators = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
-	private FileObserverFactory fileObserverFactory;
+	private final FileModificationService fileModificationService;
 	private boolean closed = false;
 	
-	public BRJS(File brjsDir, PluginLocator pluginLocator, FileObserverFactory fileObserverFactory, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
+	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
 		
-		this.fileObserverFactory = fileObserverFactory;
+		this.fileModificationService = fileModificationService;
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
@@ -101,7 +102,7 @@ public class BRJS extends AbstractBRJSRootNode
 
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
-		this(brjsDir, new BRJSPluginLocator(), new PerformantFileObserverFactory(brjsDir), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(brjsDir.getParentFile()), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
 
 	@Override
@@ -146,7 +147,7 @@ public class BRJS extends AbstractBRJSRootNode
 		String dirPath = dir.getPath();
 		
 		if(!fileIterators.containsKey(dirPath)) {
-			fileIterators.put(dirPath, new FileIterator(this, fileObserverFactory, dir));
+			fileIterators.put(dirPath, new FileIterator(this, fileModificationService, dir));
 		}
 		
 		return fileIterators.get(dirPath);
@@ -162,7 +163,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public void close() {
 		closed  = true;
-		fileObserverFactory.close();
+		fileModificationService.close();
 	}
 	
 	// TODO: this needs unit testing
@@ -334,6 +335,10 @@ public class BRJS extends AbstractBRJSRootNode
 			appServers.put(port, appServer);
 		}
 		return appServer;
+	}
+	
+	public FileModificationInfo getModificationInfo(File file) {
+		return fileModificationService.getModificationInfo(file);
 	}
 	
 	public <AF extends Asset> AF createAssetFile(Class<? extends AF> assetFileClass, AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException

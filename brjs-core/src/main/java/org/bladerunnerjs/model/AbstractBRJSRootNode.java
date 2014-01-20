@@ -27,7 +27,7 @@ public abstract class AbstractBRJSRootNode extends AbstractRootNode implements B
 	
 	@Override
 	public long lastModified() {
-		return (dir.exists()) ? root().getFileIterator(dir).getLastModified() : 0;
+		return (dir.exists()) ? root().getModificationInfo(dir).getLastModified() : 0;
 	}
 	
 	@Override
