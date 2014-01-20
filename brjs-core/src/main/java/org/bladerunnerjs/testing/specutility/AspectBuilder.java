@@ -39,7 +39,7 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		return indexPageRefersTo(content);
 	}
 
-	public BuilderChainer indexPageRefersTo(JsLib thirdpartyLib) throws Exception
+	public BuilderChainer indexPageRequires(JsLib thirdpartyLib) throws Exception
 	{
 		FileUtils.write(aspect.file("index.html"), "require('"+thirdpartyLib.getName()+"');");
 		

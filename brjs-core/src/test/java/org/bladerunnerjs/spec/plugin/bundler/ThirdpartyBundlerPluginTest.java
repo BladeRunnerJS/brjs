@@ -110,7 +110,7 @@ public class ThirdpartyBundlerPluginTest extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("file2.js", "lib1.file2 = {}\n")
 			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "js:")
 			.and(thirdpartyLib2).containsFileWithContents("file1.js", "lib2.file1 = {}\n")
-			.and(aspect).indexPageRefersTo(thirdpartyLib);
+			.and(aspect).indexPageRequires(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("lib1.file1 = {}")
 			.and(pageResponse).containsText("lib1.file2 = {}")
@@ -121,7 +121,7 @@ public class ThirdpartyBundlerPluginTest extends SpecTest {
 	public void scriptsCanResideWithDirectories() throws Exception {
 		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: src1.js, lib/src2.js, lib/dir/src3.js")
 			.and(thirdpartyLib).containsFiles("src1.js", "lib/src2.js", "lib/dir/src3.js")
-			.and(aspect).indexPageRefersTo(thirdpartyLib);
+			.and(aspect).indexPageRequires(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsOrderedTextFragments("src1.js", "lib/src2.js", "lib/dir/src3.js");
 	}
