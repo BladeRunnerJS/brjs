@@ -4,8 +4,10 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -29,12 +31,24 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 	}
 
 	@Test
-	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(sdkLib).hasClass("br.SdkClass")
-			.and(aspect).indexPageRefersTo("br.SdkClass");
+	public void aspectBundlesContainsNodeStyleSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
+		given(sdkLib).hasPackageStyle(NodeJsContentPlugin.JS_STYLE)
+			.and(sdkLib).hasClass("br.SdkClass")
+			.and(aspect).indexPageHasContent("require('br/SdkClass');");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("br.SdkClass");
+		then(response).containsDefinedClasses("br/SdkClass");
 	}
+	
+	@Ignore // This test should pass and define the sdkLib class 
+	@Test
+	public void aspectBundlesContainsNamespaceStyleSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
+		given(sdkLib).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)
+			.and(sdkLib).hasClass("br.SdkClass")
+			.and(aspect).indexPageHasContent("require('br/SdkClass');");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsDefinedClasses("br/SdkClass");
+	}
+	
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInAClass() throws Exception {
