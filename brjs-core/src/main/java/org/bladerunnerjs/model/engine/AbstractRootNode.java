@@ -106,6 +106,22 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		return (N) node;
 	}
 	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass) {
+		if (node == null)
+		{
+			return null;
+		}
+		
+		if (node.getClass() == nodeClass)
+		{
+			return (N) this;
+		}
+		
+		return locateAncestorNodeOfClass(node.parentNode(), nodeClass);
+	}
+	
 	@SuppressWarnings("unchecked")
 	private <N extends Node> N locateExistentAncestorNodeOfClass(Node node, Class<N> nodeClass)
 	{

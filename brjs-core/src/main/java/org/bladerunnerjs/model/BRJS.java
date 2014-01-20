@@ -365,4 +365,5 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		return files;
 	}
+	
 }

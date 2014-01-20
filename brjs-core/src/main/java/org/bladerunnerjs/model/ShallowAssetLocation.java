@@ -49,6 +49,19 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	}
 	
 	@Override
+	public List<SourceModule> getSourceModules()
+	{
+		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
+		
+		for (AssetContainer assetContainer : getAssetContainer().getApp().getAllAssetContainers())
+		{
+			sourceModules.addAll( assetContainer.sourceModules() );
+		}
+		
+		return sourceModules;
+	}
+	
+	@Override
 	public SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException
 	{
 		if(!sourceModules.containsKey(requirePath)) {

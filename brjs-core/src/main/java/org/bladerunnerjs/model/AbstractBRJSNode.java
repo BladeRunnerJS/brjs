@@ -41,4 +41,5 @@ public abstract class AbstractBRJSNode extends AbstractNode implements BRJSNode 
 	public String getTemplateName() {
 		return BRJSNodeHelper.getTemplateName(this);
 	}
+	
 }

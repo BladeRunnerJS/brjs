@@ -17,6 +17,11 @@ public interface BundlableNode extends Node, AssetContainer {
 	AliasesFile aliasesFile();
 	SourceModule getSourceModule(String requirePath) throws RequirePathException;
 	List<LinkedAsset> seedFiles();
+	
+	/**
+	 * Returns all AssetContainers that contain resource that can potentially be bundled.
+	 * @return
+	 */
 	List<AssetContainer> getAssetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;
 	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException;
