@@ -120,7 +120,7 @@ public abstract class SpecTest
 	}
 	
 	public BRJS createNonTestModel() {
-		return new BRJS(testSdkDirectory, new BRJSPluginLocator(), new PerformantFileObserverFactory(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return new BRJS(testSdkDirectory, new BRJSPluginLocator(), new PerformantFileObserverFactory(testSdkDirectory), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 	}
 	
 	@After

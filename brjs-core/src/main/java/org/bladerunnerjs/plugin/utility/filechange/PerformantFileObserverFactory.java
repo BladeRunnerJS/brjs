@@ -17,6 +17,9 @@ public class PerformantFileObserverFactory implements FileObserverFactory {
 		}
 	}
 	
+	public PerformantFileObserverFactory(File rootDir) {
+	}
+	
 	@Override
 	public FileObserver createFileObserver(File file) {
 		// TODO: this is going to stop working as soon as we having more than one class set-up a watch on the same directory
