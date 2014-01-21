@@ -42,6 +42,7 @@ public class SectionRedirectFilter implements Filter
 	@Override
 	public void destroy()
 	{
+		ServletModelAccessor.destroy();
 	}
 	
 	@Override

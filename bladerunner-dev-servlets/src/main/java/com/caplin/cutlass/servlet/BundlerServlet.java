@@ -75,7 +75,13 @@ public class BundlerServlet extends HttpServlet
 		servletContext.setAttribute(CutlassConfig.DEV_MODE_FLAG, "true");
 		super.init(servletConfig);
 	}
-
+	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+	}
+	
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
 	{

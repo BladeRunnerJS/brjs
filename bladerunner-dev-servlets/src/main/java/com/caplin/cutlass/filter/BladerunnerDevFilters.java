@@ -20,6 +20,7 @@ import org.bladerunnerjs.model.BRJS;
 //import com.caplin.cutlass.filter.productionFilePreventionFilter.ProductionFilePreventionFilter;
 
 
+
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class BladerunnerDevFilters implements Filter
@@ -35,16 +36,7 @@ public class BladerunnerDevFilters implements Filter
 		immutableFilters = Collections.unmodifiableList(mutableFilters);
 	}
 	
-	public void destroy()
-	{
-		ServletModelAccessor.destroy();
-		
-		for (Filter filter : immutableFilters)
-		{
-			filter.destroy();
-		}
-	}
-	
+	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
 		BRJS brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
@@ -56,6 +48,18 @@ public class BladerunnerDevFilters implements Filter
 		}
 	}
 	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+		
+		for (Filter filter : immutableFilters)
+		{
+			filter.destroy();
+		}
+	}
+	
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
 		HttpServletRequest httpRequest = (HttpServletRequest) request;

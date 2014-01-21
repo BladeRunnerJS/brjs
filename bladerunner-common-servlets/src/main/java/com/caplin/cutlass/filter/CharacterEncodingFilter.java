@@ -28,6 +28,12 @@ public class CharacterEncodingFilter implements Filter
 	}
 	
 	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+	}
+	
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
 		logger.debug("setting character encoding to '" + EncodingAccessor.getDefaultOutputEncoding() + "'");
@@ -36,11 +42,5 @@ public class CharacterEncodingFilter implements Filter
 		// stream data, but this would be too costly using the current filter set-up
 		response.setCharacterEncoding(EncodingAccessor.getDefaultOutputEncoding());
 		chain.doFilter(request, response);
-	}
-	
-	@Override
-	public void destroy()
-	{
-		ServletModelAccessor.destroy();
 	}
 }

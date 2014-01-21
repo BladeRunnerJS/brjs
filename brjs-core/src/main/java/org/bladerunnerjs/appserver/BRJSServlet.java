@@ -32,6 +32,12 @@ public class BRJSServlet extends DefaultServlet
 	}
 	
 	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+	}
+	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		try {
