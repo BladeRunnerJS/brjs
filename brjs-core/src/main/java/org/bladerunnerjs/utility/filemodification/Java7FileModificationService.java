@@ -32,16 +32,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	
 	@Override
 	public void close() {
-		try {
-			for(Java7FileModificationInfo fileModificationInfo : fileModificationInfos.values()) {
-				fileModificationInfo.close();
-			}
-			
-			watchService.close();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		running = false;
 	}
 	
 	@Override
@@ -54,8 +45,14 @@ public class Java7FileModificationService implements FileModificationService, Ru
 				
 				Thread.sleep(100);
 			}
+			
+			for(Java7FileModificationInfo fileModificationInfo : fileModificationInfos.values()) {
+				fileModificationInfo.close();
+			}
+			
+			watchService.close();
 		}
-		catch(InterruptedException e) {
+		catch(InterruptedException | IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
