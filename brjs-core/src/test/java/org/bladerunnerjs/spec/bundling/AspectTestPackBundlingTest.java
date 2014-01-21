@@ -38,7 +38,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 	public void weBundleAspectFilesInATs() throws Exception {
 		given(aspect).hasPackageStyle("", "namespaced-js")
 			.and(aspect).hasClass("appns.Class1")
-			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
+			.and(aspectATs).testRefersTo("pkg/test.js", "appns.Class1");
 		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
 	}
 	
@@ -48,6 +48,6 @@ public class AspectTestPackBundlingTest extends SpecTest
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).hasDir("src/.svn")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
-		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
+		then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
 	}
 }

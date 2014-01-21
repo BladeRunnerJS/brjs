@@ -36,8 +36,8 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
 		then(bladeUTs).bundledFilesEquals(
-				blade.assetLocation("src").file("src/appns/bs/b1/Class1.js"),
-				blade.assetLocation("src").file("src/appns/bs/b1/Class2.js"));
+				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
+				blade.assetLocation("src").file("appns/bs/b1/Class2.js"));
 	}
 	
 	@Test
@@ -45,22 +45,22 @@ public class BladeTestPackBundlingTest extends SpecTest
 		given(blade).hasPackageStyle("", "namespaced-js")
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
+			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
 		then(bladeATs).bundledFilesEquals(
-				blade.assetLocation("src").file("src/appns/bs/b1/Class1.js"),
-				blade.assetLocation("src").file("src/appns/bs/b1/Class2.js"));
+				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
+				blade.assetLocation("src").file("appns/bs/b1/Class2.js"));
 	}
 	
 	@Test
-	public void weBundleBladeSrcTestContentsInUTs() throws Exception {
+	public void weBundleBladeSrcTestContentsInUTs() throws Exception {		
 		given(blade).hasPackageStyle("", "namespaced-js")
-			.and(blade).hasClasses("appns.bs.b1.Class1")
-			.and(bladeUTs).containsFile("src/js-test-driver/src-test/util.js")
-			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
-		then(bladeUTs).bundledFilesEquals(
-			blade.assetLocation("src").file("src/appns/bs/b1/Class1.js"),
-			blade.assetLocation("src").file("src/appns/bs/b1/Class2.js"),
-			bladeUTs.testSource().file("util.js"));
+    		.and(bladeUTs).containsFile("src-test/pkg/Util.js")
+    		.and(blade).hasClasses("appns.bs.b1.Class1")
+    		.and(bladeUTs).classDependsOn("pkg.Util", "appns.bs.b1.Class1")
+    		.and(bladeUTs).testRefersTo("pkg/test.js", "pkg.Util");
+    	then(bladeUTs).bundledFilesEquals(
+    		blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
+    		bladeUTs.testSource().file("pkg/Util.js"));
 	}
 	
 	@Test
@@ -69,9 +69,9 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).hasDir("src/.svn")
-			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
+			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
 		then(bladeATs).bundledFilesEquals(
-			blade.assetLocation("src").file("src/appns/bs/b1/Class1.js"),
-			blade.assetLocation("src").file("src/appns/bs/b1/Class2.js"));
+			blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
+			blade.assetLocation("src").file("appns/bs/b1/Class2.js"));
 	}
 }

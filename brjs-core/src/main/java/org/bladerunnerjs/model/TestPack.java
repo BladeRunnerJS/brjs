@@ -133,6 +133,12 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		return parentNode().parentNode().getClass().getSimpleName().toLowerCase() + "-" + name;
 	}
 	
+    @Override
+    public String requirePrefix()
+    {
+    	return "";
+    }
+	
 	public AliasesFile aliasesFile()
 	{
 		if(aliasesFile == null) {
