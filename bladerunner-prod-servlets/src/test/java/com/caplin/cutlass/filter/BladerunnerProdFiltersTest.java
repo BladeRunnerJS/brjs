@@ -34,7 +34,7 @@ public class BladerunnerProdFiltersTest {
 	
 	@Before
 	public void setup() throws Exception {
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		httpclient = new DefaultHttpClient();
 		appServer = createServer(PORT, "/app1", APP_DIR);
 	}

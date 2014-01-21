@@ -39,7 +39,7 @@ public class RestApiServletEndToEndTests
 	public void setup() throws Exception
 	{
 		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		brjs = ServletModelAccessor.initializeModel( sdkRoot );
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);

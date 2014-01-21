@@ -59,7 +59,7 @@ public class ApplicationEndToEndTests
 		brjs.appJars().create();
 		appServer = brjs.applicationServer(HTTP_PORT);
 		appServer.start();
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		tester = new WebappTester(tempSdkInstall);
 	}
 	

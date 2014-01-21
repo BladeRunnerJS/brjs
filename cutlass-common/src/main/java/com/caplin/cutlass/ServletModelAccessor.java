@@ -30,9 +30,4 @@ public class ServletModelAccessor {
 			model = null;
 		}
 	}
-	
-	// for testing purposes only
-	public static void reset() {
-		model = null;
-	}
 }

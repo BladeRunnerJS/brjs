@@ -37,7 +37,7 @@ public class BladerunnerDevFiltersTest {
 		
 	@BeforeClass
 	public static void suiteSetup() throws Exception {
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		httpclient = new DefaultHttpClient();
 		httpclient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
 		appServer = createServer(PORT, "/app1", "src/test/resources/cutlass-filters/app1");

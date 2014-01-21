@@ -61,7 +61,7 @@ public class BundlerTokenFilterTest
 	@Before
 	public void setup() throws IOException
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		
 		processor = new BundlerTokenProcessor();
 		processor.addTokenProcessor(CutlassConfig.CSS_BUNDLE_TOKEN, new CSSBundleTokenProcessor());

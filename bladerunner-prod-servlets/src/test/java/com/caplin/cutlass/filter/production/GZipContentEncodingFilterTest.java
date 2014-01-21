@@ -30,7 +30,7 @@ public class GZipContentEncodingFilterTest
 	@Before
 	public void setup() throws Exception
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		this.filter = new GZipContentEncodingFilter();
 		this.baseUrl = "http://localhost:" + PORT;
 	}

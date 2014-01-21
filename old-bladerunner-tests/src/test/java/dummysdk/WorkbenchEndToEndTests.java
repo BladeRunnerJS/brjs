@@ -32,13 +32,14 @@ public class WorkbenchEndToEndTests
 	
 	private ApplicationServer appServer;
 	private WebappTester tester;
+	private BRJS brjs;
 	
 	@Before
 	public void setup() throws Exception
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		File tempSdkInstall = FileUtility.createTemporarySdkInstall(INSTALL_ROOT).getParentFile();
-		BRJS brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempSdkInstall));
+		brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempSdkInstall));
 		brjs.bladerunnerConf().setJettyPort(HTTP_PORT);
 		appServer = brjs.applicationServer(HTTP_PORT);
 		appServer.start();
@@ -49,6 +50,7 @@ public class WorkbenchEndToEndTests
 	public void teardown() throws Exception
 	{
 		appServer.stop();
+		brjs.close();
 	}
 	
 	/* start of tests */

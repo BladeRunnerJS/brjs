@@ -69,7 +69,7 @@ public class BundlerServletTest
 	@Before
 	public void setup() throws Exception
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		
 		httpclient = new DefaultHttpClient();
 		
