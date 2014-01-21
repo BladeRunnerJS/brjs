@@ -43,7 +43,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", response);
 		then(response).containsText("// bootstrap");
-//		then(response).containsText("// this is bootstrap"); // TODO: Ask AB to find out why the contents of the library aren't currently emitted
+		then(response).containsText("// this is bootstrap"); 
 	}
 	
 	@Test
