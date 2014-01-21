@@ -55,6 +55,20 @@ public class StringVerifier {
 		
 		return verifierChainer;
 	}
+	
+	public VerifierChainer containsDefinedClasses(String... classRequirePaths)
+	{
+		for(String classRequirePath : classRequirePaths) {
+			String expectedDefineString = "define('" + classRequirePath + "', function(require, exports, module)";
+			
+			if(!string.contains(expectedDefineString) )
+			{
+				assertEquals("could not find expected string inside response", expectedDefineString, string);
+			}
+		}
+		
+		return verifierChainer;
+	}
 
 	public VerifierChainer textEquals(String content) {
 		assertEquals(content, string);
