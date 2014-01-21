@@ -19,7 +19,7 @@ public interface BundlableNode extends Node, AssetContainer {
 	List<LinkedAsset> seedFiles();
 	
 	/**
-	 * Returns all AssetContainers that contain resource that can potentially be bundled.
+	 * Returns all AssetContainers that contain resources that can potentially be bundled for this BundleableNode
 	 * @return
 	 */
 	List<AssetContainer> getAssetContainers();

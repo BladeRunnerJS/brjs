@@ -57,6 +57,7 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 	public List<AssetContainer> getAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
+		//TODO: refactor me
 		assetContainers.add(this);
 		assetContainers.add(this.parent());
 		assetContainers.add(this.parent().parent());
