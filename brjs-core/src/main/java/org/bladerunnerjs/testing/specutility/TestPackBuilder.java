@@ -7,16 +7,17 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
+import org.bladerunnerjs.testing.specutility.engine.AssetContainerBuilder;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
-public class TestPackNodeBuilder extends NamedNodeBuilder
+public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 {
 	TestPack testPack;
 
-	public TestPackNodeBuilder(SpecTest modelTest, TestPack testPack)
+	public TestPackBuilder(SpecTest modelTest, TestPack testPack)
 	{
 		super(modelTest, testPack);
 		this.testPack = testPack;
@@ -48,6 +49,11 @@ public class TestPackNodeBuilder extends NamedNodeBuilder
 		FileUtils.write(testFile, "require('"+className+"');");
 		
 		return builderChainer;
+	}
+	
+	@Override
+	protected File getSourceFile(String sourceClass) {
+		return testPack.testSource().file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 
 }

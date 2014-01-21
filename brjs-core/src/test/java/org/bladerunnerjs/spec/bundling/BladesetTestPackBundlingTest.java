@@ -53,8 +53,8 @@ public class BladesetTestPackBundlingTest extends SpecTest
 		given(bladeset).hasPackageStyle("", "namespaced-js")
 			.and(bladesetUTs).containsFile("src-test/pkg/Util.js")
 			.and(bladeset).hasClasses("appns.bs.Class1")
-			.and(bladeset).classDependsOn("appns.bs.Class1", "pkg.Util")
-			.and(bladesetUTs).testRefersTo("test.js", "appns.bs.Class1");
+			.and(bladesetUTs).classDependsOn("pkg.Util", "appns.bs.Class1")
+			.and(bladesetUTs).testRefersTo("pkg/test.js", "pkg.Util");
 		then(bladesetUTs).bundledFilesEquals(
 			bladeset.assetLocation("src").file("appns/bs/Class1.js"),
 			bladesetUTs.testSource().file("pkg/Util.js"));

@@ -125,7 +125,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 
-	private File getSourceFile(String sourceClass) {
+	protected File getSourceFile(String sourceClass) {
 		return node.assetLocation("src").file(sourceClass.replaceAll("\\.", "/") + ".js");
 	}
 	

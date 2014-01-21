@@ -24,7 +24,6 @@ import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
  *
  */
 public class FullyQualifiedLinkedAsset implements LinkedAsset {
-	private App app;
 	private File assetFile;
 	private Set<SourceModule> dependentSourceModules;
 	private List<String> aliases;
@@ -34,7 +33,6 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	public void initialize(AssetLocation assetLocation, File assetFile)
 	{
 		this.assetLocation = assetLocation;
-		app = assetLocation.getAssetContainer().getApp();
 		this.assetFile = assetFile;
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
@@ -109,7 +107,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private Trie<Object> createTrie() throws ModelOperationException {
 		Trie<Object> trie = new Trie<Object>();
 		
-		for(AssetContainer assetContainer : app.getAllAssetContainers()) {
+		for(AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers()) {
 			try {
 				if(assetContainer instanceof BundlableNode) {
 					BundlableNode bundlableNode = (BundlableNode) assetContainer;

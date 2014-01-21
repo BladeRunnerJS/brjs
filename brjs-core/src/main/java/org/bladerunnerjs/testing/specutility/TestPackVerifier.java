@@ -6,21 +6,21 @@ import java.util.List;
 
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.model.engine.NamedNode;
-import org.bladerunnerjs.testing.specutility.engine.NodeVerifier;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 
 import static org.junit.Assert.*;
 
-public class TestPackVerifier extends NodeVerifier<NamedNode>
+public class TestPackVerifier extends AssetContainerVerifier
 {
 	TestPack testPack;
+	private VerifierChainer verifierChainer;
 
 	public TestPackVerifier(SpecTest specTest, TestPack testPack)
 	{
-		super(specTest, testPack);
+		super(testPack);
 		this.testPack = testPack;
+		this.verifierChainer = new VerifierChainer(specTest);
 	}
 
 	public VerifierChainer bundledFilesEquals(File... files) throws Exception
