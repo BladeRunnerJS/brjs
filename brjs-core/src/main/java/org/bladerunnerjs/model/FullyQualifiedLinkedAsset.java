@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
@@ -43,7 +44,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException, RequirePathException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
@@ -52,7 +53,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	}
 
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException {
+	public List<String> getAliasNames() throws ModelOperationException, RequirePathException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
@@ -75,7 +76,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 		return assetFile.getPath();
 	}
 	
-	private void recalculateDependencies() throws ModelOperationException {
+	private void recalculateDependencies() throws ModelOperationException, RequirePathException {
 		dependentSourceModules = new HashSet<>();
 		aliases = new ArrayList<>();
 		Trie<Object> trie = createTrie();
@@ -83,18 +84,22 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 		try {
 			try(Reader reader = getReader()) {
 				for(Object match : trie.getMatches(reader)) {
-					if(match instanceof SourceModule) {
-						dependentSourceModules.add((SourceModule) match);
+					if (match instanceof SourceModuleReference) {
+						SourceModuleReference sourceModuleReference = (SourceModuleReference) match;
+						String dependencyRequirePath = sourceModuleReference.getRequirePath();
+						dependentSourceModules.add( assetLocation.getSourceModuleWithRequirePath(dependencyRequirePath) );
 					}
-					else if(match instanceof ClassSourceModule) {
-						dependentSourceModules.add(((ClassSourceModule) match).getSourceModule());
-					}
-					else {
-						String matchString = (String) match;
-						if (matchString.length() > 0)
+					else if (match instanceof AliasReference){
+						AliasReference aliasReference = (AliasReference) match;
+						String alias = aliasReference.getAlias();
+						if (alias.length() > 0)
 						{
-							aliases.add((String) match);							
+							aliases.add(alias);							
 						}
+					}
+					else
+					{
+						throw new RuntimeException("Unknown match type returned from Trie.");
 					}
 				}
 			}
@@ -114,19 +119,17 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 					
 					for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
 						if(!trie.containsKey(aliasOverride.getName())) {
-							trie.add(aliasOverride.getName(), aliasOverride.getName());
+							addToTrie(trie, aliasOverride.getName(), new AliasReference(aliasOverride.getName()));
 						}
 					}
 				}
 				
 				for(SourceModule sourceModule : assetContainer.sourceModules()) {
-					ClassSourceModule classSourceModule = new ClassSourceModule(sourceModule);
-					
 					if (!sourceModule.getUnderlyingFile().equals(assetFile)) {
-	    				trie.add(sourceModule.getRequirePath(), sourceModule);
+						addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule.getRequirePath()));
 	    				if (sourceModule.getNamespacedName() != null)
 	    				{
-	    					trie.add(sourceModule.getNamespacedName(), classSourceModule);
+	    					addToTrie(trie, sourceModule.getNamespacedName(), new SourceModuleReference(sourceModule.getRequirePath()));
 	    				}
 					}
 				}
@@ -134,23 +137,63 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 					for(String aliasName : assetLocation.aliasDefinitionsFile().aliasNames()) {
 						if(!trie.containsKey("'" + aliasName + "'")) {
-							trie.add("'" + aliasName + "'", aliasName);
-							trie.add("\"" + aliasName + "\"", aliasName);
+							addToTrie(trie, "'" + aliasName + "'", new AliasReference(aliasName));
+							addToTrie(trie, "\"" + aliasName + "\"", new AliasReference(aliasName));
 						}
 					}
 				}
 			}
-			catch (TrieKeyAlreadyExistsException | EmptyTrieKeyException | BundlerFileProcessingException ex) {
+			catch (EmptyTrieKeyException | BundlerFileProcessingException ex) {
 				throw new ModelOperationException(ex);
 			}
 		}
 		
 		return trie;
 	}
+	
+	
+	private void addToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException
+	{
+		try
+		{
+			trie.add(key, value);
+		}
+		catch (TrieKeyAlreadyExistsException ex)
+		{
+		}
+	}
 
 	@Override
 	public AssetLocation getAssetLocation()
 	{
 		return assetLocation;
+	}
+	
+	
+	
+	private class AliasReference
+	{
+		private String alias;
+		private AliasReference(String alias)
+		{
+			this.alias = alias;
+		}
+		private String getAlias()
+		{
+			return alias;
+		}
+	}
+	
+	private class SourceModuleReference
+	{
+		private String requirePath;
+		private SourceModuleReference(String requirePath)
+		{
+			this.requirePath = requirePath;
+		}
+		private String getRequirePath()
+		{
+			return requirePath;
+		}
 	}
 }

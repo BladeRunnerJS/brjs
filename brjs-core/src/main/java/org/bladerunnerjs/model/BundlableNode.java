@@ -23,7 +23,7 @@ public interface BundlableNode extends Node, AssetContainer {
 	 * @return
 	 */
 	List<AssetContainer> getAssetContainers();
-	BundleSet getBundleSet() throws ModelOperationException;
+	BundleSet getBundleSet() throws ModelOperationException, RequirePathException;
 	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException;
 	List<AliasDefinitionsFile> getAliasDefinitionFiles();
 }

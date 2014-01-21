@@ -77,6 +77,10 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		if (testScopeNode instanceof Aspect)
 		{			
 			App app = this.getApp();
+			Aspect aspect = (Aspect) testScopeNode;
+			
+			assetContainers.add( aspect );
+			
 			List<Bladeset> bladesets = app.bladesets();
 			List<Blade> blades = new ArrayList<Blade>();
 			for (Bladeset bladeset : bladesets)

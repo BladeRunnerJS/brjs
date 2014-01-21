@@ -211,7 +211,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private String globalizeNonNamespacedJsClasses(SourceModule sourceModule, List<SourceModule> globalizedModules) throws ModelOperationException {
+	private String globalizeNonNamespacedJsClasses(SourceModule sourceModule, List<SourceModule> globalizedModules) throws ModelOperationException, RequirePathException {
 		StringBuffer stringBuffer = new StringBuffer();
 		
 		for(SourceModule dependentSourceModule : sourceModule.getDependentSourceModules(null)) 

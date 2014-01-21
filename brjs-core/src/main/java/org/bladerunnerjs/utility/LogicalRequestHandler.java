@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -58,7 +59,7 @@ public class LogicalRequestHandler {
 			ParsedContentPath contentPath = contentProvider.getContentPathParser().parse(requestUri);
 			contentProvider.writeContent(contentPath, bundlableNode.getBundleSet(), os);
 		}
-		catch(ModelOperationException e) {
+		catch(ModelOperationException | RequirePathException e) {
 			throw new BundlerProcessingException(e);
 		}
 	}
