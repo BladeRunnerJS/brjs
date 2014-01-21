@@ -35,10 +35,31 @@ public class TestPackVerifier extends AssetContainerVerifier
 		
 		for (File expectedFile : files)
 		{
-			assertTrue("expected file " + expectedFile.getPath() + " wasnt found in the bundleset", bundleSetFiles.contains(expectedFile));
+			if(!bundleSetFiles.contains(expectedFile) || files.length != bundleSetFiles.size())
+			{
+				assertEquals("expected file " + expectedFile.getPath() + " wasnt found in the bundleset", 
+						getFileList(files), 
+						getFileList(bundleSetFiles.toArray(new File[bundleSetFiles.size()])));
+			}
 		}
 		
 		return verifierChainer;
+	}
+	
+	
+	private String getFileList(File[] fileList)
+	{
+		String returnList = "";
+		for(File file : fileList)
+		{
+			returnList += file.getPath();
+			if(file != fileList[fileList.length - 1])
+			{
+				returnList += "\n";
+			}
+		}
+		
+		return returnList;
 	}
 
 }

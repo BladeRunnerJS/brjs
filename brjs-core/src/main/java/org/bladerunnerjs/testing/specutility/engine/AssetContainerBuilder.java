@@ -48,8 +48,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		
 		return builderChainer;
 	}
-
-	public BuilderChainer classRefersTo(String sourceClass, String referencedClass) throws Exception
+	
+	public BuilderChainer classRefersTo(String sourceClass, String... referencedClasses) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
@@ -58,7 +58,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
 		}
 		
-		FileUtils.write(sourceFile, getClassBody(sourceClass) + "var obj = new " + referencedClass + "();\n");
+		String classReferencesContent = "";
+		for(String referencedClass : referencedClasses)
+		{
+			classReferencesContent += getClassBody(sourceClass) + "var obj = new " + referencedClass + "();\n";
+		}
+		
+		FileUtils.write(sourceFile, classReferencesContent);
 		
 		return builderChainer;
 	}

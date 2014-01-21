@@ -26,9 +26,10 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			bladesetATs = bladeset.testType("acceptance").testTech("TEST_TECH");
 	}
 
+	// N A M E S P A C E D - J S
 	@Test
 	public void weBundleBladesetFilesInUTs() throws Exception {
-		given(bladeset).hasPackageStyle("", "namespaced-js")
+		given(bladeset).hasPackageStyle("namespaced-js")
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladesetUTs).testRefersTo("pkg/test.js", "appns.bs.Class1");
@@ -39,7 +40,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void weBundleBladesetFilesInATs() throws Exception {
-		given(bladeset).hasPackageStyle("", "namespaced-js")
+		given(bladeset).hasPackageStyle("namespaced-js")
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1");
@@ -50,7 +51,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void weBundleBladesetSrcTestContentsInUTs() throws Exception {
-		given(bladeset).hasPackageStyle("", "namespaced-js")
+		given(bladeset).hasPackageStyle("namespaced-js")
 			.and(bladesetUTs).containsFile("src-test/pkg/Util.js")
 			.and(bladeset).hasClasses("appns.bs.Class1")
 			.and(bladesetUTs).classDependsOn("pkg.Util", "appns.bs.Class1")
@@ -62,7 +63,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void noExceptionsAreThrownIfTheBladesetSrcFolderHasAHiddenFolder() throws Exception {
-		given(bladeset).hasPackageStyle("", "namespaced-js")
+		given(bladeset).hasPackageStyle("namespaced-js")
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).hasDir("src/.svn")
