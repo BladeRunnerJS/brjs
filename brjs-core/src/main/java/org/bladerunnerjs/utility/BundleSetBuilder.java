@@ -59,20 +59,20 @@ public class BundleSetBuilder {
 		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourcesList);
 	}
 	
-	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
+	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException, RequirePathException {
 		for(LinkedAsset seedFile : seedFiles) {
 			addLinkedAsset(seedFile);
 		}
 	}
 	
-	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
+	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException, RequirePathException {
 		if(sourceModules.add(sourceModule)) {
 			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
 			addLinkedAsset(sourceModule);
 		}
 	}
 	
-	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
+	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException, RequirePathException {
 		if(linkedAssets.add(linkedAsset)) {
 			List<SourceModule> moduleDependencies = getDependentSourceModules(linkedAsset, bundlableNode);
 			
@@ -106,7 +106,7 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
+	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException, RequirePathException {
 		if(assetLocations.add(assetLocation)) {
 			for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
 				addLinkedAsset(resourceSeedFile);
@@ -188,7 +188,7 @@ public class BundleSetBuilder {
 		return orderDependentSourceModules;
 	}
 	
-	private List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException {
+	private List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException, RequirePathException {
 		List<SourceModule> dependentSourceModules = file.getDependentSourceModules(bundlableNode);
 		
 		if(file instanceof SourceModule) {

@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -38,7 +39,7 @@ public class WorkbenchCommander extends NodeCommander<Workbench>
 		return new BundleInfoCommander(workbench.getBundleSet());
 	}
 
-	public void pageLoaded(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException 
+	public void pageLoaded(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException, RequirePathException 
 	{
 		StringWriter writer = new StringWriter();	
 		TagPluginUtility.filterContent(FileUtils.readFileToString(workbench.file("index.html")), workbench.getBundleSet(), writer, RequestMode.Dev, locale);
