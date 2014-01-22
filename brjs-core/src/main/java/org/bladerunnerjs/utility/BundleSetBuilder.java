@@ -77,7 +77,6 @@ public class BundleSetBuilder {
 			List<SourceModule> moduleDependencies = getDependentSourceModules(linkedAsset, bundlableNode);
 			
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
-			
 			 
 			File linkedAssetFile = linkedAsset.getUnderlyingFile();
 			File assetLocationDir = linkedAsset.getAssetLocation().getAssetContainer().dir();

@@ -79,4 +79,25 @@ public class AspectBundlingOfAspectResources extends SpecTest {
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.pkg.Class1", "appns.pkg.Class2");
 	}
+	
+	
+	@Test
+	public void resourcesCanBeInTheRootOfTheResourcesDir() throws Exception {
+		given(aspect).hasClasses("appns.Class1")
+    		.and(aspect).resourceFileRefersTo("config.xml", "appns.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("appns.Class1");
+	}
+	
+	@Test
+	public void resourcesCanBeInMultipleDirLevels() throws Exception {
+		given(exceptions).arentCaught();
+		
+		given(aspect).hasClasses("appns.Class1")
+    		.and(aspect).resourceFileRefersTo("config.xml", "appns.Class1")
+    		.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
+    		.and(aspect).resourceFileRefersTo("xml/dir1/config.xml", "appns.Class1");
+    	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+    	then(response).containsClasses("appns.Class1");
+	}
 }

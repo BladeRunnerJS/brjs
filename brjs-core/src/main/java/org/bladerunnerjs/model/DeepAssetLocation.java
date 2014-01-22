@@ -20,8 +20,7 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	@Override
 	public List<LinkedAsset> seedResources()
 	{
-		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
-		addChildAssetLocations(assetLocations, dir());
+		List<AssetLocation> assetLocations = getChildAssetLocations(dir());
 		return getAllAssetsFromAssetLocations(assetLocations);
 	}
 	
@@ -37,7 +36,15 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 		return assetFiles;
 	}
 	
-	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
+	private List<AssetLocation> getChildAssetLocations(File findInDir)
+	{
+		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
+		assetLocations.add( getCachedAssetLocationForDir(dir()) );
+		getChildAssetLocations(assetLocations, findInDir);
+		return assetLocations;
+	}
+	
+	private void getChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
 	{
 		if (!findInDir.isDirectory())
 		{
@@ -48,19 +55,25 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 		{
 			if (childDir.isDirectory() && childDir != dir())
 			{
-				AssetLocation assetLocationForDir = resourcesMap.get(childDir);
-    			if (assetLocationForDir == null)
-    			{
-    				assetLocationForDir = new ShallowAssetLocation(getAssetContainer().root(), getAssetContainer(), childDir);
-    				resourcesMap.put(childDir, assetLocationForDir);
-    			}
+				AssetLocation assetLocationForDir = getCachedAssetLocationForDir(childDir);
     			assetLocations.add(assetLocationForDir);
     			
-    			addChildAssetLocations(assetLocations, childDir);
+    			getChildAssetLocations(assetLocations, childDir);
 			}
 		}
 		
 		return;
+	}
+
+	private AssetLocation getCachedAssetLocationForDir(File childDir)
+	{
+		AssetLocation assetLocationForDir = resourcesMap.get(childDir);
+		if (assetLocationForDir == null)
+		{
+			assetLocationForDir = new ShallowAssetLocation(getAssetContainer().root(), getAssetContainer(), childDir);
+			resourcesMap.put(childDir, assetLocationForDir);
+		}
+		return assetLocationForDir;
 	}
 	
 }
