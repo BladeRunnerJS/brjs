@@ -37,6 +37,7 @@ public class ServletModelAccessor {
 	public static synchronized void destroy() {
 		if(model != null) {
 			model.close();
+			model = null;
 		}
 	}
 	
