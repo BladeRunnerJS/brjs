@@ -7,7 +7,6 @@ import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsConten
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -39,7 +38,6 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		then(response).containsDefinedClasses("br/SdkClass");
 	}
 	
-	@Ignore // This test should pass and define the sdkLib class 
 	@Test
 	public void aspectBundlesContainsNamespaceStyleSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
 		given(sdkLib).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)

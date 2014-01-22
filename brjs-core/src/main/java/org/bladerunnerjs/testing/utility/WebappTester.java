@@ -30,8 +30,8 @@ import org.apache.http.util.EntityUtils;
 public class WebappTester 
 {
 	
-	private static final int MAX_POLL_REQUESTS = 10;
-	private static final int POLL_INTERVAL = 500;
+	private static final int MAX_POLL_REQUESTS = 20;
+	private static final int POLL_INTERVAL = 1000;
 	
 	private int defaultSocketTimeout = 9999999;
 	private int defaultConnectionTimeout = 9999999;
