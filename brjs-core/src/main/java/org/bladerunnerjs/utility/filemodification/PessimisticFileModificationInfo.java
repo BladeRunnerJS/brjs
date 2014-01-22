@@ -1,10 +1,10 @@
 package org.bladerunnerjs.utility.filemodification;
 
-import java.util.Date;
-
 public class PessimisticFileModificationInfo implements FileModificationInfo {
+	long lastModified = 0;
+	
 	@Override
 	public long getLastModified() {
-		return (new Date()).getTime();
+		return ++lastModified;
 	}
 }
