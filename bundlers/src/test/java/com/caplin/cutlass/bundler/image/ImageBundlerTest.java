@@ -27,8 +27,8 @@ import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 public class ImageBundlerTest
 {
 	private static final File BASE_DIR = new File("src/test/resources/generic-bundler/bundler-structure-tests");
-	private static final File APP_BASE = new File(BASE_DIR, CutlassConfig.APPLICATIONS_DIR + "/test-app2");
-	private static final File DEFAULT_ASPECT = new File(APP_BASE, "/default-aspect");
+	private static final File APP_BASE = new File(BASE_DIR, CutlassConfig.APPLICATIONS_DIR + "/test-app2").getAbsoluteFile();
+	private static final File DEFAULT_ASPECT = new File(APP_BASE, "/default-aspect").getAbsoluteFile();
 	private static final File ALTERNATE_ASPECT = new File(APP_BASE, "/xtra-aspect");
 	private static final File WORKBENCH = new File(APP_BASE, "/fx-bladeset/blades/fx-blade1/workbench");
 	private static final File BLADE = new File(APP_BASE, "/fx-bladeset/blades/fx-blade1");
