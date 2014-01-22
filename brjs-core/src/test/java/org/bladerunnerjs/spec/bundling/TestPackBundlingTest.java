@@ -35,4 +35,16 @@ public class TestPackBundlingTest extends SpecTest
 		then(aspectUTs).bundledFilesEquals(
 				aspectUTs.testSource().file("appTestUtils/Class1.js"));
 	}
+	
+	@Test
+	public void srcTestCanLiveAtTestsAndTechnologyLevel() throws Exception {
+		given(aspect).hasPackageStyle("", "namespaced-js")
+			.and(aspectUTs).hasClass("aspectUT.Class1")
+			.and(aspect).hasTestClass("appns.Class1")
+			.and(aspectUTs).testRefersTo("pkg/test.js", "aspectUT.Class1")
+			.and(aspectUTs).classRefersTo("aspectUT.Class1", "appns.Class1");
+		then(aspectUTs).bundledFilesEquals(
+				aspectUTs.testSource().file("aspectUT/Class1.js"),
+				aspect.assetLocation("src-test").file("appns/Class1.js"));
+	}
 }
