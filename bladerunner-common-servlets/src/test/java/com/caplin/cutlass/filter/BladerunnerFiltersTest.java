@@ -51,7 +51,7 @@ public class BladerunnerFiltersTest
 	@BeforeClass
 	public static void suiteSetup() throws Exception
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		httpclient = new DefaultHttpClient();
 		httpclient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
 		mockJndiContext = TestContextFactory.getTestContext();

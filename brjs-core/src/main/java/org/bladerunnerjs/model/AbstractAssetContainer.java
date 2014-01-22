@@ -11,15 +11,16 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.filemodification.NodeFileModifiedChecker;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private AssetLocationPlugin previousAssetLocationPlugin;
 	private Map<String, AssetLocation> assetLocationCache;
 	
 	private List<AssetLocation> assetLocations;
-	private long assetLocationsCreationDate;
+	private NodeFileModifiedChecker assetLocationsFileModifiedChecker = new NodeFileModifiedChecker(this);
 	private List<SourceModule> sourceModules;
-	private long sourceModulesCreationDate;
+	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -43,9 +44,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<SourceModule> sourceModules() {
-		if((lastModified() > sourceModulesCreationDate) || (sourceModules == null)) {
+		if(sourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (sourceModules == null)) {
 			sourceModules = new ArrayList<SourceModule>();
-			sourceModulesCreationDate = lastModified();
 			
 			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 				for (AssetLocation assetLocation : assetLocations())
@@ -92,9 +92,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		if((lastModified() > assetLocationsCreationDate) || (assetLocations == null)) {
-			assetLocationsCreationDate = lastModified();
-			
+		if(assetLocationsFileModifiedChecker.hasChangedSinceLastCheck() || (assetLocations == null)) {
 			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
 				if(assetLocationPlugin.canHandleAssetContainer(this)) {
 					if(assetLocationPlugin != previousAssetLocationPlugin) {

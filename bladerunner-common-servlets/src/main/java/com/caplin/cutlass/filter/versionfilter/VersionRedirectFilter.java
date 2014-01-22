@@ -19,9 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.ServletModelAccessor;
 
@@ -56,6 +56,7 @@ public class VersionRedirectFilter implements Filter
 	@Override
 	public void destroy()
 	{
+		ServletModelAccessor.destroy();
 	}
 	
 	@Override

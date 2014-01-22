@@ -207,7 +207,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 
 	public BuilderChainer usedForServletModel()
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		ServletModelAccessor.initializeModel(brjs);
 		return builderChainer;
 	}

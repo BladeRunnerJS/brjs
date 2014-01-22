@@ -41,7 +41,13 @@ public class BRJSServletFilter implements Filter
 		ServletModelAccessor.initializeModel(servletContext);
 		servletUtils = new BRJSServletUtils();
 	}
-
+	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+	}
+	
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException
 	{
@@ -71,14 +77,6 @@ public class BRJSServletFilter implements Filter
 			ServletModelAccessor.releaseModel();
 		}
 	}
-
-	@Override
-	public void destroy()
-	{
-	}
-	
-	
-	
 	
 	private void doFiltering(BRJS brjs, HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException
 	{

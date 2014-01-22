@@ -34,8 +34,15 @@ public class ServletModelAccessor {
 		}
 	}
 	
-	public static void reset() {
-		model = null;		
+	public static synchronized void destroy() {
+		if(model != null) {
+			try {
+				model.close();
+			}
+			finally {
+				model = null;
+			}
+		}
 	}
 	
 	public static BRJS aquireModel() {

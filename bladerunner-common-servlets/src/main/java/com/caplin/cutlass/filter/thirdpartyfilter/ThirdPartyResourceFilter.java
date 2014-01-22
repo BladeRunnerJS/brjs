@@ -36,6 +36,12 @@ public class ThirdPartyResourceFilter implements Filter
 	}
 	
 	@Override
+	public void destroy() 
+	{
+		ServletModelAccessor.destroy();
+	}
+	
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) 
 			throws IOException, ServletException
 	{
@@ -71,10 +77,4 @@ public class ThirdPartyResourceFilter implements Filter
 			throw new ServletException(e);
 		}
 	}
-
-	@Override
-	public void destroy() 
-	{		
-	}
-
 }

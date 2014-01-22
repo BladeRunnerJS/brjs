@@ -56,7 +56,13 @@ public class TokenisingServletFilter implements Filter
 		contextPath = filterConfig.getServletContext().getContextPath();
 		logger = brjs.logger(LoggerType.FILTER, TokenisingServletFilter.class);
 	}
-
+	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+	}
+	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
@@ -106,12 +112,4 @@ public class TokenisingServletFilter implements Filter
 		}
 		return false;
 	}
-
-	@Override
-	public void destroy()
-	{
-		streamTokeniser = null;
-		tokenFinder = null;
-	}
-
 }

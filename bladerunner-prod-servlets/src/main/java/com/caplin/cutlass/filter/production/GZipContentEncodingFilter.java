@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class GZipContentEncodingFilter implements Filter
@@ -26,6 +27,12 @@ public class GZipContentEncodingFilter implements Filter
 	{
 		brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
 		servletContext = filterConfig.getServletContext();
+	}
+	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
 	}
 	
 	@Override
@@ -59,10 +66,5 @@ public class GZipContentEncodingFilter implements Filter
 		{
 			throw new ServletException(e);
 		}
-	}
-	
-	@Override
-	public void destroy()
-	{
 	}
 }

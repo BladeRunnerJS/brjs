@@ -59,7 +59,7 @@ public class ApplicationEndToEndTests
 		brjs.appJars().create();
 		appServer = brjs.applicationServer(HTTP_PORT);
 		appServer.start();
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		tester = new WebappTester(tempSdkInstall);
 	}
 	
@@ -116,7 +116,7 @@ public class ApplicationEndToEndTests
 			.statusCodeIs(200).contentTypeIs("text/javascript")
 			.responseIsConcatenationOfFiles(new String[]{
 					APPS + "/test-app1/default-aspect/src/section/xmlDepend.js",
-					SDK_DIR + "/libs/javascript/caplin/src/caplin/bootstrap.js",
+					SDK_DIR + "/libs/javascript/caplin/src/br/bootstrap.js",
 					SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js",
 					SDK_DIR + "/libs/javascript/thirdparty/knockout/knockout.js",
 					APPS + "/test-app1/default-aspect/src/section/app/main1.js", 
@@ -136,7 +136,7 @@ public class ApplicationEndToEndTests
 		.statusCodeIs(200).contentTypeIs("text/javascript")
 		.responseIsConcatenationOfFiles(new String[]{
 				APPS + "/test-app1/default-aspect/src/section/xmlDepend.js",
-				SDK_DIR + "/libs/javascript/caplin/src/caplin/bootstrap.js",
+				SDK_DIR + "/libs/javascript/caplin/src/br/bootstrap.js",
 				SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js",
 				SDK_DIR + "/libs/javascript/thirdparty/knockout/knockout.js",
 				APPS + "/test-app1/default-aspect/src/section/app/main1.js", 
@@ -182,7 +182,7 @@ public class ApplicationEndToEndTests
 			.statusCodeIs(200).contentTypeIs("text/javascript")
 			.responseIsConcatenationOfFiles(new String[]{
 					APPS + "/test-app1/default-aspect/src/section/xmlDepend.js",
-					SDK_DIR + "/libs/javascript/caplin/src/caplin/bootstrap.js",
+					SDK_DIR + "/libs/javascript/caplin/src/br/bootstrap.js",
 					SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js",
 					SDK_DIR + "/libs/javascript/thirdparty/knockout/knockout.js",
 					APPS + "/test-app1/default-aspect/src/section/app/main1.js", 

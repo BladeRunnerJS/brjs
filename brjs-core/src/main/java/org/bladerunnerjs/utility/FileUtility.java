@@ -12,8 +12,10 @@ public class FileUtility {
 		}
 		final File tempdir = File.createTempFile(prependedFolderName, "");
 		tempdir.delete();
-		tempdir.mkdir();	
+		tempdir.mkdir();
 		Runtime.getRuntime().addShutdownHook(new DeleteTempFileShutdownHook(tempdir));
-		return tempdir;
+		File tempSubDir = new File(tempdir, prependedFolderName);
+		tempSubDir.mkdir();
+		return tempSubDir;
 	}
 }

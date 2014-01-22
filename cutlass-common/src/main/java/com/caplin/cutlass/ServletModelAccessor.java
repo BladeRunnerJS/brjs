@@ -26,13 +26,12 @@ public class ServletModelAccessor {
 	
 	public static synchronized void destroy() {
 		if(model != null) {
-			model.close();
-			model = null;
+			try {
+				model.close();
+			}
+			finally {
+				model = null;
+			}
 		}
-	}
-	
-	// for testing purposes only
-	public static void reset() {
-		model = null;
 	}
 }
