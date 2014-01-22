@@ -96,11 +96,11 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void eachClassShouldBeReturnedUnchagned() throws Exception {
+	public void eachClassShouldBeReturnedLargelyUnchanged() throws Exception {
 		given(aspect).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function() {\n};");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
-		then(requestResponse).textEquals("appns.Class1 = function() {\n};");
+		then(requestResponse).textEquals("appns.Class1 = function() {\n};\ndefine('appns/Class1', appns.Class1);");
 	}
 	
 	@Test

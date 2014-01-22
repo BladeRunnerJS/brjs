@@ -59,7 +59,7 @@ public class StringVerifier {
 	public VerifierChainer containsDefinedClasses(String... classRequirePaths)
 	{
 		for(String classRequirePath : classRequirePaths) {
-			String expectedDefineString = "define('" + classRequirePath + "', function(require, exports, module)";
+			String expectedDefineString = "define('" + classRequirePath + "', ";
 			
 			if(!string.contains(expectedDefineString) )
 			{
