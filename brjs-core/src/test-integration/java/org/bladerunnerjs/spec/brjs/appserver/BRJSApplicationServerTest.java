@@ -184,7 +184,7 @@ public class BRJSApplicationServerTest extends SpecTest
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
 			.and(brjs.applicationServer(appServerPort)).started();
-		then(appServer).requestCanBeMadeFor("/app1/");
+		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
 	}
 	
 }
