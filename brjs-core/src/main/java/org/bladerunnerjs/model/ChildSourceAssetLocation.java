@@ -24,6 +24,7 @@ public class ChildSourceAssetLocation extends ShallowAssetLocation {
 		String locationRequirePrefix = RelativePathUtility.get(assetContainer.file("src"), dir()).replaceAll("/$", "");
 		
 		if(!locationRequirePrefix.startsWith(containerRequirePrefix)) {
+			// TODO: use dir().getPath() instead of locationRequirePrefix for a clearer error message
 			throw new InvalidRequirePathException("Source module containing directory '" + locationRequirePrefix + "' does not start with correct require prefix '" + containerRequirePrefix + "'.");
 		}
 		

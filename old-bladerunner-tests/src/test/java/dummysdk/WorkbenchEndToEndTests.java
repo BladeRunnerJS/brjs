@@ -66,7 +66,7 @@ public class WorkbenchEndToEndTests
 				APPS + "/test-app1/a-bladeset/blades/blade1/workbench/src/workbench/wb2.js",
 				APPS + "/test-app1/a-bladeset/blades/blade1/src/section/a/blade1/xmlDepend.js",
 				APPS + "/test-app1/a-bladeset/src/section/a/xmlDepend.js",
-				CutlassConfig.SDK_DIR + "/libs/javascript/caplin/src/caplin/bootstrap.js",
+				CutlassConfig.SDK_DIR + "/libs/javascript/caplin/src/br/bootstrap.js",
 				APPS + "/test-app1/a-bladeset/src/section/a/app/bladeset2.js",
 				APPS + "/test-app1/a-bladeset/src/section/a/app/bladeset1.js",
 				APPS + "/test-app1/a-bladeset/blades/blade1/src/section/a/blade1/app/blade1.js",
