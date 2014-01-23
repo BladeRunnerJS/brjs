@@ -73,6 +73,6 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			"appns.Class1 = function() {",
 			"};",
 			"module.exports = appns.Class1;",
-			"});");
+			"\n});");
 	}
 }
