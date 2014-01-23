@@ -12,7 +12,6 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServeCommandTest extends SpecTest
@@ -44,12 +43,11 @@ public class ServeCommandTest extends SpecTest
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 
-	@Ignore
 	@Test
 	public void serveCommandStartsAppServer() throws Exception
 	{
 		given(logging).enabled();
-		when(brjs).runCommand("serve");
+		when(brjs).runThreadedCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
 			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + appServerPort +"/")
@@ -57,13 +55,12 @@ public class ServeCommandTest extends SpecTest
 			.and(appServer).requestIsRedirected("/","/dashboard");
 	}
 	
-	@Ignore
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated();
 			/* and */ brjs.bladerunnerConf().setJettyPort(appServerPort);
-		when(brjs).runCommand("serve");
+		when(brjs).runThreadedCommand("serve");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 
@@ -75,7 +72,6 @@ public class ServeCommandTest extends SpecTest
 		then(exceptions).verifyException(IOException.class, appServerPort);
 	}
 	
-	@Ignore
 	@Test
 	public void canOverridePortValueWithArgument() throws Exception
 	{
@@ -83,7 +79,7 @@ public class ServeCommandTest extends SpecTest
 		appServer = brjs.applicationServer(appServerPort);
 		
 		given(logging).enabled();
-		when(brjs).runCommand("serve", "-p", "7777");
+		when(brjs).runThreadedCommand("serve", "-p", "7777");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")
 			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + "7777/")

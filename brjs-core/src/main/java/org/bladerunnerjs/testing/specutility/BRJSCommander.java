@@ -94,4 +94,33 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 	{
 		node.notifyObservers(event, node);
 	}
+
+	//TODO: find a better way to run tests that use the 'serve' command - its the only command that doesnt immediately return 
+	public void runThreadedCommand(final String... args)
+	{
+		Thread t = new Thread( new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				try
+				{
+					runCommand(args);
+				}
+				catch (Exception e)
+				{
+					throw new RuntimeException(e);
+				}
+			}
+		});
+		t.start();
+		try
+		{
+			Thread.sleep(2000);
+		}
+		catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
 }
