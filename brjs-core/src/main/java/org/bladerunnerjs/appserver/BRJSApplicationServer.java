@@ -119,5 +119,14 @@ public class BRJSApplicationServer implements ApplicationServer
 		appContext.addServlet(servletHolder, servletPath);
 		servletHolder.start();
 	}
+
+	@Override
+	public void join() throws Exception
+	{
+		if (server != null)
+		{
+			server.join();
+		}
+	}
 	
 }
