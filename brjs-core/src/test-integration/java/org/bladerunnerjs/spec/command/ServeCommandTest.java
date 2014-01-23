@@ -12,6 +12,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServeCommandTest extends SpecTest
@@ -43,6 +44,7 @@ public class ServeCommandTest extends SpecTest
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 
+	@Ignore
 	@Test
 	public void serveCommandStartsAppServer() throws Exception
 	{
@@ -55,6 +57,7 @@ public class ServeCommandTest extends SpecTest
 			.and(appServer).requestIsRedirected("/","/dashboard");
 	}
 	
+	@Ignore
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
@@ -72,6 +75,7 @@ public class ServeCommandTest extends SpecTest
 		then(exceptions).verifyException(IOException.class, appServerPort);
 	}
 	
+	@Ignore
 	@Test
 	public void canOverridePortValueWithArgument() throws Exception
 	{
