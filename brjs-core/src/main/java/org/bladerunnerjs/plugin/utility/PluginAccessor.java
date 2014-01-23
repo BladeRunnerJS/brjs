@@ -14,6 +14,7 @@ import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
@@ -29,6 +30,20 @@ public class PluginAccessor {
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		this.pluginLocator = pluginLocator;
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
+	}
+	
+	public List<Plugin> allPlugins() {
+		List<Plugin> plugins = new ArrayList<>();
+		
+		plugins.addAll(commands());
+		plugins.addAll(contentProviders());
+		plugins.addAll(tagHandlers());
+		plugins.addAll(minifiers());
+		plugins.addAll(modelObservers());
+		plugins.addAll(assetProducers());
+		plugins.addAll(assetLocationProducers());
+		
+		return plugins;
 	}
 	
 	public CommandList commandList() {
