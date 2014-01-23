@@ -35,6 +35,13 @@ public class VirtualProxyPlugin implements Plugin {
 	}
 	
 	@Override
+	public void close() {
+		if(proxyState == VirtualProxyState.Initialized) {
+			plugin.close();
+		}
+	}
+	
+	@Override
 	public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
 	{
 		return otherPluginCLass.isAssignableFrom(plugin.getClass());

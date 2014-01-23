@@ -28,6 +28,11 @@ public interface Plugin
 	public void setBRJS(BRJS brjs);
 	
 	/**
+	 * Invoked during the invocation of {@link BRJS#close()}, offering plug-ins a chance to release any resources they may be holding on to.
+	 */
+	public void close();
+	
+	/**
 	 * An alternative to Java's <code>instanceof</code> operator that is needed because BladeRunnerJS wraps plug-ins within <a href="https://en.wikipedia.org/wiki/Lazy_loading#Virtual_proxy">virtual proxy</a>
 	 * wrappers, causing the native <code>instanceof</code> operator to become ineffective.
 	 * 
