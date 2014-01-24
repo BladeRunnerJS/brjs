@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.filefilter.AndFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
@@ -365,7 +367,9 @@ public class BRJS extends AbstractBRJSRootNode
 			files = new ArrayList<>();
 		}
 		else {
-			files = assetLocator.createAssetFiles(assetFileClass, assetLocation, getFileIterator(dir).files(fileFilter));
+			// TODO: none of the current spec tests check to ensure directories can't be matched
+			IOFileFilter combinedFileFilter = new AndFileFilter(FileFileFilter.FILE, fileFilter);
+			files = assetLocator.createAssetFiles(assetFileClass, assetLocation, getFileIterator(dir).files(combinedFileFilter));
 		}
 		
 		return files;
