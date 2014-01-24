@@ -7,3 +7,12 @@
 [submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/topiarist"]
 	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/topiarist
 	url = https://github.com/BladeRunnerJS/topiarist.git
+[submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/browser-modules"]
+	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/browser-modules
+	url = https://github.com/kybernetikos/browser-modules.git
+[submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/br-bootstrap"]
+	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/br-bootstrap
+	url = https://github.com/kybernetikos/browser-modules.git
+[submodule "cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/bootstrap/browser-modules"]
+	path = cutlass-sdk/workspace/sdk/libs/javascript/thirdparty/bootstrap/browser-modules
+	url = https://github.com/kybernetikos/browser-modules.git
