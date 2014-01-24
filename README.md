@@ -41,3 +41,4 @@ The built zip file will be found in `BRJS_ROOT/cutlass-sdk/build/distributions/`
 ### More information    
 
 See the [BRJS Developer Setup Guide](https://github.com/BladeRunnerJS/brjs/wiki/BRJS-Developer-Setup) for more information.
+
