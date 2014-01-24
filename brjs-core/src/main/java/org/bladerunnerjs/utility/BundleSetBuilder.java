@@ -27,6 +27,8 @@ import com.google.common.base.Joiner;
 
 
 public class BundleSetBuilder {
+	private static final String BRJS_BOOTSTRAP_SOURCE_MODULE_NAME = "bootstrap";
+	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Set<AliasDefinition> activeAliases = new HashSet<>();
 	private final Set<AssetLocation> resources = new HashSet<>();
@@ -176,9 +178,9 @@ public class BundleSetBuilder {
 	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException {
 		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
 		
-		if(!sourceModule.getRequirePath().equals("bootstrap")) {
+		if(!sourceModule.getRequirePath().equals(BRJS_BOOTSTRAP_SOURCE_MODULE_NAME)) {
 			try {
-				orderDependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
+				orderDependentSourceModules.add(bundlableNode.getSourceModule(BRJS_BOOTSTRAP_SOURCE_MODULE_NAME));
 			}
 			catch(RequirePathException e) {
 				// do nothing: 'bootstrap' is only an implicit dependency if it exists 
@@ -194,9 +196,9 @@ public class BundleSetBuilder {
 		if(file instanceof SourceModule) {
 			SourceModule sourceModule = (SourceModule) file;
 			
-			if(!sourceModule.getRequirePath().equals("bootstrap")) {
+			if(!sourceModule.getRequirePath().equals(BRJS_BOOTSTRAP_SOURCE_MODULE_NAME)) {
 				try {
-					dependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
+					dependentSourceModules.add(bundlableNode.getSourceModule(BRJS_BOOTSTRAP_SOURCE_MODULE_NAME));
 				}
 				catch(RequirePathException e) {
 					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
