@@ -3,5 +3,6 @@ org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyContentPl
 org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin
+org.bladerunnerjs.plugin.plugins.bundlers.typescript.TypeScriptContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.html.HTMLContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.xml.XMLContentPlugin

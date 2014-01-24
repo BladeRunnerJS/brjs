@@ -1,4 +1,5 @@
 org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsTagHandlerPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsTagHandlerPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsTagHandlerPlugin
+org.bladerunnerjs.plugin.plugins.bundlers.typescript.TypeScriptTagHandlerPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyTagHandlerPlugin

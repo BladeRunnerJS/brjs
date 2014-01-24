@@ -23,6 +23,17 @@
 		<script type="text/javascript" src="unbundled-resources/releaseNoteUtils.js"></script>
 		
 		<script type="text/javascript">
+			var League = require('caplinx/dashboard/app/typescript/pkg/League');
+			var Team = require('caplinx/dashboard/app/typescript/Team');
+			
+			var league = new League("NFL AFC East");
+			var miamiDolphins = new Team("Miami Dolphins");
+			league.addTeam(miamiDolphins);
+			
+			alert(league.getName());
+		</script>
+			
+		<script type="text/javascript">
 			br.Core.thirdparty("jquery");
 			br.Core.thirdparty("wolf-simple-box");
 			
