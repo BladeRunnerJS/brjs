@@ -118,11 +118,11 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	private void recalculateDependencies(BundlableNode bundlableNode) throws ModelOperationException {
-		try {
+		try(Reader reader = linkedAsset.getReader()) {
 			orderDependentSourceModules = new ArrayList<>();
 			
 			StringWriter stringWriter = new StringWriter();
-			IOUtils.copy(linkedAsset.getReader(), stringWriter);
+			IOUtils.copy(reader, stringWriter);
 			Matcher matcher = extendPattern.matcher(stringWriter.toString());
 			
 			while (matcher.find()) {
