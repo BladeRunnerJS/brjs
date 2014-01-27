@@ -17,7 +17,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	private Blade blade;
 	private TestPack bladeUTs, bladeATs;
 	
-	private JsLib appThirdparty;
+	private JsLib appThirdparty,sdkThirdparty;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -32,6 +32,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 			bladeATs = blade.testType("acceptance").testTech("TEST_TECH");
 			
 			appThirdparty = app.nonBladeRunnerLib("appThirdparty");
+			sdkThirdparty = brjs.sdkLib();
 	}
 	
 	// N A M E S P A C E D - J S
@@ -100,7 +101,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	@Test
 	public void weCanBundleAppThirdpartyLibrariesInATs() throws Exception {
 		given(appThirdparty).hasPackageStyle("namespaced-js")
-			.and(logging).echoEnabled()	// TODO - why does this output that 'bs-bladeset/blades/b1/workbench' is a source location for the app?
+//			.and(logging).echoEnabled()	
 			.and(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js, src2.js")
 			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
 			.and(blade).hasPackageStyle("namespaced-js")
@@ -113,4 +114,19 @@ public class BladeTestPackBundlingTest extends SpecTest
 				appThirdparty.dir());
 	}
 
+	@Test
+	public void weCanBundleSdkThirdpartyLibrariesInATs() throws Exception {
+		given(sdkThirdparty).hasPackageStyle("namespaced-js")
+//			.and(logging).echoEnabled()	
+			.and(sdkThirdparty).classFileHasContent("br.namespaced.Class1", "sdk class1 contents")
+			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(blade).classRefersTo("appns.bs.b1.Class1", "br.namespaced.Class1", "appns.bs.b1.Class2")
+			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
+		then(bladeATs).bundledFilesEquals(
+				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
+				blade.assetLocation("src").file("appns/bs/b1/Class2.js"),
+				sdkThirdparty.assetLocation("src").file("br/namespaced/Class1.js"));
+	}
+	
 }
