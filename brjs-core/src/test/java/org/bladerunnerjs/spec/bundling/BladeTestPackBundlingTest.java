@@ -1,8 +1,10 @@
 package org.bladerunnerjs.spec.bundling;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -12,9 +14,12 @@ import org.junit.Test;
 public class BladeTestPackBundlingTest extends SpecTest
 {
 	private App app;
+	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
 	private TestPack bladeUTs, bladeATs;
+	
+	private JsLib appThirdparty,sdkThirdparty;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -23,10 +28,14 @@ public class BladeTestPackBundlingTest extends SpecTest
     		.and(brjs).automaticallyFindsMinifiers()
     		.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
+			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			bladeUTs = blade.testType("unit").testTech("TEST_TECH");
 			bladeATs = blade.testType("acceptance").testTech("TEST_TECH");
+			
+			appThirdparty = app.nonBladeRunnerLib("appThirdparty");
+			sdkThirdparty = brjs.sdkLib();
 	}
 	
 	// N A M E S P A C E D - J S
@@ -77,18 +86,62 @@ public class BladeTestPackBundlingTest extends SpecTest
 	}
 	
 	@Test
-	public void weCanBundleBladesetAndBladeFilesInUTs() throws Exception {
+	public void weCanBundleBladesetAndBladeFilesInATs() throws Exception {
 		given(bladeset).hasPackageStyle("namespaced-js")
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(blade).hasPackageStyle("namespaced-js")
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2", "appns.bs.Class1")
-			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
-		then(bladeUTs).bundledFilesEquals(
+			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
+		then(bladeATs).bundledFilesEquals(
 				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
 				blade.assetLocation("src").file("appns/bs/b1/Class2.js"),
 				bladeset.assetLocation("src").file("appns/bs/Class1.js"),
 				bladeset.assetLocation("src").file("appns/bs/Class2.js"));
 	}
+	
+	@Test
+	public void weCanBundleAspectSrcCodeInATs() throws Exception {
+		given(aspect).hasPackageStyle("namespaced-js")
+			.and(aspect).classFileHasContent("appns.Class1", "aspect content")
+			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.Class1", "appns.bs.b1.Class2")
+			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
+		then(bladeATs).bundledFilesEquals(
+				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
+				blade.assetLocation("src").file("appns/bs/b1/Class2.js"),
+				aspect.assetLocation("src").file("appns/Class1.js"));
+	}
+	
+	@Test
+	public void weCanBundleAppThirdpartyLibrariesInATs() throws Exception {
+		given(appThirdparty).hasPackageStyle("namespaced-js")
+			.and(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js, src2.js")
+			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
+			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(blade).classRefersTo("appns.bs.b1.Class1", appThirdparty.getName(), "appns.bs.b1.Class2")
+			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
+		then(bladeATs).bundledFilesEquals(
+				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
+				blade.assetLocation("src").file("appns/bs/b1/Class2.js"),
+				appThirdparty.dir());
+	}
+
+	@Test
+	public void weCanBundleSdkThirdpartyLibrariesInATs() throws Exception {
+		given(sdkThirdparty).hasPackageStyle("namespaced-js")
+			.and(sdkThirdparty).classFileHasContent("br.namespaced.Class1", "sdk class1 contents")
+			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(blade).classRefersTo("appns.bs.b1.Class1", "br.namespaced.Class1", "appns.bs.b1.Class2")
+			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
+		then(bladeATs).bundledFilesEquals(
+				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
+				blade.assetLocation("src").file("appns/bs/b1/Class2.js"),
+				sdkThirdparty.assetLocation("src").file("br/namespaced/Class1.js"));
+	}
+	
 }

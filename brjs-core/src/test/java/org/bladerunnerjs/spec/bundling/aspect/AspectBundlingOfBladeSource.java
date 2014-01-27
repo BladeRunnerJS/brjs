@@ -38,6 +38,24 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	}
 	
 	@Test
+	public void requirePathsCanBeRelative() throws Exception {
+		given(blade).containsFileWithContents("src/appns/bs/b1/Class1.js", "Class1 = function(){}; require('./Class2')")
+			.and(blade).containsFileWithContents("src/appns/bs/b1/Class2.js", "Class2 = function(){};")
+			.and(aspect).indexPageRefersTo("src/appns/bs/b1/Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("Class2 = function(){};");
+	}
+	
+	@Test
+	public void requirePathsCanBeRelativeWithSpaces() throws Exception {
+		given(blade).containsFileWithContents("src/appns/bs/b1/Class1.js", "require( './Class2' ); Class1 = function(){}; ")
+			.and(blade).containsFileWithContents("src/appns/bs/b1/Class2.js", "Class2 = function(){};")
+			.and(aspect).indexPageRefersTo("src/appns/bs/b1/Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("Class2 = function(){};");
+	}
+	
+	@Test
 	public void weBundleABladeClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
