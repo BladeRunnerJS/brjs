@@ -41,6 +41,8 @@ public class BRJSServletUtils
 		ContentPlugin contentPlugin = getContentPluginForRequest(brjs, bladerunnerUri);
 		if (contentPlugin != null)
 		{
+			String contentType = context.getMimeType( req.getRequestURI() );
+			resp.setContentType( contentType );
 			ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
 			handleRequestUsingContentPlugin(brjs, bladerunnerUri, parse(contentPathParser, bladerunnerUri), contentPlugin, resp);
 			return true;

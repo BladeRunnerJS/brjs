@@ -58,4 +58,12 @@ public class AppServerVerifier
 		return verifierChainer;		
 	}
 
+	public VerifierChainer contentTypeForRequestIs(String urlPath, String mimeType) throws ClientProtocolException, IOException
+	{
+		String url = String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, specTest.appServerPort, urlPath);
+		specTest.webappTester.whenRequestMadeTo(url,false).contentTypeIs(mimeType);
+		
+		return verifierChainer;		
+	}
+
 }
