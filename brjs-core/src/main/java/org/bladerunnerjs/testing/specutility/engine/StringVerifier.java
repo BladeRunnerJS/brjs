@@ -139,4 +139,9 @@ public class StringVerifier {
 		
 		return verifierChainer;
 	}
+
+	public void lineContains(int lineNum, String contains)
+	{
+		assertContains( contains , string.split("\n")[lineNum-1]);
+	}
 }
