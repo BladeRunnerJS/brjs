@@ -86,7 +86,7 @@ public class BundleSetBuilder {
 	
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException, RequirePathException {
 		if(linkedAssets.add(linkedAsset)) {
-			List<SourceModule> moduleDependencies = getDependentSourceModules(linkedAsset, bundlableNode);
+			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
 			
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			 
@@ -175,23 +175,13 @@ public class BundleSetBuilder {
 	}
 	
 	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
-		for(LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule, bundlableNode)) {
+		for(LinkedAsset dependentSourceModule : sourceModule.getOrderDependentSourceModules(bundlableNode)) {
 			if(!metDependencies.contains(dependentSourceModule)) {
 				return false;
 			}
 		}
 		
 		return true;
-	}
-	
-	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException {
-		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
-		return orderDependentSourceModules;
-	}
-
-	private List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException, RequirePathException {
-		List<SourceModule> dependentSourceModules = file.getDependentSourceModules(bundlableNode);
-		return dependentSourceModules;
 	}
 	
 	private String sourceFilePaths(List<SourceModule> sourceModules) {
