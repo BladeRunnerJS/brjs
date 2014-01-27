@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
@@ -12,18 +13,21 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TestRunner;
 
 public class StandardJsLib extends AbstractAssetContainer implements JsLib
 {
 	private String name;
 	private JsLibConf libConf;
 	private Node parent;
+	private final NodeMap<TypedTestPack> testTypes;
 	
 	public StandardJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
 		this.parent = parent;
+		testTypes = TypedTestPack.createNodeSet(rootNode);
 	}
 	
 	public StandardJsLib(RootNode rootNode, Node parent, File dir)
@@ -148,4 +152,23 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	{
 		return "jslib";
 	}
+	
+	@Override
+	public void runTests(TestType... testTypes)
+	{
+		TestRunner.runTests(testTypes);
+	}
+	
+	@Override
+	public List<TypedTestPack> testTypes()
+	{
+		return children(testTypes);
+	}
+	
+	@Override
+	public TypedTestPack testType(String testTypeName)
+	{
+		return child(testTypes, testTypeName);
+	}
+	
 }

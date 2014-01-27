@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.BRJS;
 
 import com.caplin.cutlass.bundler.css.CssBundler;
 import com.caplin.cutlass.bundler.html.HtmlBundler;
