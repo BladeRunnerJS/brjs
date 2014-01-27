@@ -369,6 +369,7 @@ public class BRJS extends AbstractBRJSRootNode
 			files = new ArrayList<>();
 		}
 		else {
+			// TODO: none of the current spec tests check to ensure directories can't be matched
 			files = assetLocator.createAssetFiles(assetFileClass, assetLocation, getFileIterator(dir).files(assetFileFilter));
 		}
 		

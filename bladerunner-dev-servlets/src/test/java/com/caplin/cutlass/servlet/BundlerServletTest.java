@@ -303,6 +303,11 @@ public class BundlerServletTest
 			}
 			
 			@Override
+			public void close()
+			{
+			}
+			
+			@Override
 			public String getBundlerExtension()
 			{
 				return "dummy.bundle";

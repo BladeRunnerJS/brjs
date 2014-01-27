@@ -34,17 +34,28 @@ import com.caplin.cutlass.command.war.WarCommand;
 
 // TODO: move all classes in brjs-runner into 'org.bladerunnerjs.runner'?
 public class CommandRunner {
+	private static final int SUCCESS_EXIT_CODE = 0;
+	private static final int ERR_EXIT_CODE = 1;
+
 	public static void main(String[] args) {
-		try {
+		int exitCode = SUCCESS_EXIT_CODE;
+		try 
+		{
 			new CommandRunner().run(args);
 		}
-		catch (CommandArgumentsException e) {
+		catch (CommandArgumentsException e) 
+		{
 			System.err.println(e.getMessage());
-			System.exit(1);
+			exitCode = ERR_EXIT_CODE;
 		}
-		catch (Exception ex) {
+		catch (Exception ex) 
+		{
 			System.err.println(formatException(ex));
-			System.exit(1);
+			exitCode = ERR_EXIT_CODE;
+		}
+		finally
+		{
+			System.exit(exitCode);
 		}
 	}
 	

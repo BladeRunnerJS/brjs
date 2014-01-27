@@ -64,7 +64,12 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public Reader getReader() throws FileNotFoundException {
-		return new ConcatReader(linkedAsset.getReader(), new StringReader("\ndefine('" + requirePath + "', " + className + ");"));
+		
+		String defineBlock = "\ndefine('%s', function(require, exports, module) {" +
+							 	"module.exports = %s;" +
+							 " });";
+		String formattedDefineBlock = String.format(defineBlock, requirePath, className);
+		return new ConcatReader(linkedAsset.getReader(), new StringReader(formattedDefineBlock));
 	}
 	
 	@Override

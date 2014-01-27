@@ -18,6 +18,11 @@ public abstract class AbstractPlugin implements Plugin {
 	}
 	
 	@Override
+	public void close() {
+		// do nothing -- concrete implementations may choose to override this method, but very few will ever need to
+	}
+	
+	@Override
 	public boolean instanceOf(Class<? extends Plugin> pluginCLass) {
 		return pluginCLass.isAssignableFrom(getClass());
 	}

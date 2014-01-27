@@ -95,7 +95,7 @@ public class NodeJsSourceModule implements SourceModule {
 		return new ConcatReader(new Reader[] {
 			new StringReader("define('" + requirePath + "', function(require, exports, module) {\n"),
 			new BufferedReader(new FileReader(assetFile)),
-			new StringReader("});\n")
+			new StringReader("\n});\n")
 		});
 	}
 	

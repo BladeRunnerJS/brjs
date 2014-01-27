@@ -1,11 +1,9 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,7 +23,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.ProcessLogger;
+import org.bladerunnerjs.testing.utility.CommandRunner;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -37,8 +35,6 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	public class Messages {
 		public static final String API_DOCS_GENERATED_MSG = "API docs correctly generated in '%s'";
 	}
-	
-	private static final Runtime runTime = Runtime.getRuntime();
 	
 	private BRJS brjs;
 	private ConsoleWriter out;
@@ -74,24 +70,16 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		File outputDir = app.storageDir("jsdoc-toolkit");
-		runCommand(generateCommand(app, isVerbose, outputDir), outputDir);
-	}
-	
-	private void runCommand(List<String> command, File outputDir) throws CommandOperationException {
+		CommandRunner.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
+		
 		try {
-			Process process = runTime.exec(command.toArray(new String[0]));
-			ProcessLogger processLogger = new ProcessLogger(brjs, process, null);
-			int exitCode = waitForProcess(process);
-			processLogger.waitFor();
-			
-			if(exitCode != 0) throw new CommandOperationException("Error while running command '" + command + "' (" + exitCode + ")");
-			
 			replaceBuildDateToken(new File(outputDir, "index.html"));
-			out.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
 		}
-		catch(IOException | InterruptedException | ConfigException e) {
+		catch(IOException | ConfigException e) {
 			throw new CommandOperationException(e);
 		}
+		
+		out.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
 	}
 	
 	private List<String> generateCommand(App app, boolean isVerbose, File outputDir) {
@@ -162,25 +150,6 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	private int waitForProcess(Process process) throws IOException, InterruptedException {
-		try(InputStream inputStream = process.getInputStream();
-			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-			BufferedReader bufferedReader = new BufferedReader(inputStreamReader))
-		{
-			String line = null;
-			
-			while ((line = bufferedReader.readLine()) != null) {
-				out.println(line);
-			}
-		}
-		
-		// TODO: this code looks like a bug -- investigate
-		int exitCode = process.waitFor();
-		process.waitFor();
-		
-		return exitCode;
 	}
 	
 	private void replaceBuildDateToken(File indexFile) throws IOException, ConfigException {

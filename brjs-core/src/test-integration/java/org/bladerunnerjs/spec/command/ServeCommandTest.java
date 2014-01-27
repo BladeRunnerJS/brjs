@@ -47,7 +47,7 @@ public class ServeCommandTest extends SpecTest
 	public void serveCommandStartsAppServer() throws Exception
 	{
 		given(logging).enabled();
-		when(brjs).runCommand("serve");
+		when(brjs).runThreadedCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
 			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + appServerPort +"/")
@@ -60,7 +60,7 @@ public class ServeCommandTest extends SpecTest
 	{
 		given(brjs).hasBeenAuthenticallyCreated();
 			/* and */ brjs.bladerunnerConf().setJettyPort(appServerPort);
-		when(brjs).runCommand("serve");
+		when(brjs).runThreadedCommand("serve");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 
@@ -79,7 +79,7 @@ public class ServeCommandTest extends SpecTest
 		appServer = brjs.applicationServer(appServerPort);
 		
 		given(logging).enabled();
-		when(brjs).runCommand("serve", "-p", "7777");
+		when(brjs).runThreadedCommand("serve", "-p", "7777");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")
 			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + "7777/")
