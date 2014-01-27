@@ -16,6 +16,7 @@ public interface RootNode extends Node {
 	boolean isRootDir(File dir);
 	Node locateFirstAncestorNode(File file);
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);
+	<N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass);
 	FileIterator getFileIterator(File dir);
 	
 	// these two methods, implemented by AbstractRootNode, are used by AbstractNode

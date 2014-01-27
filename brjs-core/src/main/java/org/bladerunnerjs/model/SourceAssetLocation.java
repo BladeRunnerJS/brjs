@@ -18,6 +18,10 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 		dependentAssetLocations.add(assetLocation);
 	}
 	
+	public SourceAssetLocation(RootNode rootNode, Node parent, File dir) {
+		super(rootNode, parent, dir);
+	}
+	
 	@Override
 	public String requirePrefix() {
 		return assetContainer.requirePrefix();
@@ -28,8 +32,10 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 		return dependentAssetLocations;
 	}
 	
-	public void addChildAssetLocations(List<AssetLocation> assetLocations) {
+	public List<AssetLocation> getChildAssetLocations() {
+		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
 		addChildAssetLocations(assetLocations, dir());
+		return assetLocations;
 	}
 	
 	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)

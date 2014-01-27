@@ -61,9 +61,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {
-		given(exceptions).arentCaught();
-		
+	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {		
 		given(aspect).hasClass("appns.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@new-js.bundle prod-minifier='none'@/>");

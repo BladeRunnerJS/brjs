@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,21 +36,77 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<LinkedAsset> getSeedFiles() {
-		return Arrays.asList();
+	public List<LinkedAsset> getSeedFiles() 
+	{
+		return new ArrayList<LinkedAsset>( assetLocation("tests").seedResources("js") );
 	}
 	
 	@Override
+	public java.util.List<LinkedAsset> seedFiles() {
+		return getSeedFiles();
+	};
+	
+	@Override
 	public String namespace() {
-		return ((AssetContainer) parentNode()).namespace();
+		return ((AssetContainer) parentNode().parentNode()).namespace();
 	}
 	
 	@Override
 	public List<AssetContainer> getAssetContainers()
 	{
-		// TODO
-		return null;
+		List<AssetContainer> assetContainers = new ArrayList<AssetContainer>();
+		
+		BRJS brjs = root();
+		
+		Node testScopeNode = parentNode().parentNode();
+		
+		assetContainers.add(this);
+		assetContainers.addAll( this.getApp().jsLibs() );
+		
+		if (testScopeNode instanceof Blade)
+		{
+			Blade blade = (Blade) testScopeNode;
+			assetContainers.add( blade );
+			assetContainers.add( (Bladeset)blade.parentNode() );
+		}
+		if (testScopeNode instanceof Bladeset)
+		{
+			Bladeset bladeset = (Bladeset) testScopeNode;
+			assetContainers.add( bladeset );
+		}
+		if (testScopeNode instanceof Aspect)
+		{			
+			App app = this.getApp();
+			Aspect aspect = (Aspect) testScopeNode;
+			
+			assetContainers.add( aspect );
+			
+			List<Bladeset> bladesets = app.bladesets();
+			List<Blade> blades = new ArrayList<Blade>();
+			for (Bladeset bladeset : bladesets)
+			{
+				blades.addAll( bladeset.blades() );
+			}
+			
+			assetContainers.addAll( bladesets );
+			assetContainers.addAll( blades );
+		}
+		if (testScopeNode instanceof Workbench)
+		{
+			Workbench workbench = (Workbench) testScopeNode;
+			assetContainers.add( brjs.locateAncestorNodeOfClass(workbench, Blade.class) );
+			assetContainers.add( brjs.locateAncestorNodeOfClass(workbench, Bladeset.class) );
+			
+			App app = this.getApp();
+			assetContainers.add( app.aspect("default") );
+			
+		}
+		
+		//TODO: do we need to add support for 'sdk' level
+		
+		return assetContainers;
 	}
+	
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
@@ -80,6 +136,12 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	{
 		return parentNode().parentNode().getClass().getSimpleName().toLowerCase() + "-" + name;
 	}
+	
+    @Override
+    public String requirePrefix()
+    {
+    	return "";
+    }
 	
 	public AliasesFile aliasesFile()
 	{

@@ -66,11 +66,18 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return new NodeMap<>(brjs, App.class, "sdk/system-applications", null);
 	}
 	
+	/**
+	 * Returns *all* of the asset containers in the model. 
+	 * This is different to BundleableNode.getAssetContainers which returns only the valid AssetContainers for a given BundleableNode.
+	 * 
+	 * @return
+	 */
 	public List<AssetContainer> getAllAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		for(AbstractAssetContainer aspect : aspects()) {
+		for(Aspect aspect : aspects()) {
 			assetContainers.add(aspect);
+			addAllTestPacks(assetContainers, aspect.testTypes());
 		}
 		
 		assetContainers.addAll(getNonAspectAssetContainers());
@@ -83,15 +90,30 @@ public class App extends AbstractBRJSNode implements NamedNode
 		
 		for(Bladeset bladeset : bladesets()) {
 			assetContainers.add(bladeset);
+			addAllTestPacks(assetContainers, bladeset.testTypes());
 			
 			for(Blade blade : bladeset.blades()) {
 				assetContainers.add(blade);
+				addAllTestPacks(assetContainers, blade.testTypes());
+				assetContainers.add(blade.workbench());
+				addAllTestPacks(assetContainers, blade.workbench().testTypes());				
 			}
 		}
 		
 		assetContainers.addAll( jsLibs() );
 		
 		return assetContainers;
+	}
+	
+	private void addAllTestPacks(List<AssetContainer> assetContainers, List<TypedTestPack> typedTestPacks)
+	{
+		for (TypedTestPack typedTestPack : typedTestPacks)
+		{
+			for (TestPack testPack : typedTestPack.testTechs())
+			{
+				assetContainers.add(testPack);
+			}
+		}
 	}
 	
 	@Override

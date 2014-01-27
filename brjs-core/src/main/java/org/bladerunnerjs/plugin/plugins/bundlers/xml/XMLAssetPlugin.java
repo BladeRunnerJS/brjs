@@ -3,6 +3,10 @@ package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetFileInstantationException;
@@ -15,6 +19,10 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class XMLAssetPlugin extends AbstractAssetPlugin {
+	
+	private IOFileFilter notAliasFileFilter = FileFilterUtils.notFileFilter( new NameFileFilter("aliases.xml" ) );
+	private IOFileFilter xmlFilesFilter = FileFilterUtils.and( notAliasFileFilter, new SuffixFileFilter(".xml") );
+	
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
@@ -37,7 +45,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 				assets = new ArrayList<>();
 			}
 			else {
-				assets = assetContainer.root().createAssetFilesWithExtension(FullyQualifiedLinkedAsset.class, assetLocation, "xml");
+				assets = assetContainer.root().createAssetFiles(FullyQualifiedLinkedAsset.class, assetLocation,  xmlFilesFilter);
 			}
 		}
 		catch (AssetFileInstantationException e) {

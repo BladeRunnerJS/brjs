@@ -138,7 +138,7 @@ public class MockRootNode implements RootNode
 	{
 		return null;
 	}
-
+	
 	@Override
 	public <N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass)
 	{
@@ -197,5 +197,11 @@ public class MockRootNode implements RootNode
 	@Override
 	public FileIterator getFileIterator(File dir) {
 		return new FileIterator(this, new PessimisticFileModificationService(), null);
+	}
+
+	@Override
+	public <N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass)
+	{
+		return null;
 	}
 }

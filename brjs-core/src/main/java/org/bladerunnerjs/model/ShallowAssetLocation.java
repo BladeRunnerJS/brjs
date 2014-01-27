@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -49,27 +50,69 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	}
 	
 	@Override
+	public List<SourceModule> getSourceModules()
+	{
+		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
+		
+		for (AssetContainer assetContainer : getAssetContainer().getApp().getAllAssetContainers())
+		{
+			sourceModules.addAll( assetContainer.sourceModules() );
+		}
+		
+		return sourceModules;
+	}
+	
+	@Override
 	public SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException
 	{
-		if(!sourceModules.containsKey(requirePath)) {
-			String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
-			
-			for (AssetContainer assetContainer : getAssetContainer().getApp().getAllAssetContainers())
+		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
+
+		SourceModule sourceModule;
+		if (getAssetContainer() instanceof TestPack)
+		{
+			TestPack testPack = (TestPack) getAssetContainer();
+			sourceModule = findSourceModuleWithRequirePath(testPack.getAssetContainers(), canonicalRequirePath);
+		}
+		else if (!sourceModules.containsKey(requirePath)) 
+		{
+			sourceModule = findSourceModuleWithRequirePath(getAssetContainer().getApp().getAllAssetContainers(), canonicalRequirePath);
+			if (sourceModule != null)
 			{
-				for (SourceModule sourceModule : assetContainer.sourceModules())
+				sourceModules.put(requirePath, sourceModule);
+			}
+		}
+		else
+		{
+			sourceModule = sourceModules.get(requirePath);
+		}
+		
+		if (sourceModule != null)
+		{
+			return sourceModule;
+		}
+		
+		
+		
+		throw new InvalidRequirePathException("Unable to find SourceModule for require path '"+requirePath+"'. It either does not exist or it is outside of the scope for this request.");
+	}
+
+	private SourceModule findSourceModuleWithRequirePath(List<AssetContainer> assetContainers, String requirePath)
+	{
+		for (AssetContainer assetContainer : assetContainers)
+		{
+			for (SourceModule sourceModule : assetContainer.sourceModules())
+			{
+				if (sourceModule.getRequirePath().equals(requirePath))
 				{
-					if (sourceModule.getRequirePath().equals(canonicalRequirePath))
-					{
-						sourceModules.put(requirePath, sourceModule);
-						return sourceModule;
-					}
+					sourceModules.put(requirePath, sourceModule);
+					return sourceModule;
 				}
 			}
 		}
-		
-		return sourceModules.get(requirePath);
+		return null;
 	}
-
+	
+	
 	@Override
 	public AliasDefinitionsFile aliasDefinitionsFile() {		
 		if(aliasDefinitionsFile == null) {

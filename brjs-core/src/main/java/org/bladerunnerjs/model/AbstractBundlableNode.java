@@ -39,7 +39,12 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
 		seedFiles.addAll(getSeedFiles());
-		seedFiles.addAll(assetLocation("resources").seedResources());
+		
+		AssetLocation resourcesAssetLocation = assetLocation("resources");
+		if (resourcesAssetLocation != null)
+		{
+			seedFiles.addAll(assetLocation("resources").seedResources());			
+		}
 		
 		return seedFiles;
 	}
@@ -85,7 +90,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public BundleSet getBundleSet() throws ModelOperationException {
+	public BundleSet getBundleSet() throws ModelOperationException, RequirePathException {
 		if(bundleSetFileModifiedChecker.hasChangedSinceLastCheck() || (bundleSet == null)) {
 			bundleSet = BundleSetCreator.createBundleSet(this);
 		}

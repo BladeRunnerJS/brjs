@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class NodeJsAssetPlugin extends AbstractAssetPlugin {
@@ -34,7 +35,11 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
-		return Arrays.asList();
+		if (assetLocation.getAssetContainer() instanceof TestPack)
+		{
+			return new ArrayList<LinkedAsset>( getSourceModules(assetLocation) );
+		}
+		return new ArrayList<>();
 	}
 	
 	@Override

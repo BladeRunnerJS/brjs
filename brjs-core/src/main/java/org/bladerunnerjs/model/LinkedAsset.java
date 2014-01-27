@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 
 /**
  * An extension of AssetFile, represents any AssetFile that could depend on other AssetFiles. 
@@ -13,7 +14,8 @@ public interface LinkedAsset extends Asset {
 	/**
 	 * Returns a list of files this LinkedAssetFile depends on
 	 * @param bundlableNode TODO
+	 * @throws RequirePathException 
 	 */
-	List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
-	List<String> getAliasNames() throws ModelOperationException;
+	List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException, RequirePathException;
+	List<String> getAliasNames() throws ModelOperationException, RequirePathException;
 }

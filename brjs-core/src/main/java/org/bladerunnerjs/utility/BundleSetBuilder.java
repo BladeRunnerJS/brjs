@@ -71,25 +71,24 @@ public class BundleSetBuilder {
 		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourcesList);
 	}
 	
-	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
+	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException, RequirePathException {
 		for(LinkedAsset seedFile : seedFiles) {
 			addLinkedAsset(seedFile);
 		}
 	}
 	
-	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
+	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException, RequirePathException {
 		if(sourceModules.add(sourceModule)) {
 			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
 			addLinkedAsset(sourceModule);
 		}
 	}
 	
-	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
+	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException, RequirePathException {
 		if(linkedAssets.add(linkedAsset)) {
-			List<SourceModule> moduleDependencies = getDependentSourceModules(linkedAsset, bundlableNode);
+			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
 			
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
-			
 			 
 			File linkedAssetFile = linkedAsset.getUnderlyingFile();
 			File assetLocationDir = linkedAsset.getAssetLocation().getAssetContainer().dir();
@@ -118,7 +117,7 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
+	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException, RequirePathException {
 		if(assetLocations.add(assetLocation)) {
 			for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
 				addLinkedAsset(resourceSeedFile);
@@ -176,23 +175,13 @@ public class BundleSetBuilder {
 	}
 	
 	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
-		for(LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule, bundlableNode)) {
+		for(LinkedAsset dependentSourceModule : sourceModule.getOrderDependentSourceModules(bundlableNode)) {
 			if(!metDependencies.contains(dependentSourceModule)) {
 				return false;
 			}
 		}
 		
 		return true;
-	}
-	
-	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException {
-		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
-		return orderDependentSourceModules;
-	}
-
-	private List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException {
-		List<SourceModule> dependentSourceModules = file.getDependentSourceModules(bundlableNode);
-		return dependentSourceModules;
 	}
 	
 	private String sourceFilePaths(List<SourceModule> sourceModules) {

@@ -25,7 +25,7 @@ import org.bladerunnerjs.testing.specutility.JsLibBuilder;
 import org.bladerunnerjs.testing.specutility.LoggerBuilder;
 import org.bladerunnerjs.testing.specutility.NamedDirNodeBuilder;
 import org.bladerunnerjs.testing.specutility.NamedNodeBuilder;
-import org.bladerunnerjs.testing.specutility.TestPackNodeBuilder;
+import org.bladerunnerjs.testing.specutility.TestPackBuilder;
 import org.bladerunnerjs.testing.specutility.WorkbenchBuilder;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
@@ -38,7 +38,7 @@ public class BuilderChainer {
 		this.modelTest = modelTest;
 	}
 	
-	public TestPackNodeBuilder and(TestPack testPack) { return new TestPackNodeBuilder(modelTest, testPack); }
+	public TestPackBuilder and(TestPack testPack) { return new TestPackBuilder(modelTest, testPack); }
 	public NamedNodeBuilder and(NamedNode namedDirNode) { return new NamedNodeBuilder(modelTest, namedDirNode); }
 	public BRJSBuilder and(BRJS brjs) { return new BRJSBuilder(modelTest, brjs); }
 	public AppBuilder and(App app) { return new AppBuilder(modelTest, app); }

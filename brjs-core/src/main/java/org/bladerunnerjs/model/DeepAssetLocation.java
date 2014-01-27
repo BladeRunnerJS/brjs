@@ -1,8 +1,8 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,33 +20,60 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	@Override
 	public List<LinkedAsset> seedResources()
 	{
-		return getChildAssets(new LinkedList<LinkedAsset>(), dir());
+		List<AssetLocation> assetLocations = getChildAssetLocations(dir());
+		return getAllAssetsFromAssetLocations(assetLocations);
 	}
 	
-	private List<LinkedAsset> getChildAssets(List<LinkedAsset> assetFiles, File findInDir)
+	private List<LinkedAsset> getAllAssetsFromAssetLocations(List<AssetLocation> assetLocations)
+	{
+		List<LinkedAsset> assetFiles = new ArrayList<LinkedAsset>();
+		
+		for (AssetLocation assetLocation : assetLocations)
+		{
+			assetFiles.addAll(assetLocation.seedResources());
+		}
+		
+		return assetFiles;
+	}
+	
+	private List<AssetLocation> getChildAssetLocations(File findInDir)
+	{
+		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
+		assetLocations.add( getCachedAssetLocationForDir(dir()) );
+		getChildAssetLocations(assetLocations, findInDir);
+		return assetLocations;
+	}
+	
+	private void getChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
 	{
 		if (!findInDir.isDirectory())
 		{
-			return assetFiles;
+			return;
 		}
 		
 		for (File childDir : root().getFileIterator(findInDir).files())
 		{
 			if (childDir.isDirectory() && childDir != dir())
 			{
-				AssetLocation dirResources = resourcesMap.get(childDir);
-    			if (dirResources == null)
-    			{
-    				dirResources = new ShallowAssetLocation(getAssetContainer().root(), getAssetContainer(), childDir);
-    				resourcesMap.put(childDir, dirResources);
-    			}
-    			assetFiles.addAll(dirResources.seedResources());
+				AssetLocation assetLocationForDir = getCachedAssetLocationForDir(childDir);
+    			assetLocations.add(assetLocationForDir);
     			
-    			getChildAssets(assetFiles, childDir);
+    			getChildAssetLocations(assetLocations, childDir);
 			}
 		}
 		
-		return assetFiles;
+		return;
+	}
+
+	private AssetLocation getCachedAssetLocationForDir(File childDir)
+	{
+		AssetLocation assetLocationForDir = resourcesMap.get(childDir);
+		if (assetLocationForDir == null)
+		{
+			assetLocationForDir = new ShallowAssetLocation(getAssetContainer().root(), getAssetContainer(), childDir);
+			resourcesMap.put(childDir, assetLocationForDir);
+		}
+		return assetLocationForDir;
 	}
 	
 }
