@@ -4,10 +4,23 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
+import org.bladerunnerjs.testing.specutility.engine.ConsoleMessageStore;
+import org.bladerunnerjs.testing.specutility.engine.ConsoleStoreWriter;
+import org.bladerunnerjs.testing.utility.LogMessageStore;
+import org.bladerunnerjs.testing.utility.TestLoggerFactory;
+import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -15,11 +28,6 @@ import org.junit.Test;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
-import com.caplin.cutlass.bundler.css.CssBundler;
-import com.caplin.cutlass.bundler.html.HtmlBundler;
-import com.caplin.cutlass.bundler.i18n.I18nBundler;
-import com.caplin.cutlass.bundler.js.JsBundler;
-import com.caplin.cutlass.bundler.xml.XmlBundler;
 import com.google.jstestdriver.FileInfo;
 
 public class BundlerInjectorTest {
@@ -227,16 +235,55 @@ public class BundlerInjectorTest {
 		verify(htmlBundleHandler, times(0)).getBundledFiles(any(File.class), any(File.class), any(File.class));
 	}
 	
-	@Test
-	public void testBundlerInjectorHasCorrectBundleHandlers() throws Exception {
-		BundlerInjector bundlerInjector = new BundlerInjector();
+	@Test //TODO: tidy up this test - in reality we'll probably get rid of all these tests anyway since they'll all be obsolete when everything using the model
+	public void jsBundleRequestArePassedToTheNewModel() throws Exception {	
+		LogMessageStore logging = new LogMessageStore();
+		ConsoleMessageStore output = new ConsoleMessageStore();
+		File testSdkDirectory = createTestSdkDirectory();
+		BRJS brjs = new BRJS(testSdkDirectory, new BRJSPluginLocator(), new Java7FileModificationService(testSdkDirectory), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 		
-		assertEquals(5, bundlerInjector.bundlerHandlers.size());
-		assertEquals(new JsBundler().getClass(), bundlerInjector.bundlerHandlers.get(0).getBundler().getClass());
-		assertEquals(new CssBundler().getClass(), bundlerInjector.bundlerHandlers.get(1).getBundler().getClass());
-		assertEquals(new I18nBundler().getClass(), bundlerInjector.bundlerHandlers.get(2).getBundler().getClass());
-		assertEquals(new XmlBundler().getClass(), bundlerInjector.bundlerHandlers.get(3).getBundler().getClass());
-		assertEquals(new HtmlBundler().getClass(), bundlerInjector.bundlerHandlers.get(4).getBundler().getClass());
+		App app = brjs.app("my-app");
+		app.create();
+		
+		Bladeset bladeset = app.bladeset("bs1");
+		Blade blade = bladeset.blade("b1");
+		File bladeSrcFile = blade.file("src/srcFile.js");
+		bladeSrcFile.getParentFile().mkdirs();
+		bladeSrcFile.createNewFile();
+		org.apache.commons.io.FileUtils.write(bladeSrcFile, "// some blade src code");
+		
+		TestPack testPack = blade.testType("unit").testTech("techy");
+		testPack.create();
+		File jsBundleFile = testPack.file("js.bundle");
+		
+		testPack.tests().create();
+		File testFile = testPack.tests().file("test1.js"); 
+		testFile.createNewFile();
+		
+		org.apache.commons.io.FileUtils.write(testFile, "require('appns/bs1/b1/srcFile');");
+		
+		List<FileInfo> inputFiles = new ArrayList<FileInfo>();
+		addFileInfoToList(inputFiles, jsBundleFile.getAbsolutePath());
+		new BundlerInjector().processDependencies(inputFiles);
+		
+		String bundleFileContents = org.apache.commons.io.FileUtils.readFileToString(jsBundleFile);
+		assertTrue(bundleFileContents.contains("// some blade src code"));		
+	}
+	
+	
+	
+	private File createTestSdkDirectory() {
+		File sdkDir;
+		
+		try {
+			sdkDir = FileUtility.createTemporaryDirectory("test");
+			new File(sdkDir, "sdk").mkdirs();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
+		return sdkDir;
 	}
 	
 	private BundlerHandler createMockBundlerHandler(String extension) {
