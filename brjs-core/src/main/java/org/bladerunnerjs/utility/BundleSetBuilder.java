@@ -27,6 +27,7 @@ import com.google.common.base.Joiner;
 
 
 public class BundleSetBuilder {
+	private static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Set<AliasDefinition> activeAliases = new HashSet<>();
 	private final Set<AssetLocation> resources = new HashSet<>();
@@ -54,6 +55,17 @@ public class BundleSetBuilder {
 		}
 		catch(RequirePathException e) {
 			throw new ModelOperationException(e);
+		}
+		
+		if (sourceModules.size() > 0)
+		{
+    		try {
+    			
+    			addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
+    		}
+    		catch(RequirePathException e) {
+    			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+    		}
 		}
 		
 		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourcesList);
@@ -134,7 +146,7 @@ public class BundleSetBuilder {
 
 	private List<SourceModule> orderSourceModules(Set<SourceModule> sourceModules) throws ModelOperationException {
 		List<SourceModule> sourceModulesList = new ArrayList<>();
-		Set<LinkedAsset> metDependencies = new HashSet<>();
+		Set<LinkedAsset> metDependencies = new HashSet<>();		
 		
 		while(!sourceModules.isEmpty()) {
 			Set<SourceModule> unprocessedSourceModules = new HashSet<>();
@@ -174,35 +186,11 @@ public class BundleSetBuilder {
 	
 	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException {
 		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
-		
-		if(!sourceModule.getRequirePath().equals("bootstrap")) {
-			try {
-				orderDependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
-			}
-			catch(RequirePathException e) {
-				// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-			}
-		}
-		
 		return orderDependentSourceModules;
 	}
-	
+
 	private List<SourceModule> getDependentSourceModules(LinkedAsset file, BundlableNode bundlableNode) throws ModelOperationException, RequirePathException {
 		List<SourceModule> dependentSourceModules = file.getDependentSourceModules(bundlableNode);
-		
-		if(file instanceof SourceModule) {
-			SourceModule sourceModule = (SourceModule) file;
-			
-			if(!sourceModule.getRequirePath().equals("bootstrap")) {
-				try {
-					dependentSourceModules.add(bundlableNode.getSourceModule("bootstrap"));
-				}
-				catch(RequirePathException e) {
-					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-				}
-			}
-		}
-		
 		return dependentSourceModules;
 	}
 	
@@ -224,4 +212,5 @@ public class BundleSetBuilder {
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
 	}
+	
 }
