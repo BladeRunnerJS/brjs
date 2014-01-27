@@ -66,7 +66,7 @@ public class SectionRedirectFilter implements Filter
 			{
 				String redirectUrl = getSectionRedirectHandler().getRedirectUrl(requestPath);
 				
-				if (!requestPath.equals(redirectUrl))
+				if (!requestPath.equals(redirectUrl) && !httpRequest.getServletPath().equals("/brjs"))
 				{
 					logger.debug("requestPath '" + requestPath + "' doesn't match redirect url '" + redirectUrl + "' -- forwarding");
 					

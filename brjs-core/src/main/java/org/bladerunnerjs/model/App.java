@@ -2,6 +2,9 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +21,7 @@ import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -25,6 +29,9 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.LogicalRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.NoTagHandlerFoundException;
+import org.bladerunnerjs.utility.TagPluginUtility;
+import org.dom4j.DocumentException;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -255,7 +262,16 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void handleLogicalRequest(BladerunnerUri requestUri, java.io.OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
 		requestHandler.handle(requestUri, os);
 	}
-
+	
+	public void filterIndexPage(BladerunnerUri requestUri, String indexPage, String locale, OutputStream outputStream) throws ConfigException, IOException, NoTagHandlerFoundException, DocumentException, ModelOperationException {
+		File baseDir = new File(dir(), requestUri.scopePath);
+		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
+		
+		try(Writer writer = new OutputStreamWriter(outputStream)) {
+			TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
+		}
+	}
+	
 	public List<JsLib> nonBladeRunnerLibs()
 	{
 		Map<String, JsLib> libs = new HashMap<String,JsLib>();
@@ -283,5 +299,4 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 		return appLib;
 	}
-	
 }
