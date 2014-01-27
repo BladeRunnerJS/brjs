@@ -138,9 +138,9 @@ public class NodeJsSourceModule implements SourceModule {
 		requirePaths = new HashSet<>();
 		aliasNames = new ArrayList<>();
 		
-		try {
+		try(Reader fileReader = new FileReader(assetFile)) {
 			StringWriter stringWriter = new StringWriter();
-			IOUtils.copy(getReader(), stringWriter);
+			IOUtils.copy(fileReader, stringWriter);
 			
 			Matcher m = matcherPattern.matcher(stringWriter.toString());
 			
