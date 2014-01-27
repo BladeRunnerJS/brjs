@@ -5,11 +5,11 @@ import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.common.base.CharMatcher;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class Trie<T>
 {
-	CharMatcher charMatcher = CharMatcher.anyOf(" \t\r\n.,;(){}<>[]+-*/'\"");
+	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"".toCharArray();
 	private TrieNode<T> root = new TrieNode<T>();
 	private int largestKeyLength = 0;
 	
@@ -106,7 +106,7 @@ public class Trie<T>
 		if (nextNode == null)
 		{
 			T matcherValue = matcher.previousNode.getValue();
-			if (matcherValue != null && charMatcher.apply(nextChar))
+			if (matcherValue != null && matchesDelimeter(nextChar))
 			{
 				matches.add(matcherValue);
 				foundCompleteMatch = true;
@@ -114,7 +114,7 @@ public class Trie<T>
 			matcher.reset();
 		}
 		
-		if (matcher.startedReadingNewChars && !charMatcher.apply(nextChar))
+		if (matcher.startedReadingNewChars && !matchesDelimeter(nextChar))
 		{
 			matcher.reset();			
 		}
@@ -123,6 +123,11 @@ public class Trie<T>
 	}
 
 
+	private boolean matchesDelimeter(char nextChar)
+	{
+		return ArrayUtils.contains(DELIMETERS, nextChar);
+	}
+	
 	private class TrieMatcher {
 		TrieNode<T> currentNode;
 		TrieNode<T> previousNode;
