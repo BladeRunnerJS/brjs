@@ -6,19 +6,20 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.RequestHandlingException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
@@ -46,14 +47,6 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 	public List<File> getBundledFiles(File rootDir, File testDir, File bundlerFile)
 	{
 		createParentDirectory(bundlerFile);
-
-		String rootPath = rootDir.getAbsolutePath();
-		String bundleRequestPath = StringUtils.substringAfter(bundlerFile.getAbsolutePath(), rootPath).replace("\\", "/");
-		if (bundleRequestPath.contains(BundlerHandler.BUNDLE_PREFIX))
-		{
-			bundleRequestPath = StringUtils.substringAfterLast(bundleRequestPath, BundlerHandler.BUNDLE_PREFIX + "/");
-		}
-
 		OutputStream outputStream = createBundleOutputStream(bundlerFile);
 		
 		try
@@ -61,8 +54,7 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 			//TODO: this is *really* hacky - get rid of this once everything is using the new model
 			if (thisBundler != null)
 			{
-				List<File> bundleFiles = thisBundler.getBundleFiles(rootDir, testDir, bundleRequestPath);
-				thisBundler.writeBundle(bundleFiles, outputStream);
+				useLegacyBundlerToHandleBundle(rootDir, testDir, bundlerFile, outputStream);
 			}
 			else
 			{
@@ -92,30 +84,42 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 		return Arrays.asList(new File[0]);
 	}
 
-	private void useBrjsToHandleBundle(File rootDir, File testDir, OutputStream outputStream) throws ModelOperationException, RequirePathException, IOException, FileNotFoundException
+	private void useLegacyBundlerToHandleBundle(File rootDir, File testDir, File bundlerFile, OutputStream outputStream) throws RequestHandlingException
+	{
+		String rootPath = rootDir.getAbsolutePath();
+		String bundleRequestPath = StringUtils.substringAfter(bundlerFile.getAbsolutePath(), rootPath).replace("\\", "/");
+		if (bundleRequestPath.contains(BundlerHandler.BUNDLE_PREFIX))
+		{
+			bundleRequestPath = StringUtils.substringAfterLast(bundleRequestPath, BundlerHandler.BUNDLE_PREFIX + "/");
+		}
+		List<File> bundleFiles = thisBundler.getBundleFiles(rootDir, testDir, bundleRequestPath);
+		thisBundler.writeBundle(bundleFiles, outputStream);
+	}
+
+	private void useBrjsToHandleBundle(File rootDir, File testDir, OutputStream outputStream) throws ModelOperationException, RequirePathException, IOException, FileNotFoundException, MalformedRequestException, ResourceNotFoundException, BundlerProcessingException
 	{
 		BRJS brjs = null;
 		try
 		{
     		brjs = new BRJS(rootDir, new ConsoleLoggerConfigurator(StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger()));
-    		TestPack testPack = brjs.locateAncestorNodeOfClass(testDir, TestPack.class);
-    		if (testPack == null)
+    		App app = brjs.locateAncestorNodeOfClass(testDir, App.class);
+    		if (app == null)
     		{
-    			throw new RuntimeException("Unable to calculate TestPack node for the test dir: " + testDir.getAbsolutePath());
+    			throw new RuntimeException("Unable to calculate App node for the test dir: " + testDir.getAbsolutePath());
     		}				
-    		//TODO: this should probably be a content plugin and use app.handleRequest
-    		BundleSet bundleSet = testPack.getBundleSet();
-    		for (SourceModule sourceModule : bundleSet.getSourceModules())
-    		{
-    			IOUtils.copy( new StringReader("/"+sourceModule.getRequirePath()), outputStream);
-    			IOUtils.copy(sourceModule.getReader(), outputStream);
-    		}
+    		
+    		String pathRelativeToApp = StringUtils.substringAfter(testDir.getAbsolutePath(), app.dir().getAbsolutePath());
+    		String bladerunnerUriRequestPathPrefix = StringUtils.substringBeforeLast(pathRelativeToApp, bundlerFileExtension);
+    		
+    		BladerunnerUri requestUri = new BladerunnerUri(brjs, app.dir(), "/"+app.getName(), bladerunnerUriRequestPathPrefix+"js/dev/en_GB/combined/bundle.js", null);
+    		
+    		app.handleLogicalRequest(requestUri, outputStream);
 		}
 		finally
 		{
 			if (brjs != null)
 			{
-			brjs.close();
+				brjs.close();
 			}
 		}
 	}

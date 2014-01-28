@@ -12,6 +12,7 @@ import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -30,6 +31,7 @@ public class BladerunnerUriTest
 		
 		FileUtils.write(app.bladeset("another").file("js/empty.txt"), "");
 		FileUtils.write(app.bladeset("another").blade("blade1").workbench().file("empty.txt"), "");
+		FileUtils.write(app.bladeset("another").blade("blade1").file("/tests/test-type/testTech/empty.txt"), "");
 	}
 	
 	@After
@@ -68,6 +70,7 @@ public class BladerunnerUriTest
 		assertEquals("/", uri.getInternalPath());
 	}
 	
+	@Ignore //TODO: work out what this test is actually meant to be testing
 	@Test
 	public void theScopeAndLogicalPathsShouldBothBeAvailable() throws Exception
 	{
@@ -84,5 +87,14 @@ public class BladerunnerUriTest
 		
 		assertEquals("/another-bladeset/blades/blade1/workbench/", uri.scopePath);
 		assertEquals("empty.txt", uri.logicalPath);
+	}
+	
+	@Test
+	public void theScopeAndLogicalPathsShouldBeCorrectForTestUrls() throws Exception
+	{
+		BladerunnerUri uri = new BladerunnerUri(app.root(), app.dir(), "/the-app/", "/another-bladeset/blades/blade1/tests/test-type/testTech/js/js.bundle", null);
+		
+		assertEquals("/another-bladeset/blades/blade1/tests/test-type/testTech/", uri.scopePath);
+		assertEquals("js/js.bundle", uri.logicalPath);
 	}
 }

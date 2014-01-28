@@ -166,8 +166,7 @@ public class BladerunnerUri
 		
 		while((node != null) && (bundlableNode == null))
 		{
-			if((node instanceof App) || (node instanceof JsLib) || (node instanceof Aspect) ||
-				(node instanceof Bladeset) || (node instanceof Blade) || (node instanceof Workbench))
+			if (node instanceof BundlableNode)
 			{
 				bundlableNode = node;
 			}
