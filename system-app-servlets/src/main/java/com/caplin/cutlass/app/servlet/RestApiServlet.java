@@ -101,7 +101,7 @@ public class RestApiServlet extends HttpServlet
 	public void init(final ServletConfig config) throws ServletException
 	{
 		context = config.getServletContext();
-		brjs = ServletModelAccessor.initializeModel(context);
+		brjs = ServletModelAccessor.initializeAndGetModel(context);
 		if (apiService == null) { apiService = new RestApiService(brjs); };
 		logger = brjs.logger(LoggerType.SERVLET, this.getClass());
 	}

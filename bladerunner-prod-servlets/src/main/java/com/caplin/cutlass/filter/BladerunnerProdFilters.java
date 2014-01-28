@@ -46,7 +46,7 @@ public class BladerunnerProdFilters implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		BRJS brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		logger = brjs.logger(LoggerType.SERVLET, BladerunnerProdFilters.class);
 		
 		for (Filter filter : filters)

@@ -33,7 +33,7 @@ public class SectionRedirectFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		servletContext = filterConfig.getServletContext();
 		contextDir = new File(servletContext.getRealPath("/"));
 		logger = brjs.logger(LoggerType.FILTER, SectionRedirectFilter.class);

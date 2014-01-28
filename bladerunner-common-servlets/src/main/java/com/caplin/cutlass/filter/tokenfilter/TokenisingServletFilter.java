@@ -52,7 +52,7 @@ public class TokenisingServletFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig)
 	{
-		BRJS brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		contextPath = filterConfig.getServletContext().getContextPath();
 		logger = brjs.logger(LoggerType.FILTER, TokenisingServletFilter.class);
 	}

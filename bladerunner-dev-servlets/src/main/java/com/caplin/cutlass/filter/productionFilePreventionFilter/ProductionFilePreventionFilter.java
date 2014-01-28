@@ -30,7 +30,7 @@ public class ProductionFilePreventionFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		servletContext = filterConfig.getServletContext();
 	}
 	

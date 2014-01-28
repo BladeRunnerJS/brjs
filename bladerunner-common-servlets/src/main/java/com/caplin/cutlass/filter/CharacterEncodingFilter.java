@@ -23,7 +23,7 @@ public class CharacterEncodingFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		BRJS brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		logger = brjs.logger(LoggerType.FILTER, CharacterEncodingFilter.class);
 	}
 	

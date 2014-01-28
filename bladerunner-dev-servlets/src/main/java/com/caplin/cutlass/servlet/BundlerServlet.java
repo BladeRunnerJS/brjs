@@ -67,7 +67,7 @@ public class BundlerServlet extends HttpServlet
 	@Override
 	public void init(final ServletConfig servletConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(servletConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(servletConfig.getServletContext());
 		app = brjs.app(new File(servletConfig.getServletContext().getRealPath("/")).getName());
 		logger = brjs.logger(LoggerType.SERVLET, BundlerServlet.class);
 		

@@ -15,7 +15,8 @@ import org.bladerunnerjs.model.BRJS;
  *
  */
 public class ServletModelAccessor {
-	private static BRJS model;
+	// TODO: change back to `private` once the other ServletModelAccessor class has been deleted
+	protected static BRJS model;
 	private static ReentrantLock lock = new ReentrantLock();
 	
 	public static synchronized void initializeModel(ServletContext servletContext) {
