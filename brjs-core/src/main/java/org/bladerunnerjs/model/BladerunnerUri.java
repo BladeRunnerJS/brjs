@@ -68,8 +68,10 @@ public class BladerunnerUri
 		this.brjs = brjs;
 		String requestUri = request.getRequestURI();
 		String contextPath = request.getContextPath();
+		String servletPath = request.getServletPath();
 		String requestPath = "";
-		if (request.getServletPath().equals("/brjs"))
+		
+		if ((servletPath != null) && servletPath.equals("/brjs"))
 		{
 			requestPath = StringUtils.substringAfter(requestUri, contextPath+BRJS_URL_PREFIX);
 		}
