@@ -57,14 +57,6 @@ public class BRJSServletTest extends SpecTest
 	}
 	
 	@Test
-	public void brjsServletIsAutomaticallyLoaded() throws Exception
-	{
-		given(app).hasBeenCreated()
-			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/brjs/version/", brjs.versionInfo().getVersionNumber());
-	}
-	
-	@Test
 	public void brjsServletDoesntHandleAspectIndexFile() throws Exception
 	{
 		given(app).hasBeenCreated()
