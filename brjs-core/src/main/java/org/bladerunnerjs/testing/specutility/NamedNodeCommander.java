@@ -1,6 +1,7 @@
 package org.bladerunnerjs.testing.specutility;
 
 import org.bladerunnerjs.model.BRJSNode;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
@@ -20,6 +21,16 @@ public class NamedNodeCommander extends NodeCommander<NamedNode> {
 		call(new Command() {
 			public void call() throws Exception {
 				((BRJSNode) namedNode).populate();
+			}
+		});
+		
+		return commanderChainer;
+	}
+	
+	public CommanderChainer bundleSetGenerated() {
+		call(new Command() {
+			public void call() throws Exception {
+				((BundlableNode) namedNode).getBundleSet();
 			}
 		});
 		

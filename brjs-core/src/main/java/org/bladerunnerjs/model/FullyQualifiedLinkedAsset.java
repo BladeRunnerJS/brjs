@@ -47,13 +47,13 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException, RequirePathException {
+	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		recalculateDependencies();
 		return new ArrayList<SourceModule>( dependentSourceModules );
 	}
 
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException, RequirePathException {
+	public List<String> getAliasNames() throws ModelOperationException {
 		recalculateDependencies();
 		return aliases;
 	}
@@ -73,7 +73,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 		return assetFile.getPath();
 	}
 	
-	private void recalculateDependencies() throws ModelOperationException, RequirePathException {
+	private void recalculateDependencies() throws ModelOperationException {
 		boolean trieUpdated = updateTrie();
 		
 		if(fileModifiedChecker.fileModifiedSinceLastCheck() || trieUpdated || (dependentSourceModules == null)) {
@@ -101,7 +101,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 					}
 				}
 			}
-			catch (IOException ex)
+			catch (IOException | RequirePathException ex)
 			{
 				throw new ModelOperationException(ex);
 			}

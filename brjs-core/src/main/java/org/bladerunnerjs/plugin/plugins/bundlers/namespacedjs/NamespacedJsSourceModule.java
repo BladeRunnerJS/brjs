@@ -53,12 +53,12 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
- 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException, RequirePathException {
+ 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		return linkedAsset.getDependentSourceModules(bundlableNode);
 	}
 	
 	@Override
-	public List<String> getAliasNames() throws ModelOperationException, RequirePathException {
+	public List<String> getAliasNames() throws ModelOperationException {
 		return linkedAsset.getAliasNames();
 	}
 	

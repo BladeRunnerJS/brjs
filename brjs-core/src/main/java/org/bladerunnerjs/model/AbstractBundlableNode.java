@@ -90,7 +90,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public BundleSet getBundleSet() throws ModelOperationException, RequirePathException {
+	public BundleSet getBundleSet() throws ModelOperationException {
 		if(bundleSetFileModifiedChecker.hasChangedSinceLastCheck() || (bundleSet == null)) {
 			bundleSet = BundleSetCreator.createBundleSet(this);
 		}

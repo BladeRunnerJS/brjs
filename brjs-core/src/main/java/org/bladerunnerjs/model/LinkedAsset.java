@@ -16,6 +16,6 @@ public interface LinkedAsset extends Asset {
 	 * @param bundlableNode TODO
 	 * @throws RequirePathException 
 	 */
-	List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException, RequirePathException;
-	List<String> getAliasNames() throws ModelOperationException, RequirePathException;
+	List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
+	List<String> getAliasNames() throws ModelOperationException;
 }

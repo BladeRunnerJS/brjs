@@ -71,20 +71,20 @@ public class BundleSetBuilder {
 		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourcesList);
 	}
 	
-	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException, RequirePathException {
+	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
 		for(LinkedAsset seedFile : seedFiles) {
 			addLinkedAsset(seedFile);
 		}
 	}
 	
-	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException, RequirePathException {
+	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
 		if(sourceModules.add(sourceModule)) {
 			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
 			addLinkedAsset(sourceModule);
 		}
 	}
 	
-	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException, RequirePathException {
+	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		if(linkedAssets.add(linkedAsset)) {
 			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
 			
@@ -117,7 +117,7 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException, RequirePathException {
+	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
 		if(assetLocations.add(assetLocation)) {
 			for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
 				addLinkedAsset(resourceSeedFile);

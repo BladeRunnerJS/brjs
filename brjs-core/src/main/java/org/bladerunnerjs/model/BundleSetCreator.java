@@ -8,7 +8,6 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.BundleSetBuilder;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -24,7 +23,7 @@ public class BundleSetCreator {
 		public static final String FILE_DEPENDENCIES_MSG = "File '%s' depends on %s.";
 	}
 	
-	public static BundleSet createBundleSet(BundlableNode bundlableNode) throws ModelOperationException, RequirePathException {
+	public static BundleSet createBundleSet(BundlableNode bundlableNode) throws ModelOperationException {
 		Logger logger = bundlableNode.root().logger(LoggerType.BUNDLER, BundleSetCreator.class);
 		
 		BundleSetBuilder bundleSetBuilder = new BundleSetBuilder(bundlableNode);
