@@ -33,14 +33,11 @@ public class TestPackVerifier extends AssetContainerVerifier
 			bundleSetFiles.add( sourceModule.getUnderlyingFile() );
 		}
 		
-		for(int i = 0; i < files.length; i++)
+		for (File expectedFile : files)
 		{
-			String expectedFilePath = files[i].getPath();
-			String bundledFilePath = bundleSetFiles.get(i).getPath();
-			
-			if(!expectedFilePath.equals(bundledFilePath) || files.length != bundleSetFiles.size())
+			if(!bundleSetFiles.contains(expectedFile) || files.length != bundleSetFiles.size())
 			{
-				assertEquals("expected files were in the wrong order compard to bundleset and/or had different number of files", 
+				assertEquals("expected file " + expectedFile.getPath() + " wasnt found in the bundleset", 
 						getFileList(files), 
 						getFileList(bundleSetFiles.toArray(new File[bundleSetFiles.size()])));
 			}
