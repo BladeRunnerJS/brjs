@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
@@ -106,6 +107,7 @@ public class WritingResourceBundlerHandler implements BundlerHandler
     		BundleSet bundleSet = testPack.getBundleSet();
     		for (SourceModule sourceModule : bundleSet.getSourceModules())
     		{
+    			IOUtils.copy( new StringReader("// "+sourceModule.getRequirePath()), outputStream);
     			IOUtils.copy(sourceModule.getReader(), outputStream);
     		}
 		}
