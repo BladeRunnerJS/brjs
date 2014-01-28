@@ -53,7 +53,7 @@ public class BRJSServletFilter implements Filter
 				pluginRequestPrefixes.add(contentPlugin.getRequestPrefix());
 			}
 			
-			contentPluginPrefixPattern = Pattern.compile("^/.*-aspect/(" + Joiner.on("|").join(pluginRequestPrefixes) + ")/.*$");
+			contentPluginPrefixPattern = Pattern.compile("^/.*-aspect/(" + Joiner.on("|").join(pluginRequestPrefixes) + ")((/.*)|$)");
 		}
 		finally {
 			ServletModelAccessor.releaseModel();
