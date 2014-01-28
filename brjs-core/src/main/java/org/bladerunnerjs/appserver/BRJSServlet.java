@@ -53,6 +53,7 @@ public class BRJSServlet extends DefaultServlet
 	{
 		try {
 			BRJS brjs = ServletModelAccessor.aquireModel();
+			response.setContentType(servletContext.getMimeType(request.getRequestURI()));
 			app.handleLogicalRequest(new BladerunnerUri(brjs, servletContext, request), response.getOutputStream());
 		} catch (MalformedRequestException | ResourceNotFoundException | BundlerProcessingException e) {
 			throw new ServletException(e);
