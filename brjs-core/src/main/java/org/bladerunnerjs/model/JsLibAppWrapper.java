@@ -191,4 +191,22 @@ public class JsLibAppWrapper implements JsLib {
 	public long lastModified() {
 		return wrappedJsLib.lastModified();
 	}
+
+	@Override
+	public void runTests(TestType... testTypes)
+	{
+		wrappedJsLib.runTests(testTypes);
+	}
+
+	@Override
+	public List<TypedTestPack> testTypes()
+	{
+		return wrappedJsLib.testTypes();
+	}
+
+	@Override
+	public TypedTestPack testType(String type)
+	{
+		return wrappedJsLib.testType(type);
+	}
 }

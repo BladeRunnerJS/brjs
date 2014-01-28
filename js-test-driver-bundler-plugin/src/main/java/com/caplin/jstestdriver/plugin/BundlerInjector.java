@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+
 import com.caplin.cutlass.bundler.css.CssBundler;
 import com.caplin.cutlass.bundler.html.HtmlBundler;
 import com.caplin.cutlass.bundler.i18n.I18nBundler;
-import com.caplin.cutlass.bundler.js.JsBundler;
 import com.caplin.cutlass.bundler.xml.XmlBundler;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.google.jstestdriver.FileInfo;
@@ -19,9 +19,9 @@ public class BundlerInjector implements ResourcePreProcessor
 	protected List<BundlerHandler> bundlerHandlers;
 
 	public BundlerInjector() throws Exception
-	{
+	{		
 		bundlerHandlers = new ArrayList<BundlerHandler>();
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new JsBundler(), "js.bundle", false));
+		bundlerHandlers.add(new WritingResourceBundlerHandler(null, "js.bundle", false));
 		bundlerHandlers.add(new WritingResourceBundlerHandler(new CssBundler(), "css.bundle", true));
 		bundlerHandlers.add(new WritingResourceBundlerHandler(new I18nBundler(), "i18n.bundle", false));
 		bundlerHandlers.add(new WritingResourceBundlerHandler(new XmlBundler(), "xml.bundle", true));

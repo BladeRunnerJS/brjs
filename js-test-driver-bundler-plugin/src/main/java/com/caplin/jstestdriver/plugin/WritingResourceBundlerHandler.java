@@ -2,12 +2,24 @@ package com.caplin.jstestdriver.plugin;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
+import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
 
@@ -46,18 +58,66 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 		
 		try
 		{
-			List<File> bundleFiles = thisBundler.getBundleFiles(rootDir, testDir, bundleRequestPath);
-			thisBundler.writeBundle(bundleFiles, outputStream);
-			outputStream.close();
+			//TODO: this is *really* hacky - get rid of this once everything is using the new model
+			if (thisBundler != null)
+			{
+				List<File> bundleFiles = thisBundler.getBundleFiles(rootDir, testDir, bundleRequestPath);
+				thisBundler.writeBundle(bundleFiles, outputStream);
+			}
+			else
+			{
+				
+				useBrjsToHandleBundle(rootDir, testDir, outputStream);
+			}
+			
 		}
 		catch (Exception ex)
 		{
 			throw new RuntimeException("There was an error while bundling.", ex);
 		}
+		finally 
+		{
+			try
+			{
+				outputStream.close();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
 		/* TODO: this is a hack because when we create file infos files cannot be loaded properly in tests
 		  			(see TODO in BundlerInjector */
 		//return Arrays.asList(bundlerFile);
 		return Arrays.asList(new File[0]);
+	}
+
+	private void useBrjsToHandleBundle(File rootDir, File testDir, OutputStream outputStream) throws ModelOperationException, RequirePathException, IOException, FileNotFoundException
+	{
+		BRJS brjs = null;
+		try
+		{
+    		brjs = new BRJS(rootDir, new ConsoleLoggerConfigurator(StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger()));
+    		TestPack testPack = brjs.locateAncestorNodeOfClass(testDir, TestPack.class);
+    		if (testPack == null)
+    		{
+    			throw new RuntimeException("Unable to calculate TestPack node for the test dir: " + testDir.getAbsolutePath());
+    		}				
+    		//TODO: this should probably be a content plugin and use app.handleRequest
+    		BundleSet bundleSet = testPack.getBundleSet();
+    		for (SourceModule sourceModule : bundleSet.getSourceModules())
+    		{
+    			IOUtils.copy( new StringReader("// "+sourceModule.getRequirePath()), outputStream);
+    			IOUtils.copy(sourceModule.getReader(), outputStream);
+    		}
+		}
+		finally
+		{
+			if (brjs != null)
+			{
+			brjs.close();
+			}
+		}
 	}
 	
 	private OutputStream createBundleOutputStream(File bundlerFile)
