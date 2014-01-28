@@ -322,7 +322,7 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
   <mime-mapping>
     <extension>js</extension>
-    <mime-type>text/javascript</mime-type>
+    <mime-type>application/javascript</mime-type>
   </mime-mapping>
 
   <!-- ==================================================================== -->

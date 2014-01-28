@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.PluginProperties;
+import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsException;
@@ -102,6 +103,7 @@ public abstract class AbstractNode implements Node
 			
 			try {
 				FileUtils.forceMkdir(dir);
+				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
 				
 				rootNode.getFileIterator(dir().getParentFile()).refresh();
