@@ -101,12 +101,17 @@ public class BRJS extends AbstractBRJSRootNode
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 	}
-
+	
+	public BRJS(File brjsDir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) {
+		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(brjsDir.getParentFile()), loggerFactory, consoleWriter);
+	}
+	
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
-		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(brjsDir.getParentFile()), new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		// TODO: what was the logConfiguration parameter going to be used for?
+		this(brjsDir, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
-
+	
 	@Override
 	public boolean isRootDir(File dir)
 	{
