@@ -1,8 +1,10 @@
 package org.bladerunnerjs.spec.bundling;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +14,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 {
 	private App app;
 	private Bladeset bladeset;
+	private Blade blade;
 	private TestPack bladesetUTs, bladesetATs;
 	
 	@Before
@@ -24,6 +27,8 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			bladeset = app.bladeset("bs");
 			bladesetUTs = bladeset.testType("unit").testTech("TEST_TECH");
 			bladesetATs = bladeset.testType("acceptance").testTech("TEST_TECH");
+			blade = bladeset.blade("b1");
+			
 	}
 
 	// N A M E S P A C E D - J S
@@ -68,6 +73,20 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).hasDir("src/.svn")
 			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1");
+		then(bladesetATs).bundledFilesEquals(
+			bladeset.assetLocation("src").file("appns/bs/Class1.js"),
+			bladeset.assetLocation("src").file("appns/bs/Class2.js"));
+	}
+	
+	// TODO this exception name is misleading and is used for both namespaced/node-style bundling code paths
+	@Test(expected = InvalidRequirePathException.class)
+	public void bladesetTestsCannotDependOnBlades() throws Exception {
+		given(bladeset).hasPackageStyle("namespaced-js")
+			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasClasses("appns.bs.b1.Class1")
+			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1", "appns.bs.b1.Class1");
 		then(bladesetATs).bundledFilesEquals(
 			bladeset.assetLocation("src").file("appns/bs/Class1.js"),
 			bladeset.assetLocation("src").file("appns/bs/Class2.js"));
