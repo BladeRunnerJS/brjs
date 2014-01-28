@@ -32,6 +32,7 @@ public class ServeCommandTest extends SpecTest
 	@After
 	public void tearDown() throws Exception
 	{
+		logging.disableLogging();
 		appServer = brjs.applicationServer(appServerPort);
 		appServer.stop();
 	}

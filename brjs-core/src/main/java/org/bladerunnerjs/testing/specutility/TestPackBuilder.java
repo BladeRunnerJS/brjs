@@ -23,7 +23,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 		this.testPack = testPack;
 	}
 
-	public BuilderChainer testRefersTo(String testFilePath, String className) throws IOException
+	public BuilderChainer testRefersTo(String testFilePath, String... classNames) throws IOException
 	{
 		File testFile = testPack.tests().file(testFilePath);
 		String jsStyle = JsStyleUtility.getJsStyle(testFile.getParentFile());
@@ -32,7 +32,13 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 			throw new RuntimeException("testRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
 		}
 		
-		FileUtils.write(testFile, className);
+		String content = "";
+		for(String className : classNames)
+		{
+			content += className + "\n";
+		}
+		
+		FileUtils.write(testFile, content);
 		
 		return builderChainer;
 	}

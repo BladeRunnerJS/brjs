@@ -2,7 +2,6 @@ package com.caplin.jstestdriver.plugin;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,16 +9,7 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
 
@@ -46,30 +36,18 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 	public List<File> getBundledFiles(File rootDir, File testDir, File bundlerFile)
 	{
 		createParentDirectory(bundlerFile);
-
-		String rootPath = rootDir.getAbsolutePath();
-		String bundleRequestPath = StringUtils.substringAfter(bundlerFile.getAbsolutePath(), rootPath).replace("\\", "/");
-		if (bundleRequestPath.contains(BundlerHandler.BUNDLE_PREFIX))
-		{
-			bundleRequestPath = StringUtils.substringAfterLast(bundleRequestPath, BundlerHandler.BUNDLE_PREFIX + "/");
-		}
-
 		OutputStream outputStream = createBundleOutputStream(bundlerFile);
 		
 		try
 		{
-			//TODO: this is *really* hacky - get rid of this once everything is using the new model
-			if (thisBundler != null)
+			String rootPath = rootDir.getAbsolutePath();
+			String bundleRequestPath = StringUtils.substringAfter(bundlerFile.getAbsolutePath(), rootPath).replace("\\", "/");
+			if (bundleRequestPath.contains(BundlerHandler.BUNDLE_PREFIX))
 			{
-				List<File> bundleFiles = thisBundler.getBundleFiles(rootDir, testDir, bundleRequestPath);
-				thisBundler.writeBundle(bundleFiles, outputStream);
+				bundleRequestPath = StringUtils.substringAfterLast(bundleRequestPath, BundlerHandler.BUNDLE_PREFIX + "/");
 			}
-			else
-			{
-				
-				useBrjsToHandleBundle(rootDir, testDir, outputStream);
-			}
-			
+			List<File> bundleFiles = thisBundler.getBundleFiles(rootDir, testDir, bundleRequestPath);
+			thisBundler.writeBundle(bundleFiles, outputStream);
 		}
 		catch (Exception ex)
 		{
@@ -91,36 +69,8 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 		//return Arrays.asList(bundlerFile);
 		return Arrays.asList(new File[0]);
 	}
-
-	private void useBrjsToHandleBundle(File rootDir, File testDir, OutputStream outputStream) throws ModelOperationException, RequirePathException, IOException, FileNotFoundException
-	{
-		BRJS brjs = null;
-		try
-		{
-    		brjs = new BRJS(rootDir, new ConsoleLoggerConfigurator(StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger()));
-    		TestPack testPack = brjs.locateAncestorNodeOfClass(testDir, TestPack.class);
-    		if (testPack == null)
-    		{
-    			throw new RuntimeException("Unable to calculate TestPack node for the test dir: " + testDir.getAbsolutePath());
-    		}				
-    		//TODO: this should probably be a content plugin and use app.handleRequest
-    		BundleSet bundleSet = testPack.getBundleSet();
-    		for (SourceModule sourceModule : bundleSet.getSourceModules())
-    		{
-    			IOUtils.copy( new StringReader("// "+sourceModule.getRequirePath()), outputStream);
-    			IOUtils.copy(sourceModule.getReader(), outputStream);
-    		}
-		}
-		finally
-		{
-			if (brjs != null)
-			{
-			brjs.close();
-			}
-		}
-	}
 	
-	private OutputStream createBundleOutputStream(File bundlerFile)
+	protected OutputStream createBundleOutputStream(File bundlerFile)
 	{
 		OutputStream outputStream = null;
 		
@@ -141,7 +91,7 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 		return outputStream;
 	}
 
-	private void createParentDirectory(File bundlerFile)
+	protected void createParentDirectory(File bundlerFile)
 	{
 		boolean parentDirCreationFailed = false;
 		boolean filesCreated = false;

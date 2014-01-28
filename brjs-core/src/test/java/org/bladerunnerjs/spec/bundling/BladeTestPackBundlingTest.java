@@ -19,7 +19,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	private Blade blade;
 	private TestPack bladeUTs, bladeATs;
 	
-	private JsLib appThirdparty,sdkThirdparty;
+	private JsLib bootsrapThirdparty, browserModules, appThirdparty,sdkJsLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -34,8 +34,10 @@ public class BladeTestPackBundlingTest extends SpecTest
 			bladeUTs = blade.testType("unit").testTech("TEST_TECH");
 			bladeATs = blade.testType("acceptance").testTech("TEST_TECH");
 			
+			bootsrapThirdparty = brjs.sdkNonBladeRunnerLib("br-bootstrap");
+			browserModules = brjs.sdkNonBladeRunnerLib("browser-modules");
 			appThirdparty = app.nonBladeRunnerLib("appThirdparty");
-			sdkThirdparty = brjs.sdkLib();
+			sdkJsLib = brjs.sdkLib();
 	}
 	
 	// N A M E S P A C E D - J S
@@ -131,9 +133,12 @@ public class BladeTestPackBundlingTest extends SpecTest
 	}
 
 	@Test
-	public void weCanBundleSdkThirdpartyLibrariesInATs() throws Exception {
-		given(sdkThirdparty).hasPackageStyle("namespaced-js")
-			.and(sdkThirdparty).classFileHasContent("br.namespaced.Class1", "sdk class1 contents")
+	public void weCanBundleSdkJsLibIncludingSdkThirdpartyBootstrapInATs() throws Exception {
+		given(sdkJsLib).hasPackageStyle("namespaced-js")
+			.and(sdkJsLib).classFileHasContent("br.namespaced.Class1", "sdk class1 contents")
+			.and(browserModules).containsFileWithContents("library.manifest", "js: file.js")
+			.and(browserModules).containsFileWithContents("file.js", "browser-modules-content")
+			.and(bootsrapThirdparty).containsFileWithContents("library.manifest", "depends: browser-modules")
 			.and(blade).hasPackageStyle("namespaced-js")
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "br.namespaced.Class1", "appns.bs.b1.Class2")
@@ -141,7 +146,9 @@ public class BladeTestPackBundlingTest extends SpecTest
 		then(bladeATs).bundledFilesEquals(
 				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
 				blade.assetLocation("src").file("appns/bs/b1/Class2.js"),
-				sdkThirdparty.assetLocation("src").file("br/namespaced/Class1.js"));
+				sdkJsLib.assetLocation("src").file("br/namespaced/Class1.js"),
+				bootsrapThirdparty.dir(),
+				browserModules.dir());
 	}
 	
 }
