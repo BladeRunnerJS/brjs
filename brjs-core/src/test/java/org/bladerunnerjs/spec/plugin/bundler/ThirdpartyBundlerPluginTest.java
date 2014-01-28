@@ -144,4 +144,33 @@ public class ThirdpartyBundlerPluginTest extends SpecTest {
 		then(pageResponse).textEquals("some file contents");
 	}
 	
+	@Test
+	public void testLibraryResourceForLibraryPresentBothInAppAndSdkIsBundledFromApp() throws Exception
+	{
+		JsLib appLib = app.nonBladeRunnerLib("myLib");
+		JsLib sdkLib = brjs.sdkNonBladeRunnerLib("myLib");
+		
+		given(appLib).hasBeenCreated()
+			.and(appLib).containsFileWithContents("library.manifest", "js: myFile.js")
+			.and(appLib).containsFileWithContents("myFile.js", "my file contents")
+			.and(sdkLib).hasBeenCreated()
+			.and(sdkLib).containsFileWithContents("library.manifest", "js: sdkFile.js")
+			.and(sdkLib).containsFileWithContents("sdkFile.js", "sdk file contents");
+		when(app).requestReceived("/default-aspect/thirdparty/file/myLib/myFile.js", pageResponse);
+		then(pageResponse).textEquals("my file contents");
+	}
+	
+	@Test
+	public void testLibraryResourceRequestCanHaveQueryString() throws Exception
+	{
+		given(exceptions).arentCaught();
+		JsLib appLib = app.nonBladeRunnerLib("myLib");
+		
+		given(appLib).hasBeenCreated()
+			.and(appLib).containsFileWithContents("library.manifest", "js: myFile.js")
+			.and(appLib).containsFileWithContents("myFile.js", "my file contents");
+		when(app).requestReceived("/default-aspect/thirdparty/file/myLib/myFile.js?q=1234", pageResponse);
+		then(pageResponse).textEquals("my file contents");
+	}
+	
 }

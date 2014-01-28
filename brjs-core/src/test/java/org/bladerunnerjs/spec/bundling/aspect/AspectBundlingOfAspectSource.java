@@ -30,8 +30,8 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			bootstrapLib = app.jsLib("br-bootstrap");
-			secondBootstrapLib = app.nonBladeRunnerLib("secondBootstrapLib");
+			bootstrapLib = brjs.sdkNonBladeRunnerLib("br-bootstrap");
+			secondBootstrapLib = brjs.sdkNonBladeRunnerLib("secondBootstrapLib");
 	}
 	
 	@Test

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
@@ -93,6 +94,9 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				}
 				
 				String filePath = contentPath.properties.get("file-path");
+				
+				filePath = StringUtils.substringBeforeLast(filePath, "?"); //strip off any query string that might be in the request
+				
 				File file = lib.file(filePath);
 				if (!file.exists())
 				{
