@@ -49,7 +49,7 @@ public class SectionRedirectFilterTest
 	public void setup() throws Exception
 	{
 		handler = new SectionRedirectHandler(BRJSTestFactory.createBRJS(new File(APP_LOCATION)), new File(APP_LOCATION));
-		tempDir = FileUtility.createTemporaryDirectory(this.getClass().getName());
+		tempDir = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
 		temporaryDirectoryForWebApp = new File(tempDir,"app1_");
 	}
 
