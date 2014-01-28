@@ -7,7 +7,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ThirdpartyBundlerPluginTest extends SpecTest {
+public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	
 	private App app;
 	private Aspect aspect;
@@ -140,7 +140,7 @@ public class ThirdpartyBundlerPluginTest extends SpecTest {
 	@Test
 	public void assetsInALibCanBeRequestedIndividually() throws Exception {
 		given(thirdpartyLib).containsFileWithContents("/some/lib/dirs/some-file.ext", "some file contents");
-		when(app).requestReceived("/default-aspect/thirdparty/file/thirdparty-lib/some/lib/dirs/some-file.ext", pageResponse);
+		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/some/lib/dirs/some-file.ext", pageResponse);
 		then(pageResponse).textEquals("some file contents");
 	}
 	
@@ -156,7 +156,7 @@ public class ThirdpartyBundlerPluginTest extends SpecTest {
 			.and(sdkLib).hasBeenCreated()
 			.and(sdkLib).containsFileWithContents("library.manifest", "js: sdkFile.js")
 			.and(sdkLib).containsFileWithContents("sdkFile.js", "sdk file contents");
-		when(app).requestReceived("/default-aspect/thirdparty/file/myLib/myFile.js", pageResponse);
+		when(app).requestReceived("/default-aspect/thirdparty/myLib/myFile.js", pageResponse);
 		then(pageResponse).textEquals("my file contents");
 	}
 	
@@ -169,7 +169,7 @@ public class ThirdpartyBundlerPluginTest extends SpecTest {
 		given(appLib).hasBeenCreated()
 			.and(appLib).containsFileWithContents("library.manifest", "js: myFile.js")
 			.and(appLib).containsFileWithContents("myFile.js", "my file contents");
-		when(app).requestReceived("/default-aspect/thirdparty/file/myLib/myFile.js?q=1234", pageResponse);
+		when(app).requestReceived("/default-aspect/thirdparty/myLib/myFile.js?q=1234", pageResponse);
 		then(pageResponse).textEquals("my file contents");
 	}
 	

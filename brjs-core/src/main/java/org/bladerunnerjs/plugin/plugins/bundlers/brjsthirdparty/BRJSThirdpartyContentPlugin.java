@@ -36,7 +36,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 		contentPathParserBuilder
     		.accepts("thirdparty/bundle.js").as("bundle-request")
 				.and("thirdparty/<module>/bundle.js").as("single-module-request")
-				.and("thirdparty/file/<module>/<file-path>").as("file-request")
+				.and("thirdparty/<module>/<file-path>").as("file-request")
 			.where("module").hasForm(".+")
 				.and("file-path").hasForm(".+");
 		
