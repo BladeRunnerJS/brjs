@@ -1,5 +1,6 @@
 package org.bladerunnerjs.appserver;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -100,7 +101,12 @@ public class BRJSServletFilter implements Filter
 			
 			BladerunnerUri bladerunnerUri = new BladerunnerUri(brjs, servletContext, request);
 			String locale = LocaleHelper.getLocaleFromRequest(app, request);
-			app.filterIndexPage(bladerunnerUri, getIndexPage(responseWrapper), locale, response.getOutputStream());
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			app.filterIndexPage(bladerunnerUri, getIndexPage(responseWrapper), locale, byteArrayOutputStream);
+			
+			byte[] byteArray = byteArrayOutputStream.toByteArray();
+			response.setContentLength(byteArray.length);
+			response.getOutputStream().write(byteArray);
 		}
 		catch (Exception ex)
 		{
