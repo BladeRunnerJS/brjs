@@ -124,11 +124,6 @@ public abstract class SpecTest
 	}
 	
 	@After
-	public void verifyNotifications() {
-		then(observer).noNotifications();
-	}
-	
-	@After
 	public void verifyLogs() {
 		then(logging).verifyNoUnhandledMessages()
 			.and(logging).verifyLogsRecievedIfCaptureEnabled();

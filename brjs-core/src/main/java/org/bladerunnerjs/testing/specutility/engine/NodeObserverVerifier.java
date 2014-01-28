@@ -20,7 +20,7 @@ public class NodeObserverVerifier
 
 	public VerifierChainer notified(Class<? extends Event> eventClass, Node node)
 	{
-		verify(observer).onEventEmitted( any(eventClass), eq(node) );
+		verify(observer).onEventEmitted( isA(eventClass), eq(node) );
 		
 		return verifierChainer;
 	}
