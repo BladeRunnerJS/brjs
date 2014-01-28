@@ -2,6 +2,7 @@ package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -162,7 +163,7 @@ public class ContentPathParser
 	
 	private Map<String, Pattern> generateRequestFormPatterns(Map<String, String> requestForms, Map<String, String> tokens)
 	{
-		Map<String, Pattern> requestFormPatterns = new HashMap<>();
+		Map<String, Pattern> requestFormPatterns = new LinkedHashMap<>();
 		
 		for (String requestFormName : requestForms.keySet())
 		{

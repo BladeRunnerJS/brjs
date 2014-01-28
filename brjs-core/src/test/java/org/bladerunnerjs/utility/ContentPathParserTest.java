@@ -285,4 +285,20 @@ public class ContentPathParserTest
 		
 		parser.createRequest("content-form", "123");
 	}
+	
+	@Test
+	public void pathsCanBeSubstringsOfAnother() throws Exception
+	{
+		builder.accepts("path/<token>/somepath.txt").as("fixed-path")
+			.and("path/<token>/<some-path>").as("token-path")
+			.where("token").hasForm("[0-9]+").and("some-path").hasForm("[a-z/\\.]+");
+		parser = builder.build();
+		
+		assertEquals("path/123/somepath.txt", parser.createRequest("fixed-path", "123"));
+		assertEquals("path/123/some/file/path.txt", parser.createRequest("token-path", "123", "some/file/path.txt"));
+		
+		assertEquals( "fixed-path", parser.parse("path/123/somepath.txt").formName );
+		assertEquals( "token-path", parser.parse("path/123/some/file/path.txt").formName );
+	}
+	
 }
