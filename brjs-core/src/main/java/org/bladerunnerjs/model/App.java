@@ -268,7 +268,12 @@ public class App extends AbstractBRJSNode implements NamedNode
 		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
 		
 		try(Writer writer = new OutputStreamWriter(outputStream)) {
-			TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
+			if(bundlableNode == null) {
+				writer.write(indexPage);
+			}
+			else {
+				TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
+			}
 		}
 	}
 	
