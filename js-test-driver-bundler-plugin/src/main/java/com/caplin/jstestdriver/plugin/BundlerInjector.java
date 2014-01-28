@@ -124,7 +124,12 @@ public class BundlerInjector implements ResourcePreProcessor
 
 	private File getTestDirForBundleFile(File bundleFile)
 	{
-		return new File(StringUtils.substringBefore(bundleFile.getAbsolutePath(), BundlerHandler.BUNDLE_PREFIX).replace("\\", "/"));
+		if (bundleFile.getAbsolutePath().contains(BundlerHandler.BUNDLE_PREFIX))
+		{
+			return new File(StringUtils.substringBefore(bundleFile.getAbsolutePath(), BundlerHandler.BUNDLE_PREFIX).replace("\\", "/"));			
+		}
+		throw new RuntimeException("The path " + bundleFile.getAbsolutePath() + 
+				" does not contain the directory " + BundlerHandler.BUNDLE_PREFIX + " so the test dir for the bundle cannot be calculated.");
 	}
 
 	private void addBundledFilesToCurrentFileList(BundlerHandler handler, List<FileInfo> currentFileList, List<File> bundledFiles)

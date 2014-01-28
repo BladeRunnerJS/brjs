@@ -122,7 +122,7 @@ public class BundlerInjectorTest {
 		List<FileInfo> inputFiles = new ArrayList<FileInfo>();
 		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/src/file1.js");
 		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/src/file2.js");
-		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/tests/test-unit/src_js.bundle");
+		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/tests/test-unit/bundles/src_js.bundle");
 		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/src/file3.js");
 		
 		bundlerInjector.processDependencies(inputFiles);
@@ -140,7 +140,7 @@ public class BundlerInjectorTest {
 		List<FileInfo> inputFiles = new ArrayList<FileInfo>();
 		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/src/file1.js");
 		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/src/file2.js");
-		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/tests/test-unit/js.bundle");
+		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/tests/test-unit/bundles/js.bundle");
 		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/src/file3.js");
 		
 		bundlerInjector.processDependencies(inputFiles);
@@ -254,7 +254,7 @@ public class BundlerInjectorTest {
 		
 		TestPack testPack = blade.testType("unit").testTech("techy");
 		testPack.create();
-		File jsBundleFile = testPack.file("js.bundle");
+		File jsBundleFile = testPack.file("bundles/js.bundle");
 		
 		testPack.tests().create();
 		File testFile = testPack.tests().file("test1.js"); 

@@ -44,6 +44,7 @@ public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHan
     		
     		String pathRelativeToApp = StringUtils.substringAfter(testDir.getAbsolutePath(), app.dir().getAbsolutePath());
     		String bladerunnerUriRequestPathPrefix = StringUtils.substringBeforeLast(pathRelativeToApp, bundlerFileExtension);
+    		bladerunnerUriRequestPathPrefix = (bladerunnerUriRequestPathPrefix.endsWith("/")) ? bladerunnerUriRequestPathPrefix : bladerunnerUriRequestPathPrefix+"/";
     		
     		BladerunnerUri requestUri = new BladerunnerUri(brjs, app.dir(), "/"+app.getName(), bladerunnerUriRequestPathPrefix+brjsRequestPath, null);
     		
