@@ -166,7 +166,7 @@ public class BladerunnerUri
 		
 		while((node != null) && (bundlableNode == null))
 		{
-			if (node instanceof BundlableNode)
+			if (node instanceof BundlableNode || node instanceof Blade || node instanceof Bladeset)
 			{
 				bundlableNode = node;
 			}
