@@ -2,7 +2,6 @@ package com.caplin.jstestdriver.plugin;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,17 +9,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
-import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
-import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.LegacyFileBundlerPlugin;
 
@@ -51,17 +39,14 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 		
 		try
 		{
-			//TODO: this is *really* hacky - get rid of this once everything is using the new model
-			if (thisBundler != null)
+			String rootPath = rootDir.getAbsolutePath();
+			String bundleRequestPath = StringUtils.substringAfter(bundlerFile.getAbsolutePath(), rootPath).replace("\\", "/");
+			if (bundleRequestPath.contains(BundlerHandler.BUNDLE_PREFIX))
 			{
-				useLegacyBundlerToHandleBundle(rootDir, testDir, bundlerFile, outputStream);
+				bundleRequestPath = StringUtils.substringAfterLast(bundleRequestPath, BundlerHandler.BUNDLE_PREFIX + "/");
 			}
-			else
-			{
-				
-				useBrjsToHandleBundle(rootDir, testDir, outputStream);
-			}
-			
+			List<File> bundleFiles = thisBundler.getBundleFiles(rootDir, testDir, bundleRequestPath);
+			thisBundler.writeBundle(bundleFiles, outputStream);
 		}
 		catch (Exception ex)
 		{
@@ -83,48 +68,8 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 		//return Arrays.asList(bundlerFile);
 		return Arrays.asList(new File[0]);
 	}
-
-	private void useLegacyBundlerToHandleBundle(File rootDir, File testDir, File bundlerFile, OutputStream outputStream) throws RequestHandlingException
-	{
-		String rootPath = rootDir.getAbsolutePath();
-		String bundleRequestPath = StringUtils.substringAfter(bundlerFile.getAbsolutePath(), rootPath).replace("\\", "/");
-		if (bundleRequestPath.contains(BundlerHandler.BUNDLE_PREFIX))
-		{
-			bundleRequestPath = StringUtils.substringAfterLast(bundleRequestPath, BundlerHandler.BUNDLE_PREFIX + "/");
-		}
-		List<File> bundleFiles = thisBundler.getBundleFiles(rootDir, testDir, bundleRequestPath);
-		thisBundler.writeBundle(bundleFiles, outputStream);
-	}
-
-	private void useBrjsToHandleBundle(File rootDir, File testDir, OutputStream outputStream) throws ModelOperationException, RequirePathException, IOException, FileNotFoundException, MalformedRequestException, ResourceNotFoundException, BundlerProcessingException
-	{
-		BRJS brjs = null;
-		try
-		{
-    		brjs = new BRJS(rootDir, new ConsoleLoggerConfigurator(StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger()));
-    		App app = brjs.locateAncestorNodeOfClass(testDir, App.class);
-    		if (app == null)
-    		{
-    			throw new RuntimeException("Unable to calculate App node for the test dir: " + testDir.getAbsolutePath());
-    		}				
-    		
-    		String pathRelativeToApp = StringUtils.substringAfter(testDir.getAbsolutePath(), app.dir().getAbsolutePath());
-    		String bladerunnerUriRequestPathPrefix = StringUtils.substringBeforeLast(pathRelativeToApp, bundlerFileExtension);
-    		
-    		BladerunnerUri requestUri = new BladerunnerUri(brjs, app.dir(), "/"+app.getName(), bladerunnerUriRequestPathPrefix+"js/dev/en_GB/combined/bundle.js", null);
-    		
-    		app.handleLogicalRequest(requestUri, outputStream);
-		}
-		finally
-		{
-			if (brjs != null)
-			{
-				brjs.close();
-			}
-		}
-	}
 	
-	private OutputStream createBundleOutputStream(File bundlerFile)
+	protected OutputStream createBundleOutputStream(File bundlerFile)
 	{
 		OutputStream outputStream = null;
 		
@@ -145,7 +90,7 @@ public class WritingResourceBundlerHandler implements BundlerHandler
 		return outputStream;
 	}
 
-	private void createParentDirectory(File bundlerFile)
+	protected void createParentDirectory(File bundlerFile)
 	{
 		boolean parentDirCreationFailed = false;
 		boolean filesCreated = false;

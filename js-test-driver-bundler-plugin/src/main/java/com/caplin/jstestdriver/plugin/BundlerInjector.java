@@ -21,7 +21,7 @@ public class BundlerInjector implements ResourcePreProcessor
 	public BundlerInjector() throws Exception
 	{		
 		bundlerHandlers = new ArrayList<BundlerHandler>();
-		bundlerHandlers.add(new WritingResourceBundlerHandler(null, "js.bundle", false));
+		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("js.bundle", "js/dev/en_GB/combined/bundle.js", false));
 		bundlerHandlers.add(new WritingResourceBundlerHandler(new CssBundler(), "css.bundle", true));
 		bundlerHandlers.add(new WritingResourceBundlerHandler(new I18nBundler(), "i18n.bundle", false));
 		bundlerHandlers.add(new WritingResourceBundlerHandler(new XmlBundler(), "xml.bundle", true));
