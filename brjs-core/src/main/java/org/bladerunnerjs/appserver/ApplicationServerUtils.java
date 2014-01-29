@@ -2,7 +2,6 @@ package org.bladerunnerjs.appserver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,11 +12,9 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.eclipse.jetty.security.Authenticator;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.security.authentication.FormAuthenticator;
-import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import static org.bladerunnerjs.appserver.ApplicationServerUtils.Messages.*;
@@ -47,9 +44,7 @@ public class ApplicationServerUtils
 		app.root().logger(LoggerType.APP_SERVER, ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
 		
-		appContext.addFilter(new FilterHolder(new BRJSServletFilter()), "/*", EnumSet.of(DispatcherType.FORWARD,DispatcherType.REQUEST));
-		
-		contexts.addHandler(appContext);
+		contexts.addHandler(ApplicationServerUtils.createContextForApp(app));
 		appContext.start();
 		ApplicationServerUtils.getDeployFileForApp(app).delete();
 		
