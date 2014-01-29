@@ -44,7 +44,7 @@ public class ApplicationServerUtils
 		app.root().logger(LoggerType.APP_SERVER, ApplicationServer.class).debug(DEPLOYING_APP_MSG, app.getName());
 		WebAppContext appContext = ApplicationServerUtils.createContextForApp(app);
 		
-		contexts.addHandler(ApplicationServerUtils.createContextForApp(app));
+		contexts.addHandler(appContext);
 		appContext.start();
 		ApplicationServerUtils.getDeployFileForApp(app).delete();
 		
