@@ -14,8 +14,6 @@ import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import com.caplin.cutlass.file.RelativePath;
-
 public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHandler
 {
 	protected final String bundlerFileExtension;
