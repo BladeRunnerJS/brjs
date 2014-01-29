@@ -12,11 +12,11 @@ import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 public class NodeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
-	private ContentPlugin nodeJsTagHandlerPlugin;
+	private ContentPlugin nodeJsContentPlugin;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		nodeJsTagHandlerPlugin = brjs.plugins().contentProvider("node-js");
+		nodeJsContentPlugin = brjs.plugins().contentProvider("node-js");
 	}
 	
 	@Override
@@ -32,7 +32,7 @@ public class NodeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
-			writeTagContent(bundleSet, nodeJsTagHandlerPlugin.getValidDevContentPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, nodeJsContentPlugin.getValidDevContentPaths(bundleSet, locale), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
@@ -42,7 +42,7 @@ public class NodeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		try {
-			writeTagContent(bundleSet, nodeJsTagHandlerPlugin.getValidProdContentPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, nodeJsContentPlugin.getValidProdContentPaths(bundleSet, locale), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
