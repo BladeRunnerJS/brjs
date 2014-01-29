@@ -2,6 +2,8 @@ package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
@@ -11,11 +13,11 @@ import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 public class BRJSThirdpartyTagHandlerPlugin extends AbstractTagHandlerPlugin {
-	private ContentPlugin thirdpartyTagHandlerPlugin;
+	private ContentPlugin thirdpartyContentPlugin;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		thirdpartyTagHandlerPlugin = brjs.plugins().contentProvider("thirdparty");
+		thirdpartyContentPlugin = brjs.plugins().contentProvider("thirdparty");
 	}
 
 	@Override
@@ -32,8 +34,11 @@ public class BRJSThirdpartyTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
+		List<String> locales = new ArrayList<>();
+		locales.add(locale);
+		
 		try {
-			for (String requestPath : thirdpartyTagHandlerPlugin.getValidDevContentPaths(bundleSet, locale))
+			for (String requestPath : thirdpartyContentPlugin.getValidDevContentPaths(bundleSet, locales))
 			{
 				writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 			}
@@ -46,8 +51,11 @@ public class BRJSThirdpartyTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
+		List<String> locales = new ArrayList<>();
+		locales.add(locale);
+		
 		try {
-			for (String requestPath : thirdpartyTagHandlerPlugin.getValidProdContentPaths(bundleSet, locale))
+			for (String requestPath : thirdpartyContentPlugin.getValidProdContentPaths(bundleSet, locales))
 			{
 				writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 			}
