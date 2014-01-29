@@ -90,7 +90,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				JsLib lib = app.nonBladeRunnerLib(libName);
 				if (!lib.dirExists())
 				{
-					throw new BundlerProcessingException("Library " + lib.getName() + " doesn't exist.");
+					throw new BundlerProcessingException("Library '" + lib.getName() + "' doesn't exist.");
 				}
 				
 				String filePath = contentPath.properties.get("file-path");
@@ -100,7 +100,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				File file = lib.file(filePath);
 				if (!file.exists())
 				{
-					throw new BundlerProcessingException("File " + file.getAbsolutePath() + " doesn't exist.");
+					throw new BundlerProcessingException("File '" + file.getAbsolutePath() + "' doesn't exist.");
 				}
 				
 				IOUtils.copy(new FileInputStream(file), os);
