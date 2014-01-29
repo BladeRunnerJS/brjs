@@ -11,7 +11,10 @@ import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.utility.RelativePathUtility;
 import org.slf4j.impl.StaticLoggerBinder;
+
+import com.caplin.cutlass.file.RelativePath;
 
 public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHandler
 {
@@ -42,9 +45,9 @@ public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHan
     			throw new RuntimeException("Unable to calculate App node for the test dir: " + testDir.getAbsolutePath());
     		}				
     		
-    		String pathRelativeToApp = StringUtils.substringAfter(testDir.getAbsolutePath(), app.dir().getAbsolutePath());
+    		String pathRelativeToApp = "/" + RelativePathUtility.get(app.dir(), testDir);
     		String bladerunnerUriRequestPathPrefix = StringUtils.substringBeforeLast(pathRelativeToApp, bundlerFileExtension);
-    		bladerunnerUriRequestPathPrefix = (bladerunnerUriRequestPathPrefix.endsWith("/")) ? bladerunnerUriRequestPathPrefix : bladerunnerUriRequestPathPrefix+"/";
+    		bladerunnerUriRequestPathPrefix = (bladerunnerUriRequestPathPrefix.endsWith("/"))  ? bladerunnerUriRequestPathPrefix : bladerunnerUriRequestPathPrefix+"/";
     		
     		BladerunnerUri requestUri = new BladerunnerUri(brjs, app.dir(), "/"+app.getName(), bladerunnerUriRequestPathPrefix+brjsRequestPath, null);
     		
