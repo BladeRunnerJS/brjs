@@ -3,7 +3,6 @@ package org.bladerunnerjs.spec.plugin.bundler;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +70,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void thirdpartyAppearsFirstAndNamespacedModulesAppearLastInTheBundle() throws Exception {
-		given(aspect).hasPackageStyle("src/appns/namespaced", NamespacedJsContentPlugin.JS_STYLE)
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClasses("appns.node.NodeClass", "appns.namespaced.NamespacedClass")
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js")
 			.and(thirdpartyLib).containsFile("src.js")

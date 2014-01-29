@@ -3,7 +3,6 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Theme;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -47,7 +46,7 @@ public class AspectBundlingOfAspectResources extends SpecTest {
 	@Ignore 
  	@Test
  	public void aspectCssFilesAreBundled() throws Exception {
-		given(aspect).hasPackageStyle("src/appns", NamespacedJsContentPlugin.JS_STYLE)
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content");
  		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
  		then(response).containsText("ASPECT theme content");

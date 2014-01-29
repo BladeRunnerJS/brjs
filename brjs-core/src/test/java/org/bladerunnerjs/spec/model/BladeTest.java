@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -85,9 +84,8 @@ public class BladeTest extends SpecTest {
 	//TODO: verify bundleInfo exception
 	@Test
 	public void classesWithinABladeCantReferenceClassesInOtherBlades() throws Exception {
-		given(blade1).hasPackageStyle("src/appns/bs/", NamespacedJsContentPlugin.JS_STYLE)
+		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(blade1).hasClass("appns.bs.b1.Class1")
-			.and(blade2).hasPackageStyle("src/appns/bs", NamespacedJsContentPlugin.JS_STYLE)
 			.and(blade2).hasClass("appns.bs.b2.Class1")
 			.and(blade2).classRefersTo("appns.bs.b2.Class1", "appns.bs.b1.blade.Class1")
 			.and(aspect).indexPageRefersTo("blade2.Class2");

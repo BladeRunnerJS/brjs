@@ -3,7 +3,6 @@ package org.bladerunnerjs.spec.plugin.minifier;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +74,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesRequestsWithMultipleFiles() throws Exception
 	{
-		given(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+		given(blade).hasNamespacedJsPackageStyle("src/appns/bs/b1")
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2");
@@ -86,8 +85,8 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
-		given(aspect).hasPackageStyle("src/appns.cjs", NamespacedJsContentPlugin.JS_STYLE)
-			.and(aspect).hasPackageStyle("appns.node", "node.js")
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/cjs")
+			.and(aspect).hasNodeJsPackageStyle("appns/node")
 			.and(aspect).hasClasses("appns.cjs.Class", "appns.node.Class")
 			.and(aspect).indexPageRefersTo("appns.cjs.Class")
 			.and(aspect).classRefersTo("appns.cjs.Class",  "appns.node.Class");
@@ -98,7 +97,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 	@Test
 	public void closureMinifierStillAddsPackageDefinitionsBlock() throws Exception
 	{
-		given(aspect).hasPackageStyle("src/appns/cjs", NamespacedJsContentPlugin.JS_STYLE)
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/cjs")
     		.and(aspect).hasClasses("appns.cjs.Class", "appns.node.Class")
     		.and(aspect).indexPageRefersTo("appns.cjs.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);

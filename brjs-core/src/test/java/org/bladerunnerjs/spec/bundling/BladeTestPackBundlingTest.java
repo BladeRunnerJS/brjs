@@ -43,7 +43,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	// N A M E S P A C E D - J S
 	@Test
 	public void weBundleBladeFilesInUTs() throws Exception {
-		given(blade).hasPackageStyle("namespaced-js")
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
@@ -54,7 +54,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void weBundleBladeFilesInATs() throws Exception {
-		given(blade).hasPackageStyle("namespaced-js")
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
@@ -65,7 +65,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void weBundleBladeSrcTestContentsInUTs() throws Exception {		
-		given(blade).hasPackageStyle("namespaced-js")
+		given(blade).hasNamespacedJsPackageStyle()
     		.and(bladeUTs).containsFile("src-test/pkg/Util.js")
     		.and(blade).hasClasses("appns.bs.b1.Class1")
     		.and(bladeUTs).classDependsOn("pkg.Util", "appns.bs.b1.Class1")
@@ -77,7 +77,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void noExceptionsAreThrownIfTheBladeSrcFolderHasAHiddenFolder() throws Exception {
-		given(blade).hasPackageStyle("namespaced-js")
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).hasDir("src/.svn")
@@ -89,10 +89,10 @@ public class BladeTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void weCanBundleBladesetAndBladeFilesInATs() throws Exception {
-		given(bladeset).hasPackageStyle("namespaced-js")
+		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
-			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2", "appns.bs.Class1")
 			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
@@ -105,9 +105,9 @@ public class BladeTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void weCanBundleAspectSrcCodeInATs() throws Exception {
-		given(aspect).hasPackageStyle("namespaced-js")
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).classFileHasContent("appns.Class1", "aspect content")
-			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.Class1", "appns.bs.b1.Class2")
 			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
@@ -119,10 +119,10 @@ public class BladeTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void weCanBundleAppThirdpartyLibrariesInATs() throws Exception {
-		given(appThirdparty).hasPackageStyle("namespaced-js")
+		given(appThirdparty).hasNamespacedJsPackageStyle()
 			.and(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js, src2.js")
 			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
-			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", appThirdparty.getName(), "appns.bs.b1.Class2")
 			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
@@ -134,12 +134,12 @@ public class BladeTestPackBundlingTest extends SpecTest
 
 	@Test
 	public void weCanBundleSdkJsLibIncludingSdkThirdpartyBootstrapInATs() throws Exception {
-		given(sdkJsLib).hasPackageStyle("namespaced-js")
+		given(sdkJsLib).hasNamespacedJsPackageStyle()
 			.and(sdkJsLib).classFileHasContent("br.namespaced.Class1", "sdk class1 contents")
 			.and(browserModules).containsFileWithContents("library.manifest", "js: file.js")
 			.and(browserModules).containsFileWithContents("file.js", "browser-modules-content")
 			.and(bootsrapThirdparty).containsFileWithContents("library.manifest", "depends: browser-modules")
-			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "br.namespaced.Class1", "appns.bs.b1.Class2")
 			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");

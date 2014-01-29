@@ -22,15 +22,25 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		this.node = node;
 	}
 	
-	public BuilderChainer hasPackageStyle(String jsStyle) {
-		return hasPackageStyle("", jsStyle);
+	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
+		JsStyleUtility.setJsStyle(node.file(packagePath), jsStyle);
+		return builderChainer;
 	}
 	
-	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
-		// TODO: delete this replaceAll() line, and make tests just use normal paths
-		String path = packagePath.replaceAll("\\.", "/");
-		JsStyleUtility.setJsStyle(node.file(path), jsStyle);
-		return builderChainer;
+	public BuilderChainer hasNamespacedJsPackageStyle(String packagePath) {
+		return hasPackageStyle(packagePath, NamespacedJsContentPlugin.JS_STYLE);
+	}
+	
+	public BuilderChainer hasNamespacedJsPackageStyle() {
+		return hasNamespacedJsPackageStyle("");
+	}
+	
+	public BuilderChainer hasNodeJsPackageStyle(String packagePath) {
+		return hasPackageStyle(packagePath, NodeJsContentPlugin.JS_STYLE);
+	}
+	
+	public BuilderChainer hasNodeJsPackageStyle() {
+		return hasNodeJsPackageStyle("");
 	}
 	
 	public BuilderChainer hasClass(String className) throws Exception

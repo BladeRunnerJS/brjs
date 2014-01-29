@@ -3,7 +3,6 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -32,7 +31,7 @@ public class AspectUserLibBundling extends SpecTest {
 	@Ignore //TODO: fix this, how do we distinguish between different types of JsLibs so the bundler plugins know which to create files for?
 	@Test
 	public void aspectBundlesContainUserLibrLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(userLib).hasPackageStyle("src/userLib", NamespacedJsContentPlugin.JS_STYLE)
+		given(userLib).hasNamespacedJsPackageStyle()
 			.and(userLib).hasClass("userLib.Class1")
 			.and(aspect).indexPageRefersTo("userLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -43,11 +42,11 @@ public class AspectUserLibBundling extends SpecTest {
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(userLib).hasBeenCreated()
-			.and(userLib).hasPackageStyle("src/userLib", NamespacedJsContentPlugin.JS_STYLE)
+			.and(userLib).hasNamespacedJsPackageStyle()
 			.and(userLib).hasClass("userLib.Class1")
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).hasPackageStyle("src/appns", NamespacedJsContentPlugin.JS_STYLE)
+			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).classRefersTo("appns.Class1", "userLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);

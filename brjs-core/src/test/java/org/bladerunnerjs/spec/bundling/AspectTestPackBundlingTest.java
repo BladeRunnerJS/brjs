@@ -36,7 +36,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 	// N A M E S P A C E D - J S
 	@Test
 	public void weBundleAspectFilesInUTs() throws Exception {
-		given(aspect).hasPackageStyle("namespaced-js")
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
 		then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
@@ -44,7 +44,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void weBundleAspectFilesInATs() throws Exception {
-		given(aspect).hasPackageStyle("namespaced-js")
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspectATs).testRefersTo("pkg/test.js", "appns.Class1");
 		then(aspectATs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
@@ -52,7 +52,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void noExceptionsAreThrownIfTheBladesetSrcFolderHasAHiddenFolder() throws Exception {
-		given(aspect).hasPackageStyle("namespaced-js")
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).hasDir("src/.svn")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
@@ -61,9 +61,9 @@ public class AspectTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void aspectTestsCanDependOnBladesetCode() throws Exception {
-		given(aspect).hasPackageStyle("namespaced-js")
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
-			.and(bladeset).hasPackageStyle("namespaced-js")
+			.and(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1", "appns.bs.Class1");
@@ -75,9 +75,9 @@ public class AspectTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void aspectTestsCanDependOnBladeCode() throws Exception {
-		given(aspect).hasPackageStyle("namespaced-js")
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
-			.and(blade).hasPackageStyle("namespaced-js")
+			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1", "appns.bs.b1.Class1");

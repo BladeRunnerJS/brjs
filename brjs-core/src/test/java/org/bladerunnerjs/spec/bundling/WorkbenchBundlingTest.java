@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -65,9 +64,9 @@ public class WorkbenchBundlingTest extends SpecTest {
 	
 	@Test
 	public void workbenchPageDoesNotBundleAspectJSClassFilesWhenReferenced() throws Exception {
-		given(aspect).hasPackageStyle("src/appns", NamespacedJsContentPlugin.JS_STYLE)
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1")
-			.and(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.Class1");
@@ -90,7 +89,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladesetCssFilesAreBundledWhenReferencedInTheWorkbench() throws Exception {
-		given(bladeset).hasPackageStyle("src/appns/bs", NamespacedJsContentPlugin.JS_STYLE)
+		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClass("appns.bs.Class1")
 			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.Class1");
@@ -101,7 +100,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	@Ignore 
  	@Test
  	public void bladeCssFilesAreBundledWhenReferencedInTheWorkbench() throws Exception {
-		given(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");

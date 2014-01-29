@@ -5,7 +5,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +40,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABladeset() throws Exception {
-		given(bladeset).hasPackageStyle("src/appns", NamespacedJsContentPlugin.JS_STYLE)
+		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
@@ -60,7 +59,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	
 	@Test	// bladeset unhappy paths
 	public void weDontBundleABladesetClassIfItIsNotReferredToByAnAspect() throws Exception {
-		given(bladeset).hasPackageStyle("src/appns/bs", NamespacedJsContentPlugin.JS_STYLE)
+		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class2");
@@ -81,7 +80,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	
 	@Test
 	public void bladesetClassesThatReferToNonExistentClassesWontCauseAnExceptionWhenAspectIsRequested() throws Exception {
-		given(bladeset).hasPackageStyle("src/appns/bs", NamespacedJsContentPlugin.JS_STYLE)
+		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClass("appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.NonExistentClass");

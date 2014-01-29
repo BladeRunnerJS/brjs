@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -65,7 +64,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABlade() throws Exception {
-		given(blade).hasPackageStyle("src/appns/bs", NamespacedJsContentPlugin.JS_STYLE)
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
@@ -84,11 +83,11 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	
 	@Test
 	public void weBundleImplicitTransitiveDependenciesFromABladeIncludingBladesetDependencies() throws Exception {	
-		given(bladeset).hasPackageStyle("src/appns/bs", NamespacedJsContentPlugin.JS_STYLE)
+		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
 			.and(blade).hasClass("appns.bs.b1.Class1")
-			.and(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -100,7 +99,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
 			.and(blade).hasClass("appns.bs.b1.Class1")
-			.and(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -112,7 +111,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
     		.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
     		.and(blade).hasClass("appns.bs.b1.Class1")
-    		.and(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+    		.and(blade).hasNamespacedJsPackageStyle()
     		.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
     		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
     	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -124,7 +123,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
     		.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
     		.and(blade).hasClass("appns.bs.b1.Class1")
-    		.and(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+    		.and(blade).hasNamespacedJsPackageStyle()
     		.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
     		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
     	when(app).requestReceived("/default-aspect/js/prod/en_GB/combined/bundle.js", response);
@@ -136,7 +135,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
     		.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
     		.and(blade).hasClass("appns.bs.b1.Class1")
-    		.and(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+    		.and(blade).hasNamespacedJsPackageStyle()
     		.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
     		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", response);
@@ -145,7 +144,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	
 	@Test	// blade unhappy paths
 	public void weDontBundleABladeIfItIsNotReferredToAnAspect() throws Exception {
-		given(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class2");
@@ -166,7 +165,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	
 	@Test
 	public void bladeClassesThatReferToNonExistentClassesWontCauseAnExceptionWhenAspectIsRequested() throws Exception {
-		given(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.NonExistentClass");
@@ -178,9 +177,8 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	@Ignore
 	@Test
 	public void bladesReferencedByOtherBladesDoNotGetBundled() throws Exception {
-		given(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
-			.and(bladeWithSubstringOfAnotherBlade).hasPackageStyle("src/appns/bs/b1b", NamespacedJsContentPlugin.JS_STYLE)
 			.and(bladeWithSubstringOfAnotherBlade).classRefersTo("appns.bs.b1b.Class1", "appns.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1b.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -190,9 +188,8 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	
 	@Test
 	public void bladeNamespaceWithSubstringOfAnotherBladeShouldNotGetBundled() throws Exception {
-		given(blade).hasPackageStyle("src/appns/bs/b1", NamespacedJsContentPlugin.JS_STYLE)
+		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
-			.and(bladeWithSubstringOfAnotherBlade).hasPackageStyle("src/appns/bs/b1b", NamespacedJsContentPlugin.JS_STYLE)
 			.and(bladeWithSubstringOfAnotherBlade).hasClass("appns.bs.b1b.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1b.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);

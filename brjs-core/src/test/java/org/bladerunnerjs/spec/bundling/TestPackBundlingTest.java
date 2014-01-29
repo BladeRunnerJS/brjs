@@ -28,7 +28,7 @@ public class TestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void twoTestPacksCanHaveTestsWithTheSameRequirePath() throws Exception {
-		given(aspect).hasPackageStyle("", "namespaced-js")
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspectUTs).hasClass("appTestUtils.Class1")
 			.and(aspectATs).hasClass("appTestUtils.Class1")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appTestUtils.Class1");
@@ -38,7 +38,7 @@ public class TestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void srcTestCanLiveAtTestsAndTechnologyLevel() throws Exception {
-		given(aspect).hasPackageStyle("", "namespaced-js")
+		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspectUTs).hasClass("aspectUT.Class1")
 			.and(aspect).hasTestClass("appns.Class1")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "aspectUT.Class1")

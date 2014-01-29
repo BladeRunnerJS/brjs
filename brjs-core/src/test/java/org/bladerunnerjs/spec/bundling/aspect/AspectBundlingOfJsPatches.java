@@ -3,7 +3,6 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -37,13 +36,13 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 	@Test
 	public void weDoNotBundleNamespacedJsPatchesForLibraryClassesWhichAreNotReferenced() throws Exception {
 		given(sdkJsLib).hasBeenCreated()
-			.and(sdkJsLib).hasPackageStyle("src/sdkJsLib", NamespacedJsContentPlugin.JS_STYLE)
+			.and(sdkJsLib).hasNamespacedJsPackageStyle()
 			.and(sdkJsLib).hasClass("sdkJsLib.Class1")
 //			.and(jsPatchesLib).hasPackageStyle("br/sdkJsLib", NamespacedJsBundlerPlugin.JS_STYLE)
 //			.and(jsPatchesLib).hasClass("sdkJsLib.Class2");	
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).hasPackageStyle("src/appns", NamespacedJsContentPlugin.JS_STYLE)
+			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).classRefersTo("appns.Class1", "sdkJsLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);

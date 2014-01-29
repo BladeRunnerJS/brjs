@@ -3,8 +3,6 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +29,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 
 	@Test
 	public void aspectBundlesContainsNodeStyleSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(sdkLib).hasPackageStyle(NodeJsContentPlugin.JS_STYLE)
+		given(sdkLib).hasNodeJsPackageStyle()
 			.and(sdkLib).hasClass("br.SdkClass")
 			.and(aspect).indexPageHasContent("require('br/SdkClass');");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -40,7 +38,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 	
 	@Test
 	public void aspectBundlesContainsNamespaceStyleSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(sdkLib).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)
+		given(sdkLib).hasNamespacedJsPackageStyle()
 			.and(sdkLib).hasClass("br.SdkClass")
 			.and(aspect).indexPageHasContent("require('br/SdkClass');");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -52,7 +50,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(aspect).hasClass("appns.AspectClass")
 			.and(sdkLib).hasClass("br.SdkClass")
-			.and(aspect).hasPackageStyle(NamespacedJsContentPlugin.JS_STYLE)
+			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRefersTo("appns.AspectClass", "br.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
