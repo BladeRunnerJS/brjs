@@ -36,12 +36,13 @@ public class Java7FileModificationInfo implements FileModificationInfo {
 		List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
 		
 		if(watchEvents.size() > 0) {
+			// TODO: we shouldn't update last-modified if the only changes to are hidden files
 			updateLastModified();
 			
 			for(WatchEvent<?> watchEvent : watchEvents) {
 				if(watchEvent.kind().type().equals(ENTRY_CREATE)) {
 					// TODO: we need to process adds and removes properly, by creating more FileModificationInfo objects
-					// TODO: this will involve invoking initializeWatchers() for any new directories, and that method will need to be made thread-safe
+					//       this will involve invoking initializeWatchers() for any new directories, and that method will need to be made thread-safe
 				}
 			}
 		}
