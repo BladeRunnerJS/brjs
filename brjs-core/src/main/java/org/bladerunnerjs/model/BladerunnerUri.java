@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public class BladerunnerUri
@@ -83,12 +84,35 @@ public class BladerunnerUri
 		processUri(new File(context.getRealPath("/")), contextPath, requestPath, request.getQueryString());
 	}
 	
+	public BladerunnerUri(BRJS brjs, File contextDir, String requestPath) throws MalformedRequestException
+	{
+		this.brjs = brjs;
+		
+		App app = brjs.locateAncestorNodeOfClass(contextDir, App.class);
+		
+		if (app == null)
+		{
+			throw new MalformedRequestException(contextDir.getAbsolutePath(), "Unable to calculate App node for the contextDir dir: " + contextDir.getAbsolutePath());
+		}
+		
+		String fullRequestPath = "/"+RelativePathUtility.get(app.dir(), contextDir);
+		fullRequestPath = (fullRequestPath + requestPath).replace("//", "/");
+		
+		processUri(app.dir(), "/"+app.getName(), fullRequestPath, null);
+	}
+	
+	
+	/**
+	 * This is method should only be used for testing. DO NOT use this in plugin code, use a different constructor instead.
+	 * 
+	 * @deprecated  - deprecated so it shows as a warning if it's used
+	 */
 	public BladerunnerUri(BRJS brjs, File contextRoot, String contextPath, String requestPath, String queryString) throws MalformedRequestException
 	{
 		this.brjs = brjs;
 		processUri(contextRoot, contextPath, requestPath, queryString);
 	}
-	
+
 	public String getUri()
 	{
 		String queryStringSuffix = (queryString == null) ? "" : "?" + queryString;
@@ -103,6 +127,13 @@ public class BladerunnerUri
 	
 	private void processUri(File contextRoot, String contextPath, String requestPath, String queryString) throws MalformedRequestException
 	{
+		System.err.println(contextRoot);
+		System.err.println(contextPath);
+		System.err.println(requestPath);
+		System.err.println(queryString);
+		
+		
+		
 		if (!contextRoot.exists() || !contextRoot.isDirectory())
 		{
 			throw new MalformedRequestException(contextPath + requestPath, "Error calculating root directory. Calculated root path " + contextRoot.getPath() + " either does not exist or is not a directory.");
