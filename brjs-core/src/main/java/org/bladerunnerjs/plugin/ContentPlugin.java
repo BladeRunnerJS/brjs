@@ -79,19 +79,19 @@ public interface ContentPlugin extends Plugin {
 	 * Returns the list of valid content paths, when in development, for the given bundle-set and locale.
 	 * 
 	 * @param bundleSet The bundle-set for which content paths must be generated.
-	 * @param locale The locale for which content paths must be generated.
+	 * @param locales The locale for which content paths must be generated.
 	 * 
 	 * @throws BundlerProcessingException if a problem is encountered.
 	 */
-	List<String> getValidDevContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
+	List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in production, for the given bundle-set and locale.
 	 * 
 	 * @param bundleSet The bundle-set for which content paths must be generated.
-	 * @param locale The locale for which content paths must be generated.
+	 * @param locales The locale for which content paths must be generated.
 	 * 
 	 * @throws BundlerProcessingException if a problem is encountered.
 	 */
-	List<String> getValidProdContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException;
+	List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException;
 }

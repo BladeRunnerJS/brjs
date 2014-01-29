@@ -58,13 +58,13 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
-		return generateRequiredRequestPaths(true, bundleSet, locale);
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+		return generateRequiredRequestPaths(true, bundleSet, locales);
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
-		return generateRequiredRequestPaths(false, bundleSet, locale);
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+		return generateRequiredRequestPaths(false, bundleSet, locales);
 	}
 	
 	@Override
@@ -89,15 +89,15 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
 		for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
 			if(isDev) {
-				requestPaths.addAll(contentPlugin.getValidDevContentPaths(bundleSet, locale));
+				requestPaths.addAll(contentPlugin.getValidDevContentPaths(bundleSet, locales));
 			}
 			else {
-				requestPaths.addAll(contentPlugin.getValidProdContentPaths(bundleSet, locale));
+				requestPaths.addAll(contentPlugin.getValidProdContentPaths(bundleSet, locales));
 			}
 		}
 		
@@ -111,9 +111,11 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			String charsetName = brjs.bladerunnerConf().getDefaultOutputEncoding();
 			
 			for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
-				String locale = contentPath.properties.get("locale");
-				List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? contentPlugin.getValidDevContentPaths(bundleSet, locale) :
-					contentPlugin.getValidProdContentPaths(bundleSet, locale);
+				List<String> locales = new ArrayList<>();
+				locales.add(contentPath.properties.get("locale"));
+				
+				List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? contentPlugin.getValidDevContentPaths(bundleSet, locales) :
+					contentPlugin.getValidProdContentPaths(bundleSet, locales);
 				ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
 				
 				for(String requestPath : requestPaths) {

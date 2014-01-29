@@ -75,9 +75,8 @@ public class MockTagHandler extends AbstractTagHandlerPlugin implements TagHandl
     			printWriter.println(attributeKey+"="+attributeValue);			
     		}
 		}
-    		
-		if (printLocales && !locale.equals(""))
-		{
+    	
+		if (printLocales) {
 			printWriter.println("- "+locale);
 		}
 	}

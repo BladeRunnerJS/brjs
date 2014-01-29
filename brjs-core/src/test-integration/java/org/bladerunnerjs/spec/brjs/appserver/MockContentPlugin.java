@@ -67,13 +67,13 @@ public class MockContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException
 	{
 		return Arrays.asList();
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException
 	{
 		return Arrays.asList();
 	}

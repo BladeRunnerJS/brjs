@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +32,11 @@ public class NamespacedJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
+		List<String> locales = new ArrayList<>();
+		locales.add(locale);
+		
 		try {
-			writeTagContent(bundleSet, namespacedJsTagHandlerPlugin.getValidDevContentPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, namespacedJsTagHandlerPlugin.getValidDevContentPaths(bundleSet, locales), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
@@ -41,8 +45,11 @@ public class NamespacedJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
+		List<String> locales = new ArrayList<>();
+		locales.add(locale);
+		
 		try {
-			writeTagContent(bundleSet, namespacedJsTagHandlerPlugin.getValidProdContentPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, namespacedJsTagHandlerPlugin.getValidProdContentPaths(bundleSet, locales), writer);
 		}
 		catch (BundlerProcessingException e) {
 			throw new IOException(e);
