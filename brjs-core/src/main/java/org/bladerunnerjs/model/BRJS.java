@@ -86,6 +86,10 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
 		
+		if(dir != null) {
+			fileModificationService.setRootDir(dir);
+		}
+		
 		this.fileModificationService = fileModificationService;
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
@@ -103,7 +107,7 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public BRJS(File brjsDir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) {
-		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(brjsDir.getParentFile()), loggerFactory, consoleWriter);
+		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(), loggerFactory, consoleWriter);
 	}
 	
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)

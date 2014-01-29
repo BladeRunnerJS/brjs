@@ -6,6 +6,11 @@ public class PessimisticFileModificationService implements FileModificationServi
 	PessimisticFileModificationInfo pessimisticFileModificationInfo = new PessimisticFileModificationInfo();
 	
 	@Override
+	public void setRootDir(File rootDir) {
+		// do nothing
+	}
+	
+	@Override
 	public FileModificationInfo getModificationInfo(File file) {
 		return pessimisticFileModificationInfo;
 	}

@@ -240,7 +240,7 @@ public class BundlerInjectorTest {
 		LogMessageStore logging = new LogMessageStore();
 		ConsoleMessageStore output = new ConsoleMessageStore();
 		File testSdkDirectory = createTestSdkDirectory();
-		BRJS brjs = new BRJS(testSdkDirectory, new BRJSPluginLocator(), new Java7FileModificationService(testSdkDirectory), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		BRJS brjs = new BRJS(testSdkDirectory, new BRJSPluginLocator(), new Java7FileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 		
 		App app = brjs.app("my-app");
 		app.create();

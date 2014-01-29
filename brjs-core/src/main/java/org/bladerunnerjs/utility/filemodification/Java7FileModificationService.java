@@ -13,9 +13,18 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	private final PessimisticFileModificationInfo pessimisticFileModificationInfo = new PessimisticFileModificationInfo();
 	private boolean running = true;
 	
-	public Java7FileModificationService(File rootDir) {
+	public Java7FileModificationService() {
 		try {
 			watchService = FileSystems.getDefault().newWatchService();
+		}
+		catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public void setRootDir(File rootDir) {
+		try {
 			initializeWatchers(rootDir.getCanonicalFile(), null);
 			new Thread(this).start();
 		}
