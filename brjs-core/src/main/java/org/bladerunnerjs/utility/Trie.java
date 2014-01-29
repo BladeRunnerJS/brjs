@@ -11,7 +11,7 @@ public class Trie<T>
 {
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"".toCharArray();
 	private TrieNode<T> root = new TrieNode<T>();
-	private int largestKeyLength = 0;
+	private int readAheadLimit = 1;
 	
 	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException {
 		if (key.length() < 1)
@@ -30,7 +30,7 @@ public class Trie<T>
 			throw new TrieKeyAlreadyExistsException(key);
 		}
 		node.setValue(value);
-		largestKeyLength = Math.max(largestKeyLength, key.length());
+		readAheadLimit = Math.max(readAheadLimit, key.length() + 1);
 	}
 	
 	public boolean containsKey(String key) {
@@ -56,74 +56,47 @@ public class Trie<T>
 	
 	public List<T> getMatches(Reader reader) throws IOException
 	{
-		List<T> matches = new LinkedList<T>();
-		
-		TrieMatcher matcher = new TrieMatcher();
-		
-		int latestCharVal;
-		boolean foundCompleteMatch = true;
-		
 		if (!reader.markSupported())
 		{
 			throw new RuntimeException(this.getClass().getSimpleName() + " only supports readers that support 'marks' - (reader.markSupported() == true)");
 		}
 		
-		reader.mark(largestKeyLength+1);
-		while ((latestCharVal = readNextChar(reader, matcher, foundCompleteMatch)) != -1)
+		List<T> matches = new LinkedList<T>();
+		TrieMatcher matcher = new TrieMatcher();
+		int nextChar;
+		
+		while ((nextChar = reader.read()) != -1)
 		{
-			if (matcher.startedReadingNewChars)
-			{
-				reader.mark(largestKeyLength+1);
-			}
-			char latestChar = (char) latestCharVal;
-			
-			foundCompleteMatch = processChar(matches, latestChar, matcher);
-			if (foundCompleteMatch)
-			{
-				reader.mark(largestKeyLength+1);
-			}
+			processChar(matches, (char) nextChar, matcher, reader);
 		}
-		processChar(matches, '\n', matcher);
+		processChar(matches, '\n', matcher, reader);
 		
 		return matches;	
 	}
-
-	private int readNextChar(Reader reader, TrieMatcher matcher, boolean foundCompleteMatch) throws IOException
-	{
-		if (matcher.currentNode == root)
-		{
-			reader.reset();
-		}
-		return reader.read();
-	}
 	
-	private boolean processChar(List<T> matches, char nextChar, TrieMatcher matcher)
+	private void processChar(List<T> matches, char nextChar, TrieMatcher matcher, Reader reader) throws IOException
 	{
-		boolean foundCompleteMatch = false;
+		if (matcher.atRootOfTrie)
+		{
+			reader.mark(readAheadLimit);
+		}
 		
 		TrieNode<T> nextNode = matcher.next(nextChar);
 		
 		if (nextNode == null)
 		{
-			T matcherValue = matcher.previousNode.getValue();
-			if (matcherValue != null && matchesDelimeter(nextChar))
+			T trieValue = matcher.previousNode.getValue();
+			if (trieValue != null && isDelimiter(nextChar))
 			{
-				matches.add(matcherValue);
-				foundCompleteMatch = true;
+				matches.add(trieValue);
+				reader.mark(readAheadLimit);
 			}
 			matcher.reset();
+			reader.reset();
 		}
-		
-		if (matcher.startedReadingNewChars && !matchesDelimeter(nextChar))
-		{
-			matcher.reset();			
-		}
-		
-		return foundCompleteMatch;
 	}
 
-
-	private boolean matchesDelimeter(char nextChar)
+	private boolean isDelimiter(char nextChar)
 	{
 		return ArrayUtils.contains(DELIMETERS, nextChar);
 	}
@@ -131,7 +104,7 @@ public class Trie<T>
 	private class TrieMatcher {
 		TrieNode<T> currentNode;
 		TrieNode<T> previousNode;
-		boolean startedReadingNewChars;
+		boolean atRootOfTrie;
 		
 		TrieMatcher()
 		{
@@ -142,7 +115,7 @@ public class Trie<T>
 		{
 			previousNode = currentNode;
 			currentNode = currentNode.getNextNode(nextChar);
-			startedReadingNewChars = false;
+			atRootOfTrie = false;
 			return currentNode;
 		}
 		
@@ -150,7 +123,7 @@ public class Trie<T>
 		{
 			currentNode = root;
 			previousNode = null;
-			startedReadingNewChars = true;
+			atRootOfTrie = true;
 		}
 	}
 }
