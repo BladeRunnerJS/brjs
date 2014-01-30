@@ -90,7 +90,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				JsLib lib = app.nonBladeRunnerLib(libName);
 				if (!lib.dirExists())
 				{
-					throw new BundlerProcessingException("Library " + lib.getName() + " doesn't exist.");
+					throw new BundlerProcessingException("Library '" + lib.getName() + "' doesn't exist.");
 				}
 				
 				String filePath = contentPath.properties.get("file-path");
@@ -100,7 +100,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				File file = lib.file(filePath);
 				if (!file.exists())
 				{
-					throw new BundlerProcessingException("File " + file.getAbsolutePath() + " doesn't exist.");
+					throw new BundlerProcessingException("File '" + file.getAbsolutePath() + "' doesn't exist.");
 				}
 				
 				IOUtils.copy(new FileInputStream(file), os);
@@ -124,7 +124,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException
 	{
 		List<String> requestPaths = new ArrayList<>();
 		
@@ -143,7 +143,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException 
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException 
 	{
 		List<String> requestPaths = new ArrayList<>();
 		

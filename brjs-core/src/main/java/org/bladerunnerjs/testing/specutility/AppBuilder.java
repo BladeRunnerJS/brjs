@@ -1,8 +1,13 @@
 package org.bladerunnerjs.testing.specutility;
 
+import java.io.UnsupportedEncodingException;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
@@ -45,5 +50,13 @@ public class AppBuilder extends NodeBuilder<App> {
 		new AppVerifier(specTest, app).hasLibs(libs);
 		
 		return builderChainer;
+	}
+
+	public BuilderChainer hasReceivedRequst(String requestPath) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException, UnsupportedEncodingException 
+	{
+		AppCommander appCommander = new AppCommander(this.specTest, this.app);
+		appCommander.requestReceived(requestPath, new StringBuffer());
+			
+		return builderChainer;	
 	}
 }

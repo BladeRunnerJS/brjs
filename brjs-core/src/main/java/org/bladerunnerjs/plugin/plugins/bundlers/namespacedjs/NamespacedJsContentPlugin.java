@@ -72,7 +72,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
@@ -91,7 +91,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String locale) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
 		return prodRequestPaths;
 	}
 	
@@ -159,7 +159,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			if (sourceModule instanceof NamespacedJsSourceModule)
 			{
-    			List<String> packageList = Arrays.asList(sourceModule.getNamespacedName().split("\\."));
+    			List<String> packageList = Arrays.asList(sourceModule.getClassname().split("\\."));
     			addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}
@@ -218,7 +218,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 		{
 			if (dependentSourceModule.isEncapsulatedModule() && !globalizedModules.contains(dependentSourceModule) ) 
 			{
-   				stringBuffer.append(dependentSourceModule.getNamespacedName() + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
+   				stringBuffer.append(dependentSourceModule.getClassname() + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
    				globalizedModules.add(dependentSourceModule);
 			}
 		}

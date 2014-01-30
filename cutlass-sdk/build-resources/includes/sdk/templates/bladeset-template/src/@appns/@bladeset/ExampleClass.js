@@ -1,3 +1,7 @@
-@appns.@bladeset.ExampleClass = function()
+"use strict";
+
+ExampleClass = function()
 {
 };
+
+module.exports = ExampleClass;

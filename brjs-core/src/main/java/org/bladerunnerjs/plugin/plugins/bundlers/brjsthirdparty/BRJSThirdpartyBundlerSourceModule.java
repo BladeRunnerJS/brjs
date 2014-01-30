@@ -143,7 +143,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	}
 	
 	@Override
-	public String getNamespacedName() {
+	public String getClassname() {
 		return null;
 	}
 	
