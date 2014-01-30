@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.plugin.bundler;
+package org.bladerunnerjs.spec.plugin.bundler.i18n;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;

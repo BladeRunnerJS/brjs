@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.plugin.bundler;
+package org.bladerunnerjs.spec.plugin.bundler.thirdparty;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -28,32 +28,6 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 			thirdpartyLib = app.nonBladeRunnerLib("thirdparty-lib");
 			thirdpartyLib2 = app.nonBladeRunnerLib("thirdparty-lib2");
 	}	
-	
-	@Test
-	public void inDevSeparateJsFileRequestsAreGeneratedByDefault() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
-			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
-		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("thirdparty/thirdparty-lib/bundle.js")
-			.and(pageResponse).doesNotContainText("<@thirdparty.bundle@/>");
-	}
-	
-	@Test
-	public void inProdASingleBundlerRequestIsGeneratedByDefault() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
-			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
-		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("thirdparty/bundle.js")
-			.and(pageResponse).doesNotContainText("<@thirdparty.bundle@/>");
-	}
-	
-	@Test
-	public void noRequestPathsAreGeneratedInDevIfThereAreNoLibraries() throws Exception {
-		given(aspect).indexPageHasContent("<@thirdparty.bundle@/>");
-		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests()
-			.and(pageResponse).doesNotContainText("<@thirdparty.bundle@/>");
-	}
 	
 	@Test
 	public void singleModuleRequestContainsAllFilesForTheModule() throws Exception {

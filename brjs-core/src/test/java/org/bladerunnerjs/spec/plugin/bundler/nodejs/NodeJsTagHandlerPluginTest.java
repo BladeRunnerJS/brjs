@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.plugin.bundler;
+package org.bladerunnerjs.spec.plugin.bundler.nodejs;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -6,11 +6,10 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NodeJsBundlerPluginTest extends SpecTest {
+public class NodeJsTagHandlerPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer pageResponse = new StringBuffer();
-	private StringBuffer requestResponse = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -48,9 +47,9 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).classRequires("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
-		when(app).requestReceived("/default-aspect/node-js/bundle.js", requestResponse);
-		then(requestResponse).containsText("// appns/Class2\n" + "define('appns/Class2', function(")
-			.and(requestResponse).containsText("// appns/Class1\n" + "define('appns/Class1', function(");
+		when(app).requestReceived("/default-aspect/node-js/bundle.js", pageResponse);
+		then(pageResponse).containsText("// appns/Class2\n" + "define('appns/Class2', function(")
+			.and(pageResponse).containsText("// appns/Class1\n" + "define('appns/Class1', function(");
 	}
 	
 	@Test
@@ -60,19 +59,7 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).classRequires("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(requestResponse).isEmpty();
+		then(pageResponse).isEmpty();
 	}
 	
-	@Test
-	public void classesAreAutomaticallyWrappedInAClosure() throws Exception {
-		given(aspect).hasClasses("appns.Class1")
-			.and(aspect).indexPageRefersTo("appns.Class1");
-		when(app).requestReceived("/default-aspect/node-js/module/appns/Class1.js", requestResponse);
-		then(requestResponse).containsLines(
-			"define('appns/Class1', function(require, exports, module) {",
-			"appns.Class1 = function() {",
-			"};",
-			"module.exports = appns.Class1;",
-			"\n});");
-	}
 }

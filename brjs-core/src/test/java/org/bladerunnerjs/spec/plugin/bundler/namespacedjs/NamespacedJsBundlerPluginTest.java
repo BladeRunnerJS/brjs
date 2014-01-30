@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.plugin.bundler;
+package org.bladerunnerjs.spec.plugin.bundler.namespacedjs;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -10,7 +10,6 @@ import org.junit.Test;
 public class NamespacedJsBundlerPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private StringBuffer pageResponse = new StringBuffer();
 	private StringBuffer requestResponse = new StringBuffer();
 	private JsLib thirdpartyLib;
 	
@@ -23,28 +22,6 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			thirdpartyLib = app.jsLib("lib1");
-	}
-	
-	@Test
-	public void inDevSeparateJsFileRequestsAreGenerated() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).classRefersTo("appns.Class1", "appns.Class2")
-			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
-		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class1.js", "namespaced-js/module/appns/Class2.js");
-	}
-	
-	@Test
-	public void inProdASingleBundleRequestIsGenerated() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).classRefersTo("appns.Class1", "appns.Class2")
-			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
-		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/bundle.js");
 	}
 	
 	@Test
@@ -178,14 +155,4 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		then(requestResponse).containsTextOnce("window.appns = {\"nodejs\":{},\"namespaced\":{}};");
 	}
 	
-	@Test
-	public void staticDependenciesAppearFirstEvenWhenTheyAreDiscoveredLast() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
-			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
-		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class2.js", "namespaced-js/module/appns/Class1.js"); // TODO: enforce ordering
-	}
 }
