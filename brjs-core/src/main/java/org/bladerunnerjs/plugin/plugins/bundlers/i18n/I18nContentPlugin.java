@@ -3,8 +3,10 @@ package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -108,12 +110,9 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		
 		for (Asset asset : getOrderedI18nAssetFiles(bundleSet))
 		{
-			if (asset instanceof I18nAssetFile)
-			{
-				addI18nProperties(propertiesMap, language, location, (I18nAssetFile) asset);
-			}
+			addI18nProperties(propertiesMap, language, location, (I18nAssetFile) asset);
 		}
-		
+
 		writePropertiesMapToOutput(propertiesMap, os);
 	}
 
@@ -155,9 +154,32 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		writer.flush();
 	}
 	
-	private List<Asset> getOrderedI18nAssetFiles(BundleSet bundleSet)
+	private List<I18nAssetFile> getOrderedI18nAssetFiles(BundleSet bundleSet)
 	{
-		return bundleSet.getResourceFiles("properties");
+		List<I18nAssetFile> languageOnlyAssets = new ArrayList<I18nAssetFile>();
+		List<I18nAssetFile> languageAndLocationAssets = new ArrayList<I18nAssetFile>();
+		
+		for (Asset asset : bundleSet.getResourceFiles("properties"))
+		{
+			if (asset instanceof I18nAssetFile)
+			{
+				I18nAssetFile i18nAsset = (I18nAssetFile) asset;
+				if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
+				{
+					languageAndLocationAssets.add(i18nAsset);
+				}
+				else if (i18nAsset.getLocaleLanguage().length() > 0)
+				{
+					languageOnlyAssets.add(i18nAsset);					
+				}
+			}
+		}
+		
+		List<I18nAssetFile> orderedI18nAssets = new LinkedList<I18nAssetFile>();
+		orderedI18nAssets.addAll(languageOnlyAssets);
+		orderedI18nAssets.addAll(languageAndLocationAssets);
+		
+		return orderedI18nAssets;
 	}
 	
 }
