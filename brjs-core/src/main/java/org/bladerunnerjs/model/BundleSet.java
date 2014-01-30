@@ -8,14 +8,14 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 public class BundleSet {
 	private final List<SourceModule> sourceModules;
 	private final List<AliasDefinition> activeAliases;
-	private final List<AssetLocation> resources;
+	private final List<AssetLocation> resourceLocations;
 	private BundlableNode bundlableNode;
 	
 	public BundleSet(BundlableNode bundlableNode, List<SourceModule> sourceModules, List<AliasDefinition> activeAliases, List<AssetLocation> resources) {
 		this.bundlableNode = bundlableNode;
 		this.sourceModules = sourceModules;
 		this.activeAliases = activeAliases;
-		this.resources = resources;
+		this.resourceLocations = resources;
 	}
 	
 	public BundlableNode getBundlableNode() {
@@ -31,13 +31,13 @@ public class BundleSet {
 	}
 	
 	public List<AssetLocation> getResourceNodes() {
-		return resources;
+		return resourceLocations;
 	}
 	
 	public List<Asset> getResourceFiles(String fileExtension) {
 		List<Asset> resourceFiles = new ArrayList<>();
 		
-		for(AssetLocation resourceNode : resources) {
+		for(AssetLocation resourceNode : resourceLocations) {
 			resourceFiles.addAll(resourceNode.bundleResources(fileExtension));
 		}
 		

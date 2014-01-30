@@ -30,8 +30,7 @@ public class BundleSetBuilder {
 	private static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Set<AliasDefinition> activeAliases = new HashSet<>();
-	private final Set<AssetLocation> resources = new HashSet<>();
-	private final List<LinkedAsset> linkedAssets = new ArrayList<LinkedAsset>();
+	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final Set<AssetLocation> assetLocations = new HashSet<>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
@@ -43,11 +42,11 @@ public class BundleSetBuilder {
 	
 	public BundleSet createBundleSet() throws ModelOperationException {
 		List<AliasDefinition> activeAliasList = new ArrayList<>();
-		List<AssetLocation> resourcesList = new ArrayList<>();
+		List<AssetLocation> resourceLocationList = new ArrayList<>();
 		
 		try {
 			activeAliasList.addAll(activeAliases);
-			resourcesList.addAll(resources);
+			resourceLocationList.addAll(assetLocations);
 			
 			for(AliasDefinition aliasDefinition : activeAliases) {
 				addSourceModule(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
@@ -68,7 +67,7 @@ public class BundleSetBuilder {
     		}
 		}
 		
-		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourcesList);
+		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourceLocationList);
 	}
 	
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
@@ -85,8 +84,10 @@ public class BundleSetBuilder {
 	}
 	
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
+		
 		if(linkedAssets.add(linkedAsset)) {
 			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
+			
 			
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			 
@@ -115,9 +116,12 @@ public class BundleSetBuilder {
 			
 			addAssetLocation(linkedAsset.getAssetLocation());
 		}
+		
 	}
 	
 	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
+		
+		
 		if(assetLocations.add(assetLocation)) {
 			for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
 				addLinkedAsset(resourceSeedFile);
