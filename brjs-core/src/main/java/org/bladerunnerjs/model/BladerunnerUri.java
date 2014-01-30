@@ -126,14 +126,7 @@ public class BladerunnerUri
 	}
 	
 	private void processUri(File contextRoot, String contextPath, String requestPath, String queryString) throws MalformedRequestException
-	{
-		System.err.println(contextRoot);
-		System.err.println(contextPath);
-		System.err.println(requestPath);
-		System.err.println(queryString);
-		
-		
-		
+	{		
 		if (!contextRoot.exists() || !contextRoot.isDirectory())
 		{
 			throw new MalformedRequestException(contextPath + requestPath, "Error calculating root directory. Calculated root path " + contextRoot.getPath() + " either does not exist or is not a directory.");
