@@ -50,6 +50,11 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	}
 	
 	@Override
+	public String getNamespace() throws RequirePathException {
+		return requirePrefix().replace("/", ".");
+	}
+	
+	@Override
 	public List<SourceModule> getSourceModules()
 	{
 		List<SourceModule> sourceModules = new ArrayList<SourceModule>();

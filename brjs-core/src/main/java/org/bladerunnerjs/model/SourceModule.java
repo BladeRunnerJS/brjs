@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
  */
 public interface SourceModule extends LinkedAsset {
 	String getRequirePath();
-	String getNamespacedName();
+	String getClassname();
 	
 	boolean isEncapsulatedModule();
 	
