@@ -6,12 +6,10 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.utility.RelativePathUtility;
 import org.slf4j.impl.StaticLoggerBinder;
 
 public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHandler
@@ -41,14 +39,9 @@ public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHan
     		if (app == null)
     		{
     			throw new RuntimeException("Unable to calculate App node for the test dir: " + testDir.getAbsolutePath());
-    		}				
+    		}
     		
-    		String pathRelativeToApp = "/" + RelativePathUtility.get(app.dir(), testDir);
-    		String bladerunnerUriRequestPathPrefix = StringUtils.substringBeforeLast(pathRelativeToApp, bundlerFileExtension);
-    		bladerunnerUriRequestPathPrefix = (bladerunnerUriRequestPathPrefix.endsWith("/"))  ? bladerunnerUriRequestPathPrefix : bladerunnerUriRequestPathPrefix+"/";
-    		
-    		BladerunnerUri requestUri = new BladerunnerUri(brjs, app.dir(), "/"+app.getName(), bladerunnerUriRequestPathPrefix+brjsRequestPath, null);
-    		
+    		BladerunnerUri requestUri = new BladerunnerUri(brjs, testDir, brjsRequestPath);
     		app.handleLogicalRequest(requestUri, outputStream);
 		}
 		catch (Exception ex)

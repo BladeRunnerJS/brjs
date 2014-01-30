@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.plugin.bundler;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,6 +105,20 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void onlyWhatsInTheManifestIsLoaded_ResourcesInTheLibAreNotTreatedAsSeedFiles() throws Exception {
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js")
+			.and(thirdpartyLib).containsFileWithContents("file1.js", "lib1.file1 = {}\n")
+			.and(thirdpartyLib).containsFileWithContents("ingoredFile.js", "require('appns.class1')\n")
+			.and(thirdpartyLib).containsFileWithContents("ingoredFile.html", "appns.class1\n")
+			.and(thirdpartyLib).containsFileWithContents("ingoredFile.xml", "appns.class1'")
+			.and(aspect).hasClass("appns.class1")
+			.and(aspect).indexPageHasContent("require('"+thirdpartyLib.getName()+"')");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", pageResponse);
+		then(pageResponse).containsText("lib1.file1 = {}")
+			.and(pageResponse).doesNotContainText("appns.class1");
+	}
+	
+	@Test
 	public void bundleRequestContainsAllModuleBundles() throws Exception {
 		given(thirdpartyLib).containsFileWithContents("library.manifest", "depends: "+thirdpartyLib2.getName())
 			.and(thirdpartyLib).containsFileWithContents("file1.js", "lib1.file1 = {}\n")
@@ -171,6 +186,23 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 			.and(appLib).containsFileWithContents("myFile.js", "my file contents");
 		when(app).requestReceived("/default-aspect/thirdparty/myLib/myFile.js?q=1234", pageResponse);
 		then(pageResponse).textEquals("my file contents");
+	}
+	
+	@Test
+	public void weGetAGoodMessageIfTheLibraryDoesntExist() throws Exception
+	{
+		given(app).hasBeenCreated();
+		when(app).requestReceived("/default-aspect/thirdparty/libThatDoesntExist/myFile.js?q=1234", pageResponse);
+		then(exceptions).verifyException(BundlerProcessingException.class, "libThatDoesntExist");
+	}
+	
+	@Test
+	public void weGetAGoodMessageIfTheFileInTheLibraryDoesntExist() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(thirdpartyLib).hasBeenCreated();
+		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/myFile.js?q=1234", pageResponse);
+		then(exceptions).verifyException(BundlerProcessingException.class, thirdpartyLib.file("myFile.js").getAbsolutePath());
 	}
 	
 }
