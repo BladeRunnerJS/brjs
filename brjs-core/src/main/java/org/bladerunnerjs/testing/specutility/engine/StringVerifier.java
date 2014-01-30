@@ -144,4 +144,13 @@ public class StringVerifier {
 	{
 		assertContains( contains , string.split("\n")[lineNum-1]);
 	}
+	
+	/* override equals so we don't get tests that give false positives when someone accidentally uses the 'equals' method instead of 'textEquals' */
+	@Override
+	public boolean equals(Object o)
+	{
+		System.err.println("WARNING: 'textEquals()' should be used in SpecTests rather than 'equals()'.");
+		textEquals((String) o);
+		return true;
+	}
 }
