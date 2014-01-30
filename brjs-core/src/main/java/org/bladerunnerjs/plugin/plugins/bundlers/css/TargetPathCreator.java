@@ -48,7 +48,7 @@ public class TargetPathCreator
 		{
 			// TODO: understand how we can ever end up in here
 			CssImageReferenceException cssImageReferenceException = new CssImageReferenceException(ex);
-			cssImageReferenceException.setReferencedImagePath(imageFile.getAbsolutePath());
+			cssImageReferenceException.setReferencedResourcePath(imageFile.getAbsolutePath());
 			
 			throw cssImageReferenceException;
 		}
@@ -65,39 +65,38 @@ public class TargetPathCreator
 		try {
 			if(assetContainer instanceof Aspect) {
 				ThemeAssetLocation theme = (ThemeAssetLocation) assetLocation;
-				String imagePath = RelativePathUtility.get(theme.dir(), imageFile);
-				Aspect aspect = (Aspect) assetContainer;
+				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				
-				targetPath = cssResourceContentPathParser.createRequest("aspect-request", aspect.getName(), theme.dir().getName(), imagePath);
+				targetPath = cssResourceContentPathParser.createRequest("aspect-request", theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Bladeset) {
 				ThemeAssetLocation theme = (ThemeAssetLocation) assetLocation;
-				String imagePath = RelativePathUtility.get(theme.dir(), imageFile);
+				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				Bladeset bladeset = (Bladeset) assetContainer;
 				
-				targetPath = cssResourceContentPathParser.createRequest("bladeset-request", bladeset.getName(), theme.dir().getName(), imagePath);
+				targetPath = cssResourceContentPathParser.createRequest("bladeset-request", bladeset.getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Blade) {
 				ThemeAssetLocation theme = (ThemeAssetLocation) assetLocation;
-				String imagePath = RelativePathUtility.get(theme.dir(), imageFile);
+				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				Blade blade = (Blade) assetContainer;
 				Bladeset bladeset = blade.parent();
 				
-				targetPath = cssResourceContentPathParser.createRequest("blade-request", bladeset.getName(), blade.getName(), theme.dir().getName(), imagePath);
+				targetPath = cssResourceContentPathParser.createRequest("blade-request", bladeset.getName(), blade.getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Workbench) {
 				Workbench workbench = (Workbench) assetContainer;
-				String imagePath = RelativePathUtility.get(assetLocation.file("resources"), imageFile);
+				String resourcePath = RelativePathUtility.get(assetLocation.file("resources"), imageFile);
 				Blade blade = workbench.parent();
 				Bladeset bladeset = blade.parent();
 				
-				targetPath = cssResourceContentPathParser.createRequest("blade-workbench-request", bladeset.getName(), blade.getName(), imagePath);
+				targetPath = cssResourceContentPathParser.createRequest("blade-workbench-request", bladeset.getName(), blade.getName(), resourcePath);
 			}
 			else if(assetContainer instanceof JsLib) {
 				JsLib jsLib = (JsLib) assetContainer;
-				String imagePath = RelativePathUtility.get(jsLib.dir(), imageFile);
+				String resourcePath = RelativePathUtility.get(jsLib.dir(), imageFile);
 				
-				targetPath = cssResourceContentPathParser.createRequest("lib-request", imagePath);
+				targetPath = cssResourceContentPathParser.createRequest("lib-request", resourcePath);
 			}
 			else {
 				throw new BundlerFileProcessingException(imageFile, "File does not exist in a known scope");

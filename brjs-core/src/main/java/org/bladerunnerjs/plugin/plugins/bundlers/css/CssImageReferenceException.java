@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 public class CssImageReferenceException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	
-	private String referencedImagePath;
+	private String referencedResourcePath;
 	private String cssFileContainingImageReference;
 	
 	public CssImageReferenceException() {
@@ -14,12 +14,12 @@ public class CssImageReferenceException extends RuntimeException {
 		super(ex);
 	}
 	
-	public String getReferencedImagePath() {
-		return referencedImagePath;
+	public String getReferencedResourcePath() {
+		return referencedResourcePath;
 	}
 	
-	public void setReferencedImagePath(String referencedImagePath) {
-		this.referencedImagePath = referencedImagePath;
+	public void setReferencedResourcePath(String referencedResourcePath) {
+		this.referencedResourcePath = referencedResourcePath;
 	}
 	
 	public String getCssFileContainingImageReference() {
@@ -32,6 +32,6 @@ public class CssImageReferenceException extends RuntimeException {
 	
 	@Override
 	public String toString() {
-		return "Error in css file '" + cssFileContainingImageReference + "',\nreferencing image file '" + referencedImagePath + "'";
+		return "Error in css file '" + cssFileContainingImageReference + "',\nreferencing image file '" + referencedResourcePath + "'";
 	}
 }
