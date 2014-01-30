@@ -30,12 +30,25 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 	public void requestForI18nWithoutAnyAssetsReturnsEmptyResponse() throws Exception 
 	{
 		given(app).hasBeenCreated()
-			.and(aspect).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/i18n/bundle.json", response);
-		then(response).equals("");
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		then(response).textEquals("{\n};");
 	}
 	
-	
+	@Test
+	public void i18nFilesForTheGivenLocaleInAspectResourcesAreBundled() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en_GB.properties", "some.property=property value");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		then(response).textEquals(	
+				"{\n"+
+						"\"some.property\":\"property value\"\n"+
+				"};");
+	}
 	
 	
 	

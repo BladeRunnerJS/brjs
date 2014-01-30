@@ -156,16 +156,15 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	public List<Asset> bundleResources(String fileExtension) {
 		List<Asset> bundleResources = new LinkedList<Asset>();
 		
-		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			List<Asset> assets = assetPlugin.getAssets(this);
-			for (Asset asset: assets){
-				if(asset.getAssetName().endsWith("." + fileExtension)) {
+		for (AssetPlugin assetPlugin : root().plugins().assetProducers()) {
+			for (Asset asset: assetPlugin.getAssets(this))
+			{
+				if (asset.getAssetName().endsWith("." + fileExtension)) 
+				{
 					bundleResources.add(asset);
 				}
 			}
-				
 		}
-		
 		return bundleResources;
 	}
 
