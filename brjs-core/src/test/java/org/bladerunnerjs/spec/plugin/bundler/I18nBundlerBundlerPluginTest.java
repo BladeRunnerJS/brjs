@@ -50,8 +50,80 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 				"};");
 	}
 	
+	@Test
+	public void i18nFilesForOtherLocalesInAspectResourcesAreIgnored() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en_GB.properties", "some.property=property value")
+			.and(aspect).containsFileWithContents("resources/de_DE.properties", "some.property=a different value");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		then(response).textEquals(	
+				"{\n"+
+						"\"some.property\":\"property value\"\n"+
+				"};");
+	}
 	
+	@Test
+	public void requestsForALocaleCanContainTheLanguageOnly() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en.properties", "some.property=property value");
+		when(app).requestReceived("/default-aspect/i18n/en.json", response);
+		then(response).textEquals(	
+				"{\n"+
+						"\"some.property\":\"property value\"\n"+
+				"};");
+	}
 	
+	@Test
+	public void requestsForALanguageDoesntIncludeLocationSpecificProperties() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en.properties", "some.property=property value")
+			.and(aspect).containsFileWithContents("resources/en_GB.properties", "some.property=another value");
+		when(app).requestReceived("/default-aspect/i18n/en.json", response);
+		then(response).textEquals(	
+				"{\n"+
+						"\"some.property\":\"property value\"\n"+
+				"};");
+	}
+	
+	@Test
+	public void locationSpecificPropertiesAreAddedToLanguageValues() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en.properties", "some.property=property value")
+			.and(aspect).containsFileWithContents("resources/en_GB.properties", "another.property=another value");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		then(response).textEquals(	
+				"{\n"+
+						"\"another.property\":\"another value\",\n"+
+						"\"some.property\":\"property value\"\n"+
+				"};");
+	}
+
+	@Test
+	public void locationSpecificPropertiesOverrideLanguageProperties() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en.properties", "some.property=property value")
+			.and(aspect).containsFileWithContents("resources/en_GB.properties", "some.property=another value");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		then(response).textEquals(	
+				"{\n"+
+						"\"some.property\":\"another value\"\n"+
+				"};");
+	}
 	
 	
 	/*

@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.AssetLocation;
 public class I18nAssetFile implements Asset
 {
 	
-	public static final String I18N_REGEX = "([a-z]{2})(_([A-Z]{2}))";
+	public static final String I18N_REGEX = "([a-z]{2})(_([A-Z]{2}))?";
 	public static final String I18N_PROPERTIES_FILE_REGEX = I18N_REGEX+"\\.properties";
 	
 	private Pattern i18nPropertiesPattern = Pattern.compile(I18N_PROPERTIES_FILE_REGEX);
@@ -65,22 +65,12 @@ public class I18nAssetFile implements Asset
 	
 	public String getLocaleLanguage()
 	{
-		Matcher m = i18nPropertiesPattern.matcher( getAssetName() );
-		if (m.matches() && m.groupCount() >= 1)
-		{
-			return m.group(1);
-		}
-		return "";
+		return getMatchedValueFromPropertiesPattern(1);
 	}
 	
 	public String getLocaleLocation()
 	{
-		Matcher m = i18nPropertiesPattern.matcher( getAssetName() );
-		if (m.matches() && m.groupCount() >= 3)
-		{
-			return m.group(3);
-		}
-		return "";
+		return getMatchedValueFromPropertiesPattern(3);
 	}
 
 	public Map<String,String> getLocaleProperties() throws IOException
@@ -97,6 +87,16 @@ public class I18nAssetFile implements Asset
 		}
 
 		return propertiesMap;
+	}
+	
+	private String getMatchedValueFromPropertiesPattern(int groupNum)
+	{
+		Matcher m = i18nPropertiesPattern.matcher( getAssetName() );
+		if (m.matches() && m.groupCount() >= groupNum)
+		{
+			return (m.group(groupNum) != null) ? m.group(groupNum) : "";
+		}
+		return "";
 	}
 
 }

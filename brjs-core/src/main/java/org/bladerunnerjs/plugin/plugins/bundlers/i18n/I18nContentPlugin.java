@@ -106,7 +106,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	{
 		Map<String,String> propertiesMap = new HashMap<String,String>();
 		
-		for (Asset asset : bundleSet.getResourceFiles("properties"))
+		for (Asset asset : getOrderedI18nAssetFiles(bundleSet))
 		{
 			if (asset instanceof I18nAssetFile)
 			{
@@ -119,7 +119,8 @@ public class I18nContentPlugin extends AbstractContentPlugin
 
 	private void addI18nProperties(Map<String,String> propertiesMap, String language, String location, I18nAssetFile i18nFile) throws BundlerProcessingException
 	{
-		if (i18nFile.getLocaleLanguage().equals(language) && i18nFile.getLocaleLocation().equals(location))
+		if ( i18nFile.getLocaleLanguage().equals(language) && 
+				(i18nFile.getLocaleLocation().equals("") || i18nFile.getLocaleLocation().equals(location)) )
 		{
 			try
 			{
@@ -135,15 +136,28 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	private void writePropertiesMapToOutput(Map<String, String> propertiesMap, OutputStream os)
 	{
 		PrintWriter writer = new PrintWriter(os);
-		writer.write("{"+NEWLINE);
 		
+		StringBuilder output = new StringBuilder();
+		
+		output.append("{"+NEWLINE);		
 		for (String key : propertiesMap.keySet())
 		{
 			String value = propertiesMap.get(key);
-			writer.write(QUOTE+key+QUOTE+":"+QUOTE+value+QUOTE+NEWLINE);
+			output.append(QUOTE+key+QUOTE+":"+QUOTE+value+QUOTE+","+NEWLINE);
 		}
+		if (propertiesMap.size() > 0)
+		{
+			output.deleteCharAt( output.length() - 2 ); /* delete the last comma */			
+		}
+		output.append("};");
 		
-		writer.write("};");
+		writer.write(output.toString());
 		writer.flush();
 	}
+	
+	private List<Asset> getOrderedI18nAssetFiles(BundleSet bundleSet)
+	{
+		return bundleSet.getResourceFiles("properties");
+	}
+	
 }
