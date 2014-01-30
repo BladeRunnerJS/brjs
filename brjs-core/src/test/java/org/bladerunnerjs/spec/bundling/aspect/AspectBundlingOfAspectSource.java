@@ -2,7 +2,6 @@ package org.bladerunnerjs.spec.bundling.aspect;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
