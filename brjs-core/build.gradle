@@ -38,6 +38,7 @@ dependencies {
 	compile dependency('sjsxp')
 	compile dependency('dom4j')
 	compile dependency('utils')
+	compile dependency('jericho-html')
 	
 	/* woodstox deps */
 	compile dependency('woodstox-core-asl')

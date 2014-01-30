@@ -15,7 +15,7 @@ var i18n = require('br/i18n');
  */
 function BRHtmlResourceService(url) {
 	/** @private */
-	this.url = url || "html.bundle";
+	this.url = url || "bundle.html";
 
 	/** @private */
 	this.templates = {};

@@ -31,8 +31,6 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 		try {
 			AssetContainer assetContainer = assetLocation.getAssetContainer();
 			
-			// TODO: it doesn't make sense that the XML bundler plug-in can never be used for any future library type -- we will need to re-factor
-			// once we have concrete use cases for supporting this
 			if(assetContainer instanceof JsLib) {
 				assets = new ArrayList<>();
 			}
@@ -49,6 +47,8 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<Asset> getAssets(AssetLocation assetLocation) {
-		return new ArrayList<>();
+		List<Asset> result = new ArrayList<Asset>();
+		result.addAll(this.getLinkedAssets(assetLocation));
+		return result;
 	}
 }
