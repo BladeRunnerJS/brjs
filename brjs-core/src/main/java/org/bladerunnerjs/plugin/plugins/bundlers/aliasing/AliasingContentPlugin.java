@@ -96,4 +96,10 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 		
 		return requestPaths;
 	}
+	
+	@Override
+	public int priority()
+	{
+		return 100;
+	}
 }

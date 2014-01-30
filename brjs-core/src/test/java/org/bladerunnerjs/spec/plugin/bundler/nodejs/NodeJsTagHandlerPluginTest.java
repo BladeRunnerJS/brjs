@@ -55,7 +55,6 @@ public class NodeJsTagHandlerPluginTest extends SpecTest {
 	@Test
 	public void theBundleIsEmptyIfWeDontReferToAnyOfTheClasses() throws Exception {
 		given(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).classRequires("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");

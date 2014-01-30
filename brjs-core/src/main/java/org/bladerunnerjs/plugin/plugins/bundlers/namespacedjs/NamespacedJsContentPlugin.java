@@ -28,6 +28,7 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.json.simple.JSONObject;
 
 public class NamespacedJsContentPlugin extends AbstractContentPlugin {
+
 	public static final String JS_STYLE = "namespaced-js";
 	
 	private ContentPathParser contentPathParser;
@@ -225,4 +226,11 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 		
 		return stringBuffer.toString();
 	}
+	
+	@Override
+	public int priority()
+	{
+		return -20;
+	}
+	
 }

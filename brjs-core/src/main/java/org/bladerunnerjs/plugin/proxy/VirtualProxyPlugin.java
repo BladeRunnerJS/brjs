@@ -69,4 +69,11 @@ public class VirtualProxyPlugin implements Plugin {
 	public Plugin getUninitializedUnderlyingPlugin() {
 		return plugin;
 	}
+
+	@Override
+	public int priority()
+	{
+		return plugin.priority();
+	}
+	
 }

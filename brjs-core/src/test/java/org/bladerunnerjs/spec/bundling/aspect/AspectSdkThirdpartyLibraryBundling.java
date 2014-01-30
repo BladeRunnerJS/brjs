@@ -57,9 +57,9 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js")
 			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).lineContains(1, "// br-bootstrap");
-		then(response).lineContains(2, "// this is bootstrap"); 
-		then(response).lineContains(8, "define('appns/Class1'");	//TODO: why do we have loads of whitepace between thirdparty libs and nodejs code 
+		then(response).lineContains(3, "// br-bootstrap");
+		then(response).lineContains(4, "// this is bootstrap"); 
+		then(response).lineContains(10, "define('appns/Class1'");	//TODO: why do we have loads of whitepace between thirdparty libs and nodejs code 
 	}
 	
 	@Test
@@ -84,10 +84,10 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js")
 			.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).lineContains(1, "// secondBootstrapLib");
-		then(response).lineContains(2, "// this is secondBootstrapLib"); 
-		then(response).lineContains(8, "// br-bootstrap");	//TOOD: investigate why there's so much extra whitespace in the response
-		then(response).lineContains(14, "appns.Class1"); 
+		then(response).lineContains(3, "// secondBootstrapLib");
+		then(response).lineContains(4, "// this is secondBootstrapLib"); 
+		then(response).lineContains(10, "// br-bootstrap");	//TOOD: investigate why there's so much extra whitespace in the response
+		then(response).lineContains(16, "appns.Class1"); 
 	}
 	
 	@Test

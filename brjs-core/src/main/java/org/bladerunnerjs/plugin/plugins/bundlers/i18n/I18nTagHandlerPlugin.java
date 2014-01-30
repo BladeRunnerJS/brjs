@@ -15,15 +15,13 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public String getTagName()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return "i18n";
 	}
 
 	@Override
 	public String getGroupName()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	@Override

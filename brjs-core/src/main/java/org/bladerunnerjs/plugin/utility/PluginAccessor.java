@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.utility;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,10 +18,6 @@ import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class PluginAccessor {
@@ -51,7 +48,7 @@ public class PluginAccessor {
 	}
 	
 	public List<CommandPlugin> commands() {
-		return commandList.getPluginCommands();
+		return orderPlugins( commandList.getPluginCommands() );
 	}
 	
 	public ContentPlugin contentProvider(BladerunnerUri requestUri) {
@@ -74,15 +71,11 @@ public class PluginAccessor {
 	}
 	
 	public List<ContentPlugin> contentProviders() {
-		List<ContentPlugin> contentProviders = pluginLocator.getContentPlugins();
-		
-		orderContentPlugins(contentProviders);
-		
-		return contentProviders;
+		return orderPlugins( pluginLocator.getContentPlugins() );
 	}
 
 	public List<ContentPlugin> contentProviders(String groupName) {
-		List<ContentPlugin> contentProviders = new ArrayList<>();
+		List<ContentPlugin> contentProviders = new LinkedList<>();
 		
 		for (ContentPlugin contentPlugin : contentProviders()) {
 			if (groupName.equals(contentPlugin.getGroupName())) {
@@ -94,11 +87,11 @@ public class PluginAccessor {
 	}
 	
 	public List<TagHandlerPlugin> tagHandlers() {
-		return pluginLocator.getTagHandlerPlugins();
+		return orderPlugins( pluginLocator.getTagHandlerPlugins() );
 	}
 	
 	public List<TagHandlerPlugin> tagHandlers(String groupName) {
-		List<TagHandlerPlugin> tagHandlerPlugins = new ArrayList<>();
+		List<TagHandlerPlugin> tagHandlerPlugins = new LinkedList<>();
 		
 		for (TagHandlerPlugin tagHandlerPlugin : tagHandlers()) {
 			if (groupName.equals(tagHandlerPlugin.getGroupName())) {
@@ -110,11 +103,11 @@ public class PluginAccessor {
 	}
 	
 	public List<MinifierPlugin> minifiers() {
-		return pluginLocator.getMinifierPlugins();
+		return orderPlugins( pluginLocator.getMinifierPlugins() );
 	}
 	
 	public MinifierPlugin minifier(String minifierSetting) {
-		List<String> validMinificationSettings = new ArrayList<String>();
+		List<String> validMinificationSettings = new LinkedList<String>();
 		MinifierPlugin pluginForMinifierSetting = null;
 		
 		for (MinifierPlugin minifierPlugin : minifiers()) {
@@ -136,57 +129,25 @@ public class PluginAccessor {
 	}
 	
 	public List<ModelObserverPlugin> modelObservers() {
-		return pluginLocator.getModelObserverPlugins();
+		return orderPlugins( pluginLocator.getModelObserverPlugins() );
 	}
 	
 	public List<AssetPlugin> assetProducers() {
-		return pluginLocator.getAssetPlugins();
+		return orderPlugins( pluginLocator.getAssetPlugins() );
 	}
 	
 	public List<AssetLocationPlugin> assetLocationProducers() {
-		List<AssetLocationPlugin> plugins = pluginLocator.getAssetLocationPlugins();
-		
-		orderAssetLocationPlugins(plugins);
-		
+		return orderPlugins( pluginLocator.getAssetLocationPlugins() );
+	}
+	
+	private <P extends Plugin> List<P> orderPlugins(List<P> plugins) {
+		Collections.sort(plugins, new Comparator<Plugin>() {
+			@Override
+			public int compare(Plugin plugin1, Plugin plugin2) {
+				return Integer.compare(plugin2.priority(), plugin1.priority()); // reverse sort so higher priority == top of list
+			}
+		});		
 		return plugins;
 	}
 	
-	// TODO: it's becoming more and more obvious that we need a proper ordering mechanism for bundler content plug-ins, so external plug-in developers can have their plug-ins correctly ordered too
-	private void orderContentPlugins(List<ContentPlugin> bundlerContentProviders) {
-		Collections.sort(bundlerContentProviders, new Comparator<ContentPlugin>() {
-			@Override
-			public int compare(ContentPlugin contentPlugin1, ContentPlugin contentPlugin2) {
-				return score(contentPlugin1) - score(contentPlugin2);
-			}
-			
-			private int score(ContentPlugin contentPlugin) {
-				int score = 0;
-				
-				if(contentPlugin.instanceOf(BRJSThirdpartyContentPlugin.class)) {
-					score = -1;
-				}
-				else if(contentPlugin.instanceOf(NamespacedJsContentPlugin.class)) {
-					score = 1;
-				}
-				else if(contentPlugin.instanceOf(AliasingContentPlugin.class)) {
-					score = 2;
-				}
-				
-				return score;
-			}
-		});
-	}
-	
-	private void orderAssetLocationPlugins(List<AssetLocationPlugin> plugins) {
-		Collections.sort(plugins, new Comparator<AssetLocationPlugin>() {
-			@Override
-			public int compare(AssetLocationPlugin assetLocationPlugin1, AssetLocationPlugin assetLocationPlugin2) {
-				return score(assetLocationPlugin1) - score(assetLocationPlugin2);
-			}
-			
-			private int score(AssetLocationPlugin assetLocationPlugin) {
-				return (assetLocationPlugin.instanceOf(BRJSConformantAssetLocationPlugin.class)) ? 1 : 0;
-			}
-		});
-	}
 }

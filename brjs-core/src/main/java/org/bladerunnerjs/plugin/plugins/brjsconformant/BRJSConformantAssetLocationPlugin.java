@@ -65,4 +65,10 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		
 		return assetLocations;
 	}
+	
+	@Override
+	public int priority()
+	{
+		return -10;
+	}
 }

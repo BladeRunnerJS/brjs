@@ -31,4 +31,11 @@ public abstract class AbstractPlugin implements Plugin {
 	public Class<?> getPluginClass() {
 		return getClass();
 	}
+	
+	@Override
+	public int priority()
+	{
+		return 0;
+	}
+	
 }

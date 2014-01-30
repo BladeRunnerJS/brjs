@@ -61,4 +61,11 @@ public class NamespacedJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			writer.write("<script type='text/javascript' src='" + bundlerRequestPath + "'></script>\n");
 		}
 	}
+	
+	@Override
+	public int priority()
+	{
+		return 20;
+	}
+	
 }

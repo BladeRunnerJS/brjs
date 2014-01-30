@@ -52,4 +52,5 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 		initializePlugin();
 		return contentPlugin.getValidProdContentPaths(bundleSet, locales);
 	}
+	
 }

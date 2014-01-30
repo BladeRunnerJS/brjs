@@ -64,4 +64,11 @@ public class BRJSThirdpartyTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			throw new IOException(e);
 		}
 	}
+	
+	@Override
+	public int priority()
+	{
+		return 1000;
+	}
+	
 }
