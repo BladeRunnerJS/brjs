@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DeepAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.ThemeAssetLocation;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 
 public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlugin {
@@ -47,11 +48,13 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		{
 			if(!assetLocationCache.containsKey("resources")) {
 				assetLocationCache.put("resources", new DeepAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")));
+				assetLocationCache.put("themes", new ThemeAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("themes")));
 				assetLocationCache.put("src", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src"), assetLocationCache.get("resources")));
 				assetLocationCache.put("src-test", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src-test")));
 			}
 			
 			assetLocations.add(assetLocationCache.get("resources"));
+			assetLocations.add(assetLocationCache.get("themes"));
 			SourceAssetLocation srcAssetLocation = (SourceAssetLocation) assetLocationCache.get("src");
 			assetLocations.add(srcAssetLocation);
 			assetLocations.addAll(srcAssetLocation.getChildAssetLocations());

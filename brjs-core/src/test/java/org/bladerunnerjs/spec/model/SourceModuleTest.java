@@ -31,7 +31,7 @@ public class SourceModuleTest extends SpecTest {
 		given(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg.Class3")
 			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
 		then(aspect).hasSourceModules(sourceModule("appns/Class1", "appns.Class1"), sourceModule("appns/Class2", "appns.Class2"), sourceModule("appns/pkg/Class3", "appns.pkg.Class3"))
-			.and(aspect).hasAssetLocations("resources/", "src/", "src/appns/", "src/appns/pkg/", "src-test")
+			.and(aspect).hasAssetLocations("resources/", "themes", "src/", "src/appns/", "src/appns/pkg/", "src-test")
 			.and(aspect).sourceModuleHasAssetLocation("appns/Class1", "src/appns/")
 			.and(aspect).sourceModuleHasAssetLocation("appns/pkg/Class3", "src/appns/pkg/")
 			.and(aspect).assetLocationHasNoDependencies("resources/")
@@ -45,7 +45,7 @@ public class SourceModuleTest extends SpecTest {
 		given(brjsLib).hasClasses("brjslib.Class1", "brjslib.Class2", "brjslib.pkg.Class3")
 			.and(brjsLib).containsFiles("resources/config1.xml", "resources/dir/config2.xml");
 		then(brjsLib).hasSourceModules(sourceModule("brjslib/Class1", "brjslib.Class1"), sourceModule("brjslib/Class2", "brjslib.Class2"), sourceModule("brjslib/pkg/Class3", "brjslib.pkg.Class3"))
-			.and(brjsLib).hasAssetLocations("resources/", "src/", "src/brjslib/", "src/brjslib/pkg/", "src-test")
+			.and(brjsLib).hasAssetLocations("resources/", "themes", "src/", "src/brjslib/", "src/brjslib/pkg/", "src-test")
 			.and(brjsLib).assetLocationHasNoDependencies("resources/")
 			.and(brjsLib).assetLocationHasDependencies("src/", "resources/")
 			.and(brjsLib).assetLocationHasDependencies("src/brjslib/", "src/")
