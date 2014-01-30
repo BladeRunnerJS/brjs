@@ -17,25 +17,29 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		this.aspect = aspect;
 	}
 	
-	public BuilderChainer indexPageRefersTo(String className) throws Exception {
-		FileUtils.write(aspect.file("index.html"), className);
+	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception 
+	{
+		FileUtils.write(aspect.file("index.html"), generateStringClassReferencesContent(classNames));	
+		
+		return builderChainer;
+	}
+
+	public BuilderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
+	{
+		FileUtils.write(aspect.assetLocation("resources").file(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer resourceFileRefersTo(String resourceFileName, String className) throws Exception {
-		FileUtils.write(aspect.assetLocation("resources").file(resourceFileName), "<root refs='" + className + "'/>");
+	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
+	{
+		FileUtils.write(aspect.assetLocation("src").file(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String className) throws Exception {
-		FileUtils.write(aspect.assetLocation("src").file(resourceFileName), "<root refs='" + className + "'/>");
-		
-		return builderChainer;
-	}
-	
-	public BuilderChainer indexPageHasContent(String content) throws Exception {
+	public BuilderChainer indexPageHasContent(String content) throws Exception 
+	{
 		return indexPageRefersTo(content);
 	}
 
@@ -49,5 +53,29 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		FileUtils.write(aspect.file("index.html"), "require('"+requirePath+"');");
 		
 		return builderChainer;
+	}
+	
+	
+	// Private
+	private String generateStringClassReferencesContent(String... classNames) 
+	{
+		String content = "";
+		
+		for(String className : classNames)
+		{
+			content += className + "\n";
+		}
+		return content;
+	}
+	
+	private String generateRootRefContentForClasses(String... classNames) 
+	{
+		String content = "";
+		
+		for(String className : classNames)
+		{
+			content += "<root refs='" + className + "'/>" + "\n";
+		}
+		return content;
 	}
 }
