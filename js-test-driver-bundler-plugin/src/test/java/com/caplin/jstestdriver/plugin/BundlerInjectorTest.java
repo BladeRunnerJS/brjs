@@ -242,6 +242,8 @@ public class BundlerInjectorTest {
 		File testSdkDirectory = createTestSdkDirectory();
 		BRJS brjs = new BRJS(testSdkDirectory, new BRJSPluginLocator(), new Java7FileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 		
+		BRJSAccessor.initialize(brjs);
+		
 		App app = brjs.app("my-app");
 		app.create();
 		

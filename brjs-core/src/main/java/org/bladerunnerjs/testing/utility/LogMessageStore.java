@@ -22,11 +22,11 @@ public class LogMessageStore
 	private boolean loggingEnabled = false;
 	private boolean assertionMade = false;
 	
-	private LinkedList<LogMessage> fatalMessages;
-	private LinkedList<LogMessage> errorMessages;
-	private LinkedList<LogMessage> warnMessages;
-	private LinkedList<LogMessage> infoMessages;
-	private LinkedList<LogMessage> debugMessages;
+	private LinkedList<LogMessage> fatalMessages = new LinkedList<LogMessage>();
+	private LinkedList<LogMessage> errorMessages = new LinkedList<LogMessage>();
+	private LinkedList<LogMessage> warnMessages = new LinkedList<LogMessage>();
+	private LinkedList<LogMessage> infoMessages = new LinkedList<LogMessage>();
+	private LinkedList<LogMessage> debugMessages = new LinkedList<LogMessage>();
 
 	public LogMessageStore()
 	{
@@ -35,11 +35,11 @@ public class LogMessageStore
 	
 	public void clearLogs()
 	{
-		fatalMessages = new LinkedList<LogMessage>();
-		errorMessages = new LinkedList<LogMessage>();
-		warnMessages = new LinkedList<LogMessage>();
-		infoMessages = new LinkedList<LogMessage>();
-		debugMessages = new LinkedList<LogMessage>();
+		fatalMessages.clear();
+		errorMessages.clear();
+		warnMessages.clear();
+		infoMessages.clear();
+		debugMessages.clear();
 	}
 	
 	public LogMessageStore(boolean storeLogs)
