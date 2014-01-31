@@ -4,3 +4,5 @@ org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyAssetPlug
 org.bladerunnerjs.plugin.plugins.bundlers.html.HTMLAssetPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.xml.XMLAssetPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nAssetPlugin
+org.bladerunnerjs.plugin.plugins.bundlers.css.CssAssetPlugin
+org.bladerunnerjs.plugin.plugins.bundlers.cssresource.CssResourceAssetPlugin
