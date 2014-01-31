@@ -24,8 +24,11 @@ public class StringVerifier {
 		this.verifierChainer = new VerifierChainer(specTest);
 	}
 	
-	public VerifierChainer containsText(String substring) {
-		assertContains(substring, string);
+	public VerifierChainer containsText(String... substrings) {
+		for(String substring : substrings)
+		{
+			assertContains(substring, string);
+		}
 		
 		return verifierChainer;
 	}
