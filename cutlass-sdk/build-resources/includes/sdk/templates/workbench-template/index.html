@@ -4,12 +4,12 @@
 		<title>Workbench</title>
 		
 		<@css.bundle theme="standard"@/>
-		<@js.bundle dev-minifier="combined"@/>
+		<@js.bundle dev-minifier="none"@/>
 		
 		<script type="text/javascript">
-			var Workbench = require( 'br/workbench.ui.Workbench' );
+			var Workbench = require( 'br/workbench/ui/Workbench' );
 			var ExamplePresentationModel = require( '@appns/@bladeset/@blade/ExamplePresentationModel' );
-			var PresentationModel = require( 'br/presenter/component/PresenterComponent' );
+			var PresenterComponent = require( 'br/presenter/component/PresenterComponent' );
 			var PresentationModelViewer = require( 'br/presenter/workbench/ui/PresentationModelViewer' );
 
 			function initialize() {
