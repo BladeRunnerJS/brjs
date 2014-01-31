@@ -93,7 +93,6 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 		} catch (MalformedTokenException e) {
 			throw new BundlerProcessingException(e);
 		}
-		
 		return requestPaths;
 	}
 }

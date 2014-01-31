@@ -6,6 +6,7 @@ import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingTagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyTagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
@@ -71,7 +72,11 @@ public class PluginPriorityCalculator
 		}
 		if (plugin instanceof NamespacedJsTagHandlerPlugin)
 		{
-			return 1;
+			return -1;
+		}
+		if (plugin instanceof AliasingTagHandlerPlugin)
+		{
+			return -2;
 		}
 		return 0;
 	}
