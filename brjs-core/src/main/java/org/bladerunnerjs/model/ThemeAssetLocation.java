@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.engine.Node;
@@ -20,9 +21,13 @@ public class ThemeAssetLocation extends DeepAssetLocation {
 	}
 	
 	public List<String> themes() {
-		if(dirModifiedChecker.hasChangedSinceLastCheck()) {
-			for(File dir : brjs.getFileIterator(dir()).dirs()) {
-				themes.add(dir.getName());
+		if(dirModifiedChecker.hasChangedSinceLastCheck() || (themes == null)) {
+			themes = new ArrayList<>();
+			
+			if(dir().exists()) {
+				for(File dir : brjs.getFileIterator(dir()).dirs()) {
+					themes.add(dir.getName());
+				}
 			}
 		}
 		
