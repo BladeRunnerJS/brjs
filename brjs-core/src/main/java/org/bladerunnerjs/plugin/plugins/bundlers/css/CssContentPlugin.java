@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ThemeAssetLocation;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -26,9 +27,13 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-		contentPathParserBuilder.accepts("css/<theme>_css.bundle").as("simple-request").and("css/<theme>_<languageCode>_css.bundle")
-			.as("language-request").and("css/<theme>_<languageCode>_<countryCode>_css.bundle").as("locale-request").where("theme")
-			.hasForm(ContentPathParserBuilder.NAME_TOKEN).and("languageCode").hasForm("[a-z]{2}").and("countryCode").hasForm("[A-Z]{2}");
+		contentPathParserBuilder
+			.accepts("css/<theme>/bundle.css").as("simple-request")
+				.and("css/<theme>_<languageCode>/bundle.css").as("language-request")
+				.and("css/<theme>_<languageCode>_<countryCode>/bundle.css").as("locale-request")
+			.where("theme").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+				.and("languageCode").hasForm("[a-z]{2}")
+				.and("countryCode").hasForm("[A-Z]{2}");
 		
 		contentPathParser = contentPathParserBuilder.build();
 	}
@@ -82,7 +87,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		try(Writer writer = new OutputStreamWriter(os)) {
 			List<Asset> cssAssets = bundleSet.getResourceFiles("css");
 			for(Asset cssAsset : cssAssets) {
-				String assetTheme = getTheme(cssAsset.getAssetLocation());
+				String assetTheme = getTheme(cssAsset);
 				File cssFile = cssAsset.getUnderlyingFile();
 				
 				if(assetTheme.equals(theme) && cssFile.getName().matches(pattern)) {
@@ -117,14 +122,22 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		return contentPaths;
 	}
 	
-	private String getTheme(AssetLocation assetLocation) {
-		File dir = assetLocation.dir();
+	private String getTheme(Asset cssAsset) {
+		AssetLocation cssAssetLocation = cssAsset.getAssetLocation();
+		String themeName = "common";
 		
-		while(!dir.getParentFile().getName().equals("themes")) {
-			dir = dir.getParentFile();
+		if(cssAssetLocation instanceof ThemeAssetLocation) {
+			File themesAssetLocationDir = cssAssetLocation.dir();
+			File dir = cssAsset.getUnderlyingFile().getParentFile();
+			
+			while(!dir.getParentFile().equals(themesAssetLocationDir)) {
+				dir = dir.getParentFile();
+			}
+			
+			themeName = dir.getName();
 		}
 		
-		return dir.getName();
+		return themeName;
 	}
 	
 	private void writeAsset(Asset cssAsset, Writer writer) throws BundlerFileProcessingException {
