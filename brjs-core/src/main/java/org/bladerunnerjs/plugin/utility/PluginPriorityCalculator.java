@@ -41,7 +41,7 @@ public class PluginPriorityCalculator
 	{
 		if (plugin instanceof BRJSConformantAssetLocationPlugin)
 		{
-			return -10;
+			return -1;
 		}
 		return 0;
 	}
@@ -50,15 +50,15 @@ public class PluginPriorityCalculator
 	{
 		if (plugin instanceof BRJSThirdpartyContentPlugin)
 		{
-			return 50;
+			return 1;
 		}
 		if (plugin instanceof NamespacedJsContentPlugin)
 		{
-			return -20;
+			return -1;
 		}
 		if (plugin instanceof AliasingContentPlugin)
 		{
-			return -100;
+			return -2;
 		}
 		return 0;
 	}
@@ -67,11 +67,11 @@ public class PluginPriorityCalculator
 	{
 		if (plugin instanceof BRJSThirdpartyTagHandlerPlugin)
 		{
-			return 1000;
+			return 2;
 		}
 		if (plugin instanceof NamespacedJsTagHandlerPlugin)
 		{
-			return 20;
+			return 1;
 		}
 		return 0;
 	}
