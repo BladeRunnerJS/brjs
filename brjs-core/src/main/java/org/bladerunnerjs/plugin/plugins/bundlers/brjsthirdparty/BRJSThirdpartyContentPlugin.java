@@ -156,11 +156,4 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 		
 		return requestPaths;
 	}
-	
-	@Override
-	public int priority()
-	{
-		return 50;
-	}
-
 }

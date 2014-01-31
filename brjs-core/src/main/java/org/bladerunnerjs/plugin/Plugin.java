@@ -54,12 +54,5 @@ public interface Plugin
 	 * @return A reference to the class of the underlying plug-in.
 	 */
 	Class<?> getPluginClass();
-	
-	/**
-	 * The priority of this plugin.
-	 * The priority is used to order plugins in the model.
-	 * For a default priority this method should return 0, a lower priority a negative number and a higher priority a positive number.
-	 * @return
-	 */
-	public int priority();
+
 }

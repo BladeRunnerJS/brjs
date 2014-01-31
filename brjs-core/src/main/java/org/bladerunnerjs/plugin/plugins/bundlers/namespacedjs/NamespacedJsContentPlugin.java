@@ -227,10 +227,4 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 		return stringBuffer.toString();
 	}
 	
-	@Override
-	public int priority()
-	{
-		return -20;
-	}
-	
 }

@@ -361,12 +361,6 @@ public class BundlerServletTest
 			public Class<?> getPluginClass() {
 				return this.getClass();
 			}
-
-			@Override
-			public int priority()
-			{
-				return 0;
-			}
 		};
 		bundlerServlet.bundlers = Arrays.asList(dummyBundler);
 

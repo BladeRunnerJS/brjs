@@ -144,7 +144,8 @@ public class PluginAccessor {
 		Collections.sort(plugins, new Comparator<Plugin>() {
 			@Override
 			public int compare(Plugin plugin1, Plugin plugin2) {
-				return Integer.compare(plugin2.priority(), plugin1.priority()); // reverse sort so higher priority == top of list
+				// reverse sort so higher priority == top of list
+				return Integer.compare( PluginPriorityCalculator.priority(plugin2), PluginPriorityCalculator.priority((plugin1)) );
 			}
 		});		
 		return plugins;

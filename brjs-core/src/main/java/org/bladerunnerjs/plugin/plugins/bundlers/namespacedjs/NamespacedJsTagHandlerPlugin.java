@@ -62,10 +62,4 @@ public class NamespacedJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 	
-	@Override
-	public int priority()
-	{
-		return 20;
-	}
-	
 }

@@ -65,10 +65,4 @@ public class BRJSThirdpartyTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 	
-	@Override
-	public int priority()
-	{
-		return 1000;
-	}
-	
 }
