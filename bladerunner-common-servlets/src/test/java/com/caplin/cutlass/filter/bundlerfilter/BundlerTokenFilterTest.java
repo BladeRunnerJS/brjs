@@ -228,8 +228,6 @@ public class BundlerTokenFilterTest
 		assertTrue(content.contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_css.bundle\"/>"));
 		assertTrue(content.contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_en_GB_css.bundle\"/>"));
 		assertTrue(content.contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_ie8_css.bundle\"/>"));
-
-		assertTrue(content.contains("<script type=\"text/javascript\" src=\"js/js.bundle\"></script>"));
 	}
 
 	@Test

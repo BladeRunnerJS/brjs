@@ -31,7 +31,7 @@ import com.google.common.base.Joiner;
 
 
 public class BRJSServletFilter implements Filter
-{
+{	
 	private ServletContext servletContext;
 	private Pattern contentPluginPrefixPattern;
 	private BRJS brjs;
@@ -53,7 +53,7 @@ public class BRJSServletFilter implements Filter
 				pluginRequestPrefixes.add(contentPlugin.getRequestPrefix());
 			}
 			
-			contentPluginPrefixPattern = Pattern.compile("^/.*-aspect/(" + Joiner.on("|").join(pluginRequestPrefixes) + ")((/.*)|$)");
+			contentPluginPrefixPattern = Pattern.compile("^.*/([a-zA-Z0-9_-]+-aspect|workbench)/" + "(" + Joiner.on("|").join(pluginRequestPrefixes) + ")/.*$");
 		}
 		finally {
 			ServletModelAccessor.releaseModel();

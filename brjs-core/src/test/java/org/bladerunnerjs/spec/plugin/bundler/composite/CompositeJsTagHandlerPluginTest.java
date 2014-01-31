@@ -28,13 +28,11 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			brbootstrap = brjs.sdkNonBladeRunnerLib("br-bootstrap");
 	}
 	
-	//TODO: change the new-js.bundle back to js.bundle once the legacy js bundle tag handler is deleted
-	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGeneratedByDefault() throws Exception {
 		given(aspect).hasClass("appns.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).indexPageHasContent("<@new-js.bundle@/>");
+			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/appns/Class1.js");
 	}
@@ -43,21 +41,21 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void inProdASingleBundlerRequestIsGeneratedByDefault() throws Exception {
 		given(aspect).hasClass("appns.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).indexPageHasContent("<@new-js.bundle@/>");
+			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/prod/en_GB/combined/bundle.js");
 	}
 	
 	@Test
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
-		given(aspect).indexPageHasContent("<@new-js.bundle@/>");
+		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("namespaced-js/package-definitions.js");
 	}
 	
 	@Test
 	public void devMinifierAttributeCanAllowJsFilesToBeCombinedEvenInDev() throws Exception {
-		given(aspect).indexPageHasContent("<@new-js.bundle dev-minifier='combined'@/>");
+		given(aspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("js/dev/en_GB/combined/bundle.js");
 	}
@@ -66,7 +64,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {		
 		given(aspect).hasClass("appns.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).indexPageHasContent("<@new-js.bundle prod-minifier='none'@/>");
+			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "node-js/module/appns/Class1.js");
 	}
@@ -81,7 +79,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(brbootstrap).containsFile("bootstrap.js")
 			.and(appLib).containsFileWithContents("library.manifest", "js:")
 			.and(brbootstrap).containsFile("appLib.js")
-			.and(aspect).indexPageHasContent("<@new-js.bundle@/>\n"+
+			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 					"appns.namespaced.Class\n"+
 					"require('appLib');\n"+
 					"require('appns.node.Class');\n" );

@@ -54,7 +54,6 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(brbootstrap).containsFileWithContents("library.manifest", "js: ")
 			.and(brbootstrap).containsFile("bootstrap.js");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
-		System.err.println(requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 			"// br-bootstrap",
 			"define('appns/Class1'",
