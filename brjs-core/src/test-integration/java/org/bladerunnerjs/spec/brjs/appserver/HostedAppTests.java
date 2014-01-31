@@ -55,6 +55,15 @@ public class HostedAppTests extends SpecTest
 	}
 	
 	@Test
+	public void weCanMakeARequestForAspectBundles() throws Exception
+	{
+		String jsBundleUrlPath = "/app/default-aspect/js/dev/en/combined/bundle.js";
+		
+		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
+			.and(appServer).requestForUrlContains(jsBundleUrlPath, "appns/Class1");
+	}
+	
+	@Test
 	public void weCanMakeARequestForWorkbenchBundles() throws Exception
 	{
 		String jsBundleUrlPath = "/app/bs-bladeset/blades/b1/workbench/js/dev/en/combined/bundle.js";

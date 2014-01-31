@@ -31,9 +31,7 @@ import com.google.common.base.Joiner;
 
 
 public class BRJSServletFilter implements Filter
-{
-	private static final String CONTENT_PLUGIN_PREFIX = "/([a-zA-Z0-9_-]+-aspect|workbench)/";
-	
+{	
 	private ServletContext servletContext;
 	private Pattern contentPluginPrefixPattern;
 	private BRJS brjs;
@@ -55,7 +53,7 @@ public class BRJSServletFilter implements Filter
 				pluginRequestPrefixes.add(contentPlugin.getRequestPrefix());
 			}
 			
-			contentPluginPrefixPattern = Pattern.compile(CONTENT_PLUGIN_PREFIX + Joiner.on("|").join(pluginRequestPrefixes));
+			contentPluginPrefixPattern = Pattern.compile("^.*/([a-zA-Z0-9_-]+-aspect|workbench)/" + "(" + Joiner.on("|").join(pluginRequestPrefixes) + ")/.*$");
 		}
 		finally {
 			ServletModelAccessor.releaseModel();
@@ -86,7 +84,7 @@ public class BRJSServletFilter implements Filter
 			if(requestPath.endsWith("/index.html") || requestPath.endsWith("/index.jsp")) {
 				filterIndexPage(request, response, chain);
 			}
-			else if(contentPluginPrefixMatcher.find()) {
+			else if(contentPluginPrefixMatcher.matches()) {
 				request.getRequestDispatcher("/brjs" + requestPath).forward(request, response);
 			}
 			else {
