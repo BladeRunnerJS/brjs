@@ -28,8 +28,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	@Override
 	public String getTagName() {
-//		return "js.bundle"; //TODO: change this back to js.bundle once the legacy tag handler is deleted
-		return "new-js.bundle";
+		return "js.bundle";
 	}
 	
 	@Override
