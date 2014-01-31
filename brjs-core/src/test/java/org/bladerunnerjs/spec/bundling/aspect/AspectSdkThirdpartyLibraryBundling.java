@@ -57,9 +57,10 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js")
 			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).lineContains(3, "// br-bootstrap");
-		then(response).lineContains(4, "// this is bootstrap"); 
-		then(response).lineContains(10, "define('appns/Class1'");	//TODO: why do we have loads of whitepace between thirdparty libs and nodejs code 
+		then(response).containsOrderedTextFragments(
+				"// br-bootstrap",
+				"// this is bootstrap",
+				"define('appns/Class1'" ); 
 	}
 	
 	@Test
@@ -84,10 +85,11 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js")
 			.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).lineContains(3, "// secondBootstrapLib");
-		then(response).lineContains(4, "// this is secondBootstrapLib"); 
-		then(response).lineContains(10, "// br-bootstrap");	//TOOD: investigate why there's so much extra whitespace in the response
-		then(response).lineContains(16, "appns.Class1"); 
+		then(response).containsOrderedTextFragments(
+				"// secondBootstrapLib",
+				"// this is secondBootstrapLib",
+				"// br-bootstrap",
+				"appns.Class1" ); 
 	}
 	
 	@Test

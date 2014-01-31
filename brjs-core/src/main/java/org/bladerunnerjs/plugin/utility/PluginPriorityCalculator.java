@@ -48,10 +48,6 @@ public class PluginPriorityCalculator
 	
 	private static int priority(ContentPlugin plugin)
 	{
-		if (plugin instanceof AliasingContentPlugin)
-		{
-			return 100;
-		}
 		if (plugin instanceof BRJSThirdpartyContentPlugin)
 		{
 			return 50;
@@ -59,6 +55,10 @@ public class PluginPriorityCalculator
 		if (plugin instanceof NamespacedJsContentPlugin)
 		{
 			return -20;
+		}
+		if (plugin instanceof AliasingContentPlugin)
+		{
+			return -100;
 		}
 		return 0;
 	}
