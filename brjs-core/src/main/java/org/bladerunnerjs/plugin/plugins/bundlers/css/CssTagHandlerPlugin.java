@@ -9,13 +9,15 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
 public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private CssContentPlugin cssContentPlugin;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		cssContentPlugin = (CssContentPlugin) brjs.plugins().contentProvider("css");
+		VirtualProxyContentPlugin virtualProxyCssContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentProvider("css");
+		cssContentPlugin = (CssContentPlugin) virtualProxyCssContentPlugin.getUnderlyingPlugin();
 	}
 	
 	@Override
@@ -43,13 +45,13 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			for(String nextTheme : BRJSConformantAssetLocationPlugin.getBundlableNodeThemes(bundleSet.getBundlableNode())) {
 				for(String contentPath : cssContentPlugin.getThemeStyleSheetContentPaths(nextTheme, locale)) {
 					if(nextTheme.equals("common")) {
-						writer.write("<link rel='stylesheet' href='" + contentPath + "'/>");
+						writer.write("<link rel='stylesheet' href='" + contentPath + "'/>\n");
 					}
 					else if(nextTheme.equals(theme)) {
-						writer.write("<link rel='stylesheet' title='" + theme + "' href='" + contentPath + "'/>");
+						writer.write("<link rel='stylesheet' title='" + theme + "' href='" + contentPath + "'/>\n");
 					}
 					else {
-						writer.write("<link rel='alternate stylesheet' title='" + nextTheme + "' href='" + contentPath + "'/>");
+						writer.write("<link rel='alternate stylesheet' title='" + nextTheme + "' href='" + contentPath + "'/>\n");
 					}
 				}
 			}
