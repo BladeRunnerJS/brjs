@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -133,16 +134,17 @@ public class StringVerifier {
 	}
 
 	public VerifierChainer containsOrderedTextFragments(String... textFragments) {
-		if(!string.matches("(?s)^.*" + Joiner.on(".*").join(textFragments) + ".*$")) {
-			assertEquals(Joiner.on("\n<snip/>\n").join(textFragments), string);
+		List<String> escapedTextFragments = new LinkedList<String>();
+		for (String fragment : textFragments)
+		{
+			escapedTextFragments.add( Pattern.quote(fragment) );
+		}
+		
+		if(!string.matches("(?s)^.*" + Joiner.on(".*").join(escapedTextFragments) + ".*$")) {
+			assertEquals(Joiner.on("\n<snip/>\n").join(escapedTextFragments), string);
 		}
 		
 		return verifierChainer;
-	}
-
-	public void lineContains(int lineNum, String contains)
-	{
-		assertContains( contains , string.split("\n")[lineNum-1]);
 	}
 	
 	/* override equals so we don't get tests that give false positives when someone accidentally uses the 'equals' method instead of 'textEquals' */
