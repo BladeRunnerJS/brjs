@@ -2,8 +2,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
@@ -42,11 +40,8 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	private void writeTagContent(Writer writer, BundleSet bundleSet, String theme, String locale) throws IOException {
 		try {
-			List<String> locales = new ArrayList<>();
-			locales.add(locale);
-			
 			for(String nextTheme : BRJSConformantAssetLocationPlugin.getBundlableNodeThemes(bundleSet.getBundlableNode())) {
-				for(String contentPath : cssContentPlugin.getThemeStyleSheetContentPaths(nextTheme, locales)) {
+				for(String contentPath : cssContentPlugin.getThemeStyleSheetContentPaths(nextTheme, locale)) {
 					if(nextTheme.equals("common")) {
 						writer.write("<link rel='stylesheet' href='" + contentPath + "'/>");
 					}

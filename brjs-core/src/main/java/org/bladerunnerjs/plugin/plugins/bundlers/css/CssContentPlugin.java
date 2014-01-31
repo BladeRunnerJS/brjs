@@ -54,12 +54,12 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
 		return getValidContentPaths(bundleSet, locales);
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
 		return getValidContentPaths(bundleSet, locales);
 	}
 	
@@ -95,7 +95,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	public List<String> getThemeStyleSheetContentPaths(String theme, List<String> locales) throws MalformedTokenException {
+	public List<String> getThemeStyleSheetContentPaths(String theme, String... locales) throws MalformedTokenException {
 		List<String> contentPaths = new ArrayList<>();
 		
 		contentPaths.add(contentPathParser.createRequest("simple-request", theme));
@@ -137,7 +137,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private List<String> getValidContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+	private List<String> getValidContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
 		List<String> contentPaths = new ArrayList<>();
 		
 		try {

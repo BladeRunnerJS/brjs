@@ -67,12 +67,12 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
 		return getValidContentPaths(bundleSet, locales);
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
 		return getValidContentPaths(bundleSet, locales);
 	}
 	
@@ -142,7 +142,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private List<String> getValidContentPaths(BundleSet bundleSet, List<String> locales) {
+	private List<String> getValidContentPaths(BundleSet bundleSet, String... locales) {
 		List<String> contentPaths = new ArrayList<>();
 		
 		for(AssetLocation assetLocation : bundleSet.getResourceNodes()) {

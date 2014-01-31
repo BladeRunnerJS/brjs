@@ -2,8 +2,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
@@ -34,11 +32,8 @@ public class BRJSThirdpartyTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
-		List<String> locales = new ArrayList<>();
-		locales.add(locale);
-		
 		try {
-			for (String requestPath : thirdpartyContentPlugin.getValidDevContentPaths(bundleSet, locales))
+			for (String requestPath : thirdpartyContentPlugin.getValidDevContentPaths(bundleSet, locale))
 			{
 				writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 			}
@@ -51,11 +46,8 @@ public class BRJSThirdpartyTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
-		List<String> locales = new ArrayList<>();
-		locales.add(locale);
-		
 		try {
-			for (String requestPath : thirdpartyContentPlugin.getValidProdContentPaths(bundleSet, locales))
+			for (String requestPath : thirdpartyContentPlugin.getValidProdContentPaths(bundleSet, locale))
 			{
 				writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 			}
