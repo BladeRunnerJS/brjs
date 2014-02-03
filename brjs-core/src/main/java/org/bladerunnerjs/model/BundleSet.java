@@ -1,7 +1,9 @@
 package org.bladerunnerjs.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 
@@ -35,12 +37,14 @@ public class BundleSet {
 	}
 	
 	public List<Asset> getResourceFiles(String fileExtension) {
-		List<Asset> resourceFiles = new ArrayList<>();
+		Set<Asset> resourceFiles = new HashSet<Asset>();
 		
 		for(AssetLocation resourceNode : resourceLocations) {
 			resourceFiles.addAll(resourceNode.bundleResources(fileExtension));
 		}
 		
-		return resourceFiles;
+		List<Asset> result = new ArrayList<Asset>();
+		result.addAll(resourceFiles);
+		return result;
 	}
 }

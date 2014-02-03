@@ -78,49 +78,55 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
 	{
 		identifiers = new HashMap<String, Asset>();
+		Writer writer = null;
 		try{
-			Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding());
-			List<Asset> htmlFiles = bundleSet.getResourceFiles("html");
-			for(Asset htmlAsset : htmlFiles){
+			writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding());
+		}
+		catch( IOException | ConfigException e) {
+			throw new BundlerProcessingException(e);
+		}	
+	
+		List<Asset> htmlFiles = bundleSet.getResourceFiles("html");
+		for(Asset htmlAsset : htmlFiles){
+			
+			try {
 				validateSourceHtml(htmlAsset);
 				writer.write("\n<!-- " + htmlAsset.getAssetName()  +  " -->\n");
 				IOUtils.copy(htmlAsset.getReader(), writer);
 				writer.flush();
+			} catch (IOException | NamespaceException | RequirePathException e) {
+				throw new BundlerFileProcessingException(htmlAsset.getUnderlyingFile(), e);
 			}
 		}
-		catch( IOException | ConfigException| NamespaceException | RequirePathException e) {
-			throw new BundlerProcessingException(e);
-		} 
 	}
-	
 	
 	private void validateSourceHtml(Asset htmlAsset) throws IOException, BundlerFileProcessingException, NamespaceException, RequirePathException
 	{
 		StartTag startTag = getStartTag(htmlAsset);
 		
-		//TODO call getNamespace() utility function when it is implemented
+		//TODO call getNamespace() utility function directlry when it is implemented
 		String requirePrefix = htmlAsset.getAssetLocation().getAssetContainer().requirePrefix();
 		String namespace = requirePrefix.replaceAll("/", ".");
 		String identifier = startTag.getAttributeValue("id");
 		
 		if(identifier == null)
 		{
-			throw new BundlerFileProcessingException(htmlAsset.getUnderlyingFile(), "HTML template found without an identifier: " +
-				startTag.toString()+". Expected root element with namespaced ID of '" + namespace + "'.");
+			throw new NamespaceException( "HTML template found without an identifier: '" +
+					startTag.toString() + "'.  Root element should have namespaced ID of '" + namespace + ".*'");
 		}
 		
 		if(!identifier.startsWith(namespace))
 		{
-			throw new BundlerFileProcessingException(htmlAsset.getUnderlyingFile(), "The identifier '" +
-				identifier + "' is not correctly namespaced.\nNamespace '" + namespace + "*' was expected.");
+			throw new NamespaceException( "The identifier '" +
+					identifier + "' is not correctly namespaced.\nNamespace '" + namespace + ".*' was expected.");
 		}
 
 		Asset assetWithDuplicateId = identifiers.get(identifier);
 		if(assetWithDuplicateId == null){
 			identifiers.put(identifier, htmlAsset);
 		}else{
-			throw new BundlerFileProcessingException(htmlAsset.getUnderlyingFile()        , "HTML template found with a duplicate identifier: " +
-						identifier + ". The same identifier is used for the file:\n'" 
+			throw new NamespaceException("HTML template found with a duplicate identifier: '" +
+						identifier + "'. The same identifier is used for the file:\n'" 
 						+ assetWithDuplicateId.getUnderlyingFile().getAbsolutePath()
 						+ "'.");
 		}
