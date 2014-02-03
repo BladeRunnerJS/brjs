@@ -87,7 +87,23 @@ public class CssBundlerPluginTest extends SpecTest {
 		then(requestResponse).doesNotContainText("themes/common/style.css");
 	}
 	
-	// TODO: 'theme1' version of the previous two tests
+	@Test
+	public void nonCommonThemeCssFilesAppearInTheRelevantTheme() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFile("themes/theme1/style.css");
+		when(app).requestReceived("/default-aspect/css/theme1/bundle.css", requestResponse);
+		then(requestResponse).containsOrderedTextFragments("themes/theme1/style.css");
+	}
+	
+	@Test
+	public void nonCommonThemeCssFilesDontAppearInAnyOtherThemes() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFile("themes/theme1/style.css");
+		when(app).requestReceived("/default-aspect/css/commmon/bundle.css", requestResponse);
+		then(requestResponse).doesNotContainText("themes/theme1/style.css");
+	}
 	
 	// TODO: tests for locale specific themed css files
 }
