@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public class DeepAssetLocation extends ShallowAssetLocation {
-	
 	Map<File,AssetLocation> resourcesMap = new LinkedHashMap<File,AssetLocation>();
 	
 	public DeepAssetLocation(RootNode rootNode, Node parent, File dir) {
@@ -79,7 +78,7 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 		AssetLocation assetLocationForDir = resourcesMap.get(childDir);
 		if (assetLocationForDir == null)
 		{
-			assetLocationForDir = new ShallowAssetLocation(getAssetContainer().root(), getAssetContainer(), childDir);
+			assetLocationForDir = new PrivateAssetLocation(getAssetContainer().root(), getAssetContainer(), childDir);
 			resourcesMap.put(childDir, assetLocationForDir);
 		}
 		return assetLocationForDir;
