@@ -149,7 +149,12 @@ public class MockRootNode implements RootNode
 	public void registerNode(Node node)
 	{
 	}
-
+	
+	@Override
+	public void clearRegisteredNode(Node node)
+	{
+	}
+	
 	@Override
 	public Node getRegisteredNode(File childPath)
 	{

@@ -12,6 +12,7 @@ public abstract class InstantiatedBRJSNode extends AbstractBRJSNode {
 	
 	@Override
 	protected void registerNode() {
-		// central registration of this instance has been prevented
+		rootNode.clearRegisteredNode(this);
+		super.registerNode();
 	}
 }

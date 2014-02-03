@@ -21,5 +21,6 @@ public interface RootNode extends Node {
 	
 	// these two methods, implemented by AbstractRootNode, are used by AbstractNode
 	void registerNode(Node node) throws NodeAlreadyRegisteredException;
+	void clearRegisteredNode(Node node);
 	Node getRegisteredNode(File childPath);
 }

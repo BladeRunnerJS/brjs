@@ -40,7 +40,7 @@ public abstract class AbstractNode implements Node
 	private ObserverList observers = new ObserverList();
 	private Map<String, NodeProperties> propertiesMap = new HashMap<String,NodeProperties>();
 	
-	private RootNode rootNode;
+	protected RootNode rootNode;
 	private Node parent;
 	protected File dir;
 	
