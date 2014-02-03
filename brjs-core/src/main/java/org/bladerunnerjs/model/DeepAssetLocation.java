@@ -24,6 +24,17 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 		return getAllAssetsFromAssetLocations(assetLocations);
 	}
 	
+	@Override
+	public List<Asset> bundleResources(String fileExtension) {
+		List<Asset> assetFiles = new ArrayList<>();
+		
+		for(AssetLocation assetLocation : getChildAssetLocations(dir())) {
+			assetFiles.addAll(assetLocation.bundleResources(fileExtension));
+		}
+		
+		return assetFiles;
+	}
+	
 	private List<LinkedAsset> getAllAssetsFromAssetLocations(List<AssetLocation> assetLocations)
 	{
 		List<LinkedAsset> assetFiles = new ArrayList<LinkedAsset>();
