@@ -1,18 +1,44 @@
 package org.bladerunnerjs.plugin.plugins.brjsconformant;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.DeepAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.ThemeAssetLocation;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 
 public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlugin {
+	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
+		Set<String> themeNames = new HashSet<>();
+		
+		for(AssetContainer assetContainer : bundlableNode.getAssetContainers()) {
+			ThemeAssetLocation themeAssetLocation = (ThemeAssetLocation) assetContainer.assetLocation("themes");
+			
+			if(themeAssetLocation != null) {
+				for(String themeName : themeAssetLocation.themes()) {
+					if(!themeName.equals("common")) {
+						themeNames.add(themeName);
+					}
+				}
+			}
+		}
+		
+		List<String> themeNamesList = new ArrayList<>();
+		themeNamesList.add("common");
+		themeNamesList.addAll(themeNames);
+		
+		return themeNamesList;
+	}
+	
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
@@ -47,11 +73,13 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		{
 			if(!assetLocationCache.containsKey("resources")) {
 				assetLocationCache.put("resources", new DeepAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")));
+				assetLocationCache.put("themes", new ThemeAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("themes")));
 				assetLocationCache.put("src", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src"), assetLocationCache.get("resources")));
 				assetLocationCache.put("src-test", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src-test")));
 			}
 			
 			assetLocations.add(assetLocationCache.get("resources"));
+			assetLocations.add(assetLocationCache.get("themes"));
 			SourceAssetLocation srcAssetLocation = (SourceAssetLocation) assetLocationCache.get("src");
 			assetLocations.add(srcAssetLocation);
 			assetLocations.addAll(srcAssetLocation.getChildAssetLocations());
@@ -62,4 +90,5 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		
 		return assetLocations;
 	}
+
 }

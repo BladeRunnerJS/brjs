@@ -28,6 +28,7 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.json.simple.JSONObject;
 
 public class NamespacedJsContentPlugin extends AbstractContentPlugin {
+
 	public static final String JS_STYLE = "namespaced-js";
 	
 	private ContentPathParser contentPathParser;
@@ -72,7 +73,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
@@ -91,7 +92,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
 		return prodRequestPaths;
 	}
 	
@@ -225,4 +226,5 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 		
 		return stringBuffer.toString();
 	}
+	
 }

@@ -31,4 +31,5 @@ public abstract class AbstractPlugin implements Plugin {
 	public Class<?> getPluginClass() {
 		return getClass();
 	}
+	
 }

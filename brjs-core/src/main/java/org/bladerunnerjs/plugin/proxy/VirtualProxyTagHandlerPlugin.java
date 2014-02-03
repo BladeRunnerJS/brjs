@@ -36,4 +36,5 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 		initializePlugin();
 		tagHandlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
 	}
+	
 }

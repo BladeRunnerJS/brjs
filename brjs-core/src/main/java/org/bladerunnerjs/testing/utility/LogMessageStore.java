@@ -30,6 +30,16 @@ public class LogMessageStore
 
 	public LogMessageStore()
 	{
+		clearLogs();
+	}
+	
+	public void clearLogs()
+	{
+		fatalMessages.clear();
+		errorMessages.clear();
+		warnMessages.clear();
+		infoMessages.clear();
+		debugMessages.clear();
 	}
 	
 	public LogMessageStore(boolean storeLogs)
@@ -236,5 +246,10 @@ public class LogMessageStore
 
 	public void stopStoringLogs() {
 		disableStoringLogs();
+	}
+
+	public void emptyLogStore()
+	{
+		clearLogs();
 	}
 }

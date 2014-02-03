@@ -230,13 +230,13 @@ task downloadExampleApps, {
 	outputs.dir file("${buildDir}/brjs-example-apps.zip")
 	doFirst {
 		if (!buildDir.isDirectory()) { buildDir.mkdir() }
-		ant.get(src: "https://github.com/BladeRunnerJS/brjs-example-apps/archive/master.zip", dest: "${buildDir}/brjs-example-apps.zip")
+		ant.get(src: "https://github.com/BladeRunnerJS/brjs-todo/archive/full.zip", dest: "${buildDir}/brjs-example-apps.zip")
 	}
 }
 
 task extractExampleApps, type:Copy, dependsOn:downloadExampleApps, {
 	from zipTree( tasks.downloadExampleApps.outputs.files.singleFile )
-	into "workspace/apps"
+	into "workspace/apps/example-app-brjs-todo"   // Temporarily changing to explicit folder
 	includeEmptyDirs = false
 	eachFile {
 		it.path = it.path.replaceFirst("[A-Za-z0-9-_]+/","")

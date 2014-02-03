@@ -54,4 +54,5 @@ public interface Plugin
 	 * @return A reference to the class of the underlying plug-in.
 	 */
 	Class<?> getPluginClass();
+
 }

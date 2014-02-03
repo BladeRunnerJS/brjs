@@ -155,6 +155,7 @@ public class WarCommandUtility
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	private OutputStream createBundleSpecificOutputStream(String validBundlerRequest, File targetFile) throws IOException
 	{
 		OutputStream fileStream = new BufferedOutputStream(new FileOutputStream(targetFile));

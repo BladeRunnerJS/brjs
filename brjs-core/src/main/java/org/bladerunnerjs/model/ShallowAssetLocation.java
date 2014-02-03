@@ -163,9 +163,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 					bundleResources.add(asset);
 				}
 			}
-				
 		}
-		
 		return bundleResources;
 	}
 

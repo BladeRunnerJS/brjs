@@ -87,8 +87,16 @@ public class BundleSetBuilder {
 		
 		if(linkedAssets.add(linkedAsset)) {
 			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
-			
-			
+			if (linkedAsset instanceof SourceModule)
+			{
+	    		try {
+	    			
+	    			addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
+	    		}
+	    		catch(RequirePathException e) {
+	    			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+	    		}
+			}
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			 
 			File linkedAssetFile = linkedAsset.getUnderlyingFile();
@@ -120,7 +128,6 @@ public class BundleSetBuilder {
 	}
 	
 	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
-		
 		
 		if(assetLocations.add(assetLocation)) {
 			for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {

@@ -63,13 +63,13 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
 	{
 		return new ArrayList<>();
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
 	{
 		return new ArrayList<>();
 	}

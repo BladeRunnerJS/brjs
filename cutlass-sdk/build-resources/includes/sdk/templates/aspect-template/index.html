@@ -11,7 +11,8 @@
 	<body>
 		<p>Successfully loaded the application</p>
 
-		<@new-js.bundle dev-minifier="combined"@/>
+        <!-- dev-minifier can be set to "combined" for all JS content to be bundled with a single request -->
+		<@js.bundle dev-minifier="none" prod-minifier="combined"@/>
 		<script>
 			( function() {
 

@@ -110,6 +110,10 @@ public class BRJS extends AbstractBRJSRootNode
 		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(), loggerFactory, consoleWriter);
 	}
 	
+	public BRJS(File brjsDir, FileModificationService fileModificationService) {
+		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+	}
+	
 	public BRJS(File brjsDir, LogConfiguration logConfiguration)
 	{
 		// TODO: what was the logConfiguration parameter going to be used for?
@@ -172,8 +176,7 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 	}
 	
-	public void close() {
-		closed  = true;
+	public void close() {closed  = true;
 		fileModificationService.close();
 	}
 	

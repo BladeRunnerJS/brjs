@@ -51,12 +51,12 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
 		return getValidRequestPaths();
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, List<String> locales) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
 		return getValidRequestPaths();
 	}
 	
@@ -93,7 +93,6 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 		} catch (MalformedTokenException e) {
 			throw new BundlerProcessingException(e);
 		}
-		
 		return requestPaths;
 	}
 }

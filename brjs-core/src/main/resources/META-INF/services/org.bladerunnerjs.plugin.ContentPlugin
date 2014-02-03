@@ -5,3 +5,6 @@ org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.html.HTMLContentPlugin
 org.bladerunnerjs.plugin.plugins.bundlers.xml.XMLContentPlugin
+org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin
+org.bladerunnerjs.plugin.plugins.bundlers.css.CssContentPlugin
+org.bladerunnerjs.plugin.plugins.bundlers.cssresource.CssResourceContentPlugin

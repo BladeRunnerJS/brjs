@@ -6,11 +6,11 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.slf4j.impl.StaticLoggerBinder;
+
+import com.caplin.cutlass.BRJSAccessor;
 
 public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHandler
 {
@@ -34,7 +34,8 @@ public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHan
 		BRJS brjs = null;
 		try
 		{
-    		brjs = new BRJS(rootDir, new ConsoleLoggerConfigurator(StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger()));
+    		brjs = BRJSAccessor.root;
+    	
     		App app = brjs.locateAncestorNodeOfClass(testDir, App.class);
     		if (app == null)
     		{
@@ -50,7 +51,6 @@ public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHan
 		}
 		finally 
 		{
-			brjs.close();
 			try
 			{
 				outputStream.close();

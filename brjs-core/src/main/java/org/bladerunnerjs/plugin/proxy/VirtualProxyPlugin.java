@@ -69,4 +69,5 @@ public class VirtualProxyPlugin implements Plugin {
 	public Plugin getUninitializedUnderlyingPlugin() {
 		return plugin;
 	}
+	
 }

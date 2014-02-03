@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,8 +24,11 @@ public class StringVerifier {
 		this.verifierChainer = new VerifierChainer(specTest);
 	}
 	
-	public VerifierChainer containsText(String substring) {
-		assertContains(substring, string);
+	public VerifierChainer containsText(String... substrings) {
+		for(String substring : substrings)
+		{
+			assertContains(substring, string);
+		}
 		
 		return verifierChainer;
 	}
@@ -133,15 +137,25 @@ public class StringVerifier {
 	}
 
 	public VerifierChainer containsOrderedTextFragments(String... textFragments) {
-		if(!string.matches("(?s)^.*" + Joiner.on(".*").join(textFragments) + ".*$")) {
-			assertEquals(Joiner.on("\n<snip/>\n").join(textFragments), string);
+		List<String> escapedTextFragments = new LinkedList<String>();
+		for (String fragment : textFragments)
+		{
+			escapedTextFragments.add( Pattern.quote(fragment) );
+		}
+		
+		if(!string.matches("(?s)^.*" + Joiner.on(".*").join(escapedTextFragments) + ".*$")) {
+			assertEquals(Joiner.on("\n<snip/>\n").join(escapedTextFragments), string);
 		}
 		
 		return verifierChainer;
 	}
-
-	public void lineContains(int lineNum, String contains)
+	
+	/* override equals so we don't get tests that give false positives when someone accidentally uses the 'equals' method instead of 'textEquals' */
+	@Override
+	public boolean equals(Object o)
 	{
-		assertContains( contains , string.split("\n")[lineNum-1]);
+		System.err.println("WARNING: 'textEquals()' should be used in SpecTests rather than 'equals()'.");
+		textEquals((String) o);
+		return true;
 	}
 }
