@@ -22,7 +22,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;
-	private JsLib thirdpartyLib;
+	private JsLib thirdpartyLib, brjsLib;
 	private NamedDirNode workbenchTemplate;
 	private StringBuffer response;
 	
@@ -42,6 +42,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 		standardBladeTheme = blade.theme("standard");
 		workbench = blade.workbench();
 		workbenchTemplate = brjs.template("workbench");
+		brjsLib = brjs.sdkLib();
 		thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdparty-lib1");
 		
 		response = new StringBuffer();
@@ -114,5 +115,21 @@ public class WorkbenchBundlingTest extends SpecTest {
 	public void sdkLibCssFilesAreNotBundledAsCommonCssInTheWorkbenchWhenNotReferenced() throws Exception {
 
 	}
+	
+	// ----------------------------------- H T M L  -------------------------------------
+	@Ignore // This test should pass to prove that 
+	@Test
+	public void workbenchCanBundleSdkLibHtmlResources() throws Exception {
+		given(brjsLib).hasBeenCreated()
+			.and(brjsLib).hasNamespacedJsPackageStyle()
+			.and(brjsLib).containsFileWithContents("resources/html/view.html", "<div id='tree-view'></div>")
+			.and(brjsLib).hasClass("br.workbench.ui.Workbench")
+			.and(workbench).containsFileWithContents("resources/workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
+			.and(workbench).indexPageRefersTo("br.workbench.ui.Workbench");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/bundle.html", response);
+		then(response).containsOrderedTextFragments("<div id='appns.bs.b1.workbench-view'></div>",
+													"<div id='tree-view'></div>");
+	}
+	
 	
 }
