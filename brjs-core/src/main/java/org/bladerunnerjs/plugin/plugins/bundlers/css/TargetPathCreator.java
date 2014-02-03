@@ -96,7 +96,7 @@ public class TargetPathCreator
 				JsLib jsLib = (JsLib) assetContainer;
 				String resourcePath = RelativePathUtility.get(jsLib.dir(), imageFile);
 				
-				targetPath = cssResourceContentPathParser.createRequest("lib-request", resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest("lib-request", jsLib.getName(), resourcePath);
 			}
 			else {
 				throw new BundlerFileProcessingException(imageFile, "File does not exist in a known scope");
