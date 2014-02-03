@@ -35,7 +35,7 @@ public class SourceModuleTest extends SpecTest {
 			.and(aspect).sourceModuleHasAssetLocation("appns/Class1", "src/appns/")
 			.and(aspect).sourceModuleHasAssetLocation("appns/pkg/Class3", "src/appns/pkg/")
 			.and(aspect).assetLocationHasNoDependencies("resources/")
-			.and(aspect).assetLocationHasDependencies("src/", "resources/")
+			.and(aspect).assetLocationHasDependencies("src/", "resources/", "themes")
 			.and(aspect).assetLocationHasDependencies("src/appns/", "src/")
 			.and(aspect).assetLocationHasDependencies("src/appns/pkg/", "src/appns/");
 	}
@@ -47,7 +47,7 @@ public class SourceModuleTest extends SpecTest {
 		then(brjsLib).hasSourceModules(sourceModule("brjslib/Class1", "brjslib.Class1"), sourceModule("brjslib/Class2", "brjslib.Class2"), sourceModule("brjslib/pkg/Class3", "brjslib.pkg.Class3"))
 			.and(brjsLib).hasAssetLocations("resources/", "themes", "src/", "src/brjslib/", "src/brjslib/pkg/", "src-test")
 			.and(brjsLib).assetLocationHasNoDependencies("resources/")
-			.and(brjsLib).assetLocationHasDependencies("src/", "resources/")
+			.and(brjsLib).assetLocationHasDependencies("src/", "resources/", "themes")
 			.and(brjsLib).assetLocationHasDependencies("src/brjslib/", "src/")
 			.and(brjsLib).assetLocationHasDependencies("src/brjslib/pkg/", "src/brjslib/");
 	}
