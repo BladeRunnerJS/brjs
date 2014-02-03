@@ -20,8 +20,14 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	@Override
 	public List<LinkedAsset> seedResources()
 	{
-		List<AssetLocation> assetLocations = getChildAssetLocations(dir());
-		return getAllAssetsFromAssetLocations(assetLocations);
+		List<LinkedAsset> assetFiles = new ArrayList<LinkedAsset>();
+		
+		for (AssetLocation assetLocation : getChildAssetLocations(dir()))
+		{
+			assetFiles.addAll(assetLocation.seedResources());
+		}
+		
+		return assetFiles;
 	}
 	
 	@Override
@@ -30,18 +36,6 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 		
 		for(AssetLocation assetLocation : getChildAssetLocations(dir())) {
 			assetFiles.addAll(assetLocation.bundleResources(fileExtension));
-		}
-		
-		return assetFiles;
-	}
-	
-	private List<LinkedAsset> getAllAssetsFromAssetLocations(List<AssetLocation> assetLocations)
-	{
-		List<LinkedAsset> assetFiles = new ArrayList<LinkedAsset>();
-		
-		for (AssetLocation assetLocation : assetLocations)
-		{
-			assetFiles.addAll(assetLocation.seedResources());
 		}
 		
 		return assetFiles;
