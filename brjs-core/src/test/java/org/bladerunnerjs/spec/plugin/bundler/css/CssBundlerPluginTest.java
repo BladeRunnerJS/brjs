@@ -124,4 +124,13 @@ public class CssBundlerPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("div {background:url(\"../images/theme_common/img/img.png_image.bundle\");}");
 	}
+	
+	@Test
+	public void referringToAParentImageCausesAParentCssResourceRequestToBeCreated() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../img.png');}");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("div {background:url(\"../images/theme_common/img.png_image.bundle\");}");
+	}
 }
