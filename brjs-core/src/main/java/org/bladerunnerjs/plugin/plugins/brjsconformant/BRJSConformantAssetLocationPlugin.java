@@ -22,13 +22,16 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		Set<String> themeNames = new HashSet<>();
 		
 		for(AssetContainer assetContainer : bundlableNode.getAssetContainers()) {
-			ThemeAssetLocation themeAssetLocation = (ThemeAssetLocation) assetContainer.assetLocation("themes");
+			ResourcesAssetLocation resourceAssetLocation = (ResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
-			if(themeAssetLocation != null) {
-				for(String themeName : themeAssetLocation.themes()) {
+			if(resourceAssetLocation != null) {
+				for(ThemeAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
+					String themeName = themeAssetLocation.getThemeName();
+					
 					if(!themeName.equals("common")) {
 						themeNames.add(themeName);
 					}
+					
 				}
 			}
 		}
