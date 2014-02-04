@@ -78,7 +78,7 @@ public class AspectBundlingOfBladeResources extends SpecTest {
 	@Ignore // This test should pass?
 	@Test
 	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAspectHTMLFiles() throws Exception {
-		given(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+		given(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).resourceFileContains("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
@@ -101,9 +101,12 @@ public class AspectBundlingOfBladeResources extends SpecTest {
 	
 	@Test
 	public void aspectHTMlFilesBundleFailsWithNoIDAttribute() throws Exception {
-		given(blade).resourceFileContains("html/view.html", "<div>TESTCONTENT</div>");
+		given(blade).resourceFileContains("html/view.html", "<div>TESTCONTENT</div>")
+			.and(blade).hasNamespacedJsPackageStyle()
+			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
-		then(exceptions).verifyException(NamespaceException.class, "<div>", "appns.*");
+		then(exceptions).verifyException(NamespaceException.class, "<div>", "appns.bs.b1.*");
 	}
 	
 	
