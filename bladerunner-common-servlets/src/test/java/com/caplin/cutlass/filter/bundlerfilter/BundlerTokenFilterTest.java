@@ -205,32 +205,6 @@ public class BundlerTokenFilterTest
 	}
 
 	@Test
-	public void testIndexHtmlRequestIsProcessedCorrectly() throws Exception
-	{
-		String thisTestRoot = "src/test/resources/bundler-token";
-		File tempSdkInstall = FileUtility.createTemporarySdkInstall(new File(thisTestRoot)).getParentFile();
-		
-		httpclient = new DefaultHttpClient();
-		appServer = createServer(PORT, "/", new File(tempSdkInstall, "apps/app1").getPath());
-		
-		Map<String, String> responseMap = makeRequest("http://localhost:"+PORT+"/main-aspect/index.html");
-		String content = responseMap.get("responseText");
-		assertEquals("200", responseMap.get("responseCode"));
-		
-		assertTrue(content.contains("<link rel=\"stylesheet\" href=\"css/common_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"stylesheet\" href=\"css/common_en_GB_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"stylesheet\" href=\"css/common_ie8_css.bundle\"/>"));
-
-		assertTrue(content.contains("<link rel=\"stylesheet\" title=\"noir\" href=\"css/noir_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"stylesheet\" title=\"noir\" href=\"css/noir_en_GB_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"stylesheet\" title=\"noir\" href=\"css/noir_ie8_css.bundle\"/>"));
-
-		assertTrue(content.contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_en_GB_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_ie8_css.bundle\"/>"));
-	}
-
-	@Test
 	public void testIndexHtmlThatDoesNotExistDoesNotGetProcessed() throws Exception
 	{
 		httpclient = new DefaultHttpClient();
