@@ -106,4 +106,31 @@ public class CssBundlerPluginTest extends SpecTest {
 	}
 	
 	// TODO: tests for locale specific themed css files
+	
+	@Test
+	public void referringToAnImageCausesACssResourceRequestToBeCreated() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img.png');}");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/theme_common/img.png\");}");
+	}
+	
+	@Test
+	public void referringToANestedImageCausesANestedCssResourceRequestToBeCreated() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img/img.png');}");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/theme_common/img/img.png\");}");
+	}
+	
+	@Test
+	public void referringToAParentImageCausesAParentCssResourceRequestToBeCreated() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../img.png');}");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/theme_common/img.png\");}");
+	}
 }

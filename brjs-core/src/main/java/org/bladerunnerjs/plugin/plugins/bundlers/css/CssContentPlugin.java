@@ -87,10 +87,10 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		try(Writer writer = new OutputStreamWriter(os)) {
 			List<Asset> cssAssets = bundleSet.getResourceFiles("css");
 			for(Asset cssAsset : cssAssets) {
-				String assetTheme = getTheme(cssAsset);
+				String assetThemeName = getThemeName(cssAsset.getAssetLocation());
 				File cssFile = cssAsset.getUnderlyingFile();
 				
-				if(assetTheme.equals(theme) && cssFile.getName().matches(pattern)) {
+				if(assetThemeName.equals(theme) && cssFile.getName().matches(pattern)) {
 					writeAsset(cssAsset, writer);
 				}
 			}
@@ -122,19 +122,14 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		return contentPaths;
 	}
 	
-	private String getTheme(Asset cssAsset) {
-		AssetLocation cssAssetLocation = cssAsset.getAssetLocation();
-		String themeName = "common";
+	private String getThemeName(AssetLocation cssAssetLocation) {
+		String themeName;
 		
 		if(cssAssetLocation instanceof ThemeAssetLocation) {
-			File themesAssetLocationDir = cssAssetLocation.dir();
-			File dir = cssAsset.getUnderlyingFile().getParentFile();
-			
-			while(!dir.getParentFile().equals(themesAssetLocationDir)) {
-				dir = dir.getParentFile();
-			}
-			
-			themeName = dir.getName();
+			themeName = ((ThemeAssetLocation) cssAssetLocation).getThemeName();
+		}
+		else {
+			themeName = "common";
 		}
 		
 		return themeName;

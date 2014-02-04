@@ -19,6 +19,7 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -31,11 +32,11 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("images/theme_<theme>/<resourcePath>_image.bundle").as("aspect-request")
-				.and("images/bladeset_<bladeset>/theme_<theme>/<resourcePath>_image.bundle").as("bladeset-request")
-				.and("images/bladeset_<bladeset>/blade_<blade>/theme_<theme>/<resourcePath>_image.bundle").as("blade-request")
-				.and("images/bladeset_<bladeset>/blade_<blade>/workbench/<resourcePath>_image.bundle").as("blade-workbench-request")
-				.and("images/lib_<lib>/<resourcePath>_image.bundle").as("lib-request")
+			.accepts("cssresource/theme_<theme>/<resourcePath>").as("aspect-request")
+				.and("cssresource/bladeset_<bladeset>/theme_<theme>/<resourcePath>").as("bladeset-request")
+				.and("cssresource/bladeset_<bladeset>/blade_<blade>/theme_<theme>/<resourcePath>").as("blade-request")
+				.and("cssresource/bladeset_<bladeset>/blade_<blade>/workbench/<resourcePath>").as("blade-workbench-request")
+				.and("cssresource/lib_<lib>/<resourcePath>").as("lib-request")
 			.where("aspect").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 				.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 				.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
@@ -87,7 +88,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
-			resourceFile = aspect.assetLocation("themes" + "/" + theme).file(resourcePath);
+			resourceFile = ((ResourcesAssetLocation) aspect.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if(contentPath.formName.equals("bladeset-request")) {
 			Aspect aspect = (Aspect) bundlableNode;
@@ -95,7 +96,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
-			resourceFile = bladeset.assetLocation("themes" + "/" + theme).file(resourcePath);
+			resourceFile = ((ResourcesAssetLocation) bladeset.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if(contentPath.formName.equals("blade-request")) {
 			Aspect aspect = (Aspect) bundlableNode;
@@ -104,7 +105,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
-			resourceFile = blade.assetLocation("themes" + "/" + theme).file(resourcePath);
+			resourceFile = ((ResourcesAssetLocation) blade.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if(contentPath.formName.equals("blade-workbench-request")) {
 			Aspect aspect = (Aspect) bundlableNode;

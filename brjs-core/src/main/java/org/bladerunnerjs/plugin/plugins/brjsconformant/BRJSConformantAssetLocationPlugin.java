@@ -11,6 +11,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.DeepAssetLocation;
+import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.ThemeAssetLocation;
@@ -21,13 +22,16 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		Set<String> themeNames = new HashSet<>();
 		
 		for(AssetContainer assetContainer : bundlableNode.getAssetContainers()) {
-			ThemeAssetLocation themeAssetLocation = (ThemeAssetLocation) assetContainer.assetLocation("themes");
+			ResourcesAssetLocation resourceAssetLocation = (ResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
-			if(themeAssetLocation != null) {
-				for(String themeName : themeAssetLocation.themes()) {
+			if(resourceAssetLocation != null) {
+				for(ThemeAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
+					String themeName = themeAssetLocation.getThemeName();
+					
 					if(!themeName.equals("common")) {
 						themeNames.add(themeName);
 					}
+					
 				}
 			}
 		}
@@ -72,19 +76,12 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		else
 		{
 			if(!assetLocationCache.containsKey("resources")) {
-				assetLocationCache.put("resources", new DeepAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")));
-				assetLocationCache.put("themes", new ThemeAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("themes")));
-				
-				List<AssetLocation> sourceDependentAssetLocations = new ArrayList<>();
-				sourceDependentAssetLocations.add(assetLocationCache.get("resources"));
-				sourceDependentAssetLocations.add(assetLocationCache.get("themes"));
-				
-				assetLocationCache.put("src", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src"), sourceDependentAssetLocations));
+				assetLocationCache.put("resources", new ResourcesAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")));
+				assetLocationCache.put("src", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src"), assetLocationCache.get("resources")));
 				assetLocationCache.put("src-test", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src-test")));
 			}
 			
 			assetLocations.add(assetLocationCache.get("resources"));
-			assetLocations.add(assetLocationCache.get("themes"));
 			SourceAssetLocation srcAssetLocation = (SourceAssetLocation) assetLocationCache.get("src");
 			assetLocations.add(srcAssetLocation);
 			assetLocations.addAll(srcAssetLocation.getChildAssetLocations());

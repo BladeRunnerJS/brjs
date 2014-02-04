@@ -29,7 +29,7 @@ public class TargetPathCreator
 	
 	public String getRelativeBundleRequestForImage(File imageFile) throws BundlerProcessingException
 	{
-		return "../" + getBundleRequestForImage(imageFile);
+		return "../../" + getBundleRequestForImage(imageFile);
 	}
 	
 	public String getBundleRequestForImage(File imageFile) throws BundlerProcessingException
