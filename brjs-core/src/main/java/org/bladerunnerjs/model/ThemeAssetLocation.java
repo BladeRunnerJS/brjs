@@ -20,6 +20,10 @@ public class ThemeAssetLocation extends DeepAssetLocation {
 		dirModifiedChecker = new NodeFileModifiedChecker(this);
 	}
 	
+	public String getThemeName() {
+		return dir().getName();
+	}
+	
 	public List<String> themes() {
 		if(dirModifiedChecker.hasChangedSinceLastCheck() || (themes == null)) {
 			themes = new ArrayList<>();

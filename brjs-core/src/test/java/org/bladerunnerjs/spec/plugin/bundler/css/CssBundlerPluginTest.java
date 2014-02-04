@@ -113,7 +113,7 @@ public class CssBundlerPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img.png');}");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../images/theme_themes/img.png_image.bundle\");}");
+		then(requestResponse).containsText("div {background:url(\"../images/theme_common/img.png_image.bundle\");}");
 	}
 	
 	@Test
@@ -122,6 +122,6 @@ public class CssBundlerPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img/img.png');}");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../images/theme_themes/img/img.png_image.bundle\");}");
+		then(requestResponse).containsText("div {background:url(\"../images/theme_common/img/img.png_image.bundle\");}");
 	}
 }

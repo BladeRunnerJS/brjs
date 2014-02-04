@@ -13,9 +13,9 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
-	public SourceAssetLocation(RootNode rootNode, Node parent, File dir, List<AssetLocation> assetLocations) {
+	public SourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation) {
 		super(rootNode, parent, dir);
-		dependentAssetLocations.addAll(assetLocations);
+		dependentAssetLocations.add(assetLocation);
 	}
 	
 	public SourceAssetLocation(RootNode rootNode, Node parent, File dir) {
