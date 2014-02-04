@@ -1,3 +1,5 @@
 language: java
+install:
+    - TERM=dumb ./gradlew compileJava
 script:
     - TERM=dumb ./gradlew testJava
