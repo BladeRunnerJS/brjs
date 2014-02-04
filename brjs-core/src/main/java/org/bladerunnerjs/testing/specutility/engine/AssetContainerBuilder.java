@@ -43,6 +43,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return hasNodeJsPackageStyle("");
 	}
 	
+	public BuilderChainer resourceFileContains(String resourceFileName, String contents) throws Exception 
+	{
+		FileUtils.write(node.assetLocation("resources").file(resourceFileName), contents);
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer hasClass(String className) throws Exception
 	{
 		FileUtils.write(getSourceFile(className), getClassBody(className));

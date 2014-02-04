@@ -31,13 +31,6 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer resourceFileContains(String resourceFileName, String contents) throws Exception 
-	{
-		FileUtils.write(aspect.assetLocation("resources").file(resourceFileName), contents);
-		
-		return builderChainer;
-	}
-	
 	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
 		FileUtils.write(aspect.assetLocation("src").file(resourceFileName), generateRootRefContentForClasses(classNames));
