@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.bundling;
+package org.bladerunnerjs.spec.bundling.testpack;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;

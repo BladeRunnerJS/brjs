@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.bundling.aspect;
+package org.bladerunnerjs.spec.bundling.workbench;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Blade;
