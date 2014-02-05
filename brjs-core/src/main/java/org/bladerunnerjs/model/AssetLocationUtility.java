@@ -12,9 +12,14 @@ import java.util.Map;
 public class AssetLocationUtility
 {
 	private final Map<String, Asset> assetFiles = new HashMap<>();
+	private final AssetLocation assetLocation;
+	
+	public AssetLocationUtility(AssetLocation assetLocation) {
+		this.assetLocation = assetLocation;
+	}
 	
 	@SuppressWarnings("unchecked")
-	public <A extends Asset> A obtainAsset(Class<? extends A> assetFileClass, AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
+	public <A extends Asset> A obtainAsset(Class<? extends A> assetFileClass, File assetFile) throws AssetFileInstantationException {
 		String absolutePath = assetFile.getAbsolutePath();
 		A asset;
 		
@@ -22,7 +27,7 @@ public class AssetLocationUtility
 			asset = (A) assetFiles.get(absolutePath);
 		}
 		else {
-			asset = createAssetInstance(assetFileClass, assetLocation, assetFile);
+			asset = createAssetInstance(assetFileClass, assetFile);
 			assetFiles.put(absolutePath, asset);
 		}
 		
@@ -30,20 +35,20 @@ public class AssetLocationUtility
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <A extends Asset> List<A> obtainMatchingAssets(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, Collection<File> assetFiles) throws AssetFileInstantationException
+	public <A extends Asset> List<A> obtainMatchingAssets(Class<? extends Asset> assetFileClass, Collection<File> assetFiles) throws AssetFileInstantationException
 	{
 		List<A> assets = new LinkedList<A>();		
 		
 		for (File file : assetFiles)
 		{
-			assets.add( (A) obtainAsset(assetFileClass, assetLocation, file) );
+			assets.add( (A) obtainAsset(assetFileClass, file) );
 		}
 		
 		return assets;
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <A extends Asset> A createAssetInstance(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, File file) throws AssetFileInstantationException
+	private <A extends Asset> A createAssetInstance(Class<? extends Asset> assetFileClass, File file) throws AssetFileInstantationException
 	{
 		try
 		{

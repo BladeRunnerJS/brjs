@@ -45,7 +45,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 				assets = new ArrayList<>();
 			}
 			else {
-				assets = assetContainer.root().obtainMatchingAssets(FullyQualifiedLinkedAsset.class, assetLocation,  xmlFilesFilter);
+				assets = assetLocation.obtainMatchingAssets(xmlFilesFilter, LinkedAsset.class, FullyQualifiedLinkedAsset.class);
 			}
 		}
 		catch (AssetFileInstantationException e) {

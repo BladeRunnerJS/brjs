@@ -28,12 +28,13 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	protected final AssetContainer assetContainer;
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private final Map<String, SourceModule> sourceModules = new HashMap<>();
-	private final AssetLocationUtility assetLocator = new AssetLocationUtility();
+	private final AssetLocationUtility assetLocator;
 	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
 		this.assetContainer = (AssetContainer) parent;
+		assetLocator = new AssetLocationUtility(this);
 	}
 	
 	@Override
@@ -190,7 +191,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	
 	@Override
 	public <A extends Asset> A obtainAsset(File assetFileOrDir, Class<? extends A> assetClass) throws AssetFileInstantationException {
-		return assetLocator.obtainAsset(assetClass, this, assetFileOrDir);
+		return assetLocator.obtainAsset(assetClass, assetFileOrDir);
 	}
 	
 	@Override
@@ -202,7 +203,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 		}
 		else {
 			IOFileFilter assetFileFilter = FileFilterUtils.and(FileFileFilter.FILE, fileFilter);
-			assets = assetLocator.obtainMatchingAssets(assetClass, this, root().getFileIterator(dir).files(assetFileFilter));
+			assets = assetLocator.obtainMatchingAssets(assetClass, root().getFileIterator(dir).files(assetFileFilter));
 		}
 		
 		return assets;

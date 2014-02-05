@@ -8,9 +8,6 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.apache.commons.io.filefilter.FileFileFilter;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.console.ConsoleWriter;
@@ -67,8 +64,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> logs = new NodeItem<>(DirNode.class, "sdk/log");
 	private final NodeItem<DirNode> apiDocs = new NodeItem<>(DirNode.class, "sdk/docs/jsdoc");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(DirNode.class, "sdk/test-results");
-	
-	private AssetLocationUtility assetLocator = new AssetLocationUtility();
 	
 	private final Logger logger;
 	private final CommandList commandList;
@@ -352,23 +347,4 @@ public class BRJS extends AbstractBRJSRootNode
 	public FileModificationInfo getModificationInfo(File file) {
 		return fileModificationService.getModificationInfo(file);
 	}
-	
-	public <AF extends Asset> List<AF> obtainMatchingAssets(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, IOFileFilter fileFilter) throws AssetFileInstantationException
-	{
-		File dir = assetLocation.dir();
-		List<AF> files = null;
-		
-		IOFileFilter assetFileFilter = FileFilterUtils.and( FileFileFilter.FILE, fileFilter );
-		
-		if (!dir.isDirectory()) {
-			files = new ArrayList<>();
-		}
-		else {
-			// TODO: none of the current spec tests check to ensure directories can't be matched
-			files = assetLocator.obtainMatchingAssets(assetFileClass, assetLocation, getFileIterator(dir).files(assetFileFilter));
-		}
-		
-		return files;
-	}
-	
 }
