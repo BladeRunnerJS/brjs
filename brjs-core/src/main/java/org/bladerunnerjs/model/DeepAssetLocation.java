@@ -2,86 +2,38 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public class DeepAssetLocation extends ShallowAssetLocation {
-	Map<File,AssetLocation> resourcesMap = new LinkedHashMap<File,AssetLocation>();
-	
 	public DeepAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 	}
-
+	
 	@Override
-	public List<LinkedAsset> seedResources()
-	{
-		List<LinkedAsset> assetFiles = new ArrayList<LinkedAsset>();
-		
-		for (AssetLocation assetLocation : getChildAssetLocations(dir()))
-		{
-			for(LinkedAsset linkedAsset : assetLocation.seedResources()) {
-				assetFiles.add(new DeepLinkedAsset(linkedAsset, this));
-			}
-		}
-		
-		return assetFiles;
+	public <A extends Asset> A obtainAsset(File assetFileOrDir, Class<? extends A> assetClass) throws AssetFileInstantationException {
+		// TODO: we will need some different logic once we start taking a logical assetPath, since we won't be preventing deep file paths
+		return super.obtainAsset(assetFileOrDir, assetClass);
 	}
 	
 	@Override
-	public List<Asset> bundleResources(String fileExtension) {
-		List<Asset> assetFiles = new ArrayList<>();
+	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
+		List<A> assets = new ArrayList<>();
 		
-		for(AssetLocation assetLocation : getChildAssetLocations(dir())) {
-			for(Asset asset : assetLocation.bundleResources(fileExtension)) {
-				assetFiles.add(new DeepAsset(asset, this));
-			}
+		if (dir.isDirectory()) {
+			addAllMatchingAssets(dir, assetFilter, assetClass, assets);
 		}
 		
-		return assetFiles;
+		return assets;
 	}
 	
-	private List<AssetLocation> getChildAssetLocations(File findInDir)
-	{
-		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
-		assetLocations.add( getCachedAssetLocationForDir(dir()) );
-		getChildAssetLocations(assetLocations, findInDir);
-		return assetLocations;
-	}
-	
-	private void getChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
-	{
-		if (!findInDir.isDirectory())
-		{
-			return;
-		}
+	private <A extends Asset> void addAllMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
+		addMatchingAssets(dir, assetFilter, assetClass, assets);
 		
-		for (File childDir : root().getFileIterator(findInDir).files())
-		{
-			if (childDir.isDirectory() && childDir != dir())
-			{
-				AssetLocation assetLocationForDir = getCachedAssetLocationForDir(childDir);
-    			assetLocations.add(assetLocationForDir);
-    			
-    			getChildAssetLocations(assetLocations, childDir);
-			}
+		for(File file : root().getFileIterator(dir).dirs()) {
+			addAllMatchingAssets(file, assetFilter, assetClass, assets);
 		}
-		
-		return;
 	}
-
-	private AssetLocation getCachedAssetLocationForDir(File childDir)
-	{
-		AssetLocation assetLocationForDir = resourcesMap.get(childDir);
-		if (assetLocationForDir == null)
-		{
-			assetLocationForDir = new PrivateAssetLocation(getAssetContainer().root(), getAssetContainer(), childDir);
-			resourcesMap.put(childDir, assetLocationForDir);
-		}
-		return assetLocationForDir;
-	}
-	
 }

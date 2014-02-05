@@ -190,18 +190,19 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
 		List<A> assets = new ArrayList<>();
 		
-		if (!dir.isDirectory()) {
-			assets = new ArrayList<>();
-		}
-		else {
-			for(File file : root().getFileIterator(dir).files()) {
-				if(!file.isDirectory() && assetFilter.accept(file.getName())) {
-					assets.add(assetLocator.obtainAsset(assetClass, file));
-				}
-			}
+		if(dir.isDirectory()) {
+			addMatchingAssets(dir, assetFilter, assetClass, assets);
 		}
 		
 		return assets;
+	}
+	
+	protected <A extends Asset> void addMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
+		for(File file : root().getFileIterator(dir).files()) {
+			if(!file.isDirectory() && assetFilter.accept(file.getName())) {
+				assets.add(assetLocator.obtainAsset(assetClass, file));
+			}
+		}
 	}
 	
 	private String canonicaliseRequirePath(String requirePrefix, String requirePath) throws RequirePathException
