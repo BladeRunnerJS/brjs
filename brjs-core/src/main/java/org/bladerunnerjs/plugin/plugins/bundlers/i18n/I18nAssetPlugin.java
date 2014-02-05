@@ -40,7 +40,7 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 	public List<Asset> getAssets(AssetLocation assetLocation)
 	{
 		try {
-			return assetLocation.getAssetContainer().root().createAssetFiles(I18nAssetFile.class, assetLocation, i18nPropertiesFileFilter);
+			return assetLocation.getAssetContainer().root().obtainMatchingAssets(I18nAssetFile.class, assetLocation, i18nPropertiesFileFilter);
 		}
 		catch (AssetFileInstantationException e) {
 			throw new RuntimeException(e);

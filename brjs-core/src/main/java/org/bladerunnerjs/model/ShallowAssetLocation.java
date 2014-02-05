@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.filefilter.FileFileFilter;
+import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.engine.Node;
@@ -22,9 +25,10 @@ import org.bladerunnerjs.utility.JsStyleUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
-	protected AssetContainer assetContainer;
+	protected final AssetContainer assetContainer;
 	private AliasDefinitionsFile aliasDefinitionsFile;
-	private Map<String, SourceModule> sourceModules = new HashMap<>();
+	private final Map<String, SourceModule> sourceModules = new HashMap<>();
+	private final AssetLocationUtility assetLocator = new AssetLocationUtility();
 	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
@@ -182,6 +186,26 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException {
 		// do nothing
+	}
+	
+	@Override
+	public <A extends Asset> A obtainAsset(File assetFileOrDir, Class<? extends A> assetClass) throws AssetFileInstantationException {
+		return assetLocator.obtainAsset(assetClass, this, assetFileOrDir);
+	}
+	
+	@Override
+	public <A extends Asset> List<A> obtainMatchingAssets(IOFileFilter fileFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
+		List<A> assets = new ArrayList<>();
+		
+		if (!dir.isDirectory()) {
+			assets = new ArrayList<>();
+		}
+		else {
+			IOFileFilter assetFileFilter = FileFilterUtils.and(FileFileFilter.FILE, fileFilter);
+			assets = assetLocator.obtainMatchingAssets(assetClass, this, root().getFileIterator(dir).files(assetFileFilter));
+		}
+		
+		return assets;
 	}
 	
 	private String canonicaliseRequirePath(String requirePrefix, String requirePath) throws RequirePathException

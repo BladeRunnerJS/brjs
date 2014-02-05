@@ -14,7 +14,7 @@ public class AssetLocationUtility
 	private final Map<String, Asset> assetFiles = new HashMap<>();
 	
 	@SuppressWarnings("unchecked")
-	public <A extends Asset> A createAssetFile(Class<? extends A> assetFileClass, AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
+	public <A extends Asset> A obtainAsset(Class<? extends A> assetFileClass, AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
 		String absolutePath = assetFile.getAbsolutePath();
 		A asset;
 		
@@ -30,13 +30,13 @@ public class AssetLocationUtility
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <A extends Asset> List<A> createAssetFiles(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, Collection<File> assetFiles) throws AssetFileInstantationException
+	public <A extends Asset> List<A> obtainMatchingAssets(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, Collection<File> assetFiles) throws AssetFileInstantationException
 	{
 		List<A> assets = new LinkedList<A>();		
 		
 		for (File file : assetFiles)
 		{
-			assets.add( (A) createAssetFile(assetFileClass, assetLocation, file) );
+			assets.add( (A) obtainAsset(assetFileClass, assetLocation, file) );
 		}
 		
 		return assets;

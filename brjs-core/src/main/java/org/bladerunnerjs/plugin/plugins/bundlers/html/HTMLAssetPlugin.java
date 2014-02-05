@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.html;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetFileInstantationException;
@@ -35,7 +36,7 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 				assets = new ArrayList<>();
 			}
 			else {
-				assets = assetContainer.root().createAssetFilesWithExtension(FullyQualifiedLinkedAsset.class, assetLocation, "html");
+				assets = assetLocation.obtainMatchingAssets(new SuffixFileFilter("html"), LinkedAsset.class, FullyQualifiedLinkedAsset.class);
 			}
 		}
 		catch (AssetFileInstantationException e) {

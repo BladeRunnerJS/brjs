@@ -17,7 +17,7 @@ public class IndexPageSeedFileLocator {
 			File indexFile = getIndexFile(viewableBundlableNode);
 			
 			if(indexFile != null) {
-				LinkedAsset indexFileAsset = viewableBundlableNode.root().createAssetFile(FullyQualifiedLinkedAsset.class, viewableBundlableNode.assetLocation("resources"), indexFile);
+				LinkedAsset indexFileAsset = viewableBundlableNode.assetLocation("resources").obtainAsset(indexFile, FullyQualifiedLinkedAsset.class);
 				
 				seedFiles.add(indexFileAsset);
 			}

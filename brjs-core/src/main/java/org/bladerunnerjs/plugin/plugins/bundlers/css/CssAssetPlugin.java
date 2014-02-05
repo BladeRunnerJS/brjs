@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -15,11 +16,10 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 public class CssAssetPlugin extends AbstractAssetPlugin {
 	private final List<SourceModule> emptySourceModules = new ArrayList<>();
 	private final List<LinkedAsset> emptyLinkedAssets = new ArrayList<>();
-	private BRJS brjs;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
+		// do nothing
 	}
 	
 	@Override
@@ -35,7 +35,7 @@ public class CssAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<Asset> getAssets(AssetLocation assetLocation) {
 		try {
-			return brjs.createAssetFilesWithExtension(FileAsset.class, assetLocation, "css");
+			return assetLocation.obtainMatchingAssets(new SuffixFileFilter("css"), Asset.class, FileAsset.class);
 		}
 		catch (AssetFileInstantationException e) {
 			throw new RuntimeException(e);

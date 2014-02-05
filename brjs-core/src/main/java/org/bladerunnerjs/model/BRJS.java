@@ -11,8 +11,6 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.NameFileFilter;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.console.ConsoleWriter;
@@ -355,22 +353,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return fileModificationService.getModificationInfo(file);
 	}
 	
-	public <AF extends Asset> AF createAssetFile(Class<? extends AF> assetFileClass, AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException
-	{
-		return assetLocator.createAssetFile(assetFileClass, assetLocation, assetFile);
-	}
-	
-	public <AF extends Asset> List<AF> createAssetFilesWithExtension(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... extensions) throws AssetFileInstantationException
-	{
-		return createAssetFiles(assetFileClass, assetLocation, new SuffixFileFilter(extensions));
-	}
-	
-	public <AF extends Asset> List<AF> createAssetFilesWithName(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, String... fileNames) throws AssetFileInstantationException
-	{
-		return createAssetFiles(assetFileClass, assetLocation, new NameFileFilter(fileNames));
-	}
-	
-	public <AF extends Asset> List<AF> createAssetFiles(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, IOFileFilter fileFilter) throws AssetFileInstantationException
+	public <AF extends Asset> List<AF> obtainMatchingAssets(Class<? extends Asset> assetFileClass, AssetLocation assetLocation, IOFileFilter fileFilter) throws AssetFileInstantationException
 	{
 		File dir = assetLocation.dir();
 		List<AF> files = null;
@@ -382,7 +365,7 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		else {
 			// TODO: none of the current spec tests check to ensure directories can't be matched
-			files = assetLocator.createAssetFiles(assetFileClass, assetLocation, getFileIterator(dir).files(assetFileFilter));
+			files = assetLocator.obtainMatchingAssets(assetFileClass, assetLocation, getFileIterator(dir).files(assetFileFilter));
 		}
 		
 		return files;
