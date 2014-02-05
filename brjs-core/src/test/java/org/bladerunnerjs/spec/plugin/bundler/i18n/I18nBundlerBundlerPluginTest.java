@@ -4,7 +4,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -26,6 +25,7 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 	}
 	
 	
+	
 	@Test
 	public void requestForI18nWithoutAnyAssetsReturnsEmptyResponse() throws Exception 
 	{
@@ -36,7 +36,6 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 		then(response).textEquals("{\n};");
 	}
 	
-	@Ignore
 	@Test
 	public void i18nFilesForTheGivenLocaleInAspectResourcesAreBundled() throws Exception 
 	{
@@ -51,7 +50,6 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 				"};");
 	}
 	
-	@Ignore
 	@Test
 	public void i18nFilesForOtherLocalesInAspectResourcesAreIgnored() throws Exception 
 	{
@@ -67,7 +65,6 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 				"};");
 	}
 	
-	@Ignore
 	@Test
 	public void requestsForALocaleCanContainTheLanguageOnly() throws Exception 
 	{
@@ -82,7 +79,6 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 				"};");
 	}
 	
-	@Ignore
 	@Test
 	public void requestsForALanguageDoesntIncludeLocationSpecificProperties() throws Exception 
 	{
@@ -98,7 +94,6 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 				"};");
 	}
 	
-	@Ignore
 	@Test
 	public void locationSpecificPropertiesAreAddedToLanguageValues() throws Exception 
 	{
@@ -115,7 +110,6 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 				"};");
 	}
 
-	@Ignore
 	@Test
 	public void locationSpecificPropertiesOverrideLanguageProperties() throws Exception 
 	{
