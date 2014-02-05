@@ -104,10 +104,7 @@ public class BladerunnerUri
 	
 	/**
 	 * This is method should only be used for testing. DO NOT use this in plugin code, use a different constructor instead.
-	 * 
-	 * @Deprecated - marked as deprecated to trigger a compiler warning if it's used
 	 */
-	@Deprecated
 	public BladerunnerUri(BRJS brjs, File contextRoot, String contextPath, String requestPath, String queryString) throws MalformedRequestException
 	{
 		this.brjs = brjs;

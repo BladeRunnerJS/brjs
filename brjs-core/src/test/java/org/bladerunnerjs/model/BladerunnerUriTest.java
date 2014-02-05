@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@SuppressWarnings("deprecation")
 public class BladerunnerUriTest
 {
 	private BRJS brjs;

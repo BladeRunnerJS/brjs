@@ -76,8 +76,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 	/**
 	 * Returns *all* of the asset containers in the model. 
 	 * This is different to BundleableNode.getAssetContainers which returns only the valid AssetContainers for a given BundleableNode.
-	 * 
-	 * @return
 	 */
 	public List<AssetContainer> getAllAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
