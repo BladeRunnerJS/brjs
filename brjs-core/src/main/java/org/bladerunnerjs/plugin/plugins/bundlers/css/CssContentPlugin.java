@@ -139,6 +139,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		try {
 			CssRewriter processor = new CssRewriter(cssAsset);
 			writer.append(processor.getFileContents());
+			writer.write("\n");
 		}
 		catch (IOException e) {
 			throw new BundlerFileProcessingException(cssAsset.getUnderlyingFile(), e, "Error while bundling file.");
