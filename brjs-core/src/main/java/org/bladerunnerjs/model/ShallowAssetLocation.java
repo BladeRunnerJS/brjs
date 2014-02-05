@@ -9,9 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.filefilter.FileFileFilter;
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.engine.Node;
@@ -195,15 +192,18 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	}
 	
 	@Override
-	public <A extends Asset> List<A> obtainMatchingAssets(IOFileFilter fileFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
+	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
 		List<A> assets = new ArrayList<>();
 		
 		if (!dir.isDirectory()) {
 			assets = new ArrayList<>();
 		}
 		else {
-			IOFileFilter assetFileFilter = FileFilterUtils.and(FileFileFilter.FILE, fileFilter);
-			assets = assetLocator.obtainMatchingAssets(assetClass, root().getFileIterator(dir).files(assetFileFilter));
+			for(File file : root().getFileIterator(dir).files()) {
+				if(!file.isDirectory() && assetFilter.accept(file.getName())) {
+					assets.add(assetLocator.obtainAsset(assetClass, file));
+				}
+			}
 		}
 		
 		return assets;

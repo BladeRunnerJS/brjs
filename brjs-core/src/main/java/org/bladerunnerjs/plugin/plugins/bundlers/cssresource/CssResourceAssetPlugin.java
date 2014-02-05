@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -12,6 +11,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FileAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.SuffixAssetFilter;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class CssResourceAssetPlugin extends AbstractAssetPlugin {
@@ -40,7 +40,7 @@ public class CssResourceAssetPlugin extends AbstractAssetPlugin {
 		
 		try {
 			for(String resourceExtension : resourceExtensions) {
-				assets.addAll(assetLocation.obtainMatchingAssets(new SuffixFileFilter(resourceExtension), Asset.class, FileAsset.class));
+				assets.addAll(assetLocation.obtainMatchingAssets(new SuffixAssetFilter(resourceExtension), Asset.class, FileAsset.class));
 			}
 		}
 		catch (AssetFileInstantationException e) {

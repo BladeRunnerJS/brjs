@@ -2,10 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 
@@ -32,19 +29,6 @@ public class AssetLocationUtility
 		}
 		
 		return asset;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public <A extends Asset> List<A> obtainMatchingAssets(Class<? extends Asset> assetFileClass, Collection<File> assetFiles) throws AssetFileInstantationException
-	{
-		List<A> assets = new LinkedList<A>();		
-		
-		for (File file : assetFiles)
-		{
-			assets.add( (A) obtainAsset(assetFileClass, file) );
-		}
-		
-		return assets;
 	}
 	
 	@SuppressWarnings("unchecked")

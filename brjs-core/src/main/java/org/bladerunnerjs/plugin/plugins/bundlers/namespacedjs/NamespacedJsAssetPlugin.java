@@ -3,13 +3,13 @@ package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.SuffixAssetFilter;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
@@ -22,7 +22,7 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		try {
 			if (assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE)) {
-				return assetLocation.obtainMatchingAssets(new SuffixFileFilter("js"), SourceModule.class, NamespacedJsSourceModule.class);
+				return assetLocation.obtainMatchingAssets(new SuffixAssetFilter("js"), SourceModule.class, NamespacedJsSourceModule.class);
 			}
 			else {
 				return new ArrayList<>();

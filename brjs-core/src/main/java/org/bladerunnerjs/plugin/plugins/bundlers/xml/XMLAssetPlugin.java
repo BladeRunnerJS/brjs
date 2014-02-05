@@ -3,13 +3,10 @@ package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.FileFilterUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.NameFileFilter;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetFileInstantationException;
+import org.bladerunnerjs.model.AssetFilter;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
@@ -19,9 +16,7 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class XMLAssetPlugin extends AbstractAssetPlugin {
-	
-	private IOFileFilter notAliasFileFilter = FileFilterUtils.notFileFilter( new NameFileFilter("aliases.xml" ) );
-	private IOFileFilter xmlFilesFilter = FileFilterUtils.and( notAliasFileFilter, new SuffixFileFilter(".xml") );
+	private AssetFilter xmlFilesFilter = new XMLAssetFilter();
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
@@ -58,5 +53,12 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<Asset> getAssets(AssetLocation assetLocation) {
 		return new ArrayList<>();
+	}
+	
+	private class XMLAssetFilter implements AssetFilter {
+		@Override
+		public boolean accept(String assetName) {
+			return (assetName.endsWith(".xml") && !assetName.equals("aliases.xml"));
+		}
 	}
 }

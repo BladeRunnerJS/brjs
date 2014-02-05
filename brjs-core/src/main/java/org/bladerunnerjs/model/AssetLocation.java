@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.exception.RequirePathException;
 
@@ -25,5 +24,5 @@ public interface AssetLocation extends BRJSNode {
 	AssetContainer getAssetContainer();
 	List<AssetLocation> getDependentAssetLocations();
 	<A extends Asset> A obtainAsset(File assetFileOrDir, Class<? extends A> assetClass) throws AssetFileInstantationException;
-	<A extends Asset> List<A> obtainMatchingAssets(IOFileFilter fileFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException;
+	<A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException;
 }
