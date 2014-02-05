@@ -4,14 +4,15 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Test;
 
 
 public class I18nBundlerTagHandlerPluginTest extends SpecTest
 {
 
 	private App app;
+	@SuppressWarnings("unused")
 	private Aspect aspect;
+	@SuppressWarnings("unused")
 	private StringBuffer response = new StringBuffer();
 	
 	@Before

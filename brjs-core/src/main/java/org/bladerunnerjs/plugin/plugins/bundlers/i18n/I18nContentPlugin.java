@@ -91,7 +91,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
 	{
-		for (String locale : locales)
+		for (@SuppressWarnings("unused") String locale : locales)
 		{
 			
 		}

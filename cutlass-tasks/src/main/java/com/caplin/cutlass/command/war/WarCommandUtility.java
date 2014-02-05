@@ -116,10 +116,10 @@ public class WarCommandUtility
 			{
 				File targetFile = new File(temporaryDirectoryForWarCreation, applicationAspect.getName() + File.separator + validBundlerRequest);
 				targetFile.getParentFile().mkdirs();
-				OutputStream outputStream = this.createBundleSpecificOutputStream(validBundlerRequest, targetFile);
 				
-				bundler.writeBundle(sourceFilesForBundling, outputStream);
-				outputStream.close();
+				try(OutputStream outputStream = this.createBundleSpecificOutputStream(validBundlerRequest, targetFile)) {
+					bundler.writeBundle(sourceFilesForBundling, outputStream);
+				}
 			}
 		}
 	}
@@ -157,8 +157,13 @@ public class WarCommandUtility
 	
 	private OutputStream createBundleSpecificOutputStream(String validBundlerRequest, File targetFile) throws IOException
 	{
-		OutputStream fileStream = new BufferedOutputStream(new FileOutputStream(targetFile));
-		return (validBundlerRequest.endsWith("image.bundle")) ? fileStream : new GZIPOutputStream(fileStream);
+		OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(targetFile));
+		
+		if(!validBundlerRequest.endsWith("image.bundle")) {
+			outputStream = new GZIPOutputStream(outputStream);
+		}
+		
+		return outputStream;
 	}
 	
 	private LegacyFileBundlerPlugin createJsBundler() throws CommandArgumentsException
