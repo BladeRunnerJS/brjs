@@ -4,7 +4,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
