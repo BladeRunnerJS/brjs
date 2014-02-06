@@ -117,5 +117,13 @@ public class HTMLContentPluginTest extends SpecTest
 		then(exceptions).verifyException(NamespaceException.class, "<div>", "appns.bs.b1.*");
 	}
 	
+	@Test
+	public void enforcedNamespacesAreCalculatedUsingTheAssetLocation() throws Exception {
+		given(blade).containsFileWithContents("src/appns/bs/b1/some/pkg/view.html", "<div id='appns.bs.badnamespace.view'>TESTCONTENT</div>")
+			.and(blade).hasClass("appns.bs.b1.some.pkg.Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.some.pkg.Class1");
+		when(app).requestReceived("/default-aspect/bundle.html", response);
+		then(exceptions).verifyException(NamespaceException.class, "appns.bs.badnamespace.view", "appns.bs.b1.some.pkg.*");
+	}
 	
 }
