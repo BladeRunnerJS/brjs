@@ -104,9 +104,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	{
 		StartTag startTag = getStartTag(htmlAsset);
 		
-		//TODO call getNamespace() utility function directlry when it is implemented
-		String requirePrefix = htmlAsset.getAssetLocation().getAssetContainer().requirePrefix();
-		String namespace = requirePrefix.replaceAll("/", ".");
+		String namespace = htmlAsset.getAssetLocation().getNamespace();
 		String identifier = startTag.getAttributeValue("id");
 		
 		if(identifier == null)
