@@ -53,10 +53,12 @@ public class CssBundlerPluginTest extends SpecTest {
 	public void cssFilesInNonConformantLibrariesAppearInTheCommonTheme() throws Exception {
 		given(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: style.css")
-			.and(nonConformantLib).containsFile("style.css");
+			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: style1.css")
+			.and(nonConformantLib).containsFile("style1.css")
+			.and(nonConformantLib).containsFile("style2.css");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("style.css");
+		then(requestResponse).containsText("style1.css")
+			.and(requestResponse).doesNotContainText("style2.css");
 	}
 	
 	@Test
