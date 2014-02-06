@@ -48,7 +48,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	}
 	
 	@Override
-	public void initialize(AssetLocation assetLocation, File dir)
+	public void initialize(AssetLocation assetLocation, File dir, String assetName)
 	{
 		this.assetLocation = assetLocation;
 		this.dir = dir;

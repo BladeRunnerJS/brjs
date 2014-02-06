@@ -9,7 +9,7 @@ import java.io.Reader;
  *
  */
 public interface Asset {
-	void initialize(AssetLocation assetLocation, File assetFileOrDir) throws AssetFileInstantationException;
+	void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException;
 	Reader getReader() throws FileNotFoundException;
 	AssetLocation getAssetLocation();
 	File dir();

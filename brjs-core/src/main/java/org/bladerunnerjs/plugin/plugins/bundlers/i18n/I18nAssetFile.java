@@ -29,11 +29,11 @@ public class I18nAssetFile implements Asset
 	private String assetPath;
 
 	@Override
-	public void initialize(AssetLocation assetLocation, File assetFileOrDir) throws AssetFileInstantationException
+	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
 	{
 		this.assetLocation = assetLocation;
-		this.assetFile = assetFileOrDir;
-		assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFileOrDir);
+		this.assetFile = new File(dir, assetName);
+		assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
 	}
 
 	@Override

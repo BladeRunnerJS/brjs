@@ -42,11 +42,11 @@ public class NodeJsSourceModule implements SourceModule {
 	private String assetPath;
 	
 	@Override
-	public void initialize(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException
+	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
 	{
 		try {
 			this.assetLocation = assetLocation;
-			this.assetFile = assetFile;
+			this.assetFile = new File(dir, assetName);
 			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
