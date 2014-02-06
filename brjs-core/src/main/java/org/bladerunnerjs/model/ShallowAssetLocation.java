@@ -182,7 +182,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	}
 	
 	@Override
-	public <A extends Asset> A obtainAsset(File assetFileOrDir, Class<? extends A> assetClass) throws AssetFileInstantationException {
+	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File assetFileOrDir) throws AssetFileInstantationException {
 		return assetLocator.obtainAsset(assetClass, assetFileOrDir);
 	}
 	
@@ -200,7 +200,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	protected <A extends Asset> void addMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
 		for(File file : root().getFileIterator(dir).files()) {
 			if(!file.isDirectory() && assetFilter.accept(file.getName())) {
-				assets.add(assetLocator.obtainAsset(assetClass, file));
+				assets.add(obtainAsset(assetClass, file));
 			}
 		}
 	}

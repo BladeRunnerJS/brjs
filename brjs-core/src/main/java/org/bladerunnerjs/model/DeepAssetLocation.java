@@ -13,9 +13,9 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	}
 	
 	@Override
-	public <A extends Asset> A obtainAsset(File assetFileOrDir, Class<? extends A> assetClass) throws AssetFileInstantationException {
+	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File assetFileOrDir) throws AssetFileInstantationException {
 		// TODO: we will need some different logic once we start taking a logical assetPath, since we won't be preventing deep file paths
-		return super.obtainAsset(assetFileOrDir, assetClass);
+		return super.obtainAsset(assetClass, assetFileOrDir);
 	}
 	
 	@Override
@@ -32,8 +32,8 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	private <A extends Asset> void addAllMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
 		addMatchingAssets(dir, assetFilter, assetClass, assets);
 		
-		for(File file : root().getFileIterator(dir).dirs()) {
-			addAllMatchingAssets(file, assetFilter, assetClass, assets);
+		for(File childDir : root().getFileIterator(dir).dirs()) {
+			addAllMatchingAssets(childDir, assetFilter, assetClass, assets);
 		}
 	}
 }

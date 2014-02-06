@@ -23,6 +23,6 @@ public interface AssetLocation extends BRJSNode {
 	List<Asset> bundleResources(String fileExtension);
 	AssetContainer getAssetContainer();
 	List<AssetLocation> getDependentAssetLocations();
-	<A extends Asset> A obtainAsset(File assetFileOrDir, Class<? extends A> assetClass) throws AssetFileInstantationException;
+	<A extends Asset> A obtainAsset(Class<? extends A> assetClass, File assetFileOrDir) throws AssetFileInstantationException;
 	<A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException;
 }
