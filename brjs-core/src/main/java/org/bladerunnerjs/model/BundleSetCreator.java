@@ -48,7 +48,7 @@ public class BundleSetCreator {
 		List<String> seedFilePaths = new ArrayList<>();
 		
 		for(Asset seedFile : seedFiles) {
-			seedFilePaths.add(RelativePathUtility.get(bundlableNode.dir(), seedFile.getUnderlyingFile()));
+			seedFilePaths.add(seedFile.getAssetPath());
 		}
 		
 		return "'" + Joiner.on("', '").join(seedFilePaths) + "'";

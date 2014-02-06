@@ -39,6 +39,7 @@ public class NodeJsSourceModule implements SourceModule {
 	private FileModifiedChecker fileModifiedChecker;
 	private String requirePath;
 	private String className;
+	private String assetPath;
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException
@@ -46,6 +47,7 @@ public class NodeJsSourceModule implements SourceModule {
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = assetFile;
+			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
 			fileModifiedChecker = new FileModifiedChecker(assetFile);
@@ -120,8 +122,8 @@ public class NodeJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public File getUnderlyingFile() {
-		return assetFile;
+	public File dir() {
+		return assetFile.getParentFile();
 	}
 	
 	@Override
@@ -131,7 +133,7 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	@Override
 	public String getAssetPath() {
-		return assetFile.getPath();
+		return assetPath;
 	}
 	
 	private void recalculateDependencies() throws ModelOperationException {

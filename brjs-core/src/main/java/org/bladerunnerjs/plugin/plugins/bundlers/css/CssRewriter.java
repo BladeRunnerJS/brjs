@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 
 public class CssRewriter {
@@ -25,7 +24,7 @@ public class CssRewriter {
 		targetPathCreator = new TargetPathCreator(cssAsset.getAssetLocation().root());
 	}
 	
-	public String getFileContents() throws IOException, BundlerFileProcessingException {
+	public String getFileContents() throws IOException, BundlerProcessingException {
 		try {
 			String unprocessedCss = "";
 			
@@ -33,14 +32,14 @@ public class CssRewriter {
 				unprocessedCss = IOUtils.toString(fileReader);
 			}
 			
-			return rewriteCss(cssAsset.getUnderlyingFile().getParentFile(), unprocessedCss);
+			return rewriteCss(cssAsset.dir(), unprocessedCss);
 		}
 		catch (CssImageReferenceException cssImageReferenceException) {
-			cssImageReferenceException.setCssFileContainingImageReference(cssAsset.getUnderlyingFile().getAbsolutePath());
+			cssImageReferenceException.setCssFileContainingImageReference(cssAsset.getAssetPath());
 			throw cssImageReferenceException;
 		}
 		catch (Exception e) {
-			throw new BundlerFileProcessingException(cssAsset.getUnderlyingFile(), e, "Error while bundling file.");
+			throw new BundlerProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
 		}
 	}
 	

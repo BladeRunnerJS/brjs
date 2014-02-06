@@ -1,6 +1,5 @@
 package org.bladerunnerjs.utility;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -98,24 +97,12 @@ public class BundleSetBuilder {
 	    		}
 			}
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
-			 
-			File linkedAssetFile = linkedAsset.getUnderlyingFile();
-			File assetLocationDir = linkedAsset.getAssetLocation().getAssetContainer().dir();
-			String linkedAssetRelativePath = "";
-			if (linkedAssetFile.getAbsolutePath().equals( assetLocationDir.getAbsolutePath()))
-			{
-				linkedAssetRelativePath = RelativePathUtility.get(linkedAsset.getAssetLocation().root().dir(), linkedAssetFile);
-			}
-			else
-			{
-				linkedAssetRelativePath = RelativePathUtility.get(assetLocationDir, linkedAssetFile);				
-			}
 			
 			if(moduleDependencies.isEmpty()) {
-				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAssetRelativePath);
+				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
 			}
 			else {
-				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAssetRelativePath, sourceFilePaths(moduleDependencies));
+				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), sourceFilePaths(moduleDependencies));
 			}
 			
 			for(SourceModule sourceModule : moduleDependencies) {
@@ -199,16 +186,7 @@ public class BundleSetBuilder {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
 		for(SourceModule sourceModule : sourceModules) {
-			File assetContainerDir = sourceModule.getAssetLocation().getAssetContainer().dir();
-			File sourceModuleFile = sourceModule.getUnderlyingFile();
-			if (assetContainerDir.getAbsolutePath().equals( sourceModuleFile.getAbsolutePath() ))
-			{
-				sourceFilePaths.add( RelativePathUtility.get(sourceModule.getAssetLocation().root().dir(), sourceModuleFile) );
-			}
-			else
-			{
-				sourceFilePaths.add( RelativePathUtility.get(assetContainerDir, sourceModuleFile) );
-			}
+			sourceFilePaths.add(sourceModule.getAssetPath());
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";

@@ -52,7 +52,6 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 		return assetContainer.namespace();
 	}
 	
-	
 	// TODO: this is the first time that we have a plug-in created asset-location producing more asset-locations dynamically, and there is currently no mechanism to help
 	// with the caching issues within the model
 	private void recalcuateDependencies() {
