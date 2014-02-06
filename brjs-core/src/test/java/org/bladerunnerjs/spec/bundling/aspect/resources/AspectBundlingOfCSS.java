@@ -4,10 +4,10 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AspectBundlingOfCSS extends SpecTest {
@@ -34,38 +34,33 @@ public class AspectBundlingOfCSS extends SpecTest {
 			standardBladeTheme = blade.theme("standard");
 	}
 		
-	// TODO enable when we work on CSS Bundler
 	// Aspect
-	@Ignore 
  	@Test
  	public void aspectCssFilesAreBundled() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle()
-			.and(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content");
- 		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
+		given(aspect).hasClass("appns.Class1")
+			.and(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+ 		when(app).requestReceived("/default-aspect/css/standard/bundle.css", response);
  		then(response).containsText("ASPECT theme content");
  	}
 	
 	// Bladeset
-	@Ignore 
  	@Test
  	public void bladesetCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle()
-			.and(bladeset).hasClass("appns.bs.Class1")
+		given(bladeset).hasClass("appns.bs.Class1")
 			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
- 		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
+ 		when(app).requestReceived("/default-aspect/css/standard/bundle.css", response);
  		then(response).containsText("BLADESET theme content");
  	}
 	
 	// Blade
-	@Ignore
 	@Test
  	public void bladeCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle()
-			.and(blade).hasClass("appns.bs.b1.Class1")
+		given(blade).hasClass("appns.bs.b1.Class1")
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
- 		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
+ 		when(app).requestReceived("/default-aspect/css/standard/bundle.css", response);
  		then(response).containsText("BLADE theme content");
  	}
 }

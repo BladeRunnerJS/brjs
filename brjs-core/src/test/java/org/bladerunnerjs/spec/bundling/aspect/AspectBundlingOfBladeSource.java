@@ -173,11 +173,12 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
-	// TODO This test should fail
+	// TODO this test should fail, blades can't have dependencies on other blades
 	@Ignore
 	@Test
 	public void bladesReferencedByOtherBladesDoNotGetBundled() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
+			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(bladeWithSubstringOfAnotherBlade).classRefersTo("appns.bs.b1b.Class1", "appns.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1b.Class1");
