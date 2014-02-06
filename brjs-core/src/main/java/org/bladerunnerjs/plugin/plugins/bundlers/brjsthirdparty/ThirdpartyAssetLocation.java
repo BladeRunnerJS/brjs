@@ -38,13 +38,13 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 		
 		try {
 			// TODO: this makes no sense as assets are still dependent on an associated file, whereas they shouldn't be
-			if(assetFilter.accept("lib.js") && !manifest.getJs().isEmpty()) {
-				assets.add(obtainAsset(assetClass, dir()));
+			if(assetFilter.accept("library.js") && !manifest.getJs().isEmpty()) {
+				assets.add(obtainAsset(assetClass, dir(), "library.js"));
 			}
 			
 			for(String cssAssetName : manifest.getCss()) {
 				if(assetFilter.accept(cssAssetName)) {
-					assets.add(obtainAsset(assetClass, file(cssAssetName)));
+					assets.add(obtainAsset(assetClass, dir(), cssAssetName));
 				}
 			}
 		}
