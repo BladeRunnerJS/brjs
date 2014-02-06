@@ -217,7 +217,7 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
     		.and(aspect).containsEmptyFile("index.html")
     		.and(aspect).containsFileWithContents("resources/en_GB.properties", "some.property=property value");
     	when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
-    	then(exceptions).verifyException(NamespaceException.class, "some.property", aspect.file("resources/en_GB.properties").getPath(), "appns");
+    	then(exceptions).verifyException(NamespaceException.class, "some.property", "default-aspect/resources/en_GB.properties", "appns");
 	}
 	
 }
