@@ -1,4 +1,4 @@
-<script id="workbench-event-logger" type="text/html">
+<script id="br.workbench-event-logger" type="text/html">
 <div>
 	<button class="btn" data-bind="click:clear">Clear Log</button>
 	<div class="messagelog" data-bind="template:{name:'workbench-event-message', foreach:messages}"></div>
@@ -6,7 +6,7 @@
 </script>
 
 
-<script id="workbench-event-message" type="text/html">
+<script id="br.workbench-event-message" type="text/html">
 <div>	
 	<div data-bind="css: {'expanded': visible}">
 		<div class="plus-minus">
@@ -19,7 +19,7 @@
 </script>
 
 
-<script id="workbench-event-data" type="text/html">
+<script id="br.workbench-event-data" type="text/html">
 <div class="event-message">
   <span data-bind="text:label"></span>:<span data-bind="text:value"></span>
 </div>

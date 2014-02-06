@@ -1,16 +1,16 @@
-<div id="quickform" class="workbench-data-editor">
+<div id="br.quickform" class="workbench-data-editor">
    	<div class="quick-form" data-bind="template:{name:'quickform-field', foreach:fields}"></div>
 	<div data-bind="template:{name:'quickform-button', foreach:buttons}"></div>
 </div>
 
-<div id="quickform-field">
+<div id="br.quickform-field">
 	<dl>
 		<dt><label data-bind="text:label"></label></dt>
 		<dd><input type="text" data-bind="value:value"/></dd>
 	</dl>
 </div>
 
-<script id="quickform-button" type="text/html">
+<script id="br.quickform-button" type="text/html">
 	<button class="quickform-btn btn" data-bind="click:click, text:label, enable:enabled"></button>
 </script>
 
