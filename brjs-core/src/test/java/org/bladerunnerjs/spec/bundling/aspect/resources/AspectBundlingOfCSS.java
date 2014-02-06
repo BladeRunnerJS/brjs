@@ -58,6 +58,8 @@ public class AspectBundlingOfCSS extends SpecTest {
  	}
 	
 	// Blade
+	@Ignore
+	@Test
  	public void bladeCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
