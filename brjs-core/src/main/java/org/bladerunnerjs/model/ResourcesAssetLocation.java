@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 
@@ -44,6 +45,13 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 		
 		return themeAssetLocations.get(themeName);
 	}
+	
+	@Override
+	public String getNamespace() throws RequirePathException
+	{
+		return assetContainer.namespace();
+	}
+	
 	
 	// TODO: this is the first time that we have a plug-in created asset-location producing more asset-locations dynamically, and there is currently no mechanism to help
 	// with the caching issues within the model

@@ -11,12 +11,18 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.exception.RequirePathException;
 
 public class I18nAssetFile implements Asset
 {
+	
+	class Messages {
+		public static final String PROPERTY_NAMESPACE_EXCEPTION = "i18n property '%s' in property file '%s' is invalid. It must start with the same namespace as it's container, '%s'.";
+	}
 	
 	public static final String I18N_REGEX = "([a-z]{2})(_([A-Z]{2}))?";
 	public static final String I18N_PROPERTIES_FILE_REGEX = I18N_REGEX+"\\.properties";
@@ -73,7 +79,7 @@ public class I18nAssetFile implements Asset
 		return getMatchedValueFromPropertiesPattern(3);
 	}
 
-	public Map<String,String> getLocaleProperties() throws IOException
+	public Map<String,String> getLocaleProperties() throws IOException, RequirePathException, NamespaceException
 	{
 		Map<String, String> propertiesMap = new HashMap<String,String>();
 		
@@ -82,6 +88,7 @@ public class I18nAssetFile implements Asset
 		
 		for (String property : i18nProperties.stringPropertyNames())
 		{
+			assertPropertyMatchesNamepsaceOfAssetLocation(property);
 			String value = i18nProperties.getProperty(property);
 			propertiesMap.put(property, value);
 		}
@@ -89,6 +96,15 @@ public class I18nAssetFile implements Asset
 		return propertiesMap;
 	}
 	
+	private void assertPropertyMatchesNamepsaceOfAssetLocation(String property) throws RequirePathException, NamespaceException
+	{
+		String propertyNamepsace = getAssetLocation().getNamespace();
+		if (!property.startsWith(propertyNamepsace+"."))
+		{
+			throw new NamespaceException( String.format(Messages.PROPERTY_NAMESPACE_EXCEPTION, property, this.getAssetPath(), propertyNamepsace) );
+		}
+	}
+
 	private String getMatchedValueFromPropertiesPattern(int groupNum)
 	{
 		Matcher m = i18nPropertiesPattern.matcher( getAssetName() );

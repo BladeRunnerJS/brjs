@@ -44,4 +44,11 @@ public class WorkbenchBuilder extends AssetContainerBuilder<Workbench>
 	{
 		return indexPageRefersTo(content);
 	}
+
+	public BuilderChainer indexPageRequires(String requirePath) throws Exception
+	{
+		FileUtils.write(workbench.file("index.html"), "require('"+requirePath+"');");
+		
+		return builderChainer;
+	}
 }

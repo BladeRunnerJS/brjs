@@ -10,10 +10,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.aliasing.NamespaceException;
+import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -125,7 +132,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			{
 				propertiesMap.putAll( i18nFile.getLocaleProperties() );
 			}
-			catch (IOException ex)
+			catch (IOException | RequirePathException | NamespaceException ex)
 			{
 				throw new BundlerProcessingException(ex, "Error getting locale properties from file");
 			}
@@ -159,19 +166,23 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		List<I18nAssetFile> languageOnlyAssets = new ArrayList<I18nAssetFile>();
 		List<I18nAssetFile> languageAndLocationAssets = new ArrayList<I18nAssetFile>();
 		
-		for (Asset asset : bundleSet.getResourceFiles("properties"))
+		List<Asset> propertyAssets = bundleSet.getResourceFiles("properties");
+		
+		List<I18nAssetFile> i18nAssets = new LinkedList<I18nAssetFile>();
+		i18nAssets.addAll( getI18nPropertiesInAssetContainer(propertyAssets, Blade.class) );
+		i18nAssets.addAll( getI18nPropertiesInAssetContainer(propertyAssets, Bladeset.class) );
+		i18nAssets.addAll( getI18nPropertiesInAssetContainer(propertyAssets, Aspect.class) );
+		i18nAssets.addAll( getI18nPropertiesInAssetContainer(propertyAssets, Workbench.class) );
+		
+		for (I18nAssetFile i18nAsset : i18nAssets)
 		{
-			if (asset instanceof I18nAssetFile)
+			if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
 			{
-				I18nAssetFile i18nAsset = (I18nAssetFile) asset;
-				if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
-				{
-					languageAndLocationAssets.add(i18nAsset);
-				}
-				else if (i18nAsset.getLocaleLanguage().length() > 0)
-				{
-					languageOnlyAssets.add(i18nAsset);					
-				}
+				languageAndLocationAssets.add(i18nAsset);
+			}
+			else if (i18nAsset.getLocaleLanguage().length() > 0)
+			{
+				languageOnlyAssets.add(i18nAsset);					
 			}
 		}
 		
@@ -181,5 +192,26 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		
 		return orderedI18nAssets;
 	}
+	
+	
+	private List<I18nAssetFile> getI18nPropertiesInAssetContainer(List<Asset> assets, Class<? extends AssetContainer> assetContainerType)
+	{
+		List<I18nAssetFile> i18nAssets = new ArrayList<I18nAssetFile>();
+		
+		for (Asset asset : assets)
+		{
+			if (asset instanceof I18nAssetFile)
+			{
+				I18nAssetFile i18nAssetFile = (I18nAssetFile) asset;
+				AssetContainer i18nAssetContainer = i18nAssetFile.getAssetLocation().getAssetContainer();
+				if (i18nAssetContainer.getClass() == assetContainerType)
+				{
+					i18nAssets.add(i18nAssetFile);
+				}
+			}
+		}
+		return i18nAssets;
+	}
+	
 	
 }
