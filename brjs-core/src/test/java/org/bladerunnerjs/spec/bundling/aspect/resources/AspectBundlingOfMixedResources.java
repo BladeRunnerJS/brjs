@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.bundling.aspect;
+package org.bladerunnerjs.spec.bundling.aspect.resources;
 
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;

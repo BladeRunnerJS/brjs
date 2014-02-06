@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.bundling.aspect;
+package org.bladerunnerjs.spec.bundling.aspect.resources;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -10,12 +10,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class AspectBundlingOfBladeResources extends SpecTest {
+public class AspectBundlingOfCSS extends SpecTest {
 	private App app;
 	private Aspect aspect;
+	private Theme standardAspectTheme, standardBladesetTheme, standardBladeTheme;
 	private Bladeset bladeset;
 	private Blade blade;
-	private Theme standardBladeTheme;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -27,36 +27,37 @@ public class AspectBundlingOfBladeResources extends SpecTest {
 		
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			standardAspectTheme = aspect.theme("standard");
 			bladeset = app.bladeset("bs");
+			standardBladesetTheme = bladeset.theme("standard");
 			blade = bladeset.blade("b1");
 			standardBladeTheme = blade.theme("standard");
 	}
-	
-	// ----------------------------------- X M L -------------------------------------- 
-	@Test
-	public void classesReferringToABladeInAspectXMlFilesAreBundled() throws Exception {
-		given(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-    		.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.b1.Class1");
-	}
-
-	// ---------------------------------  H T M L -------------------------------------
-	// JS dependencies
-	@Test
-	public void classesReferringToABladeInAspectHTMlFilesAreBundled() throws Exception {
-		given(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.b1.Class1");
-	}
-	
-	
-	
-	// ----------------------------------- C S S  -------------------------------------
+		
 	// TODO enable when we work on CSS Bundler
+	// Aspect
 	@Ignore 
  	@Test
+ 	public void aspectCssFilesAreBundled() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content");
+ 		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
+ 		then(response).containsText("ASPECT theme content");
+ 	}
+	
+	// Bladeset
+	@Ignore 
+ 	@Test
+ 	public void bladesetCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(bladeset).hasClass("appns.bs.Class1")
+			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
+			.and(aspect).indexPageRefersTo("appns.bs.Class1");
+ 		when(app).requestReceived("/default-aspect/css/standard_css.bundle", response);
+ 		then(response).containsText("BLADESET theme content");
+ 	}
+	
+	// Blade
  	public void bladeCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
