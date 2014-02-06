@@ -95,7 +95,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 				IOUtils.copy(htmlAsset.getReader(), writer);
 				writer.flush();
 			} catch (IOException | NamespaceException | RequirePathException e) {
-				throw new BundlerFileProcessingException(htmlAsset.getUnderlyingFile(), e);
+				throw new BundlerProcessingException(e, "Error while bundling asset '" + htmlAsset.getAssetPath() + "'.");
 			}
 		}
 	}
@@ -127,7 +127,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		}else{
 			throw new NamespaceException("HTML template found with a duplicate identifier: '" +
 						identifier + "'. The same identifier is used for the file:\n'" 
-						+ assetWithDuplicateId.getUnderlyingFile().getAbsolutePath()
+						+ assetWithDuplicateId.getAssetPath()
 						+ "'.");
 		}
 	}

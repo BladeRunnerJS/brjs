@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -14,7 +13,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ThemeAssetLocation;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -88,9 +86,8 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			List<Asset> cssAssets = bundleSet.getResourceFiles("css");
 			for(Asset cssAsset : cssAssets) {
 				String assetThemeName = getThemeName(cssAsset.getAssetLocation());
-				File cssFile = cssAsset.getUnderlyingFile();
 				
-				if(assetThemeName.equals(theme) && cssFile.getName().matches(pattern)) {
+				if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(pattern)) {
 					writeAsset(cssAsset, writer);
 				}
 			}
@@ -135,14 +132,14 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		return themeName;
 	}
 	
-	private void writeAsset(Asset cssAsset, Writer writer) throws BundlerFileProcessingException {
+	private void writeAsset(Asset cssAsset, Writer writer) throws BundlerProcessingException {
 		try {
 			CssRewriter processor = new CssRewriter(cssAsset);
 			writer.append(processor.getFileContents());
 			writer.write("\n");
 		}
 		catch (IOException e) {
-			throw new BundlerFileProcessingException(cssAsset.getUnderlyingFile(), e, "Error while bundling file.");
+			throw new BundlerProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
 		}
 	}
 	

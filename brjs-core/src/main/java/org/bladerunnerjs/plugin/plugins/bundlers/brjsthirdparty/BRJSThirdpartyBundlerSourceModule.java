@@ -36,6 +36,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	private NonBladerunnerJsLibManifest manifest;
 	private byte[] delimiterBytes;
 	private FileIterator fileIterator;
+	private String assetPath;
 	
 	{
 		try {
@@ -52,6 +53,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 		this.assetLocation = assetLocation;
 		this.dir = dir;
 		fileIterator = assetLocation.root().getFileIterator(dir);
+		assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), dir);
 	}
 	
 	@Override
@@ -80,21 +82,21 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	{
 		return assetLocation;
 	}
-
+	
 	@Override
-	public File getUnderlyingFile()
+	public File dir()
 	{
 		return dir;
 	}
 	
 	@Override
 	public String getAssetName() {
-		return dir.getName(); // TODO: this seems wrong
+		return "";
 	}
 	
 	@Override
 	public String getAssetPath() {
-		return dir.getPath(); // TODO: this seems wrong
+		return assetPath;
 	}
 	
 	public void initManifest(NonBladerunnerJsLibManifest manifest)

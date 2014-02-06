@@ -44,12 +44,12 @@ public class AspectBundlingLoggingTest extends SpecTest {
 		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/en_GB/combined/bundle.js", "app1")
 			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsContentPlugin", "js/dev/en_GB/combined/bundle.js")
-			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'index.html', 'resources/xml/config.xml'"))
+			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'default-aspect/index.html', 'default-aspect/resources/xml/config.xml'"))
 			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/', 'bs-bladeset/blades/b1/workbench', 'sdk/libs/javascript/caplin'")
-			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "index.html", "'src/appns/bs/b1/Class1.js'")
-			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "src/appns/bs/b1/Class1.js", "'src/appns/bs/b1/Class2.js'")
-			.and(logging).debugMessageReceived(FILE_HAS_NO_DEPENDENCIES_MSG, "src/appns/bs/b1/Class2.js")
-			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "resources/xml/config.xml", "'src/appns/bs/b1/Class1.js'");
+			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "default-aspect/index.html", "'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'")
+			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js", "'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js'")
+			.and(logging).debugMessageReceived(FILE_HAS_NO_DEPENDENCIES_MSG, "bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js")
+			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "default-aspect/resources/xml/config.xml", "'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'");
 	}
 	
 	@Test

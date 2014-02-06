@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class I18nAssetFile implements Asset
 {
@@ -25,12 +26,14 @@ public class I18nAssetFile implements Asset
 	
 	private AssetLocation assetLocation;
 	private File assetFile;
+	private String assetPath;
 
 	@Override
 	public void initialize(AssetLocation assetLocation, File assetFileOrDir) throws AssetFileInstantationException
 	{
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFileOrDir;
+		assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFileOrDir);
 	}
 
 	@Override
@@ -44,7 +47,13 @@ public class I18nAssetFile implements Asset
 	{
 		return assetLocation;
 	}
-
+	
+	@Override
+	public File dir()
+	{
+		return assetFile.getParentFile();
+	}
+	
 	@Override
 	public String getAssetName()
 	{
@@ -54,13 +63,7 @@ public class I18nAssetFile implements Asset
 	@Override
 	public String getAssetPath()
 	{
-		return assetFile.getAbsolutePath();
-	}
-
-	@Override
-	public File getUnderlyingFile()
-	{
-		return assetFile;
+		return assetPath;
 	}
 	
 	public String getLocaleLanguage()

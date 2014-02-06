@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 
@@ -31,6 +32,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private List<String> aliases;
 	private FileModifiedChecker fileModifiedChecker;
 	private AssetLocation assetLocation;
+	private String assetPath;
 	
 	public void initialize(AssetLocation assetLocation, File assetFile)
 	{
@@ -38,6 +40,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 		app = assetLocation.getAssetContainer().getApp();
 		appProperties = app.nodeProperties("fully-qualified-linked-asset");
 		this.assetFile = assetFile;
+		assetPath = RelativePathUtility.get(app.dir(), assetFile);
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
@@ -59,8 +62,9 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public File getUnderlyingFile() {
-		return assetFile;
+	public File dir()
+	{
+		return assetFile.getParentFile();
 	}
 	
 	@Override
@@ -70,7 +74,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	
 	@Override
 	public String getAssetPath() {
-		return assetFile.getPath();
+		return assetPath;
 	}
 	
 	private void recalculateDependencies() throws ModelOperationException {
@@ -137,7 +141,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 				}
 				
 				for(SourceModule sourceModule : assetContainer.sourceModules()) {
-					if (!sourceModule.getUnderlyingFile().equals(assetFile)) {
+					if (!sourceModule.getAssetPath().equals(getAssetPath())) {
 						addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule.getRequirePath()));
 	    				if (sourceModule.getClassname() != null)
 	    				{

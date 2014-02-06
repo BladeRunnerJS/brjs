@@ -97,8 +97,9 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public File getUnderlyingFile() {
-		return linkedAsset.getUnderlyingFile();
+	public File dir()
+	{
+		return linkedAsset.dir();
 	}
 	
 	@Override
