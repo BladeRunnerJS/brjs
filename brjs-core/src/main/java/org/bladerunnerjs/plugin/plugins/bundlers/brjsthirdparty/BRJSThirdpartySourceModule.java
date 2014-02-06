@@ -28,7 +28,7 @@ import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 
-public class BRJSThirdpartyBundlerSourceModule implements SourceModule
+public class BRJSThirdpartySourceModule implements SourceModule
 {
 
 	private AssetLocation assetLocation;

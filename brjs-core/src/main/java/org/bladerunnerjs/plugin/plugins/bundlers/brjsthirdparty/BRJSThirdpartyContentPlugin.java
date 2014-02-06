@@ -75,7 +75,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
 				{
 					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
-						if(sourceFile instanceof BRJSThirdpartyBundlerSourceModule)
+						if(sourceFile instanceof BRJSThirdpartySourceModule)
 						{
     						writer.write("// " + sourceFile.getRequirePath() + "\n");
     						IOUtils.copy(sourceFile.getReader(), writer);
@@ -130,7 +130,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 		
 		try {
 			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-				if(sourceModule instanceof BRJSThirdpartyBundlerSourceModule) {
+				if(sourceModule instanceof BRJSThirdpartySourceModule) {
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
 				}
 			}
