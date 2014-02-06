@@ -41,8 +41,8 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("i18n/<language>.json").as(LANGUAGE_BUNDLE)
-			.and("i18n/<language>_<location>.json").as(LANGUAGE_AND_LOCATION_BUNDLE)
+			.accepts("i18n/<language>.js").as(LANGUAGE_BUNDLE)
+			.and("i18n/<language>_<location>.js").as(LANGUAGE_AND_LOCATION_BUNDLE)
 			.where(LANGUAGE_PROPERTY_NAME).hasForm("[a-z]{2}")
 			.and(LOCATION_PROPERTY_NAME).hasForm("[A-Z]{2}");
 		
@@ -145,7 +145,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		
 		StringBuilder output = new StringBuilder();
 		
-		output.append("{"+NEWLINE);		
+		output.append("window._brjsI18nProperties = [{"+NEWLINE);
 		for (String key : propertiesMap.keySet())
 		{
 			String value = propertiesMap.get(key);
@@ -155,7 +155,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		{
 			output.deleteCharAt( output.length() - 2 ); /* delete the last comma */			
 		}
-		output.append("};");
+		output.append("}];");
 		
 		writer.write(output.toString());
 		writer.flush();

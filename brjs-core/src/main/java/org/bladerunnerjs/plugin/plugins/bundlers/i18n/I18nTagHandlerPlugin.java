@@ -76,7 +76,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("org/bladerunnerjs/plugin/plugins/bundlers/i18n/i18nScript.js");
 		String scriptContentFromFile = IOUtils.toString(in);
-		String scriptContent = String.format(scriptContentFromFile, localeCookieName, stringifyLocales(supportedLocales), defaultLocale);
+		String scriptContent = String.format("\n"+scriptContentFromFile, localeCookieName, stringifyLocales(supportedLocales), defaultLocale);
 		writer.write(scriptContent);
 	}
 

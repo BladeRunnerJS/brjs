@@ -32,7 +32,7 @@ public class I18nTagHandlerPluginTest extends SpecTest
     			"getCookieLocale() {",
     			"var localeCookieName = \"brjsLocale=\";",
     			"getLocale() {",
-    			"document.write('<scr'+'ipt src=\"i18n/' + getLocale() + '.js\"></script>');" );
+    			"document.write('<scr'+'ipt src=\"i18n/' + getLocale() + '.js\"></scr'+'ipt>');" );
 	}
 	
 	@Test

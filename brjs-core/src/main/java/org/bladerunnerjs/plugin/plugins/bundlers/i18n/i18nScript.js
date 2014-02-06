@@ -1,4 +1,4 @@
-<script>	
+<script type='text/javascript'>	
 	function getCookieLocale() {
 		var localeCookieName = "%s=";
 		var ca = document.cookie.split(';');
@@ -26,5 +26,5 @@
 		return browserLocale;
 	}
 	
-	document.write('<scr'+'ipt src="i18n/' + getLocale() + '.js"></script>');
+	document.write('<scr'+'ipt src="i18n/' + getLocale() + '.js"></scr'+'ipt>');
 </script>

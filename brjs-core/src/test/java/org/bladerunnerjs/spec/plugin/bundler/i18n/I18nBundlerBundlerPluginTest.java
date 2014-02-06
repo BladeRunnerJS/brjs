@@ -42,8 +42,8 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
-		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
-		then(response).textEquals("{\n};");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(response).textEquals("window._brjsI18nProperties = [{\n}];");
 	}
 	
 	@Test
@@ -53,11 +53,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html")
 			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.property=property value");
-		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.property\":\"property value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	@Test
@@ -68,11 +68,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(aspect).containsEmptyFile("index.html")
 			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.property=property value")
 			.and(aspect).containsFileWithContents("resources/de_DE.properties", "appns.property=a different value");
-		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.property\":\"property value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	@Test
@@ -82,11 +82,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html")
 			.and(aspect).containsFileWithContents("resources/en.properties", "appns.property=property value");
-		when(app).requestReceived("/default-aspect/i18n/en.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.property\":\"property value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	@Test
@@ -97,11 +97,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(aspect).containsEmptyFile("index.html")
 			.and(aspect).containsFileWithContents("resources/en.properties", "appns.property=property value")
 			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.property=another value");
-		when(app).requestReceived("/default-aspect/i18n/en.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.property\":\"property value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	@Test
@@ -112,12 +112,12 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(aspect).containsEmptyFile("index.html")
 			.and(aspect).containsFileWithContents("resources/en.properties", "appns.some.property=property value")
 			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.another.property=another value");
-		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.some.property\":\"property value\",\n"+
 						"\"appns.another.property\":\"another value\"\n"+
-				"};");
+				"}];");
 	}
 
 	@Test
@@ -128,11 +128,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(aspect).containsEmptyFile("index.html")
 			.and(aspect).containsFileWithContents("resources/en.properties", "appns.property=property value")
 			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.property=another value");
-		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.property\":\"another value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	@Test
@@ -142,11 +142,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html")
 			.and(aspect).containsFileWithContents("resources/en.properties", "appns.property=property value");
-		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.property\":\"property value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	@Test
@@ -156,11 +156,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html")
 			.and(aspect).containsFileWithContents("resources/i18n/en.properties", "appns.property=property value");
-		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.property\":\"property value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	@Test
@@ -171,11 +171,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(aspect).indexPageRequires("appns.Class")
 			.and(aspect).hasClass("appns.Class")
 			.and(aspect).containsFileWithContents("src/appns/en.properties", "appns.property=property value");
-		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.property\":\"property value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	
@@ -187,11 +187,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 			.and(blade).hasClass("appns.bs.b1.Class")
 			.and(blade).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=blade value")
 			.and(aspect).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=aspect value");
-		when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.bs.b1.property\":\"aspect value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	@Test
@@ -202,11 +202,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 		.and(blade).hasClass("appns.bs.b1.Class")
 		.and(blade).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=blade value")
 		.and(workbench).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=workbench value");
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/i18n/en_GB.json", response);
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/i18n/en_GB.js", response);
 		then(response).textEquals(	
-				"{\n"+
+				"window._brjsI18nProperties = [{\n"+
 						"\"appns.bs.b1.property\":\"workbench value\"\n"+
-				"};");
+				"}];");
 	}
 	
 	@Test
@@ -216,7 +216,7 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
     		.and(aspect).hasBeenCreated()
     		.and(aspect).containsEmptyFile("index.html")
     		.and(aspect).containsFileWithContents("resources/en_GB.properties", "some.property=property value");
-    	when(app).requestReceived("/default-aspect/i18n/en_GB.json", response);
+    	when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
     	then(exceptions).verifyException(NamespaceException.class, "some.property", "default-aspect/resources/en_GB.properties", "appns");
 	}
 	
