@@ -129,7 +129,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	{
 		Map<String,String> propertiesMap = new HashMap<String,String>();
 		
-		for (Asset asset : getOrderedI18nAssetFiles(bundleSet))
+		for (Asset asset : getI18nAssetFiles(bundleSet))
 		{
 			addI18nProperties(propertiesMap, language, location, (I18nAssetFile) asset);
 		}
@@ -175,28 +175,26 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		writer.flush();
 	}
 	
-	private List<I18nAssetFile> getOrderedI18nAssetFiles(BundleSet bundleSet)
+	private List<I18nAssetFile> getI18nAssetFiles(BundleSet bundleSet)
 	{
 		List<I18nAssetFile> languageOnlyAssets = new ArrayList<I18nAssetFile>();
 		List<I18nAssetFile> languageAndLocationAssets = new ArrayList<I18nAssetFile>();
 		
 		List<Asset> propertyAssets = bundleSet.getResourceFiles("properties");
 		
-		List<I18nAssetFile> i18nAssets = new LinkedList<I18nAssetFile>();
-		i18nAssets.addAll( getI18nPropertiesInAssetContainer(propertyAssets, Blade.class) );
-		i18nAssets.addAll( getI18nPropertiesInAssetContainer(propertyAssets, Bladeset.class) );
-		i18nAssets.addAll( getI18nPropertiesInAssetContainer(propertyAssets, Aspect.class) );
-		i18nAssets.addAll( getI18nPropertiesInAssetContainer(propertyAssets, Workbench.class) );
-		
-		for (I18nAssetFile i18nAsset : i18nAssets)
+		for (Asset asset : propertyAssets)
 		{
-			if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
+			if (asset instanceof I18nAssetFile)
 			{
-				languageAndLocationAssets.add(i18nAsset);
-			}
-			else if (i18nAsset.getLocaleLanguage().length() > 0)
-			{
-				languageOnlyAssets.add(i18nAsset);					
+				I18nAssetFile i18nAsset = (I18nAssetFile) asset;
+    			if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
+    			{
+    				languageAndLocationAssets.add(i18nAsset);
+    			}
+    			else if (i18nAsset.getLocaleLanguage().length() > 0)
+    			{
+    				languageOnlyAssets.add(i18nAsset);					
+    			}
 			}
 		}
 		
@@ -205,26 +203,6 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		orderedI18nAssets.addAll(languageAndLocationAssets);
 		
 		return orderedI18nAssets;
-	}
-	
-	
-	private List<I18nAssetFile> getI18nPropertiesInAssetContainer(List<Asset> assets, Class<? extends AssetContainer> assetContainerType)
-	{
-		List<I18nAssetFile> i18nAssets = new ArrayList<I18nAssetFile>();
-		
-		for (Asset asset : assets)
-		{
-			if (asset instanceof I18nAssetFile)
-			{
-				I18nAssetFile i18nAssetFile = (I18nAssetFile) asset;
-				AssetContainer i18nAssetContainer = i18nAssetFile.getAssetLocation().getAssetContainer();
-				if (i18nAssetContainer.getClass() == assetContainerType)
-				{
-					i18nAssets.add(i18nAssetFile);
-				}
-			}
-		}
-		return i18nAssets;
 	}
 	
 	

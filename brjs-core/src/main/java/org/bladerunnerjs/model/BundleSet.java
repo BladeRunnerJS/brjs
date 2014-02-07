@@ -1,11 +1,14 @@
 package org.bladerunnerjs.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nAssetFile;
 
 public class BundleSet {
 	private final List<SourceModule> sourceModules;
@@ -45,6 +48,39 @@ public class BundleSet {
 		
 		List<Asset> result = new ArrayList<Asset>();
 		result.addAll(resourceFiles);
-		return result;
+		
+		return orderAssetsBasedOnAssetContainer(result);
 	}
+	
+	
+	private <A extends Asset> List<A> orderAssetsBasedOnAssetContainer(List<A> assets)
+	{
+		List<A> assetsNotOrderedByContainer = new ArrayList<A>(assets);
+		List<A> orderedAssets = new LinkedList<A>();
+		
+		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Blade.class) );
+		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Bladeset.class) );
+		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Aspect.class) );
+		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Workbench.class) );
+		
+		orderedAssets.addAll(0, assetsNotOrderedByContainer);
+		
+		return orderedAssets;
+	}
+	
+	private <A extends Asset> List<A> getAssetsInContainer(List<A> assets, Class<? extends AssetContainer> assetContainerType)
+	{
+		List<A> assetsInContainer = new ArrayList<A>();
+		
+		for (A asset : assets)
+		{
+			if (asset.getAssetLocation().getAssetContainer().getClass() == assetContainerType)
+			{
+				assetsInContainer.add(asset);
+			}
+		}
+		assets.removeAll(assetsInContainer);
+		return assetsInContainer;
+	}
+	
 }
