@@ -99,6 +99,7 @@ public class I18nAssetFile implements Asset
 		return propertiesMap;
 	}
 	
+	// an exception will be thrown if the namespace isnt correct, the exception could be ingored in CT to disable namespace enforcement
 	private void assertPropertyMatchesNamepsaceOfAssetLocation(String property) throws RequirePathException, NamespaceException
 	{
 		String propertyNamepsace = getAssetLocation().getNamespace();
