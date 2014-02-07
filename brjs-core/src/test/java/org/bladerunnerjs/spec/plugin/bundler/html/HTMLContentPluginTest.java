@@ -98,7 +98,6 @@ public class HTMLContentPluginTest extends SpecTest
 	}
 	
 	// TODO this test should pass
-	@Ignore 
 	@Test
 	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAnAspectHTMLResourceFile() throws Exception {
 		given(blade).hasClass("appns.bs.b1.Class1")
@@ -106,7 +105,10 @@ public class HTMLContentPluginTest extends SpecTest
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).resourceFileContains("html/aspect-view.html", "appns.bs.b1.Class1");
+			.and(aspect).hasClass("appns.AppClass")
+			.and(aspect).resourceFileContains("html/aspect-view.html", "<div id='appns.stuff'>appns.bs.b1.Class1</div>")
+			.and(aspect).containsFileWithContents("index.html", "appns.AppClass");
+		
 		when(app).requestReceived("/default-aspect/bundle.html", response);
 		then(response).containsText("TESTCONTENT");
 	}
