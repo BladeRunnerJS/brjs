@@ -70,7 +70,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 		} else {
 			requestUrl = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
 		}
-		writer.write("<script type=\"text/javascript\" src=\""+requestUrl+"\"></script>");
+		writer.write("<script type=\"text/javascript\" src=\""+requestUrl+"\"></script>\n");
 	}
 
 }
