@@ -1,14 +1,12 @@
 package org.bladerunnerjs.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nAssetFile;
 
 public class BundleSet {
 	private final List<SourceModule> sourceModules;
@@ -40,7 +38,7 @@ public class BundleSet {
 	}
 	
 	public List<Asset> getResourceFiles(String fileExtension) {
-		Set<Asset> resourceFiles = new HashSet<Asset>();
+		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
 		
 		for(AssetLocation resourceNode : resourceLocations) {
 			resourceFiles.addAll(resourceNode.bundleResources(fileExtension));

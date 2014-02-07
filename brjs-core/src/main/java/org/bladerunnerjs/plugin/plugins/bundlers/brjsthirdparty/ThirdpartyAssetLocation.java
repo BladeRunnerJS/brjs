@@ -33,18 +33,30 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 	}
 	
 	@Override
+	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
+		A asset;
+		
+		if(!dir.equals(this.dir())) {
+			throw new AssetFileInstantationException("directory '" + dir.getPath() + "' was not the asset location directory '" + dir().getPath() + "'.");
+		}
+		else if(!assetName.equals("")) {
+			throw new AssetFileInstantationException("asset name '" + assetName + "' was not empty.");
+		}
+		else {
+			asset = assetLocator.obtainAsset(assetClass, dir, assetName);
+		}
+		
+		return asset;
+	}
+	
+	@Override
 	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
 		List<A> assets = new ArrayList<>();
 		
 		try {
-			// TODO: this makes no sense as assets are still dependent on an associated file, whereas they shouldn't be
-			if(assetFilter.accept("lib.js") && !manifest.getJs().isEmpty()) {
-				assets.add(obtainAsset(dir(), assetClass));
-			}
-			
-			for(String cssAssetName : manifest.getCss()) {
-				if(assetFilter.accept(cssAssetName)) {
-					assets.add(obtainAsset(file(cssAssetName), assetClass));
+			for(File cssAssetFile : manifest.getCssFiles()) {
+				if(assetFilter.accept(cssAssetFile.getName())) {
+					assets.add(assetLocator.obtainAsset(assetClass, cssAssetFile.getParentFile(), cssAssetFile.getName()));
 				}
 			}
 		}

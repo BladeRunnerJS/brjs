@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -85,15 +84,30 @@ public class HTMLContentPluginTest extends SpecTest
 		then(response).containsText("TESTCONTENT");
 	}
 
-	@Ignore // This test should pass?
 	@Test
-	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAspectHTMLFiles() throws Exception {
+	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAspectIndexPage() throws Exception {
 		given(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).resourceFileContains("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.b1.Class1");
+			.and(aspect).containsFileWithContents("index.html", "appns.bs.b1.Class1");
+		when(app).requestReceived("/default-aspect/bundle.html", response);
+		then(response).containsText("TESTCONTENT");
+	}
+	
+	// TODO this test should pass
+	@Test
+	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAnAspectHTMLResourceFile() throws Exception {
+		given(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).resourceFileContains("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
+			.and(blade).hasNamespacedJsPackageStyle()
+			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.AppClass")
+			.and(aspect).resourceFileContains("html/aspect-view.html", "<div id='appns.stuff'>appns.bs.b1.Class1</div>")
+			.and(aspect).containsFileWithContents("index.html", "appns.AppClass");
+		
 		when(app).requestReceived("/default-aspect/bundle.html", response);
 		then(response).containsText("TESTCONTENT");
 	}

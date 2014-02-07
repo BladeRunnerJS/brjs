@@ -25,7 +25,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	protected final AssetContainer assetContainer;
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private final Map<String, SourceModule> sourceModules = new HashMap<>();
-	private final AssetLocationUtility assetLocator;
+	protected final AssetLocationUtility assetLocator;
 	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
@@ -182,8 +182,13 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	}
 	
 	@Override
-	public <A extends Asset> A obtainAsset(File assetFileOrDir, Class<? extends A> assetClass) throws AssetFileInstantationException {
-		return assetLocator.obtainAsset(assetClass, assetFileOrDir);
+	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
+		if(!new File(dir, assetName).getParentFile().equals(dir())) {
+			// TODO: this needs to be tested
+			throw new AssetFileInstantationException("'" + assetName + "' can only point to a logical resource within the directory '" + dir + "'.");
+		}
+		
+		return assetLocator.obtainAsset(assetClass, dir, assetName);
 	}
 	
 	@Override
@@ -200,7 +205,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	protected <A extends Asset> void addMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
 		for(File file : root().getFileIterator(dir).files()) {
 			if(!file.isDirectory() && assetFilter.accept(file.getName())) {
-				assets.add(assetLocator.obtainAsset(assetClass, file));
+				assets.add(obtainAsset(assetClass, file.getParentFile(), file.getName()));
 			}
 		}
 	}

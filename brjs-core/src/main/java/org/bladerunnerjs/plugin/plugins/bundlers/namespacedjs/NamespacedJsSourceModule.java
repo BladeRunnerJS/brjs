@@ -37,15 +37,17 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private String className;
 	
 	@Override
-	public void initialize(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException
+	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
 	{
 		try {
+			File assetFile = new File(dir, assetName);
+			
 			this.assetLocation = assetLocation;
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
 			fileModifiedChecker = new FileModifiedChecker(assetFile);
 			linkedAsset = new FullyQualifiedLinkedAsset();
-			linkedAsset.initialize(assetLocation, assetFile);
+			linkedAsset.initialize(assetLocation, dir, assetName);
 		}
 		catch(RequirePathException e) {
 			throw new AssetFileInstantationException(e);

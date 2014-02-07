@@ -22,7 +22,7 @@ br.Core.implement(br.presenter.workbench.ui.PresentationModelViewer, br.workbenc
 br.presenter.workbench.ui.PresentationModelViewer.prototype._getFormElement = function()
 {
 	this.m_PresentationModel = new br.presenter.workbench.model.TreeViewerPM(this);
-	this.m_oComponent = new br.presenter.component.PresenterComponent("tree-viewer", this.m_PresentationModel);
+	this.m_oComponent = new br.presenter.component.PresenterComponent("br.tree-viewer", this.m_PresentationModel);
 	var eElement = this.m_oComponent.getElement();
 	
 	return eElement;	

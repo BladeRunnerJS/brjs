@@ -178,5 +178,4 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/myFile.js?q=1234", pageResponse);
 		then(exceptions).verifyException(BundlerProcessingException.class, thirdpartyLib.file("myFile.js").getAbsolutePath());
 	}
-	
 }

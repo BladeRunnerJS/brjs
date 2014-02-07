@@ -11,15 +11,10 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.NamespaceException;
-import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;

@@ -80,6 +80,18 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer hasAssetPlugins(AssetPlugin... assetPlugins)
+	{
+		verifyBrjsIsSet();
+		
+		for(AssetPlugin assetPlugin : assetPlugins)
+		{
+			specTest.pluginLocator.assetPlugins.add( new VirtualProxyAssetPlugin(assetPlugin) );
+		}
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer hasMinifiers(MinifierPlugin... minifyPlugins)
 	{
 		verifyBrjsIsSet();

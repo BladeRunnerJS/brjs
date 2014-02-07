@@ -34,12 +34,12 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private AssetLocation assetLocation;
 	private String assetPath;
 	
-	public void initialize(AssetLocation assetLocation, File assetFile)
+	public void initialize(AssetLocation assetLocation, File dir, String assetName)
 	{
 		this.assetLocation = assetLocation;
 		app = assetLocation.getAssetContainer().getApp();
 		appProperties = app.nodeProperties("fully-qualified-linked-asset");
-		this.assetFile = assetFile;
+		this.assetFile = new File(dir, assetName);
 		assetPath = RelativePathUtility.get(app.dir(), assetFile);
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}

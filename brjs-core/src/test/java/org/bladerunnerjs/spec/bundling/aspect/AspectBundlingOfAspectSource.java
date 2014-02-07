@@ -29,6 +29,25 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			aspect = app.aspect("default");
 	}
 	
+	// TODO get these UTF8 char tests passing (test in eclipse AND cmd line)
+	@Ignore
+	@Test
+	public void utf8CharactersAreBundledCorrectlyForDev() throws Exception {
+		given(aspect).containsFileWithContents("src/Class1.js", "£$€")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("£$€");
+	}
+	
+	@Ignore
+	@Test
+	public void utf8CharactersAreBundledCorrectlyForProd() throws Exception {
+		given(aspect).containsFileWithContents("src/Class1.js", "£$€")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/js/prod/en_GB/combined/bundle.js", response);
+		then(response).containsText("£$€");
+	}
+	
 	@Test
 	public void weBundleAnAspectClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("appns.Class1")

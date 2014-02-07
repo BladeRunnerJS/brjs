@@ -14,8 +14,8 @@ public class FileAsset implements Asset {
 	private String assetPath;
 	
 	@Override
-	public void initialize(AssetLocation assetLocation, File assetFileOrDir) throws AssetFileInstantationException {
-		this.file = assetFileOrDir;
+	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+		this.file = new File(dir, assetName);
 		this.assetLocation = assetLocation;
 		assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), file);
 	}

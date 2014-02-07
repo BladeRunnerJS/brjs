@@ -16,15 +16,15 @@ public class AssetLocationUtility
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <A extends Asset> A obtainAsset(Class<? extends A> assetFileClass, File assetFile) throws AssetFileInstantationException {
-		String absolutePath = assetFile.getAbsolutePath();
+	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
+		String absolutePath = new File(dir, assetName).getAbsolutePath();
 		A asset;
 		
 		if(assetFiles.containsKey(absolutePath)) {
 			asset = (A) assetFiles.get(absolutePath);
 		}
 		else {
-			asset = createAssetInstance(assetFileClass, assetFile);
+			asset = createAssetInstance(assetClass, dir, assetName);
 			assetFiles.put(absolutePath, asset);
 		}
 		
@@ -32,13 +32,13 @@ public class AssetLocationUtility
 	}
 	
 	@SuppressWarnings("unchecked")
-	private <A extends Asset> A createAssetInstance(Class<? extends Asset> assetFileClass, File file) throws AssetFileInstantationException
+	private <A extends Asset> A createAssetInstance(Class<? extends Asset> assetClass, File dir, String assetName) throws AssetFileInstantationException
 	{
 		try
 		{
-			Constructor<? extends Asset> ctor = assetFileClass.getConstructor();
+			Constructor<? extends Asset> ctor = assetClass.getConstructor();
 			A assetFile = (A) ctor.newInstance();
-			assetFile.initialize(assetLocation, file);
+			assetFile.initialize(assetLocation, dir, assetName);
 			
 			return assetFile;
 		}
@@ -51,7 +51,7 @@ public class AssetLocationUtility
 		}
 		catch (Exception ex)
 		{
-			throw new AssetFileInstantationException(ex, assetFileClass);
+			throw new AssetFileInstantationException(ex, assetClass);
 		}		
 	}
 }
