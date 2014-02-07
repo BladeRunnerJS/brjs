@@ -54,9 +54,9 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 		List<A> assets = new ArrayList<>();
 		
 		try {
-			for(String cssAssetName : manifest.getCss()) {
-				if(assetFilter.accept(cssAssetName)) {
-					assets.add(assetLocator.obtainAsset(assetClass, dir(), cssAssetName));
+			for(File cssAssetFile : manifest.getCssFiles()) {
+				if(assetFilter.accept(cssAssetFile.getName())) {
+					assets.add(assetLocator.obtainAsset(assetClass, dir(), cssAssetFile.getName()));
 				}
 			}
 		}
