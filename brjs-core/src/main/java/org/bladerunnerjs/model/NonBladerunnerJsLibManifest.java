@@ -32,7 +32,7 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	public List<String> getJs() throws ConfigException
 	{
 		reloadConfIfChanged();
-		return listify(conf.js, ".*\\.js");
+		return listify(conf.js, ".*\\.js"); // TODO: see if we should also limit to only loading js in the root directory by default too
 	}
 	
 	public List<File> getJsFiles() throws ConfigException {
@@ -42,7 +42,7 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	public List<String> getCss() throws ConfigException
 	{
 		reloadConfIfChanged();
-		return listify(conf.css, ".*\\.css");
+		return listify(conf.css, "[^/]*\\.css");
 	}
 	
 	public List<File> getCssFiles() throws ConfigException {
