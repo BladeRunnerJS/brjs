@@ -86,13 +86,27 @@ public class HTMLContentPluginTest extends SpecTest
 	}
 
 	@Test
-	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAspectHTMLFiles() throws Exception {
+	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAspectIndexPage() throws Exception {
 		given(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).resourceFileContains("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("index.html", "appns.bs.b1.Class1");
+		when(app).requestReceived("/default-aspect/bundle.html", response);
+		then(response).containsText("TESTCONTENT");
+	}
+	
+	// TODO this test should pass
+	@Ignore 
+	@Test
+	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAnAspectHTMLResourceFile() throws Exception {
+		given(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).resourceFileContains("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
+			.and(blade).hasNamespacedJsPackageStyle()
+			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).resourceFileContains("html/aspect-view.html", "appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
 		then(response).containsText("TESTCONTENT");
 	}
