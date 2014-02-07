@@ -25,43 +25,10 @@ public class I18nTagHandlerPluginTest extends SpecTest
 	}
 
 	@Test
-	public void i18nTokenPluginContainsJsFunction() throws Exception {
+	public void i18nTokenPluginContainsJsRequest() throws Exception {
 		given(aspect).indexPageHasContent("<@i18n.bundle@/>");
     	when(aspect).indexPageLoadedInDev(response, "en_GB");
-    	then(response).containsOrderedTextFragments(
-    			"getCookieLocale() {",
-    			"var localeCookieName = \"brjsLocale=\";",
-    			"getLocale() {",
-    			"document.write('<scr'+'ipt src=\"i18n/' + getLocale() + '.js\"></scr'+'ipt>');" );
-	}
-	
-	@Test
-	public void localeCookieNameIsConfigurable() throws Exception {
-		given(aspect).indexPageHasContent("<@i18n.bundle cookieName='appLocale' @/>");
-    	when(aspect).indexPageLoadedInDev(response, "en_GB");
-    	then(response).containsOrderedTextFragments(
-    			"getCookieLocale() {",
-    			"var localeCookieName = \"appLocale=\";" );
-	}
-	
-	@Test
-	public void getLocaleMethodHasCorrectSupportedLocales() throws Exception {
-		given(app).hasSupportedLocales("en, en_GB, de")
-			.and(aspect).indexPageHasContent("<@i18n.bundle@/>");
-		when(aspect).indexPageLoadedInDev(response, "en_GB");
-		then(response).containsOrderedTextFragments(
-				"getLocale() {",
-				"var supportedLocales = [\"en\",\"en_GB\",\"de\"]; var defaultLocale = \"en\";  var browserLocale = browserLocale;" );
-	}
-	
-	@Test
-	public void getLocaleMethodHasCorrectDefaultLocale() throws Exception {
-		given(app).hasSupportedLocales("en, en_GB, de")
-			.and(aspect).indexPageHasContent("<@i18n.bundle@/>");
-		when(aspect).indexPageLoadedInDev(response, "en_GB");
-		then(response).containsOrderedTextFragments(
-				"getLocale() {",
-				"var defaultLocale = \"en\";" );
+    	then(response).containsText("<script type=\"text/javascript\" src=\"i18n/en_GB.js\"></script>");
 	}
 	
 }

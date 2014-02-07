@@ -9,6 +9,8 @@ import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingTagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyTagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nTagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsTagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
@@ -51,6 +53,10 @@ public class PluginPriorityCalculator
 	{
 		if (plugin instanceof BRJSThirdpartyContentPlugin)
 		{
+			return 2;
+		}
+		if (plugin instanceof I18nContentPlugin)
+		{
 			return 1;
 		}
 		if (plugin instanceof NamespacedJsContentPlugin)
@@ -69,6 +75,10 @@ public class PluginPriorityCalculator
 		if (plugin instanceof BRJSThirdpartyTagHandlerPlugin)
 		{
 			return 2;
+		}
+		if (plugin instanceof I18nTagHandlerPlugin)
+		{
+			return 1;
 		}
 		if (plugin instanceof NamespacedJsTagHandlerPlugin)
 		{

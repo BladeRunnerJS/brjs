@@ -1,28 +1,27 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
 
 public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 {
-
-	private static final String LOCALE_COOKIE_NAME_KEY = "cookieName";
-	private static final String DEFAULT_COOKIE_NAME = "brjsLocale";
+	private I18nContentPlugin i18nContentPlugin;
 
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		VirtualProxyContentPlugin virtualProxyContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentProvider("i18n");
+		i18nContentPlugin = (I18nContentPlugin) virtualProxyContentPlugin.getUnderlyingPlugin();
 	}
 	
 	@Override
@@ -34,7 +33,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public String getGroupName()
 	{
-		return "";
+		return "text/javascript";
 	}
 
 	@Override
@@ -63,28 +62,15 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 		}
 	}
 
-	private void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws ConfigException, IOException
+	private void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws ConfigException, IOException, MalformedTokenException
 	{
-		App app = bundleSet.getBundlableNode().getApp();
-		String[] supportedLocales = StringUtils.split( app.appConf().getLocales(), "," );
-		String defaultLocale = supportedLocales[0];
-		String localeCookieName = (tagAttributes.get(LOCALE_COOKIE_NAME_KEY) != null) ? tagAttributes.get(LOCALE_COOKIE_NAME_KEY) : DEFAULT_COOKIE_NAME;
-		writeI18nScriptContent(localeCookieName, supportedLocales, defaultLocale, writer);
-	}
-
-	private void writeI18nScriptContent(String localeCookieName, String[] supportedLocales, String defaultLocale, Writer writer) throws IOException
-	{
-		InputStream in = this.getClass().getClassLoader().getResourceAsStream("org/bladerunnerjs/plugin/plugins/bundlers/i18n/i18nScript.js");
-		String scriptContentFromFile = IOUtils.toString(in);
-		String scriptContent = String.format("\n"+scriptContentFromFile, localeCookieName, stringifyLocales(supportedLocales), defaultLocale);
-		writer.write(scriptContent);
-	}
-
-	private String stringifyLocales(String[] supportedLocales)
-	{
-		String stringifiedLocales = "\"" + StringUtils.join(supportedLocales, "\",\"") + "\"";
-		stringifiedLocales = stringifiedLocales.replaceAll(" ", "");
-		return stringifiedLocales;
+		String requestUrl = "";
+		if (locale.contains("_")) {
+			requestUrl = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, StringUtils.substringBefore(locale, "_"), StringUtils.substringAfter(locale, "_"));			
+		} else {
+			requestUrl = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
+		}
+		writer.write("<script type=\"text/javascript\" src=\""+requestUrl+"\"></script>");
 	}
 
 }

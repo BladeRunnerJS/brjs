@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Asset;
@@ -29,8 +29,8 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 public class I18nContentPlugin extends AbstractContentPlugin
 {
-	private static final String LANGUAGE_BUNDLE = "language-bundle";
-	private static final String LANGUAGE_AND_LOCATION_BUNDLE = "language-and-location-bundle";
+	public static final String LANGUAGE_BUNDLE = "language-bundle";
+	public static final String LANGUAGE_AND_LOCATION_BUNDLE = "language-and-location-bundle";
 	private static final String LANGUAGE_PROPERTY_NAME = "language";
 	private static final String LOCATION_PROPERTY_NAME = "location";
 	private static final String NEWLINE = "\n";
@@ -69,7 +69,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	@Override
 	public String getGroupName()
 	{
-		return null;
+		return "text/javascript";
 	}
 
 	@Override
@@ -98,11 +98,25 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
 	{
-		for (@SuppressWarnings("unused") String locale : locales)
+		try 
 		{
-			
+    		List<String> contentPaths = new ArrayList<String>();
+    		for (String locale : locales)
+    		{
+    			String requestPath = "";
+    			if (locale.contains("_")) {
+    				requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, StringUtils.substringBefore(locale, "_"), StringUtils.substringAfter(locale, "_"));			
+    			} else {
+    				requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
+    			}
+    			contentPaths.add(requestPath);
+    		}
+    		return contentPaths;
 		}
-		return Arrays.asList();
+		catch (Exception ex)
+		{
+			throw new BundlerProcessingException(ex);
+		}
 	}
 
 	@Override
