@@ -30,6 +30,14 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	}
 	
 	@Test
+	public void utf8CharactersAreBundledCorrectly() throws Exception {
+		given(aspect).containsFileWithContents("src/Class1.js", "£$€𤭢")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/js/prod/en_GB/combined/bundle.js", response);
+		then(response).containsText("£$€𤭢");
+	}
+	
+	@Test
 	public void weBundleAnAspectClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
