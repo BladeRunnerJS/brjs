@@ -68,9 +68,9 @@ public class AspectBundlingOfHTML extends SpecTest {
 			.and(aspect).containsFileWithContents("resources/aspect.html", "<div id='appns.aspect-view'></div>")
 			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
-		then(response).containsOrderedTextFragments("<!-- workbench.html -->",
-													"<div id='br.workbench-view'></div>",
-													"<!-- aspect.html -->",
-													"<div id='appns.aspect-view'></div>");
+		then(response).containsOrderedTextFragments("<!-- aspect.html -->",
+													"<div id='appns.aspect-view'></div>",
+													"<!-- workbench.html -->",
+													"<div id='br.workbench-view'></div>");
 	}
 }
