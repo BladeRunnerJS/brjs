@@ -25,7 +25,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	protected final AssetContainer assetContainer;
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private final Map<String, SourceModule> sourceModules = new HashMap<>();
-	private final AssetLocationUtility assetLocator;
+	protected final AssetLocationUtility assetLocator;
 	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
@@ -183,6 +183,11 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	
 	@Override
 	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
+		if(!new File(dir, assetName).getParentFile().equals(dir())) {
+			// TODO: this needs to be tested
+			throw new AssetFileInstantationException("'" + assetName + "' can only point to a logical resource within the directory '" + dir + "'.");
+		}
+		
 		return assetLocator.obtainAsset(assetClass, dir, assetName);
 	}
 	

@@ -14,8 +14,7 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	
 	@Override
 	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
-		// TODO: we will need some different logic once we start taking a logical assetPath, since we won't be preventing deep file paths
-		return super.obtainAsset(assetClass, dir, assetName);
+		return assetLocator.obtainAsset(assetClass, dir, assetName);
 	}
 	
 	@Override
