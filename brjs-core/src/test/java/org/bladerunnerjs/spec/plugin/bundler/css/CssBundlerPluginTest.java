@@ -78,9 +78,10 @@ public class CssBundlerPluginTest extends SpecTest {
 			.and(nonConformantLib).containsFileWithContents("library.manifest", "js: script.js")
 			.and(nonConformantLib).containsFile("script.js")
 			.and(nonConformantLib).containsFile("style1.css")
-			.and(nonConformantLib).containsFile("style2.css");
+			.and(nonConformantLib).containsFile("style2.css")
+			.and(nonConformantLib).containsFile("dir/style3.css");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css");
+		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css", "dir/style3.css");
 	}
 	
 	@Test
