@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
@@ -24,7 +23,6 @@ import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 
@@ -35,7 +33,6 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	private File dir;
 	private NonBladerunnerJsLibManifest manifest;
 	private byte[] delimiterBytes;
-	private FileIterator fileIterator;
 	private String assetPath;
 	
 	{
@@ -52,7 +49,6 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	{
 		this.assetLocation = assetLocation;
 		this.dir = dir;
-		fileIterator = assetLocation.root().getFileIterator(dir);
 		assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), dir);
 	}
 	
@@ -62,7 +58,7 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 		Set<InputStream> fileFileInputStreams = new LinkedHashSet<InputStream>();
 		try
 		{
-			for (File file : getFilesMatchingFilePaths(manifest.getJs()))
+			for (File file : manifest.getJsFiles())
 			{
 				fileFileInputStreams.add( new FileInputStream(file) );
 				fileFileInputStreams.add(new ByteArrayInputStream(delimiterBytes));
@@ -158,24 +154,5 @@ public class BRJSThirdpartyBundlerSourceModule implements SourceModule
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		return getDependentSourceModules(bundlableNode);
-	}
-	
-	private List<File> getFilesMatchingFilePaths(List<String> matchFilePaths)
-	{
-		List<File> filesMatching = new ArrayList<File>();
-		List<File> files = fileIterator.nestedFiles();
-		
-		for (String pattern : matchFilePaths)
-		{
-			for (File f : files)
-			{
-				String relativePath = RelativePathUtility.get(dir, f);
-				if ( Pattern.matches(pattern, relativePath) )
-				{
-					filesMatching.add(f);
-				}
-			}
-		}
-		return filesMatching;
 	}
 }
