@@ -52,4 +52,10 @@ public class CharResponseWrapper extends HttpServletResponseWrapper
 		printWriter.flush();
 		return new InputStreamReader(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
 	}
+	
+	@Override
+	public void flushBuffer()
+	{
+	}
+	
 }
