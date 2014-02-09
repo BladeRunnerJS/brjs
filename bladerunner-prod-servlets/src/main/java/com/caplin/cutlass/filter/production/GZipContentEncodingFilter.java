@@ -1,5 +1,6 @@
 package com.caplin.cutlass.filter.production;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -57,6 +58,10 @@ public class GZipContentEncodingFilter implements Filter
 			{
 				chain.doFilter(request, response);
 			}
+		}
+		catch(FileNotFoundException e)
+		{
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_NOT_FOUND);
 		}
 		catch(IOException|ServletException e)
 		{
