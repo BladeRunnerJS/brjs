@@ -33,7 +33,7 @@ public class AspectBundlingLoggingTest extends SpecTest {
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
-			sdkLib = brjs.sdkLib("br");
+			sdkLib = brjs.sdkLib("brlib");
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class AspectBundlingLoggingTest extends SpecTest {
 			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/en_GB/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsContentPlugin", "js/dev/en_GB/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLABLE_NODE_SEED_FILES_MSG, unquoted("Aspect"), "default", unquoted("'default-aspect/index.html', 'default-aspect/resources/xml/config.xml'"))
-			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/', 'bs-bladeset/blades/b1/workbench', 'sdk/libs/javascript/br-libs/br/'")
+			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", "'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/', 'bs-bladeset/blades/b1/workbench', 'sdk/libs/javascript/br-libs/brlib/'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "default-aspect/index.html", "'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'")
 			.and(logging).debugMessageReceived(FILE_DEPENDENCIES_MSG, "bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js", "'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js'")
 			.and(logging).debugMessageReceived(FILE_HAS_NO_DEPENDENCIES_MSG, "bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js")
@@ -68,6 +68,6 @@ public class AspectBundlingLoggingTest extends SpecTest {
 			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, unquoted("Aspect"), "default", "js/dev/en_GB/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsContentPlugin", "js/dev/en_GB/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, unquoted("Aspect"), "default")
-			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", unquoted("'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/', 'bs-bladeset/blades/b1/workbench', 'sdk/libs/javascript/br-libs/br/'"));
+			.and(logging).debugMessageReceived(APP_SOURCE_LOCATIONS_MSG, "app1", unquoted("'default-aspect/', 'bs-bladeset/', 'bs-bladeset/blades/b1/', 'bs-bladeset/blades/b1/workbench', 'sdk/libs/javascript/br-libs/brlib/'"));
 	}
 }
