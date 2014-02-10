@@ -9,7 +9,6 @@ import static com.caplin.cutlass.structure.CutlassDirectoryLocator.getParentBlad
 import static com.caplin.cutlass.structure.CutlassDirectoryLocator.getScope;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,8 +162,6 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	private void appendAllUserLibraryFiles(File contextDir, List<File> sourceFiles) throws BundlerProcessingException
 	{
 		App app = BRJSAccessor.root.locateAncestorNodeOfClass(contextDir, App.class);
-		
-		Path sdkLibPath = BRJSAccessor.root.sdkLib().assetLocation("src").dir().toPath();
 
 		for(JsLib jsLib: app.jsLibs())
 		{
@@ -173,7 +170,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 			
 			if((libSrcRoot != null) && libSrcRoot.dirExists())
 			{
-				if(libSrcRoot.dir().toPath().normalize().equals(sdkLibPath))
+				if(app.root().sdkLib(jsLib.getName()).dirExists()) // check the JsLib isnt a SDK lib
 				{
 					continue;
 				}

@@ -12,7 +12,6 @@ import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.logging.LoggerType;
-import org.bladerunnerjs.model.AssetLocation;
 
 import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.NodeType;

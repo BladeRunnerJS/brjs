@@ -39,7 +39,7 @@ public class HtmlBundlerFileAppenderTest
 	{
 		BRJS brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File("src/test/resources/generic-bundler/bundler-structure-tests")));
 
-		AssetLocation resourcesDir = brjs.sdkLib().assetLocation("resources");
+		AssetLocation resourcesDir = brjs.sdkLib("br").assetLocation("resources");
 		
 		File resourceDir = new File(resourcesDir.dir(), "caplin/chart");
 		File speculativeFile = new File(resourceDir, "somehtml.html");

@@ -161,6 +161,7 @@ public class AppTest extends SpecTest {
 	public void nonBladerunnerLibsAreWrappedSoTheCorrectAppIsReturned() throws Exception {
 		given(app).hasBeenCreated()
 			.and(appLib).hasBeenCreated()
+			.and(sdkLib).hasBeenCreated()
 			.and(globalNonBladeRunnerLib).hasBeenCreated()
 			.and(appNonBladeRunnerLib).hasBeenCreated();
 		given(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
@@ -179,6 +180,7 @@ public class AppTest extends SpecTest {
 	public void appLibsContainBothAppLibsAndNonBladerunnerLibs() throws Exception {
 		given(app).hasBeenCreated()
     		.and(appLib).hasBeenCreated()
+    		.and(sdkLib).hasBeenCreated()
     		.and(globalNonBladeRunnerLib).hasBeenCreated()
     		.and(appNonBladeRunnerLib).hasBeenCreated();
 		then(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
@@ -188,6 +190,7 @@ public class AppTest extends SpecTest {
 	public void overriddenLibsDontAppearTwiceInLibsList() throws Exception {
 		given(app).hasBeenCreated()
     		.and(appLib).hasBeenCreated()
+    		.and(sdkLib).hasBeenCreated()
     		.and(globalOverriddenNonBRLib).hasBeenCreated()
     		.and(appOverriddenNonBRLib).hasBeenCreated();
 		then(app).hasLibs(appLib, sdkLib, appOverriddenNonBRLib);
