@@ -66,6 +66,7 @@ subprojects { p ->
 					
 			project.tasks.withType(Test) { testTask ->
 				test {
+                    setDefaultCharacterEncoding 'UTF-8'
 					testLogging {
 						events 'skipped', 'failed'
 						exceptionFormat 'full'
