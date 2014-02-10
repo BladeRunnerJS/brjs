@@ -11,6 +11,7 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
 
@@ -22,10 +23,15 @@ public class AliasDefinitionsFile {
 	private final FileModifiedChecker fileModifiedChecker;
 	
 	public AliasDefinitionsFile(AssetContainer assetContainer, File parent, String child) {
-		file = new File(parent, child);
-		fileModifiedChecker = new FileModifiedChecker(file);
-		reader = new AliasDefinitionsReader(data, file, assetContainer);
-		writer = new AliasDefinitionsWriter(data, file);
+		try {
+			file = new File(parent, child);
+			fileModifiedChecker = new FileModifiedChecker(file);
+			reader = new AliasDefinitionsReader(data, file, assetContainer);
+			writer = new AliasDefinitionsWriter(data, file, assetContainer.root().bladerunnerConf().getDefaultInputEncoding());
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public File getUnderlyingFile() {

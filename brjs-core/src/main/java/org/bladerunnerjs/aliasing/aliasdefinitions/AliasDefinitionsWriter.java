@@ -18,10 +18,12 @@ import com.jamesmurty.utils.XMLBuilder;
 public class AliasDefinitionsWriter {
 	private final AliasDefinitionsData data;
 	private final File file;
+	private final String defaultInputEncoding;
 	
-	public AliasDefinitionsWriter(AliasDefinitionsData data, File file) {
+	public AliasDefinitionsWriter(AliasDefinitionsData data, File file, String defaultInputEncoding) {
 		this.data = data;
 		this.file = file;
+		this.defaultInputEncoding = defaultInputEncoding;
 	}
 	
 	public void write() throws IOException {
@@ -51,7 +53,7 @@ public class AliasDefinitionsWriter {
 				}
 			}
 			
-			FileUtils.write(file, XmlBuilderSerializer.serialize(builder));
+			FileUtils.write(file, XmlBuilderSerializer.serialize(builder), defaultInputEncoding);
 		}
 		catch (IOException | ParserConfigurationException | FactoryConfigurationError | TransformerException e) {
 			throw new IOException(e);

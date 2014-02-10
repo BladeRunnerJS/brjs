@@ -153,12 +153,12 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	private void replaceBuildDateToken(File indexFile) throws IOException, ConfigException {
-		String fileContent = FileUtils.readFileToString(indexFile, brjs.bladerunnerConf().getDefaultOutputEncoding());
+		String fileContent = FileUtils.readFileToString(indexFile, brjs.bladerunnerConf().getDefaultInputEncoding());
 		
 		DateFormat dateFormat = new SimpleDateFormat("dd MMMMM yyyy");
 		Date date = new Date();
 		
 		String resultFileContent = fileContent.replace("@buildDate@", dateFormat.format(date));
-		FileUtils.writeStringToFile(indexFile, resultFileContent, brjs.bladerunnerConf().getDefaultOutputEncoding());
+		FileUtils.writeStringToFile(indexFile, resultFileContent, brjs.bladerunnerConf().getDefaultInputEncoding());
 	}
 }

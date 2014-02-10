@@ -42,7 +42,7 @@ public class WorkbenchCommander extends NodeCommander<Workbench>
 	public void pageLoaded(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException, RequirePathException 
 	{
 		StringWriter writer = new StringWriter();	
-		TagPluginUtility.filterContent(FileUtils.readFileToString(workbench.file("index.html")), workbench.getBundleSet(), writer, RequestMode.Dev, locale);
+		TagPluginUtility.filterContent(FileUtils.readFileToString(workbench.file("index.html"), "UTF-8"), workbench.getBundleSet(), writer, RequestMode.Dev, locale);
 		pageResponse.append(writer.toString());
 	}
 }

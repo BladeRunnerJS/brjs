@@ -93,7 +93,7 @@ public class AppCommander extends NodeCommander<App> {
 	{
 		call(new Command() {
 			public void call() throws Exception {
-				FileUtils.write(app.file(filePath), fileContents);
+				FileUtils.write(app.file(filePath), fileContents, "UTF-8");
 			}
 		});
 		

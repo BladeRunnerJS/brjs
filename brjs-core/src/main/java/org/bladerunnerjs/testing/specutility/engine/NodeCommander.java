@@ -58,7 +58,7 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	
 	// TODO Unable to use composition to create new private NodeBuilder instance because it's an abstract class
 	public CommanderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
-		FileUtils.write(node.file(filePath), fileContents);
+		FileUtils.write(node.file(filePath), fileContents, "UTF-8");
 		
 		return commanderChainer;
 	}

@@ -9,17 +9,17 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 
 import com.esotericsoftware.yamlbeans.YamlWriter;
 import com.google.common.base.Joiner;
 
 public abstract class AbstractYamlConfFile implements YamlConfFile {
-	protected Node node;
+	protected BRJSNode node;
 	private File confFile;
 	
-	public void setNode(Node node) {
+	public void setNode(BRJSNode node) {
 		this.node = node;
 	}
 	
@@ -61,7 +61,10 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 	@Override
 	public void write() throws ConfigException, IOException {
 		verify();
-		FileUtils.write(confFile, getRenderedConfig());
+		
+		// TODO: remove this line and just use getDefaultInputEncoding() directly once non brjs-core code has been deleted, as otherwise `node` is never null
+		String fileEncoding = (node != null) ? node.root().bladerunnerConf().getDefaultInputEncoding() : "UTF-8";
+		FileUtils.write(confFile, getRenderedConfig(), fileEncoding);
 	}
 	
 }

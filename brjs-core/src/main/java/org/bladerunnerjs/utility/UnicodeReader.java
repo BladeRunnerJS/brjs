@@ -104,13 +104,19 @@ public class UnicodeReader extends Reader
 		}
 	}
 	
-	/** Overridden to use delegate reader. */
+	@Override
+	public boolean ready() throws IOException
+	{
+		return delegate.ready();
+	}
+	
+	@Override
 	public void close() throws IOException
 	{
 		delegate.close();
 	}
 	
-	/** Overridden to use delegate reader. */
+	@Override
 	public int read(char[] cbuf, int off, int len) throws IOException
 	{
 		return delegate.read(cbuf, off, len);

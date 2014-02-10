@@ -49,7 +49,7 @@ public class VersionInfo
 			String contents;
 			try
 			{
-				contents = FileUtils.readFileToString(versionFile);
+				contents = FileUtils.readFileToString(versionFile, "UTF-8");
 			}
 			catch (IOException e)
 			{

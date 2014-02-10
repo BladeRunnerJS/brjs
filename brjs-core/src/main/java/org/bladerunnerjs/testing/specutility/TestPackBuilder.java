@@ -38,7 +38,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 			content += className + "\n";
 		}
 		
-		FileUtils.write(testFile, content);
+		FileUtils.write(testFile, content, "UTF-8");
 		
 		return builderChainer;
 	}
@@ -52,7 +52,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + NodeJsContentPlugin.JS_STYLE + "'");
 		}
 		
-		FileUtils.write(testFile, "require('"+className+"');");
+		FileUtils.write(testFile, "require('"+className+"');", "UTF-8");
 		
 		return builderChainer;
 	}

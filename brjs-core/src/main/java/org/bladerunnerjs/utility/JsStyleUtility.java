@@ -24,7 +24,7 @@ public class JsStyleUtility {
 		try {
 			File jsStyleFile = new File(dir, ".js-style");
 			
-			FileUtils.writeStringToFile(jsStyleFile, jsStyle);
+			FileUtils.writeStringToFile(jsStyleFile, jsStyle, "UTF-8");
 		}
 		catch (IOException e) {
 			throw new RuntimeException(e);
@@ -38,7 +38,7 @@ public class JsStyleUtility {
 			File jsStyleFile = new File(dir, ".js-style");
 			
 			if(jsStyleFile.exists()) {
-				jsStyle = FileUtils.readFileToString(jsStyleFile).trim();
+				jsStyle = FileUtils.readFileToString(jsStyleFile, "UTF-8").trim();
 			}
 		}
 		catch (IOException e) {

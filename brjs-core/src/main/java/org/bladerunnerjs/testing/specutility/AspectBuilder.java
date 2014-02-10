@@ -19,21 +19,21 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 	
 	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception 
 	{
-		FileUtils.write(aspect.file("index.html"), generateStringClassReferencesContent(classNames));	
+		FileUtils.write(aspect.file("index.html"), generateStringClassReferencesContent(classNames), "UTF-8");	
 		
 		return builderChainer;
 	}
 
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		FileUtils.write(aspect.assetLocation("resources").file(resourceFileName), generateRootRefContentForClasses(classNames));
+		FileUtils.write(aspect.assetLocation("resources").file(resourceFileName), generateRootRefContentForClasses(classNames), "UTF-8");
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		FileUtils.write(aspect.assetLocation("src").file(resourceFileName), generateRootRefContentForClasses(classNames));
+		FileUtils.write(aspect.assetLocation("src").file(resourceFileName), generateRootRefContentForClasses(classNames), "UTF-8");
 		
 		return builderChainer;
 	}
@@ -50,7 +50,7 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 	
 	public BuilderChainer indexPageRequires(String requirePath) throws Exception
 	{
-		FileUtils.write(aspect.file("index.html"), "require('"+requirePath+"');");
+		FileUtils.write(aspect.file("index.html"), "require('"+requirePath+"');", "UTF-8");
 		
 		return builderChainer;
 	}

@@ -38,7 +38,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFile(String filePath) throws Exception {
-		FileUtils.write(node.file(filePath), filePath + "\n");
+		FileUtils.write(node.file(filePath), filePath + "\n", "UTF-8");
 		
 		return builderChainer;
 	}
@@ -52,7 +52,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
-		FileUtils.write(node.file(filePath), fileContents);
+		FileUtils.write(node.file(filePath), fileContents, "UTF-8");
 		
 		return builderChainer;
 	}
@@ -64,7 +64,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsStorageFile(String pluginName, String filePath) throws Exception {
-		FileUtils.write(node.storageFile(pluginName, filePath), "");
+		FileUtils.write(node.storageFile(pluginName, filePath), "", "UTF-8");
 		
 		return builderChainer;
 	}
