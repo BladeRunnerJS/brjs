@@ -29,6 +29,8 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			aspect = app.aspect("default");
 	}
 	
+	// TODO get these UTF8 char tests passing (test in eclipse AND cmd line)
+//	@Ignore
 	@Test
 	public void utf8CharactersAreBundledCorrectlyForDev() throws Exception {
 		given(aspect).containsFileWithContents("src/Class1.js", "£$€")
@@ -37,6 +39,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 		then(response).containsText("£$€");
 	}
 	
+//	@Ignore
 	@Test
 	public void utf8CharactersAreBundledCorrectlyForProd() throws Exception {
 		given(aspect).containsFileWithContents("src/Class1.js", "£$€")
