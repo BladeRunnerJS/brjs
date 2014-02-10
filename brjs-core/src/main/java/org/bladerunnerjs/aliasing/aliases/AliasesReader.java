@@ -1,7 +1,7 @@
 package org.bladerunnerjs.aliasing.aliases;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -25,6 +25,8 @@ public class AliasesReader {
 	
 	private AliasesData aliasesData;
 	private File aliasesFile;
+
+	private String defaultInputEncoding;
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -39,9 +41,10 @@ public class AliasesReader {
 		}
 	}
 	
-	public AliasesReader(AliasesData aliasesData, File aliasesFile) {
+	public AliasesReader(AliasesData aliasesData, File aliasesFile, String defaultInputEncoding) {
 		this.aliasesData = aliasesData;
 		this.aliasesFile = aliasesFile;
+		this.defaultInputEncoding = defaultInputEncoding;
 	}
 	
 	public void read() throws BundlerFileProcessingException {
@@ -49,7 +52,7 @@ public class AliasesReader {
 		aliasesData.groupNames = new ArrayList<>();
 		
 		if(aliasesFile.exists()) {
-			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(aliasesFile, aliasesSchema)) {
+			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(aliasesFile, defaultInputEncoding, aliasesSchema)) {
 				while(streamReader.hasNextTag()) {
 					streamReader.nextTag();
 					
@@ -71,7 +74,7 @@ public class AliasesReader {
 				
 				throw new BundlerFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
-			catch (FileNotFoundException e) {
+			catch (IOException e) {
 				throw new BundlerFileProcessingException(aliasesFile, e);
 			}
 		}

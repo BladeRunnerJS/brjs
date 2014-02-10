@@ -1,9 +1,6 @@
 package org.bladerunnerjs.model;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -11,6 +8,7 @@ import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.model.engine.NodeProperties;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
@@ -19,6 +17,7 @@ import org.bladerunnerjs.utility.FileModifiedChecker;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
+import org.bladerunnerjs.utility.UnicodeReader;
 
 /**
  * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
@@ -33,20 +32,27 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private FileModifiedChecker fileModifiedChecker;
 	private AssetLocation assetLocation;
 	private String assetPath;
+	private String defaultInputEncoding;
 	
 	public void initialize(AssetLocation assetLocation, File dir, String assetName)
 	{
-		this.assetLocation = assetLocation;
-		app = assetLocation.getAssetContainer().getApp();
-		appProperties = app.nodeProperties("fully-qualified-linked-asset");
-		this.assetFile = new File(dir, assetName);
-		assetPath = RelativePathUtility.get(app.dir(), assetFile);
-		fileModifiedChecker = new FileModifiedChecker(assetFile);
+		try {
+			this.assetLocation = assetLocation;
+			app = assetLocation.getAssetContainer().getApp();
+			appProperties = app.nodeProperties("fully-qualified-linked-asset");
+			this.assetFile = new File(dir, assetName);
+			assetPath = RelativePathUtility.get(app.dir(), assetFile);
+			fileModifiedChecker = new FileModifiedChecker(assetFile);
+			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
-	public Reader getReader() throws FileNotFoundException {
-		return new BufferedReader( new FileReader(assetFile) );
+	public Reader getReader() throws IOException {
+		return new UnicodeReader(assetFile, defaultInputEncoding);
 	}
 	
 	@Override

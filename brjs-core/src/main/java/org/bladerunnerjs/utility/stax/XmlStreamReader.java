@@ -1,7 +1,7 @@
 package org.bladerunnerjs.utility.stax;
 
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -10,12 +10,12 @@ import org.codehaus.stax2.XMLStreamReader2;
 
 public class XmlStreamReader implements AutoCloseable {
 	private XMLStreamReader2 streamReader;
-	private FileReader fileReader;
+	private Reader reader;
 	private int startDepth;
 	
-	public XmlStreamReader(XMLStreamReader2 streamReader, FileReader fileReader) {
+	public XmlStreamReader(XMLStreamReader2 streamReader, Reader reader) {
 		this.streamReader = streamReader;
-		this.fileReader = fileReader;
+		this.reader = reader;
 		startDepth = streamReader.getDepth() + 1;
 	}
 	
@@ -28,8 +28,8 @@ public class XmlStreamReader implements AutoCloseable {
 		try {
 			streamReader.close();
 			
-			if(fileReader != null) {
-				fileReader.close();
+			if(reader != null) {
+				reader.close();
 			}
 		}
 		catch (IOException e) {

@@ -1,8 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
@@ -15,8 +13,10 @@ import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.UnicodeReader;
 
 public class I18nAssetFile implements Asset
 {
@@ -33,19 +33,26 @@ public class I18nAssetFile implements Asset
 	private AssetLocation assetLocation;
 	private File assetFile;
 	private String assetPath;
+	private String defaultInputEncoding;
 
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
 	{
-		this.assetLocation = assetLocation;
-		this.assetFile = new File(dir, assetName);
-		assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
+		try {
+			this.assetLocation = assetLocation;
+			this.assetFile = new File(dir, assetName);
+			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
+			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public Reader getReader() throws FileNotFoundException
+	public Reader getReader() throws IOException
 	{
-		return new FileReader(assetFile);
+		return new UnicodeReader(assetFile, defaultInputEncoding);
 	}
 
 	@Override
@@ -87,7 +94,7 @@ public class I18nAssetFile implements Asset
 		Map<String, String> propertiesMap = new HashMap<String,String>();
 		
 		Properties i18nProperties = new Properties();
-		i18nProperties.load( new FileReader(assetFile) );
+		i18nProperties.load( new UnicodeReader(assetFile, defaultInputEncoding) );
 		
 		for (String property : i18nProperties.stringPropertyNames())
 		{

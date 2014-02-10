@@ -10,6 +10,7 @@ import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
 
@@ -22,11 +23,18 @@ public class AliasesFile {
 	private BundlableNode bundlableNode;
 	
 	public AliasesFile(File parent, String child, BundlableNode bundlableNode) {
-		this.bundlableNode = bundlableNode;
-		file = new File(parent, child);
-		fileModifiedChecker = new FileModifiedChecker(file);
-		reader = new AliasesReader(data, file);
-		writer = new AliasesWriter(data, file);
+		try {
+			this.bundlableNode = bundlableNode;
+			file = new File(parent, child);
+			fileModifiedChecker = new FileModifiedChecker(file);
+			
+			String defaultInputEncoding = bundlableNode.root().bladerunnerConf().getDefaultInputEncoding();
+			reader = new AliasesReader(data, file, defaultInputEncoding);
+			writer = new AliasesWriter(data, file, defaultInputEncoding);
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public File getUnderlyingFile() {

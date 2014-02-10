@@ -22,14 +22,18 @@ public class UnicodeReader extends Reader
 	
 	private InputStreamReader delegate;
 	
-	public UnicodeReader(InputStream in) throws IOException
-	{
-		init(in, null);
-	}
-	
 	public UnicodeReader(InputStream in, String defaultEnc) throws IOException
 	{
 		init(in, defaultEnc);
+	}
+	
+	public UnicodeReader(InputStream in) throws IOException
+	{
+		this(in, null);
+	}
+	
+	public UnicodeReader(File file, String defaultEnc) throws IOException {
+		this(new BufferedInputStream(new FileInputStream(file)), defaultEnc);
 	}
 	
 	/**
