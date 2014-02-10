@@ -7,7 +7,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CssBundlerPluginTest extends SpecTest {
+public class CssContentPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private JsLib nonConformantLib;
