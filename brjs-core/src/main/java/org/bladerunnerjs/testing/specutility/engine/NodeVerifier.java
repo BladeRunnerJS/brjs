@@ -2,18 +2,20 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import static org.junit.Assert.*;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
+import org.bladerunnerjs.utility.FileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class NodeVerifier<N extends Node> {
 	protected final VerifierChainer verifierChainer;
 	private final N node;
+	private final FileUtil fileUtil;
 	
 	public NodeVerifier(SpecTest specTest, N node) {
 		this.node = node;
+		fileUtil = new FileUtil("UTF-8");
 		verifierChainer = new VerifierChainer(specTest);
 	}
 	
@@ -61,7 +63,7 @@ public abstract class NodeVerifier<N extends Node> {
 	
 	public VerifierChainer fileHasContents(String fileName, String fileContents) throws Exception {
 		assertTrue("The file '" + fileName + "' did not exist at: " + node.file(fileName).getAbsoluteFile(), node.file(fileName).exists());
-		assertEquals(fileContents, FileUtils.readFileToString(node.file(fileName), "UTF-8"));
+		assertEquals(fileContents, fileUtil.readFileToString(node.file(fileName)));
 		
 		return verifierChainer;
 		

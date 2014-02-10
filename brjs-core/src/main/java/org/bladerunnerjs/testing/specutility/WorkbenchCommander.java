@@ -5,7 +5,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -42,7 +41,7 @@ public class WorkbenchCommander extends NodeCommander<Workbench>
 	public void pageLoaded(StringBuffer pageResponse, String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException, RequirePathException 
 	{
 		StringWriter writer = new StringWriter();	
-		TagPluginUtility.filterContent(FileUtils.readFileToString(workbench.file("index.html"), "UTF-8"), workbench.getBundleSet(), writer, RequestMode.Dev, locale);
+		TagPluginUtility.filterContent(fileUtil.readFileToString(workbench.file("index.html")), workbench.getBundleSet(), writer, RequestMode.Dev, locale);
 		pageResponse.append(writer.toString());
 	}
 }

@@ -1,6 +1,5 @@
 package org.bladerunnerjs.testing.specutility;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.AssetContainerBuilder;
@@ -19,21 +18,21 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 	
 	public BuilderChainer indexPageRefersTo(String... classNames) throws Exception 
 	{
-		FileUtils.write(aspect.file("index.html"), generateStringClassReferencesContent(classNames), "UTF-8");	
+		fileUtil.write(aspect.file("index.html"), generateStringClassReferencesContent(classNames));	
 		
 		return builderChainer;
 	}
 
 	public BuilderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		FileUtils.write(aspect.assetLocation("resources").file(resourceFileName), generateRootRefContentForClasses(classNames), "UTF-8");
+		fileUtil.write(aspect.assetLocation("resources").file(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
-		FileUtils.write(aspect.assetLocation("src").file(resourceFileName), generateRootRefContentForClasses(classNames), "UTF-8");
+		fileUtil.write(aspect.assetLocation("src").file(resourceFileName), generateRootRefContentForClasses(classNames));
 		
 		return builderChainer;
 	}
@@ -50,7 +49,7 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 	
 	public BuilderChainer indexPageRequires(String requirePath) throws Exception
 	{
-		FileUtils.write(aspect.file("index.html"), "require('"+requirePath+"');", "UTF-8");
+		fileUtil.write(aspect.file("index.html"), "require('"+requirePath+"');");
 		
 		return builderChainer;
 	}

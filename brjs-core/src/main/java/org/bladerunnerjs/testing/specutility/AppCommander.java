@@ -3,7 +3,6 @@ package org.bladerunnerjs.testing.specutility;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -93,7 +92,7 @@ public class AppCommander extends NodeCommander<App> {
 	{
 		call(new Command() {
 			public void call() throws Exception {
-				FileUtils.write(app.file(filePath), fileContents, "UTF-8");
+				fileUtil.write(app.file(filePath), fileContents);
 			}
 		});
 		

@@ -1,18 +1,20 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
+import org.bladerunnerjs.utility.FileUtil;
 
 
 public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	protected final CommanderChainer commanderChainer;
 	private final N node;
+	protected final FileUtil fileUtil;
 	
 	public NodeCommander(SpecTest modelTest, N node) {
 		super(modelTest);
 		this.node = node;
+		fileUtil = new FileUtil("UTF-8");
 		commanderChainer = new CommanderChainer(modelTest);
 	}
 	
@@ -58,7 +60,7 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	
 	// TODO Unable to use composition to create new private NodeBuilder instance because it's an abstract class
 	public CommanderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
-		FileUtils.write(node.file(filePath), fileContents, "UTF-8");
+		fileUtil.write(node.file(filePath), fileContents);
 		
 		return commanderChainer;
 	}

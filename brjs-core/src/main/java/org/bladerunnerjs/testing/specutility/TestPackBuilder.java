@@ -3,7 +3,6 @@ package org.bladerunnerjs.testing.specutility;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
@@ -38,7 +37,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 			content += className + "\n";
 		}
 		
-		FileUtils.write(testFile, content, "UTF-8");
+		fileUtil.write(testFile, content);
 		
 		return builderChainer;
 	}
@@ -52,7 +51,7 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 			throw new RuntimeException("testRequires() can only be used if packageOfStyle() has been set to '" + NodeJsContentPlugin.JS_STYLE + "'");
 		}
 		
-		FileUtils.write(testFile, "require('"+className+"');", "UTF-8");
+		fileUtil.write(testFile, "require('"+className+"');");
 		
 		return builderChainer;
 	}
