@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -36,9 +35,9 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		this(rootNode, parent, dir, null);
 	}
 	
-	public static NodeItem<StandardJsLib> createSdkNodeItem()
+	public static NodeMap<StandardJsLib> createSdkLibNodeSet(RootNode rootNode)
 	{
-		return new NodeItem<>(StandardJsLib.class, "sdk/libs/javascript/caplin");
+		return new NodeMap<>(rootNode, StandardJsLib.class, "sdk/libs/javascript/caplin", null);
 	}
 	
 	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)

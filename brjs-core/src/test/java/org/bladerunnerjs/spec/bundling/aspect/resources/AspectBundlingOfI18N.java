@@ -28,7 +28,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
-			sdkLib = brjs.sdkLib();
+			sdkLib = brjs.sdkLib("br");
 	}
 	
 	// Aspect

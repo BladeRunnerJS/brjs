@@ -138,24 +138,25 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	
 	private void appendAllLibraryFiles(File contextDir, List<File> sourceFiles) throws BundlerProcessingException
 	{
-		JsLib jsLib = BRJSAccessor.root.sdkLib();
-		
-		AssetLocation libSrcRoot = jsLib.assetLocation("src");
-		AssetLocation libResourcesRoot = jsLib.assetLocation("resources");
-
-		if(libSrcRoot.dirExists())
+		for (JsLib jsLib : BRJSAccessor.root.sdkLibs())
 		{
-			bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
-		}
-		
-		if(libResourcesRoot.dirExists())
-		{
-			List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
-			
-			for(File libraryResourceDir : libraryResourceDirs)
-			{
-				bundlerFileAppender.appendLibraryResourceFiles(libraryResourceDir, sourceFiles);
-			}
+    		AssetLocation libSrcRoot = jsLib.assetLocation("src");
+    		AssetLocation libResourcesRoot = jsLib.assetLocation("resources");
+    
+    		if(libSrcRoot.dirExists())
+    		{
+    			bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
+    		}
+    		
+    		if(libResourcesRoot.dirExists())
+    		{
+    			List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
+    			
+    			for(File libraryResourceDir : libraryResourceDirs)
+    			{
+    				bundlerFileAppender.appendLibraryResourceFiles(libraryResourceDir, sourceFiles);
+    			}
+    		}
 		}
 	}
 	
