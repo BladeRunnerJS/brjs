@@ -133,7 +133,42 @@ public class CssBundlerPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css", "dir/style3.css");
 	}
 	
-	// TODO: tests for locale specific themed css files
+	@Test
+	public void nonLocaleRequestsBundleNonLocaleOnlyStylesheets() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("style.css")
+			.and(requestResponse).doesNotContainText("style_de.css")
+			.and(requestResponse).doesNotContainText("style_de_DE.css")
+			.and(requestResponse).doesNotContainText("style_de_CH.css");
+	}
+	
+	@Test
+	public void languageRequestsBundleLanguageOnlyStylesheets() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
+		when(app).requestReceived("/default-aspect/css/common_de/bundle.css", requestResponse);
+		then(requestResponse).containsText("style_de.css")
+			.and(requestResponse).doesNotContainText("style.css")
+			.and(requestResponse).doesNotContainText("style_de_DE.css")
+			.and(requestResponse).doesNotContainText("style_de_CH.css");
+	}
+	
+	@Test
+	public void localeRequestsBundleLocaleOnlyStylesheets() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
+		when(app).requestReceived("/default-aspect/css/common_de_DE/bundle.css", requestResponse);
+		then(requestResponse).containsText("style_de_DE.css")
+			.and(requestResponse).doesNotContainText("style.css")
+			.and(requestResponse).doesNotContainText("style_de.css")
+			.and(requestResponse).doesNotContainText("style_de_CH.css");
+	}
+	
 	
 	@Test
 	public void referringToAnImageCausesACssResourceRequestToBeCreated() throws Exception {
