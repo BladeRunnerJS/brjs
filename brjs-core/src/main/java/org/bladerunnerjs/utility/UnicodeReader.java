@@ -1,6 +1,6 @@
 // class copied from <http://www.java2s.com/Code/Java/Development-Class/Unicodereader.htm>
 
-package com.caplin.cutlass.io;
+package org.bladerunnerjs.utility;
 
 import java.io.*;
 
