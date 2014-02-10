@@ -107,11 +107,13 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				String language = locale;
 				
 				contentPaths.add(contentPathParser.createRequest("language-request", theme, language));
-			} else {
+			}
+			else {
 				String[] parts = locale.split("_");
 				String language = parts[0];
 				String country = parts[1];
 				
+				contentPaths.add(contentPathParser.createRequest("language-request", theme, language));
 				contentPaths.add(contentPathParser.createRequest("locale-request", theme, language, country));
 			}
 		}
