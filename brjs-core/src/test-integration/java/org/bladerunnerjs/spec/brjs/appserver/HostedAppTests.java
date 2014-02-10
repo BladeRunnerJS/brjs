@@ -23,17 +23,16 @@ public class HostedAppTests extends SpecTest
 
 		// generate the app structure
 		App app = brjs.app("app");
-    	Aspect aspect = app.aspect("default");
-    	Bladeset bs = app.bladeset("bs");
-    	Blade b1 = bs.blade("b1");
-    	Workbench workbench = b1.workbench();
+		Aspect aspect = app.aspect("default");
+		Bladeset bs = app.bladeset("bs");
+		Blade b1 = bs.blade("b1");
+		Workbench workbench = b1.workbench();
 		
-    	given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(b1).hasClass("appns/bs/b1/Class")
 			.and(workbench).containsFileWithContents("index.html", "require('appns.bs.b1.Class');");
-    	
-    		
+		
 		appServer = brjs.applicationServer(appServerPort);
 		appServer.start();
 	}

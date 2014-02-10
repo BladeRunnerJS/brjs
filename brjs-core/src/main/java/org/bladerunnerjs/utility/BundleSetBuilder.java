@@ -57,13 +57,12 @@ public class BundleSetBuilder {
 		
 		if (sourceModules.size() > 0)
 		{
-    		try {
-    			
-    			addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
-    		}
-    		catch(RequirePathException e) {
-    			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-    		}
+			try {
+				addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
+			}
+			catch(RequirePathException e) {
+				// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+			}
 		}
 		
 		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourceLocationList);
@@ -88,13 +87,13 @@ public class BundleSetBuilder {
 			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
 			if (linkedAsset instanceof SourceModule)
 			{
-	    		try {
-	    			
-	    			addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
-	    		}
-	    		catch(RequirePathException e) {
-	    			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-	    		}
+				try {
+					
+					addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
+				}
+				catch(RequirePathException e) {
+					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+				}
 			}
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			

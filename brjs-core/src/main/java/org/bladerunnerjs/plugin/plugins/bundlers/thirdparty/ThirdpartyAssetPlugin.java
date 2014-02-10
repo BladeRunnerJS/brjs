@@ -23,15 +23,15 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	{
 		try
 		{
-    		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
-    		if (assetLocation instanceof ThirdpartyAssetLocation)
-    		{
-    			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
-    			ThirdpartySourceModule sourceModule = assetLocation.obtainAsset(ThirdpartySourceModule.class, assetLocation.dir(), "");
+			List<SourceModule> sourceModules = new ArrayList<SourceModule>();
+			if (assetLocation instanceof ThirdpartyAssetLocation)
+			{
+				NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
+				ThirdpartySourceModule sourceModule = assetLocation.obtainAsset(ThirdpartySourceModule.class, assetLocation.dir(), "");
 				sourceModule.initManifest(manifest);
 				sourceModules.add( sourceModule );
-    		}
-    		return sourceModules;
+			}
+			return sourceModules;
 		}
 		catch (ConfigException | AssetFileInstantationException ex)
 		{

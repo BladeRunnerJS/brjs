@@ -34,7 +34,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-    		.accepts("thirdparty/bundle.js").as("bundle-request")
+			.accepts("thirdparty/bundle.js").as("bundle-request")
 				.and("thirdparty/<module>/bundle.js").as("single-module-request")
 				.and("thirdparty/<module>/<file-path>").as("file-request")
 			.where("module").hasForm(".+")
@@ -77,9 +77,9 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
 						if(sourceFile instanceof ThirdpartySourceModule)
 						{
-    						writer.write("// " + sourceFile.getRequirePath() + "\n");
-    						IOUtils.copy(sourceFile.getReader(), writer);
-    						writer.write("\n\n");
+							writer.write("// " + sourceFile.getRequirePath() + "\n");
+							IOUtils.copy(sourceFile.getReader(), writer);
+							writer.write("\n\n");
 						}
 					}
 				}

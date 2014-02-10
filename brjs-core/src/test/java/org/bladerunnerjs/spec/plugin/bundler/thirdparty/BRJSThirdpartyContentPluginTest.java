@@ -50,7 +50,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/bundle.js", pageResponse);
 		then(pageResponse).containsText("file1 = {}")
 			.and(pageResponse).containsText("file3 = {}")
-    		.and(pageResponse).doesNotContainText("file2 = {}");
+			.and(pageResponse).doesNotContainText("file2 = {}");
 	}
 	
 	@Test

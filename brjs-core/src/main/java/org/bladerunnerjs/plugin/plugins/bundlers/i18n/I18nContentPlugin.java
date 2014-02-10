@@ -95,18 +95,18 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	{
 		try 
 		{
-    		List<String> contentPaths = new ArrayList<String>();
-    		for (String locale : locales)
-    		{
-    			String requestPath = "";
-    			if (locale.contains("_")) {
-    				requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, StringUtils.substringBefore(locale, "_"), StringUtils.substringAfter(locale, "_"));			
-    			} else {
-    				requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
-    			}
-    			contentPaths.add(requestPath);
-    		}
-    		return contentPaths;
+			List<String> contentPaths = new ArrayList<String>();
+			for (String locale : locales)
+			{
+				String requestPath = "";
+				if (locale.contains("_")) {
+					requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, StringUtils.substringBefore(locale, "_"), StringUtils.substringAfter(locale, "_"));			
+				} else {
+					requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
+				}
+				contentPaths.add(requestPath);
+			}
+			return contentPaths;
 		}
 		catch (Exception ex)
 		{
@@ -182,14 +182,14 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			if (asset instanceof I18nAssetFile)
 			{
 				I18nAssetFile i18nAsset = (I18nAssetFile) asset;
-    			if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
-    			{
-    				languageAndLocationAssets.add(i18nAsset);
-    			}
-    			else if (i18nAsset.getLocaleLanguage().length() > 0)
-    			{
-    				languageOnlyAssets.add(i18nAsset);					
-    			}
+				if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
+				{
+					languageAndLocationAssets.add(i18nAsset);
+				}
+				else if (i18nAsset.getLocaleLanguage().length() > 0)
+				{
+					languageOnlyAssets.add(i18nAsset);
+				}
 			}
 		}
 		

@@ -149,10 +149,10 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 				for(SourceModule sourceModule : assetContainer.sourceModules()) {
 					if (!sourceModule.getAssetPath().equals(getAssetPath())) {
 						addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule.getRequirePath()));
-	    				if (sourceModule.getClassname() != null)
-	    				{
-	    					addToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule.getRequirePath()));
-	    				}
+						if (sourceModule.getClassname() != null)
+						{
+							addToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule.getRequirePath()));
+						}
 					}
 				}
 				

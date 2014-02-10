@@ -38,13 +38,13 @@ public class BRJSServletFilterTest extends SpecTest
 			.and(brjs).usedForServletModel()
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
-    		appServer = brjs.applicationServer(appServerPort);
-    		app = brjs.app("app");
-    		aspect = app.aspect("default");
-    		blade = app.bladeset("bs").blade("b1");
-    		appJars = brjs.appJars();
-    		appJars.create();
-    		helloWorldServlet = new HelloWorldServlet();
+			appServer = brjs.applicationServer(appServerPort);
+			app = brjs.app("app");
+			aspect = app.aspect("default");
+			blade = app.bladeset("bs").blade("b1");
+			appJars = brjs.appJars();
+			appJars.create();
+			helloWorldServlet = new HelloWorldServlet();
 	}
 	
 	
@@ -70,9 +70,9 @@ public class BRJSServletFilterTest extends SpecTest
 	public void aspectIndexFileIsFiltered() throws Exception
 	{
 		given(app).hasBeenCreated()
-    		.and(aspect).hasBeenCreated()
-    		.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
-    		.and(appServer).started();
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
+			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "dev replacement");
 	}
 	
@@ -81,9 +81,9 @@ public class BRJSServletFilterTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(app).hasSupportedLocales("ab_CD")
-    		.and(aspect).hasBeenCreated()
-    		.and(aspect).containsFileWithContents("index.html", "<@localeToken @/>")
-    		.and(appServer).started();
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("index.html", "<@localeToken @/>")
+			.and(appServer).started();
 		when(webappTester).makesRequestWithLocale("ab_CD");
 		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "- ab_CD");
 	}

@@ -110,15 +110,15 @@ public class ThirdpartySourceModule implements SourceModule
 		
 		try 
 		{
-    		for (String dependentLibName : manifest.getDepends())
-    		{
-    			JsLib dependentLib = assetLocation.getAssetContainer().getApp().nonBladeRunnerLib(dependentLibName);
-    			if (!dependentLib.dirExists())
-    			{
-    				throw new ConfigException(String.format("Library '%s' depends on '%s', which doesn't exist.", getAssetName(), dependentLibName)) ;
-    			}
-    			dependentLibs.addAll(dependentLib.sourceModules());
-    		}
+			for (String dependentLibName : manifest.getDepends())
+			{
+				JsLib dependentLib = assetLocation.getAssetContainer().getApp().nonBladeRunnerLib(dependentLibName);
+				if (!dependentLib.dirExists())
+				{
+					throw new ConfigException(String.format("Library '%s' depends on '%s', which doesn't exist.", getAssetName(), dependentLibName)) ;
+				}
+				dependentLibs.addAll(dependentLib.sourceModules());
+			}
 		}
 		catch (ConfigException ex)
 		{

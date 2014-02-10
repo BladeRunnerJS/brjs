@@ -124,8 +124,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 					}
 					
 					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
-    				writePackageStructure(packageStructure, writer);
-    				writer.write("\n");
+					writePackageStructure(packageStructure, writer);
+					writer.write("\n");
 					
 					writer.write( jsContent.toString() );
 				}
@@ -141,8 +141,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 						}
 					}
 					
-    				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
-    				writePackageStructure(packageStructure, writer);
+					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
+					writePackageStructure(packageStructure, writer);
 				}
 			}
 			else {
@@ -160,8 +160,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			if (sourceModule instanceof NamespacedJsSourceModule)
 			{
-    			List<String> packageList = Arrays.asList(sourceModule.getClassname().split("\\."));
-    			addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
+				List<String> packageList = Arrays.asList(sourceModule.getClassname().split("\\."));
+				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}
 		

@@ -101,8 +101,8 @@ public class NodeJsContentPlugin extends AbstractContentPlugin {
 						if (sourceModule instanceof NodeJsSourceModule)
 						{
 							writer.write("// " + sourceModule.getRequirePath() + "\n");
-    						IOUtils.copy(sourceModule.getReader(), writer);
-    						writer.write("\n\n");
+							IOUtils.copy(sourceModule.getReader(), writer);
+							writer.write("\n\n");
 						}
 					}
 				}
