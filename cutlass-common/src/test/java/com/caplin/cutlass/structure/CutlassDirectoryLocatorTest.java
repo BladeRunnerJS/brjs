@@ -487,46 +487,6 @@ public class CutlassDirectoryLocatorTest
 		assertEquals(new File(testBase + "/cutlass-libraries"), getRootDir(new File(testBase + "/cutlass-libraries/sdk/libs/javascript/caplin/src/caplin/alerts/empty.txt")));
 		assertEquals(new File(testBase + "/cutlass-libraries/" + SDK_DIR), SdkModel.getSdkPath(new File(testBase + "/cutlass-libraries/sdk/libs/javascript/caplin/src/caplin/alerts/empty.txt")).getDir());
 	}
-
-	@Test
-	public void testGettingSdkLevelResources() throws Exception
-	{
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase)));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/apps/")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/apps/app1")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/apps/app1/a-aspect")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/apps/app1/a-bladeset")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/apps/app1/a-bladeset/blades/blade1")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/apps/app1/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/sdk/")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/sdk/a-dir")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/sdk/a-dir/empty.txt")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/sdk/libs/javascript/caplin/src/caplin")));
-
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File(testBase + "/sdk/a-dir/non-existant.dir/file.txt")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/resources").getAbsoluteFile(), getSdkJsResourcesDir(new File("src/test/resources/")));
-		assertEquals(null, getSdkJsResourcesDir(null));
-	}
-
-	@Test
-	public void testGettingSdkLevelCaplinSrc() throws Exception
-	{		
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase)));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/apps/")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/apps/app1")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/apps/app1/a-aspect")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/apps/app1/a-bladeset")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/apps/app1/a-bladeset/blades/blade1")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/apps/app1/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/sdk/")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/sdk/a-dir")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/sdk/a-dir/empty.txt")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/sdk/libs/javascript/caplin/src/caplin")));
-
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File(testBase + "/sdk/a-dir/non-existant.dir/file.txt")));
-		assertEquals(new File(testBase + "/sdk/libs/javascript/caplin/src").getAbsoluteFile(), getSDkCaplinSrcDir(new File("src/test/resources/")));
-		assertEquals(null, getSDkCaplinSrcDir(null));
-	}
 	
 	@Test
 	public void testGettingSdkLevelThirdpartySrc() throws Exception

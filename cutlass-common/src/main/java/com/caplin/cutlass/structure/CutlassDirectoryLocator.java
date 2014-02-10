@@ -476,42 +476,6 @@ public class CutlassDirectoryLocator
 	}
 	
 	//TODO: move to sdk model
-	public static File getSdkJsResourcesDir(File location)
-	{
-		if(invalidInput(location))
-		{
-			return null;
-		}
-
-		AssetLocation resourcesDir = BRJSAccessor.root.sdkLib().assetLocation("resources");
-
-		if(resourcesDir.dirExists())
-		{
-			return resourcesDir.dir();
-		}
-		
-		return null;
-	}
-
-	//TODO: move to sdk model
-	public static File getSDkCaplinSrcDir(File location)
-	{
-		if (invalidInput(location))
-		{
-			return null;
-		}
-
-		AssetLocation srcDir = BRJSAccessor.root.sdkLib().assetLocation("src");
-		
-		if(srcDir.dirExists())
-		{
-			return srcDir.dir();
-		}
-		
-		return null;
-	}
-	
-	//TODO: move to sdk model
 	public static File getSDkThirdpartySrcDir(File location)
 	{
 		if (invalidInput(location))
