@@ -1,6 +1,7 @@
 package com.caplin.cutlass.bundler.css;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.bundler.BundlerFileTester;
@@ -30,7 +31,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void appAspectLevelThemeCommonRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/main-aspect")
@@ -56,7 +57,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void appAspectLevelThemeCommonLocaleRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/main-aspect")
@@ -81,7 +82,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void appAspectLevelThemeCommonBrowserRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/main-aspect")
@@ -106,7 +107,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladesetLevelThemeCommonRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset")
@@ -127,7 +128,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladesetLevelThemeCommonLocaleRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset")
@@ -148,7 +149,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladesetLevelThemeCommonBrowserRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset")
@@ -172,7 +173,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladeLevelThemeCommonRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1")
@@ -195,7 +196,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladeLevelThemeCommonLocaleRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1")
@@ -218,7 +219,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladeLevelThemeCommonBrowserRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1")
@@ -245,7 +246,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void workbenchLevelThemeCommonRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench")
@@ -273,7 +274,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void workbenchLevelThemeCommonLocaleRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench")
@@ -300,7 +301,7 @@ public class StructureCssBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void workbenchLevelThemeCommonBrowserRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench")

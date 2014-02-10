@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
@@ -44,7 +45,7 @@ public class ClassProcessorFactoryTest {
 		aliasRegistry = new AliasRegistry( baseDir, null, validClasses );
 	}
 	
-	@Test
+	@Test @Ignore
 	public void classDictionaryIncludesAliases() {
 		ClassProcessor classProcessor = ClassProcessorFactory.createClassProcessor( sourceFiles, patchFiles, thirdpartyClassnames, aliasRegistry );
 		

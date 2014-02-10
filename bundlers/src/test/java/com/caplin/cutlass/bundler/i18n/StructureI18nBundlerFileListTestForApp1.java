@@ -1,6 +1,7 @@
 package com.caplin.cutlass.bundler.i18n;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
@@ -18,7 +19,7 @@ public class StructureI18nBundlerFileListTestForApp1
 		test = new BundlerFileTester(new I18nBundler(), "src/test/resources/generic-bundler/bundler-structure-tests");
 	}
 	
-	@Test
+	@Test @Ignore
 	public void appAspectLevelRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/main-aspect")
@@ -31,7 +32,7 @@ public class StructureI18nBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void appAspectLevelRequestForApp1WithLanguage() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/main-aspect")
@@ -42,7 +43,7 @@ public class StructureI18nBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladesetLevelRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset")
@@ -53,7 +54,7 @@ public class StructureI18nBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladesetLevelRequestForApp1WithLanguage() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset")
@@ -63,7 +64,7 @@ public class StructureI18nBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladeLevelRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1")
@@ -75,7 +76,7 @@ public class StructureI18nBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladeLevelRequestForApp1WithLanguage() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1")
@@ -85,7 +86,7 @@ public class StructureI18nBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void workbenchLevelRequestForApp1() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench")
@@ -99,7 +100,7 @@ public class StructureI18nBundlerFileListTestForApp1
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void workbenchLevelRequestForApp1WithLanguage() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench")

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
@@ -28,7 +29,7 @@ public class JsSourceFileFinderGetSourceFilesTest
 	
 	/* source file tests */
 
-	@Test
+	@Test @Ignore
 	public void testGettingAppAspectSourceFiles() throws Exception 
 	{
 		File baseDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect");
@@ -54,7 +55,7 @@ public class JsSourceFileFinderGetSourceFilesTest
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, actualFiles );
 	}
 
-	@Test
+	@Test @Ignore
 	public void testGettingAppAspectSourceFilesWithTestDir() throws Exception 
 	{
 		File baseDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect");
@@ -81,7 +82,7 @@ public class JsSourceFileFinderGetSourceFilesTest
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
 	}
 
-	@Test
+	@Test @Ignore
 	public void testGettingBladesetAspectSourceFiles() throws Exception 
 	{
 		File baseDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset");
@@ -96,7 +97,7 @@ public class JsSourceFileFinderGetSourceFilesTest
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testGettingBladesetAspectSourceFilesWithTestDir() throws Exception 
 	{
 		File baseDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset");
@@ -113,7 +114,7 @@ public class JsSourceFileFinderGetSourceFilesTest
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
 	}
 
-	@Test
+	@Test @Ignore
 	public void testGettingBladeAspectSourceFiles() throws Exception 
 	{
 		File baseDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1");
@@ -129,7 +130,7 @@ public class JsSourceFileFinderGetSourceFilesTest
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testGettingBladeAspectSourceFilesWithTestDir() throws Exception 
 	{
 		File baseDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1");
@@ -147,7 +148,7 @@ public class JsSourceFileFinderGetSourceFilesTest
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
 	}
 
-	@Test
+	@Test @Ignore
 	public void testGettingWorkbenchAspectSourceFiles() throws Exception 
 	{
 		File baseDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench");
@@ -166,7 +167,7 @@ public class JsSourceFileFinderGetSourceFilesTest
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, sourceFiles );
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testGettingWorkbenchAspectSourceFilesWithTestDir() throws Exception 
 	{
 		File baseDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench");
@@ -186,7 +187,7 @@ public class JsSourceFileFinderGetSourceFilesTest
 		JsSourceFileFinderTestHelper.assertFilesSameAsClassMapping( expectedFiles, SourceFileLocator.getAllSourceFiles(baseDir, testDir) );
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testClassnameFileMappingsAreCorrect() throws Exception 
 	{
 		File baseDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect");

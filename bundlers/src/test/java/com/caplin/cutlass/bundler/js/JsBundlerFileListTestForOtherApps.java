@@ -1,6 +1,7 @@
 package com.caplin.cutlass.bundler.js;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.bundler.BundlerFileTester;
@@ -48,7 +49,7 @@ public class JsBundlerFileListTestForOtherApps
 		});
 	}
 
-	@Test
+	@Test @Ignore
 	public void appAspectLevelRequestForAppUsingSdkLibraryPatch() throws Exception
 	{
 		test = new BundlerFileTester(new JsBundler(), "src/test/resources/js-bundler/patch-sdk-structure");

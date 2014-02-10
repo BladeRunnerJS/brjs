@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.Set;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
@@ -88,7 +89,7 @@ public class AliasRegistryTest
 		activeAliases.addAlias( "bar", sdkFooBar );
 	}
 	
-	@Test
+	@Test @Ignore
 	public void verifySingleAliasFile() throws BundlerProcessingException
 	{
 		activeAliases.addAlias( "alias #1", alias1 );
@@ -101,7 +102,7 @@ public class AliasRegistryTest
 		assertEquals(defaultScenarioJson, aliasRegistry.getJson(classDictionary, activeAliases));
 	}
 	
-	@Test
+	@Test @Ignore
 	public void verifyAliasFileCanOverrideAnAliasDefinitionsFile() throws BundlerProcessingException
 	{
 		activeAliases.addAlias( "novox.example.blade1.alias #1", group1blade1alias1 );
@@ -114,7 +115,7 @@ public class AliasRegistryTest
 		assertEquals(overriddenJson, aliasRegistry.getJson(classDictionary, activeAliases));
 	}
 	
-	@Test
+	@Test @Ignore
 	public void verifyAliasFileCanSwitchScenario() throws BundlerProcessingException
 	{
 		activeAliases.addAlias( "novox.example.blade1.alias #1", group1blade1alias1test );
@@ -127,7 +128,7 @@ public class AliasRegistryTest
 		assertEquals(testScenarioJson, aliasRegistry.getJson(classDictionary, activeAliases));
 	}
 	
-	@Test
+	@Test @Ignore
 	public void verifyAliasWithNoClassReturnsNull() throws BundlerProcessingException
 	{
 		activeAliases.addAlias( "alias #1", new AliasDefinition(null, null, null));
@@ -139,7 +140,7 @@ public class AliasRegistryTest
 		assertEquals(nullClassJson, aliasRegistry.getJson(classDictionary, activeAliases));
 	}
 	
-	@Test
+	@Test @Ignore
 	public void verifyAnAliasGetsAddedToGivenScenario() throws Exception {
 		File testDir = new File(testBase, "single-alias-file/default-aspect");
 		Set<String> validClasses = SourceFileLocator.createValidClasses(SourceFileLocator.getAllSourceFiles(testDir, null));
@@ -159,7 +160,7 @@ public class AliasRegistryTest
 		verify(scenarioAliases).addAlias(eq("myAlias"), eq(alias));
 	}
 	
-	@Test
+	@Test @Ignore
 	public void verifyAliasesWithinAGroupGetAdded() throws BundlerProcessingException
 	{
 		Set<String> validClasses = SourceFileLocator.createValidClasses(SourceFileLocator.getAllSourceFiles(workbenchPathUsingGroups, null));
@@ -182,7 +183,7 @@ public class AliasRegistryTest
 		new AliasRegistry(workbenchPathWithGroupsDefinedTwice, appBaseFile, validClasses);
 	}
 	
-	@Test
+	@Test @Ignore
 	public void anExceptionIsThrownIfAnAliasClashesWithTheSameAliasInAnotherGroup() throws BundlerProcessingException
 	{
 		try {

@@ -1,6 +1,7 @@
 package com.caplin.cutlass.bundler.css;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
@@ -20,7 +21,7 @@ public class StructureCssBundlerFileListTestForApp2
 		
 	
 ///////////////// Aspect Level Tests ///////////////////
-	@Test
+	@Test @Ignore
 	public void requestAspectLevelThemeCommonForDefaultAspect() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app2/default-aspect")
@@ -55,7 +56,7 @@ public class StructureCssBundlerFileListTestForApp2
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void requestAspectLevelThemeCommonRequestForAlternateAspect() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app2/xtra-aspect")
