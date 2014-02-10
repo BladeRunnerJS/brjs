@@ -14,7 +14,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
-	private JsLib sdkLib;
+	private JsLib sdkLib, userLib;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -29,6 +29,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			sdkLib = brjs.sdkLib();
+			userLib = app.jsLib("userLib");
 	}
 	
 	// Aspect
@@ -72,4 +73,18 @@ public class AspectBundlingOfI18N extends SpecTest {
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
 		then(response).containsText("\"br.sdktoken\":\"library token\"");
 	}
+	
+	// User library (specific to an app)
+	@Test
+	public void aspectCanBundleUserLibraries() throws Exception {
+		given(userLib).hasBeenCreated()
+			.and(userLib).hasNamespacedJsPackageStyle()
+			.and(userLib).containsFileWithContents("resources/i18n/en/en.properties", "userLib.token=userLib token")
+			.and(userLib).hasClass("userLib.Class1")
+			.and(aspect).indexPageRefersTo("userLib.Class1");
+		when(app).requestReceived("/default-aspect/i18n/en.js", response);
+		then(response).containsText("\"userLib.token\":\"userLib token\"");
+			
+	}
+	
 }
