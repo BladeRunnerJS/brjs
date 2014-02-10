@@ -10,8 +10,8 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.ThirdpartyAssetLocation;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsSourceModule;
+import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyAssetLocation;
 
 public class InvalidLocationJsAssetPlugin extends AbstractAssetPlugin {
 	private boolean enabled;

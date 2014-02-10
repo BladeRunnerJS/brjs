@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
-public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
+public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
@@ -27,7 +27,7 @@ public class BRJSThirdpartyAssetPlugin extends AbstractAssetPlugin {
     		if (assetLocation instanceof ThirdpartyAssetLocation)
     		{
     			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
-    			BRJSThirdpartySourceModule sourceModule = assetLocation.obtainAsset(BRJSThirdpartySourceModule.class, assetLocation.dir(), "");
+    			ThirdpartySourceModule sourceModule = assetLocation.obtainAsset(ThirdpartySourceModule.class, assetLocation.dir(), "");
 				sourceModule.initManifest(manifest);
 				sourceModules.add( sourceModule );
     		}

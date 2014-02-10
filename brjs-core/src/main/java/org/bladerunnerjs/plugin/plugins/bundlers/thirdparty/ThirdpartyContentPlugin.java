@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +26,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
+public class ThirdpartyContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
@@ -75,7 +75,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
 				{
 					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
-						if(sourceFile instanceof BRJSThirdpartySourceModule)
+						if(sourceFile instanceof ThirdpartySourceModule)
 						{
     						writer.write("// " + sourceFile.getRequirePath() + "\n");
     						IOUtils.copy(sourceFile.getReader(), writer);
@@ -130,7 +130,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 		
 		try {
 			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-				if(sourceModule instanceof BRJSThirdpartySourceModule) {
+				if(sourceModule instanceof ThirdpartySourceModule) {
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
 				}
 			}

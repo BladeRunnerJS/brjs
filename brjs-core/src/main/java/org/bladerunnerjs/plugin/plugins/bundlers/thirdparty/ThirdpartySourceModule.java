@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -26,7 +26,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 
-public class BRJSThirdpartySourceModule implements SourceModule
+public class ThirdpartySourceModule implements SourceModule
 {
 
 	private AssetLocation assetLocation;
