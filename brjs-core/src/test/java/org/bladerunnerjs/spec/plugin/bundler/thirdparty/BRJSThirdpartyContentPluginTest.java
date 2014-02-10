@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -150,23 +151,22 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void testLibraryResourceRequestCanHaveQueryString() throws Exception
+	public void testLibraryResourceRequestCanNotHaveAQueryString() throws Exception
 	{
-		given(exceptions).arentCaught();
 		JsLib appLib = app.nonBladeRunnerLib("myLib");
 		
 		given(appLib).hasBeenCreated()
 			.and(appLib).containsFileWithContents("library.manifest", "js: myFile.js")
 			.and(appLib).containsFileWithContents("myFile.js", "my file contents");
 		when(app).requestReceived("/default-aspect/thirdparty/myLib/myFile.js?q=1234", pageResponse);
-		then(pageResponse).textEquals("my file contents");
+		then(exceptions).verifyException(MalformedRequestException.class);
 	}
 	
 	@Test
 	public void weGetAGoodMessageIfTheLibraryDoesntExist() throws Exception
 	{
 		given(app).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/thirdparty/libThatDoesntExist/myFile.js?q=1234", pageResponse);
+		when(app).requestReceived("/default-aspect/thirdparty/libThatDoesntExist/myFile.js", pageResponse);
 		then(exceptions).verifyException(BundlerProcessingException.class, "libThatDoesntExist");
 	}
 	
@@ -175,7 +175,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
 			.and(thirdpartyLib).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/myFile.js?q=1234", pageResponse);
+		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/myFile.js", pageResponse);
 		then(exceptions).verifyException(BundlerProcessingException.class, thirdpartyLib.file("myFile.js").getAbsolutePath());
 	}
 }

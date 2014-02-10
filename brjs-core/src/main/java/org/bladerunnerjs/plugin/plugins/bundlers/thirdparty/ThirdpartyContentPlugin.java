@@ -37,8 +37,8 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 			.accepts("thirdparty/bundle.js").as("bundle-request")
 				.and("thirdparty/<module>/bundle.js").as("single-module-request")
 				.and("thirdparty/<module>/<file-path>").as("file-request")
-			.where("module").hasForm(".+")
-				.and("file-path").hasForm(".+");
+			.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN)
+				.and("file-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 		
 		contentPathParser = contentPathParserBuilder.build();
 	}

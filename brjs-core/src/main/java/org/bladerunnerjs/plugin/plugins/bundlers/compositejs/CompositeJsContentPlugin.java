@@ -32,7 +32,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			.accepts("js/dev/<locale>/<minifier-setting>/bundle.js").as("dev-bundle-request")
 				.and("js/prod/<locale>/<minifier-setting>/bundle.js").as("prod-bundle-request")
 			.where("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
-				.and("minifier-setting").hasForm("[a-z-]+");
+				.and("minifier-setting").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		
 		contentPathParser = contentPathParserBuilder.build();
 	}

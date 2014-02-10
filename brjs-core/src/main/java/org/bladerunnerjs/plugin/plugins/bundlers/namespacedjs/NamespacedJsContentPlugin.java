@@ -42,7 +42,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 				.accepts("namespaced-js/bundle.js").as("bundle-request")
 					.and("namespaced-js/module/<module>.js").as("single-module-request")
 					.and("namespaced-js/package-definitions.js").as("package-definitions-request")
-				.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
+				.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 			
 			contentPathParser = contentPathParserBuilder.build();
 			prodRequestPaths.add(contentPathParser.createRequest("bundle-request"));
