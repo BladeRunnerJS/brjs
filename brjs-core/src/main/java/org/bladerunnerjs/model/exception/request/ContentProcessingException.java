@@ -6,7 +6,7 @@ package org.bladerunnerjs.model.exception.request;
 public class ContentProcessingException extends RequestHandlingException
 {
 	
-	private static final long serialVersionUID = 7697459338111614915L;
+	private static final long serialVersionUID = 1L;
 	
 	public ContentProcessingException(Throwable cause)
 	{

@@ -3,7 +3,7 @@ package org.bladerunnerjs.model.exception.request;
 public class MalformedRequestException extends RequestHandlingException
 {
 
-	private static final long serialVersionUID = -2969550053270556181L;
+	private static final long serialVersionUID = 1L;
 	private String request = "";
 	private int characterNumber = -1;
 

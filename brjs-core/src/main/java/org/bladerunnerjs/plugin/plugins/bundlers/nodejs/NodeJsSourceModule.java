@@ -29,7 +29,7 @@ import org.bladerunnerjs.utility.UnicodeReader;
 import com.Ostermiller.util.ConcatReader;
 
 public class NodeJsSourceModule implements SourceModule {
-	private static Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
+	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
 	
 	private File assetFile;
 	private Set<String> requirePaths;

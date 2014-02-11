@@ -4,7 +4,7 @@ package org.bladerunnerjs.model.exception.request;
 
 public class ResourceNotFoundException extends RequestHandlingException {
 
-	private static final long serialVersionUID = -7934305990312796421L;
+	private static final long serialVersionUID = 1L;
 
 	public ResourceNotFoundException()
 	{
