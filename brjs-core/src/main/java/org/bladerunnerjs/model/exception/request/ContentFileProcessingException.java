@@ -6,7 +6,7 @@ import java.io.File;
 public class ContentFileProcessingException extends ContentProcessingException
 {
 	 
-	private static final long serialVersionUID = 5326055152554125320L;
+	private static final long serialVersionUID = 1L;
 	
 	private File sourceFile;
 	private int lineNumber = -1;

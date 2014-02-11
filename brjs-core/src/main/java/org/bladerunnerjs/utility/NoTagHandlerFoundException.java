@@ -4,7 +4,7 @@ package org.bladerunnerjs.utility;
 public class NoTagHandlerFoundException extends Exception
 {
 
-	private static final long serialVersionUID = -2248045619960247541L;
+	private static final long serialVersionUID = 1L;
 
 	public NoTagHandlerFoundException(String tagName)
 	{

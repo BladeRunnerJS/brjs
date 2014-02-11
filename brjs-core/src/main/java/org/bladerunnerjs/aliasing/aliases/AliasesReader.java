@@ -21,7 +21,7 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 
 public class AliasesReader {
-	private final static XMLValidationSchema aliasesSchema;
+	private static final XMLValidationSchema aliasesSchema;
 	
 	private AliasesData aliasesData;
 	private File aliasesFile;

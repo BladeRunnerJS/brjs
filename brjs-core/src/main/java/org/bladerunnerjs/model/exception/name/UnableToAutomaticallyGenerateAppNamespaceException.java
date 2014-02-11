@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.App;
 
 public class UnableToAutomaticallyGenerateAppNamespaceException extends InvalidNameException
 {
-	private static final long serialVersionUID = 5666303784767589496L;
+	private static final long serialVersionUID = 1L;
 
 	public UnableToAutomaticallyGenerateAppNamespaceException(App app)
 	{

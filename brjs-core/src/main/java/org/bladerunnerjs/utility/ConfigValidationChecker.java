@@ -9,7 +9,7 @@ import org.bladerunnerjs.yaml.YamlConfFile;
 
 
 public class ConfigValidationChecker {
-	private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+	private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 	
 	public static <T extends YamlConfFile> void validate(T confObject) throws ConfigException 
 	{

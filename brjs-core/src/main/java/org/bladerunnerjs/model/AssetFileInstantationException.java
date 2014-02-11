@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class AssetFileInstantationException extends Exception
 {
-	private static final long serialVersionUID = 6076369548188355671L;
+	private static final long serialVersionUID = 1L;
 	
 	public AssetFileInstantationException(String message) {
 		super(message);
