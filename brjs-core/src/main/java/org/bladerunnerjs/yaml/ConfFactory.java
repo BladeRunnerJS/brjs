@@ -14,7 +14,8 @@ import com.esotericsoftware.yamlbeans.YamlReader.YamlReaderException;
 public class ConfFactory {
 	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, File confFile) throws ConfigException {
 		CF conf = null;
-		String defaultInputEncoding = (confFile.getName().equals("bladerunner.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultInputEncoding();
+		// TODO: get rid of `node == null` guard once we delete no brjs-core code
+		String defaultInputEncoding = ((node == null) || confFile.getName().equals("bladerunner.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultInputEncoding();
 		
 		if(confFile.exists()) {
 			conf = readConf(confFile, confClass, defaultInputEncoding);
