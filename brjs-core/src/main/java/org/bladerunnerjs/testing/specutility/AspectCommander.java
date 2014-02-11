@@ -121,7 +121,6 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		return commanderChainer;
 	}
 	
-	
 	public CommanderChainer classRequires(String sourceClass, String dependencyClass) throws Exception
 	{
 		aspectBuilder.classRequires(sourceClass, dependencyClass);
@@ -132,6 +131,13 @@ public class AspectCommander extends NodeCommander<Aspect> {
 	public CommanderChainer classRequires(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		aspectBuilder.classRequiresThirdpartyLib(sourceClass, thirdpartyLib);
+		
+		return commanderChainer;
+	}
+
+	public CommanderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
+	{
+		aspectBuilder.resourceFileRefersTo(resourceFileName, classNames);
 		
 		return commanderChainer;
 	}
