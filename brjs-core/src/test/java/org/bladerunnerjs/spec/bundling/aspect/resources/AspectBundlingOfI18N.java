@@ -28,7 +28,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
-			sdkLib = brjs.sdkLib("brlib");
+			sdkLib = brjs.sdkLib("br");
 	}
 	
 	// Aspect
@@ -66,10 +66,10 @@ public class AspectBundlingOfI18N extends SpecTest {
 	public void aspectCanBundleSdkLibHtmlResources() throws Exception {
 		given(sdkLib).hasBeenCreated()
 			.and(sdkLib).hasNamespacedJsPackageStyle()
-			.and(sdkLib).containsFileWithContents("resources/i18n/en/en.properties", "br.brlib.sdktoken=library token")
-			.and(sdkLib).hasClass("br.brlib.workbench.ui.Workbench")
-			.and(aspect).indexPageRefersTo("br.brlib.workbench.ui.Workbench");
+			.and(sdkLib).containsFileWithContents("resources/i18n/en/en.properties", "br.sdktoken=library token")
+			.and(sdkLib).hasClass("br.workbench.ui.Workbench")
+			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
-		then(response).containsText("\"br.brlib.sdktoken\":\"library token\"");
+		then(response).containsText("\"br.sdktoken\":\"library token\"");
 	}
 }

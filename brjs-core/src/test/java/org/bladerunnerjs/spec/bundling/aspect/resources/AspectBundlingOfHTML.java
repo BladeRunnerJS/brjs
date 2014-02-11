@@ -28,7 +28,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
-			sdkLib = brjs.sdkLib("brlib");
+			sdkLib = brjs.sdkLib("br");
 	}
 	
 	// Aspect
@@ -63,14 +63,14 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void aspectCanBundleSdkLibHtmlResources() throws Exception {
 		given(sdkLib).hasBeenCreated()
 			.and(sdkLib).hasNamespacedJsPackageStyle()
-			.and(sdkLib).containsFileWithContents("resources/html/workbench.html", "<div id='br.brlib.workbench-view'></div>")
-			.and(sdkLib).hasClass("br.brlib.workbench.ui.Workbench")
+			.and(sdkLib).containsFileWithContents("resources/html/workbench.html", "<div id='br.workbench-view'></div>")
+			.and(sdkLib).hasClass("br.workbench.ui.Workbench")
 			.and(aspect).containsFileWithContents("resources/aspect.html", "<div id='appns.aspect-view'></div>")
-			.and(aspect).indexPageRefersTo("br.brlib.workbench.ui.Workbench");
+			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
 		then(response).containsOrderedTextFragments(
 				"<!-- workbench.html -->",
-				"<div id='br.brlib.workbench-view'></div>",
+				"<div id='br.workbench-view'></div>",
 				"<!-- aspect.html -->",
 				"<div id='appns.aspect-view'></div>" );
 	}

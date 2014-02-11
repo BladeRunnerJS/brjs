@@ -35,6 +35,11 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		this(rootNode, parent, dir, null);
 	}
 	
+	public static NodeMap<StandardJsLib> createSdkLibNodeSet(RootNode rootNode)
+	{
+		return new NodeMap<>(rootNode, StandardJsLib.class, "sdk/libs/javascript/br-libs", null);
+	}
+	
 	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, StandardJsLib.class, "libs", null);
@@ -64,7 +69,7 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	
 	@Override
 	public String getName()
-	{;
+	{
 		// TODO: remove this 'caplin' to 'br' hack once all the code is using the new model
 		return (name != null) ? name : dir().getName().replaceAll("^caplin$", "br");
 	}

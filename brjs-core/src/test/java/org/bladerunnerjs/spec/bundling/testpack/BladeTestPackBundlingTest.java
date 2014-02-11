@@ -37,7 +37,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 			bootsrapThirdparty = brjs.sdkNonBladeRunnerLib("br-bootstrap");
 			browserModules = brjs.sdkNonBladeRunnerLib("browser-modules");
 			appThirdparty = app.nonBladeRunnerLib("appThirdparty");
-			sdkJsLib = brjs.sdkLib("brlib");
+			sdkJsLib = brjs.sdkLib("br");
 	}
 	
 	// N A M E S P A C E D - J S
@@ -135,18 +135,18 @@ public class BladeTestPackBundlingTest extends SpecTest
 	@Test
 	public void weCanBundleSdkJsLibIncludingSdkThirdpartyBootstrapInATs() throws Exception {
 		given(sdkJsLib).hasNamespacedJsPackageStyle()
-			.and(sdkJsLib).classFileHasContent("br.brlib.namespaced.Class1", "sdk class1 contents")
+			.and(sdkJsLib).classFileHasContent("br.namespaced.Class1", "sdk class1 contents")
 			.and(browserModules).containsFileWithContents("library.manifest", "js: file.js")
 			.and(browserModules).containsFileWithContents("file.js", "browser-modules-content")
 			.and(bootsrapThirdparty).containsFileWithContents("library.manifest", "depends: browser-modules")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-			.and(blade).classRefersTo("appns.bs.b1.Class1", "br.brlib.namespaced.Class1", "appns.bs.b1.Class2")
+			.and(blade).classRefersTo("appns.bs.b1.Class1", "br.namespaced.Class1", "appns.bs.b1.Class2")
 			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
 		then(bladeATs).bundledFilesEquals(
 				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
 				blade.assetLocation("src").file("appns/bs/b1/Class2.js"),
-				sdkJsLib.assetLocation("src").file("br/brlib/namespaced/Class1.js"),
+				sdkJsLib.assetLocation("src").file("br/namespaced/Class1.js"),
 				bootsrapThirdparty.dir(),
 				browserModules.dir());
 	}

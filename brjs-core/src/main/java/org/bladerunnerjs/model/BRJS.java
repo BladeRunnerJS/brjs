@@ -53,7 +53,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	private final NodeMap<App> apps = App.createAppNodeSet(this);
 	private final NodeMap<App> systemApps = App.createSystemAppNodeSet(this);
-	private final NodeMap<BRSdkLib> sdkLibs = BRSdkLib.createSdkLibNodeSet(this);
+	private final NodeMap<StandardJsLib> sdkLibs = StandardJsLib.createSdkLibNodeSet(this);
 	private final NodeMap<StandardJsLib> sdkNonBladeRunnerLibs = StandardJsLib.createSdkNonBladeRunnerLibNodeSet(this);
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(DirNode.class, "js-patches");
 	private final NodeMap<NamedDirNode> templates = new NodeMap<>(this, NamedDirNode.class, "sdk/templates", "-template$");

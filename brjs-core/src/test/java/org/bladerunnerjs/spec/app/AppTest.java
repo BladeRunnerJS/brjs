@@ -34,7 +34,7 @@ public class AppTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-			sdkLib = brjs.sdkLib("brlib");
+			sdkLib = brjs.sdkLib("br");
 			app = brjs.app("app1");
 			appLib = app.jsLib("lib1");
 			appTemplate = brjs.template("app");

@@ -24,46 +24,46 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			sdkLib = brjs.sdkLib("brlib");
+			sdkLib = brjs.sdkLib("br");
 	}
 
 	@Test
 	public void aspectBundlesContainsNodeStyleSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
 		given(sdkLib).hasNodeJsPackageStyle()
-			.and(sdkLib).hasClass("br.brlib.SdkClass")
-			.and(aspect).indexPageHasContent("require('br/brlib/SdkClass');");
+			.and(sdkLib).hasClass("br.SdkClass")
+			.and(aspect).indexPageHasContent("require('br/SdkClass');");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsDefinedClasses("br/brlib/SdkClass");
+		then(response).containsDefinedClasses("br/SdkClass");
 	}
 	
 	@Test
 	public void aspectBundlesContainsNamespaceStyleSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
 		given(sdkLib).hasNamespacedJsPackageStyle()
-			.and(sdkLib).hasClass("br.brlib.SdkClass")
-			.and(aspect).indexPageHasContent("require('br/brlib/SdkClass');");
+			.and(sdkLib).hasClass("br.SdkClass")
+			.and(aspect).indexPageHasContent("require('br/SdkClass');");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsDefinedClasses("br/brlib/SdkClass");
+		then(response).containsDefinedClasses("br/SdkClass");
 	}
 	
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(aspect).hasClass("appns.AspectClass")
-			.and(sdkLib).hasClass("br.brlib.SdkClass")
+			.and(sdkLib).hasClass("br.SdkClass")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRefersTo("appns.AspectClass", "br.brlib.SdkClass");
+			.and(aspect).classRefersTo("appns.AspectClass", "br.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("br.brlib.SdkClass");
+		then(response).containsClasses("br.SdkClass");
 	}
 	
 	@Test
 	public void aspectBundlesContainSdkLibsIfTheyAreRequiredInAClass() throws Exception {
 		given(aspect).hasClass("appns.AspectClass")
-			.and(sdkLib).hasClass("br.brlib.SdkClass")
+			.and(sdkLib).hasClass("br.SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns.AspectClass", "br.brlib.SdkClass");
+			.and(aspect).classRequires("appns.AspectClass", "br.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("br.brlib.SdkClass");
+		then(response).containsClasses("br.SdkClass");
 	}
 }
