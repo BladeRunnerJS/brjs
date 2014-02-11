@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.MinifierPlugin;
@@ -59,12 +60,12 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
-		return generateRequiredRequestPaths(true, bundleSet, locales);
+		return generateRequiredRequestPaths("dev-bundle-request", locales);
 	}
 	
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
-		return generateRequiredRequestPaths(false, bundleSet, locales);
+		return generateRequiredRequestPaths("prod-bundle-request", locales);
 	}
 	
 	@Override
@@ -89,16 +90,21 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, String... locales) throws ContentProcessingException {
+	private List<String> generateRequiredRequestPaths(String requestFormName, String[] locales) throws ContentProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
-			if(isDev) {
-				requestPaths.addAll(contentPlugin.getValidDevContentPaths(bundleSet, locales));
+		// TODO: we need to be able to determine which minifier is actually in use so we don't need to create lots of redundant bundles
+		try {
+			for(MinifierPlugin minifier : brjs.plugins().minifiers()) {
+				for(String minifierSettingName : minifier.getSettingNames()) {
+					for(String locale : locales) {
+						requestPaths.add(contentPathParser.createRequest(requestFormName, locale, minifierSettingName));
+					}
+				}
 			}
-			else {
-				requestPaths.addAll(contentPlugin.getValidProdContentPaths(bundleSet, locales));
-			}
+		}
+		catch(MalformedTokenException e) {
+			throw new ContentProcessingException(e);
 		}
 		
 		return requestPaths;
