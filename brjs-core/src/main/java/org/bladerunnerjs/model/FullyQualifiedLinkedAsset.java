@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
 import org.bladerunnerjs.utility.RelativePathUtility;
@@ -165,7 +165,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 					}
 				}
 			}
-			catch (EmptyTrieKeyException | BundlerFileProcessingException ex) {
+			catch (EmptyTrieKeyException | ContentFileProcessingException ex) {
 				throw new ModelOperationException(ex);
 			}
 		}

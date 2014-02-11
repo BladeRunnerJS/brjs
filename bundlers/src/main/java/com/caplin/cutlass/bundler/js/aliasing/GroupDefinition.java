@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 
 public class GroupDefinition implements AliasContainer{
@@ -27,7 +27,7 @@ public class GroupDefinition implements AliasContainer{
 	}
 
 	@Override
-	public void addClassAlias(AliasDefinition alias, String scenario) throws BundlerProcessingException {
+	public void addClassAlias(AliasDefinition alias, String scenario) throws ContentProcessingException {
 		if (!aliasDefinitionsInScenario.containsKey(scenario))
 		{
 			aliasDefinitionsInScenario.put(scenario, new ArrayList<AliasDefinition>());

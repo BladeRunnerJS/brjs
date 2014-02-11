@@ -27,8 +27,8 @@ import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.SourceFileProvider;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
@@ -88,7 +88,7 @@ public class XmlBundler extends AbstractPlugin implements LegacyFileBundlerPlugi
 	}
 
 	@Override
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		
@@ -98,15 +98,15 @@ public class XmlBundler extends AbstractPlugin implements LegacyFileBundlerPlugi
 		}
 		catch (XMLStreamException e)
 		{
-			throw new BundlerFileProcessingException(null, e.getLocation().getLineNumber(), e.getLocation().getColumnNumber(), e.getMessage());
+			throw new ContentFileProcessingException(null, e.getLocation().getLineNumber(), e.getLocation().getColumnNumber(), e.getMessage());
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Error bundling files.");
+			throw new ContentProcessingException(e, "Error bundling files.");
 		}
 		catch (XmlSiblingReaderException e)
 		{
-			throw new BundlerProcessingException(e, "Error bundling files.");
+			throw new ContentProcessingException(e, "Error bundling files.");
 		}
 		finally
 		{

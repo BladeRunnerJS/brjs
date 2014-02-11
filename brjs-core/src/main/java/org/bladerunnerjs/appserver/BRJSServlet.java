@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -55,7 +55,7 @@ public class BRJSServlet extends DefaultServlet
 			BRJS brjs = ServletModelAccessor.aquireModel();
 			response.setContentType(servletContext.getMimeType(request.getRequestURI()));
 			app.handleLogicalRequest(new BladerunnerUri(brjs, servletContext, request), response.getOutputStream());
-		} catch (MalformedRequestException | ResourceNotFoundException | BundlerProcessingException e) {
+		} catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException e) {
 			throw new ServletException(e);
 		}
 		finally {

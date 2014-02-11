@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.InputSource;
@@ -58,17 +58,17 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		return generateRequiredRequestPaths(true, bundleSet, locales);
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		return generateRequiredRequestPaths(false, bundleSet, locales);
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
 		if(contentPath.formName.equals("dev-bundle-request") || contentPath.formName.equals("prod-bundle-request")) {
 			try {
 				String minifierSetting = contentPath.properties.get("minifier-setting");
@@ -80,16 +80,16 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 				}
 			}
 			catch(IOException e) {
-				throw new BundlerProcessingException(e);
+				throw new ContentProcessingException(e);
 			}
 			
 		}
 		else {
-			throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
+			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 		}
 	}
 	
-	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	private List<String> generateRequiredRequestPaths(boolean isDev, BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
 		for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
@@ -104,7 +104,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		return requestPaths;
 	}
 	
-	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet) throws BundlerProcessingException {
+	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet) throws ContentProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {
@@ -127,7 +127,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			}
 		}
 		catch(ConfigException | IOException | MalformedRequestException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		
 		return inputSources;

@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.plugin.bundler.thirdparty;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -167,7 +167,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated();
 		when(app).requestReceived("/default-aspect/thirdparty/libThatDoesntExist/myFile.js", pageResponse);
-		then(exceptions).verifyException(BundlerProcessingException.class, "libThatDoesntExist");
+		then(exceptions).verifyException(ContentProcessingException.class, "libThatDoesntExist");
 	}
 	
 	@Test
@@ -176,6 +176,6 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(thirdpartyLib).hasBeenCreated();
 		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/myFile.js", pageResponse);
-		then(exceptions).verifyException(BundlerProcessingException.class, thirdpartyLib.file("myFile.js").getAbsolutePath());
+		then(exceptions).verifyException(ContentProcessingException.class, thirdpartyLib.file("myFile.js").getAbsolutePath());
 	}
 }

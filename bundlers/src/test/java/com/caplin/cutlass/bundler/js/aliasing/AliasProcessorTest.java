@@ -23,8 +23,8 @@ import org.mockito.ArgumentCaptor;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 import com.caplin.cutlass.exception.NamespaceException;
 import com.ctc.wstx.stax.WstxInputFactory;
@@ -84,7 +84,7 @@ public class AliasProcessorTest {
 	}
 	
 	@Test
-	public void testAnAliasNameDefinedInABladeIsNamespaced() throws BundlerFileProcessingException, XMLStreamException, NamespaceException, FileNotFoundException {
+	public void testAnAliasNameDefinedInABladeIsNamespaced() throws ContentFileProcessingException, XMLStreamException, NamespaceException, FileNotFoundException {
 		//Given.
 		aliasProcessor = new AliasProcessor( aliasRegistry, createStreamReader(bladeLevelAliasesFile), bladeLevelAliasesFile, validClasses );
 		
@@ -98,7 +98,7 @@ public class AliasProcessorTest {
 	}
 	
 	@Test
-	public void testAnAliasNameDefinedInABladesetIsNamespaced() throws BundlerFileProcessingException, XMLStreamException, NamespaceException, FileNotFoundException {
+	public void testAnAliasNameDefinedInABladesetIsNamespaced() throws ContentFileProcessingException, XMLStreamException, NamespaceException, FileNotFoundException {
 		//Given.
 		aliasProcessor = new AliasProcessor( aliasRegistry, createStreamReader(bladesetLevelNotNamespacedAliasesFile), bladesetLevelNotNamespacedAliasesFile, validClasses );
 		
@@ -112,7 +112,7 @@ public class AliasProcessorTest {
 	}
 	
 	@Test
-	public void testAnAliasDefinedInABladesetIsNamespacedWorks() throws XMLStreamException, NamespaceException, FileNotFoundException, BundlerProcessingException {
+	public void testAnAliasDefinedInABladesetIsNamespacedWorks() throws XMLStreamException, NamespaceException, FileNotFoundException, ContentProcessingException {
 		//Given.
 		aliasProcessor = new AliasProcessor( aliasRegistry, createStreamReader(bladesetLevelNamespacedAliasesFile), bladesetLevelNamespacedAliasesFile, validClasses );
 		
@@ -129,7 +129,7 @@ public class AliasProcessorTest {
 	}
 	
 	@Test //PCTCUT-667
-	public void anAliasDefinitionThatIsInANonDefaultScenarioOneHasTheAliasInterfacePassedIntoIt() throws XMLStreamException, NamespaceException, FileNotFoundException, BundlerProcessingException {
+	public void anAliasDefinitionThatIsInANonDefaultScenarioOneHasTheAliasInterfacePassedIntoIt() throws XMLStreamException, NamespaceException, FileNotFoundException, ContentProcessingException {
 		//Given.
 		when( aliasScenarios.hasScenario( AliasRegistry.DEFAULT_SCENARIO ) ).thenReturn( true );
 		when( aliasScenarios.getScenarioAliases( AliasRegistry.DEFAULT_SCENARIO ) ).thenReturn( scenarioAliases );
@@ -161,7 +161,7 @@ public class AliasProcessorTest {
 	}
 	
 	@Test //PCTCUT-686
-	public void anAssignedAliasHasItsAliasDefinitionInterfacePassedIntoIt() throws XMLStreamException, NamespaceException, FileNotFoundException, BundlerProcessingException {
+	public void anAssignedAliasHasItsAliasDefinitionInterfacePassedIntoIt() throws XMLStreamException, NamespaceException, FileNotFoundException, ContentProcessingException {
 		//Given.
 		when( aliasRegistry.getAliases() ).thenReturn( scenarioAliases );
 		when( scenarioAliases.getAlias( "myAlias" ) ).thenReturn( aliasDefinitions );
@@ -188,7 +188,7 @@ public class AliasProcessorTest {
 	}
 	
 	@Test
-	public void simpleGroupGetsDefined() throws XMLStreamException, NamespaceException, FileNotFoundException, BundlerProcessingException {
+	public void simpleGroupGetsDefined() throws XMLStreamException, NamespaceException, FileNotFoundException, ContentProcessingException {
 		//Given.
 		aliasProcessor = new AliasProcessor( aliasRegistry, createStreamReader(groupDefineAtTheBladesetLevelFile), groupDefineAtTheBladesetLevelFile , validClasses );
 		
@@ -207,7 +207,7 @@ public class AliasProcessorTest {
 	}
 	
 	@Test
-	public void multipleGroupsDefineAtTheBladesetLevelFile() throws XMLStreamException, NamespaceException, FileNotFoundException, BundlerProcessingException {
+	public void multipleGroupsDefineAtTheBladesetLevelFile() throws XMLStreamException, NamespaceException, FileNotFoundException, ContentProcessingException {
 		//Given.
 		aliasProcessor = new AliasProcessor( aliasRegistry, createStreamReader(multipleGroupsDefineAtTheBladesetLevelFile), multipleGroupsDefineAtTheBladesetLevelFile , validClasses );
 		
@@ -228,7 +228,7 @@ public class AliasProcessorTest {
 	}
 	
 	@Test
-	public void aliasRegistryUsesTheGroupsSpecifiedOnAliasesFile() throws XMLStreamException, NamespaceException, FileNotFoundException, BundlerProcessingException {
+	public void aliasRegistryUsesTheGroupsSpecifiedOnAliasesFile() throws XMLStreamException, NamespaceException, FileNotFoundException, ContentProcessingException {
 		//Given.
 		aliasProcessor = new AliasProcessor( aliasRegistry, createStreamReader(groupInsideAliasesFile), groupInsideAliasesFile , validClasses );
 		

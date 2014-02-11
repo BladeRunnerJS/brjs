@@ -5,7 +5,7 @@ import java.io.UnsupportedEncodingException;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
@@ -52,7 +52,7 @@ public class AppBuilder extends NodeBuilder<App> {
 		return builderChainer;
 	}
 
-	public BuilderChainer hasReceivedRequst(String requestPath) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException, UnsupportedEncodingException 
+	public BuilderChainer hasReceivedRequst(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException 
 	{
 		AppCommander appCommander = new AppCommander(this.specTest, this.app);
 		appCommander.requestReceived(requestPath, new StringBuffer());

@@ -3,22 +3,22 @@ package org.bladerunnerjs.model.exception.request;
 
 
 
-public class BundlerProcessingException extends RequestHandlingException
+public class ContentProcessingException extends RequestHandlingException
 {
 	
 	private static final long serialVersionUID = 7697459338111614915L;
 	
-	public BundlerProcessingException(Throwable cause)
+	public ContentProcessingException(Throwable cause)
 	{
 		super(cause);
 	}
 	
-	public BundlerProcessingException(String message)
+	public ContentProcessingException(String message)
 	{
 		super(message);
 	}
 	
-	public BundlerProcessingException(Throwable cause, String message)
+	public ContentProcessingException(Throwable cause, String message)
 	{
 		super(message, cause);
 	}

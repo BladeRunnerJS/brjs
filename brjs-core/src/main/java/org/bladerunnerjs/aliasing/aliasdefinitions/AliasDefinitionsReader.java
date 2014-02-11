@@ -16,7 +16,7 @@ import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
 import org.bladerunnerjs.utility.stax.XmlStreamReader;
 import org.codehaus.stax2.validation.XMLValidationSchema;
@@ -55,7 +55,7 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	public void read() throws BundlerFileProcessingException {
+	public void read() throws ContentFileProcessingException {
 		data.aliasDefinitions = new ArrayList<>();
 		data.scenarioAliases = new HashMap<>();
 		data.groupAliases = new HashMap<>();
@@ -85,10 +85,10 @@ public class AliasDefinitionsReader {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new BundlerFileProcessingException(file, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+				throw new ContentFileProcessingException(file, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
 			catch (IOException | NamespaceException e) {
-				throw new BundlerFileProcessingException(file, e);
+				throw new ContentFileProcessingException(file, e);
 			}
 		}
 	}

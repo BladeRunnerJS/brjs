@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ThemeAssetLocation;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
@@ -57,17 +57,17 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		return getValidContentPaths(bundleSet, locales);
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		return getValidContentPaths(bundleSet, locales);
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
 		String theme = contentPath.properties.get("theme");
 		String languageCode = contentPath.properties.get("languageCode");
 		String countryCode = contentPath.properties.get("countryCode");
@@ -93,7 +93,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			}
 		}
 		catch (IOException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 	}
 	
@@ -134,18 +134,18 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		return themeName;
 	}
 	
-	private void writeAsset(Asset cssAsset, Writer writer) throws BundlerProcessingException {
+	private void writeAsset(Asset cssAsset, Writer writer) throws ContentProcessingException {
 		try {
 			CssRewriter processor = new CssRewriter(cssAsset);
 			writer.append(processor.getFileContents());
 			writer.write("\n");
 		}
 		catch (IOException e) {
-			throw new BundlerProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
+			throw new ContentProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
 		}
 	}
 	
-	private List<String> getValidContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	private List<String> getValidContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		List<String> contentPaths = new ArrayList<>();
 		
 		try {
@@ -156,7 +156,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			}
 		}
 		catch(MalformedTokenException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		
 		return contentPaths;

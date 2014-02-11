@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 public class InputSource {
@@ -37,7 +37,7 @@ public class InputSource {
 		return filteredSource;
 	}
 	
-	public String getSourceMap() throws MalformedRequestException, BundlerProcessingException {
+	public String getSourceMap() throws MalformedRequestException, ContentProcessingException {
 		String sourceMap = null;
 		
 		try {
@@ -51,7 +51,7 @@ public class InputSource {
 			}
 		}
 		catch(ConfigException | UnsupportedEncodingException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		
 		return sourceMap;

@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class CssUrlRewriter
 {
@@ -15,7 +15,7 @@ public class CssUrlRewriter
 	private static final char[] postPathSymbols = new char[]{'?', '#'};
 	private final StringBuffer css = new StringBuffer();
 
-	public CssUrlRewriter(File cssBasePath, final CharSequence input) throws BundlerProcessingException
+	public CssUrlRewriter(File cssBasePath, final CharSequence input) throws ContentProcessingException
 	{
 		Matcher urlMatcher = URL_PATTERN.matcher(input);
 		while (urlMatcher.find())
@@ -47,7 +47,7 @@ public class CssUrlRewriter
 		urlMatcher.appendTail(css);
 	}
 
-	private String parseUrl(File cssBasePath, String relativePath) throws BundlerProcessingException
+	private String parseUrl(File cssBasePath, String relativePath) throws ContentProcessingException
 	{
 		String ending = "";
 		for(char postPathSymbol: postPathSymbols)
@@ -65,14 +65,14 @@ public class CssUrlRewriter
 		return "url(\"" + targetPath + ending + "\")";
 	}
 
-	private String getCanonicalPath(String imagePath) throws BundlerProcessingException
+	private String getCanonicalPath(String imagePath) throws ContentProcessingException
 	{
 		try
 		{
 			return new File(imagePath).getCanonicalPath();
 		} catch (IOException e)
 		{
-			throw new BundlerProcessingException("referenced image ('" + imagePath + "') does not exist.");
+			throw new ContentProcessingException("referenced image ('" + imagePath + "') does not exist.");
 		}
 	}
 

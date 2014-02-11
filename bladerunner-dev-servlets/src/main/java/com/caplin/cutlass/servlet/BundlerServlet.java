@@ -31,7 +31,7 @@ import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.bundler.css.CssBundler;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 import com.caplin.cutlass.bundler.exception.UnknownBundlerException;
@@ -115,7 +115,7 @@ public class BundlerServlet extends HttpServlet
 		{
 			sendErrorResponse(response, 404, ex);
 		}
-		catch (BundlerProcessingException ex)
+		catch (ContentProcessingException ex)
 		{
 			sendErrorResponse(response, 500, ex);
 		}

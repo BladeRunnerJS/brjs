@@ -11,7 +11,7 @@ import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
 
 public class AliasesFile {
@@ -41,7 +41,7 @@ public class AliasesFile {
 		return file;
 	}
 	
-	public String scenarioName() throws BundlerFileProcessingException {
+	public String scenarioName() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reader.read();
 		}
@@ -53,7 +53,7 @@ public class AliasesFile {
 		data.scenario = scenarioName;
 	}
 	
-	public List<String> groupNames() throws BundlerFileProcessingException {
+	public List<String> groupNames() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reader.read();
 		}
@@ -65,7 +65,7 @@ public class AliasesFile {
 		data.groupNames = groupNames;
 	}
 	
-	public List<AliasOverride> aliasOverrides() throws BundlerFileProcessingException {
+	public List<AliasOverride> aliasOverrides() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reader.read();
 		}
@@ -77,7 +77,7 @@ public class AliasesFile {
 		data.aliasOverrides.add(aliasOverride);
 	}
 	
-	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException {
+	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, ContentFileProcessingException {
 		AliasOverride aliasOverride = getLocalAliasOverride(aliasName);
 		AliasDefinition aliasDefinition = getAliasDefinition(aliasName);
 		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName);
@@ -104,7 +104,7 @@ public class AliasesFile {
 		writer.write();
 	}
 	
-	private AliasOverride getLocalAliasOverride(String aliasName) throws BundlerFileProcessingException {
+	private AliasOverride getLocalAliasOverride(String aliasName) throws ContentFileProcessingException {
 		AliasOverride aliasOverride = null;
 		
 		for(AliasOverride nextAliasOverride : aliasOverrides()) {
@@ -117,7 +117,7 @@ public class AliasesFile {
 		return aliasOverride;
 	}
 	
-	private AliasOverride getGroupAliasOverride(String aliasName) throws BundlerFileProcessingException, AmbiguousAliasException {
+	private AliasOverride getGroupAliasOverride(String aliasName) throws ContentFileProcessingException, AmbiguousAliasException {
 		AliasOverride aliasOverride = null;
 		List<String> groupNames = groupNames();
 		
@@ -140,7 +140,7 @@ public class AliasesFile {
 		return aliasOverride;
 	}
 	
-	private AliasDefinition getAliasDefinition(String aliasName) throws BundlerFileProcessingException, AmbiguousAliasException {
+	private AliasDefinition getAliasDefinition(String aliasName) throws ContentFileProcessingException, AmbiguousAliasException {
 		AliasDefinition aliasDefinition = null;
 		String scenarioName = scenarioName();
 		List<String> groupNames = groupNames();

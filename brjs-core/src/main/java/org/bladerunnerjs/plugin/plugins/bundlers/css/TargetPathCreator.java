@@ -2,8 +2,8 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
@@ -27,12 +27,12 @@ public class TargetPathCreator
 		cssResourceContentPathParser = brjs.plugins().contentProvider("cssresource").getContentPathParser();
 	}
 	
-	public String getRelativeBundleRequestForImage(File imageFile) throws BundlerProcessingException
+	public String getRelativeBundleRequestForImage(File imageFile) throws ContentProcessingException
 	{
 		return "../../" + getBundleRequestForImage(imageFile);
 	}
 	
-	public String getBundleRequestForImage(File imageFile) throws BundlerProcessingException
+	public String getBundleRequestForImage(File imageFile) throws ContentProcessingException
 	{
 		String targetPath = null;
 		
@@ -40,7 +40,7 @@ public class TargetPathCreator
 		{
 			targetPath = getTargetPath(imageFile);
 		}
-		catch(BundlerProcessingException bundlerProcessingException)
+		catch(ContentProcessingException bundlerProcessingException)
 		{
 			throw bundlerProcessingException;
 		}
@@ -56,7 +56,7 @@ public class TargetPathCreator
 		return targetPath;
 	}
 	
-	private String getTargetPath(File imageFile) throws BundlerProcessingException
+	private String getTargetPath(File imageFile) throws ContentProcessingException
 	{
 		AssetLocation assetLocation = (AssetLocation) brjs.locateFirstAncestorNode(imageFile);
 		AssetContainer assetContainer = assetLocation.getAssetContainer();
@@ -99,11 +99,11 @@ public class TargetPathCreator
 				targetPath = cssResourceContentPathParser.createRequest("lib-request", jsLib.getName(), resourcePath);
 			}
 			else {
-				throw new BundlerFileProcessingException(imageFile, "File does not exist in a known scope");
+				throw new ContentFileProcessingException(imageFile, "File does not exist in a known scope");
 			}
 		}
 		catch(MalformedTokenException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		
 		return targetPath;

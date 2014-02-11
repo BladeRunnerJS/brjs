@@ -24,8 +24,8 @@ import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
@@ -82,7 +82,7 @@ public class CssBundler extends AbstractPlugin implements LegacyFileBundlerPlugi
 		return requests;
 	}
 
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		
@@ -97,7 +97,7 @@ public class CssBundler extends AbstractPlugin implements LegacyFileBundlerPlugi
 				}
 				catch (IOException e)
 				{
-					throw new BundlerFileProcessingException(file, e, "Error while bundling file.");
+					throw new ContentFileProcessingException(file, e, "Error while bundling file.");
 				}
 			}
 		}

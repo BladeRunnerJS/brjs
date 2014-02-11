@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -72,7 +72,7 @@ public class BRJSServletUtils
 		{
 			sendErrorResponse(resp, 404, ex);
 		}
-		catch (BundlerProcessingException ex)
+		catch (ContentProcessingException ex)
 		{
 			sendErrorResponse(resp, 500, ex);
 		}

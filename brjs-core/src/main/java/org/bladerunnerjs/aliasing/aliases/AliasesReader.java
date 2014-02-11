@@ -12,7 +12,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
 import org.bladerunnerjs.utility.stax.XmlStreamReader;
 import org.codehaus.stax2.validation.XMLValidationSchema;
@@ -47,7 +47,7 @@ public class AliasesReader {
 		this.defaultInputEncoding = defaultInputEncoding;
 	}
 	
-	public void read() throws BundlerFileProcessingException {
+	public void read() throws ContentFileProcessingException {
 		aliasesData.aliasOverrides = new ArrayList<>();
 		aliasesData.groupNames = new ArrayList<>();
 		
@@ -72,10 +72,10 @@ public class AliasesReader {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new BundlerFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+				throw new ContentFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
 			catch (IOException e) {
-				throw new BundlerFileProcessingException(aliasesFile, e);
+				throw new ContentFileProcessingException(aliasesFile, e);
 			}
 		}
 	}

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BladeRunnerFileAppender;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 
 public class JsSourceBundlerFileAppender implements BladeRunnerFileAppender
@@ -18,7 +18,7 @@ public class JsSourceBundlerFileAppender implements BladeRunnerFileAppender
 	}
 	
 	@Override
-	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws BundlerProcessingException
+	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws ContentProcessingException
 	{
 		files.add(librarySourceRoot);
 	}

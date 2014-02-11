@@ -1,6 +1,6 @@
 package com.caplin.cutlass.bundler.js.aliasing;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class AliasesNode implements AliasingNode {
 
@@ -15,12 +15,12 @@ public class AliasesNode implements AliasingNode {
 	}
 	
 	@Override
-	public void register() throws BundlerProcessingException {
-		throw new BundlerProcessingException("aliasDefinitions.xml should not contain any 'aliases' nodes");
+	public void register() throws ContentProcessingException {
+		throw new ContentProcessingException("aliasDefinitions.xml should not contain any 'aliases' nodes");
 	}
 
 	@Override
-	public void use() throws BundlerProcessingException {
+	public void use() throws ContentProcessingException {
 		if (scenario != null)
 		{
 			context.getAliasRegistry().setScenario(scenario);

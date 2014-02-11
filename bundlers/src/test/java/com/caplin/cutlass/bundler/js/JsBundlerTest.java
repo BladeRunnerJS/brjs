@@ -21,7 +21,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.bundler.BundlerFileTester;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.BRJSAccessor;
@@ -283,7 +283,7 @@ public class JsBundlerTest
 		});
 	}
 	
-	private String getJsBundleOutput(List<File> sourceFiles) throws IOException, FileNotFoundException, BundlerProcessingException
+	private String getJsBundleOutput(List<File> sourceFiles) throws IOException, FileNotFoundException, ContentProcessingException
 	{
 		File tempWarDir = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
 		File warFile = new File(tempWarDir, "js.bundle");

@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import org.codehaus.stax2.XMLStreamReader2;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import com.caplin.cutlass.exception.NamespaceException;
 
 public class AliasNodeReader implements AliasingNodeReader {
@@ -18,7 +18,7 @@ public class AliasNodeReader implements AliasingNodeReader {
 	}
 
 	@Override
-	public AliasingNode getCurrentNode() throws BundlerFileProcessingException, XMLStreamException, NamespaceException {
+	public AliasingNode getCurrentNode() throws ContentFileProcessingException, XMLStreamException, NamespaceException {
 		String aliasName = underlyingStreamReader.getAttributeValue(null, "name");
 		String defaultClassName = underlyingStreamReader.getAttributeValue(null, "defaultClass");
 		String className = underlyingStreamReader.getAttributeValue(null, "class");
@@ -30,7 +30,7 @@ public class AliasNodeReader implements AliasingNodeReader {
 		return new AliasNode(aliasName, interfaceName, scenarios, className);
 	}
 	
-	private Map<String, String> processScenarios( String alias, String interfaceName ) throws XMLStreamException, BundlerFileProcessingException
+	private Map<String, String> processScenarios( String alias, String interfaceName ) throws XMLStreamException, ContentFileProcessingException
 	{
 		boolean withinAliasTag = true;
 		Map<String, String> scenarios = new HashMap<String, String>();
