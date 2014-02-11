@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
@@ -47,13 +48,13 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		throw new RuntimeException("Not implemented!");
+		return new ArrayList<>();
 	}
 
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		throw new RuntimeException("Not implemented!");
+		return new ArrayList<>();
 	}
 
 	@Override
