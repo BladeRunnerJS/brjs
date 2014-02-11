@@ -61,8 +61,7 @@ public class NodeMap<N extends Node>
 	public File getDir(File dir, String childName)
 	{
 		List<String> possibleDirNames = getPossibleDirNames(childName);
-		// TODO: can this be initialized to null?
-		File childDir = new File(dir, possibleDirNames.get(0));
+		File childDir = null;
 		
 		for(String dirName : possibleDirNames)
 		{
@@ -73,6 +72,10 @@ public class NodeMap<N extends Node>
 				childDir = nextDir;
 				break;
 			}
+		}
+		
+		if(childDir == null) {
+			childDir = new File(dir, possibleDirNames.get(0));
 		}
 		
 		return childDir;
