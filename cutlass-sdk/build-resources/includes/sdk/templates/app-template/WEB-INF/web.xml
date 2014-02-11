@@ -86,6 +86,7 @@
 	end-env -->
 	
 	
+	<!-- start-env: dev -->
 	<servlet>
 		<servlet-name>BRJSServlet</servlet-name>
 		<servlet-class>org.bladerunnerjs.appserver.BRJSServlet</servlet-class>
@@ -106,6 +107,6 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
-	
+	<!-- end-env -->
 	
 </web-app>
