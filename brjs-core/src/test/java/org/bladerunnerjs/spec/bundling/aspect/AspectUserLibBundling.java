@@ -5,7 +5,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AspectUserLibBundling extends SpecTest {
@@ -21,14 +20,14 @@ public class AspectUserLibBundling extends SpecTest {
 			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated();
 			
-		app = brjs.app("app1");
+			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			
 			userLib = app.jsLib("userLib");
 	}
 
 	// ----------------------------- U S E R   J S   L I B S --------------------------------
-	@Ignore //TODO: fix this, how do we distinguish between different types of JsLibs so the bundler plugins know which to create files for?
+	// This are 'BRJS conformant libraries'
 	@Test
 	public void aspectBundlesContainUserLibrLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
 		given(userLib).hasNamespacedJsPackageStyle()
@@ -38,7 +37,6 @@ public class AspectUserLibBundling extends SpecTest {
 		then(response).containsClasses("userLib.Class1");
 	}
 	
-	@Ignore //TODO: fix this, how do we distinguish between different types of JsLibs so the bundler plugins know which to create files for?
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreReferencedInAClass() throws Exception {
 		given(userLib).hasBeenCreated()
@@ -55,7 +53,8 @@ public class AspectUserLibBundling extends SpecTest {
 	
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreRequiredInAClass() throws Exception {
-		given(userLib).hasClass("userLib.Class1")
+		given(userLib).hasNodeJsPackageStyle()
+			.and(userLib).hasClass("userLib.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).classRequires("appns.Class1", "userLib.Class1");
