@@ -11,10 +11,10 @@ import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 public class BRLibConf extends AbstractYamlConfFile {	
 	
 	public class Messages {
-		public static final String INVALID_REQUIRE_PREFIX_EXCEPTION = "Require prefix in BR manifest at '%s' isn't valid. It must be in the format '%s'";
+		public static final String INVALID_REQUIRE_PREFIX_EXCEPTION = "Require prefix '%s' in BR manifest at '%s' isn't valid. It must be in the format '%s'";
 	}
 	
-	public static final String REQUIRE_PREFIX_REGEX = "[a-zA-Z]+((/[a-zA-Z]+)+)?";
+	public static final String REQUIRE_PREFIX_REGEX = "[a-zA-Z0-9]+((/[a-zA-Z0-9]+)+)?";
 	
 	@NotNull
 	public String requirePrefix;
@@ -39,7 +39,7 @@ public class BRLibConf extends AbstractYamlConfFile {
 		if (!requirePrefix.matches(REQUIRE_PREFIX_REGEX))
 		{
 			String manifestPath = RelativePathUtility.get(this.node.root().dir(), getUnderlyingFile());
-			throw new ConfigException( String.format(Messages.INVALID_REQUIRE_PREFIX_EXCEPTION, manifestPath, REQUIRE_PREFIX_REGEX) );
+			throw new ConfigException( String.format(Messages.INVALID_REQUIRE_PREFIX_EXCEPTION, requirePrefix, manifestPath, REQUIRE_PREFIX_REGEX) );
 		}
 	}
 }
