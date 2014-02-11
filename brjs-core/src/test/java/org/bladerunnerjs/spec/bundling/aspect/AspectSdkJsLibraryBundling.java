@@ -70,7 +70,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		then(response).containsClasses("br.SdkClass");
 	}
 	
-	@Test @Ignore
+	@Test
 	public void sdkLibrariesCanHaveARequirePrefixThatsDifferentToTheirName() throws Exception {
 		given(aspect).hasClass("appns.AspectClass")
 			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo/bar")
@@ -81,7 +81,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		then(response).containsClasses("foo.bar.SdkClass");
 	}
 	
-	@Test @Ignore
+	@Test
 	public void sdkLibrariesMustHaveARequirePrefixWithCorrectFormat() throws Exception {
 		given(aspect).hasClass("appns.AspectClass")
 			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo.bar")
@@ -89,6 +89,6 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns.AspectClass", "foo.bar.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(ConfigException.class, "", BRLibConf.REQUIRE_PREFIX_REGEX);
+		then(exceptions).verifyException(ConfigException.class, "sdk/libs/javascript/br-libs/br/br.manifest", BRLibConf.REQUIRE_PREFIX_REGEX);
 	}
 }
