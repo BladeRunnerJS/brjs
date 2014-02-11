@@ -3,8 +3,11 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.plugin.plugins.brjsconformant.BRLibConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -65,5 +68,27 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			.and(aspect).classRequires("appns.AspectClass", "br.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("br.SdkClass");
+	}
+	
+	@Test @Ignore
+	public void sdkLibrariesCanHaveARequirePrefixThatsDifferentToTheirName() throws Exception {
+		given(aspect).hasClass("appns.AspectClass")
+			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo/bar")
+			.and(sdkLib).hasClass("foo.bar.SdkClass")
+			.and(aspect).indexPageRefersTo("appns.AspectClass")
+			.and(aspect).classRequires("appns.AspectClass", "foo.bar.SdkClass");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsClasses("foo.bar.SdkClass");
+	}
+	
+	@Test @Ignore
+	public void sdkLibrariesMustHaveARequirePrefixWithCorrectFormat() throws Exception {
+		given(aspect).hasClass("appns.AspectClass")
+			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo.bar")
+			.and(sdkLib).hasClass("foo.bar.SdkClass")
+			.and(aspect).indexPageRefersTo("appns.AspectClass")
+			.and(aspect).classRequires("appns.AspectClass", "foo.bar.SdkClass");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(exceptions).verifyException(ConfigException.class, "", BRLibConf.REQUIRE_PREFIX_REGEX);
 	}
 }
