@@ -27,7 +27,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 
 import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.util.FileUtility;
@@ -42,28 +42,17 @@ import com.caplin.cutlass.bundler.image.ImageBundler;
 import com.caplin.cutlass.bundler.js.JsBundler;
 import com.caplin.cutlass.bundler.thirdparty.ThirdPartyBundler;
 import com.caplin.cutlass.bundler.xml.XmlBundler;
-import com.caplin.cutlass.command.LegacyCommandPlugin;
+
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class WarCommand extends AbstractPlugin implements LegacyCommandPlugin
+public class WarCommand extends ArgsParsingCommandPlugin
 {
-	private final JSAP argsParser = new JSAP();
 	private ConsoleWriter out;
 	private BRJS brjs;
-	
-	{
-		try {
-			argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the name of the app being exported"));
-			argsParser.registerParameter(new UnflaggedOption("war-location").setHelp("the name of the war file to create"));
-			argsParser.registerParameter(new FlaggedOption("minifier").setShortFlag('m').setDefault("default").setHelp("the name of the minifier that will be used to compress the javascript"));
-		}
-		catch (Exception ex) {
-			throw new RuntimeException("Error initialising argument parser", ex);
-		}
-	}
 	
 	public WarCommand(BRJS brjs) {
 		this.brjs = brjs;
@@ -87,26 +76,19 @@ public class WarCommand extends AbstractPlugin implements LegacyCommandPlugin
 	}
 	
 	@Override
-	public String getCommandUsage() {
-		return argsParser.getUsage();
+	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
+		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the name of the app being exported"));
+		argsParser.registerParameter(new UnflaggedOption("war-location").setHelp("the name of the war file to create"));
+		argsParser.registerParameter(new FlaggedOption("minifier").setShortFlag('m').setDefault("default").setHelp("the name of the minifier that will be used to compress the javascript"));
 	}
 
 	@Override
-	public String getCommandHelp() {
-		return argsParser.getHelp();
-	}
-	
-	@Override
-	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException  {
-		// TODO: remove the need for these two lines by doing the argument parsing in BRJS.runCommand()
-		JSAPResult config = argsParser.parse(args);
-		if(!config.success()) throw new CommandArgumentsException("Invalid arguments provided.", this);
-		
-		App app = brjs.app(config.getString("app-name"));
+	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+		App app = brjs.app(parsedArgs.getString("app-name"));
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
-		exportWar(app, getWarLocation(app, config), config.getString("minifier"));
+		exportWar(app, getWarLocation(app, parsedArgs), parsedArgs.getString("minifier"));
 	}
 	
 	private void exportWar(App origApp, File warFile, String minifierName) throws CommandOperationException {
