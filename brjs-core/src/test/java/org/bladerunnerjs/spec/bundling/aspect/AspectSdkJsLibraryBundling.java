@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRLibConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -18,6 +19,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 	private JsLib sdkLib;
 	private StringBuffer response = new StringBuffer();
 	private JsLib sdkLib2;
+	private TestPack sdkLibTestPack;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -28,6 +30,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			sdkLib = brjs.sdkLib("br");
+			sdkLibTestPack = sdkLib.testType("unit").testTech("techy");
 			sdkLib2 = brjs.sdkLib("brlib2");
 	}
 
@@ -105,5 +108,13 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("foo.Bar");
 	}
+	
+//	@Test
+//	public void weCanGenerateABundleForJsLibTestPacks() throws Exception {
+//		given(sdkLib).hasClass("br.SdkClass")
+//			.and(sdkLibTestPack).testRequires("test.js", "br/SdkClass");
+//		when(sdkLibTestPack).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+//		then(response).containsClasses("br/SdkClass");
+//	}
 	
 }
