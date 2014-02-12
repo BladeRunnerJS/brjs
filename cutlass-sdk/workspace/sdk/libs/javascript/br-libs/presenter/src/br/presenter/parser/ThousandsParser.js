@@ -49,7 +49,7 @@ br.presenter.parser.ThousandsParser.prototype.parse = function(vValue, mAttribut
 	if(this._isNumeric(vValue)) {
 		return vValue;
 	}
-	var i18n = require("br/i18n");
+	var i18n = require("br/I18n");
 	var sSeparator = mAttributes["separator"] || i18n("ct.i18n.number.grouping.separator");
 	if (!vValue) {
 		return vValue;

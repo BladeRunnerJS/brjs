@@ -20,7 +20,7 @@ br.presenter.validator.NumericValidator.prototype.validate = function(vValue, mA
 		var bIsValid = false;
 	}
 	
-	var oTranslator = require("br/i18n").getTranslator();
+	var oTranslator = require("br/I18n").getTranslator();
 	var sFailureMessage = oTranslator.tokenExists(this.sMessage) ? oTranslator.getMessage(this.sMessage,{sInput:vValue}) : this.sMessage;
 	
 	oValidationResult.setResult(bIsValid, sFailureMessage);

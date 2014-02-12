@@ -1,7 +1,7 @@
 NotEmptyValidatorTest = TestCase("NotEmptyValidatorTest");
 
 NotEmptyValidatorTest.prototype.setUp = function() {
-	var i18n = require("br/i18n")
+	var i18n = require("br/I18n")
 	i18n.reset();
 	i18n.initialise([{i18ntesttoken: "i18nErrorMessage"}]);
 	

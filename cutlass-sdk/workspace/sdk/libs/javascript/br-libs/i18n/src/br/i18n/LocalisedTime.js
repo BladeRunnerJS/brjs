@@ -1,7 +1,7 @@
 "use strict";
 
 var Errors = require('br/Errors');
-var i18n = require('br/i18n');
+var i18n = require('br/I18n');
 
 /**
  * @private

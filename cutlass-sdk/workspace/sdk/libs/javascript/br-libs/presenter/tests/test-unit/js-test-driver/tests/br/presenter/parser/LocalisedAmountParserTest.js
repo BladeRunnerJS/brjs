@@ -1,6 +1,6 @@
 LocalisedAmountParserTest = TestCase("LocalisedAmountParserTest");
 LocalisedAmountParserTest.prototype.setUp = function() {
-	var i18n = require("br/i18n")
+	var i18n = require("br/I18n")
 	i18n.reset();
 	i18n.initialise([{
 		"ct.i18n.decimal.radix.character": ".",
@@ -52,7 +52,7 @@ LocalisedAmountParserTest.prototype.test_testParseDecimal = function() {
 
 
 LocalisedAmountParserTest.prototype.test_testParseI18nDecimal = function() {
-	var i18n = require("br/i18n")
+	var i18n = require("br/I18n")
 	i18n.reset();
 	i18n.initialise([{
 		"ct.i18n.decimal.radix.character": ",",

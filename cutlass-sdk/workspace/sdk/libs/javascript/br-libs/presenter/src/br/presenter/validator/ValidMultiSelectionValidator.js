@@ -28,7 +28,7 @@ br.presenter.validator.ValidMultiSelectionValidator.prototype.validate = functio
 {
 	var bIsValid = true;
 	var sValidationMessage = "";
-	var i18n = require("br/i18n");
+	var i18n = require("br/I18n");
 	if(this.m_bAllowInvalidSelections)
 	{
 		sValidationMessage = i18n("br.presenter.validator.invalidSelectionsAllowed");

@@ -71,7 +71,7 @@ br.presenter.parser.LocalisedAmountParser.prototype.parse = function(sValue, mAt
 		}
 	}
 
-	var oTranslator = require("br/i18n").getTranslator();
+	var oTranslator = require("br/I18n").getTranslator();
 	var sValue = oTranslator.parseNumber(sValue);
 	
 	if(!sValue)
@@ -87,7 +87,7 @@ br.presenter.parser.LocalisedAmountParser.prototype.parse = function(sValue, mAt
 br.presenter.parser.LocalisedAmountParser.prototype._getShortcutMultiplier = function(sShortcutSymbol)
 {
 	var sToken = "ct.element.number.formatting.multiplier." + sShortcutSymbol.toLowerCase();
-	var oTranslator = require("br/i18n").getTranslator();
+	var oTranslator = require("br/I18n").getTranslator();
 	if (oTranslator.tokenExists(sToken)) 
 	{
 		var multiplier = oTranslator.getMessage(sToken);

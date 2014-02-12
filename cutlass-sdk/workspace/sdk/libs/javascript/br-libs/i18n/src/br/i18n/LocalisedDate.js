@@ -2,7 +2,7 @@
 
 // caplin.thirdparty("momentjs");
 
-var i18n = require('br/i18n');
+var i18n = require('br/I18n');
 
 /**
  * @private

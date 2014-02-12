@@ -44,7 +44,7 @@ br.presenter.formatter.ThousandsFormatter.prototype.format = function(vValue, mA
 		var sNumber = String(vValue);
 		var sNumberWithoutSuffix = this._stripSuffix(sNumber);
 		var sNumberWithoutComma = this._stripComma(sNumberWithoutSuffix);
-		var oTranslator = require("br/i18n").getTranslator();
+		var oTranslator = require("br/I18n").getTranslator();
 		var sFormattedNumber = oTranslator.formatNumber(sNumberWithoutComma, mAttributes["separator"]);
 		vValue = sNumber.replace(sNumberWithoutSuffix, sFormattedNumber);
 	}

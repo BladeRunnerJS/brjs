@@ -23,7 +23,7 @@ br.Core.implement(br.presenter.validator.ISODateValidator, br.presenter.validato
 br.presenter.validator.ISODateValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {
 	var bIsValid = false;
-	var i18n = require("br/i18n");
+	var i18n = require("br/I18n");
 	var sValidationMessage = i18n("br.presenter.validator.invalidISODateFormat", {value: vValue});
 
 	if (vValue === null || vValue === undefined || vValue === "")

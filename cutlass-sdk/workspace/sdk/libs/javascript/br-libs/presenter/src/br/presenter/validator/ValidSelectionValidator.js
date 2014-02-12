@@ -25,7 +25,7 @@ br.presenter.validator.ValidSelectionValidator.prototype.validate = function(vVa
 {
 	// default results, unless value is found in the selection options
 	var bIsValid = false;
-	var i18n = require("br/i18n");
+	var i18n = require("br/I18n");
 	var sValidationMessage = i18n("br.presenter.validator.invalidSelection", {value: vValue});
 
 	if(this.m_bAllowInvalidSelections)

@@ -19,7 +19,7 @@ br.presenter.validator.NotEmptyValidator.prototype.validate = function(vValue, m
 		var bIsValid = true;
 	}
 	
-	var oTranslator = require("br/i18n").getTranslator();
+	var oTranslator = require("br/I18n").getTranslator();
 	var sFailureMessage = oTranslator.tokenExists(this.sMessage) ? oTranslator.getMessage(this.sMessage) : this.sMessage;
 	
 	oValidationResult.setResult(bIsValid, sFailureMessage);

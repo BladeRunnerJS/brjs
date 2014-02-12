@@ -1,7 +1,7 @@
 var br = require('br/Core');
 var File = require('br/core/File');
 var HtmlResourceService = require('br/services/HtmlResourceService');
-var i18n = require('br/i18n');
+var i18n = require('br/I18n');
 
 /**
  * @constructor

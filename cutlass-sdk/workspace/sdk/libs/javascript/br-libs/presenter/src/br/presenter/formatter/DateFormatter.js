@@ -116,10 +116,10 @@ br.presenter.formatter.DateFormatter.prototype.formatDate = function(oDate, sDat
 		case "ISO":
 			return oDate.toISOString();
 		case "localize":
-			var oTranslator = require("br/i18n").getTranslator();
+			var oTranslator = require("br/I18n").getTranslator();
 			return oTranslator.formatDate(oDate);
 		default:
-			var oTranslator = require("br/i18n").getTranslator();
+			var oTranslator = require("br/I18n").getTranslator();
 			return oTranslator.formatDate(oDate, sDateFormat);
 	}
 };

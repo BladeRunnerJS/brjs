@@ -1,7 +1,7 @@
 ThousandsFormatterTest = TestCase("ThousandsFormatterTest");
 ThousandsFormatterTest.prototype.setUp = function()
 {
-	var i18n = require("br/i18n")
+	var i18n = require("br/I18n")
 	i18n.reset();
 	i18n.initialise([{
 		"ct.i18n.number.grouping.separator":",",
@@ -83,7 +83,7 @@ ThousandsFormatterTest.prototype.test_toString = function() {
 
 ThousandsFormatterTest.prototype.test_preFormatedNumbers = function()
 {
-	var i18n = require("br/i18n")
+	var i18n = require("br/I18n")
 	i18n.reset();
 	i18n.initialise([{
 		"ct.i18n.number.grouping.separator":".",
