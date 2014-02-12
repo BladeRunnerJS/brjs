@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility;
 
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.appserver.ServletModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
@@ -77,6 +78,12 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 			specTest.pluginLocator.contentPlugins.add( new VirtualProxyContentPlugin(contentPlugin) );
 		}
 		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasConfigurationFileWithContent(String filename, String content) throws Exception 
+	{
+		FileUtils.write(brjs.configurations().file(filename), content);	
 		return builderChainer;
 	}
 	

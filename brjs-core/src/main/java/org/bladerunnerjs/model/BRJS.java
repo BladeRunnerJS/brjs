@@ -58,6 +58,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(DirNode.class, "js-patches");
 	private final NodeMap<NamedDirNode> templates = new NodeMap<>(this, NamedDirNode.class, "sdk/templates", "-template$");
 	private final NodeItem<DirNode> appJars = new NodeItem<>(DirNode.class, "sdk/libs/java/application");
+	private final NodeItem<DirNode> configuration = new NodeItem<>(DirNode.class, "conf");
 	private final NodeItem<DirNode> systemJars = new NodeItem<>(DirNode.class, "sdk/libs/java/system");
 	private final NodeItem<DirNode> testJars = new NodeItem<>(DirNode.class, "sdk/libs/java/testRunner");
 	private final NodeItem<DirNode> userJars = new NodeItem<>(DirNode.class, "conf/java");
@@ -257,6 +258,18 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		return item(appJars);
 	}
+	
+	public DirNode configurations()
+	{
+		return item(configuration);
+	}
+	
+	public File configuration(String filename)
+	{
+		return item(configuration).file(filename);
+	}
+	
+	
 	
 	public DirNode systemJars()
 	{

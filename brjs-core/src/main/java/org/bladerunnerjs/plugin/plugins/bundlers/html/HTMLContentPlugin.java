@@ -24,6 +24,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
 import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -33,11 +34,21 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private Map<String, Asset> identifiers = new HashMap<String, Asset>();
+	private List<String> prodRequestPaths = new ArrayList<>();
+	
 	private BRJS brjs;
 	{
-		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-		contentPathParserBuilder.accepts("bundle.html").as("bundle-request");
-		contentPathParser = contentPathParserBuilder.build();
+		try{
+			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+			contentPathParserBuilder.accepts("bundle.html").as("bundle-request");
+			contentPathParser = contentPathParserBuilder.build();
+		
+			contentPathParser = contentPathParserBuilder.build();
+			prodRequestPaths.add(contentPathParser.createRequest("bundle-request"));
+		}
+		catch(MalformedTokenException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -71,7 +82,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
 	{
-		return new ArrayList<>();
+		return prodRequestPaths;
 	}
 
 	@Override

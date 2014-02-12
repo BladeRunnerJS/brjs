@@ -28,7 +28,6 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
 		List<LinkedAsset> assets;
-		
 		try {
 			assets = assetLocation.obtainMatchingAssets(xmlFilesFilter, LinkedAsset.class, FullyQualifiedLinkedAsset.class);
 		}
@@ -41,7 +40,9 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<Asset> getAssets(AssetLocation assetLocation) {
-		return new ArrayList<>();
+		List<Asset> result = new ArrayList<Asset>();
+		result.addAll(this.getLinkedAssets(assetLocation));
+		return result;
 	}
 	
 	private class XMLAssetFilter implements AssetFilter {
