@@ -52,7 +52,12 @@ public class PluginAccessor {
 	}
 	
 	public ContentPlugin contentProvider(BladerunnerUri requestUri) {
-		String requestPrefix = (requestUri.logicalPath.indexOf('/') == -1) ? requestUri.logicalPath : requestUri.logicalPath.substring(0, requestUri.logicalPath.indexOf('/'));
+		return contentProviderForLogicalPath(requestUri.logicalPath);
+	}
+	
+	public ContentPlugin contentProviderForLogicalPath(String logicalRequestpath)
+	{
+		String requestPrefix = (logicalRequestpath.indexOf('/') == -1) ? logicalRequestpath : logicalRequestpath.substring(0, logicalRequestpath.indexOf('/'));
 		
 		return contentProvider(requestPrefix);
 	}

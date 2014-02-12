@@ -54,7 +54,8 @@ public class BRJSServlet extends HttpServlet
 		try {
 			BRJS brjs = ServletModelAccessor.aquireModel();
 			response.setContentType(servletContext.getMimeType(request.getRequestURI()));
-			app.handleLogicalRequest(new BladerunnerUri(brjs, servletContext, request), response.getOutputStream());
+			BladerunnerUri bladerunnerUri = new BladerunnerUri(brjs, servletContext, request);
+			app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri, response.getOutputStream());
 		} catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException e) {
 			throw new ServletException(e);
 		}

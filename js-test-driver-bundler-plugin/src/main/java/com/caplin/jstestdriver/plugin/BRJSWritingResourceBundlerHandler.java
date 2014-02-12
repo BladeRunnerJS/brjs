@@ -43,7 +43,7 @@ public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHan
     		}
     		
     		BladerunnerUri requestUri = new BladerunnerUri(brjs, testDir, brjsRequestPath);
-    		app.handleLogicalRequest(requestUri, outputStream);
+    		app.getBundlableNode(requestUri).handleLogicalRequest(requestUri, outputStream);
 		}
 		catch (Exception ex)
 		{

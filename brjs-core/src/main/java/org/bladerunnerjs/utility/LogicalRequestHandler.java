@@ -1,12 +1,10 @@
 package org.bladerunnerjs.utility;
 
-import java.io.File;
 import java.io.OutputStream;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -27,35 +25,31 @@ public class LogicalRequestHandler {
 	
 	private final App app;
 	private final Logger logger;
+	private BundlableNode bundlableNode;
 	
-	public LogicalRequestHandler(App app) {
-		this.app = app;
+	public LogicalRequestHandler(BundlableNode bundlableNode)
+	{
+		this.bundlableNode = bundlableNode;
+		this.app = bundlableNode.getApp();
 		logger = app.root().logger(LoggerType.BUNDLER, getClass());
 	}
-	
-	public void handle(BladerunnerUri requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		logger.debug(Messages.REQUEST_HANDLED_MSG, requestUri.logicalPath, app.getName());
+
+	public void handle(String logicalRequestpath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		logger.debug(Messages.REQUEST_HANDLED_MSG, logicalRequestpath, app.getName());
 		
-		try {
-			File baseDir = new File(app.dir(), requestUri.scopePath);
-			BundlableNode bundlableNode = app.root().locateFirstBundlableAncestorNode(baseDir);
-			
-			if(bundlableNode == null) {
-				throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
-			}
-			
+		try {					
 			String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
-			logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getClass().getSimpleName(), name, requestUri.logicalPath);
+			logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getClass().getSimpleName(), name, logicalRequestpath);
 			
-			ContentPlugin contentProvider = app.root().plugins().contentProvider(requestUri);
+			ContentPlugin contentProvider = app.root().plugins().contentProviderForLogicalPath(logicalRequestpath);
 			
 			if(contentProvider == null) {
-				throw new ResourceNotFoundException("No content provider could be found found the logical request path '" + requestUri.logicalPath + "'");
+				throw new ResourceNotFoundException("No content provider could be found found the logical request path '" + logicalRequestpath + "'");
 			}
 			
-			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), requestUri.logicalPath);
+			logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), logicalRequestpath);
 			
-			ParsedContentPath contentPath = contentProvider.getContentPathParser().parse(requestUri);
+			ParsedContentPath contentPath = contentProvider.getContentPathParser().parse(logicalRequestpath);
 			contentProvider.writeContent(contentPath, bundlableNode.getBundleSet(), os);
 		}
 		catch(ModelOperationException e) {

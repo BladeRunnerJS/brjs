@@ -98,7 +98,7 @@ public class BundlerServlet extends HttpServlet
 			logger.debug("REQUEST PATH " + requestPath);
 			
 			if(requestPath.equals("XXX-js/js.bundle")) {
-				app.handleLogicalRequest(bladerunnerUri, cachedBundlerOutputStream);
+				app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri, cachedBundlerOutputStream);
 			}
 			else {
 				LegacyFileBundlerPlugin theBundler = getBundlerForRequest(request);

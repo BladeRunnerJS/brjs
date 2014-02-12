@@ -23,11 +23,8 @@ import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.utility.LogicalRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
@@ -45,7 +42,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private final NodeMap<Bladeset> bladesets;
 	private final NodeMap<Aspect> aspects;
 	private final NodeMap<StandardJsLib> jsLibs;
-	private final LogicalRequestHandler requestHandler;
 	
 	private String name;
 	private AppConf appConf;
@@ -59,7 +55,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		bladesets = Bladeset.createNodeSet(rootNode);
 		aspects = Aspect.createNodeSet(rootNode);
 		jsLibs = StandardJsLib.createAppNodeSet(rootNode);
-		requestHandler = new LogicalRequestHandler(this);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 	}
 	
@@ -260,13 +255,21 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 	}
 	
-	public void handleLogicalRequest(BladerunnerUri requestUri, java.io.OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		requestHandler.handle(requestUri, os);
+	public BundlableNode getBundlableNode(BladerunnerUri bladerunnerUri) throws ResourceNotFoundException
+	{
+		File baseDir = new File(dir(), bladerunnerUri.scopePath);
+		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
+		
+		if(bundlableNode == null) {
+			throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
+		}
+		
+		return bundlableNode;
 	}
 	
-	public void filterIndexPage(BladerunnerUri requestUri, String indexPage, String locale, OutputStream outputStream) throws ConfigException, IOException, NoTagHandlerFoundException, DocumentException, ModelOperationException {
-		File baseDir = new File(dir(), requestUri.scopePath);
-		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
+	
+	public void filterIndexPage(BladerunnerUri requestUri, String indexPage, String locale, OutputStream outputStream) throws ConfigException, IOException, NoTagHandlerFoundException, DocumentException, ModelOperationException, ResourceNotFoundException {
+		BundlableNode bundlableNode = getBundlableNode(requestUri);
 		
 		try(Writer writer = new OutputStreamWriter(outputStream)) {
 			if(bundlableNode == null) {

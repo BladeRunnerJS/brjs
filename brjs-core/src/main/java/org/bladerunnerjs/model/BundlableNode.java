@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model;
 
+import java.io.OutputStream;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -11,6 +12,9 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 
 public interface BundlableNode extends Node, AssetContainer {
@@ -25,4 +29,6 @@ public interface BundlableNode extends Node, AssetContainer {
 	BundleSet getBundleSet() throws ModelOperationException;
 	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, ContentFileProcessingException;
 	List<AliasDefinitionsFile> getAliasDefinitionFiles();
+	
+	void handleLogicalRequest(BladerunnerUri requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 }
