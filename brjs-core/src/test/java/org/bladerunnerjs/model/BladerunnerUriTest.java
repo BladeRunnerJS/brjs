@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
+import org.bladerunnerjs.utility.FileUtil;
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.After;
 import org.junit.Before;
@@ -28,9 +28,10 @@ public class BladerunnerUriTest
 		brjs = BRJSTestFactory.createBRJS(tempDir);
 		app = brjs.app("the-app");
 		
-		FileUtils.write(app.bladeset("another").file("js/empty.txt"), "");
-		FileUtils.write(app.bladeset("another").blade("blade1").workbench().file("empty.txt"), "");
-		FileUtils.write(app.bladeset("another").blade("blade1").file("/tests/test-type/testTech/empty.txt"), "");
+		FileUtil fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultInputEncoding());
+		fileUtil.write(app.bladeset("another").file("js/empty.txt"), "");
+		fileUtil.write(app.bladeset("another").blade("blade1").workbench().file("empty.txt"), "");
+		fileUtil.write(app.bladeset("another").blade("blade1").file("/tests/test-type/testTech/empty.txt"), "");
 	}
 	
 	@After

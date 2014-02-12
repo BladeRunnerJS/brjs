@@ -30,8 +30,8 @@ import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 import com.caplin.cutlass.bundler.exception.UnknownBundlerException;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
@@ -77,7 +77,7 @@ public class XmlBundleWriter
 
 	/// Public API
 	
-	public void writeBundle(final List<File> documents, final Writer writer) throws XmlSiblingReaderException, XMLStreamException, IOException, BundlerProcessingException
+	public void writeBundle(final List<File> documents, final Writer writer) throws XmlSiblingReaderException, XMLStreamException, IOException, ContentProcessingException
 	{
 		Map<String, List<XmlSiblingReader>> resourceReaders = null;
 		
@@ -113,7 +113,7 @@ public class XmlBundleWriter
 	/// Private helper methods
 
 	/* returns a map of xml root elements to a list of xml sibling readers */
-	private Map<String, List<XmlSiblingReader>> getResourceReaders(final List<File> documents) throws XMLStreamException, BundlerFileProcessingException, IOException
+	private Map<String, List<XmlSiblingReader>> getResourceReaders(final List<File> documents) throws XMLStreamException, ContentFileProcessingException, IOException
 	{
 		Map<String, List<XmlSiblingReader>> resourceReaders = new HashMap<String, List<XmlSiblingReader>>();
 		System.setProperty("javax.xml.stream.XMLInputFactory", "com.sun.xml.stream.ZephyrParserFactory");
@@ -138,7 +138,7 @@ public class XmlBundleWriter
 				}
 				catch (Exception ex)
 				{
-					throw new BundlerFileProcessingException(document, ex, "Error determining namespace for file.");
+					throw new ContentFileProcessingException(document, ex, "Error determining namespace for file.");
 				}
 				
 				siblingReader.setXmlDocumentNamespace(packageNamespaceForResource);
@@ -165,7 +165,7 @@ public class XmlBundleWriter
 			}
 			catch (FileNotFoundException e)
 			{
-				throw new BundlerFileProcessingException(document, e, "Error bundling file.");
+				throw new ContentFileProcessingException(document, e, "Error bundling file.");
 			}
 			catch (XMLStreamException xse)
 			{
@@ -178,7 +178,7 @@ public class XmlBundleWriter
 	}
 	
 	private void writeBundle(final Map<String, List<XmlSiblingReader>> resourceReaders, final XMLStreamWriter writer) 
-			throws XMLStreamException, XmlSiblingReaderException, BundlerProcessingException
+			throws XMLStreamException, XmlSiblingReaderException, ContentProcessingException
 	{
 		// start document
 		writer.setDefaultNamespace("http://schema.caplin.com/CaplinTrader/bundle");
@@ -209,7 +209,7 @@ public class XmlBundleWriter
 	}
 
 	private void writeResource(List<XmlSiblingReader> readers, final XMLStreamWriter writer, final XmlResourceConfig resourceConfig) 
-			throws XMLStreamException, XmlSiblingReaderException, BundlerProcessingException
+			throws XMLStreamException, XmlSiblingReaderException, ContentProcessingException
 	{
 		String elementName;
 		do
@@ -281,7 +281,7 @@ public class XmlBundleWriter
 		}
 	}
 
-	private String getNextElement(final List<XmlSiblingReader> readers, final XmlResourceConfig resourceConfig) throws XMLStreamException, BundlerProcessingException
+	private String getNextElement(final List<XmlSiblingReader> readers, final XmlResourceConfig resourceConfig) throws XMLStreamException, ContentProcessingException
 	{
 		Map<String, Boolean> availableElements = new HashMap<String, Boolean>();
 		String nextElement = null;
@@ -325,7 +325,7 @@ public class XmlBundleWriter
 			{
 				String errorMessage = "None of the available elements (" + StringUtils.join(availableElements.keySet(),
 					", ") + ") matched any of the expected elements (" + StringUtils.join(resourceConfig.getTemplateElements(), ", ") + ")";
-				throw new BundlerProcessingException(errorMessage);
+				throw new ContentProcessingException(errorMessage);
 			}
 		}
 
@@ -333,7 +333,7 @@ public class XmlBundleWriter
 	}
 
 	private void mergeElements(final List<XmlSiblingReader> readers, XMLStreamWriter writer, final XmlResourceConfig resourceConfig, final String elementName) 
-			throws XMLStreamException, XmlSiblingReaderException, BundlerFileProcessingException
+			throws XMLStreamException, XmlSiblingReaderException, ContentFileProcessingException
 	{
 		Map<String, File> processedIdentifers = new HashMap<String, File>();
 		String identifierAttribute = resourceConfig.getMergeElementIdentifier(elementName);
@@ -356,7 +356,7 @@ public class XmlBundleWriter
 	}
 
 	private boolean processXMLElement(XMLStreamWriter writer, Map<String, File> processedIdentifers,	String identifierAttribute, XmlSiblingReader reader) 
-			throws XMLStreamException, XmlSiblingReaderException, BundlerFileProcessingException 
+			throws XMLStreamException, XmlSiblingReaderException, ContentFileProcessingException 
 	{
 		String identifier = getIdentifier(identifierAttribute, reader);
 		
@@ -367,7 +367,7 @@ public class XmlBundleWriter
 			{
 				if(checkFilesAreInTheSameBladeset(fileWithTheSameIdForTheMergeElement, reader.getXmlDocument()))
 				{
-					throw new BundlerFileProcessingException(reader.getXmlDocument(), " duplicate identifier '" + 
+					throw new ContentFileProcessingException(reader.getXmlDocument(), " duplicate identifier '" + 
 						identifier + "', first seen in the file:\n" + fileWithTheSameIdForTheMergeElement.getAbsolutePath());
 				}
 				else
@@ -402,7 +402,7 @@ public class XmlBundleWriter
 	}
 
 	/* Throws an exception if the identifer is not in the default XML namespace configured for this reader. */
-	private String getIdentifier(String identifierAttribute, XmlSiblingReader reader) throws BundlerFileProcessingException
+	private String getIdentifier(String identifierAttribute, XmlSiblingReader reader) throws ContentFileProcessingException
 	{
 		String namespace = reader.getXmlDocumentNamespace();
 		String identifier = reader.getAttributeValue(identifierAttribute);
@@ -412,7 +412,7 @@ public class XmlBundleWriter
 			if(identifier.startsWith(namespace) == false)
 			{
 				Location location = reader.getLocation();
-				throw new BundlerFileProcessingException(reader.getXmlDocument(), location.getLineNumber(), location.getColumnNumber(),
+				throw new ContentFileProcessingException(reader.getXmlDocument(), location.getLineNumber(), location.getColumnNumber(),
 					"The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + "*' was expected.");
 			}
 		}

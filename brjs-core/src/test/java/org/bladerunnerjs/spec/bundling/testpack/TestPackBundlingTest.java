@@ -18,8 +18,8 @@ public class TestPackBundlingTest extends SpecTest
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).automaticallyFindsBundlers()
-    		.and(brjs).automaticallyFindsMinifiers()
-    		.and(brjs).hasBeenCreated();
+			.and(brjs).automaticallyFindsMinifiers()
+			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			aspectUTs = aspect.testType("unit").testTech("TEST_TECH");

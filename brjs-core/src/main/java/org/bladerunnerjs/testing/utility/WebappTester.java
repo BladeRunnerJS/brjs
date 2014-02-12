@@ -7,8 +7,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.SocketTimeoutException;
@@ -26,6 +26,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.utility.UnicodeReader;
 
 public class WebappTester 
 {
@@ -45,12 +48,20 @@ public class WebappTester
 	private String url;
 	
 	public String requestLocale = "";
+	private String defaultInputEncoding;
 	
-	public WebappTester(File filePathBase, int defaultSocketTimeout, int defaultConnectionTimeout)
+	public WebappTester(BRJS brjs, File filePathBase, int defaultSocketTimeout, int defaultConnectionTimeout)
 	{
 		this(filePathBase);
-		this.defaultSocketTimeout = defaultSocketTimeout;
-		this.defaultSocketTimeout = defaultConnectionTimeout;
+		
+		try {
+			this.defaultSocketTimeout = defaultSocketTimeout;
+			this.defaultSocketTimeout = defaultConnectionTimeout;
+			defaultInputEncoding = brjs.bladerunnerConf().getDefaultInputEncoding();
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public WebappTester(File filePathBase)
@@ -185,9 +196,9 @@ public class WebappTester
 		for(String path: filePaths)
 		{
 			File sourceFile = new File(filePathBase, path);
-			try(FileReader input = new FileReader(sourceFile))
+			try(Reader reader = new UnicodeReader(sourceFile, defaultInputEncoding))
 			{
-				IOUtils.copy(input, writer);
+				IOUtils.copy(reader, writer);
 				writer.write("\n\n");
 			}
 		}

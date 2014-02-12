@@ -9,7 +9,7 @@ import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyser;
@@ -63,7 +63,7 @@ public class PackageDepsCommand extends AbstractPlugin implements LegacyCommandP
 		{
 			codeAnalyser = CodeAnalyserFactory.getLibraryCodeAnalyser(config.getApp(), packageDirectory);
 		} 
-		catch (BundlerProcessingException e) 
+		catch (ContentProcessingException e) 
 		{
 			throw new CommandOperationException(e);
 		}

@@ -178,27 +178,27 @@ public class AppTest extends SpecTest {
 	@Test
 	public void appLibsContainBothAppLibsAndNonBladerunnerLibs() throws Exception {
 		given(app).hasBeenCreated()
-    		.and(appLib).hasBeenCreated()
-    		.and(globalNonBladeRunnerLib).hasBeenCreated()
-    		.and(appNonBladeRunnerLib).hasBeenCreated();
+			.and(appLib).hasBeenCreated()
+			.and(globalNonBladeRunnerLib).hasBeenCreated()
+			.and(appNonBladeRunnerLib).hasBeenCreated();
 		then(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
 	}
 	
 	@Test
 	public void overriddenLibsDontAppearTwiceInLibsList() throws Exception {
 		given(app).hasBeenCreated()
-    		.and(appLib).hasBeenCreated()
-    		.and(globalOverriddenNonBRLib).hasBeenCreated()
-    		.and(appOverriddenNonBRLib).hasBeenCreated();
+			.and(appLib).hasBeenCreated()
+			.and(globalOverriddenNonBRLib).hasBeenCreated()
+			.and(appOverriddenNonBRLib).hasBeenCreated();
 		then(app).hasLibs(appLib, sdkLib, appOverriddenNonBRLib);
 	}
 	
 	@Test
 	public void appNonBRLibsCanOverrideGlobalLibs() throws Exception {
 		given(app).hasBeenCreated()
-    		.and(appLib).hasBeenCreated()
-    		.and(globalOverriddenNonBRLib).hasBeenCreated()
-    		.and(appOverriddenNonBRLib).hasBeenCreated();
+			.and(appLib).hasBeenCreated()
+			.and(globalOverriddenNonBRLib).hasBeenCreated()
+			.and(appOverriddenNonBRLib).hasBeenCreated();
 		then(app).libWithNameIs("overridden-lib", appOverriddenNonBRLib);
 	}	
 	

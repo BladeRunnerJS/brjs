@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.utility.ContentPathParser;
 
 /**
@@ -71,9 +71,9 @@ public interface ContentPlugin extends Plugin {
 	 * @param bundleSet The bundle-set for the bundlable node to which this request is related to.
 	 * @param os The output stream the content will be written to.
 	 * 
-	 * @throws BundlerProcessingException if a problem is encountered.
+	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException;
+	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in development, for the given bundle-set and locale.
@@ -81,9 +81,9 @@ public interface ContentPlugin extends Plugin {
 	 * @param bundleSet The bundle-set for which content paths must be generated.
 	 * @param locales The locale for which content paths must be generated.
 	 * 
-	 * @throws BundlerProcessingException if a problem is encountered.
+	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException;
+	List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in production, for the given bundle-set and locale.
@@ -91,7 +91,7 @@ public interface ContentPlugin extends Plugin {
 	 * @param bundleSet The bundle-set for which content paths must be generated.
 	 * @param locales The locale for which content paths must be generated.
 	 * 
-	 * @throws BundlerProcessingException if a problem is encountered.
+	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException;
+	List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException;
 }

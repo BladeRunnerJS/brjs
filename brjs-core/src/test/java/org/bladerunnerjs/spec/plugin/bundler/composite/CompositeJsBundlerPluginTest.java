@@ -86,4 +86,28 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 				"define('appns/namespaced/Class'," ); 
 	}
 	
+	@Test
+	public void i18nBundleIsIncludedAfterThirdpartyAndBeforeNamespacedAndNodeJSBundlers() throws Exception {
+		given(aspect).hasNodeJsPackageStyle("src/appns/node")
+			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
+			.and(aspect).hasClass("appns.node.Class")
+			.and(aspect).hasClass("appns.namespaced.Class")
+			.and(brbootstrap).containsFileWithContents("library.manifest", "js:")
+			.and(brbootstrap).containsFile("bootstrap.js")
+			.and(appLib).containsFileWithContents("library.manifest", "js:")
+			.and(brbootstrap).containsFile("appLib.js")
+			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
+					"appns.namespaced.Class\n"+
+					"require('appLib');\n"+
+					"require('appns.node.Class');\n" );
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"// br-bootstrap", 
+				"// appLib",
+				"window._brjsI18nProperties = [{",
+				"define('appns/node/Class'",
+				"appns.namespaced.Class =", 
+				"define('appns/namespaced/Class'," ); 
+	}
+	
 }

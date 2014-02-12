@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.InvalidRequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -109,35 +109,35 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 	@Test
 	public void devRequestsContainThePackageDefinitionsAtTheTop() throws Exception {
 		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-    		.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
-    		.and(blade).hasClass("appns.bs.b1.Class1")
-    		.and(blade).hasNamespacedJsPackageStyle()
-    		.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
-    		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
-    	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+			.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
+			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).hasNamespacedJsPackageStyle()
+			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.appns = {\"bs\":{\"b1\":{}}};");
 	}
 	
 	@Test
 	public void prodRequestsContainThePackageDefinitionsAtTheTop() throws Exception {
 		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-    		.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
-    		.and(blade).hasClass("appns.bs.b1.Class1")
-    		.and(blade).hasNamespacedJsPackageStyle()
-    		.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
-    		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
-    	when(app).requestReceived("/default-aspect/js/prod/en_GB/combined/bundle.js", response);
+			.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
+			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).hasNamespacedJsPackageStyle()
+			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
+		when(app).requestReceived("/default-aspect/js/prod/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.appns = {\"bs\":{\"b1\":{}}};");
 	}
 	
 	@Test
 	public void packageDefinitionsAreDefinedInASingleRequest() throws Exception {	
 		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-    		.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
-    		.and(blade).hasClass("appns.bs.b1.Class1")
-    		.and(blade).hasNamespacedJsPackageStyle()
-    		.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
-    		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
+			.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2")
+			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).hasNamespacedJsPackageStyle()
+			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", response);
 		then(response).textEquals("// package definition block\n" + "window.appns = {\"bs\":{\"b1\":{}}};\n");
 	}
@@ -160,7 +160,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(blade).classRequires("appns.bs.b1.Class1", "appns.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(InvalidRequirePathException.class, "appns/NonExistentClass")
-			.whereTopLevelExceptionIs(BundlerProcessingException.class);
+			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	
 	@Test

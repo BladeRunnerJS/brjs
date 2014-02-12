@@ -7,7 +7,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CssBundlerPluginTest extends SpecTest {
+public class CssContentPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private JsLib nonConformantLib;
@@ -107,7 +107,68 @@ public class CssBundlerPluginTest extends SpecTest {
 		then(requestResponse).doesNotContainText("themes/theme1/style.css");
 	}
 	
-	// TODO: tests for locale specific themed css files
+	@Test
+	public void allNonNestedCssFilesInNonConformantLibrariesAppearIfLeftUnspecified() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRequires(nonConformantLib)
+			.and(nonConformantLib).containsFileWithContents("library.manifest", "js: script.js")
+			.and(nonConformantLib).containsFile("script.js")
+			.and(nonConformantLib).containsFile("style1.css")
+			.and(nonConformantLib).containsFile("style2.css")
+			.and(nonConformantLib).containsFile("dir/style3.css");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css")
+			.and(requestResponse).doesNotContainText("dir/style3.css");
+	}
+	
+	@Test
+	public void allCssFilesInNonConformantLibrariesAppearIfAWildcardIsExplicitlySpecified() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRequires(nonConformantLib)
+			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: .*\\.css")
+			.and(nonConformantLib).containsFile("style1.css")
+			.and(nonConformantLib).containsFile("style2.css")
+			.and(nonConformantLib).containsFile("dir/style3.css");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css", "dir/style3.css");
+	}
+	
+	@Test
+	public void nonLocaleRequestsBundleNonLocaleOnlyStylesheets() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("style.css")
+			.and(requestResponse).doesNotContainText("style_de.css")
+			.and(requestResponse).doesNotContainText("style_de_DE.css")
+			.and(requestResponse).doesNotContainText("style_de_CH.css");
+	}
+	
+	@Test
+	public void languageRequestsBundleLanguageOnlyStylesheets() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
+		when(app).requestReceived("/default-aspect/css/common_de/bundle.css", requestResponse);
+		then(requestResponse).containsText("style_de.css")
+			.and(requestResponse).doesNotContainText("style.css")
+			.and(requestResponse).doesNotContainText("style_de_DE.css")
+			.and(requestResponse).doesNotContainText("style_de_CH.css");
+	}
+	
+	@Test
+	public void localeRequestsBundleLocaleOnlyStylesheets() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
+		when(app).requestReceived("/default-aspect/css/common_de_DE/bundle.css", requestResponse);
+		then(requestResponse).containsText("style_de_DE.css")
+			.and(requestResponse).doesNotContainText("style.css")
+			.and(requestResponse).doesNotContainText("style_de.css")
+			.and(requestResponse).doesNotContainText("style_de_CH.css");
+	}
+	
 	
 	@Test
 	public void referringToAnImageCausesACssResourceRequestToBeCreated() throws Exception {

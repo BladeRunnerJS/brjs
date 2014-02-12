@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -56,25 +56,25 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		List<String> result = new ArrayList<String>();
 		try {
 			result.add(contentPathParser.createRequest("bundle-request"));
 		} catch (MalformedTokenException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		return result;
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		return getValidDevContentPaths(bundleSet, locales);
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
 	{
 		//TODO not parse the config on every execution
 		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
@@ -88,7 +88,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 			output.flush();
 		}
 		catch( IOException | ConfigException |  XMLStreamException  e) {
-			throw new BundlerProcessingException(e, "Error while processing XML assets '" );
+			throw new ContentProcessingException(e, "Error while processing XML assets '" );
 		}	
 	}
 	

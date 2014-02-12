@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -51,17 +51,17 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		return getValidRequestPaths();
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		return getValidRequestPaths();
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
 		try {
 			if (contentPath.formName.equals("aliasing-request")) {
 				boolean aliasRegistryLoaded = bundleSet.getSourceModules().contains(bundleSet.getBundlableNode().getSourceModule("br/AliasRegistry"));
@@ -74,24 +74,24 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 				}
 			}
 			else {
-				throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
+				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
 		catch (RequirePathException e) {
 			// do nothing: if 'br/AliasRegistry' doesn't exist then we definitely need to configure it
 		}
 		catch(IOException | ConfigException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 	}
 	
-	private List<String> getValidRequestPaths() throws BundlerProcessingException {
+	private List<String> getValidRequestPaths() throws ContentProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
 			requestPaths.add(contentPathParser.createRequest("aliasing-request"));
 		} catch (MalformedTokenException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		return requestPaths;
 	}

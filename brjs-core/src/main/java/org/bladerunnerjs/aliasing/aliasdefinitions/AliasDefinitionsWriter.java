@@ -8,20 +8,22 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.testing.specutility.XmlBuilderSerializer;
+import org.bladerunnerjs.utility.FileUtil;
 
 import com.jamesmurty.utils.XMLBuilder;
 
 public class AliasDefinitionsWriter {
 	private final AliasDefinitionsData data;
 	private final File file;
+	private final FileUtil fileUtil;
 	
-	public AliasDefinitionsWriter(AliasDefinitionsData data, File file) {
+	public AliasDefinitionsWriter(AliasDefinitionsData data, File file, String defaultInputEncoding) {
 		this.data = data;
 		this.file = file;
+		fileUtil = new FileUtil(defaultInputEncoding);
 	}
 	
 	public void write() throws IOException {
@@ -51,7 +53,7 @@ public class AliasDefinitionsWriter {
 				}
 			}
 			
-			FileUtils.write(file, XmlBuilderSerializer.serialize(builder));
+			fileUtil.write(file, XmlBuilderSerializer.serialize(builder));
 		}
 		catch (IOException | ParserConfigurationException | FactoryConfigurationError | TransformerException e) {
 			throw new IOException(e);

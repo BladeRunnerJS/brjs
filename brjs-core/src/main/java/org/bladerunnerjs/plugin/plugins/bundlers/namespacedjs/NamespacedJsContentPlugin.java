@@ -20,7 +20,7 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -42,7 +42,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 				.accepts("namespaced-js/bundle.js").as("bundle-request")
 					.and("namespaced-js/module/<module>.js").as("single-module-request")
 					.and("namespaced-js/package-definitions.js").as("package-definitions-request")
-				.where("module").hasForm(".+"); // TODO: ensure we really need such a simple hasForm() -- we didn't use to need it
+				.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 			
 			contentPathParser = contentPathParserBuilder.build();
 			prodRequestPaths.add(contentPathParser.createRequest("bundle-request"));
@@ -73,7 +73,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
@@ -85,19 +85,19 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 			}
 		}
 		catch(MalformedTokenException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		
 		return requestPaths;
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		return prodRequestPaths;
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
 		try {
 			if(contentPath.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
@@ -124,8 +124,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 					}
 					
 					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
-    				writePackageStructure(packageStructure, writer);
-    				writer.write("\n");
+					writePackageStructure(packageStructure, writer);
+					writer.write("\n");
 					
 					writer.write( jsContent.toString() );
 				}
@@ -141,16 +141,16 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 						}
 					}
 					
-    				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
-    				writePackageStructure(packageStructure, writer);
+					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
+					writePackageStructure(packageStructure, writer);
 				}
 			}
 			else {
-				throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
+				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
 		catch(ModelOperationException | ConfigException | IOException | RequirePathException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 	}
 	
@@ -160,8 +160,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			if (sourceModule instanceof NamespacedJsSourceModule)
 			{
-    			List<String> packageList = Arrays.asList(sourceModule.getClassname().split("\\."));
-    			addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
+				List<String> packageList = Arrays.asList(sourceModule.getClassname().split("\\."));
+				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}
 		

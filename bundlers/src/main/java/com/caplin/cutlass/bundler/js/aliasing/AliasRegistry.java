@@ -21,8 +21,8 @@ import org.xml.sax.SAXException;
 
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 import com.caplin.cutlass.bundler.js.ClassDictionary;
 import com.caplin.cutlass.exception.NamespaceException;
@@ -70,7 +70,7 @@ public class AliasRegistry implements AliasContainer
 		}
 	}
 	
-	public AliasRegistry(File baseDir, File testDir, Set<String> validClasses) throws BundlerFileProcessingException
+	public AliasRegistry(File baseDir, File testDir, Set<String> validClasses) throws ContentFileProcessingException
 	{
 		aliasScenarios.addScenario(DEFAULT_SCENARIO);
 		this.validClasses = validClasses;
@@ -79,7 +79,7 @@ public class AliasRegistry implements AliasContainer
 		{
 			processAliasFiles(new BladeRunnerSourceFileProvider(new AliasFileAppender()).getSourceFiles(baseDir, testDir), validClasses);
 		}
-		catch(BundlerFileProcessingException e)
+		catch(ContentFileProcessingException e)
 		{
 			throw e;
 		}
@@ -172,7 +172,7 @@ public class AliasRegistry implements AliasContainer
 		return jsonData.toString();
 	}
 	
-	private void processAliasFiles(List<File> sourceFiles, Set<String> validClasses) throws BundlerFileProcessingException, XMLStreamException,
+	private void processAliasFiles(List<File> sourceFiles, Set<String> validClasses) throws ContentFileProcessingException, XMLStreamException,
 	FileNotFoundException, IOException, NamespaceException
 	{
 		for(File sourceFile : sourceFiles)
@@ -186,7 +186,7 @@ public class AliasRegistry implements AliasContainer
 		}
 	}
 	
-	private void processAliasFile(File aliasesFile, Set<String> validClasses) throws BundlerFileProcessingException, XMLStreamException, 
+	private void processAliasFile(File aliasesFile, Set<String> validClasses) throws ContentFileProcessingException, XMLStreamException, 
 	FileNotFoundException, IOException, NamespaceException
 	{
 		XMLStreamReader2 streamReader = null;
@@ -211,7 +211,7 @@ public class AliasRegistry implements AliasContainer
 		{
 			Location location = e.getLocation();
 			
-			throw new BundlerFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+			throw new ContentFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 		}
 		finally
 		{
@@ -235,7 +235,7 @@ public class AliasRegistry implements AliasContainer
 		}
 	}
 
-	public void addGroup(GroupDefinition groupDefinition) throws BundlerProcessingException {
+	public void addGroup(GroupDefinition groupDefinition) throws ContentProcessingException {
 		
 		String groupName = groupDefinition.getName();
 		if (groupDefinitions == null)
@@ -245,15 +245,15 @@ public class AliasRegistry implements AliasContainer
 		
 		if(groupDefinitions.containsKey(groupName))
 		{
-			throw new BundlerProcessingException("The alias group " + groupName + " has already been defined");
+			throw new ContentProcessingException("The alias group " + groupName + " has already been defined");
 		}
 		groupDefinitions.put(groupName, groupDefinition);
 	}
 	
-	public void useGroup(String groupName) throws BundlerProcessingException {
+	public void useGroup(String groupName) throws ContentProcessingException {
 		if(groupDefinitions == null || !groupDefinitions.containsKey(groupName))
 		{
-			throw new BundlerProcessingException("The alias group " + groupName + " hasn't been defined");
+			throw new ContentProcessingException("The alias group " + groupName + " hasn't been defined");
 		}
 		GroupDefinition groupToUse = groupDefinitions.get(groupName);
 		
@@ -265,7 +265,7 @@ public class AliasRegistry implements AliasContainer
 		}
 	}
 
-	public void addGroupAliases(GroupDefinition groupToUse, String scenario) throws BundlerProcessingException 
+	public void addGroupAliases(GroupDefinition groupToUse, String scenario) throws ContentProcessingException 
 	{
 		List<AliasDefinition> scenarioAliases = groupToUse.getAliasDefinitions(scenario);
 		if(scenarioAliases != null)
@@ -280,18 +280,18 @@ public class AliasRegistry implements AliasContainer
 		}
 	}
 	
-	private void verifyAliasDoesNotClash(AliasDefinition newAlias, AliasDefinition existingAlias ) throws BundlerProcessingException 
+	private void verifyAliasDoesNotClash(AliasDefinition newAlias, AliasDefinition existingAlias ) throws ContentProcessingException 
 	{
 		String newGroup = newAlias.getGroup();
 		String aliasName = newAlias.getName();
 
 		if (existingAlias != null && existingAlias.getGroup() != null  && existingAlias.getName().equals(aliasName) && !existingAlias.getGroup().equals(newGroup))
 		{
-			throw new BundlerProcessingException("Alias " + newAlias.getName() + " has been defined in at least 2 groups: " + newGroup  + " and " + existingAlias.getGroup());
+			throw new ContentProcessingException("Alias " + newAlias.getName() + " has been defined in at least 2 groups: " + newGroup  + " and " + existingAlias.getGroup());
 		}
 	}
 
-	public void addClassAlias( AliasDefinition alias) throws BundlerProcessingException
+	public void addClassAlias( AliasDefinition alias) throws ContentProcessingException
 	{
 		addClassAlias(alias, this.scenario);
 	}
@@ -300,14 +300,14 @@ public class AliasRegistry implements AliasContainer
 	 * @see com.caplin.cutlass.bundler.js.aliasing.SomeSortOfInterface#addClassAlias(org.bladerunnerjs.model.AliasDefinition, java.lang.String)
 	 */
 	@Override
-	public void addClassAlias(AliasDefinition alias, String scenario) throws BundlerProcessingException {
+	public void addClassAlias(AliasDefinition alias, String scenario) throws ContentProcessingException {
 		ScenarioAliases scenarioAliases = getScenarioAliases(scenario);
 		
 		String className = alias.getClassName();
 		
 		if(className != null && ! validClasses.contains(className))
 		{
-			throw new BundlerProcessingException("There is no such class as '" + className + "'.");
+			throw new ContentProcessingException("There is no such class as '" + className + "'.");
 		}
 		
 		verifyAliasDoesNotClash(alias, scenarioAliases.getAlias(alias.getName()));

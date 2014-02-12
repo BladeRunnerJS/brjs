@@ -91,13 +91,13 @@ public class BRJSStartupTest extends SpecTest {
 	@Test
 	public void fatalErrorIsEmittedIfAnyOfTheCommandPluginsCantBeCreated() throws Exception {
 		given(logging).enabled()
-    		.and(brjs).hasCommands(failingCommandPlugin);
-    	when(brjs).hasBeenCreated()
-    		.and(brjs).runCommand("help", "failingCommand");
-    	then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
-    		.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLUGIN_ERROR_MSG, failingCommandPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
-    		.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
-    		.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
+			.and(brjs).hasCommands(failingCommandPlugin);
+		when(brjs).hasBeenCreated()
+			.and(brjs).runCommand("help", "failingCommand");
+		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
+			.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLUGIN_ERROR_MSG, failingCommandPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
+			.and(logging).infoMessageReceived(PERFORMING_NODE_DISCOVERY_LOG_MSG)
+			.and(logging).infoMessageReceived(MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG);
 	}
 	
 }

@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AspectBundlingOfHTML extends SpecTest {
@@ -15,7 +14,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
-	private JsLib sdkLib;
+	private JsLib sdkLib, userLib;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -30,6 +29,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			sdkLib = brjs.sdkLib();
+			userLib = app.jsLib("userLib");
 	}
 	
 	// Aspect
@@ -60,17 +60,37 @@ public class AspectBundlingOfHTML extends SpecTest {
 	}
 	
 	// SDK BRJS Lib
-	@Ignore // This test should pass to prove that the app can bundle sdk html resources
 	@Test
-	public void aspectCanBundleSdkLibHtmlResources() throws Exception {
+	public void aspectCanBundleSdkLibHTMLResources() throws Exception {
 		given(sdkLib).hasBeenCreated()
 			.and(sdkLib).hasNamespacedJsPackageStyle()
-			.and(sdkLib).containsFileWithContents("resources/html/view.html", "<div id='tree-view'></div>")
+			.and(sdkLib).containsFileWithContents("resources/html/workbench.html", "<div id='br.workbench-view'></div>")
 			.and(sdkLib).hasClass("br.workbench.ui.Workbench")
-			.and(aspect).containsFileWithContents("resources/workbench-view.html", "<div id='appns.aspect-view'></div>")
+			.and(aspect).containsFileWithContents("resources/aspect.html", "<div id='appns.aspect-view'></div>")
 			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
-		then(response).containsOrderedTextFragments("<div id='appns.workbench-view'></div>",
-													"<div id='tree-view'></div>");
+		then(response).containsOrderedTextFragments(
+				"<!-- workbench.html -->",
+				"<div id='br.workbench-view'></div>",
+				"<!-- aspect.html -->",
+				"<div id='appns.aspect-view'></div>" );
+	}
+	
+	
+	// User library (specific to an app)
+	@Test
+	public void aspectCanBundleUserLibHTMLRresources() throws Exception {
+		given(userLib).hasBeenCreated()
+			.and(userLib).hasNamespacedJsPackageStyle()
+			.and(userLib).containsFileWithContents("resources/html/userLib.html", "<div id='userLib.my-view'></div>")
+			.and(userLib).hasClass("userLib.Class1")
+			.and(aspect).containsFileWithContents("resources/aspect.html", "<div id='appns.aspect-view'></div>")
+			.and(aspect).indexPageRefersTo("userLib.Class1");
+		when(app).requestReceived("/default-aspect/bundle.html", response);
+		then(response).containsOrderedTextFragments(
+				"<!-- userLib.html -->",
+				"<div id='userLib.my-view'></div>",
+				"<!-- aspect.html -->",
+				"<div id='appns.aspect-view'></div>" );
 	}
 }

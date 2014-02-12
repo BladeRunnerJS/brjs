@@ -10,8 +10,7 @@ public class ServerUtility
 	private static final int MIN_PORT = 1024;
 	private static final int MAX_PORT = 3000;
 	private static final int MAX_RANDOM_PORT = MAX_PORT - MIN_PORT;
-	
-	private static Random random = new Random();
+	private static final Random random = new Random();
 	
 	// this has to generate a 'random' port, otherwise it breaks parallel Gradle builds
 	public static int getTestPort()

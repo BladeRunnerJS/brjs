@@ -24,7 +24,7 @@ public class BladerunnerUri
 	 * The path for the webapp context.
 	 * Will always start and end with a <tt>/</tt>.
 	 * e.g. <ul>
-	 *    <li>/myapp/</li>
+	 *   <li>/myapp/</li>
 	 * </ul>
 	 */
 	public String contextPath;
@@ -39,7 +39,7 @@ public class BladerunnerUri
 	 * The url query string.
 	 * Will be either the empty string or start with a <tt>?</tt>.
 	 * e.g. <ul>
-	 *    <li>?major=boris&cameron=worried</li>
+	 *   <li>?major=boris&cameron=worried</li>
 	 * </ul>
 	 */
 	public String queryString;
@@ -48,8 +48,8 @@ public class BladerunnerUri
 	 * The path to a bundle scope (i.e. a workbench, aspect or test).
 	 * Will be either the empty string or start and end with a <tt>/</tt>.
 	 * e.g. <ul>
-	 *    <li>/fx-bladeset/blades/ticket/workbench/</li>
-	 *    <li>/mobile-aspect/</li>
+	 *   <li>/fx-bladeset/blades/ticket/workbench/</li>
+	 *   <li>/mobile-aspect/</li>
 	 * </ul>
 	 */
 	public String scopePath;
@@ -58,8 +58,8 @@ public class BladerunnerUri
 	 * The path to the resource within the scope.  May or may not be a bundle.
 	 * Will not start with a <tt>/</tt>.
 	 * e.g. <ul>
-	 *    <li>js/js.bundle</li>
-	 *    <li>index.html</li>
+	 *   <li>js/js.bundle</li>
+	 *   <li>index.html</li>
 	 * </ul>
 	 */
 	public String logicalPath;

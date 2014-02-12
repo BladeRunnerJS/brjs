@@ -24,8 +24,8 @@ import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
@@ -77,7 +77,7 @@ public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 	}
 
 	@Override
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		
@@ -112,7 +112,7 @@ public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 		return requests;
 	}
 	
-	private void writeJson(Writer writer, String jsonMap) throws BundlerProcessingException
+	private void writeJson(Writer writer, String jsonMap) throws ContentProcessingException
 	{
 		try
 		{
@@ -120,7 +120,7 @@ public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Unable to write to output stream.");
+			throw new ContentProcessingException(e, "Unable to write to output stream.");
 		}
 	}
 	
@@ -140,7 +140,7 @@ public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 		return pattern;
 	}
 
-	private Properties generateBundle(List<File> sourceFiles) throws BundlerFileProcessingException
+	private Properties generateBundle(List<File> sourceFiles) throws ContentFileProcessingException
 	{
 		Properties bundle = new Properties();
 		for (File file : sourceFiles)
@@ -153,7 +153,7 @@ public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 			}
 			catch (Exception e)
 			{
-				throw new BundlerFileProcessingException(file, e, "Error while bundling file.");
+				throw new ContentFileProcessingException(file, e, "Error while bundling file.");
 			}
 			bundle.putAll(override);
 		}
@@ -170,7 +170,7 @@ public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 			{
 				if(!identifier.startsWith(namespace))
 				{
-					throw new BundlerFileProcessingException(file, "The identifier '" + identifier +
+					throw new ContentFileProcessingException(file, "The identifier '" + identifier +
 						"' is not correctly namespaced, namespace '" + namespace + "*' was expected.");
 				}
 			}

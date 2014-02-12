@@ -7,7 +7,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamReader2;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import com.caplin.cutlass.exception.NamespaceException;
 
 
@@ -26,7 +26,7 @@ public class AliasingStreamReader
 		this.nodeReaders.put("group", new GroupNodeReader(underlyingStreamReader));
 	}
 
-	public AliasingNode getNextNode() throws XMLStreamException, NamespaceException, BundlerFileProcessingException
+	public AliasingNode getNextNode() throws XMLStreamException, NamespaceException, ContentFileProcessingException
 	{
 		underlyingStreamReader.next();
 		

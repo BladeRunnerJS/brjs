@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
@@ -46,7 +46,7 @@ public class ThirdPartyFileFinderTest {
 		fileFinder.getThirdPartyLibraryFiles(new File(appDir), thirdPartyLibraries);
 	}
 	
-	@Test(expected=BundlerProcessingException.class)
+	@Test(expected=ContentProcessingException.class)
 	public void testIfWePassInAnInvalidDirWeJustGetNoResults() throws Exception 
 	{
 		ThirdPartyFileFinder fileFinder = new ThirdPartyFileFinder(new ThirdPartyLibraryFinder());

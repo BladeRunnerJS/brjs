@@ -13,7 +13,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.caplin.cutlass.ServletModelAccessor;
@@ -24,6 +26,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 
 import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.filter.CharResponseWrapper;
 
 public class BundlerContentTypeFilter implements Filter
 {
@@ -66,31 +69,42 @@ public class BundlerContentTypeFilter implements Filter
 		ServletModelAccessor.destroy();
 	}
 	
-	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
-	{
-		try
-		{
-			BladerunnerUri bladerunnerUri = new BladerunnerUri(brjs, servletContext, (HttpServletRequest) request);
-			String requestURI = bladerunnerUri.logicalPath;
-			
-			if(requestURI.endsWith(".bundle"))
-			{
-				String contentType = getContentType(requestURI);
-				response.setContentType(contentType);
-				
-				logger.debug("setting bundler content type to '" + contentType + "'");
-			}
-			chain.doFilter(request, response);
-		}
-		catch(IOException|ServletException e)
-		{
-			throw e;
-		}
-		catch(Exception e)
-		{
-			throw new ServletException(e);
-		}
+	@Override 
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException 
+	{ 
+    	try
+    	{
+        	BladerunnerUri bladerunnerUri = new BladerunnerUri(brjs, servletContext, (HttpServletRequest) request);
+        	String requestURI = bladerunnerUri.logicalPath;
+        
+        	if(requestURI.endsWith(".bundle"))
+        	{
+            	String contentType = getContentType(requestURI);
+            	CharResponseWrapper responseWrapper = new CharResponseWrapper( (HttpServletResponse) response);
+            	chain.doFilter(request, responseWrapper);
+            	response.setContentType(contentType);
+            
+            	logger.debug("setting bundler content type to '" + contentType + "' after chain.doFilter");
+            	IOUtils.copy(responseWrapper.getReader(), response.getWriter());
+
+        	}
+        	else
+        	{
+        		chain.doFilter(request, response);
+        	}
+    	}
+    	catch(IOException e)
+    	{
+    	throw e;
+    	}
+    	catch(ServletException e)
+    	{
+    	throw e;
+    	}
+    	catch(Exception e)
+    	{
+    	throw new ServletException(e);
+    	}
 	}
 	
 	public String getContentType(String path)

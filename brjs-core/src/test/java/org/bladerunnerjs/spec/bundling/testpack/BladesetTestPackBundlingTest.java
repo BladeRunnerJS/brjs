@@ -22,8 +22,8 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).automaticallyFindsBundlers()
-    		.and(brjs).automaticallyFindsMinifiers()
-    		.and(brjs).hasBeenCreated();
+			.and(brjs).automaticallyFindsMinifiers()
+			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			bladeset = app.bladeset("bs");
 			bladesetUTs = bladeset.testType("unit").testTech("TEST_TECH");

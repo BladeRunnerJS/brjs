@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class XmlBundleWriter
 {
@@ -31,7 +32,7 @@ public class XmlBundleWriter
 		this.xmlBundlerConfig  = xmlBundlerConfig;
 	}
 	
-	public void writeBundle(List<Asset> xmlAssets, final Writer writer) throws BundlerProcessingException, XMLStreamException {
+	public void writeBundle(List<Asset> xmlAssets, final Writer writer) throws ContentProcessingException, XMLStreamException {
 		
 		Map<String, List<XmlSiblingReader>> resourceReaders = null;
 		
@@ -43,7 +44,7 @@ public class XmlBundleWriter
 			writeBundleInternal(resourceReaders, xmlWriter);
 		}
 		catch(   XmlSiblingReaderException | XMLStreamException e) {
-			throw new BundlerProcessingException(e, "Error while bundling XML assets '" );
+			throw new ContentProcessingException(e, "Error while bundling XML assets '" );
 		}	
 		finally
 		{
@@ -61,7 +62,7 @@ public class XmlBundleWriter
 	}
 	
 	private void writeBundleInternal(final Map<String, List<XmlSiblingReader>> resourceReaders, final XMLStreamWriter writer) 
-			throws XMLStreamException, XmlSiblingReaderException, BundlerProcessingException
+			throws XMLStreamException, XmlSiblingReaderException, ContentProcessingException
 	{
 		writer.setDefaultNamespace("http://schema.caplin.com/CaplinTrader/bundle");
 		writer.writeStartDocument();
@@ -94,7 +95,7 @@ public class XmlBundleWriter
 
 	
 	/* returns a map of xml root elements to a list of xml sibling readers */
-	private Map<String, List<XmlSiblingReader>> getResourceReaders(List<Asset> xmlAssets) throws  BundlerProcessingException
+	private Map<String, List<XmlSiblingReader>> getResourceReaders(List<Asset> xmlAssets) throws  ContentProcessingException
 	{
 		Map<String, List<XmlSiblingReader>> resourceReaders = new HashMap<String, List<XmlSiblingReader>>();
 		System.setProperty("javax.xml.stream.XMLInputFactory", "com.sun.xml.stream.ZephyrParserFactory");
@@ -121,7 +122,7 @@ public class XmlBundleWriter
 				if (!configMap.containsKey(rootElement))
 				{
 					siblingReader.close();
-					throw new BundlerFileProcessingException(document, "Document contain unsupported root element: '" + rootElement + "'");
+					throw new ContentFileProcessingException(document, "Document contain unsupported root element: '" + rootElement + "'");
 				}
 				else
 				{
@@ -134,8 +135,8 @@ public class XmlBundleWriter
 					readerSet.add(siblingReader);
 				}
 				
-			}catch ( FileNotFoundException | XMLStreamException | RequirePathException  e){
-				throw new BundlerFileProcessingException(document, e);
+			}catch (  XMLStreamException | RequirePathException | IOException e){
+				throw new ContentFileProcessingException(document, e);
 			}
 		}
 		
@@ -144,7 +145,7 @@ public class XmlBundleWriter
 	
 	
 	private void writeResource(List<XmlSiblingReader> readers, final XMLStreamWriter writer, final XmlResourceConfig resourceConfig) 
-			throws XMLStreamException, XmlSiblingReaderException, BundlerProcessingException
+			throws XMLStreamException, XmlSiblingReaderException, ContentProcessingException
 	{
 		String elementName;
 		do
@@ -216,7 +217,7 @@ public class XmlBundleWriter
 		}
 	}
 
-	private String getNextElement(final List<XmlSiblingReader> readers, final XmlResourceConfig resourceConfig) throws XMLStreamException, BundlerProcessingException
+	private String getNextElement(final List<XmlSiblingReader> readers, final XmlResourceConfig resourceConfig) throws XMLStreamException, ContentProcessingException
 	{
 		Map<String, Boolean> availableElements = new HashMap<String, Boolean>();
 		String nextElement = null;
@@ -260,7 +261,7 @@ public class XmlBundleWriter
 			{
 				String errorMessage = "None of the available elements '" + StringUtils.join(availableElements.keySet(),
 					", ") + "' matched any of the expected elements '" + StringUtils.join(resourceConfig.getTemplateElements(), ", ") + "'";
-				throw new BundlerProcessingException(errorMessage);
+				throw new ContentProcessingException(errorMessage);
 			}
 		}
 
@@ -268,7 +269,7 @@ public class XmlBundleWriter
 	}
 
 	private void mergeElements(final List<XmlSiblingReader> readers, XMLStreamWriter writer, final XmlResourceConfig resourceConfig, final String elementName) 
-			throws  BundlerProcessingException
+			throws  ContentProcessingException
 	{
 		Map<String, File> processedIdentifers = new HashMap<String, File>();
 		String identifierAttribute = resourceConfig.getMergeElementIdentifier(elementName);
@@ -281,19 +282,19 @@ public class XmlBundleWriter
 			}
 			catch (Exception e)
 			{
-				throw new BundlerProcessingException(e, "Error while bundling asset ");
+				throw new ContentProcessingException(e, "Error while bundling asset ");
 			}
 		}
 	}
 
 	private boolean processXMLElement(XMLStreamWriter writer, Map<String, File> processedIdentifers,	String identifierAttribute, XmlSiblingReader reader) 
-			throws XMLStreamException, XmlSiblingReaderException, BundlerProcessingException 
+			throws XMLStreamException, XmlSiblingReaderException, ContentProcessingException 
 	{
 		String identifier;
 		try {
 			identifier = getIdentifier(identifierAttribute, reader);
 		} catch (NamespaceException e) {
-			throw new BundlerFileProcessingException(reader.getXmlDocument(), e);
+			throw new ContentFileProcessingException(reader.getXmlDocument(), e);
 		}
 			
 		if(identifier != null)
@@ -301,15 +302,7 @@ public class XmlBundleWriter
 			File fileWithTheSameIdForTheMergeElement = processedIdentifers.get(identifier);
 			if(fileWithTheSameIdForTheMergeElement != null )
 			{
-				if(checkFilesAreInTheSameBladeset(fileWithTheSameIdForTheMergeElement, reader.getXmlDocument()))
-				{
-					throw new BundlerFileProcessingException(reader.getXmlDocument(), " duplicate identifier '" + 
-						identifier + "', first seen in the file:\n" + fileWithTheSameIdForTheMergeElement.getAbsolutePath());
-				}
-				else
-				{
-					return reader.skipToNextSibling();
-				}
+				return reader.skipToNextSibling();
 			}
 			processedIdentifers.put(identifier, reader.getXmlDocument());
 		}
@@ -318,24 +311,7 @@ public class XmlBundleWriter
 		return reader.nextSibling();
 	}
 
-	private boolean checkFilesAreInTheSameBladeset(File file1, File file2)
-	{
-//		ScopeLevel file1Scope = CutlassDirectoryLocator.getScope(file1);
-//		ScopeLevel file2Scope = CutlassDirectoryLocator.getScope(file2);
-//		
-//		if((file1Scope == ScopeLevel.BLADE_SCOPE || file1Scope == ScopeLevel.BLADESET_SCOPE)
-//			&& (file2Scope == ScopeLevel.BLADE_SCOPE || file2Scope == ScopeLevel.BLADESET_SCOPE))
-//		{
-//			File file1Bladeset = CutlassDirectoryLocator.getParentBladeset(file1);
-//			File file2Bladeset = CutlassDirectoryLocator.getParentBladeset(file2);
-//			
-//			if(file1Bladeset.equals(file2Bladeset))
-//			{
-//				return true;
-//			}
-//		}
-		return false;
-	}
+
 
 	/* Throws an exception if the identifer is not in the default XML namespace configured for this reader. */
 	private String getIdentifier(String identifierAttribute, XmlSiblingReader reader) throws NamespaceException
@@ -363,7 +339,7 @@ public class XmlBundleWriter
 		}
 	}
 
-	private List<XmlSiblingReader> getChildReaders(final List<XmlSiblingReader> readers, final String elementName) throws BundlerFileProcessingException
+	private List<XmlSiblingReader> getChildReaders(final List<XmlSiblingReader> readers, final String elementName) throws ContentFileProcessingException
 	{
 		List<XmlSiblingReader> childReaders = new ArrayList<XmlSiblingReader>();
 
@@ -381,7 +357,7 @@ public class XmlBundleWriter
 					}
 				}
 			}catch(XMLStreamException | XmlSiblingReaderException e){
-				throw new BundlerFileProcessingException(reader.getXmlDocument(), e);
+				throw new ContentFileProcessingException(reader.getXmlDocument(), e);
 			}
 		}
 

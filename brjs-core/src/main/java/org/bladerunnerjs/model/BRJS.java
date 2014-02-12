@@ -174,7 +174,6 @@ public class BRJS extends AbstractBRJSRootNode
 		fileModificationService.close();
 	}
 	
-	// TODO: this needs unit testing
 	public BundlableNode locateFirstBundlableAncestorNode(File file)
 	{
 		Node node = locateFirstAncestorNode(file);

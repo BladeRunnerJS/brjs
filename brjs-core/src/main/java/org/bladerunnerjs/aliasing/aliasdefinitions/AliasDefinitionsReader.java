@@ -1,7 +1,7 @@
 package org.bladerunnerjs.aliasing.aliasdefinitions;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,7 +15,8 @@ import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
 import org.bladerunnerjs.utility.stax.XmlStreamReader;
 import org.codehaus.stax2.validation.XMLValidationSchema;
@@ -24,12 +25,12 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 
 public class AliasDefinitionsReader {
-	private final static XMLValidationSchema aliasDefinitionsSchema;
+	private static final XMLValidationSchema aliasDefinitionsSchema;
 	
 	private final AliasDefinitionsData data;
 	private final File file;
-
-	private AssetContainer assetContainer;
+	private final AssetContainer assetContainer;
+	private final String defaultInputEncoding;
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -43,18 +44,24 @@ public class AliasDefinitionsReader {
 	}
 	
 	public AliasDefinitionsReader(AliasDefinitionsData data, File file, AssetContainer assetContainer) {
-		this.data = data;
-		this.file = file;
-		this.assetContainer = assetContainer;
+		try {
+			this.data = data;
+			this.file = file;
+			this.assetContainer = assetContainer;
+			defaultInputEncoding = assetContainer.root().bladerunnerConf().getDefaultInputEncoding();
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
-	public void read() throws BundlerFileProcessingException {
+	public void read() throws ContentFileProcessingException {
 		data.aliasDefinitions = new ArrayList<>();
 		data.scenarioAliases = new HashMap<>();
 		data.groupAliases = new HashMap<>();
 		
 		if(file.exists()) {
-			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(file, aliasDefinitionsSchema)) {
+			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(file, defaultInputEncoding, aliasDefinitionsSchema)) {
 				while(streamReader.hasNextTag()) {
 					streamReader.nextTag();
 					
@@ -78,10 +85,10 @@ public class AliasDefinitionsReader {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new BundlerFileProcessingException(file, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+				throw new ContentFileProcessingException(file, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
-			catch (FileNotFoundException | NamespaceException e) {
-				throw new BundlerFileProcessingException(file, e);
+			catch (IOException | NamespaceException e) {
+				throw new ContentFileProcessingException(file, e);
 			}
 		}
 	}

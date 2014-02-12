@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 
-public class BRJSThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
+public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}

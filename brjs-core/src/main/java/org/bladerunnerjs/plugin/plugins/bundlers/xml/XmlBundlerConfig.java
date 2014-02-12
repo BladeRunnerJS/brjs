@@ -12,7 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -26,7 +26,7 @@ public class XmlBundlerConfig {
 	private Map<String, XmlResourceConfig> configMap = new HashMap<String, XmlResourceConfig>();
 	private BRJS brjs;
 
-	public XmlBundlerConfig(BRJS brjs) throws BundlerProcessingException {
+	public XmlBundlerConfig(BRJS brjs) throws ContentProcessingException {
 		this.brjs = brjs;
 		this.configMap = createConfigMap();
 	}
@@ -35,7 +35,7 @@ public class XmlBundlerConfig {
 		return configMap;
 	}
 
-	private Map<String, XmlResourceConfig>  createConfigMap() throws BundlerProcessingException
+	private Map<String, XmlResourceConfig>  createConfigMap() throws ContentProcessingException
 	{
 		File file = brjs.configuration(CONFIG_FILE_NAME);
 		Map<String, XmlResourceConfig> result = new HashMap<String, XmlResourceConfig>();
@@ -44,7 +44,7 @@ public class XmlBundlerConfig {
 			InputStream is = new FileInputStream(file);
 			result = processBundlerConfig(is);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		return result;
 	}

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,14 +19,14 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
+public class ThirdpartyContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
@@ -34,11 +34,11 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-    		.accepts("thirdparty/bundle.js").as("bundle-request")
+			.accepts("thirdparty/bundle.js").as("bundle-request")
 				.and("thirdparty/<module>/bundle.js").as("single-module-request")
 				.and("thirdparty/<module>/<file-path>").as("file-request")
-			.where("module").hasForm(".+")
-				.and("file-path").hasForm(".+");
+			.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN)
+				.and("file-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 		
 		contentPathParser = contentPathParserBuilder.build();
 	}
@@ -67,7 +67,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
 	{
 		try {
 			if (contentPath.formName.equals("bundle-request"))
@@ -75,11 +75,11 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
 				{
 					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
-						if(sourceFile instanceof BRJSThirdpartyBundlerSourceModule)
+						if(sourceFile instanceof ThirdpartySourceModule)
 						{
-    						writer.write("// " + sourceFile.getRequirePath() + "\n");
-    						IOUtils.copy(sourceFile.getReader(), writer);
-    						writer.write("\n\n");
+							writer.write("// " + sourceFile.getRequirePath() + "\n");
+							IOUtils.copy(sourceFile.getReader(), writer);
+							writer.write("\n\n");
 						}
 					}
 				}
@@ -90,7 +90,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				JsLib lib = app.nonBladeRunnerLib(libName);
 				if (!lib.dirExists())
 				{
-					throw new BundlerProcessingException("Library '" + lib.getName() + "' doesn't exist.");
+					throw new ContentProcessingException("Library '" + lib.getName() + "' doesn't exist.");
 				}
 				
 				String filePath = contentPath.properties.get("file-path");
@@ -100,7 +100,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				File file = lib.file(filePath);
 				if (!file.exists())
 				{
-					throw new BundlerProcessingException("File '" + file.getAbsolutePath() + "' doesn't exist.");
+					throw new ContentProcessingException("File '" + file.getAbsolutePath() + "' doesn't exist.");
 				}
 				
 				IOUtils.copy(new FileInputStream(file), os);
@@ -115,35 +115,35 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 				}
 			}
 			else {
-				throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
+				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
 		catch(RequirePathException | ConfigException | IOException ex) {
-			throw new BundlerProcessingException(ex);
+			throw new ContentProcessingException(ex);
 		}
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		List<String> requestPaths = new ArrayList<>();
 		
 		try {
 			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-				if(sourceModule instanceof BRJSThirdpartyBundlerSourceModule) {
+				if(sourceModule instanceof ThirdpartySourceModule) {
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
 				}
 			}
 		}
 		catch(MalformedTokenException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		
 		return requestPaths;
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException 
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException 
 	{
 		List<String> requestPaths = new ArrayList<>();
 		
@@ -151,7 +151,7 @@ public class BRJSThirdpartyContentPlugin extends AbstractContentPlugin
 			requestPaths.add(contentPathParser.createRequest("bundle-request"));
 		}
 		catch (MalformedTokenException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		
 		return requestPaths;

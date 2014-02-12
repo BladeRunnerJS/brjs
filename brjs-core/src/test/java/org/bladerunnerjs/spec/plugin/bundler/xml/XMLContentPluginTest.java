@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -116,7 +116,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
 		and(aspect).resourceFileContains("xml/gridDefinitions3.xml", wrap(badXml , true));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
-		then(exceptions).verifyException(BundlerProcessingException.class, "wibble");
+		then(exceptions).verifyException(ContentProcessingException.class, "wibble");
 	}
 	
 	@Test

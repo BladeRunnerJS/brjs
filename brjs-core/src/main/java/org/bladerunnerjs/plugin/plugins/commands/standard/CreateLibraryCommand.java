@@ -67,7 +67,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		if(library.dirExists()) throw new NodeAlreadyExistsException(library, this);
 		
 		try {
-    		library.populate(libraryNamespace);
+			library.populate(libraryNamespace);
 		}
 		catch(InvalidNameException e) {
 			throw new CommandArgumentsException(e, this);

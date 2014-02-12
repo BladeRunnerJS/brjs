@@ -21,7 +21,7 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -68,17 +68,17 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		return getValidContentPaths(bundleSet, locales);
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		return getValidContentPaths(bundleSet, locales);
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		File resourceFile = null;
 		
@@ -129,7 +129,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			IOUtils.copy(input, os);
 		}
 		catch(IOException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}
 		finally
 		{
@@ -138,7 +138,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 				os.flush();
 			}
 			catch (IOException e) {
-				throw new BundlerProcessingException(e);
+				throw new ContentProcessingException(e);
 			}
 		}
 	}

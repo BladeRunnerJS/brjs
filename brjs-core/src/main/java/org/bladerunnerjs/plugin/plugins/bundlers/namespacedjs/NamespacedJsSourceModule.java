@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -65,7 +64,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public Reader getReader() throws FileNotFoundException {
+	public Reader getReader() throws IOException {
 		
 		String defineBlock = "\ndefine('%s', function(require, exports, module) {" +
 							 	"module.exports = %s;" +

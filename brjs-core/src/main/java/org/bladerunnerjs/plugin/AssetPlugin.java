@@ -12,9 +12,8 @@ import org.bladerunnerjs.model.SourceModule;
  * 
  * <p>It is the responsibility of each asset plug-in to provide an identical list of objects each time {@link #getSourceModules getSourceModules()},
  * {@link #getLinkedAssets getLinkedAssets()} or {@link #getAssets getAssets()} are invoked for the same {@link AssetLocation}, assuming the disk
- * contents are unchanged of course. The {@link org.bladerunnerjs.model.BRJS#createAssetFile BRJS.createAssetFile()},
- * {@link org.bladerunnerjs.model.BRJS#createAssetFilesWithExtension BRJS.createAssetFilesWithExtension()} &
- * {@link org.bladerunnerjs.model.BRJS#createAssetFilesWithName BRJS.createAssetFilesWithName()} methods provide help with this, while also being designed to
+ * contents are unchanged of course. The {@link org.bladerunnerjs.model.AssetLocation#obtainAsset AssetLocation.obtainAsset()} &
+ * {@link org.bladerunnerjs.model.AssetLocation#obtainAssets()} methods provide help with this, while also being designed to
  * be performant.</p>
  */
 public interface AssetPlugin extends Plugin {

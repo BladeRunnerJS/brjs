@@ -24,11 +24,11 @@ public class ClosureMinifierPluginTest extends SpecTest
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).automaticallyFindsBundlers()
-    		.and(brjs).automaticallyFindsMinifiers()
-    		.and(brjs).hasBeenCreated();
-    		app = brjs.app("app1");
-    		aspect = app.aspect("default");
-    		blade = app.bladeset("bs").blade("b1");
+			.and(brjs).automaticallyFindsMinifiers()
+			.and(brjs).hasBeenCreated();
+			app = brjs.app("app1");
+			aspect = app.aspect("default");
+			blade = app.bladeset("bs").blade("b1");
 			
 		/* only closure compiler service used to calculate responses - http://closure-compiler.appspot.com/home */
 		unminifiedContent = "function hello(name) {\n"+
@@ -98,8 +98,8 @@ public class ClosureMinifierPluginTest extends SpecTest
 	public void closureMinifierStillAddsPackageDefinitionsBlock() throws Exception
 	{
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/cjs")
-    		.and(aspect).hasClasses("appns.cjs.Class", "appns.node.Class")
-    		.and(aspect).indexPageRefersTo("appns.cjs.Class");
+			.and(aspect).hasClasses("appns.cjs.Class", "appns.node.Class")
+			.and(aspect).indexPageRefersTo("appns.cjs.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.cjs.Class")
 			.and(response).containsText("window.appns={\"cjs\":{}};");

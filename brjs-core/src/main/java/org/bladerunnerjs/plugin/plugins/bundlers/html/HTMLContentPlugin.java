@@ -22,9 +22,9 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -74,19 +74,19 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		return new ArrayList<>();
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		return prodRequestPaths;
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
 	{
 		identifiers = new HashMap<String, Asset>();
 		Writer writer = null;
@@ -94,7 +94,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 			writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding());
 		}
 		catch( IOException | ConfigException e) {
-			throw new BundlerProcessingException(e);
+			throw new ContentProcessingException(e);
 		}	
 	
 		List<Asset> htmlFiles = bundleSet.getResourceFiles("html");
@@ -106,12 +106,12 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 				IOUtils.copy(htmlAsset.getReader(), writer);
 				writer.flush();
 			} catch (IOException | NamespaceException | RequirePathException e) {
-				throw new BundlerProcessingException(e, "Error while bundling asset '" + htmlAsset.getAssetPath() + "'.");
+				throw new ContentProcessingException(e, "Error while bundling asset '" + htmlAsset.getAssetPath() + "'.");
 			}
 		}
 	}
 	
-	private void validateSourceHtml(Asset htmlAsset) throws IOException, BundlerFileProcessingException, NamespaceException, RequirePathException
+	private void validateSourceHtml(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException
 	{
 		StartTag startTag = getStartTag(htmlAsset);
 		

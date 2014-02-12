@@ -45,7 +45,7 @@ import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.ServletModelAccessor;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.utility.ServerUtility;
@@ -262,10 +262,10 @@ public class BundlerServletTest
 	}
 
 	@Test @SuppressWarnings("unchecked")
-	public void testExceptionIsThrownIfBundlerThrowsBundlerProcessingException() throws Exception
+	public void testExceptionIsThrownIfBundlerThrowsContentProcessingException() throws Exception
 	{
 		doThrow(
-				new BundlerProcessingException("oops, error!")
+				new ContentProcessingException("oops, error!")
 		).when(mockCssBundler).writeBundle(any(List.class), any(OutputStream.class));
 		Map<String, String> responseMap = makeRequest("http://localhost:"+PORT+"/a/b/c/d/css.bundle");
 
@@ -273,7 +273,7 @@ public class BundlerServletTest
 		verify(mockCssBundler).writeBundle(any(List.class), any(OutputStream.class));
 		assertEquals("500", responseMap.get("responseCode"));
 // TODO: commented out by dominicc: we need a massive clean-up of bundler servlet exception handling anyway
-//		assertTrue(responseMap.get("responseText").contains("BundlerProcessingException"));
+//		assertTrue(responseMap.get("responseText").contains("ContentProcessingException"));
 		assertTrue(responseMap.get("responseText").contains("oops, error!"));
 	}
 	
@@ -326,7 +326,7 @@ public class BundlerServletTest
 			}
 
 			@Override
-			public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+			public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 			{
 				Writer writer = BundleWriterFactory.createWriter(outputStream);
 				
@@ -336,7 +336,7 @@ public class BundlerServletTest
 				}
 				catch (IOException e)
 				{
-					throw new BundlerProcessingException(e, "Unable to write to output stream.");
+					throw new ContentProcessingException(e, "Unable to write to output stream.");
 				}
 				finally
 				{

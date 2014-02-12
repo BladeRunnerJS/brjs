@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import com.caplin.cutlass.bundler.BladeRunnerFileAppender;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class AliasFileAppender implements BladeRunnerFileAppender
 {
@@ -19,7 +19,7 @@ public class AliasFileAppender implements BladeRunnerFileAppender
 	}
 	
 	@Override
-	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws BundlerProcessingException
+	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws ContentProcessingException
 	{
 		// do nothing
 	}

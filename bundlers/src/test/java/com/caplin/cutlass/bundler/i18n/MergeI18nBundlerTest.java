@@ -20,7 +20,7 @@ import com.caplin.cutlass.testing.BRJSTestFactory;
 
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import com.caplin.cutlass.EncodingAccessor;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import com.google.gson.Gson;
 
 public class MergeI18nBundlerTest
@@ -172,7 +172,7 @@ public class MergeI18nBundlerTest
 		return results;
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testWriteNonExistentBundleThrowsException() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();

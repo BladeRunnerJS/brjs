@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 import com.caplin.cutlass.bundler.js.aliasing.AliasDefinition;
 import com.caplin.cutlass.bundler.js.aliasing.AliasInformation;
@@ -39,7 +39,7 @@ public class ClassProcessorTest {
 	}
 	
 	@Test
-	public void getAliasesDefinedInDependency() throws BundlerProcessingException {
+	public void getAliasesDefinedInDependency() throws ContentProcessingException {
 		//Given.
 		classTrie.addAlias( "alias", aliasInformation );
 		classTrie.addAlias( "unused-alias", notpresentAliasInformation );

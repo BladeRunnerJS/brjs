@@ -1,6 +1,6 @@
 @echo off
 
-set JAVA_OPTS=-Xms64m -Xmx256m -XX:MaxPermSize=128M %JAVA_OPTS%
+set JAVA_OPTS=-Xms64m -Xmx512m -XX:MaxPermSize=128M %JAVA_OPTS%
 
 set THIS_DIR=%CD%
 set SCRIPT_DIR=%~dp0

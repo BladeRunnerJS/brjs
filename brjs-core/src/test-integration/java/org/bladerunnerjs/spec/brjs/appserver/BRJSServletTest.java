@@ -37,13 +37,13 @@ public class BRJSServletTest extends SpecTest
 			.and(brjs).usedForServletModel()
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
-    		appServer = brjs.applicationServer(appServerPort);
-    		app = brjs.app("app");
-    		aspect = app.aspect("default");
-    		blade = app.bladeset("bs").blade("b1");
-    		appJars = brjs.appJars();
-    		appJars.create();
-    		helloWorldServlet = new HelloWorldServlet();
+			appServer = brjs.applicationServer(appServerPort);
+			app = brjs.app("app");
+			aspect = app.aspect("default");
+			blade = app.bladeset("bs").blade("b1");
+			appJars = brjs.appJars();
+			appJars.create();
+			helloWorldServlet = new HelloWorldServlet();
 	}
 	
 	
@@ -109,7 +109,7 @@ public class BRJSServletTest extends SpecTest
 			.and(blade).hasClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.cjs.Class")
 			.and(blade).classRefersTo("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
-    		.and(appServer).started()
+			.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class");

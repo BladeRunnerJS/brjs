@@ -4,7 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -96,7 +96,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).classRequires("appns.pkg.pkg2.Class1", "../../../../Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRelativeRequirePathException.class, "appns/pkg/pkg2", "../../../../Class2")
-			.whereTopLevelExceptionIs(BundlerProcessingException.class);
+			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	
 	@Ignore // This should pass

@@ -7,9 +7,9 @@ import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.testing.specutility.XmlBuilderSerializer;
+import org.bladerunnerjs.utility.FileUtil;
 
 import com.esotericsoftware.yamlbeans.parser.Parser.ParserException;
 import com.google.common.base.Joiner;
@@ -18,10 +18,12 @@ import com.jamesmurty.utils.XMLBuilder;
 public class AliasesWriter {
 	private final AliasesData data;
 	private final File file;
+	private final FileUtil fileUtil;
 	
-	public AliasesWriter(AliasesData data, File file) {
+	public AliasesWriter(AliasesData data, File file, String defaultInputEncoding) {
 		this.data = data;
 		this.file = file;
+		fileUtil = new FileUtil(defaultInputEncoding);
 	}
 	
 	public void write() throws IOException {
@@ -40,7 +42,7 @@ public class AliasesWriter {
 				builder.e("alias").a("name", aliasOverride.getName()).a("class", aliasOverride.getClassName());
 			}
 			
-			FileUtils.write(file, XmlBuilderSerializer.serialize(builder));
+			fileUtil.write(file, XmlBuilderSerializer.serialize(builder));
 		} catch (ParserException | TransformerException | ParserConfigurationException | FactoryConfigurationError e) {
 			throw new IOException(e);
 		}

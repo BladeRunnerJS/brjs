@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -10,7 +10,7 @@ import java.io.Reader;
  */
 public interface Asset {
 	void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException;
-	Reader getReader() throws FileNotFoundException;
+	Reader getReader() throws IOException;
 	AssetLocation getAssetLocation();
 	File dir();
 	String getAssetName();

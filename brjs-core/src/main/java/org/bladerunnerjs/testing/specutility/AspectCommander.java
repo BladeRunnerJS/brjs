@@ -3,7 +3,6 @@ package org.bladerunnerjs.testing.specutility;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.RequestMode;
@@ -67,7 +66,7 @@ public class AspectCommander extends NodeCommander<Aspect> {
 	private void pageLoaded(StringBuffer pageResponse, String locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException, RequirePathException {
 		StringWriter writer = new StringWriter();	
 		
-		TagPluginUtility.filterContent(FileUtils.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale);
+		TagPluginUtility.filterContent(fileUtil.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale);
 		
 		pageResponse.append(writer.toString());
 	}
@@ -122,7 +121,6 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		return commanderChainer;
 	}
 	
-	
 	public CommanderChainer classRequires(String sourceClass, String dependencyClass) throws Exception
 	{
 		aspectBuilder.classRequires(sourceClass, dependencyClass);
@@ -133,6 +131,13 @@ public class AspectCommander extends NodeCommander<Aspect> {
 	public CommanderChainer classRequires(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		aspectBuilder.classRequiresThirdpartyLib(sourceClass, thirdpartyLib);
+		
+		return commanderChainer;
+	}
+
+	public CommanderChainer resourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
+	{
+		aspectBuilder.resourceFileRefersTo(resourceFileName, classNames);
 		
 		return commanderChainer;
 	}

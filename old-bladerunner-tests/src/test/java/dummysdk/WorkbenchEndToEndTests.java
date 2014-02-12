@@ -43,7 +43,7 @@ public class WorkbenchEndToEndTests
 		brjs.bladerunnerConf().setJettyPort(HTTP_PORT);
 		appServer = brjs.applicationServer(HTTP_PORT);
 		appServer.start();
-		tester = new WebappTester(tempSdkInstall, 5000, 5000);
+		tester = new WebappTester(brjs, tempSdkInstall, 5000, 5000);
 	}
 	
 	@After

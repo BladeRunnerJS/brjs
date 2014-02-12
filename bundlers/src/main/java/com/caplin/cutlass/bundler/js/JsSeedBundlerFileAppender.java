@@ -9,7 +9,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BladeRunnerFileAppender;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 
@@ -32,7 +32,7 @@ public class JsSeedBundlerFileAppender implements BladeRunnerFileAppender
 	}
 	
 	@Override
-	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws BundlerProcessingException
+	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws ContentProcessingException
 	{
 		// do nothing
 	}

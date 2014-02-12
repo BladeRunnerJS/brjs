@@ -1,5 +1,6 @@
 package org.bladerunnerjs.utility;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.LinkedList;
@@ -56,9 +57,8 @@ public class Trie<T>
 	
 	public List<T> getMatches(Reader reader) throws IOException
 	{
-		if (!reader.markSupported())
-		{
-			throw new RuntimeException(this.getClass().getSimpleName() + " only supports readers that support 'marks' - (reader.markSupported() == true)");
+		if (!reader.markSupported()) {
+			reader = new BufferedReader(reader);
 		}
 		
 		List<T> matches = new LinkedList<T>();

@@ -1,25 +1,32 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
-import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
+import org.bladerunnerjs.utility.FileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class AssetContainerBuilder<N extends AssetContainer> extends NodeBuilder<N>
 {
-	
 	private AssetContainer node;
+	protected FileUtil fileUtil;
 	
 	public AssetContainerBuilder(SpecTest specTest, N node)
 	{
 		super(specTest, node);
-		this.node = node;
+		
+		try {
+			this.node = node;
+			fileUtil = new FileUtil(node.root().bladerunnerConf().getDefaultInputEncoding());
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
@@ -45,14 +52,14 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	
 	public BuilderChainer resourceFileContains(String resourceFileName, String contents) throws Exception 
 	{
-		FileUtils.write(node.assetLocation("resources").file(resourceFileName), contents);
+		fileUtil.write(node.assetLocation("resources").file(resourceFileName), contents);
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasClass(String className) throws Exception
 	{
-		FileUtils.write(getSourceFile(className), getClassBody(className));
+		fileUtil.write(getSourceFile(className), getClassBody(className));
 		return builderChainer;
 	}
 	
@@ -64,13 +71,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasTestClass(String className) throws IOException
+	public BuilderChainer hasTestClass(String className) throws Exception
 	{
-		FileUtils.write(getTestSourceFile(className), getClassBody(className));
+		fileUtil.write(getTestSourceFile(className), getClassBody(className));
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasTestClasses(String... classNames) throws IOException
+	public BuilderChainer hasTestClasses(String... classNames) throws Exception
 	{
 		for(String className : classNames) {
 			hasTestClass(className);
@@ -115,7 +122,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	public BuilderChainer classFileHasContent(String sourceClass, String content) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		FileUtils.write(sourceFile, content);
+		fileUtil.write(sourceFile, content);
 		
 		return builderChainer;
 	}
@@ -129,7 +136,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
 		}
 		
-		FileUtils.write(sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');", true);
+		fileUtil.write(sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');", true);
 		
 		return builderChainer;
 	}
@@ -143,7 +150,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classRequiresThirdpartyLib() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
-		FileUtils.write(sourceFile, "require('"+thirdpartyLib.getName()+"');", true);
+		fileUtil.write(sourceFile, "require('"+thirdpartyLib.getName()+"');", true);
 		
 		return builderChainer;
 	}
@@ -169,7 +176,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 	
 	
-	private BuilderChainer classRefersTo(String sourceClass, File sourceFile, String... referencedClasses) throws IOException
+	private BuilderChainer classRefersTo(String sourceClass, File sourceFile, String... referencedClasses) throws Exception
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
@@ -183,12 +190,12 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			classReferencesContent += getClassBody(sourceClass) + "var obj = new " + referencedClass + "();\n";
 		}
 		
-		FileUtils.write(sourceFile, classReferencesContent);
+		fileUtil.write(sourceFile, classReferencesContent);
 		
 		return builderChainer;
 	}
 	
-	private BuilderChainer classDependsOn(String dependentClass, String referencedClass, File dependentSourceFile) throws IOException
+	private BuilderChainer classDependsOn(String dependentClass, String referencedClass, File dependentSourceFile) throws Exception
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(dependentSourceFile.getParentFile());
 		
@@ -196,12 +203,12 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
 		}
 		
-		FileUtils.write(dependentSourceFile, getCaplinJsClassBody(dependentClass, referencedClass));
+		fileUtil.write(dependentSourceFile, getCaplinJsClassBody(dependentClass, referencedClass));
 		
 		return builderChainer;
 	}
 	
-	private BuilderChainer classRequires(String sourceClass, String dependencyClass, File sourceFile) throws IOException
+	private BuilderChainer classRequires(String sourceClass, String dependencyClass, File sourceFile) throws Exception
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
@@ -209,7 +216,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
-		FileUtils.write(sourceFile, getNodeJsClassBody(sourceClass, dependencyClass));
+		fileUtil.write(sourceFile, getNodeJsClassBody(sourceClass, dependencyClass));
 		
 		return builderChainer;
 	}

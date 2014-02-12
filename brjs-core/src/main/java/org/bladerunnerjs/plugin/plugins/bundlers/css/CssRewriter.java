@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.Asset;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class CssRewriter {
 	private static final Pattern URL_PATTERN = Pattern.compile("url\\(\\s*[\"']?[ ]?([\\s\\S]*?)[\"']?[ ]?\\s*\\)");
@@ -24,7 +24,7 @@ public class CssRewriter {
 		targetPathCreator = new TargetPathCreator(cssAsset.getAssetLocation().root());
 	}
 	
-	public String getFileContents() throws IOException, BundlerProcessingException {
+	public String getFileContents() throws IOException, ContentProcessingException {
 		try {
 			String unprocessedCss = "";
 			
@@ -39,11 +39,11 @@ public class CssRewriter {
 			throw cssImageReferenceException;
 		}
 		catch (Exception e) {
-			throw new BundlerProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
+			throw new ContentProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
 		}
 	}
 	
-	public String rewriteCss(File cssBasePath, final CharSequence input) throws BundlerProcessingException {
+	public String rewriteCss(File cssBasePath, final CharSequence input) throws ContentProcessingException {
 		Matcher urlMatcher = URL_PATTERN.matcher(input);
 		StringBuffer css = new StringBuffer();
 		
@@ -75,7 +75,7 @@ public class CssRewriter {
 		return css.toString();
 	}
 	
-	private String parseUrl(File cssBasePath, String relativePath) throws BundlerProcessingException {
+	private String parseUrl(File cssBasePath, String relativePath) throws ContentProcessingException {
 		String ending = "";
 		
 		for (char postPathSymbol : postPathSymbols) {
@@ -93,12 +93,12 @@ public class CssRewriter {
 		return "url(\"" + targetPath + ending + "\")";
 	}
 	
-	private String getCanonicalPath(String imagePath) throws BundlerProcessingException {
+	private String getCanonicalPath(String imagePath) throws ContentProcessingException {
 		try {
 			return new File(imagePath).getCanonicalPath();
 		}
 		catch (IOException e) {
-			throw new BundlerProcessingException("referenced image ('" + imagePath + "') does not exist.");
+			throw new ContentProcessingException("referenced image ('" + imagePath + "') does not exist.");
 		}
 	}
 }

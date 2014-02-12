@@ -18,5 +18,4 @@ exports.implement = function(implementor, interface) {
 
 exports.thirdparty = function(library){};
 
-// TODO: this should be done by the bundler, rather than it setting pUnprocessedI18NMessages
-require("br/i18n").initialise(window.pUnprocessedI18NMessages || []);
+require("br/i18n").initialise(window._brjsI18nProperties || []);

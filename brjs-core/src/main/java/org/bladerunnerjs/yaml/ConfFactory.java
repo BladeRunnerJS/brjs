@@ -1,21 +1,24 @@
 package org.bladerunnerjs.yaml;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
-import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.esotericsoftware.yamlbeans.YamlReader;
 import com.esotericsoftware.yamlbeans.YamlReader.YamlReaderException;
 
 public class ConfFactory {
-	public static <CF extends AbstractYamlConfFile> CF createConfFile(Node node, Class<CF> confClass, File confFile) throws ConfigException {
+	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, File confFile) throws ConfigException {
 		CF conf = null;
+		// TODO: get rid of `node == null` guard once we delete no brjs-core code
+		String defaultInputEncoding = ((node == null) || confFile.getName().equals("bladerunner.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultInputEncoding();
 		
 		if(confFile.exists()) {
-			conf = readConf(confFile, confClass);
+			conf = readConf(confFile, confClass, defaultInputEncoding);
 			conf.setNode(node);
 			conf.setConfFile(confFile);
 			conf.verify();
@@ -43,14 +46,14 @@ public class ConfFactory {
 		return conf;
 	}
 	
-	private static <CF extends AbstractYamlConfFile> CF readConf(File confFile, Class<CF> confClass) throws ConfigException
+	private static <CF extends AbstractYamlConfFile> CF readConf(File confFile, Class<CF> confClass, String defaultInputEncoding) throws ConfigException
 	{
 		CF conf;
 		
 		try {
 			YamlReader reader = null;
 			
-			try(FileReader fileReader = new FileReader(confFile)) {
+			try(Reader fileReader = new UnicodeReader(confFile, defaultInputEncoding)) {
 				if(!fileReader.ready()) {
 					throw new ConfigException("'" + confFile.getPath() + "' is empty");
 				}

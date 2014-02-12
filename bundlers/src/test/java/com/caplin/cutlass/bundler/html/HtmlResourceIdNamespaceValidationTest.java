@@ -11,7 +11,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.CutlassConfig;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
@@ -38,35 +38,35 @@ public class HtmlResourceIdNamespaceValidationTest
 		htmlFileProcessor.bundleHtml(validHtmlFile, mockWriter);
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithNoNamespaceOrBladesetName() throws Exception
 	{
 		File invalidHtmlFileWithoutAnyNameSpacePrefixId = new File(APPLICATIONS_DIR + "/test-app1/fx-bladeset/blades/blade1/resources/html/html2.html");
 		htmlFileProcessor.bundleHtml(invalidHtmlFileWithoutAnyNameSpacePrefixId, mockWriter);
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithBladeNameTypo() throws Exception
 	{
 		File invalidHtmlFile = new File(APPLICATIONS_DIR + "/test-app2/fx-bladeset/blades/blade1/resources/html/blade1Invalid.html");
 		htmlFileProcessor.bundleHtml(invalidHtmlFile, mockWriter);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithSiblingBladeName() throws Exception
 	{
 		File invalidHtmlFile = new File(APPLICATIONS_DIR + "/test-app3/fx-bladeset/blades/blade1/resources/html/blade1Invalid.html");
 		htmlFileProcessor.bundleHtml(invalidHtmlFile, mockWriter);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithNoBladesetName() throws Exception
 	{
 		File invalidHtmlFile = new File(APPLICATIONS_DIR + "/test-app4/fx-bladeset/blades/blade1/resources/html/blade1Invalid.html");
 		htmlFileProcessor.bundleHtml(invalidHtmlFile, mockWriter);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithWrongBladesetName() throws Exception
 	{
 		File invalidHtmlFile = new File(APPLICATIONS_DIR + "/test-app5/fx-bladeset/blades/blade1/resources/html/blade1Invalid.html");
@@ -87,7 +87,7 @@ public class HtmlResourceIdNamespaceValidationTest
 		}
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testExceptionIsThrownForDuplicateIdsInBlade() throws Exception
 	{
 		ArrayList<File> htmlFilesToValidate = new ArrayList<File>();
@@ -108,14 +108,14 @@ public class HtmlResourceIdNamespaceValidationTest
 		htmlFileProcessor.bundleHtml(validHtmlFile, mockWriter);
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testInvalidBladesetIdWithNoNamespaceOrBladesetName() throws Exception
 	{
 		File validHtmlFile = new File(APPLICATIONS_DIR + "/test-app1/fx-bladeset/resources/html/html2.html");
 		htmlFileProcessor.bundleHtml(validHtmlFile, mockWriter);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladesetIdWithNoBladesetName() throws Exception
 	{
 		File validHtmlFile = new File(APPLICATIONS_DIR + "/test-app6/fx-bladeset/resources/html/bladesetInvalid.html");
@@ -124,7 +124,7 @@ public class HtmlResourceIdNamespaceValidationTest
 	
 	// TODO PCTCUT-468 - bundler namespace validation does not fail fast if there are duplicate IDs defined
 	@Ignore
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testValidBladesetIdDuplicated() throws Exception
 	{
 		File htmlFileWithDuplicateIdTemplates = new File(APPLICATIONS_DIR + "/test-app7/fx-bladeset/resources/html/bladesetValid.html");
@@ -153,7 +153,7 @@ public class HtmlResourceIdNamespaceValidationTest
 		}
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testExceptionIsThrownForDuplicateIdsInBladeset() throws Exception
 	{
 		ArrayList<File> htmlFilesToValidate = new ArrayList<File>();

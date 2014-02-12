@@ -25,7 +25,7 @@ public class ModelLoggingTest extends SpecTest
 	ModelLoggingCommander logCommander = new ModelLoggingCommander(this);
 	
 	@Rule
-    public ExpectedTestFailureWatcher expectedFailure = ExpectedTestFailureWatcher.instance();
+	public ExpectedTestFailureWatcher expectedFailure = ExpectedTestFailureWatcher.instance();
 	
 	
 	@Test /* 1A. we comment out a log.error() */

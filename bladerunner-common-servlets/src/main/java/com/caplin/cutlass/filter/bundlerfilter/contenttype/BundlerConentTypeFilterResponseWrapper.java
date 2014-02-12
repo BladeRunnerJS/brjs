@@ -23,4 +23,9 @@ public class BundlerConentTypeFilterResponseWrapper extends HttpServletResponseW
 		return contentLength;
 	}
 	
+	@Override
+	public void flushBuffer()
+	{
+	}
+	
 }
