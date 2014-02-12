@@ -25,13 +25,13 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationComma
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
 import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
-import com.caplin.cutlass.command.war.WarCommand;
 import com.caplin.cutlass.structure.model.SdkModel;
 import com.caplin.cutlass.structure.model.node.BladeNode;
 import com.caplin.cutlass.structure.model.node.BladesetNode;
@@ -134,13 +134,14 @@ public class RestApiService
 	
 	public void exportWar(String appName, File destinationWar) throws Exception
 	{
-			if (destinationWar.exists())
-			{
-				destinationWar.delete();
-			}
-			WarCommand cmd = new WarCommand(brjs);
-			String[] args = new String[]{ appName, destinationWar.getAbsolutePath() };		
-			doCommand( cmd, args );
+		if (destinationWar.exists())
+		{
+			destinationWar.delete();
+		}
+		WarCommand cmd = new WarCommand();
+		cmd.setBRJS(brjs);
+		String[] args = new String[]{ appName, destinationWar.getAbsolutePath() };		
+		doCommand( cmd, args );
 	}
 	
 	public void importBladeset(String sourceApp, Map<String,Map<String,List<String>>> bladesets, String targetApp) throws Exception

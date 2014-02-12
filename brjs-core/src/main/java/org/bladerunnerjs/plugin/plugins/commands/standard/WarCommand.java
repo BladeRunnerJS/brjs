@@ -1,4 +1,4 @@
-package com.caplin.cutlass.command.war;
+package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 import javax.naming.InvalidNameException;
-import org.bladerunnerjs.console.ConsoleWriter;
 
+import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -27,10 +28,9 @@ import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 
-import com.caplin.cutlass.AppMetaData;
-import com.caplin.cutlass.util.FileUtility;
-
+import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.WebXmlCompiler;
+
 import com.martiansoftware.jsap.FlaggedOption;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -41,11 +41,6 @@ public class WarCommand extends ArgsParsingCommandPlugin
 {
 	private ConsoleWriter out;
 	private BRJS brjs;
-	
-	public WarCommand(BRJS brjs) {
-		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
-	}
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
@@ -82,7 +77,6 @@ public class WarCommand extends ArgsParsingCommandPlugin
 	private void exportWar(App origApp, File warFile, String minifierName) throws CommandOperationException {
 		try {
 			List<ContentPlugin> contentPlugins = brjs.plugins().contentProviders();
-			AppMetaData appMetaData = new AppMetaData(origApp);
 			App warApp = brjs.app(origApp.getName() + "-war");
 			
 			try {
@@ -102,10 +96,13 @@ public class WarCommand extends ArgsParsingCommandPlugin
 					FileUtility.copyFileIfExists(origAspect.file("index.jsp"), warAspect.file("index.jsp"));
 					FileUtility.copyDirectoryIfExists(origAspect.unbundledResources().dir(), warAspect.unbundledResources().dir());
 					
-					createAspectBundles(origAspect, warAspect, contentPlugins, appMetaData);
+					createAspectBundles(origAspect, warAspect, contentPlugins, origApp.appConf().getLocales().split(","));
 				}
 				
 				FileUtility.zipFolder(warApp.dir(), warFile, true);
+			}
+			catch (ConfigException e) {
+				throw new RuntimeException(e);
 			}
 			finally {
 				warApp.delete();
@@ -119,10 +116,9 @@ public class WarCommand extends ArgsParsingCommandPlugin
 		}
 	}
 	
-	private void createAspectBundles(Aspect origAspect, Aspect warAspect, List<ContentPlugin> contentPlugins, AppMetaData appMetaData) throws CommandOperationException {
+	private void createAspectBundles(Aspect origAspect, Aspect warAspect, List<ContentPlugin> contentPlugins, String[] locales) throws CommandOperationException {
 		try {
 			BundleSet bundleSet = warAspect.getBundleSet();
-			String[] locales = appMetaData.getLocales().toArray(new String[0]);
 			
 			for(ContentPlugin contentPlugin : contentPlugins) {
 				for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {

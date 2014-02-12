@@ -18,7 +18,6 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
 
 
 public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
@@ -163,27 +162,6 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 		return exists;
 	}
 	
-	public static void zipFolder(File srcFolder, File destZipFile, boolean zipOnlySrcFolderContentsAndNotSrcFolder) throws IOException
-	{
-		FileOutputStream fileWriter = new FileOutputStream(destZipFile);
-		ZipOutputStream zip = new ZipOutputStream(fileWriter);
-		
-		if(zipOnlySrcFolderContentsAndNotSrcFolder)
-		{
-			for (File file : srcFolder.listFiles())
-			{
-				addFileToZip("", file, zip, false);
-			}
-		}
-		else
-		{
-			addFolderToZip("", srcFolder, zip);
-		}
-		
-		zip.flush();
-		zip.close();
-	}
-	
 	public static void createResourcesFromSdkTemplate(File templateDir, File targetDir) throws IOException
 	{
 		createResourcesFromSdkTemplate(templateDir, targetDir, new NotFileFilter(new NameFileFilter("null.txt")));
@@ -290,58 +268,6 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 		}
 	}
 	
-	private static void addFileToZip(String path, File srcFile, ZipOutputStream zip, boolean flag) throws IOException
-	{
-		if (flag == true)
-		{
-			zip.putNextEntry(new ZipEntry(path + "/" + srcFile.getName() + "/"));
-		}
-		else
-		{
-			if (srcFile.isDirectory())
-			{
-				addFolderToZip(path, srcFile, zip);
-			}
-			else
-			{
-				int len;
-				byte[] buf = new byte[1024];
-				FileInputStream in = new FileInputStream(srcFile);
-				String pathPrefix = (!path.equals("")) ? path+"/" : "";
-				zip.putNextEntry(new ZipEntry(pathPrefix + srcFile.getName()));
-				
-				while ((len = in.read(buf)) > 0)
-				{
-					zip.write(buf, 0, len);
-				}
-				
-				in.close();
-			}
-		}
-	}
-
-	private static void addFolderToZip(String path, File srcFolder, ZipOutputStream zip) throws IOException
-	{
-		if (srcFolder.list().length == 0)
-		{
-			addFileToZip(path, srcFolder, zip, true);
-		} 
-		else 
-		{
-			for (File file : srcFolder.listFiles())
-			{
-				if (path.equals(""))
-				{
-					addFileToZip(srcFolder.getName(), file, zip, false);
-				}
-				else
-				{
-					addFileToZip(path + "/" + srcFolder.getName(), file, zip, false);
-				}
-			}
-		}
-	}
-
 	public static File createTemporarySdkInstall(File existingSDK) throws IOException
 	{
 		File tempDir = createTemporaryDirectory("tempSdk");
@@ -365,17 +291,4 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 			new File(location, ".hiddenFile").createNewFile();	
 		}
 	}
-	
-	public static void copyFileIfExists(File srcFile, File destFile) throws IOException {
-		if(srcFile.exists()) {
-			FileUtils.copyFile(srcFile, destFile);
-		}
-	}
-	
-	public static void copyDirectoryIfExists(File srcDir, File destDir) throws IOException {
-		if(srcDir.exists()) {
-			FileUtils.copyDirectory(srcDir, destDir);
-		}
-	}
-	
 }
