@@ -54,7 +54,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		nonBladeRunnerLibs = StandardJsLib.createAppNonBladeRunnerLibNodeSet(rootNode);
 		bladesets = Bladeset.createNodeSet(rootNode);
 		aspects = Aspect.createNodeSet(rootNode);
-		jsLibs = StandardJsLib.createAppNodeSet(rootNode);
+		jsLibs = BRLib.createAppNodeSet(rootNode);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 	}
 	

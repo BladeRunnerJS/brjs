@@ -35,11 +35,6 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		this(rootNode, parent, dir, null);
 	}
 	
-	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, StandardJsLib.class, "libs", null);
-	}
-	
 	public static NodeMap<StandardJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, StandardJsLib.class, "sdk/libs/javascript/thirdparty", null);

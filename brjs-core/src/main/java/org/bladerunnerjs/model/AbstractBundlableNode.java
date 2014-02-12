@@ -32,11 +32,10 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	private Map<String, AssetContainer> assetContainers = new HashMap<>();
 	private BundleSet bundleSet;
 	private NodeFileModifiedChecker bundleSetFileModifiedChecker = new NodeFileModifiedChecker(this);
-	private final LogicalRequestHandler requestHandler;
+	private LogicalRequestHandler requestHandler;
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
-		requestHandler = new LogicalRequestHandler(this);
 	}
 	
 	public abstract List<LinkedAsset> getSeedFiles();
@@ -120,6 +119,10 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public void handleLogicalRequest(BladerunnerUri  requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		if (requestHandler == null)
+		{
+			requestHandler = new LogicalRequestHandler(this);
+		}
 		requestHandler.handle( requestUri.logicalPath, os);
 	}
 	
