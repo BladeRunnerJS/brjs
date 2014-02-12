@@ -55,7 +55,7 @@ public class ConfFactory {
 			
 			try(Reader fileReader = new UnicodeReader(confFile, defaultInputEncoding)) {
 				if(!fileReader.ready()) {
-					throw new ConfigException("'" + confFile.getPath() + "' is empty");
+					throw new ConfigException("'" + confFile.getPath() + "' is empty, either add some configuration or delete it to use the default configuration.");
 				}
 				
 				reader = new YamlReader(fileReader);
