@@ -93,7 +93,7 @@ public class ApplicationEndToEndTests
 	{
 		tester.whenRequestMadeTo(AUTH_APP_URL)
 			.statusCodeIs(200)
-			.sameAsRequestFor(AUTH_APP_URL+"/login/index.html");
+			.sameAsRequestFor(AUTH_APP_URL+"/login-aspect/index.html");
 	}
 	
 	@Test

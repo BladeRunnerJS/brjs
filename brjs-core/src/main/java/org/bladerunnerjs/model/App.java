@@ -271,13 +271,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void filterIndexPage(BladerunnerUri requestUri, String indexPage, String locale, OutputStream outputStream) throws ConfigException, IOException, NoTagHandlerFoundException, DocumentException, ModelOperationException, ResourceNotFoundException {
 		BundlableNode bundlableNode = getBundlableNode(requestUri);
 		
-		try(Writer writer = new OutputStreamWriter(outputStream)) {
-			if(bundlableNode == null) {
-				writer.write(indexPage);
-			}
-			else {
-				TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
-			}
+		try (Writer writer = new OutputStreamWriter(outputStream)) {
+			TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
 		}
 	}
 	
