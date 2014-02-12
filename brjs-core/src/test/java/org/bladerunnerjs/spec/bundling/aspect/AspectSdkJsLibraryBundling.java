@@ -109,12 +109,12 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		then(response).containsClasses("foo.Bar");
 	}
 	
-//	@Test
-//	public void weCanGenerateABundleForJsLibTestPacks() throws Exception {
-//		given(sdkLib).hasClass("br.SdkClass")
-//			.and(sdkLibTestPack).testRequires("test.js", "br/SdkClass");
-//		when(sdkLibTestPack).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-//		then(response).containsClasses("br/SdkClass");
-//	}
+	@Test
+	public void weCanGenerateABundleForJsLibTestPacks() throws Exception {
+		given(sdkLib).hasClass("br/SdkClass")
+			.and(sdkLibTestPack).testRequires("test.js", "br/SdkClass");
+		when(sdkLibTestPack).requestReceived("js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("define('br/SdkClass'");
+	}
 	
 }
