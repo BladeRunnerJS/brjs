@@ -49,4 +49,22 @@ public class BRSdkLib extends StandardJsLib
 		}
 	}
 	
+	@Override
+	public String namespace()
+	{
+		if (!libManifest.manifestExists())
+		{
+			return super.namespace();			
+		}
+		
+		try
+		{
+			return libManifest.getRequirePrefix().replace("/", ".");
+		}
+		catch (ConfigException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
 }
