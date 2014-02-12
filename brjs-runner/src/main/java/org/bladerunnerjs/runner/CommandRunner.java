@@ -30,7 +30,6 @@ import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.TestServerCommand;
 import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
-import com.caplin.cutlass.command.war.WarCommand;
 
 // TODO: move all classes in brjs-runner into 'org.bladerunnerjs.runner'?
 public class CommandRunner {
@@ -145,7 +144,6 @@ public class CommandRunner {
 			commandList.addCommand(new ImportApplicationCommand( brjs ));
 			commandList.addCommand(new TestCommand());
 			commandList.addCommand(new TestServerCommand());
-			commandList.addCommand(new WarCommand(brjs));
 			commandList.addCommand(new PackageDepsCommand());
 			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
 			commandList.addCommand(new ExportApplicationCommand(  ));
