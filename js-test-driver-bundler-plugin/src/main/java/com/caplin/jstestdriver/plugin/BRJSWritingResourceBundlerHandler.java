@@ -6,9 +6,8 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.BundlableNode;
 
 import com.caplin.cutlass.BRJSAccessor;
 
@@ -36,14 +35,13 @@ public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHan
 		{
     		brjs = BRJSAccessor.root;
     	
-    		App app = brjs.locateAncestorNodeOfClass(testDir, App.class);
-    		if (app == null)
+    		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(testDir, BundlableNode.class);
+    		if (bundlableNode == null)
     		{
-    			throw new RuntimeException("Unable to calculate App node for the test dir: " + testDir.getAbsolutePath());
+    			throw new RuntimeException("Unable to calculate bundlable node for the test dir: " + testDir.getAbsolutePath());
     		}
     		
-    		BladerunnerUri requestUri = new BladerunnerUri(brjs, testDir, brjsRequestPath);
-    		app.getBundlableNode(requestUri).handleLogicalRequest(requestUri, outputStream);
+    		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream);
 		}
 		catch (Exception ex)
 		{

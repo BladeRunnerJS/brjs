@@ -69,7 +69,7 @@ public class AppCommander extends NodeCommander<App> {
 			public void call() throws Exception {
 				BladerunnerUri bladerunnerUri = new BladerunnerUri(app.root(), app.dir(), "/" + app.getName(), requestPath, null);
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri, responseOutput);
+				app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri.logicalPath, responseOutput);
 				response.append(responseOutput.toString("UTF-8"));
 			}
 		});

@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.testing.specutility.engine.ConsoleMessageStore;
@@ -270,6 +271,40 @@ public class BundlerInjectorTest {
 		
 		String bundleFileContents = org.apache.commons.io.FileUtils.readFileToString(jsBundleFile);
 		assertTrue(bundleFileContents.contains("// some blade src code"));		
+	}
+	
+	
+	@Test //TODO: tidy up this test - in reality we'll probably get rid of all these tests anyway since they'll all be obsolete when everything using the model
+	public void jsBundleRequestsUsingTheNewModelWorkWithSdkLibs() throws Exception {	
+		LogMessageStore logging = new LogMessageStore();
+		ConsoleMessageStore output = new ConsoleMessageStore();
+		File testSdkDirectory = createTestSdkDirectory();
+		BRJS brjs = new BRJS(testSdkDirectory, new BRJSPluginLocator(), new Java7FileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		
+		BRJSAccessor.initialize(brjs);
+		
+		JsLib sdkLib = brjs.sdkLib("br");
+		File sdkLibSrcFile = sdkLib.file("src/srcFile.js");
+		sdkLibSrcFile.getParentFile().mkdirs();
+		sdkLibSrcFile.createNewFile();
+		org.apache.commons.io.FileUtils.write(sdkLibSrcFile, "// some SDK src code");
+		
+		TestPack testPack = sdkLib.testType("unit").testTech("techy");
+		testPack.create();
+		
+		File jsBundleFile = testPack.file("bundles/js.bundle");
+
+		testPack.tests().create();
+		File testFile = testPack.tests().file("test1.js"); 
+		testFile.createNewFile();
+		org.apache.commons.io.FileUtils.write(testFile, "require('br/srcFile');");
+		
+		List<FileInfo> inputFiles = new ArrayList<FileInfo>();
+		addFileInfoToList(inputFiles, jsBundleFile.getAbsolutePath());
+		new BundlerInjector().processDependencies(inputFiles);
+		
+		String bundleFileContents = org.apache.commons.io.FileUtils.readFileToString(jsBundleFile);
+		assertTrue(bundleFileContents.contains("// some SDK src code"));		
 	}
 	
 	

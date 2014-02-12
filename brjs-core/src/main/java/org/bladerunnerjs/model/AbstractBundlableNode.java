@@ -118,12 +118,12 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public void handleLogicalRequest(BladerunnerUri  requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		if (requestHandler == null)
 		{
 			requestHandler = new LogicalRequestHandler(this);
 		}
-		requestHandler.handle( requestUri.logicalPath, os);
+		requestHandler.handle( logicalRequestPath, os);
 	}
 	
 	

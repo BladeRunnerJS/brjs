@@ -30,5 +30,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, ContentFileProcessingException;
 	List<AliasDefinitionsFile> getAliasDefinitionFiles();
 	
-	void handleLogicalRequest(BladerunnerUri requestUri, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
+	void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 }
