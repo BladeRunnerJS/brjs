@@ -11,7 +11,7 @@ import java.util.List;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import com.caplin.cutlass.bundler.BladeRunnerFileAppender;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class HtmlBundlerFileAppender implements BladeRunnerFileAppender
 {
@@ -24,7 +24,7 @@ public class HtmlBundlerFileAppender implements BladeRunnerFileAppender
 	}
 	
 	@Override
-	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws BundlerProcessingException
+	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws ContentProcessingException
 	{
 		// do nothing
 	}

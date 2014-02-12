@@ -37,13 +37,13 @@ public class BRJSApplicationServerTest extends SpecTest
 		given(brjs).hasBeenCreated()
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
-    		appServer = brjs.applicationServer(appServerPort);
-    		app1 = brjs.app("app1");
-    		app2 = brjs.app("app2");
-    		sysapp1 = brjs.systemApp("sysapp1");
-    		sysapp2 = brjs.systemApp("sysapp2");
-    		appJars = brjs.appJars();
-    		appJars.create();
+			appServer = brjs.applicationServer(appServerPort);
+			app1 = brjs.app("app1");
+			app2 = brjs.app("app2");
+			sysapp1 = brjs.systemApp("sysapp1");
+			sysapp2 = brjs.systemApp("sysapp2");
+			appJars = brjs.appJars();
+			appJars.create();
 		
 		secondBrjsProcess = createNonTestModel();
 	}
@@ -135,10 +135,10 @@ public class BRJSApplicationServerTest extends SpecTest
 	public void multipleSystemAppsCanBeHosted() throws Exception
 	{
 		given(sysapp1).hasBeenCreated()
-    		.and(sysapp2).hasBeenCreated();
-    	when(appServer).started();
-    	then(appServer).requestCanBeMadeFor("/sysapp1")
-    		.and(appServer).requestCanBeMadeFor("/sysapp2");
+			.and(sysapp2).hasBeenCreated();
+		when(appServer).started();
+		then(appServer).requestCanBeMadeFor("/sysapp1")
+			.and(appServer).requestCanBeMadeFor("/sysapp2");
 	}
 	
 	@Test

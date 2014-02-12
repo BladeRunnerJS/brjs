@@ -7,24 +7,34 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.utility.FileUtil;
 
 import com.esotericsoftware.yamlbeans.YamlWriter;
 import com.google.common.base.Joiner;
 
 public abstract class AbstractYamlConfFile implements YamlConfFile {
-	protected Node node;
+	protected BRJSNode node;
 	private File confFile;
+	private FileUtil fileUtil;
 	
-	public void setNode(Node node) {
+	public void setNode(BRJSNode node) {
 		this.node = node;
 	}
 	
 	public void setConfFile(File confFile) {
 		this.confFile = confFile;
+		
+		try {
+			// TODO: get rid of `node == null` guard once we delete no brjs-core code
+			String fileEncoding = ((node == null) || confFile.getName().equals("bladerunner.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultInputEncoding();
+			fileUtil = new FileUtil(fileEncoding);
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public abstract void initialize();
@@ -61,7 +71,8 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 	@Override
 	public void write() throws ConfigException, IOException {
 		verify();
-		FileUtils.write(confFile, getRenderedConfig());
+		
+		fileUtil.write(confFile, getRenderedConfig());
 	}
 	
 }

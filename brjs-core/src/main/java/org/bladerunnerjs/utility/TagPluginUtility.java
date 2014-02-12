@@ -65,16 +65,16 @@ public class TagPluginUtility {
 		
 		StringReader xmlContentReader = new StringReader(xmlContent);
 		
-        Document document;
-        try
-        {
-        	document = new SAXReader().read(xmlContentReader);
-        }
-        catch (DocumentException ex)
-        {
-        	return tagContent;
-        }
-        Element root = document.getRootElement();
+		Document document;
+		try
+		{
+			document = new SAXReader().read(xmlContentReader);
+		}
+		catch (DocumentException ex)
+		{
+			return tagContent;
+		}
+		Element root = document.getRootElement();
 		
 		try
 		{

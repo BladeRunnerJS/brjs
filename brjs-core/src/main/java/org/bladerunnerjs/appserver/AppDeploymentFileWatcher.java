@@ -58,10 +58,10 @@ public class AppDeploymentFileWatcher extends Thread
 		{
 			try
 			{
-	    		for (FileIterator watchDirIterator : watchDirIterators)
-	    		{
-	    			checkForNewApps(watchDirIterator);
-	    		}
+				for (FileIterator watchDirIterator : watchDirIterators)
+				{
+					checkForNewApps(watchDirIterator);
+				}
 				Thread.sleep(CHECK_INTERVAL);
 			}
 			catch (InterruptedException e)

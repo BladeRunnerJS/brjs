@@ -1,4 +1,4 @@
-package com.caplin.cutlass.io;
+package org.bladerunnerjs.utility;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.bladerunnerjs.utility.UnicodeReader;
 import org.junit.Test;
 
 @SuppressWarnings("resource")

@@ -72,8 +72,10 @@ public class TemplateUtility
 	
 	private static void transformFile(File file, Map<String, String> transformations) throws TemplateInstallationException
 	{
+		FileUtil fileUtil = new FileUtil("UTF-8");
+		
 		try {
-			String fileContents = FileUtils.readFileToString(file);
+			String fileContents = fileUtil.readFileToString(file);
 			
 			for(String transformationKey : transformations.keySet()) {
 				String findText = "@" + transformationKey;
@@ -83,7 +85,7 @@ public class TemplateUtility
 				fileContents = fileContents.replaceAll(findText, replaceText);
 			}
 			
-			FileUtils.writeStringToFile(file, fileContents);
+			fileUtil.writeStringToFile(file, fileContents);
 		}
 		catch(IOException e) {
 			throw new TemplateInstallationException(e);

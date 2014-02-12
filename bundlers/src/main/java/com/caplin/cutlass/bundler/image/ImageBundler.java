@@ -22,8 +22,8 @@ import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.bundler.RequestScopeProvider;
 import com.caplin.cutlass.bundler.css.TargetPathCreator;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -89,7 +89,7 @@ public class ImageBundler extends AbstractPlugin implements LegacyFileBundlerPlu
 		}
 		else if(sourceFiles.size() > 1)
 		{
-			throw new BundlerProcessingException("More than one image file was requested to be added to a single bundle.");
+			throw new ContentProcessingException("More than one image file was requested to be added to a single bundle.");
 		}
 		else
 		{
@@ -111,14 +111,14 @@ public class ImageBundler extends AbstractPlugin implements LegacyFileBundlerPlu
 			}
 			catch (Exception e)
 			{
-				throw new BundlerFileProcessingException(imageFile, e, "Error while bundling files.");
+				throw new ContentFileProcessingException(imageFile, e, "Error while bundling files.");
 			}
 		}
 		
 	}
 
 	@Override
-	public List<String> getValidRequestStrings(AppMetaData appMetaData) throws BundlerProcessingException
+	public List<String> getValidRequestStrings(AppMetaData appMetaData) throws ContentProcessingException
 	{
 		List<String> requests = new ArrayList<String>();
 		for(File image : appMetaData.getImages())

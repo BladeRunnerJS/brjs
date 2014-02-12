@@ -173,7 +173,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	@Override
 	public List<AssetLocation> getDependentAssetLocations()
 	{
-    	return new ArrayList<>();
+		return new ArrayList<>();
 	}
 	
 	@Override

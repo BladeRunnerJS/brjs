@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.App;
 
 import com.caplin.cutlass.BRJSAccessor;
@@ -39,7 +39,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	}
 
 	@Override
-	public List<File> getSourceFiles(File baseDir, File testDir) throws BundlerProcessingException
+	public List<File> getSourceFiles(File baseDir, File testDir) throws ContentProcessingException
 	{
 
 		if (!baseDir.exists()) 
@@ -90,7 +90,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 		return sourceFiles;
 	}
 	
-	private void appendScopeFiles(File baseDir, File contextDir, ScopeLevel scopeLevel, ScopeLevel requestLevel, List<File> sourceFiles) throws BundlerProcessingException
+	private void appendScopeFiles(File baseDir, File contextDir, ScopeLevel scopeLevel, ScopeLevel requestLevel, List<File> sourceFiles) throws ContentProcessingException
 	{
 		switch(scopeLevel)
 		{
@@ -135,7 +135,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 		}
 	}
 	
-	private void appendAllLibraryFiles(File contextDir, List<File> sourceFiles) throws BundlerProcessingException
+	private void appendAllLibraryFiles(File contextDir, List<File> sourceFiles) throws ContentProcessingException
 	{
 		for (JsLib jsLib : BRJSAccessor.root.sdkLibs())
 		{
@@ -159,7 +159,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 		}
 	}
 	
-	private void appendAllUserLibraryFiles(File contextDir, List<File> sourceFiles) throws BundlerProcessingException
+	private void appendAllUserLibraryFiles(File contextDir, List<File> sourceFiles) throws ContentProcessingException
 	{
 		App app = BRJSAccessor.root.locateAncestorNodeOfClass(contextDir, App.class);
 

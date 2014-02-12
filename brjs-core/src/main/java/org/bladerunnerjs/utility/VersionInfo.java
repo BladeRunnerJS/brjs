@@ -3,8 +3,8 @@ package org.bladerunnerjs.utility;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.ConfigException;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -12,10 +12,17 @@ import com.google.gson.JsonParser;
 public class VersionInfo
 {
 	private final BRJS brjs;
+	private final FileUtil fileUtil;
 	
 	public VersionInfo(BRJS brjs)
 	{
-		this.brjs = brjs;
+		try {
+			this.brjs = brjs;
+			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultInputEncoding());
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	// TODO: replace this method with a save facility, so we can encapsulate all of the version file functionality in this class
@@ -49,7 +56,7 @@ public class VersionInfo
 			String contents;
 			try
 			{
-				contents = FileUtils.readFileToString(versionFile);
+				contents = fileUtil.readFileToString(versionFile);
 			}
 			catch (IOException e)
 			{

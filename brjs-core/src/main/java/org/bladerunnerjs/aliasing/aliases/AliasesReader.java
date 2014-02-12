@@ -1,7 +1,7 @@
 package org.bladerunnerjs.aliasing.aliases;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -12,7 +12,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
 import org.bladerunnerjs.utility.stax.XmlStreamReader;
 import org.codehaus.stax2.validation.XMLValidationSchema;
@@ -21,10 +21,12 @@ import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import com.ctc.wstx.msv.RelaxNGSchemaFactory;
 
 public class AliasesReader {
-	private final static XMLValidationSchema aliasesSchema;
+	private static final XMLValidationSchema aliasesSchema;
 	
 	private AliasesData aliasesData;
 	private File aliasesFile;
+
+	private String defaultInputEncoding;
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -39,17 +41,18 @@ public class AliasesReader {
 		}
 	}
 	
-	public AliasesReader(AliasesData aliasesData, File aliasesFile) {
+	public AliasesReader(AliasesData aliasesData, File aliasesFile, String defaultInputEncoding) {
 		this.aliasesData = aliasesData;
 		this.aliasesFile = aliasesFile;
+		this.defaultInputEncoding = defaultInputEncoding;
 	}
 	
-	public void read() throws BundlerFileProcessingException {
+	public void read() throws ContentFileProcessingException {
 		aliasesData.aliasOverrides = new ArrayList<>();
 		aliasesData.groupNames = new ArrayList<>();
 		
 		if(aliasesFile.exists()) {
-			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(aliasesFile, aliasesSchema)) {
+			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(aliasesFile, defaultInputEncoding, aliasesSchema)) {
 				while(streamReader.hasNextTag()) {
 					streamReader.nextTag();
 					
@@ -69,10 +72,10 @@ public class AliasesReader {
 			catch (XMLStreamException e) {
 				Location location = e.getLocation();
 				
-				throw new BundlerFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
+				throw new ContentFileProcessingException(aliasesFile, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
-			catch (FileNotFoundException e) {
-				throw new BundlerFileProcessingException(aliasesFile, e);
+			catch (IOException e) {
+				throw new ContentFileProcessingException(aliasesFile, e);
 			}
 		}
 	}

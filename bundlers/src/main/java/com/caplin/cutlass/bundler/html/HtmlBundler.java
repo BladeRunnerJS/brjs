@@ -23,7 +23,7 @@ import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.SourceFileProvider;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
@@ -73,7 +73,7 @@ public class HtmlBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 	}
 
 	@Override
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		HtmlFileProcessor htmlFileProcessor = new HtmlFileProcessor();

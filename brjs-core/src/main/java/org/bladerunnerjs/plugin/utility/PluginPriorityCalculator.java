@@ -7,12 +7,12 @@ import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.aliasing.AliasingTagHandlerPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty.BRJSThirdpartyTagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nTagHandlerPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsTagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyTagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
 
 public class PluginPriorityCalculator
@@ -51,7 +51,7 @@ public class PluginPriorityCalculator
 	
 	private static int priority(ContentPlugin plugin)
 	{
-		if (plugin.getPluginClass() == BRJSThirdpartyContentPlugin.class)
+		if (plugin.getPluginClass() == ThirdpartyContentPlugin.class)
 		{
 			return 2;
 		}
@@ -72,7 +72,7 @@ public class PluginPriorityCalculator
 	
 	private static int priority(TagHandlerPlugin plugin)
 	{
-		if (plugin.getPluginClass() == BRJSThirdpartyTagHandlerPlugin.class)
+		if (plugin.getPluginClass() == ThirdpartyTagHandlerPlugin.class)
 		{
 			return 2;
 		}

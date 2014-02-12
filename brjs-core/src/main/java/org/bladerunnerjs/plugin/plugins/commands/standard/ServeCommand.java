@@ -103,12 +103,12 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	
 	private ApplicationServer getApplicationServer(JSAPResult parsedArgs) throws NumberFormatException, ConfigException
 	{
-	    if(parsedArgs.contains("port"))
-	    {
-	    	int port = Integer.parseInt(parsedArgs.getString("port")); 
-	    	return brjs.applicationServer(port); 
-	    }
-       
-	    return brjs.applicationServer();
+		if(parsedArgs.contains("port"))
+		{
+			int port = Integer.parseInt(parsedArgs.getString("port"));
+			return brjs.applicationServer(port);
+		}
+		
+		return brjs.applicationServer();
 	}
 }

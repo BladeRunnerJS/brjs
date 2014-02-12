@@ -25,8 +25,8 @@ public class BladeTestPackBundlingTest extends SpecTest
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).automaticallyFindsBundlers()
-    		.and(brjs).automaticallyFindsMinifiers()
-    		.and(brjs).hasBeenCreated();
+			.and(brjs).automaticallyFindsMinifiers()
+			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
@@ -66,13 +66,13 @@ public class BladeTestPackBundlingTest extends SpecTest
 	@Test
 	public void weBundleBladeSrcTestContentsInUTs() throws Exception {		
 		given(blade).hasNamespacedJsPackageStyle()
-    		.and(bladeUTs).containsFile("src-test/pkg/Util.js")
-    		.and(blade).hasClasses("appns.bs.b1.Class1")
-    		.and(bladeUTs).classDependsOn("pkg.Util", "appns.bs.b1.Class1")
-    		.and(bladeUTs).testRefersTo("pkg/test.js", "pkg.Util");
-    	then(bladeUTs).bundledFilesEquals(
-    		blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
-    		bladeUTs.testSource().file("pkg/Util.js"));
+			.and(bladeUTs).containsFile("src-test/pkg/Util.js")
+			.and(blade).hasClasses("appns.bs.b1.Class1")
+			.and(bladeUTs).classDependsOn("pkg.Util", "appns.bs.b1.Class1")
+			.and(bladeUTs).testRefersTo("pkg/test.js", "pkg.Util");
+		then(bladeUTs).bundledFilesEquals(
+			blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
+			bladeUTs.testSource().file("pkg/Util.js"));
 	}
 	
 	@Test

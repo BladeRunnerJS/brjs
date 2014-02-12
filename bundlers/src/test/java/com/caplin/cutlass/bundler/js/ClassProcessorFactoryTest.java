@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.bundler.js.aliasing.AliasRegistry;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
@@ -36,7 +36,7 @@ public class ClassProcessorFactoryTest {
 	private AliasRegistry aliasRegistry;
 	
 	@Before
-	public void setUp() throws BundlerProcessingException {
+	public void setUp() throws ContentProcessingException {
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(testBase)));
 		
 		List<ClassnameFileMapping> allSourceFiles = SourceFileLocator.getAllSourceFiles( baseDir, null );

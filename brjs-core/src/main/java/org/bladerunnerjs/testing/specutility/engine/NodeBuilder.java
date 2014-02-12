@@ -6,16 +6,19 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
+import org.bladerunnerjs.utility.FileUtil;
 
 
 public abstract class NodeBuilder<N extends Node> {
 	protected BuilderChainer builderChainer;
 	protected SpecTest specTest;
 	protected N node;
+	private FileUtil fileUtil;
 	
 	public NodeBuilder(SpecTest specTest, N node) {
 		this.specTest = specTest;
 		this.node = node;
+		fileUtil = new FileUtil("UTF-8");
 		builderChainer = new BuilderChainer(specTest);
 	}
 	
@@ -38,7 +41,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFile(String filePath) throws Exception {
-		FileUtils.write(node.file(filePath), filePath + "\n");
+		fileUtil.write(node.file(filePath), filePath + "\n");
 		
 		return builderChainer;
 	}
@@ -52,7 +55,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
-		FileUtils.write(node.file(filePath), fileContents);
+		fileUtil.write(node.file(filePath), fileContents);
 		
 		return builderChainer;
 	}
@@ -64,7 +67,7 @@ public abstract class NodeBuilder<N extends Node> {
 	}
 	
 	public BuilderChainer containsStorageFile(String pluginName, String filePath) throws Exception {
-		FileUtils.write(node.storageFile(pluginName, filePath), "");
+		fileUtil.write(node.storageFile(pluginName, filePath), "");
 		
 		return builderChainer;
 	}

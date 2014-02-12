@@ -3,36 +3,34 @@ package org.bladerunnerjs.model.exception.request;
 import java.io.File;
 
 
-
-// TODO: rename class to FileProcessingException
-public class BundlerFileProcessingException extends BundlerProcessingException
+public class ContentFileProcessingException extends ContentProcessingException
 {
 	 
-	private static final long serialVersionUID = 5326055152554125320L;
+	private static final long serialVersionUID = 1L;
 	
 	private File sourceFile;
 	private int lineNumber = -1;
 	private int characterNumber = -1;
 	
-	public BundlerFileProcessingException(BundlerProcessingException e, File sourceFile)
+	public ContentFileProcessingException(ContentProcessingException e, File sourceFile)
 	{
 		super(e);
 		this.sourceFile = sourceFile;
 	}
 	
-	public BundlerFileProcessingException(File sourceFile, String message)
+	public ContentFileProcessingException(File sourceFile, String message)
 	{
 		super(message);
 		this.sourceFile = sourceFile;
 	}
 	
-	public BundlerFileProcessingException(File sourceFile, Throwable cause, String message)
+	public ContentFileProcessingException(File sourceFile, Throwable cause, String message)
 	{
 		super(cause, message);
 		this.sourceFile = sourceFile;
 	}
 	
-	public BundlerFileProcessingException(File sourceFile, int lineNumber, int characterNumber, String message)
+	public ContentFileProcessingException(File sourceFile, int lineNumber, int characterNumber, String message)
 	{
 		super(message);
 		this.sourceFile = sourceFile;
@@ -40,7 +38,7 @@ public class BundlerFileProcessingException extends BundlerProcessingException
 		this.characterNumber = characterNumber;
 	}
 	
-	public BundlerFileProcessingException(File sourceFile, Exception cause) {
+	public ContentFileProcessingException(File sourceFile, Exception cause) {
 		super(cause);
 		this.sourceFile = sourceFile;
 	}

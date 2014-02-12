@@ -29,6 +29,7 @@ import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.filter.bundlerfilter.token.CSSBundleTokenProcessor;
 import com.caplin.cutlass.filter.bundlerfilter.token.I18nBundleTokenProcessor;
+import com.caplin.cutlass.filter.bundlerfilter.token.JSBundleTokenProcessor;
 
 public class BundlerTokenFilter implements Filter
 {
@@ -43,6 +44,7 @@ public class BundlerTokenFilter implements Filter
 	{
 		tokenProcessor = new BundlerTokenProcessor();
 		tokenProcessor.addTokenProcessor(CutlassConfig.CSS_BUNDLE_TOKEN, new CSSBundleTokenProcessor());
+		tokenProcessor.addTokenProcessor(CutlassConfig.JS_BUNDLE_TOKEN, new JSBundleTokenProcessor());
 		tokenProcessor.addTokenProcessor(CutlassConfig.I18N_BUNDLE_TOKEN, new I18nBundleTokenProcessor());
 	}
 	

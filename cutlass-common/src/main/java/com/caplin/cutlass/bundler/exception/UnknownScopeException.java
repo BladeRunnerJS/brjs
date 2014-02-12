@@ -1,9 +1,9 @@
 package com.caplin.cutlass.bundler.exception;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.structure.model.Node;
 
-public class UnknownScopeException extends BundlerProcessingException
+public class UnknownScopeException extends ContentProcessingException
 {
 	private static final long serialVersionUID = -6336566544386277866L;
 

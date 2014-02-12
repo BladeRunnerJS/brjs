@@ -6,7 +6,7 @@ import java.io.Reader;
 
 import org.apache.commons.io.IOUtils;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
 
 public class CssFileRewriter
@@ -18,7 +18,7 @@ public class CssFileRewriter
 		this.file = cssFile;
 	}
 
-	public String getFileContents() throws IOException, BundlerFileProcessingException
+	public String getFileContents() throws IOException, ContentFileProcessingException
 	{
 		try
 		{
@@ -38,7 +38,7 @@ public class CssFileRewriter
 		}
 		catch(Exception e)
 		{
-			throw new BundlerFileProcessingException(file, e, "Error while bundling file.");
+			throw new ContentFileProcessingException(file, e, "Error while bundling file.");
 		}
 	}
 

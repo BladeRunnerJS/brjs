@@ -77,14 +77,14 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		List<AssetLocation> assetLocations = assetLocations();
 		if (assetLocations != null)
 		{
-    		for(AssetLocation nextAssetLocation : assetLocations) {
-    			String nextLocationPath = normalizePath(RelativePathUtility.get(dir(), nextAssetLocation.dir()));
-    			
-    			if(nextLocationPath.equals(normalizedLocationPath)) {
-    				assetLocation = nextAssetLocation;
-    				break;
-    			}
-    		}
+			for(AssetLocation nextAssetLocation : assetLocations) {
+				String nextLocationPath = normalizePath(RelativePathUtility.get(dir(), nextAssetLocation.dir()));
+				
+				if(nextLocationPath.equals(normalizedLocationPath)) {
+					assetLocation = nextAssetLocation;
+					break;
+				}
+			}
 		}
 		
 		return assetLocation;

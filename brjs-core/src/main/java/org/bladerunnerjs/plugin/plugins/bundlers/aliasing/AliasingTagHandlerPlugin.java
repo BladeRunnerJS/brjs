@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
@@ -15,12 +15,12 @@ import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 public class AliasingTagHandlerPlugin extends AbstractTagHandlerPlugin
 {
 
-	private ContentPlugin aliasingPlugin;
+	private ContentPlugin aliasingContentPlugin;
 
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		aliasingPlugin = brjs.plugins().contentProvider( getTagName() );
+		aliasingContentPlugin = brjs.plugins().contentProvider( getTagName() );
 	}
 	
 	@Override
@@ -39,9 +39,9 @@ public class AliasingTagHandlerPlugin extends AbstractTagHandlerPlugin
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
 		try {
-			writeTagContent(bundleSet, aliasingPlugin.getValidDevContentPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, aliasingContentPlugin.getValidDevContentPaths(bundleSet, locale), writer);
 		}
-		catch (BundlerProcessingException e) {
+		catch (ContentProcessingException e) {
 			throw new IOException(e);
 		}
 	}
@@ -50,9 +50,9 @@ public class AliasingTagHandlerPlugin extends AbstractTagHandlerPlugin
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{
 		try {
-			writeTagContent(bundleSet, aliasingPlugin.getValidProdContentPaths(bundleSet, locale), writer);
+			writeTagContent(bundleSet, aliasingContentPlugin.getValidProdContentPaths(bundleSet, locale), writer);
 		}
-		catch (BundlerProcessingException e) {
+		catch (ContentProcessingException e) {
 			throw new IOException(e);
 		}
 	}

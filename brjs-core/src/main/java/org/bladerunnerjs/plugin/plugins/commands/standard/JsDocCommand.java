@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
@@ -24,6 +23,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.testing.utility.CommandRunner;
+import org.bladerunnerjs.utility.FileUtil;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -38,11 +38,18 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	
 	private BRJS brjs;
 	private ConsoleWriter out;
+	private FileUtil fileUtil;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {	
-		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		try {
+			this.brjs = brjs;
+			out = brjs.getConsoleWriter();
+			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultInputEncoding());
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -153,12 +160,12 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	private void replaceBuildDateToken(File indexFile) throws IOException, ConfigException {
-		String fileContent = FileUtils.readFileToString(indexFile, brjs.bladerunnerConf().getDefaultOutputEncoding());
+		String fileContent = fileUtil.readFileToString(indexFile);
 		
 		DateFormat dateFormat = new SimpleDateFormat("dd MMMMM yyyy");
 		Date date = new Date();
 		
 		String resultFileContent = fileContent.replace("@buildDate@", dateFormat.format(date));
-		FileUtils.writeStringToFile(indexFile, resultFileContent, brjs.bladerunnerConf().getDefaultOutputEncoding());
+		fileUtil.writeStringToFile(indexFile, resultFileContent);
 	}
 }

@@ -6,7 +6,7 @@ import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractCommandPlugin;
 
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyser;
@@ -66,7 +66,7 @@ public class DependencyAnalyserCommand extends AbstractCommandPlugin implements 
 		{
 			codeAnalyser = CodeAnalyserFactory.getCodeAnalyser(seedFileDir);
 		} 
-		catch (BundlerProcessingException e) 
+		catch (ContentProcessingException e) 
 		{
 			throw new CommandOperationException(e);
 		}

@@ -16,7 +16,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -74,7 +74,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws BundlerProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
 	{
 		if (contentPath.formName.equals(LANGUAGE_BUNDLE)) 
 		{
@@ -86,41 +86,41 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		} 
 		else
 		{
-			throw new BundlerProcessingException("unknown request form '" + contentPath.formName + "'.");
+			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 		}
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		try 
 		{
-    		List<String> contentPaths = new ArrayList<String>();
-    		for (String locale : locales)
-    		{
-    			String requestPath = "";
-    			if (locale.contains("_")) {
-    				requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, StringUtils.substringBefore(locale, "_"), StringUtils.substringAfter(locale, "_"));			
-    			} else {
-    				requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
-    			}
-    			contentPaths.add(requestPath);
-    		}
-    		return contentPaths;
+			List<String> contentPaths = new ArrayList<String>();
+			for (String locale : locales)
+			{
+				String requestPath = "";
+				if (locale.contains("_")) {
+					requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, StringUtils.substringBefore(locale, "_"), StringUtils.substringAfter(locale, "_"));			
+				} else {
+					requestPath = getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
+				}
+				contentPaths.add(requestPath);
+			}
+			return contentPaths;
 		}
 		catch (Exception ex)
 		{
-			throw new BundlerProcessingException(ex);
+			throw new ContentProcessingException(ex);
 		}
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws BundlerProcessingException
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		return getValidDevContentPaths(bundleSet, locales);
 	}
 	
-	private void generateBundleForLocale(BundleSet bundleSet, OutputStream os, String language, String location) throws BundlerProcessingException
+	private void generateBundleForLocale(BundleSet bundleSet, OutputStream os, String language, String location) throws ContentProcessingException
 	{
 		Map<String,String> propertiesMap = new HashMap<String,String>();
 		
@@ -132,7 +132,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		writePropertiesMapToOutput(propertiesMap, os);
 	}
 
-	private void addI18nProperties(Map<String,String> propertiesMap, String language, String location, I18nAssetFile i18nFile) throws BundlerProcessingException
+	private void addI18nProperties(Map<String,String> propertiesMap, String language, String location, I18nAssetFile i18nFile) throws ContentProcessingException
 	{
 		if ( i18nFile.getLocaleLanguage().equals(language) && 
 				(i18nFile.getLocaleLocation().equals("") || i18nFile.getLocaleLocation().equals(location)) )
@@ -143,7 +143,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			}
 			catch (IOException | RequirePathException | NamespaceException ex)
 			{
-				throw new BundlerProcessingException(ex, "Error getting locale properties from file");
+				throw new ContentProcessingException(ex, "Error getting locale properties from file");
 			}
 		}
 	}
@@ -182,14 +182,14 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			if (asset instanceof I18nAssetFile)
 			{
 				I18nAssetFile i18nAsset = (I18nAssetFile) asset;
-    			if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
-    			{
-    				languageAndLocationAssets.add(i18nAsset);
-    			}
-    			else if (i18nAsset.getLocaleLanguage().length() > 0)
-    			{
-    				languageOnlyAssets.add(i18nAsset);					
-    			}
+				if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
+				{
+					languageAndLocationAssets.add(i18nAsset);
+				}
+				else if (i18nAsset.getLocaleLanguage().length() > 0)
+				{
+					languageOnlyAssets.add(i18nAsset);
+				}
 			}
 		}
 		

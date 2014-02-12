@@ -30,8 +30,8 @@ import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -94,7 +94,7 @@ public class ThirdPartyBundler extends AbstractPlugin implements LegacyFileBundl
 		}
 		else if(sourceFiles.size() > 1)
 		{
-			throw new BundlerProcessingException("More than one library resource file was requested to be added to a single bundle.");
+			throw new ContentProcessingException("More than one library resource file was requested to be added to a single bundle.");
 		}
 		else
 		{
@@ -129,7 +129,7 @@ public class ThirdPartyBundler extends AbstractPlugin implements LegacyFileBundl
 		}
 		catch (IOException e)
 		{
-			throw new BundlerFileProcessingException(image, e, "Error while writing bundle");
+			throw new ContentFileProcessingException(image, e, "Error while writing bundle");
 		}
 	}
 	
@@ -143,7 +143,7 @@ public class ThirdPartyBundler extends AbstractPlugin implements LegacyFileBundl
 		}
 		catch (IOException e)
 		{
-			throw new BundlerFileProcessingException(textFile, e, "Error while writing bundle");
+			throw new ContentFileProcessingException(textFile, e, "Error while writing bundle");
 		}
 	}
 	

@@ -136,10 +136,10 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	@Test
 	public void packageDefinitionsInBundleContainAutomaticRequirePackages() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-        	.and(aspect).hasClasses("appns.namespaced.Class", "appns.namespaced.AnotherClass", "appns.nodejs.Class")
-        	.and(aspect).indexPageRefersTo("new appns.namespaced.Class(); new appns.namespaced.AnotherClass();")
-        	.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
-        	.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
+			.and(aspect).hasClasses("appns.namespaced.Class", "appns.namespaced.AnotherClass", "appns.nodejs.Class")
+			.and(aspect).indexPageRefersTo("new appns.namespaced.Class(); new appns.namespaced.AnotherClass();")
+			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
+			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsTextOnce("window.appns = {\"nodejs\":{},\"namespaced\":{}};");
 	}
@@ -147,10 +147,10 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	@Test
 	public void packageDefinitionsContainsAutomaticRequirePackages() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-    		.and(aspect).hasClasses("appns.namespaced.Class", "appns.namespaced.AnotherClass", "appns.nodejs.Class")
-    		.and(aspect).indexPageRefersTo("new appns.namespaced.Class(); new appns.namespaced.AnotherClass();")
-    		.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
-    		.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
+			.and(aspect).hasClasses("appns.namespaced.Class", "appns.namespaced.AnotherClass", "appns.nodejs.Class")
+			.and(aspect).indexPageRefersTo("new appns.namespaced.Class(); new appns.namespaced.AnotherClass();")
+			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
+			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsTextOnce("window.appns = {\"nodejs\":{},\"namespaced\":{}};");
 	}

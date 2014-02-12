@@ -1,6 +1,6 @@
 // class copied from <http://www.java2s.com/Code/Java/Development-Class/Unicodereader.htm>
 
-package com.caplin.cutlass.io;
+package org.bladerunnerjs.utility;
 
 import java.io.*;
 
@@ -22,14 +22,18 @@ public class UnicodeReader extends Reader
 	
 	private InputStreamReader delegate;
 	
-	public UnicodeReader(InputStream in) throws IOException
-	{
-		init(in, null);
-	}
-	
 	public UnicodeReader(InputStream in, String defaultEnc) throws IOException
 	{
 		init(in, defaultEnc);
+	}
+	
+	public UnicodeReader(InputStream in) throws IOException
+	{
+		this(in, null);
+	}
+	
+	public UnicodeReader(File file, String defaultEnc) throws IOException {
+		this(new BufferedInputStream(new FileInputStream(file)), defaultEnc);
 	}
 	
 	/**
@@ -100,13 +104,19 @@ public class UnicodeReader extends Reader
 		}
 	}
 	
-	/** Overridden to use delegate reader. */
+	@Override
+	public boolean ready() throws IOException
+	{
+		return delegate.ready();
+	}
+	
+	@Override
 	public void close() throws IOException
 	{
 		delegate.close();
 	}
 	
-	/** Overridden to use delegate reader. */
+	@Override
 	public int read(char[] cbuf, int off, int len) throws IOException
 	{
 		return delegate.read(cbuf, off, len);

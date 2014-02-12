@@ -213,11 +213,11 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 	public void i18nPropertyKeysMustMatchTheAspectNamespace() throws Exception 
 	{
 		given(app).hasBeenCreated()
-    		.and(aspect).hasBeenCreated()
-    		.and(aspect).containsEmptyFile("index.html")
-    		.and(aspect).containsFileWithContents("resources/en_GB.properties", "some.property=property value");
-    	when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
-    	then(exceptions).verifyException(NamespaceException.class, "some.property", "default-aspect/resources/en_GB.properties", "appns");
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en_GB.properties", "some.property=property value");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(exceptions).verifyException(NamespaceException.class, "some.property", "default-aspect/resources/en_GB.properties", "appns");
 	}
 	
 }

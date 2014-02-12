@@ -10,7 +10,7 @@ import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 
 public interface BundlableNode extends Node, AssetContainer {
@@ -23,6 +23,6 @@ public interface BundlableNode extends Node, AssetContainer {
 	 */
 	List<AssetContainer> getAssetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;
-	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException;
+	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, ContentFileProcessingException;
 	List<AliasDefinitionsFile> getAliasDefinitionFiles();
 }

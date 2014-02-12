@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.File;
 import java.util.ArrayList;

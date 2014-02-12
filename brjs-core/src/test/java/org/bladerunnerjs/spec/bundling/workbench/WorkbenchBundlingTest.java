@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -73,7 +73,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbench).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/Class1")
-			.whereTopLevelExceptionIs(BundlerProcessingException.class);
+			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 
 	

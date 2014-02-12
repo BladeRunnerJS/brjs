@@ -1,8 +1,8 @@
 package org.bladerunnerjs.utility;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -16,8 +16,8 @@ import com.ctc.wstx.stax.WstxInputFactory;
 public class XmlStreamReaderFactory {
 	private static final XMLInputFactory2 inputFactory = new WstxInputFactory();
 	
-	public static XmlStreamReader createReader(File xmlFile, XMLValidationSchema xmlSchema) throws FileNotFoundException, XMLStreamException {
-		FileReader fileReader = new FileReader(xmlFile);
+	public static XmlStreamReader createReader(File xmlFile, String defaultInputEncoding, XMLValidationSchema xmlSchema) throws IOException, XMLStreamException {
+		Reader fileReader = new UnicodeReader(xmlFile, defaultInputEncoding);
 		XMLStreamReader2 streamReader = (XMLStreamReader2) inputFactory.createXMLStreamReader(fileReader);
 		
 		streamReader.validateAgainst(xmlSchema);

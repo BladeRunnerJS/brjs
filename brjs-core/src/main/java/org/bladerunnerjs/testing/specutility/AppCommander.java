@@ -3,10 +3,9 @@ package org.bladerunnerjs.testing.specutility;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.testing.specutility.engine.Command;
@@ -65,7 +64,7 @@ public class AppCommander extends NodeCommander<App> {
 		return commanderChainer;
 	}
 	
-	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException, UnsupportedEncodingException {
+	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
 				BladerunnerUri uri = new BladerunnerUri(app.root(), app.dir(), "/" + app.getName(), requestPath, null);
@@ -93,7 +92,7 @@ public class AppCommander extends NodeCommander<App> {
 	{
 		call(new Command() {
 			public void call() throws Exception {
-				FileUtils.write(app.file(filePath), fileContents);
+				fileUtil.write(app.file(filePath), fileContents);
 			}
 		});
 		

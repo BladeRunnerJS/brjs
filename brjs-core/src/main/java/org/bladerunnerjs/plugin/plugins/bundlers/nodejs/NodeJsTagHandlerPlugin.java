@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
@@ -34,7 +34,7 @@ public class NodeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		try {
 			writeTagContent(bundleSet, nodeJsContentPlugin.getValidDevContentPaths(bundleSet, locale), writer);
 		}
-		catch (BundlerProcessingException e) {
+		catch (ContentProcessingException e) {
 			throw new IOException(e);
 		}
 	}
@@ -44,7 +44,7 @@ public class NodeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		try {
 			writeTagContent(bundleSet, nodeJsContentPlugin.getValidProdContentPaths(bundleSet, locale), writer);
 		}
-		catch (BundlerProcessingException e) {
+		catch (ContentProcessingException e) {
 			throw new IOException(e);
 		}
 	}

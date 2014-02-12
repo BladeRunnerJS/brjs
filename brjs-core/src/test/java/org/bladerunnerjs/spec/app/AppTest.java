@@ -199,9 +199,9 @@ public class AppTest extends SpecTest {
 	@Test
 	public void appNonBRLibsCanOverrideGlobalLibs() throws Exception {
 		given(app).hasBeenCreated()
-    		.and(appLib).hasBeenCreated()
-    		.and(globalOverriddenNonBRLib).hasBeenCreated()
-    		.and(appOverriddenNonBRLib).hasBeenCreated();
+			.and(appLib).hasBeenCreated()
+			.and(globalOverriddenNonBRLib).hasBeenCreated()
+			.and(appOverriddenNonBRLib).hasBeenCreated();
 		then(app).libWithNameIs("overridden-lib", appOverriddenNonBRLib);
 	}	
 	

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.brjsthirdparty;
+package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -26,7 +26,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 
-public class BRJSThirdpartySourceModule implements SourceModule
+public class ThirdpartySourceModule implements SourceModule
 {
 
 	private AssetLocation assetLocation;
@@ -110,15 +110,15 @@ public class BRJSThirdpartySourceModule implements SourceModule
 		
 		try 
 		{
-    		for (String dependentLibName : manifest.getDepends())
-    		{
-    			JsLib dependentLib = assetLocation.getAssetContainer().getApp().nonBladeRunnerLib(dependentLibName);
-    			if (!dependentLib.dirExists())
-    			{
-    				throw new ConfigException(String.format("Library '%s' depends on '%s', which doesn't exist.", getAssetName(), dependentLibName)) ;
-    			}
-    			dependentLibs.addAll(dependentLib.sourceModules());
-    		}
+			for (String dependentLibName : manifest.getDepends())
+			{
+				JsLib dependentLib = assetLocation.getAssetContainer().getApp().nonBladeRunnerLib(dependentLibName);
+				if (!dependentLib.dirExists())
+				{
+					throw new ConfigException(String.format("Library '%s' depends on '%s', which doesn't exist.", getAssetName(), dependentLibName)) ;
+				}
+				dependentLibs.addAll(dependentLib.sourceModules());
+			}
 		}
 		catch (ConfigException ex)
 		{

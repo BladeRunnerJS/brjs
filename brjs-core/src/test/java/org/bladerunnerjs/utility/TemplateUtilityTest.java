@@ -24,6 +24,7 @@ import org.junit.Test;
 public class TemplateUtilityTest
 {
 	private BRJS brjs;
+	private FileUtil fileUtil;
 	
 	@Before
 	public void setUp() throws Exception
@@ -31,6 +32,7 @@ public class TemplateUtilityTest
 		File tempDir = FileUtility.createTemporaryDirectory("TemplateUtilityTest");
 		FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
 		brjs = BRJSTestFactory.createBRJS(tempDir);
+		fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultInputEncoding());
 	}
 	
 	@After
@@ -57,17 +59,17 @@ public class TemplateUtilityTest
 		assertTrue("root dir exists", app.file("root-@dir").exists());
 		assertTrue("root dir is a directory", app.file("root-@dir").isDirectory());
 		assertTrue("root text file exists", app.file("root-@dir/root-text-file.txt").exists());
-		assertEquals("root text file has correct contents", "this is the root text file (in root @dir)", FileUtils.readFileToString(app.file("root-@dir/root-text-file.txt")));
+		assertEquals("root text file has correct contents", "this is the root text file (in root @dir)", fileUtil.readFileToString(app.file("root-@dir/root-text-file.txt")));
 		assertTrue("root binary file exists", app.file("root-@dir/root-binary-file.bin").exists());
-		assertEquals("root binary file has correct contents", "this is the root binary file (in root @dir)", FileUtils.readFileToString(app.file("root-@dir/root-binary-file.bin")));
+		assertEquals("root binary file has correct contents", "this is the root binary file (in root @dir)", fileUtil.readFileToString(app.file("root-@dir/root-binary-file.bin")));
 		assertFalse("hidden file does not exist", app.file("root-@dir/.unix-hidden-file.txt").exists());
 		
 		assertTrue("child dir exists", app.file("root-@dir/child-@dir").exists());
 		assertTrue("child dir is a directory", app.file("root-@dir/child-@dir").isDirectory());
 		assertTrue("child text file exists", app.file("root-@dir/child-@dir/child-text-file.txt").exists());
-		assertEquals("child text file has correct contents", "this is the child text file (in child @dir)", FileUtils.readFileToString(app.file("root-@dir/child-@dir/child-text-file.txt")));
+		assertEquals("child text file has correct contents", "this is the child text file (in child @dir)", fileUtil.readFileToString(app.file("root-@dir/child-@dir/child-text-file.txt")));
 		assertTrue("child binary file exists", app.file("root-@dir/child-@dir/child-binary-file.bin").exists());
-		assertEquals("child binary file has correct contents", "this is the child binary file (in child @dir)", FileUtils.readFileToString(app.file("root-@dir/child-@dir/child-binary-file.bin")));
+		assertEquals("child binary file has correct contents", "this is the child binary file (in child @dir)", fileUtil.readFileToString(app.file("root-@dir/child-@dir/child-binary-file.bin")));
 	}
 	
 	@Test
@@ -84,16 +86,16 @@ public class TemplateUtilityTest
 		assertTrue("root folder exists", app.file("root-folder").exists());
 		assertTrue("root folder is a directory", app.file("root-folder").isDirectory());
 		assertTrue("root text file exists", app.file("root-folder/root-text-file.txt").exists());
-		assertEquals("root text file has correct contents", "this is the root text file (in root folder)", FileUtils.readFileToString(app.file("root-folder/root-text-file.txt")));
+		assertEquals("root text file has correct contents", "this is the root text file (in root folder)", fileUtil.readFileToString(app.file("root-folder/root-text-file.txt")));
 		assertTrue("root binary file exists", app.file("root-folder/root-binary-file.bin").exists());
-		assertEquals("root binary file has correct contents", "this is the root binary file (in root @dir)", FileUtils.readFileToString(app.file("root-folder/root-binary-file.bin")));
+		assertEquals("root binary file has correct contents", "this is the root binary file (in root @dir)", fileUtil.readFileToString(app.file("root-folder/root-binary-file.bin")));
 		assertFalse("hidden file does not exist", app.file("root-dir/.unix-hidden-file.txt").exists());
 		
 		assertTrue("child folder exists", app.file("root-folder/child-folder").exists());
 		assertTrue("child folder is a directory", app.file("root-folder/child-folder").isDirectory());
 		assertTrue("child text file exists", app.file("root-folder/child-folder/child-text-file.txt").exists());
-		assertEquals("child text file has correct contents", "this is the child text file (in child folder)", FileUtils.readFileToString(app.file("root-folder/child-folder/child-text-file.txt")));
+		assertEquals("child text file has correct contents", "this is the child text file (in child folder)", fileUtil.readFileToString(app.file("root-folder/child-folder/child-text-file.txt")));
 		assertTrue("child binary file exists", app.file("root-folder/child-folder/child-binary-file.bin").exists());
-		assertEquals("child binary file has correct contents", "this is the child binary file (in child @dir)", FileUtils.readFileToString(app.file("root-folder/child-folder/child-binary-file.bin")));
+		assertEquals("child binary file has correct contents", "this is the child binary file (in child @dir)", fileUtil.readFileToString(app.file("root-folder/child-folder/child-binary-file.bin")));
 	}
 }

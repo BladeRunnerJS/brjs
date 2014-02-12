@@ -2,8 +2,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -20,16 +18,18 @@ import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
 
 public class NodeJsSourceModule implements SourceModule {
-	private static Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
+	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
 	
 	private File assetFile;
 	private Set<String> requirePaths;
@@ -40,6 +40,8 @@ public class NodeJsSourceModule implements SourceModule {
 	private String requirePath;
 	private String className;
 	private String assetPath;
+
+	private String defaultInputEncoding;
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -51,8 +53,9 @@ public class NodeJsSourceModule implements SourceModule {
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
 			fileModifiedChecker = new FileModifiedChecker(assetFile);
+			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
 		}
-		catch(RequirePathException e) {
+		catch(RequirePathException | ConfigException e) {
 			throw new AssetFileInstantationException(e);
 		}
 	}
@@ -93,10 +96,10 @@ public class NodeJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public Reader getReader() throws FileNotFoundException {
+	public Reader getReader() throws IOException {
 		return new ConcatReader(new Reader[] {
 			new StringReader("define('" + requirePath + "', function(require, exports, module) {\n"),
-			new BufferedReader(new FileReader(assetFile)),
+			new BufferedReader(new UnicodeReader(assetFile, defaultInputEncoding)),
 			new StringReader("\n});\n")
 		});
 	}
@@ -140,7 +143,7 @@ public class NodeJsSourceModule implements SourceModule {
 		requirePaths = new HashSet<>();
 		aliasNames = new ArrayList<>();
 		
-		try(Reader fileReader = new FileReader(assetFile)) {
+		try(Reader fileReader = new UnicodeReader(assetFile, defaultInputEncoding)) {
 			StringWriter stringWriter = new StringWriter();
 			IOUtils.copy(fileReader, stringWriter);
 			

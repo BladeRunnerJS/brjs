@@ -11,7 +11,8 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
 
 public class AliasDefinitionsFile {
@@ -22,17 +23,22 @@ public class AliasDefinitionsFile {
 	private final FileModifiedChecker fileModifiedChecker;
 	
 	public AliasDefinitionsFile(AssetContainer assetContainer, File parent, String child) {
-		file = new File(parent, child);
-		fileModifiedChecker = new FileModifiedChecker(file);
-		reader = new AliasDefinitionsReader(data, file, assetContainer);
-		writer = new AliasDefinitionsWriter(data, file);
+		try {
+			file = new File(parent, child);
+			fileModifiedChecker = new FileModifiedChecker(file);
+			reader = new AliasDefinitionsReader(data, file, assetContainer);
+			writer = new AliasDefinitionsWriter(data, file, assetContainer.root().bladerunnerConf().getDefaultInputEncoding());
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public File getUnderlyingFile() {
 		return file;
 	}
 	
-	public List<String> aliasNames() throws BundlerFileProcessingException {
+	public List<String> aliasNames() throws ContentFileProcessingException {
 		List<String> aliasNames = new ArrayList<>();
 		
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
@@ -62,7 +68,7 @@ public class AliasDefinitionsFile {
 		data.aliasDefinitions.add(aliasDefinition);
 	}
 	
-	public List<AliasDefinition> aliases() throws BundlerFileProcessingException {
+	public List<AliasDefinition> aliases() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reader.read();
 		}
@@ -74,7 +80,7 @@ public class AliasDefinitionsFile {
 		data.getScenarioAliases(scenarioAlias.getName()).put(scenarioName, scenarioAlias);
 	}
 	
-	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws BundlerFileProcessingException {
+	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reader.read();
 		}
@@ -86,7 +92,7 @@ public class AliasDefinitionsFile {
 		data.getGroupAliases(groupName).add(groupAlias);
 	}
 	
-	public Set<String> groupNames() throws BundlerFileProcessingException {
+	public Set<String> groupNames() throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reader.read();
 		}
@@ -94,7 +100,7 @@ public class AliasDefinitionsFile {
 		return data.groupAliases.keySet();
 	}
 	
-	public List<AliasOverride> groupAliases(String groupName) throws BundlerFileProcessingException {
+	public List<AliasOverride> groupAliases(String groupName) throws ContentFileProcessingException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
 			reader.read();
 		}
@@ -102,7 +108,7 @@ public class AliasDefinitionsFile {
 		return ((data.groupAliases.containsKey(groupName)) ? data.groupAliases.get(groupName) : new ArrayList<AliasOverride>());
 	}
 	
-	public AliasDefinition getAliasDefinition(String aliasName, String scenarioName, List<String> groupNames) throws BundlerFileProcessingException {
+	public AliasDefinition getAliasDefinition(String aliasName, String scenarioName, List<String> groupNames) throws ContentFileProcessingException {
 		AliasDefinition aliasDefinition = null;
 		
 		try {
@@ -125,13 +131,13 @@ public class AliasDefinitionsFile {
 			}
 		}
 		catch(AmbiguousAliasException e) {
-			throw new BundlerFileProcessingException(file, e);
+			throw new ContentFileProcessingException(file, e);
 		}
 		
 		return aliasDefinition;
 	}
 	
-	public AliasOverride getGroupOverride(String aliasName, List<String> groupNames) throws BundlerFileProcessingException, AmbiguousAliasException {
+	public AliasOverride getGroupOverride(String aliasName, List<String> groupNames) throws ContentFileProcessingException, AmbiguousAliasException {
 		AliasOverride aliasOverride = null;
 		
 		for(String groupName : groupNames) {

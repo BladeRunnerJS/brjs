@@ -19,7 +19,7 @@ import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 
@@ -85,7 +85,7 @@ public class JsBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 	}
 
 	@Override
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		if(sourceFiles.size() == 1)
 		{
@@ -121,7 +121,7 @@ public class JsBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 		return Arrays.asList(BundlePathsFromRoot.JS + "js" + BUNDLE_EXT);
 	}
 	
-	private void serveSourceMap(Minifier minifier, OutputStream outputStream) throws BundlerProcessingException
+	private void serveSourceMap(Minifier minifier, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		
@@ -131,7 +131,7 @@ public class JsBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Error while writing source map.");
+			throw new ContentProcessingException(e, "Error while writing source map.");
 		}
 		finally
 		{
@@ -139,7 +139,7 @@ public class JsBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 		}
 	}
 	
-	private void bundleFiles(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	private void bundleFiles(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		CharacterCountingWriter headerWriter = new CharacterCountingWriter(writer);
@@ -155,7 +155,7 @@ public class JsBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Error while bundling files.");
+			throw new ContentProcessingException(e, "Error while bundling files.");
 		}
 		finally
 		{
