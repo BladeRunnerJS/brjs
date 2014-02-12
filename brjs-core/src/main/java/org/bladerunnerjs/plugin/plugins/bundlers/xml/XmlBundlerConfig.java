@@ -32,7 +32,7 @@ public class XmlBundlerConfig {
 	
 	
 	public boolean isbundleConigAvailable(){
-		File file = brjs.configuration(CONFIG_FILE_NAME);
+		File file = brjs.conf().file(CONFIG_FILE_NAME);
 		return file.exists();
 	}
 
@@ -46,7 +46,7 @@ public class XmlBundlerConfig {
 	private Map<String, XmlResourceConfig>  createConfigMap() throws ContentProcessingException
 	{
 		
-		File file = brjs.configuration(CONFIG_FILE_NAME);
+		File file = brjs.conf().file(CONFIG_FILE_NAME);
 		Map<String, XmlResourceConfig> result = new HashMap<String, XmlResourceConfig>();
 		try 
 		{

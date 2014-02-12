@@ -83,7 +83,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasConfigurationFileWithContent(String filename, String content) throws Exception 
 	{
-		FileUtils.write(brjs.configurations().file(filename), content);	
+		FileUtils.write(brjs.conf().file(filename), content);	
 		return builderChainer;
 	}
 	

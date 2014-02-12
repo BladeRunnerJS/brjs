@@ -258,17 +258,10 @@ public class BRJS extends AbstractBRJSRootNode
 		return item(appJars);
 	}
 	
-	public DirNode configurations()
+	public DirNode conf()
 	{
 		return item(configuration);
 	}
-	
-	public File configuration(String filename)
-	{
-		return item(configuration).file(filename);
-	}
-	
-	
 	
 	public DirNode systemJars()
 	{

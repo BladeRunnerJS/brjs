@@ -38,9 +38,9 @@ public class XMLContentPluginTest extends SpecTest{
 	public void aspectXmlFilesAreBundled() throws Exception {
 		String config = getSimpleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
-		and(aspect).resourceFileContains("gridDefinitions.xml", wrap(getFullGridDefinition()));
+		and(aspect).resourceFileContains("gridDefinitions.xml", xml(getFullGridDefinition()));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
-		then(response).containsText(wrap(getFullGridDefinition()));
+		then(response).containsText(xml(getFullGridDefinition()));
 	}
 	
 	
@@ -49,9 +49,9 @@ public class XMLContentPluginTest extends SpecTest{
 	public void aspectXmlFilesAreBundledFromNestedDirectory() throws Exception {
 		String config = getSimpleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
-		and(aspect).resourceFileContains("xml/gridDefinitions.xml", wrap(getFullGridDefinition()));
+		and(aspect).resourceFileContains("xml/gridDefinitions.xml", xml(getFullGridDefinition()));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
-		then(response).containsText(wrap(getFullGridDefinition()));
+		then(response).containsText(xml(getFullGridDefinition()));
 	}
 	
 
@@ -60,7 +60,7 @@ public class XMLContentPluginTest extends SpecTest{
 		
 		String config = getSimpleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
-		and(aspect).resourceFileContains("xml/gridDefinitions.xml", wrap(getProviderMapping("xxxxx.Provider"), true));
+		and(aspect).resourceFileContains("xml/gridDefinitions.xml", xml(getProviderMapping("xxxxx.Provider"), true));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
 		then(exceptions).verifyException(NamespaceException.class, "xxxxx.Provider", "appns.*" );
 	}
@@ -68,21 +68,21 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void aspectXmMergesEmptyGridDefinitions() throws Exception {
 		String config = getSimpleConfig();
-		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
-		and(aspect).resourceFileContains("xml/gridDefinitions1.xml", wrap("", true)).
-		and(aspect).resourceFileContains("xml/gridDefinitions2.xml", wrap("", true));
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
+			.and(aspect).resourceFileContains("xml/gridDefinitions1.xml", xml("", true))
+			.and(aspect).resourceFileContains("xml/gridDefinitions2.xml", xml("", true));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
-		then(response).containsTextOnce(wrap(""));
+		then(response).containsTextOnce(xml(""));
 	}
 	
 	@Test
 	public void aspectXmMergesDuplicateDataMappingElements() throws Exception {
 		String config = getSimpleConfig();
-		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
-		and(aspect).resourceFileContains("xml/gridDefinitions1.xml", wrap( getProviderMapping("appns.DatProvider1"), true)).
-		and(aspect).resourceFileContains("xml/gridDefinitions2.xml", wrap( getProviderMapping("appns.DatProvider1"), true));
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
+			.and(aspect).resourceFileContains("xml/gridDefinitions1.xml", xml( getProviderMapping("appns.DatProvider1"), true))
+			.and(aspect).resourceFileContains("xml/gridDefinitions2.xml", xml( getProviderMapping("appns.DatProvider1"), true));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
-		then(response).containsTextOnce(wrap( getProviderMapping("appns.DatProvider1")));
+		then(response).containsTextOnce(xml( getProviderMapping("appns.DatProvider1")));
 	}
 	
 	@Ignore //This test runs in eclipse but fails in gradle build
@@ -90,9 +90,9 @@ public class XMLContentPluginTest extends SpecTest{
 	//This tests that merge elements - dataProviderMapping are correctly merged within a template elements - dataMappings
 	public void aspectXmlDoesNotMergeDifferentDataMappingElements() throws Exception {
 		String config = getSimpleConfig();
-		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
-		and(aspect).resourceFileContains("xml/gridDefinitions1.xml", wrap( getProviderMapping("appns.DatProvider1"), true)).
-		and(aspect).resourceFileContains("xml/gridDefinitions2.xml", wrap( getDataProviderMapping2ForMerge(), true));
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
+			.and(aspect).resourceFileContains("xml/gridDefinitions1.xml", xml( getProviderMapping("appns.DatProvider1"), true))
+			.and(aspect).resourceFileContains("xml/gridDefinitions2.xml", xml( getDataProviderMapping2ForMerge(), true));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
 		then(response).containsTextOnce(getDataProviderMapping1and2ForMerge());
 	}
@@ -102,8 +102,8 @@ public class XMLContentPluginTest extends SpecTest{
 		
 		String badXml = "<xxx=\">";
 		String config = getSimpleConfig();
-		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
-		and(aspect).resourceFileContains("xml/gridDefinitions3.xml", wrap(badXml , true));
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
+			.and(aspect).resourceFileContains("xml/gridDefinitions3.xml", xml(badXml , true));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
 		then(exceptions).verifyException(XMLStreamException2.class);
 	}
@@ -113,8 +113,8 @@ public class XMLContentPluginTest extends SpecTest{
 		
 		String badXml = "<wibble></wibble>";
 		String config = getSimpleConfig();
-		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
-		and(aspect).resourceFileContains("xml/gridDefinitions3.xml", wrap(badXml , true));
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
+			.and(aspect).resourceFileContains("xml/gridDefinitions3.xml", xml(badXml , true));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
 		then(exceptions).verifyException(ContentProcessingException.class, "wibble");
 	}
@@ -122,18 +122,18 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void bladeXmlFilesAreBundledIfTheirClassIsReferencedInsideIndexPage() throws Exception {
 		String config = getSimpleConfig();
-		given(blade).resourceFileContains("xml/gridDefinitions.xml", wrap( getProviderMapping("appns.bs.b1.DatProvider1"), true))
+		given(blade).resourceFileContains("xml/gridDefinitions.xml", xml( getProviderMapping("appns.bs.b1.DatProvider1"), true))
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 		    .and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config);
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
-		then(response).containsTextOnce(wrap( getProviderMapping("appns.bs.b1.DatProvider1")));
+		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
 	
 	@Test
 	public void bladeXMLFilesAreBundledIfAspectSrcRefersToBlade() throws Exception {
 		String config = getSimpleConfig();
-		given(blade).resourceFileContains("xml/gridDefinitions.xml", wrap( getProviderMapping("appns.bs.b1.DatProvider1"), true))
+		given(blade).resourceFileContains("xml/gridDefinitions.xml", xml( getProviderMapping("appns.bs.b1.DatProvider1"), true))
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
@@ -142,7 +142,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
-		then(response).containsTextOnce(wrap( getProviderMapping("appns.bs.b1.DatProvider1")));
+		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
 	
 	
@@ -150,14 +150,14 @@ public class XMLContentPluginTest extends SpecTest{
 	public void bladeXMLFilesAreBundledIfTheBladeIsReferredToByAspectIndexPage() throws Exception {
 		String config = getSimpleConfig();
 		given(blade).hasClass("appns.bs.b1.Class1")
-			.and(blade).resourceFileContains("xml/gridDefinitions.xml", wrap( getProviderMapping("appns.bs.b1.DatProvider1"), true))
+			.and(blade).resourceFileContains("xml/gridDefinitions.xml", xml( getProviderMapping("appns.bs.b1.DatProvider1"), true))
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).containsFileWithContents("index.html", "appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
-		then(response).containsTextOnce(wrap( getProviderMapping("appns.bs.b1.DatProvider1")));
+		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
 	
 	@Test
@@ -165,7 +165,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String config = getSimpleConfig();
 		given(blade).hasClass("appns.bs.b1.Class1")
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)	
-			.and(blade).resourceFileContains("xml/gridDefinitions.xml", wrap( getProviderMapping("appns.bs.b1.DatProvider1"), true))
+			.and(blade).resourceFileContains("xml/gridDefinitions.xml", xml( getProviderMapping("appns.bs.b1.DatProvider1"), true))
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
@@ -174,7 +174,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).resourceFileContains("html/aspect-view.html", "<div id='appns.stuff'>appns.bs.b1.Class1</div>")
 			.and(aspect).containsFileWithContents("index.html", "appns.AppClass");
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
-		then(response).containsTextOnce(wrap( getProviderMapping("appns.bs.b1.DatProvider1")));
+		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
 
 	
@@ -189,11 +189,11 @@ public class XMLContentPluginTest extends SpecTest{
 		return content;
 	}
 	
-	private String wrap(String input){
-		return wrap(input, false);
+	private String xml(String input){
+		return xml(input, false);
 	}
 	
-	private String wrap(String input, boolean includePreamble ){
+	private String xml(String input, boolean includePreamble ){
 		String result = "";
 		if(includePreamble){
 			result = "<?xml version=\"1.0\" ?>";
