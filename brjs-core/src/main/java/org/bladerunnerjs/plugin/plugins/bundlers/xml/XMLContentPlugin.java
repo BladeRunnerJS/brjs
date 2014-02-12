@@ -1,5 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -59,6 +60,11 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		List<String> result = new ArrayList<String>();
+		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
+		if(!config.isbundleConigAvailable()){
+			return result;
+		}
+		
 		try {
 			result.add(contentPathParser.createRequest("bundle-request"));
 		} catch (MalformedTokenException e) {
@@ -78,6 +84,9 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	{
 		//TODO not parse the config on every execution
 		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
+		if(!config.isbundleConigAvailable()){
+			throw new ContentProcessingException("Cannot process XML no configuration file found");
+		}
 		XmlBundleWriter bundleWriter = new XmlBundleWriter(config);
 		
 		try{

@@ -134,13 +134,13 @@ public class RestApiService
 	
 	public void exportWar(String appName, File destinationWar) throws Exception
 	{
-		if (destinationWar.exists())
-		{
-			destinationWar.delete();
-		}
-		WarCommand cmd = new WarCommand(brjs);
-		String[] args = new String[]{ appName, destinationWar.getAbsolutePath() };		
-		doCommand( cmd, args );
+			if (destinationWar.exists())
+			{
+				destinationWar.delete();
+			}
+			WarCommand cmd = new WarCommand(brjs);
+			String[] args = new String[]{ appName, destinationWar.getAbsolutePath() };		
+			doCommand( cmd, args );
 	}
 	
 	public void importBladeset(String sourceApp, Map<String,Map<String,List<String>>> bladesets, String targetApp) throws Exception

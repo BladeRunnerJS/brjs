@@ -22,21 +22,30 @@ import org.xml.sax.SAXException;
 //TODO check how the DocumentBuilder handles file encoding and UTF8/BOM issues
 public class XmlBundlerConfig {
 
-	private static final String CONFIG_FILE_NAME = "bundleConfig.xml";
-	private Map<String, XmlResourceConfig> configMap = new HashMap<String, XmlResourceConfig>();
+	public static final String CONFIG_FILE_NAME = "bundleConfig.xml";
+	private Map<String, XmlResourceConfig> configMap = null;
 	private BRJS brjs;
 
-	public XmlBundlerConfig(BRJS brjs) throws ContentProcessingException {
+	public XmlBundlerConfig(BRJS brjs) {
 		this.brjs = brjs;
-		this.configMap = createConfigMap();
+	}
+	
+	
+	public boolean isbundleConigAvailable(){
+		File file = brjs.configuration(CONFIG_FILE_NAME);
+		return file.exists();
 	}
 
-	public Map<String, XmlResourceConfig> getConfigMap() {
+	public Map<String, XmlResourceConfig> getConfigMap() throws ContentProcessingException {
+		if(configMap == null){
+			configMap = createConfigMap();
+		}
 		return configMap;
 	}
 
 	private Map<String, XmlResourceConfig>  createConfigMap() throws ContentProcessingException
 	{
+		
 		File file = brjs.configuration(CONFIG_FILE_NAME);
 		Map<String, XmlResourceConfig> result = new HashMap<String, XmlResourceConfig>();
 		try 
