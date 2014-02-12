@@ -141,4 +141,10 @@ public class AspectCommander extends NodeCommander<Aspect> {
 		
 		return commanderChainer;
 	}
+
+	public CommanderChainer resourceFileContains(String resourceFileName, String contents) throws Exception 
+	{
+		aspectBuilder.resourceFileContains(resourceFileName, contents);
+		return commanderChainer;
+	}
 }
