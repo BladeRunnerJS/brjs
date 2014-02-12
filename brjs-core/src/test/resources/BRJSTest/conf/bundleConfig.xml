@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<bundleConfig xmlns="http://schema.caplin.com/CaplinTrader/bundleConfig">
+	
+	<resource rootElement="gridDefinitions"
+		templateElements="dataProviderMappings, decoratorMappings, templates, grids"
+		mergeElements="dataProviderMapping, decoratorMapping, gridTemplate, folder@name, grid"/>
+
+	
+	<!-- this definition is only here to facilitate unit testing -->
+	<resource rootElement="unitTest"
+	 templateElements="templateElem, alternateTemplateElem"
+	 mergeElements="mergeElem, alternateMergeElem@alternateId"/>
+	 
+</bundleConfig>

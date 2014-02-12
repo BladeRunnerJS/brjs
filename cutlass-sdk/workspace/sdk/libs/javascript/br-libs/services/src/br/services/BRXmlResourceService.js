@@ -1,6 +1,9 @@
 var br = require('br/Core');
 var Errors = require('br/Errors');
-var XmlResourceService = require('./XmlResourceService ');
+var XmlResourceService = require('br/services/XmlResourceService');
+var XmlParser = require('br/util/XmlParser');
+var File = require('br/core/File');
+var i18n = require('br/i18n');
 
 /**
  * @constructor
@@ -14,10 +17,10 @@ var XmlResourceService = require('./XmlResourceService ');
  */
 function BRXmlResourceService(sUrl) {
 	/** @private */
-	this.url = sUrl || "xml.bundle";
+	this.url = sUrl || "bundle.xml";
 
 	/** @private */
-	this.element = caplin.core.XmlParser.parse("<div></div>");
+	this.element = XmlParser.parse("<div></div>");
 
 	this._loadXml();
 };
@@ -26,7 +29,7 @@ BRXmlResourceService.prototype.getXmlDocument = function(elementName) {
 	try {
 		return this.element.getElementsByTagName(elementName);
 	} catch (e) {
-		caplin.core.Logger.log(caplin.core.LogLevel.ERROR, "Error: requested XML resource tagName '" + elementName + "' does not exist in application config.");
+		throw new Errors.INVALID_PARAMETERS("Requested XML resource tagName '" + elementName + "' does not exist in application config.");
 	}
 };
 
@@ -34,9 +37,9 @@ BRXmlResourceService.prototype.getXmlDocument = function(elementName) {
  * @private
  */
 BRXmlResourceService.prototype._loadXml = function() {
-	var rawXml = caplin.getFileContents(this.url);
-	var translatedXml = caplin.i18n.Translator.getTranslator().translate(rawXml);
-	var data = caplin.core.XmlParser.parse(translatedXml);
+	var rawXml = File.readFileSync(this.url);
+	var translatedXml = i18n.getTranslator().translate(rawXml);
+	var data = XmlParser.parse(translatedXml);
 
 	if (data) {
 		if (data.nodeName === 'parsererror' || data.getElementsByTagName('parsererror').length > 0) {

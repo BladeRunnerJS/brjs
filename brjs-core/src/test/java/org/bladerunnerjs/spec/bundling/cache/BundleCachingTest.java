@@ -72,4 +72,13 @@ public class BundleCachingTest extends SpecTest
 			.and(response).containsClasses("appns.Class2");
 	}
 	
+	@Test
+	public void weDetectWhenResourceSubDirectoriesHaveNewResourcesAddedToBundle() throws Exception {
+		given(aspect).resourceFileContains("html/view.html", "<div id='appns.view'>TESTCONTENT</div>")
+			.and(app).hasReceivedRequst("/default-aspect/bundle.html");
+		when(aspect).resourceFileContains("html/subdir/extradir/view.html", "<div id='appns.foo'>NEWCONTENT</div>")
+			.and(app).requestReceived("/default-aspect/bundle.html", response);
+		then(response).containsText("TESTCONTENT")
+			.and(response).containsText("NEWCONTENT");
+	}
 }
