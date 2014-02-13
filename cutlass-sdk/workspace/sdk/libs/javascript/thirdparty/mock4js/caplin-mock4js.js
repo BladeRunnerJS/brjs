@@ -806,5 +806,5 @@ Mock.prototype = {
 		}
 		return msg;
 	}
-}
+};
      	
