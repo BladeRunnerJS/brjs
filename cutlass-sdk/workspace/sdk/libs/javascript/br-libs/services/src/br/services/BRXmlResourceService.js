@@ -3,7 +3,7 @@ var Errors = require('br/Errors');
 var XmlResourceService = require('br/services/XmlResourceService');
 var XmlParser = require('br/util/XmlParser');
 var File = require('br/core/File');
-var i18n = require('br/i18n');
+var i18n = require('br/I18n');
 
 /**
  * @constructor
