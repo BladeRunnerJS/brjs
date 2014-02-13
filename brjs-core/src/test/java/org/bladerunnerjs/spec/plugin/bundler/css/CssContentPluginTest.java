@@ -60,6 +60,18 @@ public class CssContentPluginTest extends SpecTest {
 		then(requestResponse).containsText("style1.css")
 			.and(requestResponse).doesNotContainText("style2.css");
 	}
+
+	@Test
+	public void cssFilesInNonConformantLibrariesAppearAreAllBundledInCommonThemeWhenYouDontSpecifyCssManifestConfig() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRequires(nonConformantLib)
+			.and(nonConformantLib).containsFileWithContents("library.manifest", "js: foo.js")
+			.and(nonConformantLib).containsFile("foo.js")
+			.and(nonConformantLib).containsFileWithContents("style1.css", "style-1")
+			.and(nonConformantLib).containsFileWithContents("style2.css", "style-2");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsLines("style-1", "style-2");
+	}
 	
 	@Test
 	public void cssFilesInNonConformantLibrariesDontAppearInAnyOtherThemes() throws Exception {

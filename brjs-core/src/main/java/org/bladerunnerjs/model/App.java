@@ -2,8 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -267,13 +265,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return bundlableNode;
 	}
 	
-	
-	public void filterIndexPage(BladerunnerUri requestUri, String indexPage, String locale, OutputStream outputStream) throws ConfigException, IOException, NoTagHandlerFoundException, DocumentException, ModelOperationException, ResourceNotFoundException {
-		BundlableNode bundlableNode = getBundlableNode(requestUri);
-		
-		try (Writer writer = new OutputStreamWriter(outputStream)) {
-			TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
-		}
+	public void filterIndexPage(BladerunnerUri requestUri, String indexPage, String locale, Writer writer) throws ConfigException, IOException, NoTagHandlerFoundException, DocumentException, ModelOperationException, ResourceNotFoundException {
+		BundlableNode bundlableNode = getBundlableNode(requestUri);		
+		TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
 	}
 	
 	public List<JsLib> nonBladeRunnerLibs()
