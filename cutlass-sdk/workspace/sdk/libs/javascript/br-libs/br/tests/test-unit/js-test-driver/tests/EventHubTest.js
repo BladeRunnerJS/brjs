@@ -1,4 +1,4 @@
-caplin.thirdparty("caplin-br");
+br.Core.thirdparty("br-bootstrap");
 
 (function() {
 
