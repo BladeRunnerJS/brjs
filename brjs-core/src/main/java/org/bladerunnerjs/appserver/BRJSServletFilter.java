@@ -3,9 +3,11 @@ package org.bladerunnerjs.appserver;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -103,7 +105,11 @@ public class BRJSServletFilter implements Filter
 			BladerunnerUri bladerunnerUri = new BladerunnerUri(brjs, servletContext, request);
 			String locale = LocaleHelper.getLocaleFromRequest(app, request);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			app.filterIndexPage(bladerunnerUri, getIndexPage(responseWrapper), locale, byteArrayOutputStream);
+			
+			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, brjs.bladerunnerConf().getDefaultOutputEncoding()))
+			{
+				app.filterIndexPage(bladerunnerUri, getIndexPage(responseWrapper), locale, writer);
+			}
 			
 			byte[] byteArray = byteArrayOutputStream.toByteArray();
 			response.setContentLength(byteArray.length);

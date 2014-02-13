@@ -75,12 +75,12 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 				String minifierSetting = contentPath.properties.get("minifier-setting");
 				MinifierPlugin minifierPlugin = brjs.plugins().minifier(minifierSetting);
 				
-				try(Writer writer = new OutputStreamWriter(os)) {
+				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
 					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet);
 					minifierPlugin.minify(minifierSetting, inputSources, writer);
 				}
 			}
-			catch(IOException e) {
+			catch(IOException | ConfigException e) {
 				throw new ContentProcessingException(e);
 			}
 			

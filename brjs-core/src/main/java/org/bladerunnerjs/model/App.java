@@ -2,8 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -261,17 +259,15 @@ public class App extends AbstractBRJSNode implements NamedNode
 		requestHandler.handle(requestUri, os);
 	}
 	
-	public void filterIndexPage(BladerunnerUri requestUri, String indexPage, String locale, OutputStream outputStream) throws ConfigException, IOException, NoTagHandlerFoundException, DocumentException, ModelOperationException {
+	public void filterIndexPage(BladerunnerUri requestUri, String indexPage, String locale, Writer writer) throws ConfigException, IOException, NoTagHandlerFoundException, DocumentException, ModelOperationException {
 		File baseDir = new File(dir(), requestUri.scopePath);
 		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
 		
-		try(Writer writer = new OutputStreamWriter(outputStream)) {
-			if(bundlableNode == null) {
-				writer.write(indexPage);
-			}
-			else {
-				TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
-			}
+		if(bundlableNode == null) {
+			writer.write(indexPage);
+		}
+		else {
+			TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
 		}
 	}
 	
