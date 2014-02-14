@@ -7,17 +7,13 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.ServerUtility;
-import org.eclipse.jetty.server.Server;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class WarCommandTest extends SpecTest {
-	private Server server = new Server(ServerUtility.getTestPort());
 	private App app;
 	private Aspect aspect;
-	private StringBuffer response = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -25,7 +21,6 @@ public class WarCommandTest extends SpecTest {
 		given(brjs).hasCommands(new WarCommand())
 			.and(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
-			.and(brjs).usesProductionTemplates()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -111,18 +106,5 @@ public class WarCommandTest extends SpecTest {
 		when(brjs).runCommand("war", "app1", "unminified.war")
 			.and(brjs).runCommand("war", "app1", "-m", "closure-whitespace", "minified.war");
 		then(brjs).firstFileIsLarger("unminified.war", "minified.war");
-	}
-	
-	// TODO: this currently doesn't work because the usesProductionTemplates() method has not yet been implemented
-	@Ignore
-	@Test
-	public void exportedWarCanBeDeployedOnAnAppServer() throws Exception {
-		// TODO: this hasBeenPopulated() can't currently work correctly because we don't have the templates available
-		given(app).hasBeenPopulated()
-			.and(brjs).commandHasBeenRun("war", "app1")
-			.and(server).hasWar("app1.war", "app")
-			.and(server).hasStarted();
-		when(server).receivesRequestFor("/app", response);
-		then(response).containsText("Application succesfully created.");
 	}
 }

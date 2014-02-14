@@ -1,5 +1,7 @@
 package org.bladerunnerjs.testing.specutility;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -46,7 +48,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 
 	public BuilderChainer hasCommands(CommandPlugin... commands)
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.pluginCommands);
 		
 		for(CommandPlugin command : commands)
@@ -59,7 +61,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasModelObservers(ModelObserverPlugin... modelObservers)
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.modelObservers);
 		
 		for(ModelObserverPlugin modelObserver : modelObservers)
@@ -72,7 +74,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasContentPlugins(ContentPlugin... contentPlugins)
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		
 		for(ContentPlugin contentPlugin : contentPlugins)
 		{
@@ -90,7 +92,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasAssetPlugins(AssetPlugin... assetPlugins)
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		
 		for(AssetPlugin assetPlugin : assetPlugins)
 		{
@@ -102,7 +104,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasMinifiers(MinifierPlugin... minifyPlugins)
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.minifiers);
 		
 		for(MinifierPlugin minifierPlugin : minifyPlugins)
@@ -115,7 +117,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer hasTagPlugins(TagHandlerPlugin... tagHandlers)
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.tagHandlers);
 		
 		for(TagHandlerPlugin tagHandler : tagHandlers)
@@ -128,7 +130,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsCommands()
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.pluginCommands);
 		
 		specTest.pluginLocator.pluginCommands.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), CommandPlugin.class, VirtualProxyCommandPlugin.class) );
@@ -138,7 +140,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsModelObservers()
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.modelObservers);
 		
 		specTest.pluginLocator.modelObservers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ModelObserverPlugin.class, VirtualProxyModelObserverPlugin.class) );
@@ -148,7 +150,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsContentPlugins() 
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.contentPlugins);
 		
 		specTest.pluginLocator.contentPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), ContentPlugin.class, VirtualProxyContentPlugin.class) );
@@ -158,7 +160,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsTagHandlers() 
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.tagHandlers);
 		
 		specTest.pluginLocator.tagHandlers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), TagHandlerPlugin.class, VirtualProxyTagHandlerPlugin.class) );
@@ -167,7 +169,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	}
 	
 	public BuilderChainer automaticallyFindsAssetProducers() {
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.assetPlugins);
 		
 		specTest.pluginLocator.assetPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetPlugin.class, VirtualProxyAssetPlugin.class) );
@@ -176,7 +178,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	}
 	
 	public BuilderChainer automaticallyFindsAssetLocationProducers() {
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.assetLocationPlugins);
 		
 		specTest.pluginLocator.assetLocationPlugins.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), AssetLocationPlugin.class, VirtualProxyAssetLocationPlugin.class) );
@@ -196,7 +198,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsMinifiers() 
 	{
-		verifyBrjsIsSet();
+		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.minifiers);
 		
 		specTest.pluginLocator.minifiers.addAll( PluginLoader.createPluginsOfType(Mockito.mock(BRJS.class), MinifierPlugin.class, VirtualProxyMinifierPlugin.class) );
@@ -234,6 +236,14 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	private void verifyBrjsIsSet()
 	{
+		if (specTest.brjs == null)
+		{
+			throw new RuntimeException("BRJS must exist before this command can be used.");
+		}
+	}
+	
+	private void verifyBrjsIsNotSet()
+	{
 		if (specTest.brjs != null)
 		{
 			throw new RuntimeException("Plugins must be added to BRJS before it is created.");
@@ -258,8 +268,10 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer usesProductionTemplates() {
-		// TODO: need to discuss with Andy whether it's okay to move the templates into 'brjs-core'
+	public BuilderChainer usesProductionTemplates() throws IOException {
+		verifyBrjsIsSet();
+		File templateDir = new File("../cutlass-sdk/build-resources/includes/sdk/templates");
+		FileUtils.copyDirectory(templateDir, brjs.template("template").dir().getParentFile());
 		
 		return builderChainer;
 	}
