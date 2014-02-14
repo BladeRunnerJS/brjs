@@ -24,6 +24,7 @@ import org.bladerunnerjs.plugin.utility.PluginLoader;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.logging.MockLogLevelAccessor;
 import org.mockito.Mockito;
 
 
@@ -243,5 +244,23 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		if(pluginList.size() > 0) {
 			throw new RuntimeException("automaticallyFindsXXX() invoked after plug-ins have already been added.");
 		}
+	}
+	
+	public BuilderChainer commandHasBeenRun(String... args) throws Exception {
+		brjs.runCommand(args);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer userCommandHasBeenRun(String... args) throws Exception {
+		brjs.runUserCommand(new MockLogLevelAccessor(), args);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer usesProductionTemplates() {
+		// TODO: need to discuss with Andy whether it's okay to move the templates into 'brjs-core'
+		
+		return builderChainer;
 	}
 }

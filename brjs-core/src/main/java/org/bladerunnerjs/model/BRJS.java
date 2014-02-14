@@ -65,6 +65,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> logs = new NodeItem<>(DirNode.class, "sdk/log");
 	private final NodeItem<DirNode> apiDocs = new NodeItem<>(DirNode.class, "sdk/docs/jsdoc");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(DirNode.class, "sdk/test-results");
+	private WorkingDirNode workingDir;
 	
 	private final Logger logger;
 	private final CommandList commandList;
@@ -79,6 +80,7 @@ public class BRJS extends AbstractBRJSRootNode
 	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
+		this.workingDir = new WorkingDirNode(this, brjsDir);
 		
 		if(dir != null) {
 			fileModificationService.setRootDir(dir);
@@ -190,6 +192,14 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		return bundlableNode;
+	}
+	
+	public WorkingDirNode workingDir() {
+		return workingDir;
+	}
+	
+	public void setWorkingDir(File workingDir) {
+		this.workingDir = new WorkingDirNode(this, workingDir);
 	}
 	
 	public List<App> apps()

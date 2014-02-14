@@ -2,6 +2,8 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 import org.bladerunnerjs.utility.FileUtil;
@@ -67,6 +69,17 @@ public abstract class NodeVerifier<N extends Node> {
 		
 		return verifierChainer;
 		
+	}
+	
+	public VerifierChainer firstFileIsLarger(String filePath1, String filePath2) {
+		File file1 = node.file(filePath1);
+		File file2 = node.file(filePath2);
+		
+		assertTrue("The file '" + file1.getPath() + "' does not exist, so can not be compared for size.", file1.exists());
+		assertTrue("The file '" + file2.getPath() + "' does not exist, so can not be compared for size.", file2.exists());
+		assertTrue("The file '" + file1.getPath() + "' (" + file1.length() + " bytes) was not larger than file '" + file2.getPath() + "' (" + file2.length() + " bytes).", file1.length() > file2.length());
+		
+		return verifierChainer;
 	}
 	
 	public VerifierChainer hasStorageFile(String pluginName, String filePath) {

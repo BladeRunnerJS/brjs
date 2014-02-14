@@ -70,6 +70,7 @@ import org.bladerunnerjs.testing.utility.WebappTester;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
+import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
 
@@ -174,7 +175,7 @@ public abstract class SpecTest
 	public AppCommander when(App app) { return new AppCommander(this, app); }
 	public AppVerifier then(App app) { return new AppVerifier(this, app); }
 	
-	// App
+	// AppConf
 	public AppConfBuilder given(AppConf appConf) { return new AppConfBuilder(this, appConf); }
 	public AppConfCommander when(AppConf appConf) { return new AppConfCommander(this, appConf); }
 	public AppConfVerifier then(AppConf appConf) { return new AppConfVerifier(this, appConf); }
@@ -217,10 +218,15 @@ public abstract class SpecTest
 	// TestPack
 	public TestPackVerifier then(TestPack testPack) { return new TestPackVerifier(this, testPack); }
 	
-	// App server
+	// ApplicationServer
 	public AppServerBuilder given(ApplicationServer appServer) { return new AppServerBuilder(this, appServer); }
 	public AppServerCommander when(ApplicationServer appServer) { return new AppServerCommander(this, appServer); }
 	public AppServerVerifier then(ApplicationServer appServer) { return new AppServerVerifier(this, appServer); }
+	
+	// JettyServer
+	public JettyServerBuilder given(Server jettyServer) { return new JettyServerBuilder(this, jettyServer); }
+	public JettyServerCommander when(Server jettyServer) { return new JettyServerCommander(this, jettyServer); }
+	public JettyServerVerifier then(Server jettyServer) { return new JettyServerVerifier(this, jettyServer); }
 	
 	// Webapp Tester
 	public WebappTesterCommander when(WebappTester webappTester) { return new WebappTesterCommander(this, webappTester); } 

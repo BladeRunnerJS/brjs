@@ -21,6 +21,7 @@ import org.bladerunnerjs.testing.specutility.JsLibCommander;
 import org.bladerunnerjs.testing.specutility.NamedDirNodeCommander;
 import org.bladerunnerjs.testing.specutility.NamedNodeCommander;
 import org.bladerunnerjs.testing.specutility.WorkbenchCommander;
+import org.eclipse.jetty.server.Server;
 
 
 public class CommanderChainer {
@@ -41,4 +42,5 @@ public class CommanderChainer {
 	public DirNodeCommander and(DirNode dirNode) { return new DirNodeCommander(modelTest, dirNode); }
 	public NamedDirNodeCommander and(NamedDirNode namedDirNode) { return new NamedDirNodeCommander(modelTest, namedDirNode); }
 	public AppServerCommander and(ApplicationServer applicationServer) { return new AppServerCommander(modelTest, applicationServer); }
+	public JettyServerCommander and(Server jettyServer) { return new JettyServerCommander(modelTest, jettyServer); }
 }

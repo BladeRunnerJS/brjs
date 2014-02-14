@@ -126,17 +126,6 @@ public class WarCommandTest extends CommandTaskTest
 	}
 	
 	@Test
-	public void testWarCommandForApplicationThatExistsWithoutWarOutputSpecified() throws Exception
-	{
-		warFile = new File("emptytrader.war");
-		assertFalse(warFile.exists());
-
-		warCommand.doCommand(new String[] { "emptytrader" });
-
-		assertTrue(warFile.exists());
-	}
-	
-	@Test
 	public void testWarCommandWithoutAddingDotWarSuffix() throws Exception
 	{
 		warFile = new File(tempDirectory, "emptytrader");

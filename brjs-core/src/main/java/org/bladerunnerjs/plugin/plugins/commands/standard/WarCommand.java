@@ -86,7 +86,10 @@ public class WarCommand extends ArgsParsingCommandPlugin
 				warApp.file("WEB-INF/jetty-env.xml").delete();
 				warApp.file("WEB-INF/lib/bladerunner-dev-servlets.jar").delete();
 				
-				WebXmlCompiler.compile(warApp.file("WEB-INF/web.xml"));
+				if(warApp.file("WEB-INF/web.xml").exists()) {
+					WebXmlCompiler.compile(warApp.file("WEB-INF/web.xml"));
+				}
+				
 				FileUtility.copyFileIfExists(origApp.file("app.conf"), warApp.file("app.conf"));
 				
 				for(Aspect origAspect : origApp.aspects()) {
@@ -140,19 +143,24 @@ public class WarCommand extends ArgsParsingCommandPlugin
 		File warFile;
 		
 		if(!config.contains("war-location")) {
-			warFile = new File(app.getName() + ".war");
+			warFile = brjs.workingDir().file(app.getName() + ".war");
 		}
 		else {
-			String warPath = config.getString("war-location");
+			String warLocation = config.getString("war-location");
+			File warLocationFile = new File(warLocation);
 			
-			if(warPath.endsWith(".war")) {
-				warFile = new File(warPath);
+			if(!warLocationFile.isAbsolute()) {
+				warLocationFile = brjs.workingDir().file(warLocation);
 			}
-			else if(new File(warPath).isDirectory()) {
-				warFile = new File(new File(warPath), app.getName() + ".war");
+			
+			if(warLocation.endsWith(".war")) {
+				warFile =  warLocationFile;
+			}
+			else if(!warLocationFile.isDirectory()) {
+				warFile = new File(warLocationFile.getPath() + ".war");
 			}
 			else {
-				warFile = new File(warPath + ".war");
+				warFile = new File(warLocationFile, app.getName() + ".war");
 			}
 		}
 		

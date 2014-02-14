@@ -29,6 +29,7 @@ import org.bladerunnerjs.testing.specutility.TestPackBuilder;
 import org.bladerunnerjs.testing.specutility.WorkbenchBuilder;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
+import org.eclipse.jetty.server.Server;
 
 
 public class BuilderChainer {
@@ -52,6 +53,7 @@ public class BuilderChainer {
 	public LoggerBuilder and(LogMessageStore logStore) { return new LoggerBuilder(modelTest, logStore); }
 	public NodeObserverBuilder and(EventObserver observer) { return new NodeObserverBuilder(modelTest, observer); }
 	public AppServerBuilder and(ApplicationServer appServer) { return new AppServerBuilder(modelTest, appServer); }
+	public JettyServerBuilder and(Server jettyServer) { return new JettyServerBuilder(modelTest, jettyServer); }
 	public AliasesFileBuilder and(AliasesFile aliasesFile) { return new AliasesFileBuilder(modelTest, aliasesFile); }
 	public AliasDefinitionsFileBuilder and(AliasDefinitionsFile aliasDefinitionsFile) { return new AliasDefinitionsFileBuilder(modelTest, aliasDefinitionsFile); }
 	public SpecTestDirObserverBuilder and(SpecTestDirObserver observer) { return new SpecTestDirObserverBuilder(modelTest, observer); }

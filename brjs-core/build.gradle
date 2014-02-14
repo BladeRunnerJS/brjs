@@ -49,6 +49,7 @@ dependencies {
 	compileOnly dependency('servlet-api')
 	compileOnly dependency('junit')
 	compileOnly dependency('mockito-core')
+	compileOnly dependency('fluent-hc')
 	compileOnly dependency('httpclient')
 	compileOnly dependency('hamcrest-all')
 	

@@ -31,6 +31,7 @@ import org.bladerunnerjs.testing.specutility.NamedNodeVerifier;
 import org.bladerunnerjs.testing.specutility.TestPackVerifier;
 import org.bladerunnerjs.testing.specutility.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
+import org.eclipse.jetty.server.Server;
 
 
 public class VerifierChainer {
@@ -55,6 +56,7 @@ public class VerifierChainer {
 	public LoggerVerifier and(LogMessageStore logStore) { return new LoggerVerifier(specTest, logStore); }
 	public ConsoleWriterVerifier and(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(specTest, consoleMessageStore); }
 	public AppServerVerifier and(ApplicationServer appServer) { return new AppServerVerifier(specTest, appServer); }
+	public JettyServerVerifier and(Server jettyServer) { return new JettyServerVerifier(specTest, jettyServer); }
 	public AppConfVerifier and(AppConf appConf) { return new AppConfVerifier(specTest, appConf); }
 	public DirectoryVerifier and(File dir) { return new DirectoryVerifier(specTest, dir); }
 	public StringVerifier and(StringBuffer stringBuffer) { return new StringVerifier(specTest, stringBuffer); }
