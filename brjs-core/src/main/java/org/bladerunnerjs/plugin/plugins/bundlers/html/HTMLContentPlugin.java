@@ -34,7 +34,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private Map<String, Asset> identifiers = new HashMap<String, Asset>();
-	private List<String> prodRequestPaths = new ArrayList<>();
+	private List<String> requestPaths = new ArrayList<>();
 	
 	private BRJS brjs;
 	{
@@ -44,7 +44,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 			contentPathParser = contentPathParserBuilder.build();
 		
 			contentPathParser = contentPathParserBuilder.build();
-			prodRequestPaths.add(contentPathParser.createRequest("bundle-request"));
+			requestPaths.add(contentPathParser.createRequest("bundle-request"));
 		}
 		catch(MalformedTokenException e) {
 			throw new RuntimeException(e);
@@ -76,13 +76,13 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return new ArrayList<>();
+		return requestPaths;
 	}
 
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return prodRequestPaths;
+		return requestPaths;
 	}
 
 	@Override
