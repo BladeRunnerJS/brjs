@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -34,16 +33,6 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	{
 		// TODO: can we avoid having to have a null name for a NamedNode that is available as a single item through the model
 		this(rootNode, parent, dir, null);
-	}
-	
-	public static NodeItem<StandardJsLib> createSdkNodeItem()
-	{
-		return new NodeItem<>(StandardJsLib.class, "sdk/libs/javascript/caplin");
-	}
-	
-	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, StandardJsLib.class, "libs", null);
 	}
 	
 	public static NodeMap<StandardJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)

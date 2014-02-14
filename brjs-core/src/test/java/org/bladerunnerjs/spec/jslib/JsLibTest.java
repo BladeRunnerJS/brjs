@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -55,9 +54,6 @@ public class JsLibTest extends SpecTest {
 		then(exceptions).verifyException(InvalidRootPackageNameException.class, "caplin", lib.dir().getPath());
 	}
 	
-	//TODO:: add test to verify the lib.conf file has been created correctly, once we have decided on keeping it.
-	// TODO: get Andy to investigate why this is failing
-	@Ignore
 	@Test
 	public void libraryIsBaselinedDuringPopulation() throws Exception {
 		given(libTemplate).containsFolder("@libns")

@@ -3,6 +3,7 @@ package com.caplin.cutlass.bundler.js.analyser;
 import java.io.File;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.BRJSAccessor;
@@ -23,7 +24,7 @@ public class LibraryDepsTest
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(rootLibDirName)));
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testPackageDeps() throws Exception
 	{
 		File packageDir = new File(packageLibDirName);
@@ -40,7 +41,7 @@ public class LibraryDepsTest
 		assertEquals(expected, result);
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testPackageDepsSummary() throws Exception
 	{
 		File packageDir = new File(packageLibDirName);
@@ -55,7 +56,7 @@ public class LibraryDepsTest
 		assertEquals(expected, result);
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testPackageDepsContainingThirdpartyDependency() throws Exception
 	{
 		rootLibDirName = "src/test/resources/js-bundler/lib-with-thirdparty-dep/" + SDK_DIR;
@@ -74,7 +75,7 @@ public class LibraryDepsTest
 		assertEquals(expected, result);
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testPackageDepsSummaryContainingThirdpartyDependency() throws Exception
 	{
 		rootLibDirName = "src/test/resources/js-bundler/lib-with-thirdparty-dep/" + SDK_DIR;

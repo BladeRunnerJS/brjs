@@ -12,7 +12,6 @@ import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.logging.LoggerType;
-import org.bladerunnerjs.model.AssetLocation;
 
 import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.NodeType;
@@ -473,42 +472,6 @@ public class CutlassDirectoryLocator
 	public static boolean isWorkbenchDir(File dir)
 	{
 		return SdkModel.nodeForLocationIsOfType(dir, NodeType.WORKBENCH);
-	}
-	
-	//TODO: move to sdk model
-	public static File getSdkJsResourcesDir(File location)
-	{
-		if(invalidInput(location))
-		{
-			return null;
-		}
-
-		AssetLocation resourcesDir = BRJSAccessor.root.sdkLib().assetLocation("resources");
-
-		if(resourcesDir.dirExists())
-		{
-			return resourcesDir.dir();
-		}
-		
-		return null;
-	}
-
-	//TODO: move to sdk model
-	public static File getSDkCaplinSrcDir(File location)
-	{
-		if (invalidInput(location))
-		{
-			return null;
-		}
-
-		AssetLocation srcDir = BRJSAccessor.root.sdkLib().assetLocation("src");
-		
-		if(srcDir.dirExists())
-		{
-			return srcDir.dir();
-		}
-		
-		return null;
 	}
 	
 	//TODO: move to sdk model

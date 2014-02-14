@@ -27,7 +27,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 		app = brjs.app("app1");
 			aspect = app.aspect("default");
 			
-			sdkJsLib = brjs.sdkLib();
+			sdkJsLib = brjs.sdkLib("br");
 	}
 	
 	// ------------------------------- J S   P A T C H E S ----------------------------------

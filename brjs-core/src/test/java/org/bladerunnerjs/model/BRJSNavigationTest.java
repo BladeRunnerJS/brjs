@@ -57,8 +57,10 @@ public class BRJSNavigationTest
 	@Test
 	public void sdkLib()
 	{
-		nodeTesterFactory.createItemTester(JsLib.class, "sdkLib", "sdk/libs/javascript/caplin")
-			.assertModelIsOK();
+		nodeTesterFactory.createSetTester(JsLib.class, "sdkLibs", "sdkLib")
+    		.addChild("br", "sdk/libs/javascript/br-libs/br")
+    		.addChild("brlib2", "sdk/libs/javascript/br-libs/brlib2")
+    		.assertModelIsOK();
 	}
 	
 	@Test

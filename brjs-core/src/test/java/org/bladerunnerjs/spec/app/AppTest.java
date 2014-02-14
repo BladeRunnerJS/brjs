@@ -34,7 +34,7 @@ public class AppTest extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasBeenCreated();
-			sdkLib = brjs.sdkLib();
+			sdkLib = brjs.sdkLib("br");
 			app = brjs.app("app1");
 			appLib = app.jsLib("lib1");
 			appTemplate = brjs.template("app");
@@ -161,6 +161,7 @@ public class AppTest extends SpecTest {
 	public void nonBladerunnerLibsAreWrappedSoTheCorrectAppIsReturned() throws Exception {
 		given(app).hasBeenCreated()
 			.and(appLib).hasBeenCreated()
+			.and(sdkLib).hasBeenCreated()
 			.and(globalNonBladeRunnerLib).hasBeenCreated()
 			.and(appNonBladeRunnerLib).hasBeenCreated();
 		given(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
@@ -178,18 +179,20 @@ public class AppTest extends SpecTest {
 	@Test
 	public void appLibsContainBothAppLibsAndNonBladerunnerLibs() throws Exception {
 		given(app).hasBeenCreated()
-			.and(appLib).hasBeenCreated()
-			.and(globalNonBladeRunnerLib).hasBeenCreated()
-			.and(appNonBladeRunnerLib).hasBeenCreated();
+    		.and(appLib).hasBeenCreated()
+    		.and(sdkLib).hasBeenCreated()
+    		.and(globalNonBladeRunnerLib).hasBeenCreated()
+    		.and(appNonBladeRunnerLib).hasBeenCreated();
 		then(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
 	}
 	
 	@Test
 	public void overriddenLibsDontAppearTwiceInLibsList() throws Exception {
 		given(app).hasBeenCreated()
-			.and(appLib).hasBeenCreated()
-			.and(globalOverriddenNonBRLib).hasBeenCreated()
-			.and(appOverriddenNonBRLib).hasBeenCreated();
+    		.and(appLib).hasBeenCreated()
+    		.and(sdkLib).hasBeenCreated()
+    		.and(globalOverriddenNonBRLib).hasBeenCreated()
+    		.and(appOverriddenNonBRLib).hasBeenCreated();
 		then(app).hasLibs(appLib, sdkLib, appOverriddenNonBRLib);
 	}
 	

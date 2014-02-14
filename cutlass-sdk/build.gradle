@@ -293,16 +293,14 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/libs/java/testRunner/js-test-driver-bundler-plugin.jar", /* make sure this isnt versioned */
 		"*/sdk/libs/java/system/*",
 		"*/sdk/libs/java/application/**",
-
-		// TODO: Hardcoded reference to caplin's core library location, we should attempt to use the BRJS model for getting this location
-		"*/sdk/libs/javascript/caplin/src/br/**",
-		"*/sdk/libs/javascript/caplin/resources/**/*",
-		"*/sdk/libs/javascript/thirdparty/**/*",
-		"*/sdk/system-applications/**/*",
+		"*/sdk/libs/javascript/br-libs/*/src/**",
+		"*/sdk/libs/javascript/br-libs/*/resources/**",
+		"*/sdk/libs/javascript/thirdparty/*/*",
+		"*/sdk/system-applications/*/*",
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
-		"*/sdk/templates/**/*",
-		"*/sdk/templates/**/tests/**/*",
-		"*/sdk/docs/javadoc/**/*",
+		"*/sdk/templates/*/*",
+		"*/sdk/templates/*/tests/*",
+		"*/sdk/docs/javadoc/*/*",
 		"*/README.txt",
 		"*/LICENSE",
 		"*/apps/apps.txt",

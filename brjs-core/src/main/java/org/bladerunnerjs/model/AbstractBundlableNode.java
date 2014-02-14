@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,10 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.utility.LogicalRequestHandler;
 import org.bladerunnerjs.utility.filemodification.NodeFileModifiedChecker;
 
 import com.google.common.base.Joiner;
@@ -27,6 +32,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	private Map<String, AssetContainer> assetContainers = new HashMap<>();
 	private BundleSet bundleSet;
 	private NodeFileModifiedChecker bundleSetFileModifiedChecker = new NodeFileModifiedChecker(this);
+	private LogicalRequestHandler requestHandler;
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -110,6 +116,16 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		
 		return aliasDefinitionFiles;
 	}
+	
+	@Override
+	public void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		if (requestHandler == null)
+		{
+			requestHandler = new LogicalRequestHandler(this);
+		}
+		requestHandler.handle( logicalRequestPath, os);
+	}
+	
 	
 	private List<AssetContainer> getPotentialAssetContainers(String requirePath) {
 		List<AssetContainer> potentialAssetContainers = new ArrayList<>();

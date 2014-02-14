@@ -216,6 +216,7 @@ public abstract class SpecTest
 	public NamedDirNodeVerifier then(NamedDirNode namedDirNode) { return new NamedDirNodeVerifier(this, namedDirNode); }
 	
 	// TestPack
+	public TestPackCommander when(TestPack testPack) { return new TestPackCommander(this, testPack); }
 	public TestPackVerifier then(TestPack testPack) { return new TestPackVerifier(this, testPack); }
 	
 	// ApplicationServer

@@ -42,7 +42,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 		standardBladeTheme = blade.theme("standard");
 		workbench = blade.workbench();
 		workbenchTemplate = brjs.template("workbench");
-		brjsLib = brjs.sdkLib();
+		brjsLib = brjs.sdkLib("br");
 		thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdparty-lib1");
 		
 		response = new StringBuffer();

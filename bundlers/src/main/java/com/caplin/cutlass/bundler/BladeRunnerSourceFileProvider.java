@@ -9,7 +9,6 @@ import static com.caplin.cutlass.structure.CutlassDirectoryLocator.getParentBlad
 import static com.caplin.cutlass.structure.CutlassDirectoryLocator.getScope;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,32 +137,31 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	
 	private void appendAllLibraryFiles(File contextDir, List<File> sourceFiles) throws ContentProcessingException
 	{
-		JsLib jsLib = BRJSAccessor.root.sdkLib();
-		
-		AssetLocation libSrcRoot = jsLib.assetLocation("src");
-		AssetLocation libResourcesRoot = jsLib.assetLocation("resources");
-
-		if(libSrcRoot.dirExists())
+		for (JsLib jsLib : BRJSAccessor.root.sdkLibs())
 		{
-			bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
-		}
-		
-		if(libResourcesRoot.dirExists())
-		{
-			List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
-			
-			for(File libraryResourceDir : libraryResourceDirs)
-			{
-				bundlerFileAppender.appendLibraryResourceFiles(libraryResourceDir, sourceFiles);
-			}
+    		AssetLocation libSrcRoot = jsLib.assetLocation("src");
+    		AssetLocation libResourcesRoot = jsLib.assetLocation("resources");
+    
+    		if(libSrcRoot.dirExists())
+    		{
+    			bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
+    		}
+    		
+    		if(libResourcesRoot.dirExists())
+    		{
+    			List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
+    			
+    			for(File libraryResourceDir : libraryResourceDirs)
+    			{
+    				bundlerFileAppender.appendLibraryResourceFiles(libraryResourceDir, sourceFiles);
+    			}
+    		}
 		}
 	}
 	
 	private void appendAllUserLibraryFiles(File contextDir, List<File> sourceFiles) throws ContentProcessingException
 	{
 		App app = BRJSAccessor.root.locateAncestorNodeOfClass(contextDir, App.class);
-		
-		Path sdkLibPath = BRJSAccessor.root.sdkLib().assetLocation("src").dir().toPath();
 
 		for(JsLib jsLib: app.jsLibs())
 		{
@@ -172,7 +170,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 			
 			if((libSrcRoot != null) && libSrcRoot.dirExists())
 			{
-				if(libSrcRoot.dir().toPath().normalize().equals(sdkLibPath))
+				if(app.root().sdkLib(jsLib.getName()).dirExists()) // check the JsLib isnt a SDK lib
 				{
 					continue;
 				}

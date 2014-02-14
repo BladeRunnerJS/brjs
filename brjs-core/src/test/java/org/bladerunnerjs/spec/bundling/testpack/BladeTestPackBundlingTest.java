@@ -37,7 +37,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 			bootsrapThirdparty = brjs.sdkNonBladeRunnerLib("br-bootstrap");
 			browserModules = brjs.sdkNonBladeRunnerLib("browser-modules");
 			appThirdparty = app.nonBladeRunnerLib("appThirdparty");
-			sdkJsLib = brjs.sdkLib();
+			sdkJsLib = brjs.sdkLib("br");
 	}
 	
 	// N A M E S P A C E D - J S

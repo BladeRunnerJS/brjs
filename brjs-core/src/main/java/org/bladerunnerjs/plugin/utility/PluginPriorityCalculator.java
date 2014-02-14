@@ -42,7 +42,7 @@ public class PluginPriorityCalculator
 	
 	private static int priority(AssetLocationPlugin plugin)
 	{
-		if (plugin instanceof BRJSConformantAssetLocationPlugin)
+		if (plugin.getPluginClass() == BRJSConformantAssetLocationPlugin.class)
 		{
 			return -1;
 		}
@@ -51,19 +51,19 @@ public class PluginPriorityCalculator
 	
 	private static int priority(ContentPlugin plugin)
 	{
-		if (plugin instanceof ThirdpartyContentPlugin)
+		if (plugin.getPluginClass() == ThirdpartyContentPlugin.class)
 		{
 			return 2;
 		}
-		if (plugin instanceof I18nContentPlugin)
+		if (plugin.getPluginClass() == I18nContentPlugin.class)
 		{
 			return 1;
 		}
-		if (plugin instanceof NamespacedJsContentPlugin)
+		if (plugin.getPluginClass() == NamespacedJsContentPlugin.class)
 		{
 			return -1;
 		}
-		if (plugin instanceof AliasingContentPlugin)
+		if (plugin.getPluginClass() == AliasingContentPlugin.class)
 		{
 			return -2;
 		}
@@ -72,19 +72,19 @@ public class PluginPriorityCalculator
 	
 	private static int priority(TagHandlerPlugin plugin)
 	{
-		if (plugin instanceof ThirdpartyTagHandlerPlugin)
+		if (plugin.getPluginClass() == ThirdpartyTagHandlerPlugin.class)
 		{
 			return 2;
 		}
-		if (plugin instanceof I18nTagHandlerPlugin)
+		if (plugin.getPluginClass() == I18nTagHandlerPlugin.class)
 		{
 			return 1;
 		}
-		if (plugin instanceof NamespacedJsTagHandlerPlugin)
+		if (plugin.getPluginClass() == NamespacedJsTagHandlerPlugin.class)
 		{
 			return -1;
 		}
-		if (plugin instanceof AliasingTagHandlerPlugin)
+		if (plugin.getPluginClass() == AliasingTagHandlerPlugin.class)
 		{
 			return -2;
 		}

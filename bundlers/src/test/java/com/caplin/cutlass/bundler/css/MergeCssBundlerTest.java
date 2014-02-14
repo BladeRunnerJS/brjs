@@ -250,7 +250,7 @@ public class MergeCssBundlerTest {
 	}
 	
 	// Image urls from sdk level
-	@Test
+	@Test @Ignore
 	public void applevelCssCanReferToSdkImageFile() throws Exception
 	{
 		test.givenInputFiles(new String[] {
@@ -259,7 +259,7 @@ public class MergeCssBundlerTest {
 			.thenBundleIsCreated("src/test/resources/css-bundler/output/url-tests/app-level-css-with-sdk-image.css");
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladesetlevelCssCanReferToSdkImageFile() throws Exception
 	{
 		test.givenInputFiles(new String[] {
@@ -268,7 +268,7 @@ public class MergeCssBundlerTest {
 			.thenBundleIsCreated("src/test/resources/css-bundler/output/url-tests/bladeset-level-css-with-sdk-image.css");
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladelevelCssCanReferToSdkImageFile() throws Exception
 	{
 		test.givenInputFiles(new String[] {
@@ -277,7 +277,7 @@ public class MergeCssBundlerTest {
 			.thenBundleIsCreated("src/test/resources/css-bundler/output/url-tests/blade-level-css-with-sdk-image.css");
 	}
 	
-	@Test
+	@Test @Ignore
 	public void workbenchlevelCssCanReferToSdkImageFile() throws Exception
 	{
 		test.givenInputFiles(new String[] {
