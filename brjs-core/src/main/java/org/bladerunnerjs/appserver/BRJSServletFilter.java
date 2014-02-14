@@ -27,8 +27,8 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.plugin.ContentPlugin;
-
 import com.google.common.base.Joiner;
 
 
@@ -108,7 +108,9 @@ public class BRJSServletFilter implements Filter
 			
 			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, brjs.bladerunnerConf().getDefaultOutputEncoding()))
 			{
-				app.filterIndexPage(bladerunnerUri, getIndexPage(responseWrapper), locale, writer);
+				BrowsableNode browsableNode = (BrowsableNode) app.getBundlableNode(bladerunnerUri);
+				
+				browsableNode.filterIndexPage(getIndexPage(responseWrapper), locale, writer);
 			}
 			
 			byte[] byteArray = byteArrayOutputStream.toByteArray();

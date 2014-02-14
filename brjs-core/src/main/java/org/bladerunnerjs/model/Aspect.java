@@ -18,7 +18,7 @@ import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public class Aspect extends AbstractBundlableNode implements TestableNode, NamedNode
+public class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
 {
 	private final NodeItem<DirNode> unbundledResources = new NodeItem<>(DirNode.class, "unbundled-resources");
 	private final NodeMap<TypedTestPack> testTypes;

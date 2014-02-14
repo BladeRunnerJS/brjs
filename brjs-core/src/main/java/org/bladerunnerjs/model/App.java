@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,14 +18,10 @@ import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.NameValidator;
-import org.bladerunnerjs.utility.NoTagHandlerFoundException;
-import org.bladerunnerjs.utility.TagPluginUtility;
-import org.dom4j.DocumentException;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -263,11 +258,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 		
 		return bundlableNode;
-	}
-	
-	public void filterIndexPage(BladerunnerUri requestUri, String indexPage, String locale, Writer writer) throws ConfigException, IOException, NoTagHandlerFoundException, DocumentException, ModelOperationException, ResourceNotFoundException {
-		BundlableNode bundlableNode = getBundlableNode(requestUri);		
-		TagPluginUtility.filterContent(indexPage, bundlableNode.getBundleSet(), writer, RequestMode.Dev, locale);
 	}
 	
 	public List<JsLib> nonBladeRunnerLibs()
