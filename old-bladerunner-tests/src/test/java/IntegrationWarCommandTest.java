@@ -30,6 +30,6 @@ public class IntegrationWarCommandTest extends SpecTest {
 			.and(server).hasStarted();
 		when(server).receivesRequestFor("/app", response);
 		then(response).containsText("Successfully loaded the application")
-			.and(response).containsText("_css.bundle");
+			.and(response).containsText("/bundle.css");
 	}
 }
