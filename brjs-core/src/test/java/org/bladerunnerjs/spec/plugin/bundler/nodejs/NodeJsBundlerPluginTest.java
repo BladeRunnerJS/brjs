@@ -33,4 +33,20 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			"module.exports = appns.Class1;",
 			"\n});");
 	}
+	
+	@Test
+	public void jsPatchesAreIncludedInTheClosure() throws Exception {
+		given(aspect).hasClasses("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(brjs).containsFileWithContents("js-patches/appns/Class1.js", "appns.Class1.patch = function() {}");
+		when(app).requestReceived("/default-aspect/node-js/module/appns/Class1.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+			"define('appns/Class1', function(require, exports, module) {",
+			"appns.Class1 = function() {",
+			"};",
+			"module.exports = appns.Class1;",
+			"appns.Class1.patch = function() {}",
+			"\n});");
+	}
+	
 }
