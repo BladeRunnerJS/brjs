@@ -127,8 +127,9 @@ exports.isAliasAssigned = function isAliasAssigned(aliasName) {
  * @see caplin.core.ServiceRegistry.clear
  */
 exports.clear = function clear() {
-	isAliasDataSet = false;
-	aliasData = null;
+//	TODO: clean this up as part of removing the clear() function
+//	isAliasDataSet = false;
+//	aliasData = null;
 };
 
 /**

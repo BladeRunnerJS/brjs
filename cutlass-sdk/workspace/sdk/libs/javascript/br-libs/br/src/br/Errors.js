@@ -4,7 +4,7 @@ var br = require('br/Core');
 /** @module br/Errors */
 
 /**
- * Constructs a new <code>Error</code> of the provided type.
+ * Constructs a new <code>Errors</code> of the provided type.
  * 
  * @param {String} type The error type to be thrown.
  * @param {String} message A human-readable description of the error.
@@ -12,7 +12,7 @@ var br = require('br/Core');
  * @param {int} lineNumber (Optional) The line number of the code that caused the error.
  * 
  * @class
- * <code>br/Error</code> extends the built in <code>Error</code> and allows the
+ * <code>br/Errors</code> extends the built in <code>Errors</code> and allows the
  * error type to be specified in the constructor. The <code>name</code>
  * property is set to the specified type.
  */
