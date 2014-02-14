@@ -442,18 +442,18 @@ window.setTimeout = function(funcToCall, millis) {
     Clock.timeoutsMade = Clock.timeoutsMade + 1;
     Clock.scheduleFunction(Clock.timeoutsMade, funcToCall, millis, false);
     return Clock.timeoutsMade;
-}
+};
 
 window.setInterval = function(funcToCall, millis) {
     Clock.timeoutsMade = Clock.timeoutsMade + 1;
     Clock.scheduleFunction(Clock.timeoutsMade, funcToCall, millis, true);
     return Clock.timeoutsMade;
-}
+};
 
 window.clearTimeout = function(timeoutKey) {
     Clock.scheduledFunctions[timeoutKey] = undefined;
-}
+};
 
 window.clearInterval = function(timeoutKey) {
     Clock.scheduledFunctions[timeoutKey] = undefined;
-}
+};
