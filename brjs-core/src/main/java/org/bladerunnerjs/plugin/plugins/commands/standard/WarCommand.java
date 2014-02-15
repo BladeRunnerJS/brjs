@@ -22,6 +22,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -113,7 +114,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 							FileUtils.copyFile(origAspect.file(indexFile), warAspect.file(indexFile));
 							try(Writer writer = new OutputStreamWriter(new FileOutputStream(warAspect.file(indexFile)), brjs.bladerunnerConf().getDefaultInputEncoding())) {
 								// TODO: stop only supporting the English locale within wars
-								warAspect.filterIndexPage(fileUtil.readFileToString(origAspect.file(indexFile)), "en", writer);
+								warAspect.filterIndexPage(fileUtil.readFileToString(origAspect.file(indexFile)), "en", writer, RequestMode.Prod);
 							}
 						}
 					}

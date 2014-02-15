@@ -17,9 +17,9 @@ public abstract class AbstractBrowsableNode extends AbstractBundlableNode implem
 	}
 	
 	@Override
-	public void filterIndexPage(String indexPage, String locale, Writer writer) throws ModelOperationException {
+	public void filterIndexPage(String indexPage, String locale, Writer writer, RequestMode requestMode) throws ModelOperationException {
 		try {
-			TagPluginUtility.filterContent(indexPage, getBundleSet(), writer, RequestMode.Dev, locale);
+			TagPluginUtility.filterContent(indexPage, getBundleSet(), writer, requestMode, locale);
 		}
 		catch (IOException | NoTagHandlerFoundException | DocumentException e) {
 			throw new ModelOperationException(e);

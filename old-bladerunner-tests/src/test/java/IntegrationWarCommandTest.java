@@ -9,7 +9,8 @@ import org.junit.Test;
 public class IntegrationWarCommandTest extends SpecTest {
 	private App app;
 	private Server server = new Server(ServerUtility.getTestPort());
-	private StringBuffer response = new StringBuffer();
+	private StringBuffer pageResponse = new StringBuffer();
+	private StringBuffer bundleResponse = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -28,8 +29,10 @@ public class IntegrationWarCommandTest extends SpecTest {
 			.and(brjs).commandHasBeenRun("war", "app1")
 			.and(server).hasWar("app1.war", "app")
 			.and(server).hasStarted();
-		when(server).receivesRequestFor("/app", response);
-		then(response).containsText("Successfully loaded the application")
-			.and(response).containsText("/bundle.css");
+		when(server).receivesRequestFor("/app", pageResponse)
+			.and(server).receivesRequestFor("/app/js/prod/en/combined/bundle.js", bundleResponse);
+		then(pageResponse).containsText("Successfully loaded the application")
+			.and(pageResponse).containsText("js/prod/en/combined/bundle.js")
+			.and(bundleResponse).isNotEmpty();
 	}
 }
