@@ -160,11 +160,11 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle("src")
 			.and(aspect).hasClasses("appns.Class")
 			.and(aspect).indexPageRefersTo("new appns.Class()")
-			.and(brjs).containsFileWithContents("js-patches/appns/Class1.js", "appns.Class1.patch = function() {}");
+			.and(brjs).containsFileWithContents("js-patches/appns/Class.js", "appns.Class.patch = function() {}");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-				"appns.Class1 = function()",
-				"appns.Class1.patch = function() {}"
+				"appns.Class = function()",
+				"appns.Class.patch = function() {}"
 		);
 	}
 	
