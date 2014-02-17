@@ -43,7 +43,7 @@ public class AssetLocationUtility
 			if (assetFile instanceof SourceModule)
 			{
 				SourceModule sourceModule = (SourceModule) assetFile;
-				sourceModule.addPatch( SourceModulePatch.getPatchForRequirePath(assetLocation.root(), sourceModule.getRequirePath()) );
+				sourceModule.addPatch( SourceModulePatch.getPatchForRequirePath(assetLocation, sourceModule.getRequirePath()) );
 			}
 			
 			return assetFile;
