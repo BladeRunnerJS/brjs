@@ -20,6 +20,7 @@ workspace/licenses/
 workspace/sdk/brjs
 workspace/sdk/brjs.cmd
 workspace/sdk/docs/
+workspace/sdk/scripts
 workspace/sdk/jsdoc-templates/
 workspace/sdk/jsdoc-toolkit/
 workspace/sdk/libs/java/
