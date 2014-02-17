@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -42,6 +43,8 @@ public class NodeJsSourceModule implements SourceModule {
 	private String assetPath;
 
 	private String defaultInputEncoding;
+
+	private SourceModulePatch patch;
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -100,6 +103,7 @@ public class NodeJsSourceModule implements SourceModule {
 		return new ConcatReader(new Reader[] {
 			new StringReader("define('" + requirePath + "', function(require, exports, module) {\n"),
 			new BufferedReader(new UnicodeReader(assetFile, defaultInputEncoding)),
+			patch.getReader(),
 			new StringReader("\n});\n")
 		});
 	}
@@ -177,5 +181,11 @@ public class NodeJsSourceModule implements SourceModule {
 	public AssetLocation getAssetLocation()
 	{
 		return assetLocation;
+	}
+
+	@Override
+	public void addPatch(SourceModulePatch patch)
+	{
+		this.patch = patch;
 	}
 }
