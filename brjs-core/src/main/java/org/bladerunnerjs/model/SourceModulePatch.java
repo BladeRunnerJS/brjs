@@ -10,12 +10,17 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 public class SourceModulePatch
 {
 
+	public static final String PATCH_APPLIED_MESSAGE = "Patch found for %s, applying patch from %s.";
+	public static final String NO_PATCH_APPLIED_MESSAGE = "No patch found for %s, there was no patch file at %s so no patch will be applied.";
+	
 	private static Map<String, SourceModulePatch> patchesCache = new HashMap<String, SourceModulePatch>();
 	
 	
@@ -24,7 +29,7 @@ public class SourceModulePatch
 
 	private Reader patchFileReader;
 	
-	//TODO: this only supports patching JS files
+	//TODO: this only supports patching files with a .js extension
 	public SourceModulePatch(BRJS brjs, String requirePath)
 	{
 		String patchPath = requirePath.replace(".", "/") + ".js";
@@ -32,6 +37,7 @@ public class SourceModulePatch
 		
 		if (patchFile.isFile())
 		{
+			brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
 			try
 			{
 				patchFileReader = new BufferedReader(new UnicodeReader(patchFile, brjs.bladerunnerConf().getDefaultInputEncoding()));
@@ -43,6 +49,7 @@ public class SourceModulePatch
 		}
 		else
 		{
+			brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
 			patchFileReader = new StringReader("");
 		}
 	}

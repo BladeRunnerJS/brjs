@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,6 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 		sdkJsLib = brjs.sdkLib("sdkLib");
 	}
 	
-	// ------------------------------- J S   P A T C H E S ----------------------------------
 	@Test
 	public void weDoNoIncludePatchesForClassesThatArentUsed() throws Exception {
 		given(sdkJsLib).hasClasses("sdkLib.Class", "sdkLib.AnotherClass")
@@ -38,5 +38,17 @@ public class AspectBundlingOfJsPatches extends SpecTest {
     	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
     	then(response).doesNotContainText("sdkLib.AnotherClass.patch = function() {}")
     		.and(response).containsText("define('sdkLib/Class'");
+	}
+	
+	
+	@Test
+	public void usefulLoggingIsOutputWhenAPatchIsApplied() throws Exception {
+		given(logging).enabled()
+			.and(sdkJsLib).hasClasses("sdkLib.Class", "sdkLib.AnotherClass")
+    		.and(aspect).indexPageRequires("sdkLib/Class")
+    		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}");
+    	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+    	then(response).containsText("sdkLib.Class.patch = ")
+    		.and(logging).debugMessageReceived(SourceModulePatch.PATCH_APPLIED_MESSAGE, "sdkLib/Class", "js-patches/sdkLib/Class.js");
 	}
 }
