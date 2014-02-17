@@ -2,17 +2,19 @@ package org.bladerunnerjs.spec.plugin.bundler.namespacedjs;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NamespacedJsBundlerPluginTest extends SpecTest {
+public class NamespacedJsContentPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
 	private JsLib thirdpartyLib;
 	private JsLib sdkJsLib;
+	private BladerunnerConf bladerunnerConf;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -24,6 +26,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 			thirdpartyLib = app.jsLib("lib1");
 			sdkJsLib = brjs.sdkLib("sdkLib");
+			bladerunnerConf = brjs.bladerunnerConf();
 	}
 	
 	@Test
@@ -170,4 +173,33 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 		);
 	}
 	
+	@Test
+	public void weCanUseUTF8() throws Exception {
+		given(bladerunnerConf).defaultInputEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£€");
+		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
+		then(requestResponse).containsText("$£€");
+	}
+	
+	@Test
+	public void weCanUseLatin1() throws Exception {
+		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
+			.and().activeEncodingIs("ISO-8859-1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£");
+		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
+		then(requestResponse).containsText("$£");
+	}
+	
+	@Test
+	public void weCanUseUnicodeFilesWithABomMarkerEvenWhenThisIsNotTheDefaultEncoding() throws Exception {
+		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
+			.and().activeEncodingIs("UTF-16")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£€");
+		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
+		then(requestResponse).containsText("$£€");
+	}
 }
