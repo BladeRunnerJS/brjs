@@ -78,13 +78,11 @@ public class AppDeploymentFileWatcher extends Thread
 
 	private void checkForNewApps(FileIterator watchDirIterator)
 	{
-		List<File> children = watchDirIterator.files();
-		
-		for (File child : children)
+		for (File dir : watchDirIterator.dirs())
 		{
-			if (isAppDirWithDeployFile(child)) 
+			if (isAppDirWithDeployFile(dir)) 
 			{
-				deployApp(child);
+				deployApp(dir);
 			}
 		}
 	}
