@@ -55,7 +55,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	@Test
 	public void workbenchPageCanBundleAnSdkJsLibraryClass() throws Exception {
 		given(thirdpartyLib).hasBeenCreated()
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: thirdpartyLib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
 			.and(workbench).indexPageRefersTo("thirdparty-lib1");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);

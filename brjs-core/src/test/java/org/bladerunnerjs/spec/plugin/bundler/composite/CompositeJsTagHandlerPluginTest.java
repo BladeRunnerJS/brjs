@@ -86,9 +86,9 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 		.and(aspect).hasClass("appns.node.Class")
 		.and(aspect).hasClass("appns.namespaced.Class")
-		.and(brbootstrap).containsFileWithContents("library.manifest", "js:")
+		.and(brbootstrap).containsFileWithContents("library.manifest", "exports: brbootstrap")
 		.and(brbootstrap).containsFile("bootstrap.js")
-		.and(appLib).containsFileWithContents("library.manifest", "js:")
+		.and(appLib).containsFileWithContents("library.manifest", "exports: applib")
 		.and(brbootstrap).containsFile("appLib.js")
 		.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 				"appns.namespaced.Class\n"+
@@ -110,9 +110,9 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns.node.Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
-			.and(brbootstrap).containsFileWithContents("library.manifest", "js:")
+			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: brbootstrap")
 			.and(brbootstrap).containsFile("bootstrap.js")
-			.and(appLib).containsFileWithContents("library.manifest", "js:")
+			.and(appLib).containsFileWithContents("library.manifest", "exports: applib")
 			.and(brbootstrap).containsFile("appLib.js")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 					"appns.namespaced.Class\n"+
@@ -132,7 +132,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void seperateScriptTagsAreGeneratedInTheCorrectOrderForWorkbenches() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1")
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js \n"+"exports: thirdpartylib")
 			.and(thirdpartyLib).containsFile("file1.js")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")

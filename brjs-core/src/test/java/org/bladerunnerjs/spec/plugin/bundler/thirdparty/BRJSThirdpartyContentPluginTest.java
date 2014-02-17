@@ -34,7 +34,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	
 	@Test
 	public void singleModuleRequestContainsAllFilesForTheModule() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js, file2.js")
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js, file2.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("file1.js", "file2.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
 		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/bundle.js", pageResponse);
@@ -43,7 +43,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	
 	@Test
 	public void singleModuleRequestOnlyContainsListedInManifest() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js, file3.js")
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js, file3.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("file1.js", "file2.js", "file3.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
 		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/bundle.js", pageResponse);
@@ -53,7 +53,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	
 	@Test
 	public void allJsFilesAreIncludedIfManifestDoesntListThem() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "js:")
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFiles("file1.js", "file2.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
 		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/bundle.js", pageResponse);
@@ -62,9 +62,9 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	
 	@Test
 	public void libBundleRequestOnlyContainsFilesForTheLib() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "depends: "+thirdpartyLib2.getName())
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "depends: "+thirdpartyLib2.getName()+"\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("lib1-file1.js", "lib1-file2.js")
-			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "js:")
+			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib2).containsFiles("lib2-file1.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
 		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/bundle.js", pageResponse);
@@ -74,7 +74,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	
 	@Test
 	public void onlyWhatsInTheManifestIsLoaded_ResourcesInTheLibAreNotTreatedAsSeedFiles() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js")
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFile("file1.js")
 			.and(thirdpartyLib).containsFileWithContents("ingoredFile.js", "require('appns.class1')\n")
 			.and(thirdpartyLib).containsFileWithContents("ingoredFile.html", "appns.class1\n")
@@ -88,9 +88,9 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	
 	@Test
 	public void bundleRequestContainsAllModuleBundles() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "depends: "+thirdpartyLib2.getName())
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "depends: "+thirdpartyLib2.getName()+"\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("lib1-file1.js", "lib1-file2.js")
-			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "js:")
+			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "exports: lib\n"+"exports: lib")
 			.and(thirdpartyLib2).containsFiles("lib2-file1.js")
 			.and(aspect).indexPageRequires(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
@@ -99,7 +99,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	
 	@Test
 	public void scriptsCanResideWithDirectories() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: src1.js, lib/src2.js, lib/dir/src3.js")
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: src1.js, lib/src2.js, lib/dir/src3.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("src1.js", "lib/src2.js", "lib/dir/src3.js")
 			.and(aspect).indexPageRequires(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
@@ -108,7 +108,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	
 	@Test
 	public void fileNamesThatEndWithADesiredFileNameAreNotIncluded() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: lib.js")
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "js: lib.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFiles("lib.js", "X-lib.js", "Y-lib.js")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);

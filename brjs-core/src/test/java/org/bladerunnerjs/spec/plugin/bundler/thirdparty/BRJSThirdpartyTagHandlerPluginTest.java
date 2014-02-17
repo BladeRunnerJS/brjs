@@ -28,7 +28,7 @@ public class BRJSThirdpartyTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGeneratedByDefault() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "exports: thirdpartylib")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("thirdparty/thirdparty-lib/bundle.js")
@@ -37,7 +37,7 @@ public class BRJSThirdpartyTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inProdASingleBundlerRequestIsGeneratedByDefault() throws Exception {
-		given(thirdpartyLib).containsFileWithContents("library.manifest", "depends:")
+		given(thirdpartyLib).containsFileWithContents("library.manifest", "exports: thirdpartylib")
 			.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("thirdparty/bundle.js")

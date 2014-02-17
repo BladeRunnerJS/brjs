@@ -54,7 +54,7 @@ public class SourceModuleTest extends SpecTest {
 	
 	@Test
 	public void brjsThirdpartyLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
-		given(brjsThirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js, file2.js")
+		given(brjsThirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js, file2.js\n"+"exports: lib")
 			.and(brjsThirdpartyLib).containsFiles("file1.js", "file2.js");
 		then(brjsThirdpartyLib).hasSourceModules(sourceModule("thirdparty-lib", "file1.js", "file2.js"))
 			.and(brjsThirdpartyLib).hasAssetLocations("")

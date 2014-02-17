@@ -48,7 +48,7 @@ public class BundleCachingTest extends SpecTest
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
 		when(thirdpartyLib).populate()
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file1.js", "thirdpartyLib content")
 			.and(aspect).classRefersToThirdpartyLib("appns.Class1", thirdpartyLib)
 			.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
