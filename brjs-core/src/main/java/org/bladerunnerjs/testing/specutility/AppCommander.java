@@ -46,7 +46,7 @@ public class AppCommander extends NodeCommander<App> {
 	public AppConfCommander appConf() throws Exception {
 		AppConfCommander commander = call(new ValueCommand<AppConfCommander>() {
 			public AppConfCommander call() throws Exception {
-				return new AppConfCommander(modelTest, app.appConf());
+				return new AppConfCommander(specTest, app.appConf());
 			}
 		});
 		
@@ -70,7 +70,7 @@ public class AppCommander extends NodeCommander<App> {
 				BladerunnerUri bladerunnerUri = new BladerunnerUri(app.root(), app.dir(), "/" + app.getName(), requestPath, null);
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
 				app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri.logicalPath, responseOutput);
-				response.append(responseOutput.toString("UTF-8"));
+				response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
 			}
 		});
 		

@@ -2,6 +2,7 @@ package org.bladerunnerjs.spec.plugin.bundler.thirdparty;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -15,7 +16,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	private Aspect aspect;
 	private JsLib thirdpartyLib;
 	private JsLib thirdpartyLib2;
-	
+	private BladerunnerConf bladerunnerConf;
 	private StringBuffer pageResponse = new StringBuffer();
 	
 	@Before
@@ -28,6 +29,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 			thirdpartyLib = app.nonBladeRunnerLib("thirdparty-lib");
 			thirdpartyLib2 = app.nonBladeRunnerLib("thirdparty-lib2");
+			bladerunnerConf = brjs.bladerunnerConf();
 	}	
 	
 	@Test
@@ -165,5 +167,38 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib).hasBeenCreated();
 		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/myFile.js", pageResponse);
 		then(exceptions).verifyException(ContentProcessingException.class, thirdpartyLib.file("myFile.js").getAbsolutePath());
+	}
+	
+	@Test
+	public void weCanUseUTF8() throws Exception {
+		given(bladerunnerConf).defaultInputEncodingIs("UTF-8")
+			.and().activeEncodingIs("UTF-8")
+			.and(aspect).indexPageRequires(thirdpartyLib)
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file.js")
+			.and(thirdpartyLib).containsFileWithContents("file.js", "$£€");
+		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
+		then(pageResponse).containsText("$£€");
+	}
+	
+	@Test
+	public void weCanUseLatin1() throws Exception {
+		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
+			.and().activeEncodingIs("ISO-8859-1")
+			.and(aspect).indexPageRequires(thirdpartyLib)
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file.js")
+			.and(thirdpartyLib).containsFileWithContents("file.js", "$£");
+		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
+		then(pageResponse).containsText("$£");
+	}
+	
+	@Test
+	public void weCanUseUnicodeFilesWithABomMarkerEvenWhenThisIsNotTheDefaultEncoding() throws Exception {
+		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
+			.and().activeEncodingIs("UTF-16")
+			.and(aspect).indexPageRequires(thirdpartyLib)
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file.js")
+			.and(thirdpartyLib).containsFileWithContents("file.js", "$£€");
+		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
+		then(pageResponse).containsText("$£€");
 	}
 }

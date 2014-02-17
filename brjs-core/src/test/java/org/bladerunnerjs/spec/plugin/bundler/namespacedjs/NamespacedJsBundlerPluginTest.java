@@ -12,6 +12,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
 	private JsLib thirdpartyLib;
+	private JsLib sdkJsLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -22,6 +23,7 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			thirdpartyLib = app.jsLib("lib1");
+			sdkJsLib = brjs.sdkLib("sdkLib");
 	}
 	
 	@Test
@@ -153,6 +155,19 @@ public class NamespacedJsBundlerPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsTextOnce("window.appns = {\"nodejs\":{},\"namespaced\":{}};");
+	}
+	
+	@Test
+	public void jsPatchesAreIncludedAfterTheSourceModule() throws Exception {
+		given(sdkJsLib).hasNamespacedJsPackageStyle("src")
+			.and(sdkJsLib).hasClasses("sdkLib.Class")
+			.and(aspect).indexPageRefersTo("new sdkLib.Class()")
+			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"sdkLib.Class = function()",
+				"sdkLib.Class.patch = function() {}"
+		);
 	}
 	
 }

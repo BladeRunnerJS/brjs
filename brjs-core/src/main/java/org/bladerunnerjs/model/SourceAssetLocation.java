@@ -42,9 +42,9 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 	{
 		if (findInDir.isDirectory())
 		{
-			for (File childDir : root().getFileIterator(findInDir).files())
+			for (File childDir : root().getFileIterator(findInDir).dirs())
 			{
-				if (childDir.isDirectory() && childDir != dir())
+				if (childDir != dir())
 				{
 					assetLocations.add(createAssetLocationForChildDir(childDir));
 					addChildAssetLocations(assetLocations, childDir);

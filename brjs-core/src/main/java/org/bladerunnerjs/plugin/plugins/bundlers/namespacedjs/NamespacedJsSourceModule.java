@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
@@ -34,6 +35,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private AssetLocation assetLocation;
 	private String requirePath;
 	private String className;
+
+	private SourceModulePatch patch;
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -70,7 +73,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 							 	"module.exports = %s;" +
 							 " });";
 		String formattedDefineBlock = String.format(defineBlock, requirePath, className);
-		return new ConcatReader(linkedAsset.getReader(), new StringReader(formattedDefineBlock));
+		Reader[] readers = new Reader[] { linkedAsset.getReader(), patch.getReader(), new StringReader(formattedDefineBlock) };
+		return new ConcatReader( readers );
 	}
 	
 	@Override
@@ -142,5 +146,11 @@ public class NamespacedJsSourceModule implements SourceModule {
 		catch(IOException | RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+	}
+
+	@Override
+	public void addPatch(SourceModulePatch patch)
+	{
+		this.patch = patch;
 	}
 }

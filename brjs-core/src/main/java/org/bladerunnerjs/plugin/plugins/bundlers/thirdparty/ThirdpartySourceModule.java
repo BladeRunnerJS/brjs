@@ -1,18 +1,11 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.SequenceInputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,9 +14,13 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.UnicodeReader;
+
+import com.Ostermiller.util.ConcatReader;
 
 
 public class ThirdpartySourceModule implements SourceModule
@@ -32,47 +29,44 @@ public class ThirdpartySourceModule implements SourceModule
 	private AssetLocation assetLocation;
 	private File dir;
 	private NonBladerunnerJsLibManifest manifest;
-	private byte[] delimiterBytes;
 	private String assetPath;
+	private SourceModulePatch patch;
+	private String defaultInputEncoding;
 	
+	@Override
+	public void initialize(AssetLocation assetLocation, File dir, String assetName)
 	{
 		try {
-			delimiterBytes = "\n\n".getBytes("UTF-8");
+			this.assetLocation = assetLocation;
+			this.dir = dir;
+			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), dir);
+			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
 		}
-		catch(IOException e) {
+		catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
 	@Override
-	public void initialize(AssetLocation assetLocation, File dir, String assetName)
+	public Reader getReader() throws IOException
 	{
-		this.assetLocation = assetLocation;
-		this.dir = dir;
-		assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), dir);
-	}
-	
-	@Override
-	public Reader getReader() throws FileNotFoundException
-	{
-		Set<InputStream> fileFileInputStreams = new LinkedHashSet<InputStream>();
-		try
-		{
-			for (File file : manifest.getJsFiles())
-			{
-				fileFileInputStreams.add( new FileInputStream(file) );
-				fileFileInputStreams.add(new ByteArrayInputStream(delimiterBytes));
+		List<Reader> fileReaders = new ArrayList<>();
+		
+		try {
+			for(File file : manifest.getJsFiles()) {
+				fileReaders.add(new UnicodeReader(file, defaultInputEncoding));
+				fileReaders.add(new StringReader("\n\n"));
 			}
 		}
-		catch (ConfigException ex)
-		{
-			throw new RuntimeException(ex);
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
 		}
 		
-		InputStream sequenceReaders = new SequenceInputStream( Collections.enumeration(fileFileInputStreams) );
-		return new InputStreamReader( sequenceReaders );
+		fileReaders.add(patch.getReader());
+		
+		return new ConcatReader(fileReaders.toArray(new Reader[]{}));
 	}
-
+	
 	@Override
 	public AssetLocation getAssetLocation()
 	{
@@ -154,5 +148,11 @@ public class ThirdpartySourceModule implements SourceModule
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
 		return getDependentSourceModules(bundlableNode);
+	}
+
+	@Override
+	public void addPatch(SourceModulePatch patch)
+	{
+		this.patch = patch;
 	}
 }

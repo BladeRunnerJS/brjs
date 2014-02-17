@@ -24,6 +24,7 @@ public class FileIterator {
 	private final File dir;
 	private final RootNode brjs;
 	private List<File> files;
+	private List<File> dirs;
 	
 	public FileIterator(RootNode rootNode, FileModificationService fileModificationService, File dir) {
 		this.brjs = rootNode;
@@ -33,6 +34,7 @@ public class FileIterator {
 	
 	public void refresh() {
 		files = null;
+		dirs = null;
 	}
 	
 	public List<File> files() {
@@ -53,7 +55,13 @@ public class FileIterator {
 	}
 	
 	public List<File> dirs() {
-		return files(dirFilter);
+		updateIfChangeDetected();
+		
+		if(dirs == null) {
+			dirs = files(dirFilter);
+		}
+		
+		return dirs;
 	}
 	
 	public List<File> nestedFiles() {
@@ -65,6 +73,7 @@ public class FileIterator {
 	private void updateIfChangeDetected() {
 		if((fileModificationChecker.hasChangedSinceLastCheck()) || (files == null)) {
 			files = Arrays.asList(dir.listFiles());
+			dirs = null;
 			Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
 		}
 	}
