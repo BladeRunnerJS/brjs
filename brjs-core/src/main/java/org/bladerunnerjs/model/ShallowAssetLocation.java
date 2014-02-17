@@ -163,6 +163,11 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 		}
 		return bundleResources;
 	}
+	
+	public List<Asset> bundleResources(AssetPlugin assetPlugin) {
+		List<Asset> assets = assetPlugin.getAssets(this);
+		return assets;
+	}
 
 	@Override
 	public AssetContainer getAssetContainer()
