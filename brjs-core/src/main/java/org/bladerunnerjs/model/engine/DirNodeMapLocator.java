@@ -4,17 +4,23 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.utility.AdhocTimer;
+import org.bladerunnerjs.utility.FastDirectoryFileFilter;
+import org.bladerunnerjs.utility.FileIterator;
+
 public class DirNodeMapLocator implements NodeMapLocator
 {
 	private String subDirPath;
 	private String dirNameFilter;
 	private RootNode rootNode;
+	private String dirNameMatcher;
 	
 	public DirNodeMapLocator(RootNode rootNode, String subDirPath, String dirNameFilter)
 	{
 		this.rootNode = rootNode;
 		this.subDirPath = subDirPath;
 		this.dirNameFilter = dirNameFilter;
+		dirNameMatcher = getDirNameMatcher(dirNameFilter);
 	}
 	
 	@Override
@@ -25,11 +31,10 @@ public class DirNodeMapLocator implements NodeMapLocator
 		
 		if(childDir.exists())
 		{
-			String dirNameMatcher = getDirNameMatcher(dirNameFilter);
 			
 			for(File file : rootNode.getFileIterator(childDir).dirs())
 			{
-				if( file.isDirectory() && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
+				if(FastDirectoryFileFilter.isDirectory(file) && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
 				{
 					String childName = file.getName();
 					
@@ -42,7 +47,6 @@ public class DirNodeMapLocator implements NodeMapLocator
 				}
 			}
 		}
-		
 		return dirSet;
 	}
 	
@@ -81,4 +85,8 @@ public class DirNodeMapLocator implements NodeMapLocator
 		
 		return dirNameMatcher;
 	}
+	
 }
+
+
+

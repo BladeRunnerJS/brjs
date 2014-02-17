@@ -30,6 +30,7 @@ import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
+import org.bladerunnerjs.utility.FastDirectoryFileFilter;
 import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
@@ -121,7 +122,7 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		File sdkDir = new File(dir, "sdk");
 		
-		return (sdkDir.exists() && sdkDir.isDirectory());
+		return (sdkDir.exists() && FastDirectoryFileFilter.isDirectory(sdkDir));
 	}
 	
 	@Override

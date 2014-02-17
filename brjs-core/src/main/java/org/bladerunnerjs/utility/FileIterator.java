@@ -17,7 +17,9 @@ import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
 
 public class FileIterator {
-	private final IOFileFilter dirFilter = FileFilterUtils.and(DirectoryFileFilter.INSTANCE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
+	
+	
+	private final IOFileFilter dirFilter = FileFilterUtils.and(FastDirectoryFileFilter.INSTANCE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
 	private final FileModifiedChecker fileModificationChecker;
 	private final File dir;
 	private final RootNode brjs;
