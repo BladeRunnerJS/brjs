@@ -20,7 +20,7 @@ public class ModelLoggingCommander extends ModelCommander {
 		call(new Command() {
 			@Override
 			public void call() throws Exception {
-				modelTest.logging.addError(LOGGER_NAME, errorMessage, params);
+				specTest.logging.addError(LOGGER_NAME, errorMessage, params);
 			}
 		});
 	}
@@ -29,7 +29,7 @@ public class ModelLoggingCommander extends ModelCommander {
 		call(new Command() {
 			@Override
 			public void call() throws Exception {
-				modelTest.logging.addInfo(LOGGER_NAME, errorMessage, params);
+				specTest.logging.addInfo(LOGGER_NAME, errorMessage, params);
 			}
 		});
 	}
@@ -38,7 +38,7 @@ public class ModelLoggingCommander extends ModelCommander {
 		call(new Command() {
 			@Override
 			public void call() throws Exception {
-				modelTest.logging.addDebug(LOGGER_NAME, errorMessage, params);
+				specTest.logging.addDebug(LOGGER_NAME, errorMessage, params);
 			}
 		});
 	}

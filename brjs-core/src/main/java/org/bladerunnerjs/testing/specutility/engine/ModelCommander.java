@@ -1,24 +1,24 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 public class ModelCommander {
-	public final SpecTest modelTest;
+	public final SpecTest specTest;
 	
 	public ModelCommander(SpecTest modelTest) {
-		this.modelTest = modelTest;
+		this.specTest = modelTest;
 	}
 	
 	protected <T extends Object> T call(ValueCommand<T> valueCommand) {
 		T returnValue = null;
 		
 		try {
-			modelTest.logging.storeLogsIfEnabled();
+			specTest.logging.storeLogsIfEnabled();
 			returnValue = valueCommand.call();
-			modelTest.logging.stopStoringLogs();
+			specTest.logging.stopStoringLogs();
 		}
 		catch(Throwable e) {
-			if (modelTest.catchAndVerifyExceptions) 
+			if (specTest.catchAndVerifyExceptions) 
 			{
-				modelTest.exceptions.add(e);
+				specTest.exceptions.add(e);
 			}
 			else
 			{

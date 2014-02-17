@@ -1,9 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -39,42 +36,37 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName)
 	{
-		this.assetLocation = assetLocation;
-		this.dir = dir;
-		assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), dir);
-		try
-		{
+		try {
+			this.assetLocation = assetLocation;
+			this.dir = dir;
+			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), dir);
 			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
 		}
-		catch (ConfigException e)
-		{
+		catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
 	@Override
-	public Reader getReader() throws FileNotFoundException
+	public Reader getReader() throws IOException
 	{
-		List<Reader> readers = new ArrayList<Reader>();
+		List<Reader> fileReaders = new ArrayList<>();
 		
-		try
-		{
-			for (File file : manifest.getJsFiles())
-			{
-				readers.add( new BufferedReader(new UnicodeReader(file, defaultInputEncoding)) );
-				readers.add( new StringReader("\n\n") );
+		try {
+			for(File file : manifest.getJsFiles()) {
+				fileReaders.add(new UnicodeReader(file, defaultInputEncoding));
+				fileReaders.add(new StringReader("\n\n"));
 			}
 		}
-		catch (ConfigException | IOException e)
-		{
+		catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}
 		
-		readers.add( patch.getReader() );
+		fileReaders.add(patch.getReader());
 		
-		return new ConcatReader( readers.toArray(new Reader[0]) );
+		return new ConcatReader(fileReaders.toArray(new Reader[]{}));
 	}
-
+	
 	@Override
 	public AssetLocation getAssetLocation()
 	{

@@ -11,11 +11,11 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	private final N node;
 	protected final FileUtil fileUtil;
 	
-	public NodeCommander(SpecTest modelTest, N node) {
-		super(modelTest);
+	public NodeCommander(SpecTest specTest, N node) {
+		super(specTest);
 		this.node = node;
-		fileUtil = new FileUtil("UTF-8");
-		commanderChainer = new CommanderChainer(modelTest);
+		fileUtil = new FileUtil(specTest.getActiveCharacterEncoding());
+		commanderChainer = new CommanderChainer(specTest);
 	}
 	
 	public CommanderChainer create() {

@@ -15,6 +15,7 @@ import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
@@ -79,6 +80,9 @@ public abstract class SpecTest
 {
 	public static final String HTTP_REQUEST_PREFIX = "http://localhost";
 	
+	private String activeCharacterEncoding = "UTF-8";
+	private String activeClientCharacterEncoding = "UTF-8";
+	
 	public LogMessageStore logging;
 	public ConsoleMessageStore output;
 	public List<Throwable> exceptions;
@@ -122,6 +126,22 @@ public abstract class SpecTest
 		return new BRJS(testSdkDirectory, new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 	}
 	
+	public String getActiveCharacterEncoding() {
+		return activeCharacterEncoding;
+	}
+	
+	public void setActiveCharacterEncoding(String activeCharacterEncoding) {
+		this.activeCharacterEncoding = activeCharacterEncoding;
+	}
+	
+	public String getActiveClientCharacterEncoding() {
+		return activeClientCharacterEncoding;
+	}
+	
+	public void setActiveClientCharacterEncoding(String activeClientCharacterEncoding) {
+		this.activeClientCharacterEncoding = activeClientCharacterEncoding;
+	}
+	
 	@After
 	public void verifyLogs() {
 		then(logging).verifyNoUnhandledMessages()
@@ -132,6 +152,9 @@ public abstract class SpecTest
 	public void verifyExceptions() {
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
+	
+	// BRJS
+	public SpecTestBuilder given() { return new SpecTestBuilder(this); }
 	
 	// exceptions
 	protected ExceptionsBuilder given(List<Throwable> exceptions) { return new ExceptionsBuilder(this, exceptions); }
@@ -164,6 +187,9 @@ public abstract class SpecTest
 	public BRJSBuilder given(BRJS brjs) { return new BRJSBuilder(this, brjs); }
 	public BRJSCommander when(BRJS brjs) { return new BRJSCommander(this, brjs); }
 	public BRJSVerifier then(BRJS brjs) { return new BRJSVerifier(this, brjs); }
+	
+	// BladerunnerConf
+	public BladerunnerConfBuilder given(BladerunnerConf bladerunnerConf) { return new BladerunnerConfBuilder(this, bladerunnerConf); }
 	
 	// NodeProperties
 	public NodePropertiesBuilder given(NodeProperties nodeProperties) { return new NodePropertiesBuilder(this, nodeProperties); }
