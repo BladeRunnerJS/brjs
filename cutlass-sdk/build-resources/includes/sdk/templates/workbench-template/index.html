@@ -7,6 +7,10 @@
 		<@js.bundle dev-minifier="none"@/>
 		
 		<script type="text/javascript">
+			var ServiceRegistry = require( 'br/ServiceRegistry' );
+			var EventHub = require( 'br/EventHub' );
+			ServiceRegistry.registerService( 'br.event-hub', new EventHub() );
+
 			var Workbench = require( 'br/workbench/ui/Workbench' );
 			var ExamplePresentationModel = require( '@appns/@bladeset/@blade/ExamplePresentationModel' );
 			var PresenterComponent = require( 'br/presenter/component/PresenterComponent' );

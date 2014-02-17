@@ -1,5 +1,8 @@
 ExampleClassTest = TestCase("ExampleClassTest");
 
+var ExamplePresentationModel = require( '@appns/@bladeset/@blade/ExamplePresentationModel' );
+
 ExampleClassTest.prototype.testSomething = function() {
-	assertEquals(1, 1);
+  var model = new ExamplePresentationModel();
+  assertEquals( 'Hello World!', model.message.getValue() );
 };
