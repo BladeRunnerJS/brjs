@@ -18,6 +18,7 @@ import org.bladerunnerjs.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nAssetPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class PluginAccessor {
@@ -143,6 +144,20 @@ public class PluginAccessor {
 	
 	public List<AssetLocationPlugin> assetLocationProducers() {
 		return orderPlugins( pluginLocator.getAssetLocationPlugins() );
+	}
+	
+	public AssetPlugin assetProducer(Class<?> pluginClass ) {
+		
+		AssetPlugin result = null;
+		List<AssetPlugin> assetProducers = assetProducers();
+		for(AssetPlugin producer: assetProducers){
+			Class<?> possiblePluginClass = producer.getPluginClass();
+			if(possiblePluginClass.equals(pluginClass)){
+				result =  producer;
+				break;
+			}
+		}
+		return result;
 	}
 	
 	private <P extends Plugin> List<P> orderPlugins(List<P> plugins) {
