@@ -215,5 +215,17 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     						"module.exports = thirdpartyLib",
     					"});");
 	}
+
 	
+	//TODO: remove this test when we have a NodeJS library plugin that reads the Package.json - also remove the check in ThirdpartySourceModule
+	@Test
+	public void librariesAreNotWrappedIfPackageJsonExistsr() throws Exception {
+		given(thirdpartyLib).hasBeenCreated()
+    		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: someLib")
+    		.and(thirdpartyLib).containsFileWithContents("package.json", "// some packagey stuff")
+    		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
+    		.and(aspect).indexPageRequires(thirdpartyLib);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).doesNotContainText("define('thirdparty-lib1', function(require, exports, module) {\n");
+	}
 }

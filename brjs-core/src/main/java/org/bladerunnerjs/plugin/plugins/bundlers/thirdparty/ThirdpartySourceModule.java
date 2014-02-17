@@ -1,6 +1,10 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.File;
+<<<<<<< HEAD
+=======
+import java.io.FileNotFoundException;
+>>>>>>> only wrapping libs if they dont have a package.json - this is only temporary until we have a NodeJs lib type
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -59,6 +63,7 @@ public class ThirdpartySourceModule implements SourceModule
 				fileReaders.add(new StringReader("\n\n"));
 			}
 			
+<<<<<<< HEAD
 			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
 			String defineBlockBody = "module.exports = " + manifest.getExports();
 			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
@@ -70,6 +75,23 @@ public class ThirdpartySourceModule implements SourceModule
 			fileReaders.add(patch.getReader());
 		}
 		catch (ConfigException e) {
+=======
+			if (!assetLocation.file("package.json").isFile()) //TODO: remove this check once we have a seperate NodeJS lib plugin that reads Package.json
+			{
+    			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
+    			String defineBlockBody = "module.exports = " + manifest.getExports();
+    			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
+    			
+    			readers.add( new StringReader( defineBlockHeader ) );
+    			readers.add( new StringReader( defineBlockBody ) );
+    			readers.add( new StringReader( defineBlockFooter ) );
+			}
+
+			readers.add( patch.getReader() );
+		}			
+		catch (ConfigException | IOException e)
+		{
+>>>>>>> only wrapping libs if they dont have a package.json - this is only temporary until we have a NodeJs lib type
 			throw new RuntimeException(e);
 		}
 		
@@ -165,4 +187,5 @@ public class ThirdpartySourceModule implements SourceModule
 	{
 		this.patch = patch;
 	}
+	
 }
