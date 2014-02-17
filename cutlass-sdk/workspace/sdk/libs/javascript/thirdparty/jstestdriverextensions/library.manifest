@@ -1,2 +1,3 @@
 depends : mock4js
 js : ApiProtector.js, caplinjsunit-to-jstestdriver.js, abnl.js
+exports: "{}"
