@@ -2,9 +2,9 @@
   "name": "browser-modules",
   "main": "browser-modules.js",
   "version": "0.0.0",
-  "homepage": "http://kybernetikos.github.io/browser-modules",
+  "homepage": "http://bladerunnerjs.github.io/browser-modules",
   "authors": [
-    "kybernetikos <me@kybernetikos.com>"  ],
+    "kybernetikos & the BladeRunnerJS team <bladerunnerjs@caplin.com>"  ],
   "description": "A simple define/require for the browser",
   "keywords": [
     "define",
