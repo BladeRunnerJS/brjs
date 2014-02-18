@@ -116,6 +116,7 @@ public class BRJSServletFilter implements Filter
 			}
 			
 			byte[] byteArray = byteArrayOutputStream.toByteArray();
+			response.setHeader("Content-Type", "text/html;charset=" + brjs.bladerunnerConf().getDefaultOutputEncoding());
 			response.setContentLength(byteArray.length);
 			response.getOutputStream().write(byteArray);
 		}
