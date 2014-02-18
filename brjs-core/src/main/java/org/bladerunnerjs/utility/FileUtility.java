@@ -66,7 +66,7 @@ public class FileUtility {
 		}
 		else
 		{
-			if (srcFile.isDirectory())
+			if (FastDirectoryFileFilter.isDirectory(srcFile))
 			{
 				addFolderToZip(path, srcFile, zip);
 			}

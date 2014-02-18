@@ -2,6 +2,7 @@ package org.bladerunnerjs.utility;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.apache.commons.io.filefilter.AbstractFileFilter;
@@ -44,6 +45,7 @@ public class FastDirectoryFileFilter extends AbstractFileFilter {
     public static final IOFileFilter INSTANCE = DIRECTORY;
 
     public static final  HashMap<File, Boolean> filePropertiesCache = new HashMap<File, Boolean>();
+    public static final  HashMap<File, String> fileCanonicalCache = new HashMap<File, String>();
     
     /**
      * Checks to see if the file is a directory.
@@ -58,6 +60,8 @@ public class FastDirectoryFileFilter extends AbstractFileFilter {
     
     public static boolean isDirectory(File file)
 	{
+ //   	AdhocTimer.enter("isDirectory", false);
+ //   	boolean result =  file.isDirectory();
 		boolean result = false;
 		Boolean isDirectory = filePropertiesCache.get(file);
 		if(isDirectory == null){
@@ -67,7 +71,25 @@ public class FastDirectoryFileFilter extends AbstractFileFilter {
 			result = isDirectory.booleanValue();
 		}
 		
+//		AdhocTimer.exit("isDirectory", false);
 		return result;
 	}
+    
+    public static String getCanonicalPath(File file) throws IOException
+   	{
+//    	AdhocTimer.enter("getCanonicalPath", false);
+ //   	String result = file.getCanonicalPath();;
+   		String result = fileCanonicalCache.get(file);
+   		if(result == null){
+   			result = file.getCanonicalPath();
+   			fileCanonicalCache.put(file, result);
+   		}
+//   		AdhocTimer.enter("getCanonicalPath", false);
+   		return result;
+   	}
+    
+    
+    
+    
 
 }

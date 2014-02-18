@@ -32,15 +32,16 @@ public class DashboardLoadingTest extends SpecTest
 		when(dashboard).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		endTime = new Date().getTime();
 		System.out.println("1st Request: " + (endTime - startTime) + " ms");
-		AdhocTimer.dump();
+		//AdhocTimer.dump();
+		
+		
 		AdhocTimer.init();
-		
-		
 		startTime = new Date().getTime();
 		when(dashboard).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		endTime = new Date().getTime();
 		System.out.println("2nd Request: " + (endTime - startTime) + " ms");
-		AdhocTimer.dump();
+		System.out.println(AdhocTimer.deStack());
+//		AdhocTimer.dump();
 	}
 	
 }

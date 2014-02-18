@@ -30,7 +30,7 @@ private static String getFast(File basePath, File childPath) {
 		result = child;
 	}
 
-	if(childPath.isDirectory()){
+	if(FastDirectoryFileFilter.isDirectory(childPath)){
 		result += File.separator;
 	}
 	return result;

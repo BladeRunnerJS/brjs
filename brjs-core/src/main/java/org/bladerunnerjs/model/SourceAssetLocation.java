@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.utility.FastDirectoryFileFilter;
 
 public class SourceAssetLocation extends ShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
@@ -40,7 +41,7 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 	
 	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
 	{
-		if (findInDir.isDirectory())
+		if (FastDirectoryFileFilter.isDirectory(findInDir))
 		{
 			for (File childDir : root().getFileIterator(findInDir).dirs())
 			{

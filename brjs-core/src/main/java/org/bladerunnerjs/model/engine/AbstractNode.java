@@ -24,6 +24,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.utility.FastDirectoryFileFilter;
 import org.bladerunnerjs.utility.NodePathGenerator;
 import org.bladerunnerjs.utility.ObserverList;
 
@@ -296,7 +297,7 @@ public abstract class AbstractNode implements Node
 		String normalizedPath;
 		
 		try {
-			normalizedPath = dir.getCanonicalPath();
+			normalizedPath = FastDirectoryFileFilter.getCanonicalPath(dir);
 		}
 		catch (IOException ex)
 		{

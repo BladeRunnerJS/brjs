@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.utility.FastDirectoryFileFilter;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 
@@ -125,7 +126,7 @@ public class BladerunnerUri
 	
 	private void processUri(File contextRoot, String contextPath, String requestPath, String queryString) throws MalformedRequestException
 	{		
-		if (!contextRoot.exists() || !contextRoot.isDirectory())
+		if (!contextRoot.exists() || !FastDirectoryFileFilter.isDirectory(contextRoot))
 		{
 			throw new MalformedRequestException(contextPath + requestPath, "Error calculating root directory. Calculated root path " + contextRoot.getPath() + " either does not exist or is not a directory.");
 		}

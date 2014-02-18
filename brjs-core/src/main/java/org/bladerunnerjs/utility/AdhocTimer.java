@@ -16,7 +16,8 @@ public class AdhocTimer {
 	
 	public static void init(){
 		initTime = System.nanoTime();
-		funcDetails = new HashMap<String, FuncDetail>();;
+		funcDetails = new HashMap<String, FuncDetail>();
+		stacks.setLength(0);
 	}
 	
 	public static void enter(String name){
@@ -53,6 +54,21 @@ public class AdhocTimer {
 		return stacks.toString();
 	}
 	
+	public static void stack(){
+		try{
+			throw new Exception();
+		}catch(Exception e){
+			
+			append("======== Start Dump =========\n");
+			StackTraceElement[] stackTrace = e.getStackTrace();
+			for(int i = 1; i < (stackTrace.length - 33); i++){
+				StackTraceElement el = stackTrace[i];
+				append(el.toString());
+				append("\n");
+			}
+		}
+	}
+	
 	public static void exit(String name){
 		funcDetails.get(name).finish(true);
 	}
@@ -62,6 +78,7 @@ public class AdhocTimer {
 	}
 
 	public static void append(String stuff) {
+		//System.out.print(stuff);
 		stacks.append(stuff);
 		
 	}

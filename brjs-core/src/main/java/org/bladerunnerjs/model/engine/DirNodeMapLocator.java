@@ -26,16 +26,35 @@ public class DirNodeMapLocator implements NodeMapLocator
 	@Override
 	public List<String> getDirs(File sourceDir)
 	{
+		String absPath = sourceDir.getAbsolutePath();
+		if(absPath.equals("/Users/jamesturner/Code/Caplin/brjs/cutlass-sdk/workspace")){
+			AdhocTimer.stack();
+		}
+		
+		AdhocTimer.enter("getDirs\t" + absPath , false);
+		AdhocTimer.enter("getDirs\t", false);
 		List<String> dirSet = new ArrayList<>();
+		
+//		AdhocTimer.enter("getDirs:0\t", false);
 		File childDir = (subDirPath == null) ? sourceDir : new File(sourceDir, subDirPath);
+//		AdhocTimer.exit("getDirs:0\t", false);
 		
 		if(childDir.exists())
 		{
+//			AdhocTimer.enter("getDirs:1\t", false);
+			List<File> dirs = rootNode.getFileIterator(childDir).dirs();
+//			AdhocTimer.exit("getDirs:1\t", false);
 			
-			for(File file : rootNode.getFileIterator(childDir).dirs())
+			
+			for(File file : dirs)
 			{
-				if(FastDirectoryFileFilter.isDirectory(file) && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
+//				AdhocTimer.enter("getDirs:2\t", false);
+				boolean doit = FastDirectoryFileFilter.isDirectory(file) && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) ;
+//				AdhocTimer.exit("getDirs:2\t", false);
+				
+				if(doit )
 				{
+//					AdhocTimer.enter("getDirs:3\t", false);
 					String childName = file.getName();
 					
 					if(dirNameFilter != null)
@@ -44,9 +63,12 @@ public class DirNodeMapLocator implements NodeMapLocator
 					}
 					
 					dirSet.add(childName);
+//					AdhocTimer.exit("getDirs:3\t", false);
 				}
 			}
 		}
+		AdhocTimer.exit("getDirs\t" + sourceDir.getAbsolutePath(), false);
+		AdhocTimer.exit("getDirs\t", false);
 		return dirSet;
 	}
 	
