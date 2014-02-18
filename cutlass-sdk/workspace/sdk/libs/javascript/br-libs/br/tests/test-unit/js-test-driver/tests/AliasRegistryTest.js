@@ -1,29 +1,28 @@
-br.Core.thirdparty("jstestdriverextensions");
-br.Core.thirdparty("jsmockito");
+require("jstestdriverextensions");
+require("jsmockito");
 
 (function() {
 
-//	TODO: uncomment after AliasRegistry re-work has been completed
-//	TODO: rename caplin.core.AliasRegistry -> br.AliasRegistry
-//	TODO: remove references to caplin.__aliasData global
+	var AliasRegistry = require('br/AliasRegistry').constructor;
+	
+	var onAliasRegistry = defineTestCase("AliasRegistryTest",
+			function() //setUp
+			{
+				JsHamcrest.Integration.JsTestDriver();
+				JsMockito.Integration.JsTestDriver();
 
-//	var caplinAliasData = caplin.__aliasData;
-//	var onAliasRegistry = defineTestCase("AliasRegistryTest",
-//			function() //setUp
-//			{
-//				JsHamcrest.Integration.JsTestDriver();
-//				JsMockito.Integration.JsTestDriver();
-//
-//				//Define all classes and interfaces
-//				Alias1Interface = function(){};
-//				Alias1Interface.prototype.interfaceFunction = function(){};
-//
-//				Alias1AlternateInterface = function(){};
-//				Alias1AlternateInterface.prototype.alternateInterfaceFunction = function(){};
-//
-//				Alias2Interface = function(){};
-//				Alias2Interface.prototype.interfaceFunction2 = function(){};
-//
+				//Define all classes and interfaces
+				Alias1Interface = function(){};
+				Alias1Interface.prototype.interfaceFunction = function(){};
+
+				Alias1AlternateInterface = function(){};
+				Alias1AlternateInterface.prototype.alternateInterfaceFunction = function(){};
+
+				Alias2Interface = function(){};
+				Alias2Interface.prototype.interfaceFunction2 = function(){};
+
+				
+				
 //				caplin.namespace("novox.a");
 //				novox.a.AliasClass1 = function(){};
 //
@@ -52,24 +51,23 @@ br.Core.thirdparty("jsmockito");
 //					{
 //					}
 //				};
-//			},
-//			function() //tearDown
-//			{
-//				caplin.__aliasData = caplinAliasData;
-//			}
-//		);
-//
-//		onAliasRegistry.testThat("Return an empty list of aliases if there is no Alias", function()
-//		{
-//			caplin.__aliasData = {};
-//			caplin.core.AliasRegistry.clear();
-//
-//			var pAllAliases = caplin.core.AliasRegistry.getAllAliases();
-//
-//			assertEquals("The aliases list should be empty", [], pAllAliases);
-//
-//		});
-//
+			}
+		);
+	
+	//setAliasData
+
+		onAliasRegistry.testThat("Service Registry instance can be used", function()
+		{
+			assertNotEquals("The aliases list should be empty", [], require('br/AliasRegistry').getAllAliases());
+		});
+
+		onAliasRegistry.testThat("Return an empty list of aliases if there is no Alias", function()
+		{
+			var aliasRegistry = new AliasRegistry();
+			aliasRegistry.setAliasData({});
+			assertEquals("The aliases list should be empty", [], aliasRegistry.getAllAliases());
+		});
+
 //		onAliasRegistry.testThat("Return the list of aliases from the alias JSON", function()
 //		{
 //			var pAllAliases = caplin.core.AliasRegistry.getAllAliases();

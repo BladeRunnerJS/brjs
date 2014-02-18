@@ -32,17 +32,21 @@
 var br = require('br/Core');
 var Errors = require('./Errors');
 
-var aliasData = null;
-var isAliasDataSet = false;
+
+var AliasRegistry = function()
+{
+	this._aliasData = null;
+	this._isAliasDataSet = false;
+}
 
 /**
  * Returns an array containing the names of all aliases in use within the application.
  *
  * @type Array
  */
-exports.getAllAliases = function getAllAliases() {
-	ensureAliasDataHasBeenSet();
-	return Object.keys(aliasData);
+AliasRegistry.prototype.getAllAliases = function getAllAliases() {
+	ensureAliasDataHasBeenSet.call(this);
+	return Object.keys(this._aliasData);
 };
 
 /**
@@ -56,14 +60,14 @@ exports.getAllAliases = function getAllAliases() {
  * @param {function} interface the interface being used to filter the aliases by.
  * @type Array
  */
-exports.getAliasesByInterface = function getAliasesByInterface(protocol) {
-	ensureAliasDataHasBeenSet();
+AliasRegistry.prototype.getAliasesByInterface = function getAliasesByInterface(protocol) {
+	ensureAliasDataHasBeenSet.call(this);
 	var allAliases = this.getAllAliases();
 	var filteredAliases = [];
 
 	for(var i = 0, length = allAliases.length; i < length; ++i) {
 		var alias = allAliases[i];
-		var aliasInterface = aliasData[alias]["interface"];
+		var aliasInterface = this._aliasData[alias]["interface"];
 
 		if(aliasInterface === protocol) {
 			filteredAliases.push(alias);
@@ -86,13 +90,13 @@ exports.getAliasesByInterface = function getAliasesByInterface(protocol) {
 * @param {String} aliasName alias name.
 * @type function
 */
-exports.getClass = function getClass(aliasName) {
-	ensureAliasDataHasBeenSet();
+AliasRegistry.prototype.getClass = function getClass(aliasName) {
+	ensureAliasDataHasBeenSet.call(this);
 	if (!this.isAliasAssigned(aliasName)) {
 		throw new Errors.IllegalStateError("No class has been found for alias '" + aliasName +"'");
 	}
 
-	return aliasData[aliasName]["class"];
+	return this._aliasData[aliasName]["class"];
 };
 
 /**
@@ -101,9 +105,9 @@ exports.getClass = function getClass(aliasName) {
  * @param {String} aliasName alias name.
  * @type boolean
  */
-exports.isAlias = function isAlias(aliasName) {
-	ensureAliasDataHasBeenSet();
-	return aliasName in aliasData;
+AliasRegistry.prototype.isAlias = function isAlias(aliasName) {
+	ensureAliasDataHasBeenSet.call(this);
+	return aliasName in this._aliasData;
 };
 
 /**
@@ -113,23 +117,9 @@ exports.isAlias = function isAlias(aliasName) {
  * @param {String} aliasName alias name.
  * @type boolean
  */
-exports.isAliasAssigned = function isAliasAssigned(aliasName) {
-	ensureAliasDataHasBeenSet();
-	return this.isAlias(aliasName) && aliasData[aliasName]["class"] !== undefined;
-};
-
-/**
- * Resets the <code>AliasRegistry</code> back to its initial state.
- *
- * <p>This method isn't normally called within an application, but is called automatically before
- * each test is run.</p>
- *
- * @see caplin.core.ServiceRegistry.clear
- */
-exports.clear = function clear() {
-//	TODO: clean this up as part of removing the clear() function
-//	isAliasDataSet = false;
-//	aliasData = null;
+AliasRegistry.prototype.isAliasAssigned = function isAliasAssigned(aliasName) {
+	ensureAliasDataHasBeenSet.call(this);
+	return this.isAlias(aliasName) && this._aliasData[aliasName]["class"] !== undefined;
 };
 
 /**
@@ -137,13 +127,13 @@ exports.clear = function clear() {
  *
  * If the alias data is inconsistent, this will throw Errors.
  */
-exports.setAliasData = function setAliasData(unverifiedAliasData) {
-	if (isAliasDataSet === true) {
+AliasRegistry.prototype.setAliasData = function setAliasData(unverifiedAliasData) {
+	if (this._isAliasDataSet === true) {
 		throw new Errors.IllegalStateError("Alias data has already been set; unable to set again.");
 	}
 
-	isAliasDataSet = true;
-	aliasData = unverifiedAliasData;
+	this._isAliasDataSet = true;
+	this._aliasData = unverifiedAliasData;
 
 	var aliases = this.getAllAliases();
 	var incorrectAliases = [];
@@ -151,7 +141,7 @@ exports.setAliasData = function setAliasData(unverifiedAliasData) {
 
 	for (i = 0; i < aliases.length; ++i) {
 		var aliasId = aliases[i];
-		var alias = aliasData[aliasId];
+		var alias = this._aliasData[aliasId];
 
 		if (this.isAliasAssigned(aliasId) && alias["interface"]) {
 			var aliasClass = alias["class"];
@@ -168,7 +158,7 @@ exports.setAliasData = function setAliasData(unverifiedAliasData) {
 		for(i = 0; i < incorrectAliases.length; ++i)
 		{
 			var incorrectAlias = incorrectAliases[i];
-			errorMessage += '[' + incorrectAlias + ']: "' + aliasData[incorrectAlias]["className"] + '" should implement "' + aliasData[incorrectAlias].interfaceName + '";\n';
+			errorMessage += '[' + incorrectAlias + ']: "' + this._aliasData[incorrectAlias]["className"] + '" should implement "' + this._aliasData[incorrectAlias].interfaceName + '";\n';
 		}
 		this.clear();
 		throw new Errors.IllegalStateError(errorMessage);
@@ -178,7 +168,7 @@ exports.setAliasData = function setAliasData(unverifiedAliasData) {
 // private utility functions /////////////////////////////////////////////////////////////////////
 // TODO: This should not be required.
 function implementsInterface(aliasClass, protocol) {
-	for(member in protocol.prototype) {
+	for(var member in protocol.prototype) {
 		if(typeof aliasClass.prototype[member] != "function")
 		{
 			return false;
@@ -188,7 +178,7 @@ function implementsInterface(aliasClass, protocol) {
 }
 
 function ensureAliasDataHasBeenSet() {
-	if (isAliasDataSet !== true) {
+	if (this._isAliasDataSet !== true) {
 		// TODO: the bundler should just require AliasRegistry and initialize this stuff itself.
 		var global = Function("return this")(); 
 		if (global.caplin && global.caplin.__aliasData) {
@@ -198,3 +188,6 @@ function ensureAliasDataHasBeenSet() {
 		throw new Errors.IllegalStateError("Alias data has not been set.");
 	}
 }
+
+
+module.exports = new AliasRegistry();
