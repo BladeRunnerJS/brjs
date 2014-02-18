@@ -38,8 +38,8 @@ br.presenter.property.EditableProperty = function(vValue)
 	/** @private */
 	this.m_oValidationCompleteListenerFactory = new br.util.ListenerFactory(br.presenter.property.PropertyListener, "onValidationComplete");
 };
+
 br.Core.extend(br.presenter.property.EditableProperty, br.presenter.property.WritableProperty);
-br.Core.implement(br.presenter.property.EditableProperty, br.presenter.validator.ValidationResultListener);
 
 /**
  * Adds a {@link br.presenter.parser.Parser} that will be run each time the user enters a
@@ -357,3 +357,5 @@ br.presenter.property.EditableProperty.prototype._parse = function(vValue)
 
 	return vParsedValue;
 };
+
+br.Core.implement(br.presenter.property.EditableProperty, br.presenter.validator.ValidationResultListener);

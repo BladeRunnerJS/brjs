@@ -12,8 +12,6 @@ br.test.viewhandler.Checked = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.Checked, br.test.viewhandler.ViewFixtureHandler);
-
 br.test.viewhandler.Checked.prototype.get = function(eElement)
 {
 	if (eElement.checked === undefined)
@@ -38,3 +36,5 @@ br.test.viewhandler.Checked.prototype.set = function(eElement, vValue)
 	br.test.Utils.fireDomEvent(eElement, 'change');
 	eElement.checked = vValue;
 };
+
+br.Core.implement(br.test.viewhandler.Checked, br.test.viewhandler.ViewFixtureHandler);

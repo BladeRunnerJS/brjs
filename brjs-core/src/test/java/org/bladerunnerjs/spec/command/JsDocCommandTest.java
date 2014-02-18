@@ -1,7 +1,5 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand.Messages.*;
-
 import java.io.File;
 
 import org.bladerunnerjs.model.App;
@@ -26,25 +24,6 @@ public class JsDocCommandTest extends SpecTest {
 		app = brjs.app("app");
 		appLib = app.jsLib("lib");
 		jsdocOutputDir = app.storageDir("jsdoc-toolkit");
-	}
-	
-	
-	@Test 
-	public void runningJsDocCommandCausesApiDocsToBeCreated() throws Exception {
-		given(app).hasBeenCreated()
-			.and(appLib).containsFileWithContents("src/MyClass.js", "/** @constructor */MyClass = function() {};");
-		when(brjs).runCommand("jsdoc", "app");
-		then(jsdocOutputDir).containsFile("MyClass.html")
-			.and(output).containsLine(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
-	}
-	
-	@Test 
-	public void runningJsDocCommandWithVerboseFlagCausesApiDocsToBeCreated() throws Exception {
-		given(app).hasBeenCreated()
-			.and(appLib).containsFileWithContents("src/MyClass.js", "/** @constructor */MyClass = function() {};");
-		when(brjs).runCommand("jsdoc", "app", "-v");
-		then(jsdocOutputDir).containsFile("MyClass.html")
-			.and(output).containsLine(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
 	}
 	
 	// TODO: add this test once logging and console output have been merged into one thing, and we can use the same partial

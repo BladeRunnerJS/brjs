@@ -16,4 +16,10 @@ public class BladerunnerConfBuilder {
 		
 		return builderChainer;
 	}
+	
+	public BuilderChainer defaultOutputEncodingIs(String defaultOutputEncoding) throws Exception {
+		bladerunnerConf.setDefaultOutputEncoding(defaultOutputEncoding);
+		
+		return builderChainer;
+	}
 }

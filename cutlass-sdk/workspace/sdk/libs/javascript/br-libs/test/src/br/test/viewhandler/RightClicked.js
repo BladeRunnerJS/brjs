@@ -11,8 +11,6 @@
 br.test.viewhandler.RightClicked = function()
 {
 };
-br.Core.implement(br.test.viewhandler.RightClicked, br.test.viewhandler.ViewFixtureHandler);
-
 
 br.test.viewhandler.RightClicked.prototype.set = function(eElement)
 {
@@ -23,3 +21,5 @@ br.test.viewhandler.RightClicked.prototype.get = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Clicked can't be used in a then clause.");
 };
+
+br.Core.implement(br.test.viewhandler.RightClicked, br.test.viewhandler.ViewFixtureHandler);

@@ -3,18 +3,15 @@ package org.bladerunnerjs.spec.command;
 import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
 import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Messages.*;
 
-import java.io.IOException;
-
 import org.bladerunnerjs.appserver.ApplicationServer;
-import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
-import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ServeCommandTest extends SpecTest
+// TODO: some of the integration tests for the serve command currently have to live within 'old-bladerunner-tests' given that we still rely on old bundler code in production -- move it back in once this is no longer the case
+public class IntegrationServeCommandTest extends SpecTest
 {
 	ApplicationServer appServer;
 	
@@ -39,13 +36,6 @@ public class ServeCommandTest extends SpecTest
 	}
 	
 	@Test
-	public void exceptionIsThrownIfThereAreTooManyArguments() throws Exception {
-		when(brjs).runCommand("serve", "a");
-		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: a"))
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
-	}
-
-	@Test
 	public void serveCommandStartsAppServer() throws Exception
 	{
 		given(logging).enabled();
@@ -65,14 +55,6 @@ public class ServeCommandTest extends SpecTest
 		when(brjs).runThreadedCommand("serve");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
-
-	@Test
-	public void exceptionIsThrownIfAppServerAlreadyStarted() throws Exception
-	{
-		given(appServer).started();
-		when(brjs).runCommand("serve");
-		then(exceptions).verifyException(IOException.class, appServerPort);
-	}
 	
 	@Test
 	public void canOverridePortValueWithArgument() throws Exception
@@ -87,14 +69,5 @@ public class ServeCommandTest extends SpecTest
 			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + "7777/")
 			.and(logging).infoMessageReceived("\t" + SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
 			.and(appServer).requestIsRedirected("/","/dashboard");
-	}
-	
-	@Test
-	public void providingInvalidPortValueThrowsException() throws Exception
-	{
-		given(brjs).hasBeenAuthenticallyCreated();
-		when(brjs).runCommand("serve", "-p", "invalid-port");
-		then(exceptions).verifyException(NumberFormatException.class)
-			.whereTopLevelExceptionContainsString(CommandArgumentsException.class, INVALID_PORT_MESSAGE + " 'invalid-port'");
 	}
 }

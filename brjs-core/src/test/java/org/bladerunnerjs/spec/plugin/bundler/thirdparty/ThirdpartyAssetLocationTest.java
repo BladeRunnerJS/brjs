@@ -36,7 +36,7 @@ public class ThirdpartyAssetLocationTest extends SpecTest {
 		
 		given(app).hasBeenCreated()
 			.and(aspect).indexPageRequires(thirdpartyLib)
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: libs.js")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: libs.js\n"+"exports: thirdpartylib")
 			.and(thirdpartyLib).containsFile("lib.js");
 		when(app).requestReceived("/default-aspect/js/dev/en/combined/bundle.js", pageResponse);
 		then(exceptions).verifyException(AssetFileInstantationException.class, thirdpartyLib.file("invalid-location").getPath(), thirdpartyLib.dir().getPath());
@@ -49,7 +49,7 @@ public class ThirdpartyAssetLocationTest extends SpecTest {
 		
 		given(app).hasBeenCreated()
 			.and(aspect).indexPageRequires(thirdpartyLib)
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: libs.js")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: libs.js\n"+"exports: thirdpartylib")
 			.and(thirdpartyLib).containsFile("lib.js");
 		when(app).requestReceived("/default-aspect/js/dev/en/combined/bundle.js", pageResponse);
 		then(exceptions).verifyException(AssetFileInstantationException.class, "non-existent-asset");

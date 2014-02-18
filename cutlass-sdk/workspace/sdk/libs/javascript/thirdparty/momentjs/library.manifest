@@ -1,1 +1,2 @@
 js: moment.js
+exports: moment

@@ -1,5 +1,3 @@
-br.Core.thirdparty("br-bootstrap");
-
 (function() {
 
 	var ServiceRegistry = require('br/ServiceRegistry');

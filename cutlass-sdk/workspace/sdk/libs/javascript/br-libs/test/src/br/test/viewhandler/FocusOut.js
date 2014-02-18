@@ -14,9 +14,6 @@ br.test.viewhandler.FocusOut = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.FocusOut, br.test.viewhandler.ViewFixtureHandler);
-
-
 br.test.viewhandler.FocusOut.prototype.set = function(eElement)
 {
 	jQuery(eElement).trigger('focusout');
@@ -26,3 +23,5 @@ br.test.viewhandler.FocusOut.prototype.get = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The focusOut event cannot be used in a doGiven or doThen");
 };
+
+br.Core.implement(br.test.viewhandler.FocusOut, br.test.viewhandler.ViewFixtureHandler);

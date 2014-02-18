@@ -30,6 +30,10 @@ import org.bladerunnerjs.utility.UnicodeReader;
 import com.Ostermiller.util.ConcatReader;
 
 public class NodeJsSourceModule implements SourceModule {
+
+	public static final String NODEJS_DEFINE_BLOCK_HEADER = "define('%s', function(require, exports, module) {\n";
+	public static final String NODEJS_DEFINE_BLOCK_FOOTER = "\n});\n";
+
 	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
 	
 	private File assetFile;
@@ -101,10 +105,10 @@ public class NodeJsSourceModule implements SourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		return new ConcatReader(new Reader[] {
-			new StringReader("define('" + requirePath + "', function(require, exports, module) {\n"),
+			new StringReader( String.format(NODEJS_DEFINE_BLOCK_HEADER, requirePath) ),
 			new BufferedReader(new UnicodeReader(assetFile, defaultInputEncoding)),
 			patch.getReader(),
-			new StringReader("\n});\n")
+			new StringReader( NODEJS_DEFINE_BLOCK_FOOTER )
 		});
 	}
 	

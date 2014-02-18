@@ -12,9 +12,6 @@ br.test.viewhandler.MouseUp = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.MouseUp, br.test.viewhandler.ViewFixtureHandler);
-
-
 br.test.viewhandler.MouseUp.prototype.set = function(eElement, mValues)
 {
 	br.test.Utils.fireMouseEvent(eElement, 'mouseup', mValues);
@@ -24,3 +21,5 @@ br.test.viewhandler.MouseUp.prototype.get = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The mouseUp event cannot be used in a doGiven or doThen");
 };
+
+br.Core.implement(br.test.viewhandler.MouseUp, br.test.viewhandler.ViewFixtureHandler);

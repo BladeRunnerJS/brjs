@@ -50,8 +50,6 @@
 		this.m_fOnOpenCallback = null;
 	};
 
-	br.Core.implement(ComponentFixture, br.test.Fixture);
-
 	/**
 	 * Upon set-up of the ComponentFixture, the ComponentFactory is configured not to create an ErrorComponent. If 
 	 * no component can be created with the given XML configuration, an exception will be thrown instead.
@@ -297,6 +295,8 @@
 		assertEquals('Component frame modified state not as expected.', this.m_oComponentFrame.getComponentModified(), vValue);
 	};
 
+	br.Core.implement(ComponentFixture, br.test.Fixture);
+	
 	// export
 	br.component.testing.ComponentFixture = ComponentFixture;
 })();

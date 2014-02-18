@@ -111,7 +111,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.namespaced.Class")
 			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
 			.and(aspect).classRefersToThirdpartyLib("appns.namespaced.Class", thirdpartyLib)
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: lib.js")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: lib.js\n"+"exports: thirdpartlib")
 			.and(thirdpartyLib).containsFile("lib.js");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.namespaced.Class")

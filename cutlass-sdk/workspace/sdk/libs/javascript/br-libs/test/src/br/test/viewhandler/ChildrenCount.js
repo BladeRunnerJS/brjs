@@ -14,8 +14,6 @@ br.test.viewhandler.ChildrenCount = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.ChildrenCount, br.test.viewhandler.ViewFixtureHandler);
-
 br.test.viewhandler.ChildrenCount.prototype.get = function(eElement)
 {
 	return jQuery(eElement).children().length;
@@ -25,3 +23,5 @@ br.test.viewhandler.ChildrenCount.prototype.set = function(eElement, vValue)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "ChildrenCount value can not be set on an object and therefore should only be used in a then clause.");
 };
+
+br.Core.implement(br.test.viewhandler.ChildrenCount, br.test.viewhandler.ViewFixtureHandler);

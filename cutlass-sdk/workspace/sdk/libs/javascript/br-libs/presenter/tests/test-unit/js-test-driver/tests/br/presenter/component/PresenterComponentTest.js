@@ -29,8 +29,7 @@ br.Core.extend(PresenterComponentTest.FakePresentationModel, br.presenter.Presen
 PresenterComponentTest.MockPresentationModel = function()
 {
 };
-br.Core.extend(PresenterComponentTest.MockPresentationModel, br.presenter.PresentationModel);
-br.Core.implement(PresenterComponentTest.MockPresentationModel, br.presenter.SerializablePresentationModel);
+
 
 PresenterComponentTest.MockPresentationModel.prototype.serialize = function()
 {
@@ -46,6 +45,10 @@ PresenterComponentTest.MockPresentationModel.prototype.getClassName = function()
 {
 	return "PresenterComponentTest.MockPresentationModel";
 };
+
+br.Core.extend(PresenterComponentTest.MockPresentationModel, br.presenter.PresentationModel);
+br.Core.implement(PresenterComponentTest.MockPresentationModel, br.presenter.SerializablePresentationModel);
+
 
 PresenterComponentTest.BadPresentationModel = function()
 {

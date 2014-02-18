@@ -1,5 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -17,6 +18,7 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsSourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
@@ -57,12 +59,25 @@ public class ThirdpartySourceModule implements SourceModule
 				fileReaders.add(new UnicodeReader(file, defaultInputEncoding));
 				fileReaders.add(new StringReader("\n\n"));
 			}
+			
+			if (!assetLocation.getAssetContainer().file("package.json").isFile())
+			{
+    			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
+    			String defineBlockBody = "module.exports = " + manifest.getExports();
+    			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
+    			
+    			fileReaders.add( new StringReader( defineBlockHeader ) );
+    			fileReaders.add( new StringReader( defineBlockBody ) );
+    			fileReaders.add( new StringReader( defineBlockFooter ) );
+			}
+			
+			fileReaders.add(patch.getReader());
 		}
-		catch (ConfigException e) {
+		catch (ConfigException | IOException e)
+		{
 			throw new RuntimeException(e);
 		}
 		
-		fileReaders.add(patch.getReader());
 		
 		return new ConcatReader(fileReaders.toArray(new Reader[]{}));
 	}
@@ -155,4 +170,5 @@ public class ThirdpartySourceModule implements SourceModule
 	{
 		this.patch = patch;
 	}
+	
 }

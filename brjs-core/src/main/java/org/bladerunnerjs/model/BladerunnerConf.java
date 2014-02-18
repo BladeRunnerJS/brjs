@@ -33,6 +33,8 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 		return conf.defaultOutputEncoding;
 	}
 	
+	// TODO: change this method, and any related artifacts to omit the word 'default' since it allows you to absolutely define character encoding sent to the browser
+	// maybe the terms should be 'default file character encoding' and 'browser character encoding'
 	public void setDefaultOutputEncoding(String defaultOutputEncoding) throws ConfigException {
 		conf.defaultOutputEncoding = defaultOutputEncoding;
 		verifyAndAutoWrite();

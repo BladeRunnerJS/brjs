@@ -14,8 +14,6 @@
 br.presenter.formatter.LowerCaseFormatter = function() {
 };
 
-br.Core.implement(br.presenter.formatter.LowerCaseFormatter, br.presenter.formatter.Formatter);
-
 /**
  * Converts a string to lower case.
  * 
@@ -34,3 +32,5 @@ br.presenter.formatter.LowerCaseFormatter.prototype.format = function(vValue, mA
 br.presenter.formatter.LowerCaseFormatter.prototype.toString = function() {
 	return "br.presenter.formatter.LowerCaseFormatter";
 };
+
+br.Core.implement(br.presenter.formatter.LowerCaseFormatter, br.presenter.formatter.Formatter);

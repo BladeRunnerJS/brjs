@@ -14,8 +14,6 @@ br.Core.thirdparty("jquery");
 br.test.viewhandler.Enabled = function(){
 };
 
-br.Core.implement(br.test.viewhandler.Enabled, br.test.viewhandler.ViewFixtureHandler);
-
 br.test.viewhandler.Enabled.prototype.get = function(eElement)
 {
 
@@ -55,3 +53,5 @@ br.test.viewhandler.Enabled.prototype.set = function(eElement, vValue)
 		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "enabled can only be set with a boolean value.");
 	}
 };
+
+br.Core.implement(br.test.viewhandler.Enabled, br.test.viewhandler.ViewFixtureHandler);

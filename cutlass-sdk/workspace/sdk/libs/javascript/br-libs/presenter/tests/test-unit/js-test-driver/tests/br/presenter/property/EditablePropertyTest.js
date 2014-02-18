@@ -21,7 +21,6 @@ EditablePropertyTest.prototype._getTestValidator = function(bAsync)
 		this.m_sResultMessage = bAsync ? "async" : "sync";
 		this.m_pValidationRequests = [];
 	};
-	br.Core.implement(fValidator, br.presenter.validator.Validator);
 	
 	fValidator.prototype.validate = function(sText, mConfig, oValidationResult)
 	{
@@ -42,6 +41,7 @@ EditablePropertyTest.prototype._getTestValidator = function(bAsync)
 		
 		oValidationRequest.result.setResult(oValidationRequest.isValid, this.m_sResultMessage);
 	};
+	br.Core.implement(fValidator, br.presenter.validator.Validator);
 
 	return new fValidator(bAsync);
 };
@@ -68,11 +68,12 @@ EditablePropertyTest.prototype.test_setUserEnteredValueSetsValue = function()
 EditablePropertyTest.prototype.test_setUserEnteredValueSetsParsedValueWhenParsersAreAdded = function()
 {
 	var fParser = function(){};
-	br.Core.implement(fParser, br.presenter.parser.Parser);
 
 	fParser.prototype.parse = function(sText, mConfig){
 		return sText.replace(mConfig.find, mConfig.replace);
 	};
+	br.Core.implement(fParser, br.presenter.parser.Parser);
+	
 	var oParser = new fParser();
 	var mParser1 = {find:"y", replace:"z"};
 	var mParser2 = {find:"x", replace:"y"};
