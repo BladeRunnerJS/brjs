@@ -74,7 +74,7 @@ AliasRegistry.prototype.getAliasesByInterface = function getAliasesByInterface(p
 		} else if (this.isAliasAssigned(alias)) {
 			var aliasClass = this.getClass(alias);
 
-			if(br.isAssignableFrom(aliasClass, protocol) || implementsInterface(aliasClass, protocol)) {
+			if(br.classIsA(aliasClass, protocol)) {
 				filteredAliases.push(alias);
 			}
 		}
@@ -146,8 +146,7 @@ AliasRegistry.prototype.setAliasData = function setAliasData(unverifiedAliasData
 		if (this.isAliasAssigned(aliasId) && alias["interface"]) {
 			var aliasClass = alias["class"];
 			var protocol = alias["interface"];
-
-			if (br.isAssignableFrom(aliasClass, protocol) == false && implementsInterface(aliasClass, protocol) == false) {
+			if (br.classIsA(aliasClass, protocol) == false) {
 				incorrectAliases.push(aliasId);
 			}
 		}
@@ -160,22 +159,11 @@ AliasRegistry.prototype.setAliasData = function setAliasData(unverifiedAliasData
 			var incorrectAlias = incorrectAliases[i];
 			errorMessage += '[' + incorrectAlias + ']: "' + this._aliasData[incorrectAlias]["className"] + '" should implement "' + this._aliasData[incorrectAlias].interfaceName + '";\n';
 		}
-		this.clear();
+		this._isAliasDataSet = false;
+		this._aliasData = null;
 		throw new Errors.IllegalStateError(errorMessage);
 	}
 };
-
-// private utility functions /////////////////////////////////////////////////////////////////////
-// TODO: This should not be required.
-function implementsInterface(aliasClass, protocol) {
-	for(var member in protocol.prototype) {
-		if(typeof aliasClass.prototype[member] != "function")
-		{
-			return false;
-		}
-	}
-	return true;
-}
 
 function ensureAliasDataHasBeenSet() {
 	if (this._isAliasDataSet !== true) {
