@@ -16,6 +16,7 @@ br.presenter.node.TemplateNode = function(sTemplateName)
 	/** @private */
 	this.m_sTemplateName = sTemplateName;
 };
+br.Core.extend(br.presenter.node.TemplateNode, br.presenter.node.PresentationNode);
 
 /**
  * @private
@@ -25,5 +26,4 @@ br.presenter.node.TemplateNode.prototype.getTemplateName = function() {
 	return this.m_sTemplateName;
 };
 
-br.Core.extend(br.presenter.node.TemplateNode, br.presenter.node.PresentationNode);
 br.Core.implement(br.presenter.node.TemplateNode, br.presenter.node.TemplateAware);
