@@ -60,13 +60,16 @@ public class ThirdpartySourceModule implements SourceModule
 				fileReaders.add(new StringReader("\n\n"));
 			}
 			
-			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
-			String defineBlockBody = "module.exports = " + manifest.getExports();
-			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
-			
-			fileReaders.add( new StringReader( defineBlockHeader ) );
-			fileReaders.add( new StringReader( defineBlockBody ) );
-			fileReaders.add( new StringReader( defineBlockFooter ) );
+			if (!assetLocation.getAssetContainer().file("package.json").isFile())
+			{
+    			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
+    			String defineBlockBody = "module.exports = " + manifest.getExports();
+    			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
+    			
+    			fileReaders.add( new StringReader( defineBlockHeader ) );
+    			fileReaders.add( new StringReader( defineBlockBody ) );
+    			fileReaders.add( new StringReader( defineBlockFooter ) );
+			}
 			
 			fileReaders.add(patch.getReader());
 		}

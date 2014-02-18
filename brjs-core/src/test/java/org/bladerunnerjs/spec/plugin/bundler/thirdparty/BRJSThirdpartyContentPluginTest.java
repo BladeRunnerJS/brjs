@@ -174,7 +174,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 		given(bladerunnerConf).defaultInputEncodingIs("UTF-8")
 			.and().activeEncodingIs("UTF-8")
 			.and(aspect).indexPageRequires(thirdpartyLib)
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file.js")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file.js", "$£€");
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("$£€");
@@ -185,7 +185,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
 			.and().activeEncodingIs("ISO-8859-1")
 			.and(aspect).indexPageRequires(thirdpartyLib)
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file.js")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file.js", "$£");
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("$£");
@@ -196,7 +196,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
 			.and().activeEncodingIs("UTF-16")
 			.and(aspect).indexPageRequires(thirdpartyLib)
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file.js")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file.js", "$£€");
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("$£€");
