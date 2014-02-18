@@ -14,8 +14,6 @@ br.test.viewhandler.Value = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.Value, br.test.viewhandler.ViewFixtureHandler);
-
 br.test.viewhandler.Value.prototype.get = function(eElement)
 {
 	if (eElement.value === undefined)
@@ -36,3 +34,5 @@ br.test.viewhandler.Value.prototype.set = function(eElement, vValue)
 	try { delete eElement.fireOnChange; } catch (e) { }
 	jQuery(eElement).val(vValue).change();
 };
+
+br.Core.implement(br.test.viewhandler.Value, br.test.viewhandler.ViewFixtureHandler);

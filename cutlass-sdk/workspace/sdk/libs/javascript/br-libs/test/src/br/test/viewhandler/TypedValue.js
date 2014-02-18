@@ -14,8 +14,6 @@ br.test.viewhandler.TypedValue = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.TypedValue, br.test.viewhandler.ViewFixtureHandler);
-
 br.test.viewhandler.TypedValue.prototype.get = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'typedValue' property can't be used in a Then clause, try using 'value'.");
@@ -52,3 +50,4 @@ br.test.viewhandler.TypedValue.prototype.set = function(eElement, sValue)
 	   eElement.bFireChangeEventWhenNextElementIsActivated = true;
 };
 
+br.Core.implement(br.test.viewhandler.TypedValue, br.test.viewhandler.ViewFixtureHandler);

@@ -12,8 +12,6 @@ br.test.viewhandler.Focused = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.Focused, br.test.viewhandler.ViewFixtureHandler);
-
 br.test.viewhandler.Focused.focusableElements = {"A" : true, "BODY" : true, "BUTTON" : true, "FRAME" : true, "IFRAME" : true, "IMG" : true, "INPUT" : true, "ISINDEX" : true,
 		"OBJECT" : true, "SELECT" : true, "TEXTAREA" : true};
 
@@ -56,3 +54,5 @@ br.test.viewhandler.Focused.prototype.get = function(eElement)
 	}
 	return false;
 };
+
+br.Core.implement(br.test.viewhandler.Focused, br.test.viewhandler.ViewFixtureHandler);

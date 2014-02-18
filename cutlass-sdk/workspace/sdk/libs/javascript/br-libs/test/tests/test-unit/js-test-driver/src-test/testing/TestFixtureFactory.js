@@ -2,7 +2,6 @@ testing.TestFixtureFactory = function()
 {
 	this.m_mFixtures = {};
 };
-br.Core.implement(testing.TestFixtureFactory, br.test.FixtureFactory);
 
 testing.TestFixtureFactory.createMockFixture = function(bCanHandleExactMatch, bApplyTearDownStub)
 {
@@ -45,3 +44,5 @@ testing.TestFixtureFactory.prototype.addMockFixtureToRegistry = function(oFixtur
 	this.m_mFixtures[sFixtureName] = oMockFixture;
 	oFixtureRegistry.addFixture(sFixtureName, oMockFixture.proxy());
 };
+
+br.Core.implement(testing.TestFixtureFactory, br.test.FixtureFactory);

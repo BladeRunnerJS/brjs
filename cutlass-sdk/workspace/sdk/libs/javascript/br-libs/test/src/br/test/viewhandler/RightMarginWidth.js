@@ -15,8 +15,6 @@ br.test.viewhandler.RightMarginWidth = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.RightMarginWidth, br.test.viewhandler.ViewFixtureHandler);
-
 br.test.viewhandler.RightMarginWidth.prototype.set = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "RightMarginWidth can't be used in a Given or When clause.");
@@ -30,3 +28,5 @@ br.test.viewhandler.RightMarginWidth.prototype.get = function(eElement)
 	
 	return pWidthValues.length == 4 ? pWidthValues[1] : pWidthValues.length == 2 ? pWidthValues[1] : pWidthValues[0] ;
 };
+
+br.Core.implement(br.test.viewhandler.RightMarginWidth, br.test.viewhandler.ViewFixtureHandler);

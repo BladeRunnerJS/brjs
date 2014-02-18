@@ -16,8 +16,6 @@
 br.presenter.parser.LocalisedAmountParser = function() {
 };
 
-br.Core.implement(br.presenter.parser.LocalisedAmountParser, br.presenter.parser.Parser);
-
 /**
  * Parses an amount containing a thousands, millions or billions token into a number.
  *
@@ -106,3 +104,5 @@ br.presenter.parser.LocalisedAmountParser.prototype._getShortcutMultiplier = fun
 br.presenter.parser.LocalisedAmountParser.prototype.toString = function() {
 	return "br.presenter.parser.LocalisedAmountParser";
 };
+
+br.Core.implement(br.presenter.parser.LocalisedAmountParser, br.presenter.parser.Parser);

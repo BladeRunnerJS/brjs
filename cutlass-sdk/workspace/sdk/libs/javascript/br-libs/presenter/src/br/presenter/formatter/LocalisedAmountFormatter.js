@@ -22,8 +22,6 @@ br.presenter.formatter.LocalisedAmountFormatter = function()
 	
 };
 
-br.Core.implement(br.presenter.formatter.LocalisedAmountFormatter, br.presenter.formatter.Formatter);
-
 /**
  * Formats a number into an localised string representation.
  *
@@ -66,3 +64,5 @@ br.presenter.formatter.LocalisedAmountFormatter.prototype.format = function(vVal
 br.presenter.formatter.LocalisedAmountFormatter.prototype.toString = function() {
 	return "br.presenter.formatter.LocalisedAmountFormatter";
 };
+
+br.Core.implement(br.presenter.formatter.LocalisedAmountFormatter, br.presenter.formatter.Formatter);

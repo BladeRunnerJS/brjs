@@ -2,7 +2,6 @@ br.presenter.testing.UpperCaseFormatter = function()
 {
 	// nothing
 };
-br.Core.implement(br.presenter.testing.UpperCaseFormatter, br.presenter.formatter.Formatter);
 
 br.presenter.testing.UpperCaseFormatter.prototype.format = function(vValue, mAttributes)
 {
@@ -16,5 +15,8 @@ br.presenter.testing.UpperCaseFormatter.prototype.toString = function()
 {
 	return "br.presenter.testing.UpperCaseFormatter";
 };
+
+br.Core.implement(br.presenter.testing.UpperCaseFormatter, br.presenter.formatter.Formatter);
+
 
 br.presenter.testing.UpperCaseFormatter = new br.presenter.testing.UpperCaseFormatter();

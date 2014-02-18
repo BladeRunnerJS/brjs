@@ -14,9 +14,6 @@ br.test.viewhandler.Width = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.Width, br.test.viewhandler.ViewFixtureHandler);
-
-
 br.test.viewhandler.Width.prototype.set = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The width attribute for a element cannot be set directly and should be set via the viewModel.");
@@ -26,3 +23,5 @@ br.test.viewhandler.Width.prototype.get = function(eElement)
 {
 	return jQuery(eElement).width();
 };
+
+br.Core.implement(br.test.viewhandler.Width, br.test.viewhandler.ViewFixtureHandler);

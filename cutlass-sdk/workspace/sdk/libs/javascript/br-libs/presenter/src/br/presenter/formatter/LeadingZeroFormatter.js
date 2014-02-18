@@ -14,8 +14,6 @@
 br.presenter.formatter.LeadingZeroFormatter = function() {
 };
 
-br.Core.implement(br.presenter.formatter.LeadingZeroFormatter, br.presenter.formatter.Formatter);
-
 /**
  * Pads the integer part of a number with as many leading zeros needed to reach the specified size.
  * 
@@ -47,3 +45,5 @@ br.presenter.formatter.LeadingZeroFormatter.prototype.format = function(vValue, 
 br.presenter.formatter.LeadingZeroFormatter.prototype.toString = function() {
 	return "br.presenter.formatter.LeadingZeroFormatter";
 };
+
+br.Core.implement(br.presenter.formatter.LeadingZeroFormatter, br.presenter.formatter.Formatter);

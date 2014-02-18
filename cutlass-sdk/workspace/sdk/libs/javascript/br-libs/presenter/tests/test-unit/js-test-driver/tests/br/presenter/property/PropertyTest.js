@@ -16,10 +16,10 @@ PropertyTest.prototype.tearDown = function()
 PropertyTest.prototype._getTestFormatter = function(){
 	
 	var fFormatter = function(){};
-	br.Core.implement(fFormatter, br.presenter.formatter.Formatter);
 	fFormatter.prototype.format = function(sValue, mConfig){
 		return sValue + mConfig.c;
 	};
+	br.Core.implement(fFormatter, br.presenter.formatter.Formatter);
 	return new fFormatter();
 };
 

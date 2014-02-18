@@ -12,8 +12,6 @@ br.test.viewhandler.HasClass = function()
 {
 };
 
-br.Core.implement(br.test.viewhandler.HasClass, br.test.viewhandler.ViewFixtureHandler);
-
 br.test.viewhandler.HasClass.prototype.get = function(eElement, sClassName)
 {
 	if(eElement.className.match("(^| )" + sClassName + "($| )")) {
@@ -28,3 +26,5 @@ br.test.viewhandler.HasClass.prototype.set = function(eElement, sClassName)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "hasClass can't be used in a Given or When clause.");
 };
+
+br.Core.implement(br.test.viewhandler.HasClass, br.test.viewhandler.ViewFixtureHandler);

@@ -18,8 +18,6 @@ br.presenter.formatter.RegExpFormatter = function()
 	this.m_oRegExps = {};
 };
 
-br.Core.implement(br.presenter.formatter.RegExpFormatter, br.presenter.formatter.Formatter);
-
 /**
  * Transforms a string using a standard JavaScript regular expression.
  * 
@@ -74,3 +72,5 @@ br.presenter.formatter.RegExpFormatter.prototype.getRegExp = function(sMatch, sF
 br.presenter.formatter.RegExpFormatter.prototype.toString = function() {
 	return "br.presenter.formatter.RegExpFormatter";
 };
+
+br.Core.implement(br.presenter.formatter.RegExpFormatter, br.presenter.formatter.Formatter);

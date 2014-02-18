@@ -55,9 +55,6 @@ br.Core.thirdparty("knockout");
 		
 		this.m_oPresentationModel._$setPath(this);
 	};
-	
-	br.Core.implement(PresenterComponent, br.component.Component);
-	br.Core.implement(PresenterComponent, br.component.Serializable);
 
 	/**
 	 * @private
@@ -327,6 +324,9 @@ br.Core.thirdparty("knockout");
 		return eTemplateHolder;
 	};
 
+	br.Core.implement(PresenterComponent, br.component.Component);
+	br.Core.implement(PresenterComponent, br.component.Serializable);
+	
 	var global = Function("return this")();
 	global.br.presenter.component.PresenterComponent = PresenterComponent;
 })();

@@ -25,7 +25,6 @@ CrossValidationPropertyBinderTest.prototype._getLessThanTenValidator = function(
 	{
 		// nothing
 	};
-	br.Core.implement(fValidator, br.presenter.validator.Validator);
 
 	fValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 	{
@@ -38,6 +37,7 @@ CrossValidationPropertyBinderTest.prototype._getLessThanTenValidator = function(
 			oValidationResult.setResult(false, "Property is not less than 10.");
 		}
 	};
+	br.Core.implement(fValidator, br.presenter.validator.Validator);
 
 	return new fValidator();
 };
@@ -48,7 +48,6 @@ CrossValidationPropertyBinderTest.prototype._getOrderedPropertiesValidator = fun
 	{
 		// nothing
 	};
-	br.Core.implement(fCPValidator, br.presenter.validator.CrossPropertyValidator);
 
 	fCPValidator.prototype.validate = function(mProperties, oValidationResult)
 	{
@@ -67,6 +66,7 @@ CrossValidationPropertyBinderTest.prototype._getOrderedPropertiesValidator = fun
 			oValidationResult.setResult(false, "First property is not less than or equal to the second.");
 		}
 	};
+	br.Core.implement(fCPValidator, br.presenter.validator.CrossPropertyValidator);
 
 	return new fCPValidator();
 };
@@ -77,7 +77,6 @@ CrossValidationPropertyBinderTest.prototype._getSumOfPropertiesValidator = funct
 	{
 		// nothing
 	};
-	br.Core.implement(fCPValidator, br.presenter.validator.CrossPropertyValidator);
 
 	fCPValidator.prototype.validate = function(mProperties, oValidationResult)
 	{
@@ -92,6 +91,7 @@ CrossValidationPropertyBinderTest.prototype._getSumOfPropertiesValidator = funct
 			oValidationResult.setResult(false, "Property values should not sum to " + nSumToDislike + ".");
 		}
 	};
+	br.Core.implement(fCPValidator, br.presenter.validator.CrossPropertyValidator);
 
 	return new fCPValidator();
 };

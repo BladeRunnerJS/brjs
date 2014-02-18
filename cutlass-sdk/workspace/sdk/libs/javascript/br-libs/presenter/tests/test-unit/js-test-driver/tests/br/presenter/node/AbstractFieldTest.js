@@ -13,7 +13,6 @@ AbstractFieldTest.inheritMethods = function(fFieldTest)
 AbstractFieldTest.prototype._getTestValidator = function()
 {
 	var fValidator = function(){};
-	br.Core.implement(fValidator, br.presenter.validator.Validator);
 
 	fValidator.prototype.validate = function(sText, mConfig, oValidationResult)
 	{
@@ -21,6 +20,7 @@ AbstractFieldTest.prototype._getTestValidator = function()
 
 		oValidationResult.setResult(bIsValid, "only 'pass' is valid");
 	};
+	br.Core.implement(fValidator, br.presenter.validator.Validator);
 
 	return new fValidator();
 };

@@ -12,7 +12,6 @@ br.presenter.validator.ISODateValidator = function()
 	/** @private */
 	this.m_oSplitterNoDashesRegex = /^(\d{4})(\d{2})(\d{2})$/;
 };
-br.Core.implement(br.presenter.validator.ISODateValidator, br.presenter.validator.Validator);
 
 /**
  * @private
@@ -81,3 +80,4 @@ br.presenter.validator.ISODateValidator.prototype.isValidISODate = function (sIS
 	return oValidationResult.isValid();
 };
 
+br.Core.implement(br.presenter.validator.ISODateValidator, br.presenter.validator.Validator);

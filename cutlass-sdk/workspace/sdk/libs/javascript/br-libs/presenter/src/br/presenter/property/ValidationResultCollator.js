@@ -85,7 +85,6 @@ br.presenter.property.ValidationResultCollator.ValidationResultReceiver = functi
 	this.m_oCollator = oCollator;
 	this.m_nValidatorIndex = nValidatorIndex;
 };
-br.Core.implement(br.presenter.property.ValidationResultCollator.ValidationResultReceiver, br.presenter.validator.ValidationResultListener);
 
 /**
  * @private
@@ -95,3 +94,5 @@ br.presenter.property.ValidationResultCollator.ValidationResultReceiver.prototyp
 {
 	this.m_oCollator._onNextValidationResultReceived(oValidationResult, this.m_nValidatorIndex);
 };
+
+br.Core.implement(br.presenter.property.ValidationResultCollator.ValidationResultReceiver, br.presenter.validator.ValidationResultListener);
