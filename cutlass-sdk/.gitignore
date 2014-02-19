@@ -1,30 +1,9 @@
-.gradle
-.settings
-bin
-build
-.classpath
-.project
+workspace/
+!workspace/sdk/libs/javascript/
+!workspace/sdk/system-applications/
 
-**/bundles/*
-
-
-# WARNING: everything in build-workspace is automaticaly generated
-# the only things that are checked in are in sdk/libs/javascript and sdk/system-applications
-
-workspace/LICENSE
-workspace/README.txt
-workspace/apps/
-workspace/conf/
-workspace/generated/
-workspace/licenses/
-workspace/sdk/brjs
-workspace/sdk/brjs.cmd
-workspace/sdk/docs/
-workspace/sdk/jsdoc-templates/
-workspace/sdk/jsdoc-toolkit/
-workspace/sdk/libs/java/
-workspace/sdk/templates/
-workspace/sdk/version.txt
-workspace/test-results/
-workspace/**/WEB-INF/lib/brjs-*
-test-results
+# TODO: delete these lines when no longer needed -- these lines are needed to work around 2 separate bugs in the Java git implementation (EGit) provided with Eclipse Kepler
+#   1. Egit doesn't currently support recursive wildcards (**) as used in the main brjs .gitignore
+#   2. Egit currently won't consider recursive matches defined before a blanket block pattern, followed by negated block patterns (!), so is ignoring matches in the main brjs .gitignore
+brjs-*.jar
+*.bundle
