@@ -12,9 +12,9 @@ br.presenter.validator.EmailValidator = function()
 	// a character other than @ . or -, and may be followed by none or more of anything except @.
 };
 
+br.Core.implement(br.presenter.validator.EmailValidator, br.presenter.validator.Validator);
+
 br.presenter.validator.EmailValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {
 	oValidationResult.setResult(vValue.match(this.partsRegex) != null, "Invalid E-Mail address.");
 };
-
-br.Core.implement(br.presenter.validator.EmailValidator, br.presenter.validator.Validator);

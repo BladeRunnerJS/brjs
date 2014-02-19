@@ -15,6 +15,8 @@ br.test.viewhandler.LeftMarginWidth = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.LeftMarginWidth, br.test.viewhandler.ViewFixtureHandler);
+
 br.test.viewhandler.LeftMarginWidth.prototype.set = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "LeftMarginWidth can't be used in a Given or When clause.");
@@ -28,5 +30,3 @@ br.test.viewhandler.LeftMarginWidth.prototype.get = function(eElement)
 	
 	return pWidthValues.length == 4 ? pWidthValues[3] : pWidthValues.length == 2 ? pWidthValues[1] : pWidthValues[0] ;
 };
-
-br.Core.implement(br.test.viewhandler.LeftMarginWidth, br.test.viewhandler.ViewFixtureHandler);

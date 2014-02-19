@@ -22,6 +22,7 @@ br.presenter.parser.DateParser = function()
 	this.m_sSeparatorsDefault = "\\/.-";
 	this.m_oDateFormatter = new br.presenter.formatter.DateFormatter();
 };
+br.Core.implement(br.presenter.parser.DateParser, br.presenter.parser.Parser);
 
 /**
  * Matches a date string and converts it to a specified output format.
@@ -110,5 +111,3 @@ br.presenter.parser.DateParser.prototype._getDefaultInputFormats = function(mAtt
 br.presenter.parser.DateParser.prototype.toString = function() {
 	return "br.presenter.parser.DateParser";
 };
-
-br.Core.implement(br.presenter.parser.DateParser, br.presenter.parser.Parser);

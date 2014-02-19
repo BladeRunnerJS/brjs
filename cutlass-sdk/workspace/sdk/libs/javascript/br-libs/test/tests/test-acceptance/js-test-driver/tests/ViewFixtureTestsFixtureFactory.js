@@ -2,6 +2,8 @@ ViewFixtureTestsFixtureFactory = function()
 {
 };
 
+br.Core.implement(ViewFixtureTestsFixtureFactory, br.test.FixtureFactory);
+
 ViewFixtureTestsFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {
 	oFixtureRegistry.addFixture("page", new TestLoadedDummyFixture());
@@ -13,5 +15,3 @@ ViewFixtureTestsFixtureFactory.prototype.setUp = function()
 	// an element in some circumstances.
 	document.body.focus();
 };
-
-br.Core.implement(ViewFixtureTestsFixtureFactory, br.test.FixtureFactory);

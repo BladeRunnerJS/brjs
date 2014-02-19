@@ -8,6 +8,7 @@ br.presenter.validator.DateRangeCrossPropertyValidator = function()
 {
 	// nothing
 };
+br.Core.implement(br.presenter.validator.DateRangeCrossPropertyValidator, br.presenter.validator.CrossPropertyValidator);
 
 /**
  * @private
@@ -53,5 +54,3 @@ br.presenter.validator.DateRangeCrossPropertyValidator.prototype.validate = func
 	}
 	oValidationResult.setResult(bIsValid, sValidationMessage);
 };
-
-br.Core.implement(br.presenter.validator.DateRangeCrossPropertyValidator, br.presenter.validator.CrossPropertyValidator);

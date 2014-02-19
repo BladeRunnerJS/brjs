@@ -23,6 +23,8 @@ TemplateAwarePresentationNode = function(sNodeText)
 {
 	this.itemProperty = new br.presenter.property.WritableProperty(sNodeText);
 };
+br.Core.extend(TemplateAwarePresentationNode, br.presenter.node.PresentationNode);
+br.Core.implement(TemplateAwarePresentationNode, br.presenter.node.TemplateAware);
 
 TemplateAwarePresentationNode.prototype.getTemplateName = function()
 {
@@ -53,6 +55,3 @@ NodeListPresentationModel.prototype.showAnotherNodeList = function()
 {
 	this.anotherNodeList.updateList([this.nested.oNode3, this.nested.oNode4]);
 };
-
-br.Core.extend(TemplateAwarePresentationNode, br.presenter.node.PresentationNode);
-br.Core.implement(TemplateAwarePresentationNode, br.presenter.node.TemplateAware);

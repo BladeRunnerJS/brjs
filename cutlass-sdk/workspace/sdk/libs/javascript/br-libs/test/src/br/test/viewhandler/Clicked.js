@@ -14,6 +14,9 @@ br.test.viewhandler.Clicked = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.Clicked, br.test.viewhandler.ViewFixtureHandler);
+
+
 br.test.viewhandler.Clicked.prototype.set = function(eElement, mArgs)
 {
 	var jq_Element = jQuery(eElement);
@@ -69,5 +72,3 @@ br.test.viewhandler.Clicked.prototype.get = function(eElement)
 {
 		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Clicked can't be used in a then clause.");
 };
-
-br.Core.implement(br.test.viewhandler.Clicked, br.test.viewhandler.ViewFixtureHandler);

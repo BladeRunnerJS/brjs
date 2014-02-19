@@ -46,6 +46,7 @@ br.presenter.validator.CrossPropertyValidatorProxy = function(mProperties, oCros
 		this.m_mCrossValidationPropertyListeners[sPropId] = oListener;
 	}
 };
+br.Core.implement(br.presenter.validator.CrossPropertyValidatorProxy, br.presenter.validator.Validator);
 
 /**
  * @private
@@ -107,5 +108,3 @@ br.presenter.validator.CrossPropertyValidatorProxy.prototype._$onPropertyChanged
 {
 	this._propagateValidation(sPropId); // force-validate all editable properties
 };
-
-br.Core.implement(br.presenter.validator.CrossPropertyValidatorProxy, br.presenter.validator.Validator);

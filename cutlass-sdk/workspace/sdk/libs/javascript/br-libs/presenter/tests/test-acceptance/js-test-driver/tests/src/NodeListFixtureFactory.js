@@ -2,6 +2,8 @@ NodeListFixtureFactory = function()
 {
 };
 
+br.Core.implement(NodeListFixtureFactory, br.test.FixtureFactory);
+
 NodeListFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {
 	oFixtureRegistry.addFixture("component", 
@@ -12,5 +14,3 @@ NodeListFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 			new br.presenter.testing.PresenterComponentFixture("template-aware-node-list",
 					"NodeListPresentationModel"));
 };
-
-br.Core.implement(NodeListFixtureFactory, br.test.FixtureFactory);

@@ -17,6 +17,8 @@ br.presenter.formatter.NullValueFormatter = function()
 	this.m_sNullValueDefault = "\u00a0";
 };
 
+br.Core.implement(br.presenter.formatter.NullValueFormatter, br.presenter.formatter.Formatter);
+
 /**
  * Substitutes replacement text when the string is void (null, undefined, or the empty string).
  * 
@@ -48,5 +50,3 @@ br.presenter.formatter.NullValueFormatter.prototype.format = function(vValue, mA
 br.presenter.formatter.NullValueFormatter.prototype.toString = function() {
 	return "br.presenter.formatter.NullValueFormatter";
 };
-
-br.Core.implement(br.presenter.formatter.NullValueFormatter, br.presenter.formatter.Formatter);

@@ -34,9 +34,9 @@
 	pkg.b.AliasClass2 = function() {};
 	pkg.b.AliasClass2.prototype.interfaceFunction2 = function(){};
 
-	br.implement(pkg.a.AliasClass1, Alias1Interface);
-	br.implement(pkg.a.AliasClass1, Alias1AlternateInterface);
-	br.implement(pkg.b.AliasClass2, Alias2Interface);
+	br.implementImmediately(pkg.a.AliasClass1, Alias1Interface);
+	br.implementImmediately(pkg.a.AliasClass1, Alias1AlternateInterface);
+	br.implementImmediately(pkg.b.AliasClass2, Alias2Interface);
 	
 	
 	var onAliasRegistry = defineTestCase("AliasRegistryTest",

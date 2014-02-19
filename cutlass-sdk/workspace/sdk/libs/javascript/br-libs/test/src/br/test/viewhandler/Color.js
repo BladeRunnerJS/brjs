@@ -15,6 +15,8 @@ br.test.viewhandler.Color = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.Color, br.test.viewhandler.ViewFixtureHandler);
+
 br.test.viewhandler.Color.prototype.set = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Color can't be used in a Given or When clause.");
@@ -48,4 +50,3 @@ br.test.viewhandler.Color.prototype.get = function(eElement)
 	return sHexColor.toUpperCase();
 };
 
-br.Core.implement(br.test.viewhandler.Color, br.test.viewhandler.ViewFixtureHandler);

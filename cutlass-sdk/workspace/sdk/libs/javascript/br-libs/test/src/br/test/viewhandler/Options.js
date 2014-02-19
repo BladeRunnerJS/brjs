@@ -15,6 +15,8 @@ br.test.viewhandler.Options = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.Options, br.test.viewhandler.ViewFixtureHandler);
+
 br.test.viewhandler.Options.prototype.set = function(eElement, pValues)
 {
 	if (eElement.tagName.toLowerCase() !== "select")
@@ -46,5 +48,3 @@ br.test.viewhandler.Options.prototype.get = function(eElement)
 	});
 	return pOptions;
 };
-
-br.Core.implement(br.test.viewhandler.Options, br.test.viewhandler.ViewFixtureHandler);
