@@ -14,7 +14,6 @@ public interface LinkedAsset extends Asset {
 	/**
 	 * Returns a list of files this LinkedAssetFile depends on
 	 * @param bundlableNode TODO
-	 * @throws RequirePathException 
 	 */
 	List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
 	List<String> getAliasNames() throws ModelOperationException;

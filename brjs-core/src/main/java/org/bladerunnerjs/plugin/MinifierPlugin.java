@@ -6,7 +6,7 @@ import java.util.List;
 
 
 /**
- * Minifier plug-ins allow alternate minifier implementations to be made available for JavaScript & CSS minification.
+ * Minifier plug-ins allow alternate minifier implementations to be made available for JavaScript &amp; CSS minification.
  * 
  * <p>Minifier plug-ins may or may not choose to support source-maps, with the following levels of support being possible:</p>
  * 
