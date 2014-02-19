@@ -1,8 +1,7 @@
 var topiarist = require('topiarist');
 topiarist.exportTo(exports);
 
-//TODO: find a better solution for this
-exports.implementImmediately = exports.implement; 
+exports.hasImplemented = exports.implement;
 
 exports.implement = function(implementor, interface) {
 	// We do this on a timeout so you can implement the methods later.
