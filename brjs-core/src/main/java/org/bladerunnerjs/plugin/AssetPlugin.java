@@ -8,7 +8,7 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 
 /**
- * Asset plug-ins allow new implementations of {@link SourceModule}, {@link LinkedAsset} & {@link Asset} to be supported within the model.
+ * Asset plug-ins allow new implementations of {@link SourceModule}, {@link LinkedAsset} &amp; {@link Asset} to be supported within the model.
  * 
  * <p>It is the responsibility of each asset plug-in to provide an identical list of objects each time {@link #getSourceModules getSourceModules()},
  * {@link #getLinkedAssets getLinkedAssets()} or {@link #getAssets getAssets()} are invoked for the same {@link AssetLocation}, assuming the disk
