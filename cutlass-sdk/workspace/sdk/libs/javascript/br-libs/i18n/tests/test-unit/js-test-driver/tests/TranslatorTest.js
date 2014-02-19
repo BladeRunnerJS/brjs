@@ -4,15 +4,13 @@ TranslatorTest = TestCase("TranslatorTest");
 TranslatorTest.prototype.setUp = function() {
 	Mock4JS.addMockSupport(window);
 	Mock4JS.clearMocksToVerify();
-
-	this.m_oi18nMessages = caplin.i18nMessages;
-	this.m_fLocalisedDateConstructor = caplin.i18n.LocalisedDate;
-	this.m_fLocalisedNumberConstructor = caplin.i18n.LocalisedNumber;
-	this.m_fLocalisedTime = caplin.i18n.LocalisedTime;
-
-	caplin.i18n.LocalisedTime = function() {};
-	caplin.i18n.LocalisedTime.prototype.format = function() { return "LocalisedTime.format"; };
-
+	
+	var MockLocalisedTime = function() {};
+	MockLocalisedTime.prototype.format = function() { return "LocalisedTime.format"; };
+	
+	this.definitionRegistry = require('br/TestDefinitionRegistry').install();
+	this.definitionRegistry.define('br/I18n/LocalisedTime', MockLocalisedTime);
+	
 	this.messages = {
 		"caplin.test.key": "key 1 value.",
 		"other.key": "value 2",
@@ -41,7 +39,7 @@ TranslatorTest.prototype.setUp = function() {
 		"entity.string": "the & quick < brown > fox ' jumps \" over & the << && lazy >&\"\"\"&& dog. \' "
 	};
 
-	miscForeignMessages = {
+	this.miscForeignMessages = {
 		"english.hello": "hello, world",
 		"chinese.hello": "你好，世界",
 		"japanese.hello": "こんにちは、世界",
@@ -60,47 +58,13 @@ TranslatorTest.prototype.setUp = function() {
 		"currency.amd.issuer": "Armenia",
 		"currency.amd.name": "Drams"
 	};
-	caplin.i18nMessages = this.i18nTimeDateNumberMessages;
 };
 
 TranslatorTest.prototype.tearDown = function()
 {
+	this.definitionRegistry.uninstall();
+	
 	Mock4JS.verifyAllMocks();
-	// Nuke any localization preferences so as not to interfere with other tests.
-	var oTranslator = caplin.i18n.Translator.getTranslator();
-	oTranslator.setLocalizationPreferences({});
-
-	// Restores the LocalisedDate object which is replaced with a mock
-	caplin.i18nMessages = this.m_oi18nMessages;
-	caplin.i18n.LocalisedDate = this.m_fLocalisedDateConstructor;
-	caplin.i18n.LocalisedNumber = this.m_fLocalisedNumberConstructor;
-	caplin.i18n.LocalisedTime = this.m_fLocalisedTime;
-};
-
-function getMockLocalisedDateConfig()
-{
-	var oMockLocalisedDateConfig = mock(caplin.i18n.LocalisedDate);
-	var oMockLocalisedDate = oMockLocalisedDateConfig.proxy();
-
-	caplin.i18n.LocalisedDate = function()
-	{
-		return oMockLocalisedDate;
-	};
-
-	return oMockLocalisedDateConfig;
-};
-
-function getMockLocalisedNumberConfig()
-{
-	var oMockLocalisedNumberConfig = mock(caplin.i18n.LocalisedNumber);
-	var oMockLocalisedNumber = oMockLocalisedNumberConfig.proxy();
-
-	caplin.i18n.LocalisedNumber = function()
-	{
-		return oMockLocalisedNumber;
-	};
-
-	return oMockLocalisedNumberConfig;
 };
 
 TranslatorTest.prototype.test_translateXMLString = function()
@@ -108,7 +72,8 @@ TranslatorTest.prototype.test_translateXMLString = function()
 	var text = "<blah att=\"@{entity.string}\">somethingelse</blah>";
 	var expected = "<blah att=\"the &amp; quick &lt; brown &gt; fox &apos; jumps &quot; over &amp; the &lt;&lt; &amp;&amp; lazy &gt;&amp;&quot;&quot;&quot;&amp;&amp; dog. &apos; \">somethingelse</blah>";
 
-	var translator = new caplin.i18n.Translator(this.invalidXmlCharMessages);
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(this.invalidXmlCharMessages);
 
 	var result = translator.translate(text);
 
@@ -120,7 +85,8 @@ TranslatorTest.prototype.test_translateLongXmlString = function() {
 	var text = "@{currency.aed.issuer} @{currency.aed.name} @{currency.afn.issuer} @{currency.afn.name}";
 	var expected = "United Arab Emirates Dirhams Afghanistan Afghanis";
 
-	var translator = new caplin.i18n.Translator(this.longXmlMessages);
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(this.longXmlMessages);
 
 	var result = translator.translate(text);
 	assertEquals(expected, result);
@@ -131,7 +97,8 @@ TranslatorTest.prototype.test_translateString = function()
 	var text = "<test name='@{caplin.test.key}'>values</test><blah>@{other.key}</blah>";
 	var expected = "<test name='key 1 value.'>values</test><blah>value 2</blah>";
 
-	var translator = new caplin.i18n.Translator(this.messages);
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(this.messages);
 
 	var result = translator.translate(text, "text");
 
@@ -141,10 +108,13 @@ TranslatorTest.prototype.test_translateString = function()
 TranslatorTest.prototype.test_formatDateUsingUserPreferredFormat = function()
 {
 	var sPreferredDateFormat = "d F Y";
-	var oMockLocalisedDateConfig = getMockLocalisedDateConfig();
+	var oMockLocalisedDateConfig = mock(require('br/i18n/LocalisedDate'));
+	this.definitionRegistry.define('br/i18n/LocalisedDate', oMockLocalisedDateConfig.proxy());
+	
 	oMockLocalisedDateConfig.expects(once()).format(eq(sPreferredDateFormat));
-
-	var oTranslator = caplin.i18n.Translator.getTranslator();
+	
+	var Translator = require('br/i18n/Translator');
+	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
 	var mPrefs = { dateFormat: "d F Y" };
 	oTranslator.setLocalizationPreferences(mPrefs);
 	oTranslator.formatDate();
@@ -153,26 +123,33 @@ TranslatorTest.prototype.test_formatDateUsingUserPreferredFormat = function()
 TranslatorTest.prototype.test_formatDateUsingDefaultFormat = function()
 {
 	var sPreferredDateFormat = "d-m-Y";
-	var oMockLocalisedDateConfig = getMockLocalisedDateConfig();
+	var oMockLocalisedDateConfig = mock(require('br/i18n/LocalisedDate'));
+	this.definitionRegistry.define('br/i18n/LocalisedDate', oMockLocalisedDateConfig.proxy());
+	
 	oMockLocalisedDateConfig.expects(once()).format(eq(sPreferredDateFormat));
-
-	var oTranslator = caplin.i18n.Translator.getTranslator();
+	
+	var Translator = require('br/i18n/Translator');
+	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
 	oTranslator.formatDate();
 };
 
 // TODO: If formatTime is changed to not delegate to LocalisedTime - new tests must be added.
 TranslatorTest.prototype.test_formatTimeDelegatesToLocalisedTime = function()
 {
-	var oTranslator = caplin.i18n.Translator.getTranslator();
+	var Translator = require('br/i18n/Translator');
+	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
 	assertEquals("LocalisedTime.format", oTranslator.formatTime());
 };
 
 TranslatorTest.prototype.test_formatNumberUsingPreferredFormat = function()
 {
-	var oMockLocalisedNumberConfig = getMockLocalisedNumberConfig();
+	var oMockLocalisedNumberConfig = mock(require('br/i18n/LocalisedNumber'));
+	this.definitionRegistry.define('br/i18n/LocalisedNumber', oMockLocalisedNumberConfig.proxy());
+	
 	oMockLocalisedNumberConfig.expects(once()).format(eq("."), eq(","));
 
-	var oTranslator = caplin.i18n.Translator.getTranslator();
+	var Translator = require('br/i18n/Translator');
+	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
 	var mPrefs = { thousandsSeparator: ".",  decimalRadixCharacter: "," };
 	oTranslator.setLocalizationPreferences(mPrefs);
 	oTranslator.formatNumber();
@@ -180,10 +157,13 @@ TranslatorTest.prototype.test_formatNumberUsingPreferredFormat = function()
 
 TranslatorTest.prototype.test_formatNumberUsingDefaultFormat = function()
 {
-	var oMockLocalisedNumberConfig = getMockLocalisedNumberConfig();
+	var oMockLocalisedNumberConfig = mock(require('br/i18n/LocalisedNumber'));
+	this.definitionRegistry.define('br/i18n/LocalisedNumber', oMockLocalisedNumberConfig.proxy());
+	
 	oMockLocalisedNumberConfig.expects(once()).format(eq(","), eq("."));
 
-	var oTranslator = new caplin.i18n.Translator();
+	var Translator = require('br/i18n/Translator');
+	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
 	oTranslator.formatNumber();
 };
 
@@ -192,7 +172,8 @@ TranslatorTest.prototype.test_missingMessage = function()
 	var text = "<test name='@{caplin.missing.key}'>values</test><blah>@{other.key}</blah>";
 	var expected = "<test name='??? caplin.missing.key ???'>values</test><blah>value 2</blah>";
 
-	var translator = new caplin.i18n.Translator(this.messages);
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(this.messages);
 
 	var result = translator.translate(text, "text");
 
@@ -211,7 +192,8 @@ TranslatorTest.prototype.test_multiLineReplace = function()
 		"caplin.missing.key <numeric key value\n" +
 		"something else !!\"£ΕΥΣΕΒΙΟΥ ΚΑΙΣΑΡΕΙΑΣ^^\n";
 
-	var translator = new caplin.i18n.Translator(this.moreMessages);
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(this.moreMessages);
 
 	var result = translator.translate(text, "text");
 
@@ -219,7 +201,8 @@ TranslatorTest.prototype.test_multiLineReplace = function()
 };
 
 TranslatorTest.prototype.test_simpleTokenTest = function() {
-	var translator = new caplin.i18n.Translator(this.messages);
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(this.messages);
 
 	var result = translator.getMessage("template.key", {"template.key.first":"foo", "template.key.second":"bar"});
 	var expected = "this key has a foo value and a bar value";
@@ -239,7 +222,8 @@ TranslatorTest.prototype.test_getMessageWhenTheSameTokenIsIncludedTwiceIsReplace
 function _assertGetMessageReturnsCorrectValue(sTest, mTokens, sExpected)
 {
 	var mMessages = { "test.key": sTest };
-	var oTranslator = new caplin.i18n.Translator(mMessages);
+	var Translator = require('br/i18n/Translator');
+	var oTranslator = new Translator(mMessages);
 	var sResult = oTranslator.getMessage("test.key", mTokens);
 	assertEquals(sExpected, sResult);
 }
@@ -331,7 +315,8 @@ TranslatorTest.prototype.test_getMessageForAnUnknownKeyReturnsAKeyWithQuestionMa
 	var sKey = "unknown.key";
 	var sExpected = "??? " + sKey + " ???";
 
-	var oTranslator = new caplin.i18n.Translator({});
+	var Translator = require('br/i18n/Translator');
+	var oTranslator = new Translator({});
 	var sResult = oTranslator.getMessage(sKey, {});
 
 	assertEquals(sExpected, sResult);
@@ -343,14 +328,16 @@ TranslatorTest.prototype.test_getMessageForAnUnknownKeyThatContainsATokenReturns
 	var mTokens = { token: "bad" };
 	var sExpected = "??? " + sKey + " ???";
 
-	var oTranslator = new caplin.i18n.Translator({});
+	var Translator = require('br/i18n/Translator');
+	var oTranslator = new Translator({});
 	var sResult = oTranslator.getMessage(sKey, mTokens);
 
 	assertEquals(sExpected, sResult);
 };
 
 TranslatorTest.prototype.test_utfForeignScriptTest = function() {
-	var translator = new caplin.i18n.Translator(miscForeignMessages);
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(miscForeignMessages);
 	var text = "English: @{english.hello}\n" +
 		"Chinese: @{chinese.hello}\n" +
 		"Japanese: @{japanese.hello}\n" +
@@ -370,7 +357,8 @@ TranslatorTest.prototype.test_utfForeignScriptTest = function() {
 };
 
 TranslatorTest.prototype.test_correctTranslationWithCamelCaseTokens = function() {
-	var translator = new caplin.i18n.Translator(camelCaseTokens);
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(camelCaseTokens);
 
 	var token = "token.CamelcasetokeN";
 
@@ -381,7 +369,8 @@ TranslatorTest.prototype.test_correctTranslationWithCamelCaseTokens = function()
 };
 
 TranslatorTest.prototype.test_tokenExistsWithCamelCaseTokens = function() {
-	var translator = new caplin.i18n.Translator(camelCaseTokens);
+	var Translator = require('br/i18n/Translator');
+	var translator = new Translator(camelCaseTokens);
 
 	var token = "token.cameLcaseTOKEN";
 
