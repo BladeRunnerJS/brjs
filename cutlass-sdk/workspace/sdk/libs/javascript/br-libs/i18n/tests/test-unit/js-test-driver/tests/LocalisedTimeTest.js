@@ -1,37 +1,11 @@
-//TODO this test has references to ct.i18n which need to be removed
 LocalisedTimeTest = TestCase("LocalisedTimeTest");
-
-LocalisedTimeTest.prototype.setUp = function()
-{
-	this.m_fRealCT_i18n = ct.i18n;
-
-	var that = this;
-
-	ct.i18n = function(sToken)
-	{
-		return that.mTimeFormats[sToken];
-	};
-
-	this.mTimeFormats = {
-		"ct.i18n.time.format.separator": ":"
-	};
-
-};
-
-LocalisedTimeTest.prototype.tearDown = function()
-{
-	ct.i18n = this.m_fRealCT_i18n;
-};
 
 function assertCallToFormatThrowsException(vTime)
 {
-	var sErrorMessage = "An attempt to create an invalid time did not result in an exception being thrown.";
-	var sExceptionMessage = "A LocalisedTime object could not be instantiated from: " + vTime;
-
 	var Errors = require("br/Errors");
-
-	var oException = new Errors.TypeError(Errors.INVALID_DATA, sExceptionMessage);
-	assertFails(sErrorMessage, function() { new (require("br/i18n/LocalisedTime"))(vTime); }, oException);
+	var LocalisedTime = require("br/i18n/LocalisedTime");
+	
+	assertException("An attempt to create an invalid time did not result in an exception being thrown.", function() { new LocalisedTime(vTime); }, Errors.INVALID_PARAMETERS);
 };
 
 LocalisedTimeTest.prototype.test_NullTimeThrowsException = function()
@@ -147,14 +121,4 @@ LocalisedTimeTest.prototype.test_TimeStringBeginningWithZero = function()
 	var sLocalisedTime = oLocalisedTime.format();
 
 	assertEquals("09:30:01", sLocalisedTime);
-};
-
-LocalisedTimeTest.prototype.test_DifferentTimeFormat = function()
-{
-	this.mTimeFormats["ct.i18n.time.format.separator"] = '.';
-
-	var oLocalisedTime = new (require("br/i18n/LocalisedTime"))('101010');
-	var sLocalisedTime = oLocalisedTime.format();
-
-	assertEquals("10.10.10", sLocalisedTime);
 };

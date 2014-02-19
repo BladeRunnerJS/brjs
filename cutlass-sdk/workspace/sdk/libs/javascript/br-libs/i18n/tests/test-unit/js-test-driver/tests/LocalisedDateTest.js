@@ -3,14 +3,14 @@ LocalisedDateTest.prototype.setUp = function()
 {
 	this.m_pOrigUnprocessedI18NMessages = window.pUnprocessedI18NMessages;
 	this.mDateMessages = {
-		"ct.i18n.date.format": "DD-MM-YYYY",
-		"ct.i18n.date.format.long": "ddd, DD MMM, YYYY, HH:mm:ss A",
-		"ct.i18n.date.month.january": "Leden",
-		"ct.i18n.date.month.short.april": "Dub",
-		"ct.i18n.date.month.short.december": "Pros",
-		"ct.i18n.date.day.saturday": "Sobota",
-		"ct.i18n.date.day.short.monday": "Mon",
-		"ct.i18n.date.day.short.wednesday": "Wed"
+		"br.i18n.date.format": "DD-MM-YYYY",
+		"br.i18n.date.format.long": "ddd, DD MMM, YYYY, HH:mm:ss A",
+		"br.i18n.date.month.january": "Leden",
+		"br.i18n.date.month.short.april": "Dub",
+		"br.i18n.date.month.short.december": "Pros",
+		"br.i18n.date.day.saturday": "Sobota",
+		"br.i18n.date.day.short.monday": "Mon",
+		"br.i18n.date.day.short.wednesday": "Wed"
 	};
 	window.pUnprocessedI18NMessages = [this.mDateMessages];
 
@@ -141,7 +141,7 @@ LocalisedDateTest.prototype.test_translateShortDate = function() {
 	oDate.setMinutes(39);
 	oDate.setSeconds(1);
 
-	var sDateFormat = this.mDateMessages["ct.i18n.date.format"];
+	var sDateFormat = this.mDateMessages["br.i18n.date.format"];
 	var oLocalisedDate = new (require("br/i18n/LocalisedDate"))(oDate);
 	var sLocalisedDate = oLocalisedDate.format(sDateFormat);
 
@@ -160,7 +160,7 @@ LocalisedDateTest.prototype.test_translateLongDate = function()
 	oDate.setMinutes(39);
 	oDate.setSeconds(1);
 
-	var sDateFormat = this.mDateMessages["ct.i18n.date.format.long"];
+	var sDateFormat = this.mDateMessages["br.i18n.date.format.long"];
 	var oLocalisedDate = new (require("br/i18n/LocalisedDate"))(oDate);
 	var sLocalisedDate = oLocalisedDate.format(sDateFormat);
 

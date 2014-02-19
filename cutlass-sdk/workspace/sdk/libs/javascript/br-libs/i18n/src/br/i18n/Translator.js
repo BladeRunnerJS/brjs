@@ -12,7 +12,7 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
 
 /**
  * Do not instantiate this class directly. To access the localization token
- * translator use the global <code>ct.i18n(token, args)</code> function which
+ * translator use the global <code>br.i18n(token, args)</code> function which
  * maps to the <code>getMessage()</code> function.
  *
  * @see Translator#getMessage
@@ -73,7 +73,7 @@ Translator.prototype.translate = function(text, type) {
 /**
  * Returns whether the current locale contains a given localization token.
  *
- * <p>Usage: <code>Translator.getTranslator().tokenExists("ct.core.field.start.date")</code></p>
+ * <p>Usage: <code>Translator.getTranslator().tokenExists("br.core.field.start.date")</code></p>
  *
  * @param {String} sText The token name
  * @type boolean
@@ -119,7 +119,7 @@ Translator.prototype.convertXMLEntityChars = function(text) {
  * translation might need. For example, a given translations may be
  * ${dialog.message.amountWarning} = "you have [template.key.amount] dollars
  * left in account [template.key.account]". You would call
- * <code>ct.i18n("dialog.message.amountWarning",
+ * <code>br.i18n("dialog.message.amountWarning",
  * {"template.key.amount":"43234", "template.key.account":"testAccount"});</code>
  * to get the fully translated message "you have 43234 dollars left in account
  * testAccount"
@@ -156,7 +156,7 @@ Translator.prototype.getMessage = function(token, templateArgs) {
  * @returns The date format string, e.g. YYYY-mm-dd.
  */
 Translator.prototype.getDateFormat = function() {
-	return this.localizationPrefs.dateFormat || this._getTranslationForKey("ct.i18n.date.format");
+	return this.localizationPrefs.dateFormat || this._getTranslationForKey("br.i18n.date.format");
 };
 
 /**
@@ -170,14 +170,14 @@ Translator.prototype.getDateFormat = function() {
  * @returns The date format string, e.g. d/m/Y.
  */
 Translator.prototype.getShortDateFormat = function() {
-	return this.localizationPrefs.shortDateFormat || this._getTranslationForKey("ct.i18n.date.format.typed");
+	return this.localizationPrefs.shortDateFormat || this._getTranslationForKey("br.i18n.date.format.typed");
 };
 
 /**
  * Formats a JavaScript date object according to the locale date format
  * string or another passed in date format string. If no date format string is
  * supplied, this function will default to the date format string referenced by
- * the localization property <code>ct.i18n.date.format</code>.
+ * the localization property <code>br.i18n.date.format</code>.
  *
  * <p>Try using the following:</p>
  * <pre>
@@ -218,7 +218,7 @@ Translator.prototype.formatDate = function(date, dateFormat) {
  * Formats the time appropriately for the locale.
  *
  * <p>By specifying a time separator character (':' for example) as the value
- * of the localization property <code>ct.i18n.time.format.separator</code>, a time such
+ * of the localization property <code>br.i18n.time.format.separator</code>, a time such
  * as '102001' will be formatted as '10:20:01'.</p>
  *
  * <p>Try using the following:</p>
@@ -243,7 +243,7 @@ Translator.prototype.formatTime = function(time) {
  * Formats the number appropriately for the locale.
  *
  * <p>By specifying a number grouping separator character (',' for example) as
- * the value of the localization property <code>ct.i18n.number.grouping.separator</code>,
+ * the value of the localization property <code>br.i18n.number.grouping.separator</code>,
  * a number such as '1000000' will be formatted as '1,000,000'.</p>
  *
  * <p>Try using the following:</p>
@@ -263,10 +263,10 @@ Translator.prototype.formatNumber = function(number, thousandsSeparator) {
 	var localisedNumber = new LocalisedNumber(number);
 	if (!thousandsSeparator) {
 		thousandsSeparator = this.localizationPrefs.thousandsSeparator ||
-				this._getTranslationForKey("ct.i18n.number.grouping.separator");
+				this._getTranslationForKey("br.i18n.number.grouping.separator");
 	}
 	var decimalRadixCharacter = this.localizationPrefs.decimalRadixCharacter ||
-			this._getTranslationForKey("ct.i18n.decimal.radix.character");
+			this._getTranslationForKey("br.i18n.decimal.radix.character");
 
 	return localisedNumber.format(thousandsSeparator, decimalRadixCharacter);
 };
@@ -276,7 +276,7 @@ Translator.prototype.formatNumber = function(number, thousandsSeparator) {
  * and decimal points.
  *
  * <p>By specifying a number grouping separator character (',' for example) as
- * the value of the localization property <code>ct.i18n.number.grouping.separator</code>,
+ * the value of the localization property <code>br.i18n.number.grouping.separator</code>,
  * a number such as '1,000,000' will be parsed as '1000000'.</p>
  *
  * <p>Try using the following:</p>
@@ -293,11 +293,11 @@ Translator.prototype.formatNumber = function(number, thousandsSeparator) {
 Translator.prototype.parseNumber = function(number, thousandsSeparator) {
 	if (!thousandsSeparator) {
 		thousandsSeparator = this.localizationPrefs.thousandsSeparator ||
-				this._getTranslationForKey("ct.i18n.number.grouping.separator");
+				this._getTranslationForKey("br.i18n.number.grouping.separator");
 	}
 
 	var decimalPlaceCharacter = this.localizationPrefs.decimalRadixCharacter ||
-			this._getTranslationForKey("ct.i18n.decimal.radix.character");
+			this._getTranslationForKey("br.i18n.decimal.radix.character");
 
 	thousandsSeparator = thousandsSeparator.replace(/[-[\]*+?.,\\^$|#\s]/g, "\\$&");
 	var regEx = new RegExp(thousandsSeparator, "g");
@@ -319,7 +319,7 @@ Translator.prototype.stripNonNumericCharacters = function(value) {
 	var length = value.length;
 	var joiner = [];
 	var isDecimalPointFound = false;
-	var decimalPlaceCharacter = this.localizationPrefs.decimalRadixCharacter || this._getTranslationForKey("ct.i18n.decimal.radix.character");
+	var decimalPlaceCharacter = this.localizationPrefs.decimalRadixCharacter || this._getTranslationForKey("br.i18n.decimal.radix.character");
 
 	for (var i = 0; i < length; i++) {
 		var char = value.charAt(i);
@@ -360,9 +360,9 @@ Translator.prototype._getTranslationForKey = function(token) {
 Translator.prototype._getTranslationForKeyOrUndefinedIfKeyIsUnknown = function(token) {
 	token = token.toLowerCase();
 	if (this.testMode === true) {
-		if (token == "ct.i18n.date.format") {
+		if (token == "br.i18n.date.format") {
 			return TEST_DATE_FORMAT_SHORT;
-		} else if (token == "ct.i18n.date.format.long") {
+		} else if (token == "br.i18n.date.format.long") {
 			return TEST_DATE_FORMAT_LONG;
 		}
 		return ".";

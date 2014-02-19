@@ -27,14 +27,14 @@ TranslatorTest.prototype.setUp = function() {
 	};
 
 	this.i18nTimeDateNumberMessages = {
-		"ct.i18n.date.format": "d-m-Y",
-		"ct.i18n.date.format.long": "D, d M, Y, h:i:s A",
-		"ct.i18n.date.month.january": "Leden",
-		"ct.i18n.date.month.short.april": "Dub",
-		"ct.i18n.date.month.short.december": "Pros",
-		"ct.i18n.time.format.separator": ":",
-		"ct.i18n.decimal.radix.character": ".",
-		"ct.i18n.number.grouping.separator": ","
+		"br.i18n.date.format": "d-m-Y",
+		"br.i18n.date.format.long": "D, d M, Y, h:i:s A",
+		"br.i18n.date.month.january": "Leden",
+		"br.i18n.date.month.short.april": "Dub",
+		"br.i18n.date.month.short.december": "Pros",
+		"br.i18n.time.format.separator": ":",
+		"br.i18n.decimal.radix.character": ".",
+		"br.i18n.number.grouping.separator": ","
 	};
 
 	this.invalidXmlCharMessages = {
