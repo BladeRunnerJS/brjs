@@ -49,22 +49,22 @@ public class Workbench extends AbstractBrowsableNode implements TestableNode
 	
 	@Override
 	public String namespace() {
-		App app = parent().parent().parent();
-		return app.getNamespace();
+		return getApp().getNamespace();
 	}
 	
 	@Override
 	public List<AssetContainer> getAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		//TODO: refactor me
-		assetContainers.add(this);
-		assetContainers.add(this.parent());
-		assetContainers.add(this.parent().parent());
+		assetContainers.add( this );
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
 		
-		for(JsLib jsLib : parent().parent().parent().jsLibs()) {
+		for(JsLib jsLib : getApp().jsLibs()) {
 			assetContainers.add(jsLib);
 		}
+		
+		assetContainers.add( getApp().aspect("default") );
 		
 		return assetContainers;
 	}
