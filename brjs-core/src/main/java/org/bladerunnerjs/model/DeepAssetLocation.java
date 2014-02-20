@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.utility.FastDirectoryFileFilter;
 
 public class DeepAssetLocation extends ShallowAssetLocation {
 	public DeepAssetLocation(RootNode rootNode, Node parent, File dir) {
@@ -21,7 +22,7 @@ public class DeepAssetLocation extends ShallowAssetLocation {
 	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
 		List<A> assets = new ArrayList<>();
 		
-		if (dir.isDirectory()) {
+		if (FastDirectoryFileFilter.isDirectory(dir)) {
 			addAllMatchingAssets(dir, assetFilter, assetClass, assets);
 		}
 		

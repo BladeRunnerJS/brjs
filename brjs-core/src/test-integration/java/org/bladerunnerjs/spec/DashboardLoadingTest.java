@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.AdhocTimer;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,16 +26,21 @@ public class DashboardLoadingTest extends SpecTest
 	{
 		StringBuffer response = new StringBuffer();
 		long startTime, endTime;
+		AdhocTimer.init();
 		
 		startTime = new Date().getTime();
 		when(dashboard).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		endTime = new Date().getTime();
 		System.out.println("1st Request: " + (endTime - startTime) + " ms");
+		AdhocTimer.dump();
+		AdhocTimer.init();
+		
 		
 		startTime = new Date().getTime();
 		when(dashboard).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		endTime = new Date().getTime();
 		System.out.println("2nd Request: " + (endTime - startTime) + " ms");
+		AdhocTimer.dump();
 	}
 	
 }

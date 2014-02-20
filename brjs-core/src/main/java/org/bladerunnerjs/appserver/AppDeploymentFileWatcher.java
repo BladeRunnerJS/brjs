@@ -1,5 +1,9 @@
 package org.bladerunnerjs.appserver;
 
+import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.ERROR_DEPLOYING_APP_MSG;
+import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.NEW_APP_MESSAGE;
+import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.WATCHING_INTERUPTED_MSG;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +12,8 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.utility.FastDirectoryFileFilter;
 import org.bladerunnerjs.utility.FileIterator;
-
-import static org.bladerunnerjs.appserver.AppDeploymentFileWatcher.Messages.*;
 
 public class AppDeploymentFileWatcher extends Thread
 {
@@ -44,7 +47,7 @@ public class AppDeploymentFileWatcher extends Thread
 		this.brjs = brjs;
 		
 		for(File rootWatchDir : rootWatchDirs) {
-			if (rootWatchDir.isDirectory())
+			if (FastDirectoryFileFilter.isDirectory(rootWatchDir))
 			{
 				watchDirIterators.add(brjs.getFileIterator(rootWatchDir));
 			}

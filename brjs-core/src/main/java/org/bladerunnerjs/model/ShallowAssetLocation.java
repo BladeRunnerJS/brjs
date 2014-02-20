@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.utility.FastDirectoryFileFilter;
 import org.bladerunnerjs.utility.JsStyleUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -200,7 +201,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
 		List<A> assets = new ArrayList<>();
 		
-		if(dir.isDirectory()) {
+		if(FastDirectoryFileFilter.isDirectory(dir)) {
 			addMatchingAssets(dir, assetFilter, assetClass, assets);
 		}
 		
@@ -209,7 +210,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	
 	protected <A extends Asset> void addMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
 		for(File file : root().getFileIterator(dir).files()) {
-			if(!file.isDirectory() && assetFilter.accept(file.getName())) {
+			if(!FastDirectoryFileFilter.isDirectory(file) && assetFilter.accept(file.getName())) {
 				assets.add(obtainAsset(assetClass, file.getParentFile(), file.getName()));
 			}
 		}
