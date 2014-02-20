@@ -6,9 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.caplin.cutlass.bundler.css.CssBundler;
 import com.caplin.cutlass.bundler.html.HtmlBundler;
-import com.caplin.cutlass.bundler.i18n.I18nBundler;
 import com.caplin.cutlass.bundler.xml.XmlBundler;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.google.jstestdriver.FileInfo;
@@ -19,13 +17,15 @@ public class BundlerInjector implements ResourcePreProcessor
 	protected List<BundlerHandler> bundlerHandlers;
 
 	public BundlerInjector() throws Exception
-	{		
+	{
 		bundlerHandlers = new ArrayList<BundlerHandler>();
 		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("js.bundle", "js/dev/en_GB/combined/bundle.js", false));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new CssBundler(), "css.bundle", true));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new I18nBundler(), "i18n.bundle", false));
+		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("css.bundle", "css/standard_en_GB/bundle.css", true));
+		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("i18n.bundle", "i18n/en_GB.js", false));
 		bundlerHandlers.add(new WritingResourceBundlerHandler(new XmlBundler(), "xml.bundle", true));
+//		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("xml.bundle", "bundle.xml", true));
 		bundlerHandlers.add(new WritingResourceBundlerHandler(new HtmlBundler(), "html.bundle", true));
+//		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("html.bundle", "bundle.html", true));
 	}
 
 	@Override
