@@ -17,7 +17,7 @@ public abstract class NodeVerifier<N extends Node> {
 	
 	public NodeVerifier(SpecTest specTest, N node) {
 		this.node = node;
-		fileUtil = new FileUtil("UTF-8");
+		fileUtil = new FileUtil(specTest.getActiveCharacterEncoding());
 		verifierChainer = new VerifierChainer(specTest);
 	}
 	

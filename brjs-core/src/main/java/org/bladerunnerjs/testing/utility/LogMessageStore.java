@@ -171,6 +171,8 @@ public class LogMessageStore
 
 	private void verifyLogMessage(String logLevel, boolean strictCheck, LinkedList<LogMessage> messages, String message, Object... params)
 	{
+		assertTrue("log message can't be empty", message.length() > 0);
+		
 		LogMessage foundMessage;
 		String isNullFailMessage;
 		if (strictCheck)

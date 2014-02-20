@@ -32,18 +32,18 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 	
 	@Test
 	public void interLibraryDependenciesAppearAheadOfTheDependentLibrary() throws Exception {
-		given(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js\ndepends: app-thirdparty2")
+		given(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js\n"+"depends: app-thirdparty2\n"+"exports: appthirdparty")
 			.and(appThirdparty).containsFile("src1.js")
-			.and(appThirdparty2).containsFileWithContents("library.manifest", "js: src2.js")
+			.and(appThirdparty2).containsFileWithContents("library.manifest", "js: src2.js\n"+"exports: lib")
 			.and(appThirdparty2).containsFile("src2.js")
 			.and(aspect).indexPageRequires(appThirdparty);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsText("// app-thirdparty2\nsrc2.js\n\n\n\n\n\n\n// app-thirdparty");
+		then(response).containsOrderedTextFragments("// app-thirdparty2", "// app-thirdparty");
 	}
 
 	@Test
 	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js, src2.js")
+		given(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js, src2.js\n"+"exports: appThirdparty")
 			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
 			.and(aspect).indexPageRequires(appThirdparty);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -53,7 +53,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 	
 	@Test
 	public void libraryFilesAreOrderedAsDefinedWithinTheManifest() throws Exception {
-		given(appThirdparty).containsFileWithContents("library.manifest", "js: src2.js, src1.js")
+		given(appThirdparty).containsFileWithContents("library.manifest", "js: src2.js, src1.js\n"+"exports: appThirdparty")
 			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
 			.and(aspect).indexPageRequires(appThirdparty);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -63,7 +63,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 	
 	@Test
 	public void aspectBundlesAppLegacyThirdpartyLibsIfTheyAreIncludedInAClass() throws Exception {
-		given(appThirdparty).containsFileWithContents("library.manifest", "js: src.js")
+		given(appThirdparty).containsFileWithContents("library.manifest", "js: src.js\n"+"exports: appThirdparty")
 			.and(appThirdparty).containsFile("src.js")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).classRefersToThirdpartyLib("appns.Class1", appThirdparty)
@@ -74,7 +74,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 	
 	@Test
 	public void aspectBundlesContainAppLegacyThirdpartyLibsIfTheyAreRequiredInAClass() throws Exception {
-		given(appThirdparty).containsFileWithContents("library.manifest", "js: src.js")
+		given(appThirdparty).containsFileWithContents("library.manifest", "js: src.js\n"+"exports: appThirdparty")
 			.and(appThirdparty).containsFile("src.js")
 			.and(aspect).classRequires("appns.Class1", "app-thirdparty")
 			.and(aspect).indexPageRefersTo("appns.Class1");

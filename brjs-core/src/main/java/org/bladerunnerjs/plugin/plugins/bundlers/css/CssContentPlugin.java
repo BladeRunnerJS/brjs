@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.ThemeAssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -24,6 +25,7 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 public class CssContentPlugin extends AbstractContentPlugin {
 	private final ContentPathParser contentPathParser;
 	private BRJS brjs;
+	private AssetPlugin cssAssetPlugin;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -41,6 +43,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
+		cssAssetPlugin = brjs.plugins().assetProducer(CssAssetPlugin.class);
 	}
 	
 	@Override
@@ -85,7 +88,8 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		String pattern = getFilePattern(locale, null);
 		
 		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
-			List<Asset> cssAssets = bundleSet.getResourceFiles("css");
+//			List<Asset> cssAssets = bundleSet.getResourceFiles("css");
+			List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
 			for(Asset cssAsset : cssAssets) {
 				String assetThemeName = getThemeName(cssAsset.getAssetLocation());
 				

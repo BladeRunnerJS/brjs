@@ -45,6 +45,12 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 		return listify(conf.css, "[^/]*\\.css");
 	}
 	
+	public String getExports() throws ConfigException
+	{
+		reloadConfIfChanged();
+		return conf.exports;
+	}
+	
 	public List<File> getCssFiles() throws ConfigException {
 		return getFilesMatchingFilePaths(getCss());
 	}

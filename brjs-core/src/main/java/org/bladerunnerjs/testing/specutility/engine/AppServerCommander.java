@@ -14,7 +14,7 @@ public class AppServerCommander extends ModelCommander
 	{
 		super(specTest);
 		this.appServer = appServer;
-		chainer = new BuilderChainer(modelTest);
+		chainer = new BuilderChainer(specTest);
 		this.specTest = specTest;
 	}
 

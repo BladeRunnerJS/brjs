@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -30,6 +31,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	private static final String LOCATION_PROPERTY_NAME = "location";
 	private static final String NEWLINE = "\n";
 	private static final String QUOTE = "\"";
+	private AssetPlugin i18nAssetPlugin = null;
 	
 	private ContentPathParser contentPathParser;
 	
@@ -48,6 +50,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		i18nAssetPlugin = brjs.plugins().assetProducer(I18nAssetPlugin.class);
 	}
 
 	@Override
@@ -64,7 +67,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	@Override
 	public String getGroupName()
 	{
-		return "text/javascript";
+		return null;
 	}
 
 	@Override
@@ -175,7 +178,8 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		List<I18nAssetFile> languageOnlyAssets = new ArrayList<I18nAssetFile>();
 		List<I18nAssetFile> languageAndLocationAssets = new ArrayList<I18nAssetFile>();
 		
-		List<Asset> propertyAssets = bundleSet.getResourceFiles("properties");
+//		List<Asset> propertyAssets = bundleSet.getResourceFiles("properties");
+		List<Asset> propertyAssets = bundleSet.getResourceFiles(i18nAssetPlugin);
 		
 		for (Asset asset : propertyAssets)
 		{

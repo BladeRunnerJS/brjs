@@ -1,1 +1,2 @@
 js: es5-shim.js, indexOf.js
+exports: "{}"

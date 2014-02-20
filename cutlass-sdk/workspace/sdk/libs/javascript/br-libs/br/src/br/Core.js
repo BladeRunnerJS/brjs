@@ -1,6 +1,8 @@
 var topiarist = require('topiarist');
 topiarist.exportTo(exports);
 
+exports.hasImplemented = exports.implement;
+
 exports.implement = function(implementor, interface) {
 	// We do this on a timeout so you can implement the methods later.
 	var br = topiarist;

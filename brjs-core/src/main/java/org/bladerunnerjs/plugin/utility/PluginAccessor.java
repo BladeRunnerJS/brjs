@@ -145,6 +145,20 @@ public class PluginAccessor {
 		return orderPlugins( pluginLocator.getAssetLocationPlugins() );
 	}
 	
+	public AssetPlugin assetProducer(Class<?> pluginClass ) {
+		
+		AssetPlugin result = null;
+		List<AssetPlugin> assetProducers = assetProducers();
+		for(AssetPlugin producer: assetProducers){
+			Class<?> possiblePluginClass = producer.getPluginClass();
+			if(possiblePluginClass.equals(pluginClass)){
+				result =  producer;
+				break;
+			}
+		}
+		return result;
+	}
+	
 	private <P extends Plugin> List<P> orderPlugins(List<P> plugins) {
 		Collections.sort(plugins, new Comparator<Plugin>() {
 			@Override

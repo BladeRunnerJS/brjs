@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class BundleSet {
 	private final List<SourceModule> sourceModules;
@@ -50,6 +51,18 @@ public class BundleSet {
 		return orderAssetsBasedOnAssetContainer(result);
 	}
 	
+	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
+		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
+		
+		for(AssetLocation resourceNode : resourceLocations) {
+			resourceFiles.addAll(resourceNode.bundleResources(assetProducer));
+		}
+		
+		List<Asset> result = new ArrayList<Asset>();
+		result.addAll(resourceFiles);
+		
+		return orderAssetsBasedOnAssetContainer(result);
+	}
 	
 	private <A extends Asset> List<A> orderAssetsBasedOnAssetContainer(List<A> assets)
 	{

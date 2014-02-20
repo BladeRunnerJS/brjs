@@ -111,6 +111,14 @@ public class StringVerifier {
 		
 		return verifierChainer;
 	}
+	
+	public VerifierChainer isNotEmpty() {
+		if(string.trim().length() == 0) {
+			assertEquals("", string.trim());
+		}
+		
+		return verifierChainer;
+	}
 
 	public VerifierChainer containsMinifiedClasses(String... classes)
 	{

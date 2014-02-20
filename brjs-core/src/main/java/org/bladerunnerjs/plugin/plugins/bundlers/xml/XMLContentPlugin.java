@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
@@ -26,6 +27,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 
 	private ContentPathParser contentPathParser;
 	private BRJS brjs = null;
+	private AssetPlugin xmlAssetPlugin;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -37,6 +39,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs) 
 	{
 		this.brjs  = brjs;
+		xmlAssetPlugin = brjs.plugins().assetProducer(XMLAssetPlugin.class);
 	}
 
 	@Override
@@ -91,7 +94,8 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		try{
 			String outputEncoding = brjs.bladerunnerConf().getDefaultOutputEncoding();
 			Writer output = new OutputStreamWriter(os, outputEncoding);
-			List<Asset> xmlAssets = bundleSet.getResourceFiles("xml");
+			List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
+//			List<Asset> xmlAssets = bundleSet.getResourceFiles("xml");
 			bundleWriter.writeBundle(xmlAssets, output);
 			output.flush();
 		}

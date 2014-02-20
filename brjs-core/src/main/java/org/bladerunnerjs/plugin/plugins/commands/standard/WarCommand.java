@@ -5,12 +5,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -18,6 +22,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -27,7 +32,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-
+import org.bladerunnerjs.utility.FileUtil;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.WebXmlCompiler;
 
@@ -39,13 +44,21 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 public class WarCommand extends ArgsParsingCommandPlugin
 {
+	private static List<String> indexFiles = Arrays.asList(new String[] {"index.html", "index.jsp"});
 	private ConsoleWriter out;
 	private BRJS brjs;
+	private String defaultInputEncoding;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		try {
+			this.brjs = brjs;
+			out = brjs.getConsoleWriter();
+			defaultInputEncoding = brjs.bladerunnerConf().getDefaultInputEncoding();
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -92,11 +105,20 @@ public class WarCommand extends ArgsParsingCommandPlugin
 				
 				FileUtility.copyFileIfExists(origApp.file("app.conf"), warApp.file("app.conf"));
 				
+				FileUtil fileUtil = new FileUtil(defaultInputEncoding);
 				for(Aspect origAspect : origApp.aspects()) {
 					Aspect warAspect = warApp.aspect(origAspect.getName());
 					
-					FileUtility.copyFileIfExists(origAspect.file("index.html"), warAspect.file("index.html"));
-					FileUtility.copyFileIfExists(origAspect.file("index.jsp"), warAspect.file("index.jsp"));
+					for(String indexFile : indexFiles) {
+						if(origAspect.file(indexFile).exists()) {
+							FileUtils.copyFile(origAspect.file(indexFile), warAspect.file(indexFile));
+							try(Writer writer = new OutputStreamWriter(new FileOutputStream(warAspect.file(indexFile)), brjs.bladerunnerConf().getDefaultInputEncoding())) {
+								// TODO: stop only supporting the English locale within wars
+								warAspect.filterIndexPage(fileUtil.readFileToString(origAspect.file(indexFile)), "en", writer, RequestMode.Prod);
+							}
+						}
+					}
+					
 					FileUtility.copyDirectoryIfExists(origAspect.unbundledResources().dir(), warAspect.unbundledResources().dir());
 					
 					createAspectBundles(origAspect, warAspect, contentPlugins, origApp.appConf().getLocales().split(","));
@@ -104,7 +126,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 				
 				FileUtility.zipFolder(warApp.dir(), warFile, true);
 			}
-			catch (ConfigException e) {
+			catch (ConfigException | ModelOperationException e) {
 				throw new RuntimeException(e);
 			}
 			finally {

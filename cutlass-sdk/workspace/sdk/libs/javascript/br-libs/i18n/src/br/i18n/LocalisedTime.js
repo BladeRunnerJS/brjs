@@ -3,9 +3,6 @@
 var Errors = require('br/Errors');
 var i18n = require('br/I18n');
 
-/**
- * @private
- */
 function LocalisedTime(time) {
 	if (!isValidTime(time)) {
 		var exceptionMessage = "A LocalisedTime object could not be instantiated from: " + time;
@@ -16,7 +13,7 @@ function LocalisedTime(time) {
 
 LocalisedTime.prototype.format = function() {
 	var timeString = String(this.time);
-	var timeSeparatorToken = i18n("ct.i18n.time.format.separator");
+	var timeSeparatorToken = i18n("br.i18n.time.format.separator");
 	var replacementPattern = "$1" + timeSeparatorToken;
 	var regExp = /(\d{2})/g;
 	var formattedTime = timeString.replace(regExp, replacementPattern);

@@ -18,7 +18,7 @@ public abstract class NodeBuilder<N extends Node> {
 	public NodeBuilder(SpecTest specTest, N node) {
 		this.specTest = specTest;
 		this.node = node;
-		fileUtil = new FileUtil("UTF-8");
+		fileUtil = new FileUtil(specTest.getActiveCharacterEncoding());
 		builderChainer = new BuilderChainer(specTest);
 	}
 	

@@ -16,15 +16,15 @@ LocalisedDate.prototype.format = function(dateFormat) {
 	if (this._containsAmPm(dateFormat)) {
 		// format a date containing only the am or pm string
 		var amPmString = moment(this.date).format("a");
-		var localeAmPmString = i18n("ct.i18n.date." + amPmString);
+		var localeAmPmString = i18n("br.i18n.date." + amPmString);
 		formattedDate = formattedDate.replace(amPmString, localeAmPmString);
 	}
 
 	if (this._containsMonthName(dateFormat)) {
 		var monthName = this._getMonthName();
-		var monthToken = "ct.i18n.date.month." + monthName.toLowerCase();
+		var monthToken = "br.i18n.date.month." + monthName.toLowerCase();
 		if (this._containsAbbreviatedMonthName(dateFormat)) {
-			monthToken = "ct.i18n.date.month.short." + monthName.toLowerCase();
+			monthToken = "br.i18n.date.month.short." + monthName.toLowerCase();
 			monthName = this._getAbbreviatedMonthName();
 		}
 		formattedDate = formattedDate.replace(monthName, i18n(monthToken));
@@ -32,9 +32,9 @@ LocalisedDate.prototype.format = function(dateFormat) {
 
 	if (this._containsDayName(dateFormat)) {
 		var dayName = this._getDayName();
-		var dayToken = "ct.i18n.date.day." + dayName.toLowerCase();
+		var dayToken = "br.i18n.date.day." + dayName.toLowerCase();
 		if (this._containsAbbreviatedDayName(dateFormat)) {
-			dayToken = "ct.i18n.date.day.short." + dayName.toLowerCase();
+			dayToken = "br.i18n.date.day.short." + dayName.toLowerCase();
 			dayName = this._getAbbreviatedDayName();
 		}
 		formattedDate = formattedDate.replace(dayName, i18n(dayToken));
@@ -48,15 +48,15 @@ LocalisedDate.prototype.format = function(dateFormat) {
 	if (this._containsAmPm(dateFormat)) {
 		// format a date containing only the am or pm string
 		var amPmString = moment(this.date).format("a");
-		var localeAmPmString = i18n("ct.i18n.date." + amPmString);
+		var localeAmPmString = i18n("br.i18n.date." + amPmString);
 		formattedDate = formattedDate.replace(amPmString, localeAmPmString);
 	}
 
 	if (this._containsMonthName(dateFormat)) {
 		var monthName = this._getMonthName();
-		var monthToken = "ct.i18n.date.month." + monthName.toLowerCase();
+		var monthToken = "br.i18n.date.month." + monthName.toLowerCase();
 		if (this._containsAbbreviatedMonthName(dateFormat)) {
-			monthToken = "ct.i18n.date.month.short." + monthName.toLowerCase();
+			monthToken = "br.i18n.date.month.short." + monthName.toLowerCase();
 			monthName = this._getAbbreviatedMonthName();
 		}
 		formattedDate = formattedDate.replace(monthName, i18n(monthToken));
@@ -64,9 +64,9 @@ LocalisedDate.prototype.format = function(dateFormat) {
 
 	if (this._containsDayName(dateFormat)) {
 		var dayName = this._getDayName();
-		var dayToken = "ct.i18n.date.day." + dayName.toLowerCase();
+		var dayToken = "br.i18n.date.day." + dayName.toLowerCase();
 		if (this._containsAbbreviatedDayName(dateFormat)) {
-			dayToken = "ct.i18n.date.day.short." + dayName.toLowerCase();
+			dayToken = "br.i18n.date.day.short." + dayName.toLowerCase();
 			dayName = this._getAbbreviatedDayName();
 		}
 		formattedDate = formattedDate.replace(dayName, i18n(dayToken));

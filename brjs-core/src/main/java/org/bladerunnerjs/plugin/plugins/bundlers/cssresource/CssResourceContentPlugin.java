@@ -82,25 +82,21 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		File resourceFile = null;
 		
-		// TODO: this code all seems to assume that the bundlable node will be an aspect, whereas it could also be a workbench
 		if(contentPath.formName.equals("aspect-request")) {
-			Aspect aspect = (Aspect) bundlableNode;
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
-			resourceFile = ((ResourcesAssetLocation) aspect.assetLocation("resources")).theme(theme).file(resourcePath);
+			resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if(contentPath.formName.equals("bladeset-request")) {
-			Aspect aspect = (Aspect) bundlableNode;
-			Bladeset bladeset = aspect.getApp().bladeset(contentPath.properties.get("bladeset"));
+			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get("bladeset"));
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
 			resourceFile = ((ResourcesAssetLocation) bladeset.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if(contentPath.formName.equals("blade-request")) {
-			Aspect aspect = (Aspect) bundlableNode;
-			Bladeset bladeset = aspect.getApp().bladeset(contentPath.properties.get("bladeset"));
+			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get("bladeset"));
 			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
@@ -108,8 +104,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			resourceFile = ((ResourcesAssetLocation) blade.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if(contentPath.formName.equals("blade-workbench-request")) {
-			Aspect aspect = (Aspect) bundlableNode;
-			Bladeset bladeset = aspect.getApp().bladeset(contentPath.properties.get("bladeset"));
+			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get("bladeset"));
 			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
 			Workbench workbench = blade.workbench();
 			String resourcePath = contentPath.properties.get("resourcePath");
@@ -117,8 +112,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			resourceFile = workbench.assetLocation("resources").file(resourcePath);
 		}
 		else if(contentPath.formName.equals("lib-request")) {
-			Aspect aspect = (Aspect) bundlableNode;
-			JsLib jsLib = aspect.getApp().jsLib(contentPath.properties.get("lib"));
+			JsLib jsLib = bundlableNode.getApp().jsLib(contentPath.properties.get("lib"));
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
 			resourceFile = jsLib.file(resourcePath);

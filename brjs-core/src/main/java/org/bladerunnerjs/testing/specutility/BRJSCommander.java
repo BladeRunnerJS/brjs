@@ -83,7 +83,7 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 	public CommanderChainer hasBeenCreated() {
 		call(new Command() {
 			public void call() throws Exception {
-				modelTest.brjs = modelTest.createModel();
+				specTest.brjs = specTest.createModel();
 			}
 		});
 		

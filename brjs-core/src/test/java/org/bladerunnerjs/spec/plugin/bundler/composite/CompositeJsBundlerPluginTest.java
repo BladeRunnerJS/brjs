@@ -37,7 +37,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void thirdpartyAppearsFirstAndNamespacedModulesAppearLastInTheBundle() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClasses("appns.node.NodeClass", "appns.namespaced.NamespacedClass")
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js")
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFile("src.js")
 			.and(aspect).indexPageRefersTo("thirdparty-lib, appns.namespaced.NamespacedClass, appns.node.NodeClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
@@ -53,7 +53,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(brLib).hasClass("br.AliasRegistry")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageRefersTo("the-alias")
-			.and(brbootstrap).containsFileWithContents("library.manifest", "js: ")
+			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("bootstrap.js");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
@@ -69,9 +69,9 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns.node.Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
-			.and(brbootstrap).containsFileWithContents("library.manifest", "js:")
+			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("bootstrap.js")
-			.and(appLib).containsFileWithContents("library.manifest", "js:")
+			.and(appLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("appLib.js")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 					"appns.namespaced.Class\n"+
@@ -87,27 +87,21 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void i18nBundleIsIncludedAfterThirdpartyAndBeforeNamespacedAndNodeJSBundlers() throws Exception {
+	public void i18nBundleIsNotIncluded() throws Exception {
 		given(aspect).hasNodeJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns.node.Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
-			.and(brbootstrap).containsFileWithContents("library.manifest", "js:")
+			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("bootstrap.js")
-			.and(appLib).containsFileWithContents("library.manifest", "js:")
+			.and(appLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("appLib.js")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 					"appns.namespaced.Class\n"+
 					"require('appLib');\n"+
 					"require('appns.node.Class');\n" );
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
-		then(requestResponse).containsOrderedTextFragments(
-				"// br-bootstrap", 
-				"// appLib",
-				"window._brjsI18nProperties = [{",
-				"define('appns/node/Class'",
-				"appns.namespaced.Class =", 
-				"define('appns/namespaced/Class'," ); 
+		then(requestResponse).doesNotContainText("window._brjsI18nProperties = [{");
 	}
 	
 }
