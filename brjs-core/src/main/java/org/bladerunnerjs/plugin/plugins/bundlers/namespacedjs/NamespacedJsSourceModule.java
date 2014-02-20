@@ -37,6 +37,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private String className;
 
 	private SourceModulePatch patch;
+	private FileModifiedChecker patchFileModifiedChecker;
+
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -94,7 +96,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+		if(fileModifiedChecker.fileModifiedSinceLastCheck() || patchFileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies(bundlableNode);
 		}
 		
@@ -124,7 +126,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	private void recalculateDependencies(BundlableNode bundlableNode) throws ModelOperationException {
-		try(Reader reader = linkedAsset.getReader()) {
+		try(Reader reader = getReader()) {
 			orderDependentSourceModules = new ArrayList<>();
 			
 			StringWriter stringWriter = new StringWriter();
@@ -152,5 +154,6 @@ public class NamespacedJsSourceModule implements SourceModule {
 	public void addPatch(SourceModulePatch patch)
 	{
 		this.patch = patch;
+		patchFileModifiedChecker = new FileModifiedChecker(patch.getPatchFile());
 	}
 }

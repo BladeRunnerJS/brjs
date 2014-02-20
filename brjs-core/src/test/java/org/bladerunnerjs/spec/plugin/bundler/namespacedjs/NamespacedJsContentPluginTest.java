@@ -6,6 +6,7 @@ import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NamespacedJsContentPluginTest extends SpecTest {
@@ -96,6 +97,8 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void requiresAreAlsoAutomaticallyAddedWithinTheBundledResponse() throws Exception {
+		given(exceptions).arentCaught();
+		
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClasses("appns.namespaced.Class", "appns.nodejs.Class")
 			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
@@ -171,6 +174,17 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 				"sdkLib.Class = function()",
 				"sdkLib.Class.patch = function() {}"
 		);
+	}
+	
+	@Ignore
+	@Test
+	public void dependenciesInPatchesArePulledInToTheBundle() throws Exception {
+		given(sdkJsLib).hasNamespacedJsPackageStyle("src")
+			.and(sdkJsLib).hasClasses("sdkLib.Class1", "sdkLib.Class2")
+			.and(aspect).indexPageRefersTo("new sdkLib.Class1()")
+			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "new sdkLib.Class2()");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("sdkLib.Class2 = ");
 	}
 	
 	@Test

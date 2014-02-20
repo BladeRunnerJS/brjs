@@ -49,6 +49,7 @@ public class NodeJsSourceModule implements SourceModule {
 	private String defaultInputEncoding;
 
 	private SourceModulePatch patch;
+	private FileModifiedChecker patchFileModifiedChecker;
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -72,7 +73,7 @@ public class NodeJsSourceModule implements SourceModule {
 		Set<SourceModule> dependentSourceModules = new HashSet<>();
 		
 		try {
-			if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
+			if (fileModifiedChecker.fileModifiedSinceLastCheck() || patchFileModifiedChecker.fileModifiedSinceLastCheck()) {
 				recalculateDependencies();
 			}
 			
@@ -95,7 +96,7 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		if (fileModifiedChecker.fileModifiedSinceLastCheck()) {
+		if (fileModifiedChecker.fileModifiedSinceLastCheck() || patchFileModifiedChecker.fileModifiedSinceLastCheck()) {
 			recalculateDependencies();
 		}
 		
@@ -151,7 +152,7 @@ public class NodeJsSourceModule implements SourceModule {
 		requirePaths = new HashSet<>();
 		aliasNames = new ArrayList<>();
 		
-		try(Reader fileReader = new UnicodeReader(assetFile, defaultInputEncoding)) {
+		try(Reader fileReader = getReader()) {
 			StringWriter stringWriter = new StringWriter();
 			IOUtils.copy(fileReader, stringWriter);
 			
@@ -191,5 +192,6 @@ public class NodeJsSourceModule implements SourceModule {
 	public void addPatch(SourceModulePatch patch)
 	{
 		this.patch = patch;
+		patchFileModifiedChecker = new FileModifiedChecker(patch.getPatchFile());
 	}
 }

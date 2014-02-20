@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
 
 /**
  * An extension of AssetFile, represents any AssetFile that could depend on other AssetFiles. 

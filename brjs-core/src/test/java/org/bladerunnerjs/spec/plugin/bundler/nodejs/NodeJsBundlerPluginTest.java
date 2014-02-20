@@ -52,4 +52,13 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			"\n});");
 	}
 	
+	@Test
+	public void requiresInPatchesArePulledInToTheBundle() throws Exception {
+		given(sdkJsLib).hasClasses("sdkLib.Class1", "sdkLib.Class2")
+			.and(aspect).indexPageRefersTo("sdkLib.Class1")
+			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "require('sdkLib/Class2')");
+		when(app).requestReceived("/default-aspect/node-js/bundle.js", requestResponse);
+		then(requestResponse).containsText("define('sdkLib/Class2'");
+	}
+	
 }
