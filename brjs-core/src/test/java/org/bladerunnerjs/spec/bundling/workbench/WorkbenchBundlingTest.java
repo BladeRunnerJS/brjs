@@ -86,6 +86,15 @@ public class WorkbenchBundlingTest extends SpecTest {
  	}
 	
  	@Test
+ 	public void aspectCssFilesAreBundledInTheWorkbenchEvenIfAspectSrcIsntUsed() throws Exception {
+ 		given(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content")
+        	.and(workbench).hasClass("appns.workbench.Class1")
+        	.and(workbench).indexPageRefersTo("appns.workbench.Class1");
+ 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", response);
+ 		then(response).containsText("ASPECT theme content");
+ 	}
+ 	
+ 	@Test
  	public void bladesetCssFilesAreBundledWhenReferencedInTheWorkbench() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClass("appns.bs.Class1")

@@ -56,6 +56,8 @@ public class Workbench extends AbstractBrowsableNode implements TestableNode
 	public List<AssetContainer> getAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
+		assetContainers.add( getApp().aspect("default") );
+		
 		assetContainers.add( this );
 		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
 		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
@@ -63,8 +65,6 @@ public class Workbench extends AbstractBrowsableNode implements TestableNode
 		for(JsLib jsLib : getApp().jsLibs()) {
 			assetContainers.add(jsLib);
 		}
-		
-		assetContainers.add( getApp().aspect("default") );
 		
 		return assetContainers;
 	}
