@@ -61,7 +61,7 @@ public class ThirdpartySourceModule implements SourceModule
 			
 			// If package.json exists then the code being loaded expects module and exports variables to be present
 			// the define block supplies those. So wrap the code in the define block.
-			Boolean packageJsonExists = !assetLocation.getAssetContainer().file("package.json").isFile();
+			Boolean packageJsonExists = assetLocation.getAssetContainer().file("package.json").isFile();
 			
 			if(packageJsonExists)
 			{

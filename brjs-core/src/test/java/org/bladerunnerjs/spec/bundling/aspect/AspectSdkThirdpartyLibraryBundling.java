@@ -205,13 +205,15 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	}
 	
 	@Test
-	public void librariesAreWrappedInADefineBlock() throws Exception {
+	public void librariesHaveADefineBlockAppended() throws Exception {
+		String fileSrc = "window.thirdpartyLib = { }";
 		given(thirdpartyLib).hasBeenCreated()
     		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: thirdpartyLib")
-    		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
+    		.and(thirdpartyLib).containsFileWithContents("src.js", fileSrc)
     		.and(aspect).indexPageRequires(thirdpartyLib);
     	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-    	then(response).containsOrderedTextFragments("define('thirdparty-lib1', function(require, exports, module) {\n",
+    	then(response).containsOrderedTextFragments(fileSrc,
+    					"define('thirdparty-lib1', function(require, exports, module) {\n",
     						"module.exports = thirdpartyLib",
     					"});");
 	}
@@ -219,14 +221,16 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	//TODO: remove this test when we have a NodeJS library plugin that reads the Package.json - also remove the check in ThirdpartySourceModule
 	@Test
-	public void librariesAreWrappedIfPackageJsonExistsr() throws Exception {
+	public void librariesAreWrappedIfPackageJsonExists() throws Exception {
+		String fileSrc = "window.thirdpartyLib = { }";
 		given(thirdpartyLib).hasBeenCreated()
     		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: someLib")
     		.and(thirdpartyLib).containsFileWithContents("package.json", "// some packagey stuff")
-    		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
+    		.and(thirdpartyLib).containsFileWithContents("src.js", fileSrc)
     		.and(aspect).indexPageRequires(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments("define('thirdparty-lib1', function(require, exports, module) {\n",
+				fileSrc,
 				"module.exports = someLib",
 			"});");
 	}
