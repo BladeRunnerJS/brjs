@@ -337,7 +337,7 @@ TranslatorTest.prototype.test_getMessageForAnUnknownKeyThatContainsATokenReturns
 
 TranslatorTest.prototype.test_utfForeignScriptTest = function() {
 	var Translator = require('br/i18n/Translator');
-	var translator = new Translator(miscForeignMessages);
+	var translator = new Translator(this.miscForeignMessages);
 	var text = "English: @{english.hello}\n" +
 		"Chinese: @{chinese.hello}\n" +
 		"Japanese: @{japanese.hello}\n" +
@@ -358,7 +358,7 @@ TranslatorTest.prototype.test_utfForeignScriptTest = function() {
 
 TranslatorTest.prototype.test_correctTranslationWithCamelCaseTokens = function() {
 	var Translator = require('br/i18n/Translator');
-	var translator = new Translator(camelCaseTokens);
+	var translator = new Translator(this.camelCaseTokens);
 
 	var token = "token.CamelcasetokeN";
 
@@ -370,7 +370,7 @@ TranslatorTest.prototype.test_correctTranslationWithCamelCaseTokens = function()
 
 TranslatorTest.prototype.test_tokenExistsWithCamelCaseTokens = function() {
 	var Translator = require('br/i18n/Translator');
-	var translator = new Translator(camelCaseTokens);
+	var translator = new Translator(this.camelCaseTokens);
 
 	var token = "token.cameLcaseTOKEN";
 
