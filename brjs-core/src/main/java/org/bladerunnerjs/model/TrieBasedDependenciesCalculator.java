@@ -38,13 +38,13 @@ public class TrieBasedDependenciesCalculator
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
 	}
 	
-	protected List<SourceModule> getCalculatedDependentSourceModules() throws ModelOperationException
+	public List<SourceModule> getCalculatedDependentSourceModules() throws ModelOperationException
 	{
 		recalculateDependencies();
 		return new ArrayList<SourceModule>( dependentSourceModules );
 	}
 	
-	protected List<String> getCalculataedAliases() throws ModelOperationException
+	public List<String> getCalculataedAliases() throws ModelOperationException
 	{
 		recalculateDependencies();
 		return aliases;

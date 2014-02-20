@@ -6,7 +6,6 @@ import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NamespacedJsContentPluginTest extends SpecTest {
@@ -176,7 +175,6 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		);
 	}
 	
-	@Ignore
 	@Test
 	public void dependenciesInPatchesArePulledInToTheBundle() throws Exception {
 		given(sdkJsLib).hasNamespacedJsPackageStyle("src")
@@ -184,7 +182,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("new sdkLib.Class1()")
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "new sdkLib.Class2()");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
-		then(requestResponse).containsClasses("sdkLib.Class2 = ");
+		then(requestResponse).containsClasses("sdkLib.Class2");
 	}
 	
 	@Test

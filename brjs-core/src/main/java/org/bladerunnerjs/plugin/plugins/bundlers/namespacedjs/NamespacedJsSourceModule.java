@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
+import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
@@ -39,6 +40,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private SourceModulePatch patch;
 	private FileModifiedChecker patchFileModifiedChecker;
 
+	private TrieBasedDependenciesCalculator dependencyCalculator;
+
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -52,6 +55,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 			fileModifiedChecker = new FileModifiedChecker(assetFile);
 			linkedAsset = new FullyQualifiedLinkedAsset();
 			linkedAsset.initialize(assetLocation, dir, assetName);
+			dependencyCalculator = new TrieBasedDependenciesCalculator(this);
 		}
 		catch(RequirePathException e) {
 			throw new AssetFileInstantationException(e);
@@ -60,12 +64,12 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return linkedAsset.getDependentSourceModules(bundlableNode);
+		return dependencyCalculator.getCalculatedDependentSourceModules();
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return linkedAsset.getAliasNames();
+		return dependencyCalculator.getCalculataedAliases();
 	}
 	
 	@Override
@@ -97,7 +101,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		if(fileModifiedChecker.fileModifiedSinceLastCheck() || patchFileModifiedChecker.fileModifiedSinceLastCheck()) {
-			recalculateDependencies(bundlableNode);
+			recalculateOrderedDependencies(bundlableNode);
 		}
 		
 		return orderDependentSourceModules;
@@ -125,7 +129,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 		return assetLocation;
 	}
 	
-	private void recalculateDependencies(BundlableNode bundlableNode) throws ModelOperationException {
+	private void recalculateOrderedDependencies(BundlableNode bundlableNode) throws ModelOperationException {
 		try(Reader reader = getReader()) {
 			orderDependentSourceModules = new ArrayList<>();
 			
