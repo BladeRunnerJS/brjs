@@ -17,6 +17,8 @@ br.presenter.workbench.ui.PresentationModelTree = function(oPresentationModel)
 	oTree.render(this.m_eElement);
 };
 
+br.Core.implement(br.presenter.workbench.ui.PresentationModelTree, br.workbench.ui.WorkbenchComponent);
+
 br.presenter.workbench.ui.PresentationModelTree.prototype.search = function(sValue)
 {
 	this.m_oTreeSearcher.search(sValue);
@@ -94,5 +96,3 @@ br.presenter.workbench.ui.PresentationModelTree.prototype._createListeners = fun
 			}
 		}, "_onChange");
 };
-
-br.Core.implement(br.presenter.workbench.ui.PresentationModelTree, br.workbench.ui.WorkbenchComponent);

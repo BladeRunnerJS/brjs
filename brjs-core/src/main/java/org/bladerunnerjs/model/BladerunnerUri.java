@@ -39,7 +39,7 @@ public class BladerunnerUri
 	 * The url query string.
 	 * Will be either the empty string or start with a <tt>?</tt>.
 	 * e.g. <ul>
-	 *   <li>?major=boris&cameron=worried</li>
+	 *   <li>?major=boris&amp;cameron=worried</li>
 	 * </ul>
 	 */
 	public String queryString;

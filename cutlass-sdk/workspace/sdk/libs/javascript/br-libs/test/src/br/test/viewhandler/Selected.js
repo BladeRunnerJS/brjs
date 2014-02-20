@@ -14,6 +14,8 @@ br.Core.thirdparty("jquery");
 br.test.viewhandler.Selected = function(){
 };
 
+br.Core.implement(br.test.viewhandler.Selected, br.test.viewhandler.ViewFixtureHandler);
+
 br.test.viewhandler.Selected.prototype.get = function(eElement)
 {
 	if (eElement.selected === undefined)
@@ -38,5 +40,3 @@ br.test.viewhandler.Selected.prototype.set = function(eElement, vValue)
 		jQuery(eElement).parent('select').trigger("change");
 	}
 };
-
-br.Core.implement(br.test.viewhandler.Selected, br.test.viewhandler.ViewFixtureHandler);

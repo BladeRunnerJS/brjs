@@ -14,6 +14,8 @@ br.test.viewhandler.IsVisible = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.IsVisible, br.test.viewhandler.ViewFixtureHandler);
+
 br.test.viewhandler.IsVisible.prototype.set = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Visibility can't be used in a Given or When clause.");
@@ -35,5 +37,3 @@ br.test.viewhandler.IsVisible.prototype.get = function(eElement)
 	var sVisibility = jQuery(eElement).css("visibility");
 	return jQuery(eElement).is(":visible") && sVisibility != 'hidden';
 };
-
-br.Core.implement(br.test.viewhandler.IsVisible, br.test.viewhandler.ViewFixtureHandler);

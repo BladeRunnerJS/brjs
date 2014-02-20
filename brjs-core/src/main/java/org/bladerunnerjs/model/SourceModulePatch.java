@@ -12,6 +12,7 @@ import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
+import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 
 public class SourceModulePatch
 {
@@ -23,42 +24,21 @@ public class SourceModulePatch
 	
 	
 	private File patchFile;
-
-
+	private FileModificationInfo fileModificationInfo;
+	private BRJS brjs;
+	private AssetLocation assetLocation;
+	private String requirePath;
 	private Reader patchFileReader;
 	
 	//TODO: this only supports patching files with a .js extension
-	public SourceModulePatch(AssetLocation assetLocation, String requirePath)
+	private SourceModulePatch(AssetLocation assetLocation, String requirePath)
 	{
-		BRJS brjs = assetLocation.root();
+		brjs = assetLocation.root();
+		this.assetLocation = assetLocation;
+		this.requirePath = requirePath;
 		
 		String patchPath = requirePath.replace(".", "/") + ".js";
 		patchFile = new File(brjs.jsPatches().dir(), patchPath);
-		
-		if ( !(assetLocation.getAssetContainer() instanceof JsLib) )
-		{
-			patchFileReader = new StringReader("");
-		}
-		else
-		{
-    		if (patchFile.isFile())
-    		{
-    			brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
-    			try
-    			{
-    				patchFileReader = new BufferedReader(new UnicodeReader(patchFile, brjs.bladerunnerConf().getDefaultInputEncoding()));
-    			}
-    			catch (IOException | ConfigException e)
-    			{
-    				throw new RuntimeException(e);
-    			}			
-    		}
-    		else
-    		{
-				brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
-    			patchFileReader = new StringReader("");
-    		}
-		}
 	}
 
 	public File getPatchFile()
@@ -67,11 +47,49 @@ public class SourceModulePatch
 	}
 	
 	public Reader getReader()
-	{
+	{		
+		if (fileModificationInfo == null || fileModificationInfo.getLastModified() < lastModified())
+		{
+    		if ( !(assetLocation.getAssetContainer() instanceof JsLib) )
+    		{
+    			patchFileReader = new StringReader("");
+    		}
+    		else
+    		{
+        		if (patchFile.isFile())
+        		{
+        			brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
+        			try
+        			{
+        				patchFileReader = new BufferedReader(new UnicodeReader(patchFile, brjs.bladerunnerConf().getDefaultInputEncoding()));
+        			}
+        			catch (IOException | ConfigException e)
+        			{
+        				throw new RuntimeException(e);
+        			}			
+        		}
+        		else
+        		{
+    				brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
+        			patchFileReader = new StringReader("");
+        		}
+    		}
+		}
+		
 		return patchFileReader;
 	}
 	
+	private long lastModified() {
+		if((fileModificationInfo == null) && patchFile.isFile()) {
+			fileModificationInfo = brjs.getModificationInfo(patchFile);
+		}
+		
+		return (fileModificationInfo != null) ? fileModificationInfo.getLastModified() : 0;
+	}
 	
+	
+	
+	/*----- static methods for getting patches so we can caches them -----*/
 	
 	public static SourceModulePatch getPatchForRequirePath(AssetLocation assetLocation, String requirePath)
 	{

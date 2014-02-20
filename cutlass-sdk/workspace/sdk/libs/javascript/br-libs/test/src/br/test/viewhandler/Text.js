@@ -14,6 +14,8 @@ br.test.viewhandler.Text = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.Text, br.test.viewhandler.ViewFixtureHandler);
+
 br.test.viewhandler.Text.prototype.get = function(eElement)
 {
 	if (eElement.tagName.toLowerCase() === "input")
@@ -31,5 +33,3 @@ br.test.viewhandler.Text.prototype.set = function(eElement, vValue)
 	}
 	jQuery(eElement).text(vValue);
 };
-
-br.Core.implement(br.test.viewhandler.Text, br.test.viewhandler.ViewFixtureHandler);

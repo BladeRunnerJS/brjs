@@ -12,9 +12,13 @@ TooltipControlPresentationModel = function()
 	this.errorMonitor.monitorField(this.tooltipField2);
 };
 
+br.Core.extend(TooltipControlPresentationModel, br.presenter.PresentationModel);
+
 TooltipControlPresentationModel.aValidator = function()
 {
 };
+
+br.Core.implement(TooltipControlPresentationModel.aValidator, br.presenter.validator.Validator);
 
 TooltipControlPresentationModel.aValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {
@@ -33,6 +37,3 @@ TooltipControlPresentationModel.anotherValidator.prototype.validate = function(v
 	oValidationResult.setResult (vValue == 0, "ANOTHERERR" );
 	return;
 };
-
-br.Core.extend(TooltipControlPresentationModel, br.presenter.PresentationModel);
-br.Core.implement(TooltipControlPresentationModel.aValidator, br.presenter.validator.Validator);

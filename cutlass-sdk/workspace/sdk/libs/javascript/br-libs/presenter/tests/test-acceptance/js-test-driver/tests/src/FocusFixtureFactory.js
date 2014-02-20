@@ -1,6 +1,7 @@
 FocusFixtureFactory = function()
 {
 };
+br.Core.implement(FocusFixtureFactory, br.test.FixtureFactory);
 
 FocusFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {
@@ -8,5 +9,3 @@ FocusFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 			new br.presenter.testing.PresenterComponentFixture('focus-view-form-id',
 					'FocusPresentationModel'));
 };
-
-br.Core.implement(FocusFixtureFactory, br.test.FixtureFactory);

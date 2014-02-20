@@ -10,6 +10,8 @@ br.presenter.formatter.TrimFormatter = function() {
 	this.regExpFormatter = new br.presenter.formatter.RegExpFormatter();
 };
 
+br.Core.implement(br.presenter.formatter.TrimFormatter, br.presenter.formatter.Formatter);
+
 /**
  * Trims whitespace from boths ends of the string.
  * <p/>
@@ -38,5 +40,3 @@ br.presenter.formatter.TrimFormatter.prototype.format = function(vValue, mAttrib
 br.presenter.formatter.TrimFormatter.prototype.toString = function() {
 	return "br.presenter.formatter.TrimFormatter";
 };
-
-br.Core.implement(br.presenter.formatter.TrimFormatter, br.presenter.formatter.Formatter);

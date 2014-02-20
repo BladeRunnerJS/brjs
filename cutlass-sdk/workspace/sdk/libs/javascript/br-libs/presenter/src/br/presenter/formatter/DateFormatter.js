@@ -22,6 +22,8 @@ br.presenter.formatter.DateFormatter = function()
 	this.m_sFormatDefault = "DD-MM-YYYY HH:mm:ss";
 };
 
+br.Core.implement(br.presenter.formatter.DateFormatter, br.presenter.formatter.Formatter);
+
 /**
  * Formats a date by converting it from a specified input format to a new output format.
  * 
@@ -146,5 +148,3 @@ br.presenter.formatter.DateFormatter.prototype.getDateFormat = function(sDateFor
 br.presenter.formatter.DateFormatter.prototype.toString = function() {
 	return "br.presenter.formatter.DateFormatter";
 };
-
-br.Core.implement(br.presenter.formatter.DateFormatter, br.presenter.formatter.Formatter);

@@ -13,6 +13,8 @@
 br.presenter.formatter.KeyValueFormatter = function() {
 };
 
+br.Core.implement(br.presenter.formatter.KeyValueFormatter, br.presenter.formatter.Formatter);
+
 /**
  * Substitues a value with a mapped value if the a mapped value exists othewise it returns the
  * value itself.
@@ -32,5 +34,3 @@ br.presenter.formatter.KeyValueFormatter.prototype.format = function(vValue, mAt
 br.presenter.formatter.KeyValueFormatter.prototype.toString = function() {
 	return "br.presenter.formatter.KeyValueFormatter";
 };
-
-br.Core.implement(br.presenter.formatter.KeyValueFormatter, br.presenter.formatter.Formatter);

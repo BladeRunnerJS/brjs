@@ -27,6 +27,8 @@ br.presenter.formatter.ThousandsFormatter = function() {
 	this.nullValueFormatter = new br.presenter.formatter.NullValueFormatter();
 };
 
+br.Core.implement(br.presenter.formatter.ThousandsFormatter, br.presenter.formatter.Formatter);
+
 /**
  * Adds a separator character for each 'thousand' position in a number. eg 1000000 becomes 1,000,000
  * 
@@ -76,5 +78,3 @@ br.presenter.formatter.ThousandsFormatter.prototype._stripComma = function(sValu
 br.presenter.formatter.ThousandsFormatter.prototype.toString = function() {
 	return "br.presenter.formatter.ThousandsFormatter";
 };
-
-br.Core.implement(br.presenter.formatter.ThousandsFormatter, br.presenter.formatter.Formatter);

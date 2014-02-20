@@ -15,6 +15,8 @@ br.test.viewhandler.BorderColor = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.BorderColor, br.test.viewhandler.ViewFixtureHandler);
+
 br.test.viewhandler.BorderColor.prototype.set = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "BorderWidth can't be used in a Given or When clause.");
@@ -48,4 +50,3 @@ br.test.viewhandler.BorderColor.prototype.get = function(eElement)
 	return sHexColor.toUpperCase();
 };
 
-br.Core.implement(br.test.viewhandler.BorderColor, br.test.viewhandler.ViewFixtureHandler);

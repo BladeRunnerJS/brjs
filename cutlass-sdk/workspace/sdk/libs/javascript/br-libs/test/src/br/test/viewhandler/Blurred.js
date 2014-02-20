@@ -15,6 +15,8 @@ br.test.viewhandler.Blurred = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.Blurred, br.test.viewhandler.ViewFixtureHandler);
+
 br.test.viewhandler.Blurred.prototype.set = function(eElement, vValue)
 {
 	if( !br.test.viewhandler.Focused.isFocusableElement(eElement) || eElement.disabled )
@@ -55,5 +57,3 @@ br.test.viewhandler.Blurred.prototype.get = function(eElement)
 	}
 	return true;
 };
-
-br.Core.implement(br.test.viewhandler.Blurred, br.test.viewhandler.ViewFixtureHandler);

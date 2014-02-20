@@ -20,6 +20,8 @@
 br.presenter.parser.ThousandsParser = function() {
 };
 
+br.Core.implement(br.presenter.parser.ThousandsParser, br.presenter.parser.Parser);
+
 /**
  * Parses an amount, strips any thousands separators and changes the local radix (decimal point) char
  * into a ".".  
@@ -75,4 +77,3 @@ br.presenter.parser.ThousandsParser.prototype._isNumeric = function(value) {
 	return !isNaN(parseFloat(value)) && isFinite(value);
 }
 
-br.Core.implement(br.presenter.parser.ThousandsParser, br.presenter.parser.Parser);

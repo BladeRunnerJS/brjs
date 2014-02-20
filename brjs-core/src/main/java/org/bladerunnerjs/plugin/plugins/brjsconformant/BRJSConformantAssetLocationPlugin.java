@@ -15,6 +15,8 @@ import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.ThemeAssetLocation;
+import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.WorkbenchResourcesAssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 
@@ -80,7 +82,16 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	private void addNonTestPackAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache, List<AssetLocation> assetLocations) throws ConfigException
 	{
 		if(!assetLocationCache.containsKey("resources")) {
-			assetLocationCache.put( "resources", new ResourcesAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")) );
+			AssetLocation resourcesAssetLocation;
+			if (assetContainer instanceof Workbench)
+			{
+				resourcesAssetLocation = new WorkbenchResourcesAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources"));
+			}
+			else
+			{
+				resourcesAssetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources"));				
+			}
+			assetLocationCache.put( "resources",  resourcesAssetLocation);
 			assetLocationCache.put( "src", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src"), assetLocationCache.get("resources")) );
 			assetLocationCache.put( "src-test", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src-test")) );
 		}

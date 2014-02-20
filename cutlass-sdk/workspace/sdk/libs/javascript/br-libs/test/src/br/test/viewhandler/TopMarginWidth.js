@@ -15,6 +15,8 @@ br.test.viewhandler.TopMarginWidth = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.TopMarginWidth, br.test.viewhandler.ViewFixtureHandler);
+
 br.test.viewhandler.TopMarginWidth.prototype.set = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "TopMarginWidth can't be used in a Given or When clause.");
@@ -28,5 +30,3 @@ br.test.viewhandler.TopMarginWidth.prototype.get = function(eElement)
 	
 	return parseInt(pWidthValues);
 };
-
-br.Core.implement(br.test.viewhandler.TopMarginWidth, br.test.viewhandler.ViewFixtureHandler);

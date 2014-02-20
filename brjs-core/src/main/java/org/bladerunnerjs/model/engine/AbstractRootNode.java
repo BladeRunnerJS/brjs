@@ -122,7 +122,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		if (node.getClass() == nodeClass)
 		{
-			return (N) this;
+			return (N) node;
 		}
 		
 		return locateAncestorNodeOfClass(node.parentNode(), nodeClass);

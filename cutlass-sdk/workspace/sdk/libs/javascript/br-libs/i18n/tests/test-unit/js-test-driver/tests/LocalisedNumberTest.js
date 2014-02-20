@@ -8,19 +8,10 @@ LocalisedNumberTest.prototype.setUp = function()
 
 function assertInstantiateNumberThrowsException(vNumber)
 {
-	var sErrorMessage = "An attempt to create an invalid LocalisedNumber object did not result in an exception being thrown.";
-	var sExceptionMessage = "A LocalisedNumber object could not be instantiated from: " + vNumber;
-
 	var Errors = require("br/Errors");
 	var LocalisedNumber = require("br/i18n/LocalisedNumber");
-
-	var oException = new Errors.InvalidParametersError(sExceptionMessage);
-
-	assertFails(sErrorMessage, function() { new LocalisedNumber(vNumber); }, oException);
-
-//	CT3 test code commented below to assist with debug/understanding (from brjs-last-stand)
-//	var oException = new caplin.core.Error(caplin.core.Error.LEGACY, sExceptionMessage);
-//	assertFails(sErrorMessage, function() { new caplin.i18n.LocalisedNumber(vNumber); }, oException);
+	
+	assertException("An attempt to create an invalid LocalisedNumber object did not result in an exception being thrown.", function() { new LocalisedNumber(vNumber); }, Errors.INVALID_PARAMETERS);
 };
 
 LocalisedNumberTest.prototype.test_nonDecimals = function()
@@ -88,7 +79,6 @@ LocalisedNumberTest.prototype.test_spaceSeparator = function()
 
 LocalisedNumberTest.prototype.test_NullNumberThrowsException = function()
 {
-	debugger;
 	assertInstantiateNumberThrowsException(null);
 };
 

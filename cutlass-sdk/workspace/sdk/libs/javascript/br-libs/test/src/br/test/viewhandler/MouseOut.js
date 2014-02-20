@@ -12,6 +12,9 @@ br.test.viewhandler.MouseOut = function()
 {
 };
 
+br.Core.implement(br.test.viewhandler.MouseOut, br.test.viewhandler.ViewFixtureHandler);
+
+
 br.test.viewhandler.MouseOut.prototype.set = function(eElement, mValues)
 {
 	br.test.Utils.fireMouseEvent(eElement, 'mouseout', mValues);
@@ -21,5 +24,3 @@ br.test.viewhandler.MouseOut.prototype.get = function(eElement)
 {
 	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The mouseOut event cannot be used in a doGiven or doThen");
 };
-
-br.Core.implement(br.test.viewhandler.MouseOut, br.test.viewhandler.ViewFixtureHandler);

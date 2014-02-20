@@ -1,6 +1,8 @@
 MultiViewClickFixtureFactory = function()
 {
 };
+
+br.Core.implement(MultiViewClickFixtureFactory, br.test.FixtureFactory);
 	
 MultiViewClickFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 {
@@ -8,5 +10,3 @@ MultiViewClickFixtureFactory.prototype.addFixtures = function(oFixtureRegistry)
 			new br.presenter.testing.PresenterComponentFixture("multi-view-click",
 					"MultiViewClickPresentationModel"));
 };
-
-br.Core.implement(MultiViewClickFixtureFactory, br.test.FixtureFactory);

@@ -17,6 +17,8 @@ br.presenter.workbench.ui.PresentationModelViewer = function(oPresentationModel)
 	this.m_eElement.appendChild(this.m_oTree.getElement());
 };
 
+br.Core.implement(br.presenter.workbench.ui.PresentationModelViewer, br.workbench.ui.WorkbenchComponent);
+
 br.presenter.workbench.ui.PresentationModelViewer.prototype._getFormElement = function()
 {
 	this.m_PresentationModel = new br.presenter.workbench.model.TreeViewerPM(this);
@@ -41,5 +43,3 @@ br.presenter.workbench.ui.PresentationModelViewer.prototype.close = function()
 	this.m_eElement.parentNode.removeChild(this.m_eElement);
 	this.m_oComponent.onClose();
 };
-
-br.Core.implement(br.presenter.workbench.ui.PresentationModelViewer, br.workbench.ui.WorkbenchComponent);
