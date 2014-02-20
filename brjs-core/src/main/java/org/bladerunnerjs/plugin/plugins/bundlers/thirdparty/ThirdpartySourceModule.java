@@ -55,19 +55,33 @@ public class ThirdpartySourceModule implements SourceModule
 		List<Reader> fileReaders = new ArrayList<>();
 		
 		try {
+			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
+			String defineBlockExports = "module.exports = " + manifest.getExports();
+			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
+			
+			// If package.json exists then the code being loaded expects module and exports variables to be present
+			// the define block supplies those. So wrap the code in the define block.
+			Boolean packageJsonExists = !assetLocation.getAssetContainer().file("package.json").isFile();
+			
+			if(packageJsonExists)
+			{
+				fileReaders.add( new StringReader( defineBlockHeader ) );
+			}
+			
 			for(File file : manifest.getJsFiles()) {
 				fileReaders.add(new UnicodeReader(file, defaultInputEncoding));
 				fileReaders.add(new StringReader("\n\n"));
 			}
 			
-			if (!assetLocation.getAssetContainer().file("package.json").isFile())
+			if (packageJsonExists)
 			{
-    			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
-    			String defineBlockBody = "module.exports = " + manifest.getExports();
-    			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
-    			
+    			fileReaders.add( new StringReader( defineBlockExports ) );
+    			fileReaders.add( new StringReader( defineBlockFooter ) );
+			}
+			else
+			{
     			fileReaders.add( new StringReader( defineBlockHeader ) );
-    			fileReaders.add( new StringReader( defineBlockBody ) );
+    			fileReaders.add( new StringReader( defineBlockExports ) );
     			fileReaders.add( new StringReader( defineBlockFooter ) );
 			}
 			
