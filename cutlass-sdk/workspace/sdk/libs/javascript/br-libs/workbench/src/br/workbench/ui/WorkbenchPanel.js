@@ -1,9 +1,9 @@
-br.Core.thirdparty("jquery");
+var jQuery = require( 'jquery' );
 
 /**
  * @class
  * A <code>WorkbenchPanel</code> is the main container for displaying components
- * within a workbench. Workbench panels can be added to a {@link br.workbench.ui.Workbench},
+ * within a workbench. Workbench panels can be added to a {@link WorkbenchPanel},
  * either to the left or right side of the screen.
  * 
  * @param String sOrientation Either "left" or "right"
@@ -12,15 +12,14 @@ br.Core.thirdparty("jquery");
  * 
  * @constructor
  */
-br.workbench.ui.WorkbenchPanel = function(sOrientation, nWidth, bXResizable)
-{
+function WorkbenchPanelPanel(sOrientation, nWidth, bXResizable) {
 	bXResizable = (bXResizable || true);
 	this.m_sOrientation = sOrientation;
 	this.m_nWidth = nWidth;
-	this.m_eElement = jQuery('<div class="workbench-panel"></div>')
+	this.m_eElement = jQuery('<div class="workbench-panel"></div>');
 	
 	this.m_eComponentContainer = document.createElement('ul');
-	this.m_eComponentContainer.id = 'workbench-panel-' + br.workbench.ui.WorkbenchPanel.ID++;
+	this.m_eComponentContainer.id = 'workbench-panel-' + WorkbenchPanelPanel.ID++;
 	
 	jQuery(this.m_eComponentContainer).sortable({
 		placeholder: "sortable-placeholder",
@@ -38,12 +37,12 @@ br.workbench.ui.WorkbenchPanel = function(sOrientation, nWidth, bXResizable)
 	{
 		this._bindXResize();
 	}
-};
+}
 
 /**
  * @private
  */
-br.workbench.ui.WorkbenchPanel.ID = 0;
+WorkbenchPanelPanel.ID = 0;
 
 /**
  * Returns the id of the element that represents the container which components 
@@ -52,20 +51,18 @@ br.workbench.ui.WorkbenchPanel.ID = 0;
  * @type String
  * @returns the container id
  */
-br.workbench.ui.WorkbenchPanel.prototype.getComponentContainerId = function()
-{
+WorkbenchPanelPanel.prototype.getComponentContainerId = function() {
 	return this.m_eComponentContainer.id;
 };
 
 /**
  * Adds a {@link cpalin.workbench.ui.WorkbenchComponent} to this panel. 
  * 
- * @param {br.workbench.ui.WorkbenchComponent} oWorkbenchComponent The component to add.
+ * @param {WorkbenchPanelComponent} oWorkbenchComponent The component to add.
  * @param {String} sTitle The title to display for the component.
  * @param {boolean} bCollapsed if True, the initial state of the component will be collapsed.
  */
-br.workbench.ui.WorkbenchPanel.prototype.add = function(oWorkbenchComponent, sTitle, bCollapsed)
-{
+WorkbenchPanelPanel.prototype.add = function(oWorkbenchComponent, sTitle, bCollapsed) {
 	var ePanelElement = this.getElement()[0];
 	var eWrapper = document.createElement("li");
 	eWrapper.className = 'workbench-component';
@@ -108,7 +105,7 @@ br.workbench.ui.WorkbenchPanel.prototype.add = function(oWorkbenchComponent, sTi
  * @param {int} nWidth The width of the WorkbenchPanel in Pixels
  *
  */
-br.workbench.ui.WorkbenchPanel.prototype.setWidth = function(nWidth)
+WorkbenchPanelPanel.prototype.setWidth = function(nWidth)
 {
 	this.m_nWidth = nWidth;
 
@@ -134,7 +131,7 @@ br.workbench.ui.WorkbenchPanel.prototype.setWidth = function(nWidth)
  * @type int
  * @returns The total width of the WorkbenchPanel including padding and borders in pixels
  */
-br.workbench.ui.WorkbenchPanel.prototype.getOuterWidth = function()
+WorkbenchPanelPanel.prototype.getOuterWidth = function()
 {
 	var pWidthAspects = [
 		'padding-left',
@@ -163,7 +160,7 @@ br.workbench.ui.WorkbenchPanel.prototype.getOuterWidth = function()
  * @type int
  * @returns nWidth The inner width of the WorkbenchPanel in pixels
  */
-br.workbench.ui.WorkbenchPanel.prototype.getWidth = function()
+WorkbenchPanelPanel.prototype.getWidth = function()
 {
 	return this.m_nWidth;
 };
@@ -174,7 +171,7 @@ br.workbench.ui.WorkbenchPanel.prototype.getWidth = function()
  * @returns The total height of the WorkbenchPanel including padding and borders in pixels.
  * @type int
  */
-br.workbench.ui.WorkbenchPanel.prototype.getHeightOffset = function()
+WorkbenchPanelPanel.prototype.getHeightOffset = function()
 {
 	var pHeightAspects = [
 		'padding-top',
@@ -196,7 +193,7 @@ br.workbench.ui.WorkbenchPanel.prototype.getHeightOffset = function()
 	return nTotalHeight;
 };
 
-br.workbench.ui.WorkbenchPanel.prototype.getElement = function()
+WorkbenchPanelPanel.prototype.getElement = function()
 {
 	return this.m_eElement;
 };
@@ -204,7 +201,7 @@ br.workbench.ui.WorkbenchPanel.prototype.getElement = function()
 /**
  * @private
  */
-br.workbench.ui.WorkbenchPanel.prototype._bindYResize = function()
+WorkbenchPanelPanel.prototype._bindYResize = function()
 {
 	var self = this;
 	var fResize = function() {
@@ -217,7 +214,7 @@ br.workbench.ui.WorkbenchPanel.prototype._bindYResize = function()
 /**
  * @private
  */
-br.workbench.ui.WorkbenchPanel.prototype._bindXResize = function()
+WorkbenchPanelPanel.prototype._bindXResize = function()
 {
 	var self = this;
 	this.m_eDragHandle = jQuery('<div class="drag-handle"></div>');
@@ -261,6 +258,9 @@ br.workbench.ui.WorkbenchPanel.prototype._bindXResize = function()
 		 */
 		.mouseup(function() {
 			jQuery(document).unbind('mousemove mouseup');
-		})
-	})
+		});
+	});
 };
+
+module.exports = WorkbenchPanelPanel;
+
