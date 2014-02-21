@@ -222,16 +222,41 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	//TODO: remove this test when we have a NodeJS library plugin that reads the Package.json - also remove the check in ThirdpartySourceModule
 	@Test
 	public void librariesAreWrappedIfPackageJsonExists() throws Exception {
-		String fileSrc = "window.thirdpartyLib = { }";
+		String fileSrc = "module.exports = { };";
 		given(thirdpartyLib).hasBeenCreated()
-    		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: someLib")
     		.and(thirdpartyLib).containsFileWithContents("package.json", "// some packagey stuff")
+    		.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js")
     		.and(thirdpartyLib).containsFileWithContents("src.js", fileSrc)
     		.and(aspect).indexPageRequires(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments("define('thirdparty-lib1', function(require, exports, module) {\n",
 				fileSrc,
-				"module.exports = someLib",
 			"});");
+	}
+	
+	@Test
+	public void librariesAreNotWrappedIfPackageJsonExistsAndExcludeDefineIsSet() throws Exception {
+		String fileSrc = "module.exports = { };";
+		given(thirdpartyLib).hasBeenCreated()
+    		.and(thirdpartyLib).containsFileWithContents("package.json", "// some packagey stuff")
+    		.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js\n"+"excludeDefine: true")
+    		.and(thirdpartyLib).containsFileWithContents("src.js", fileSrc)
+    		.and(aspect).indexPageRequires(thirdpartyLib);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText(fileSrc)
+			.and(response).doesNotContainText("define(")
+			.and(response).doesNotEndWithTextExcludingWhitespace("});");
+	}
+	
+	@Test
+	public void librariesAreNotWrappedIfExportsIsNotDefined() throws Exception {
+		String fileSrc = "window.thirdpartyLib = { }";
+		given(thirdpartyLib).hasBeenCreated()
+    		.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js")
+    		.and(thirdpartyLib).containsFileWithContents("src.js", fileSrc)
+    		.and(aspect).indexPageRequires(thirdpartyLib);
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText(fileSrc)
+			.and(response).doesNotContainText("define(");
 	}
 }

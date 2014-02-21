@@ -55,15 +55,18 @@ public class ThirdpartySourceModule implements SourceModule
 		List<Reader> fileReaders = new ArrayList<>();
 		
 		try {
+			// In some situations the define blocks should not be written.
+			// e.g. the browser-modules library actually defines it.
+			Boolean excludeDefine = manifest.getExcludeDefine();
+			
 			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
-			String defineBlockExports = "module.exports = " + manifest.getExports();
 			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
 			
-			// If package.json exists then the code being loaded expects module and exports variables to be present
+			// If package.json exists then the code being loaded expects `module` and `exports` variables to be present and
 			// the define block supplies those. So wrap the code in the define block.
 			Boolean packageJsonExists = assetLocation.getAssetContainer().file("package.json").isFile();
 			
-			if(packageJsonExists)
+			if(packageJsonExists && !excludeDefine)
 			{
 				fileReaders.add( new StringReader( defineBlockHeader ) );
 			}
@@ -73,13 +76,15 @@ public class ThirdpartySourceModule implements SourceModule
 				fileReaders.add(new StringReader("\n\n"));
 			}
 			
-			if (packageJsonExists)
+			if (packageJsonExists && !excludeDefine)
 			{
-    			fileReaders.add( new StringReader( defineBlockExports ) );
+    			// package.json means the library is from npm and the file
+				// will do its own module.exports
     			fileReaders.add( new StringReader( defineBlockFooter ) );
 			}
-			else
+			else if(manifest.getExports() != null && !excludeDefine)
 			{
+				String defineBlockExports = "module.exports = " + manifest.getExports();
     			fileReaders.add( new StringReader( defineBlockHeader ) );
     			fileReaders.add( new StringReader( defineBlockExports ) );
     			fileReaders.add( new StringReader( defineBlockFooter ) );
