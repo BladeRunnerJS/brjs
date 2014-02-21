@@ -259,6 +259,9 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	into "BladeRunnerJS/"
 	include "licenses/**", "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
 	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**"
+	doLast {
+		println "BladeRunnerJS ${project.buildVersion} built and zipped to ${archivePath}"
+	}
 }
 build.dependsOn distZip
 distZip.mustRunAfter test
