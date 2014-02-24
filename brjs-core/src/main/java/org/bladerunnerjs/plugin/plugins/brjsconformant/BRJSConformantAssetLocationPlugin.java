@@ -109,14 +109,16 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	{
 		TestPack testPack = (TestPack) assetContainer;
 		
-		if(!assetLocationCache.containsKey("tests")) {
-			assetLocationCache.put( "tests", new DeepAssetLocation(assetContainer.root(), assetContainer, testPack.tests().dir()) );
+		if(!assetLocationCache.containsKey("resources")) {
+			assetLocationCache.put( "resources", new ResourcesAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")) );
+			assetLocationCache.put( "tests", new DeepAssetLocation(assetContainer.root(), assetContainer, testPack.tests().dir(), assetLocationCache.get("resources")) );
 			assetLocationCache.put( "src-test", new SourceAssetLocation(assetContainer.root(), assetContainer, testPack.testSource().dir()) );
 		}
 		
 		DeepAssetLocation tests = (DeepAssetLocation) assetLocationCache.get("tests");
 		SourceAssetLocation testSource = (SourceAssetLocation) assetLocationCache.get("src-test");
 		
+		assetLocations.add(assetLocationCache.get("resources"));
 		assetLocations.add(tests);
 		assetLocations.add(testSource);
 		assetLocations.addAll(testSource.getChildAssetLocations());

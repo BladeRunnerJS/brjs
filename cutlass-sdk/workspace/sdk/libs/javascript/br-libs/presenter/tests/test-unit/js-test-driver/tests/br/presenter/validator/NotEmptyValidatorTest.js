@@ -27,7 +27,7 @@ NotEmptyValidatorTest.prototype.test_EmptyFails = function() {
 }
 
 NotEmptyValidatorTest.prototype.test_EmptyShowsi18nErrorMessage = function() {
-	var oNotEmptyValidator =  new br.presenter.validator.NotEmptyValidator("i18ntesttoken");
+	var oNotEmptyValidator =  new br.presenter.validator.NotEmptyValidator("br.presenter.i18ntesttoken");
 	
 	oNotEmptyValidator.validate("", {}, this.oValidationResult);
 	

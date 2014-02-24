@@ -26,6 +26,14 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private final Map<String, SourceModule> sourceModules = new HashMap<>();
 	protected final AssetLocationUtility assetLocator;
+	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
+	
+	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation)
+	{
+		this(rootNode, parent, dir);
+		dependentAssetLocations.add(assetLocation);
+	}
+	
 	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
@@ -178,7 +186,7 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	@Override
 	public List<AssetLocation> getDependentAssetLocations()
 	{
-		return new ArrayList<>();
+		return dependentAssetLocations;
 	}
 	
 	@Override

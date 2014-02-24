@@ -17,6 +17,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 	private Bladeset bladeset;
 	private Blade blade;
 	private TestPack aspectUTs, aspectATs;
+	private StringBuffer response = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -37,7 +38,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 	@Test
 	public void weBundleAspectFilesInUTs() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
 		then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
 	}
@@ -86,5 +87,14 @@ public class AspectTestPackBundlingTest extends SpecTest
 				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
 				blade.assetLocation("src").file("appns/bs/b1/Class2.js"));
 	}
-
+	
+	@Test
+	public void allTestResourcesAreBundled() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspectUTs).hasNamespacedJsPackageStyle()
+			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1")
+			.and(aspectUTs).containsFileWithContents("resources/en.properties", "appns.prop=val");
+		when(aspectUTs).requestReceived("i18n/en.js", response);
+		then(response).containsText("\"appns.prop\":\"val\"");
+	}
 }

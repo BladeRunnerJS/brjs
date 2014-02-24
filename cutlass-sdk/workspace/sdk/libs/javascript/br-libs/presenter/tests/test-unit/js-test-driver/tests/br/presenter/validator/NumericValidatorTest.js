@@ -28,7 +28,7 @@ NumericValidatorTest.prototype.test_InvalidNumber = function() {
 }
 
 NumericValidatorTest.prototype.testInvalidNumberShowsi18nErrorMessage = function() {
-	var oNumericValidator =  new br.presenter.validator.NumericValidator("i18ntesttoken");
+	var oNumericValidator =  new br.presenter.validator.NumericValidator("br.presenter.i18ntesttoken");
 	
 	oNumericValidator.validate("1a", {}, this.oValidationResult);
 	
