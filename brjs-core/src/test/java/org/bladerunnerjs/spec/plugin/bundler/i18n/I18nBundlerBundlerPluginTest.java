@@ -115,8 +115,8 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.some.property\":\"property value\",\n"+
-						"\"appns.another.property\":\"another value\"\n"+
+						"\"appns.another.property\":\"another value\",\n"+
+						"\"appns.some.property\":\"property value\"\n"+
 				"}];");
 	}
 
@@ -220,4 +220,19 @@ public class I18nBundlerBundlerPluginTest extends SpecTest
 		then(exceptions).verifyException(NamespaceException.class, "some.property", "default-aspect/resources/en_GB.properties", "appns");
 	}
 	
+	@Test
+	public void propertiesAreOrderedAlphabetically() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en.properties", "appns.p3=v3\nappns.p1=v1\nappns.p2=v2\n");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(response).textEquals(	
+				"window._brjsI18nProperties = [{\n"+
+						"\"appns.p1\":\"v1\",\n"+
+						"\"appns.p2\":\"v2\",\n"+
+						"\"appns.p3\":\"v3\"\n"+
+				"}];");
+	}
 }

@@ -4,10 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.NamespaceException;
@@ -125,7 +126,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	
 	private void generateBundleForLocale(BundleSet bundleSet, OutputStream os, String language, String location) throws ContentProcessingException
 	{
-		Map<String,String> propertiesMap = new HashMap<String,String>();
+		SortedMap<String,String> propertiesMap = new TreeMap<String,String>();
 		
 		for (Asset asset : getI18nAssetFiles(bundleSet))
 		{
