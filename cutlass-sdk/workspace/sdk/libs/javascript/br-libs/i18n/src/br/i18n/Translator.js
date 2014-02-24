@@ -260,6 +260,7 @@ Translator.prototype.formatTime = function(time) {
  * @type String
  */
 Translator.prototype.formatNumber = function(number, thousandsSeparator) {
+debugger;
 	var localisedNumber = new LocalisedNumber(number);
 	if (!thousandsSeparator) {
 		thousandsSeparator = this.localizationPrefs.thousandsSeparator ||

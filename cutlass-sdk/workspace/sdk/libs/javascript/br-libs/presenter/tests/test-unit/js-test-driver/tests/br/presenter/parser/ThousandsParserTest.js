@@ -1,12 +1,5 @@
 ThousandsParserTest = TestCase("ThousandsParserTest");
 ThousandsParserTest.prototype.setUp = function() {
-	var i18n = require("br/I18n")
-	i18n.reset();
-	i18n.initialise([{
-		"ct.i18n.number.grouping.separator":",",
-		"ct.i18n.decimal.radix.character":"."
-	}]);
-	
 	this.oParser = new br.presenter.parser.ThousandsParser();
 };
 
@@ -27,8 +20,8 @@ ThousandsParserTest.prototype.test_bigFloatAndDotSeparator = function() {
 	var i18n = require("br/I18n")
 	i18n.reset();
 	i18n.initialise([{
-		"ct.i18n.number.grouping.separator":".",
-		"ct.i18n.decimal.radix.character":"!"
+		"br.i18n.number.grouping.separator":".",
+		"br.i18n.decimal.radix.character":"!"
 	}]);
 	this.oParser = new br.presenter.parser.ThousandsParser();
 	

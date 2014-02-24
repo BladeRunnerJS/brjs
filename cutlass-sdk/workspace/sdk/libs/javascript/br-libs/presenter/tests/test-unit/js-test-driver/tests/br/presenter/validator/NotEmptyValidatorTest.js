@@ -1,10 +1,6 @@
 NotEmptyValidatorTest = TestCase("NotEmptyValidatorTest");
 
 NotEmptyValidatorTest.prototype.setUp = function() {
-	var i18n = require("br/I18n")
-	i18n.reset();
-	i18n.initialise([{i18ntesttoken: "i18nErrorMessage"}]);
-	
 	this.oNotEmptyValidator = new br.presenter.validator.NotEmptyValidator("errorMessage");
 	
 	this.oValidationResult = 
@@ -16,7 +12,6 @@ NotEmptyValidatorTest.prototype.setUp = function() {
 		}
 	}
 }
-
 
 NotEmptyValidatorTest.prototype.test_NotEmptyPass = function() {
 	this.oNotEmptyValidator.validate(1, {}, this.oValidationResult);

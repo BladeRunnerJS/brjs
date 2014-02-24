@@ -1,7 +1,9 @@
 LocalisedDateTest = TestCase("LocalisedDateTest");
 LocalisedDateTest.prototype.setUp = function()
 {
-	this.m_pOrigUnprocessedI18NMessages = window.pUnprocessedI18NMessages;
+	var Translator = require('br/i18n/Translator');
+	var I18N = require('br/i18n/I18N');
+	
 	this.mDateMessages = {
 		"br.i18n.date.format": "DD-MM-YYYY",
 		"br.i18n.date.format.long": "ddd, DD MMM, YYYY, HH:mm:ss A",
@@ -12,16 +14,14 @@ LocalisedDateTest.prototype.setUp = function()
 		"br.i18n.date.day.short.monday": "Mon",
 		"br.i18n.date.day.short.wednesday": "Wed"
 	};
-	window.pUnprocessedI18NMessages = [this.mDateMessages];
-
-	var i18n = require("br/I18n");
-	i18n.reset();
-	i18n.initialise(window.pUnprocessedI18NMessages);
+	
+	this.definitionRegistry = require('br/TestDefinitionRegistry').install();
+	this.definitionRegistry.define('br/i18n', I18N.create(new Translator(this.mDateMessages)));
 };
 
 LocalisedDateTest.prototype.tearDown = function()
 {
-	window.pUnprocessedI18NMessages = this.m_pOrigUnprocessedI18NMessages;
+	this.definitionRegistry.uninstall();
 };
 
 //test seconds since epoch
@@ -161,6 +161,7 @@ LocalisedDateTest.prototype.test_translateLongDate = function()
 	oDate.setSeconds(1);
 
 	var sDateFormat = this.mDateMessages["br.i18n.date.format.long"];
+debugger;
 	var oLocalisedDate = new (require("br/i18n/LocalisedDate"))(oDate);
 	var sLocalisedDate = oLocalisedDate.format(sDateFormat);
 

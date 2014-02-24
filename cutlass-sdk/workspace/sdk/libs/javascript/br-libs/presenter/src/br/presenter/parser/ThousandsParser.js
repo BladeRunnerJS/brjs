@@ -9,7 +9,7 @@
  * <code>br.presenter.parser.ThousandsParser.parse("8,987,551,787.0", {})</code>
  * 
  * The number grouping separator will change per locale. The english separator defaults to "," as in the 
- * example above, see the i18n property ct.i18n.number.grouping.separator in other locales for their separators.
+ * example above, see the i18n property br.i18n.number.grouping.separator in other locales for their separators.
  * 
  * <p/>
  * See {@link br.presenter.formatter.ThousandsFormatter} for the complementary formatter.
@@ -50,7 +50,7 @@ br.presenter.parser.ThousandsParser.prototype.parse = function(vValue, mAttribut
 		return vValue;
 	}
 	var i18n = require("br/I18n");
-	var sSeparator = mAttributes["separator"] || i18n("ct.i18n.number.grouping.separator");
+	var sSeparator = mAttributes["separator"] || i18n("br.i18n.number.grouping.separator");
 	if (!vValue) {
 		return vValue;
 	}
