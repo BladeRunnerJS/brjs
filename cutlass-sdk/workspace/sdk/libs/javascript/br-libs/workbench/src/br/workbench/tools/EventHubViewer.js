@@ -1,22 +1,20 @@
 var br = require( 'br/Core' );
 var WorkbenchComponent = require( 'br/workbench/ui/WorkbenchComponent' );
 var emitr = require( 'emitr' );
-var fell = require('fell');
-var Log = fell.Log;
+var moment = require('moment');
 var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
 var ko = require( 'ko' );
 
+/**
+ * @param {} EventHub
+ */
 function EventHubViewer( eventHub ) {
   if( !eventHub ) {
     throw new Error( 'an eventHub must be provided' );
   }
-  this.constructor.superclass.apply( this, [ 50 ] );
-  Log.addDestination( this );
 
-  // View Model properties
+  // used in view model
   this.messages = ko.observableArray();
-  this.clear = function(){};
-
 
   this._eventHub = eventHub;
 
@@ -30,31 +28,73 @@ function EventHubViewer( eventHub ) {
 
   this._eventHub.on( 'new-channel', this._newChannel, this );
 }
-br.extend( EventHubViewer, fell.destination.LogStore );
 br.implement( EventHubViewer, WorkbenchComponent );
 
-EventHubViewer.prototype.onLog = function(time, component, level, data) {
-  this.constructor.superclass.prototype.onLog.apply( this, arguments );
-
-  this.messages.unshift( this.logRecords.newest().toString() );
-};
-
+/** WorkbenchComponent */
 EventHubViewer.prototype.getElement = function() {
   return this._el;
 };
 
-EventHubViewer.prototype._newChannel = function( channel ) {
-  Log.info( 'new channel subscription "{0}"', channel.name );
-  channel.on( emitr.meta.AddListenerEvent, this._logAddListenerEvent, this );
+/** ViewModel function */
+EventHubViewer.prototype.clear = function() {
+  this.messages.removeAll();
 };
 
-EventHubViewer.prototype._logAddListenerEvent = function( ev ) {
+/** @private */
+EventHubViewer.prototype._log = function( toLog ) {
+  var msg = moment().format('H:mm:ss') + ': ' + toLog;
+  this.messages.unshift( msg );
+};
+
+/** @private */
+EventHubViewer.prototype._newChannel = function( channel ) {
+  this._log( 'Subscribed: "' + channel.name + '"' );
+  channel.on( emitr.meta.AddListenerEvent, this._addListenerEventBindingWrapper( channel ), this );
+  channel.on( emitr.meta.DeadEvent, this._eventBindingWrapper( "DeadEvent", channel ), this );
+};
+
+/** @private */
+EventHubViewer.prototype._addListenerEventBindingWrapper = function( channel ) {
+  var wrapper = function() {
+    // augment the events so that the channel is passed as the first arg
+    var args = Array.prototype.slice.call( arguments, 0 );
+    args.unshift( channel );
+    this._addListenerEvent.apply( this, args );
+  }.bind( this );
+
+  return wrapper;
+};
+
+/** @private */
+EventHubViewer.prototype._addListenerEvent = function( channel, ev ) {
+  // Ignore some meta events as we bind to them
   if( ev.context === this ) {
     return;
   }
 
-  console.log( ev );
-  Log.info( ev );
+  var eventName = ev.event;
+  this._log( 'Bound: "' + eventName + '" on "' + channel.name + '"' );
+
+  channel.on( ev.event, this._eventBindingWrapper( eventName, channel ), this );
+};
+
+/** @private */
+EventHubViewer.prototype._eventBindingWrapper = function( eventName, channel ) {
+  var wrapper = function() {
+    // augment to pass (channel, eventName, event)
+    var args = Array.prototype.slice.call( arguments, 0 );
+    args.unshift( eventName );
+    args.unshift( channel );
+    this._logEventTrigger.apply( this, args );
+  }.bind( this );
+
+  return wrapper;
+};
+
+/** @private */
+EventHubViewer.prototype._logEventTrigger = function( channel, eventName, ev ) {
+  var msg = 'Triggered: "' + eventName + '" on "' + channel.name + '" with data "' + ev + '"';
+  this._log( msg );
 };
 
 EventHubViewer.prototype.close = function() {
