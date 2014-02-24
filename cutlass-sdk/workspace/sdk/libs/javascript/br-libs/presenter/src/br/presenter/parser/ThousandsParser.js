@@ -58,7 +58,7 @@ br.presenter.parser.ThousandsParser.prototype.parse = function(vValue, mAttribut
 	
 	//turn the localised radix char back into a js native decimal point
 	if (result) {
-		var radixCharacter = i18n("ct.i18n.decimal.radix.character");
+		var radixCharacter = i18n("br.i18n.decimal.radix.character");
 		return result.replace(radixCharacter, ".");
 	}
 	else {
