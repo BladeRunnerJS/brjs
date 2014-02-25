@@ -206,6 +206,9 @@ public abstract class AbstractNode implements Node
 				}
 			}
 		}
+		catch(RuntimeException e) {
+			throw e;
+		}
 		catch(Exception e)
 		{
 			throw new RuntimeException(e);
