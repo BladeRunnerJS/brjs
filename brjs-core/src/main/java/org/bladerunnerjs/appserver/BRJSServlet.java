@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -24,6 +25,7 @@ public class BRJSServlet extends HttpServlet
 	
 	private App app;
 	private ServletContext servletContext;
+	private BRJS brjs;
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException
@@ -34,7 +36,7 @@ public class BRJSServlet extends HttpServlet
 		ServletModelAccessor.initializeModel(servletContext);
 		
 		try {
-			BRJS brjs = ServletModelAccessor.aquireModel();
+			brjs = ServletModelAccessor.aquireModel();
 			app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath(".")), App.class);
 		}
 		finally {
@@ -53,10 +55,16 @@ public class BRJSServlet extends HttpServlet
 	{
 		try {
 			BRJS brjs = ServletModelAccessor.aquireModel();
-			response.setContentType(servletContext.getMimeType(request.getRequestURI()));
+			String contentType = servletContext.getMimeType(request.getRequestURI());
+			
+			if((contentType != null) && contentType.startsWith("text/")) {
+				contentType += ";charset=" + brjs.bladerunnerConf().getBrowserCharacterEncoding();
+			}
+			
+			response.setContentType(contentType);
 			BladerunnerUri bladerunnerUri = new BladerunnerUri(brjs, servletContext, request);
 			app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri.logicalPath, response.getOutputStream());
-		} catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException e) {
+		} catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException | ConfigException e) {
 			throw new ServletException(e);
 		}
 		finally {
