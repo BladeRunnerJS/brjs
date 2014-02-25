@@ -11,10 +11,12 @@ import org.bladerunnerjs.model.FileAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SuffixAssetFilter;
+import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class CssAssetPlugin extends AbstractAssetPlugin {
 	private final List<SourceModule> emptySourceModules = new ArrayList<>();
+	private final List<TestSourceModule> emptyTestSourceModules = new ArrayList<>();
 	private final List<LinkedAsset> emptyLinkedAssets = new ArrayList<>();
 	
 	@Override
@@ -25,6 +27,11 @@ public class CssAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		return emptySourceModules;
+	}
+	
+	@Override
+	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
+		return emptyTestSourceModules;
 	}
 	
 	@Override

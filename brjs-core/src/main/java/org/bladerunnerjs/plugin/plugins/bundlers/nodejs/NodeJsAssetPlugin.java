@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SuffixAssetFilter;
 import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class NodeJsAssetPlugin extends AbstractAssetPlugin {
@@ -32,6 +33,11 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 		catch (AssetFileInstantationException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
+		/* TODO: */ throw new RuntimeException("Add an implementation here");
 	}
 	
 	@Override

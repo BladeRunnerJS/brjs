@@ -1,5 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.RegExAssetFilter;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 
@@ -18,7 +20,9 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 {
 	
 	private AssetFilter i18nPropertiesFileFilter = new RegExAssetFilter(I18nAssetFile.I18N_PROPERTIES_FILE_REGEX);
-
+	private final List<SourceModule> emptySourceModules = new ArrayList<>();
+	private final List<TestSourceModule> emptyTestSourceModules = new ArrayList<>();
+	
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
@@ -27,7 +31,13 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
 	{
-		return Arrays.asList();
+		return emptySourceModules;
+	}
+	
+	@Override
+	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation)
+	{
+		return emptyTestSourceModules;
 	}
 
 	@Override

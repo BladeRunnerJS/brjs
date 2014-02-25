@@ -11,16 +11,25 @@ import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SuffixAssetFilter;
+import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class HTMLAssetPlugin extends AbstractAssetPlugin {
+	private final List<SourceModule> emptySourceModules = new ArrayList<>();
+	private final List<TestSourceModule> emptyTestSourceModules = new ArrayList<>();
+	
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
 	
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
-		return new ArrayList<>();
+		return emptySourceModules;
+	}
+	
+	@Override
+	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
+		return emptyTestSourceModules;
 	}
 	
 	@Override

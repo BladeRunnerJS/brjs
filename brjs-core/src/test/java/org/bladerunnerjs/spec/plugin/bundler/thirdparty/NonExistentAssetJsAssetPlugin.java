@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyAssetLocation;
@@ -38,6 +39,11 @@ public class NonExistentAssetJsAssetPlugin extends AbstractAssetPlugin {
 		}
 		
 		return sourceModules;
+	}
+	
+	@Override
+	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
+		return new ArrayList<>();		
 	}
 	
 	@Override
