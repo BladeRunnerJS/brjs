@@ -76,7 +76,7 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib.Class1", "brjsLib.TestClass1");
 		then(sdkLibUTs).bundledFilesEquals(
 			sdkLib.assetLocation("src").file("brjsLib/Class1.js"),
-			sdkLib.assetLocation("src-test").file("brjsLib/TestClass1.js"));
+			sdkLibUTs.assetLocation("src-test").file("brjsLib/TestClass1.js"));
 	}
 
 }
