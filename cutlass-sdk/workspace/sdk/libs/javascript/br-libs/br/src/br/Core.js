@@ -19,5 +19,3 @@ exports.implement = function(implementor, interface) {
 };
 
 exports.thirdparty = function(library){};
-
-require("br/I18n").initialise(window._brjsI18nProperties || []);

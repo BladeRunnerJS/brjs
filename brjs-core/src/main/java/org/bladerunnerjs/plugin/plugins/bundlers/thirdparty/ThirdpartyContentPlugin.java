@@ -72,7 +72,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		try {
 			if (contentPath.formName.equals("bundle-request"))
 			{
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) 
 				{
 					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
 						if(sourceFile instanceof ThirdpartySourceModule)
@@ -106,7 +106,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 				IOUtils.copy(new FileInputStream(file), os);
 			}
 			else if(contentPath.formName.equals("single-module-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) 
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) 
 				{
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
 					writer.write("// " + jsModule.getRequirePath() + "\n");

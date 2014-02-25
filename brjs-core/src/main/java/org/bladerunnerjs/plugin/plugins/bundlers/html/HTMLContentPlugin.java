@@ -92,28 +92,27 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
 	{
 		identifiers = new HashMap<String, Asset>();
-		Writer writer = null;
-		try{
-			writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding());
+		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
+		
+		// TODO: try removing the @SuppressWarnings once we upgrade past Eclipse Kepler, as the need for this appears to be a bug
+		try (@SuppressWarnings("resource") Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
+			for(Asset htmlAsset : htmlAssets){
+				try {
+					validateSourceHtml(htmlAsset);
+					
+					try(Reader reader = htmlAsset.getReader()) {
+						writer.write("\n<!-- " + htmlAsset.getAssetName() + " -->\n");
+						IOUtils.copy(reader, writer);
+						writer.flush();
+					}
+				}
+				catch (IOException | NamespaceException | RequirePathException e) {
+					throw new ContentProcessingException(e, "Error while bundling asset '" + htmlAsset.getAssetPath() + "'.");
+				}
+			}
 		}
 		catch( IOException | ConfigException e) {
 			throw new ContentProcessingException(e);
-		}	
-	
-		List<Asset> htmlFiles = bundleSet.getResourceFiles("html");
-		
-		htmlFiles = bundleSet.getResourceFiles(htmlAssetPlugin);
-		
-		for(Asset htmlAsset : htmlFiles){
-			
-			try {
-				validateSourceHtml(htmlAsset);
-				writer.write("\n<!-- " + htmlAsset.getAssetName()  +  " -->\n");
-				IOUtils.copy(htmlAsset.getReader(), writer);
-				writer.flush();
-			} catch (IOException | NamespaceException | RequirePathException e) {
-				throw new ContentProcessingException(e, "Error while bundling asset '" + htmlAsset.getAssetPath() + "'.");
-			}
 		}
 	}
 	

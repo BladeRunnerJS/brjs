@@ -45,7 +45,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		try {
 			this.brjs = brjs;
 			out = brjs.getConsoleWriter();
-			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultInputEncoding());
+			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

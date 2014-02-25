@@ -8,6 +8,10 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public class DeepAssetLocation extends ShallowAssetLocation {
+	public DeepAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation) {
+		super(rootNode, parent, dir, assetLocation);
+	}
+	
 	public DeepAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 	}

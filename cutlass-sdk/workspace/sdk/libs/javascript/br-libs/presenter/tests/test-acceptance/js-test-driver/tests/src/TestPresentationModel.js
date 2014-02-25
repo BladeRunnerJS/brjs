@@ -2,7 +2,7 @@ TestPresentationModel = function()
 {
 	ct = {
 		i18n: function(sToken, mTemplateArgs) {
-			if(sToken === "ct.i18n.date.format.typed") {
+			if(sToken === "br.i18n.date.format.typed") {
 				return "d-m-Y";
 			}
 			else {

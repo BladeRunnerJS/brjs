@@ -16,8 +16,8 @@ import com.ctc.wstx.stax.WstxInputFactory;
 public class XmlStreamReaderFactory {
 	private static final XMLInputFactory2 inputFactory = new WstxInputFactory();
 	
-	public static XmlStreamReader createReader(File xmlFile, String defaultInputEncoding, XMLValidationSchema xmlSchema) throws IOException, XMLStreamException {
-		Reader fileReader = new UnicodeReader(xmlFile, defaultInputEncoding);
+	public static XmlStreamReader createReader(File xmlFile, String defaultFileCharacterEncoding, XMLValidationSchema xmlSchema) throws IOException, XMLStreamException {
+		Reader fileReader = new UnicodeReader(xmlFile, defaultFileCharacterEncoding);
 		XMLStreamReader2 streamReader = (XMLStreamReader2) inputFactory.createXMLStreamReader(fileReader);
 		
 		streamReader.validateAgainst(xmlSchema);

@@ -1,10 +1,6 @@
 NumericValidatorTest = TestCase("NumericValidatorTest");
 
 NumericValidatorTest.prototype.setUp = function() {
-	var i18n = require("br/I18n")
-	i18n.reset();
-	i18n.initialise([{i18ntesttoken: "i18nErrorMessage"}]);
-	
 	this.oNumericValidator = new br.presenter.validator.NumericValidator("errorMessage");
 	
 	this.oValidationResult = 
@@ -32,7 +28,7 @@ NumericValidatorTest.prototype.test_InvalidNumber = function() {
 }
 
 NumericValidatorTest.prototype.testInvalidNumberShowsi18nErrorMessage = function() {
-	var oNumericValidator =  new br.presenter.validator.NumericValidator("i18ntesttoken");
+	var oNumericValidator =  new br.presenter.validator.NumericValidator("br.presenter.i18ntesttoken");
 	
 	oNumericValidator.validate("1a", {}, this.oValidationResult);
 	

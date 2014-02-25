@@ -11,11 +11,9 @@ import org.bladerunnerjs.model.engine.RootNode;
 
 public class SourceAssetLocation extends ShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
-	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
-	public SourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation dependentAssetLocation) {
-		super(rootNode, parent, dir);
-		dependentAssetLocations.add(dependentAssetLocation);
+	public SourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation) {
+		super(rootNode, parent, dir, assetLocation);
 	}
 	
 	public SourceAssetLocation(RootNode rootNode, Node parent, File dir) {
@@ -25,11 +23,6 @@ public class SourceAssetLocation extends ShallowAssetLocation {
 	@Override
 	public String requirePrefix() {
 		return assetContainer.requirePrefix();
-	}
-	
-	@Override
-	public List<AssetLocation> getDependentAssetLocations() {
-		return dependentAssetLocations;
 	}
 	
 	public List<AssetLocation> getChildAssetLocations() {

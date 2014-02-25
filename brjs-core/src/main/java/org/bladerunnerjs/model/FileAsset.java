@@ -11,7 +11,7 @@ import org.bladerunnerjs.utility.UnicodeReader;
 public class FileAsset implements Asset {
 	private File file;
 	private AssetLocation assetLocation;
-	private String defaultInputEncoding;
+	private String defaultFileCharacterEncoding;
 	private String assetPath;
 	
 	@Override
@@ -19,7 +19,7 @@ public class FileAsset implements Asset {
 		try {
 			this.file = new File(dir, assetName);
 			this.assetLocation = assetLocation;
-			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
+			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), file);
 		}
 		catch(ConfigException e) {
@@ -29,7 +29,7 @@ public class FileAsset implements Asset {
 	
 	@Override
 	public Reader getReader() throws IOException {
-		return new UnicodeReader(file, defaultInputEncoding);
+		return new UnicodeReader(file, defaultFileCharacterEncoding);
 	}
 	
 	@Override

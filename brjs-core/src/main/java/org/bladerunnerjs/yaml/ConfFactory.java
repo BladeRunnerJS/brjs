@@ -14,11 +14,11 @@ import com.esotericsoftware.yamlbeans.YamlReader.YamlReaderException;
 public class ConfFactory {
 	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, File confFile) throws ConfigException {
 		CF conf = null;
-		// TODO: get rid of `node == null` guard once we delete no brjs-core code
-		String defaultInputEncoding = ((node == null) || confFile.getName().equals("bladerunner.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultInputEncoding();
+		// TODO: get rid of `node == null` guard once we delete non brjs-core code
+		String defaultFileCharacterEncoding = ((node == null) || confFile.getName().equals("bladerunner.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		
 		if(confFile.exists()) {
-			conf = readConf(confFile, confClass, defaultInputEncoding);
+			conf = readConf(confFile, confClass, defaultFileCharacterEncoding);
 			conf.setNode(node);
 			conf.setConfFile(confFile);
 			conf.verify();
@@ -46,14 +46,14 @@ public class ConfFactory {
 		return conf;
 	}
 	
-	private static <CF extends AbstractYamlConfFile> CF readConf(File confFile, Class<CF> confClass, String defaultInputEncoding) throws ConfigException
+	private static <CF extends AbstractYamlConfFile> CF readConf(File confFile, Class<CF> confClass, String defaultFileCharacterEncoding) throws ConfigException
 	{
 		CF conf;
 		
 		try {
 			YamlReader reader = null;
 			
-			try(Reader fileReader = new UnicodeReader(confFile, defaultInputEncoding)) {
+			try(Reader fileReader = new UnicodeReader(confFile, defaultFileCharacterEncoding)) {
 				if(!fileReader.ready()) {
 					throw new ConfigException("'" + confFile.getPath() + "' is empty, either add some configuration or delete it to use the default configuration.");
 				}

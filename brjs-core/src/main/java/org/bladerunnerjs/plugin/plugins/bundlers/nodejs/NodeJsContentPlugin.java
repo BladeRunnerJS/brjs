@@ -90,13 +90,13 @@ public class NodeJsContentPlugin extends AbstractContentPlugin {
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
 		try {
 			if(contentPath.formName.equals("single-module-request")) {
-				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
 			else if(contentPath.formName.equals("bundle-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 					for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 						if (sourceModule instanceof NodeJsSourceModule)
 						{

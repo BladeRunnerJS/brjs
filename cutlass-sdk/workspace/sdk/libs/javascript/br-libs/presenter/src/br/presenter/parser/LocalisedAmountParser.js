@@ -86,7 +86,7 @@ br.presenter.parser.LocalisedAmountParser.prototype.parse = function(sValue, mAt
 
 br.presenter.parser.LocalisedAmountParser.prototype._getShortcutMultiplier = function(sShortcutSymbol)
 {
-	var sToken = "ct.element.number.formatting.multiplier." + sShortcutSymbol.toLowerCase();
+	var sToken = "br.presenter.parser.number.formatting.multiplier." + sShortcutSymbol.toLowerCase();
 	var oTranslator = require("br/I18n").getTranslator();
 	if (oTranslator.tokenExists(sToken)) 
 	{

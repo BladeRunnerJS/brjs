@@ -19,7 +19,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private File assetFile;
 	private AssetLocation assetLocation;
 	private String assetPath;
-	private String defaultInputEncoding;
+	private String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator dependencyCalculator;
 	
 	public void initialize(AssetLocation assetLocation, File dir, String assetName)
@@ -29,7 +29,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 			app = assetLocation.getAssetContainer().getApp();
 			this.assetFile = new File(dir, assetName);
 			assetPath = RelativePathUtility.get(app.dir(), assetFile);
-			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
+			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			dependencyCalculator = new TrieBasedDependenciesCalculator(this);
 		}
 		catch(ConfigException e) {
@@ -39,7 +39,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	
 	@Override
 	public Reader getReader() throws IOException {
-		return new UnicodeReader(assetFile, defaultInputEncoding);
+		return new UnicodeReader(assetFile, defaultFileCharacterEncoding);
 	}
 	
 	@Override

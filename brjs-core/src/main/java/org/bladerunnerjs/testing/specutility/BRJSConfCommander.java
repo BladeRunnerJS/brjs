@@ -15,8 +15,8 @@ public class BRJSConfCommander {
 		return this;
 	}
 	
-	public BRJSConfCommander setDefaultInputEncoding(String defaultInputEncoding) throws Exception {
-		bladerunnerConf.setDefaultInputEncoding(defaultInputEncoding);
+	public BRJSConfCommander setDefaultFileCharacterEncoding(String defaultFileCharacterEncoding) throws Exception {
+		bladerunnerConf.setDefaultFileCharacterEncoding(defaultFileCharacterEncoding);
 		
 		return this;
 	}
