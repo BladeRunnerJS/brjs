@@ -1,5 +1,7 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
+import java.util.Map;
+
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
@@ -32,6 +34,16 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 		call(new Command() {
 			public void call() throws Exception {
 				((BRJSNode) node).populate();
+			}
+		});
+		
+		return commanderChainer;
+	}
+	
+	public CommanderChainer populate(final Map<String, String> transformations) throws Exception {
+		call(new Command() {
+			public void call() throws Exception {
+				((BRJSNode) node).populate(transformations);
 			}
 		});
 		

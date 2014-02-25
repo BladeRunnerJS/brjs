@@ -1,5 +1,8 @@
 package org.bladerunnerjs.spec.model;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.NamedDirNode;
@@ -7,6 +10,7 @@ import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.StringLengthComparator;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -55,6 +59,15 @@ public class AspectTest extends SpecTest {
 	public void populatingAnAspectCausesRootObserversToBeNotified() throws Exception {
 		given(observer).observing(brjs);
 		when(aspect).populate();
+		then(observer).notified(NodeReadyEvent.class, aspect)
+			.and(observer).notified(NodeReadyEvent.class, aspect.theme("standard"));
+	}
+	
+	@Test
+	public void populatingAnAspectWithTransformationsCausesRootObserversToBeNotified() throws Exception {
+		Map<String, String> emptyTransformations = new TreeMap<>(new StringLengthComparator());
+		given(observer).observing(brjs);
+		when(aspect).populate(emptyTransformations);
 		then(observer).notified(NodeReadyEvent.class, aspect)
 			.and(observer).notified(NodeReadyEvent.class, aspect.theme("standard"));
 	}

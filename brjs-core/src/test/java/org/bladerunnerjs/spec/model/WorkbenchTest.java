@@ -1,11 +1,15 @@
 package org.bladerunnerjs.spec.model;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.StringLengthComparator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,5 +46,22 @@ public class WorkbenchTest extends SpecTest {
 		then(workbench).hasDir("resources")
 			.and(workbench).hasDir("src")
 			.and(workbench).fileHasContents("index.html", "'<html>hello world</html>'");
+	}
+	
+	@Test
+	public void workbenchTemplateWithTransformationsIsPopulatedAsExpected() throws Exception {
+		String transformationTag = "transform-me";
+		String transformationValue = "I've been transformed!";
+		
+		Map<String, String> transformations = new TreeMap<>(new StringLengthComparator());
+		transformations.put(transformationTag, transformationValue);
+		
+		given(workbenchTemplate).containsFileWithContents("index.html", "'<html>hello @" + transformationTag + "</html>'")
+			.and(workbenchTemplate).containsFolder("resources")
+			.and(workbenchTemplate).containsFolder("src");
+		when(blade).populate(transformations);
+		then(workbench).hasDir("resources")
+			.and(workbench).hasDir("src")
+			.and(workbench).fileHasContents("index.html", "'<html>hello " + transformationValue + "</html>'");
 	}
 }
