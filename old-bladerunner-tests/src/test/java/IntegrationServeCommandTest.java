@@ -34,7 +34,7 @@ private BladerunnerConf bladerunnerConf;
 	@Test
 	public void weCanServeTheIndexPageUsingTheUTF16Encoding() throws Exception
 	{
-		given(bladerunnerConf).defaultOutputEncodingIs("UTF-16")
+		given(bladerunnerConf).browserCharacterEncodingIs("UTF-16")
 			.and(app).hasBeenPopulated()
 			.and(aspect).indexPageHasContent("$£€");
 		when(brjs).runThreadedCommand("serve");

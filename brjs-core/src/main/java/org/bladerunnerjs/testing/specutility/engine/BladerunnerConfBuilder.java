@@ -17,7 +17,7 @@ public class BladerunnerConfBuilder {
 		return builderChainer;
 	}
 	
-	public BuilderChainer defaultOutputEncodingIs(String defaultOutputEncoding) throws Exception {
+	public BuilderChainer browserCharacterEncodingIs(String defaultOutputEncoding) throws Exception {
 		bladerunnerConf.setBrowserCharacterEncoding(defaultOutputEncoding);
 		
 		return builderChainer;
