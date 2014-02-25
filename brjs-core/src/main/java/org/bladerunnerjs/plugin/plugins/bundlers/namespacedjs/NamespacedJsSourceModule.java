@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.PatchableSourceModule;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
@@ -27,7 +28,7 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NamespacedJsSourceModule implements SourceModule {
+public class NamespacedJsSourceModule implements PatchableSourceModule {
 	private static final Pattern extendPattern = Pattern.compile("(caplin|br\\.Core)\\.(extend|implement|inherit)\\([^,]+,\\s*([^)]+)\\)");
 	
 	private List<SourceModule> orderDependentSourceModules;

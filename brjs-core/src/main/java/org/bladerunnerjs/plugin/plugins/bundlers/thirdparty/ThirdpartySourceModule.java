@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
+import org.bladerunnerjs.model.PatchableSourceModule;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -25,7 +26,7 @@ import org.bladerunnerjs.utility.UnicodeReader;
 import com.Ostermiller.util.ConcatReader;
 
 
-public class ThirdpartySourceModule implements SourceModule
+public class ThirdpartySourceModule implements PatchableSourceModule
 {
 
 	private AssetLocation assetLocation;
