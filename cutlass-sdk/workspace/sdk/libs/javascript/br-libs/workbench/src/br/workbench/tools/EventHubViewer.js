@@ -1,9 +1,10 @@
 var br = require( 'br/Core' );
-var WorkbenchComponent = require( 'br/workbench/ui/WorkbenchComponent' );
 var emitr = require( 'emitr' );
-var moment = require('moment');
-var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
 var ko = require( 'ko' );
+var moment = require( 'momentjs' );
+
+var WorkbenchComponent = require( 'br/workbench/ui/WorkbenchComponent' );
+var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
 
 /**
  * @param {} EventHub
