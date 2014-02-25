@@ -74,6 +74,12 @@ public class BundleSetBuilder {
 		}
 	}
 	
+	public void addSeedSourceModules(List<? extends SourceModule> seedSourceModules) throws ModelOperationException {
+		for(SourceModule sourceModule : seedSourceModules) {
+			addSourceModule(sourceModule);
+		}
+	}
+	
 	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
 		if(sourceModules.add(sourceModule)) {
 			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));

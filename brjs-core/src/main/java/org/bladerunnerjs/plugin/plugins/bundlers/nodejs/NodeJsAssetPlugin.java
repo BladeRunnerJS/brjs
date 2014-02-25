@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SuffixAssetFilter;
-import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
@@ -26,7 +25,8 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		try {
-			return assetLocation.obtainMatchingAssets( assetLocation.getJsStyle().equals(NodeJsContentPlugin.JS_STYLE), new SuffixAssetFilter("js"), SourceModule.class, NodeJsSourceModule.class);
+			List<SourceModule> sourceModules = assetLocation.obtainMatchingAssets( assetLocation.getJsStyle().equals(NodeJsContentPlugin.JS_STYLE), new SuffixAssetFilter("js"), SourceModule.class, NodeJsSourceModule.class);
+			return sourceModules;
 		} catch (AssetFileInstantationException ex)
 		{
 			throw new RuntimeException(ex);
@@ -36,7 +36,8 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
 		try {
-			return assetLocation.obtainMatchingAssets( assetLocation.getJsStyle().equals(NodeJsContentPlugin.JS_STYLE), new SuffixAssetFilter("js"), TestSourceModule.class, NodeJsTestSourceModule.class);
+			List<TestSourceModule> testSourceModules = assetLocation.obtainMatchingAssets( assetLocation.getJsStyle().equals(NodeJsContentPlugin.JS_STYLE), new SuffixAssetFilter("js"), TestSourceModule.class, NodeJsTestSourceModule.class);
+			return testSourceModules;
     	} catch (AssetFileInstantationException ex)
     	{
     		throw new RuntimeException(ex);
@@ -45,10 +46,6 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
-		if (assetLocation.getAssetContainer() instanceof TestPack) //TODO: only return an empty list when we start dealing with TestSourceModules seperately
-        {
-        	return new ArrayList<LinkedAsset>( getSourceModules(assetLocation) );
-        }
         return emptyLinkedAssets;
 	}
 	

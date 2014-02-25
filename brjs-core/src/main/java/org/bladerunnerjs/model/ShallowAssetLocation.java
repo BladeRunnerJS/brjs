@@ -75,6 +75,12 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	@Override
 	public SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException
 	{
+		if (requirePath.matches(".*[a-zA-Z0-9]\\.[a-zA-Z0-9].*"))
+		{
+			throw new InvalidRequirePathException("Invalid require path, require paths should be seperated by the '/' character. Did you mean '" + requirePath.replaceAll("([a-zA-Z0-9])\\.([a-zA-Z0-9])", "$1/$2") + "'?");
+		}
+		
+		
 		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
 
 		SourceModule sourceModule;
