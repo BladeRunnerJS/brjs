@@ -2,7 +2,8 @@ package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -35,6 +37,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	private AssetPlugin i18nAssetPlugin = null;
 	
 	private ContentPathParser contentPathParser;
+	private BRJS brjs;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -51,6 +54,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		this.brjs = brjs;
 		i18nAssetPlugin = brjs.plugins().assetProducer(I18nAssetPlugin.class);
 	}
 
@@ -152,26 +156,29 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		}
 	}
 	
-	private void writePropertiesMapToOutput(Map<String, String> propertiesMap, OutputStream os)
+	private void writePropertiesMapToOutput(Map<String, String> propertiesMap, OutputStream os) throws ContentProcessingException
 	{
-		PrintWriter writer = new PrintWriter(os);
-		
-		StringBuilder output = new StringBuilder();
-		
-		output.append("window._brjsI18nProperties = [{"+NEWLINE);
-		for (String key : propertiesMap.keySet())
-		{
-			String value = propertiesMap.get(key);
-			output.append(QUOTE+key+QUOTE+":"+QUOTE+value+QUOTE+","+NEWLINE);
+		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
+			StringBuilder output = new StringBuilder();
+			
+			output.append("window._brjsI18nProperties = [{"+NEWLINE);
+			for (String key : propertiesMap.keySet())
+			{
+				String value = propertiesMap.get(key);
+				output.append(QUOTE+key+QUOTE+":"+QUOTE+value+QUOTE+","+NEWLINE);
+			}
+			if (propertiesMap.size() > 0)
+			{
+				output.deleteCharAt( output.length() - 2 ); /* delete the last comma */			
+			}
+			output.append("}];");
+			
+			writer.write(output.toString());
+			writer.flush();
 		}
-		if (propertiesMap.size() > 0)
-		{
-			output.deleteCharAt( output.length() - 2 ); /* delete the last comma */			
+		catch (IOException | ConfigException e) {
+			throw new ContentProcessingException(e);
 		}
-		output.append("}];");
-		
-		writer.write(output.toString());
-		writer.flush();
 	}
 	
 	private List<I18nAssetFile> getI18nAssetFiles(BundleSet bundleSet)
