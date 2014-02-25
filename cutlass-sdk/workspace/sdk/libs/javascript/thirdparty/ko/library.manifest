@@ -1,0 +1,3 @@
+#NOTE: This is the official Knockout release
+depends: jquery
+js: knockout-3.0.0.js
