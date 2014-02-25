@@ -37,7 +37,17 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
-		/* TODO: */ throw new RuntimeException("Add an implementation here");
+		try {
+			if (assetLocation.getJsStyle().equals(NodeJsContentPlugin.JS_STYLE)) {
+				return assetLocation.obtainMatchingAssets(new SuffixAssetFilter("js"), TestSourceModule.class, NodeJsTestSourceModule.class);
+			}
+			else {
+				return new ArrayList<>();
+			}
+		}
+		catch (AssetFileInstantationException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
