@@ -1,5 +1,8 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.console.ConsoleWriter;
@@ -13,6 +16,7 @@ import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.StringLengthComparator;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -22,6 +26,13 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 public class CreateBladeCommand extends ArgsParsingCommandPlugin
 {
+	private class Parameters {
+		public static final String APP_NAME = "target-app-name";
+		public static final String BLADESET_NAME = "target-bladeset-name";
+		public static final String BLADE_NAME = "new-blade-name";
+		public static final String CLASS_NAME = "class-name";
+	}
+	
 	public class Messages {
 		public static final String BLADE_CREATE_SUCCESS_CONSOLE_MSG = "Successfully created new blade '%s'";
 		public static final String BLADE_PATH_CONSOLE_MSG = "  %s";
@@ -32,9 +43,10 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
-		argsParser.registerParameter(new UnflaggedOption("target-app-name").setRequired(true).setHelp("the application within which the new blade will be created"));
-		argsParser.registerParameter(new UnflaggedOption("target-bladeset-name").setRequired(true).setHelp("the bladeset within which the new blade will be created"));
-		argsParser.registerParameter(new UnflaggedOption("new-blade-name").setRequired(true).setHelp("the name of the blade that will be created"));
+		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
+		argsParser.registerParameter(new UnflaggedOption(Parameters.BLADESET_NAME).setRequired(true).setHelp("the bladeset within which the new blade will be created"));
+		argsParser.registerParameter(new UnflaggedOption(Parameters.BLADE_NAME).setRequired(true).setHelp("the name of the blade that will be created"));
+		argsParser.registerParameter(new UnflaggedOption(Parameters.CLASS_NAME).setRequired(false).setHelp("the name of the default class to be created with the blade."));
 	}
 	
 	@Override
@@ -58,9 +70,10 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 	
 	@Override
 	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
-		String appName = parsedArgs.getString("target-app-name");
-		String bladesetName = parsedArgs.getString("target-bladeset-name");
-		String bladeName = parsedArgs.getString("new-blade-name");
+		String appName = parsedArgs.getString(Parameters.APP_NAME);
+		String bladesetName = parsedArgs.getString(Parameters.BLADESET_NAME);
+		String bladeName = parsedArgs.getString(Parameters.BLADE_NAME);
+		String className = parsedArgs.getString(Parameters.CLASS_NAME);
 		
 		App app = brjs.app(appName);
 		Bladeset bladeset = app.bladeset(bladesetName);
@@ -71,7 +84,12 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		if(blade.dirExists()) throw new NodeAlreadyExistsException(blade, this);
 		
 		try {
-			blade.populate();
+			Map<String, String> transformations = new TreeMap<>(new StringLengthComparator());
+			if(	className != null && !className.isEmpty() )
+			{
+				transformations.put("class-name", className);
+			}
+			blade.populate(transformations);
 		}
 		catch(InvalidNameException e) {
 			throw new CommandArgumentsException(e, this);

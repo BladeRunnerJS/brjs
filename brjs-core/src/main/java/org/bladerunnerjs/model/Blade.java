@@ -56,12 +56,11 @@ public class Blade extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
-	{
-		super.populate();
-		testType("unit").testTech("js-test-driver").populate();
-		theme("standard").populate();
-		workbench().populate();
+	public void populate(Map<String, String> transformations) throws InvalidNameException, ModelUpdateException {
+		super.populate(transformations);
+		testType("unit").testTech("js-test-driver").populate(transformations);
+		theme("standard").populate(transformations);
+		workbench().populate(transformations);
 	}
 	
 	@Override

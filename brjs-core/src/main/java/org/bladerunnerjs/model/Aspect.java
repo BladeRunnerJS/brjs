@@ -67,10 +67,10 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException
+	public void populate(Map<String, String> transformations) throws InvalidNameException, ModelUpdateException
 	{
-		super.populate();
-		theme("standard").populate();
+		super.populate(transformations);
+		theme("standard").populate(transformations);
 	}
 	
 	@Override

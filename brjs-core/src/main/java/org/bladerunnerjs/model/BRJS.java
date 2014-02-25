@@ -134,9 +134,9 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	@Override
-	public void populate() throws InvalidNameException, ModelUpdateException {
+	public void populate(Map<String, String> transformations) throws InvalidNameException, ModelUpdateException {
 		try {
-			super.populate();
+			super.populate(transformations);
 			bladerunnerConf().write();
 		}
 		catch (ConfigException e) {
