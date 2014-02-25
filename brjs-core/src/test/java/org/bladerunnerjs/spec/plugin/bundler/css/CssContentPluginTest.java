@@ -214,7 +214,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void weCanUseUTF8() throws Exception {
-		given(bladerunnerConf).defaultInputEncodingIs("UTF-8")
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
 			.and().activeEncodingIs("UTF-8")
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
@@ -225,7 +225,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void weCanUseLatin1() throws Exception {
-		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
 			.and().activeEncodingIs("ISO-8859-1")
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
@@ -236,7 +236,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void weCanUseUnicodeFilesWithABomMarkerEvenWhenThisIsNotTheDefaultEncoding() throws Exception {
-		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
 			.and().activeEncodingIs("UTF-16")
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")

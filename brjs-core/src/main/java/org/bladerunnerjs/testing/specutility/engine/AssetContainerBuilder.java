@@ -22,7 +22,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		
 		try {
 			this.node = node;
-			fileUtil = new FileUtil(node.root().bladerunnerConf().getDefaultInputEncoding());
+			fileUtil = new FileUtil(node.root().bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

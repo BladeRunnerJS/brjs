@@ -187,7 +187,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void weCanUseUTF8() throws Exception {
-		given(bladerunnerConf).defaultInputEncodingIs("UTF-8")
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
 			.and().activeEncodingIs("UTF-8")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£€");
@@ -197,7 +197,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void weCanUseLatin1() throws Exception {
-		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
 			.and().activeEncodingIs("ISO-8859-1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£");
@@ -207,7 +207,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void weCanUseUnicodeFilesWithABomMarkerEvenWhenThisIsNotTheDefaultEncoding() throws Exception {
-		given(bladerunnerConf).defaultInputEncodingIs("ISO-8859-1")
+		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
 			.and().activeEncodingIs("UTF-16")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£€");

@@ -18,7 +18,7 @@ public class VersionInfo
 	{
 		try {
 			this.brjs = brjs;
-			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultInputEncoding());
+			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

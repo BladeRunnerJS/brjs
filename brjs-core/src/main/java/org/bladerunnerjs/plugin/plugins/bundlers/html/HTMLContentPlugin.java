@@ -94,7 +94,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		identifiers = new HashMap<String, Asset>();
 		Writer writer = null;
 		try{
-			writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding());
+			writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding());
 		}
 		catch( IOException | ConfigException e) {
 			throw new ContentProcessingException(e);

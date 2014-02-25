@@ -33,7 +33,7 @@ public class I18nAssetFile implements Asset
 	private AssetLocation assetLocation;
 	private File assetFile;
 	private String assetPath;
-	private String defaultInputEncoding;
+	private String defaultFileCharacterEncoding;
 
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -42,7 +42,7 @@ public class I18nAssetFile implements Asset
 			this.assetLocation = assetLocation;
 			this.assetFile = new File(dir, assetName);
 			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
-			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
+			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -52,7 +52,7 @@ public class I18nAssetFile implements Asset
 	@Override
 	public Reader getReader() throws IOException
 	{
-		return new UnicodeReader(assetFile, defaultInputEncoding);
+		return new UnicodeReader(assetFile, defaultFileCharacterEncoding);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class I18nAssetFile implements Asset
 		Map<String, String> propertiesMap = new HashMap<String,String>();
 		
 		Properties i18nProperties = new Properties();
-		i18nProperties.load( new UnicodeReader(assetFile, defaultInputEncoding) );
+		i18nProperties.load( new UnicodeReader(assetFile, defaultFileCharacterEncoding) );
 		
 		for (String property : i18nProperties.stringPropertyNames())
 		{

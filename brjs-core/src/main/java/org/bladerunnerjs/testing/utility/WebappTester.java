@@ -48,7 +48,7 @@ public class WebappTester
 	private String url;
 	
 	public String requestLocale = "";
-	private String defaultInputEncoding;
+	private String defaultFileCharacterEncoding;
 	
 	public WebappTester(BRJS brjs, File filePathBase, int defaultSocketTimeout, int defaultConnectionTimeout)
 	{
@@ -57,7 +57,7 @@ public class WebappTester
 		try {
 			this.defaultSocketTimeout = defaultSocketTimeout;
 			this.defaultSocketTimeout = defaultConnectionTimeout;
-			defaultInputEncoding = brjs.bladerunnerConf().getDefaultInputEncoding();
+			defaultFileCharacterEncoding = brjs.bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -196,7 +196,7 @@ public class WebappTester
 		for(String path: filePaths)
 		{
 			File sourceFile = new File(filePathBase, path);
-			try(Reader reader = new UnicodeReader(sourceFile, defaultInputEncoding))
+			try(Reader reader = new UnicodeReader(sourceFile, defaultFileCharacterEncoding))
 			{
 				IOUtils.copy(reader, writer);
 				writer.write("\n\n");

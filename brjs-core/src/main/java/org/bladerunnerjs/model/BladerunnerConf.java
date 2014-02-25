@@ -18,25 +18,23 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 		verifyAndAutoWrite();
 	}
 	
-	public String getDefaultInputEncoding() throws ConfigException {
+	public String getDefaultFileCharacterEncoding() throws ConfigException {
 		reloadConfIfChanged();
-		return conf.defaultInputEncoding;
+		return conf.defaultFileCharacterEncoding;
 	}
 	
-	public void setDefaultInputEncoding(String defaultInputEncoding) throws ConfigException {
-		conf.defaultInputEncoding = defaultInputEncoding;
+	public void setDefaultFileCharacterEncoding(String defaultFileCharacterEncoding) throws ConfigException {
+		conf.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
 		verifyAndAutoWrite();
 	}
 	
-	public String getDefaultOutputEncoding() throws ConfigException {
+	public String getBrowserCharacterEncoding() throws ConfigException {
 		reloadConfIfChanged();
-		return conf.defaultOutputEncoding;
+		return conf.browserCharacterEncoding;
 	}
 	
-	// TODO: change this method, and any related artifacts to omit the word 'default' since it allows you to absolutely define character encoding sent to the browser
-	// maybe the terms should be 'default file character encoding' and 'browser character encoding'
-	public void setDefaultOutputEncoding(String defaultOutputEncoding) throws ConfigException {
-		conf.defaultOutputEncoding = defaultOutputEncoding;
+	public void setBrowserCharacterEncoding(String browserCharacterEncoding) throws ConfigException {
+		conf.browserCharacterEncoding = browserCharacterEncoding;
 		verifyAndAutoWrite();
 	}
 

@@ -75,7 +75,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 				String minifierSetting = contentPath.properties.get("minifier-setting");
 				MinifierPlugin minifierPlugin = brjs.plugins().minifier(minifierSetting);
 				
-				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet);
 					minifierPlugin.minify(minifierSetting, inputSources, writer);
 				}
@@ -114,7 +114,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {
-			String charsetName = brjs.bladerunnerConf().getDefaultOutputEncoding();
+			String charsetName = brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			
 			for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
 				String locale = contentPath.properties.get("locale");

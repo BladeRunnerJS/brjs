@@ -27,7 +27,7 @@ public class AliasDefinitionsFile {
 			file = new File(parent, child);
 			fileModifiedChecker = new FileModifiedChecker(file);
 			reader = new AliasDefinitionsReader(data, file, assetContainer);
-			writer = new AliasDefinitionsWriter(data, file, assetContainer.root().bladerunnerConf().getDefaultInputEncoding());
+			writer = new AliasDefinitionsWriter(data, file, assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

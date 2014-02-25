@@ -26,7 +26,7 @@ public class AliasesReader {
 	private AliasesData aliasesData;
 	private File aliasesFile;
 
-	private String defaultInputEncoding;
+	private String defaultFileCharacterEncoding;
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -41,10 +41,10 @@ public class AliasesReader {
 		}
 	}
 	
-	public AliasesReader(AliasesData aliasesData, File aliasesFile, String defaultInputEncoding) {
+	public AliasesReader(AliasesData aliasesData, File aliasesFile, String defaultFileCharacterEncoding) {
 		this.aliasesData = aliasesData;
 		this.aliasesFile = aliasesFile;
-		this.defaultInputEncoding = defaultInputEncoding;
+		this.defaultFileCharacterEncoding = defaultFileCharacterEncoding;
 	}
 	
 	public void read() throws ContentFileProcessingException {
@@ -52,7 +52,7 @@ public class AliasesReader {
 		aliasesData.groupNames = new ArrayList<>();
 		
 		if(aliasesFile.exists()) {
-			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(aliasesFile, defaultInputEncoding, aliasesSchema)) {
+			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(aliasesFile, defaultFileCharacterEncoding, aliasesSchema)) {
 				while(streamReader.hasNextTag()) {
 					streamReader.nextTag();
 					
