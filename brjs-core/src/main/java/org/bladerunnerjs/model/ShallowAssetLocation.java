@@ -215,6 +215,17 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 		return assets;
 	}
 	
+	@Override
+	public <A extends Asset> List<A> obtainMatchingAssets(boolean predicate, AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException
+	{
+		if (predicate) {
+			return obtainMatchingAssets(assetFilter, assetClass, instantiateAssetClass);
+		}
+		else {
+			return new ArrayList<>();
+		}
+	}
+	
 	protected <A extends Asset> void addMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
 		for(File file : root().getFileIterator(dir).files()) {
 			if(!file.isDirectory() && assetFilter.accept(file.getName())) {
@@ -260,4 +271,5 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 		}
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
 	}
+	
 }

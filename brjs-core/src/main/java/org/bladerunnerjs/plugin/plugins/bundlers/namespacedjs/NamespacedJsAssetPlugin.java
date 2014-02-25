@@ -15,6 +15,10 @@ import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
+	
+	private List<LinkedAsset> emptyLinkedAssets = new ArrayList<LinkedAsset>();
+	private List<Asset> emptyAssets = new ArrayList<Asset>();
+	
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
@@ -22,44 +26,35 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		try {
-			if (assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE)) {
-				return assetLocation.obtainMatchingAssets(new SuffixAssetFilter("js"), SourceModule.class, NamespacedJsSourceModule.class);
-			}
-			else {
-				return new ArrayList<>();
-			}
-		}
-		catch (AssetFileInstantationException e) {
-			throw new RuntimeException(e);
+			return assetLocation.obtainMatchingAssets( assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE), new SuffixAssetFilter("js"), SourceModule.class, NamespacedJsSourceModule.class);
+		} catch (AssetFileInstantationException ex)
+		{
+			throw new RuntimeException(ex);
 		}
 	}
 	
 	@Override
 	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
 		try {
-			if (assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE)) {
-				return assetLocation.obtainMatchingAssets(new SuffixAssetFilter("js"), TestSourceModule.class, NamespacedJsTestSourceModule.class);
-			}
-			else {
-				return new ArrayList<>();
-			}
-		}
-		catch (AssetFileInstantationException e) {
-			throw new RuntimeException(e);
+			return assetLocation.obtainMatchingAssets( assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE), new SuffixAssetFilter("js"), TestSourceModule.class, NamespacedJsTestSourceModule.class);
+		} catch (AssetFileInstantationException ex)
+		{
+			throw new RuntimeException(ex);
 		}
 	}
 	
 	@Override
 	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
-		if (assetLocation.getAssetContainer() instanceof TestPack)
-		{
-			return new ArrayList<LinkedAsset>( getSourceModules(assetLocation) );
-		}
-		return new ArrayList<>();
+        if (assetLocation.getAssetContainer() instanceof TestPack) //TODO: only return an empty list when we start dealing with TestSourceModules seperately
+        {
+        	return new ArrayList<LinkedAsset>( getSourceModules(assetLocation) );
+        }
+        return emptyLinkedAssets;
 	}
 	
 	@Override
 	public List<Asset> getAssets(AssetLocation assetLocation) {
-		return new ArrayList<>();
+		return emptyAssets;
 	}
+	
 }
