@@ -232,4 +232,16 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 				"appns.nodejs.Class2 = require('appns/nodejs/Class2');");
 	}
 	
+	@Test
+	public void packageDefinitionsIncludesClassesNotDirectlyUsedByANamespacedClass() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
+    		.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")
+    		.and(aspect).hasClasses("appns.namespacedjs.Class1", "appns.nodejs.Class1", "appns.nodejs.pkg.Class2")
+    		.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1")
+    		.and(aspect).classRefersTo("appns.namespacedjs.Class1", "appns.nodejs.Class1")
+    		.and(aspect).classRequires("appns.nodejs.Class1", "appns.nodejs.pkg.Class2");
+		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
+		then(requestResponse).containsText("window.appns = {\"nodejs\":{\"pkg\":{}},\"namespacedjs\":{}};");
+	}
+	
 }

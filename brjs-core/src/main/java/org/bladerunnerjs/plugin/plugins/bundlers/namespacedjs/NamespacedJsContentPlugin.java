@@ -126,6 +126,9 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 						}
 					}
 					
+					// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
+					String globalizedClasses = globalizeExtraClasses(bundleSet, processedGlobalizedSourceModules);
+					
 					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
 					writePackageStructure(packageStructure, writer);
 					writer.write("\n");
@@ -133,7 +136,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 					writer.write( jsContent.toString() );
 					
 					writer.write("\n");
-					writer.write( globalizeExtraClasses(bundleSet, processedGlobalizedSourceModules) );
+					writer.write( globalizedClasses );
 				}
 			}
 			else if(contentPath.formName.equals("package-definitions-request")) {
@@ -147,6 +150,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 						}
 					}
 					
+					// call globalizeExtraClasses so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
+					globalizeExtraClasses(bundleSet, processedGlobalizedSourceModules);
 					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
 					writePackageStructure(packageStructure, writer);
 				}
