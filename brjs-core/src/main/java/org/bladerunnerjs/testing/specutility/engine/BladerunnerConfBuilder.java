@@ -11,14 +11,14 @@ public class BladerunnerConfBuilder {
 		builderChainer = new BuilderChainer(specTest);
 	}
 	
-	public BuilderChainer defaultInputEncodingIs(String defaultInputEncoding) throws Exception {
-		bladerunnerConf.setDefaultInputEncoding(defaultInputEncoding);
+	public BuilderChainer defaultFileCharacterEncodingIs(String defaultFileCharacterEncoding) throws Exception {
+		bladerunnerConf.setDefaultFileCharacterEncoding(defaultFileCharacterEncoding);
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer defaultOutputEncodingIs(String defaultOutputEncoding) throws Exception {
-		bladerunnerConf.setDefaultOutputEncoding(defaultOutputEncoding);
+	public BuilderChainer browserCharacterEncodingIs(String defaultOutputEncoding) throws Exception {
+		bladerunnerConf.setBrowserCharacterEncoding(defaultOutputEncoding);
 		
 		return builderChainer;
 	}

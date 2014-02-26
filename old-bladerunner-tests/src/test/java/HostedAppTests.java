@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.brjs.appserver;
+
 
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
@@ -19,8 +19,9 @@ public class HostedAppTests extends SpecTest
 
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasBeenAuthenticallyCreated();
-
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(brjs).usesProductionTemplates();
+		
 		// generate the app structure
 		App app = brjs.app("app");
 		Aspect aspect = app.aspect("default");
@@ -28,7 +29,8 @@ public class HostedAppTests extends SpecTest
 		Blade b1 = bs.blade("b1");
 		Workbench workbench = b1.workbench();
 		
-		given(aspect).hasClass("appns.Class1")
+		given(app).hasBeenPopulated()
+			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(b1).hasClass("appns/bs/b1/Class")
 			.and(workbench).containsFileWithContents("index.html", "require('appns.bs.b1.Class');");

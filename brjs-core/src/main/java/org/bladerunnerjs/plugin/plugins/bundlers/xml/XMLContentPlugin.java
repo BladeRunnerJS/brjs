@@ -92,7 +92,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		XmlBundleWriter bundleWriter = new XmlBundleWriter(config);
 		
 		try{
-			String outputEncoding = brjs.bladerunnerConf().getDefaultOutputEncoding();
+			String outputEncoding = brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			Writer output = new OutputStreamWriter(os, outputEncoding);
 			List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
 //			List<Asset> xmlAssets = bundleSet.getResourceFiles("xml");

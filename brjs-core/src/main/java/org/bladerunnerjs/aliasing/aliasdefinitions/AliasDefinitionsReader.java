@@ -30,7 +30,7 @@ public class AliasDefinitionsReader {
 	private final AliasDefinitionsData data;
 	private final File file;
 	private final AssetContainer assetContainer;
-	private final String defaultInputEncoding;
+	private final String defaultFileCharacterEncoding;
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -48,7 +48,7 @@ public class AliasDefinitionsReader {
 			this.data = data;
 			this.file = file;
 			this.assetContainer = assetContainer;
-			defaultInputEncoding = assetContainer.root().bladerunnerConf().getDefaultInputEncoding();
+			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -61,7 +61,7 @@ public class AliasDefinitionsReader {
 		data.groupAliases = new HashMap<>();
 		
 		if(file.exists()) {
-			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(file, defaultInputEncoding, aliasDefinitionsSchema)) {
+			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(file, defaultFileCharacterEncoding, aliasDefinitionsSchema)) {
 				while(streamReader.hasNextTag()) {
 					streamReader.nextTag();
 					

@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class I18nBundlerBundlerPluginTest extends SpecTest
+public class I18nContentPluginTest extends SpecTest
 {
 
 	private App app;

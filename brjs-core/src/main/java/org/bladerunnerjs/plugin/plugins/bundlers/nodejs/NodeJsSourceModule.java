@@ -47,7 +47,7 @@ public class NodeJsSourceModule implements PatchableSourceModule {
 	private String className;
 	private String assetPath;
 
-	private String defaultInputEncoding;
+	private String defaultFileCharacterEncoding;
 
 	private SourceModulePatch patch;
 	private FileModifiedChecker patchFileModifiedChecker;
@@ -62,7 +62,7 @@ public class NodeJsSourceModule implements PatchableSourceModule {
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
 			fileModifiedChecker = new FileModifiedChecker(assetFile);
-			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
+			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(RequirePathException | ConfigException e) {
 			throw new AssetFileInstantationException(e);
@@ -108,7 +108,7 @@ public class NodeJsSourceModule implements PatchableSourceModule {
 	public Reader getReader() throws IOException {
 		return new ConcatReader(new Reader[] {
 			new StringReader( String.format(NODEJS_DEFINE_BLOCK_HEADER, requirePath) ),
-			new BufferedReader(new UnicodeReader(assetFile, defaultInputEncoding)),
+			new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding)),
 			patch.getReader(),
 			new StringReader( NODEJS_DEFINE_BLOCK_FOOTER )
 		});

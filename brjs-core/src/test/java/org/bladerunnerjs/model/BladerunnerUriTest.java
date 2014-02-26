@@ -28,7 +28,7 @@ public class BladerunnerUriTest
 		brjs = BRJSTestFactory.createBRJS(tempDir);
 		app = brjs.app("the-app");
 		
-		FileUtil fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultInputEncoding());
+		FileUtil fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		fileUtil.write(app.bladeset("another").file("js/empty.txt"), "");
 		fileUtil.write(app.bladeset("another").blade("blade1").workbench().file("empty.txt"), "");
 		fileUtil.write(app.bladeset("another").blade("blade1").file("/tests/test-type/testTech/empty.txt"), "");

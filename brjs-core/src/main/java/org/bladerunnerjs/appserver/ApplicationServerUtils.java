@@ -79,7 +79,6 @@ public class ApplicationServerUtils
 			"org.eclipse.jetty.plus.webapp.PlusConfiguration",
 			"org.eclipse.jetty.webapp.JettyWebXmlConfiguration"});
 		
-		// webdefault.xml defines BRJS servlet and BRJS filter
 		webappContext.setDefaultsDescriptor("org/bladerunnerjs/model/appserver/webdefault.xml");
 		
 		File webXml = app.file("WEB-INF/web.xml");

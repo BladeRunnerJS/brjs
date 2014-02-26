@@ -67,7 +67,7 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 				boolean aliasRegistryLoaded = bundleSet.getSourceModules().contains(bundleSet.getBundlableNode().getSourceModule("br/AliasRegistry"));
 				
 				if(aliasRegistryLoaded) {
-					try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+					try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 						String aliasData = AliasingSerializer.createJson(bundleSet);
 						writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
 					}

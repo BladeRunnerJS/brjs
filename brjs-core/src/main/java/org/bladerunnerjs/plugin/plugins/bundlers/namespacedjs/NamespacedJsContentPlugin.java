@@ -100,14 +100,14 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
 		try {
 			if(contentPath.formName.equals("single-module-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
 					writer.write( globalizeNonNamespacedJsClasses(jsModule, new ArrayList<SourceModule>()) );
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
 			else if(contentPath.formName.equals("bundle-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 								
 					StringWriter jsContent = new StringWriter();
 
@@ -131,7 +131,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 				}
 			}
 			else if(contentPath.formName.equals("package-definitions-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getDefaultOutputEncoding())) {
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 					
 					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
 					for(SourceModule sourceModule : bundleSet.getSourceModules()) {

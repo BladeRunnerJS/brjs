@@ -42,6 +42,13 @@ public class TestPackBuilder extends AssetContainerBuilder<TestPack>
 		return builderChainer;
 	}
 	
+	public BuilderChainer testFileHasContent(String testFilePath, String content) throws IOException
+	{
+		File testFile = testPack.tests().file(testFilePath);
+		fileUtil.write(testFile, content);
+		return builderChainer;
+	}
+	
 	public BuilderChainer testRequires(String testFilePath, String className) throws IOException
 	{
 		File testFile = testPack.tests().file(testFilePath);

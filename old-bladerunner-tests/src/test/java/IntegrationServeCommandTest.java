@@ -30,11 +30,11 @@ private BladerunnerConf bladerunnerConf;
 		bladerunnerConf = brjs.bladerunnerConf();
 	}
 	
-	@Ignore
 	@Test
 	public void weCanServeTheIndexPageUsingTheUTF16Encoding() throws Exception
 	{
-		given(bladerunnerConf).defaultOutputEncodingIs("UTF-16")
+		// TODO: also verify one of the bundles can carry a '$£€' pay-load, and that the Content-Type header for both has a UTF-16 character encoding
+		given(bladerunnerConf).browserCharacterEncodingIs("UTF-16")
 			.and(app).hasBeenPopulated()
 			.and(aspect).indexPageHasContent("$£€");
 		when(brjs).runThreadedCommand("serve");

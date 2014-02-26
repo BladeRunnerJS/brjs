@@ -28,9 +28,9 @@ public class AliasesFile {
 			file = new File(parent, child);
 			fileModifiedChecker = new FileModifiedChecker(file);
 			
-			String defaultInputEncoding = bundlableNode.root().bladerunnerConf().getDefaultInputEncoding();
-			reader = new AliasesReader(data, file, defaultInputEncoding);
-			writer = new AliasesWriter(data, file, defaultInputEncoding);
+			String defaultFileCharacterEncoding = bundlableNode.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			reader = new AliasesReader(data, file, defaultFileCharacterEncoding);
+			writer = new AliasesWriter(data, file, defaultFileCharacterEncoding);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

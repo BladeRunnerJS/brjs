@@ -34,7 +34,7 @@ public class ThirdpartySourceModule implements PatchableSourceModule
 	private NonBladerunnerJsLibManifest manifest;
 	private String assetPath;
 	private SourceModulePatch patch;
-	private String defaultInputEncoding;
+	private String defaultFileCharacterEncoding;
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName)
@@ -43,7 +43,7 @@ public class ThirdpartySourceModule implements PatchableSourceModule
 			this.assetLocation = assetLocation;
 			this.dir = dir;
 			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), dir);
-			defaultInputEncoding = assetLocation.root().bladerunnerConf().getDefaultInputEncoding();
+			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch (ConfigException e) {
 			throw new RuntimeException(e);
@@ -57,7 +57,7 @@ public class ThirdpartySourceModule implements PatchableSourceModule
 		
 		try {
 			for(File file : manifest.getJsFiles()) {
-				fileReaders.add(new UnicodeReader(file, defaultInputEncoding));
+				fileReaders.add(new UnicodeReader(file, defaultFileCharacterEncoding));
 				fileReaders.add(new StringReader("\n\n"));
 			}
 			

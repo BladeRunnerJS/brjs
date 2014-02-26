@@ -16,11 +16,11 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	
 	@NotNull
 	@NotEmpty
-	public String defaultInputEncoding;
+	public String defaultFileCharacterEncoding;
 	
 	@NotNull
 	@NotEmpty
-	public String defaultOutputEncoding;
+	public String browserCharacterEncoding;
 
 	@NotNull
 	@NotEmpty
@@ -33,8 +33,8 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	@Override
 	public void initialize() {
 		jettyPort = 7070;
-		defaultInputEncoding = "UTF-8";
-		defaultOutputEncoding = "UTF-8";
+		defaultFileCharacterEncoding = "UTF-8";
+		browserCharacterEncoding = "UTF-8";
 		loginRealm = "BladeRunnerLoginRealm";
 	}
 	
@@ -45,8 +45,8 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	}
 	
 	private void verifyCharacterEncodings() throws ConfigException {
-		verifyCharacterEncoding("defaultInputEncoding", defaultInputEncoding);
-		verifyCharacterEncoding("defaultOutputEncoding", defaultOutputEncoding);
+		verifyCharacterEncoding("defaultFileCharacterEncoding", defaultFileCharacterEncoding);
+		verifyCharacterEncoding("browserCharacterEncoding", browserCharacterEncoding);
 	}
 	
 	private void verifyCharacterEncoding(String propertyName, String characterEncoding) throws ConfigException {

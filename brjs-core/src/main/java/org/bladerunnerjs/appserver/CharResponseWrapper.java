@@ -18,8 +18,9 @@ public class CharResponseWrapper extends HttpServletResponseWrapper
 	private ByteArrayOutputStream byteArrayOutputStream;
 	private ServletOutputStream servletOutputStream;
 	private PrintWriter printWriter;
+	private String characterEncoding = "UTF-8";
 	
-	public CharResponseWrapper(HttpServletResponse response) throws UnsupportedEncodingException
+	public CharResponseWrapper(HttpServletResponse response)
 	{
 		super(response);
 		
@@ -32,7 +33,30 @@ public class CharResponseWrapper extends HttpServletResponseWrapper
 				byteArrayOutputStream.write(i);
 			}
 		};
-		printWriter = new PrintWriter(new OutputStreamWriter(byteArrayOutputStream));
+	}
+	
+	@Override
+	public void setCharacterEncoding(String characterEncoding) {
+		this.characterEncoding = characterEncoding;
+		super.setCharacterEncoding(characterEncoding);
+	}
+	
+	@Override
+	public void setContentType(String contentType) {
+		super.setContentType(contentType);
+		
+		if(contentType.contains(";charset=")) {
+			this.characterEncoding = getCharacterEncoding();
+		}
+	}
+	
+	@Override
+	public void setHeader(String headerName, String headerValue) {
+		super.setHeader(headerName, headerValue);
+		
+		if((headerName.equals("Content-Type")) && headerValue.contains(";charset=")) {
+			this.characterEncoding = getCharacterEncoding();
+		}
 	}
 	
 	@Override
@@ -42,20 +66,26 @@ public class CharResponseWrapper extends HttpServletResponseWrapper
 	}
 	
 	@Override
-	public PrintWriter getWriter()
+	public PrintWriter getWriter() throws UnsupportedEncodingException
 	{
+		if(printWriter == null) {
+			printWriter = new PrintWriter(new OutputStreamWriter(byteArrayOutputStream, characterEncoding));
+		}
+		
 		return printWriter;
 	}
 	
 	public Reader getReader() throws UnsupportedEncodingException
 	{
-		printWriter.flush();
-		return new InputStreamReader(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+		if(printWriter != null) {
+			printWriter.flush();
+		}
+		
+		return new InputStreamReader(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()), characterEncoding);
 	}
 	
 	@Override
 	public void flushBuffer()
 	{
 	}
-	
 }

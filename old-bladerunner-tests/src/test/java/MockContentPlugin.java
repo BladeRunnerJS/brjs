@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.brjs.appserver;
+
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -25,8 +25,8 @@ public class MockContentPlugin extends AbstractContentPlugin
 		try {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
-				.accepts("mock-servlet").as("request")
-				.and("mock-servlet/some/other/path").as("long-request");
+				.accepts("mock-content-plugin/").as("request")
+				.and("mock-content-plugin/some/other/path/").as("long-request");
 			
 			contentPathParser = contentPathParserBuilder.build();
 			prodRequestPaths.add(contentPathParser.createRequest("request"));
@@ -44,7 +44,7 @@ public class MockContentPlugin extends AbstractContentPlugin
 	
 	@Override
 	public String getRequestPrefix() {
-		return "mock-servlet";
+		return "mock-content-plugin";
 	}
 
 	@Override

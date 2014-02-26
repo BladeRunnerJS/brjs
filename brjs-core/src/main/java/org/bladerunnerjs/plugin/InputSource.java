@@ -47,7 +47,7 @@ public class InputSource {
 				
 				contentPlugin.writeContent(contentPath, bundleSet, bos);
 				
-				sourceMap = bos.toString(bundleSet.getBundlableNode().root().bladerunnerConf().getDefaultOutputEncoding());
+				sourceMap = bos.toString(bundleSet.getBundlableNode().root().bladerunnerConf().getBrowserCharacterEncoding());
 			}
 		}
 		catch(ConfigException | UnsupportedEncodingException e) {

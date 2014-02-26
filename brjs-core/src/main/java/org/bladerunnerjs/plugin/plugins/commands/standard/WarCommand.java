@@ -47,14 +47,14 @@ public class WarCommand extends ArgsParsingCommandPlugin
 	private static List<String> indexFiles = Arrays.asList(new String[] {"index.html", "index.jsp"});
 	private ConsoleWriter out;
 	private BRJS brjs;
-	private String defaultInputEncoding;
+	private String defaultFileCharacterEncoding;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
 		try {
 			this.brjs = brjs;
 			out = brjs.getConsoleWriter();
-			defaultInputEncoding = brjs.bladerunnerConf().getDefaultInputEncoding();
+			defaultFileCharacterEncoding = brjs.bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch (ConfigException e) {
 			throw new RuntimeException(e);
@@ -105,14 +105,14 @@ public class WarCommand extends ArgsParsingCommandPlugin
 				
 				FileUtility.copyFileIfExists(origApp.file("app.conf"), warApp.file("app.conf"));
 				
-				FileUtil fileUtil = new FileUtil(defaultInputEncoding);
+				FileUtil fileUtil = new FileUtil(defaultFileCharacterEncoding);
 				for(Aspect origAspect : origApp.aspects()) {
 					Aspect warAspect = warApp.aspect(origAspect.getName());
 					
 					for(String indexFile : indexFiles) {
 						if(origAspect.file(indexFile).exists()) {
 							FileUtils.copyFile(origAspect.file(indexFile), warAspect.file(indexFile));
-							try(Writer writer = new OutputStreamWriter(new FileOutputStream(warAspect.file(indexFile)), brjs.bladerunnerConf().getDefaultInputEncoding())) {
+							try(Writer writer = new OutputStreamWriter(new FileOutputStream(warAspect.file(indexFile)), brjs.bladerunnerConf().getDefaultFileCharacterEncoding())) {
 								// TODO: stop only supporting the English locale within wars
 								warAspect.filterIndexPage(fileUtil.readFileToString(origAspect.file(indexFile)), "en", writer, RequestMode.Prod);
 							}

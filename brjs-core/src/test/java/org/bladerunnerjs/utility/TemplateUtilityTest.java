@@ -32,7 +32,7 @@ public class TemplateUtilityTest
 		File tempDir = FileUtility.createTemporaryDirectory("TemplateUtilityTest");
 		FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
 		brjs = BRJSTestFactory.createBRJS(tempDir);
-		fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultInputEncoding());
+		fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 	}
 	
 	@After

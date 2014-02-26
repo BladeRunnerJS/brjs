@@ -20,10 +20,10 @@ public class AliasesWriter {
 	private final File file;
 	private final FileUtil fileUtil;
 	
-	public AliasesWriter(AliasesData data, File file, String defaultInputEncoding) {
+	public AliasesWriter(AliasesData data, File file, String defaultFileCharacterEncoding) {
 		this.data = data;
 		this.file = file;
-		fileUtil = new FileUtil(defaultInputEncoding);
+		fileUtil = new FileUtil(defaultFileCharacterEncoding);
 	}
 	
 	public void write() throws IOException {

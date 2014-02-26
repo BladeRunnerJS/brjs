@@ -108,7 +108,7 @@ public class BRJSServletFilter implements Filter
 			String locale = LocaleHelper.getLocaleFromRequest(app, request);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
-			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, brjs.bladerunnerConf().getDefaultOutputEncoding()))
+			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 			{
 				BrowsableNode browsableNode = (BrowsableNode) app.getBundlableNode(bladerunnerUri);
 				
@@ -116,7 +116,8 @@ public class BRJSServletFilter implements Filter
 			}
 			
 			byte[] byteArray = byteArrayOutputStream.toByteArray();
-			response.setHeader("Content-Type", "text/html;charset=" + brjs.bladerunnerConf().getDefaultOutputEncoding());
+			response.setContentType("text/html");
+			response.setCharacterEncoding(brjs.bladerunnerConf().getBrowserCharacterEncoding());
 			response.setContentLength(byteArray.length);
 			response.getOutputStream().write(byteArray);
 		}
