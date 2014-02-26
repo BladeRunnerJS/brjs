@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.brjs.appserver;
+
 
 import java.net.ServerSocket;
 
@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.testing.utility.MockTagHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,8 @@ public class BRJSServletFilterTest extends SpecTest
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usedForServletModel()
 			.and(brjs).containsFolder("apps")
-			.and(brjs).containsFolder("sdk/system-applications");
+			.and(brjs).containsFolder("sdk/system-applications")
+			.and(brjs).usesProductionTemplates();
 			appServer = brjs.applicationServer(appServerPort);
 			app = brjs.app("app");
 			aspect = app.aspect("default");
@@ -59,8 +59,7 @@ public class BRJSServletFilterTest extends SpecTest
 	@Test
 	public void indexFilesWithoutTagsAreUnchanged() throws Exception
 	{
-		given(app).hasBeenCreated()
-			.and(aspect).hasBeenCreated()
+		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "some html content")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "some html content");
@@ -69,8 +68,7 @@ public class BRJSServletFilterTest extends SpecTest
 	@Test
 	public void aspectIndexFileIsFiltered() throws Exception
 	{
-		given(app).hasBeenCreated()
-			.and(aspect).hasBeenCreated()
+		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "dev replacement");
@@ -79,9 +77,8 @@ public class BRJSServletFilterTest extends SpecTest
 	@Test
 	public void localesCanBeUsedInTagHandlers() throws Exception
 	{
-		given(app).hasBeenCreated()
+		given(app).hasBeenPopulated()
 			.and(app).hasSupportedLocales("ab_CD")
-			.and(aspect).hasBeenCreated()
 			.and(aspect).containsFileWithContents("index.html", "<@localeToken @/>")
 			.and(appServer).started();
 		when(webappTester).makesRequestWithLocale("ab_CD");

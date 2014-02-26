@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.brjs.appserver;
+
 
 import java.net.ServerSocket;
 
@@ -36,7 +36,8 @@ public class BRJSServletTest extends SpecTest
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usedForServletModel()
 			.and(brjs).containsFolder("apps")
-			.and(brjs).containsFolder("sdk/system-applications");
+			.and(brjs).containsFolder("sdk/system-applications")
+			.and(brjs).usesProductionTemplates();
 			appServer = brjs.applicationServer(appServerPort);
 			app = brjs.app("app");
 			aspect = app.aspect("default");
@@ -58,8 +59,7 @@ public class BRJSServletTest extends SpecTest
 	@Test
 	public void brjsServletDoesntHandleAspectIndexFile() throws Exception
 	{
-		given(app).hasBeenCreated()
-			.and(aspect).hasBeenCreated()
+		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "aspect index.html");
@@ -68,34 +68,34 @@ public class BRJSServletTest extends SpecTest
 	@Test
 	public void contentPluginsCanHandleRequests() throws Exception
 	{
-		given(app).hasBeenCreated()
+		given(app).hasBeenPopulated()
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet", MockContentPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/default-aspect/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test
 	public void longUrlsDontGetHandedToOtherServlets() throws Exception
 	{
-		given(app).hasBeenCreated()
+		given(app).hasBeenPopulated()
 			.and(appServer).started()
-			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-servlet/some/other/path", MockContentPlugin.class.getCanonicalName())
-			.and(appServer).requestForUrlReturns("/app/hello", "Hello World!");
+			.and(appServer).appHasServlet(app, helloWorldServlet, "/servlet/hello");
+		then(appServer).requestForUrlReturns("/app/default-aspect/mock-content-plugin/some/other/path/", MockContentPlugin.class.getCanonicalName())
+			.and(appServer).requestForUrlReturns("/app/servlet/hello", "Hello World!");
 	}
 	
 	@Test
 	public void brjsServletAllowsOtherServletsToBeAdded() throws Exception
 	{
-		given(app).hasBeenCreated()
+		given(app).hasBeenPopulated()
 			.and(appServer).started()
-			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello/*");
-		then(appServer).requestForUrlReturns("/app/hello", "Hello World!");
+			.and(appServer).appHasServlet(app, helloWorldServlet, "/servlet/hello/*");
+		then(appServer).requestForUrlReturns("/app/servlet/hello", "Hello World!");
 	}
 	
 	@Test
 	public void brjsServletAllowsOtherServletsToBeAddedWithExtensionMapping() throws Exception
 	{
-		given(app).hasBeenCreated()
+		given(app).hasBeenPopulated()
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "*.mock");
 		then(appServer).requestForUrlReturns("/app/hello.mock", "Hello World!");
@@ -104,7 +104,7 @@ public class BRJSServletTest extends SpecTest
 	@Test
 	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
 	{
-		given(app).hasBeenCreated()
+		given(app).hasBeenPopulated()
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.cjs.Class")
