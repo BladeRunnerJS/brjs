@@ -56,11 +56,11 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public void populate(Map<String, String> transformations) throws InvalidNameException, ModelUpdateException
+	public void populate() throws InvalidNameException, ModelUpdateException
 	{
-		super.populate(transformations);
-		testType("unit").testTech("js-test-driver").populate(transformations);
-		theme("standard").populate(transformations);
+		super.populate();
+		testType("unit").testTech("js-test-driver").populate();
+		theme("standard").populate();
 	}
 	
 	@Override

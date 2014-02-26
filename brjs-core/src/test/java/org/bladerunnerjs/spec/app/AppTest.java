@@ -3,9 +3,6 @@ package org.bladerunnerjs.spec.app;
 import static org.bladerunnerjs.model.App.Messages.APP_DEPLOYED_LOG_MSG;
 import static org.bladerunnerjs.model.App.Messages.APP_DEPLOYMENT_FAILED_LOG_MSG;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
@@ -15,7 +12,6 @@ import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.StringLengthComparator;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -65,16 +61,6 @@ public class AppTest extends SpecTest {
 	public void populatingAnAppCausesRootObserversToBeNotified() throws Exception {
 		given(observer).observing(brjs);
 		when(app).populate();
-		then(observer).notified(NodeReadyEvent.class, app)
-			.and(observer).notified(NodeReadyEvent.class, aspect)
-			.and(observer).notified(NodeReadyEvent.class, aspect.theme("standard"));
-	}
-	
-	@Test
-	public void populatingAnAppWithTransformationsCausesRootObserversToBeNotified() throws Exception {
-		Map<String, String> emptyTransformations = new TreeMap<>(new StringLengthComparator());
-		given(observer).observing(brjs);
-		when(app).populate(emptyTransformations);
 		then(observer).notified(NodeReadyEvent.class, app)
 			.and(observer).notified(NodeReadyEvent.class, aspect)
 			.and(observer).notified(NodeReadyEvent.class, aspect.theme("standard"));

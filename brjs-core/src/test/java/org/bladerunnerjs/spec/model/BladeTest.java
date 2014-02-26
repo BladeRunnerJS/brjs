@@ -1,8 +1,5 @@
 package org.bladerunnerjs.spec.model;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -13,7 +10,6 @@ import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.StringLengthComparator;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -55,17 +51,6 @@ public class BladeTest extends SpecTest {
 	public void populatingABladeCausesBladesetObserversToBeNotified() throws Exception {
 		given(observer).observing(brjs);
 		when(blade1).populate();
-		then(observer).notified(NodeReadyEvent.class, blade1)
-			.and(observer).notified(NodeReadyEvent.class, blade1.testType("unit").testTech("js-test-driver"))
-			.and(observer).notified(NodeReadyEvent.class, blade1.theme("standard"))
-			.and(observer).notified(NodeReadyEvent.class, blade1.workbench());
-	}
-	
-	@Test
-	public void populatingABladeWithTransformationsCausesBladesetObserversToBeNotified() throws Exception {
-		Map<String, String> emptyTransformations = new TreeMap<>(new StringLengthComparator());
-		given(observer).observing(brjs);
-		when(blade1).populate(emptyTransformations);
 		then(observer).notified(NodeReadyEvent.class, blade1)
 			.and(observer).notified(NodeReadyEvent.class, blade1.testType("unit").testTech("js-test-driver"))
 			.and(observer).notified(NodeReadyEvent.class, blade1.theme("standard"))

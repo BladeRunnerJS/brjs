@@ -1,8 +1,6 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
 
@@ -10,7 +8,6 @@ import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.utility.StringLengthComparator;
 
 
 public abstract class AbstractBRJSRootNode extends AbstractRootNode implements BRJSNode {
@@ -25,13 +22,7 @@ public abstract class AbstractBRJSRootNode extends AbstractRootNode implements B
 	
 	@Override
 	public void populate() throws InvalidNameException, ModelUpdateException {
-		Map<String, String> emptyTransformations = new TreeMap<>(new StringLengthComparator());
-		populate(emptyTransformations);
-	}
-	
-	@Override
-	public void populate(Map<String, String> transformations) throws InvalidNameException, ModelUpdateException {
-		BRJSNodeHelper.populate(this, transformations);
+		BRJSNodeHelper.populate(this);
 	}
 	
 	@Override

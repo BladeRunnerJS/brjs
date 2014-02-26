@@ -44,8 +44,8 @@ public class CreateBladeCommandTest extends SpecTest {
 	
 	@Test
 	public void exceptionIsThrownIfThereAreTooManyArguments() throws Exception {
-		when(brjs).runCommand("create-blade", "a", "b", "c", "d", "e");
-		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: e"))
+		when(brjs).runCommand("create-blade", "a", "b", "c", "d");
+		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: d"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	

@@ -68,11 +68,6 @@ public class JsLibAppWrapper implements JsLib {
 	}
 	
 	@Override
-	public void populate(Map<String, String> transformations) throws InvalidNameException, ModelUpdateException {
-		wrappedJsLib.populate(transformations);
-	}
-	
-	@Override
 	public List<SourceModule> sourceModules() {
 		return wrappedJsLib.sourceModules();
 	}

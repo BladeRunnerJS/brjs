@@ -199,10 +199,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 	}
 	
 	@Override
-	public void populate(Map<String, String> transformations) throws InvalidNameException, ModelUpdateException
+	public void populate() throws InvalidNameException, ModelUpdateException
 	{
-		super.populate(transformations);
-		aspect("default").populate(transformations);
+		super.populate();
+		aspect("default").populate();
 	};
 	
 	public void populate(String appNamespace) throws InvalidNameException, ModelUpdateException
