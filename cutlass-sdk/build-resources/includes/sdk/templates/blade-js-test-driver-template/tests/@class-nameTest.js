@@ -1,4 +1,4 @@
-@class-nameTest = TestCase("@class-nameTest");
+var @class-nameTest = TestCase("@class-nameTest");
 
 var @class-name = require( '@appns/@bladeset/@blade/@class-name' );
 

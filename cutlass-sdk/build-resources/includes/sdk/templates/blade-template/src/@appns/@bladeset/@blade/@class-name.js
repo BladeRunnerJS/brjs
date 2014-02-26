@@ -1,13 +1,10 @@
 "use strict";
 
-var br = require('br/Core');
-var Property = require('br/presenter/property/Property');
-var PresentationModel = require('br/presenter/PresentationModel');
+var ko = require( 'ko' );
 
 function @class-name() {
-	this.message = new Property("Hello World!");
+	this.message = ko.observable( '' );
 }
-br.extend( @class-name, PresentationModel );
 
 @class-name.prototype.buttonClicked = function() {
 	console.log("button clicked");
