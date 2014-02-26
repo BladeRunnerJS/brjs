@@ -93,7 +93,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 			}
 		}
 		
-		assetContainers.addAll( jsLibs() );
+		for (JsLib jsLib : jsLibs())
+		{
+			assetContainers.add( jsLib );
+			addAllTestPacks(assetContainers, jsLib.testTypes());			
+		}
 		
 		return assetContainers;
 	}

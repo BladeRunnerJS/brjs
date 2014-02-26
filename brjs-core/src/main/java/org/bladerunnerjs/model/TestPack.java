@@ -122,7 +122,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 				for (AssetLocation assetLocation : assetLocations())
 				{
-					if ( assetLocation != assetLocation(tests().dir().getName()) )
+					if ( !isTestAssetLocation(assetLocation) )
 					{
 						sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
 					}
@@ -140,7 +140,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 				for (AssetLocation assetLocation : assetLocations())
 				{
-					if ( assetLocation == assetLocation(tests().dir().getName()) )
+					if ( isTestAssetLocation(assetLocation) )
 					{
 						testSourceModules.addAll(assetPlugin.getTestSourceModules(assetLocation));
 					}
@@ -204,4 +204,11 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	{
 		return item(tests);
 	}
+	
+	
+	private boolean isTestAssetLocation(AssetLocation assetLocation)
+	{
+		return assetLocation instanceof TestAssetLocation || assetLocation instanceof ChildTestAssetLocation;
+	}
+	
 }

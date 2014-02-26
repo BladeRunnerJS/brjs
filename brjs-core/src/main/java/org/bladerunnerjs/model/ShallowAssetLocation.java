@@ -28,10 +28,10 @@ public class ShallowAssetLocation extends InstantiatedBRJSNode implements AssetL
 	protected final AssetLocationUtility assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
-	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation)
+	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
 	{
 		this(rootNode, parent, dir);
-		dependentAssetLocations.add(assetLocation);
+		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
 	

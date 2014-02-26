@@ -4,7 +4,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -63,16 +62,13 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 				sdkLib.assetLocation("src-test").file("brjsLib/TestClass1.js"));
 	}
 	
-	@Ignore // TODO: test nodes should have their src test bundled
 	@Test
-	public void sdkLibTestCanLoadSrcTestInsideJsTestDriverFolder() throws Exception {
+	public void sdkLibTestCanLoadSrcTestFromTestTechFolder() throws Exception {
 		given(sdkLib).hasNamespacedJsPackageStyle()
-			.and(sdkLib).hasClass("brjsLib.Class1")
 			.and(sdkLibUTs).hasTestClasses("brjsLib.TestClass1")
-			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib.Class1", "brjsLib.TestClass1");
+			.and(sdkLibUTs).testRefersTo("pkg/test.js", "brjsLib.TestClass1");
 		then(sdkLibUTs).bundledFilesEquals(
-			sdkLib.assetLocation("src").file("brjsLib/Class1.js"),
-			sdkLib.assetLocation("src-test").file("brjsLib/TestClass1.js"));
+			sdkLibUTs.assetLocation("src-test").file("brjsLib/TestClass1.js"));
 	}
 
 }
