@@ -4,7 +4,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -86,24 +85,24 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 		then(response).containsText("define('brjsLib/SdkClass'");
 	}
 	
-	@Ignore // TODO - we should see package definition block added for the sdkLib even though it's a nodeJS lib, because there is a src-test file with namespace code
 	@Test
-	public void packageDefinitionsAreDefinedInASingleRequest() throws Exception {	
+	public void encapsulatedStyleSourceModulesAreGlobalizedIfTheyAreUsedWithinANamespacedTestClass () throws Exception {	
 		given(sdkLib).hasNodeJsPackageStyle()
 			.and(sdkLib).hasClasses("brjsLib.Class1", "brjsLib.Class2")
-			.and(sdkLib).hasTestClass("brjsLib.test.TestClass")
+			.and(sdkLib).hasTestClass("brjsLib.TestClass")
 			.and(sdkLibUTs).hasNamespacedJsPackageStyle()			
 			.and(sdkLibUTs).testFileHasContent("pkg/test.js",
-					"require('brjsLib/Class1');\n" +
-					"require('brjsLib/Class2');\n" +
-					"x = new brjsLib.test.TestClass();");
+					"new brjsLib.Class1()\n" +
+					"new brjsLib.Class2()\n" +
+					"new brjsLib.TestClass()");
 		when(sdkLibUTs).requestReceived("js/dev/en_GB/combined/bundle.js", response);
 		then(sdkLibUTs).bundledFilesEquals(
-				sdkLib.assetLocation("src-test").file("brjsLib/test/TestClass.js"),
+				sdkLib.assetLocation("src-test").file("brjsLib/TestClass.js"),
 				sdkLib.assetLocation("src").file("brjsLib/Class1.js"),
 				sdkLib.assetLocation("src").file("brjsLib/Class2.js"))
-				//TODO - update this as necessary for the expected global window objects that SHOULD be created due to the src-test namespace style class AND the nodejs classes
-				.and(response).containsText("// package definition block\n" + "window.brjsLib = {\"\":{\"test\":{}}};\n");	
+				.and(response).containsText("brjsLib.Class1 = require('brjsLib/Class1');",
+						"brjsLib.Class2 = require('brjsLib/Class2');",
+						"brjsLib.TestClass = require('brjsLib/TestClass');" );	
 	}
 
 }
