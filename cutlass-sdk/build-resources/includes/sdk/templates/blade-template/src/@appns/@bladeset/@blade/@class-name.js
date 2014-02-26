@@ -4,13 +4,13 @@ var br = require('br/Core');
 var Property = require('br/presenter/property/Property');
 var PresentationModel = require('br/presenter/PresentationModel');
 
-function ExamplePresentationModel() {
+function @class-name() {
 	this.message = new Property("Hello World!");
 }
-br.extend(ExamplePresentationModel, PresentationModel);
+br.extend( @class-name, PresentationModel );
 
-ExamplePresentationModel.prototype.buttonClicked = function() {
+@class-name.prototype.buttonClicked = function() {
 	console.log("button clicked");
 };
 
-module.exports = ExamplePresentationModel;
+module.exports = @class-name;

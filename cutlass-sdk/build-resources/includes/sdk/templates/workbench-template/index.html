@@ -11,30 +11,22 @@
 		<@js.bundle @/>
 		
 		<script type="text/javascript">
-			var ServiceRegistry = require( 'br/ServiceRegistry' );
-
 			// Register application EventHub. Required until the following is fixed:
 			// https://github.com/BladeRunnerJS/brjs/issues/354
+			var ServiceRegistry = require( 'br/ServiceRegistry' );
 			var EventHub = require( 'br/EventHub' );
 			ServiceRegistry.registerService( 'br.event-hub', new EventHub() );
 
-			var EventHubViewer = require( 'br/workbench/tools/EventHubViewer' );
-			var Workbench = require( 'br/workbench/ui/Workbench' );
-			var KnockoutModelTree = require( 'br/knockout/workbench/KnockoutModelTree' );
-			var PresentationModelViewer = require( 'br/presenter/workbench/ui/PresentationModelViewer' );
-			var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
-
-			var eventHub = ServiceRegistry.getService( 'br.event-hub' );
-
-			// ViewModel that is being created in the workbench
-			var ExampleViewModel = require( '@appns/@bladeset/@blade/ExamplePresentationModel' );
-
-			function addEventHubLogger( eventHub, workbench ) {
+			function addEventHubLogger( workbench ) {
+				var eventHub = ServiceRegistry.getService( 'br.event-hub' );
+				var EventHubViewer = require( 'br/workbench/tools/EventHubViewer' );
 				var eventHubViewer = new EventHubViewer( eventHub );
 				workbench.addToLeftWing( eventHubViewer, "EventHub Logging", false );
 			}
 
 			function addModelViewer( model, workbench ) {
+				var KnockoutModelTree = require( 'br/knockout/workbench/KnockoutModelTree' );
+				var PresentationModelViewer = require( 'br/presenter/workbench/ui/PresentationModelViewer' );
 				var presentationModelViewer = new PresentationModelViewer(model, KnockoutModelTree);
 				workbench.addToRightWing( presentationModelViewer, "Visualise Knockout View Model", false);
 			}
@@ -43,10 +35,15 @@
 				workbench.displayComponent( component, 200, 100 );
 			}
 
+			var Workbench = require( 'br/workbench/ui/Workbench' );
 			var workbench = new Workbench(250, 310);
-			addEventHubLogger( eventHub, workbench );
+			addEventHubLogger( workbench );
 
-			var model = new ExampleViewModel();
+			// ViewModel that is being created in the workbench
+			var @class-name = require( '@appns/@bladeset/@blade/@class-name' );
+			var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
+			
+			var model = new @class-name();
 			var component = new KnockoutComponent( '@appns.@bladeset.@blade.view-template', model );
 
 			addComponent( component, workbench )
