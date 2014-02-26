@@ -86,23 +86,36 @@ public class SdkLibraryTestPackBundlingTest extends SpecTest
 	}
 	
 	@Test
-	public void encapsulatedStyleSourceModulesAreGlobalizedIfTheyAreUsedWithinANamespacedTestClass () throws Exception {	
+	public void encapsulatedStyleSourceModulesAreGlobalizedIfTheyAreUsedWithinANamespacedTestSourceClass() throws Exception {	
 		given(sdkLib).hasNodeJsPackageStyle()
-			.and(sdkLib).hasClasses("brjsLib.Class1", "brjsLib.Class2")
 			.and(sdkLib).hasTestClass("brjsLib.TestClass")
 			.and(sdkLibUTs).hasNamespacedJsPackageStyle()			
-			.and(sdkLibUTs).testFileHasContent("pkg/test.js",
-					"new brjsLib.Class1()\n" +
-					"new brjsLib.Class2()\n" +
-					"new brjsLib.TestClass()");
+			.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.TestClass()");
 		when(sdkLibUTs).requestReceived("js/dev/en_GB/combined/bundle.js", response);
-		then(sdkLibUTs).bundledFilesEquals(
-				sdkLib.assetLocation("src-test").file("brjsLib/TestClass.js"),
-				sdkLib.assetLocation("src").file("brjsLib/Class1.js"),
-				sdkLib.assetLocation("src").file("brjsLib/Class2.js"))
-				.and(response).containsText("brjsLib.Class1 = require('brjsLib/Class1');",
-						"brjsLib.Class2 = require('brjsLib/Class2');",
-						"brjsLib.TestClass = require('brjsLib/TestClass');" );	
+		then(sdkLibUTs).bundledFilesEquals( sdkLib.assetLocation("src-test").file("brjsLib/TestClass.js") )
+			.and(response).containsText( "brjsLib.TestClass = require('brjsLib/TestClass');" );
 	}
-
+	
+	@Test
+	public void encapsulatedStyleSourceModulesAreGlobalizedIfTheyAreUsedWithinANamespacedSourceClass() throws Exception {	
+		given(sdkLib).hasNodeJsPackageStyle()
+			.and(sdkLib).hasClass("brjsLib.Class")
+			.and(sdkLibUTs).hasNamespacedJsPackageStyle()			
+			.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.Class()");
+		when(sdkLibUTs).requestReceived("js/dev/en_GB/combined/bundle.js", response);
+		then(sdkLibUTs).bundledFilesEquals( sdkLib.assetLocation("src").file("brjsLib/Class.js") )
+			.and(response).containsText( "brjsLib.Class = require('brjsLib/Class');" );
+	}
+	
+	@Test
+	public void encapsulatedStyleSourceModulesAreGlobalizedIfTheyAreUsedWithinATestTechnologyNamespacedTestSourceClass() throws Exception {	
+		given(sdkLib).hasNodeJsPackageStyle()
+    		.and(sdkLibUTs).hasTestClass("brjsLib.sdkLibUTs.Class")
+    		.and(sdkLibUTs).hasNamespacedJsPackageStyle("tests")			
+    		.and(sdkLibUTs).testFileHasContent("pkg/test.js", "new brjsLib.sdkLibUTs.Class()");
+    	when(sdkLibUTs).requestReceived("js/dev/en_GB/combined/bundle.js", response);
+    	then(sdkLibUTs).bundledFilesEquals( sdkLibUTs.assetLocation("src-test").file("brjsLib/sdkLibUTs/Class.js") )
+    		.and(response).containsText( "brjsLib.sdkLibUTs.Class = require('brjsLib/sdkLibUTs/Class');" );
+	}
+	
 }
