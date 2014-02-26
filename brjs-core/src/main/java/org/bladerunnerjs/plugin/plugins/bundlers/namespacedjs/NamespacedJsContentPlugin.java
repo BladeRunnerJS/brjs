@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 				.accepts("namespaced-js/bundle.js").as("bundle-request")
 					.and("namespaced-js/module/<module>.js").as("single-module-request")
 					.and("namespaced-js/package-definitions.js").as("package-definitions-request")
+					.and("namespaced-js/globalize-extra-classes.js").as("globalize-extra-classes-request")
 				.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 			
 			contentPathParser = contentPathParserBuilder.build();
@@ -83,6 +85,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
 				}
 			}
+			requestPaths.add(contentPathParser.createRequest("globalize-extra-classes-request"));
 		}
 		catch(MalformedTokenException e) {
 			throw new ContentProcessingException(e);
@@ -128,6 +131,9 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 					writer.write("\n");
 					
 					writer.write( jsContent.toString() );
+					
+					writer.write("\n");
+					writer.write( globalizeExtraClasses(bundleSet, processedGlobalizedSourceModules) );
 				}
 			}
 			else if(contentPath.formName.equals("package-definitions-request")) {
@@ -143,6 +149,20 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 					
 					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
 					writePackageStructure(packageStructure, writer);
+				}
+			}
+			else if(contentPath.formName.equals("globalize-extra-classes-request")) {
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
+    				
+					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
+    				for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+    					if(sourceModule instanceof NamespacedJsSourceModule)
+    					{
+    						globalizeNonNamespacedJsClasses(sourceModule, processedGlobalizedSourceModules);
+    					}
+    				}
+    				
+    				writer.write( globalizeExtraClasses(bundleSet, processedGlobalizedSourceModules) );
 				}
 			}
 			else {
@@ -217,14 +237,34 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin {
 		
 		for(SourceModule dependentSourceModule : sourceModule.getDependentSourceModules(null)) 
 		{
-			if (dependentSourceModule.isEncapsulatedModule() && !globalizedModules.contains(dependentSourceModule) ) 
-			{
-   				stringBuffer.append(dependentSourceModule.getClassname() + " = require('" + dependentSourceModule.getRequirePath()  + "');\n");
-   				globalizedModules.add(dependentSourceModule);
-			}
+			stringBuffer.append( globalizeNonNamespaceSourceModule(dependentSourceModule, globalizedModules) );
 		}
 		
 		return stringBuffer.toString();
+	}
+
+	private String globalizeNonNamespaceSourceModule(SourceModule dependentSourceModule, List<SourceModule> globalizedModules)
+	{
+		if (dependentSourceModule.isEncapsulatedModule() && !globalizedModules.contains(dependentSourceModule) ) 
+		{
+			globalizedModules.add(dependentSourceModule);
+			return dependentSourceModule.getClassname() + " = require('" + dependentSourceModule.getRequirePath()  + "');\n";
+		}
+		return "";
+	}
+	
+	private String globalizeExtraClasses(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
+	{
+		List<SourceModule> allSourceModules = new LinkedList<SourceModule>();
+		allSourceModules.addAll( bundleSet.getSourceModules() );
+		allSourceModules.addAll( bundleSet.getTestSourceModules() );
+		
+		StringBuffer output = new StringBuffer();
+		for (SourceModule sourceModule : allSourceModules)
+		{
+			output.append( globalizeNonNamespaceSourceModule(sourceModule, processedGlobalizedSourceModules) );
+		}
+		return output.toString();
 	}
 	
 }

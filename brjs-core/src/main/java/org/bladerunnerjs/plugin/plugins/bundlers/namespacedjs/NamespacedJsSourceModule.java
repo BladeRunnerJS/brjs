@@ -76,7 +76,7 @@ public class NamespacedJsSourceModule implements PatchableSourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		
-		String defineBlock = "\ndefine('%s', function(require, exports, module) {" +
+		String defineBlock = "\ndefine('%s', function(require, exports, module) { " +
 							 	"module.exports = %s;" +
 							 " });";
 		String formattedDefineBlock = String.format(defineBlock, requirePath, className);
