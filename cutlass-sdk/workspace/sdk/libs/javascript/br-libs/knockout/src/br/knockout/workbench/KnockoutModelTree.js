@@ -4,7 +4,10 @@ var WorkbenchComponent = require( 'br/workbench/ui/WorkbenchComponent' );
 var ko = require( 'ko' );
 
 /**
+ * Creates an Ext Tree Model representing a Knockout View Model.
  * 
+ * @param {Object} knockoutViewModel The object with Knockout observables for which
+ *                 the tree model is to be built.
  */
 function KnockoutModelTree( knockoutViewModel ) {
   if ( !knockoutViewModel )
@@ -17,13 +20,11 @@ function KnockoutModelTree( knockoutViewModel ) {
   this.m_eElement = document.createElement("div");
   oTree.render(this.m_eElement);
 }
-
 br.implement( KnockoutModelTree, WorkbenchComponent );
 
-KnockoutModelTree.prototype.search = function(sValue) {
-  // do nowt
-};
-
+/**
+ * @see WorkbenchComponent.getElement
+ */
 KnockoutModelTree.prototype.getElement = function() {
   return this.m_eElement;
 };
