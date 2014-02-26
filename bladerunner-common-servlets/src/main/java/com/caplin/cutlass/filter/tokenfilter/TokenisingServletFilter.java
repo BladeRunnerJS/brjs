@@ -20,7 +20,6 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 
-import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class TokenisingServletFilter implements Filter
@@ -81,7 +80,7 @@ public class TokenisingServletFilter implements Filter
 				logger.debug("processing and replacing JNDI tokens within response.");
 				
 				StringBuffer filteredResponse = streamTokeniser.replaceTokens(responseWrapper.getReader(), tokenFinder, requestUri);
-				byte[] filteredData = filteredResponse.toString().getBytes(EncodingAccessor.getDefaultOutputEncoding());
+				byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
 				response.setContentLength(filteredData.length);
 				out.write(filteredData);
 				out.close();
