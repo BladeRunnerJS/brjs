@@ -37,9 +37,4 @@ public interface AssetLocation extends BRJSNode {
 	 * @throws AssetFileInstantationException
 	 */
 	<A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException;
-	
-	/**
-	 * A convenience method for obtaining assets. If 'predicate' is true, return the list of assets returned by {@link #obtainMatchingAssets}, otherwise return an empty list.
-	 */
-	<A extends Asset> List<A> obtainMatchingAssets(boolean predicate, AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException;
 }

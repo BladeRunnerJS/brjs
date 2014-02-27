@@ -15,6 +15,8 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	
+	private List<SourceModule> emptySourceModules = new ArrayList<SourceModule>();
+	private List<TestSourceModule> emptyTestSourceModules = new ArrayList<TestSourceModule>();
 	private List<LinkedAsset> emptyLinkedAssets = new ArrayList<LinkedAsset>();
 	private List<Asset> emptyAssets = new ArrayList<Asset>();
 	
@@ -25,8 +27,11 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		try {
-			List<SourceModule> sourceModules = assetLocation.obtainMatchingAssets( assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE), new SuffixAssetFilter("js"), SourceModule.class, NamespacedJsSourceModule.class);
-			return sourceModules;
+			if (assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE))
+			{
+				return assetLocation.obtainMatchingAssets(new SuffixAssetFilter("js"), SourceModule.class, NamespacedJsSourceModule.class);
+			}
+			return emptySourceModules;
 		} catch (AssetFileInstantationException ex)
 		{
 			throw new RuntimeException(ex);
@@ -36,8 +41,11 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
 		try {
-			List<TestSourceModule> testSourceModules = assetLocation.obtainMatchingAssets( assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE), new SuffixAssetFilter("js"), TestSourceModule.class, NamespacedJsTestSourceModule.class);
-			return testSourceModules;
+			if (assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE))
+			{
+				return assetLocation.obtainMatchingAssets(new SuffixAssetFilter("js"), TestSourceModule.class, NamespacedJsTestSourceModule.class);
+			}
+			return emptyTestSourceModules;
 		} catch (AssetFileInstantationException ex)
 		{
 			throw new RuntimeException(ex);

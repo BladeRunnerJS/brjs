@@ -265,16 +265,5 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		}
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
 	}
-
-
-	@Override
- 	public <A extends Asset> List<A> obtainMatchingAssets(boolean predicate, AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException
- 	{
- 		if (predicate) {
- 			return obtainMatchingAssets(assetFilter, assetClass, instantiateAssetClass);
- 		}
- 		else {
- 			return new ArrayList<>();
- 		}
-	 }
+	
 }
