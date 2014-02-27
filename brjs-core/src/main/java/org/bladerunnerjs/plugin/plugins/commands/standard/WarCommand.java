@@ -15,7 +15,6 @@ import java.util.zip.GZIPOutputStream;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -202,10 +201,9 @@ public class WarCommand extends ArgsParsingCommandPlugin
 				return new GZIPOutputStream(fileStream);
 			}
 			
-			OutputStreamWriter encodedWriter = new OutputStreamWriter(fileStream, brjs.bladerunnerConf().getBrowserCharacterEncoding());
-			return new WriterOutputStream(encodedWriter);
+			return fileStream;
 		}
-		catch(IOException | ConfigException e) {
+		catch(IOException e) {
 			throw new CommandOperationException(e);
 		}
 	}
