@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AliasModelTest extends SpecTest {
@@ -110,6 +111,18 @@ public class AliasModelTest extends SpecTest {
 	}
 	
 	@Test
+	public void multipleScenariosCanBeDefinedForAnAlias() throws Exception {
+		given(appConf).hasNamespace("appns")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3", "appns.Class4")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "appns.bs.b1.the-alias", "appns.Class2")
+			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s2", "appns.bs.b1.the-alias", "appns.Class3")
+			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s3", "appns.bs.b1.the-alias", "appns.Class4")
+			.and(aspectAliasesFile).usesScenario("s2");
+		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class3");
+	}
+	
+	@Test
 	public void aliasesCanStillBeOverriddenWhenTheScenarioIsSet() throws Exception {
 		given(appConf).hasNamespace("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
@@ -118,6 +131,17 @@ public class AliasModelTest extends SpecTest {
 			.and(aspectAliasesFile).usesScenario("s1")
 			.and(aspectAliasesFile).hasAlias("appns.bs.b1.the-alias", "appns.Class3");
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class3");
+	}
+	
+	@Test
+	public void scenarioAliasesAreAlsoNamespaced() throws Exception {
+		given(appConf).hasNamespace("appns")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(bladeAliasDefinitionsFile).hasAlias("the-alias", "appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "the-alias", "appns.Class2")
+			.and(aspectAliasesFile).usesScenario("s1");
+		when(aspect).retrievesAlias("the-alias");
+		then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs.b1");
 	}
 	
 	@Test
@@ -158,6 +182,32 @@ public class AliasModelTest extends SpecTest {
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.the-alias", "appns.Class3")
 			.and(aspectAliasesFile).usesGroups("g1");
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
+	}
+	
+	@Ignore
+	@Test
+	public void groupsCanContainMultipleAliases() throws Exception {
+		given(appConf).hasNamespace("appns")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "alias1", "appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "alias2", "appns.Class2")
+			.and(aspectAliasesFile).usesGroups("g1");
+		then(aspect).hasAlias("alias1", "appns.Class1")
+			.and(aspect).hasAlias("alias2", "appns.Class2");
+	}
+	
+	@Test
+	public void groupAliasesAreNotNamespaced() throws Exception {
+		given(appConf).hasNamespace("appns")
+			.and(aspect).hasClasses("appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "the-alias", "appns.Class1")
+			.and(aspectAliasesFile).usesGroups("g1");
+		then(aspect).hasAlias("the-alias", "appns.Class1");
+	}
+	
+	@Test
+	public void groupIdentifiersMustBeNamespaced() throws Exception {
+		
 	}
 	
 	@Test
