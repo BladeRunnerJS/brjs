@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 var ko = require( 'ko' );
 
 function @class-nameViewModel() {
-	this.message = ko.observable( '' );
+	this.message = ko.observable( 'Hello World!' );
 }
 
-@class-name.prototype.buttonClicked = function() {
-	console.log("button clicked");
+@class-nameViewModel.prototype.buttonClicked = function() {
+	console.log( 'button clicked' );
 };
 
-module.exports = @class-name;
+module.exports = @class-nameViewModel;

@@ -1,8 +1,8 @@
-var @class-nameViewModelTest = TestCase("@class-nameTest");
+var @class-nameViewModelTest = TestCase( '@class-nameViewModelTest' );
 
 var @class-nameViewModel = require( '@appns/@bladeset/@blade/@class-nameViewModel' );
 
-@class-nameTest.prototype.testSomething = function() {
+@class-nameViewModelTest.prototype.testSomething = function() {
   var model = new @class-nameViewModel();
-  assertEquals( 'Hello World!', model.message.getValue() );
+  assertEquals( 'Hello World!', model.message() );
 };
