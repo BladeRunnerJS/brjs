@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 
-public class Bladeset extends AbstractComponent implements NamedNode
+public final class Bladeset extends AbstractComponent implements NamedNode
 {
 	private final NodeMap<Blade> blades;
 	private String name;
@@ -23,6 +23,8 @@ public class Bladeset extends AbstractComponent implements NamedNode
 		super(rootNode, parent, dir);
 		this.name = name;
 		blades = Blade.createNodeSet(rootNode);
+		
+		registerInitializedNode();
 	}
 	
 	public static NodeMap<Bladeset> createNodeSet(RootNode rootNode)

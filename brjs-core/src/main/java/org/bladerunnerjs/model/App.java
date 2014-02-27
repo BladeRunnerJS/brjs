@@ -49,6 +49,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 		aspects = Aspect.createNodeSet(rootNode);
 		jsLibs = BRLib.createAppNodeSet(rootNode);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
+		
+		registerInitializedNode();
 	}
 	
 	public static NodeMap<App> createAppNodeSet(BRJS brjs)

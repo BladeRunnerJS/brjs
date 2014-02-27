@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
-public class ChildSourceAssetLocation extends ShallowAssetLocation {
+public final class ChildSourceAssetLocation extends AbstractShallowAssetLocation {
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	private AssetLocation parentAssetLocation;
 	
@@ -19,6 +19,9 @@ public class ChildSourceAssetLocation extends ShallowAssetLocation {
 		super(rootNode, parent, dir);
 		dependentAssetLocations.add(parentAssetLocation);
 		this.parentAssetLocation = parentAssetLocation;
+		
+		// TODO: understand why removing this line doesn't break any tests
+		registerInitializedNode();
 	}
 	
 	@Override

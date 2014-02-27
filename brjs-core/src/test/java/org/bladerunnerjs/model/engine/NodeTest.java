@@ -829,7 +829,7 @@ public class NodeTest
 		rootNode.addObserver(observer);
 		
 		assertTrue(nodeDir.exists());
-		rootNode.registerNode();
+		rootNode.registerInitializedNode();
 		
 		verify(observer).onEventEmitted( any(NodeReadyEvent.class), eq(rootNode) );
 	}
@@ -844,7 +844,7 @@ public class NodeTest
 		rootNode.addObserver(observer);
 		
 		assertFalse(nodeDir.exists());
-		rootNode.registerNode();
+		rootNode.registerInitializedNode();
 		
 		verifyNoMoreInteractions(observer);
 	}

@@ -48,8 +48,6 @@ public abstract class AbstractNode implements Node
 		this.rootNode = rootNode;
 		this.parent = parent;
 		this.dir = (dir == null) ? null : new File(getNormalizedPath(dir));
-		
-		registerNode();
 	}
 	
 	public AbstractNode() {
@@ -215,7 +213,7 @@ public abstract class AbstractNode implements Node
 		}
 	}
 	
-	protected void registerNode()
+	protected void registerInitializedNode()
 	{
 		try {
 			if(dir != null) {

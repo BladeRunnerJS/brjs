@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.NameValidator;
 
 
-public class TestGrandChildNode extends AbstractNode implements NamedNode
+public final class TestGrandChildNode extends AbstractNode implements NamedNode
 {
 	NodeMap<TestGreatGrandChildNode> greatGrandChildNodes;
 	private String name;
@@ -23,6 +23,8 @@ public class TestGrandChildNode extends AbstractNode implements NamedNode
 		super(rootNode, parent, dir);
 		this.name = name;
 		greatGrandChildNodes = new NodeMap<>(rootNode, TestGreatGrandChildNode.class, null, "-greatgrandchild$");
+		
+		registerInitializedNode();
 	}
 	
 	@Override

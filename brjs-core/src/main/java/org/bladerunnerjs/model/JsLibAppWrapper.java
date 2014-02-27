@@ -14,7 +14,7 @@ import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.ObserverList;
 
-public class JsLibAppWrapper implements JsLib {
+public final class JsLibAppWrapper implements JsLib {
 	private App jsLibApp;
 	private JsLib wrappedJsLib;
 	

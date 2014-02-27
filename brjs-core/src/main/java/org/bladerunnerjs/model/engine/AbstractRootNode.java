@@ -25,9 +25,11 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		File rootDir = locateRootDir(dir);
 		this.dir = (rootDir == null) ? null : new File(getNormalizedPath(rootDir));
-		registerNode();
 		this.loggerFactory = loggerFactory;
 		this.consoleWriter = consoleWriter;
+		
+		// TODO: we should never call registerInitializedNode() from a non-final class
+		registerInitializedNode();
 	}
 	
 	@Override

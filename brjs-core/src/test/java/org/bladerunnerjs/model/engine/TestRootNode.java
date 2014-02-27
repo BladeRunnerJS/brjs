@@ -13,7 +13,7 @@ import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 
-public class TestRootNode extends AbstractRootNode
+public final class TestRootNode extends AbstractRootNode
 {
 	NodeMap<TestChildNode> childNodes = new NodeMap<>(this, TestChildNode.class, null, "^child-");
 	NodeMap<TestChildNode> multiLocationChildNodes = new NodeMap<>(this, TestChildNode.class, "set-primary-location", "^child-");
@@ -23,6 +23,8 @@ public class TestRootNode extends AbstractRootNode
 	public TestRootNode(File dir)
 	{
 		this(dir, new MockLoggerFactory());
+		
+		registerInitializedNode();
 	}
 	
 	public TestRootNode(File dir, LoggerFactory loggerFactory)
@@ -32,6 +34,8 @@ public class TestRootNode extends AbstractRootNode
 		multiLocationChildNodes.addAlternateLocation("set-secondary-location", "^child-");
 		multiLocationChildNodes.addAdditionalNamedLocation("X", "set-single-item-location");
 		multiLocationItemNode.addLegacyLocation("single-item-secondary-location");
+		
+		registerInitializedNode();
 	}
 	
 	@Override
