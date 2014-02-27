@@ -1,6 +1,8 @@
 package com.caplin.jstestdriver.plugin;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -11,20 +13,18 @@ import org.bladerunnerjs.model.BundlableNode;
 
 import com.caplin.cutlass.BRJSAccessor;
 
-public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHandler
+public class BRJSWritingResourceBundlerHandler implements BundlerHandler
 {
-	protected final String bundlerFileExtension;
 	private final String brjsRequestPath;
+	private boolean serveOnly;
 	
 
-	public BRJSWritingResourceBundlerHandler(String bundlerFileExtension, String brjsRequestPath, boolean serveOnly)
+	public BRJSWritingResourceBundlerHandler(String brjsRequestPath, boolean serveOnly)
 	{
-		super(null, bundlerFileExtension, serveOnly);
-		this.bundlerFileExtension = bundlerFileExtension;
+		this.serveOnly = serveOnly;
 		this.brjsRequestPath = brjsRequestPath;
 	}
 	
-	@Override
 	public List<File> getBundledFiles(File rootDir, File testDir, File bundlerFile)
 	{
 		createParentDirectory(bundlerFile);
@@ -62,6 +62,55 @@ public class BRJSWritingResourceBundlerHandler extends WritingResourceBundlerHan
 		  			(see TODO in BundlerInjector */
 		//return Arrays.asList(bundlerFile);
 		return Arrays.asList(new File[0]);
+	}
+	
+	private void createParentDirectory(File bundlerFile)
+	{
+		boolean parentDirCreationFailed = false;
+		boolean filesCreated = false;
+
+		Exception failureException = null;
+
+		try
+		{
+			filesCreated = bundlerFile.getParentFile().mkdirs();
+		}
+		catch (Exception ex)
+		{
+			parentDirCreationFailed = true;
+			failureException = ex;
+		}
+		if ((!filesCreated && !bundlerFile.getParentFile().exists()) || parentDirCreationFailed)
+		{
+			throw new RuntimeException("Unable to create parent directory: " + bundlerFile.getParentFile() + ((failureException != null) ? "\n" + failureException.toString() : ""));
+		}
+	}
+	
+	private OutputStream createBundleOutputStream(File bundlerFile)
+	{
+		OutputStream outputStream = null;
+		
+		try
+		{
+			if (bundlerFile.exists())
+			{
+				bundlerFile.delete();
+			}
+			bundlerFile.createNewFile();
+			outputStream = new BufferedOutputStream(new FileOutputStream(bundlerFile));
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("Unable to create or write to file: " + bundlerFile.getPath() + "\n", ex);
+		}
+		
+		return outputStream;
+	}
+	
+	@Override
+	public boolean serveOnly()
+	{
+		return serveOnly;
 	}
 	
 }

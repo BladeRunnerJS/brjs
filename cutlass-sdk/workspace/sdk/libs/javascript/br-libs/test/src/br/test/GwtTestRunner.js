@@ -8,9 +8,9 @@ br.Core.thirdparty("jasmine");
  */
 br.test.GwtTestRunner = function(sFixtureFactoryClass) {
 	var Utility = require('br/core/Utility');
-	
+
 	this.m_pFixtures = [];
-	
+
 	var fFixtureFactoryClass;
 	try {
 		fFixtureFactoryClass = Utility.locate(sFixtureFactoryClass);
@@ -18,7 +18,7 @@ br.test.GwtTestRunner = function(sFixtureFactoryClass) {
 		throw new br.Errors.CustomError("InvalidFactoryError", "An error occured in br.test.GwtTestRunner when creating the fixture factory " +
 				"(" + sFixtureFactoryClass + "): " + e.message);
 	}
-	
+
 	try {
 		this.m_oFixtureFactory = new fFixtureFactoryClass();
 	} catch(e) {
@@ -34,7 +34,7 @@ br.test.GwtTestRunner = function(sFixtureFactoryClass) {
 	this.m_oFixtureFactory.addFixtures(this);
 	this.addFixture("test", new br.test.TestFixture(this));
 	this.addFixture("time", new br.test.TimeFixture(br.test.TimeUtility));
-	
+
 	this.m_fDoGiven = br.test.GwtTestRunner.createTestMethod(this, "doGiven"),
 	this.m_fDoWhen = br.test.GwtTestRunner.createTestMethod(this, "doWhen"),
 	this.m_fDoThen = br.test.GwtTestRunner.createTestMethod(this, "doThen"),
@@ -85,15 +85,15 @@ br.test.GwtTestRunner.createProxyDescribeFunction = function(fOrigDescribeFuncti
 	return function(description, closure)
 	{
 		var pInvalidChars = ["\\","/",":","*","?","<",">"]
-		for (var i = 0; i < pInvalidChars.length; i++) 
-		{ 
+		for (var i = 0; i < pInvalidChars.length; i++)
+		{
 			var cInvalidChar = pInvalidChars[i];
 			if (description.indexOf(cInvalidChar) > -1)
 			{
 				throw new br.Errors.CustomError("InvalidSuiteError", "Invalid character '" + cInvalidChar + "' in test suite '"+ description + "'.");
 			}
 		}
-		
+
 		if (br.test.GwtTestRunner.m_mSuites[description])
 		{
 			throw new br.Errors.CustomError("InvalidSuiteError", "The test suite '" + description + "' has already been defined.");
@@ -102,13 +102,13 @@ br.test.GwtTestRunner.createProxyDescribeFunction = function(fOrigDescribeFuncti
 		{
 			br.test.GwtTestRunner.m_mSuites[description] = closure;
 			var jasmineDescribeReturnValue = fOrigDescribeFunction.call(this, description, closure);
-			
+
 			if(bIsXDescribe)
 			{
 				var fOrigIt = it;
 				var fOrigFixtures = fixtures;
 				var fOrigGetEnv = jasmine.getEnv;
-				
+
 				try
 				{
 					it = br.test.GwtTestRunner.capturingItFunction;
@@ -123,7 +123,7 @@ br.test.GwtTestRunner.createProxyDescribeFunction = function(fOrigDescribeFuncti
 							}
 						};
 					};
-					
+
 					closure();
 				}
 				finally
@@ -133,7 +133,7 @@ br.test.GwtTestRunner.createProxyDescribeFunction = function(fOrigDescribeFuncti
 					jasmine.getEnv = fOrigGetEnv;
 				}
 			}
-			
+
 			return jasmineDescribeReturnValue;
 		}
 	};
@@ -148,7 +148,7 @@ br.test.GwtTestRunner.createProxyItFunction = function(fOrigItFunction)
 	{
 		var sSuiteFullName = jasmine.getEnv().currentSuite.getFullName();
 		var sSuiteNamespacedTestName = sSuiteFullName + "::" + description;
-		
+
 		if (br.test.GwtTestRunner.m_mTests[sSuiteNamespacedTestName] && !description.match("encountered a declaration exception"))
 		{
 			throw new br.Errors.CustomError("DuplicateTestError", "The test '" + sSuiteNamespacedTestName + "' has already been defined.");
@@ -158,7 +158,7 @@ br.test.GwtTestRunner.createProxyItFunction = function(fOrigItFunction)
 			closure.suiteName = sSuiteFullName;
 			br.test.GwtTestRunner.m_mTests[sSuiteNamespacedTestName] = closure;
 			var jasmineItReturnValue = fOrigItFunction.call(this, description, closure);
-			
+
 			return jasmineItReturnValue;
 		}
 	};
@@ -182,7 +182,7 @@ br.test.GwtTestRunner.prototype.addFixture = function(sScope, oFixture)
 br.test.GwtTestRunner.initializeTest = function(sFixtureFactoryClass)
 {
 	var oTestRunner = new br.test.GwtTestRunner(sFixtureFactoryClass);
-	
+
 	beforeEach(this.createTestMethod(oTestRunner, "startTest"));
 	afterEach(this.createTestMethod(oTestRunner, "endTest"));
 };
@@ -192,7 +192,6 @@ br.test.GwtTestRunner.initializeTest = function(sFixtureFactoryClass)
  */
 br.test.GwtTestRunner.prototype.startTest = function()
 {
-	require("br/AliasRegistry").clear();
 	require("br/ServiceRegistry").clear();
 
 	given = this.m_fDoGiven;
@@ -201,10 +200,10 @@ br.test.GwtTestRunner.prototype.startTest = function()
 	and = this.m_fDoAnd;
 	startingContinuesFrom = this.m_fStartingContinuesFrom;
 	finishedContinuesFrom = this.m_fFinishedContinuesFrom;
-	
+
 	this.m_bTestFailed = false;
 	this.m_nTestPhase = br.test.GwtTestRunner.INIT_PHASE;
-	
+
 	if(this.m_oFixtureFactory.setUp) {
 		try {
 			this.m_oFixtureFactory.setUp();
@@ -243,9 +242,9 @@ br.test.GwtTestRunner.prototype.endTest = function()
 			throw new br.Errors.CustomError("TestTearDownError", e.message,
 					"Error occured in br.test.GwtTestRunner.prototype.endTest() calling oFixture.tearDown()");
 		}
-		
+
 	}
-	
+
 	if (document.body.hasChildNodes())
 	{
 		for (var i = 0, j = document.body.childNodes.length; i < j; i++)
@@ -253,7 +252,7 @@ br.test.GwtTestRunner.prototype.endTest = function()
 			document.body.removeChild(document.body.childNodes[0]);
 		}
 	}
-	
+
 	if(!this.m_bTestFailed && ((this.m_nTestPhase == br.test.GwtTestRunner.GIVEN_PHASE) ||
 		(this.m_nTestPhase == br.test.GwtTestRunner.WHEN_PHASE)))
 	{
@@ -267,7 +266,7 @@ br.test.GwtTestRunner.prototype.endTest = function()
 br.test.GwtTestRunner.prototype.startingContinuesFrom = function(description)
 {
 	this.m_nTestPhase = br.test.GwtTestRunner.INIT_PHASE;
-	
+
 	var sSuiteNamespacedTestName;
 	if(description.match(/::/))
 	{
@@ -278,14 +277,14 @@ br.test.GwtTestRunner.prototype.startingContinuesFrom = function(description)
 		var sSuiteFullName = (this.currentSuiteName) ? this.currentSuiteName : jasmine.getEnv().currentSpec.suite.getFullName();
 		sSuiteNamespacedTestName = sSuiteFullName + "::" + description;
 	}
-	
+
 	var fTest = br.test.GwtTestRunner.m_mTests[sSuiteNamespacedTestName];
-	
+
 	if(!fTest)
 	{
 		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "attempt to continue from a test that doesn't exist: '" + sSuiteNamespacedTestName + "'");
 	}
-	
+
 	this.currentSuiteName = fTest.suiteName;
 	fTest();
 	this.currentSuiteName = null;
@@ -308,10 +307,10 @@ br.test.GwtTestRunner.prototype.doGiven = function(sStatement)
 	try
 	{
 		TimeUtility.captureTimerFunctions();
-		
+
 		var oStatement = this._parseStatement(sStatement, br.test.GwtTestRunner.GIVEN_PHASE);
 		oStatement.fixture.doGiven(oStatement.propertyName, oStatement.propertyValue);
-		
+
 		TimeUtility.nextStep();
 	}
 	catch(e)
@@ -333,10 +332,10 @@ br.test.GwtTestRunner.prototype.doWhen = function(sStatement)
 	try
 	{
 		TimeUtility.captureTimerFunctions();
-		
+
 		var oStatement = this._parseStatement(sStatement, br.test.GwtTestRunner.WHEN_PHASE);
 		oStatement.fixture.doWhen(oStatement.propertyName, oStatement.propertyValue);
-		
+
 		TimeUtility.nextStep();
 	}
 	catch(e)
@@ -359,10 +358,10 @@ br.test.GwtTestRunner.prototype.doThen = function(sStatement)
 	try
 	{
 		TimeUtility.captureTimerFunctions();
-		
+
 		var oStatement = this._parseStatement(sStatement, br.test.GwtTestRunner.THEN_PHASE);
 		oStatement.fixture.doThen(oStatement.propertyName, oStatement.propertyValue);
-		
+
 		TimeUtility.nextStep();
 	}
 	catch(e)
@@ -385,15 +384,15 @@ br.test.GwtTestRunner.prototype.doAnd = function(sStatement, oMessage)
 		case br.test.GwtTestRunner.GIVEN_PHASE:
 			this.doGiven(sStatement);
 			break;
-		
+
 		case br.test.GwtTestRunner.WHEN_PHASE:
 			this.doWhen(sStatement);
 			break;
-		
+
 		case br.test.GwtTestRunner.THEN_PHASE:
 			this.doThen(sStatement, oMessage);
 			break;
-		
+
 		default:
 			this._throwError("InvalidPhaseError", sStatement, "'AND' statements can not occur until a 'GIVEN', 'WHEN' or 'THEN' statement has been made.");
 	}
@@ -408,7 +407,7 @@ br.test.GwtTestRunner.prototype.doAnd = function(sStatement, oMessage)
 br.test.GwtTestRunner.prototype._handleError = function(e)
 {
 	this.m_bTestFailed = true;
-	
+
 	if(e.getMessage)
 	{
 		fail(e.getMessage());
@@ -467,17 +466,17 @@ br.test.GwtTestRunner.prototype._parseStatement = function(sStatement, nPhase)
 {
 
 	var newlinePlaceholder = "<!--space--!>";
-	
+
 	sStatement = sStatement.replace("\n",newlinePlaceholder);
-	
+
 	this._updatePhase(nPhase, sStatement);
-	
+
 	/**
 	 * Parses Statements in the format <fixtureName>.<propertyName> <operator> <propertyValue>
 	 * uses '[\x21-\x7E]' rather than '.' to match any character so that newlines can be included too
 	 */
 	var pStatement = /(.+)(\=\>|\=)(.+)/i.exec(sStatement);
-	
+
 	for (var i = 0; i < pStatement.length; i++)
 	{
 		pStatement[i] = (pStatement[i].trim());
@@ -494,24 +493,24 @@ br.test.GwtTestRunner.prototype._parseStatement = function(sStatement, nPhase)
 		operator:pStatement[2],
 		propertyValue:this._getTypedPropertyValue(pStatement[3].replace(newlinePlaceholder,"\n"))
 	};
-	
+
 	if(nPhase === br.test.GwtTestRunner.WHEN_PHASE && oStatement.operator != "=>")
 	{
 		this._throwError("IllegalStatementError", sStatement, "'When Statements should use => as an Operator");
 	}
-	
+
 	if(oStatement.propertyValue === null)
 	{
-		this._throwError("InvalidPropertyValueError", sStatement, "'" + oStatement.propertyValue + 
+		this._throwError("InvalidPropertyValueError", sStatement, "'" + oStatement.propertyValue +
 				"' is not a valid type (only strings, numbers, booleans and undefined are supported)");
 	}
-	
+
 	this._addFixtureToStatement(oStatement);
 	if(!oStatement.fixture)
 	{
 		this._throwError("InvalidFixtureNameError", sStatement, "No Fixture has been specified matching '" + oStatement.propertyName + "'");
 	}
-	
+
 	return oStatement;
 };
 
@@ -523,13 +522,13 @@ br.test.GwtTestRunner.prototype._addFixtureToStatement = function(oStatement)
 	for(var i = 0, l = this.m_pFixtures.length; i < l; ++i)
 	{
 		var oNextFixture = this.m_pFixtures[i];
-		
+
 		if(oStatement.property.match(oNextFixture.scopeMatcher))
 		{
 			var sFixtureProperty = oStatement.property.substr(oNextFixture.scopeLength);
 			var bCanHandleProperty = (sFixtureProperty.length > 0) ? oNextFixture.fixture.canHandleProperty(sFixtureProperty) :
 				oNextFixture.fixture.canHandleExactMatch();
-			
+
 			if(bCanHandleProperty)
 			{
 				oStatement.fixture = oNextFixture.fixture;
@@ -546,7 +545,7 @@ br.test.GwtTestRunner.prototype._addFixtureToStatement = function(oStatement)
 br.test.GwtTestRunner.prototype._getTypedPropertyValue = function(sValue)
 {
 	var vValue = null;
-	
+
 	if(sValue == "true")
 	{
 		vValue = true;
@@ -570,14 +569,14 @@ br.test.GwtTestRunner.prototype._getTypedPropertyValue = function(sValue)
 	else if(sValue.match(/^\[.*\]$/))
 	{
 		var pItems = sValue.substr(1, sValue.length - 2).split(/ *, */);
-		
+
 		vValue = [];
 		for(var i = 0, l = pItems.length; i < l; ++i)
 		{
 			vValue[i] = this._getTypedPropertyValue(pItems[i]);
 		}
 	}
-	
+
 	return vValue;
 };
 
@@ -598,9 +597,9 @@ if(window.jasmine)
 {
 	describe = br.test.GwtTestRunner.createProxyDescribeFunction(describe);
 	xdescribe = br.test.GwtTestRunner.createProxyDescribeFunction(xdescribe, true);
-	
+
 	jasmine.Env.prototype.it = br.test.GwtTestRunner.createProxyItFunction(jasmine.Env.prototype.it);
 	jasmine.Env.prototype.xit = br.test.GwtTestRunner.createProxyItFunction(jasmine.Env.prototype.xit);
-	
+
 	br.test.GwtTestRunner.capturingItFunction = br.test.GwtTestRunner.createProxyItFunction(function() {});
 }

@@ -2,30 +2,28 @@ package com.caplin.jstestdriver.plugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.caplin.cutlass.bundler.html.HtmlBundler;
-import com.caplin.cutlass.bundler.xml.XmlBundler;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.google.jstestdriver.FileInfo;
 import com.google.jstestdriver.hooks.ResourcePreProcessor;
 
 public class BundlerInjector implements ResourcePreProcessor
 {
-	protected List<BundlerHandler> bundlerHandlers;
+	protected Map<String,BundlerHandler> bundlerHandlers;
 
 	public BundlerInjector() throws Exception
 	{
-		bundlerHandlers = new ArrayList<BundlerHandler>();
-		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("js.bundle", "js/dev/en_GB/combined/bundle.js", false));
-		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("css.bundle", "css/standard_en_GB/bundle.css", true));
-		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("i18n.bundle", "i18n/en_GB.js", false));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new XmlBundler(), "xml.bundle", true));
-//		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("xml.bundle", "bundle.xml", true));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new HtmlBundler(), "html.bundle", true));
-//		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("html.bundle", "bundle.html", true));
+		bundlerHandlers = new HashMap<String,BundlerHandler>();
+		bundlerHandlers.put("js.bundle", new BRJSWritingResourceBundlerHandler("js/dev/en_GB/combined/bundle.js", false));
+		bundlerHandlers.put("css.bundle", new BRJSWritingResourceBundlerHandler("css/standard_en_GB/bundle.css", true));
+		bundlerHandlers.put("i18n.bundle", new BRJSWritingResourceBundlerHandler("i18n/en_GB.js", false));
+		bundlerHandlers.put("xml.bundle", new BRJSWritingResourceBundlerHandler("bundle.xml", true));
+		bundlerHandlers.put("html.bundle", new BRJSWritingResourceBundlerHandler("bundle.html", true));
 	}
 
 	@Override
@@ -82,7 +80,7 @@ public class BundlerInjector implements ResourcePreProcessor
 		return files;
 	}
 
-	protected void setBundlerHandlers(List<BundlerHandler> bundlerHandlers)
+	protected void setBundlerHandlers(Map<String,BundlerHandler> bundlerHandlers)
 	{
 		this.bundlerHandlers = bundlerHandlers;
 	}
@@ -91,14 +89,15 @@ public class BundlerInjector implements ResourcePreProcessor
 	{
 		List<BundlerHandler> validBundlerHandlers = new ArrayList<BundlerHandler>();
 		String thisFileName = thisFile.getName();
-		for (BundlerHandler handler : bundlerHandlers)
+		
+		for (String handlerExtension : bundlerHandlers.keySet())
 		{
-			boolean isAbsoluteMatch = thisFileName.equals(handler.getAcceptedFileSuffix());
-			boolean hasValidMatchingExtension = thisFileName.endsWith("_" + handler.getAcceptedFileSuffix());
-
+			boolean isAbsoluteMatch = thisFileName.equals(handlerExtension);
+			boolean hasValidMatchingExtension = thisFileName.endsWith("_" + handlerExtension);
+			
 			if (isAbsoluteMatch || hasValidMatchingExtension)
 			{
-				validBundlerHandlers.add(handler);
+				validBundlerHandlers.add( bundlerHandlers.get(handlerExtension) );
 			}
 		}
 		return validBundlerHandlers;
