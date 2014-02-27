@@ -115,7 +115,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 			assetLocationCache.put( "tests", new TestAssetLocation(assetContainer.root(), assetContainer, testPack.tests().dir(), assetLocationCache.get("resources"), assetLocationCache.get("src-test")) );
 		}
 		
-		SourceAssetLocation tests = (SourceAssetLocation) assetLocationCache.get("tests");
+		TestAssetLocation tests = (TestAssetLocation) assetLocationCache.get("tests");
 		SourceAssetLocation testSource = (SourceAssetLocation) assetLocationCache.get("src-test");
 		
 		assetLocations.add(assetLocationCache.get("resources"));
