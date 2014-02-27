@@ -45,7 +45,7 @@ public class CharResponseWrapper extends HttpServletResponseWrapper
 	public void setContentType(String contentType) {
 		super.setContentType(contentType);
 		
-		if(contentType.contains(";charset=")) {
+		if((contentType != null) && contentType.contains(";charset=")) {
 			this.characterEncoding = getCharacterEncoding();
 		}
 	}
