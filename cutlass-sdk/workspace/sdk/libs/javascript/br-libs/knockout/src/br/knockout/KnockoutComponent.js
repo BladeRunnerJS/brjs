@@ -64,7 +64,14 @@ KnockoutComponent.prototype._getTemplate = function(sTemplateId) {
   }
   eTemplateHolder.innerHTML = eTemplateNode.innerHTML;
 
-  return eTemplateHolder;
+  // The template service wraps elements in a div that isn't part of the template.
+  // Do not return that element, instead return the element representing the tempate.
+  var el = eTemplateHolder;
+  if( el.children.length === 1 ) {
+    el = el.children[ 0 ];
+  }
+
+  return el;
 };
 
 module.exports = KnockoutComponent;
