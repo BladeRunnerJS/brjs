@@ -13,7 +13,7 @@ var i18n = require('br/I18n');
  * @param {String}
  *          sUrl The url to load to retrieve the XML resource.
  * 
- * @implements caplin.services.XmlResourceService
+ * @implements br.services.XmlResourceService
  */
 function BRXmlResourceService(sUrl) {
 	/** @private */
