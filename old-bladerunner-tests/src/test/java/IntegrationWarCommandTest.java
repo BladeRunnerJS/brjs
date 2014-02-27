@@ -42,7 +42,7 @@ public class IntegrationWarCommandTest extends SpecTest {
 			.and(bundleResponse).isNotEmpty();
 	}
 	
-	@Ignore
+	@Ignore //TODO: this command will only pass when we get rid of the filters
 	@Test
 	public void exportedWarIndexPageIsTheSameAsBrjsHosted() throws Exception {
 		given(app).hasBeenPopulated()
@@ -54,7 +54,7 @@ public class IntegrationWarCommandTest extends SpecTest {
 		then(warResponse).textEquals(brjsResponse);
 	}
 	
-	@Ignore
+	@Ignore //TODO: this command will only pass when we get rid of the filters
 	@Test
 	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(app).hasBeenPopulated()
@@ -66,7 +66,7 @@ public class IntegrationWarCommandTest extends SpecTest {
 		then(warResponse).textEquals(brjsResponse);
 	}
 
-	@Ignore
+	@Ignore //TODO: this command will only pass when we get rid of the filters
 	@Test
 	public void exportedWarCssBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(app).hasBeenPopulated()
