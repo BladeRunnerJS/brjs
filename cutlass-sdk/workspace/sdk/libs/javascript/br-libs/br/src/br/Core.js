@@ -3,13 +3,13 @@ topiarist.exportTo(exports);
 
 exports.hasImplemented = exports.implement;
 
-exports.implement = function(implementor, interface) {
+exports.implement = function(implementor, theInterface) {
 	// We do this on a timeout so you can implement the methods later.
 	var br = topiarist;
 	var error = new Error();
 	setTimeout(function() {
 		try {
-			br.implement(implementor, interface);
+			br.implement(implementor, theInterface);
 		} catch (e) {
 			error.message = e.message;
 			error.name = e.name;

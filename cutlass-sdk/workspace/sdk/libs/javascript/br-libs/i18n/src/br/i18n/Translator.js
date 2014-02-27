@@ -323,16 +323,16 @@ Translator.prototype.stripNonNumericCharacters = function(value) {
 	var decimalPlaceCharacter = this.localizationPrefs.decimalRadixCharacter || this._getTranslationForKey("br.i18n.decimal.radix.character");
 
 	for (var i = 0; i < length; i++) {
-		var char = value.charAt(i);
-		if (isNaN(char) === true) {
-			if (char === decimalPlaceCharacter) {
+		var thisChar = value.charAt(i);
+		if (isNaN(thisChar) === true) {
+			if (thisChar === decimalPlaceCharacter) {
 				if (isDecimalPointFound == false) {
 					joiner.push(".");
 					isDecimalPointFound = true;
 				}
 			}
 		} else {
-			joiner.push(char);
+			joiner.push(thisChar);
 		}
 	}
 	return joiner.join("");
