@@ -156,6 +156,10 @@ public abstract class SpecTest
 	// BRJS
 	public SpecTestBuilder given() { return new SpecTestBuilder(this); }
 	
+
+	// File
+	public FileTestBuilder given(File file) { return new FileTestBuilder(this, file); }
+	
 	// exceptions
 	protected ExceptionsBuilder given(List<Throwable> exceptions) { return new ExceptionsBuilder(this, exceptions); }
 	public ExceptionsVerifier then(List<Throwable> exceptions) { return new ExceptionsVerifier(this, exceptions); }

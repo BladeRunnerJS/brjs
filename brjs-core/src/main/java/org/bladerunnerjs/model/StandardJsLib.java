@@ -27,6 +27,9 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		this.name = name;
 		this.parent = parent;
 		testTypes = TypedTestPack.createNodeSet(rootNode);
+		
+		// TODO: we should never call registerInitializedNode() from a non-final class
+		registerInitializedNode();
 	}
 	
 	public StandardJsLib(RootNode rootNode, Node parent, File dir)

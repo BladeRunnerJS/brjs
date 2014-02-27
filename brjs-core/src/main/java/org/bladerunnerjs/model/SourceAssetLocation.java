@@ -9,11 +9,15 @@ import java.util.Map;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
-public class SourceAssetLocation extends ShallowAssetLocation {
+//TODO: why was this 'final'?
+public class SourceAssetLocation extends AbstractShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
 	
 	public SourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
 		super(rootNode, parent, dir, dependentAssetLocations);
+		
+		// TODO: understand why removing this line doesn't break any tests
+		registerInitializedNode();
 	}
 	
 	public SourceAssetLocation(RootNode rootNode, Node parent, File dir) {

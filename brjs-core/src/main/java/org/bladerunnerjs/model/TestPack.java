@@ -35,6 +35,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		
+		// TODO: we should never call registerInitializedNode() from a non-final class
+		registerInitializedNode();
 	}
 	
 	public static NodeMap<TestPack> createNodeSet(RootNode rootNode)

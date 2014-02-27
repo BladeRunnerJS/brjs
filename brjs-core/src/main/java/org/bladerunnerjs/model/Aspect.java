@@ -18,7 +18,7 @@ import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
+public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
 {
 	private final NodeItem<DirNode> unbundledResources = new NodeItem<>(DirNode.class, "unbundled-resources");
 	private final NodeMap<TypedTestPack> testTypes;
@@ -31,6 +31,8 @@ public class Aspect extends AbstractBrowsableNode implements TestableNode, Named
 		this.name = name;
 		testTypes = TypedTestPack.createNodeSet(rootNode);
 		themes = Theme.createNodeSet(rootNode);
+		
+		registerInitializedNode();
 	}
 	
 	public static NodeMap<Aspect> createNodeSet(RootNode rootNode)

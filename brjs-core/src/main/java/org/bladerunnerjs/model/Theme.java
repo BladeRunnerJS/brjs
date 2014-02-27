@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 
 
-public class Theme extends AbstractBRJSNode implements NamedNode
+public final class Theme extends AbstractBRJSNode implements NamedNode
 {
 	private String name;
 	
@@ -21,6 +21,8 @@ public class Theme extends AbstractBRJSNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		
+		registerInitializedNode();
 	}
 	
 	public static NodeMap<Theme> createNodeSet(RootNode rootNode)

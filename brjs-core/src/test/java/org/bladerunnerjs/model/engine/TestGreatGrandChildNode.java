@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.NameValidator;
 
 
-public class TestGreatGrandChildNode extends AbstractNode implements NamedNode
+public final class TestGreatGrandChildNode extends AbstractNode implements NamedNode
 {
 	private String name;
 	
@@ -19,6 +19,8 @@ public class TestGreatGrandChildNode extends AbstractNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		
+		registerInitializedNode();
 	}
 	
 	@Override

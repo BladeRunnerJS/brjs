@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 
 
-public class Blade extends AbstractComponent implements NamedNode
+public final class Blade extends AbstractComponent implements NamedNode
 {
 	private final NodeItem<Workbench> workbench = new NodeItem<>(Workbench.class, "workbench");
 	private String name;
@@ -23,6 +23,8 @@ public class Blade extends AbstractComponent implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		
+		registerInitializedNode();
 	}
 	
 	public static NodeMap<Blade> createNodeSet(RootNode rootNode)
