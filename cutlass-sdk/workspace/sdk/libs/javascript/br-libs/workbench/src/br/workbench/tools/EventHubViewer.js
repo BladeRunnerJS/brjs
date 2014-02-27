@@ -92,9 +92,18 @@ EventHubViewer.prototype._eventBindingWrapper = function( eventName, channel ) {
   return wrapper;
 };
 
+function getSafeJsonValue( obj ) {
+  var val = obj;
+  try {
+    val = JSON.stringify( obj );
+  }
+  catch( e ){}
+  return val;
+}
+
 /** @private */
 EventHubViewer.prototype._logEventTrigger = function( channel, eventName, ev ) {
-  var msg = 'Triggered: "' + eventName + '" on "' + channel.name + '" with data "' + ev + '"';
+  var msg = 'Triggered: "' + eventName + '" on "' + channel.name + '" with data "' + getSafeJsonValue( ev ) + '"';
   this._log( msg );
 };
 

@@ -87,6 +87,15 @@ KnockoutModelTree.prototype._addObservableToTree = function( treeNode, key, item
   }
 };
 
+function getSafeJsonValue( obj ) {
+  var val = obj;
+  try {
+    val = JSON.stringify( obj );
+  }
+  catch( e ){}
+  return val;
+}
+
 /** @private */
 KnockoutModelTree.prototype._buildNodes = function( treeNode, viewModel, expandNode ) {
   for (var key in viewModel) {
@@ -112,7 +121,7 @@ KnockoutModelTree.prototype._buildNodes = function( treeNode, viewModel, expandN
       label = key;
       value = viewModel[ key ];
       if( value !== undefined ) {
-        label += ':' + value;
+        label += ':' + getSafeJsonValue( value );
       }
       treeChildNode = new Ext.tree.TreeNode( { text : label, expanded: expandNode } );
       treeNode.appendChild( treeChildNode );
@@ -137,7 +146,7 @@ KnockoutModelTree.prototype._createListeners = function( observable, treeNode, k
     else {
       var label = key;
       if (newValue !== undefined) {
-        label += ":" + newValue;
+        label += ":" + getSafeJsonValue( newValue );
       }
       treeNode.setText( label );
     }
