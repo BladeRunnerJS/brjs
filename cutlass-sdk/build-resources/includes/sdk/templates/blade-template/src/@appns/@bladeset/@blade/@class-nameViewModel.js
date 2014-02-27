@@ -2,7 +2,7 @@
 
 var ko = require( 'ko' );
 
-function @class-name() {
+function @class-nameViewModel() {
 	this.message = ko.observable( '' );
 }
 

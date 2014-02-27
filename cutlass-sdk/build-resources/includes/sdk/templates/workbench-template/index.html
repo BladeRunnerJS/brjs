@@ -40,10 +40,10 @@
 			addEventHubLogger( workbench );
 
 			// ViewModel that is being created in the workbench
-			var @class-name = require( '@appns/@bladeset/@blade/@class-name' );
+			var @class-nameViewModel = require( '@appns/@bladeset/@blade/@class-nameViewModel' );
 			var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
 			
-			var model = new @class-name();
+			var model = new @class-nameViewModel();
 			var component = new KnockoutComponent( '@appns.@bladeset.@blade.view-template', model );
 
 			addComponent( component, workbench )
