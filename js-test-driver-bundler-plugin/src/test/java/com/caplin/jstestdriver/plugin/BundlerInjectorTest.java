@@ -6,8 +6,9 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -45,17 +46,17 @@ public class BundlerInjectorTest {
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(".")));
 		
 		bundlerInjector = new BundlerInjector();
-		List<BundlerHandler> resourceBundleHandlers = new ArrayList<BundlerHandler>();	
+		Map<String,BundlerHandler> resourceBundleHandlers = new HashMap<String,BundlerHandler>();	
 		
-		jsBundleHandler = createMockBundlerHandler("js.bundle");
-		cssBundleHandler = createMockBundlerHandler("css.bundle");
-		xmlBundleHandler = createMockBundlerHandler("xml.bundle");
-		htmlBundleHandler = createMockBundlerHandler("html.bundle");
+		jsBundleHandler = mock(BundlerHandler.class);
+		cssBundleHandler = mock(BundlerHandler.class);
+		xmlBundleHandler = mock(BundlerHandler.class);
+		htmlBundleHandler = mock(BundlerHandler.class);
 		
-		resourceBundleHandlers.add(jsBundleHandler);
-		resourceBundleHandlers.add(cssBundleHandler);
-		resourceBundleHandlers.add(xmlBundleHandler);
-		resourceBundleHandlers.add(htmlBundleHandler);
+		resourceBundleHandlers.put("js.bundle", jsBundleHandler);
+		resourceBundleHandlers.put("css.bundle", cssBundleHandler);
+		resourceBundleHandlers.put("xml.bundle", xmlBundleHandler);
+		resourceBundleHandlers.put("html.bundle", htmlBundleHandler);
 		
 		bundlerInjector.setBundlerHandlers(resourceBundleHandlers);
 		
@@ -107,18 +108,16 @@ public class BundlerInjectorTest {
 		assertEquals("src/file1.js", processedInputFiles.get(0).getFilePath());
 		assertEquals("src/file2.js", processedInputFiles.get(1).getFilePath());
 		assertEquals("src/file3.js", processedInputFiles.get(2).getFilePath());
-		
-		verify(jsBundleHandler, atLeastOnce()).getAcceptedFileSuffix();
-		verify(cssBundleHandler, atLeastOnce()).getAcceptedFileSuffix();
-		verify(xmlBundleHandler, atLeastOnce()).getAcceptedFileSuffix();
-		verify(htmlBundleHandler, atLeastOnce()).getAcceptedFileSuffix();
 	}
 	
 	@Test
 	public void testBundlerHandlerIsCalledWithExtensionContainingUnderscore() throws Exception {
 		BundlerInjector bundlerInjector = new BundlerInjector();
-		BundlerHandler bundlerHandler = createMockBundlerHandler("js.bundle");
-		bundlerInjector.setBundlerHandlers(Arrays.asList(bundlerHandler));
+		BundlerHandler bundlerHandler = mock(BundlerHandler.class);
+		
+		Map<String,BundlerHandler> handlers = new HashMap<String,BundlerHandler>();
+		handlers.put("js.bundle", bundlerHandler);
+		bundlerInjector.setBundlerHandlers(handlers);
 
 		List<FileInfo> inputFiles = new ArrayList<FileInfo>();
 		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/src/file1.js");
@@ -128,15 +127,17 @@ public class BundlerInjectorTest {
 		
 		bundlerInjector.processDependencies(inputFiles);
 		
-		verify(bundlerHandler, atLeastOnce()).getAcceptedFileSuffix();
 		verify(bundlerHandler).getBundledFiles(any(File.class), any(File.class), any(File.class));
 	}
 
 	@Test
 	public void testBundlerHandlerIsCalledWithExtensionNotContainingUnderscore() throws Exception {
 		BundlerInjector bundlerInjector = new BundlerInjector();
-		BundlerHandler bundlerHandler = createMockBundlerHandler("js.bundle");
-		bundlerInjector.setBundlerHandlers(Arrays.asList(bundlerHandler));
+		BundlerHandler bundlerHandler = mock(BundlerHandler.class);
+		
+		Map<String,BundlerHandler> handlers = new HashMap<String,BundlerHandler>();
+		handlers.put("js.bundle", bundlerHandler);
+		bundlerInjector.setBundlerHandlers(handlers);
 
 		List<FileInfo> inputFiles = new ArrayList<FileInfo>();
 		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/src/file1.js");
@@ -146,15 +147,17 @@ public class BundlerInjectorTest {
 		
 		bundlerInjector.processDependencies(inputFiles);
 		
-		verify(bundlerHandler, atLeastOnce()).getAcceptedFileSuffix();
 		verify(bundlerHandler).getBundledFiles(any(File.class), any(File.class), any(File.class));
 	}
 	
 	@Test
 	public void testBundlerHandlerIsNotCalledIfExtensionDoesntContainUnderscoreAndIsntAnAbsoluteMatch() throws Exception {
 		BundlerInjector bundlerInjector = new BundlerInjector();
-		BundlerHandler bundlerHandler = createMockBundlerHandler("js.bundle");
-		bundlerInjector.setBundlerHandlers(Arrays.asList(bundlerHandler));
+		BundlerHandler bundlerHandler = mock(BundlerHandler.class);
+		
+		Map<String,BundlerHandler> handlers = new HashMap<String,BundlerHandler>();
+		handlers.put("js.bundle", bundlerHandler);
+		bundlerInjector.setBundlerHandlers(handlers);
 
 		List<FileInfo> inputFiles = new ArrayList<FileInfo>();
 		addFileInfoToList(inputFiles, "a/path/novotrader/sdk/apps/app1/bladeset/src/file1.js");
@@ -164,7 +167,6 @@ public class BundlerInjectorTest {
 		
 		bundlerInjector.processDependencies(inputFiles);
 		
-		verify(bundlerHandler, atLeastOnce()).getAcceptedFileSuffix();
 		verify(bundlerHandler, never()).getBundledFiles(any(File.class), any(File.class), any(File.class));
 	}
 	
@@ -206,11 +208,6 @@ public class BundlerInjectorTest {
 	@Test
 	public void testProcessDependenciesIsCalledOnAllBundlerHandlers() throws Exception {
 		bundlerInjector.processDependencies(testFiles);
-		
-		verify(jsBundleHandler, atLeastOnce()).getAcceptedFileSuffix();
-		verify(cssBundleHandler, atLeastOnce()).getAcceptedFileSuffix();
-		verify(xmlBundleHandler, atLeastOnce()).getAcceptedFileSuffix();
-		verify(htmlBundleHandler, atLeastOnce()).getAcceptedFileSuffix();
 		
 		verify(jsBundleHandler, times(1)).getBundledFiles(new File("a"), new File("a/b/c/"), new File("a/b/c/123_js.bundle"));
 		verify(cssBundleHandler, times(1)).getBundledFiles(new File("a"),new File("a/b/c/"),  new File("a/b/c/123_css.bundle"));
@@ -323,12 +320,6 @@ public class BundlerInjectorTest {
 		return sdkDir;
 	}
 	
-	private BundlerHandler createMockBundlerHandler(String extension) {
-		BundlerHandler mockBundlerHandler = mock(BundlerHandler.class);
-		when(mockBundlerHandler.getAcceptedFileSuffix()).thenReturn(extension);
-		return mockBundlerHandler;
-	}
-	
 	private void addFileInfoToList(List<FileInfo> theList, String fileName) {
 		theList.add(new FileInfo(fileName, -1, -1, false, false, null, fileName));
 	}
@@ -336,14 +327,16 @@ public class BundlerInjectorTest {
 	private void checkBundlerHandlerGetsCalledWithCorrectBaseAndTestPaths(String bundleFilename, String expectedBasePath, String expectedTestPath, String bundlerSuffix) throws Exception
 	{
 		BundlerInjector bundlerInjector = new BundlerInjector();
-		BundlerHandler bundlerHandler = createMockBundlerHandler(bundlerSuffix);
-		bundlerInjector.setBundlerHandlers(Arrays.asList(bundlerHandler));
+		BundlerHandler bundlerHandler = mock(BundlerHandler.class);
+		
+		Map<String,BundlerHandler> handlers = new HashMap<String,BundlerHandler>();
+		handlers.put("js.bundle", bundlerHandler);
+		bundlerInjector.setBundlerHandlers(handlers);
 		
 		List<FileInfo> inputFiles = new ArrayList<FileInfo>();
 		addFileInfoToList(inputFiles, bundleFilename);
 		bundlerInjector.processDependencies(inputFiles);
 		
-		verify(bundlerHandler, atLeastOnce()).getAcceptedFileSuffix();
 		verify(bundlerHandler).getBundledFiles(new File(expectedBasePath), new File(expectedTestPath), new File(bundleFilename));
 	}	
 	
