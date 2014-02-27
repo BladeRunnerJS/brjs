@@ -17,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.PatchableSourceModule;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -30,7 +29,7 @@ import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NodeJsSourceModule implements PatchableSourceModule {
+public class NodeJsSourceModule implements SourceModule {
 
 	public static final String NODEJS_DEFINE_BLOCK_HEADER = "define('%s', function(require, exports, module) {\n";
 	public static final String NODEJS_DEFINE_BLOCK_FOOTER = "\n});\n";

@@ -40,10 +40,10 @@ public class AssetLocationUtility
 			A assetFile = (A) ctor.newInstance();
 			assetFile.initialize(assetLocation, dir, assetName);
 			
-			if (assetFile instanceof PatchableSourceModule)
+			if (assetFile instanceof SourceModule)
 			{
-				PatchableSourceModule patchableSourceModule = (PatchableSourceModule) assetFile;
-				patchableSourceModule.addPatch( SourceModulePatch.getPatchForRequirePath(assetLocation, patchableSourceModule.getRequirePath()) );
+				SourceModule sourceModule = (SourceModule) assetFile;
+				sourceModule.addPatch( SourceModulePatch.getPatchForRequirePath(assetLocation, sourceModule.getRequirePath()) );
 			}
 			
 			return assetFile;

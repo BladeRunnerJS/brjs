@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -14,7 +13,6 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
-import org.bladerunnerjs.model.PatchableSourceModule;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -26,7 +24,7 @@ import org.bladerunnerjs.utility.UnicodeReader;
 import com.Ostermiller.util.ConcatReader;
 
 
-public class ThirdpartySourceModule implements PatchableSourceModule
+public class ThirdpartySourceModule implements SourceModule
 {
 
 	private AssetLocation assetLocation;
