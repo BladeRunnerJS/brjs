@@ -22,10 +22,8 @@ public class BundlerInjector implements ResourcePreProcessor
 		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("js.bundle", "js/dev/en_GB/combined/bundle.js", false));
 		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("css.bundle", "css/standard_en_GB/bundle.css", true));
 		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("i18n.bundle", "i18n/en_GB.js", false));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new XmlBundler(), "xml.bundle", true));
-//		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("xml.bundle", "bundle.xml", true));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new HtmlBundler(), "html.bundle", true));
-//		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("html.bundle", "bundle.html", true));
+		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("xml.bundle", "bundle.xml", true));
+		bundlerHandlers.add(new BRJSWritingResourceBundlerHandler("html.bundle", "bundle.html", true));
 	}
 
 	@Override
