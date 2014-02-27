@@ -41,7 +41,7 @@ public class BundleSetCreator {
 		logger.debug(Messages.APP_SOURCE_LOCATIONS_MSG, bundlableNode.getApp().getName(), assetContainerPaths(bundlableNode.getApp()));
 		
 		
-		List<TestSourceModule> seedTestSourceModules = new ArrayList<TestSourceModule>();
+		List<SourceModule> seedTestSourceModules = new ArrayList<SourceModule>();
 		if (bundlableNode instanceof TestPack)
 		{
 			TestPack testPack = (TestPack) bundlableNode;
@@ -57,7 +57,7 @@ public class BundleSetCreator {
 		}
 		
 		bundleSetBuilder.addSeedFiles(seedFiles);
-		bundleSetBuilder.addSeedSourceModules(seedTestSourceModules);
+		bundleSetBuilder.addTestSourceModules(seedTestSourceModules);
 		
 		return bundleSetBuilder.createBundleSet();
 	}

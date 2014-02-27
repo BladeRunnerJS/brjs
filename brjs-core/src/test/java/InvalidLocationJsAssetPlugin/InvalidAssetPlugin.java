@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsSourceModule;
 
@@ -42,7 +41,7 @@ public class InvalidAssetPlugin extends AbstractAssetPlugin {
 	}
 
 	@Override
-	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
+	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
 		return new ArrayList<>();		
 	}
 	

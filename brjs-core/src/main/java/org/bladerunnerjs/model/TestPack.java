@@ -28,7 +28,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	private NodeFileModifiedChecker testSourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
 	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
-	private List<TestSourceModule> testSourceModules = null;
+	private List<SourceModule> testSourceModules = null;
 	private List<SourceModule> sourceModules = null;
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
@@ -136,9 +136,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		return sourceModules;
 	}
 	
-	public List<TestSourceModule> testSourceModules() {
+	public List<SourceModule> testSourceModules() {
 		if(testSourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (testSourceModules == null)) {
-			testSourceModules = new ArrayList<TestSourceModule>();
+			testSourceModules = new ArrayList<SourceModule>();
 			
 			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 				for (AssetLocation assetLocation : assetLocations())

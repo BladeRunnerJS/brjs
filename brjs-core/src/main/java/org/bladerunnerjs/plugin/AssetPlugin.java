@@ -6,7 +6,6 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.TestSourceModule;
 
 /**
  * Asset plug-ins allow new implementations of {@link SourceModule}, {@link LinkedAsset} &amp; {@link Asset} to be supported within the model.
@@ -33,7 +32,7 @@ public interface AssetPlugin extends Plugin {
 	 * @param assetLocation The asset location to search within.
 	 * @return A list of all test source modules discovered at this location, or an empty list if none were discovered.
 	 */
-	List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation);
+	List<SourceModule> getTestSourceModules(AssetLocation assetLocation);
 	
 	/**
 	 * Return a list of all linked assets discovered within the given {@link AssetLocation}.

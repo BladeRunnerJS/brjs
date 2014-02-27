@@ -6,7 +6,6 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements AssetPlugin {
@@ -24,7 +23,7 @@ public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements Asset
 	}
 	
 	@Override
-	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
+	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
 		initializePlugin();
 		return assetPlugin.getTestSourceModules(assetLocation);
 	}

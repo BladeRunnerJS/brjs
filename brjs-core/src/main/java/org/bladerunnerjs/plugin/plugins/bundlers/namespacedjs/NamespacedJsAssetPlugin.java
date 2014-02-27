@@ -10,13 +10,11 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SuffixAssetFilter;
-import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	
 	private List<SourceModule> emptySourceModules = new ArrayList<SourceModule>();
-	private List<TestSourceModule> emptyTestSourceModules = new ArrayList<TestSourceModule>();
 	private List<LinkedAsset> emptyLinkedAssets = new ArrayList<LinkedAsset>();
 	private List<Asset> emptyAssets = new ArrayList<Asset>();
 	
@@ -39,17 +37,8 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
-		try {
-			if (assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE))
-			{
-				return assetLocation.obtainMatchingAssets(new SuffixAssetFilter("js"), TestSourceModule.class, NamespacedJsTestSourceModule.class);
-			}
-			return emptyTestSourceModules;
-		} catch (AssetFileInstantationException ex)
-		{
-			throw new RuntimeException(ex);
-		}
+	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
+		return getSourceModules(assetLocation);
 	}
 	
 	@Override

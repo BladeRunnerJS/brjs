@@ -10,13 +10,12 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
-	private final List<TestSourceModule> emptyTestSourceModules = new ArrayList<>();
+	private final List<SourceModule> emptyTestSourceModules = new ArrayList<>();
 	private final List<LinkedAsset> emptyLinkedAssets = new ArrayList<>();
 	private final List<Asset> emptyAssets = new ArrayList<>();
 	
@@ -46,7 +45,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
+	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
 		return emptyTestSourceModules;
 	}
 	

@@ -11,13 +11,12 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.TestSourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class XMLAssetPlugin extends AbstractAssetPlugin {
 	private AssetFilter xmlFilesFilter = new XMLAssetFilter();
 	private final List<SourceModule> emptySourceModules = new ArrayList<>();
-	private final List<TestSourceModule> emptyTestSourceModules = new ArrayList<>();
+	private final List<SourceModule> emptyTestSourceModules = new ArrayList<>();
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
@@ -29,7 +28,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<TestSourceModule> getTestSourceModules(AssetLocation assetLocation) {
+	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
 		return emptyTestSourceModules;
 	}
 	
