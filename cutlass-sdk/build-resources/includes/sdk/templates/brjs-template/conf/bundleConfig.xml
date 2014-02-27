@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<bundleConfig>
+ <!-- XML Bundler config for defining rootElements, templateElements and mergeElements for when the XML files are bundled -->
+</bundleConfig>
