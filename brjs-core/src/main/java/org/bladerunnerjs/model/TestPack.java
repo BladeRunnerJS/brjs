@@ -14,7 +14,9 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.filemodification.NodeFileModifiedChecker;
 
 
 public class TestPack extends AbstractBundlableNode implements NamedNode
@@ -23,6 +25,11 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	private final NodeItem<DirNode> testSource = new NodeItem<>(DirNode.class, "src-test");
 	private AliasesFile aliasesFile;
 	private String name;
+	
+	private NodeFileModifiedChecker testSourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
+	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
+	private List<SourceModule> testSourceModules = null;
+	private List<SourceModule> sourceModules = null;
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -110,6 +117,42 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		return assetContainers;
 	}
 	
+	@Override
+	public List<SourceModule> sourceModules() {
+		if(sourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (sourceModules == null)) {
+			sourceModules = new ArrayList<SourceModule>();
+			
+			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
+				for (AssetLocation assetLocation : assetLocations())
+				{
+					if ( !isTestAssetLocation(assetLocation) )
+					{
+						sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
+					}
+				}
+			}
+		}
+		
+		return sourceModules;
+	}
+	
+	public List<SourceModule> testSourceModules() {
+		if(testSourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (testSourceModules == null)) {
+			testSourceModules = new ArrayList<SourceModule>();
+			
+			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
+				for (AssetLocation assetLocation : assetLocations())
+				{
+					if ( isTestAssetLocation(assetLocation) )
+					{
+						testSourceModules.addAll(assetPlugin.getTestSourceModules(assetLocation));
+					}
+				}
+			}
+		}
+		
+		return testSourceModules;
+	}
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
@@ -164,4 +207,11 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	{
 		return item(tests);
 	}
+	
+	
+	private boolean isTestAssetLocation(AssetLocation assetLocation)
+	{
+		return assetLocation instanceof TestAssetLocation || assetLocation instanceof ChildTestAssetLocation;
+	}
+	
 }

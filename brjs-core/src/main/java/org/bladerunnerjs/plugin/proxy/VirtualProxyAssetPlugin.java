@@ -23,6 +23,12 @@ public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements Asset
 	}
 	
 	@Override
+	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
+		initializePlugin();
+		return assetPlugin.getTestSourceModules(assetLocation);
+	}
+	
+	@Override
 	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
 		initializePlugin();
 		return assetPlugin.getLinkedAssets(assetLocation);

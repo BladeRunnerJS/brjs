@@ -16,6 +16,7 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class CssResourceAssetPlugin extends AbstractAssetPlugin {
 	private final List<SourceModule> emptySourceModules = new ArrayList<>();
+	private final List<SourceModule> emptyTestSourceModules = new ArrayList<>();
 	private final List<LinkedAsset> emptyLinkedAssets = new ArrayList<>();
 	private final List<String> resourceExtensions = Arrays.asList(new String[] {"jpg","jpeg","bmp","png","gif","svg","ico","cur","eot","ttf","woff"});
 	
@@ -27,6 +28,11 @@ public class CssResourceAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		return emptySourceModules;
+	}
+	
+	@Override
+	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
+		return emptyTestSourceModules;
 	}
 	
 	@Override

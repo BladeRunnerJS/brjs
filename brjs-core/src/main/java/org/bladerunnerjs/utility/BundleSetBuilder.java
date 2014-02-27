@@ -28,6 +28,7 @@ import com.google.common.base.Joiner;
 public class BundleSetBuilder {
 	private static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
+	private final Set<SourceModule> testSourceModules = new LinkedHashSet<>();
 	private final Set<AliasDefinition> activeAliases = new HashSet<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final Set<AssetLocation> assetLocations = new HashSet<>();
@@ -65,12 +66,25 @@ public class BundleSetBuilder {
 			}
 		}
 		
-		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), activeAliasList, resourceLocationList);
+		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), new ArrayList<SourceModule>(testSourceModules), activeAliasList, resourceLocationList);
 	}
 	
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
 		for(LinkedAsset seedFile : seedFiles) {
 			addLinkedAsset(seedFile);
+		}
+	}
+	
+	public void addTestSourceModules(List<? extends SourceModule> testSourceModules) throws ModelOperationException {
+		for(SourceModule sourceModule : testSourceModules) {
+			addTestSourceModule(sourceModule);
+		}
+	}
+	
+	private void addTestSourceModule(SourceModule sourceModule) throws ModelOperationException {
+		if(testSourceModules.add(sourceModule)) {
+			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
+			addLinkedAsset(sourceModule);
 		}
 	}
 	

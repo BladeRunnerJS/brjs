@@ -5,6 +5,7 @@ import java.io.File;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
+
 public final class ShallowAssetLocation extends AbstractShallowAssetLocation {
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation) {
 		super(rootNode, parent, dir, assetLocation);
@@ -19,4 +20,5 @@ public final class ShallowAssetLocation extends AbstractShallowAssetLocation {
 		// TODO: understand why removing this line doesn't break any tests
 		registerInitializedNode();
 	}
+	
 }

@@ -26,5 +26,15 @@ public interface AssetLocation extends BRJSNode {
 	AssetContainer getAssetContainer();
 	List<AssetLocation> getDependentAssetLocations();
 	<A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException;
-	<A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException;
+	
+	/**
+	 * Returns a list of assets matching 'assetFilter'. 
+	 * 
+	 * @param assetFilter The filter applied to each asset
+	 * @param assetClass The interface of the asset to return.
+	 * @param instantiateAssetClass The class to instantiate for each matched asset.
+	 * @return The list of assets.
+	 * @throws AssetFileInstantationException
+	 */
+	<A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException;
 }

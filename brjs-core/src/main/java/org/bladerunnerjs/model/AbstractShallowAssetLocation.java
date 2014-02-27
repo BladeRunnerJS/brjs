@@ -28,10 +28,10 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	protected final AssetLocationUtility assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
-	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation)
+	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
 	{
 		this(rootNode, parent, dir);
-		dependentAssetLocations.add(assetLocation);
+		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
 	
@@ -75,6 +75,11 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	@Override
 	public SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException
 	{
+		if (requirePath.matches(".*[a-zA-Z0-9]\\.[a-zA-Z0-9].*"))
+		{
+			throw new InvalidRequirePathException("Invalid require path, require paths should be seperated by the '/' character. Did you mean '" + requirePath.replaceAll("([a-zA-Z0-9])\\.([a-zA-Z0-9])", "$1/$2") + "'?");
+		}
+		
 		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
 
 		SourceModule sourceModule;
@@ -260,4 +265,5 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		}
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
 	}
+	
 }

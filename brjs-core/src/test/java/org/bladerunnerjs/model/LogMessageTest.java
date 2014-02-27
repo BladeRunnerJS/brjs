@@ -1,4 +1,4 @@
-package org.bladerunnerjs.testing.specutility;
+package org.bladerunnerjs.model;
 
 import org.bladerunnerjs.testing.utility.LogMessage;
 import org.junit.Assert;

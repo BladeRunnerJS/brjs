@@ -81,7 +81,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function() {\n};");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
-		then(requestResponse).textEquals("appns.Class1 = function() {\n};\ndefine('appns/Class1', function(require, exports, module) {module.exports = appns.Class1; });");
+		then(requestResponse).textEquals("appns.Class1 = function() {\n};\ndefine('appns/Class1', function(require, exports, module) { module.exports = appns.Class1; });");
 	}
 	
 	@Test
@@ -214,4 +214,34 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
+	
+	@Test
+	public void weGlobalizeNonNamespaceClassesBeforeTheClassThatNeedsThemAndGlobalizeExtraClassesAtTheEnd() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
+			.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")
+			.and(aspect).hasClasses("appns.namespacedjs.Class1", "appns.nodejs.Class1", "appns.nodejs.Class2")
+			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1")
+			.and(aspect).classRefersTo("appns.namespacedjs.Class1", "appns.nodejs.Class1")
+			.and(aspect).classRequires("appns.nodejs.Class1", "appns.nodejs.Class2");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"window.appns = {\"nodejs\":{},\"namespacedjs\":{}};",
+				"appns.nodejs.Class1 = require('appns/nodejs/Class1');",
+				"appns.namespacedjs.Class1 = function()",
+				"define('appns/namespacedjs/Class1', function(require, exports, module) { module.exports = appns.namespacedjs.Class1;",
+				"appns.nodejs.Class2 = require('appns/nodejs/Class2');");
+	}
+	
+	@Test
+	public void packageDefinitionsIncludesClassesNotDirectlyUsedByANamespacedClass() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
+    		.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")
+    		.and(aspect).hasClasses("appns.namespacedjs.Class1", "appns.nodejs.Class1", "appns.nodejs.pkg.Class2")
+    		.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1")
+    		.and(aspect).classRefersTo("appns.namespacedjs.Class1", "appns.nodejs.Class1")
+    		.and(aspect).classRequires("appns.nodejs.Class1", "appns.nodejs.pkg.Class2");
+		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
+		then(requestResponse).containsText("window.appns = {\"nodejs\":{\"pkg\":{}},\"namespacedjs\":{}};");
+	}
+	
 }

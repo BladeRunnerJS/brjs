@@ -20,84 +20,107 @@ import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-public class NodeJsContentPlugin extends AbstractContentPlugin {
+
+public class NodeJsContentPlugin extends AbstractContentPlugin
+{
+
+	private static final String SINGLE_MODULE_REQUEST = "single-module-request";
+
+	private static final String BUNDLE_REQUEST = "bundle-request";
+
 	public static final String JS_STYLE = "node.js";
-	
+
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
 	private BRJS brjs;
-	
+
 	{
-		try {
+		try
+		{
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder
-				.accepts("node-js/bundle.js").as("bundle-request")
-					.and("node-js/module/<module>.js").as("single-module-request")
-				.where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
-			
+			contentPathParserBuilder.accepts("node-js/bundle.js").as(BUNDLE_REQUEST).and("node-js/module/<module>.js").as(SINGLE_MODULE_REQUEST).where("module").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+
 			contentPathParser = contentPathParserBuilder.build();
-			prodRequestPaths.add(contentPathParser.createRequest("bundle-request"));
+			prodRequestPaths.add(contentPathParser.createRequest(BUNDLE_REQUEST));
 		}
-		catch(MalformedTokenException e) {
+		catch (MalformedTokenException e)
+		{
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	@Override
-	public void setBRJS(BRJS brjs) {
+	public void setBRJS(BRJS brjs)
+	{
 		this.brjs = brjs;
 	}
-	
+
 	@Override
-	public String getRequestPrefix() {
+	public String getRequestPrefix()
+	{
 		return "node-js";
 	}
 
 	@Override
-	public String getGroupName() {
+	public String getGroupName()
+	{
 		return "text/javascript";
 	}
-	
+
 	@Override
-	public ContentPathParser getContentPathParser() {
+	public ContentPathParser getContentPathParser()
+	{
 		return contentPathParser;
 	}
-	
+
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	{
 		List<String> requestPaths = new ArrayList<>();
-		
-		try {
-			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-				if(sourceModule instanceof NodeJsSourceModule) {
-					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
+
+		try
+		{
+			for (SourceModule sourceModule : bundleSet.getSourceModules())
+			{
+				if (sourceModule instanceof NodeJsSourceModule)
+				{
+					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
 				}
 			}
 		}
-		catch(MalformedTokenException e) {
+		catch (MalformedTokenException e)
+		{
 			throw new ContentProcessingException(e);
 		}
-		
+
 		return requestPaths;
 	}
-	
+
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	{
 		return prodRequestPaths;
 	}
-	
+
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
-		try {
-			if(contentPath.formName.equals("single-module-request")) {
-				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	{
+		try
+		{
+			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
+			{
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
+				{
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
-			else if(contentPath.formName.equals("bundle-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-					for(SourceModule sourceModule : bundleSet.getSourceModules()) {
+			else if (contentPath.formName.equals(BUNDLE_REQUEST))
+			{
+				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
+				{
+					for (SourceModule sourceModule : bundleSet.getSourceModules())
+					{
 						if (sourceModule instanceof NodeJsSourceModule)
 						{
 							writer.write("// " + sourceModule.getRequirePath() + "\n");
@@ -107,11 +130,13 @@ public class NodeJsContentPlugin extends AbstractContentPlugin {
 					}
 				}
 			}
-			else {
+			else
+			{
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
-		catch(ConfigException | IOException | RequirePathException e) {
+		catch (ConfigException | IOException | RequirePathException e)
+		{
 			throw new ContentProcessingException(e);
 		}
 	}

@@ -45,7 +45,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/appns/Class1.js", "namespaced-js/package-definitions.js", "aliasing/bundle.js");
+		then(pageResponse).containsRequests("node-js/module/appns/Class1.js", "namespaced-js/package-definitions.js", "namespaced-js/globalize-extra-classes.js", "aliasing/bundle.js");
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "aliasing/bundle.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/globalize-extra-classes.js", "aliasing/bundle.js");
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/appns/Class1.js", "namespaced-js/package-definitions.js", "aliasing/bundle.js");
+		then(pageResponse).containsRequests("node-js/module/appns/Class1.js", "namespaced-js/package-definitions.js", "namespaced-js/globalize-extra-classes.js", "aliasing/bundle.js");
 	}
 	
 	@Test

@@ -26,6 +26,15 @@ public interface AssetPlugin extends Plugin {
 	List<SourceModule> getSourceModules(AssetLocation assetLocation);
 	
 	/**
+	 * Return a list of all *test* source modules discovered within the given {@link AssetLocation}. 
+	 * The assetLocation will be a location that exists inside of a {@link TestPack}. 
+	 * 
+	 * @param assetLocation The asset location to search within.
+	 * @return A list of all test source modules discovered at this location, or an empty list if none were discovered.
+	 */
+	List<SourceModule> getTestSourceModules(AssetLocation assetLocation);
+	
+	/**
 	 * Return a list of all linked assets discovered within the given {@link AssetLocation}.
 	 * 
 	 * @param assetLocation The asset location to search within.

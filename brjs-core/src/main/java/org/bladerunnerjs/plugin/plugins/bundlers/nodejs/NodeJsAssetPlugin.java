@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
@@ -11,10 +10,14 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SuffixAssetFilter;
-import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class NodeJsAssetPlugin extends AbstractAssetPlugin {
+	
+	private List<SourceModule> emptySourceModules = new ArrayList<SourceModule>();
+	private List<LinkedAsset> emptyLinkedAssets = new ArrayList<LinkedAsset>();
+	private List<Asset> emptyAssets = new ArrayList<Asset>();
+	
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
@@ -22,29 +25,30 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		try {
-			if (assetLocation.getJsStyle().equals(NodeJsContentPlugin.JS_STYLE)) {
+			if (assetLocation.getJsStyle().equals(NodeJsContentPlugin.JS_STYLE))
+			{
 				return assetLocation.obtainMatchingAssets(new SuffixAssetFilter("js"), SourceModule.class, NodeJsSourceModule.class);
 			}
-			else {
-				return new ArrayList<>();
-			}
+			return emptySourceModules;
+		} catch (AssetFileInstantationException ex)
+		{
+			throw new RuntimeException(ex);
 		}
-		catch (AssetFileInstantationException e) {
-			throw new RuntimeException(e);
-		}
+	}
+	
+	@Override
+	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
+		return getSourceModules(assetLocation);
 	}
 	
 	@Override
 	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
-		if (assetLocation.getAssetContainer() instanceof TestPack)
-		{
-			return new ArrayList<LinkedAsset>( getSourceModules(assetLocation) );
-		}
-		return new ArrayList<>();
+        return emptyLinkedAssets;
 	}
 	
 	@Override
 	public List<Asset> getAssets(AssetLocation assetLocation) {
-		return Arrays.asList();
+		return emptyAssets;
 	}
+	
 }

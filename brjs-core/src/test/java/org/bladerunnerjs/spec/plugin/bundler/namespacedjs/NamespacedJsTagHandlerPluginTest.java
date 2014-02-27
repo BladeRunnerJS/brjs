@@ -29,7 +29,7 @@ public class NamespacedJsTagHandlerPluginTest extends SpecTest {
 			.and(aspect).classRefersTo("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class1.js", "namespaced-js/module/appns/Class2.js");
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class1.js", "namespaced-js/module/appns/Class2.js", "namespaced-js/globalize-extra-classes.js");
 	}
 	
 	@Test
@@ -51,6 +51,6 @@ public class NamespacedJsTagHandlerPluginTest extends SpecTest {
 			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class2.js", "namespaced-js/module/appns/Class1.js"); // TODO: enforce ordering
+		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class2.js", "namespaced-js/module/appns/Class1.js", "namespaced-js/globalize-extra-classes.js"); // TODO: enforce ordering
 	}
 }

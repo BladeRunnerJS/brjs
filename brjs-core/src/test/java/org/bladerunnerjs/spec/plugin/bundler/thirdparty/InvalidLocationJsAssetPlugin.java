@@ -41,6 +41,11 @@ public class InvalidLocationJsAssetPlugin extends AbstractAssetPlugin {
 	}
 
 	@Override
+	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
+		return new ArrayList<>();		
+	}
+	
+	@Override
 	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
 		return new ArrayList<>();
 	}
