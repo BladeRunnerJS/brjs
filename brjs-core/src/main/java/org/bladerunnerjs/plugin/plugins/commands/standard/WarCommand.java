@@ -15,6 +15,7 @@ import java.util.zip.GZIPOutputStream;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -99,7 +100,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 				warApp.file("WEB-INF/jetty-env.xml").delete();
 				warApp.file("WEB-INF/lib/bladerunner-dev-servlets.jar").delete();
 				
-				if(warApp.file("WEB-INF/web.xml").exists()) {
+				if (warApp.file("WEB-INF/web.xml").exists()) {
 					WebXmlCompiler.compile(warApp.file("WEB-INF/web.xml"));
 				}
 				
@@ -114,7 +115,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 							FileUtils.copyFile(origAspect.file(indexFile), warAspect.file(indexFile));
 							try(Writer writer = new OutputStreamWriter(new FileOutputStream(warAspect.file(indexFile)), brjs.bladerunnerConf().getDefaultFileCharacterEncoding())) {
 								// TODO: stop only supporting the English locale within wars
-								warAspect.filterIndexPage(fileUtil.readFileToString(origAspect.file(indexFile)), "en", writer, RequestMode.Prod);
+								origAspect.filterIndexPage(fileUtil.readFileToString(origAspect.file(indexFile)), "en", writer, RequestMode.Prod);
 							}
 						}
 					}
@@ -143,11 +144,11 @@ public class WarCommand extends ArgsParsingCommandPlugin
 	
 	private void createAspectBundles(Aspect origAspect, Aspect warAspect, List<ContentPlugin> contentPlugins, String[] locales) throws CommandOperationException {
 		try {
-			BundleSet bundleSet = warAspect.getBundleSet();
+			BundleSet bundleSet = origAspect.getBundleSet();
 			
 			for(ContentPlugin contentPlugin : contentPlugins) {
 				for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-					BladerunnerUri requestPath = new BladerunnerUri(brjs, warAspect.getApp().dir(), contentPath);
+					BladerunnerUri requestPath = new BladerunnerUri(brjs, origAspect.getApp().dir(), contentPath);
 					ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(requestPath);
 					
 					try(OutputStream outputStream = createBundleSpecificOutputStream(contentPath, warAspect.file(contentPath))) {
@@ -189,19 +190,23 @@ public class WarCommand extends ArgsParsingCommandPlugin
 		return warFile;
 	}
 	
-	private OutputStream createBundleSpecificOutputStream(String validBundlerRequest, File targetFile) throws CommandOperationException {
-		OutputStream bundleStream = null;
-		
+	private OutputStream createBundleSpecificOutputStream(String validBundlerRequest, File targetFile) throws CommandOperationException {		
 		try {
 			targetFile.getParentFile().mkdirs();
-			@SuppressWarnings("resource")
-			OutputStream fileStream = new BufferedOutputStream(new FileOutputStream(targetFile));
-			bundleStream = (validBundlerRequest.endsWith("image.bundle")) ? fileStream : new GZIPOutputStream(fileStream);
+			FileOutputStream fileOutput = new FileOutputStream(targetFile);
+			OutputStream fileStream = new BufferedOutputStream(fileOutput);
+			
+			//TODO: the war command shouldnt need knowledge of image.bundles - do we need a shouldBeGZipped method?
+			if (validBundlerRequest.endsWith("image.bundle"))
+			{
+				return new GZIPOutputStream(fileStream);
+			}
+			
+			OutputStreamWriter encodedWriter = new OutputStreamWriter(fileStream, brjs.bladerunnerConf().getBrowserCharacterEncoding());
+			return new WriterOutputStream(encodedWriter);
 		}
-		catch(IOException e) {
+		catch(IOException | ConfigException e) {
 			throw new CommandOperationException(e);
 		}
-		
-		return bundleStream;
 	}
 }

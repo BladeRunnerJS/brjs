@@ -80,6 +80,10 @@ public class StringVerifier {
 		return verifierChainer;
 	}
 	
+	public VerifierChainer textEquals(StringBuffer content) {
+		return textEquals(content.toString());
+	}
+	
 	public VerifierChainer containsRequests(String... expectedRequests) {
 		List<String> actualRequests = getRequestPaths(string);
 		int i = 0;
