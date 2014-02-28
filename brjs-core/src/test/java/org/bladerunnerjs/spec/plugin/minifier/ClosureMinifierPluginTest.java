@@ -102,7 +102,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(aspect).indexPageRefersTo("appns.cjs.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.cjs.Class")
-			.and(response).containsText("window.appns={\"cjs\":{}};");
+			.and(response).containsText("mergePackageBlock(window,{\"appns\":{\"cjs\":{}}});");
 	}
 	
 }

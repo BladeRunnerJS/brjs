@@ -253,15 +253,21 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	{
 		if (packageStructure.size() > 0)
 		{
-			writer.write("// package definition block\n");
-
-			for (String packageName : packageStructure.keySet())
-			{
-				writer.write("window." + packageName + " = ");
-				JSONObject.writeJSONString(packageStructure.get(packageName), writer);
-				writer.write(";\n");
-			}
-
+			writer.write(
+				"// package definition block\n" +
+				"function mergePackageBlock(context, packageBlock) {\n" +
+				"	for(packageName in packageBlock) {\n" +
+				"		if(!context[packageName]) {\n" +
+				"			context[packageName] = packageBlock[packageName];\n" +
+				"		}\n" +
+				"		else {\n" +
+				"			mergePackageBlock(context[packageName], packageBlock[packageName]);\n" +
+				"		}\n" +
+				"	}\n" +
+				"}\n");
+			writer.write("mergePackageBlock(window, ");
+			JSONObject.writeJSONString(packageStructure, writer);
+			writer.write(");\n");
 			writer.flush();
 		}
 	}

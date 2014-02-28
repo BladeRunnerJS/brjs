@@ -55,7 +55,7 @@ public class BundleCachingTest extends SpecTest
 		then(response).containsText(
 				"// thirdpartyLib", 
 				"thirdpartyLib content", 
-				"window.appns = {}", 
+				"mergePackageBlock(window, {\"appns\":{}});",
 				"appns.Class1 = function()",
 				"module.exports = appns.Class1",
 				"define('appns/Class1', function(require, exports, module)");

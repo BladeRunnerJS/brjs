@@ -115,7 +115,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsText("window.appns = {\"bs\":{\"b1\":{}}};");
+		then(response).containsText("mergePackageBlock(window, {\"appns\":{\"bs\":{\"b1\":{}}}});");
 	}
 	
 	@Test
@@ -127,7 +127,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/combined/bundle.js", response);
-		then(response).containsText("window.appns = {\"bs\":{\"b1\":{}}};");
+		then(response).containsText("mergePackageBlock(window, {\"appns\":{\"bs\":{\"b1\":{}}}});");
 	}
 	
 	@Test
@@ -139,7 +139,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", response);
-		then(response).textEquals("// package definition block\n" + "window.appns = {\"bs\":{\"b1\":{}}};\n");
+		then(response).containsOrderedTextFragments("// package definition block\n", "mergePackageBlock(window, {\"appns\":{\"bs\":{\"b1\":{}}}});");
 	}
 	
 	@Test	// blade unhappy paths
