@@ -54,20 +54,35 @@ public class ThirdpartySourceModule implements SourceModule
 		List<Reader> fileReaders = new ArrayList<>();
 		
 		try {
+			
+			boolean hasPackageJson = assetLocation.getAssetContainer().file("package.json").isFile();
+			
+			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
+			String defineBlockBody = "module.exports = " + manifest.getExports();
+			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
+			String globaliseModuleContent = manifest.getExports() + " = require('" + getRequirePath() + "');\n";
+			
+			//TODO: once we have proper node lib support remove this block and the 'else' block below
+			if (hasPackageJson)
+			{
+				fileReaders.add( new StringReader( defineBlockHeader ) );
+			}
+			
 			for(File file : manifest.getJsFiles()) {
 				fileReaders.add(new UnicodeReader(file, defaultFileCharacterEncoding));
 				fileReaders.add(new StringReader("\n\n"));
 			}
 			
-			if (!assetLocation.getAssetContainer().file("package.json").isFile())
+			if (!hasPackageJson)
 			{
-    			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
-    			String defineBlockBody = "module.exports = " + manifest.getExports();
-    			String defineBlockFooter = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
-    			
     			fileReaders.add( new StringReader( defineBlockHeader ) );
     			fileReaders.add( new StringReader( defineBlockBody ) );
     			fileReaders.add( new StringReader( defineBlockFooter ) );
+			}
+			else
+			{
+				fileReaders.add( new StringReader( defineBlockFooter ) );
+				fileReaders.add( new StringReader( globaliseModuleContent ) );
 			}
 			
 			fileReaders.add(patch.getReader());
