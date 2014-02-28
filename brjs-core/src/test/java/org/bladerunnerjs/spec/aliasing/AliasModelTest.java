@@ -12,7 +12,6 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AliasModelTest extends SpecTest {
@@ -184,7 +183,6 @@ public class AliasModelTest extends SpecTest {
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
 	}
 	
-	@Ignore
 	@Test
 	public void groupsCanContainMultipleAliases() throws Exception {
 		given(appConf).hasNamespace("appns")
