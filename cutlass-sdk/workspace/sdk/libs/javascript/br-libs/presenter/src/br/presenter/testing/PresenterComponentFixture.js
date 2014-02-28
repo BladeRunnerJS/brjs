@@ -1,4 +1,4 @@
-br.Core.thirdparty("knockout");
+br.Core.thirdparty("presenter-knockout");
 
 /**
  * Constructs a <code>br.presenter.testing.PresenterComponentFixture</code>.
@@ -59,7 +59,7 @@ br.presenter.testing.PresenterComponentFixture = function(sTemplateId, sPresenta
 	/**
 	 * @private
 	 */
-	this.m_fBindPresentationModel = ko.applyBindings;
+	this.m_fBindPresentationModel = presenter_ko.applyBindings;
 };
 
 
@@ -98,7 +98,7 @@ br.presenter.testing.PresenterComponentFixture.prototype.doGiven = function(sPro
 	
 	if(sProperty == "opened")
 	{
-		ko.applyBindings = function(){};
+		presenter_ko.applyBindings = function(){};
 	}
 	
 	try
@@ -108,7 +108,7 @@ br.presenter.testing.PresenterComponentFixture.prototype.doGiven = function(sPro
 	}
 	finally
 	{
-		ko.applyBindings = this.m_fBindPresentationModel;
+		presenter_ko.applyBindings = this.m_fBindPresentationModel;
 	}
 };
 
