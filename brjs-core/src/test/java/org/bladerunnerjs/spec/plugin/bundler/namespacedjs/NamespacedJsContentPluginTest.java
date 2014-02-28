@@ -2,7 +2,6 @@ package org.bladerunnerjs.spec.plugin.bundler.namespacedjs;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.BRSdkLib;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.Bladeset;
