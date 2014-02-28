@@ -60,6 +60,12 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	public String namespace() {
 		return ((AssetContainer) parentNode().parentNode()).namespace(); //TOOD: refactor this
 	}
+
+	@Override
+	public String requirePrefix()
+	{
+		return ((AssetContainer) parentNode().parentNode()).requirePrefix(); //TOOD: refactor this
+	}
 	
 	@Override
 	public List<AssetContainer> getAssetContainers()
@@ -181,12 +187,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	public String getTemplateName()
 	{
 		return parentNode().parentNode().getClass().getSimpleName().toLowerCase() + "-" + name;
-	}
-	
-	@Override
-	public String requirePrefix()
-	{
-		return ((AssetContainer) parentNode().parentNode()).namespace(); //TOOD: refactor this
 	}
 	
 	public AliasesFile aliasesFile()

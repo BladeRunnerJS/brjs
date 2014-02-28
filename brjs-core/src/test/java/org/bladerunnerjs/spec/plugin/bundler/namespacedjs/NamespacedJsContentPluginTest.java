@@ -281,4 +281,15 @@ public class NamespacedJsContentPluginTest extends SpecTest {
     	then(requestResponse).containsText( "sdkLib.LibTest = require('sdkLib/LibTest');" );
 	}
 	
+	@Test
+	public void nodeJsTestsInRootTestsDirInAnSdkLibWithNestedRequirePrefixHaveTheCorrectGlobalizedPaths() throws Exception {
+		given(sdkJsLib).hasNodeJsPackageStyle()
+			.and(sdkJsLib).containsFileWithContents("br.manifest", "requirePrefix: sdkLib/subPkg")
+    		.and(sdkJsLib).hasClasses("sdkLib.subPkg.Class1")
+    		.and(sdkJsLibTests).hasTestClass("sdkLib.subPkg.TestClass1")
+    		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.subPkg.Class1(); new sdkLib.subPkg.TestClass1();");
+    	when(sdkJsLibTests).requestReceived("namespaced-js/bundle.js", requestResponse);
+    	then(requestResponse).containsText( "sdkLib.subPkg.LibTest = require('sdkLib/subPkg/LibTest');" );
+	}
+	
 }
