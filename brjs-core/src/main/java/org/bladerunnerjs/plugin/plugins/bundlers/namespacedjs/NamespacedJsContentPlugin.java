@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -291,12 +290,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 
 	private String getExtraGlobalizedClassesContent(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
 	{
-		List<SourceModule> allSourceModules = new LinkedList<SourceModule>();
-		allSourceModules.addAll(bundleSet.getSourceModules());
-		allSourceModules.addAll(bundleSet.getTestSourceModules());
-
 		StringBuffer output = new StringBuffer();
-		for (SourceModule sourceModule : allSourceModules)
+		for (SourceModule sourceModule : bundleSet.getSourceModules())
 		{
 			output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
 		}
