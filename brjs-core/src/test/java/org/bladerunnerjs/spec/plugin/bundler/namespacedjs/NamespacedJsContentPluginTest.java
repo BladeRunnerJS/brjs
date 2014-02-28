@@ -2,8 +2,13 @@ package org.bladerunnerjs.spec.plugin.bundler.namespacedjs;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.BRSdkLib;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +20,12 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	private JsLib thirdpartyLib;
 	private JsLib sdkJsLib;
 	private BladerunnerConf bladerunnerConf;
+	private Bladeset bladeset;
+	private Blade blade;
+	private TypedTestPack bladeTestPack;
+	private TestPack bladeTests;
+	private TypedTestPack sdkJsLibTestPack;
+	private TestPack sdkJsLibTests;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -24,8 +35,14 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			bladeset = app.bladeset("bs");
+			blade = bladeset.blade("b1");
+			bladeTestPack = blade.testType("test");
+			bladeTests = bladeTestPack.testTech("techy");
 			thirdpartyLib = app.jsLib("lib1");
 			sdkJsLib = brjs.sdkLib("sdkLib");
+			sdkJsLibTestPack = sdkJsLib.testType("test");
+			sdkJsLibTests = sdkJsLibTestPack.testTech("techy");
 			bladerunnerConf = brjs.bladerunnerConf();
 	}
 	
@@ -242,6 +259,27 @@ public class NamespacedJsContentPluginTest extends SpecTest {
     		.and(aspect).classRequires("appns.nodejs.Class1", "appns.nodejs.pkg.Class2");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsText("window.appns = {\"nodejs\":{\"pkg\":{}},\"namespacedjs\":{}};");
+	}
+	
+	@Test
+	public void testClassesInABladeHaveTheCorrectGlobalizedPaths() throws Exception {
+		given(blade).hasNodeJsPackageStyle()
+			.and(blade).hasClasses("appns.bs.b1.Class1")
+			.and(bladeTests).hasTestClass("appns.bs.b1.TestClass1")
+			.and(bladeTests).hasNamespacedJsPackageStyle("tests")
+			.and(bladeTests).testRefersTo("BladeTest.js", "appns.bs.b1.Class1", "appns.bs.b1.TestClass1");
+		when(app).requestReceived("/bs-bladeset/blades/b1/tests/test-test/techy/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsText( "appns.bs.b1.TestClass1 = require('appns/bs/b1/TestClass1');" );
+	}
+	
+	@Test
+	public void nodeJsTestsInRootTestsDirInAnSdkLibHaveTheCorrectGlobalizedPaths() throws Exception {
+		given(sdkJsLib).hasNodeJsPackageStyle()
+    		.and(sdkJsLib).hasClasses("sdkLib.Class1")
+    		.and(sdkJsLibTests).hasTestClass("sdkLib.TestClass1")
+    		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.Class1(); new sdkLib.TestClass1();");
+    	when(sdkJsLibTests).requestReceived("namespaced-js/bundle.js", requestResponse);
+    	then(requestResponse).containsText( "sdkLib.LibTest = require('sdkLib/LibTest');" );
 	}
 	
 }

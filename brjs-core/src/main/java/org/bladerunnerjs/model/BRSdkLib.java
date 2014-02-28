@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 
 public class BRSdkLib extends BRLib
 {
+	private static final String DUMMY_SDK_APP_NAME = "dummy-sdk-app"; // we need a dummy SDK app since SDK libs dont live inside an app
 	private final NodeMap<BRSdkTypedTestPack> testTypes;
 	
 	public BRSdkLib(RootNode rootNode, Node parent, File dir, String name)
@@ -26,7 +27,7 @@ public class BRSdkLib extends BRLib
 	@Override
 	public App getApp()
 	{
-		return root().systemApp("dummy-sdk-app");
+		return root().systemApp(DUMMY_SDK_APP_NAME);
 	}
 	
 	@Override

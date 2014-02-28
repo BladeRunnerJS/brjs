@@ -58,7 +58,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public String namespace() {
-		return ((AssetContainer) parentNode().parentNode()).namespace();
+		return ((AssetContainer) parentNode().parentNode()).namespace(); //TOOD: refactor this
 	}
 	
 	@Override
@@ -186,7 +186,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public String requirePrefix()
 	{
-		return "";
+		return ((AssetContainer) parentNode().parentNode()).namespace(); //TOOD: refactor this
 	}
 	
 	public AliasesFile aliasesFile()
