@@ -51,12 +51,6 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 		return conf.exports;
 	}
 	
-	public Boolean getExcludeDefine() throws ConfigException
-	{
-		reloadConfIfChanged();
-		return conf.excludeDefine != null && conf.excludeDefine.equals("true");
-	}
-	
 	public List<File> getCssFiles() throws ConfigException {
 		return getFilesMatchingFilePaths(getCss());
 	}

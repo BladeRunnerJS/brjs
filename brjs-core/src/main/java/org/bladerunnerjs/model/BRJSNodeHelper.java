@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
@@ -14,8 +14,7 @@ import org.bladerunnerjs.utility.TemplateUtility;
 
 public class BRJSNodeHelper {
 	public static void populate(BRJSNode node) throws InvalidNameException, ModelUpdateException {
-		Map<String, String> transformations = new TreeMap<>(new StringLengthComparator());
-		populate(node, transformations);
+		populate(node, new HashMap<String,String>());
 	}
 	
 	public static void populate(BRJSNode node, Map<String, String> overrideTransformations) 
@@ -24,16 +23,14 @@ public class BRJSNodeHelper {
 		
 		try {
 			Map<String, String> transformations = getNodeTransformations(node);
-			for(Entry<String, String> override : overrideTransformations.entrySet()) {
-				transformations.put(override.getKey(), override.getValue());
-			}
+			transformations.putAll( overrideTransformations );
 			
 			TemplateUtility.installTemplate(node, node.getTemplateName(), transformations);
 		}
 		catch(TemplateInstallationException e) {
 			throw new ModelUpdateException(e);
 		}
-		
+
 		node.ready();
 	}
 	
