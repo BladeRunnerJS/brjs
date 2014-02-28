@@ -56,6 +56,8 @@ public class ThirdpartySourceModule implements SourceModule
 		try {
 			
 			boolean hasPackageJson = assetLocation.getAssetContainer().file("package.json").isFile();
+			boolean shouldDefineLibrary = hasPackageJson && !assetLocation.getAssetContainer().file(".no-define").isFile();
+			
 			
 			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
 			String defineBlockBody = "module.exports = " + manifest.getExports();
@@ -63,7 +65,7 @@ public class ThirdpartySourceModule implements SourceModule
 			String globaliseModuleContent = manifest.getExports() + " = require('" + getRequirePath() + "');\n";
 			
 			//TODO: once we have proper node lib support remove this block and the 'else' block below
-			if (hasPackageJson)
+			if (shouldDefineLibrary)
 			{
 				fileReaders.add( new StringReader( defineBlockHeader ) );
 			}
@@ -79,7 +81,7 @@ public class ThirdpartySourceModule implements SourceModule
     			fileReaders.add( new StringReader( defineBlockBody ) );
     			fileReaders.add( new StringReader( defineBlockFooter ) );
 			}
-			else
+			else if (shouldDefineLibrary)
 			{
 				fileReaders.add( new StringReader( defineBlockFooter ) );
 				fileReaders.add( new StringReader( globaliseModuleContent ) );

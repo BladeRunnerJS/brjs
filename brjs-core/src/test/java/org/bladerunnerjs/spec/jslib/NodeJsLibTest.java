@@ -40,6 +40,17 @@ public class NodeJsLibTest extends SpecTest {
 	}
 	
 	@Test
+	public void librariesWithPackageJsonAndDotNoDefineFileAreNOTWrappedInADefineBlock() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFile("package.json")
+			.and(sdkLib).containsFile(".no-define")
+			.and(sdkLib).containsFileWithContents("library.manifest", "exports: thisLib")
+			.and(aspect).indexPageRequires("lib");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).doesNotContainText("define('lib', function(require, exports, module) {");
+	}
+	
+	@Test
 	public void librariesWithPackageJsonAreGlobalisedUsingExportsConfig() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
 			.and(sdkLib).containsFile("package.json")
