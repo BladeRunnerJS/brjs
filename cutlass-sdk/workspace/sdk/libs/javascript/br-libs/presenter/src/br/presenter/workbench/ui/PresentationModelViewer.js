@@ -1,14 +1,17 @@
 /**
  * @implements br.workbench.ui.WorkbenchComponent
  */
-br.presenter.workbench.ui.PresentationModelViewer = function(oPresentationModel)
+br.presenter.workbench.ui.PresentationModelViewer = function(oPresentationModel, ModelTree)
 {
 	if (!oPresentationModel)
 	{
 		throw "PresentationModelViewer expects a presentation model";
 	}
+
+	ModelTree = ModelTree || br.presenter.workbench.ui.PresentationModelTree;
+
 	this.m_PresentationModel = oPresentationModel;
-	this.m_oTree = new br.presenter.workbench.ui.PresentationModelTree(oPresentationModel);
+	this.m_oTree = new ModelTree(oPresentationModel);
 	
 	this.m_eElement = document.createElement("div");
 	br.util.ElementUtility.addClassName(this.m_eElement, "presentation-model-viewier");

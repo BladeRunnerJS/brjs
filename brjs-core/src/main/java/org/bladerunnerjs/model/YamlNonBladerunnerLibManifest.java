@@ -1,7 +1,5 @@
 package org.bladerunnerjs.model;
 
-import javax.validation.constraints.NotNull;
-
 import org.apache.bval.constraints.NotEmpty;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.ConfigValidationChecker;
@@ -15,9 +13,10 @@ public class YamlNonBladerunnerLibManifest extends AbstractYamlConfFile
 	public String js;
 	public String css;
 	
-	@NotNull
 	@NotEmpty
 	public String exports;
+	
+	public String excludeDefine;
 	
 	@Override
 	public void initialize() {
@@ -25,6 +24,7 @@ public class YamlNonBladerunnerLibManifest extends AbstractYamlConfFile
 		js = "";
 		css = "";
 		exports = "";
+		excludeDefine = "";
 	}
 	
 	@Override

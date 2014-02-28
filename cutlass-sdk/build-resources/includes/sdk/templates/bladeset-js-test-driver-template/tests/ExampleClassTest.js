@@ -1,4 +1,4 @@
-ExampleClassTest = TestCase("ExampleClassTest");
+var ExampleClassTest = TestCase("ExampleClassTest");
 
 ExampleClassTest.prototype.testSomething = function()
 {
