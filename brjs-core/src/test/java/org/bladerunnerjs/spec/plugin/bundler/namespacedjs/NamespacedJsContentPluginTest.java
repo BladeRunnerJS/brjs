@@ -21,8 +21,8 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	private BladerunnerConf bladerunnerConf;
 	private Bladeset bladeset;
 	private Blade blade;
-	private TypedTestPack bladeTestPack;
-	private TestPack bladeTests;
+	private TypedTestPack bladeTestPack, sdkJsLibTestPack;
+	private TestPack bladeTests, sdkJsLibTests;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -39,6 +39,8 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			thirdpartyLib = app.jsLib("lib1");
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			bladerunnerConf = brjs.bladerunnerConf();
+			sdkJsLibTestPack = sdkJsLib.testType("test");
+			sdkJsLibTests = sdkJsLibTestPack.testTech("jsTestDriver");
 	}
 	
 	@Test
@@ -265,6 +267,27 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(bladeTests).testRefersTo("BladeTest.js", "appns.bs.b1.Class1", "appns.bs.b1.TestClass1");
 		when(app).requestReceived("/bs-bladeset/blades/b1/tests/test-test/techy/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsText( "appns.bs.b1.TestClass1 = require('appns/bs/b1/TestClass1');" );
+	}
+	
+	@Test
+	public void nodeJsTestsInRootTestsDirInAnSdkLibDoNotHaveTheirPathsGlobalized() throws Exception {
+		given(sdkJsLib).hasNodeJsPackageStyle()
+    		.and(sdkJsLib).hasClasses("sdkLib.Class1")
+    		.and(sdkJsLibTests).hasTestClass("sdkLib.TestClass1")
+    		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.Class1(); new sdkLib.TestClass1();");
+    	when(sdkJsLibTests).requestReceived("namespaced-js/bundle.js", requestResponse);
+    	then(requestResponse).doesNotContainText( "sdkLib.LibTest = require" );
+	}
+	
+	@Test
+	public void nodeJsTestsInRootTestsDirInAnSdkLibWithNestedRequirePrefixDoNotHaveTheirPathsGlobalizedPaths() throws Exception {
+		given(sdkJsLib).hasNodeJsPackageStyle()
+			.and(sdkJsLib).containsFileWithContents("br.manifest", "requirePrefix: sdkLib/subPkg")
+    		.and(sdkJsLib).hasClasses("sdkLib.subPkg.Class1")
+    		.and(sdkJsLibTests).hasTestClass("sdkLib.subPkg.TestClass1")
+    		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.subPkg.Class1(); new sdkLib.subPkg.TestClass1();");
+    	when(sdkJsLibTests).requestReceived("namespaced-js/bundle.js", requestResponse);
+    	then(requestResponse).doesNotContainText( "sdkLib.subPkg.LibTest = require" );
 	}
 	
 }
