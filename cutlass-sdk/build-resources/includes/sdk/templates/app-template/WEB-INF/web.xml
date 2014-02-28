@@ -109,4 +109,22 @@
 	</filter-mapping>
 	<!-- end-env -->
 	
+	<!-- mime mappings -->
+	<mime-mapping>
+		<extension>js</extension>
+		<mime-type>application/javascript;charset=UTF-8</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>css</extension>
+		<mime-type>text/css;charset=UTF-8</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>html</extension>
+		<mime-type>text/html;charset=UTF-8</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>xml</extension>
+		<mime-type>text/xml;charset=UTF-8</mime-type>
+	</mime-mapping>
+	
 </web-app>
