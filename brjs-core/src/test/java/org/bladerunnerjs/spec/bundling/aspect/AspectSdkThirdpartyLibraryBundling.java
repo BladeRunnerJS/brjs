@@ -226,6 +226,6 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
     		.and(aspect).indexPageRequires(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).doesNotContainText("define('thirdparty-lib1', function(require, exports, module) {\n");
+		then(response).containsText("define('thirdparty-lib1', function(require, exports, module) {\n");
 	}
 }

@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.model;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
@@ -79,6 +80,16 @@ public class BladeTest extends SpecTest {
 		then(blade1).hasDir(blade1.getName())
 			.and(blade1).doesNotHaveDir("@blade")
 			.and(blade1).fileHasContents("MyClass.js", "app.bs.b1 = function() {};");
+	}
+	
+	@Test
+	public void bladeHasClassNameTranformAddedDuringPopulation() throws Exception {
+		String expectedClassName = WordUtils.capitalize( blade1.getName() );
+		given(bladeTemplate).containsFolder("@blade")
+			.and(bladeTemplate).containsFileWithContents("@class-name.js", "function @class-name(){}");
+		when(blade1).populate();
+		then(blade1).hasDir(blade1.getName())
+			.and(blade1).fileHasContents(expectedClassName + ".js", "function " + expectedClassName + "(){}");
 	}
 	
 	//TODO: verify bundleInfo exception

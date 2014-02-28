@@ -1,4 +1,4 @@
-br.Core.thirdparty("knockout");
+br.Core.thirdparty("presenter-knockout");
 
 /**
  * @private
@@ -32,8 +32,8 @@ br.presenter.view.knockout.ControlPlugin.prototype.init = function(eElement, fVa
 	var oControlPluginComponentLifecycleListener = new br.presenter.view.knockout.ControlPluginComponentLifecycleListener(oControlAdaptor);
 	oPresenterComponent.addLifeCycleListener(oControlPluginComponentLifecycleListener);
 	
-	var fCleanUpFunction = ko.bindingHandlers.control._destroyWrapper(oControlAdaptor, oPresenterComponent, oControlPluginComponentLifecycleListener);
-	ko.utils.domNodeDisposal.addDisposeCallback(eElement,fCleanUpFunction);
+	var fCleanUpFunction = presenter_ko.bindingHandlers.control._destroyWrapper(oControlAdaptor, oPresenterComponent, oControlPluginComponentLifecycleListener);
+	presenter_ko.utils.domNodeDisposal.addDisposeCallback(eElement,fCleanUpFunction);
 
 	// if the control is being added dynamically by knockout,
 	// we won't receive an onOpen from the presenter component.

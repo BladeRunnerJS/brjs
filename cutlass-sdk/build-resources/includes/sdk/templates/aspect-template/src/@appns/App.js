@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var App = function() {
   // your app code goes here
