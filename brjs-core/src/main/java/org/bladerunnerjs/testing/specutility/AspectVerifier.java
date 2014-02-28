@@ -21,15 +21,19 @@ public class AspectVerifier extends NodeVerifier<Aspect> {
 		assetContainerVerifier = new AssetContainerVerifier(aspect);
 	}
 	
-	public void hasAlias(String aliasName, String classRef, String interfaceRef) throws Exception {
+	public VerifierChainer hasAlias(String aliasName, String classRef, String interfaceRef) throws Exception {
 		AliasDefinition alias = aspect.aliasesFile().getAlias(aliasName);
 		
 		assertEquals("Class not as expected for alias '" + aliasName + "'", classRef, alias.getClassName());
 		assertEquals("Interface not as expected for alias '" + aliasName + "'", interfaceRef, alias.getInterfaceName());
+		
+		return verifierChainer;
 	}
 	
-	public void hasAlias(String aliasName, String classRef) throws Exception {
+	public VerifierChainer hasAlias(String aliasName, String classRef) throws Exception {
 		hasAlias(aliasName, classRef, null);
+		
+		return verifierChainer;
 	}
 	
 	public VerifierChainer hasSourceModules(SourceModuleDescriptor... sourceModules) throws Exception {
