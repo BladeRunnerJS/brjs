@@ -1,4 +1,4 @@
-br.Core.thirdparty("knockout");
+br.Core.thirdparty("presenter-knockout");
 
 /**
  * @private
@@ -22,7 +22,7 @@ br.presenter.view.knockout.KnockoutNodeList.prototype.getValueForKnockout = func
 		throw new br.Errors.CustomError(br.Errors.LEGACY, "getValueForKnockout cannot write as we do not support user editable NodeLists");
 	}
 	
-	ko.dependencyDetection.registerDependency(this); // The caller only needs to be notified of changes if they did a "read" operation
+	presenter_ko.dependencyDetection.registerDependency(this); // The caller only needs to be notified of changes if they did a "read" operation
 	return this.m_pItems;
 };
 

@@ -2,6 +2,7 @@ package org.bladerunnerjs.aliasing.aliasdefinitions;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,8 +18,10 @@ import org.bladerunnerjs.aliasing.SchemaCreationException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
-import org.bladerunnerjs.utility.stax.XmlStreamReader;
+import org.bladerunnerjs.utility.stax.XmlStreamCursor;
+import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
@@ -61,25 +64,24 @@ public class AliasDefinitionsReader {
 		data.groupAliases = new HashMap<>();
 		
 		if(file.exists()) {
-			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(file, defaultFileCharacterEncoding, aliasDefinitionsSchema)) {
-				while(streamReader.hasNextTag()) {
-					streamReader.nextTag();
-					
+			try(Reader fileReader = new UnicodeReader(file, defaultFileCharacterEncoding)) {
+				XMLStreamReader2 streamReader = XmlStreamReaderFactory.createReader(fileReader, aliasDefinitionsSchema);
+				XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
+				
+				while(cursor.isWithinInitialNode()) {
 					if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 						switch(streamReader.getLocalName()) {
-							case "aliasDefinitions":
-								// do nothing
-								break;
-							
 							case "alias":
-								processAlias(streamReader.getChildReader());
+								processAlias(streamReader);
 								break;
 							
 							case "group":
-								processGroup(streamReader.getChildReader());
+								processGroup(streamReader);
 								break;
 						}
 					}
+					
+					cursor.nextTag();
 				}
 			}
 			catch (XMLStreamException e) {
@@ -93,10 +95,10 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	private void processAlias(XmlStreamReader streamReader) throws XMLStreamException, NamespaceException {
-		String aliasName = streamReader.getAttributeValue("name");
-		String aliasClass = streamReader.getAttributeValue("defaultClass");
-		String aliasInterface = streamReader.getAttributeValue("interface");
+	private void processAlias(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException {
+		String aliasName = streamReader.getAttributeValue(null, "name");
+		String aliasClass = streamReader.getAttributeValue(null, "defaultClass");
+		String aliasInterface = streamReader.getAttributeValue(null, "interface");
 		
 		if(!aliasName.startsWith(assetContainer.namespace())) {
 			throw new NamespaceException("Alias '" + aliasName + "' does not begin with required container prefix of '" + assetContainer.namespace() + "'.");
@@ -104,9 +106,8 @@ public class AliasDefinitionsReader {
 		
 		data.aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
 		
-		while(streamReader.hasNextTag()) {
-			streamReader.nextTag();
-			
+		XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
+		while(cursor.isWithinInitialNode()) {
 			if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 				switch(streamReader.getLocalName()) {
 					case "scenario":
@@ -114,15 +115,16 @@ public class AliasDefinitionsReader {
 						break;
 				}
 			}
+			
+			cursor.nextTag();
 		}
 	}
 	
-	private void processGroup(XmlStreamReader streamReader) throws XMLStreamException {
-		String groupName = streamReader.getAttributeValue("name");
+	private void processGroup(XMLStreamReader2 streamReader) throws XMLStreamException {
+		String groupName = streamReader.getAttributeValue(null, "name");
+		XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
 		
-		while(streamReader.hasNextTag()) {
-			streamReader.nextTag();
-			
+		while(cursor.isWithinInitialNode()) {
 			if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 				switch(streamReader.getLocalName()) {
 					case "alias":
@@ -130,20 +132,22 @@ public class AliasDefinitionsReader {
 						break;
 				}
 			}
+			
+			cursor.nextTag();
 		}
 	}
 	
-	private void processGroupAlias(String groupName, XmlStreamReader streamReader) {
-		String aliasName = streamReader.getAttributeValue("name");
-		String aliasClass = streamReader.getAttributeValue("class");
+	private void processGroupAlias(String groupName, XMLStreamReader2 streamReader) {
+		String aliasName = streamReader.getAttributeValue(null, "name");
+		String aliasClass = streamReader.getAttributeValue(null, "class");
 		AliasOverride groupAlias = new AliasOverride(aliasName, aliasClass);
 		
 		data.getGroupAliases(groupName).add(groupAlias);
 	}
 	
-	private void processScenario(String aliasName, XmlStreamReader streamReader) {
-		String scenarioName = streamReader.getAttributeValue("name");
-		String aliasClass = streamReader.getAttributeValue("class");
+	private void processScenario(String aliasName, XMLStreamReader2 streamReader) {
+		String scenarioName = streamReader.getAttributeValue(null, "name");
+		String aliasClass = streamReader.getAttributeValue(null, "class");
 		AliasOverride scenarioAlias = new AliasOverride(aliasName, aliasClass);
 		
 		data.getScenarioAliases(aliasName).put(scenarioName, scenarioAlias);

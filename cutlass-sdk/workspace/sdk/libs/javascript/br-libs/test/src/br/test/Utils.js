@@ -1,5 +1,5 @@
 br.Core.thirdparty("jquery");
-br.Core.thirdparty("knockout");
+br.Core.thirdparty("presenter-knockout");
 
 /**
  * @class
@@ -142,7 +142,7 @@ br.test.Utils.fireMouseEvent = function(eElement, sEvent, mOptions)
 			 * 
 			 * There is a comment in the KO code which explains why this is required.
 			 */
-			ko.utils.triggerEvent(eElement, sEvent);
+			presenter_ko.utils.triggerEvent(eElement, sEvent);
 		}
 		else if(br.test.Utils._isClickEventWithNoEventOptions(sEvent, eElement, mOptions)) {
 			jQuery(eElement).click();
@@ -345,5 +345,5 @@ br.test.Utils._isClickEventWithNoEventOptions = function(sEvent, eElement, mOpti
  */
 br.test.Utils._isClickEventWithNoEventOptionsAndKOIsAvailable = function(sEvent, eElement, mOptions)
 {
-	return br.test.Utils._isClickEventWithNoEventOptions(sEvent, eElement, mOptions) && ko && ko.utils;
+	return br.test.Utils._isClickEventWithNoEventOptions(sEvent, eElement, mOptions) && ko && presenter_ko.utils;
 };

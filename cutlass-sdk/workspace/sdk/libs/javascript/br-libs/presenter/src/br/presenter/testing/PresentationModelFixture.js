@@ -20,7 +20,7 @@ br.Core.inherit(br.presenter.testing.PresentationModelFixture, br.component.test
  */
 br.presenter.testing.PresentationModelFixture.prototype._initializePlugins = function()
 {
-	ko.bindingHandlers.event = new br.presenter.testing.KnockoutInvocationCountPlugin();
+	presenter_ko.bindingHandlers.event = new br.presenter.testing.KnockoutInvocationCountPlugin();
 };
 
 // * **********************************************************************************

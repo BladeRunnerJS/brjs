@@ -1,7 +1,7 @@
 // TODO: TAT - this class needs testing
 
 br.Core.thirdparty("jquery");
-br.Core.thirdparty("knockout");
+br.Core.thirdparty("presenter-knockout");
 
 /**
  * @private

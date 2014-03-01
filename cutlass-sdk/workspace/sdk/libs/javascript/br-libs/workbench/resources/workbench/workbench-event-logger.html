@@ -1,26 +1,8 @@
 <script id="br.workbench-event-logger" type="text/html">
 <div>
 	<button class="btn" data-bind="click:clear">Clear Log</button>
-	<div class="messagelog" data-bind="template:{name:'workbench-event-message', foreach:messages}"></div>
-</div>
-</script>
-
-
-<script id="br.workbench-event-message" type="text/html">
-<div>	
-	<div data-bind="css: {'expanded': visible}">
-		<div class="plus-minus">
-			<div class="icon" data-bind="click:toggleVisibility"></div>
-			<div data-bind="attr:{'class': titleCssClass}, html:title, click:toggleVisibility"></div>
-			<div class="trade-data-message-holder" data-bind="visible:visible, template:{name:'workbench-event-data', foreach:dataFields}"></div>
-		</div>
+	<div class="messagelog" data-bind="foreach: messages">
+		<div data-bind="text: toString()"></div>
 	</div>
-</div>
-</script>
-
-
-<script id="br.workbench-event-data" type="text/html">
-<div class="event-message">
-  <span data-bind="text:label"></span>:<span data-bind="text:value"></span>
 </div>
 </script>

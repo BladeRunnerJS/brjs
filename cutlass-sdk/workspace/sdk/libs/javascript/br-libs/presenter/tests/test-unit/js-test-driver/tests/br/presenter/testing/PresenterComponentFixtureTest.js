@@ -100,7 +100,7 @@ PresenterComponentFixtureTest.prototype.test_doGivenOpenedProxiesThroughToTheCom
 	assertEquals("3a", [{property:'opened', value:true}], this.m_pDoGivenInvocations);
 };
 
-// TODO with the current design it is not possible to confirm whether ko.applyBindings is invoked
+// TODO with the current design it is not possible to confirm whether presenter_ko.applyBindings is invoked
 //PresenterComponentFixtureTest.prototype.test_doGivenOpenedDoesNotBindTheView = function()
 //{
 //};
@@ -133,7 +133,7 @@ PresenterComponentFixtureTest.prototype.test_doGivenViewOpenedProxiesThroughToTh
 	assertEquals("5a", [{property:'opened', value:true}], this.m_pDoGivenInvocations);
 };
 
-//TODO with the current design it is not possible to confirm that ko.applyBindings is invoked
+//TODO with the current design it is not possible to confirm that presenter_ko.applyBindings is invoked
 //PresenterComponentFixtureTest.prototype.test_doGivenViewOpenedBindsViewViaKnockout = function()
 //{
 //};

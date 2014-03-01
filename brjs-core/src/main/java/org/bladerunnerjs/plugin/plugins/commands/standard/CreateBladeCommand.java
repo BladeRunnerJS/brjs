@@ -22,6 +22,12 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 public class CreateBladeCommand extends ArgsParsingCommandPlugin
 {
+	private class Parameters {
+		public static final String APP_NAME = "target-app-name";
+		public static final String BLADESET_NAME = "target-bladeset-name";
+		public static final String BLADE_NAME = "new-blade-name";
+	}
+	
 	public class Messages {
 		public static final String BLADE_CREATE_SUCCESS_CONSOLE_MSG = "Successfully created new blade '%s'";
 		public static final String BLADE_PATH_CONSOLE_MSG = "  %s";
@@ -32,9 +38,9 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
-		argsParser.registerParameter(new UnflaggedOption("target-app-name").setRequired(true).setHelp("the application within which the new blade will be created"));
-		argsParser.registerParameter(new UnflaggedOption("target-bladeset-name").setRequired(true).setHelp("the bladeset within which the new blade will be created"));
-		argsParser.registerParameter(new UnflaggedOption("new-blade-name").setRequired(true).setHelp("the name of the blade that will be created"));
+		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
+		argsParser.registerParameter(new UnflaggedOption(Parameters.BLADESET_NAME).setRequired(true).setHelp("the bladeset within which the new blade will be created"));
+		argsParser.registerParameter(new UnflaggedOption(Parameters.BLADE_NAME).setRequired(true).setHelp("the name of the blade that will be created"));
 	}
 	
 	@Override
@@ -58,9 +64,9 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 	
 	@Override
 	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
-		String appName = parsedArgs.getString("target-app-name");
-		String bladesetName = parsedArgs.getString("target-bladeset-name");
-		String bladeName = parsedArgs.getString("new-blade-name");
+		String appName = parsedArgs.getString(Parameters.APP_NAME);
+		String bladesetName = parsedArgs.getString(Parameters.BLADESET_NAME);
+		String bladeName = parsedArgs.getString(Parameters.BLADE_NAME);
 		
 		App app = brjs.app(appName);
 		Bladeset bladeset = app.bladeset(bladesetName);

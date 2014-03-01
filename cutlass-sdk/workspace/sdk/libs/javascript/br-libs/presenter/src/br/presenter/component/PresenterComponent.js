@@ -1,4 +1,4 @@
-br.Core.thirdparty("knockout");
+br.Core.thirdparty("presenter-knockout");
 
 (function() {
 	"use strict";
@@ -72,9 +72,9 @@ br.Core.thirdparty("knockout");
 	 * @private
 	 */
 	PresenterComponent._initializePlugins = function() {
-		if (!ko.bindingHandlers.control) {
-			ko.bindingHandlers.control = new br.presenter.view.knockout.ControlPlugin();
-			ko.bindingHandlers.tooltip = new br.presenter.view.knockout.TooltipPlugin();
+		if (!presenter_ko.bindingHandlers.control) {
+			presenter_ko.bindingHandlers.control = new br.presenter.view.knockout.ControlPlugin();
+			presenter_ko.bindingHandlers.tooltip = new br.presenter.view.knockout.TooltipPlugin();
 		}
 	};
 
@@ -127,7 +127,7 @@ br.Core.thirdparty("knockout");
 	PresenterComponent.prototype.getElement = function() {
 		if (!this.m_bViewBound) {
 			this.m_bViewBound = true;
-			ko.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
+			presenter_ko.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
 		}
 		
 		return this.m_eTemplate;
@@ -215,7 +215,7 @@ br.Core.thirdparty("knockout");
 	 */
 	PresenterComponent.prototype.onClose = function() {
 		this._propagateComponentEvent("onClose", arguments);
-		ko.cleanNode(this.m_eTemplate);
+		presenter_ko.cleanNode(this.m_eTemplate);
 		this.m_oPresentationModel.removeChildListeners();
 		this._nullObject(this.m_oPresentationModel);
 		this.m_oPresentationModel = null;

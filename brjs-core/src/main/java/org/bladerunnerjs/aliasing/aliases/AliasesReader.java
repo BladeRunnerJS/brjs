@@ -2,6 +2,7 @@ package org.bladerunnerjs.aliasing.aliases;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -13,8 +14,9 @@ import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
-import org.bladerunnerjs.utility.stax.XmlStreamReader;
+import org.codehaus.stax2.XMLStreamReader2;
 import org.codehaus.stax2.validation.XMLValidationSchema;
 import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 
@@ -52,10 +54,10 @@ public class AliasesReader {
 		aliasesData.groupNames = new ArrayList<>();
 		
 		if(aliasesFile.exists()) {
-			try(XmlStreamReader streamReader = XmlStreamReaderFactory.createReader(aliasesFile, defaultFileCharacterEncoding, aliasesSchema)) {
-				while(streamReader.hasNextTag()) {
-					streamReader.nextTag();
-					
+			try(Reader fileReader = new UnicodeReader(aliasesFile, defaultFileCharacterEncoding)) {
+				XMLStreamReader2 streamReader = XmlStreamReaderFactory.createReader(fileReader, aliasesSchema);
+				
+				while(streamReader.hasNext()) {
 					if(streamReader.getEventType() == XMLStreamReader.START_ELEMENT) {
 						switch(streamReader.getLocalName()) {
 							case "aliases":
@@ -67,6 +69,8 @@ public class AliasesReader {
 								break;
 						}
 					}
+					
+					streamReader.next();
 				}
 			}
 			catch (XMLStreamException e) {
@@ -80,18 +84,18 @@ public class AliasesReader {
 		}
 	}
 	
-	private void processAliases(XmlStreamReader streamReader) {
-		aliasesData.scenario = streamReader.getAttributeValue("useScenario");
+	private void processAliases(XMLStreamReader2 streamReader) {
+		aliasesData.scenario = streamReader.getAttributeValue(null, "useScenario");
 		
-		String useGroups = streamReader.getAttributeValue("useGroups");
+		String useGroups = streamReader.getAttributeValue(null, "useGroups");
 		if(useGroups != null) {
 			aliasesData.groupNames = Arrays.asList(useGroups.split(" "));
 		}
 	}
 	
-	private void processAlias(XmlStreamReader streamReader) {
-		String aliasName = streamReader.getAttributeValue("name");
-		String aliasClass = streamReader.getAttributeValue("class");
+	private void processAlias(XMLStreamReader2 streamReader) {
+		String aliasName = streamReader.getAttributeValue(null, "name");
+		String aliasClass = streamReader.getAttributeValue(null, "class");
 		
 		aliasesData.aliasOverrides.add(new AliasOverride(aliasName, aliasClass));
 	}

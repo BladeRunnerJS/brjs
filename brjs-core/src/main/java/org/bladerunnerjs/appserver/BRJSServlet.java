@@ -57,7 +57,7 @@ public class BRJSServlet extends HttpServlet
 			BRJS brjs = ServletModelAccessor.aquireModel();
 			String contentType = servletContext.getMimeType(request.getRequestURI());
 			
-			if((contentType != null) && contentType.startsWith("text/")) {
+			if((contentType != null) && contentType.startsWith("text/") && !contentType.contains("charset")) {
 				contentType += ";charset=" + brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			}
 			
