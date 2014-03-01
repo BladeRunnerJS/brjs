@@ -178,7 +178,7 @@ public class XMLContentPluginTest extends SpecTest{
 	}
 
 	@Test
-	public void wibble() throws Exception {
+	public void arbritaryXMLIsUnchangedWhenNoBundlerConfig() throws Exception {
 		given(aspect).resourceFileContains("gridDefinitions.xml", xml(getArbitraryXml()));
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
 		then(response).containsText(getArbitraryXml());
