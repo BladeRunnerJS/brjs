@@ -177,6 +177,27 @@ public class XMLContentPluginTest extends SpecTest{
 		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
 
+	@Test
+	public void wibble() throws Exception {
+		given(aspect).resourceFileContains("gridDefinitions.xml", xml(getArbitraryXml()));
+		when(app).requestReceived("/default-aspect/bundle.xml", response);
+		then(response).containsText(getArbitraryXml());
+	}
+	
+	private String getArbitraryXml() {
+		String content = ""
+				+ "<a>content</a>";
+		return content;
+	}
+	
+	public String getEmptyConfig(){
+		
+		String content = "<?xml version=\"1.0\"?> "
+		 + "<bundleConfig xmlns=\"http://schema.caplin.com/CaplinTrader/bundleConfig\">"
+		 + "</bundleConfig>";
+		return content;
+	}
+
 	
 	public String getSimpleConfig(){
 		
