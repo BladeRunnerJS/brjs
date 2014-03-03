@@ -16,7 +16,7 @@ import com.caplin.cutlass.bundler.js.JsSeedBundlerFileAppender;
 import com.caplin.cutlass.bundler.js.JsSourceBundlerFileAppender;
 import com.caplin.cutlass.exception.NamespaceException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 
 
 public class UsedBladesFinder
@@ -82,20 +82,20 @@ public class UsedBladesFinder
 	
 	private String getClassnameForBlade(File blade) throws ContentProcessingException
 	{
-		String appNamespace = "";
+		String requirePrefix = "";
 		try
 		{
-			appNamespace = NamespaceCalculator.getAppNamespace(blade);
+			requirePrefix = RequirePrefixCalculator.getAppRequirePrefix(blade);
 		}
 		catch (NamespaceException ex)
 		{
 			throw new ContentProcessingException(ex, "There was an error calculating the namespace for the app");
 		}
 		
-		String bladesetNamespace = NamespaceCalculator.getBladesetNamespace(blade);
-		String bladeNamespace = NamespaceCalculator.getBladeNamespace(blade);
+		String bladesetNamespace = RequirePrefixCalculator.getBladesetRequirePrefix(blade);
+		String bladeNamespace = RequirePrefixCalculator.getBladeRequirePrefix(blade);
 		
-		return appNamespace+"."+bladesetNamespace+"."+bladeNamespace;
+		return requirePrefix+"."+bladesetNamespace+"."+bladeNamespace;
 	}
 	
 	private List<File> getSeeds(File aspectRoot)

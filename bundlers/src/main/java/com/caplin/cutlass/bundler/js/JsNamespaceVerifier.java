@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.caplin.cutlass.exception.NamespaceException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 import com.caplin.cutlass.structure.ScopeLevel;
 
 
@@ -48,7 +48,7 @@ public class JsNamespaceVerifier
 	
 	private File verifyThatSrcFolderOnlyContainsFolderWithApplicationNamespace(File bladesOrBladesetSrcDirectory, File bladeOrBladeset) throws NamespaceException
 	{
-		String applicationNamespace = NamespaceCalculator.getAppNamespace(bladeOrBladeset);
+		String applicationNamespace = RequirePrefixCalculator.getAppRequirePrefix(bladeOrBladeset);
 		File[] applicationNamespaceDirectoryInBladeOrBladeset = bladesOrBladesetSrcDirectory.listFiles((FileFilter)HiddenFileFilter.VISIBLE);
 		
 		if(applicationNamespaceDirectoryInBladeOrBladeset.length != 1)
@@ -72,7 +72,7 @@ public class JsNamespaceVerifier
 
 	private File verifyThatApplicationNamespaceFolderOnlyContainsFolderWithBladesetNamespace(File bladeOrBladesetApplicationDirectory, File bladeOrBladeset) throws NamespaceException
 	{
-		String bladesetNamespace = NamespaceCalculator.getBladesetNamespace(bladeOrBladeset);
+		String bladesetNamespace = RequirePrefixCalculator.getBladesetRequirePrefix(bladeOrBladeset);
 		File[] bladesetNamespaceDirectoryInBladeOrBladeset = bladeOrBladesetApplicationDirectory.listFiles((FileFilter)HiddenFileFilter.VISIBLE);
 		
 		if(bladesetNamespaceDirectoryInBladeOrBladeset.length != 1)
@@ -96,7 +96,7 @@ public class JsNamespaceVerifier
 	
 	private void verifyThatBladesetNamespaceFolderOnlyContainsFolderWithBladeNamespace(File bladesetNamespaceDirectory, File blade) throws NamespaceException
 	{
-		String bladeNamespace = NamespaceCalculator.getBladeNamespace(blade);
+		String bladeNamespace = RequirePrefixCalculator.getBladeRequirePrefix(blade);
 		File[] bladeNamespaceDirectoryInBlade = bladesetNamespaceDirectory.listFiles((FileFilter)HiddenFileFilter.VISIBLE);
 		
 		if(bladeNamespaceDirectoryInBlade.length != 1)

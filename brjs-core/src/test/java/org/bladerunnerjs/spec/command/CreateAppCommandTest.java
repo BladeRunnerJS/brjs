@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
-import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppNamespaceException;
+import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -70,7 +70,7 @@ public class CreateAppCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownWhenInvalidRootPackageAppNameIsUsedAsDefaultNamespace() throws Exception {
 		when(brjs).runCommand("create-app", "1app");
-		then(exceptions).verifyException(UnableToAutomaticallyGenerateAppNamespaceException.class, unquoted("Unable to automatically calculate app namespace for app '1app'"))
+		then(exceptions).verifyException(UnableToAutomaticallyGenerateAppRequirePrefixException.class, unquoted("Unable to automatically calculate app namespace for app '1app'"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -101,7 +101,7 @@ public class CreateAppCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void appNamespaceIsOptional() throws Exception {
+	public void requirePrefixIsOptional() throws Exception {
 		App myApp = brjs.app("myApp");
 		
 		given(appJars).hasBeenCreated();

@@ -14,10 +14,10 @@ public class AppConfCommander extends ModelCommander {
 		this.appConf = appConf;
 	}
 	
-	public AppConfCommander setAppNamespace(final String appNamespace) throws Exception {
+	public AppConfCommander setAppNamespace(final String requirePrefix) throws Exception {
 		call(new Command() {
 			public void call() throws Exception {
-				appConf.setAppNamespace(appNamespace);
+				appConf.setRequirePrefix(requirePrefix);
 			}
 		});
 		

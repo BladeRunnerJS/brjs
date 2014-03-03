@@ -24,9 +24,9 @@ public class AppBuilder extends NodeBuilder<App> {
 		this.specTest = modelTest;
 	}
 	
-	public BuilderChainer hasBeenPopulated(String appNamespace) throws Exception
+	public BuilderChainer hasBeenPopulated(String requirePrefix) throws Exception
 	{
-		app.populate(appNamespace);
+		app.populate(requirePrefix);
 		
 		return builderChainer;
 	}

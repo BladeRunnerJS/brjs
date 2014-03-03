@@ -15,13 +15,13 @@ public class AppConf extends ConfFile<YamlAppConf> {
 		super(app, YamlAppConf.class, app.file("app.conf"));
 	}
 	
-	public String getAppNamespace() throws ConfigException {
+	public String getRequirePrefix() throws ConfigException {
 		reloadConfIfChanged();
-		return conf.appNamespace;
+		return conf.requirePrefix;
 	}
 	
-	public void setAppNamespace(String appNamespace) throws ConfigException {
-		conf.appNamespace = appNamespace;
+	public void setRequirePrefix(String requirePrefix) throws ConfigException {
+		conf.requirePrefix = requirePrefix;
 		verifyAndAutoWrite();
 	}
 	

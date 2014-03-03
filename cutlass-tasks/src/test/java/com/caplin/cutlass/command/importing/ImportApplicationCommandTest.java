@@ -101,7 +101,7 @@ public class ImportApplicationCommandTest
 		assertTrue(appConf.exists());
 		
 		List<String> appConfLines = FileUtils.readLines(appConf);
-		assertEquals("appNamespace: novox", appConfLines.get(0));
+		assertEquals("requirePrefix: novox", appConfLines.get(1));
 	}
 
 	// <app-name> exception test cases

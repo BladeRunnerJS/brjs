@@ -142,7 +142,7 @@ public class FileUtilityTest
 		File confFileToBeAddedToWar = new File(testFolderWithSubfolders, "example.conf");
 		List<String> content = FileUtils.readLines(confFileToBeAddedToWar);
 		
-		assertTrue(content.contains("appNamespace : namespace"));
+		assertTrue(content.contains("requirePrefix : namespace"));
 		assertTrue(content.contains("locales : en, de_DE"));
 		
 		FileUtility.zipFolder(testFolderWithSubfolders, warFile, true);
@@ -158,7 +158,7 @@ public class FileUtilityTest
 		File unwaredConfFile = new File(unwaredFolder, "example.conf");
 		List<String> unwaredContent = FileUtils.readLines(unwaredConfFile);
 		
-		assertTrue(unwaredContent.contains("appNamespace : namespace"));
+		assertTrue(unwaredContent.contains("requirePrefix : namespace"));
 		assertTrue(unwaredContent.contains("locales : en, de_DE"));
 		assertTrue(content.equals(unwaredContent));
 		

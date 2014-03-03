@@ -23,10 +23,10 @@ public class AppCommander extends NodeCommander<App> {
 		this.app = app;
 	}
 	
-	public CommanderChainer populate(final String appNamespace) {
+	public CommanderChainer populate(final String requirePrefix) {
 		call(new Command() {
 			public void call() throws Exception {
-				app.populate(appNamespace);
+				app.populate(requirePrefix);
 			}
 		});
 		

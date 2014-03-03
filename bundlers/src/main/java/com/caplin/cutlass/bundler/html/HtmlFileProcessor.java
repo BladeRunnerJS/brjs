@@ -19,7 +19,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
 import com.caplin.cutlass.exception.NamespaceException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 import com.caplin.cutlass.structure.ScopeLevel;
 
 public class HtmlFileProcessor
@@ -61,7 +61,7 @@ public class HtmlFileProcessor
 	private void validateSourceHtml(File htmlFile) throws IOException, ContentFileProcessingException, NamespaceException
 	{
 		StartTag startTag = getStartTag(htmlFile);
-		String namespace = NamespaceCalculator.getPackageNamespaceForBladeLevelResources(htmlFile);
+		String namespace = RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(htmlFile);
 		String identifier = startTag.getAttributeValue("id");
 		
 		if(identifier == null)

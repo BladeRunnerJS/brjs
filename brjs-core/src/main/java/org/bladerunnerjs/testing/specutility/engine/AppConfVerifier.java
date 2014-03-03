@@ -16,6 +16,6 @@ public class AppConfVerifier
 	
 	public void namespaceIs(String string) throws ConfigException
 	{
-		assertEquals("app conf has the wrong namespace", appConf.getAppNamespace(), string);
+		assertEquals("app conf has the wrong namespace", appConf.getRequirePrefix(), string);
 	}
 }

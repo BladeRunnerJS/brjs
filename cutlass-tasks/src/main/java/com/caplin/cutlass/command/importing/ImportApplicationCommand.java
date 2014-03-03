@@ -16,7 +16,7 @@ import com.caplin.cutlass.util.FileUtility;
 import org.bladerunnerjs.utility.NameValidator;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 
 public class ImportApplicationCommand extends AbstractCommandPlugin implements LegacyCommandPlugin
 {
@@ -92,10 +92,10 @@ public class ImportApplicationCommand extends AbstractCommandPlugin implements L
 			File newAppDirConf = new File(newApplicationDirectory, CutlassConfig.APP_CONF_FILENAME);
 			FileUtils.copyFile(temporaryDirAppConf, newAppDirConf);
 			
-			String applicationNamespace = NamespaceCalculator.getAppNamespace(newApplicationDirectory);
+			String applicationNamespace = RequirePrefixCalculator.getAppRequirePrefix(newApplicationDirectory);
 			Renamer.renameApplication(newApplicationDirectory, applicationNamespace, newApplicationNamespace, currentApplicationName, newApplicationName);
 			
-			NamespaceCalculator.purgeCachedApplicationNamespaces();
+			RequirePrefixCalculator.purgeCachedApplicationNamespaces();
 			
 			importApplicationCommandUtility.createAutoDeployFileForApp(newApplicationDirectory, jettyPort);
 			

@@ -41,7 +41,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void aliasesAreRetrievableViaTheModel() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1", "appns.Interface1");
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class1", "appns.Interface1");
@@ -55,7 +55,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void aliasDefinitionsDefinedWithinBladesetsMustBeNamespaced() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladesetAliasDefinitionsFile).hasAlias("the-alias", "appns.Class1");
 		when(aspect).retrievesAlias("the-alias");
@@ -64,7 +64,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void aliasDefinitionsDefinedWithinBladesMustBeNamespaced() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("the-alias", "appns.Class1");
 		when(aspect).retrievesAlias("the-alias");
@@ -73,7 +73,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void aliasDefinitionsCanBeOverriddenWithinTheAliasesFile() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
 			.and(aspectAliasesFile).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
@@ -82,7 +82,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void aliasDefinitionsCantBeOverriddenWithinTheBladeset() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladesetAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
@@ -92,7 +92,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void theNonScenarioAliasIsUsedByDefault() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "appns.bs.b1.the-alias", "appns.Class2");
@@ -101,7 +101,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void settingTheScenarioChangesTheAliasesThatAreUsed() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "appns.bs.b1.the-alias", "appns.Class2")
@@ -111,7 +111,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void multipleScenariosCanBeDefinedForAnAlias() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3", "appns.Class4")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "appns.bs.b1.the-alias", "appns.Class2")
@@ -123,7 +123,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void aliasesCanStillBeOverriddenWhenTheScenarioIsSet() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "appns.bs.b1.the-alias", "appns.Class2")
@@ -134,7 +134,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void scenarioAliasesAreAlsoNamespaced() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasAlias("the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "the-alias", "appns.Class2")
@@ -145,7 +145,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void theNonGroupAliasIsUsedByDefault() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class2");
@@ -154,7 +154,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void settingAGroupChangesTheAliasesThatAreUsed() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.the-alias", "appns.Class2")
@@ -164,7 +164,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void aliasesCanStillBeOverriddenWhenAGroupIsSet() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
 			.and(aspectAliasesFile).usesGroups("g1")
@@ -174,7 +174,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void groupAliasesCanOverrideNonGroupAliases() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class2")
@@ -185,7 +185,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void groupsCanContainMultipleAliases() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "alias1", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "alias2", "appns.Class2")
@@ -196,7 +196,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void groupAliasesAreNotNamespaced() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "the-alias", "appns.Class1")
 			.and(aspectAliasesFile).usesGroups("g1");
@@ -210,7 +210,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void usingGroupsCanLeadToAmbiguity() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.the-alias", "appns.Class2")
@@ -221,7 +221,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void usingGroupsCanLeadToAmbiguityEvenWhenASingleGroupIsUsed() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladesetAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class2")
@@ -232,7 +232,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void settingMultipleGroupsChangesTheAliasesThatAreUsed() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.alias1", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.alias2", "appns.Class2")
@@ -243,7 +243,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void usingMultipleGroupsCanLeadToAmbiguity() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.the-alias", "appns.Class2")
@@ -254,7 +254,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void theInterfaceIsMaintainedWhenAnAliasIsOverriddenInAliasesFile() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1", "appns.Interface1")
 			.and(aspectAliasesFile).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
@@ -263,7 +263,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void theInterfaceIsMaintainedWhenAnAliasIsOverriddenInTheScenario() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1", "appns.Interface1")
 			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "appns.bs.b1.the-alias", "appns.Class2")
@@ -273,7 +273,7 @@ public class AliasModelTest extends SpecTest {
 	
 	@Test
 	public void theInterfaceIsMaintainedWhenAnAliasIsOverriddenInAGroup() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1", "appns.Interface1")
 			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class2")

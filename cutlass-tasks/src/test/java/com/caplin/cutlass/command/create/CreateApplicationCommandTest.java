@@ -91,7 +91,7 @@ public class CreateApplicationCommandTest
 		assertTrue(appConf.exists());
 		
 		List<String> appConfLines = FileUtils.readLines(appConf);
-		assertEquals("appNamespace: namespacex", appConfLines.get(0));
+		assertEquals("requirePrefix: namespacex", appConfLines.get(1));
 	}
 
 	@Test
@@ -105,7 +105,7 @@ public class CreateApplicationCommandTest
 		assertTrue(appConf.exists());
 		
 		List<String> appConfLines = FileUtils.readLines(appConf);
-		assertEquals("appNamespace: newtrader", appConfLines.get(0));
+		assertEquals("requirePrefix: newtrader", appConfLines.get(1));
 	}
 	
 	@Test

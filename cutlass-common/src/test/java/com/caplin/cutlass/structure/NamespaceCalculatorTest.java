@@ -32,70 +32,70 @@ public class NamespaceCalculatorTest
 	@Test
 	public void testGetPackageNamespaceForBladeLevelResources() throws Exception
 	{
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase)));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect/themes/noir/noir.css")));
-		assertEquals( "caplinx.a.", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset")));
-		assertEquals( "caplinx.a.", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.css")));
-		assertEquals( "caplinx.a.blade1.", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")));
-		assertEquals( "caplinx.a.blade1.", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench/workbench.css")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/a-dir")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/a-dir/empty.txt")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase)));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect/themes/noir/noir.css")));
+		assertEquals( "caplinx.a.", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset")));
+		assertEquals( "caplinx.a.", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.css")));
+		assertEquals( "caplinx.a.blade1.", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")));
+		assertEquals( "caplinx.a.blade1.", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/empty.txt")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench/workbench.css")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/a-dir")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/a-dir/empty.txt")));
 		
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect/themes/noir/noir.css")));
-		assertEquals( "caplinx.a.", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset")));
-		assertEquals( "caplinx.a.", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/themes/noir/noir.css")));
-		assertEquals( "caplinx.a.blade1.", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1")));
-		assertEquals( "caplinx.a.blade1.", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench/workbench.css")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/a-dir/non-existant.file")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect/themes/noir/noir.css")));
+		assertEquals( "caplinx.a.", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset")));
+		assertEquals( "caplinx.a.", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/themes/noir/noir.css")));
+		assertEquals( "caplinx.a.blade1.", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1")));
+		assertEquals( "caplinx.a.blade1.", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/empty.txt")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench/workbench.css")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File(testBase + "/" + SDK_DIR + "/a-dir/non-existant.file")));
 
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File("src/test/resources/")));
-		assertEquals( "", NamespaceCalculator.getPackageNamespaceForBladeLevelResources(null));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File("src/test/resources/")));
+		assertEquals( "", RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(null));
 	}
 
 	@Test(expected = Exception.class) @Ignore
 	public void testIfNoAspectInApplicationExistsErrorIsThrown() throws Exception
 	{
-		NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File("src/test/resources/NamespaceAppStructure/" + APPLICATIONS_DIR + "/appwithnosection/a-bladeset"));
+		RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File("src/test/resources/NamespaceAppStructure/" + APPLICATIONS_DIR + "/appwithnosection/a-bladeset"));
 	}
 	
 	@Test(expected = Exception.class) @Ignore
 	public void testIfMultipleNamespacesInApplicationExistsErrorIsThrown() throws Exception
 	{
-		NamespaceCalculator.getPackageNamespaceForBladeLevelResources(new File("src/test/resources/NamespaceAppStructure/" + APPLICATIONS_DIR + "/appwithmultiplenamespaces/a-bladeset"));
+		RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(new File("src/test/resources/NamespaceAppStructure/" + APPLICATIONS_DIR + "/appwithmultiplenamespaces/a-bladeset"));
 	}
 	
 	@Test
 	public void testGetApplicationNamespace() throws Exception
 	{
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect/themes/noir/noir.css")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.css")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench/workbench.css")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect/themes/noir/noir.css")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.css")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/empty.txt")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench/workbench.css")));
 		
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect/themes/noir/noir.css")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/themes/noir/noir.css")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench")));
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench/workbench.css")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect/themes/noir/noir.css")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/themes/noir/noir.css")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/empty.txt")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench/workbench.css")));
 	}
 	
 	@Test 
@@ -114,7 +114,7 @@ public class NamespaceCalculatorTest
 		svnDir.mkdir();
 		assertTrue(svnDir.exists() && svnDir.isDirectory());
 
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(tempAppDir, "a-aspect")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(tempAppDir, "a-aspect")));
 	}
 	
 	@Test 
@@ -139,7 +139,7 @@ public class NamespaceCalculatorTest
 			extraDir.mkdir();
 			assertTrue(extraDir.exists() && extraDir.isDirectory());
 			
-			assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(tempAppDir, "a-aspect")));
+			assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(tempAppDir, "a-aspect")));
 		}
 		finally
 		{
@@ -150,88 +150,88 @@ public class NamespaceCalculatorTest
 	@Test
 	public void testGetBladesetNamespace() throws Exception
 	{
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase)));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/")));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect")));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect/themes/noir/noir.css")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset")));
-		assertEquals( "another", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/another-bladeset")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.css")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench/workbench.css")));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/")));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/a-dir")));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/a-dir/empty.txt")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase)));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect/themes/noir/noir.css")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset")));
+		assertEquals( "another", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/another-bladeset")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.css")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/empty.txt")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench/workbench.css")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/a-dir")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/a-dir/empty.txt")));
 		
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard")));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect")));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect/themes/noir/noir.css")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/themes/noir/noir.css")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench")));
-		assertEquals( "a", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench/workbench.css")));
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File(testBase + "/" + SDK_DIR + "/a-dir/non-existant.file")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect/themes/noir/noir.css")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/themes/noir/noir.css")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/empty.txt")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench")));
+		assertEquals( "a", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench/workbench.css")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File(testBase + "/" + SDK_DIR + "/a-dir/non-existant.file")));
 
-		assertEquals( "", NamespaceCalculator.getBladesetNamespace(new File("src/test/resources/")));
+		assertEquals( "", RequirePrefixCalculator.getBladesetRequirePrefix(new File("src/test/resources/")));
 	}
 	
 	@Test
 	public void testGetBladeNamespace() throws Exception
 	{
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase)));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect/themes/noir/noir.css")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/another-bladeset")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.css")));
-		assertEquals( "blade1", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")));
-		assertEquals( "blade2", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade2")));
-		assertEquals( "blade1", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals( "blade1", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench")));
-		assertEquals( "blade1", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench/workbench.css")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/a-dir")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/a-dir/empty.txt")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase)));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-aspect/themes/noir/noir.css")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/another-bladeset")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.css")));
+		assertEquals( "blade1", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1")));
+		assertEquals( "blade2", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade2")));
+		assertEquals( "blade1", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/empty.txt")));
+		assertEquals( "blade1", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench")));
+		assertEquals( "blade1", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/workbench/workbench.css")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/a-dir")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/a-dir/empty.txt")));
 		
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect/themes/noir/noir.css")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/themes/noir/noir.css")));
-		assertEquals( "blade1", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1")));
-		assertEquals( "blade1", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/empty.txt")));
-		assertEquals( "blade1", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench")));
-		assertEquals( "blade1", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench/workbench.css")));
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File(testBase + "/" + SDK_DIR + "/a-dir/non-existant.file")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/main-aspect/themes/noir/noir.css")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/themes/noir/noir.css")));
+		assertEquals( "blade1", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1")));
+		assertEquals( "blade1", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/empty.txt")));
+		assertEquals( "blade1", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench")));
+		assertEquals( "blade1", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/system-applications/dashboard/a-bladeset/blades/blade1/workbench/workbench.css")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File(testBase + "/" + SDK_DIR + "/a-dir/non-existant.file")));
 
-		assertEquals( "", NamespaceCalculator.getBladeNamespace(new File("src/test/resources/")));
+		assertEquals( "", RequirePrefixCalculator.getBladeRequirePrefix(new File("src/test/resources/")));
 	}
 	
 	@Ignore //TODO: is this now a valid test case with the model?
 	@Test
 	public void testGetApplicationNamespaceWithApplicationsOfTheSameNameInDifferentLocations() throws Exception
 	{
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
-		assertEquals( "novox", NamespaceCalculator.getAppNamespace(new File("src/test/resources/NamespaceAppStructure/" + APPLICATIONS_DIR + "/app1")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app1")));
+		assertEquals( "novox", RequirePrefixCalculator.getAppRequirePrefix(new File("src/test/resources/NamespaceAppStructure/" + APPLICATIONS_DIR + "/app1")));
 	}
 	
 	@Test
 	public void testGetApplicationNamespaceWithApplicationSrcFolderWhichContainsFolderAndFile() throws Exception
 	{
-		assertEquals( "caplinx", NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/app4")));
+		assertEquals( "caplinx", RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/app4")));
 	}
 	
 	@Test(expected=NamespaceException.class)
 	public void testGettingNamespaceWithInvalidConf() throws Exception
 	{
-		NamespaceCalculator.getAppNamespace(new File(testBase + "/" + APPLICATIONS_DIR + "/no-namespace"));
+		RequirePrefixCalculator.getAppRequirePrefix(new File(testBase + "/" + APPLICATIONS_DIR + "/no-namespace"));
 	}
 	
 	

@@ -11,8 +11,8 @@ public class AppConfBuilder extends SpecTest {
 		builderChainer = new BuilderChainer(specTest);
 	}
 	
-	public BuilderChainer hasNamespace(String appNamespace) throws Exception {
-		appConf.setAppNamespace(appNamespace);
+	public BuilderChainer hasRequirePrefix(String requirePrefix) throws Exception {
+		appConf.setRequirePrefix(requirePrefix);
 		appConf.write();
 		
 		return builderChainer;

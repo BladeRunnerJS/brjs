@@ -13,7 +13,7 @@ public class AppConf
 {	
 	public static final AppConf exampleConf = new AppConf("<namespace>", "<locale1>,<locale2>");
 	public static final String LOCALE_SEPERATOR = ",";
-	public String appNamespace = "";
+	public String requirePrefix = "";
 	public String locales = "";
 	
 	public AppConf()
@@ -21,9 +21,9 @@ public class AppConf
 		
 	}
 	
-	public AppConf(String appNamespace, String locales)
+	public AppConf(String requirePrefix, String locales)
 	{
-		this.appNamespace = appNamespace;
+		this.requirePrefix = requirePrefix;
 		this.locales = locales;
 	}
 	
@@ -40,14 +40,14 @@ public class AppConf
 		{
 			appConf = app.appConf();
 		}
-		return new AppConf(appConf.getAppNamespace(), appConf.getLocales());
+		return new AppConf(appConf.getRequirePrefix(), appConf.getLocales());
 	}
 	
 	public static void writeConf(File applicationDirectory, AppConf appConf) throws IOException, ConfigException
 	{
 		YamlAppConf newAppConf = new YamlAppConf();
 		newAppConf.setConfFile(new File(applicationDirectory, "app.conf"));
-		newAppConf.appNamespace = appConf.appNamespace;
+		newAppConf.requirePrefix = appConf.requirePrefix;
 		newAppConf.locales = appConf.locales;
 		newAppConf.write();
 	}

@@ -39,7 +39,7 @@ import com.caplin.cutlass.bundler.xml.reader.XmlReaderWriterPipeline;
 import com.caplin.cutlass.bundler.xml.reader.XmlSiblingReader;
 import com.caplin.cutlass.bundler.xml.reader.XmlSiblingReaderException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 import com.caplin.cutlass.structure.ScopeLevel;
 
 public class XmlBundleWriter
@@ -134,7 +134,7 @@ public class XmlBundleWriter
 				
 				try
 				{
-					packageNamespaceForResource = NamespaceCalculator.getPackageNamespaceForBladeLevelResources(document);
+					packageNamespaceForResource = RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(document);
 				}
 				catch (Exception ex)
 				{

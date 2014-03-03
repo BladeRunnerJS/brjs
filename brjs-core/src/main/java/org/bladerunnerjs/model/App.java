@@ -119,7 +119,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
 		try {
-			transformations.put("appns", appConf().getAppNamespace());
+			transformations.put("appns", appConf().getRequirePrefix());
 			transformations.put("appname", name);
 		}
 		catch(ConfigException e) {
@@ -211,12 +211,12 @@ public class App extends AbstractBRJSNode implements NamedNode
 		aspect("default").populate();
 	};
 	
-	public void populate(String appNamespace) throws InvalidNameException, ModelUpdateException
+	public void populate(String requirePrefix) throws InvalidNameException, ModelUpdateException
 	{
-		NameValidator.assertValidRootPackageName(this, appNamespace);
+		NameValidator.assertValidRootPackageName(this, requirePrefix);
 		
 		try {
-			appConf().setAppNamespace(appNamespace);
+			appConf().setRequirePrefix(requirePrefix);
 			populate();
 			appConf.autoWriteOnSet(true);
 			appConf().write();
@@ -248,7 +248,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public String getNamespace() {
 		try {
-			return appConf().getAppNamespace();
+			return appConf().getRequirePrefix();
 		} catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}

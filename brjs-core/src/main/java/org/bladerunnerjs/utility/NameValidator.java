@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
-import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppNamespaceException;
+import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
 
 public class NameValidator
 {
@@ -156,19 +156,19 @@ public class NameValidator
 	}
 	
 	
-	public static String generateAppNamespaceFromApp(App app) throws UnableToAutomaticallyGenerateAppNamespaceException
+	public static String generateRequirePrefixFromApp(App app) throws UnableToAutomaticallyGenerateAppRequirePrefixException
 	{
 		String appName = app.getName();
-		String appNamespace = appName;
-		appNamespace = appNamespace.replace("-", "");
-		appNamespace = appNamespace.replace("+", "");
-		appNamespace = appNamespace.replace("_", "");
-		appNamespace = appNamespace.toLowerCase();
-		if (isValidRootPackageName(appNamespace))
+		String requirePrefix = appName;
+		requirePrefix = requirePrefix.replace("-", "");
+		requirePrefix = requirePrefix.replace("+", "");
+		requirePrefix = requirePrefix.replace("_", "");
+		requirePrefix = requirePrefix.toLowerCase();
+		if (isValidRootPackageName(requirePrefix))
 		{
-			return appNamespace;
+			return requirePrefix;
 		}
-		throw new UnableToAutomaticallyGenerateAppNamespaceException(app);
+		throw new UnableToAutomaticallyGenerateAppRequirePrefixException(app);
 	}
 	
 }

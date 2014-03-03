@@ -32,7 +32,7 @@ public class CreateApplicationCommand extends ArgsParsingCommandPlugin
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("new-app-name").setRequired(true).setHelp("the name of the application that will be created"));
-		argsParser.registerParameter(new UnflaggedOption("app-namespace").setRequired(false).setHelp("the top-level namespace that all source code will reside within"));
+		argsParser.registerParameter(new UnflaggedOption("require-prefix").setRequired(false).setHelp("the require prefix that all source code will be available within"));
 	}
 	
 	@Override
@@ -57,16 +57,16 @@ public class CreateApplicationCommand extends ArgsParsingCommandPlugin
 	@Override
 	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("new-app-name");
-		String appNamespace = parsedArgs.getString("app-namespace");
+		String requirePrefix = parsedArgs.getString("require-prefix");
 		App app = brjs.app(appName);
 		
 		if(app.dirExists()) throw new NodeAlreadyExistsException(app, this);
 		
 		try {
 			NameValidator.assertValidDirectoryName(app);
-			appNamespace = (appNamespace == null) ? NameValidator.generateAppNamespaceFromApp(app) : appNamespace;
+			requirePrefix = (requirePrefix == null) ? NameValidator.generateRequirePrefixFromApp(app) : requirePrefix;
 			
-			app.populate(appNamespace);
+			app.populate(requirePrefix);
 			out.println(Messages.APP_CREATED_CONSOLE_MSG, appName);
 			out.println(" " + app.dir().getPath());
 			

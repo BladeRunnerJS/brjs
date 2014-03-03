@@ -33,7 +33,7 @@ import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -162,7 +162,7 @@ public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlug
 
 	private void verifyThatI18NTokensAreInCorrectNamespace(File file, Properties override) throws Exception
 	{
-		String namespace = NamespaceCalculator.getPackageNamespaceForBladeLevelResources(file);
+		String namespace = RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(file);
 		
 		if(namespace.length() > 0)
 		{

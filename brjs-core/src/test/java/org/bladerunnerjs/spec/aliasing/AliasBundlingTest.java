@@ -52,7 +52,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void weAlsoBundleAClassIfTheAliasIsDefinedInABladeAliasDefinitionsXml() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
 			.and(aspect).indexPageRefersTo("\"appns.bs.b1.the-alias\"");
@@ -95,7 +95,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test
 	public void weDoNotBundleAClassIfADefinedAliasIsNotReferenced() throws Exception {
-		given(appConf).hasNamespace("appns")
+		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);

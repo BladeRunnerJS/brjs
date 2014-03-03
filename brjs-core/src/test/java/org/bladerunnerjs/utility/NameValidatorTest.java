@@ -3,7 +3,7 @@ package org.bladerunnerjs.utility;
 import static org.mockito.Mockito.*;
 
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppNamespaceException;
+import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
 import org.bladerunnerjs.utility.NameValidator;
 import org.junit.Rule;
 import org.junit.Test;
@@ -153,19 +153,19 @@ public class NameValidatorTest
 	}
 	
 	@Test
-	public void testGenerateAppNamespace() throws UnableToAutomaticallyGenerateAppNamespaceException
+	public void testGenerateAppNamespace() throws UnableToAutomaticallyGenerateAppRequirePrefixException
 	{
 		App app = mock(App.class);
 		when(app.getName()).thenReturn("my-App");
-		assertEquals("myapp", NameValidator.generateAppNamespaceFromApp(app));
+		assertEquals("myapp", NameValidator.generateRequirePrefixFromApp(app));
 	}
 	
 	@Test
-	public void testExceptionThrownIfNamespaceCantBeAutomaticallyDetirmined() throws UnableToAutomaticallyGenerateAppNamespaceException
+	public void testExceptionThrownIfNamespaceCantBeAutomaticallyDetirmined() throws UnableToAutomaticallyGenerateAppRequirePrefixException
 	{
 		App app = mock(App.class);
 		when(app.getName()).thenReturn("my�App");
 		exception.expectMessage( startsWith("Unable to automatically calculate app namespace") );
-		NameValidator.generateAppNamespaceFromApp(app);
+		NameValidator.generateRequirePrefixFromApp(app);
 	}
 }

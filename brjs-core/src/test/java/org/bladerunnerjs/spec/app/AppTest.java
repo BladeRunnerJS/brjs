@@ -70,7 +70,7 @@ public class AppTest extends SpecTest {
 	public void theAppConfIsWrittenOnPopulate() throws Exception {
 		given(appTemplate).hasBeenCreated();
 		when(app).populate("appx");
-		then(app).fileHasContents("app.conf", "appNamespace: appx\nlocales: en");
+		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: appx");
 	}
 	
 	@Test
@@ -85,7 +85,7 @@ public class AppTest extends SpecTest {
 		given(appTemplate).hasBeenCreated()
 			.and(app).hasBeenPopulated();
 		when(app).appConf().write();
-		then(app).fileHasContents("app.conf", "appNamespace: app1\nlocales: en");
+		then(app).fileHasContents("app.conf", "requirePrefix: app1\nlocales: en");
 	}
 	
 	@Test

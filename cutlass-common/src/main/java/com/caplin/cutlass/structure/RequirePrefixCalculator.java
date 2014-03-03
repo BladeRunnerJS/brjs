@@ -10,33 +10,33 @@ import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.exception.NamespaceException;
 
 
-public class NamespaceCalculator
+public class RequirePrefixCalculator
 {
 
-	static HashMap<String, String> applicationToNamespace = new HashMap<String, String>();
+	static HashMap<String, String> applicationToRequirePrefix = new HashMap<String, String>();
 
 	public static void purgeCachedApplicationNamespaces()
 	{
-		applicationToNamespace = new HashMap<String, String>();
+		applicationToRequirePrefix = new HashMap<String, String>();
 	}
 	
-	public static String getPackageNamespaceForBladeLevelResources(File location) throws NamespaceException
+	public static String getPackageRequirePrefixForBladeLevelResources(File location) throws NamespaceException
 	{
 		ScopeLevel scopeLevel = CutlassDirectoryLocator.getScope(location);
 		
 		if(scopeLevel == ScopeLevel.BLADE_SCOPE)
 		{
-			return NamespaceCalculator.getAppNamespace(location) + "." + NamespaceCalculator.getBladesetNamespace(location) + "." + NamespaceCalculator.getBladeNamespace(location) + ".";
+			return RequirePrefixCalculator.getAppRequirePrefix(location) + "." + RequirePrefixCalculator.getBladesetRequirePrefix(location) + "." + RequirePrefixCalculator.getBladeRequirePrefix(location) + ".";
 		}
 		else if(scopeLevel == ScopeLevel.BLADESET_SCOPE)
 		{
-			return NamespaceCalculator.getAppNamespace(location) + "." + NamespaceCalculator.getBladesetNamespace(location) + ".";
+			return RequirePrefixCalculator.getAppRequirePrefix(location) + "." + RequirePrefixCalculator.getBladesetRequirePrefix(location) + ".";
 		}
 		
 		return "";
 	}
 
-	public static String getBladesetNamespace(File location)
+	public static String getBladesetRequirePrefix(File location)
 	{
 		File parentBladeset = CutlassDirectoryLocator.getParentBladeset(location);
 		
@@ -47,7 +47,7 @@ public class NamespaceCalculator
 		return StringUtils.substringBeforeLast(parentBladeset.getName(), CutlassConfig.BLADESET_SUFFIX);
 	}
 
-	public static String getBladeNamespace(File location)
+	public static String getBladeRequirePrefix(File location)
 	{
 		File parentBlade = CutlassDirectoryLocator.getParentBlade(location);
 		if (parentBlade == null)
@@ -57,7 +57,7 @@ public class NamespaceCalculator
 		return parentBlade.getName();
 	}
 	
-	public static String getAppNamespace(File applicationDirectory) throws NamespaceException
+	public static String getAppRequirePrefix(File applicationDirectory) throws NamespaceException
 	{
 		if (applicationDirectory == null)
 		{
@@ -66,7 +66,7 @@ public class NamespaceCalculator
 		
 		String applicationPath = applicationDirectory.getAbsolutePath();
 		
-		if (!applicationToNamespace.containsKey(applicationPath))
+		if (!applicationToRequirePrefix.containsKey(applicationPath))
 		{
 			AppConf appConf;
 			
@@ -79,13 +79,13 @@ public class NamespaceCalculator
 				throw new NamespaceException("Unable to parse the app configuration file", e);
 			}
 			
-			String namespace = appConf.appNamespace;
-			applicationToNamespace.put(applicationPath, namespace);
+			String namespace = appConf.requirePrefix;
+			applicationToRequirePrefix.put(applicationPath, namespace);
 		}
 		
-		String appNamespace = applicationToNamespace.get(applicationPath);
+		String requirePrefix = applicationToRequirePrefix.get(applicationPath);
 		
-		return appNamespace;
+		return requirePrefix;
 	}
 
 }

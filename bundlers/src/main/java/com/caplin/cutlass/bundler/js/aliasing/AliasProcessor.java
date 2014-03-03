@@ -12,7 +12,7 @@ import org.codehaus.stax2.XMLStreamReader2;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.exception.NamespaceException;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 import com.caplin.cutlass.structure.ScopeLevel;
 
 public class AliasProcessor
@@ -34,7 +34,7 @@ public class AliasProcessor
 	{
 		
 		ScopeLevel requestLevel = getScope( aliasesFile );
-		String packageNamespace = NamespaceCalculator.getPackageNamespaceForBladeLevelResources( aliasesFile );
+		String packageNamespace = RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources( aliasesFile );
 		
 		AliasContext context = new AliasContext(requestLevel, packageNamespace, aliasRegistry, validClasses);
 		
@@ -57,7 +57,7 @@ public class AliasProcessor
 	{
 		
 		ScopeLevel requestLevel = getScope( aliasesFile );
-		String packageNamespace = NamespaceCalculator.getPackageNamespaceForBladeLevelResources( aliasesFile );
+		String packageNamespace = RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources( aliasesFile );
 		
 		AliasContext context = new AliasContext(requestLevel, packageNamespace, aliasRegistry, validClasses);
 		

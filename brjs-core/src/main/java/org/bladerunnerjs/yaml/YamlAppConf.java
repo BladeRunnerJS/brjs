@@ -12,7 +12,7 @@ import org.bladerunnerjs.utility.NameValidator;
 public class YamlAppConf extends AbstractYamlConfFile {
 	@NotNull
 	@NotEmpty
-	public String appNamespace;
+	public String requirePrefix;
 	
 	@NotNull
 	@NotEmpty
@@ -20,7 +20,7 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	
 	@Override
 	public void initialize() {
-		appNamespace = "appns";
+		requirePrefix = "appns";
 		locales = "en";
 	}
 	
@@ -28,7 +28,7 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	public void verify() throws ConfigException {
 		try {
 			ConfigValidationChecker.validate(this);
-			NameValidator.assertValidPackageName(node, appNamespace);
+			NameValidator.assertValidPackageName(node, requirePrefix);
 			verifyLocales(locales);
 		}
 		catch(InvalidPackageNameException e) {

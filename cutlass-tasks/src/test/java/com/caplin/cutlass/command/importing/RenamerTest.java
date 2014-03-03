@@ -64,7 +64,7 @@ public class RenamerTest
 		
 		assertTrue("Expected " + expectedRenamedFile + " to exist", expectedRenamedFile.exists());
 		assertFalse("Expected " + originalFile + " to not exist", originalFile.exists());
-		assertEquals(Arrays.asList("appNamespace: acmebank","locales: en"), renamedAppConfContents);
+		assertEquals(Arrays.asList("locales: en","requirePrefix: acmebank"), renamedAppConfContents);
 	}
 	
 	@Test

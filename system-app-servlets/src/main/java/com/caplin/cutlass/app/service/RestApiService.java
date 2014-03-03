@@ -125,10 +125,10 @@ public class RestApiService
 		}
 	}
 	
-	public void importMotif(String appName, String appNamespace, File appZip) throws Exception
+	public void importMotif(String appName, String requirePrefix, File appZip) throws Exception
 	{
 		ImportApplicationCommand cmd = new ImportApplicationCommand( brjs );
-		String[] args = new String[]{ appZip.getAbsolutePath(), appName, appNamespace };		
+		String[] args = new String[]{ appZip.getAbsolutePath(), appName, requirePrefix };		
 		doCommand( cmd, args );
 	}
 	
@@ -174,11 +174,11 @@ public class RestApiService
 		}
 	}
 	
-	public void createApp(String appName, String appNamespace) throws Exception
+	public void createApp(String appName, String requirePrefix) throws Exception
 	{
 		CreateApplicationCommand cmd = new CreateApplicationCommand();
 		cmd.setBRJS(brjs);
-		String[] args = new String[]{ appName, appNamespace };		
+		String[] args = new String[]{ appName, requirePrefix };		
 		doCommand( cmd, args );
 	}
 	

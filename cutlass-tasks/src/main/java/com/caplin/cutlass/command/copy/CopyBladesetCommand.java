@@ -18,7 +18,7 @@ import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.command.importing.Renamer;
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.AppStructureVerifier;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 
 import org.bladerunnerjs.utility.NameValidator;
 
@@ -96,8 +96,8 @@ public class CopyBladesetCommand extends AbstractCommandPlugin implements Legacy
 		String targetApplicationNamespace = "";
 		try 
 		{
-			sourceApplicationNamespace = NamespaceCalculator.getAppNamespace(new File(applicationsDir, sourceApplicationName));
-			targetApplicationNamespace = NamespaceCalculator.getAppNamespace(new File(applicationsDir, targetApplicationName));
+			sourceApplicationNamespace = RequirePrefixCalculator.getAppRequirePrefix(new File(applicationsDir, sourceApplicationName));
+			targetApplicationNamespace = RequirePrefixCalculator.getAppRequirePrefix(new File(applicationsDir, targetApplicationName));
 		} 
 		catch (Exception ex) 
 		{
