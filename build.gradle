@@ -1,9 +1,7 @@
-import static org.bladerunnerjs.BuildVersionCalculator.*
-
 apply from: 'wrapper.gradle'
 
-
 def projectBuildVersion = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(project)
+def projectBuildMajorVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
 def projectVersionIsDirty = org.bladerunnerjs.BuildVersionCalculator.isVersionDirty(project)
 def projectBuildDate = org.bladerunnerjs.BuildVersionCalculator.calculateBuildDate(project)
 def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBuildHostname(project)
@@ -11,6 +9,20 @@ def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBui
 logger.info "Build version calculated as: ${projectBuildVersion}"
 logger.info "Build date is: ${projectBuildDate}"
 logger.info "Build hostname is: ${projectBuildHostname}"
+
+
+def overrideBuildVersionPropertyName = "overrideBuildVersion"
+if (project.hasProperty(overrideBuildVersionPropertyName)) {
+	logger.info "Project has property ${overrideBuildVersionPropertyName} set, overriding calculated build version"
+	projectBuildVersion = project.property(overrideBuildVersionPropertyName)
+}
+
+def overrideMajorVersionPropertyName = "overrideBuildMajorVersion"
+if (project.hasProperty(overrideMajorVersionPropertyName)) {
+	logger.info "Project has property ${overrideMajorVersionPropertyName} set, overriding calculated build version"
+	projectBuildMajorVersion = project.property(overrideMajorVersionPropertyName)
+}
+
 
 allprojects {
 	
@@ -174,7 +186,7 @@ task generateReleaseNotes, {
 	doFirst {
     	def gitHubToken = getGitHubToken(project)
 		def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
-    	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
+    	def tagVersion = projectBuildMajorVersion
 		
 		def releaseNoteFile = file("releases/${tagVersion}.md")
 		def milestoneJson = getReleaseNoteJson(project,tagVersion).milestone
@@ -202,13 +214,13 @@ task generateReleaseNotes, {
 		assembledReleaseNotesFile.text += "\n\n"
 		assembledReleaseNotesFile.text += "-------------\n"
 		assembledReleaseNotesFile.text += "### Closed Issues\n"
-		assembledReleaseNotesFile.text += "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} - "
+		assembledReleaseNotesFile.text += "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} from ${milestoneIds.size} milestones: "
 		milestoneIds.each { milestoneId ->
-			if (milestoneId != milestoneIds.first()) { assembledReleaseNotesFile.text += ", " }
+			if (milestoneId != milestoneIds.first()) { assembledReleaseNotesFile.text += "; " }
 			def milestoneUrl = githubApi.getMilestoneUrl(milestoneId)
-			assembledReleaseNotesFile.text += "<a href=\"${milestoneUrl}\">${milestoneUrl}</a><sup>"
+			assembledReleaseNotesFile.text += "<a href=\"${milestoneUrl}\">${milestoneUrl}</a>"
 		}
-		assembledReleaseNotesFile.text += "\n\n"
+		assembledReleaseNotesFile.text += "</sub>\n\n"
 		releaseNoteIssues.each {
 			assembledReleaseNotesFile.text += "- ${it.toString()}\n"
 		}
@@ -236,7 +248,7 @@ task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', bui
 		
     	def gitHubToken = getGitHubToken(project)
     	def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
-    	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
+    	def tagVersion = projectBuildMajorVersion
     	
 		def releaseNoteFile = generateReleaseNotes.outputs.files.singleFile
     	Release release = githubApi.createReleaseForTag(tagVersion, getReleaseNoteJson(project,tagVersion), releaseNoteFile.text)

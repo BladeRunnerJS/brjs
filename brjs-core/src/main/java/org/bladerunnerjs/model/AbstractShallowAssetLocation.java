@@ -55,7 +55,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	@Override
-	public String getNamespace() throws RequirePathException {
+	public String namespace() throws RequirePathException {
 		return requirePrefix().replace("/", ".");
 	}
 	

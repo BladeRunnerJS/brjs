@@ -47,7 +47,7 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 	}
 	
 	@Override
-	public String getNamespace() throws RequirePathException
+	public String namespace() throws RequirePathException
 	{
 		return assetContainer.namespace();
 	}

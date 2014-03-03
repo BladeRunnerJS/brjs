@@ -292,12 +292,15 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	into "BladeRunnerJS/"
 	include "licenses/**", "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
 	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**"
-	doLast {
-		println "BladeRunnerJS ${project.buildVersion} built and zipped to ${archivePath}"
-	}
 }
 build.dependsOn distZip
 distZip.mustRunAfter test
+
+gradle.taskGraph.whenReady { taskGraph ->
+	if (taskGraph.hasTask(distZip)) {
+		gradle.addBuildListener(new DistZipPathLogger(project.buildVersion, distZip.archivePath.getPath()))
+	}
+}
 
 
 task explodeSdk, type:Sync, dependsOn: distZip, {
@@ -378,3 +381,21 @@ clean {
 	}
 }
 
+
+
+// util class
+class DistZipPathLogger extends BuildAdapter {
+	String buildVersion
+	String archivePath
+	public DistZipPathLogger(String buildVersion, String archivePath) {
+		this.buildVersion = buildVersion
+		this.archivePath = archivePath
+	}
+	void buildFinished(BuildResult result) {
+		println ""
+		println "----"
+		println "BladeRunnerJS ${buildVersion} built and zipped to ${archivePath}"
+		println "----"
+		println ""
+	}
+}

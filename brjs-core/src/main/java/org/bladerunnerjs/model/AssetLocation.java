@@ -15,7 +15,7 @@ import org.bladerunnerjs.plugin.AssetPlugin;
 public interface AssetLocation extends BRJSNode {
 	String getJsStyle();
 	String requirePrefix() throws RequirePathException;
-	String getNamespace() throws RequirePathException;
+	String namespace() throws RequirePathException;
 	SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException;
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAsset> seedResources();

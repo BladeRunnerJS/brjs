@@ -120,7 +120,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	{
 		StartTag startTag = getStartTag(htmlAsset);
 		
-		String namespace = htmlAsset.getAssetLocation().getNamespace();
+		String namespace = htmlAsset.getAssetLocation().namespace();
 		String identifier = startTag.getAttributeValue("id");
 		
 		if(identifier == null)
