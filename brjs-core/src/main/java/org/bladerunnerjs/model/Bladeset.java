@@ -73,7 +73,7 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	
 	@Override
 	public boolean isNamespaceEnforced() {
-		return false;
+		return true;
 	}
 	
 	public App parent()

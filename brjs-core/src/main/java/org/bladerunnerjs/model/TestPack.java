@@ -69,7 +69,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public boolean isNamespaceEnforced() {
-		return true;
+		return false;
 	}
 	
 	@Override
