@@ -37,8 +37,7 @@ public class BundleCachingTest extends SpecTest
 		when(aspect).indexPageRefersTo("appns.Class2")
 			.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.Class2")
-			.and(response).doesNotContainText("appns.Class1")
-			.and(response).containsClasses("appns.Class2");
+			.and(response).doesNotContainText("appns.Class1");
 	}
 	
 	@Test
