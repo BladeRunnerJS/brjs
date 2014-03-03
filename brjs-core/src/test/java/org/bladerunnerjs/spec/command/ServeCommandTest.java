@@ -5,7 +5,6 @@ import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Me
 import java.io.IOException;
 
 import org.bladerunnerjs.appserver.ApplicationServer;
-import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
