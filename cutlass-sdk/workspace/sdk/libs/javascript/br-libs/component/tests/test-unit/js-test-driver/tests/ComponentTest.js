@@ -62,12 +62,12 @@ ComponentTest.prototype.test_invokingSetFrameOnASetFrameComponentWorks = functio
 //	oSetContainerComponent.setContainer();
 //	assertTrue(oSetContainerComponent.hasBeenInvoked);
 //};
-
-ComponentTest.prototype.test_invokingSetFrameOnASetContainerComponentWorks = function()
-{
-	var oSetContainerComponent = this.createSetContainerComponent();
-	assertFalse(oSetContainerComponent.hasBeenInvoked);
-	
-	oSetContainerComponent.setFrame();
-	assertTrue(oSetContainerComponent.hasBeenInvoked);
-};
+//
+//ComponentTest.prototype.test_invokingSetFrameOnASetContainerComponentWorks = function()
+//{
+//	var oSetContainerComponent = this.createSetContainerComponent();
+//	assertFalse(oSetContainerComponent.hasBeenInvoked);
+//	
+//	oSetContainerComponent.setFrame();
+//	assertTrue(oSetContainerComponent.hasBeenInvoked);
+//};

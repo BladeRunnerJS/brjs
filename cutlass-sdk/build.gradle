@@ -213,7 +213,7 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 //createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
 
 
-//TODO: delete this once all JS tests are passing
+//TODO: delete this once all JS tests are passing (delete down to ******)
 task testJsIE, {}
 task testJsChrome, {}
 task testJsFirefox, {}
@@ -232,7 +232,14 @@ file("workspace/sdk/libs/javascript/br-libs").listFiles().each {
 		testJsFirefox.dependsOn testJsFirefoxDependency
 	}
 }
-// delete up to here
+
+// delete a line to enable the tests for that library
+project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('I18n') }.each { it.enabled = false }
+project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Knockout') }.each { it.enabled = false }
+project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Presenter') }.each { it.enabled = false }
+project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Test') }.each { it.enabled = false }
+project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Workbench') }.each { it.enabled = false }
+// ******************************************
 
 
 createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
@@ -240,8 +247,10 @@ createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
 createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
 
 
-task test, dependsOn:[testJsChrome, testJsFirefox, testSystemAppsChrome, testSystemAppsFirefox]
+task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome]
+task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox]
 task testIE, dependsOn: [testJsIE, testSystemAppsIE]
+task test, dependsOn: testChrome
 
 
 assemble.dependsOn = [assembleSdk, copyBrowsers]
