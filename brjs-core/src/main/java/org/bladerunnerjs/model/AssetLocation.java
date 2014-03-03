@@ -16,7 +16,6 @@ public interface AssetLocation extends BRJSNode {
 	String getJsStyle();
 	String requirePrefix() throws RequirePathException;
 	String getNamespace() throws RequirePathException;
-	List<SourceModule> getSourceModules();
 	SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException;
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAsset> seedResources();

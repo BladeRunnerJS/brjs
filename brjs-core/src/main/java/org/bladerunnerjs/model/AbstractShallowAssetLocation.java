@@ -60,19 +60,6 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules()
-	{
-		List<SourceModule> sourceModules = new ArrayList<SourceModule>();
-		
-		for (AssetContainer assetContainer : getAssetContainer().getApp().getAllAssetContainers())
-		{
-			sourceModules.addAll( assetContainer.sourceModules() );
-		}
-		
-		return sourceModules;
-	}
-	
-	@Override
 	public SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException
 	{
 		if (requirePath.matches(".*[a-zA-Z0-9]\\.[a-zA-Z0-9].*"))
