@@ -18,6 +18,8 @@
 		<script>
 			( function() {
 
+				// Register application EventHub. Required until the following is fixed:
+				// https://github.com/BladeRunnerJS/brjs/issues/354
 				var ServiceRegistry = require( 'br/ServiceRegistry' );
 				var EventHub = require( 'br/EventHub' );
 				ServiceRegistry.registerService( 'br.event-hub', new EventHub() );

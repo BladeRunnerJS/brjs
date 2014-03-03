@@ -14,6 +14,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
@@ -30,6 +31,21 @@ public class XmlBundleWriter
 	{
 		this.xmlBundlerConfig  = xmlBundlerConfig;
 	}
+	
+	public void concatenateBundle(List<Asset> xmlAssets, final Writer writer) throws ContentProcessingException  {
+		
+		try {
+			writer.write("<bundle>\n");
+			for(Asset asset : xmlAssets){
+				Reader reader = asset.getReader();
+				IOUtils.copy(reader, writer);
+			}
+			writer.write("</bundle>");
+		} catch (IOException e) {
+			throw new ContentProcessingException( e);
+			
+		}
+	};
 	
 	public void writeBundle(List<Asset> xmlAssets, final Writer writer) throws ContentProcessingException, XMLStreamException {
 		

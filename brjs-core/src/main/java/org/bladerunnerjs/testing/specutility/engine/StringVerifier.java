@@ -147,6 +147,12 @@ public class StringVerifier {
 		
 		return verifierChainer;	
 	}
+	
+	public VerifierChainer doesNotEndWithTextExcludingWhitespace(String substring) {
+		assertFalse(string.trim().endsWith(substring));
+		
+		return verifierChainer;	
+	}
 
 	public VerifierChainer containsOrderedTextFragments(String... textFragments) {
 		List<String> escapedTextFragments = new LinkedList<String>();

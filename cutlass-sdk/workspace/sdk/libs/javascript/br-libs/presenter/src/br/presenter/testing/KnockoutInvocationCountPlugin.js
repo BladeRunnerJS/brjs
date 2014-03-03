@@ -1,4 +1,4 @@
-br.Core.thirdparty("knockout");
+br.Core.thirdparty("presenter-knockout");
 
 /**
  * @private
@@ -14,14 +14,14 @@ br.presenter.testing.KnockoutInvocationCountPlugin.prototype.init = function (el
 	
 	for(var eventNameOutsideClosure in eventsToHandle) {
 		var methodToBeReplacedByProxy = eventsToHandle[eventNameOutsideClosure];
-		eventsToHandle[eventNameOutsideClosure] = ko.bindingHandlers.event._getInvocationCountingProxyMethod(methodToBeReplacedByProxy);
+		eventsToHandle[eventNameOutsideClosure] = presenter_ko.bindingHandlers.event._getInvocationCountingProxyMethod(methodToBeReplacedByProxy);
 		valueAccessor = function() {
 			return eventsToHandle;
 		};
 		(function() {
 			var eventName = eventNameOutsideClosure; // Separate variable to be captured by event handler closure
 			if (typeof eventName == "string") {
-				ko.utils.registerEventHandler(element, eventName, function (event) {
+				presenter_ko.utils.registerEventHandler(element, eventName, function (event) {
 					var handlerReturnValue;
 					var handlerFunction = valueAccessor()[eventName];
 					if (!handlerFunction)

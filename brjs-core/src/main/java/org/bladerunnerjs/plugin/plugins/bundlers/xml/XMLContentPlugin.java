@@ -86,17 +86,18 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	{
 		//TODO not parse the config on every execution
 		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
-		if(!config.isbundleConigAvailable()){
-			throw new ContentProcessingException("Cannot process XML no configuration file found");
-		}
 		XmlBundleWriter bundleWriter = new XmlBundleWriter(config);
-		
+		List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
+
 		try{
 			String outputEncoding = brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			Writer output = new OutputStreamWriter(os, outputEncoding);
-			List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
-//			List<Asset> xmlAssets = bundleSet.getResourceFiles("xml");
-			bundleWriter.writeBundle(xmlAssets, output);
+		
+			if(config.isbundleConigAvailable()){
+				bundleWriter.writeBundle(xmlAssets, output);
+			}else{
+				bundleWriter.concatenateBundle(xmlAssets, output);
+			}
 			output.flush();
 		}
 		catch( IOException | ConfigException |  XMLStreamException  e) {
