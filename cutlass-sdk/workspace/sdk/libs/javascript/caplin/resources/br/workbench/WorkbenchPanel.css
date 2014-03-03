@@ -96,4 +96,6 @@
 
 .workbench-panel > ul{
 	height: 100%;
+	overflow: auto;
+	min-width: 160px;
 }
