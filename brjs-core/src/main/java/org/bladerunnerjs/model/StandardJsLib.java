@@ -126,7 +126,7 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	}
 	
 	@Override
-	public String namespace() {
+	public String requirePrefix() {
 		return getName();
 	}
 	
