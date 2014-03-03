@@ -42,9 +42,18 @@ public class HTMLContentPluginTest extends SpecTest
 	
 	@Test
 	public void aspectHTMlFilesBundleFailsWithWrongNamespace() throws Exception {
+		given(blade).hasClass("appns.bs.b1.Class")
+			.and(blade).resourceFileContains("html/view.html", "<div id='xxxxx.view'>TESTCONTENT</div>")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class");
+		when(app).requestReceived("/default-aspect/bundle.html", response);
+		then(exceptions).verifyException(NamespaceException.class, "xxxxx.view", "appns.bs.b1.*");
+	}
+	
+	@Test
+	public void htmlTemplatesWithinAspectArentNamespaced() throws Exception {
 		given(aspect).resourceFileContains("html/view.html", "<div id='xxxxx.view'>TESTCONTENT</div>");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
-		then(exceptions).verifyException(NamespaceException.class, "xxxxx.view", "appns.*");
+		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
 	@Test

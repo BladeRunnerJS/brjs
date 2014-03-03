@@ -98,7 +98,7 @@ public class I18nAssetFile implements Asset
 		
 		for (String property : i18nProperties.stringPropertyNames())
 		{
-			assertPropertyMatchesNamepsaceOfAssetLocation(property);
+			getAssetLocation().assertIdentifierCorrectlyNamespaced(property);
 			String value = i18nProperties.getProperty(property);
 			propertiesMap.put(property, value);
 		}
@@ -106,16 +106,6 @@ public class I18nAssetFile implements Asset
 		return propertiesMap;
 	}
 	
-	// an exception will be thrown if the namespace isnt correct, the exception could be ignored in CT to disable namespace enforcement
-	private void assertPropertyMatchesNamepsaceOfAssetLocation(String property) throws RequirePathException, NamespaceException
-	{
-		String propertyNamepsace = getAssetLocation().namespace();
-		if (!property.startsWith(propertyNamepsace+"."))
-		{
-			throw new NamespaceException( String.format(Messages.PROPERTY_NAMESPACE_EXCEPTION, property, this.getAssetPath(), propertyNamepsace) );
-		}
-	}
-
 	private String getMatchedValueFromPropertiesPattern(int groupNum)
 	{
 		Matcher m = i18nPropertiesPattern.matcher( getAssetName() );

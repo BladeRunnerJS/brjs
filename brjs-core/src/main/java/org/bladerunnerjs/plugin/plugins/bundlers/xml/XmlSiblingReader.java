@@ -7,14 +7,18 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.bladerunnerjs.aliasing.NamespaceException;
+import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.model.exception.RequirePathException;
+
 public class XmlSiblingReader
 {
 	private XmlSiblingReader parent = null;
 	private PeekableXmlStreamReader streamReader;
 	private XmlSiblingReader childReader = null;
 	private int depth = 1;
-	private String namespace = null;
 	private File document;
+	private Asset xmlAsset;
 	
 	public XmlSiblingReader(XMLStreamReader streamReader) throws XMLStreamException
 	{
@@ -152,19 +156,17 @@ public class XmlSiblingReader
 		return hasNextSibling;
 	}
 	
-	public void setXmlDocumentNamespace(String namespace)
-	{
-		this.namespace = namespace;
+	public void setAsset(Asset xmlAsset) {
+		this.xmlAsset = xmlAsset;
 	}
 	
-	public String getXmlDocumentNamespace()
-	{
-		if(namespace == null)
-		{
-			return parent.getXmlDocumentNamespace();
+	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
+		if(xmlAsset == null) {
+			parent.assertIdentifierCorrectlyNamespaced(identifier);
 		}
-		
-		return namespace;
+		else {
+			xmlAsset.getAssetLocation().assertIdentifierCorrectlyNamespaced(identifier);
+		}
 	}
 	
 	public void setXmlDocument(File document)

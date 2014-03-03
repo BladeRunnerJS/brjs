@@ -212,12 +212,20 @@ public class I18nContentPluginTest extends SpecTest
 	@Test
 	public void i18nPropertyKeysMustMatchTheAspectNamespace() throws Exception 
 	{
-		given(app).hasBeenCreated()
-			.and(aspect).hasBeenCreated()
-			.and(aspect).containsEmptyFile("index.html")
+		given(blade).hasClass("appns.bs.b1.Class")
+			.and(blade).containsFileWithContents("resources/en_GB.properties", "some.property=property value")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(exceptions).verifyException(NamespaceException.class, "some.property", "appns.bs.b1.*");
+	}
+	
+	@Test
+	public void i18nPropertyKeysDefinedWithTheAspectDoNotNeedToBeNamespace() throws Exception 
+	{
+		given(aspect).containsEmptyFile("index.html")
 			.and(aspect).containsFileWithContents("resources/en_GB.properties", "some.property=property value");
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
-		then(exceptions).verifyException(NamespaceException.class, "some.property", "default-aspect/resources/en_GB.properties", "appns");
+		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
 	@Test

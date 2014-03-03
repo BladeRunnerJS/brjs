@@ -119,22 +119,16 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	private void validateSourceHtml(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException
 	{
 		StartTag startTag = getStartTag(htmlAsset);
-		
-		String namespace = htmlAsset.getAssetLocation().namespace();
 		String identifier = startTag.getAttributeValue("id");
 		
 		if(identifier == null)
 		{
 			throw new NamespaceException( "HTML template found without an identifier: '" +
-					startTag.toString() + "'.  Root element should have namespaced ID of '" + namespace + ".*'");
+					startTag.toString() + "'.  Root element should have namespaced ID of '" + htmlAsset.getAssetLocation().namespace() + ".*'");
 		}
 		
-		if(!identifier.startsWith(namespace))
-		{
-			throw new NamespaceException( "The identifier '" +
-					identifier + "' is not correctly namespaced.\nNamespace '" + namespace + ".*' was expected.");
-		}
-
+		htmlAsset.getAssetLocation().assertIdentifierCorrectlyNamespaced(identifier);
+		
 		Asset assetWithDuplicateId = identifiers.get(identifier);
 		if(assetWithDuplicateId == null){
 			identifiers.put(identifier, htmlAsset);

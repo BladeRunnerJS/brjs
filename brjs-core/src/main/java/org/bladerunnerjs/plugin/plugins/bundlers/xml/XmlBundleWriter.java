@@ -127,8 +127,7 @@ public class XmlBundleWriter
 			try{
 				Reader bundlerFileReader = xmlAsset.getReader();
 				XmlSiblingReader siblingReader = new XmlSiblingReader(inputFactory.createXMLStreamReader(bundlerFileReader));
-				String namespace = xmlAsset.getAssetLocation().namespace();
-				siblingReader.setXmlDocumentNamespace(namespace);
+				siblingReader.setAsset(xmlAsset);
 				
 				siblingReader.setXmlDocument(document);
 				String rootElement = siblingReader.getElementName();
@@ -150,7 +149,7 @@ public class XmlBundleWriter
 					readerSet.add(siblingReader);
 				}
 				
-			}catch (  XMLStreamException | RequirePathException | IOException e){
+			}catch (  XMLStreamException | IOException e){
 				throw new ContentFileProcessingException(document, e);
 			}
 		}
@@ -331,16 +330,13 @@ public class XmlBundleWriter
 	/* Throws an exception if the identifer is not in the default XML namespace configured for this reader. */
 	private String getIdentifier(String identifierAttribute, XmlSiblingReader reader) throws NamespaceException
 	{
-		String namespace = reader.getXmlDocumentNamespace();
 		String identifier = reader.getAttributeValue(identifierAttribute);
 		
-		if(identifier != null && namespace.length() > 0 )
-		{
-			if(identifier.startsWith(namespace) == false)
-			{
-				throw new NamespaceException( "The identifier '" +
-						identifier + "' is not correctly namespaced.\nNamespace '" + namespace + ".*' was expected.");
-			}
+		try {
+			reader.assertIdentifierCorrectlyNamespaced(identifier);
+		}
+		catch(RequirePathException e) {
+			throw new NamespaceException("Require path exception while attempting to validate correctly namespaced identifier", e);
 		}
 		
 		return identifier;
