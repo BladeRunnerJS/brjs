@@ -127,7 +127,7 @@ public class XmlBundleWriter
 			try{
 				Reader bundlerFileReader = xmlAsset.getReader();
 				XmlSiblingReader siblingReader = new XmlSiblingReader(inputFactory.createXMLStreamReader(bundlerFileReader));
-				String namespace = xmlAsset.getAssetLocation().getNamespace();
+				String namespace = xmlAsset.getAssetLocation().namespace();
 				siblingReader.setXmlDocumentNamespace(namespace);
 				
 				siblingReader.setXmlDocument(document);

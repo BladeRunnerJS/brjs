@@ -109,7 +109,7 @@ public class I18nAssetFile implements Asset
 	// an exception will be thrown if the namespace isnt correct, the exception could be ignored in CT to disable namespace enforcement
 	private void assertPropertyMatchesNamepsaceOfAssetLocation(String property) throws RequirePathException, NamespaceException
 	{
-		String propertyNamepsace = getAssetLocation().getNamespace();
+		String propertyNamepsace = getAssetLocation().namespace();
 		if (!property.startsWith(propertyNamepsace+"."))
 		{
 			throw new NamespaceException( String.format(Messages.PROPERTY_NAMESPACE_EXCEPTION, property, this.getAssetPath(), propertyNamepsace) );
