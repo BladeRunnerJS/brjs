@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.BRJS;
  * WARNING: Do not use this class. Any plugins that should have a reference to the BRJS instance will be provided it in the setBRJS() method. 
  *
  */
-public class ServletModelAccessor {
+public class BRJSThreadSafeModelAccessor {
 	// TODO: change back to `private` once the other ServletModelAccessor class has been deleted
 	// Note: this should be the only static state within 'brjs-core'
 	protected static BRJS model;

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
@@ -67,6 +68,8 @@ public class BundlerInjectorTest {
 		addFileInfoToList(testFiles, "a/b/c/123_xml.bundle");
 		addFileInfoToList(testFiles, "a/b/c/123_html.bundle");
 		addFileInfoToList(testFiles, "a/b/c/another-non-bundle-file.js");
+		
+		BRJSThreadSafeModelAccessor.destroy();
 	}
 	
 	@After
@@ -240,7 +243,7 @@ public class BundlerInjectorTest {
 		File testSdkDirectory = createTestSdkDirectory();
 		BRJS brjs = new BRJS(testSdkDirectory, new BRJSPluginLocator(), new Java7FileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 		
-		BRJSAccessor.initialize(brjs);
+		BRJSThreadSafeModelAccessor.initializeModel(brjs);
 		
 		App app = brjs.app("my-app");
 		app.create();
@@ -278,7 +281,7 @@ public class BundlerInjectorTest {
 		File testSdkDirectory = createTestSdkDirectory();
 		BRJS brjs = new BRJS(testSdkDirectory, new BRJSPluginLocator(), new Java7FileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
 		
-		BRJSAccessor.initialize(brjs);
+		BRJSThreadSafeModelAccessor.initializeModel(brjs);
 		
 		JsLib sdkLib = brjs.sdkLib("br");
 		File sdkLibSrcFile = sdkLib.file("src/srcFile.js");

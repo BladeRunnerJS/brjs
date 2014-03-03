@@ -8,10 +8,9 @@ import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
-
-import com.caplin.cutlass.BRJSAccessor;
 
 public class BRJSWritingResourceBundlerHandler implements BundlerHandler
 {
@@ -33,8 +32,8 @@ public class BRJSWritingResourceBundlerHandler implements BundlerHandler
 		BRJS brjs = null;
 		try
 		{
-    		brjs = BRJSAccessor.root;
-    	
+    		brjs = BRJSThreadSafeModelAccessor.aquireModel();
+    		
     		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(testDir, BundlableNode.class);
     		if (bundlableNode == null)
     		{
@@ -49,6 +48,10 @@ public class BRJSWritingResourceBundlerHandler implements BundlerHandler
 		}
 		finally 
 		{
+			if (brjs != null)
+			{
+				BRJSThreadSafeModelAccessor.releaseModel();
+			}
 			try
 			{
 				outputStream.close();

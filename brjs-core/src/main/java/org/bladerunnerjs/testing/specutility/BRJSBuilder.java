@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.appserver.ServletModelAccessor;
+import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -229,8 +229,8 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 
 	public BuilderChainer usedForServletModel()
 	{
-		ServletModelAccessor.destroy();
-		ServletModelAccessor.initializeModel(brjs);
+		BRJSThreadSafeModelAccessor.destroy();
+		BRJSThreadSafeModelAccessor.initializeModel(brjs);
 		return builderChainer;
 	}
 	

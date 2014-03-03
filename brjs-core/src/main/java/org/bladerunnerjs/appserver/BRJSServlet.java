@@ -33,28 +33,28 @@ public class BRJSServlet extends HttpServlet
 		super.init(config);
 		
 		servletContext = config.getServletContext();
-		ServletModelAccessor.initializeModel(servletContext);
+		BRJSThreadSafeModelAccessor.initializeModel(servletContext);
 		
 		try {
-			brjs = ServletModelAccessor.aquireModel();
+			brjs = BRJSThreadSafeModelAccessor.aquireModel();
 			app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath(".")), App.class);
 		}
 		finally {
-			ServletModelAccessor.releaseModel();
+			BRJSThreadSafeModelAccessor.releaseModel();
 		}
 	}
 	
 	@Override
 	public void destroy()
 	{
-		ServletModelAccessor.destroy();
+		BRJSThreadSafeModelAccessor.destroy();
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		try {
-			BRJS brjs = ServletModelAccessor.aquireModel();
+			BRJS brjs = BRJSThreadSafeModelAccessor.aquireModel();
 			String contentType = servletContext.getMimeType(request.getRequestURI());
 			
 			if((contentType != null) && contentType.startsWith("text/") && !contentType.contains("charset")) {
@@ -68,7 +68,7 @@ public class BRJSServlet extends HttpServlet
 			throw new ServletException(e);
 		}
 		finally {
-			ServletModelAccessor.releaseModel();
+			BRJSThreadSafeModelAccessor.releaseModel();
 		}
 	}
 }

@@ -45,10 +45,10 @@ public class BRJSServletFilter implements Filter
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
 		servletContext = filterConfig.getServletContext();
-		ServletModelAccessor.initializeModel(servletContext);
+		BRJSThreadSafeModelAccessor.initializeModel(servletContext);
 		
 		try {
-			brjs = ServletModelAccessor.aquireModel();
+			brjs = BRJSThreadSafeModelAccessor.aquireModel();
 			List<String> pluginRequestPrefixes = new ArrayList<>();
 			
 			app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath(".")), App.class);
@@ -60,14 +60,14 @@ public class BRJSServletFilter implements Filter
 			contentPluginPrefixPattern = Pattern.compile("^.*/([a-zA-Z0-9_-]+-aspect|workbench)/" + "(" + Joiner.on("|").join(pluginRequestPrefixes) + ")(/.*)?$");
 		}
 		finally {
-			ServletModelAccessor.releaseModel();
+			BRJSThreadSafeModelAccessor.releaseModel();
 		}
 	}
 	
 	@Override
 	public void destroy()
 	{
-		ServletModelAccessor.destroy();
+		BRJSThreadSafeModelAccessor.destroy();
 	}
 	
 	@Override
