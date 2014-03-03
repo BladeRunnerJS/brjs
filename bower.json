@@ -1,7 +1,7 @@
 {
   "name": "browser-modules",
   "main": "browser-modules.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "homepage": "http://bladerunnerjs.github.io/browser-modules",
   "authors": [
     "kybernetikos & the BladeRunnerJS team <bladerunnerjs@caplin.com>"  ],

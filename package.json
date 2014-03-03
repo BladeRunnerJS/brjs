@@ -1,6 +1,6 @@
 {
   "name": "browser-modules",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A simple define/require for the browser.",
   "homepage": "http://bladerunnerjs.github.io/browser-modules",
   "main": "browser-modules.js",
@@ -20,5 +20,8 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/BladeRunnerJS/browser-modules/issues"
+  },
+  "devDependencies": {
+    "jasmine-node": "~1.13.1"
   }
 }
