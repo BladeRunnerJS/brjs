@@ -81,6 +81,11 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	}
 	
 	@Override
+	public boolean isNamespaceEnforced() {
+		return false;
+	}
+	
+	@Override
 	public List<AssetContainer> getAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		

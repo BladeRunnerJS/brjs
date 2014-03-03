@@ -57,14 +57,19 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	};
 	
 	@Override
-	public String namespace() {
-		return ((AssetContainer) parentNode().parentNode()).namespace(); //TOOD: refactor this
-	}
-
-	@Override
 	public String requirePrefix()
 	{
 		return ((AssetContainer) parentNode().parentNode()).requirePrefix(); //TOOD: refactor this
+	}
+	
+	@Override
+	public String namespace() {
+		return ((AssetContainer) parentNode().parentNode()).namespace(); //TOOD: refactor this
+	}
+	
+	@Override
+	public boolean isNamespaceEnforced() {
+		return true;
 	}
 	
 	@Override

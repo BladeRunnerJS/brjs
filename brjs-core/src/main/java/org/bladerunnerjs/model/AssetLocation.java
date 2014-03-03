@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 
+import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -16,6 +17,7 @@ public interface AssetLocation extends BRJSNode {
 	String getJsStyle();
 	String requirePrefix() throws RequirePathException;
 	String namespace() throws RequirePathException;
+	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException;
 	SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException;
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAsset> seedResources();

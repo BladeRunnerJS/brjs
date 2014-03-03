@@ -71,6 +71,11 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 		return app.getRequirePrefix() + "/" + getName();
 	}
 	
+	@Override
+	public boolean isNamespaceEnforced() {
+		return false;
+	}
+	
 	public App parent()
 	{
 		return (App) parentNode();

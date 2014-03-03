@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -57,6 +58,13 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	@Override
 	public String namespace() throws RequirePathException {
 		return requirePrefix().replace("/", ".");
+	}
+	
+	@Override
+	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
+		if(assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace() + ".")) {
+			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace() + ".*' was expected.");
+		}
 	}
 	
 	@Override

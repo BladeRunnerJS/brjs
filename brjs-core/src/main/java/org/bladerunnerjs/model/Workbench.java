@@ -55,6 +55,11 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	}
 	
 	@Override
+	public boolean isNamespaceEnforced() {
+		return false;
+	}
+	
+	@Override
 	public List<AssetContainer> getAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		

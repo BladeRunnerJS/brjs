@@ -130,7 +130,11 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		return getName();
 	}
 	
-
+	@Override
+	public boolean isNamespaceEnforced() {
+		return true;
+	}
+	
 	@Override
 	public String toString()
 	{

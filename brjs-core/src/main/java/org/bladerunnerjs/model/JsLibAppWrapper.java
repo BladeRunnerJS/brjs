@@ -53,6 +53,11 @@ public final class JsLibAppWrapper implements JsLib {
 	}
 	
 	@Override
+	public boolean isNamespaceEnforced() {
+		return wrappedJsLib.isNamespaceEnforced();
+	}
+	
+	@Override
 	public BRJS root() {
 		return wrappedJsLib.root();
 	}

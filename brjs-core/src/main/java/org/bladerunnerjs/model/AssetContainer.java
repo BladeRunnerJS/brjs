@@ -8,8 +8,9 @@ import java.util.List;
  */
 public interface AssetContainer extends BRJSNode {
 	App getApp();
-	String namespace();
 	String requirePrefix();
+	String namespace();
+	boolean isNamespaceEnforced();
 	List<SourceModule> sourceModules();
 	SourceModule sourceModule(String requirePath);
 	AssetLocation assetLocation(String locationPath);
