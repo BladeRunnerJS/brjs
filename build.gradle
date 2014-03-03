@@ -135,26 +135,6 @@ subprojects {
 	}
 }
 
-
-task buildAndTestIE {
-	description "Runs the 'build' task and also includes IE tests"
-}
-afterEvaluate { project ->
-	buildAndTestIE.dependsOn build
-	buildAndTestIE.dependsOn ':cutlass-sdk:testIE'
-}
-
-
-task buildAndTestIE_NoSysApps {
-	description "Runs the 'build' task and also includes IE tests, ignoring the IE tests for systems apps"
-}
-afterEvaluate { project ->
-    buildAndTestIE_NoSysApps.dependsOn build
-    buildAndTestIE_NoSysApps.dependsOn ':cutlass-sdk:testJsIE'
-}
-
-
-
 def getProperty = { project, property ->
 if (!project.hasProperty(property)) {
 	throw new GradleException("${property} property must be set")
