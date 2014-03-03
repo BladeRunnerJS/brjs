@@ -166,7 +166,10 @@
 					definitionContext = id.substring(0, id.lastIndexOf("/"));
 				}
 				// this is set to the module inside the definition code.
-				var returnValue = definition.call(module, require.bind(this, definitionContext), module.exports, module);
+				var realm = this;
+				var returnValue = definition.call(module, function(requirePath) {
+					return realm.require(definitionContext, requirePath);
+				}, module.exports, module);
 				this.moduleExports[id] = returnValue || module.exports;
 			} else {
 				// this lets you define things without definition functions, e.g.
