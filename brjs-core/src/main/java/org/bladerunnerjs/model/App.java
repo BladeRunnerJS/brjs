@@ -246,7 +246,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 	}
 	
-	public String getNamespace() {
+	public String getRequirePrefix() {
 		try {
 			return appConf().getRequirePrefix();
 		} catch (ConfigException e) {

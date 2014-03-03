@@ -79,7 +79,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public String namespace() {
 		// TODO: Aspect and Workbench shouldn't define a namespace so that i18n tokens and aliases can be overridden, but we should create some tests before we make this change
 		App app = parent();
-		return app.getNamespace();
+		return app.getRequirePrefix();
 	}
 	
 	@Override

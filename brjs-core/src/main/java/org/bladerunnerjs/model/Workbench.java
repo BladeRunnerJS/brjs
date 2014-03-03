@@ -52,7 +52,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	@Override
 	public String namespace() {
 		// TODO: Aspect and Workbench shouldn't define a namespace so that i18n tokens and aliases can be overridden, but we should create some tests before we make this change
-		return getApp().getNamespace();
+		return getApp().getRequirePrefix();
 	}
 	
 	@Override
