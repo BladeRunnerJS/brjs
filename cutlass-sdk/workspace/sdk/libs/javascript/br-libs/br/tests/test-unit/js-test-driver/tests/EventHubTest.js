@@ -21,10 +21,6 @@
 		};
 	};
 	
-//	 Error: expected {"apple":{"_emitterListeners":{"_map":{"_map":{},"_keys":[],"_values":[]}},"_emitterMetaEventsOn":false,"name":"apple"}} but was 
-//	                 {"apple":{"_emitterListeners":{"_map":{"_map":{},"_keys":[],"_values":[]}},"_emitterMetaEventsOn":false}}
-
-
 	// T E S T S
 	
 	//TODO: Don't really like this. why is the channel adding a "name" property onto the Emitter object from the outside?
