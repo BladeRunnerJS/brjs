@@ -1,7 +1,7 @@
 caplinx.dashboard.app.model.dialog.validator.AppNamespaceValidator = function()
 {
 };
-br.extend(caplinx.dashboard.app.model.dialog.validator.AppNamespaceValidator, br.presenter.validator.Validator);
+br.Core.extend(caplinx.dashboard.app.model.dialog.validator.AppNamespaceValidator, br.presenter.validator.Validator);
 
 caplinx.dashboard.app.model.dialog.validator.AppNamespaceValidator.prototype.validate = function(vValue, mAttributes, oValidationResult)
 {

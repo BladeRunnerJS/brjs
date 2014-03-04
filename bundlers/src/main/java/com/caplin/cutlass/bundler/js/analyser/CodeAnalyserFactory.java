@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.caplin.cutlass.bundler.BundlerFileUtils;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.bundler.js.ClassProcessor;
 import com.caplin.cutlass.bundler.js.ClassProcessorFactory;
 import com.caplin.cutlass.bundler.js.ClassnameFileMapping;
@@ -20,9 +20,9 @@ public class CodeAnalyserFactory
 {
 	/**
 	 * @param baseDir - Directory containing seed files e.g. index.html, index.jsp
-	 * @throws BundlerProcessingException 
+	 * @throws ContentProcessingException 
 	 */
-	public static CodeAnalyser getCodeAnalyser(File baseDir) throws BundlerProcessingException
+	public static CodeAnalyser getCodeAnalyser(File baseDir) throws ContentProcessingException
 	{
 		List<ClassnameFileMapping> sourceFiles = SourceFileLocator.getAllSourceFiles(baseDir, null);
 		List<ClassnameFileMapping> patchFiles = new ArrayList<>();
@@ -45,22 +45,19 @@ public class CodeAnalyserFactory
 	 * 
 	 * @param baseDir
 	 * @return
-	 * @throws BundlerProcessingException 
+	 * @throws ContentProcessingException 
 	 */
-	public static CodeAnalyser getLibraryCodeAnalyser(App appNode, File packageDir) throws BundlerProcessingException
+	public static CodeAnalyser getLibraryCodeAnalyser(App appNode, File packageDir) throws ContentProcessingException
 	{
 		List<File> libraryRootDirs = new ArrayList<File>();
 		
 		for(JsLib jsLibrary: appNode.jsLibs())
 		{
-			File libraryRoot = jsLibrary.src().dir();
-
-			if(!libraryRoot.exists())
+			File libraryRoot = jsLibrary.assetLocation("src").dir();
+			if(libraryRoot.exists())
 			{
-				throw new BundlerProcessingException("Cant find: " + libraryRoot.getAbsolutePath() );
+				libraryRootDirs.addAll(Arrays.asList(libraryRoot));
 			}
-			
-			libraryRootDirs.addAll(Arrays.asList(libraryRoot));
 		}
 		
 		Set<ClassnameFileMapping> mappings = SourceFileLocator.getClassNameMappings(libraryRootDirs, SourceFileLocator.SOURCE_FILENAME_FILTER);

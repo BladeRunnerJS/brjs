@@ -13,25 +13,30 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.OrFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
+
+import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.SourceFileProvider;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
 
-public class HtmlBundler implements LegacyFileBundlerPlugin
+public class HtmlBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private final IOFileFilter htmlFilter = new SuffixFileFilter(".html");
 	private final IOFileFilter htmFilter = new SuffixFileFilter(".htm");
 	private final IOFileFilter htmlOrHtmFileFilter = new OrFileFilter(htmlFilter, htmFilter);
-	private final ContentPathParser requestParser = RequestParserFactory.createHtmlBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createHtmlBundlerContentPathParser();
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -47,7 +52,7 @@ public class HtmlBundler implements LegacyFileBundlerPlugin
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
@@ -55,7 +60,7 @@ public class HtmlBundler implements LegacyFileBundlerPlugin
 	{
 		SourceFileProvider htmlSourceFileProvider = new BladeRunnerSourceFileProvider(new HtmlBundlerFileAppender());
 
-		requestParser.parse(requestName);
+		contentPathParser.parse(requestName);
 		
 		List<File> sourceFiles = htmlSourceFileProvider.getSourceFiles(baseDir, testDir);
 		List<File> htmlSourceFiles = new ArrayList<File>();
@@ -68,7 +73,7 @@ public class HtmlBundler implements LegacyFileBundlerPlugin
 	}
 
 	@Override
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		HtmlFileProcessor htmlFileProcessor = new HtmlFileProcessor();

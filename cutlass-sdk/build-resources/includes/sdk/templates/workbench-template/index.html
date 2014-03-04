@@ -4,20 +4,50 @@
 		<title>Workbench</title>
 		
 		<@css.bundle theme="standard"@/>
-		<@js.bundle@/>
+		
+	</head>
+	<body>
+
+		<@js.bundle @/>
 		
 		<script type="text/javascript">
-			function initialize() {
-				var workbench = new br.workbench.ui.Workbench(250, 310);
-				var model = new @appns.@bladeset.@blade.ExamplePresentationModel();
-				var component = new br.presenter.component.PresenterComponent("@appns.@bladeset.@blade.view-template", model);
-				var presentationModelViewer = new br.presenter.workbench.ui.PresentationModelViewer(model);
-				
-				workbench.addToRightWing(presentationModelViewer, "Visualise Presentation Model", false);
-				workbench.displayComponent(component, 200, 100);
+			// Register application EventHub. Required until the following is fixed:
+			// https://github.com/BladeRunnerJS/brjs/issues/354
+			var ServiceRegistry = require( 'br/ServiceRegistry' );
+			var EventHub = require( 'br/EventHub' );
+			ServiceRegistry.registerService( 'br.event-hub', new EventHub() );
+
+			function addEventHubLogger( workbench ) {
+				var eventHub = ServiceRegistry.getService( 'br.event-hub' );
+				var EventHubViewer = require( 'br/workbench/tools/EventHubViewer' );
+				var eventHubViewer = new EventHubViewer( eventHub );
+				workbench.addToLeftWing( eventHubViewer, "EventHub Logging", false );
 			}
+
+			function addModelViewer( model, workbench ) {
+				var KnockoutModelTree = require( 'br/knockout/workbench/KnockoutModelTree' );
+				var PresentationModelViewer = require( 'br/presenter/workbench/ui/PresentationModelViewer' );
+				var presentationModelViewer = new PresentationModelViewer(model, KnockoutModelTree);
+				workbench.addToRightWing( presentationModelViewer, "Visualise Knockout View Model", false);
+			}
+
+			function addComponent( component, workbench  ) {
+				workbench.displayComponent( component, 200, 100 );
+			}
+
+			var Workbench = require( 'br/workbench/ui/Workbench' );
+			var workbench = new Workbench(250, 310);
+			addEventHubLogger( workbench );
+
+			// ViewModel that is being created in the workbench
+			var @class-nameViewModel = require( '@appns/@bladeset/@blade/@class-nameViewModel' );
+			var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
+			
+			var model = new @class-nameViewModel();
+			var component = new KnockoutComponent( '@appns.@bladeset.@blade.view-template', model );
+
+			addComponent( component, workbench )
+			addModelViewer( model, workbench );
 		</script>
-	</head>
-	<body onload="initialize()">
 	</body>
 </html>

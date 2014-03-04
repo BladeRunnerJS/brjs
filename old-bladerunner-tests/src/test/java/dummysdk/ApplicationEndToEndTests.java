@@ -1,23 +1,25 @@
 package dummysdk;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.appserver.AppDeploymentObserver;
-import org.bladerunnerjs.model.appserver.ApplicationServer;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
+
+import org.bladerunnerjs.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.plugin.plugins.appdeployer.AppDeploymentObserverPlugin;
 import org.bladerunnerjs.testing.utility.WebappTester;
+import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
@@ -50,21 +52,22 @@ public class ApplicationEndToEndTests
 		tempSdkInstall = FileUtility.createTemporarySdkInstall(INSTALL_ROOT).getParentFile();
 		brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempSdkInstall));
 		
-		ModelObserverPlugin appDeploymentObserver = new AppDeploymentObserver();
+		ModelObserverPlugin appDeploymentObserver = new AppDeploymentObserverPlugin();
 		appDeploymentObserver.setBRJS(brjs);
 		
 		brjs.bladerunnerConf().setJettyPort(HTTP_PORT);	
 		brjs.appJars().create();
 		appServer = brjs.applicationServer(HTTP_PORT);
 		appServer.start();
-		ServletModelAccessor.reset();
-		tester = new WebappTester(tempSdkInstall, 10000, 10000);
+		ServletModelAccessor.destroy();
+		tester = new WebappTester(tempSdkInstall);
 	}
 	
 	@After
 	public void teardown() throws Exception
 	{
 		appServer.stop();
+		brjs.close();
 		assertFalse( "port is still bound!", ServerUtility.isPortBound(HTTP_PORT) );
 	}
 	
@@ -90,7 +93,7 @@ public class ApplicationEndToEndTests
 	{
 		tester.whenRequestMadeTo(AUTH_APP_URL)
 			.statusCodeIs(200)
-			.sameAsRequestFor(AUTH_APP_URL+"/login/index.html");
+			.sameAsRequestFor(AUTH_APP_URL+"/login-aspect/index.html");
 	}
 	
 	@Test
@@ -113,7 +116,7 @@ public class ApplicationEndToEndTests
 			.statusCodeIs(200).contentTypeIs("text/javascript")
 			.responseIsConcatenationOfFiles(new String[]{
 					APPS + "/test-app1/default-aspect/src/section/xmlDepend.js",
-					SDK_DIR + "/libs/javascript/caplin/src/caplin/bootstrap.js",
+					SDK_DIR + "/libs/javascript/caplin/src/br/bootstrap.js",
 					SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js",
 					SDK_DIR + "/libs/javascript/thirdparty/knockout/knockout.js",
 					APPS + "/test-app1/default-aspect/src/section/app/main1.js", 
@@ -133,7 +136,7 @@ public class ApplicationEndToEndTests
 		.statusCodeIs(200).contentTypeIs("text/javascript")
 		.responseIsConcatenationOfFiles(new String[]{
 				APPS + "/test-app1/default-aspect/src/section/xmlDepend.js",
-				SDK_DIR + "/libs/javascript/caplin/src/caplin/bootstrap.js",
+				SDK_DIR + "/libs/javascript/caplin/src/br/bootstrap.js",
 				SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js",
 				SDK_DIR + "/libs/javascript/thirdparty/knockout/knockout.js",
 				APPS + "/test-app1/default-aspect/src/section/app/main1.js", 
@@ -155,12 +158,9 @@ public class ApplicationEndToEndTests
 			.responseDoesntContain("section");
 	}
 	
-	@Test
+	@Test @Ignore // this test is duplicated in BRJSApplicationServerTest and is unreliable when run with other tests (it passes individually)
 	public void testNewContextsCanBeAddedAfterServerHasStarted() throws Exception
-	{		
-		tester.whenRequestMadeTo(APP1_URL)
-		.statusCodeIs(200);
-
+	{
 		tester.whenRequestMadeTo(BASE_URL+"/newly-created-app")
 		.statusCodeIs(404);
 		
@@ -182,7 +182,7 @@ public class ApplicationEndToEndTests
 			.statusCodeIs(200).contentTypeIs("text/javascript")
 			.responseIsConcatenationOfFiles(new String[]{
 					APPS + "/test-app1/default-aspect/src/section/xmlDepend.js",
-					SDK_DIR + "/libs/javascript/caplin/src/caplin/bootstrap.js",
+					SDK_DIR + "/libs/javascript/caplin/src/br/bootstrap.js",
 					SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js",
 					SDK_DIR + "/libs/javascript/thirdparty/knockout/knockout.js",
 					APPS + "/test-app1/default-aspect/src/section/app/main1.js", 

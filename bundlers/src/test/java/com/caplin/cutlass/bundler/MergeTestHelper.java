@@ -11,9 +11,9 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import com.caplin.cutlass.EncodingAccessor;
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 
 public class MergeTestHelper
 {

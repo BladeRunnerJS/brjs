@@ -10,15 +10,17 @@ import java.util.zip.ZipFile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.BRJS;
+
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand;
+
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.command.CommandTaskTest;
 
 public class WarCommandTest extends CommandTaskTest
@@ -35,7 +37,8 @@ public class WarCommandTest extends CommandTaskTest
 		FileUtils.copyDirectory(testResourceDir, tempDir);
 		BRJS brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempDir));
 		out = BRJSAccessor.root.getConsoleWriter();
-		warCommand = new WarCommand(brjs);
+		warCommand = new WarCommand();
+		warCommand.setBRJS(brjs);
 		
 		tempDirectory = FileUtility.createTemporaryDirectory("warCommandTest");
 		warFile = new File(tempDirectory, "tempWar.war");
@@ -82,7 +85,8 @@ public class WarCommandTest extends CommandTaskTest
 			
 			File copiedSdkBaseDir = new File(copiedTestResources, CutlassConfig.SDK_DIR);
 			BRJS brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(copiedSdkBaseDir));
-			WarCommand newWarCommand = new WarCommand(brjs);
+			WarCommand newWarCommand = new WarCommand();
+			newWarCommand.setBRJS(brjs);
 			
 			createHiddenFoldersInsideAppStructure(copiedTestResources);
 
@@ -119,17 +123,6 @@ public class WarCommandTest extends CommandTaskTest
 		new File(rootDir, "apps/emptytrader/default-aspect/unbundled-resources/subfolder/.svn").mkdirs();
 		new File(rootDir, "apps/emptytrader/thirdparty-libraries/.svn").mkdirs();
 		new File(rootDir, "apps/emptytrader/thirdparty-libraries/subfolder/.svn").mkdirs();
-	}
-	
-	@Test
-	public void testWarCommandForApplicationThatExistsWithoutWarOutputSpecified() throws Exception
-	{
-		warFile = new File("emptytrader.war");
-		assertFalse(warFile.exists());
-
-		warCommand.doCommand(new String[] { "emptytrader" });
-
-		assertTrue(warFile.exists());
 	}
 	
 	@Test

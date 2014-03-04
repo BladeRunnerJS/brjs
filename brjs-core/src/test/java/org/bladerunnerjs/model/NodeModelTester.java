@@ -14,14 +14,23 @@ public class NodeModelTester
 		CN locatedNode = null;
 		
 		assertTrue("you must provide possible node locations", possibleNodeLocations.size() > 0);
-		
+
 		for(File possibleNodeLocation : possibleNodeLocations)
-		{
+		{			
 			locatedNode = parentNode.root().locateAncestorNodeOfClass(possibleNodeLocation, childNodeClass);
 			
+			assertNotNull("no node of class " + childNodeClass + " found for location " + possibleNodeLocation, locatedNode);
 			assertNotNull("no '" + childNodeClass.getSimpleName() + "' node located for '" + possibleNodeLocation.getAbsolutePath() + "'", locatedNode.dir());
-			assertEquals("located node was found at given directory, but .dir() returns different location", possibleNodeLocation.getAbsolutePath(), locatedNode.dir().getAbsolutePath());
-			assertSame(parentNode, locatedNode.parentNode());
+			assertEquals("located node was found at given directory, but .dir() returns different location", possibleNodeLocation.getAbsolutePath(), locatedNode.dir().getPath());
+			
+			if (locatedNode instanceof JsLib && !possibleNodeLocation.getAbsolutePath().contains(File.separator + "apps" + File.separator))
+			{
+				assertSame(parentNode.root(), locatedNode.parentNode());
+			}
+			else
+			{
+				assertSame(parentNode, locatedNode.parentNode());
+			}
 		}
 	}
 }

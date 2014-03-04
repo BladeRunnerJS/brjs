@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,7 +31,14 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 	
 	public NodeSetModelTester<PN, CN> addChild(String childName, String childPath)
 	{
-		childPaths.put(childName, new File(parentNode.dir(), childPath));
+		try
+		{
+			childPaths.put(childName, new File(parentNode.dir(), childPath).getCanonicalFile());
+		}
+		catch (IOException e)
+		{
+			new RuntimeException(e);
+		}
 		
 		return this;
 	}
@@ -64,7 +72,7 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 			File entryPath = entry.getValue();
 			CN childNode = childrenNodes.get(nextChild++);
 			
-			assertEquals(entryPath.getAbsolutePath(), childNode.dir().getAbsolutePath());
+			assertEquals(entryPath.getAbsolutePath(), childNode.dir().getPath());
 		}
 		
 		assertEquals("list lengths differ", childPaths.size(), childrenNodes.size());
@@ -81,7 +89,7 @@ public class NodeSetModelTester<PN extends BRJSNode, CN extends BRJSNode>
 			@SuppressWarnings("unchecked")
 			CN childNode = (CN) getNamedItemMethod.invoke(parentNode, entryName);
 			
-			assertEquals(entryPath.getAbsolutePath(), childNode.dir().getAbsolutePath());
+			assertEquals(entryPath.getAbsolutePath(), childNode.dir().getPath());
 		}
 	}
 }

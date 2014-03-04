@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.structure.model.BasicNameCalculator;
 import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.NodeType;

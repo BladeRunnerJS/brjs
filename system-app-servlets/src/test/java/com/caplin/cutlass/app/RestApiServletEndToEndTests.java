@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -12,10 +13,12 @@ import org.eclipse.jetty.server.Server;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+
+import com.caplin.cutlass.util.FileUtility;
+
+import org.bladerunnerjs.utility.ServerUtility;
+
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.app.servlet.RestApiServlet;
 
@@ -36,8 +39,8 @@ public class RestApiServletEndToEndTests
 	public void setup() throws Exception
 	{
 		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
-		ServletModelAccessor.reset();
-		brjs = ServletModelAccessor.initializeModel( sdkRoot );
+		ServletModelAccessor.destroy();
+		brjs = ServletModelAccessor.initializeAndGetModel( sdkRoot );
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
 		server.start();
@@ -47,6 +50,8 @@ public class RestApiServletEndToEndTests
 	@After
 	public void tearDown() throws Exception
 	{
+		ServletModelAccessor.destroy();
+		
 		if (server != null)
 		{
 			server.stop();
@@ -80,7 +85,7 @@ public class RestApiServletEndToEndTests
 		createApp("newApp","appx");
 		
 		assertTrue( brjs.app("newApp").dirExists() );
-		assertTrue( brjs.app("newApp").aspect("default").src().file("appx").exists() );
+		assertTrue( brjs.app("newApp").aspect("default").assetLocation("src").file("appx").exists() );
 	}
 	
 	@Test

@@ -12,12 +12,12 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import static com.caplin.cutlass.bundler.ResourceAdder.*;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BladeRunnerFileAppender;
 import com.caplin.cutlass.bundler.LibraryManifest;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class CssBundlerFileAppender implements BladeRunnerFileAppender
 {
@@ -33,7 +33,7 @@ public class CssBundlerFileAppender implements BladeRunnerFileAppender
 	}
 	
 	@Override
-	public void appendThirdPartyLibraryFiles(File appRoot, List<File> files) throws BundlerProcessingException
+	public void appendThirdPartyLibraryFiles(File appRoot, List<File> files) throws ContentProcessingException
 	{
 		if(theme.equals(CutlassConfig.COMMON_CSS))
 		{
@@ -43,7 +43,7 @@ public class CssBundlerFileAppender implements BladeRunnerFileAppender
 	}
 	
 	@Override
-	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws BundlerProcessingException
+	public void appendLibrarySourceFiles(File librarySourceRoot, List<File> files) throws ContentProcessingException
 	{
 		// do nothing
 	}
@@ -99,7 +99,7 @@ public class CssBundlerFileAppender implements BladeRunnerFileAppender
 		}
 	}
 
-	private List<File> getCssFilesFromLibraryDirectories(Map<String, File> libraryDirectories) throws BundlerProcessingException
+	private List<File> getCssFilesFromLibraryDirectories(Map<String, File> libraryDirectories) throws ContentProcessingException
 	{
 		List<File> thirdPartyCssFiles = new ArrayList<File>();
 		for(File libraryDirectory: libraryDirectories.values())
@@ -109,7 +109,7 @@ public class CssBundlerFileAppender implements BladeRunnerFileAppender
 		return thirdPartyCssFiles;
 	}
 	
-	private List<File> addCssFilesForThirdPartyLibrary(File libraryDirectory) throws BundlerProcessingException
+	private List<File> addCssFilesForThirdPartyLibrary(File libraryDirectory) throws ContentProcessingException
 	{
 		List<File> libraryCssFiles = new ArrayList<File>();
 		LibraryManifest manifest = new LibraryManifest(libraryDirectory);
@@ -120,7 +120,7 @@ public class CssBundlerFileAppender implements BladeRunnerFileAppender
 			{
 				String errorMessage = "Could not find thirdparty library css file '" + cssFile.getName() 
 						+ "' for library '" + libraryDirectory.getName() + "'";
-				throw new BundlerFileProcessingException(cssFile, errorMessage);
+				throw new ContentFileProcessingException(cssFile, errorMessage);
 			}
 			libraryCssFiles.add(cssFile);
 		}

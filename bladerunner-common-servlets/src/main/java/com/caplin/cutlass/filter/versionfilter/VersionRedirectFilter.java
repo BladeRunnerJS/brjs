@@ -19,10 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class VersionRedirectFilter implements Filter
@@ -49,13 +49,14 @@ public class VersionRedirectFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		servletContext = filterConfig.getServletContext();
 	}
 	
 	@Override
 	public void destroy()
 	{
+		ServletModelAccessor.destroy();
 	}
 	
 	@Override

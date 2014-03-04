@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.junit.Test;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +42,7 @@ public class CssBundlerFileAppenderTest
 		assertTrue(cssFiles.contains(new File(BASE_DIR, SDK_DIR + "/libs/javascript/thirdparty/lib2/lib2_style2.css")));
 	}
 	
-	@Test(expected=BundlerProcessingException.class)
+	@Test(expected=ContentProcessingException.class)
 	public void testAppendThirdPartyLibraryThrowsExceptionIfManifestIncludesNonExistentCssFile() throws Exception
 	{
 		CssBundlerFileAppender fileAppender = new CssBundlerFileAppender("common");

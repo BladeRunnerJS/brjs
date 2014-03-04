@@ -1,9 +1,10 @@
 package com.caplin.cutlass.bundler.xml;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.bundler.BundlerFileTester;
@@ -18,7 +19,7 @@ public class StructureXmlBundlerFileListTestForApp2
 		test = new BundlerFileTester(new XmlBundler(), "src/test/resources/generic-bundler/bundler-structure-tests");
 	}
 
-	@Test
+	@Test @Ignore
 	public void appAspectLevelRequestForApp2DefaultAspect() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app2/default-aspect")
@@ -44,7 +45,7 @@ public class StructureXmlBundlerFileListTestForApp2
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void appAspectLevelRequestForApp2AlternateAspect() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app2/xtra-aspect")
@@ -70,7 +71,7 @@ public class StructureXmlBundlerFileListTestForApp2
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladesetLevelRequestForApp2() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app2/fx-bladeset")
@@ -84,7 +85,7 @@ public class StructureXmlBundlerFileListTestForApp2
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void bladeLevelRequestForApp2() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app2/fx-bladeset/blades/fx-blade1")
@@ -100,7 +101,7 @@ public class StructureXmlBundlerFileListTestForApp2
 		});
 	}
 	
-	@Test
+	@Test @Ignore
 	public void workbenchLevelRequestForApp2() throws Exception
 	{
 		test.givenDirectoryOnDisk(APPLICATIONS_DIR + "/test-app2/fx-bladeset/blades/fx-blade1/workbench")

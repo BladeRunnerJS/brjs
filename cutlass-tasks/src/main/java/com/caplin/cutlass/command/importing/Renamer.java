@@ -15,12 +15,12 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.exception.NamespaceException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 
 public class Renamer
 {
@@ -40,13 +40,13 @@ public class Renamer
 				/* no app.conf for renamed app (its from a template) so create a new app conf with default values */
 				appConf = new AppConf(oldNamespace, CutlassConfig.DEFAULT_APP_LOCALES);
 			}
-			appConf.appNamespace = newNamespace;
+			appConf.requirePrefix = newNamespace;
 			AppConf.writeConf(applicationDirectory, appConf);
 		}
 		
 		for(File bladeset : CutlassDirectoryLocator.getChildBladesets(applicationDirectory))
 		{
-			String bladesetNamespace = "." + NamespaceCalculator.getBladesetNamespace(bladeset);
+			String bladesetNamespace = "." + RequirePrefixCalculator.getBladesetRequirePrefix(bladeset);
 			renameBladeset(bladeset, oldNamespace + bladesetNamespace, newNamespace + bladesetNamespace);
 		}
 		

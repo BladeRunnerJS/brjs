@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class EnabledBladesFilterTest
 {
@@ -17,7 +17,7 @@ public class EnabledBladesFilterTest
 	public static final File APP1 = new File(BASE, "apps/app1");
 	
 	@Test
-	public void testFilterGetsCorrectBladeAndBladesetFiles() throws BundlerProcessingException
+	public void testFilterGetsCorrectBladeAndBladesetFiles() throws ContentProcessingException
 	{
 		List<File> filesToBeFiltered = new ArrayList<File>();
 		

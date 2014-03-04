@@ -30,6 +30,8 @@ If you are interested in contributing to the BRJS core toolkit then the followin
     git submodule init
     git submodule update
 
+You may need to run `git submodule sync` and `git submodule update` when changing branches if submodules have changed.
+
 #### Build a Distributable Zip
 
 From the root `brjs` source directory:
@@ -41,3 +43,4 @@ The built zip file will be found in `BRJS_ROOT/cutlass-sdk/build/distributions/`
 ### More information    
 
 See the [BRJS Developer Setup Guide](https://github.com/BladeRunnerJS/brjs/wiki/BRJS-Developer-Setup) for more information.
+

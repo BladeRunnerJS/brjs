@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.exception.NamespaceException;
 
 public class SourceFileLocator
@@ -33,7 +33,7 @@ public class SourceFileLocator
 		return new ArrayList<String>(librariesToDirectories.keySet());
 	}
 
-	public static List<ClassnameFileMapping> getAllSourceFiles(File baseDir, File testDir ) throws BundlerProcessingException
+	public static List<ClassnameFileMapping> getAllSourceFiles(File baseDir, File testDir ) throws ContentProcessingException
 	{
 		BladeRunnerSourceFileProvider sourceFileProvider = new BladeRunnerSourceFileProvider(new JsSourceBundlerFileAppender());
 		
@@ -45,7 +45,7 @@ public class SourceFileLocator
 		}
 		catch (NamespaceException ex)
 		{
-			throw new BundlerProcessingException(ex);
+			throw new ContentProcessingException(ex);
 		}
 		
 		List<File> sourceFileDirs = sourceFileProvider.getSourceFiles(baseDir, testDir);
@@ -53,7 +53,7 @@ public class SourceFileLocator
 		return new ArrayList<ClassnameFileMapping>(classnameFileMappings);
 	}
 	
-	public static List<ClassnameFileMapping> getAllPatchFiles(File patchesDir) throws BundlerProcessingException
+	public static List<ClassnameFileMapping> getAllPatchFiles(File patchesDir) throws ContentProcessingException
 	{		
 		if (patchesDir == null || !patchesDir.isDirectory())
 		{
@@ -64,7 +64,7 @@ public class SourceFileLocator
 		return new ArrayList<ClassnameFileMapping>(classnameFileMappings);
 	}
 	
-	public static List<File> getAllSeedFiles(File baseDir, File testDir) throws BundlerProcessingException
+	public static List<File> getAllSeedFiles(File baseDir, File testDir) throws ContentProcessingException
 	{
 		BladeRunnerSourceFileProvider seedFileProvider = new BladeRunnerSourceFileProvider(new JsSeedBundlerFileAppender());
 		

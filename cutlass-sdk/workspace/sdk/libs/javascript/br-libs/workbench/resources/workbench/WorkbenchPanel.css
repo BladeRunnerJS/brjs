@@ -1,0 +1,101 @@
+.workbench-panel {
+	width:300px;
+	padding:10px;
+	border-left: 1px solid #aaa;
+	-webkit-box-shadow:0 0 6px rgba(0,0,0,0.3);
+	-moz-box-shadow:0 0 6px rgba(0,0,0,0.3);
+	left:100%;
+	position: absolute;
+	top:0;
+	font-family: arial, sans-serif;
+	font-size: 13px;
+	color: #444;
+	text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.4);
+	background-color:grey;
+}
+
+.workbench-panel .drag-handle {
+	position: absolute;
+	left:0;
+	top:0;
+	height:100%;
+	width: 7px;
+	cursor:ew-resize;
+	background-color:#CCC;
+	background: url('handle.png') 0 50% no-repeat;
+}
+
+.workbench-panel .btn {
+	background: #E9E9E9;
+	background: -moz-linear-gradient(top, rgba(233, 233, 233, 1) 0%, rgba(192, 192, 192, 1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(233, 233, 233, 1)), color-stop(100%,rgba(192, 192, 192, 1)));
+	background: -webkit-linear-gradient(top, rgba(233, 233, 233, 1) 0%,rgba(192, 192, 192, 1) 100%);
+	background: -o-linear-gradient(top, rgba(233, 233, 233, 1) 0%,rgba(192, 192, 192, 1) 100%);
+	background: -ms-linear-gradient(top, rgba(233, 233, 233, 1) 0%,rgba(192, 192, 192, 1) 100%);
+	background: linear-gradient(to bottom, rgba(233, 233, 233, 1) 0%,rgba(192, 192, 192, 1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e9e9e9', endColorstr='#c0c0c0',GradientType=0 );
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	border:1px solid #777;
+	display:inline-block;
+	color:#444;
+	font-family:arial;
+	font-size:11px;
+	cursor:pointer;
+	font-weight:bold;
+	padding:3px 14px;
+	margin:5px;
+	text-decoration:none;
+	text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.4);
+	box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.5);
+}
+
+.workbench-panel .btn:hover {
+	background: rgb(247,247,247); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(247,247,247,1) 0%, rgba(214,214,214,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(247,247,247,1)), color-stop(100%,rgba(214,214,214,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(247,247,247,1) 0%,rgba(214,214,214,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(247,247,247,1) 0%,rgba(214,214,214,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(247,247,247,1) 0%,rgba(214,214,214,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(247,247,247,1) 0%,rgba(214,214,214,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#d6d6d6',GradientType=0 ); /* IE6-9 */
+}
+
+.workbench-panel .btn:active {
+	background: rgb(94,94,94); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(94,94,94,1) 0%, rgba(137,137,137,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(94,94,94,1)), color-stop(100%,rgba(137,137,137,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(94,94,94,1) 0%,rgba(137,137,137,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(94,94,94,1) 0%,rgba(137,137,137,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(94,94,94,1) 0%,rgba(137,137,137,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(94,94,94,1) 0%,rgba(137,137,137,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5e5e5e', endColorstr='#898989',GradientType=0 ); /* IE6-9 */
+	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5),
+				inset 0px 0px 3px rgba(0, 0, 0, 0.2);
+	border: done;
+	border-width: 1px;
+	border-color:#777;
+	color: #FFF;
+	text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.4);
+}
+
+.sortable-placeholder {
+	border: 2px dashed #666;
+	height: 100px
+}
+
+.workbench-panel input {
+	border: 1px solid #898989;
+	background: -webkit-gradient(linear, center top, center bottom, color-stop(0%, #ccc), color-stop(100%, #fff));
+	background: -moz-linear-gradient(top, #ccc, #fff);
+	border-radius: 4px;
+	height: 18px;
+	color: #333;
+}
+
+.workbench-panel > ul{
+	height: 100%;
+	overflow: auto;
+	min-width: 160px;
+}

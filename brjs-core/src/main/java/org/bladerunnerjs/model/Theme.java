@@ -10,22 +10,24 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 
 
-public class Theme extends AbstractBRJSNode implements NamedNode
+public final class Theme extends AbstractBRJSNode implements NamedNode
 {
 	private String name;
 	
 	public Theme(RootNode rootNode, Node parent, File dir, String name)
 	{
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
+		
+		registerInitializedNode();
 	}
 	
-	public static NodeMap<Theme> createNodeSet()
+	public static NodeMap<Theme> createNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(Theme.class, "themes", null);
+		return new NodeMap<>(rootNode, Theme.class, "themes", null);
 	}
 	
 	@Override

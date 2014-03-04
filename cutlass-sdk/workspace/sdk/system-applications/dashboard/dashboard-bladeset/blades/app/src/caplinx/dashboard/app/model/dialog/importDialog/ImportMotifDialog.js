@@ -22,7 +22,7 @@ caplinx.dashboard.app.model.dialog.importDialog.ImportMotifDialog = function(oPr
 	this.appNamespace.value.addValidationCompleteListener(this, "_updateDialog");
 	this.appNamespace.value.addChangeListener(this, "_onNamespaceChanged");
 };
-br.extend(caplinx.dashboard.app.model.dialog.importDialog.ImportMotifDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.Core.extend(caplinx.dashboard.app.model.dialog.importDialog.ImportMotifDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.importDialog.ImportMotifDialog.prototype.initializeForm = function()
 {

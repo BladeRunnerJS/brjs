@@ -20,8 +20,8 @@ import com.caplin.cutlass.testing.BRJSTestFactory;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
 
 public class ImportApplicationCommandTest
 {
@@ -101,7 +101,7 @@ public class ImportApplicationCommandTest
 		assertTrue(appConf.exists());
 		
 		List<String> appConfLines = FileUtils.readLines(appConf);
-		assertEquals("appNamespace: novox", appConfLines.get(0));
+		assertEquals("requirePrefix: novox", appConfLines.get(1));
 	}
 
 	// <app-name> exception test cases

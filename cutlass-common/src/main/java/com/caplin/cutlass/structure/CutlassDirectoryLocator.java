@@ -7,13 +7,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-
+import com.caplin.cutlass.util.FileUtility;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.BRJSAccessor;
 
-import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.logging.LoggerType;
 
 import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.NodeType;
@@ -432,7 +430,7 @@ public class CutlassDirectoryLocator
 		{
 			return dirs;
 		}
-		List<File> sortedDirContents = Arrays.asList(FileUtility.sortFileArray(directory.listFiles()));
+		List<File> sortedDirContents = Arrays.asList(FileUtility.sortFiles(directory.listFiles()));
 		
 		for (File dirContent : sortedDirContents)
 		{
@@ -474,42 +472,6 @@ public class CutlassDirectoryLocator
 	public static boolean isWorkbenchDir(File dir)
 	{
 		return SdkModel.nodeForLocationIsOfType(dir, NodeType.WORKBENCH);
-	}
-	
-	//TODO: move to sdk model
-	public static File getSdkJsResourcesDir(File location)
-	{
-		if(invalidInput(location))
-		{
-			return null;
-		}
-
-		AssetLocation resourcesDir = BRJSAccessor.root.sdkLib().resources();
-
-		if(resourcesDir.dirExists())
-		{
-			return resourcesDir.dir();
-		}
-		
-		return null;
-	}
-
-	//TODO: move to sdk model
-	public static File getSDkCaplinSrcDir(File location)
-	{
-		if (invalidInput(location))
-		{
-			return null;
-		}
-
-		AssetLocation srcDir = BRJSAccessor.root.sdkLib().src();
-		
-		if(srcDir.dirExists())
-		{
-			return srcDir.dir();
-		}
-		
-		return null;
 	}
 	
 	//TODO: move to sdk model

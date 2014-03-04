@@ -13,26 +13,31 @@ import java.util.Map;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
+import com.caplin.cutlass.AppMetaData;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
 
-public class CssBundler implements LegacyFileBundlerPlugin
+public class CssBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private static final String CSS_BUNDLE_EXT = "_css" + BUNDLE_EXT;
 	private final Map<String, BladeRunnerSourceFileProvider> providers = new HashMap<String, BladeRunnerSourceFileProvider>();
-	private final ContentPathParser requestParser = RequestParserFactory.createCssBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createCssBundlerContentPathParser();
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -48,7 +53,7 @@ public class CssBundler implements LegacyFileBundlerPlugin
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	public List<String> getValidRequestStrings(AppMetaData appMetaData)
@@ -77,7 +82,7 @@ public class CssBundler implements LegacyFileBundlerPlugin
 		return requests;
 	}
 
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		
@@ -92,7 +97,7 @@ public class CssBundler implements LegacyFileBundlerPlugin
 				}
 				catch (IOException e)
 				{
-					throw new BundlerFileProcessingException(file, e, "Error while bundling file.");
+					throw new ContentFileProcessingException(file, e, "Error while bundling file.");
 				}
 			}
 		}
@@ -104,7 +109,7 @@ public class CssBundler implements LegacyFileBundlerPlugin
 
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{		
-		ParsedContentPath request = requestParser.parse(requestName);
+		ParsedContentPath request = contentPathParser.parse(requestName);
 		String theme = request.properties.get("theme");
 		String languageCode = request.properties.get("languageCode");
 		String countryCode = request.properties.get("countryCode");

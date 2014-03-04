@@ -1,0 +1,2 @@
+depends: browser-modules, br-shims
+exports: bootstrap

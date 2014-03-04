@@ -13,17 +13,19 @@ import java.util.Map;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.Event;
-import org.bladerunnerjs.core.plugin.EventObserver;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.PluginProperties;
+import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
-import org.bladerunnerjs.model.utility.NodePathGenerator;
-import org.bladerunnerjs.model.utility.ObserverList;
+import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.utility.NodePathGenerator;
+import org.bladerunnerjs.utility.ObserverList;
 
 
 public abstract class AbstractNode implements Node
@@ -39,8 +41,18 @@ public abstract class AbstractNode implements Node
 	private Map<String, NodeProperties> propertiesMap = new HashMap<String,NodeProperties>();
 	
 	protected RootNode rootNode;
-	protected Node parent;
+	private Node parent;
 	protected File dir;
+	
+	public AbstractNode(RootNode rootNode, Node parent, File dir) {
+		this.rootNode = rootNode;
+		this.parent = parent;
+		this.dir = (dir == null) ? null : new File(getNormalizedPath(dir));
+	}
+	
+	public AbstractNode() {
+		this.rootNode = (RootNode) this;
+	}
 	
 	@Override
 	public RootNode root()
@@ -89,7 +101,10 @@ public abstract class AbstractNode implements Node
 			
 			try {
 				FileUtils.forceMkdir(dir);
+				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
+				
+				rootNode.getFileIterator(dir().getParentFile()).refresh();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -117,7 +132,7 @@ public abstract class AbstractNode implements Node
 			
 			try {
 				FileUtils.deleteDirectory(dir);
-				logger.debug(Messages.NODE_DELETED_LOG_MSG, getClass().getSimpleName(), dir.getAbsolutePath());
+				logger.debug(Messages.NODE_DELETED_LOG_MSG, getClass().getSimpleName(), dir.getPath());
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -189,26 +204,28 @@ public abstract class AbstractNode implements Node
 				}
 			}
 		}
+		catch(RuntimeException e) {
+			throw e;
+		}
 		catch(Exception e)
 		{
 			throw new RuntimeException(e);
 		}
 	}
 	
-	protected void init(RootNode rootNode, Node parent, File dir)
+	protected void registerInitializedNode()
 	{
-		this.rootNode = rootNode;
-		this.parent = parent;
-		this.dir = dir;
-		
-		if(dir != null)
-		{
-			rootNode.registerNode(this);
-			
-			if (dir.exists())
-			{
-				ready();
+		try {
+			if(dir != null) {
+				rootNode.registerNode(this);
+				
+				if (dir.exists()) {
+					ready();
+				}
 			}
+		}
+		catch(NodeAlreadyRegisteredException e) {
+			throw new RuntimeException(e);
 		}
 	}
 	
@@ -274,6 +291,22 @@ public abstract class AbstractNode implements Node
 		}
 		
 		return nodeItem.item;
+	}
+	
+	protected String getNormalizedPath(File dir) {
+		String normalizedPath;
+		
+		try {
+			normalizedPath = dir.getCanonicalPath();
+		}
+		catch (IOException ex)
+		{
+			root().logger(LoggerType.CORE, this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
+			
+			normalizedPath = dir.getAbsolutePath();
+		}
+		
+		return normalizedPath;
 	}
 	
 	private void discoverAllChildren(List<Node> nodes)

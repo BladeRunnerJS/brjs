@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class JsLibTest extends SpecTest {
 	@Test
 	public void parentAppGivesTheCorrectNode() throws Exception {
 		when(lib).create();
-		then(lib.parentApp()).isSameAs(app);
+		then(lib.getApp()).isSameAs(app);
 	}
 	
 	@Test
@@ -54,7 +54,6 @@ public class JsLibTest extends SpecTest {
 		then(exceptions).verifyException(InvalidRootPackageNameException.class, "caplin", lib.dir().getPath());
 	}
 	
-	//TODO:: add test to verify the lib.conf file has been created correctly, once we have decided on keeping it.
 	@Test
 	public void libraryIsBaselinedDuringPopulation() throws Exception {
 		given(libTemplate).containsFolder("@libns")
@@ -64,4 +63,5 @@ public class JsLibTest extends SpecTest {
 			.and(lib).doesNotHaveDir("@libns")
 			.and(lib).fileHasContents("some-libx-file.txt", "'libx'");
 	}
+	
 }

@@ -14,12 +14,12 @@ import net.htmlparser.jericho.StreamedSource;
 
 import org.apache.commons.io.IOUtils;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
 import com.caplin.cutlass.exception.NamespaceException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 import com.caplin.cutlass.structure.ScopeLevel;
 
 public class HtmlFileProcessor
@@ -31,20 +31,20 @@ public class HtmlFileProcessor
 		identifiers = new HashMap<String, File>();
 	}
 	
-	public void bundleHtml(File htmlFile, Writer writer) throws BundlerFileProcessingException 
+	public void bundleHtml(File htmlFile, Writer writer) throws ContentFileProcessingException 
 	{
 		try
 		{
 			validateSourceHtml(htmlFile);
 			writeToBundle(htmlFile, writer);
 		}
-		catch (BundlerProcessingException e)
+		catch (ContentProcessingException e)
 		{
-			throw new BundlerFileProcessingException(e, htmlFile);
+			throw new ContentFileProcessingException(e, htmlFile);
 		}
 		catch (Exception e)
 		{
-			throw new BundlerFileProcessingException(htmlFile, e, "Error bundling HTML.");
+			throw new ContentFileProcessingException(htmlFile, e, "Error bundling HTML.");
 		}
 	}
 	
@@ -58,21 +58,21 @@ public class HtmlFileProcessor
 		}
 	}
 	
-	private void validateSourceHtml(File htmlFile) throws IOException, BundlerFileProcessingException, NamespaceException
+	private void validateSourceHtml(File htmlFile) throws IOException, ContentFileProcessingException, NamespaceException
 	{
 		StartTag startTag = getStartTag(htmlFile);
-		String namespace = NamespaceCalculator.getPackageNamespaceForBladeLevelResources(htmlFile);
+		String namespace = RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(htmlFile);
 		String identifier = startTag.getAttributeValue("id");
 		
 		if(identifier == null)
 		{
-			throw new BundlerFileProcessingException(htmlFile, "HTML template found without an identifier: " +
+			throw new ContentFileProcessingException(htmlFile, "HTML template found without an identifier: " +
 				startTag.toString()+". Expected root element with namespaced ID of '" + namespace + "'.");
 		}
 		
 		if(!identifier.startsWith(namespace))
 		{
-			throw new BundlerFileProcessingException(htmlFile, "The identifier '" +
+			throw new ContentFileProcessingException(htmlFile, "The identifier '" +
 				identifier + "' is not correctly namespaced.\nNamespace '" + namespace + "*' was expected.");
 		}
 		
@@ -82,7 +82,7 @@ public class HtmlFileProcessor
 			File htmlFileWithTheSameIdentifier = identifiers.get(identifier);
 			if(htmlFileWithTheSameIdentifier != null)
 			{
-				throw new BundlerFileProcessingException(htmlFile, "HTML template found with a duplicate identifier: " +
+				throw new ContentFileProcessingException(htmlFile, "HTML template found with a duplicate identifier: " +
 						identifier + ". The same identifier is used for the file:\n'" 
 						+ htmlFileWithTheSameIdentifier.getAbsolutePath()
 						+ "'.");

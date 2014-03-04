@@ -69,4 +69,9 @@ public class IgnoreHeadersResponseWrapper extends HttpServletResponseWrapper
 		super.setHeader(name, value);
 	}
 
+	@Override
+	public void flushBuffer()
+	{
+	}
+	
 }

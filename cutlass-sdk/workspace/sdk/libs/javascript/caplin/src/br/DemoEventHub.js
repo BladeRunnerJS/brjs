@@ -1,1 +1,0 @@
-br.DemoEventHub = require("br/DemoEventHub");

@@ -6,6 +6,6 @@ public class NoSuchDirectoryException extends ModelUpdateException {
 	private static final long serialVersionUID = 1L;
 	
 	public NoSuchDirectoryException(Node node) {
-		super("unable to delete directory at '" + node.dir().getAbsolutePath() + "' as directory does not exist");
+		super("unable to delete directory at '" + node.dir().getPath() + "' as directory does not exist");
 	}
 }

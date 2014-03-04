@@ -8,7 +8,7 @@ caplinx.dashboard.app.model.dialog.BrowserWarningDialog = function(oPresentation
 	this.browserVersionsHtml = new br.presenter.property.EditableProperty("");
 	this.m_pMinimumBrowserVersions = null;
 };
-br.extend(caplinx.dashboard.app.model.dialog.BrowserWarningDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.Core.extend(caplinx.dashboard.app.model.dialog.BrowserWarningDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.BrowserWarningDialog.prototype.initializeForm = function()
 {

@@ -1,23 +1,34 @@
 package org.bladerunnerjs.model;
 
+import java.io.OutputStream;
 import java.util.List;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.aliasing.AliasName;
-import org.bladerunnerjs.model.aliasing.AliasesFile;
-import org.bladerunnerjs.model.aliasing.AmbiguousAliasException;
-import org.bladerunnerjs.model.aliasing.UnresolvableAliasException;
+import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.aliasing.UnresolvableAliasException;
+import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 
 public interface BundlableNode extends Node, AssetContainer {
 	AliasesFile aliasesFile();
-	SourceFile getSourceFile(String requirePath) throws RequirePathException;
-	List<LinkedAssetFile> seedFiles();
+	SourceModule getSourceModule(String requirePath) throws RequirePathException;
+	List<LinkedAsset> seedFiles();
+	
+	/**
+	 * Returns all AssetContainers that contain resources that can potentially be bundled for this BundleableNode
+	 */
 	List<AssetContainer> getAssetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;
-	AliasDefinition getAlias(AliasName aliasName) throws UnresolvableAliasException, AmbiguousAliasException, BundlerFileProcessingException;
+	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, ContentFileProcessingException;
+	List<AliasDefinitionsFile> getAliasDefinitionFiles();
+	
+	void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 }

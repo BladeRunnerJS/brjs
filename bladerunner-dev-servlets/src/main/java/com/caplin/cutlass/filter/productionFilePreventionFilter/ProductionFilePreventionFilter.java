@@ -13,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.ArrayUtils;
-
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class ProductionFilePreventionFilter implements Filter
@@ -30,13 +30,16 @@ public class ProductionFilePreventionFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		servletContext = filterConfig.getServletContext();
 	}
 	
 	@Override
-	public void destroy() {}
-
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+	}
+	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{

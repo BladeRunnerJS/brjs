@@ -39,6 +39,10 @@ public class NodeCreator
 					constructorFound = true;
 					node = (N) constructor.newInstance(rootNode, parent, file, name);
 				}
+				
+				if(constructorFound) {
+					break;
+				}
 			}
 			
 			if(!constructorFound)
@@ -61,7 +65,7 @@ public class NodeCreator
 		Collections.sort(sortedConstructors, new Comparator<Constructor<?>>() {
 			@Override
 			public int compare(Constructor<?> c1, Constructor<?> c2) {
-				return c1.getGenericParameterTypes().length - c2.getGenericParameterTypes().length;
+				return c2.getGenericParameterTypes().length - c1.getGenericParameterTypes().length;
 			}
 		});
 		

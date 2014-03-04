@@ -4,13 +4,12 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.JsNonBladeRunnerLib;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
@@ -34,7 +33,7 @@ public class BRJSNavigationTest
 	@After
 	public void teardown()
 	{
-		nodeTesterFactory = null;
+		brjs.close();
 	}
 
 	@Test
@@ -58,16 +57,18 @@ public class BRJSNavigationTest
 	@Test
 	public void sdkLib()
 	{
-		nodeTesterFactory.createItemTester(JsLib.class, "sdkLib", "sdk/libs/javascript/caplin")
-			.assertModelIsOK();
+		nodeTesterFactory.createSetTester(JsLib.class, "sdkLibs", "sdkLib")
+    		.addChild("br", "sdk/libs/javascript/br-libs/br")
+    		.addChild("brlib2", "sdk/libs/javascript/br-libs/brlib2")
+    		.assertModelIsOK();
 	}
 	
 	@Test
 	public void sdkNonBladeRunnerLibs()
 	{
-		nodeTesterFactory.createSetTester(JsNonBladeRunnerLib.class, "sdkNonBladeRunnerLibs", "sdkNonBladeRunnerLib")
-			.addChild("l1", "sdk/libs/javascript/thirdparty/l1")
-			.addChild("l2", "sdk/libs/javascript/thirdparty/l2")
+		nodeTesterFactory.createSetTester(JsLib.class, "sdkNonBladeRunnerLibs", "sdkNonBladeRunnerLib")
+			.addChild("thirdparty-l1", "sdk/libs/javascript/thirdparty/thirdparty-l1")
+			.addChild("thirdparty-l2", "sdk/libs/javascript/thirdparty/thirdparty-l2")
 			.assertModelIsOK();
 	}
 	

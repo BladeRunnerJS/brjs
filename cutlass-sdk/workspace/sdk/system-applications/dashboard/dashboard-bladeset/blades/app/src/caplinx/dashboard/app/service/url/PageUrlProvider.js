@@ -12,7 +12,7 @@ caplinx.dashboard.app.service.url.PageUrlProvider = function()
 		}, false);
 	}
 };
-br.inherit(caplinx.dashboard.app.service.url.PageUrlProvider, caplinx.dashboard.app.service.url.PageUrlService);
+br.Core.inherit(caplinx.dashboard.app.service.url.PageUrlProvider, caplinx.dashboard.app.service.url.PageUrlService);
 
 caplinx.dashboard.app.service.url.PageUrlProvider.prototype.getRootUrl = function()
 {

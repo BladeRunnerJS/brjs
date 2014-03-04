@@ -5,8 +5,8 @@ import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.file.RelativePath;
 import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.model.JsLib;
@@ -26,19 +26,19 @@ public class TargetPathCreator
 	private static final String THIRDPARTY_BUNDLE_EXT = "_thirdparty.bundle";
 	private static final Pattern thirdpartyLibraryPattern = Pattern.compile(".*(thirdparty-libraries|thirdparty)[/\\\\](.*)");
 	
-	public static String getRelativeBundleRequestForImage(File imageFile) throws BundlerProcessingException
+	public static String getRelativeBundleRequestForImage(File imageFile) throws ContentProcessingException
 	{
 		return "../" + getBundleRequestForImage(imageFile);
 	}
 
-	public static String getBundleRequestForImage(File imageFile) throws BundlerProcessingException
+	public static String getBundleRequestForImage(File imageFile) throws ContentProcessingException
 	{
 		String targetPath = null;
 		try 
 		{
 			targetPath = getTargetPath(imageFile);
 		}
-		catch(BundlerProcessingException bundlerProcessingException)
+		catch(ContentProcessingException bundlerProcessingException)
 		{
 			throw bundlerProcessingException;
 		}
@@ -53,7 +53,7 @@ public class TargetPathCreator
 		return targetPath;
 	}
 	
-	private static String getTargetPath(File imageFile) throws BundlerProcessingException
+	private static String getTargetPath(File imageFile) throws ContentProcessingException
 	{
 		
 		String targetPath = null;
@@ -106,7 +106,7 @@ public class TargetPathCreator
 				break;
 			
 			default:
-				throw new BundlerFileProcessingException(imageFile, "File does not exist in a known scope");
+				throw new ContentFileProcessingException(imageFile, "File does not exist in a known scope");
 		}
 		
 		return targetPath;
@@ -116,7 +116,7 @@ public class TargetPathCreator
 	{
 		JsLib jslib = BRJSAccessor.root.locateAncestorNodeOfClass(imageFile, JsLib.class);
 
-		Path resources = jslib.resources().dir().getAbsoluteFile().toPath();
+		Path resources = jslib.assetLocation("resources").dir().getAbsoluteFile().toPath();
 		Path relativised = resources.relativize(imageFile.getAbsoluteFile().toPath());
 		
 		String relativePath = "/" + relativised.toString();

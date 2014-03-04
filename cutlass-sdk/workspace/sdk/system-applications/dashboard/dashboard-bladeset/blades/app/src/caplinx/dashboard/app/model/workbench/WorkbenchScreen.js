@@ -8,7 +8,7 @@ caplinx.dashboard.app.model.workbench.WorkbenchScreen = function(oPresentationMo
 	$(window).resize( this._setIframeSize.bind( this ) );
 	this._setIframeSize();
 };
-br.extend(caplinx.dashboard.app.model.workbench.WorkbenchScreen, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.workbench.WorkbenchScreen, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.workbench.WorkbenchScreen.prototype.getWorkbenchScreenUrl = function(sAppName, sBladesetName, sBladeName)
 {

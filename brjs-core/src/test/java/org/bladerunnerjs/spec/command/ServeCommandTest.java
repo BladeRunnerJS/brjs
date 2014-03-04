@@ -1,15 +1,14 @@
 package org.bladerunnerjs.spec.command;
 
-import static org.bladerunnerjs.model.appserver.BRJSApplicationServer.Messages.*;
-import static org.bladerunnerjs.core.plugin.command.standard.ServeCommand.Messages.*;
+import static org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand.Messages.*;
 
 import java.io.IOException;
 
-import org.bladerunnerjs.core.plugin.command.standard.ServeCommand;
-import org.bladerunnerjs.model.appserver.ApplicationServer;
+import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,16 +20,19 @@ public class ServeCommandTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		appServerPort = 7070;
-		
-		given(pluginLocator).hasCommand(new ServeCommand())
-			.and(brjs).hasBeenCreated();	
+		given(brjs).hasCommands(new ServeCommand())
+			.and(brjs).hasBeenCreated()
+			.and(brjs).containsFolder("apps")
+			.and(brjs).containsFolder("sdk/system-applications");
 		appServer = brjs.applicationServer(appServerPort);
+		brjs.bladerunnerConf().setJettyPort(appServerPort);
 	}
 	
 	@After
 	public void tearDown() throws Exception
 	{
+		logging.disableStoringLogs();
+		logging.emptyLogStore();
 		appServer = brjs.applicationServer(appServerPort);
 		appServer.stop();
 	}
@@ -41,32 +43,21 @@ public class ServeCommandTest extends SpecTest
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: a"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
-
-	@Test
-	public void serveCommandStartsAppServer() throws Exception
-	{
-		given(logging).enabled();
-		when(brjs).runCommand("serve");
-		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
-			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7070")
-			.and(logging).infoMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + "7070/")
-			.and(logging).infoMessageReceived("\t" + SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
-			.and(appServer).requestIsRedirected("/","/dashboard");
-	}
 	
-	@Test
-	public void commandIsAutomaticallyLoaded() throws Exception
-	{
-		given(brjs).hasBeenAuthenticallyCreated();
-		when(brjs).runCommand("serve");
-		then(exceptions).verifyNoOutstandingExceptions();
-	}
-
 	@Test
 	public void exceptionIsThrownIfAppServerAlreadyStarted() throws Exception
 	{
 		given(appServer).started();
 		when(brjs).runCommand("serve");
-		then(exceptions).verifyException(IOException.class, "7070");
+		then(exceptions).verifyException(IOException.class, appServerPort);
+	}
+	
+	@Test
+	public void providingInvalidPortValueThrowsException() throws Exception
+	{
+		given(brjs).hasBeenAuthenticallyCreated();
+		when(brjs).runCommand("serve", "-p", "invalid-port");
+		then(exceptions).verifyException(NumberFormatException.class)
+			.whereTopLevelExceptionContainsString(CommandArgumentsException.class, INVALID_PORT_MESSAGE + " 'invalid-port'");
 	}
 }

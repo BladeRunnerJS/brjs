@@ -1,4 +1,4 @@
-br.thirdparty("wolf-simple-box");
+br.Core.thirdparty("wolf-simple-box");
 
 caplinx.dashboard.app.model.dialog.Dialog = function(oPresentationModel)
 {
@@ -12,7 +12,7 @@ caplinx.dashboard.app.model.dialog.Dialog = function(oPresentationModel)
 	this.m_oPresentationModel = oPresentationModel;
 	this.m_sAppNamespace = "";
 };
-br.extend(caplinx.dashboard.app.model.dialog.Dialog, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.dialog.Dialog, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.dialog.Dialog.prototype.initialize = function()
 {

@@ -13,22 +13,24 @@ import org.junit.Test;
 
 public class AppNavigationTest
 {
+	private BRJS brjs;
 	private App app;
 
 	private NodeTesterFactory<App> nodeTesterFactory;
+
 	
 	@Before
 	public void setup()
 	{
-		app = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest")).app("a1");
+		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
+		app = brjs.app("a1");
 		nodeTesterFactory = new NodeTesterFactory<>(app, App.class);
 	}
 	
 	@After
 	public void teardown()
 	{
-		app = null;
-		nodeTesterFactory = null;
+		brjs.close();
 	}
 
 	@Test
@@ -48,7 +50,10 @@ public class AppNavigationTest
 	{
 		nodeTesterFactory.createSetTester(JsLib.class, "jsLibs", "jsLib")
 			.addChild("l1", "libs/l1")
-			.addChild("caplin", "../../sdk/libs/javascript/caplin")
+			.addChild("br", "../../sdk/libs/javascript/br-libs/br")
+			.addChild("brlib2", "../../sdk/libs/javascript/br-libs/brlib2")
+			.addChild("thirdparty-l2", "../../sdk/libs/javascript/thirdparty/thirdparty-l2")
+			.addChild("thirdparty-l1", "../../sdk/libs/javascript/thirdparty/thirdparty-l1")
 			.assertModelIsOK();
 	}
 }

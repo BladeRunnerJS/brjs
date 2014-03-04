@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -10,23 +11,25 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 
-public class Bladeset extends AbstractComponent implements NamedNode
+public final class Bladeset extends AbstractComponent implements NamedNode
 {
-	private final NodeMap<Blade> blades = Blade.createNodeSet();
+	private final NodeMap<Blade> blades;
 	private String name;
 
 	public Bladeset(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(rootNode, dir);
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
+		blades = Blade.createNodeSet(rootNode);
+		
+		registerInitializedNode();
 	}
 	
-	public static NodeMap<Bladeset> createNodeSet()
+	public static NodeMap<Bladeset> createNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(Bladeset.class, null, "-bladeset$");
+		return new NodeMap<>(rootNode, Bladeset.class, null, "-bladeset$");
 	}
 	
 	@Override
@@ -63,14 +66,19 @@ public class Bladeset extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public String getRequirePrefix() {
+	public String requirePrefix() {
 		App app = parent();
-		return "/" + app.getNamespace() + "/" + getName();
+		return app.getRequirePrefix() + "/" + getName();
+	}
+	
+	@Override
+	public boolean isNamespaceEnforced() {
+		return true;
 	}
 	
 	public App parent()
 	{
-		return (App) parent;
+		return (App) parentNode();
 	}
 
 	public List<Blade> blades()

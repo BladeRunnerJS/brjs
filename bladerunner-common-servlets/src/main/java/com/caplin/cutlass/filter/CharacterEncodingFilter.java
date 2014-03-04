@@ -9,9 +9,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
+
 import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.ServletModelAccessor;
 
@@ -22,8 +23,14 @@ public class CharacterEncodingFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		BRJS brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		logger = brjs.logger(LoggerType.FILTER, CharacterEncodingFilter.class);
+	}
+	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
 	}
 	
 	@Override
@@ -35,11 +42,5 @@ public class CharacterEncodingFilter implements Filter
 		// stream data, but this would be too costly using the current filter set-up
 		response.setCharacterEncoding(EncodingAccessor.getDefaultOutputEncoding());
 		chain.doFilter(request, response);
-	}
-	
-	@Override
-	public void destroy()
-	{
-		// do nothing
 	}
 }

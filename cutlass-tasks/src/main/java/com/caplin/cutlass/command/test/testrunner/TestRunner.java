@@ -20,21 +20,21 @@ import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 
 import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.logger.LogLevel;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
+import com.caplin.cutlass.util.FileUtility;
 
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.ProcessLogger;
+import org.bladerunnerjs.utility.ProcessLogger;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.file.RelativePath;
@@ -84,17 +84,27 @@ public class TestRunner {
 		this(configFile, resultDir, browserNames, false, false);
 	}
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean noBrowser, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
+	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean noBrowserFlag, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
 		verbose = determineIfVerbose();
 		config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
 		
 		this.jsTestDriverJar = config.getJsTestDriverJarFile();
 		this.portNumber = config.getPortNumber();
-		this.browsers = noBrowser == true ? null : config.getBrowsers();
+		this.browsers = getBrowsers(noBrowserFlag);
 //		this.resultDir = resultDir;
-		this.noBrowserFlag = noBrowser;
+		this.noBrowserFlag = noBrowserFlag;
 		this.generateReports = generateReports;
 		addShutDownHook();
+	}
+
+	private List<String> getBrowsers(boolean noBrowserFlag) throws NoBrowsersDefinedException, IOException {
+
+		if(noBrowserFlag || isServerRunning())
+		{
+				return null;
+		}
+		
+		return config.getBrowsers();
 	}
 	
 	public void runServer() throws Exception {
@@ -291,7 +301,7 @@ public class TestRunner {
 			throw new IOException(failureMessage);
 		}
 		
-		File[] dirContents = FileUtility.sortFileArray(directory.listFiles());
+		File[] dirContents = FileUtility.sortFiles(directory.listFiles());
 		reverseDirectoryContentsIfContainsTestDir(dirContents);
 		for(File file : dirContents) {
 			if(file.isDirectory() && !file.isHidden()) {		
@@ -500,7 +510,7 @@ public class TestRunner {
 		}
 	}
 	
-	private boolean isServerRunning() throws Exception {
+	private boolean isServerRunning() {
 		logger.debug("Checking to see if server is running...");
 		ServerSocket socket = null;
 		boolean isServerRunning = false;
@@ -513,7 +523,12 @@ public class TestRunner {
 		}
 		finally {
 			if(socket != null) {
-				socket.close();
+				try{
+					socket.close();					
+				}
+				catch(IOException e){
+					throw new RuntimeException(e);
+				}
 			}
 		}
 		

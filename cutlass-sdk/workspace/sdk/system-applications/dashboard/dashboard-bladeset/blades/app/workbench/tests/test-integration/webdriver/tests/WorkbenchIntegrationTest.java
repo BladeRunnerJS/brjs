@@ -72,7 +72,7 @@ public class WorkbenchIntegrationTest
 		assertPageTitleIs("Workbench");
 	}
 
-	private void openAndThenCloseNewAppDialog(String appName, String appNamespace) throws InterruptedException
+	private void openAndThenCloseNewAppDialog(String appName, String requirePrefix) throws InterruptedException
 	{
 		WebElement newAppButton = driver.findElements(By.tagName("button")).get(0);
 		assertTrue(newAppButton.getText().equals("New App"));
@@ -80,7 +80,7 @@ public class WorkbenchIntegrationTest
 		
 		List<WebElement> inputFields = driver.findElement(By.id("modalDialog")).findElements(By.tagName("input"));
 		inputFields.get(0).sendKeys(appName);
-		inputFields.get(1).sendKeys(appNamespace);
+		inputFields.get(1).sendKeys(requirePrefix);
 		
 		assertTrue(driver.findElement(By.id("modalDialog")).isDisplayed());
 		driver.findElement(By.id("fancybox-close")).click();

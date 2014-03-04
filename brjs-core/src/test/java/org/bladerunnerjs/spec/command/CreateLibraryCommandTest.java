@@ -1,18 +1,19 @@
 package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
-import static org.bladerunnerjs.core.plugin.command.standard.CreateLibraryCommand.Messages.*;
+import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand.Messages.*;
 
-import org.bladerunnerjs.core.plugin.command.standard.CreateLibraryCommand;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.StandardJsLib;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +26,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(pluginLocator).hasCommand(new CreateLibraryCommand())
+		given(brjs).hasCommands(new CreateLibraryCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			lib = app.jsLib("lib");
@@ -51,7 +52,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(logging).enabled();
 		when(brjs).runCommand("create-library", "app", "lib#$@/", "libx");
-		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, "JsLib", badLib.dir().getPath())
+		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, StandardJsLib.class.getSimpleName(), badLib.dir().getPath())
 			.and(exceptions).verifyException(InvalidDirectoryNameException.class, "lib#$@/", badLib.dir().getPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}

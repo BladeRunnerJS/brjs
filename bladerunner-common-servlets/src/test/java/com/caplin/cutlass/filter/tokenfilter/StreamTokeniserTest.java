@@ -232,7 +232,6 @@ public class StreamTokeniserTest
 		}
 		catch (Exception ex)
 		{
-			System.err.println(ex);
 			verify(mockTokenFinder, times(1)).findTokenValue("TOKEN.HELLO");
 			verify(mockTokenFinder, times(1)).findTokenValue("TOKEN.WORLD");
 		}

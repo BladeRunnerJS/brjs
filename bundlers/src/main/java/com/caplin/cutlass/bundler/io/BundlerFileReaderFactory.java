@@ -6,8 +6,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.bladerunnerjs.utility.UnicodeReader;
+
 import com.caplin.cutlass.EncodingAccessor;
-import com.caplin.cutlass.io.UnicodeReader;
 
 public class BundlerFileReaderFactory
 {

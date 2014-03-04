@@ -2,17 +2,19 @@
 <html>
 	<head>
 		<base href="@APP.VERSION@"/>
-		<title>BladeRunner Dashboard</title>
-		<@css.bundle theme="standard"@/>
-		<@js.bundle@/>
+		<title>BladeRunnerJS Dashboard</title>
 		<link rel="shortcut icon" href="favicon.ico">
+		
+		<@css.bundle theme="standard"@/>
 		<link type="text/css" rel="stylesheet" media="screen" href="unbundled-resources/standard-theme/typography.css" />
+
+		<@js.bundle dev-minifier="combined"@/>
 		<script type="text/javascript" src="unbundled-resources/browserCheck.js"></script>
 		<script type="text/javascript" src="unbundled-resources/releaseNoteUtils.js"></script>
-		<script type="text/javascript">
 		
-			br.thirdparty("jquery");
-			br.thirdparty("wolf-simple-box");
+		<script type="text/javascript">
+			br.Core.thirdparty("jquery");
+			br.Core.thirdparty("wolf-simple-box");
 			
 			var oApp;
 			

@@ -2,17 +2,19 @@ package com.caplin.cutlass.command.analyse;
 
 import java.io.File;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.base.AbstractCommandPlugin;
+
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyser;
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyserFactory;
 import com.caplin.cutlass.bundler.js.analyser.JsonCodeUnitVisitor;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 
-public class DependencyAnalyserCommand implements LegacyCommandPlugin 
+public class DependencyAnalyserCommand extends AbstractCommandPlugin implements LegacyCommandPlugin 
 {
 	private final BRJS brjs;
 	private final ConsoleWriter out;
@@ -52,7 +54,7 @@ public class DependencyAnalyserCommand implements LegacyCommandPlugin
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException 
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{	
 		AnalyserConfig config = new AnalyserConfig(args, this);
 		File seedFileDir = config.getAspectDirectory();
@@ -64,7 +66,7 @@ public class DependencyAnalyserCommand implements LegacyCommandPlugin
 		{
 			codeAnalyser = CodeAnalyserFactory.getCodeAnalyser(seedFileDir);
 		} 
-		catch (BundlerProcessingException e) 
+		catch (ContentProcessingException e) 
 		{
 			throw new CommandOperationException(e);
 		}

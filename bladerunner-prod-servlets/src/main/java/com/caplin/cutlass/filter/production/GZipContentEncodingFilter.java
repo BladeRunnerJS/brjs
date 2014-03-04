@@ -1,5 +1,6 @@
 package com.caplin.cutlass.filter.production;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class GZipContentEncodingFilter implements Filter
@@ -24,8 +26,14 @@ public class GZipContentEncodingFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		servletContext = filterConfig.getServletContext();
+	}
+	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
 	}
 	
 	@Override
@@ -51,6 +59,10 @@ public class GZipContentEncodingFilter implements Filter
 				chain.doFilter(request, response);
 			}
 		}
+		catch(FileNotFoundException e)
+		{
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_NOT_FOUND);
+		}
 		catch(IOException|ServletException e)
 		{
 			throw e;
@@ -59,10 +71,5 @@ public class GZipContentEncodingFilter implements Filter
 		{
 			throw new ServletException(e);
 		}
-	}
-	
-	@Override
-	public void destroy()
-	{
 	}
 }

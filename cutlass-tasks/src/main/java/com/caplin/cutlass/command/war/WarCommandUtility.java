@@ -15,13 +15,17 @@ import java.util.zip.GZIPOutputStream;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.WebXmlCompiler;
+
+import com.caplin.cutlass.AppMetaData;
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
+
+import org.bladerunnerjs.utility.WebXmlCompiler;
 import org.xml.sax.SAXException;
 
 import com.caplin.cutlass.bundler.css.CssBundler;
@@ -112,10 +116,10 @@ public class WarCommandUtility
 			{
 				File targetFile = new File(temporaryDirectoryForWarCreation, applicationAspect.getName() + File.separator + validBundlerRequest);
 				targetFile.getParentFile().mkdirs();
-				OutputStream outputStream = this.createBundleSpecificOutputStream(validBundlerRequest, targetFile);
 				
-				bundler.writeBundle(sourceFilesForBundling, outputStream);
-				outputStream.close();
+				try(OutputStream outputStream = this.createBundleSpecificOutputStream(validBundlerRequest, targetFile)) {
+					bundler.writeBundle(sourceFilesForBundling, outputStream);
+				}
 			}
 		}
 	}
@@ -151,11 +155,15 @@ public class WarCommandUtility
 		}
 	}
 	
-	@SuppressWarnings("resource")
 	private OutputStream createBundleSpecificOutputStream(String validBundlerRequest, File targetFile) throws IOException
 	{
-		OutputStream fileStream = new BufferedOutputStream(new FileOutputStream(targetFile));
-		return (validBundlerRequest.endsWith("image.bundle")) ? fileStream : new GZIPOutputStream(fileStream);
+		OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(targetFile));
+		
+		if(!validBundlerRequest.endsWith("image.bundle")) {
+			outputStream = new GZIPOutputStream(outputStream);
+		}
+		
+		return outputStream;
 	}
 	
 	private LegacyFileBundlerPlugin createJsBundler() throws CommandArgumentsException

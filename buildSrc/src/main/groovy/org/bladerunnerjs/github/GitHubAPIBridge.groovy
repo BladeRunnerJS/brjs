@@ -25,7 +25,7 @@ class GitHubAPIBridge
 	String userAgentString = ""
 	
 	
-	String githubWebPrefix = "https://github.com/"
+	String githubWebPrefix = "https://github.com"
 	String apiPrefix = "https://api.github.com"
 	String uploadsPrefix = "https://uploads.github.com"
 	

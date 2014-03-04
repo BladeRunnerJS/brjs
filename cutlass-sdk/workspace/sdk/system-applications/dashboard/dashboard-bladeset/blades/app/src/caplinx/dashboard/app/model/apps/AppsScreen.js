@@ -20,7 +20,7 @@ caplinx.dashboard.app.model.apps.AppsScreen = function(oPresentationModel)
 		this.importMotifFromZipButton.enabled.setValue( false );
 	}
 };
-br.extend(caplinx.dashboard.app.model.apps.AppsScreen, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.apps.AppsScreen, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.apps.AppsScreen.prototype.displayApps = function()
 {

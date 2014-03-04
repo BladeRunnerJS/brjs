@@ -3,14 +3,15 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
+import org.apache.commons.io.FileUtils;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
@@ -18,13 +19,9 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.LogicalRequestHandler;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -34,10 +31,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeMap<Bladeset> bladesets = Bladeset.createNodeSet();
-	private final NodeMap<Aspect> aspects = Aspect.createNodeSet();
-	private final NodeMap<JsLib> jsLibs = JsLib.createAppNodeSet();
-	private final LogicalRequestHandler requestHandler;
+	private final NodeMap<StandardJsLib> nonBladeRunnerLibs;
+	private final NodeMap<Bladeset> bladesets;
+	private final NodeMap<Aspect> aspects;
+	private final NodeMap<StandardJsLib> jsLibs;
 	
 	private String name;
 	private AppConf appConf;
@@ -45,57 +42,84 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public App(RootNode rootNode, Node parent, File dir, String name)
 	{
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
-		requestHandler = new LogicalRequestHandler(this);
+		nonBladeRunnerLibs = StandardJsLib.createAppNonBladeRunnerLibNodeSet(rootNode);
+		bladesets = Bladeset.createNodeSet(rootNode);
+		aspects = Aspect.createNodeSet(rootNode);
+		jsLibs = BRLib.createAppNodeSet(rootNode);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
-	}
-	
-	public static NodeMap<App> createAppNodeSet()
-	{
-		return new NodeMap<>(App.class, "apps", null);
-	}
-	
-	public static NodeMap<App> createSystemAppNodeSet()
-	{
-		return new NodeMap<>(App.class, "sdk/system-applications", null);
-	}
-	
-	public List<AssetContainer> getAllAssetContainers() {
-		List<AssetContainer> assetContainer = new ArrayList<>();
 		
-		for(AbstractAssetContainer aspect : aspects()) {
-			assetContainer.add(aspect);
+		registerInitializedNode();
+	}
+	
+	public static NodeMap<App> createAppNodeSet(BRJS brjs)
+	{
+		return new NodeMap<>(brjs, App.class, "apps", null);
+	}
+	
+	public static NodeMap<App> createSystemAppNodeSet(BRJS brjs)
+	{
+		return new NodeMap<>(brjs, App.class, "sdk/system-applications", null);
+	}
+	
+	/**
+	 * Returns *all* of the asset containers in the model. 
+	 * This is different to BundleableNode.getAssetContainers which returns only the valid AssetContainers for a given BundleableNode.
+	 */
+	public List<AssetContainer> getAllAssetContainers() {
+		List<AssetContainer> assetContainers = new ArrayList<>();
+		
+		for(Aspect aspect : aspects()) {
+			assetContainers.add(aspect);
+			addAllTestPacks(assetContainers, aspect.testTypes());
 		}
 		
-		assetContainer.addAll(getNonAspectAssetContainers());
+		assetContainers.addAll(getNonAspectAssetContainers());
 		
-		return assetContainer;
+		return assetContainers;
 	}
 	
 	public List<AssetContainer> getNonAspectAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		for(JsLib jsLib : jsLibs()) {
-			assetContainers.add(jsLib);
-		}
-		
 		for(Bladeset bladeset : bladesets()) {
 			assetContainers.add(bladeset);
+			addAllTestPacks(assetContainers, bladeset.testTypes());
 			
 			for(Blade blade : bladeset.blades()) {
 				assetContainers.add(blade);
+				addAllTestPacks(assetContainers, blade.testTypes());
+				assetContainers.add(blade.workbench());
+				addAllTestPacks(assetContainers, blade.workbench().testTypes());				
 			}
 		}
 		
+		for (JsLib jsLib : jsLibs())
+		{
+			assetContainers.add( jsLib );
+			addAllTestPacks(assetContainers, jsLib.testTypes());			
+		}
+		
 		return assetContainers;
+	}
+	
+	private void addAllTestPacks(List<AssetContainer> assetContainers, List<TypedTestPack> typedTestPacks)
+	{
+		for (TypedTestPack typedTestPack : typedTestPacks)
+		{
+			for (TestPack testPack : typedTestPack.testTechs())
+			{
+				assetContainers.add(testPack);
+			}
+		}
 	}
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
 		try {
-			transformations.put("appns", appConf().getAppNamespace());
+			transformations.put("appns", appConf().getRequirePrefix());
 			transformations.put("appname", name);
 		}
 		catch(ConfigException e) {
@@ -123,12 +147,13 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public BRJS parent()
 	{
-		return (BRJS) parent;
+		return (BRJS) parentNode();
 	}
 	
 	public AppConf appConf() throws ConfigException {
 		if(appConf == null) {
 			appConf = new AppConf(this);
+			appConf.autoWriteOnSet(false);
 		}
 		
 		return appConf ;
@@ -156,11 +181,26 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<JsLib> jsLibs()
 	{
-		return children(jsLibs);
+		List<JsLib> appJsLibs = new ArrayList<JsLib>();
+		appJsLibs.addAll( children(jsLibs) );
+		for (JsLib lib : root().sdkLibs())
+		{
+			appJsLibs.add( new JsLibAppWrapper(this, lib) );
+		}
+		appJsLibs.addAll( nonBladeRunnerLibs() );
+		return appJsLibs;
 	}
 	
 	public JsLib jsLib(String jsLibName)
 	{
+		for (JsLib lib : jsLibs()) 
+		{
+			if (lib.getName().equals(jsLibName))
+			{
+				return lib;
+			}
+		}
+		
 		return child(jsLibs, jsLibName);
 	}
 	
@@ -171,13 +211,14 @@ public class App extends AbstractBRJSNode implements NamedNode
 		aspect("default").populate();
 	};
 	
-	public void populate(String appNamespace) throws InvalidNameException, ModelUpdateException
+	public void populate(String requirePrefix) throws InvalidNameException, ModelUpdateException
 	{
-		NameValidator.assertValidRootPackageName(this, appNamespace);
+		NameValidator.assertValidRootPackageName(this, requirePrefix);
 		
 		try {
-			appConf().setAppNamespace(appNamespace);
+			appConf().setRequirePrefix(requirePrefix);
 			populate();
+			appConf.autoWriteOnSet(true);
 			appConf().write();
 		}
 		catch (ConfigException e) {
@@ -195,7 +236,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		try {
 			if(!root().appJars().dirExists()) throw new IllegalStateException(
 				"The directory containing the app jars, located at '" + root().appJars().dir().getPath() + "', is not present");
-			FileUtility.copyDirectoryContents(root().appJars().dir(), file("WEB-INF/lib"));
+			FileUtils.copyDirectory(root().appJars().dir(), file("WEB-INF/lib"));
 			notifyObservers(new AppDeployedEvent(), this);
 			logger.info(Messages.APP_DEPLOYED_LOG_MSG, getName(), dir().getPath());
 		}
@@ -205,20 +246,51 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 	}
 	
-	public List<BundlerPlugin> bundlerPlugins(String mimeType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public String getNamespace() {
+	public String getRequirePrefix() {
 		try {
-			return appConf().getAppNamespace();
+			return appConf().getRequirePrefix();
 		} catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public void handleLogicalRequest(BladerunnerUri requestUri, java.io.OutputStream os) throws MalformedRequestException, ResourceNotFoundException, BundlerProcessingException {
-		requestHandler.handle(requestUri, os);
+	public BundlableNode getBundlableNode(BladerunnerUri bladerunnerUri) throws ResourceNotFoundException
+	{
+		File baseDir = new File(dir(), bladerunnerUri.scopePath);
+		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
+		
+		if(bundlableNode == null) {
+			throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
+		}
+		
+		return bundlableNode;
+	}
+	
+	public List<JsLib> nonBladeRunnerLibs()
+	{
+		Map<String, JsLib> libs = new HashMap<String,JsLib>();
+		
+		for (JsLib lib : root().sdkNonBladeRunnerLibs())
+		{
+			libs.put(lib.getName(), new JsLibAppWrapper(this, lib) );			
+		}
+		for (JsLib lib : children(nonBladeRunnerLibs))
+		{
+			libs.put(lib.getName(), lib );			
+		}
+		
+		return new ArrayList<JsLib>( libs.values() );
+	}
+	
+	public JsLib nonBladeRunnerLib(String libName)
+	{
+		JsLib appLib = child(nonBladeRunnerLibs, libName);
+		JsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
+		
+		if (!appLib.dirExists() && sdkLib.dirExists())
+		{
+			return new JsLibAppWrapper(this, sdkLib);
+		}
+		return appLib;
 	}
 }

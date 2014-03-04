@@ -17,26 +17,31 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.xml.sax.SAXException;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
+
+import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.SourceFileProvider;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.bundler.xml.reader.XmlSiblingReaderException;
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
 
-public class XmlBundler implements LegacyFileBundlerPlugin
+public class XmlBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private XmlBundleWriter bundleWriter;
 	private final IOFileFilter xmlFilter = new SuffixFileFilter(".xml");
-	private final ContentPathParser requestParser = RequestParserFactory.createXmlBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createXmlBundlerContentPathParser();
 	
 	public XmlBundler() throws ParserConfigurationException, SAXException, IOException
 	{		
@@ -62,13 +67,13 @@ public class XmlBundler implements LegacyFileBundlerPlugin
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{
-		requestParser.parse(requestName);
+		contentPathParser.parse(requestName);
 		
 		SourceFileProvider sourceFileProvider = new BladeRunnerSourceFileProvider(new XmlBundlerFileAppender());
 		
@@ -83,7 +88,7 @@ public class XmlBundler implements LegacyFileBundlerPlugin
 	}
 
 	@Override
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		
@@ -93,15 +98,15 @@ public class XmlBundler implements LegacyFileBundlerPlugin
 		}
 		catch (XMLStreamException e)
 		{
-			throw new BundlerFileProcessingException(null, e.getLocation().getLineNumber(), e.getLocation().getColumnNumber(), e.getMessage());
+			throw new ContentFileProcessingException(null, e.getLocation().getLineNumber(), e.getLocation().getColumnNumber(), e.getMessage());
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Error bundling files.");
+			throw new ContentProcessingException(e, "Error bundling files.");
 		}
 		catch (XmlSiblingReaderException e)
 		{
-			throw new BundlerProcessingException(e, "Error bundling files.");
+			throw new ContentProcessingException(e, "Error bundling files.");
 		}
 		finally
 		{

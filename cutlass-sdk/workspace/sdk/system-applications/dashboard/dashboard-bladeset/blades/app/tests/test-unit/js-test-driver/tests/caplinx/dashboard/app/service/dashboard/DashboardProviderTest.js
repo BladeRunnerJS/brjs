@@ -1,7 +1,7 @@
 
 DashboardProviderTest = TestCase("DashboardProviderTest");
 
-br.thirdparty("mock4js");
+br.Core.thirdparty("mock4js");
 
 DashboardProviderTest.prototype.setUp = function() {
 	Mock4JS.addMockSupport(window);

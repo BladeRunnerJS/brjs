@@ -12,12 +12,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.ServletModelAccessor;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
+import com.caplin.cutlass.CutlassConfig;
 
 public class ThirdPartyResourceFilter implements Filter
 {	
@@ -28,9 +30,15 @@ public class ThirdPartyResourceFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		servletContext = filterConfig.getServletContext();
 		logger = brjs.logger(LoggerType.FILTER, ThirdPartyResourceFilter.class);
+	}
+	
+	@Override
+	public void destroy() 
+	{
+		ServletModelAccessor.destroy();
 	}
 	
 	@Override
@@ -69,10 +77,4 @@ public class ThirdPartyResourceFilter implements Filter
 			throw new ServletException(e);
 		}
 	}
-
-	@Override
-	public void destroy() 
-	{		
-	}
-
 }

@@ -2,8 +2,8 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.conf.YamlAppConf;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.yaml.YamlAppConf;
 
 public class AppConf extends ConfFile<YamlAppConf> {
 	
@@ -15,23 +15,23 @@ public class AppConf extends ConfFile<YamlAppConf> {
 		super(app, YamlAppConf.class, app.file("app.conf"));
 	}
 	
-	public String getAppNamespace() throws ConfigException {
-		reloadConf();
-		return conf.appNamespace;
+	public String getRequirePrefix() throws ConfigException {
+		reloadConfIfChanged();
+		return conf.requirePrefix;
 	}
 	
-	public void setAppNamespace(String appNamespace) throws ConfigException {
-		conf.appNamespace = appNamespace;
-		conf.verify();
+	public void setRequirePrefix(String requirePrefix) throws ConfigException {
+		conf.requirePrefix = requirePrefix;
+		verifyAndAutoWrite();
 	}
 	
 	public String getLocales() throws ConfigException {
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.locales;
 	}
 	
 	public void setLocales(String locales) throws ConfigException {
 		conf.locales = locales;
-		conf.verify();
+		verifyAndAutoWrite();
 	}
 }

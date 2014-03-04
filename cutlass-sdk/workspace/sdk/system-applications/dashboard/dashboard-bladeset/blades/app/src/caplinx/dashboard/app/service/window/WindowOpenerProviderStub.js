@@ -2,7 +2,7 @@ caplinx.dashboard.app.service.window.WindowOpenerProviderStub = function()
 {
 	this.m_pOpenerRequests = [];
 };
-br.inherit(caplinx.dashboard.app.service.window.WindowOpenerProviderStub, caplinx.dashboard.app.service.window.WindowOpenerService);
+br.Core.inherit(caplinx.dashboard.app.service.window.WindowOpenerProviderStub, caplinx.dashboard.app.service.window.WindowOpenerService);
 
 caplinx.dashboard.app.service.window.WindowOpenerProviderStub.prototype.openWindow = function(sUrl)
 {

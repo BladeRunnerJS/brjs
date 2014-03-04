@@ -14,16 +14,19 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.appserver.CharResponseWrapper;
+
 import com.caplin.cutlass.ServletModelAccessor;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.conf.AppConf;
-import com.caplin.cutlass.filter.CharResponseWrapper;
 import com.caplin.cutlass.filter.bundlerfilter.token.CSSBundleTokenProcessor;
 import com.caplin.cutlass.filter.bundlerfilter.token.I18nBundleTokenProcessor;
 import com.caplin.cutlass.filter.bundlerfilter.token.JSBundleTokenProcessor;
@@ -48,7 +51,7 @@ public class BundlerTokenFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		servletContext = filterConfig.getServletContext();
 		logger = brjs.logger(LoggerType.FILTER, BundlerTokenFilter.class);
 	}
@@ -56,7 +59,7 @@ public class BundlerTokenFilter implements Filter
 	@Override
 	public void destroy()
 	{
-
+		ServletModelAccessor.destroy();
 	}
 	
 	@Override

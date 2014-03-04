@@ -8,7 +8,7 @@ import com.caplin.cutlass.bundler.BundlerFileTester;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.structure.model.SdkModel;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
 public class StructureCssBundlerFilenameTests
 {

@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -11,23 +10,23 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.TestRunner;
+import org.bladerunnerjs.utility.IndexPageSeedFileLocator;
+import org.bladerunnerjs.utility.TestRunner;
 
 
-public class Workbench extends AbstractBundlableNode implements TestableNode 
+public final class Workbench extends AbstractBrowsableNode implements TestableNode 
 {
-	private static final List<String> seedFilenames = Arrays.asList("index.html", "index.jsp");
-	
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
-	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
-	private final NodeMap<Theme> themes = Theme.createNodeSet();
-	private AssetLocation thisAssetLocation;
+	private final NodeMap<TypedTestPack> testTypes;
+	private final NodeMap<Theme> themes;
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
-		super(rootNode, dir);
-		thisAssetLocation = new ShallowAssetLocation(rootNode, this, dir);
-		init(rootNode, parent, dir);
+		super(rootNode, parent, dir);
+		testTypes = TypedTestPack.createNodeSet(rootNode);
+		themes = Theme.createNodeSet(rootNode);
+		
+		registerInitializedNode();
 	}
 
 	public DirNode styleResources()
@@ -37,22 +36,12 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 		
 	public Blade parent()
 	{
-		return (Blade) parent;
+		return (Blade) parentNode();
 	}
 		
 	@Override
-	public List<LinkedAssetFile> getSeedFiles() {
-		List<LinkedAssetFile> assetFiles = new ArrayList<LinkedAssetFile>();
-		
-		for (LinkedAssetFile assetFile : thisAssetLocation.seedResources())
-		{
-			if ( seedFilenames.contains( assetFile.getUnderlyingFile().getName() ) )
-			{
-				assetFiles.add(assetFile);
-			}
-		}
-		
-		return assetFiles;
+	public List<LinkedAsset> getSeedFiles() {
+		return IndexPageSeedFileLocator.getSeedFiles(this);
 	}
 	
 	@Override
@@ -61,20 +50,26 @@ public class Workbench extends AbstractBundlableNode implements TestableNode
 	}
 	
 	@Override
-	public String getRequirePrefix() {
-		App app = parent().parent().parent();
-		return "/" + app.getNamespace();
+	public String requirePrefix() {
+		return getApp().getRequirePrefix();
+	}
+	
+	@Override
+	public boolean isNamespaceEnforced() {
+		return false;
 	}
 	
 	@Override
 	public List<AssetContainer> getAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		assetContainers.add(this);
-		assetContainers.add(this.parent());
-		assetContainers.add(this.parent().parent());
+		assetContainers.add( getApp().aspect("default") );
 		
-		for(JsLib jsLib : parent().parent().parent().jsLibs()) {
+		assetContainers.add( this );
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
+		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
+		
+		for(JsLib jsLib : getApp().jsLibs()) {
 			assetContainers.add(jsLib);
 		}
 		

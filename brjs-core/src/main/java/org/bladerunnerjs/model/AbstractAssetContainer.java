@@ -2,31 +2,28 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.filemodification.NodeFileModifiedChecker;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final NodeItem<SourceAssetLocation> src = new NodeItem<>(SourceAssetLocation.class, "src");
-	private final NodeItem<DeepAssetLocation> resources = new NodeItem<>(DeepAssetLocation.class, "resources");
-	protected final AssetContainerLocations assetContainerLocations;
+	private AssetLocationPlugin previousAssetLocationPlugin;
+	private Map<String, AssetLocation> assetLocationCache;
 	
-	public AbstractAssetContainer(RootNode rootNode, File dir) {
-		init(rootNode, rootNode, dir);
-		
-		assetContainerLocations = new AssetContainerLocations(this, src().dir(), resources().dir());
-	}
+	private List<AssetLocation> assetLocations;
+	private NodeFileModifiedChecker assetLocationsFileModifiedChecker = new NodeFileModifiedChecker(this);
+	private List<SourceModule> sourceModules;
+	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
 	
-	public SourceAssetLocation src() {
-		return item(src);
-	}
-	
-	public AssetLocation resources()
-	{
-		return item(resources);
+	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
+		super(rootNode, parent, dir);
 	}
 	
 	@Override
@@ -41,24 +38,31 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public List<SourceFile> sourceFiles() {
-		List<SourceFile> sourceFiles = new ArrayList<SourceFile>();
-			
-		for(BundlerPlugin bundlerPlugin : ((BRJS) rootNode).bundlerPlugins()) {
-			for (AssetLocation assetLocation : getAllAssetLocations())
-			{
-				sourceFiles.addAll(bundlerPlugin.getSourceFiles(assetLocation));
-			}
-		}
-		
-		return sourceFiles;
+	public String namespace() {
+		return requirePrefix().replace("/", ".");
 	}
 	
 	@Override
-	public SourceFile sourceFile(String requirePath) {
-		for(SourceFile sourceFile : sourceFiles()) {
-			if(sourceFile.getRequirePath().equals(requirePath)) {
-				return sourceFile;
+	public List<SourceModule> sourceModules() {
+		if(sourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (sourceModules == null)) {
+			sourceModules = new ArrayList<SourceModule>();
+			
+			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
+				for (AssetLocation assetLocation : assetLocations())
+				{
+					sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
+				}
+			}
+		}
+		
+		return sourceModules;
+	}
+	
+	@Override
+	public SourceModule sourceModule(String requirePath) {
+		for(SourceModule sourceModule : sourceModules()) {
+			if(sourceModule.getRequirePath().equals(requirePath)) {
+				return sourceModule;
 			}
 		}
 		
@@ -66,13 +70,46 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public List<AssetLocation> getAllAssetLocations() {
-		List<AssetLocation> assetLocations = new ArrayList<>();
+	public AssetLocation assetLocation(String locationPath) {
+		String normalizedLocationPath = normalizePath(locationPath);
+		AssetLocation assetLocation = null;
 		
-		assetLocations.add(resources());
-//		assetLocations.add(src()); // TODO: talk to team about asset locations still not being quite right
-		assetLocations.addAll(src().getChildAssetLocations());
+		List<AssetLocation> assetLocations = assetLocations();
+		if (assetLocations != null)
+		{
+			for(AssetLocation nextAssetLocation : assetLocations) {
+				String nextLocationPath = normalizePath(RelativePathUtility.get(dir(), nextAssetLocation.dir()));
+				
+				if(nextLocationPath.equals(normalizedLocationPath)) {
+					assetLocation = nextAssetLocation;
+					break;
+				}
+			}
+		}
+		
+		return assetLocation;
+	}
+	
+	@Override
+	public List<AssetLocation> assetLocations() {
+		if(assetLocationsFileModifiedChecker.hasChangedSinceLastCheck() || (assetLocations == null)) {
+			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+				if(assetLocationPlugin.canHandleAssetContainer(this)) {
+					if(assetLocationPlugin != previousAssetLocationPlugin) {
+						previousAssetLocationPlugin = assetLocationPlugin;
+						assetLocationCache = new HashMap<>();
+					}
+					
+					assetLocations = assetLocationPlugin.getAssetLocations(this, assetLocationCache);
+					break;
+				}
+			}
+		}
 		
 		return assetLocations;
+	}
+	
+	private String normalizePath(String path) {
+		return path.replaceAll("/$", "");
 	}
 }

@@ -13,10 +13,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import com.caplin.cutlass.ServletModelAccessor;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
-import com.caplin.cutlass.filter.bundlerfilter.BundlerTokenFilter;
+
 import com.caplin.cutlass.filter.bundlerfilter.contenttype.BundlerContentTypeFilter;
 import com.caplin.cutlass.filter.sectionfilter.SectionRedirectFilter;
 import com.caplin.cutlass.filter.thirdpartyfilter.ThirdPartyResourceFilter;
@@ -33,16 +34,14 @@ public class BladerunnerFilters implements Filter
 		filters.add(new ThirdPartyResourceFilter());
 		filters.add(new VersionRedirectFilter());
 		filters.add(new SectionRedirectFilter());
-		filters.add(new BundlerTokenFilter());
 		filters.add(new TokenisingServletFilter());
 		filters.add(new BundlerContentTypeFilter());
-		filters.add(new CharacterEncodingFilter());
 	}
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		BRJS brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		logger = brjs.logger(LoggerType.FILTER, SectionRedirectFilter.class);
 		
 		for (Filter filter : filters)
@@ -54,6 +53,8 @@ public class BladerunnerFilters implements Filter
 	@Override
 	public void destroy()
 	{
+		ServletModelAccessor.destroy();
+		
 		for (Filter filter : filters)
 		{
 			filter.destroy();

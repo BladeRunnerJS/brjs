@@ -97,10 +97,15 @@ public class StatusExposingCachingServletResponseWrapper extends HttpServletResp
 	public void writeCacheToResponse() throws IOException
 	{
 		response.setStatus(httpStatus);
+		response.setContentLength(contentLength);
 		ServletOutputStream out = response.getOutputStream();
 		out.write(cache.toByteArray());
 		out.close();
-		response.setContentLength(contentLength);
+	}
+	
+	@Override
+	public void flushBuffer()
+	{
 	}
 
 }

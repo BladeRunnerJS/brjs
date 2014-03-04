@@ -2,16 +2,18 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.Event;
-import org.bladerunnerjs.core.plugin.EventObserver;
+import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.ObserverList;
+import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.utility.FileIterator;
+import org.bladerunnerjs.utility.ObserverList;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 
 public class MockRootNode implements RootNode
@@ -136,7 +138,7 @@ public class MockRootNode implements RootNode
 	{
 		return null;
 	}
-
+	
 	@Override
 	public <N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass)
 	{
@@ -147,7 +149,12 @@ public class MockRootNode implements RootNode
 	public void registerNode(Node node)
 	{
 	}
-
+	
+	@Override
+	public void clearRegisteredNode(Node node)
+	{
+	}
+	
 	@Override
 	public Node getRegisteredNode(File childPath)
 	{
@@ -190,5 +197,16 @@ public class MockRootNode implements RootNode
 	@Override
 	public void notifyObservers(Event event, Node notifyForNode)
 	{
+	}
+
+	@Override
+	public FileIterator getFileIterator(File dir) {
+		return new FileIterator(this, new PessimisticFileModificationService(), null);
+	}
+
+	@Override
+	public <N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass)
+	{
+		return null;
 	}
 }

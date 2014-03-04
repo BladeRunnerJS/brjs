@@ -28,7 +28,7 @@ caplinx.dashboard.app.model.DashboardPresentationModel = function(oDashboardServ
 	this.dialog = new caplinx.dashboard.app.model.dialog.Dialog(this);
 	this.dialog.initialize();
 };
-br.extend(caplinx.dashboard.app.model.DashboardPresentationModel, br.presenter.PresentationModel);
+br.Core.extend(caplinx.dashboard.app.model.DashboardPresentationModel, br.presenter.PresentationModel);
 
 caplinx.dashboard.app.model.DashboardPresentationModel.prototype.getBrowserDetector = function()
 {

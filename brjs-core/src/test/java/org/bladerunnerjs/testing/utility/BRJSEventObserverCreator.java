@@ -1,11 +1,12 @@
 package org.bladerunnerjs.testing.utility;
 
-import org.bladerunnerjs.core.plugin.EventObserver;
-import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.plugin.base.AbstractModelObserverPlugin;
 
 
-public class BRJSEventObserverCreator implements ModelObserverPlugin
+public class BRJSEventObserverCreator extends AbstractModelObserverPlugin implements ModelObserverPlugin
 {
 	EventObserver observer;
 	

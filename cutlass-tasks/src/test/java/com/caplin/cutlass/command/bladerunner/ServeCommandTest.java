@@ -8,12 +8,14 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import org.bladerunnerjs.core.plugin.command.standard.ServeCommand;
-import org.bladerunnerjs.model.appserver.ApplicationServer;
+import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+
 import com.caplin.cutlass.command.CommandTaskTest;
+
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
+
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 

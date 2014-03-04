@@ -7,8 +7,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.SocketTimeoutException;
@@ -26,16 +26,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.utility.UnicodeReader;
 
 public class WebappTester 
 {
 	
-	private static final int MAX_POLL_REQUESTS = 10;
-	private static final int POLL_INTERVAL = 500;
+	private static final int MAX_POLL_REQUESTS = 20;
+	private static final int POLL_INTERVAL = 1000;
 	
-	//TODO: make this 1000 again
-	private int defaultSocketTimeout = 999999;
-	private int defaultConnectionTimeout = 999999;
+	private int defaultSocketTimeout = 9999999;
+	private int defaultConnectionTimeout = 9999999;
 	
 	private File filePathBase;
 	private int statusCode;
@@ -45,11 +47,21 @@ public class WebappTester
 	private String contentType;
 	private String url;
 	
-	public WebappTester(File filePathBase, int defaultSocketTimeout, int defaultConnectionTimeout)
+	public String requestLocale = "";
+	private String defaultFileCharacterEncoding;
+	
+	public WebappTester(BRJS brjs, File filePathBase, int defaultSocketTimeout, int defaultConnectionTimeout)
 	{
 		this(filePathBase);
-		this.defaultSocketTimeout = defaultSocketTimeout;
-		this.defaultSocketTimeout = defaultConnectionTimeout;
+		
+		try {
+			this.defaultSocketTimeout = defaultSocketTimeout;
+			this.defaultSocketTimeout = defaultConnectionTimeout;
+			defaultFileCharacterEncoding = brjs.bladerunnerConf().getDefaultFileCharacterEncoding();
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public WebappTester(File filePathBase)
@@ -77,6 +89,7 @@ public class WebappTester
 		HttpParams params = get.getParams();
 		params.setParameter(ClientPNames.HANDLE_REDIRECTS, followRedirects);
 		get.setParams(params);
+		get.addHeader("Accept-Language", requestLocale);
 		
 		httpResponse = httpClient.execute( get );
 		statusCode = httpResponse.getStatusLine().getStatusCode();
@@ -183,9 +196,9 @@ public class WebappTester
 		for(String path: filePaths)
 		{
 			File sourceFile = new File(filePathBase, path);
-			try(FileReader input = new FileReader(sourceFile))
+			try(Reader reader = new UnicodeReader(sourceFile, defaultFileCharacterEncoding))
 			{
-				IOUtils.copy(input, writer);
+				IOUtils.copy(reader, writer);
 				writer.write("\n\n");
 			}
 		}

@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.brjs;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,10 +25,10 @@ public class BRJSTest extends SpecTest {
 	
 	@Ignore //TODO: fix test
 	@Test
-	public void theAppConfIsWrittenOnPopulate() throws Exception {
+	public void theBrjsConfIsWrittenOnPopulate() throws Exception {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/bladerunner.conf", "defaultInputEncoding: UTF-8\ndefaultOutputEncoding: UTF-8\njettyPort: 7070");
+		then(brjs).fileHasContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 7070");
 	}
 	
 	@Test
@@ -48,6 +48,27 @@ public class BRJSTest extends SpecTest {
 	public void exceptionIsThrownIfRunCommandIsInvokedWithANonExistentCommandName() throws Exception {
 		when(brjs).runCommand("no-such-command");
 		then(exceptions).verifyException(NoSuchCommandException.class, "no-such-command");
+	}
+	
+	@Test
+	public void brjsConfDirIsntOverwrittenIfItExists() throws Exception {
+		given(brjsTemplate).hasBeenCreated()
+			.and(brjs).hasDir("conf")
+			.and(brjs).containsFile("conf/some-config.xml")
+			.and(brjs).hasDir("conf")
+			.and(brjs).containsFileWithContents("conf/my.conf", "some config");
+		when(brjs).populate();
+		then(brjs).fileHasContents("conf/my.conf", "some config");
+	}
+	
+	@Test
+	public void brjsFilesInTemplateDontOverwriteExistingFiles() throws Exception {
+		given(brjsTemplate).hasBeenCreated()
+			.and(brjsTemplate).containsFileWithContents("conf/my.conf", "some template config")
+			.and(brjs).hasDir("conf")
+			.and(brjs).containsFileWithContents("conf/my.conf", "some custom config");
+		when(brjs).populate();
+		then(brjs).fileHasContents("conf/my.conf", "some custom config");
 	}
 	
 }

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8">
+		
 		<base href="@APP.VERSION@"/>
 		
 		<title>My Application</title>
@@ -11,10 +13,20 @@
 	<body>
 		<p>Successfully loaded the application</p>
 
-		<@js.bundle@/>
+    <!-- dev-minifier can be set to "combined" for all JS content to be bundled with a single request -->
+		<@js.bundle dev-minifier="none" prod-minifier="combined"@/>
 		<script>
 			( function() {
-				var oApp = new @appns.App();
+
+				// Register application EventHub. Required until the following is fixed:
+				// https://github.com/BladeRunnerJS/brjs/issues/354
+				var ServiceRegistry = require( 'br/ServiceRegistry' );
+				var EventHub = require( 'br/EventHub' );
+				ServiceRegistry.registerService( 'br.event-hub', new EventHub() );
+
+				var App = require( '@appns/App' );
+				var app = new App();
+
 			} )();
 		</script>
 	</body>

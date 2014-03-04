@@ -2,30 +2,28 @@ package com.caplin.jstestdriver.plugin;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import com.caplin.cutlass.bundler.css.CssBundler;
-import com.caplin.cutlass.bundler.html.HtmlBundler;
-import com.caplin.cutlass.bundler.i18n.I18nBundler;
-import com.caplin.cutlass.bundler.js.JsBundler;
-import com.caplin.cutlass.bundler.xml.XmlBundler;
+
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.google.jstestdriver.FileInfo;
 import com.google.jstestdriver.hooks.ResourcePreProcessor;
 
 public class BundlerInjector implements ResourcePreProcessor
 {
-	protected List<BundlerHandler> bundlerHandlers;
+	protected Map<String,BundlerHandler> bundlerHandlers;
 
 	public BundlerInjector() throws Exception
 	{
-		bundlerHandlers = new ArrayList<BundlerHandler>();
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new JsBundler(), "js.bundle", false));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new CssBundler(), "css.bundle", true));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new I18nBundler(), "i18n.bundle", false));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new XmlBundler(), "xml.bundle", true));
-		bundlerHandlers.add(new WritingResourceBundlerHandler(new HtmlBundler(), "html.bundle", true));
+		bundlerHandlers = new HashMap<String,BundlerHandler>();
+		bundlerHandlers.put("js.bundle", new BRJSWritingResourceBundlerHandler("js/dev/en_GB/combined/bundle.js", false));
+		bundlerHandlers.put("css.bundle", new BRJSWritingResourceBundlerHandler("css/standard_en_GB/bundle.css", true));
+		bundlerHandlers.put("i18n.bundle", new BRJSWritingResourceBundlerHandler("i18n/en_GB.js", false));
+		bundlerHandlers.put("xml.bundle", new BRJSWritingResourceBundlerHandler("bundle.xml", true));
+		bundlerHandlers.put("html.bundle", new BRJSWritingResourceBundlerHandler("bundle.html", true));
 	}
 
 	@Override
@@ -82,7 +80,7 @@ public class BundlerInjector implements ResourcePreProcessor
 		return files;
 	}
 
-	protected void setBundlerHandlers(List<BundlerHandler> bundlerHandlers)
+	protected void setBundlerHandlers(Map<String,BundlerHandler> bundlerHandlers)
 	{
 		this.bundlerHandlers = bundlerHandlers;
 	}
@@ -91,14 +89,15 @@ public class BundlerInjector implements ResourcePreProcessor
 	{
 		List<BundlerHandler> validBundlerHandlers = new ArrayList<BundlerHandler>();
 		String thisFileName = thisFile.getName();
-		for (BundlerHandler handler : bundlerHandlers)
+		
+		for (String handlerExtension : bundlerHandlers.keySet())
 		{
-			boolean isAbsoluteMatch = thisFileName.equals(handler.getAcceptedFileSuffix());
-			boolean hasValidMatchingExtension = thisFileName.endsWith("_" + handler.getAcceptedFileSuffix());
-
+			boolean isAbsoluteMatch = thisFileName.equals(handlerExtension);
+			boolean hasValidMatchingExtension = thisFileName.endsWith("_" + handlerExtension);
+			
 			if (isAbsoluteMatch || hasValidMatchingExtension)
 			{
-				validBundlerHandlers.add(handler);
+				validBundlerHandlers.add( bundlerHandlers.get(handlerExtension) );
 			}
 		}
 		return validBundlerHandlers;
@@ -124,7 +123,12 @@ public class BundlerInjector implements ResourcePreProcessor
 
 	private File getTestDirForBundleFile(File bundleFile)
 	{
-		return new File(StringUtils.substringBefore(bundleFile.getAbsolutePath(), BundlerHandler.BUNDLE_PREFIX).replace("\\", "/"));
+		if (bundleFile.getAbsolutePath().contains(BundlerHandler.BUNDLE_PREFIX))
+		{
+			return new File(StringUtils.substringBefore(bundleFile.getAbsolutePath(), BundlerHandler.BUNDLE_PREFIX).replace("\\", "/"));			
+		}
+		throw new RuntimeException("The path " + bundleFile.getAbsolutePath() + 
+				" does not contain the directory " + BundlerHandler.BUNDLE_PREFIX + " so the test dir for the bundle cannot be calculated.");
 	}
 
 	private void addBundledFilesToCurrentFileList(BundlerHandler handler, List<FileInfo> currentFileList, List<File> bundledFiles)

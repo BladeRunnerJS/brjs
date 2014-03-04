@@ -1,16 +1,16 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.console.PrintStreamConsoleWriter;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerFactory;
-import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.console.PrintStreamConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
 public abstract class AbstractRootNode extends AbstractNode implements RootNode
@@ -21,9 +21,15 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	public AbstractRootNode(File dir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
-		init(this, null, locateRootDir(dir));
+		super();
+		
+		File rootDir = locateRootDir(dir);
+		this.dir = (rootDir == null) ? null : new File(getNormalizedPath(rootDir));
 		this.loggerFactory = loggerFactory;
 		this.consoleWriter = consoleWriter;
+		
+		// TODO: we should never call registerInitializedNode() from a non-final class
+		registerInitializedNode();
 	}
 	
 	@Override
@@ -50,22 +56,27 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
-	public void registerNode(Node node)
+	public void registerNode(Node node) throws NodeAlreadyRegisteredException
 	{
-		nodeCache.put(node.dir().getAbsolutePath(), node);
-		try {
-			nodeCache.put(node.dir().getCanonicalPath(), node);
+		String normalizedPath = node.dir().getPath();
+		
+		if(nodeCache.containsKey(normalizedPath)) {
+			throw new NodeAlreadyRegisteredException("A node has already been registered for path '" + normalizedPath + "'");
 		}
-		catch (IOException ex)
-		{
-			root().logger(LoggerType.CORE, this.getClass() ).warn("Unable to get canonical path for dir %s, exception was: '%s'", dir(), ex);
-		}
+		
+		nodeCache.put(normalizedPath, node);
+	}
+	
+	@Override
+	public void clearRegisteredNode(Node node) {
+		String normalizedPath = node.dir().getPath();
+		nodeCache.remove(normalizedPath);
 	}
 	
 	@Override
 	public Node getRegisteredNode(File childPath)
 	{
-		return nodeCache.get(childPath.getAbsolutePath());
+		return nodeCache.get(getNormalizedPath(childPath));
 	}
 	
 	@Override
@@ -103,6 +114,22 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		return (N) node;
 	}
 	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass) {
+		if (node == null)
+		{
+			return null;
+		}
+		
+		if (node.getClass() == nodeClass)
+		{
+			return (N) node;
+		}
+		
+		return locateAncestorNodeOfClass(node.parentNode(), nodeClass);
+	}
+	
 	@SuppressWarnings("unchecked")
 	private <N extends Node> N locateExistentAncestorNodeOfClass(Node node, Class<N> nodeClass)
 	{
@@ -134,11 +161,11 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		do
 		{
-			String filePath = nextFile.getAbsolutePath();
+			String normalizedFilePath = getNormalizedPath(nextFile);
 			
-			if(nodeCache.containsKey(filePath))
+			if(nodeCache.containsKey(normalizedFilePath))
 			{
-				node = nodeCache.get(filePath);
+				node = nodeCache.get(normalizedFilePath);
 			}
 			else
 			{
@@ -148,5 +175,4 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		return node;
 	}
-	
 }

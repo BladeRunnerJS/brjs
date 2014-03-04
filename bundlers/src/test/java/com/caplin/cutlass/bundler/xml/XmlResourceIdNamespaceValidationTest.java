@@ -9,8 +9,8 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import com.caplin.cutlass.CutlassConfig;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
@@ -38,7 +38,7 @@ public class XmlResourceIdNamespaceValidationTest
 		bundleWriter.writeBundle(Arrays.asList(validGridDefinitionsFile), writer);
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testValidBladeIdDuplicatedInDifferentFilesAtBladeLevel() throws Exception
 	{
 		File validFile1 = new File(APPLICATIONS_DIR + "/test-app7/fx-bladeset/blades/blade1/resources/xml/blade1valid1.xml");
@@ -47,7 +47,7 @@ public class XmlResourceIdNamespaceValidationTest
 		bundleWriter.writeBundle(Arrays.asList(validFile1, validFile2), writer);
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testValidBladeIdDuplicatedInDifferentFilesAtBladesetLevel() throws Exception
 	{
 		File validFile1 = new File(APPLICATIONS_DIR + "/test-app7/fx-bladeset/resources/xml/blade1valid1.xml");
@@ -56,42 +56,42 @@ public class XmlResourceIdNamespaceValidationTest
 		bundleWriter.writeBundle(Arrays.asList(validFile1, validFile2), writer);
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithNoNamespaceOrBladesetOrBladeName() throws Exception
 	{
 		File invalidFile = new File(APPLICATIONS_DIR + "/test-app/testbladeset-bladeset/blades/testblade-blade/resources/xml/gridDefinitionsInvalid.xml");
 		bundleWriter.writeBundle(Arrays.asList(invalidFile), writer);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithTypoBladeName() throws Exception
 	{
 		File invalidFile = new File(APPLICATIONS_DIR + "/test-app2/fx-bladeset/blades/blade1/resources/xml/blade1Invalid.xml");
 		bundleWriter.writeBundle(Arrays.asList(invalidFile), writer);
 	}
 	
-	@Test(expected=BundlerFileProcessingException.class)
+	@Test(expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithSiblingBladeName() throws Exception
 	{
 		File invalidFile = new File(APPLICATIONS_DIR + "/test-app3/fx-bladeset/blades/blade1/resources/xml/blade1Invalid.xml");
 		bundleWriter.writeBundle(Arrays.asList(invalidFile), writer);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testBladeAttemptsToOverrideParentBladesetId() throws Exception
 	{
 		File invalidFile = new File(APPLICATIONS_DIR + "/test-app4/fx-bladeset/blades/blade1/resources/xml/blade1Invalid.xml");
 		bundleWriter.writeBundle(Arrays.asList(invalidFile), writer);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithTypoParentBladesetName() throws Exception
 	{
 		File invalidFile = new File(APPLICATIONS_DIR + "/test-app5/fx-bladeset/blades/blade1/resources/xml/blade1Invalid.xml");
 		bundleWriter.writeBundle(Arrays.asList(invalidFile), writer);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithWithNoNamespaceName() throws Exception
 	{
 		File invalidFile = new File(APPLICATIONS_DIR + "/test-app6/fx-bladeset/blades/blade1/resources/xml/blade1Invalid.xml");
@@ -107,14 +107,14 @@ public class XmlResourceIdNamespaceValidationTest
 		bundleWriter.writeBundle(Arrays.asList(validGridDefinitionsFile), writer);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladesetIdNoNamespaceOrBladesetName() throws Exception
 	{
 		File validGridDefinitionsFile = new File(APPLICATIONS_DIR + "/test-app/testbladeset-bladeset/resources/xml/rendererDefinitionsInvalid.xml");
 		bundleWriter.writeBundle(Arrays.asList(validGridDefinitionsFile), writer);
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladesetIdNoNamespace() throws Exception
 	{
 		File invalidFile = new File(APPLICATIONS_DIR + "/test-app8/fx-bladeset/resources/xml/fxbladesetInvalid.xml");
@@ -122,7 +122,7 @@ public class XmlResourceIdNamespaceValidationTest
 	}
 	
 	@Ignore
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladesetIdWithChildBladeName() throws Exception
 	{
 		File invalidFile = new File(APPLICATIONS_DIR + "/test-app9/fx-bladeset/resources/xml/fxbladesetInvalid.xml");

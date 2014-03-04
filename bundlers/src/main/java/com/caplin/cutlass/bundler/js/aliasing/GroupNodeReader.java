@@ -7,7 +7,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamReader2;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import com.caplin.cutlass.exception.NamespaceException;
 
 public class GroupNodeReader implements AliasingNodeReader {
@@ -19,7 +19,7 @@ public class GroupNodeReader implements AliasingNodeReader {
 	}
 
 	@Override
-	public AliasingNode getCurrentNode() throws BundlerFileProcessingException, XMLStreamException, NamespaceException {
+	public AliasingNode getCurrentNode() throws ContentFileProcessingException, XMLStreamException, NamespaceException {
 		String groupName = underlyingStreamReader.getAttributeValue(null, "name");
 		
 		List<AliasNode> aliasNodes = getAliasNodes();
@@ -27,7 +27,7 @@ public class GroupNodeReader implements AliasingNodeReader {
 		return new GroupNode(groupName, aliasNodes);
 	}
 
-	private List<AliasNode> getAliasNodes() throws BundlerFileProcessingException, XMLStreamException, NamespaceException {
+	private List<AliasNode> getAliasNodes() throws ContentFileProcessingException, XMLStreamException, NamespaceException {
 		
 		List<AliasNode> aliasNodes = new ArrayList<AliasNode>();
 		AliasingNodeReader aliasNodeReader = new AliasNodeReader(underlyingStreamReader);

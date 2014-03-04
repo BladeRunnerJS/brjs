@@ -3,7 +3,7 @@ package com.caplin.cutlass.structure.model.path;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.structure.model.SdkModel;
 import com.caplin.cutlass.structure.model.node.AppNode;
 

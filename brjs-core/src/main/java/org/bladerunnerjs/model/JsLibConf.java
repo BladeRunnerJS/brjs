@@ -8,7 +8,7 @@ public class JsLibConf extends ConfFile<YamlJsLibConf> {
 	}
 	
 	public String getLibNamespace() throws ConfigException {
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.libNamespace;
 	}
 	

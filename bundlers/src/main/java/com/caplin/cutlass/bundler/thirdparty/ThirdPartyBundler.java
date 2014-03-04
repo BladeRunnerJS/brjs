@@ -19,18 +19,23 @@ import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.lang3.StringUtils;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
+import com.caplin.cutlass.AppMetaData;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
@@ -38,10 +43,10 @@ import com.caplin.cutlass.structure.model.SdkModel;
 import com.caplin.cutlass.structure.model.path.AppPath;
 import com.caplin.cutlass.structure.model.path.ThirdpartyLibPath;
 
-public class ThirdPartyBundler implements LegacyFileBundlerPlugin
+public class ThirdPartyBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
 	private static final NotFileFilter notManifestFileFilter = new NotFileFilter(new NameFileFilter(CutlassConfig.LIBRARY_MANIFEST_FILENAME, IOCase.INSENSITIVE));
-	private final ContentPathParser requestParser = RequestParserFactory.createThirdPartyBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createThirdPartyBundlerContentPathParser();
 	private final ThirdPartyLibraryFinder libraryFinder = new ThirdPartyLibraryFinder();
 	
 	@Override
@@ -58,7 +63,7 @@ public class ThirdPartyBundler implements LegacyFileBundlerPlugin
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
@@ -66,7 +71,7 @@ public class ThirdPartyBundler implements LegacyFileBundlerPlugin
 	{
 		String requestPath = StringUtils.substringBeforeLast(requestName, "?");		
 		
-		ParsedContentPath request = requestParser.parse(requestPath);
+		ParsedContentPath request = contentPathParser.parse(requestPath);
 		String resourcePath = getResourcePath(baseDir, request.properties);
 		File file = new File(resourcePath);
 		
@@ -89,7 +94,7 @@ public class ThirdPartyBundler implements LegacyFileBundlerPlugin
 		}
 		else if(sourceFiles.size() > 1)
 		{
-			throw new BundlerProcessingException("More than one library resource file was requested to be added to a single bundle.");
+			throw new ContentProcessingException("More than one library resource file was requested to be added to a single bundle.");
 		}
 		else
 		{
@@ -124,7 +129,7 @@ public class ThirdPartyBundler implements LegacyFileBundlerPlugin
 		}
 		catch (IOException e)
 		{
-			throw new BundlerFileProcessingException(image, e, "Error while writing bundle");
+			throw new ContentFileProcessingException(image, e, "Error while writing bundle");
 		}
 	}
 	
@@ -138,7 +143,7 @@ public class ThirdPartyBundler implements LegacyFileBundlerPlugin
 		}
 		catch (IOException e)
 		{
-			throw new BundlerFileProcessingException(textFile, e, "Error while writing bundle");
+			throw new ContentFileProcessingException(textFile, e, "Error while writing bundle");
 		}
 	}
 	

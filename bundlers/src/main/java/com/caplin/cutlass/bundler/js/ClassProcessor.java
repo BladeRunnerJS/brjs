@@ -10,17 +10,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 
 import com.caplin.cutlass.BRJSAccessor;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 import com.caplin.cutlass.bundler.exception.UnknownBundlerException;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
 import com.caplin.cutlass.bundler.js.Match;
+import com.caplin.cutlass.bundler.js.aliasing.AliasDefinition;
 import com.caplin.cutlass.bundler.js.aliasing.AliasInformation;
 import com.caplin.cutlass.bundler.js.aliasing.ScenarioAliases;
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyser;
@@ -50,12 +50,12 @@ public class ClassProcessor
 		return classDictionary;
 	}
 	
-	public FileDependencies getClassDependencies(File theFile) throws BundlerProcessingException
+	public FileDependencies getClassDependencies(File theFile) throws ContentProcessingException
 	{
 		return getClassDependencies(theFile, true);
 	}
 	
-	public FileDependencies getClassDependencies(File file, boolean includeSeedFileInList) throws BundlerProcessingException
+	public FileDependencies getClassDependencies(File file, boolean includeSeedFileInList) throws ContentProcessingException
 	{
 		FileDependencies foundDependencies = new FileDependencies();
 		List<String> foundClassNames = new ArrayList<String>();
@@ -93,7 +93,7 @@ public class ClassProcessor
 		return matchedAliases;
 	}
 	
-	private void processClass(String classname, List<String> foundClassnames, FileDependencies foundDependencies, Match matched ) throws BundlerProcessingException
+	private void processClass(String classname, List<String> foundClassnames, FileDependencies foundDependencies, Match matched ) throws ContentProcessingException
 	{
 		if (processedClasses.contains(classname))
 		{
@@ -130,12 +130,12 @@ public class ClassProcessor
 		}
 	}
 	
-	private void processSourceFile(File sourceFile, List<String> foundClassnames, FileDependencies foundDependencies) throws BundlerProcessingException
+	private void processSourceFile(File sourceFile, List<String> foundClassnames, FileDependencies foundDependencies) throws ContentProcessingException
 	{
 		processSourceFile(sourceFile, "", foundClassnames, foundDependencies);
 	}
 	
-	private void processSourceFile(File sourceFile, String classname, List<String> foundClassnames, FileDependencies foundDependencies) throws BundlerProcessingException
+	private void processSourceFile(File sourceFile, String classname, List<String> foundClassnames, FileDependencies foundDependencies) throws ContentProcessingException
 	{
 		logger.debug("processing file '" + sourceFile.getAbsolutePath() + "'");
 		
@@ -173,7 +173,7 @@ public class ClassProcessor
 	// Process dependencies recursively using a depth first approach
 	// to minimise memory usage of the write buffers.
 	// Can't emit a class until all its static dependencies are written.
-	private void processDependencies(File sourceFile, Reader reader, List<String> foundClassnames, FileDependencies foundDependencies, String sourceFileExtension) throws BundlerProcessingException
+	private void processDependencies(File sourceFile, Reader reader, List<String> foundClassnames, FileDependencies foundDependencies, String sourceFileExtension) throws ContentProcessingException
 	{
 		DependencyFinder finder = new DependencyFinder(classTrie, sourceFileExtension);
 		int latest;
@@ -191,12 +191,12 @@ public class ClassProcessor
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Error while processing the file " + sourceFile.getAbsolutePath());
+			throw new ContentProcessingException(e, "Error while processing the file " + sourceFile.getAbsolutePath());
 		}
 	}
 
 	private void processClassChar( List<String> foundClassnames, FileDependencies foundDependencies, DependencyFinder finder, char latestChar )
-			throws IOException, BundlerProcessingException
+			throws IOException, ContentProcessingException
 	{
 		Match matched = finder.next( latestChar );
 		
@@ -223,7 +223,7 @@ public class ClassProcessor
 		}
 	}
 
-	private void processStaticDependency( List<String> foundClassnames, FileDependencies foundDependencies, Match matched )	throws BundlerProcessingException
+	private void processStaticDependency( List<String> foundClassnames, FileDependencies foundDependencies, Match matched )	throws ContentProcessingException
 	{
 		String className = matched.getDependencyName();
 		
@@ -247,7 +247,7 @@ public class ClassProcessor
 		}
 	}
 
-	private void processAlias( List<String> foundClassnames, FileDependencies foundDependencies, Match matched ) throws BundlerProcessingException
+	private void processAlias( List<String> foundClassnames, FileDependencies foundDependencies, Match matched ) throws ContentProcessingException
 	{
 		String qualifiedAlias = matched.getDependencyName();
 		AliasInformation aliasInformation = this.classTrie.getAliasInformation( qualifiedAlias );
@@ -260,7 +260,7 @@ public class ClassProcessor
 		matchedAliases.addAlias(aliasName, new AliasDefinition(matchedAliasDefinition));
 	}
 	
-	private void processMatchedClass( List<String> foundClassnames, FileDependencies foundDependencies, Match matched ) throws BundlerProcessingException
+	private void processMatchedClass( List<String> foundClassnames, FileDependencies foundDependencies, Match matched ) throws ContentProcessingException
 	{
 		String className = matched.getDependencyName();
 		

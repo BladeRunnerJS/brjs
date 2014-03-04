@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,20 +16,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
 
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.bundler.css.CssBundler;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 import com.caplin.cutlass.bundler.exception.UnknownBundlerException;
@@ -43,7 +46,7 @@ public class BundlerServlet extends HttpServlet
 {
 	private static final long serialVersionUID = -3359840788356811425L;
 	
-	protected List<LegacyFileBundlerPlugin> bundlers = null;
+	protected List<LegacyFileBundlerPlugin> bundlers = new ArrayList<>();
 	
 	private BRJS brjs;
 	private App app;
@@ -52,8 +55,8 @@ public class BundlerServlet extends HttpServlet
 	
 	public BundlerServlet() throws Exception
 	{
-		bundlers = Arrays.asList(new JsBundler(), new XmlBundler(), new HtmlBundler(),
-			new I18nBundler(), new CssBundler(), new ImageBundler(), new ThirdPartyBundler());
+		bundlers.addAll(Arrays.asList(new JsBundler(), new XmlBundler(), new HtmlBundler(),
+			new I18nBundler(), new CssBundler(), new ImageBundler(), new ThirdPartyBundler()));
 	}
 
 	protected BundlerServlet(List<LegacyFileBundlerPlugin> bundlers)
@@ -64,7 +67,7 @@ public class BundlerServlet extends HttpServlet
 	@Override
 	public void init(final ServletConfig servletConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(servletConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(servletConfig.getServletContext());
 		app = brjs.app(new File(servletConfig.getServletContext().getRealPath("/")).getName());
 		logger = brjs.logger(LoggerType.SERVLET, BundlerServlet.class);
 		
@@ -72,7 +75,13 @@ public class BundlerServlet extends HttpServlet
 		servletContext.setAttribute(CutlassConfig.DEV_MODE_FLAG, "true");
 		super.init(servletConfig);
 	}
-
+	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+	}
+	
 	@Override
 	protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
 	{
@@ -89,7 +98,7 @@ public class BundlerServlet extends HttpServlet
 			logger.debug("REQUEST PATH " + requestPath);
 			
 			if(requestPath.equals("XXX-js/js.bundle")) {
-				app.handleLogicalRequest(bladerunnerUri, cachedBundlerOutputStream);
+				app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri.logicalPath, cachedBundlerOutputStream);
 			}
 			else {
 				LegacyFileBundlerPlugin theBundler = getBundlerForRequest(request);
@@ -106,7 +115,7 @@ public class BundlerServlet extends HttpServlet
 		{
 			sendErrorResponse(response, 404, ex);
 		}
-		catch (BundlerProcessingException ex)
+		catch (ContentProcessingException ex)
 		{
 			sendErrorResponse(response, 500, ex);
 		}

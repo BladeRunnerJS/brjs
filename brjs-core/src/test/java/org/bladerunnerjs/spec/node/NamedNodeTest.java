@@ -9,11 +9,12 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.NamedNode;
+import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -223,7 +224,8 @@ public class NamedNodeTest extends SpecTest {
 	{
 		given(observer).observing(brjs);
 		when(node).create();
-		then(observer).noNotifications();
+		then(observer).notified(NodeCreatedEvent.class, node)
+			.and(observer).noNotifications();
 	}
 	
 	private interface NamedNodeFactory {

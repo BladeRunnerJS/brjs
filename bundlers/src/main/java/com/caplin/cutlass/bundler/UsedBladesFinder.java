@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.bundler.js.ClassDictionary;
 import com.caplin.cutlass.bundler.js.ClassProcessor;
 import com.caplin.cutlass.bundler.js.ClassesTrie;
@@ -16,13 +16,13 @@ import com.caplin.cutlass.bundler.js.JsSeedBundlerFileAppender;
 import com.caplin.cutlass.bundler.js.JsSourceBundlerFileAppender;
 import com.caplin.cutlass.exception.NamespaceException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 
 
 public class UsedBladesFinder
 {
 
-	public List<File> findUsedBlades(File aspectRoot) throws BundlerProcessingException
+	public List<File> findUsedBlades(File aspectRoot) throws ContentProcessingException
 	{
 		List<File> bladeList = new ArrayList<File>();
 		
@@ -40,7 +40,7 @@ public class UsedBladesFinder
 		return bladeList;
 	}
 
-	private ClassesTrie getClassesTrie(File appRoot) throws BundlerProcessingException
+	private ClassesTrie getClassesTrie(File appRoot) throws ContentProcessingException
 	{		
 		List<ClassnameFileMapping> allBladeMappings = getAllBladesMappings(appRoot);
 		ClassesTrie trie = new ClassesTrie();	
@@ -52,7 +52,7 @@ public class UsedBladesFinder
 		return trie;
 	}
 	
-	private ClassDictionary getClassesDictionary(File appRoot) throws BundlerProcessingException
+	private ClassDictionary getClassesDictionary(File appRoot) throws ContentProcessingException
 	{
 		List<ClassnameFileMapping> allBladeMappings = getAllBladesMappings(appRoot);
 		ClassDictionary dictionary = new ClassDictionary();
@@ -64,7 +64,7 @@ public class UsedBladesFinder
 		return dictionary;
 	}
 	
-	private List<ClassnameFileMapping> getAllBladesMappings(File appRoot) throws BundlerProcessingException
+	private List<ClassnameFileMapping> getAllBladesMappings(File appRoot) throws ContentProcessingException
 	{
 		List<ClassnameFileMapping> mappings = new ArrayList<ClassnameFileMapping>();
 		
@@ -80,22 +80,22 @@ public class UsedBladesFinder
 		return mappings;
 	}
 	
-	private String getClassnameForBlade(File blade) throws BundlerProcessingException
+	private String getClassnameForBlade(File blade) throws ContentProcessingException
 	{
-		String appNamespace = "";
+		String requirePrefix = "";
 		try
 		{
-			appNamespace = NamespaceCalculator.getAppNamespace(blade);
+			requirePrefix = RequirePrefixCalculator.getAppRequirePrefix(blade);
 		}
 		catch (NamespaceException ex)
 		{
-			throw new BundlerProcessingException(ex, "There was an error calculating the namespace for the app");
+			throw new ContentProcessingException(ex, "There was an error calculating the namespace for the app");
 		}
 		
-		String bladesetNamespace = NamespaceCalculator.getBladesetNamespace(blade);
-		String bladeNamespace = NamespaceCalculator.getBladeNamespace(blade);
+		String bladesetNamespace = RequirePrefixCalculator.getBladesetRequirePrefix(blade);
+		String bladeNamespace = RequirePrefixCalculator.getBladeRequirePrefix(blade);
 		
-		return appNamespace+"."+bladesetNamespace+"."+bladeNamespace;
+		return requirePrefix+"."+bladesetNamespace+"."+bladeNamespace;
 	}
 	
 	private List<File> getSeeds(File aspectRoot)

@@ -5,12 +5,11 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.caplin.cutlass.command.war.WarCommand;
 
 public class WARCommandTest extends SpecTest {
 	App app;
@@ -23,7 +22,7 @@ public class WARCommandTest extends SpecTest {
 		//TODO::have to create brjs first should remove when moved over to core
 		given(brjs).hasBeenCreated();
 		
-		given(pluginLocator).hasCommand(new WarCommand(brjs))
+		given(brjs).hasCommands(new WarCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("myaspect");

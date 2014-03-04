@@ -9,13 +9,15 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.bladerunnerjs.core.plugin.command.standard.CreateApplicationCommand;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
+
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
+import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
@@ -89,7 +91,7 @@ public class CreateApplicationCommandTest
 		assertTrue(appConf.exists());
 		
 		List<String> appConfLines = FileUtils.readLines(appConf);
-		assertEquals("appNamespace: namespacex", appConfLines.get(0));
+		assertEquals("requirePrefix: namespacex", appConfLines.get(1));
 	}
 
 	@Test
@@ -103,7 +105,7 @@ public class CreateApplicationCommandTest
 		assertTrue(appConf.exists());
 		
 		List<String> appConfLines = FileUtils.readLines(appConf);
-		assertEquals("appNamespace: newtrader", appConfLines.get(0));
+		assertEquals("requirePrefix: newtrader", appConfLines.get(1));
 	}
 	
 	@Test

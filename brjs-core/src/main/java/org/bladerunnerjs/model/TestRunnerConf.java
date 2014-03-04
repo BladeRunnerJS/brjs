@@ -1,7 +1,7 @@
 package org.bladerunnerjs.model;
 
-import org.bladerunnerjs.model.conf.YamlTestRunnerConf;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.yaml.YamlTestRunnerConf;
 
 public class TestRunnerConf extends ConfFile<YamlTestRunnerConf> {
 	public TestRunnerConf(BRJS brjs) throws ConfigException {
@@ -9,7 +9,7 @@ public class TestRunnerConf extends ConfFile<YamlTestRunnerConf> {
 	}
 	
 	public String getDefaultBrowser() throws ConfigException {
-		reloadConf();
+		reloadConfIfChanged();
 		return conf.defaultBrowser;
 	}
 	

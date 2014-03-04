@@ -1,9 +1,8 @@
 package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
-import static org.bladerunnerjs.core.plugin.command.standard.CreateBladeCommand.Messages.*;
+import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand.Messages.*;
 
-import org.bladerunnerjs.core.plugin.command.standard.CreateBladeCommand;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
@@ -12,7 +11,8 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(pluginLocator).hasCommand(new CreateBladeCommand())
+		given(brjs).hasCommands(new CreateBladeCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			bladeset = app.bladeset("bladeset");
