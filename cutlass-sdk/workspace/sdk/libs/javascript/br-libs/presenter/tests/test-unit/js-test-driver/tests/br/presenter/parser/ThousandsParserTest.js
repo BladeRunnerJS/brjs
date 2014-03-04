@@ -1,6 +1,13 @@
 ThousandsParserTest = TestCase("ThousandsParserTest");
 ThousandsParserTest.prototype.setUp = function() {
 	this.oParser = new br.presenter.parser.ThousandsParser();
+	
+	this.definitionRegistry = require('br/TestDefinitionRegistry').install();
+};
+
+ThousandsParserTest.prototype.tearDown = function()
+{
+	this.definitionRegistry.uninstall();
 };
 
 ThousandsParserTest.prototype.test_Int = function() {
@@ -17,12 +24,14 @@ ThousandsParserTest.prototype.test_BigInt = function() {
 };
 
 ThousandsParserTest.prototype.test_bigFloatAndDotSeparator = function() {
-	var i18n = require("br/I18n")
-	i18n.reset();
-	i18n.initialise([{
+	var Translator = require('br/i18n/Translator');
+	var I18N = require('br/i18n/I18N');
+	
+	this.definitionRegistry.define('br/I18n', I18N.create(new Translator({
 		"br.i18n.number.grouping.separator":".",
 		"br.i18n.decimal.radix.character":"!"
-	}]);
+	})));
+	
 	this.oParser = new br.presenter.parser.ThousandsParser();
 	
 	assertEquals("12345887.224", this.oParser.parse("12.345.887!224", {}));
