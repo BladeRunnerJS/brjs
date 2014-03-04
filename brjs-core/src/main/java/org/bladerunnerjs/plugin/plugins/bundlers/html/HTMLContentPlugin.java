@@ -123,8 +123,11 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		
 		if(identifier == null)
 		{
+			String idMessage = (htmlAsset.getAssetLocation().getAssetContainer().isNamespaceEnforced()) ?
+				"a namespaced ID of '" + htmlAsset.getAssetLocation().namespace() + ".*'" : "an ID";
+			
 			throw new NamespaceException( "HTML template found without an identifier: '" +
-					startTag.toString() + "'.  Root element should have namespaced ID of '" + htmlAsset.getAssetLocation().namespace() + ".*'");
+					startTag.toString() + "'.  Root element should have " + idMessage + ".");
 		}
 		
 		htmlAsset.getAssetLocation().assertIdentifierCorrectlyNamespaced(identifier);

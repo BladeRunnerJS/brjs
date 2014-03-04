@@ -60,7 +60,7 @@ public class HTMLContentPluginTest extends SpecTest
 	public void aspectHTMlFilesBundleFailsWithNoIDAttribute() throws Exception {
 		given(aspect).resourceFileContains("html/view.html", "<div>TESTCONTENT</div>");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
-		then(exceptions).verifyException(NamespaceException.class, "<div>", "appns.*");
+		then(exceptions).verifyException(NamespaceException.class, "<div>");
 	}
 	
 	@Test
