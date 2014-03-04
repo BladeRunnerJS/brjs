@@ -19,7 +19,7 @@ function EventHubViewer( eventHub ) {
 
   this._eventHub = eventHub;
 
-  this._component = new KnockoutComponent( 'br.workbench-event-logger', this );
+  this._component = new KnockoutComponent( 'br.workbench.event-logger', this );
   
   this._el = document.createElement("div");
   this._el.className = "presentation-model-viewier";
