@@ -58,6 +58,10 @@ TranslatorTest.prototype.setUp = function() {
 		"currency.amd.issuer": "Armenia",
 		"currency.amd.name": "Drams"
 	};
+	
+	this.camelCaseTokens = {
+		"token.CamelcasetokeN": "a Translation"
+	};
 };
 
 TranslatorTest.prototype.tearDown = function()
@@ -210,7 +214,6 @@ TranslatorTest.prototype.test_simpleTokenTest = function() {
 	assertEquals(expected, result);
 };
 
-TranslatorTest.prototype.test_getMessageWhenTheSameTokenIsIncludedTwiceIsReplacedTwice = function()
 {
 	var sTest = "This [token] should be replaced as should this [token]";
 	var mTokens = { token: "replaced-token" };
@@ -232,7 +235,7 @@ TranslatorTest.prototype.test_getMessageWhenTheMessageIsAnEmptyString = function
 {
 	var sTest = "";
 	var mTokens = { };
-	var sExpected = "";
+	var sExpected = "??? test.key ???";
 
 	_assertGetMessageReturnsCorrectValue(sTest, mTokens, sExpected);
 };
