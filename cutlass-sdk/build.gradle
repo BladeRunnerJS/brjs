@@ -263,7 +263,7 @@ task downloadExampleApps, {
 	outputs.dir file("${buildDir}/brjs-example-apps.zip")
 	doFirst {
 		if (!buildDir.isDirectory()) { buildDir.mkdir() }
-		ant.get(src: "https://github.com/BladeRunnerJS/brjs-todo/archive/full.zip", dest: "${buildDir}/brjs-example-apps.zip")
+		ant.get(src: "https://github.com/BladeRunnerJS/brjstodo-getting-started/archive/master.zip", dest: "${buildDir}/brjs-example-apps.zip")
 	}
 }
 
