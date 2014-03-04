@@ -166,9 +166,8 @@
 					definitionContext = id.substring(0, id.lastIndexOf("/"));
 				}
 				// this is set to the module inside the definition code.
-				var realm = this;
 				var returnValue = definition.call(module, function(requirePath) {
-					return realm.require(definitionContext, requirePath);
+					return window.require(definitionContext, requirePath);
 				}, module.exports, module);
 				this.moduleExports[id] = returnValue || module.exports;
 			} else {
