@@ -114,7 +114,7 @@ TranslatorTest.prototype.test_formatTimeDelegatesToLocalisedTime = function()
 {
 	var Translator = require('br/i18n/Translator');
 	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
-	assertEquals("LocalisedTime.format", oTranslator.formatTime());
+	assertEquals("20:00:00", oTranslator.formatTime("200000"));
 };
 
 TranslatorTest.prototype.test_missingMessage = function()
