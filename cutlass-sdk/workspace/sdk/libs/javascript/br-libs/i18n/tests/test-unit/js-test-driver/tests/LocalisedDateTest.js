@@ -16,7 +16,7 @@ LocalisedDateTest.prototype.setUp = function()
 	};
 	
 	this.definitionRegistry = require('br/TestDefinitionRegistry').install();
-	this.definitionRegistry.define('br/i18n', I18N.create(new Translator(this.mDateMessages)));
+	this.definitionRegistry.define('br/I18n', I18N.create(new Translator(this.mDateMessages)));
 };
 
 LocalisedDateTest.prototype.tearDown = function()
