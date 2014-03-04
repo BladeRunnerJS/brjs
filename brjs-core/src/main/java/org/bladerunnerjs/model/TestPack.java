@@ -59,7 +59,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public String requirePrefix()
 	{
-		return ((AssetContainer) parentNode().parentNode()).requirePrefix(); //TOOD: refactor this
+		return "";
 	}
 	
 	@Override
