@@ -1,2 +1,3 @@
+depends: browser-modules
 js: html5shiv.js
-exports: "{}"
+exports: null
