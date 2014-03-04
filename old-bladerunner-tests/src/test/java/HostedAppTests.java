@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -56,11 +55,10 @@ public class HostedAppTests extends SpecTest
 			.and(appServer).contentTypeForRequestIs(jsBundleUrlPath, "application/javascript");
 	}
 	
-	@Ignore // Need to understand failure, possibly related to changes in webdefault.xml
 	@Test
 	public void weCanMakeARequestForAspectBundles() throws Exception
 	{
-		String jsBundleUrlPath = "/app/default-aspect/js/dev/en/combined/bundle.js";
+		String jsBundleUrlPath = "/app/default-aspect/js/dev/en_GB/combined/bundle.js";
 		
 		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
 			.and(appServer).requestForUrlContains(jsBundleUrlPath, "appns/Class1");
@@ -69,7 +67,7 @@ public class HostedAppTests extends SpecTest
 	@Test
 	public void weCanMakeARequestForWorkbenchBundles() throws Exception
 	{
-		String jsBundleUrlPath = "/app/bs-bladeset/blades/b1/workbench/js/dev/en/combined/bundle.js";
+		String jsBundleUrlPath = "/app/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js";
 		
 		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
 			.and(appServer).requestForUrlContains(jsBundleUrlPath, "appns/bs/b1/Class");
