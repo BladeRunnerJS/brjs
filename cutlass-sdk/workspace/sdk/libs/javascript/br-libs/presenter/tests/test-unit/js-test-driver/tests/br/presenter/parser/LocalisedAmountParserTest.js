@@ -44,15 +44,15 @@ LocalisedAmountParserTest.prototype.test_testParseDecimal = function() {
 LocalisedAmountParserTest.prototype.test_testParseI18nDecimal = function() {
 	this.oParser = new br.presenter.parser.LocalisedAmountParser();
 	
-	var sValue = "1,25l";
+	var sValue = "1.25l";
 	assertEquals(62.5, this.oParser.parse(sValue, this.mAttributes));
-	sValue = "1,25x";
+	sValue = "1.25x";
 	assertEquals(12.5, this.oParser.parse(sValue, this.mAttributes));
-	sValue = "0,5X";
+	sValue = "0.5X";
 	assertEquals(5, this.oParser.parse(sValue, this.mAttributes));
-	sValue = "0,23c";
+	sValue = "0.23c";
 	assertEquals(23, this.oParser.parse(sValue, this.mAttributes));
-	sValue = ",2345";
+	sValue = ".2345";
 	assertEquals(0.2345, this.oParser.parse(sValue, this.mAttributes));
 };
 
