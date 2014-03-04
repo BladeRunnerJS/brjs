@@ -1,0 +1,81 @@
+<html id="view-fixture-harness">
+
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<body>
+
+<!-- start view-fixture-elements.html -->	
+	
+<div id="wrapper">
+	
+	<p><a href="" id="defaultFocus" class="ignoreEvents" onclick="return false">default focus link</a></p>
+	<p><a href="" id="aLink" onclick="return false">a link</a></p>
+	<p><a href="" id="anotherLink" onclick="return false">another link</a></p>
+
+	<input id="nonFormSubmitButton" type="submit" name="submitButton" value="Submit" />
+	<button id="nonFormButton">my button</button>
+
+	<form id="testForm" action="./" method="post" onsubmit="return false">
+		<input id="textInput" type="text" name="textInput" />
+		<input type="text" id="anotherTextInput" />
+		<input id="submitButton" type="submit" name="submitButton" value="Submit" />
+		<button id="button">my button</button>
+		<input id="checkbox1" type="checkbox" name="checkbox" value="1" />
+		<input id="checkbox2" type="checkbox" name="checkbox" value="2" />
+		<input id="radioButton1" type="radio" name="radioButton" value="1" />
+		<input id="radioButton2" type="radio" name="radioButton" value="2" />
+		<select id="dropDown" name="dropDown">
+			<option id="dropDownItem1" value="1">1</option>
+			<option id="dropDownItem2" value="2">2</option>
+			<option id="dropDownItem3" value="3">3</option>
+		</select>
+		<select multiple id="dropDownMultipleSelect" name="dropDownMultipleSelect">
+			<option id="dropDownMultipleSelect1" value="1">1</option>
+			<option id="dropDownMultipleSelect2" value="2">2</option>
+			<option id="dropDownMultipleSelect3" value="3">3</option>
+		</select>
+		<textarea id="textArea" name="textArea" rows="5" cols="25"></textarea>
+	</form>
+
+</div>
+
+<!-- end view-fixture-elements.html -->
+
+	<script type="text/javascript">
+		window.assertEquals = function(){}
+	</script>
+	<script type="text/javascript" src="../src/events.js"></script>
+	<script type="text/javascript" src="../src/event-logging.js"></script>
+	<script type="text/javascript" src="../src/test-utils.js"></script>
+	<script type="text/javascript">
+		if (typeof window.console == 'undefined') window.console = {};
+		origConsoleLog = (typeof window.console.log != 'undefined') ? window.console.log : function() { };
+		window.console.log = function(msg) {
+			activeEl = document.activeElement.tagName + ((document.activeElement.id) ? "#" + document.activeElement.id : "");
+			jQuery('#activeElement').text(activeEl);
+			jQuery('#log').append(msg+"<br/>\n");
+			origConsoleLog(msg);
+		}
+		jQuery("body").bind(NO_MOUSE_EVENTS.join(" "), logEvent);
+		jQuery("body").bind(NO_MOUSE_EVENTS.join(" "), function(e){
+			$("#log").each( function(){
+			var scrollHeight = Math.max(this.scrollHeight, this.clientHeight);
+			this.scrollTop = scrollHeight - this.clientHeight;
+			});
+		});
+	</script>
+	<br/><br/><br/><br/>
+	<hr class="ignoreEvents"/>
+	<h4 class="ignoreEvents" style='display:inline; margin-bottom:2px; float:left;'>Event Log</h4>
+		<div class="ignoreEvents" style='float:left; font-size: 12px; vertical-align: bottom; margin-left:20px; margin-top:5px;'>
+			<spanclass="ignoreEvents" >document.activeElement: </span>
+			<span class='ignoreEvents' id='activeElement'></span>
+		</div>
+		<input class="ignoreEvents" style='float:right; font-size: 12px;' type='button' onclick="jQuery('#log').html('')" value='clear log'/>
+	<div class="ignoreEvents" id="log" style="width:99%; height:150px; 
+		border:solid red 1px; background-color:#f0f0f0; padding:5px;
+		overflow:hidden; vertical-align:bottom; clear:both;">
+	</div>
+	
+</body>
+</html>

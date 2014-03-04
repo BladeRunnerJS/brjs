@@ -13,9 +13,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import com.caplin.cutlass.ServletModelAccessor;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
+
 import com.caplin.cutlass.filter.production.GZipContentEncodingFilter;
 import com.caplin.cutlass.filter.production.ValidRequestForBundledResourceFilter;
 
@@ -33,6 +35,8 @@ public class BladerunnerProdFilters implements Filter
 	@Override
 	public void destroy()
 	{
+		ServletModelAccessor.destroy();
+		
 		for (Filter filter : filters)
 		{
 			filter.destroy();
@@ -42,7 +46,7 @@ public class BladerunnerProdFilters implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		BRJS brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		logger = brjs.logger(LoggerType.SERVLET, BladerunnerProdFilters.class);
 		
 		for (Filter filter : filters)

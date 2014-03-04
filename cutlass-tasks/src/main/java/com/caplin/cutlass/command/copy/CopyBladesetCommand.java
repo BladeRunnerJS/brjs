@@ -2,22 +2,27 @@ package com.caplin.cutlass.command.copy;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.core.console.ConsoleWriter;
+
+import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import org.bladerunnerjs.plugin.base.AbstractCommandPlugin;
+
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.command.importing.Renamer;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.AppStructureVerifier;
-import com.caplin.cutlass.structure.NamespaceCalculator;
-import org.bladerunnerjs.model.utility.NameValidator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 
-public class CopyBladesetCommand implements LegacyCommandPlugin
+import org.bladerunnerjs.utility.NameValidator;
+
+public class CopyBladesetCommand extends AbstractCommandPlugin implements LegacyCommandPlugin
 {
 	private final File sdkBaseDir;
 	private ConsoleWriter out;
@@ -58,7 +63,7 @@ public class CopyBladesetCommand implements LegacyCommandPlugin
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		//<source-app-name> <source-bladeset-name> <target-app-name> [<target-bladeset-name>]
 		assertValidArgs(args);
@@ -91,8 +96,8 @@ public class CopyBladesetCommand implements LegacyCommandPlugin
 		String targetApplicationNamespace = "";
 		try 
 		{
-			sourceApplicationNamespace = NamespaceCalculator.getAppNamespace(new File(applicationsDir, sourceApplicationName));
-			targetApplicationNamespace = NamespaceCalculator.getAppNamespace(new File(applicationsDir, targetApplicationName));
+			sourceApplicationNamespace = RequirePrefixCalculator.getAppRequirePrefix(new File(applicationsDir, sourceApplicationName));
+			targetApplicationNamespace = RequirePrefixCalculator.getAppRequirePrefix(new File(applicationsDir, targetApplicationName));
 		} 
 		catch (Exception ex) 
 		{

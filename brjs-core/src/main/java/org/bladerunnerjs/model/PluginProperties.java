@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.bladerunnerjs.model.engine.Node;
@@ -21,6 +23,8 @@ public class PluginProperties implements NodeProperties
 	
 	private final Node node;
 	private final String pluginName;
+
+	private Map<String, Object> transientProperties = new HashMap<String, Object>();
 	
 	public PluginProperties(Node node, String pluginName)
 	{
@@ -29,7 +33,7 @@ public class PluginProperties implements NodeProperties
 	}
 
 	@Override
-	public void setProperty(String name, String value) throws PropertiesException
+	public void setPersisentProperty(String name, String value) throws PropertiesException
 	{
 		try {
 			Properties properties = getProperties();
@@ -42,7 +46,7 @@ public class PluginProperties implements NodeProperties
 	}
 
 	@Override
-	public String getProperty(String name) throws PropertiesException
+	public String getPersisentProperty(String name) throws PropertiesException
 	{
 		try {
 			Properties properties = getProperties();
@@ -52,6 +56,20 @@ public class PluginProperties implements NodeProperties
 			throw new PropertiesException(PropertiesException.ERROR_GETTING_PROPERTIES_EXCEPTION, ex);
 		}
 	}
+	
+	@Override
+	public void setTransientProperty(String propertyName, Object propertyValue)
+	{
+		transientProperties.put(propertyName, propertyValue);
+	}
+
+	@Override
+	public Object getTransientProperty(String propertyName)
+	{
+		return transientProperties.get(propertyName);
+	}
+	
+	
 
 	private File getPropertiesFile() throws IOException
 	{

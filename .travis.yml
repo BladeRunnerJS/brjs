@@ -1,2 +1,5 @@
 language: java
-script: "./gradlew testJava"
+install:
+    - TERM=dumb ./gradlew compileJava
+script:
+    - TERM=dumb ./gradlew testJava

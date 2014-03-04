@@ -10,18 +10,21 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 
 
-public class TestChildNode extends AbstractNode implements NamedNode
+public final class TestChildNode extends AbstractNode implements NamedNode
 {
-	NodeMap<TestGrandChildNode> grandChildNodes = new NodeMap<>(TestGrandChildNode.class, "grandchild", null);
+	NodeMap<TestGrandChildNode> grandChildNodes;
 	private String name;
 	
 	public TestChildNode(RootNode rootNode, Node parent, File dir, String name)
 	{
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
+		grandChildNodes = new NodeMap<>(rootNode, TestGrandChildNode.class, "grandchild", null);
+		
+		registerInitializedNode();
 	}
 	
 	@Override

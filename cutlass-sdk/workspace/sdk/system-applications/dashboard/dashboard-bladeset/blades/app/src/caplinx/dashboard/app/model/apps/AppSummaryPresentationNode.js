@@ -4,4 +4,4 @@ caplinx.dashboard.app.model.apps.AppSummaryPresentationNode = function(sAppName,
 	this.appInfoUrl = new br.presenter.property.Property(sAppInfoUrl);
 	this.imageUrl = new br.presenter.property.Property(sImageUrl);
 };
-br.extend(caplinx.dashboard.app.model.apps.AppSummaryPresentationNode, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.apps.AppSummaryPresentationNode, br.presenter.node.PresentationNode);

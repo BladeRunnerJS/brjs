@@ -2,38 +2,42 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.Map;
+
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 
 
-public class Blade extends AbstractComponent implements NamedNode
+public final class Blade extends AbstractComponent implements NamedNode
 {
 	private final NodeItem<Workbench> workbench = new NodeItem<>(Workbench.class, "workbench");
 	private String name;
 
 	public Blade(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(rootNode, dir);
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
+		
+		registerInitializedNode();
 	}
 	
-	public static NodeMap<Blade> createNodeSet()
+	public static NodeMap<Blade> createNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(Blade.class, "blades", null);
+		return new NodeMap<>(rootNode, Blade.class, "blades", null);
 	}
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
 		transformations.put("blade", getName());
+		transformations.put("class-name", WordUtils.capitalize(getName()) );
 	}
 	
 	@Override
@@ -65,15 +69,18 @@ public class Blade extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public String getRequirePrefix() {
-		Bladeset bladeset = parent();
-		App app = bladeset.parent();
-		return "/" + app.getNamespace() + "/" + bladeset.getName() + "/" + getName();
+	public String requirePrefix() {
+		return parent().requirePrefix() + "/" + getName();
+	}
+	
+	@Override
+	public boolean isNamespaceEnforced() {
+		return true;
 	}
 	
 	public Bladeset parent()
 	{
-		return (Bladeset) parent;
+		return (Bladeset) parentNode();
 	}
 	
 	public Workbench workbench()

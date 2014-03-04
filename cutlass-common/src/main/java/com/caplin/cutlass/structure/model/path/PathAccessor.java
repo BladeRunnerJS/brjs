@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 
 // TODO: experimental class
 public class PathAccessor
@@ -20,7 +20,7 @@ public class PathAccessor
 		
 		if(path.exists())
 		{
-			for(File childDir : FileUtility.sortFileArray(path.listFiles()))
+			for(File childDir : FileUtility.sortFiles(path.listFiles()))
 			{
 				if(childDir.isDirectory() && childDir.getName().endsWith(acceptSuffix))
 				{

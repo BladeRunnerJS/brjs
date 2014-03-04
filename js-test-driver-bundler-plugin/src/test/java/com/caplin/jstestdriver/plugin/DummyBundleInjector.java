@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.google.jstestdriver.FileInfo;
 import com.google.jstestdriver.hooks.ResourcePreProcessor;
 

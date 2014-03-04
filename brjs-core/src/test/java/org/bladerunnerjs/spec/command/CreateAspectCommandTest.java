@@ -1,9 +1,8 @@
 package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
-import static org.bladerunnerjs.core.plugin.command.standard.CreateAspectCommand.Messages.*;
+import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCommand.Messages.*;
 
-import org.bladerunnerjs.core.plugin.command.standard.CreateAspectCommand;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
@@ -11,7 +10,8 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCommand;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class CreateAspectCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(pluginLocator).hasCommand(new CreateAspectCommand())
+		given(brjs).hasCommands(new CreateAspectCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("aspect");

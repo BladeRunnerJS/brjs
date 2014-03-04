@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 
 
 public class NodeUtility
@@ -19,7 +19,7 @@ public class NodeUtility
 			return new ArrayList<Node>();
 		}
 		List<File> nodeFiles = new LinkedList<File>();
-		for (File child : FileUtility.sortFileArray(dirToList.listFiles()))
+		for (File child : FileUtility.sortFiles(dirToList.listFiles()))
 		{
 			if (child.isDirectory() && child.getName().endsWith(acceptSuffix)){
 				nodeFiles.add(child);

@@ -11,7 +11,7 @@ import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
 public class JsSourceFileFinderGetSeedFilesTest
 {
@@ -33,21 +33,21 @@ public class JsSourceFileFinderGetSeedFilesTest
 		File testDir = null;
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/index.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/resources/html/file.html"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/resources/xml/file.xml"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/resources/html/file.html"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/resources/xml/file.xml"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/resources/html/file.html"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/resources/xml/file.xml"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml") 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/index.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/resources/html/file.html").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/resources/xml/file.xml").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/resources/html/file.html").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/resources/xml/file.xml").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/resources/html/file.html").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/resources/xml/file.xml").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesEquals( expectedFiles, SourceFileLocator.getAllSeedFiles(baseDir, testDir) );
@@ -60,29 +60,29 @@ public class JsSourceFileFinderGetSeedFilesTest
 		File testDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-acceptance/js-test-driver");
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-acceptance/js-test-driver/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-acceptance/js-test-driver/resources/xml/file.xml"),
-				new File(testDir, "src-test/file.xml"),
-				new File(testDir, "src-test/file.js"),
-				new File(testDir, "src-test/file.html"),
-				new File(testDir, "src-test/dir1/file.xml"),
-				new File(testDir, "src-test/dir1/file.js"),
-				new File(testDir, "src-test/dir1/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/index.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/resources/html/file.html"),  
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/resources/xml/file.xml"),  
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/resources/xml/file.xml"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml"), 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/resources/html/file.html"),  
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/resources/xml/file.xml"),  
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml")  
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-acceptance/js-test-driver/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/tests/test-acceptance/js-test-driver/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/file.js").getAbsoluteFile(),
+				new File(testDir, "src-test/file.html").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.js").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-aspect/index.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/resources/html/file.html").getAbsoluteFile(),  
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade2/resources/xml/file.xml").getAbsoluteFile(),  
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/blades/blade1/resources/xml/file.xml").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade2/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml").getAbsoluteFile(), 
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/resources/html/file.html").getAbsoluteFile(),  
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/another-bladeset/resources/xml/file.xml").getAbsoluteFile(),  
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesEquals( expectedFiles, SourceFileLocator.getAllSeedFiles(baseDir, testDir) );
@@ -95,8 +95,8 @@ public class JsSourceFileFinderGetSeedFilesTest
 		File testDir = null;
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml")
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesEquals( expectedFiles, SourceFileLocator.getAllSeedFiles(baseDir, testDir) );
@@ -109,16 +109,16 @@ public class JsSourceFileFinderGetSeedFilesTest
 		File testDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-acceptance/js-test-driver");
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-acceptance/js-test-driver/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-acceptance/js-test-driver/resources/xml/file.xml"),
-				new File(testDir, "src-test/file.xml"),
-				new File(testDir, "src-test/file.js"),
-				new File(testDir, "src-test/file.html"),
-				new File(testDir, "src-test/dir1/file.xml"),
-				new File(testDir, "src-test/dir1/file.js"),
-				new File(testDir, "src-test/dir1/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml")
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-acceptance/js-test-driver/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/tests/test-acceptance/js-test-driver/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/file.js").getAbsoluteFile(),
+				new File(testDir, "src-test/file.html").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.js").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesEquals( expectedFiles, SourceFileLocator.getAllSeedFiles(baseDir, testDir) );
@@ -131,10 +131,10 @@ public class JsSourceFileFinderGetSeedFilesTest
 		File testDir = null;
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml")
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesEquals( expectedFiles, SourceFileLocator.getAllSeedFiles(baseDir, testDir) );
@@ -147,18 +147,18 @@ public class JsSourceFileFinderGetSeedFilesTest
 		File testDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-acceptance/js-test-driver");
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-acceptance/js-test-driver/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-acceptance/js-test-driver/resources/xml/file.xml"),
-				new File(testDir, "src-test/file.xml"),
-				new File(testDir, "src-test/file.js"),
-				new File(testDir, "src-test/file.html"),
-				new File(testDir, "src-test/dir1/file.xml"),
-				new File(testDir, "src-test/dir1/file.js"),
-				new File(testDir, "src-test/dir1/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml")
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-acceptance/js-test-driver/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/tests/test-acceptance/js-test-driver/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/file.js").getAbsoluteFile(),
+				new File(testDir, "src-test/file.html").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.js").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesEquals( expectedFiles, SourceFileLocator.getAllSeedFiles(baseDir, testDir) );
@@ -171,13 +171,13 @@ public class JsSourceFileFinderGetSeedFilesTest
 		File testDir = null;
 		
 		List<File> expectedFiles = Arrays.asList( 
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/index.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml")
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/index.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesEquals( expectedFiles, SourceFileLocator.getAllSeedFiles(baseDir, testDir) );
@@ -190,21 +190,21 @@ public class JsSourceFileFinderGetSeedFilesTest
 		File testDir = new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-acceptance/js-test-driver");
 		
 		List<File> expectedFiles = Arrays.asList(
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-acceptance/js-test-driver/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-acceptance/js-test-driver/resources/xml/file.xml"),
-				new File(testDir, "src-test/file.xml"),
-				new File(testDir, "src-test/file.js"),
-				new File(testDir, "src-test/file.html"),
-				new File(testDir, "src-test/dir1/file.xml"),
-				new File(testDir, "src-test/dir1/file.js"),
-				new File(testDir, "src-test/dir1/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/index.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html"),
-				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml")
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-acceptance/js-test-driver/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/tests/test-acceptance/js-test-driver/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/file.js").getAbsoluteFile(),
+				new File(testDir, "src-test/file.html").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.xml").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.js").getAbsoluteFile(),
+				new File(testDir, "src-test/dir1/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/workbench/index.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/blades/blade1/resources/xml/file.xml").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/html/file.html").getAbsoluteFile(),
+				new File(testBase, APPLICATIONS_DIR + "/test-app1/a-bladeset/resources/xml/file.xml").getAbsoluteFile()
 		);
 		
 		JsSourceFileFinderTestHelper.assertFilesEquals( expectedFiles, SourceFileLocator.getAllSeedFiles(baseDir, testDir) );

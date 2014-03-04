@@ -10,7 +10,7 @@ caplinx.dashboard.app.model.dialog.TestRunnerDialog = function(oPresentationMode
 	this.errorMessage = new br.presenter.node.Field("");
 	this.testsPassed = new br.presenter.property.EditableProperty(false);
 };
-br.extend(caplinx.dashboard.app.model.dialog.TestRunnerDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.Core.extend(caplinx.dashboard.app.model.dialog.TestRunnerDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.TestRunnerDialog.prototype.initializeForm = function()
 {

@@ -1,16 +1,29 @@
-.gradle
-.settings
-gradle
-.classpath
-.project
-gradle-app.setting
-build
-out
-**/*.iml
-.idea
-conf/.project
+# local excludes
+/.gradle
+/.settings
+/.classpath
+/.project
+/.idea
+/gradle-app.setting
+/gradle/
+/bin/
+/build/
+/out/
+
+# nested project excludes
+/*/*.gradle
+/*/.gradle
+/*/.settings
+/*/.classpath
+/*/.project
+/*/.idea
+/*/bin/
+/*/build/
+/*/test-results/
+
+# recursive excludes
+*.iml
 js.bundle
-html.bundle
-xml.bundle
-brjs-*.jar
-*/**/bundles
+**/WEB-INF/lib/brjs-*.jar
+**/bundles/*.bundle
+**/bundles/**/*.bundle

@@ -9,12 +9,10 @@ import static com.caplin.cutlass.structure.CutlassDirectoryLocator.getParentBlad
 import static com.caplin.cutlass.structure.CutlassDirectoryLocator.getScope;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.App;
 
 import com.caplin.cutlass.BRJSAccessor;
@@ -28,6 +26,7 @@ import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.SdkModel;
 import com.caplin.cutlass.structure.model.path.AppPath;
 import com.caplin.cutlass.structure.model.path.AspectPath;
+import com.caplin.cutlass.util.FileUtility;
 
 public class BladeRunnerSourceFileProvider implements SourceFileProvider
 {
@@ -40,7 +39,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	}
 
 	@Override
-	public List<File> getSourceFiles(File baseDir, File testDir) throws BundlerProcessingException
+	public List<File> getSourceFiles(File baseDir, File testDir) throws ContentProcessingException
 	{
 
 		if (!baseDir.exists()) 
@@ -91,7 +90,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 		return sourceFiles;
 	}
 	
-	private void appendScopeFiles(File baseDir, File contextDir, ScopeLevel scopeLevel, ScopeLevel requestLevel, List<File> sourceFiles) throws BundlerProcessingException
+	private void appendScopeFiles(File baseDir, File contextDir, ScopeLevel scopeLevel, ScopeLevel requestLevel, List<File> sourceFiles) throws ContentProcessingException
 	{
 		switch(scopeLevel)
 		{
@@ -136,50 +135,49 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 		}
 	}
 	
-	private void appendAllLibraryFiles(File contextDir, List<File> sourceFiles) throws BundlerProcessingException
+	private void appendAllLibraryFiles(File contextDir, List<File> sourceFiles) throws ContentProcessingException
 	{
-		JsLib jsLib = BRJSAccessor.root.sdkLib();
-		
-		AssetLocation libSrcRoot = jsLib.src();
-		AssetLocation libResourcesRoot = jsLib.resources();
-
-		if(libSrcRoot.dirExists())
+		for (JsLib jsLib : BRJSAccessor.root.sdkLibs())
 		{
-			bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
-		}
-		
-		if(libResourcesRoot.dirExists())
-		{
-			List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
-			
-			for(File libraryResourceDir : libraryResourceDirs)
-			{
-				bundlerFileAppender.appendLibraryResourceFiles(libraryResourceDir, sourceFiles);
-			}
+    		AssetLocation libSrcRoot = jsLib.assetLocation("src");
+    		AssetLocation libResourcesRoot = jsLib.assetLocation("resources");
+    
+    		if(libSrcRoot.dirExists())
+    		{
+    			bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
+    		}
+    		
+    		if(libResourcesRoot.dirExists())
+    		{
+    			List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
+    			
+    			for(File libraryResourceDir : libraryResourceDirs)
+    			{
+    				bundlerFileAppender.appendLibraryResourceFiles(libraryResourceDir, sourceFiles);
+    			}
+    		}
 		}
 	}
 	
-	private void appendAllUserLibraryFiles(File contextDir, List<File> sourceFiles) throws BundlerProcessingException
+	private void appendAllUserLibraryFiles(File contextDir, List<File> sourceFiles) throws ContentProcessingException
 	{
 		App app = BRJSAccessor.root.locateAncestorNodeOfClass(contextDir, App.class);
-		
-		Path sdkLibPath = BRJSAccessor.root.sdkLib().src().dir().toPath();
 
-		for(JsLib jsLib: app.jsLibs()){
-
-			AssetLocation libSrcRoot = jsLib.src();
-			AssetLocation libResourcesRoot = jsLib.resources();
+		for(JsLib jsLib: app.jsLibs())
+		{
+			AssetLocation libSrcRoot = jsLib.assetLocation("src");
+			AssetLocation libResourcesRoot = jsLib.assetLocation("resources");
 			
-			if(libSrcRoot.dirExists())
+			if((libSrcRoot != null) && libSrcRoot.dirExists())
 			{
-				if(libSrcRoot.dir().toPath().normalize().equals(sdkLibPath))
+				if(app.root().sdkLib(jsLib.getName()).dirExists()) // check the JsLib isnt a SDK lib
 				{
 					continue;
 				}
 				bundlerFileAppender.appendLibrarySourceFiles(libSrcRoot.dir(), sourceFiles);
 			}
 			
-			if(libResourcesRoot.dirExists())
+			if((libResourcesRoot != null) && libResourcesRoot.dirExists())
 			{
 				List<File> libraryResourceDirs = getLibraryResourceDirs(libResourcesRoot.dir(), libSrcRoot.dir());
 				
@@ -276,7 +274,7 @@ public class BladeRunnerSourceFileProvider implements SourceFileProvider
 	
 	private void getLibraryResourceDirs(File resourceDir, File sourceDir, List<File> resourceDirs)
 	{
-		for(File resourceSubDir : FileUtility.getSortedListOfSubFolders(resourceDir))
+		for(File resourceSubDir : FileUtility.listDirs(resourceDir))
 		{
 			File sourceSubDir = new File(sourceDir, resourceSubDir.getName());
 			

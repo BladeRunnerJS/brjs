@@ -15,11 +15,11 @@ import org.junit.Test;
 
 import com.caplin.cutlass.testing.BRJSTestFactory;
 import com.caplin.cutlass.EncodingAccessor;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import com.caplin.cutlass.BRJSAccessor;
 import com.google.gson.Gson;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
 public class I18nResourceIdNamespaceValidationTest {
 	
@@ -46,7 +46,7 @@ public class I18nResourceIdNamespaceValidationTest {
 		assertEquals("I am blade1 header", results.get("caplinx.fx.blade1.header") );
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalideBladeIdWithNoNamespace() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();
@@ -55,7 +55,7 @@ public class I18nResourceIdNamespaceValidationTest {
 		bundler.writeBundle(files, new ByteArrayOutputStream());
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalideBladeIdWithNoBladesetName() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();
@@ -64,7 +64,7 @@ public class I18nResourceIdNamespaceValidationTest {
 		bundler.writeBundle(files, new ByteArrayOutputStream());
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithWrongBladesetName() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();
@@ -73,7 +73,7 @@ public class I18nResourceIdNamespaceValidationTest {
 		bundler.writeBundle(files, new ByteArrayOutputStream());
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalideBladeIdWithNoBladeName() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();
@@ -82,7 +82,7 @@ public class I18nResourceIdNamespaceValidationTest {
 		bundler.writeBundle(files, new ByteArrayOutputStream());
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladeIdWithBladeNameTypo() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();
@@ -107,7 +107,7 @@ public class I18nResourceIdNamespaceValidationTest {
 	}
 	
 	@Ignore
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladesetIdAttemptsToOverrideBladeId() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();
@@ -116,7 +116,7 @@ public class I18nResourceIdNamespaceValidationTest {
 		bundler.writeBundle(files, new ByteArrayOutputStream());
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladesetIdWithNoNamespace() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();
@@ -125,7 +125,7 @@ public class I18nResourceIdNamespaceValidationTest {
 		bundler.writeBundle(files, new ByteArrayOutputStream());
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladesetIdWithNoBladesetName() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();
@@ -134,7 +134,7 @@ public class I18nResourceIdNamespaceValidationTest {
 		bundler.writeBundle(files, new ByteArrayOutputStream());
 	}
 	
-	@Test (expected=BundlerFileProcessingException.class)
+	@Test (expected=ContentFileProcessingException.class)
 	public void testInvalidBladesetIdWithWrongBladesetName() throws Exception
 	{
 		I18nBundler bundler = new I18nBundler();

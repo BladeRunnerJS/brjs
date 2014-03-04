@@ -10,7 +10,7 @@ caplinx.dashboard.app.model.app.BladesetPresentationNode = function(sBladesetNam
 	this.blades = new br.presenter.node.NodeList(this._getBladePresentationModels(pBlades || []),
 		caplinx.dashboard.app.model.app.BladePresentationNode);
 };
-br.extend(caplinx.dashboard.app.model.app.BladesetPresentationNode, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.app.BladesetPresentationNode, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.app.BladesetPresentationNode.prototype.getBlade = function(sBlade)
 {

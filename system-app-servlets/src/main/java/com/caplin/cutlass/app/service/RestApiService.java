@@ -12,26 +12,26 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
-import org.bladerunnerjs.core.plugin.command.standard.CreateApplicationCommand;
-import org.bladerunnerjs.core.plugin.command.standard.CreateBladeCommand;
-import org.bladerunnerjs.core.plugin.command.standard.CreateBladesetCommand;
-import org.bladerunnerjs.core.plugin.command.standard.JsDocCommand;
+import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.engine.NamedNode;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand;
+
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
 import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.testrunner.TestRunnerController;
-import com.caplin.cutlass.command.war.WarCommand;
 import com.caplin.cutlass.structure.model.SdkModel;
 import com.caplin.cutlass.structure.model.node.BladeNode;
 import com.caplin.cutlass.structure.model.node.BladesetNode;
@@ -125,10 +125,10 @@ public class RestApiService
 		}
 	}
 	
-	public void importMotif(String appName, String appNamespace, File appZip) throws Exception
+	public void importMotif(String appName, String requirePrefix, File appZip) throws Exception
 	{
 		ImportApplicationCommand cmd = new ImportApplicationCommand( brjs );
-		String[] args = new String[]{ appZip.getAbsolutePath(), appName, appNamespace };		
+		String[] args = new String[]{ appZip.getAbsolutePath(), appName, requirePrefix };		
 		doCommand( cmd, args );
 	}
 	
@@ -138,7 +138,8 @@ public class RestApiService
 		{
 			destinationWar.delete();
 		}
-		WarCommand cmd = new WarCommand(brjs);
+		WarCommand cmd = new WarCommand();
+		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appName, destinationWar.getAbsolutePath() };		
 		doCommand( cmd, args );
 	}
@@ -173,11 +174,11 @@ public class RestApiService
 		}
 	}
 	
-	public void createApp(String appName, String appNamespace) throws Exception
+	public void createApp(String appName, String requirePrefix) throws Exception
 	{
 		CreateApplicationCommand cmd = new CreateApplicationCommand();
 		cmd.setBRJS(brjs);
-		String[] args = new String[]{ appName, appNamespace };		
+		String[] args = new String[]{ appName, requirePrefix };		
 		doCommand( cmd, args );
 	}
 	

@@ -1,8 +1,8 @@
 package org.bladerunnerjs.testing.utility;
 
-import org.bladerunnerjs.core.plugin.Event;
-import org.bladerunnerjs.core.plugin.EventObserver;
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.plugin.EventObserver;
 
 
 public class ExceptionThrowingEventObserver implements EventObserver

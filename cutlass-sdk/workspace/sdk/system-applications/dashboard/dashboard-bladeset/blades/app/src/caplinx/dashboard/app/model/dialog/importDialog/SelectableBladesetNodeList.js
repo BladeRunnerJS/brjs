@@ -11,7 +11,7 @@ caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList = fun
 	
 	oAppSelectionField.value.addChangeListener(this, "_onSelectedAppChanged");
 };
-br.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList, br.presenter.node.NodeList);
+br.Core.extend(caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList, br.presenter.node.NodeList);
 
 caplinx.dashboard.app.model.dialog.importDialog.SelectableBladesetNodeList.prototype._onSelectedAppChanged = function()
 {

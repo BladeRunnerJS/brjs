@@ -1,11 +1,12 @@
 package org.bladerunnerjs.testing.utility;
 
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.base.AbstractCommandPlugin;
 
-public class ExplodingCommand implements CommandPlugin {
+public class ExplodingCommand extends AbstractCommandPlugin implements CommandPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
@@ -31,7 +32,7 @@ public class ExplodingCommand implements CommandPlugin {
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException {
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
 		throw new CommandOperationException("Bang!");
 	}
 }

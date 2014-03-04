@@ -1,1 +1,3 @@
+depends: browser-modules
 js: es5-shim.js, indexOf.js
+exports: null

@@ -9,17 +9,19 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 
 
-public class NamedDirNode extends AbstractBRJSNode implements NamedNode
+public final class NamedDirNode extends AbstractBRJSNode implements NamedNode
 {
 	private String name;
 	
 	public NamedDirNode(RootNode rootNode, Node parent, File dir, String name)
 	{
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
+		
+		registerInitializedNode();
 	}
 	
 	@Override

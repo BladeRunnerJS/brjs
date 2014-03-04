@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public class BladerunnerUri
@@ -23,7 +24,7 @@ public class BladerunnerUri
 	 * The path for the webapp context.
 	 * Will always start and end with a <tt>/</tt>.
 	 * e.g. <ul>
-	 *    <li>/myapp/</li>
+	 *   <li>/myapp/</li>
 	 * </ul>
 	 */
 	public String contextPath;
@@ -38,7 +39,7 @@ public class BladerunnerUri
 	 * The url query string.
 	 * Will be either the empty string or start with a <tt>?</tt>.
 	 * e.g. <ul>
-	 *    <li>?major=boris&cameron=worried</li>
+	 *   <li>?major=boris&amp;cameron=worried</li>
 	 * </ul>
 	 */
 	public String queryString;
@@ -47,8 +48,8 @@ public class BladerunnerUri
 	 * The path to a bundle scope (i.e. a workbench, aspect or test).
 	 * Will be either the empty string or start and end with a <tt>/</tt>.
 	 * e.g. <ul>
-	 *    <li>/fx-bladeset/blades/ticket/workbench/</li>
-	 *    <li>/mobile-aspect/</li>
+	 *   <li>/fx-bladeset/blades/ticket/workbench/</li>
+	 *   <li>/mobile-aspect/</li>
 	 * </ul>
 	 */
 	public String scopePath;
@@ -57,8 +58,8 @@ public class BladerunnerUri
 	 * The path to the resource within the scope.  May or may not be a bundle.
 	 * Will not start with a <tt>/</tt>.
 	 * e.g. <ul>
-	 *    <li>js/js.bundle</li>
-	 *    <li>index.html</li>
+	 *   <li>js/js.bundle</li>
+	 *   <li>index.html</li>
 	 * </ul>
 	 */
 	public String logicalPath;
@@ -68,10 +69,12 @@ public class BladerunnerUri
 		this.brjs = brjs;
 		String requestUri = request.getRequestURI();
 		String contextPath = request.getContextPath();
+		String servletPath = request.getServletPath();
 		String requestPath = "";
-		if (isBrjsUriRequest(request))
+		
+		if ((servletPath != null) && servletPath.equals(BRJS_URL_PREFIX))
 		{
-			requestPath = StringUtils.substringAfter(requestUri, contextPath+BRJS_URL_PREFIX+contextPath);
+			requestPath = StringUtils.substringAfter(requestUri, contextPath+BRJS_URL_PREFIX);
 		}
 		else
 		{
@@ -81,12 +84,33 @@ public class BladerunnerUri
 		processUri(new File(context.getRealPath("/")), contextPath, requestPath, request.getQueryString());
 	}
 	
+	public BladerunnerUri(BRJS brjs, File contextDir, String requestPath) throws MalformedRequestException
+	{
+		this.brjs = brjs;
+		
+		App app = brjs.locateAncestorNodeOfClass(contextDir, App.class);
+		
+		if (app == null)
+		{
+			throw new MalformedRequestException(contextDir.getAbsolutePath(), "Unable to calculate App node for the contextDir dir: " + contextDir.getAbsolutePath());
+		}
+		
+		String fullRequestPath = "/"+RelativePathUtility.get(app.dir(), contextDir);
+		fullRequestPath = (fullRequestPath + requestPath).replace("//", "/");
+		
+		processUri(app.dir(), "/"+app.getName(), fullRequestPath, null);
+	}
+	
+	
+	/**
+	 * This is method should only be used for testing. DO NOT use this in plugin code, use a different constructor instead.
+	 */
 	public BladerunnerUri(BRJS brjs, File contextRoot, String contextPath, String requestPath, String queryString) throws MalformedRequestException
 	{
 		this.brjs = brjs;
 		processUri(contextRoot, contextPath, requestPath, queryString);
 	}
-	
+
 	public String getUri()
 	{
 		String queryStringSuffix = (queryString == null) ? "" : "?" + queryString;
@@ -100,7 +124,7 @@ public class BladerunnerUri
 	}
 	
 	private void processUri(File contextRoot, String contextPath, String requestPath, String queryString) throws MalformedRequestException
-	{
+	{		
 		if (!contextRoot.exists() || !contextRoot.isDirectory())
 		{
 			throw new MalformedRequestException(contextPath + requestPath, "Error calculating root directory. Calculated root path " + contextRoot.getPath() + " either does not exist or is not a directory.");
@@ -166,8 +190,7 @@ public class BladerunnerUri
 		
 		while((node != null) && (bundlableNode == null))
 		{
-			if((node instanceof App) || (node instanceof JsLib) || (node instanceof Aspect) ||
-				(node instanceof Bladeset) || (node instanceof Blade) || (node instanceof Workbench))
+			if (node instanceof BundlableNode || node instanceof Blade || node instanceof Bladeset)
 			{
 				bundlableNode = node;
 			}

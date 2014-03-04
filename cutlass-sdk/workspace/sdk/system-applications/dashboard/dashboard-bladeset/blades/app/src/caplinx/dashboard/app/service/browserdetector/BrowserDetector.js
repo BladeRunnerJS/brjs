@@ -1,4 +1,4 @@
-br.thirdparty("jquery-browser");
+br.Core.thirdparty("jquery-browser");
 
 caplinx.dashboard.app.service.browserdetector.BrowserDetector = function()
 {

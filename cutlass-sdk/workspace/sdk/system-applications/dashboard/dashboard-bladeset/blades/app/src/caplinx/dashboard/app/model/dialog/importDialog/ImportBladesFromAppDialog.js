@@ -14,7 +14,7 @@ caplinx.dashboard.app.model.dialog.importDialog.ImportBladesFromAppDialog = func
 	
 	this.bladesets.addChangeListener(this, "_onBladesetsChanged", true);
 };
-br.extend(caplinx.dashboard.app.model.dialog.importDialog.ImportBladesFromAppDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.Core.extend(caplinx.dashboard.app.model.dialog.importDialog.ImportBladesFromAppDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.importDialog.ImportBladesFromAppDialog.prototype.initializeForm = function()
 {

@@ -10,8 +10,8 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.bladerunnerjs.utility.ServerUtility;
 
-import org.bladerunnerjs.model.utility.ServerUtility;
 import com.caplin.cutlass.filter.bundlerfilter.contenttype.BundlerContentTypeFilter;
 
 import static org.junit.Assert.assertEquals;
@@ -138,7 +138,7 @@ public class BundlerContentTypeFilterTest
 
 		HttpResponse response = httpclient.execute(new HttpGet(baseUrl + "/app1/html/html.bundle"));
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		assertEquals("text/html", response.getEntity().getContentType().getValue());
+		assertEquals("text/html;charset=ISO-8859-1", response.getEntity().getContentType().getValue());
 	}
 	
 	@Test
@@ -149,7 +149,7 @@ public class BundlerContentTypeFilterTest
 
 		HttpResponse response = httpclient.execute(new HttpGet(baseUrl + "/app1/images/theme-noir/someImage.png_image.bundle"));
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		assertEquals("image/png", response.getEntity().getContentType().getValue());
+		assertEquals("image/png;charset=ISO-8859-1", response.getEntity().getContentType().getValue());
 	}
 	
 	private Server createServer() throws Exception

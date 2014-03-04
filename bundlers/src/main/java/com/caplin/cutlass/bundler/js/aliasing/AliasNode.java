@@ -2,9 +2,7 @@ package com.caplin.cutlass.bundler.js.aliasing;
 
 import java.util.Map;
 
-import org.bladerunnerjs.model.AliasContainer;
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 import com.caplin.cutlass.exception.NamespaceException;
 import com.caplin.cutlass.structure.ScopeLevel;
@@ -27,14 +25,14 @@ public class AliasNode implements AliasingNode {
 	}
 
 	@Override
-	public void register() throws BundlerProcessingException, NamespaceException 
+	public void register() throws ContentProcessingException, NamespaceException 
 	{
 		verifyAliasIsCorrectlyNamespaced();
 		
 		addAliasesToConatainer(context.getAliasRegistry());
 	}
 	
-	public void addAliasesToConatainer (AliasContainer aliasContainer) throws BundlerProcessingException
+	public void addAliasesToConatainer (AliasContainer aliasContainer) throws ContentProcessingException
 	{
 		for (String scenarioName : scenarios.keySet())
 		{
@@ -45,7 +43,7 @@ public class AliasNode implements AliasingNode {
 	}
 		
 	@Override
-	public void use() throws BundlerProcessingException 
+	public void use() throws ContentProcessingException 
 	{
 		getInterfaceNameFromRegistry();
 		AliasDefinition aliasDefinition = new AliasDefinition( this.name, className, this.interfaceName );

@@ -30,6 +30,16 @@ public class LogMessageStore
 
 	public LogMessageStore()
 	{
+		clearLogs();
+	}
+	
+	public void clearLogs()
+	{
+		fatalMessages.clear();
+		errorMessages.clear();
+		warnMessages.clear();
+		infoMessages.clear();
+		debugMessages.clear();
 	}
 	
 	public LogMessageStore(boolean storeLogs)
@@ -161,6 +171,8 @@ public class LogMessageStore
 
 	private void verifyLogMessage(String logLevel, boolean strictCheck, LinkedList<LogMessage> messages, String message, Object... params)
 	{
+		assertTrue("log message can't be empty", message.length() > 0);
+		
 		LogMessage foundMessage;
 		String isNullFailMessage;
 		if (strictCheck)
@@ -236,5 +248,10 @@ public class LogMessageStore
 
 	public void stopStoringLogs() {
 		disableStoringLogs();
+	}
+
+	public void emptyLogStore()
+	{
+		clearLogs();
 	}
 }

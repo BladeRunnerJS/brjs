@@ -1,6 +1,6 @@
 package org.bladerunnerjs.testing.utility;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.console.ConsoleWriter;
 
 public class StubConsoleWriter implements ConsoleWriter {
 	@Override

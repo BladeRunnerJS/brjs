@@ -8,12 +8,12 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
+import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
 /* 
  * This class does not actually test the abstract CommandTask class.
@@ -41,7 +41,7 @@ public class CommandTaskTest
 		assertTrue(commandTask.getCommandDescription().toString().length() > 0);
 	}
 
-	private class DummyCommandTask implements LegacyCommandPlugin
+	private class DummyCommandTask extends AbstractPlugin implements LegacyCommandPlugin
 	{
 		public DummyCommandTask(File sdkBaseDir, String commandName)
 		{
@@ -76,7 +76,7 @@ public class CommandTaskTest
 		}
 		
 		@Override
-		public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException
+		public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 		{
 			out.println("DummyCommandTask.doCommand");
 		}

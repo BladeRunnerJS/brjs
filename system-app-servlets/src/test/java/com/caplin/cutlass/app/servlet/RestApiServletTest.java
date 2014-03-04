@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -20,11 +21,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.bladerunnerjs.utility.ServerUtility;
 
-import org.bladerunnerjs.model.utility.ServerUtility;
 import com.caplin.cutlass.app.RestApiServletTestUtils;
 import com.caplin.cutlass.app.service.RestApiService;
 import com.caplin.cutlass.app.servlet.RestApiServlet;
+import com.caplin.cutlass.util.FileUtility;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -44,7 +46,8 @@ public class RestApiServletTest
 	public void setup() throws Exception
 	{
 		service = mock(RestApiService.class);
-		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(service), new File("."));
+		File testSdk = FileUtility.createTemporaryDirectory("RestApiServletTest");
+		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(service), testSdk);
 		server.start();
 		client = new DefaultHttpClient();
 	}

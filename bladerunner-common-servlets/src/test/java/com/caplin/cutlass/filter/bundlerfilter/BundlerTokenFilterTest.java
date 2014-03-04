@@ -33,9 +33,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
+
+import org.bladerunnerjs.utility.ServerUtility;
+
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.filter.bundlerfilter.token.CSSBundleTokenProcessor;
@@ -59,7 +61,7 @@ public class BundlerTokenFilterTest
 	@Before
 	public void setup() throws IOException
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		
 		processor = new BundlerTokenProcessor();
 		processor.addTokenProcessor(CutlassConfig.CSS_BUNDLE_TOKEN, new CSSBundleTokenProcessor());
@@ -108,7 +110,6 @@ public class BundlerTokenFilterTest
 		StringBuffer buffer = processor.replaceTokens(appConf, request, response);
 
 		String includes = buffer.toString();
-		System.err.println(includes);
 
 		assertTrue(includes.contains("<link rel=\"stylesheet\" href=\"css/common_css.bundle\"/>"));
 		assertTrue(includes.contains("<link rel=\"stylesheet\" href=\"css/common_en_GB_css.bundle\"/>"));
@@ -201,35 +202,6 @@ public class BundlerTokenFilterTest
 
 		assertTrue(buffer.toString().contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_css.bundle\"/>"));
 		assertTrue(buffer.toString().contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_en_GB_css.bundle\"/>"));
-	}
-
-	@Test
-	public void testIndexHtmlRequestIsProcessedCorrectly() throws Exception
-	{
-		String thisTestRoot = "src/test/resources/bundler-token";
-		File tempSdkInstall = FileUtility.createTemporarySdkInstall(new File(thisTestRoot)).getParentFile();
-		
-		httpclient = new DefaultHttpClient();
-		appServer = createServer(PORT, "/", new File(tempSdkInstall, "apps/app1").getPath());
-		
-		Map<String, String> responseMap = makeRequest("http://localhost:"+PORT+"/main-aspect/index.html");
-		String content = responseMap.get("responseText");
-		System.err.println(content);
-		assertEquals("200", responseMap.get("responseCode"));
-		
-		assertTrue(content.contains("<link rel=\"stylesheet\" href=\"css/common_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"stylesheet\" href=\"css/common_en_GB_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"stylesheet\" href=\"css/common_ie8_css.bundle\"/>"));
-
-		assertTrue(content.contains("<link rel=\"stylesheet\" title=\"noir\" href=\"css/noir_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"stylesheet\" title=\"noir\" href=\"css/noir_en_GB_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"stylesheet\" title=\"noir\" href=\"css/noir_ie8_css.bundle\"/>"));
-
-		assertTrue(content.contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_en_GB_css.bundle\"/>"));
-		assertTrue(content.contains("<link rel=\"alternate stylesheet\" title=\"pastel\" href=\"css/pastel_ie8_css.bundle\"/>"));
-
-		assertTrue(content.contains("<script type=\"text/javascript\" src=\"js/js.bundle\"></script>"));
 	}
 
 	@Test

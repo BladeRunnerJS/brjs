@@ -1,19 +1,19 @@
 package org.bladerunnerjs.spec.brjs.appserver;
 
-import static org.bladerunnerjs.model.appserver.BRJSApplicationServer.Messages.*;
-import static org.bladerunnerjs.model.appserver.ApplicationServerUtils.Messages.*;
+import static org.bladerunnerjs.appserver.BRJSApplicationServer.Messages.*;
+import static org.bladerunnerjs.appserver.ApplicationServerUtils.Messages.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import org.bladerunnerjs.appserver.ApplicationServer;
+import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
-import org.bladerunnerjs.model.appserver.AppDeploymentObserver;
-import org.bladerunnerjs.model.appserver.ApplicationServer;
-import org.bladerunnerjs.model.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.plugin.plugins.appdeployer.AppDeploymentObserverPlugin;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,15 +33,17 @@ public class BRJSApplicationServerTest extends SpecTest
 
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasModelObservers(new AppDeploymentObserver());
-		given(brjs).hasBeenCreated();
-    		appServer = brjs.applicationServer(appServerPort);
-    		app1 = brjs.app("app1");
-    		app2 = brjs.app("app2");
-    		sysapp1 = brjs.systemApp("sysapp1");
-    		sysapp2 = brjs.systemApp("sysapp2");
-    		appJars = brjs.appJars();
-    		appJars.create();
+		given(brjs).hasModelObservers(new AppDeploymentObserverPlugin());
+		given(brjs).hasBeenCreated()
+			.and(brjs).containsFolder("apps")
+			.and(brjs).containsFolder("sdk/system-applications");
+			appServer = brjs.applicationServer(appServerPort);
+			app1 = brjs.app("app1");
+			app2 = brjs.app("app2");
+			sysapp1 = brjs.systemApp("sysapp1");
+			sysapp2 = brjs.systemApp("sysapp2");
+			appJars = brjs.appJars();
+			appJars.create();
 		
 		secondBrjsProcess = createNonTestModel();
 	}
@@ -133,10 +135,10 @@ public class BRJSApplicationServerTest extends SpecTest
 	public void multipleSystemAppsCanBeHosted() throws Exception
 	{
 		given(sysapp1).hasBeenCreated()
-    		.and(sysapp2).hasBeenCreated();
-    	when(appServer).started();
-    	then(appServer).requestCanBeMadeFor("/sysapp1")
-    		.and(appServer).requestCanBeMadeFor("/sysapp2");
+			.and(sysapp2).hasBeenCreated();
+		when(appServer).started();
+		then(appServer).requestCanBeMadeFor("/sysapp1")
+			.and(appServer).requestCanBeMadeFor("/sysapp2");
 	}
 	
 	@Test
@@ -182,7 +184,7 @@ public class BRJSApplicationServerTest extends SpecTest
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
 			.and(brjs.applicationServer(appServerPort)).started();
-		then(appServer).requestCanBeMadeFor("/app1/");
+		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
 	}
 	
 }

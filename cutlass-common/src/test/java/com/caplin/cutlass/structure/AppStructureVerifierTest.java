@@ -9,8 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
+import com.caplin.cutlass.CutlassConfig;
 
 public class AppStructureVerifierTest 
 {

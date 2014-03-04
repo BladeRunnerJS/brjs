@@ -20,7 +20,7 @@ caplinx.dashboard.app.model.apps.SplashScreen = function(oPresentationModel)
 		this.isVisible.setValue(false);
 	}
 };
-br.extend(caplinx.dashboard.app.model.apps.SplashScreen, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.apps.SplashScreen, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.apps.SplashScreen.prototype._toggleLocalStoragePermanentHide = function()
 {

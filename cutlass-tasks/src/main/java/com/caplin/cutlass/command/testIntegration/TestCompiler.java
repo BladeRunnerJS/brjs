@@ -13,9 +13,9 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.model.path.AppPath;
 

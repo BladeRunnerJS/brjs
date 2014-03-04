@@ -1,0 +1,4 @@
+#NOTE: The knockout-3.0 version used is a modified version
+depends: jquery
+js: brjs-knockout-3.0.js
+exports: presenter_ko

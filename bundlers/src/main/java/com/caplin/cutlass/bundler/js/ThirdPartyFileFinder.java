@@ -11,13 +11,16 @@ import java.util.Set;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.BRJSAccessor;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
+
 import com.caplin.cutlass.bundler.LibraryManifest;
 import com.caplin.cutlass.bundler.ThirdPartyLibraryFinder;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 
 public class ThirdPartyFileFinder
@@ -44,13 +47,13 @@ public class ThirdPartyFileFinder
 			String libraryName = libraryWithManifest.getKey();
 			LibraryManifest manifest = libraryWithManifest.getValue();
 			List<String> libraryFilePaths = manifest.getJavascriptFiles();
-			File libraryDirectory = libraryFinder.getThirdPartyLibraryDirectory(baseDir, libraryName);
+			File libraryDirectory = libraryFinder.getThirdPartyLibraryDirectory(baseDir, libraryName).getAbsoluteFile();
 			filesOfLibraries.addAll(getLibraryFiles(libraryDirectory, libraryFilePaths));
 		}
 		return filesOfLibraries;
 	}
 	
-	private LinkedHashMap<String, LibraryManifest> getOrderedLibraries(File baseDir, Set<String> thirdPartyLibraries) throws BundlerProcessingException
+	private LinkedHashMap<String, LibraryManifest> getOrderedLibraries(File baseDir, Set<String> thirdPartyLibraries) throws ContentProcessingException
 	{
 		LinkedHashMap<String, LibraryManifest> orderedLibraries = new LinkedHashMap<String, LibraryManifest>();
 		for(String library : thirdPartyLibraries)
@@ -60,7 +63,7 @@ public class ThirdPartyFileFinder
 		return orderedLibraries;
 	}
 	
-	private void populateLibraryDependencies(File baseDir, String library, LinkedHashMap<String, LibraryManifest> orderedLibraries) throws BundlerProcessingException
+	private void populateLibraryDependencies(File baseDir, String library, LinkedHashMap<String, LibraryManifest> orderedLibraries) throws ContentProcessingException
 	{
 		File libraryDirectory = libraryFinder.getThirdPartyLibraryDirectory(baseDir, library);
 		LibraryManifest manifest = new LibraryManifest(libraryDirectory);
@@ -86,7 +89,7 @@ public class ThirdPartyFileFinder
 				{
 					String errorMessage = "Could not find thirdparty library file '" + libraryFile.getName() 
 							+ "' for library '" + libraryDirectory.getName() + "'";
-					throw new BundlerProcessingException(errorMessage);
+					throw new ContentProcessingException(errorMessage);
 				}
 				files.add(libraryFile);
 				

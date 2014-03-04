@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
@@ -34,7 +34,8 @@ public class ExportApplicationCommandTest
 		sdkBaseDir = new File(tempDirRoot, "structure1" + File.separator + CutlassConfig.SDK_DIR);
 		BRJS brjs = BRJSAccessor.initialize(BRJSTestFactory.createBRJS(sdkBaseDir.getParentFile()));
 		
-		exportCommand = new ExportApplicationCommand(brjs);
+		exportCommand = new ExportApplicationCommand();
+		exportCommand.setBRJS(brjs);
 	}
 	
 	@Test

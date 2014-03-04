@@ -2,7 +2,7 @@ package org.bladerunnerjs.model.exception.test;
 
 public class BrowserNotFoundException extends Exception {
 
-	private static final long serialVersionUID = -7934305990312796421L;
+	private static final long serialVersionUID = 1L;
 
 	public BrowserNotFoundException()
 	{

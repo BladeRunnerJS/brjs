@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -14,47 +13,36 @@ import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.utility.NameValidator;
-import org.bladerunnerjs.model.utility.TestRunner;
+import org.bladerunnerjs.utility.IndexPageSeedFileLocator;
+import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.TestRunner;
 
 
-public class Aspect extends AbstractBundlableNode implements TestableNode, NamedNode
+public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
 {
-	private static final List<String> seedFilenames = Arrays.asList("index.html", "index.jsp");
-	
 	private final NodeItem<DirNode> unbundledResources = new NodeItem<>(DirNode.class, "unbundled-resources");
-	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
-	private final NodeMap<Theme> themes = Theme.createNodeSet();
+	private final NodeMap<TypedTestPack> testTypes;
+	private final NodeMap<Theme> themes;
 	private String name;
-	private AssetLocation thisAssetLocation;
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(rootNode, dir);
+		super(rootNode, parent, dir);
 		this.name = name;
-		thisAssetLocation = new ShallowAssetLocation(this.rootNode, this, dir);
-		init(rootNode, parent, dir);
+		testTypes = TypedTestPack.createNodeSet(rootNode);
+		themes = Theme.createNodeSet(rootNode);
+		
+		registerInitializedNode();
 	}
 	
-	public static NodeMap<Aspect> createNodeSet()
+	public static NodeMap<Aspect> createNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(Aspect.class, null, "-aspect$");
+		return new NodeMap<>(rootNode, Aspect.class, null, "-aspect$");
 	}
 	
 	@Override
-	public List<LinkedAssetFile> getSeedFiles() {
-		List<LinkedAssetFile> assetFiles = new ArrayList<LinkedAssetFile>();
-		
-		//TODO: move this in to a seperate AssetLocation class since this is duplicated in Workbench
-		for (LinkedAssetFile assetFile : thisAssetLocation.seedResources())
-		{
-			if ( seedFilenames.contains( assetFile.getUnderlyingFile().getName() ) )
-			{
-				assetFiles.add(assetFile);
-			}
-		}
-		
-		return assetFiles;
+	public List<LinkedAsset> getSeedFiles() {
+		return IndexPageSeedFileLocator.getSeedFiles(this);
 	}
 	
 	@Override
@@ -88,9 +76,13 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	}
 	
 	@Override
-	public String getRequirePrefix() {
-		App app = parent();
-		return "/" + app.getNamespace();
+	public String requirePrefix() {
+		return parent().getRequirePrefix();
+	}
+	
+	@Override
+	public boolean isNamespaceEnforced() {
+		return false;
 	}
 	
 	@Override
@@ -105,7 +97,7 @@ public class Aspect extends AbstractBundlableNode implements TestableNode, Named
 	
 	public App parent()
 	{
-		return (App) parent;
+		return (App) parentNode();
 	}
 	
 	public DirNode unbundledResources()

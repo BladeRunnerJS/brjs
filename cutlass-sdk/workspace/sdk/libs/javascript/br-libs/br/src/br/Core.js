@@ -1,0 +1,21 @@
+var topiarist = require('topiarist');
+topiarist.exportTo(exports);
+
+exports.hasImplemented = exports.implement;
+
+exports.implement = function(implementor, theInterface) {
+	// We do this on a timeout so you can implement the methods later.
+	var br = topiarist;
+	var error = new Error();
+	setTimeout(function() {
+		try {
+			br.implement(implementor, theInterface);
+		} catch (e) {
+			error.message = e.message;
+			error.name = e.name;
+			throw error;
+		}
+	}, 0);
+};
+
+exports.thirdparty = function(library){};

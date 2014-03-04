@@ -1,0 +1,48 @@
+<div id="br.workbench.state-visualiser">
+
+	<div class="state_control">
+		<div data-bind="template:{ name: 'workbench-toggle-switch', data:autoEvents}"></div>
+		<div data-bind="template:{ name: 'workbench-toggle-switch', data:autoData}"></div>
+		
+		<hr/>
+		<div class="expansionToggle" data-bind="template:{ name: 'workbench-toggle-switch', data:allStates}"></div>
+		
+		
+		<div data-bind="template:{ name: 'workbench-single-state-visualiser', foreach:stateDiagrams}"></div>
+			
+		</div>
+	</div>
+
+</div>
+
+<div id="br.workbench.single-state-visualiser">
+	<div>
+		<div class="data-fields" data-bind="visible:dataFieldVisible">
+			<div data-bind="template:{ name: 'workbench-field-trade-section', foreach:tradeSections}"></div>
+			<button class="quickform-btn btn" data-bind="click:send">Send</button>
+			<button class="quickform-btn btn" data-bind="click:cancel">Cancel</button>
+		</div>
+	    <div data-bind="control:'StateVisualiserControl', value:stateDetails, visible:stateDiagramVisible"></div>
+	</div>
+</div>
+
+<div id="br.workbench.field-trade-section">
+	<div>
+		<label data-bind="text:sectionName"></label>
+		<div data-bind="template:{name:'quickform'}"></div>
+	</div>
+</div>
+
+<div id="br.workbench.toggle-switch">
+	<div>
+		<div class="toggle-switch" data-bind="css: value">
+			<div data-bind="click:click, template:{ name: 'workbench-toggle-switch-label', foreach:options}"></div>
+		</div>
+		
+		<label data-bind="text:label"></label>
+	</div>
+</div>
+
+<div id="br.workbench.toggle-switch-label">
+	<span data-bind="text:label, attr: { title: label }"></span>
+</div>

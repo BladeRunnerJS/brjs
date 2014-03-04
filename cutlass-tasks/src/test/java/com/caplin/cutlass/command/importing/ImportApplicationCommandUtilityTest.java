@@ -12,10 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 public class ImportApplicationCommandUtilityTest
 {

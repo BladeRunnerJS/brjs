@@ -8,17 +8,19 @@ import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.utility.NameValidator;
+import org.bladerunnerjs.utility.NameValidator;
 
 
-public class TestGreatGrandChildNode extends AbstractNode implements NamedNode
+public final class TestGreatGrandChildNode extends AbstractNode implements NamedNode
 {
 	private String name;
 	
 	public TestGreatGrandChildNode(RootNode rootNode, Node parent, File dir, String name)
 	{
+		super(rootNode, parent, dir);
 		this.name = name;
-		init(rootNode, parent, dir);
+		
+		registerInitializedNode();
 	}
 	
 	@Override

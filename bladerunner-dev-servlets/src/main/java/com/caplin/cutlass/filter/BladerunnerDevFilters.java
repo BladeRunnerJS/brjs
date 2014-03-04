@@ -13,11 +13,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 
 //import com.caplin.cutlass.filter.productionFilePreventionFilter.ProductionFilePreventionFilter;
+
+
 
 import com.caplin.cutlass.ServletModelAccessor;
 
@@ -34,17 +36,10 @@ public class BladerunnerDevFilters implements Filter
 		immutableFilters = Collections.unmodifiableList(mutableFilters);
 	}
 	
-	public void destroy()
-	{
-		for (Filter filter : immutableFilters)
-		{
-			filter.destroy();
-		}
-	}
-	
+	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		BRJS brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		logger = brjs.logger(LoggerType.FILTER, BladerunnerDevFilters.class);
 		
 		for (Filter filter : immutableFilters)
@@ -53,6 +48,18 @@ public class BladerunnerDevFilters implements Filter
 		}
 	}
 	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+		
+		for (Filter filter : immutableFilters)
+		{
+			filter.destroy();
+		}
+	}
+	
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
 		HttpServletRequest httpRequest = (HttpServletRequest) request;

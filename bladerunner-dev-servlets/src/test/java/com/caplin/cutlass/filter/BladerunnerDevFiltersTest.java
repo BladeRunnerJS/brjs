@@ -7,11 +7,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -25,8 +25,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.jetty.xml.XmlConfiguration;
+import org.bladerunnerjs.utility.ServerUtility;
 
-import org.bladerunnerjs.model.utility.ServerUtility;
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class BladerunnerDevFiltersTest {
@@ -37,7 +37,7 @@ public class BladerunnerDevFiltersTest {
 		
 	@BeforeClass
 	public static void suiteSetup() throws Exception {
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		httpclient = new DefaultHttpClient();
 		httpclient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
 		appServer = createServer(PORT, "/app1", "src/test/resources/cutlass-filters/app1");

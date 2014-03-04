@@ -13,12 +13,12 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.SDK_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
 public class CheckCommandTest
 {

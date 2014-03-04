@@ -1,24 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-  <!-- ===================================================================== -->
-  <!-- This file contains a modified copy of the default descriptor for web  -->
-  <!-- applications. Option "useFileMappedBuffer" is set to false.           -->
-  <!-- 																		 -->
-  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-  <!-- The intent of this descriptor is to include jetty specific or common  -->
-  <!-- configuration for all webapps.   If a context has a webdefault.xml    -->
-  <!-- descriptor, it is applied before the contexts own web.xml file        -->
-  <!--                                                                       -->
-  <!-- A context may be assigned a default descriptor by:                    -->
-  <!--  + Calling WebApplicationContext.setDefaultsDescriptor                -->
-  <!--  + Passed an arg to addWebApplications                                -->
-  <!--                                                                       -->
-  <!-- This file is used both as the resource within the jetty.jar (which is -->
-  <!-- used as the default if no explicit defaults descriptor is set) and it -->
-  <!-- is copied to the etc directory of the Jetty distro and explicitly     -->
-  <!-- by the jetty.xml file.                                                -->
-  <!--                                                                       -->
-  <!-- ===================================================================== -->
 <web-app
   xmlns="http://java.sun.com/xml/ns/javaee"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -28,8 +9,7 @@
 >
 
   <description>
-    Default web.xml file.  
-    This file is applied to a Web application before it's own WEB_INF/web.xml file
+    BladeRunnerJS webapp default web.xml.
   </description>
 
   <!-- ==================================================================== -->
@@ -265,9 +245,7 @@
   <!--   If you get an error reporting that jikes can't use UTF-8 encoding, -->
   <!--   try setting the init parameter "javaEncoding" to "ISO-8859-1".     -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-  <servlet
-    id="jsp"
-  >
+  <servlet  id="jsp" >
     <servlet-name>jsp</servlet-name>
     <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
     <init-param>
@@ -342,12 +320,10 @@
   <!-- resource in the org.eclipse.jetty.server.jar file.  Additional or modified  -->
   <!-- mappings may be specified here                                       -->
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-  <!-- UNCOMMENT TO ACTIVATE
   <mime-mapping>
-    <extension>mysuffix</extension>
-    <mime-type>mymime/type</mime-type>
+    <extension>js</extension>
+    <mime-type>application/javascript</mime-type>
   </mime-mapping>
-  -->
 
   <!-- ==================================================================== -->
   <welcome-file-list>

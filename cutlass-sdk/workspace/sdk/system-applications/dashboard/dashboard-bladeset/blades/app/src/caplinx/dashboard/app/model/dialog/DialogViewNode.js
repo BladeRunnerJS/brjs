@@ -7,7 +7,7 @@ caplinx.dashboard.app.model.dialog.DialogViewNode = function(sTemplateId)
 	this.hasBackground = new br.presenter.property.EditableProperty(true);
 	
 };
-br.extend(caplinx.dashboard.app.model.dialog.DialogViewNode, br.presenter.node.TemplateNode);
+br.Core.extend(caplinx.dashboard.app.model.dialog.DialogViewNode, br.presenter.node.TemplateNode);
 
 caplinx.dashboard.app.model.dialog.DialogViewNode.prototype.initializeForm = function()
 {

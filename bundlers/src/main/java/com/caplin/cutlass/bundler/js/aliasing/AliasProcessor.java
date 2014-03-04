@@ -9,10 +9,10 @@ import javax.xml.stream.XMLStreamException;
 
 import org.codehaus.stax2.XMLStreamReader2;
 
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.exception.NamespaceException;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 import com.caplin.cutlass.structure.ScopeLevel;
 
 public class AliasProcessor
@@ -30,11 +30,11 @@ public class AliasProcessor
 		this.validClasses = validClasses;
 	}
 	
-	public void processAliasDefinitionsFile() throws BundlerFileProcessingException, XMLStreamException, NamespaceException
+	public void processAliasDefinitionsFile() throws ContentFileProcessingException, XMLStreamException, NamespaceException
 	{
 		
 		ScopeLevel requestLevel = getScope( aliasesFile );
-		String packageNamespace = NamespaceCalculator.getPackageNamespaceForBladeLevelResources( aliasesFile );
+		String packageNamespace = RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources( aliasesFile );
 		
 		AliasContext context = new AliasContext(requestLevel, packageNamespace, aliasRegistry, validClasses);
 		
@@ -46,18 +46,18 @@ public class AliasProcessor
 			{
 				node.register();
 			}
-			catch (BundlerProcessingException e)
+			catch (ContentProcessingException e)
 			{
-				throw new BundlerFileProcessingException(aliasesFile, streamReader.getLineNumber(), streamReader.getColumnNumber(), e.getMessage());
+				throw new ContentFileProcessingException(aliasesFile, streamReader.getLineNumber(), streamReader.getColumnNumber(), e.getMessage());
 			}
 		}
 	}
 	
-	public void processAliasesFile() throws BundlerFileProcessingException, XMLStreamException, NamespaceException
+	public void processAliasesFile() throws ContentFileProcessingException, XMLStreamException, NamespaceException
 	{
 		
 		ScopeLevel requestLevel = getScope( aliasesFile );
-		String packageNamespace = NamespaceCalculator.getPackageNamespaceForBladeLevelResources( aliasesFile );
+		String packageNamespace = RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources( aliasesFile );
 		
 		AliasContext context = new AliasContext(requestLevel, packageNamespace, aliasRegistry, validClasses);
 		
@@ -69,9 +69,9 @@ public class AliasProcessor
 			{
 				node.use();
 			}
-			catch (BundlerProcessingException e)
+			catch (ContentProcessingException e)
 			{
-				throw new BundlerFileProcessingException(aliasesFile, streamReader.getLineNumber(), streamReader.getColumnNumber(), e.getMessage());
+				throw new ContentFileProcessingException(aliasesFile, streamReader.getLineNumber(), streamReader.getColumnNumber(), e.getMessage());
 			}
 		}
 	}

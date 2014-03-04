@@ -7,11 +7,11 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import com.caplin.cutlass.EncodingAccessor;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class BundleWriterFactory
 {
-	public static Writer createWriter(OutputStream outputStream) throws BundlerProcessingException
+	public static Writer createWriter(OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = null;
 		
@@ -21,13 +21,13 @@ public class BundleWriterFactory
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			throw new BundlerProcessingException(e, "'" + EncodingAccessor.getDefaultOutputEncoding() + "' is not a supported character encoding.");
+			throw new ContentProcessingException(e, "'" + EncodingAccessor.getDefaultOutputEncoding() + "' is not a supported character encoding.");
 		}
 		
 		return writer;
 	}
 	
-	public static void closeWriter(Writer writer) throws BundlerProcessingException
+	public static void closeWriter(Writer writer) throws ContentProcessingException
 	{
 		try
 		{
@@ -35,7 +35,7 @@ public class BundleWriterFactory
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Unable to close ouput writer.");
+			throw new ContentProcessingException(e, "Unable to close ouput writer.");
 		}
 	}
 }

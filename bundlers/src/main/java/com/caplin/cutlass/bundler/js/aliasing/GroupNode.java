@@ -2,8 +2,8 @@ package com.caplin.cutlass.bundler.js.aliasing;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.GroupDefinition;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+
 import com.caplin.cutlass.exception.NamespaceException;
 
 public class GroupNode implements AliasingNode {
@@ -18,7 +18,7 @@ public class GroupNode implements AliasingNode {
 	}
 
 	@Override
-	public void register() throws BundlerProcessingException, NamespaceException 
+	public void register() throws ContentProcessingException, NamespaceException 
 	{
 		AliasRegistry aliasRegistry = context.getAliasRegistry();
 		
@@ -32,7 +32,7 @@ public class GroupNode implements AliasingNode {
 	}
 
 	@Override
-	public void use() throws BundlerProcessingException 
+	public void use() throws ContentProcessingException 
 	{
 		context.getAliasRegistry().useGroup(groupName);
 	}

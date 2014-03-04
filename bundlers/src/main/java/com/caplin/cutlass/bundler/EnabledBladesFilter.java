@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 
 public class EnabledBladesFilter
@@ -16,7 +16,7 @@ public class EnabledBladesFilter
 		this.usedBladesFinder = usedBladesFinder;
 	}
 
-	public List<File> filter(File aspectRoot, List<File> files) throws BundlerProcessingException
+	public List<File> filter(File aspectRoot, List<File> files) throws ContentProcessingException
 	{
 		List<File> usedBlades = getUsedBlades(aspectRoot);
 		List<File> usedBladesets = getUsedBladesets(usedBlades);
@@ -47,7 +47,7 @@ public class EnabledBladesFilter
 		return usedBladesets;
 	}
 
-	private List<File> getUsedBlades(File aspectRoot) throws BundlerProcessingException
+	private List<File> getUsedBlades(File aspectRoot) throws ContentProcessingException
 	{
 		List<File> usedBlades = usedBladesFinder.findUsedBlades(aspectRoot);
 		return usedBlades;

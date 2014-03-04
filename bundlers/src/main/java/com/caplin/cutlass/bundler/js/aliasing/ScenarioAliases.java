@@ -4,8 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.Map;
 
-import org.bladerunnerjs.model.aliasing.AliasDefinition;
-
 public class ScenarioAliases
 {
 	private Map<String, AliasDefinition> aliases = new LinkedHashMap<>();

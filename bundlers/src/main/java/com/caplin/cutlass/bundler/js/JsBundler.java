@@ -9,24 +9,29 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
 import com.caplin.cutlass.BRJSAccessor;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
+
+import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.js.minification.Minifier;
 import com.caplin.cutlass.bundler.js.minification.MinifierFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
 
-public class JsBundler implements LegacyFileBundlerPlugin
+public class JsBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
-	private final ContentPathParser requestParser = RequestParserFactory.createJsBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createJsBundlerContentPathParser();
 	private Minifier minifier;
 	
 	public JsBundler()
@@ -53,13 +58,13 @@ public class JsBundler implements LegacyFileBundlerPlugin
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
 	public List<File> getBundleFiles(File baseDir, File testDir, String requestName) throws RequestHandlingException
 	{
-		ParsedContentPath request = requestParser.parse(requestName);
+		ParsedContentPath request = contentPathParser.parse(requestName);
 		
 		if(request.properties.containsKey("path"))
 		{
@@ -80,7 +85,7 @@ public class JsBundler implements LegacyFileBundlerPlugin
 	}
 
 	@Override
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		if(sourceFiles.size() == 1)
 		{
@@ -116,7 +121,7 @@ public class JsBundler implements LegacyFileBundlerPlugin
 		return Arrays.asList(BundlePathsFromRoot.JS + "js" + BUNDLE_EXT);
 	}
 	
-	private void serveSourceMap(Minifier minifier, OutputStream outputStream) throws BundlerProcessingException
+	private void serveSourceMap(Minifier minifier, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		
@@ -126,7 +131,7 @@ public class JsBundler implements LegacyFileBundlerPlugin
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Error while writing source map.");
+			throw new ContentProcessingException(e, "Error while writing source map.");
 		}
 		finally
 		{
@@ -134,7 +139,7 @@ public class JsBundler implements LegacyFileBundlerPlugin
 		}
 	}
 	
-	private void bundleFiles(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	private void bundleFiles(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		CharacterCountingWriter headerWriter = new CharacterCountingWriter(writer);
@@ -150,7 +155,7 @@ public class JsBundler implements LegacyFileBundlerPlugin
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Error while bundling files.");
+			throw new ContentProcessingException(e, "Error while bundling files.");
 		}
 		finally
 		{

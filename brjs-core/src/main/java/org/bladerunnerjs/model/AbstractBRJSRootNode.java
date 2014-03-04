@@ -4,8 +4,8 @@ import java.io.File;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
-import org.bladerunnerjs.core.log.LoggerFactory;
+import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
@@ -17,12 +17,17 @@ public abstract class AbstractBRJSRootNode extends AbstractRootNode implements B
 	
 	@Override
 	public BRJS root() {
-		return (BRJS) rootNode;
+		return (BRJS) super.root();
 	}
 	
 	@Override
 	public void populate() throws InvalidNameException, ModelUpdateException {
 		BRJSNodeHelper.populate(this);
+	}
+	
+	@Override
+	public long lastModified() {
+		return (dir.exists()) ? root().getModificationInfo(dir).getLastModified() : 0;
 	}
 	
 	@Override

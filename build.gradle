@@ -1,9 +1,7 @@
-import static org.bladerunnerjs.BuildVersionCalculator.*
-
 apply from: 'wrapper.gradle'
 
-
 def projectBuildVersion = org.bladerunnerjs.BuildVersionCalculator.calculateVersion(project)
+def projectBuildMajorVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
 def projectVersionIsDirty = org.bladerunnerjs.BuildVersionCalculator.isVersionDirty(project)
 def projectBuildDate = org.bladerunnerjs.BuildVersionCalculator.calculateBuildDate(project)
 def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBuildHostname(project)
@@ -11,6 +9,20 @@ def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBui
 logger.info "Build version calculated as: ${projectBuildVersion}"
 logger.info "Build date is: ${projectBuildDate}"
 logger.info "Build hostname is: ${projectBuildHostname}"
+
+
+def overrideBuildVersionPropertyName = "overrideBuildVersion"
+if (project.hasProperty(overrideBuildVersionPropertyName)) {
+	logger.info "Project has property ${overrideBuildVersionPropertyName} set, overriding calculated build version"
+	projectBuildVersion = project.property(overrideBuildVersionPropertyName)
+}
+
+def overrideMajorVersionPropertyName = "overrideBuildMajorVersion"
+if (project.hasProperty(overrideMajorVersionPropertyName)) {
+	logger.info "Project has property ${overrideMajorVersionPropertyName} set, overriding calculated build version"
+	projectBuildMajorVersion = project.property(overrideMajorVersionPropertyName)
+}
+
 
 allprojects {
 	
@@ -123,26 +135,6 @@ subprojects {
 	}
 }
 
-
-task buildAndTestIE {
-	description "Runs the 'build' task and also includes IE tests"
-}
-afterEvaluate { project ->
-	buildAndTestIE.dependsOn build
-	buildAndTestIE.dependsOn ':cutlass-sdk:testIE'
-}
-
-
-task buildAndTestIE_NoSysApps {
-	description "Runs the 'build' task and also includes IE tests, ignoring the IE tests for systems apps"
-}
-afterEvaluate { project ->
-    buildAndTestIE_NoSysApps.dependsOn build
-    buildAndTestIE_NoSysApps.dependsOn ':cutlass-sdk:testJsIE'
-}
-
-
-
 def getProperty = { project, property ->
 if (!project.hasProperty(property)) {
 	throw new GradleException("${property} property must be set")
@@ -174,16 +166,21 @@ task generateReleaseNotes, {
 	doFirst {
     	def gitHubToken = getGitHubToken(project)
 		def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
-    	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
+    	def tagVersion = projectBuildMajorVersion
 		
 		def releaseNoteFile = file("releases/${tagVersion}.md")
-		def milestoneId = getReleaseNoteJson(project,tagVersion).milestone
+		def milestoneJson = getReleaseNoteJson(project,tagVersion).milestone
+		def milestoneIds = (milestoneJson instanceof Integer) ? [milestoneJson] : milestoneJson.split(",").collect { it.trim().toInteger()  }
 		def includeIssueLabels = ["bug", "feature", "enhancement", "experience"]
 		def issueIncludeLabelsString = includeIssueLabels.join(", ").replaceAll(/^(.*),(.*)$/,'$1 or$2'); /* regex replaces the last ',' with 'or' */	
 		
 		def excludeIssueLabels = ["invalid", "duplicate"]
 		
-		List<Issue> issues = githubApi.getClosedIssuesForMilestone(milestoneId)
+		List<Issue> issues = new ArrayList<Issue>();
+		milestoneIds.each { milestoneId ->
+			issues.addAll( githubApi.getClosedIssuesForMilestone(milestoneId) )
+		}
+		
 		List<Issue> releaseNoteIssues = new LinkedList<Issue>()
 		issues.each {
 			if (it.labels.intersect(includeIssueLabels) && !it.labels.intersect(excludeIssueLabels)) {
@@ -197,7 +194,13 @@ task generateReleaseNotes, {
 		assembledReleaseNotesFile.text += "\n\n"
 		assembledReleaseNotesFile.text += "-------------\n"
 		assembledReleaseNotesFile.text += "### Closed Issues\n"
-		assembledReleaseNotesFile.text += "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} - <a href=\"@milestoneURL@\">@milestoneURL@</a><sup>\n\n"
+		assembledReleaseNotesFile.text += "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} from ${milestoneIds.size} milestones: "
+		milestoneIds.each { milestoneId ->
+			if (milestoneId != milestoneIds.first()) { assembledReleaseNotesFile.text += "; " }
+			def milestoneUrl = githubApi.getMilestoneUrl(milestoneId)
+			assembledReleaseNotesFile.text += "<a href=\"${milestoneUrl}\">${milestoneUrl}</a>"
+		}
+		assembledReleaseNotesFile.text += "</sub>\n\n"
 		releaseNoteIssues.each {
 			assembledReleaseNotesFile.text += "- ${it.toString()}\n"
 		}
@@ -207,8 +210,6 @@ task generateReleaseNotes, {
     	ant.replace(file: assembledReleaseNotesFile) {
     		replacefilter(token:"@tagVersion@", value:tagVersion)
     		replacefilter(token:"@buildVersion@", value:buildVersion)
-    		replacefilter(token:"@milestonesURL@", value:githubApi.getMilestonesUrl())
-    		replacefilter(token:"@milestoneURL@", value:githubApi.getMilestoneUrl(milestoneId))
     	}
 	}
 }
@@ -227,7 +228,7 @@ task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', bui
 		
     	def gitHubToken = getGitHubToken(project)
     	def githubApi = new GitHubAPIBridge(project, "BladeRunnerJS", "brjs", gitHubToken)
-    	def tagVersion = org.bladerunnerjs.BuildVersionCalculator.calculateMajorVersion(project)
+    	def tagVersion = projectBuildMajorVersion
     	
 		def releaseNoteFile = generateReleaseNotes.outputs.files.singleFile
     	Release release = githubApi.createReleaseForTag(tagVersion, getReleaseNoteJson(project,tagVersion), releaseNoteFile.text)

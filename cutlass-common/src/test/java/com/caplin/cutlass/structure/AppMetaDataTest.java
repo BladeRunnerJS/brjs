@@ -15,9 +15,9 @@ import org.junit.Test;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
+import com.caplin.cutlass.AppMetaData;
+import com.caplin.cutlass.CutlassConfig;
 
 public class AppMetaDataTest
 {
@@ -105,15 +105,15 @@ public class AppMetaDataTest
 		
 		assertEquals(7, applicationImages.size());
 		
-		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/blue/img/blue.png")));
-		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.gif")));
-		assertFalse(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/notdefinedimageextension.bla")));
-		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/another-aspect/themes/blue/img/extralevel/blue.jpg")));
-		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/another-bladeset/blades/blade1/themes/noir/img/extralevel/levelup/noir.bmp")));
+		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/blue/img/blue.png").getAbsoluteFile()));
+		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/noir.gif").getAbsoluteFile()));
+		assertFalse(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/themes/noir/notdefinedimageextension.bla").getAbsoluteFile()));
+		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/another-aspect/themes/blue/img/extralevel/blue.jpg").getAbsoluteFile()));
+		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/another-bladeset/blades/blade1/themes/noir/img/extralevel/levelup/noir.bmp").getAbsoluteFile()));
 
-		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/blue/img/BLUE_UPPER.PNG")));
-		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/blue/img/BLUE_UPPER.JPEG")));
-		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/blue/img/BLUE.JPEG")));
+		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/blue/img/BLUE_UPPER.PNG").getAbsoluteFile()));
+		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/blue/img/BLUE_UPPER.JPEG").getAbsoluteFile()));
+		assertTrue(applicationImages.contains(new File(APPLICATIONS_DIR + "/app1/a-bladeset/blades/blade1/themes/blue/img/BLUE.JPEG").getAbsoluteFile()));
 		
 	}
 	

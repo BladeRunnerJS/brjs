@@ -49,7 +49,7 @@ public class ProductionFilePreventionFilterTest
 	@Before
 	public void setup() throws Exception
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		this.filter = new ProductionFilePreventionFilter();
 	}
 

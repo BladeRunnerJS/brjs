@@ -7,7 +7,7 @@ caplinx.dashboard.app.model.form.FileField = function(sAccepts)
 	this.fileInputVisible = new br.presenter.property.WritableProperty( true );
 	this.fileInfoVisible = new br.presenter.property.WritableProperty( false );
 };
-br.extend(caplinx.dashboard.app.model.form.FileField, br.presenter.node.PresentationNode);
+br.Core.extend(caplinx.dashboard.app.model.form.FileField, br.presenter.node.PresentationNode);
 
 caplinx.dashboard.app.model.form.FileField.prototype.onChange = function(oViewModel, oEvent)
 {

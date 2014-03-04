@@ -13,12 +13,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
 import com.caplin.cutlass.ServletModelAccessor;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
+import com.caplin.cutlass.CutlassConfig;
 
 public class SectionRedirectFilter implements Filter
 {
@@ -31,7 +33,7 @@ public class SectionRedirectFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		servletContext = filterConfig.getServletContext();
 		contextDir = new File(servletContext.getRealPath("/"));
 		logger = brjs.logger(LoggerType.FILTER, SectionRedirectFilter.class);
@@ -40,6 +42,7 @@ public class SectionRedirectFilter implements Filter
 	@Override
 	public void destroy()
 	{
+		ServletModelAccessor.destroy();
 	}
 	
 	@Override
@@ -63,7 +66,7 @@ public class SectionRedirectFilter implements Filter
 			{
 				String redirectUrl = getSectionRedirectHandler().getRedirectUrl(requestPath);
 				
-				if (!requestPath.equals(redirectUrl))
+				if (!requestPath.equals(redirectUrl) && !httpRequest.getServletPath().equals("/brjs"))
 				{
 					logger.debug("requestPath '" + requestPath + "' doesn't match redirect url '" + redirectUrl + "' -- forwarding");
 					

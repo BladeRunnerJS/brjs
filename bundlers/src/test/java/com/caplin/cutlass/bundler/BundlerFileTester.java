@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
@@ -24,7 +24,7 @@ public class BundlerFileTester
 	public BundlerFileTester(LegacyFileBundlerPlugin bundler, String pathPrefix)
 	{
 		this.bundler = bundler;
-		this.pathPrefix = pathPrefix.replaceAll("\\\\", "/");
+		this.pathPrefix = new File(pathPrefix).getAbsolutePath().replaceAll("\\\\", "/");
 		
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(pathPrefix)));
 	}
@@ -53,10 +53,6 @@ public class BundlerFileTester
 		List<File> bundleFiles = bundler.getBundleFiles(bundleDir, bundleTestDir, bundleRequest);
 		removeTempBundleFileIfExists(bundleFiles);
 		
-		for (File f : bundleFiles )
-		{
-			System.err.println(f.getAbsolutePath());
-		}
 		assertArrayEquals("1a", addPathPrefix(pathPrefix, expectedFiles), convertToArray(bundleFiles));
 	}
 	

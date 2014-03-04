@@ -4,16 +4,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.utility.FileUtility;
-
-
 public class DirNodeMapLocator implements NodeMapLocator
 {
 	private String subDirPath;
 	private String dirNameFilter;
+	private RootNode rootNode;
 	
-	public DirNodeMapLocator(String subDirPath, String dirNameFilter)
+	public DirNodeMapLocator(RootNode rootNode, String subDirPath, String dirNameFilter)
 	{
+		this.rootNode = rootNode;
 		this.subDirPath = subDirPath;
 		this.dirNameFilter = dirNameFilter;
 	}
@@ -28,9 +27,9 @@ public class DirNodeMapLocator implements NodeMapLocator
 		{
 			String dirNameMatcher = getDirNameMatcher(dirNameFilter);
 			
-			for(File file : FileUtility.getSortedListOfSubFolders(childDir))
+			for(File file : rootNode.getFileIterator(childDir).dirs())
 			{
-				if((dirNameMatcher == null) || (file.getName().matches(dirNameMatcher)))
+				if( file.isDirectory() && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
 				{
 					String childName = file.getName();
 					

@@ -16,8 +16,8 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
-import org.bladerunnerjs.model.utility.FileUtility;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 
@@ -77,14 +77,14 @@ public class BundlerFileUtils
 		{
 			if (root.isDirectory())
 			{
-				for (File child : FileUtility.sortFileArray(root.listFiles()))
+				for (File child : FileUtility.sortFiles(root.listFiles()))
 				{
 					recursiveListFiles(child, files, filter);
 				}
 			}
 			else if (root.isFile() && filter.accept(root, root.getName()))
 			{
-				files.add(root);
+				files.add(root.getAbsoluteFile());
 			}
 		}
 	}
@@ -111,7 +111,7 @@ public class BundlerFileUtils
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public static void writeClassPackages(List<File> sourceFiles, Writer writer) throws BundlerProcessingException
+	public static void writeClassPackages(List<File> sourceFiles, Writer writer) throws ContentProcessingException
 	{
 		if(sourceFiles.size() > 0)
 		{
@@ -144,7 +144,7 @@ public class BundlerFileUtils
 				}
 				catch(IOException e)
 				{
-					throw new BundlerProcessingException(e, "Error while writing the package definition block");
+					throw new ContentProcessingException(e, "Error while writing the package definition block");
 				}
 			}
 		}

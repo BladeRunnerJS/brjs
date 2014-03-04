@@ -1,0 +1,10 @@
+<div id="br.workbench.connection-editor">
+<div class="permission-editor-container">
+	<div data-bind="template: {name: 'workbench-connection-button', foreach:buttons }"></div>
+</div>
+</div>
+
+<div id="workbench.connection-button">
+	<button class="btn" data-bind="click:click, visible:visible, enable:enabled, text:label, css:{notClickable: notClickable, selected:selected}" ></button>
+</div>
+

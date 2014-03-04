@@ -8,11 +8,13 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 
 
-public class DirNode extends AbstractBRJSNode
+public final class DirNode extends AbstractBRJSNode
 {
 	public DirNode(RootNode rootNode, Node parent, File dir)
 	{
-		init(rootNode, parent, dir);
+		super(rootNode, parent, dir);
+		
+		registerInitializedNode();
 	}
 	
 	@Override

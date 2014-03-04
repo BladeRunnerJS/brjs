@@ -18,8 +18,8 @@ import org.junit.Test;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
 
 public class RenamerTest
 {
@@ -64,7 +64,7 @@ public class RenamerTest
 		
 		assertTrue("Expected " + expectedRenamedFile + " to exist", expectedRenamedFile.exists());
 		assertFalse("Expected " + originalFile + " to not exist", originalFile.exists());
-		assertEquals(Arrays.asList("appNamespace: acmebank","locales: en"), renamedAppConfContents);
+		assertEquals(Arrays.asList("locales: en","requirePrefix: acmebank"), renamedAppConfContents);
 	}
 	
 	@Test

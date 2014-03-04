@@ -11,12 +11,14 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.bladerunnerjs.core.plugin.command.standard.CreateAspectCommand;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+
+import com.caplin.cutlass.CutlassConfig;
+
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.utility.FileUtility;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCommand;
+
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 

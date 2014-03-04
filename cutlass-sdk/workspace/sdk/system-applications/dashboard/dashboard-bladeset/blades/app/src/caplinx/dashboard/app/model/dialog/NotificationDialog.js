@@ -7,7 +7,7 @@ caplinx.dashboard.app.model.dialog.NotificationDialog = function(oPresentationMo
 	
 	this.message = new br.presenter.property.WritableProperty();
 };
-br.extend(caplinx.dashboard.app.model.dialog.NotificationDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
+br.Core.extend(caplinx.dashboard.app.model.dialog.NotificationDialog, caplinx.dashboard.app.model.dialog.DialogViewNode);
 
 caplinx.dashboard.app.model.dialog.NotificationDialog.prototype.initializeForm = function()
 {

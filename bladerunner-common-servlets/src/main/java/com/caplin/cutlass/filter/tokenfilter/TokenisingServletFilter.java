@@ -15,12 +15,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.bladerunnerjs.core.log.Logger;
-import org.bladerunnerjs.core.log.LoggerType;
+import org.bladerunnerjs.appserver.CharResponseWrapper;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
-import com.caplin.cutlass.EncodingAccessor;
+
 import com.caplin.cutlass.ServletModelAccessor;
-import com.caplin.cutlass.filter.CharResponseWrapper;
 
 public class TokenisingServletFilter implements Filter
 {
@@ -51,11 +51,17 @@ public class TokenisingServletFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig)
 	{
-		BRJS brjs = ServletModelAccessor.initializeModel(filterConfig.getServletContext());
+		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
 		contextPath = filterConfig.getServletContext().getContextPath();
 		logger = brjs.logger(LoggerType.FILTER, TokenisingServletFilter.class);
 	}
-
+	
+	@Override
+	public void destroy()
+	{
+		ServletModelAccessor.destroy();
+	}
+	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
@@ -74,7 +80,7 @@ public class TokenisingServletFilter implements Filter
 				logger.debug("processing and replacing JNDI tokens within response.");
 				
 				StringBuffer filteredResponse = streamTokeniser.replaceTokens(responseWrapper.getReader(), tokenFinder, requestUri);
-				byte[] filteredData = filteredResponse.toString().getBytes(EncodingAccessor.getDefaultOutputEncoding());
+				byte[] filteredData = filteredResponse.toString().getBytes(response.getCharacterEncoding());
 				response.setContentLength(filteredData.length);
 				out.write(filteredData);
 				out.close();
@@ -105,12 +111,4 @@ public class TokenisingServletFilter implements Filter
 		}
 		return false;
 	}
-
-	@Override
-	public void destroy()
-	{
-		streamTokeniser = null;
-		tokenFinder = null;
-	}
-
 }

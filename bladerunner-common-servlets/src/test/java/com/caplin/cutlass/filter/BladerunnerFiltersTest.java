@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.naming.Context;
 
 import org.apache.http.HttpResponse;
@@ -30,8 +31,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+import com.caplin.cutlass.util.FileUtility;
+
+import org.bladerunnerjs.utility.ServerUtility;
+
 import com.caplin.cutlass.ServletModelAccessor;
 import com.caplin.cutlass.filter.tokenfilter.StreamTokeniser;
 import com.caplin.cutlass.test.TestContextFactory;
@@ -48,7 +51,7 @@ public class BladerunnerFiltersTest
 	@BeforeClass
 	public static void suiteSetup() throws Exception
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		httpclient = new DefaultHttpClient();
 		httpclient.getParams().setBooleanParameter(ClientPNames.HANDLE_REDIRECTS, false);
 		mockJndiContext = TestContextFactory.getTestContext();

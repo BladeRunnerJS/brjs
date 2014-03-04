@@ -1,41 +1,42 @@
 package org.bladerunnerjs.testing.utility;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.core.plugin.ModelObserverPlugin;
-import org.bladerunnerjs.core.plugin.PluginLocator;
-import org.bladerunnerjs.core.plugin.PluginLocatorUtils;
-import org.bladerunnerjs.core.plugin.bundler.BundlerPlugin;
-import org.bladerunnerjs.core.plugin.command.CommandPlugin;
-import org.bladerunnerjs.core.plugin.minifier.MinifierPlugin;
-import org.bladerunnerjs.core.plugin.servlet.ContentPlugin;
-import org.bladerunnerjs.core.plugin.taghandler.TagHandlerPlugin;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.CommandPlugin;
+import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.MinifierPlugin;
+import org.bladerunnerjs.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.plugin.Plugin;
+import org.bladerunnerjs.plugin.PluginLocator;
+import org.bladerunnerjs.plugin.TagHandlerPlugin;
+import org.bladerunnerjs.plugin.proxy.VirtualProxyPlugin;
+import org.bladerunnerjs.plugin.utility.PluginLocatorUtils;
 
 
 public class MockPluginLocator implements PluginLocator
 {
-	public List<BundlerPlugin> bundlers = new ArrayList<BundlerPlugin>();
-	public List<CommandPlugin> pluginCommands = new ArrayList<CommandPlugin>();
-	public List<ModelObserverPlugin> modelObservers = new ArrayList<ModelObserverPlugin>();
-	public List<MinifierPlugin> minifiers = new ArrayList<MinifierPlugin>();
-	public List<ContentPlugin> contentPlugins = new ArrayList<ContentPlugin>();
-	public List<TagHandlerPlugin> tagHandlers = new ArrayList<TagHandlerPlugin>();
+	public List<CommandPlugin> pluginCommands = new ArrayList<>();
+	public List<ModelObserverPlugin> modelObservers = new ArrayList<>();
+	public List<MinifierPlugin> minifiers = new ArrayList<>();
+	public List<ContentPlugin> contentPlugins = new ArrayList<>();
+	public List<TagHandlerPlugin> tagHandlers = new ArrayList<>();
+	public List<AssetPlugin> assetPlugins = new ArrayList<>();
+	public List<AssetLocationPlugin> assetLocationPlugins = new ArrayList<>();
 	
 	public void createPlugins(BRJS brjs) {
-		PluginLocatorUtils.setBRJSForPlugins(brjs, bundlers);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, pluginCommands);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, modelObservers);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, minifiers);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, contentPlugins);
-		PluginLocatorUtils.setBRJSForPlugins(brjs, tagHandlers);
-	}
-	
-	@Override
-	public List<BundlerPlugin> getBundlerPlugins()
-	{
-		return bundlers;
+		setBRJSForPlugins(brjs, pluginCommands);
+		setBRJSForPlugins(brjs, modelObservers);
+		setBRJSForPlugins(brjs, minifiers);
+		setBRJSForPlugins(brjs, contentPlugins);
+		setBRJSForPlugins(brjs, tagHandlers);
+		setBRJSForPlugins(brjs, assetPlugins);
+		setBRJSForPlugins(brjs, assetLocationPlugins);
 	}
 	
 	@Override
@@ -45,13 +46,13 @@ public class MockPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<ModelObserverPlugin> getModelObservers()
+	public List<ModelObserverPlugin> getModelObserverPlugins()
 	{
 		return modelObservers;
 	}
 	
 	@Override
-	public List<MinifierPlugin> getMinifiers() {
+	public List<MinifierPlugin> getMinifierPlugins() {
 		return minifiers;
 	}
 	
@@ -61,7 +62,30 @@ public class MockPluginLocator implements PluginLocator
 	}
 	
 	@Override
-	public List<TagHandlerPlugin> getTagHandlers() {
+	public List<TagHandlerPlugin> getTagHandlerPlugins() {
 		return tagHandlers;
+	}
+	
+	@Override
+	public List<AssetPlugin> getAssetPlugins() {
+		return assetPlugins;
+	}
+	
+	@Override
+	public List<AssetLocationPlugin> getAssetLocationPlugins() {
+		return assetLocationPlugins;
+	}
+	
+	public static List<? extends Plugin> setBRJSForPlugins(BRJS brjs, List<? extends Plugin> plugins)
+	{
+		for (Plugin p : plugins)
+		{
+			if ( !(p instanceof VirtualProxyPlugin) ) 
+			{ 
+				fail("plugin class " + p.getClass() + " wasn't wrapped in a VirtualProxy plugin");
+			}
+		}
+		PluginLocatorUtils.setBRJSForPlugins(brjs, plugins);
+		return plugins;
 	}
 }

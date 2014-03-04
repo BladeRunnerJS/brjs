@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.app;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.name.InvalidPackageNameException;
-import org.bladerunnerjs.specutil.engine.SpecTest;
+import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class AppConfTest extends SpecTest {
 	public void appConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(app).appConf().write();
-		then(app).fileHasContents("app.conf", "appNamespace: app1\nlocales: en");
+		then(app).fileHasContents("app.conf", "requirePrefix: app1\nlocales: en");
 	}
 	@Ignore
 	@Test
@@ -46,14 +46,14 @@ public class AppConfTest extends SpecTest {
 	public void updateLocaleInAppConf() throws Exception {
 		given(app).hasBeenPopulated("appx");
 		when(app).appConf().setLocales("de").write();
-		then(app).fileHasContents("app.conf", "appNamespace: appx\nlocales: de");
+		then(app).fileHasContents("app.conf", "locales: de\nrequirePrefix: appx");
 	}
 	
 	@Test
 	public void updateAppNamespaceInAppConf() throws Exception {
 		given(app).hasBeenPopulated("appx");
 		when(app).appConf().setAppNamespace("newns").write();
-		then(app).fileHasContents("app.conf", "appNamespace: newns\nlocales: en");
+		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: newns");
 	}
 	
 	@Test
@@ -71,7 +71,7 @@ public class AppConfTest extends SpecTest {
 	@Test
 	public void readingAnAppConfFileWithMissingLocaleWillCauseAnException() throws Exception {
 		given(app).hasBeenCreated()
-			.and(app).containsFileWithContents("app.conf", "appNamespace: appns");
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: appns");
 		when(app).appConf();
 		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'locales' may not be null"));
 	}
@@ -81,13 +81,13 @@ public class AppConfTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "\nlocales: en");
 		when(app).appConf();
-		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'appNamespace' may not be null"));
+		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'requirePrefix' may not be null"));
 	}
 	
 	@Test
 	public void readingAnAppConfFileWithEmptyLocaleWillCauseAnException() throws Exception {
 		given(app).hasBeenCreated()
-			.and(app).containsFileWithContents("app.conf", "appNamespace: appns\nlocales:");
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: appns\nlocales:");
 		when(app).appConf();
 		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'locales' may not be empty"));
 	}
@@ -95,15 +95,15 @@ public class AppConfTest extends SpecTest {
 	@Test
 	public void readingAnAppConfFileWithEmptyAppNamespaceWillCauseAnException() throws Exception {
 		given(app).hasBeenCreated()
-			.and(app).containsFileWithContents("app.conf", "appNamespace: \nlocales: en");
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: \nlocales: en");
 		when(app).appConf();
-		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'appNamespace' may not be empty"));
+		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'requirePrefix' may not be empty"));
 	}
 	
 	@Test
 	public void readingAnAppConfFileWithInvalidProperty() throws Exception {
 		given(app).hasBeenCreated()
-			.and(app).containsFileWithContents("app.conf", "appNamespace: appns\nlocales: en\nblah: me");
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: appns\nlocales: en\nblah: me");
 		when(app).appConf();
 		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("Unable to find property 'blah'"));
 	}
@@ -119,7 +119,7 @@ public class AppConfTest extends SpecTest {
 	@Test
 	public void readingAnEmptyAppConfFileWillCauseAnException() throws Exception{
 		given(app).hasBeenCreated()
-			.and(app).containsFile("app.conf");
+			.and(app).containsEmptyFile("app.conf");
 		when(app).appConf();
 		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("is empty"));
 	}
@@ -127,7 +127,7 @@ public class AppConfTest extends SpecTest {
 	@Test
 	public void AppConfFileWithInvalidLocaleCauseExceptions() throws Exception{
 		given(app).hasBeenCreated()
-			.and(app).containsFileWithContents("app.conf", "appNamespace: app\nlocales: en, en_GB, 123, de");
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: app\nlocales: en, en_GB, 123, de");
 		when(app).appConf();
 		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'123' not a valid locale"));
 	}

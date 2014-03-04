@@ -2,7 +2,7 @@ package com.caplin.cutlass.filter.bundlerfilter.token;
 
 import java.util.Map;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
+import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.filter.bundlerfilter.BrowserCssHelper;
 import com.caplin.cutlass.filter.bundlerfilter.TokenProcessor;
 import com.caplin.cutlass.filter.bundlerfilter.TokenProcessorException;

@@ -89,7 +89,9 @@ class BuildVersionCalculator
 			return hostname
 		}
 		
-		throw new GradleException("Unable to detirmine hostname")
+		hostname = "localhost";
+		p.logger.warn "The hostname was calculated as '${hostname}', you should set your hostname so this build can be traced back to this machine."
+		return hostname
 	}
 	
 	

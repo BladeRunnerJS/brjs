@@ -2,18 +2,22 @@ package com.caplin.cutlass.command.analyse;
 
 import java.io.File;
 
-import org.bladerunnerjs.core.console.ConsoleWriter;
+import org.bladerunnerjs.console.ConsoleWriter;
+
 import com.caplin.cutlass.BRJSAccessor;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
+
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyser;
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyserFactory;
 import com.caplin.cutlass.bundler.js.analyser.PackageDepsCodeUnitVisitor;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 
-public class PackageDepsCommand implements LegacyCommandPlugin
+public class PackageDepsCommand extends AbstractPlugin implements LegacyCommandPlugin
 {
 	private ConsoleWriter out;
 	
@@ -49,7 +53,7 @@ public class PackageDepsCommand implements LegacyCommandPlugin
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException {
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
 		
 		PackageDepsConfig config = new PackageDepsConfig(args, this);
 		File packageDirectory = config.getPackageDirectory();
@@ -59,7 +63,7 @@ public class PackageDepsCommand implements LegacyCommandPlugin
 		{
 			codeAnalyser = CodeAnalyserFactory.getLibraryCodeAnalyser(config.getApp(), packageDirectory);
 		} 
-		catch (BundlerProcessingException e) 
+		catch (ContentProcessingException e) 
 		{
 			throw new CommandOperationException(e);
 		}

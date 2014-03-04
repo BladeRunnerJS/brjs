@@ -10,15 +10,19 @@ import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
-import org.bladerunnerjs.core.console.ConsoleWriter;
+
+import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.JsLib;
+
 import com.caplin.cutlass.BRJSAccessor;
-import org.bladerunnerjs.model.JsNonBladeRunnerLib;
+
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
-public class CheckCommand implements LegacyCommandPlugin
+public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 {
 	private FileFilter CAPLIN_JAR_FILE_NAME_FILTER = new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar"));
 	private ConsoleWriter out;
@@ -57,7 +61,7 @@ public class CheckCommand implements LegacyCommandPlugin
 	}
 	
 	@Override
-	public void doCommand(String[] args) throws CommandArgumentsException, CommandOperationException
+	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		CheckUtility checkUtility = new CheckUtility();
 		StringBuilder messageToShowUser = new StringBuilder();
@@ -69,7 +73,7 @@ public class CheckCommand implements LegacyCommandPlugin
 		messageToShowUser.append("-- Application Details --\n");
 		
 		List<File> sdkLibsApplicationJars = Arrays.asList(BRJSAccessor.root.appJars().dir().listFiles(CAPLIN_JAR_FILE_NAME_FILTER));
-		List<JsNonBladeRunnerLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkNonBladeRunnerLibs();
+		List<JsLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkNonBladeRunnerLibs();
 		
 		for(App application : BRJSAccessor.root.apps())
 		{

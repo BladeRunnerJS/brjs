@@ -4,7 +4,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.UnknownFormatConversionException;
 
-import org.bladerunnerjs.core.log.SLF4JLogger;
+import org.bladerunnerjs.logging.SLF4JLogger;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

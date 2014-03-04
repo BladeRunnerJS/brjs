@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import org.bladerunnerjs.model.sinbin.AppMetaData;
+import com.caplin.cutlass.AppMetaData;
 
 public class I18nBundlerTest
 {

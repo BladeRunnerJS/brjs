@@ -15,6 +15,7 @@ sourceSets {
 
 configurations {
 	javadocs
+	srcJar
 }
 
 dependencies {
@@ -32,6 +33,12 @@ dependencies {
 	compile dependency('jetty-all-server')
 	compile dependency('jta')
 	compile dependency('closure-compiler')
+	compile dependency('java-xmlbuilder')
+	compile dependency('xalan')
+	compile dependency('sjsxp')
+	compile dependency('dom4j')
+	compile dependency('utils')
+	compile dependency('jericho-html')
 	
 	/* woodstox deps */
 	compile dependency('woodstox-core-asl')
@@ -42,6 +49,7 @@ dependencies {
 	compileOnly dependency('servlet-api')
 	compileOnly dependency('junit')
 	compileOnly dependency('mockito-core')
+	compileOnly dependency('fluent-hc')
 	compileOnly dependency('httpclient')
 	compileOnly dependency('hamcrest-all')
 	
@@ -58,6 +66,7 @@ javadoc {
 	classpath += project.configurations.compileOnly
 	/* info for JavaDoc options http://docs.oracle.com/javase/6/docs/technotes/tools/windows/javadoc.html#overviewcomment */
 	options.overview = "${sourceSets.main.java.srcDirs.toArray()[0]}/overview-summary.html"
+	maxMemory = "128m"
 }
 
 javadoc {
@@ -70,8 +79,14 @@ task javadocZip, type:Zip, dependsOn:javadoc, {
 	into "javadoc"
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+
 artifacts {
 	javadocs javadocZip
+	srcJar sourcesJar
 }
 
 task zipJsDocResources, type:Zip, dependsOn: processResources, {

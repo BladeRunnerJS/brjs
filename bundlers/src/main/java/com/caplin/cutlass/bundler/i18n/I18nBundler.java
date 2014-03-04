@@ -13,29 +13,34 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.filefilter.RegexFileFilter;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ContentPathParser;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
+
+import com.caplin.cutlass.AppMetaData;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.BundlerFileUtils;
-import org.bladerunnerjs.model.exception.request.BundlerFileProcessingException;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.base.AbstractPlugin;
+import org.bladerunnerjs.utility.ContentPathParser;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
 import com.caplin.cutlass.bundler.parser.RequestParserFactory;
 import com.caplin.cutlass.structure.BundlePathsFromRoot;
-import com.caplin.cutlass.structure.NamespaceCalculator;
+import com.caplin.cutlass.structure.RequirePrefixCalculator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-public class I18nBundler implements LegacyFileBundlerPlugin
+public class I18nBundler extends AbstractPlugin implements LegacyFileBundlerPlugin
 {
-	private final ContentPathParser requestParser = RequestParserFactory.createI18nBundlerRequestParser();
+	private final ContentPathParser contentPathParser = RequestParserFactory.createI18nBundlerContentPathParser();
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -51,7 +56,7 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 	@Override
 	public List<String> getValidRequestForms()
 	{
-		return requestParser.getRequestForms();
+		return contentPathParser.getRequestForms();
 	}
 	
 	@Override
@@ -72,7 +77,7 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 	}
 
 	@Override
-	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+	public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 	{
 		Writer writer = BundleWriterFactory.createWriter(outputStream);
 		
@@ -107,7 +112,7 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 		return requests;
 	}
 	
-	private void writeJson(Writer writer, String jsonMap) throws BundlerProcessingException
+	private void writeJson(Writer writer, String jsonMap) throws ContentProcessingException
 	{
 		try
 		{
@@ -115,13 +120,13 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 		}
 		catch (IOException e)
 		{
-			throw new BundlerProcessingException(e, "Unable to write to output stream.");
+			throw new ContentProcessingException(e, "Unable to write to output stream.");
 		}
 	}
 	
 	private String getI18nPropertiesFilePattern(String requestString) throws MalformedRequestException
 	{
-		ParsedContentPath request = requestParser.parse(requestString);
+		ParsedContentPath request = contentPathParser.parse(requestString);
 		String languageCode = request.properties.get("languageCode");
 		String countryCode = request.properties.get("countryCode");
 		
@@ -135,7 +140,7 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 		return pattern;
 	}
 
-	private Properties generateBundle(List<File> sourceFiles) throws BundlerFileProcessingException
+	private Properties generateBundle(List<File> sourceFiles) throws ContentFileProcessingException
 	{
 		Properties bundle = new Properties();
 		for (File file : sourceFiles)
@@ -148,7 +153,7 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 			}
 			catch (Exception e)
 			{
-				throw new BundlerFileProcessingException(file, e, "Error while bundling file.");
+				throw new ContentFileProcessingException(file, e, "Error while bundling file.");
 			}
 			bundle.putAll(override);
 		}
@@ -157,7 +162,7 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 
 	private void verifyThatI18NTokensAreInCorrectNamespace(File file, Properties override) throws Exception
 	{
-		String namespace = NamespaceCalculator.getPackageNamespaceForBladeLevelResources(file);
+		String namespace = RequirePrefixCalculator.getPackageRequirePrefixForBladeLevelResources(file);
 		
 		if(namespace.length() > 0)
 		{
@@ -165,7 +170,7 @@ public class I18nBundler implements LegacyFileBundlerPlugin
 			{
 				if(!identifier.startsWith(namespace))
 				{
-					throw new BundlerFileProcessingException(file, "The identifier '" + identifier +
+					throw new ContentFileProcessingException(file, "The identifier '" + identifier +
 						"' is not correctly namespaced, namespace '" + namespace + "*' was expected.");
 				}
 			}

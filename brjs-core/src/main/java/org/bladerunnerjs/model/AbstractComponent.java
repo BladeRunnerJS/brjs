@@ -3,18 +3,21 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 
+import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.utility.TestRunner;
+import org.bladerunnerjs.utility.TestRunner;
 
 
 public abstract class AbstractComponent extends AbstractAssetContainer implements TestableNode
 {
-	private final NodeMap<Theme> themes = Theme.createNodeSet();
-	private final NodeMap<TypedTestPack> testTypes = TypedTestPack.createNodeSet();
+	private final NodeMap<Theme> themes;
+	private final NodeMap<TypedTestPack> testTypes;
 	
-	public AbstractComponent(RootNode rootNode, File dir) {
-		super(rootNode, dir);
+	public AbstractComponent(RootNode rootNode, Node parent, File dir) {
+		super(rootNode, parent, dir);
+		themes = Theme.createNodeSet(rootNode);
+		testTypes = TypedTestPack.createNodeSet(rootNode);
 	}
 	
 	public List<Theme> themes()

@@ -1,6 +1,6 @@
 package com.caplin.cutlass.command.war;
 
-import static org.bladerunnerjs.model.sinbin.CutlassConfig.APPLICATIONS_DIR;
+import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -23,13 +23,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
+import com.caplin.cutlass.AppMetaData;
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.bundler.BladeRunnerSourceFileProvider;
 import com.caplin.cutlass.bundler.css.CssBundler;
 import com.caplin.cutlass.bundler.html.HtmlBundler;
@@ -315,6 +315,9 @@ public class WarCommandUtilityTest
 			"/**************************************************************/\n" +
 			"\n" +
 			"// package definition block\n" +
+			// NOTE: this hack provides tacit acceptance of a bug in the old bundling code introduced by a switch to canonical paths, but since it's in
+			// the old bundling code only, I don't care.
+			"window.test = {\"resources\":{\"WarCommandUtilityTest\":{\"sdk\":{\"libs\":{\"javascript\":{\"thirdparty\":{\"caplin-bootstrap\":{}}}}}}}};\n" + 
 			"window.caplinx = {};\n" +
 			"\n" +
 			"\n" +
@@ -354,6 +357,9 @@ public class WarCommandUtilityTest
 			"/**************************************************************/\n" +
 			"\n" +
 			"// package definition block\n" +
+			// NOTE: this hack provides tacit acceptance of a bug in the old bundling code introduced by a switch to canonical paths, but since it's in
+			// the old bundling code only, I don't care.
+			"window.test = {\"resources\":{\"WarCommandUtilityTest\":{\"sdk\":{\"libs\":{\"javascript\":{\"thirdparty\":{\"caplin-bootstrap\":{}}}}}}}};\n" + 
 			"window.caplinx = {};\n" +
 			"\n" +
 			"caplinx.MyClass=function(){};caplin.__aliasData={};\n" +

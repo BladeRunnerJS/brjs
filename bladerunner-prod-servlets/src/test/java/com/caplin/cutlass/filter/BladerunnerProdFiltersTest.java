@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -20,8 +21,8 @@ import org.eclipse.jetty.xml.XmlConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.bladerunnerjs.utility.ServerUtility;
 
-import org.bladerunnerjs.model.utility.ServerUtility;
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class BladerunnerProdFiltersTest {
@@ -33,7 +34,7 @@ public class BladerunnerProdFiltersTest {
 	
 	@Before
 	public void setup() throws Exception {
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		httpclient = new DefaultHttpClient();
 		appServer = createServer(PORT, "/app1", APP_DIR);
 	}

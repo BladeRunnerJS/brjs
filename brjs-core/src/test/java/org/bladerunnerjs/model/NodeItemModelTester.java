@@ -48,6 +48,6 @@ public class NodeItemModelTester<PN extends BRJSNode, CN extends BRJSNode>
 		@SuppressWarnings("unchecked")
 		CN childNode = (CN) getItemMethod.invoke(parentNode);
 		
-		assertEquals(childPath.getAbsolutePath(), childNode.dir().getAbsolutePath());
+		assertEquals(childPath.getAbsolutePath(), childNode.dir().getPath());
 	}
 }

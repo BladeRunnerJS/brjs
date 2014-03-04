@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -23,9 +24,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
+
+import org.bladerunnerjs.utility.ServerUtility;
 
 import com.caplin.cutlass.testing.BRJSTestFactory;
 import com.caplin.cutlass.util.UrlEchoServlet;
@@ -47,7 +49,7 @@ public class SectionRedirectFilterTest
 	public void setup() throws Exception
 	{
 		handler = new SectionRedirectHandler(BRJSTestFactory.createBRJS(new File(APP_LOCATION)), new File(APP_LOCATION));
-		tempDir = FileUtility.createTemporaryDirectory(this.getClass().getName());
+		tempDir = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
 		temporaryDirectoryForWebApp = new File(tempDir,"app1_");
 	}
 

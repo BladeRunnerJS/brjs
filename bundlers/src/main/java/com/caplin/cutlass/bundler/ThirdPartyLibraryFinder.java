@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+import com.caplin.cutlass.CutlassConfig;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.model.path.AppPath;
 import com.caplin.cutlass.structure.model.path.RootPath;
@@ -20,7 +20,7 @@ public class ThirdPartyLibraryFinder
 		return librariesToLibDirectoriesMap;
 	}
 	
-	public File getThirdPartyLibraryDirectory(File baseDir, String libraryName) throws BundlerProcessingException
+	public File getThirdPartyLibraryDirectory(File baseDir, String libraryName) throws ContentProcessingException
 	{
 		File libraryDirInApp = AppPath.locateAncestorPath(baseDir).thirdpartyLibsPath().libPath(libraryName).getDir();
 		File libraryDirInSdk = RootPath.locateAncestorPath(baseDir).sdkPath().libsPath().javascriptLibsPath().thirdpartyLibsPath().libPath(libraryName).getDir();
@@ -35,7 +35,7 @@ public class ThirdPartyLibraryFinder
 		}
 		else
 		{
-			throw new BundlerProcessingException("Couldn't find library " + libraryName);
+			throw new ContentProcessingException("Couldn't find library " + libraryName);
 		}
 	}
 	

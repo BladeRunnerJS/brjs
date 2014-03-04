@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -33,17 +34,22 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.core.plugin.bundler.LegacyFileBundlerPlugin;
+import com.caplin.cutlass.LegacyFileBundlerPlugin;
+
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
-import org.bladerunnerjs.model.sinbin.AppMetaData;
-import org.bladerunnerjs.model.sinbin.CutlassConfig;
-import org.bladerunnerjs.model.utility.FileUtility;
-import org.bladerunnerjs.model.utility.ServerUtility;
+
+import com.caplin.cutlass.AppMetaData;
+import com.caplin.cutlass.CutlassConfig;
+import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.ServletModelAccessor;
-import org.bladerunnerjs.model.exception.request.BundlerProcessingException;
+
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.Plugin;
+import org.bladerunnerjs.utility.ServerUtility;
+
 import com.caplin.cutlass.bundler.io.BundleWriterFactory;
 
 public class BundlerServletTest
@@ -63,7 +69,7 @@ public class BundlerServletTest
 	@Before
 	public void setup() throws Exception
 	{
-		ServletModelAccessor.reset();
+		ServletModelAccessor.destroy();
 		
 		httpclient = new DefaultHttpClient();
 		
@@ -256,10 +262,10 @@ public class BundlerServletTest
 	}
 
 	@Test @SuppressWarnings("unchecked")
-	public void testExceptionIsThrownIfBundlerThrowsBundlerProcessingException() throws Exception
+	public void testExceptionIsThrownIfBundlerThrowsContentProcessingException() throws Exception
 	{
 		doThrow(
-				new BundlerProcessingException("oops, error!")
+				new ContentProcessingException("oops, error!")
 		).when(mockCssBundler).writeBundle(any(List.class), any(OutputStream.class));
 		Map<String, String> responseMap = makeRequest("http://localhost:"+PORT+"/a/b/c/d/css.bundle");
 
@@ -267,7 +273,7 @@ public class BundlerServletTest
 		verify(mockCssBundler).writeBundle(any(List.class), any(OutputStream.class));
 		assertEquals("500", responseMap.get("responseCode"));
 // TODO: commented out by dominicc: we need a massive clean-up of bundler servlet exception handling anyway
-//		assertTrue(responseMap.get("responseText").contains("BundlerProcessingException"));
+//		assertTrue(responseMap.get("responseText").contains("ContentProcessingException"));
 		assertTrue(responseMap.get("responseText").contains("oops, error!"));
 	}
 	
@@ -297,6 +303,11 @@ public class BundlerServletTest
 			}
 			
 			@Override
+			public void close()
+			{
+			}
+			
+			@Override
 			public String getBundlerExtension()
 			{
 				return "dummy.bundle";
@@ -315,7 +326,7 @@ public class BundlerServletTest
 			}
 
 			@Override
-			public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws BundlerProcessingException
+			public void writeBundle(List<File> sourceFiles, OutputStream outputStream) throws ContentProcessingException
 			{
 				Writer writer = BundleWriterFactory.createWriter(outputStream);
 				
@@ -325,7 +336,7 @@ public class BundlerServletTest
 				}
 				catch (IOException e)
 				{
-					throw new BundlerProcessingException(e, "Unable to write to output stream.");
+					throw new ContentProcessingException(e, "Unable to write to output stream.");
 				}
 				finally
 				{
@@ -337,6 +348,18 @@ public class BundlerServletTest
 			public List<String> getValidRequestStrings(AppMetaData appMetaData)
 			{
 				return null;
+			}
+			
+
+			@Override
+			public boolean instanceOf(Class<? extends Plugin> otherPluginCLass)
+			{
+				throw new RuntimeException("should never be invoked");
+			}
+			
+			@Override
+			public Class<?> getPluginClass() {
+				return this.getClass();
 			}
 		};
 		bundlerServlet.bundlers = Arrays.asList(dummyBundler);
