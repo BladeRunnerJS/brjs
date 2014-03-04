@@ -109,66 +109,12 @@ TranslatorTest.prototype.test_translateString = function()
 	assertEquals(expected, result);
 };
 
-TranslatorTest.prototype.test_formatDateUsingUserPreferredFormat = function()
-{
-	var sPreferredDateFormat = "d F Y";
-	var oMockLocalisedDateConfig = mock(require('br/i18n/LocalisedDate'));
-	this.definitionRegistry.define('br/i18n/LocalisedDate', oMockLocalisedDateConfig.proxy());
-	
-	oMockLocalisedDateConfig.expects(once()).format(eq(sPreferredDateFormat));
-	
-	var Translator = require('br/i18n/Translator');
-	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
-	var mPrefs = { dateFormat: "d F Y" };
-	oTranslator.setLocalizationPreferences(mPrefs);
-	oTranslator.formatDate();
-};
-
-TranslatorTest.prototype.test_formatDateUsingDefaultFormat = function()
-{
-	var sPreferredDateFormat = "d-m-Y";
-	var oMockLocalisedDateConfig = mock(require('br/i18n/LocalisedDate'));
-	this.definitionRegistry.define('br/i18n/LocalisedDate', oMockLocalisedDateConfig.proxy());
-	
-	oMockLocalisedDateConfig.expects(once()).format(eq(sPreferredDateFormat));
-	
-	var Translator = require('br/i18n/Translator');
-	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
-	oTranslator.formatDate();
-};
-
 // TODO: If formatTime is changed to not delegate to LocalisedTime - new tests must be added.
 TranslatorTest.prototype.test_formatTimeDelegatesToLocalisedTime = function()
 {
 	var Translator = require('br/i18n/Translator');
 	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
 	assertEquals("LocalisedTime.format", oTranslator.formatTime());
-};
-
-TranslatorTest.prototype.test_formatNumberUsingPreferredFormat = function()
-{
-	var oMockLocalisedNumberConfig = mock(require('br/i18n/LocalisedNumber'));
-	this.definitionRegistry.define('br/i18n/LocalisedNumber', oMockLocalisedNumberConfig.proxy());
-	
-	oMockLocalisedNumberConfig.expects(once()).format(eq("."), eq(","));
-
-	var Translator = require('br/i18n/Translator');
-	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
-	var mPrefs = { thousandsSeparator: ".",  decimalRadixCharacter: "," };
-	oTranslator.setLocalizationPreferences(mPrefs);
-	oTranslator.formatNumber();
-};
-
-TranslatorTest.prototype.test_formatNumberUsingDefaultFormat = function()
-{
-	var oMockLocalisedNumberConfig = mock(require('br/i18n/LocalisedNumber'));
-	this.definitionRegistry.define('br/i18n/LocalisedNumber', oMockLocalisedNumberConfig.proxy());
-	
-	oMockLocalisedNumberConfig.expects(once()).format(eq(","), eq("."));
-
-	var Translator = require('br/i18n/Translator');
-	var oTranslator = new Translator(this.i18nTimeDateNumberMessages);
-	oTranslator.formatNumber();
 };
 
 TranslatorTest.prototype.test_missingMessage = function()
