@@ -117,6 +117,8 @@ TranslatorTest.prototype.test_formatTimeDelegatesToLocalisedTime = function()
 	assertEquals("20:00:00", oTranslator.formatTime("200000"));
 };
 
+// TODO: Add Test for Translator.setLocalizationPreferences()
+
 TranslatorTest.prototype.test_missingMessage = function()
 {
 	var text = "<test name='@{caplin.missing.key}'>values</test><blah>@{other.key}</blah>";
