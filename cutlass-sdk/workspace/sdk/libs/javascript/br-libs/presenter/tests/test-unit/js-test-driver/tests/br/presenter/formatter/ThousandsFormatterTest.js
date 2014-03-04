@@ -80,7 +80,6 @@ ThousandsFormatterTest.prototype.test_preFormatedNumbers = function()
 {
 	this.oFormatter = new br.presenter.formatter.ThousandsFormatter();
 
-debugger;
 	assertEquals("1,000", this.oFormatter.format("1.000", {}));
 	assertEquals("10,00", this.oFormatter.format("10.00", {}));
 	assertEquals("100.000,", this.oFormatter.format("100,000,", {}));
