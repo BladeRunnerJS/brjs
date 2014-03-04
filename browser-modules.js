@@ -73,9 +73,14 @@
 		this.modulesFromParent = {};
 		this.fallbackRequire = fallbackRequire;
 		this.installedData = null;
-
-		this.require = this.require.bind(this);
-		this.define = this.define.bind(this);
+		
+		var realm = this;
+		this.require = function() {
+			return realm._require.apply(realm, arguments);
+		};
+		this.define = function() {
+			realm._define.apply(realm, arguments);
+		};
 	}
 
 	Realm.prototype.install = function install(target) {
@@ -101,7 +106,7 @@
 		}
 	};
 
-	Realm.prototype.define = function define(id, definition) {
+	Realm.prototype._define = function define(id, definition) {
 		if (this.modulesFromParent[id] === true) {
 			throw new Error('Module ' + id + ' has already been loaded from a parent realm.  If you are sure that you want to override an already loaded parent module, you need to undefine this module or reset this realm first.');
 		}
@@ -118,7 +123,7 @@
 		define(id, eval("(function(require, exports, module){\n" + definitionString + "\n});"));
 	};
 
-	Realm.prototype.require = function require(context, id) {
+	Realm.prototype._require = function require(context, id) {
 		if (arguments.length === 1) {
 			id = arguments[0];
 			context = '';
