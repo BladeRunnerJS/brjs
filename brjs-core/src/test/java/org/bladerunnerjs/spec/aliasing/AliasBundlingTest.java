@@ -59,7 +59,7 @@ public class AliasBundlingTest extends SpecTest {
 	public void sdkLibAliasDefinitionsReferencesAreBundledIfTheyAreReferenced() throws Exception {
 		given(brLib).hasClasses("br.Class1", "br.Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
-			.and(aspect).indexPageRefersTo("br.Class1", "'br.alias'");
+			.and(aspect).indexPageRefersTo("'br.alias'");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("br.Class2");
 	}
