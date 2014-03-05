@@ -55,6 +55,16 @@ public class AliasBundlingTest extends SpecTest {
 			.and(response).doesNotContainText("I should not be bundled");
 	}
 	
+//	@Ignore // This test should pass? 
+	@Test
+	public void sdkLibAliasDefinitionsReferencesAreBundledIfTheyAreReferenced() throws Exception {
+		given(brLib).hasClasses("br.Class1", "br.Class2")
+			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
+			.and(aspect).indexPageRefersTo("br.Class1", "br.alias");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("br.Class2");
+	}
+	
 	@Test
 	public void weBundleAClassIfItsAliasIsReferredToInTheIndexPage() throws Exception {
 		given(aspect).hasClass("appns.Class1")
