@@ -22,6 +22,16 @@
 	 */
 
 	var global = Function("return this;")();
+	
+	var create = Object.create || function(proto, attributes) {
+		function object() {};
+		object.prototype = proto;
+		var result = new object();
+		for (var key in attributes) {
+			result[key] = attributes[key].value;
+		}
+		return result;
+	};
 
 	function derelativise(context, path) {
 		var result = (context === "" || path.charAt(0) !== '.') ? [] : context.split("/");
@@ -209,7 +219,7 @@
 		this.parentRealm = parentRealm;
 	}
 
-	SubRealm.prototype = Object.create(Realm.prototype, {
+	SubRealm.prototype = create(Realm.prototype, {
 		constructor: {value: SubRealm, enumerable: false, configurable: true, writable: true}
 	});
 
