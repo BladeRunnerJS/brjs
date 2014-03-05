@@ -20,9 +20,9 @@ public class AliasBundlingTest extends SpecTest {
 	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
-	private JsLib brLib;
+	private JsLib brLib, otherBrLib;
 	private AliasesFile aspectAliasesFile;
-	private AliasDefinitionsFile bladeAliasDefinitionsFile;
+	private AliasDefinitionsFile brLibAliasDefinitionsFile, bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -39,6 +39,20 @@ public class AliasBundlingTest extends SpecTest {
 			blade = bladeset.blade("b1");
 			bladeAliasDefinitionsFile = blade.assetLocation("src").aliasDefinitionsFile();
 			brLib = app.jsLib("br");
+			brLibAliasDefinitionsFile = brLib.assetLocation("resources").aliasDefinitionsFile();
+			otherBrLib = brjs.sdkLib("otherBrLib");
+			
+	}
+	
+	@Test
+	public void sdkLibAliasDefinitionsShouldNotGetScannedForDependenciesIfTheClassesAreNotReferenced() throws Exception {
+		given(brLib).hasClass("br.Class1")
+			.and(brLibAliasDefinitionsFile).hasAlias("br.test-class", "otherBrLib.TestClass")
+			.and(otherBrLib).classFileHasContent("otherBrLib.TestClass", "I should not be bundled")
+			.and(aspect).indexPageRefersTo("br.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).doesNotContainText("otherBrLib.TestClass")
+			.and(response).doesNotContainText("I should not be bundled");
 	}
 	
 	@Test
