@@ -161,7 +161,6 @@ LocalisedDateTest.prototype.test_translateLongDate = function()
 	oDate.setSeconds(1);
 
 	var sDateFormat = this.mDateMessages["br.i18n.date.format.long"];
-debugger;
 	var oLocalisedDate = new (require("br/i18n/LocalisedDate"))(oDate);
 	var sLocalisedDate = oLocalisedDate.format(sDateFormat);
 
