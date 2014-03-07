@@ -70,9 +70,13 @@ public class FileIterator {
 	
 	private void updateIfChangeDetected() {
 		if((fileModificationChecker.hasChangedSinceLastCheck()) || (files == null)) {
-			files = Arrays.asList(dir.listFiles());
-			dirs = null;
-			Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
+			// TODO: see if this guard can be removed (it currently prevents an exception that can be seen when running gradle testJava, but that doesn't fail the build)
+			// once we've added support for automatically adding and removing watchers and file iterators as directories come and go
+			if(dir.exists()) {
+				files = Arrays.asList(dir.listFiles());
+				dirs = null;
+				Collections.sort(files, NameFileComparator.NAME_COMPARATOR);
+			}
 		}
 	}
 	
