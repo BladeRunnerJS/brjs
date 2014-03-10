@@ -10,6 +10,8 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.TypedTestPack;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +45,11 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			bladerunnerConf = brjs.bladerunnerConf();
 			sdkJsLibTestPack = sdkJsLib.testType("test");
 			sdkJsLibTests = sdkJsLibTestPack.testTech("jsTestDriver");
+			
+		Plugin unbundledResourcesPlugin = brjs.plugins().contentProviderForLogicalPath("unbundled-resources");
 	}
+	
+	//TODO: should requests be made relative to an aspect?
 	
 	@Test
 	public void requestsCanBeMadeForAFileInUnbundledResources() throws Exception
@@ -52,6 +58,23 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			.and(app).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
 		when(app).requestReceived("/default-aspect/unbundled-resources/someFile.txt", response);
 		then(response).textEquals("some file contents");
+	}
+	
+	@Test
+	public void requestsCanBeMadeForAFileInASubDirectoryInUnbundledResources() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("unbundled-resources/a/dir/someFile.txt", "some file contents");
+		when(app).requestReceived("/default-aspect/unbundled-resources/a/dir/someFile.txt", response);
+		then(response).textEquals("some file contents");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTheFileDoesntExists() throws Exception
+	{
+		given(app).hasBeenCreated();
+		when(app).requestReceived("/default-aspect/unbundled-resources/someFile.txt", response);
+		then(exceptions).verifyException(ContentProcessingException.class, "app1/unbundled-resources/someFile.txt");
 	}
 	
 }
