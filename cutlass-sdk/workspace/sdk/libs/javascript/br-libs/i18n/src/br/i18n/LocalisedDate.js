@@ -43,38 +43,6 @@ LocalisedDate.prototype.format = function(dateFormat) {
 	return formattedDate;
 };
 
-LocalisedDate.prototype.format = function(dateFormat) {
-	var formattedDate = (dateFormat === "U") ? moment(this.date).unix() : moment(this.date).format(dateFormat);
-	if (this._containsAmPm(dateFormat)) {
-		// format a date containing only the am or pm string
-		var amPmString = moment(this.date).format("a");
-		var localeAmPmString = i18n("br.i18n.date." + amPmString);
-		formattedDate = formattedDate.replace(amPmString, localeAmPmString);
-	}
-
-	if (this._containsMonthName(dateFormat)) {
-		var monthName = this._getMonthName();
-		var monthToken = "br.i18n.date.month." + monthName.toLowerCase();
-		if (this._containsAbbreviatedMonthName(dateFormat)) {
-			monthToken = "br.i18n.date.month.short." + monthName.toLowerCase();
-			monthName = this._getAbbreviatedMonthName();
-		}
-		formattedDate = formattedDate.replace(monthName, i18n(monthToken));
-	}
-
-	if (this._containsDayName(dateFormat)) {
-		var dayName = this._getDayName();
-		var dayToken = "br.i18n.date.day." + dayName.toLowerCase();
-		if (this._containsAbbreviatedDayName(dateFormat)) {
-			dayToken = "br.i18n.date.day.short." + dayName.toLowerCase();
-			dayName = this._getAbbreviatedDayName();
-		}
-		formattedDate = formattedDate.replace(dayName, i18n(dayToken));
-	}
-
-	return formattedDate;
-};
-
 LocalisedDate.prototype._containsMonthName = function(dateFormat) {
 	return (dateFormat.indexOf('MMM') !== -1) ? true : false;
 };
