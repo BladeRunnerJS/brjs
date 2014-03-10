@@ -44,8 +44,9 @@ public class AliasBundlingTest extends SpecTest {
 			
 	}
 	
+	// SDK AliasDefinitions
 	@Test
-	public void sdkLibAliasDefinitionsShouldNotGetScannedForDependenciesIfTheClassesAreNotReferenced() throws Exception {
+	public void sdkLibAliasDefinitionsShouldNotGetScannedForDependenciesIfTheClassesAreNotReferencedViaIndexPage() throws Exception {
 		given(brLib).hasClass("br.Class1")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.test-class", "otherBrLib.TestClass")
 			.and(otherBrLib).classFileHasContent("otherBrLib.TestClass", "I should not be bundled")
@@ -56,10 +57,36 @@ public class AliasBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void sdkLibAliasDefinitionsReferencesAreBundledIfTheyAreReferenced() throws Exception {
+	public void sdkLibAliasDefinitionsShouldNotGetScannedForDependenciesIfTheClassesAreNotReferencedViaAspectClass() throws Exception {
+		given(brLib).hasClass("br.Class1")
+			.and(brLibAliasDefinitionsFile).hasAlias("br.alias-class", "otherBrLib.TestClass")
+			.and(otherBrLib).classFileHasContent("otherBrLib.TestClass", "I should not be bundled")
+			.and(aspect).hasNodeJsPackageStyle()
+			.and(aspect).classFileHasContent("appns.Class1", "'br.alias-class'")
+			.and(aspect).indexPageRefersTo("br.Class1", "appns.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).doesNotContainText("otherBrLib.TestClass")
+			.and(response).doesNotContainText("I should not be bundled");
+	}
+	
+	@Test
+	public void sdkLibAliasDefinitionsReferencesAreBundledIfTheyAreReferencedViaIndexPage() throws Exception {
 		given(brLib).hasClasses("br.Class1", "br.Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
 			.and(aspect).indexPageHasAliasReferences("br.alias");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("br.Class2");
+	}
+	
+	// TODO: #354 adding another test highlighting the alias dependency issue with NodeJS classes
+	@Ignore 
+	@Test
+	public void sdkLibAliasDefinitionsReferencesAreBundledIfTheyAreReferencedViaAspectClass() throws Exception {
+		given(brLib).hasClasses("br.Class1", "br.Class2")
+			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
+			.and(aspect).hasNodeJsPackageStyle()
+			.and(aspect).classFileHasContent("Class1", "'br.alias'")
+			.and(aspect).indexPageRequires("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("br.Class2");
 	}
@@ -74,7 +101,7 @@ public class AliasBundlingTest extends SpecTest {
 	}
 	
 	
-	// useful to have a single test which asserts the trie works with double quotes
+	// Blade/Aspect AliasDefinitions
 	@Test
 	public void weAlsoBundleAClassIfTheAliasIsDefinedInABladeAliasDefinitionsXml() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
