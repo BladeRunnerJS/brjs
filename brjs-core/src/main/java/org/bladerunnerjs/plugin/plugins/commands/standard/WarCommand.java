@@ -119,8 +119,6 @@ public class WarCommand extends ArgsParsingCommandPlugin
 						}
 					}
 					
-					FileUtility.copyDirectoryIfExists(origAspect.unbundledResources().dir(), warAspect.unbundledResources().dir());
-					
 					createAspectBundles(origAspect, warAspect, contentPlugins, origApp.appConf().getLocales().split(","));
 				}
 				
