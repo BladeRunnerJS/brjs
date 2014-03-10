@@ -146,7 +146,7 @@ public class CommandRunner {
 			commandList.addCommand(new TestServerCommand());
 			commandList.addCommand(new PackageDepsCommand());
 			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
-			commandList.addCommand(new ExportApplicationCommand(  ));
+//			commandList.addCommand(new ExportApplicationCommand(  ));
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

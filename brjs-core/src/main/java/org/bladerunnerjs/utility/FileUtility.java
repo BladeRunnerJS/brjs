@@ -39,6 +39,8 @@ public class FileUtility {
 	
 	public static void zipFolder(File srcFolder, File destZipFile, boolean zipOnlySrcFolderContentsAndNotSrcFolder) throws IOException
 	{
+		destZipFile.getParentFile().mkdirs();
+		
 		FileOutputStream fileWriter = new FileOutputStream(destZipFile);
 		ZipOutputStream zip = new ZipOutputStream(fileWriter);
 		
