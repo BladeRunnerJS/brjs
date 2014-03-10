@@ -1,6 +1,7 @@
 package org.bladerunnerjs.spec.aliasing;
 
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
@@ -10,10 +11,13 @@ import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
+// TODO: should we fail if we refer to interfaces that don't exist
+// TODO: should we have tests that confirm that interfaces are loaded if referred to by an alias?
 public class AliasModelTest extends SpecTest {
 	private App app;
 	private AppConf appConf;
@@ -54,6 +58,22 @@ public class AliasModelTest extends SpecTest {
 	}
 	
 	@Test
+	public void aliasesOverridesMustDefineAClassName() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(aspectAliasesFile).hasAlias("appns.the-alias", null);
+		when(aspect).retrievesAlias("appns.the-alias");
+		then(exceptions).verifyException(ContentFileProcessingException.class, doubleQuoted("alias"), doubleQuoted("class"));
+	}
+	
+	@Test
+	public void aliasesOverridesMustDefineANonEmptyClassName() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(aspectAliasesFile).hasAlias("appns.the-alias", "");
+		when(aspect).retrievesAlias("appns.the-alias");
+		then(exceptions).verifyException(IncompleteAliasException.class, "appns.the-alias");
+	}
+	
+	@Test
 	public void aliasDefinitionsDefinedWithinBladesetsMustBeNamespaced() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
@@ -88,6 +108,45 @@ public class AliasModelTest extends SpecTest {
 			.and(bladesetAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
 		when(aspect).retrievesAlias("appns.bs.b1.the-alias");
 		then(exceptions).verifyException(AmbiguousAliasException.class, "appns.bs.b1.the-alias", aspectAliasesFile.getUnderlyingFile().getPath());
+	}
+	
+	@Test
+	public void usedAliasDefinitionsMustBeMadeConcrete() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", null, "appns.Interface");
+		when(aspect).retrievesAlias("appns.bs.b1.the-alias");
+		then(exceptions).verifyException(IncompleteAliasException.class, "appns.bs.b1.the-alias");
+	}
+	
+	@Test
+	public void unusedAliasDefinitionsDoNotNeedToBeMadeConcrete() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(aspect).hasClass("appns.Class")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias1", "appns.Class", "appns.Interface1")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias2", null, "appns.Interface2");
+		when(aspect).retrievesAlias("appns.bs.b1.alias1");
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void incompleteAliasDefinitionsCanBeMadeConcreteViaDirectOverride() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(aspect).hasClass("appns.Class")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", null, "appns.Interface")
+			.and(aspectAliasesFile).hasAlias("appns.bs.b1.the-alias", "appns.Class");
+		when(aspect).retrievesAlias("appns.bs.b1.the-alias");
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void incompleteAliasDefinitionsCanBeMadeConcreteUsingGroups() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(aspect).hasClass("appns.Class")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", null, "appns.Interface")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1");
+		when(aspect).retrievesAlias("appns.bs.b1.the-alias");
+		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
 	@Test
