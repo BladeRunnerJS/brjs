@@ -73,6 +73,7 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsClasses("appns.Class1");
 	}
 	
+	
 	// useful to have a single test which asserts the trie works with double quotes
 	@Test
 	public void weAlsoBundleAClassIfTheAliasIsDefinedInABladeAliasDefinitionsXml() throws Exception {
@@ -91,7 +92,7 @@ public class AliasBundlingTest extends SpecTest {
 		given(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).classRequires("appns.Class1", "the-alias");
+			.and(aspect).classFileHasContent("appns.Class1", "'the-alias'");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.Class1", "appns.Class2");
 	}
