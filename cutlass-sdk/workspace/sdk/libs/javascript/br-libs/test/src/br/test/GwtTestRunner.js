@@ -169,7 +169,6 @@ br.test.GwtTestRunner.createProxyItFunction = function(fOrigItFunction)
 
 br.test.GwtTestRunner.prototype.addFixture = function(sScope, oFixture)
 {
-	if(!oFixture.setUp)debugger;
 	this.m_pFixtures.push({scopeMatcher:new RegExp("^" + sScope + "(\\..+|$)"), scopeLength:sScope.length + 1, fixture:oFixture});
 	oFixture.addSubFixtures(new br.test.SubFixtureRegistry(this, sScope));
 };
