@@ -66,6 +66,9 @@
 
 			aliasRegistry = new AliasRegistry();
 			aliasRegistry.setAliasData(testAliasData);
+
+			this.definitionRegistry = require('br/TestDefinitionRegistry').install();
+			this.definitionRegistry.define('br/AliasRegistry', aliasRegistry);
 		}
 	);
 	
