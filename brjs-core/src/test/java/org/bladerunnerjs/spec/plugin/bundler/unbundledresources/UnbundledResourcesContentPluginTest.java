@@ -1,17 +1,12 @@
 package org.bladerunnerjs.spec.plugin.bundler.unbundledresources;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.BladerunnerConf;
-import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.plugin.Plugin;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,13 +15,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer response = new StringBuffer();
-	private JsLib thirdpartyLib;
-	private JsLib sdkJsLib;
-	private BladerunnerConf bladerunnerConf;
-	private Bladeset bladeset;
-	private Blade blade;
-	private TypedTestPack bladeTestPack, sdkJsLibTestPack;
-	private TestPack bladeTests, sdkJsLibTests;
+	private List<String> requestsList;
+	private ContentPlugin unbundledResourcesPlugin;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -36,17 +26,9 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			bladeset = app.bladeset("bs");
-			blade = bladeset.blade("b1");
-			bladeTestPack = blade.testType("test");
-			bladeTests = bladeTestPack.testTech("techy");
-			thirdpartyLib = app.jsLib("lib1");
-			sdkJsLib = brjs.sdkLib("sdkLib");
-			bladerunnerConf = brjs.bladerunnerConf();
-			sdkJsLibTestPack = sdkJsLib.testType("test");
-			sdkJsLibTests = sdkJsLibTestPack.testTech("jsTestDriver");
 			
-		Plugin unbundledResourcesPlugin = brjs.plugins().contentProviderForLogicalPath("unbundled-resources");
+		unbundledResourcesPlugin = brjs.plugins().contentProviderForLogicalPath("unbundled-resources");
+		requestsList = new ArrayList<String>();
 	}
 	
 	//TODO: should requests be made relative to an aspect?
@@ -75,6 +57,18 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(app).requestReceived("/default-aspect/unbundled-resources/someFile.txt", response);
 		then(exceptions).verifyException(ContentProcessingException.class, "app1/unbundled-resources/someFile.txt");
+	}
+	
+	@Test
+	public void unbundledResourcesHasCorrectPossibleDevPaths() throws Exception
+	{
+		given(app).hasBeenCreated()
+    		.and(app).containsFiles("unbundled-resources/someFile.txt", "unbundled-resources/a/dir/someFile.txt");
+    	when(unbundledResourcesPlugin).getPossibleDevRequests(aspect, requestsList);
+		thenRequests(requestsList).entriesEqual(
+    			"unbundled-resources/someFile.txt",
+    			"unbundled-resources/a/dir/someFile.txt"
+    	);
 	}
 	
 }

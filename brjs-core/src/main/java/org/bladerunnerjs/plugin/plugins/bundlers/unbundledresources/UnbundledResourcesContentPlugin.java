@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -15,10 +12,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -35,7 +28,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	public static final String UNBUNDLED_RESOURCES_DIRNAME = "unbundled-resources";
 	
 	private ContentPathParser contentPathParser;
-	private List<String> validRequestPaths = new ArrayList<>();
+	private BRJS brjs;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -60,6 +53,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		this.brjs = brjs;
 	}
 	
 	@Override
@@ -76,12 +70,12 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     		if (contentPath.formName.equals(UNBUNDLED_RESOURCES_REQUEST))
     		{
     			String relativeFilePath = contentPath.properties.get(FILE_PATH_REQUEST_FORM);
-    			App requestApp = bundleSet.getBundlableNode().getApp();
-    			File unbundledResourcesDir = requestApp.file(UNBUNDLED_RESOURCES_DIRNAME);
+    			File unbundledResourcesDir = getUnbundledResourcesDir(bundleSet);
     			File requestedFile = new File(unbundledResourcesDir, relativeFilePath);
     			if (!requestedFile.isFile())
     			{
-    				String requestedFilePathRelativeToApp = RelativePathUtility.get(requestApp.dir().getParentFile(), requestedFile);
+    				App app = bundleSet.getBundlableNode().getApp();
+    				String requestedFilePathRelativeToApp = RelativePathUtility.get(app.dir().getParentFile(), requestedFile);
     				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToApp+"' does not exist or is not a file.");
     			}
 				IOUtils.copy(new FileInputStream(requestedFile), os);
@@ -96,19 +90,46 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return calculatValidRequestPaths();
+		return calculatValidRequestPaths(bundleSet);
 	}
 
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return calculatValidRequestPaths();
+		return calculatValidRequestPaths(bundleSet);
 	}
 
-	private List<String> calculatValidRequestPaths()
+	private List<String> calculatValidRequestPaths(BundleSet bundleSet) throws ContentProcessingException
 	{
-		return Arrays.asList();
+		List<String> requestPaths = new ArrayList<String>();
+		
+		File unbundledResourcesDir = getUnbundledResourcesDir(bundleSet);
+		
+		try
+		{
+			for (File file : brjs.getFileIterator(unbundledResourcesDir).nestedFiles())
+			{
+				if (file.isFile())
+				{
+        			String relativePath = RelativePathUtility.get(unbundledResourcesDir, file);
+        			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);
+        			requestPaths.add(calculatedPath);
+				}
+			}
+		}
+		catch (MalformedTokenException e)
+		{
+			throw new ContentProcessingException(e);
+		}
+		
+		return requestPaths;
 	}
 	
+	private File getUnbundledResourcesDir(BundleSet bundleSet)
+	{
+		App requestApp = bundleSet.getBundlableNode().getApp();
+		File unbundledResourcesDir = requestApp.file(UNBUNDLED_RESOURCES_DIRNAME);
+		return unbundledResourcesDir;
+	}
 	
 }
