@@ -35,7 +35,56 @@ public class CssResourceContentPluginTest extends SpecTest {
 			sdkJsLib = brjs.sdkLib("sdkLib");
 	}
 	
-	//TODO: we need more test coverage here
+//	.accepts("cssresource/theme_<theme>/<resourcePath>").as("aspect-request")
+//	.and("cssresource/bladeset_<bladeset>/theme_<theme>/<resourcePath>").as("bladeset-request")
+//	.and("cssresource/bladeset_<bladeset>/blade_<blade>/theme_<theme>/<resourcePath>").as("blade-request")
+//	.and("cssresource/bladeset_<bladeset>/blade_<blade>/workbench/<resourcePath>").as("blade-workbench-request")
+//	.and("cssresource/lib_<lib>/<resourcePath>").as("lib-request")
+	
+	@Test
+	public void assetsInADefaultAspectThemeCanBeRequested() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(app).requestReceived("/default-aspect/cssresource/theme_myTheme/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
+	public void assetsInABladesetThemeCanBeRequested() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenCreated()
+			.and(bladeset).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(app).requestReceived("/default-aspect/cssresource/bladeset_bs/theme_myTheme/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
+	public void assetsInABladeThemeCanBeRequested() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenCreated()
+			.and(blade).hasBeenCreated()
+			.and(blade).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(app).requestReceived("/default-aspect/cssresource/bladeset_bs/blade_b1/theme_myTheme/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
+	public void assetsInABladeWorkbenchCanBeRequested() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(bladeset).hasBeenCreated()
+			.and(blade).hasBeenCreated()
+			.and(workbench).containsFileWithContents("resources/dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(app).requestReceived("/default-aspect/cssresource/bladeset_bs/blade_b1/workbench/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	
+	
 	
 	@Test
 	public void assetsInAnSDKLibraryCanBeRequested() throws Exception
@@ -54,17 +103,6 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(workbench).hasBeenCreated()
 			.and(sdkJsLib).containsFileWithContents("resources/dir1/dir2/someFile.txt", "someFile.txt contents");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
-		then(response).textEquals("someFile.txt contents");
-	}
-	
-	@Ignore //TODO: FIXME, theme assets in an aspect should be available from a workbench
-	@Test
-	public void assetsInAnAssetThemeCanBeRequestedFromAWorkbench() throws Exception
-	{
-		given(app).hasBeenCreated()
-			.and(workbench).hasBeenCreated()
-			.and(standardAspetTheme).containsFileWithContents("someFile.txt", "someFile.txt contents");
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/cssresource/theme_standard/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}
 	
