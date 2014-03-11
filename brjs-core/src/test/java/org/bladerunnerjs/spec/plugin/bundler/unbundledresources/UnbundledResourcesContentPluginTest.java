@@ -31,8 +31,6 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		requestsList = new ArrayList<String>();
 	}
 	
-	//TODO: should requests be made relative to an aspect?
-	
 	@Test
 	public void requestsCanBeMadeForAFileInUnbundledResources() throws Exception
 	{
