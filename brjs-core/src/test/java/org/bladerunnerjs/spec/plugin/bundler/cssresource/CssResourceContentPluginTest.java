@@ -38,7 +38,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
-		when(app).requestReceived("/default-aspect/cssresource/theme_myTheme/dir1/dir2/someFile.txt", response);
+		when(app).requestReceived("/default-aspect/cssresource/aspect_default/theme_myTheme/dir1/dir2/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}
 	
@@ -48,7 +48,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		given(app).hasBeenCreated()
     		.and(aspect).hasBeenCreated()
     		.and(aspect).containsFileWithContents("resources/dir1/dir2/someFile.txt", "someFile.txt contents");
-		when(app).requestReceived("/default-aspect/cssresource/resources/dir1/dir2/someFile.txt", response);
+		when(app).requestReceived("/default-aspect/cssresource/aspect_default/resources/dir1/dir2/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}
 	

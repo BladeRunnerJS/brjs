@@ -42,12 +42,10 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	
 	private final ContentPathParser contentPathParser;
 	
-	
-	//TODO: add aspect to URL
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("cssresource/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(ASPECT_REQUEST)
+			.accepts("cssresource/aspect_<"+ASPECT+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(ASPECT_REQUEST)
 				.and("cssresource/bladeset_<"+BLADESET+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADESET_REQUEST)
 				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADE_REQUEST)
 				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/workbench/<"+RESOURCE_PATH+">").as(BLADE_WORKBENCH_REQUEST)
