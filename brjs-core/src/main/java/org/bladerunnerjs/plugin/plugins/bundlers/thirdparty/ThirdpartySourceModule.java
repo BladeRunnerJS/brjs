@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -131,7 +131,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		Set<SourceModule> dependentLibs = new HashSet<SourceModule>();
+		Set<SourceModule> dependentLibs = new LinkedHashSet<SourceModule>();
 		
 		try 
 		{
