@@ -5,7 +5,6 @@ import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -23,12 +22,11 @@ public class BRJSTest extends SpecTest {
 			app2 = brjs.app("app2");
 	}
 	
-	@Ignore //TODO: fix test
 	@Test
 	public void theBrjsConfIsWrittenOnPopulate() throws Exception {
 		given(brjsTemplate).hasBeenCreated();
 		when(brjs).populate();
-		then(brjs).fileHasContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 7070");
+		then(brjs).fileHasContents("conf/bladerunner.conf", "browserCharacterEncoding: UTF-8\ndefaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
 	}
 	
 	@Test

@@ -51,7 +51,7 @@ public class BundleCachingTest extends SpecTest
 			.and(thirdpartyLib).containsFileWithContents("file1.js", "thirdpartyLib content")
 			.and(aspect).classRefersToThirdpartyLib("appns.Class1", thirdpartyLib)
 			.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsText(
+		then(response).containsOrderedTextFragments(
 				"// thirdpartyLib", 
 				"thirdpartyLib content", 
 				"mergePackageBlock(window, {\"appns\":{}});",

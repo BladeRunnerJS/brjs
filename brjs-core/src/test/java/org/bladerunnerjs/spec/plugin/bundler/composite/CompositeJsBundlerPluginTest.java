@@ -52,7 +52,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 		given(aspect).classRequires("appns.Class1", "br/AliasRegistry")
 			.and(brLib).hasClass("br.AliasRegistry")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
-			.and(aspect).indexPageRefersTo("the-alias")
+			.and(aspect).indexPageRefersTo("\"the-alias\"")
 			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("bootstrap.js");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
