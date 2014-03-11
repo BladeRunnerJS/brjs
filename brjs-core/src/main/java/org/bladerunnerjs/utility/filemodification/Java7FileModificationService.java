@@ -60,7 +60,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 				fileModificationInfo.close();
 			}
 			
-			// TODO: Waiting on Java bug fix #8029516 
+			// TODO: Waiting on Java bug fix http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8029516, github issue #385
 			if(!isWindows) {
 				 watchService.close();
 			}
