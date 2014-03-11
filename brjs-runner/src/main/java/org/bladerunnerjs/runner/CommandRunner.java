@@ -25,7 +25,6 @@ import com.caplin.cutlass.command.analyse.DependencyAnalyserCommand;
 import com.caplin.cutlass.command.analyse.PackageDepsCommand;
 import com.caplin.cutlass.command.check.CheckCommand;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
-import com.caplin.cutlass.command.export.ExportApplicationCommand;
 import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.TestServerCommand;

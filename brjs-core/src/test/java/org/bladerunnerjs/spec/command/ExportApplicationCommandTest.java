@@ -44,7 +44,7 @@ public class ExportApplicationCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(aspect).classFileHasContent("appns.Class1", "default aspect src");
 		when(brjs).runCommand("export-app", "app1");
-		then(brjs).hasFile("generated/exported-war/app1.zip");
+		then(brjs).hasFile("generated/exported-app/app1.zip");
 	}
 	
 	// TODO port over other tests

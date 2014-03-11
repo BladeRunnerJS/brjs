@@ -57,7 +57,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	@Override
 	public String getCommandName()
 	{
-		return "export";
+		return "export-app";
 	}
 	
 	@Override
@@ -74,7 +74,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		
 		if(!app.dirExists()) throw new CommandArgumentsException("Could not find application '" + appName + "'", this);
 		
-		File destinationZipLocation = new File(brjs.storageDir("exported-war").getAbsolutePath() + "/" + appName + ".zip");
+		File destinationZipLocation = new File(brjs.storageDir("exported-app").getAbsolutePath() + "/" + appName + ".zip");
 
 		try 
 		{
