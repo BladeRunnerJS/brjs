@@ -120,8 +120,13 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	private void processGroup(XMLStreamReader2 streamReader) throws XMLStreamException {
+	private void processGroup(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException {
 		String groupName = streamReader.getAttributeValue(null, "name");
+		
+		if(!groupName.startsWith(assetContainer.namespace())) {
+			throw new NamespaceException("Alias group identifier '" + groupName + "' does not begin with required container prefix of '" + assetContainer.namespace() + "'.");
+		}
+		
 		XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
 		
 		while(cursor.isWithinInitialNode()) {

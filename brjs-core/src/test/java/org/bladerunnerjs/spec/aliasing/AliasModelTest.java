@@ -148,7 +148,7 @@ public class AliasModelTest extends SpecTest {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class2");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class2");
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class1");
 	}
 	
@@ -156,9 +156,9 @@ public class AliasModelTest extends SpecTest {
 	public void settingAGroupChangesTheAliasesThatAreUsed() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.the-alias", "appns.Class2")
-			.and(aspectAliasesFile).usesGroups("g2");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g2", "appns.bs.b1.the-alias", "appns.Class2")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g2");
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
 	}
 	
@@ -166,8 +166,8 @@ public class AliasModelTest extends SpecTest {
 	public void aliasesCanStillBeOverriddenWhenAGroupIsSet() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
-			.and(aspectAliasesFile).usesGroups("g1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class1")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1")
 			.and(aspectAliasesFile).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
 	}
@@ -177,9 +177,9 @@ public class AliasModelTest extends SpecTest {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class2")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.the-alias", "appns.Class3")
-			.and(aspectAliasesFile).usesGroups("g1");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class2")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g2", "appns.bs.b1.the-alias", "appns.Class3")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1");
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class2");
 	}
 	
@@ -187,34 +187,38 @@ public class AliasModelTest extends SpecTest {
 	public void groupsCanContainMultipleAliases() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "alias1", "appns.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "alias2", "appns.Class2")
-			.and(aspectAliasesFile).usesGroups("g1");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "alias1", "appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "alias2", "appns.Class2")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1");
 		then(aspect).hasAlias("alias1", "appns.Class1")
 			.and(aspect).hasAlias("alias2", "appns.Class2");
 	}
 	
 	@Test
-	public void groupAliasesAreNotNamespaced() throws Exception {
+	public void groupAliasesDoNotNeedToBeNamespaced() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "the-alias", "appns.Class1")
-			.and(aspectAliasesFile).usesGroups("g1");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "the-alias", "appns.Class1")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1");
 		then(aspect).hasAlias("the-alias", "appns.Class1");
 	}
 	
 	@Test
 	public void groupIdentifiersMustBeNamespaced() throws Exception {
-		
+		given(appConf).hasRequirePrefix("appns")
+			.and(aspect).hasClass("appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "the-alias", "appns.Class2");
+		when(aspect).retrievesAlias("the-alias");
+		then(exceptions).verifyException(NamespaceException.class, "g1", "appns.bs.b1");
 	}
 	
 	@Test
 	public void usingGroupsCanLeadToAmbiguity() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.the-alias", "appns.Class2")
-			.and(aspectAliasesFile).usesGroups("g1", "g2");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g2", "appns.bs.b1.the-alias", "appns.Class2")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1", "appns.bs.b1.g2");
 		when(aspect).retrievesAlias("appns.bs.b1.the-alias");
 		then(exceptions).verifyException(AmbiguousAliasException.class, "appns.bs.b1.the-alias", bladeAliasDefinitionsFile.getUnderlyingFile().getPath());
 	}
@@ -223,9 +227,9 @@ public class AliasModelTest extends SpecTest {
 	public void usingGroupsCanLeadToAmbiguityEvenWhenASingleGroupIsUsed() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
-			.and(bladesetAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class2")
-			.and(aspectAliasesFile).usesGroups("g1");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class1")
+			.and(bladesetAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class2")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1");
 		when(aspect).retrievesAlias("appns.bs.b1.the-alias");
 		then(exceptions).verifyException(AmbiguousAliasException.class, "appns.bs.b1.the-alias", aspectAliasesFile.getUnderlyingFile().getPath());
 	}
@@ -234,9 +238,9 @@ public class AliasModelTest extends SpecTest {
 	public void settingMultipleGroupsChangesTheAliasesThatAreUsed() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.alias1", "appns.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.alias2", "appns.Class2")
-			.and(aspectAliasesFile).usesGroups("g1", "g2");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.alias1", "appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g2", "appns.bs.b1.alias2", "appns.Class2")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1", "appns.bs.b1.g2");
 		then(aspect).hasAlias("appns.bs.b1.alias1", "appns.Class1");
 		then(aspect).hasAlias("appns.bs.b1.alias2", "appns.Class2");
 	}
@@ -245,9 +249,9 @@ public class AliasModelTest extends SpecTest {
 	public void usingMultipleGroupsCanLeadToAmbiguity() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g2", "appns.bs.b1.the-alias", "appns.Class2")
-			.and(aspectAliasesFile).usesGroups("g1", "g2");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class1")
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g2", "appns.bs.b1.the-alias", "appns.Class2")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1", "appns.bs.b1.g2");
 		when(aspect).retrievesAlias("appns.bs.b1.the-alias");
 		then(exceptions).verifyException(AmbiguousAliasException.class, "appns.bs.b1.the-alias", bladeAliasDefinitionsFile.getUnderlyingFile().getPath());
 	}
@@ -276,8 +280,8 @@ public class AliasModelTest extends SpecTest {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1", "appns.Interface1")
-			.and(bladeAliasDefinitionsFile).hasGroupAlias("g1", "appns.bs.b1.the-alias", "appns.Class2")
-			.and(aspectAliasesFile).usesGroups("g1");
+			.and(bladeAliasDefinitionsFile).hasGroupAlias("appns.bs.b1.g1", "appns.bs.b1.the-alias", "appns.Class2")
+			.and(aspectAliasesFile).usesGroups("appns.bs.b1.g1");
 		then(aspect).hasAlias("appns.bs.b1.the-alias", "appns.Class2", "appns.Interface1");
 	}
 }
