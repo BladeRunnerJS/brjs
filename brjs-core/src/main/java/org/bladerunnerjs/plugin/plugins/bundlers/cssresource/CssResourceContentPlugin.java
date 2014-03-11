@@ -27,22 +27,37 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 public class CssResourceContentPlugin extends AbstractContentPlugin {
+	private static final String ASPECT = "aspect";
+	private static final String BLADESET = "bladeset";
+	private static final String BLADE = "blade";
+	private static final String THEME = "theme";
+	private static final String RESOURCE_PATH = "resourcePath";
+	private static final String LIB = "lib";
+	
+	public static final String ASPECT_REQUEST = "aspect-request";
+	public static final String BLADESET_REQUEST = "bladeset-request";
+	public static final String BLADE_REQUEST = "blade-request";
+	public static final String BLADE_WORKBENCH_REQUEST = "blade-workbench-request";
+	public static final String LIB_REQUEST = "lib-request";
+	
 	private final ContentPathParser contentPathParser;
 	
+	
+	//TODO: add aspect to URL
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("cssresource/theme_<theme>/<resourcePath>").as("aspect-request")
-				.and("cssresource/bladeset_<bladeset>/theme_<theme>/<resourcePath>").as("bladeset-request")
-				.and("cssresource/bladeset_<bladeset>/blade_<blade>/theme_<theme>/<resourcePath>").as("blade-request")
-				.and("cssresource/bladeset_<bladeset>/blade_<blade>/workbench/<resourcePath>").as("blade-workbench-request")
-				.and("cssresource/lib_<lib>/<resourcePath>").as("lib-request")
-			.where("aspect").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-				.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-				.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-				.and("lib").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-				.and("resourcePath").hasForm(ContentPathParserBuilder.PATH_TOKEN)
-				.and("theme").hasForm(ContentPathParserBuilder.NAME_TOKEN);
+			.accepts("cssresource/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(ASPECT_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADESET_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADE_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/workbench/<"+RESOURCE_PATH+">").as(BLADE_WORKBENCH_REQUEST)
+				.and("cssresource/lib_<"+LIB+">/<"+RESOURCE_PATH+">").as(LIB_REQUEST)
+			.where(ASPECT).hasForm(ContentPathParserBuilder.NAME_TOKEN)
+				.and(BLADESET).hasForm(ContentPathParserBuilder.NAME_TOKEN)
+				.and(BLADE).hasForm(ContentPathParserBuilder.NAME_TOKEN)
+				.and(LIB).hasForm(ContentPathParserBuilder.NAME_TOKEN)
+				.and(RESOURCE_PATH).hasForm(ContentPathParserBuilder.PATH_TOKEN)
+				.and(THEME).hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		
 		contentPathParser = contentPathParserBuilder.build();
 	}
@@ -82,38 +97,38 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		File resourceFile = null;
 		
-		if(contentPath.formName.equals("aspect-request")) {
-			String theme = contentPath.properties.get("theme");
-			String resourcePath = contentPath.properties.get("resourcePath");
+		if(contentPath.formName.equals(ASPECT_REQUEST)) {
+			String theme = contentPath.properties.get(THEME);
+			String resourcePath = contentPath.properties.get(RESOURCE_PATH);
 			
 			resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
-		else if(contentPath.formName.equals("bladeset-request")) {
-			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get("bladeset"));
-			String theme = contentPath.properties.get("theme");
-			String resourcePath = contentPath.properties.get("resourcePath");
+		else if(contentPath.formName.equals(BLADESET_REQUEST)) {
+			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get(BLADESET));
+			String theme = contentPath.properties.get(THEME);
+			String resourcePath = contentPath.properties.get(RESOURCE_PATH);
 			
 			resourceFile = ((ResourcesAssetLocation) bladeset.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
-		else if(contentPath.formName.equals("blade-request")) {
-			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get("bladeset"));
-			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
-			String theme = contentPath.properties.get("theme");
-			String resourcePath = contentPath.properties.get("resourcePath");
+		else if(contentPath.formName.equals(BLADE_REQUEST)) {
+			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get(BLADESET));
+			Blade blade = bladeset.blade(contentPath.properties.get(BLADE));
+			String theme = contentPath.properties.get(THEME);
+			String resourcePath = contentPath.properties.get(RESOURCE_PATH);
 			
 			resourceFile = ((ResourcesAssetLocation) blade.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
-		else if(contentPath.formName.equals("blade-workbench-request")) {
-			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get("bladeset"));
-			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
+		else if(contentPath.formName.equals(BLADE_WORKBENCH_REQUEST)) {
+			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get(BLADESET));
+			Blade blade = bladeset.blade(contentPath.properties.get(BLADE));
 			Workbench workbench = blade.workbench();
-			String resourcePath = contentPath.properties.get("resourcePath");
+			String resourcePath = contentPath.properties.get(RESOURCE_PATH);
 			
 			resourceFile = workbench.assetLocation("resources").file(resourcePath);
 		}
-		else if(contentPath.formName.equals("lib-request")) {
-			JsLib jsLib = bundlableNode.getApp().jsLib(contentPath.properties.get("lib"));
-			String resourcePath = contentPath.properties.get("resourcePath");
+		else if(contentPath.formName.equals(LIB_REQUEST)) {
+			JsLib jsLib = bundlableNode.getApp().jsLib(contentPath.properties.get(LIB));
+			String resourcePath = contentPath.properties.get(RESOURCE_PATH);
 			
 			resourceFile = jsLib.file(resourcePath);
 		}
