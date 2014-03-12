@@ -69,4 +69,16 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
     	);
 	}
 	
+	@Test
+	public void unbundledResourcesHasCorrectPossibleProdPaths() throws Exception
+	{
+		given(app).hasBeenCreated()
+		.and(app).containsFiles("unbundled-resources/someFile.txt", "unbundled-resources/a/dir/someFile.txt");
+		when(unbundledResourcesPlugin).getPossibleProdRequests(aspect, requestsList);
+		thenRequests(requestsList).entriesEqual(
+				"unbundled-resources/someFile.txt",
+				"unbundled-resources/a/dir/someFile.txt"
+		);
+	}
+	
 }

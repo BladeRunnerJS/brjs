@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import java.util.List;
 
+import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -25,6 +26,12 @@ public class ContentPluginCommander
 	public CommanderChainer getPossibleDevRequests(BundlableNode bundlableNode, List<String> requestsList) throws ContentProcessingException, ModelOperationException
 	{
 		requestsList.addAll( contentPlugin.getValidDevContentPaths(bundlableNode.getBundleSet(), new String[0]) );
+		return commanderChainer;
+	}
+
+	public CommanderChainer getPossibleProdRequests(BundlableNode bundlableNode, List<String> requestsList) throws ContentProcessingException, ModelOperationException
+	{
+		requestsList.addAll( contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet(), new String[0]) );
 		return commanderChainer;
 	}
 	
