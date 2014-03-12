@@ -68,14 +68,14 @@ public class TargetPathCreator
 				ThemeAssetLocation theme = (ThemeAssetLocation) assetLocation;
 				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				
-				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_REQUEST, ((Aspect) assetContainer).getName(), theme.dir().getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_THEME_REQUEST, ((Aspect) assetContainer).getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Bladeset) {
 				ThemeAssetLocation theme = (ThemeAssetLocation) assetLocation;
 				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				Bladeset bladeset = (Bladeset) assetContainer;
 				
-				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_REQUEST, bladeset.getName(), theme.dir().getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_THEME_REQUEST, bladeset.getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Blade) {
 				ThemeAssetLocation theme = (ThemeAssetLocation) assetLocation;
@@ -83,7 +83,7 @@ public class TargetPathCreator
 				Blade blade = (Blade) assetContainer;
 				Bladeset bladeset = blade.parent();
 				
-				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_REQUEST, bladeset.getName(), blade.getName(), theme.dir().getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_THEME_REQUEST, bladeset.getName(), blade.getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Workbench) {
 				Workbench workbench = (Workbench) assetContainer;
@@ -91,7 +91,7 @@ public class TargetPathCreator
 				Blade blade = workbench.parent();
 				Bladeset bladeset = blade.parent();
 				
-				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_WORKBENCH_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_WORKBENCH_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
 			}
 			else if(assetContainer instanceof JsLib) {
 				JsLib jsLib = (JsLib) assetContainer;

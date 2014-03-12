@@ -34,10 +34,11 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	private static final String RESOURCE_PATH = "resourcePath";
 	private static final String LIB = "lib";
 	
-	public static final String ASPECT_REQUEST = "aspect-request";
-	public static final String BLADESET_REQUEST = "bladeset-request";
-	public static final String BLADE_REQUEST = "blade-request";
-	public static final String BLADE_WORKBENCH_REQUEST = "blade-workbench-request";
+	public static final String ASPECT_THEME_REQUEST = "aspect-theme-request";
+	public static final String ASPECT_RESOURCE_REQUEST = "aspect-resources-request";
+	public static final String BLADESET_THEME_REQUEST = "bladeset-theme-request";
+	public static final String BLADE_THEME_REQUEST = "blade-theme-request";
+	public static final String BLADE_WORKBENCH_RESOURCES_REQUEST = "blade-workbench-resources-request";
 	public static final String LIB_REQUEST = "lib-request";
 	
 	private final ContentPathParser contentPathParser;
@@ -45,10 +46,11 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("cssresource/aspect_<"+ASPECT+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(ASPECT_REQUEST)
-				.and("cssresource/bladeset_<"+BLADESET+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADESET_REQUEST)
-				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADE_REQUEST)
-				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/workbench/<"+RESOURCE_PATH+">").as(BLADE_WORKBENCH_REQUEST)
+			.accepts("cssresource/aspect_<"+ASPECT+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(ASPECT_THEME_REQUEST)
+				.and("cssresource/aspect_<"+ASPECT+">/resources/<"+RESOURCE_PATH+">").as(ASPECT_RESOURCE_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADESET_THEME_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADE_THEME_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/workbench/resources/<"+RESOURCE_PATH+">").as(BLADE_WORKBENCH_RESOURCES_REQUEST)
 				.and("cssresource/lib_<"+LIB+">/<"+RESOURCE_PATH+">").as(LIB_REQUEST)
 			.where(ASPECT).hasForm(ContentPathParserBuilder.NAME_TOKEN)
 				.and(BLADESET).hasForm(ContentPathParserBuilder.NAME_TOKEN)
@@ -95,20 +97,20 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		File resourceFile = null;
 		
-		if(contentPath.formName.equals(ASPECT_REQUEST)) {
+		if(contentPath.formName.equals(ASPECT_THEME_REQUEST)) {
 			String theme = contentPath.properties.get(THEME);
 			String resourcePath = contentPath.properties.get(RESOURCE_PATH);
 			
 			resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
-		else if(contentPath.formName.equals(BLADESET_REQUEST)) {
+		else if(contentPath.formName.equals(BLADESET_THEME_REQUEST)) {
 			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get(BLADESET));
 			String theme = contentPath.properties.get(THEME);
 			String resourcePath = contentPath.properties.get(RESOURCE_PATH);
 			
 			resourceFile = ((ResourcesAssetLocation) bladeset.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
-		else if(contentPath.formName.equals(BLADE_REQUEST)) {
+		else if(contentPath.formName.equals(BLADE_THEME_REQUEST)) {
 			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get(BLADESET));
 			Blade blade = bladeset.blade(contentPath.properties.get(BLADE));
 			String theme = contentPath.properties.get(THEME);
@@ -116,7 +118,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			
 			resourceFile = ((ResourcesAssetLocation) blade.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
-		else if(contentPath.formName.equals(BLADE_WORKBENCH_REQUEST)) {
+		else if(contentPath.formName.equals(BLADE_WORKBENCH_RESOURCES_REQUEST)) {
 			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get(BLADESET));
 			Blade blade = bladeset.blade(contentPath.properties.get(BLADE));
 			Workbench workbench = blade.workbench();
