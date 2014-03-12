@@ -101,9 +101,15 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 
 	private List<String> calculatValidRequestPaths(BundleSet bundleSet) throws ContentProcessingException
 	{
+		
 		List<String> requestPaths = new ArrayList<String>();
 		
 		File unbundledResourcesDir = getUnbundledResourcesDir(bundleSet);
+		
+		if (!unbundledResourcesDir.isDirectory())
+		{
+			return requestPaths;
+		}
 		
 		try
 		{
