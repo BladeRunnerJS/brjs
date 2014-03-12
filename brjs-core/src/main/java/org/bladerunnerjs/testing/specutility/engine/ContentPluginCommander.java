@@ -2,7 +2,6 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import java.util.List;
 
-import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
@@ -20,11 +21,14 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
+import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class CssResourceContentPlugin extends AbstractContentPlugin {
 	private static final String ASPECT = "aspect";
@@ -42,6 +46,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	public static final String LIB_REQUEST = "lib-request";
 	
 	private final ContentPathParser contentPathParser;
+	private BRJS brjs;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -64,7 +69,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		// do nothing
+		this.brjs = brjs;
 	}
 	
 	@Override
@@ -84,12 +89,26 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
-		return getValidContentPaths(bundleSet, locales);
+		try
+		{
+			return getValidContentPaths(bundleSet.getBundlableNode().getApp(), locales);
+		}
+		catch (MalformedTokenException ex)
+		{
+			throw new ContentProcessingException(ex);
+		}
 	}
 	
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
-		return getValidContentPaths(bundleSet, locales);
+		try
+		{
+			return getValidContentPaths(bundleSet.getBundlableNode().getApp(), locales);
+		}
+		catch (MalformedTokenException ex)
+		{
+			throw new ContentProcessingException(ex);
+		}
 	}
 	
 	@Override
@@ -132,6 +151,10 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			
 			resourceFile = jsLib.file(resourcePath);
 		}
+		else
+		{
+			throw new ContentProcessingException("Cannot handle request with form name " + contentPath.formName);
+		}
 		
 		try(InputStream input = new FileInputStream(resourceFile);)
 		{
@@ -152,16 +175,50 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private List<String> getValidContentPaths(BundleSet bundleSet, String... locales) {
+	private List<String> getValidContentPaths(App app, String... locales) throws MalformedTokenException {
 		List<String> contentPaths = new ArrayList<>();
 		
-		for(AssetLocation assetLocation : bundleSet.getResourceNodes()) {
-			AssetContainer assetContainer = assetLocation.getAssetContainer();
-			
-			if(assetContainer instanceof Aspect) {
-			}
+		for(AssetContainer assetContainer : app.getAllAssetContainers())
+		{
+			contentPaths.addAll( getValidContentPaths(assetContainer) );
 		}
 		
 		return contentPaths;
 	}
+
+	private List< String> getValidContentPaths(AssetContainer assetContainer) throws MalformedTokenException
+	{		
+		List<String> contentPaths = new ArrayList<>();
+		
+		if (assetContainer instanceof Aspect)
+		{
+			Aspect aspect = (Aspect) assetContainer;
+			for (Theme theme : aspect.themes())
+			{
+				for (File file : brjs.getFileIterator(theme.dir()).nestedFiles())
+				{
+					if (file.isFile() && !file.getName().endsWith(".css"))
+					{
+						String assetPath = RelativePathUtility.get(theme.dir(), file);
+						contentPaths.add( contentPathParser.createRequest(ASPECT_THEME_REQUEST, aspect.getName(), theme.getName(), assetPath) );
+					}
+				}
+			}
+			
+			AssetLocation resourcesAssetLocation = aspect.assetLocation("resources");
+			for (File file : brjs.getFileIterator(resourcesAssetLocation.dir()).nestedFiles())
+			{
+				if (file.isFile() && !file.getName().endsWith(".css"))
+				{
+					String assetPath = RelativePathUtility.get(resourcesAssetLocation.dir(), file);
+					contentPaths.add( contentPathParser.createRequest(ASPECT_RESOURCE_REQUEST, aspect.getName(), assetPath) );
+				}
+			}
+			
+		}
+		
+		
+		return contentPaths;
+	}
+	
 }
