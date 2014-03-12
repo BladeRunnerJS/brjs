@@ -44,8 +44,8 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	public static final String BLADESET_RESOURCES_REQUEST = "bladeset-resources-request";
 	public static final String BLADE_THEME_REQUEST = "blade-theme-request";
 	public static final String BLADE_RESOURCES_REQUEST = "blade-resources-request";
-	public static final String BLADE_WORKBENCH_THEME_REQUEST = "blade-workbench-theme-request";
-	public static final String BLADE_WORKBENCH_RESOURCES_REQUEST = "blade-workbench-resources-request";
+	public static final String WORKBENCH_THEME_REQUEST = "workbench-theme-request";
+	public static final String WORKBENCH_RESOURCES_REQUEST = "workbench-resources-request";
 	public static final String LIB_REQUEST = "lib-request";
 	
 	private final ContentPathParser contentPathParser;
@@ -57,8 +57,11 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			.accepts("cssresource/aspect_<"+ASPECT+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(ASPECT_THEME_REQUEST)
 				.and("cssresource/aspect_<"+ASPECT+">/resources/<"+RESOURCE_PATH+">").as(ASPECT_RESOURCES_REQUEST)
 				.and("cssresource/bladeset_<"+BLADESET+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADESET_THEME_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/resources/<"+RESOURCE_PATH+">").as(BLADESET_RESOURCES_REQUEST)
 				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(BLADE_THEME_REQUEST)
-				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/workbench/resources/<"+RESOURCE_PATH+">").as(BLADE_WORKBENCH_RESOURCES_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/resources/<"+RESOURCE_PATH+">").as(BLADE_RESOURCES_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/workbench/theme_<"+THEME+">/<"+RESOURCE_PATH+">").as(WORKBENCH_THEME_REQUEST)
+				.and("cssresource/bladeset_<"+BLADESET+">/blade_<"+BLADE+">/workbench/resources/<"+RESOURCE_PATH+">").as(WORKBENCH_RESOURCES_REQUEST)
 				.and("cssresource/lib_<"+LIB+">/<"+RESOURCE_PATH+">").as(LIB_REQUEST)
 			.where(ASPECT).hasForm(ContentPathParserBuilder.NAME_TOKEN)
 				.and(BLADESET).hasForm(ContentPathParserBuilder.NAME_TOKEN)
@@ -155,11 +158,11 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		{
 			//TODO: this needs implementing
 		}
-		else if (contentPath.formName.equals(BLADE_WORKBENCH_THEME_REQUEST))
+		else if (contentPath.formName.equals(WORKBENCH_THEME_REQUEST))
 		{
 			//TODO: this needs implementing
 		}
-		else if (contentPath.formName.equals(BLADE_WORKBENCH_RESOURCES_REQUEST))
+		else if (contentPath.formName.equals(WORKBENCH_RESOURCES_REQUEST))
 		{
 			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get(BLADESET));
 			Blade blade = bladeset.blade(contentPath.properties.get(BLADE));
@@ -213,42 +216,166 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		return contentPaths;
 	}
 
+	//TODO: this method (and the sub-methods) it uses need refactoring!
 	private List< String> getValidContentPaths(AssetContainer assetContainer) throws MalformedTokenException
 	{		
 		List<String> contentPaths = new ArrayList<>();
 		
 		if (assetContainer instanceof Aspect)
 		{
-			Aspect aspect = (Aspect) assetContainer;
-			for (Theme theme : aspect.themes())
-			{
-				for (File file : brjs.getFileIterator(theme.dir()).nestedFiles())
-				{
-					if (file.isFile() && !file.getName().endsWith(".css"))
-					{
-						String assetPath = RelativePathUtility.get(theme.dir(), file);
-						contentPaths.add( contentPathParser.createRequest(ASPECT_THEME_REQUEST, aspect.getName(), theme.getName(), assetPath) );
-					}
-				}
-			}
-			
-			AssetLocation resourcesAssetLocation = aspect.assetLocation("resources");
-			if (resourcesAssetLocation.dir().isDirectory())
-			{
-    			for (File file : brjs.getFileIterator(resourcesAssetLocation.dir()).nestedFiles())
-    			{
-    				if (file.isFile() && !file.getName().endsWith(".css"))
-    				{
-    					String assetPath = RelativePathUtility.get(resourcesAssetLocation.dir(), file);
-    					contentPaths.add( contentPathParser.createRequest(ASPECT_RESOURCES_REQUEST, aspect.getName(), assetPath) );
-					}
-				}
-			}
-			
+			contentPaths.addAll( addAspectContentPaths(assetContainer, contentPaths) );
+		}
+		if (assetContainer instanceof Bladeset)
+		{
+			contentPaths.addAll( addBladesetContentPaths(assetContainer, contentPaths) );
+		}
+		if (assetContainer instanceof Blade)
+		{
+			contentPaths.addAll( addBladeContentPaths(assetContainer, contentPaths) );
+		}
+		if (assetContainer instanceof Workbench)
+		{
+			contentPaths.addAll( addWorkbenchContentPaths(assetContainer, contentPaths) );
 		}
 		
-		
 		return contentPaths;
+	}
+
+	private List<String> addAspectContentPaths(AssetContainer assetContainer, List<String> contentPaths) throws MalformedTokenException
+	{
+		List<String> aspectContentPaths = new ArrayList<>();
+		
+		Aspect aspect = (Aspect) assetContainer;
+		for (Theme theme : aspect.themes())
+		{
+			for (File file : brjs.getFileIterator(theme.dir()).nestedFiles())
+			{
+				if (file.isFile() && !file.getName().endsWith(".css"))
+				{
+					String assetPath = RelativePathUtility.get(theme.dir(), file);
+					contentPaths.add( contentPathParser.createRequest(ASPECT_THEME_REQUEST, aspect.getName(), theme.getName(), assetPath) );
+				}
+			}
+		}
+		
+		AssetLocation resourcesAssetLocation = aspect.assetLocation("resources");
+		if (resourcesAssetLocation.dir().isDirectory())
+		{
+			for (File file : brjs.getFileIterator(resourcesAssetLocation.dir()).nestedFiles())
+			{
+				if (file.isFile() && !file.getName().endsWith(".css"))
+				{
+					String assetPath = RelativePathUtility.get(resourcesAssetLocation.dir(), file);
+					contentPaths.add( contentPathParser.createRequest(ASPECT_RESOURCES_REQUEST, aspect.getName(), assetPath) );
+				}
+			}
+		}
+		
+		return aspectContentPaths;
+	}
+	
+	private List<String> addBladesetContentPaths(AssetContainer assetContainer, List<String> contentPaths) throws MalformedTokenException
+	{
+		List<String> bladesetContentPaths = new ArrayList<>();
+		
+		Bladeset bladeset = (Bladeset) assetContainer;
+		for (Theme theme : bladeset.themes())
+		{
+			for (File file : brjs.getFileIterator(theme.dir()).nestedFiles())
+			{
+				if (file.isFile() && !file.getName().endsWith(".css"))
+				{
+					String assetPath = RelativePathUtility.get(theme.dir(), file);
+					contentPaths.add( contentPathParser.createRequest(BLADESET_THEME_REQUEST, bladeset.getName(), theme.getName(), assetPath) );
+				}
+			}
+		}
+		
+		AssetLocation resourcesAssetLocation = bladeset.assetLocation("resources");
+		if (resourcesAssetLocation.dir().isDirectory())
+		{
+			for (File file : brjs.getFileIterator(resourcesAssetLocation.dir()).nestedFiles())
+			{
+				if (file.isFile() && !file.getName().endsWith(".css"))
+				{
+					String assetPath = RelativePathUtility.get(resourcesAssetLocation.dir(), file);
+					contentPaths.add( contentPathParser.createRequest(BLADESET_RESOURCES_REQUEST, bladeset.getName(), assetPath) );
+				}
+			}
+		}
+		
+		return bladesetContentPaths;
+	}
+	
+	private List<String> addBladeContentPaths(AssetContainer assetContainer, List<String> contentPaths) throws MalformedTokenException
+	{
+		List<String> bladeContentPaths = new ArrayList<>();
+		
+		Blade blade = (Blade) assetContainer;
+		Bladeset bladeset = brjs.locateAncestorNodeOfClass(blade, Bladeset.class);
+		
+		for (Theme theme : blade.themes())
+		{
+			for (File file : brjs.getFileIterator(theme.dir()).nestedFiles())
+			{
+				if (file.isFile() && !file.getName().endsWith(".css"))
+				{
+					String assetPath = RelativePathUtility.get(theme.dir(), file);
+					contentPaths.add( contentPathParser.createRequest(BLADE_THEME_REQUEST, bladeset.getName(), blade.getName(), theme.getName(), assetPath) );
+				}
+			}
+		}
+		
+		AssetLocation resourcesAssetLocation = blade.assetLocation("resources");
+		if (resourcesAssetLocation.dir().isDirectory())
+		{
+			for (File file : brjs.getFileIterator(resourcesAssetLocation.dir()).nestedFiles())
+			{
+				if (file.isFile() && !file.getName().endsWith(".css"))
+				{
+					String assetPath = RelativePathUtility.get(resourcesAssetLocation.dir(), file);
+					contentPaths.add( contentPathParser.createRequest(BLADE_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), assetPath) );
+				}
+			}
+		}
+		
+		return bladeContentPaths;
+	}
+	
+	private List<String> addWorkbenchContentPaths(AssetContainer assetContainer, List<String> contentPaths) throws MalformedTokenException
+	{
+		List<String> workbenchContentPaths = new ArrayList<>();
+		
+		Workbench workbench = (Workbench) assetContainer;
+		Blade blade = brjs.locateAncestorNodeOfClass(workbench, Blade.class);
+		Bladeset bladeset = brjs.locateAncestorNodeOfClass(blade, Bladeset.class);
+		
+		for (Theme theme : workbench.themes())
+		{
+			for (File file : brjs.getFileIterator(theme.dir()).nestedFiles())
+			{
+				if (file.isFile() && !file.getName().endsWith(".css"))
+				{
+					String assetPath = RelativePathUtility.get(theme.dir(), file);
+					contentPaths.add( contentPathParser.createRequest(WORKBENCH_THEME_REQUEST, bladeset.getName(), blade.getName(), theme.getName(), assetPath) );
+				}
+			}
+		}
+		
+		AssetLocation resourcesAssetLocation = workbench.assetLocation("resources");
+		if (resourcesAssetLocation.dir().isDirectory())
+		{
+			for (File file : brjs.getFileIterator(resourcesAssetLocation.dir()).nestedFiles())
+			{
+				if (file.isFile() && !file.getName().endsWith(".css"))
+				{
+					String assetPath = RelativePathUtility.get(resourcesAssetLocation.dir(), file);
+					contentPaths.add( contentPathParser.createRequest(WORKBENCH_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), assetPath) );
+				}
+			}
+		}
+		
+		return workbenchContentPaths;
 	}
 	
 }

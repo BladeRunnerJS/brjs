@@ -114,7 +114,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		then(response).textEquals("someFile.txt contents");
 	}
 	
-	@Test @Ignore
+	@Test
 	public void assetsInABladesetAreIncludedInPossibleDevRequests() throws Exception
  	{
 		given(app).hasBeenCreated()
@@ -128,7 +128,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		);
  	}
 	
-	@Test @Ignore
+	@Test
 	public void assetsInABladesetAreIncludedInPossibleProdRequests() throws Exception
 	{
 		given(app).hasBeenCreated()
@@ -167,7 +167,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		then(response).textEquals("someFile.txt contents");
 	}
 	
-	@Test @Ignore
+	@Test
 	public void assetsInABladeAreIncludedInPossibleDevRequests() throws Exception
  	{
 		given(app).hasBeenCreated()
@@ -182,7 +182,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		);
  	}
 	
-	@Test @Ignore
+	@Test
 	public void assetsInABladeAreIncludedInPossibleProdRequests() throws Exception
 	{
 		given(app).hasBeenCreated()
@@ -210,7 +210,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		then(response).textEquals("someFile.txt contents");
 	}
 	
-	@Test @Ignore
+	@Test
 	public void assetsInABladeWorkbenchResourcesCanBeRequested() throws Exception
 	{
 		given(app).hasBeenCreated()
@@ -221,7 +221,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		then(response).textEquals("someFile.txt contents");
 	}
 	
-	@Test @Ignore
+	@Test
 	public void assetsInABladeWorkbenchAreIncludedInPossibleDevRequests() throws Exception
  	{
 		given(app).hasBeenCreated()
@@ -236,7 +236,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		);
  	}
 	
-	@Test @Ignore
+	@Test
 	public void assetsInABladeWorkbenchAreIncludedInPossibleProdRequests() throws Exception
 	{
 		given(app).hasBeenCreated()
