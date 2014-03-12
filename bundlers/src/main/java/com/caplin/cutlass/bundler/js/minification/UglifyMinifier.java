@@ -75,7 +75,7 @@ public class UglifyMinifier implements Minifier
 		
 		for(File sourceFile : sourceFiles)
 		{
-			String sourceCode = FileUtils.readFileToString(sourceFile, EncodingAccessor.getDefaultInputEncoding());
+			String sourceCode = FileUtils.readFileToString(sourceFile, "UTF-8");
 			convertedSourceFiles.add(new SourceFile(sourceFile.getPath(), sourceCode));
 		}
 		

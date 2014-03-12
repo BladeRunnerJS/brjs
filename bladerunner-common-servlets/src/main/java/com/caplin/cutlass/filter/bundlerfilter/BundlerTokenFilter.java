@@ -84,7 +84,7 @@ public class BundlerTokenFilter implements Filter
 					logger.debug("processing and replacing bundler tokens within response.");
 					
 					StringBuffer filteredResponse = tokenProcessor.replaceTokens(appConf, httpRequest, responseWrapper.getReader());
-					byte[] filteredData = filteredResponse.toString().getBytes(EncodingAccessor.getDefaultOutputEncoding());
+					byte[] filteredData = filteredResponse.toString().getBytes("UTF-8");
 					response.setContentLength(filteredData.length);
 					out.write(filteredData);
 				}
