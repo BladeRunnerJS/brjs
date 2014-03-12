@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
@@ -29,12 +28,6 @@ public class AspectNavigationTest
 	public void teardown()
 	{
 		brjs.close();
-	}
-	
-	@Test
-	public void unbundledResources()
-	{
-		nodeTesterFactory.createItemTester(DirNode.class, "unbundledResources", "unbundled-resources").assertModelIsOK();
 	}
 
 	@Test

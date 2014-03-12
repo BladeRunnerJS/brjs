@@ -9,7 +9,6 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -20,7 +19,6 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
 {
-	private final NodeItem<DirNode> unbundledResources = new NodeItem<>(DirNode.class, "unbundled-resources");
 	private final NodeMap<TypedTestPack> testTypes;
 	private final NodeMap<Theme> themes;
 	private String name;
@@ -98,11 +96,6 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public App parent()
 	{
 		return (App) parentNode();
-	}
-	
-	public DirNode unbundledResources()
-	{
-		return item(unbundledResources);
 	}
 	
 	@Override
