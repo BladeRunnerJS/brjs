@@ -37,7 +37,7 @@ public class Java7FileModificationInfo implements FileModificationInfo {
 		List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
 		
 		if(watchEvents.size() > 0) {
-			// TODO: we shouldn't update last-modified if the only changes to are hidden files
+			// TODO: we shouldn't update last-modified if the only changes are to hidden files
 			updateLastModified();
 			
 			for(WatchEvent<?> watchEvent : watchEvents) {

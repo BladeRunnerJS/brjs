@@ -70,7 +70,9 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     		if (contentPath.formName.equals(UNBUNDLED_RESOURCES_REQUEST))
     		{
     			String relativeFilePath = contentPath.properties.get(FILE_PATH_REQUEST_FORM);
-    			File unbundledResourcesDir = getUnbundledResourcesDir(bundleSet);
+    			
+    			File unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
+    			
     			File requestedFile = new File(unbundledResourcesDir, relativeFilePath);
     			if (!requestedFile.isFile())
     			{
@@ -104,7 +106,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		
 		List<String> requestPaths = new ArrayList<String>();
 		
-		File unbundledResourcesDir = getUnbundledResourcesDir(bundleSet);
+		File unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
 		
 		if (!unbundledResourcesDir.isDirectory())
 		{
@@ -129,13 +131,6 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		}
 		
 		return requestPaths;
-	}
-	
-	private File getUnbundledResourcesDir(BundleSet bundleSet)
-	{
-		App requestApp = bundleSet.getBundlableNode().getApp();
-		File unbundledResourcesDir = requestApp.file(UNBUNDLED_RESOURCES_DIRNAME);
-		return unbundledResourcesDir;
 	}
 	
 }
