@@ -89,6 +89,9 @@ public class DependencyGraphReportBuilder {
 		else if(dependencyInfo.resourceAssets.contains(linkedAsset)) {
 			stringBuilder.append(" (implicit resource)");
 		}
+		else if(linkedAsset instanceof AliasAsset) {
+			stringBuilder.append(" (alias dep.)");
+		}
 		
 		if(alreadyProcessedDependency) {
 			stringBuilder.append(" (*)");

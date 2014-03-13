@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.command;
 
+import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
@@ -14,6 +15,7 @@ import org.junit.Test;
 public class AspectDepsCommandTest extends SpecTest {
 	App app;
 	Aspect aspect;
+	AliasesFile aliasesFile;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -24,6 +26,7 @@ public class AspectDepsCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
+			aliasesFile = aspect.aliasesFile();
 	}
 	
 	@Test
@@ -118,5 +121,35 @@ public class AspectDepsCommandTest extends SpecTest {
 			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js'",
 			"    |    |    |    \\--- 'default-aspect/src/appns/pkg/config.xml' (implicit resource)",
 			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
+	}
+	
+	@Test
+	public void aliasedDependenciesFromTheIndexPageAreCorrectlyDisplayed() throws Exception {
+		given(aspect).indexPageHasAliasReferences("alias-ref")
+			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
+			.and(aspect).hasClass("appns.Class");
+		when(brjs).runCommand("aspect-deps", "app");
+		then(output).containsText(
+			"Aspect 'default' dependencies found:",
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    |    \\--- 'alias!alias-ref' (alias dep.)",
+			"    |    |    \\--- 'default-aspect/src/appns/Class.js'");
+	}
+	
+	@Test
+	public void aliasedDependenciesFromAClassAreCorrectlyDisplayed() throws Exception {
+		// TODO: switch to require style once they support aliases
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classRefersToAlias("appns.Class1", "alias-ref")
+			.and(aliasesFile).hasAlias("alias-ref", "appns.Class2");
+		when(brjs).runCommand("aspect-deps", "app");
+		then(output).containsText(
+			"Aspect 'default' dependencies found:",
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
+			"    |    |    \\--- 'alias!alias-ref' (alias dep.)",
+			"    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
 }

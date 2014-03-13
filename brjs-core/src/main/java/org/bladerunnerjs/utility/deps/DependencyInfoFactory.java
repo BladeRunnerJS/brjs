@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BrowsableNode;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class DependencyInfoFactory {
 	public static DependencyInfo buildForwardDependencyMap(BrowsableNode browsableNode) throws ModelOperationException {
@@ -37,24 +42,29 @@ public class DependencyInfoFactory {
 		for(LinkedAsset seedAsset : browsableNode.seedFiles()) {
 			dependencyInfo.seedAssets.add(seedAsset);
 			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(browsableNode));
+			addAliasDependencies(dependencyInfo, browsableNode, seedAsset);
 		}
 		
 		for(AssetLocation assetLocation : bundleSet.getResourceNodes()) {
 			for(LinkedAsset resourceAsset : assetLocation.seedResources()) {
 				dependencyInfo.resourceAssets.add(resourceAsset);
 				addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(browsableNode));
+				addAliasDependencies(dependencyInfo, browsableNode, resourceAsset);
 			}
 		}
 		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(browsableNode));
 			addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(browsableNode));
+			addAliasDependencies(dependencyInfo, browsableNode, sourceModule);
 			
 			for(AssetLocation assetLocation : allAssetLocations(sourceModule)) {
 				for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
 					if(assetLocationLinkedAsset.getDependentSourceModules(browsableNode).size() > 0) {
 						dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
 					}
+					
+					// TODO: assetLocationLinkedAsset aliases?
 				}
 			}
 		}
@@ -82,6 +92,21 @@ public class DependencyInfoFactory {
 		}
 		
 		dependencies.map.get(sourceAsset).add(targetAsset);
+	}
+	
+	private static void addAliasDependencies(DependencyInfo dependencies, BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {
+		try {
+			for(String aliasName : linkedAsset.getAliasNames()) {
+				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				AliasAsset aliasAsset = new AliasAsset(alias);
+				addDependency(dependencies, linkedAsset, aliasAsset);
+				addDependency(dependencies, aliasAsset, bundlableNode.getSourceModule(alias.getRequirePath()));
+			}
+		}
+		catch(AliasException | ContentFileProcessingException | RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
+		
 	}
 	
 	private static interface DependencyAdder {
