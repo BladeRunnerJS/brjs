@@ -165,6 +165,7 @@ public abstract class SpecTest
 	protected ExceptionsBuilder given(List<Throwable> exceptions) { return new ExceptionsBuilder(this, exceptions); }
 	public ExceptionsVerifier then(List<Throwable> exceptions) { return new ExceptionsVerifier(this, exceptions); }
 	public StringBuilder unquoted(String string) { return new StringBuilder(string); }
+	public StringBuilder doubleQuoted(String string) { return new StringBuilder("\"" + string + "\""); }
 	
 	// logging
 	public LoggerBuilder given(LogMessageStore logStore) { return new LoggerBuilder(this, logStore); }

@@ -39,7 +39,11 @@ public class AliasesWriter {
 			}
 			
 			for (AliasOverride aliasOverride : data.aliasOverrides) {
-				builder.e("alias").a("name", aliasOverride.getName()).a("class", aliasOverride.getClassName());
+				XMLBuilder element = builder.e("alias").a("name", aliasOverride.getName());
+				
+				if(aliasOverride.getClassName() != null) {
+					element.a("class", aliasOverride.getClassName());
+				}
 			}
 			
 			fileUtil.write(file, XmlBuilderSerializer.serialize(builder));
