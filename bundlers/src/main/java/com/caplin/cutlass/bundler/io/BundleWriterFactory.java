@@ -6,7 +6,6 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import com.caplin.cutlass.EncodingAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
 public class BundleWriterFactory
@@ -17,11 +16,11 @@ public class BundleWriterFactory
 		
 		try
 		{
-			writer = new OutputStreamWriter(outputStream, EncodingAccessor.getDefaultOutputEncoding());
+			writer = new OutputStreamWriter(outputStream, "UTF-8");
 		}
 		catch (UnsupportedEncodingException e)
 		{
-			throw new ContentProcessingException(e, "'" + EncodingAccessor.getDefaultOutputEncoding() + "' is not a supported character encoding.");
+			throw new ContentProcessingException(e, "Unable to create OutputStreamWriter.");
 		}
 		
 		return writer;
