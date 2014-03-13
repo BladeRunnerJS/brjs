@@ -60,11 +60,11 @@ public class DependencyInfoFactory {
 			
 			for(AssetLocation assetLocation : allAssetLocations(sourceModule)) {
 				for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
-					if(assetLocationLinkedAsset.getDependentSourceModules(browsableNode).size() > 0) {
+					if((assetLocationLinkedAsset.getDependentSourceModules(browsableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
 						dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
 					}
 					
-					// TODO: assetLocationLinkedAsset aliases?
+					addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, assetLocationLinkedAsset);
 				}
 			}
 		}
