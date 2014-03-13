@@ -125,4 +125,21 @@ public class DepInsightCommandTest extends SpecTest {
 			"",
 			"    (*) - dependencies omitted (listed previously)");
 	}
+	
+	@Test
+	public void dependenciesThatOccurDueToRelatedResourcesAreShownCorrectly() throws Exception {
+		given(aspect).indexPageRequires("appns/Class1")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg.InnerClass")
+			.and(aspect).classRequires("appns.Class1", "./pkg/InnerClass")
+			.and(aspect).containsFileWithContents("src/appns/pkg/config.xml", "'appns/Class2'")
+			.and(aspect).containsEmptyFile("empty-config.xml");
+		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
+		then(output).containsText(
+			"Source module 'appns/Class2' dependencies found:",
+			"    +--- 'default-aspect/src/appns/Class2.js'",
+			"    |    \\--- 'default-aspect/src/appns/pkg/config.xml'", // TODO: mark as (implicit resource)
+			"    |    |    \\--- 'default-aspect/src/appns/pkg/InnerClass.js'",
+			"    |    |    |    \\--- 'default-aspect/src/appns/Class1.js'",
+			"    |    |    |    |    \\--- 'default-aspect/index.html'");
+	}
 }

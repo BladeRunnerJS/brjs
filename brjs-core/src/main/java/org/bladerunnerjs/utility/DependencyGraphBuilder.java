@@ -131,9 +131,17 @@ public class DependencyGraphBuilder {
 			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 				addInverseDependencies(sourceModule, sourceModule.getOrderDependentSourceModules(browsableNode));
 				addInverseDependencies(sourceModule, sourceModule.getDependentSourceModules(browsableNode));
+				
+				for(AssetLocation assetLocation : allAssetLocations(sourceModule)) {
+					for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
+						if(assetLocationLinkedAsset.getDependentSourceModules(browsableNode).size() > 0) {
+							addInverseDependency(sourceModule, assetLocationLinkedAsset);
+						}
+					}
+				}
 			}
 		}
-
+		
 		@Override
 		public List<LinkedAsset> getDependencies(BundlableNode bundlableNode, LinkedAsset linkedAsset) {
 			List<LinkedAsset> dependencies =  new ArrayList<>();
@@ -150,14 +158,26 @@ public class DependencyGraphBuilder {
 			return false;
 		}
 		
-		private void addInverseDependencies(LinkedAsset linkedAsset, List<SourceModule> sourceModuleDependencies) throws ModelOperationException {
-			for(SourceModule sourceModuleDependency : sourceModuleDependencies) {
-				if(!inverseDependencies.containsKey(sourceModuleDependency)) {
-					inverseDependencies.put(sourceModuleDependency, new LinkedHashSet<LinkedAsset>());
-				}
-				
-				inverseDependencies.get(sourceModuleDependency).add(linkedAsset);
+		private List<AssetLocation> allAssetLocations(SourceModule sourceModule) {
+			List<AssetLocation> assetLocations = new ArrayList<>();
+			assetLocations.add(sourceModule.getAssetLocation());
+			assetLocations.addAll(sourceModule.getAssetLocation().getDependentAssetLocations());
+			
+			return assetLocations;
+		}
+		
+		private void addInverseDependencies(LinkedAsset sourceAsset, List<SourceModule> targetAssets) throws ModelOperationException {
+			for(SourceModule sourceModuleDependency : targetAssets) {
+				addInverseDependency(sourceAsset, sourceModuleDependency);
 			}
+		}
+		
+		private void addInverseDependency(LinkedAsset sourceAsset, LinkedAsset targetAsset) {
+			if(!inverseDependencies.containsKey(targetAsset)) {
+				inverseDependencies.put(targetAsset, new LinkedHashSet<LinkedAsset>());
+			}
+			
+			inverseDependencies.get(targetAsset).add(sourceAsset);
 		}
 	}
 }
