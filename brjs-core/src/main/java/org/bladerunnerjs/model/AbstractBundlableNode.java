@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
@@ -91,7 +92,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, ContentFileProcessingException {
+	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException {
 		return aliasesFile().getAlias(aliasName);
 	}
 	
