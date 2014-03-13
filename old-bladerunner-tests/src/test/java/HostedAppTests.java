@@ -30,6 +30,7 @@ public class HostedAppTests extends SpecTest
 		Workbench workbench = b1.workbench();
 		
 		given(app).hasBeenPopulated()
+			.and(aspect).hasBeenPopulated()
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(b1).hasClass("appns/bs/b1/Class")
