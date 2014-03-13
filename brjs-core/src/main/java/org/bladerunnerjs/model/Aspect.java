@@ -11,13 +11,14 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.IndexPageSeedFileLocator;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
+public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode, ThemeableNode
 {
 	private final NodeMap<TypedTestPack> testTypes;
 	private final NodeMap<Theme> themes;
@@ -116,11 +117,13 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 		return child(testTypes, typedTestPackName);
 	}
 	
+	@Override
 	public List<Theme> themes()
 	{
 		return children(themes);
 	}
 	
+	@Override
 	public Theme theme(String themeName)
 	{
 		return child(themes, themeName);
