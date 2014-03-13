@@ -13,7 +13,6 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 
-import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class CharacterEncodingFilter implements Filter

@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ThemeAssetLocation;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.plugin.plugins.bundlers.cssresource.CssResourceContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -67,14 +68,14 @@ public class TargetPathCreator
 				ThemeAssetLocation theme = (ThemeAssetLocation) assetLocation;
 				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				
-				targetPath = cssResourceContentPathParser.createRequest("aspect-request", theme.dir().getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_THEME_REQUEST, ((Aspect) assetContainer).getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Bladeset) {
 				ThemeAssetLocation theme = (ThemeAssetLocation) assetLocation;
 				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				Bladeset bladeset = (Bladeset) assetContainer;
 				
-				targetPath = cssResourceContentPathParser.createRequest("bladeset-request", bladeset.getName(), theme.dir().getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_THEME_REQUEST, bladeset.getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Blade) {
 				ThemeAssetLocation theme = (ThemeAssetLocation) assetLocation;
@@ -82,7 +83,7 @@ public class TargetPathCreator
 				Blade blade = (Blade) assetContainer;
 				Bladeset bladeset = blade.parent();
 				
-				targetPath = cssResourceContentPathParser.createRequest("blade-request", bladeset.getName(), blade.getName(), theme.dir().getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_THEME_REQUEST, bladeset.getName(), blade.getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Workbench) {
 				Workbench workbench = (Workbench) assetContainer;
@@ -90,13 +91,13 @@ public class TargetPathCreator
 				Blade blade = workbench.parent();
 				Bladeset bladeset = blade.parent();
 				
-				targetPath = cssResourceContentPathParser.createRequest("blade-workbench-request", bladeset.getName(), blade.getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.WORKBENCH_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
 			}
 			else if(assetContainer instanceof JsLib) {
 				JsLib jsLib = (JsLib) assetContainer;
 				String resourcePath = RelativePathUtility.get(jsLib.dir(), imageFile);
 				
-				targetPath = cssResourceContentPathParser.createRequest("lib-request", jsLib.getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.LIB_REQUEST, jsLib.getName(), resourcePath);
 			}
 			else {
 				throw new ContentFileProcessingException(imageFile, "File does not exist in a known scope");
