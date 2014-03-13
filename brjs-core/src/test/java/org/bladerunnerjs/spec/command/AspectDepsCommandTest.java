@@ -116,7 +116,7 @@ public class AspectDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js'",
-			"    |    |    |    \\--- 'default-aspect/src/appns/pkg/config.xml'", // TODO: mark as (implicit resource)
+			"    |    |    |    \\--- 'default-aspect/src/appns/pkg/config.xml' (implicit resource)",
 			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
 }
