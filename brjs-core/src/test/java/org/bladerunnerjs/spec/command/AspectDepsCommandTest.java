@@ -8,7 +8,6 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.AspectDepsCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -104,13 +103,12 @@ public class AspectDepsCommandTest extends SpecTest {
 			"    (*) - dependencies omitted (listed previously)");
 	}
 	
-	@Ignore
 	@Test
 	public void dependenciesThatOccurDueToRelatedResourcesAreShownCorrectly() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class1", "appns.pkg.NestedClass")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg.NestedClass")
 			.and(aspect).classRequires("appns.Class1", "./pkg/NestedClass")
-			.and(aspect).containsFileWithContents("src/pkg/config.xml", "'appns/Class2'")
+			.and(aspect).containsFileWithContents("src/appns/pkg/config.xml", "'appns/Class2'")
 			.and(aspect).containsEmptyFile("src/pkg/empty-config.xml");
 		when(brjs).runCommand("aspect-deps", "app");
 		then(output).containsText(
@@ -118,7 +116,7 @@ public class AspectDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/pkg/NestedClass.js'",
-			"    |    |    |    \\--- 'default-aspect/src/appns/pkg/config.xml' (implicit resource)",
+			"    |    |    |    \\--- 'default-aspect/src/appns/pkg/config.xml'", // TODO: mark as (implicit resource)
 			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
 }

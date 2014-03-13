@@ -2,18 +2,14 @@ package org.bladerunnerjs.utility.deps;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.Workbench;
@@ -22,11 +18,13 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 
 public class DependencyGraphReportBuilder {
 	public static String createReport(Aspect aspect) throws ModelOperationException {
-		return "Aspect '" + aspect.getName() + "' dependencies found:\n" + createReport(aspect, aspect.seedFiles(), new ForwardDependencyProvider());
+		return "Aspect '" + aspect.getName() + "' dependencies found:\n" + createReport(aspect, aspect.seedFiles(),
+			new MappedDependencyProvider(DependencyGraphBuilder.buildForwardDependencyGraph(aspect), true));
 	}
 	
 	public static String createReport(Workbench workbench) throws ModelOperationException {
-		return "Workbench dependencies found:\n" + createReport(workbench, workbench.seedFiles(), new ForwardDependencyProvider());
+		return "Workbench dependencies found:\n" + createReport(workbench, workbench.seedFiles(),
+			new MappedDependencyProvider(DependencyGraphBuilder.buildForwardDependencyGraph(workbench), true));
 	}
 	
 	public static String createReport(BrowsableNode browsableNode, String requirePath) throws ModelOperationException, RequirePathException {
@@ -34,7 +32,8 @@ public class DependencyGraphReportBuilder {
 		List<LinkedAsset> linkedAssets = new ArrayList<>();
 		linkedAssets.add(sourceModule);
 		
-		return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" + createReport(browsableNode, linkedAssets, new ReverseDependencyProvider(browsableNode));
+		return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" + createReport(browsableNode, linkedAssets,
+			new MappedDependencyProvider(DependencyGraphBuilder.buildReverseDependencyGraph(browsableNode), false));
 	}
 	
 	private static String createReport(BundlableNode bundlableNode, List<LinkedAsset> linkedAssets, DependencyProvider dependencyProvider) throws ModelOperationException {
@@ -100,54 +99,21 @@ public class DependencyGraphReportBuilder {
 		boolean areRootDependenciesSeeds();
 	}
 	
-	private static class ForwardDependencyProvider implements DependencyProvider {
-		@Override
-		public List<LinkedAsset> getDependencies(BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {
-			return new ArrayList<LinkedAsset>(linkedAsset.getDependentSourceModules(bundlableNode));
-		}
+	private static class MappedDependencyProvider implements DependencyProvider {
+		private Map<LinkedAsset, Set<LinkedAsset>> dependencyMap;
+		private boolean areRootDependenciesSeeds;
 		
-		@Override
-		public boolean areRootDependenciesSeeds() {
-			return true;
-		}
-	}
-	
-	private static class ReverseDependencyProvider implements DependencyProvider {
-		private Map<LinkedAsset, Set<LinkedAsset>> inverseDependencies = new LinkedHashMap<>();
-		
-		public ReverseDependencyProvider(BrowsableNode browsableNode) throws ModelOperationException {
-			BundleSet bundleSet = browsableNode.getBundleSet();
-			
-			for(LinkedAsset linkedAsset : browsableNode.seedFiles()) {
-				addInverseDependencies(linkedAsset, linkedAsset.getDependentSourceModules(browsableNode));
-			}
-			
-			for(AssetLocation assetLocation : bundleSet.getResourceNodes()) {
-				for(LinkedAsset linkedAsset : assetLocation.seedResources()) {
-					addInverseDependencies(linkedAsset, linkedAsset.getDependentSourceModules(browsableNode));
-				}
-			}
-			
-			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-				addInverseDependencies(sourceModule, sourceModule.getOrderDependentSourceModules(browsableNode));
-				addInverseDependencies(sourceModule, sourceModule.getDependentSourceModules(browsableNode));
-				
-				for(AssetLocation assetLocation : allAssetLocations(sourceModule)) {
-					for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
-						if(assetLocationLinkedAsset.getDependentSourceModules(browsableNode).size() > 0) {
-							addInverseDependency(sourceModule, assetLocationLinkedAsset);
-						}
-					}
-				}
-			}
+		public MappedDependencyProvider(Map<LinkedAsset, Set<LinkedAsset>> dependencyMap, boolean areRootDependenciesSeeds) throws ModelOperationException {
+			this.dependencyMap = dependencyMap;
+			this.areRootDependenciesSeeds = areRootDependenciesSeeds;
 		}
 		
 		@Override
 		public List<LinkedAsset> getDependencies(BundlableNode bundlableNode, LinkedAsset linkedAsset) {
 			List<LinkedAsset> dependencies =  new ArrayList<>();
 			
-			if(inverseDependencies.containsKey(linkedAsset)) {
-				dependencies.addAll(inverseDependencies.get(linkedAsset));
+			if(dependencyMap.containsKey(linkedAsset)) {
+				dependencies.addAll(dependencyMap.get(linkedAsset));
 			}
 			
 			return dependencies;
@@ -155,29 +121,7 @@ public class DependencyGraphReportBuilder {
 		
 		@Override
 		public boolean areRootDependenciesSeeds() {
-			return false;
-		}
-		
-		private List<AssetLocation> allAssetLocations(SourceModule sourceModule) {
-			List<AssetLocation> assetLocations = new ArrayList<>();
-			assetLocations.add(sourceModule.getAssetLocation());
-			assetLocations.addAll(sourceModule.getAssetLocation().getDependentAssetLocations());
-			
-			return assetLocations;
-		}
-		
-		private void addInverseDependencies(LinkedAsset sourceAsset, List<SourceModule> targetAssets) throws ModelOperationException {
-			for(SourceModule sourceModuleDependency : targetAssets) {
-				addInverseDependency(sourceAsset, sourceModuleDependency);
-			}
-		}
-		
-		private void addInverseDependency(LinkedAsset sourceAsset, LinkedAsset targetAsset) {
-			if(!inverseDependencies.containsKey(targetAsset)) {
-				inverseDependencies.put(targetAsset, new LinkedHashSet<LinkedAsset>());
-			}
-			
-			inverseDependencies.get(targetAsset).add(sourceAsset);
+			return areRootDependenciesSeeds;
 		}
 	}
 }
