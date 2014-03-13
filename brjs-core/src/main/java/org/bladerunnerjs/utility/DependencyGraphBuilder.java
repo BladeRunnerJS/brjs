@@ -118,9 +118,7 @@ public class DependencyGraphBuilder {
 		public ReverseDependencyProvider(BrowsableNode browsableNode) throws ModelOperationException {
 			BundleSet bundleSet = browsableNode.getBundleSet();
 			
-			// TODO: why is Aspect.getSeedFiles() not just part of AssetLocation.seedResources()?
-			// TODO: alternatively, why is Aspect.getSeedFiles() not BrowsableNode.getIndexAsset()?
-			for(LinkedAsset linkedAsset : ((Aspect) browsableNode).getSeedFiles()) {
+			for(LinkedAsset linkedAsset : browsableNode.seedFiles()) {
 				addInverseDependencies(linkedAsset, linkedAsset.getDependentSourceModules(browsableNode));
 			}
 			
