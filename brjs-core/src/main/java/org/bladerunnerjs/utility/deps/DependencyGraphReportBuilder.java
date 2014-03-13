@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
@@ -14,6 +16,7 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class DependencyGraphReportBuilder {
 	public static String createReport(Aspect aspect) throws ModelOperationException {
@@ -26,13 +29,33 @@ public class DependencyGraphReportBuilder {
 			createReport(workbench, workbench.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(workbench), true);
 	}
 	
-	public static String createReport(BrowsableNode browsableNode, String requirePath) throws ModelOperationException, RequirePathException {
-		SourceModule sourceModule = browsableNode.getSourceModule(requirePath);
-		List<LinkedAsset> linkedAssets = new ArrayList<>();
-		linkedAssets.add(sourceModule);
-		
-		return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" +
-			createReport(browsableNode, linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), false);
+	public static String createReport(BrowsableNode browsableNode, String requirePath) throws ModelOperationException {
+		try {
+			SourceModule sourceModule = browsableNode.getSourceModule(requirePath);
+			List<LinkedAsset> linkedAssets = new ArrayList<>();
+			linkedAssets.add(sourceModule);
+			
+			return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" +
+				createReport(browsableNode, linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), false);
+		}
+		catch(RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
+	}
+	
+	public static String createReportForAlias(BrowsableNode browsableNode, String aliasName) throws ModelOperationException {
+		try {
+			AliasDefinition alias = browsableNode.getAlias(aliasName);
+			SourceModule sourceModule = browsableNode.getSourceModule(alias.getRequirePath());
+			List<LinkedAsset> linkedAssets = new ArrayList<>();
+			linkedAssets.add(sourceModule);
+			
+			return "Alias '" + aliasName + "' dependencies found:\n" +
+				createReport(browsableNode, linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), false);
+		}
+		catch(AliasException | ContentFileProcessingException | RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 	
 	private static String createReport(BundlableNode bundlableNode, List<LinkedAsset> linkedAssets, DependencyInfo dependencyInfo, boolean isSeed) throws ModelOperationException {

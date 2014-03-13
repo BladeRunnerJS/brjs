@@ -158,4 +158,17 @@ public class DepInsightCommandTest extends SpecTest {
 			"    |    \\--- 'alias!alias-ref' (alias dep.)",
 			"    |    |    \\--- 'default-aspect/index.html' (seed file)");
 	}
+	
+	@Test
+	public void weCanShowDependenciesForAnAliasToo() throws Exception {
+		given(aspect).indexPageHasAliasReferences("alias-ref")
+			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
+			.and(aspect).hasClass("appns.Class");
+		when(brjs).runCommand("dep-insight", "app", "alias-ref", "-a");
+		then(output).containsText(
+			"Alias 'alias-ref' dependencies found:",
+			"    +--- 'default-aspect/src/appns/Class.js'",
+			"    |    \\--- 'alias!alias-ref' (alias dep.)",
+			"    |    |    \\--- 'default-aspect/index.html' (seed file)");
+	}
 }
