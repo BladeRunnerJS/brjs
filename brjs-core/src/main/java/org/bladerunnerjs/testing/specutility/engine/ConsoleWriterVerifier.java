@@ -29,6 +29,12 @@ public class ConsoleWriterVerifier
 		return verifierChainer;
 	}
 	
+	public VerifierChainer doesNotContainText(String... text) {
+		consoleMessageStore.verifyDoesNotContainText(text);
+		
+		return verifierChainer;
+	}
+	
 	public VerifierChainer noMoreOutput() {
 		consoleMessageStore.verifyNoMoreOutput();
 		return verifierChainer;

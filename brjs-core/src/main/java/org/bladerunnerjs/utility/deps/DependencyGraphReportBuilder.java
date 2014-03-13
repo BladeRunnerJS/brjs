@@ -54,12 +54,13 @@ public class DependencyGraphReportBuilder {
 	private static void addDependency(BundlableNode bundlableNode, LinkedAsset linkedAsset, DependencyInfo dependencyInfo, StringBuilder stringBuilder, Set<LinkedAsset> processedAssets, MutableBoolean hasOmittedDependencies, int indentLevel, boolean isSeed) throws ModelOperationException {
 		appendAssetPath(linkedAsset, dependencyInfo, stringBuilder, indentLevel, isSeed && (indentLevel == 1), processedAssets.contains(linkedAsset));
 		
+		List<LinkedAsset> assetDependencies = getDependencies(bundlableNode, linkedAsset, dependencyInfo);
 		if(processedAssets.add(linkedAsset)) {
-			for(LinkedAsset dependentAsset : getDependencies(bundlableNode, linkedAsset, dependencyInfo)) {
+			for(LinkedAsset dependentAsset : assetDependencies) {
 				addDependency(bundlableNode, dependentAsset, dependencyInfo, stringBuilder, processedAssets, hasOmittedDependencies, indentLevel + 1, isSeed);
 			}
 		}
-		else {
+		else if(assetDependencies.size() > 0) {
 			hasOmittedDependencies.setValue(true);
 		}
 	}
