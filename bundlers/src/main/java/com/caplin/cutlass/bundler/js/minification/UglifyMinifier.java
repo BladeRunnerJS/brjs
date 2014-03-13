@@ -14,8 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 
-import com.caplin.cutlass.EncodingAccessor;
-
 public class UglifyMinifier implements Minifier
 {
 	private ScriptableObject scope;
