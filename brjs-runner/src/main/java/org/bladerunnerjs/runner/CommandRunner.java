@@ -21,7 +21,6 @@ import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.command.analyse.DependencyAnalyserCommand;
 import com.caplin.cutlass.command.analyse.PackageDepsCommand;
 import com.caplin.cutlass.command.check.CheckCommand;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
@@ -137,7 +136,6 @@ public class CommandRunner {
 	private void injectLegacyCommands(BRJS brjs) {
 		try {
 			CommandList commandList = brjs.plugins().commandList();
-			commandList.addCommand(new DependencyAnalyserCommand(brjs));
 			commandList.addCommand(new CheckCommand());
 			commandList.addCommand(new CopyBladesetCommand( brjs.root().dir() ));
 			commandList.addCommand(new ImportApplicationCommand( brjs ));
