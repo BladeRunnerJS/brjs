@@ -41,7 +41,7 @@ public class BRJSServlet extends HttpServlet
 			app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath("/")), App.class);
 			if (app == null)
 			{
-				throw new ServletException("Unable to calculate app. Context path for expected app was '" + servletContext.getRealPath("/") + "'.");
+				throw new ServletException("Unable to calculate app for Servlet. Context path for expected app was '" + servletContext.getRealPath("/") + "'.");
 			}
 		}
 		finally {
