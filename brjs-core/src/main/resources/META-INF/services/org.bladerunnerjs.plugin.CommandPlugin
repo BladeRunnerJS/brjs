@@ -8,3 +8,4 @@ org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.AspectDepsCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.WorkbenchDepsCommand
+org.bladerunnerjs.plugin.plugins.commands.standard.DepInsightCommand
