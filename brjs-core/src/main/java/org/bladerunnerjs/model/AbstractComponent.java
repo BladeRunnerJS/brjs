@@ -6,10 +6,11 @@ import java.util.List;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public abstract class AbstractComponent extends AbstractAssetContainer implements TestableNode
+public abstract class AbstractComponent extends AbstractAssetContainer implements TestableNode, ThemeableNode
 {
 	private final NodeMap<Theme> themes;
 	private final NodeMap<TypedTestPack> testTypes;
@@ -20,11 +21,13 @@ public abstract class AbstractComponent extends AbstractAssetContainer implement
 		testTypes = TypedTestPack.createNodeSet(rootNode);
 	}
 	
+	@Override
 	public List<Theme> themes()
 	{
 		return children(this.themes);
 	}
 	
+	@Override
 	public Theme theme(String name)
 	{
 		return child(this.themes, name);
