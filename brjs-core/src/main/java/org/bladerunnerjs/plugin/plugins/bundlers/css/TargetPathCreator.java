@@ -91,7 +91,7 @@ public class TargetPathCreator
 				Blade blade = workbench.parent();
 				Bladeset bladeset = blade.parent();
 				
-				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADE_WORKBENCH_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
+				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.WORKBENCH_RESOURCES_REQUEST, bladeset.getName(), blade.getName(), resourcePath);
 			}
 			else if(assetContainer instanceof JsLib) {
 				JsLib jsLib = (JsLib) assetContainer;
