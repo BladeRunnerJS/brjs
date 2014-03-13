@@ -20,7 +20,7 @@ public class RequestListVerifier
 
 	public VerifierChainer entriesEqual(String... expectedRequests)
 	{
-		Assert.assertArrayEquals( "incorrect entries, actual entries were: " + StringUtils.join(requests, ", "), expectedRequests , requests.toArray() );
+		Assert.assertEquals( StringUtils.join(expectedRequests, ", ") , StringUtils.join(requests, ", ") );
 		return verifierChainer;
 	}
 
