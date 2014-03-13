@@ -42,21 +42,21 @@ public class DependencyInfoFactory {
 		for(LinkedAsset seedAsset : browsableNode.seedFiles()) {
 			dependencyInfo.seedAssets.add(seedAsset);
 			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(browsableNode));
-			addAliasDependencies(dependencyInfo, browsableNode, seedAsset);
+			addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, seedAsset);
 		}
 		
 		for(AssetLocation assetLocation : bundleSet.getResourceNodes()) {
 			for(LinkedAsset resourceAsset : assetLocation.seedResources()) {
 				dependencyInfo.resourceAssets.add(resourceAsset);
 				addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(browsableNode));
-				addAliasDependencies(dependencyInfo, browsableNode, resourceAsset);
+				addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, resourceAsset);
 			}
 		}
 		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 			addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(browsableNode));
 			addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(browsableNode));
-			addAliasDependencies(dependencyInfo, browsableNode, sourceModule);
+			addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, sourceModule);
 			
 			for(AssetLocation assetLocation : allAssetLocations(sourceModule)) {
 				for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
@@ -94,13 +94,13 @@ public class DependencyInfoFactory {
 		dependencies.map.get(sourceAsset).add(targetAsset);
 	}
 	
-	private static void addAliasDependencies(DependencyInfo dependencies, BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {
+	private static void addAliasDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {
 		try {
 			for(String aliasName : linkedAsset.getAliasNames()) {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
 				AliasAsset aliasAsset = new AliasAsset(alias);
-				addDependency(dependencies, linkedAsset, aliasAsset);
-				addDependency(dependencies, aliasAsset, bundlableNode.getSourceModule(alias.getRequirePath()));
+				dependencyAdder.add(dependencies, linkedAsset, aliasAsset);
+				dependencyAdder.add(dependencies, aliasAsset, bundlableNode.getSourceModule(alias.getRequirePath()));
 			}
 		}
 		catch(AliasException | ContentFileProcessingException | RequirePathException e) {

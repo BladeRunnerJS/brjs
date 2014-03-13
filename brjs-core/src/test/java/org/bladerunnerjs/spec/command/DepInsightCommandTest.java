@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.command;
 
+import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
@@ -14,6 +15,7 @@ import org.junit.Test;
 public class DepInsightCommandTest extends SpecTest {
 	App app;
 	Aspect aspect;
+	AliasesFile aliasesFile;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -24,6 +26,7 @@ public class DepInsightCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
+			aliasesFile = aspect.aliasesFile();
 	}
 	
 	@Test
@@ -141,5 +144,18 @@ public class DepInsightCommandTest extends SpecTest {
 			"    |    |    \\--- 'default-aspect/src/appns/pkg/InnerClass.js'",
 			"    |    |    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    |    |    \\--- 'default-aspect/index.html' (seed file)");
+	}
+	
+	@Test
+	public void aliasedDependenciesAreCorrectlyDisplayed() throws Exception {
+		given(aspect).indexPageHasAliasReferences("alias-ref")
+			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
+			.and(aspect).hasClass("appns.Class");
+		when(brjs).runCommand("dep-insight", "app", "appns/Class");
+		then(output).containsText(
+			"Source module 'appns/Class' dependencies found:",
+			"    +--- 'default-aspect/src/appns/Class.js'",
+			"    |    \\--- 'alias!alias-ref' (alias dep.)",
+			"    |    |    \\--- 'default-aspect/index.html' (seed file)");
 	}
 }
