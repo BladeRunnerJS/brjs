@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.DependencyGraphBuilder;
+import org.bladerunnerjs.utility.deps.DependencyGraphReportBuilder;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -67,7 +67,7 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 		if(!workbench.dirExists()) throw new NodeDoesNotExistException(workbench, "workbench", this);
 		
 		try {
-			out.println(DependencyGraphBuilder.createDependencyGraph(workbench));
+			out.println(DependencyGraphReportBuilder.createReport(workbench));
 		}
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);

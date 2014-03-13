@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.DependencyGraphBuilder;
+import org.bladerunnerjs.utility.deps.DependencyGraphReportBuilder;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -62,7 +62,7 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 		if(!aspect.dirExists()) throw new NodeDoesNotExistException(aspect, this);
 		
 		try {
-			out.println(DependencyGraphBuilder.createDependencyGraph(aspect, requirePath));
+			out.println(DependencyGraphReportBuilder.createReport(aspect, requirePath));
 		}
 		catch (ModelOperationException | RequirePathException e) {
 			throw new CommandOperationException(e);

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.utility;
+package org.bladerunnerjs.utility.deps;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,24 +20,24 @@ import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 
-public class DependencyGraphBuilder {
-	public static String createDependencyGraph(Aspect aspect) throws ModelOperationException {
-		return "Aspect '" + aspect.getName() + "' dependencies found:\n" + createDependencyReport(aspect, aspect.seedFiles(), new ForwardDependencyProvider());
+public class DependencyGraphReportBuilder {
+	public static String createReport(Aspect aspect) throws ModelOperationException {
+		return "Aspect '" + aspect.getName() + "' dependencies found:\n" + createReport(aspect, aspect.seedFiles(), new ForwardDependencyProvider());
 	}
 	
-	public static String createDependencyGraph(Workbench workbench) throws ModelOperationException {
-		return "Workbench dependencies found:\n" + createDependencyReport(workbench, workbench.seedFiles(), new ForwardDependencyProvider());
+	public static String createReport(Workbench workbench) throws ModelOperationException {
+		return "Workbench dependencies found:\n" + createReport(workbench, workbench.seedFiles(), new ForwardDependencyProvider());
 	}
 	
-	public static String createDependencyGraph(BrowsableNode browsableNode, String requirePath) throws ModelOperationException, RequirePathException {
+	public static String createReport(BrowsableNode browsableNode, String requirePath) throws ModelOperationException, RequirePathException {
 		SourceModule sourceModule = browsableNode.getSourceModule(requirePath);
 		List<LinkedAsset> linkedAssets = new ArrayList<>();
 		linkedAssets.add(sourceModule);
 		
-		return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" + createDependencyReport(browsableNode, linkedAssets, new ReverseDependencyProvider(browsableNode));
+		return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" + createReport(browsableNode, linkedAssets, new ReverseDependencyProvider(browsableNode));
 	}
 	
-	private static String createDependencyReport(BundlableNode bundlableNode, List<LinkedAsset> linkedAssets, DependencyProvider dependencyProvider) throws ModelOperationException {
+	private static String createReport(BundlableNode bundlableNode, List<LinkedAsset> linkedAssets, DependencyProvider dependencyProvider) throws ModelOperationException {
 		StringBuilder stringBuilder = new StringBuilder();
 		HashSet<LinkedAsset> processedAssets = new HashSet<>();
 		MutableBoolean hasOmittedDependencies = new MutableBoolean(false);

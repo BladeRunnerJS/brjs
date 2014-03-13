@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.DependencyGraphBuilder;
+import org.bladerunnerjs.utility.deps.DependencyGraphReportBuilder;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -59,7 +59,7 @@ public class AspectDepsCommand extends ArgsParsingCommandPlugin
 		if(!aspect.dirExists()) throw new NodeDoesNotExistException(aspect, this);
 		
 		try {
-			out.println(DependencyGraphBuilder.createDependencyGraph(aspect));
+			out.println(DependencyGraphReportBuilder.createReport(aspect));
 		}
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
