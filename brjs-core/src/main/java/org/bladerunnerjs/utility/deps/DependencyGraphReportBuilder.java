@@ -53,7 +53,10 @@ public class DependencyGraphReportBuilder {
 			return "Alias '" + aliasName + "' dependencies found:\n" +
 				createReport(browsableNode, linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), false);
 		}
-		catch(AliasException | ContentFileProcessingException | RequirePathException e) {
+		catch(AliasException | RequirePathException e) {
+			return e.getMessage();
+		}
+		catch(ContentFileProcessingException e) {
 			throw new ModelOperationException(e);
 		}
 	}

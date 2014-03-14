@@ -171,4 +171,20 @@ public class DepInsightCommandTest extends SpecTest {
 			"    |    \\--- 'alias!alias-ref' (alias dep.)",
 			"    |    |    \\--- 'default-aspect/index.html' (seed file)");
 	}
+	
+	@Test
+	public void requestingDependenciesForANonExistentAliasProvidesANiceMessage() throws Exception {
+		given(aspect).hasBeenCreated();
+		when(brjs).runCommand("dep-insight", "app", "alias-ref", "-a");
+		then(output).containsText(
+			"Alias 'alias-ref' has not been defined within '" + aliasesFile.getUnderlyingFile().getPath() + "' or any other files that it inherits from");
+	}
+	
+	@Test
+	public void requestingDependenciesForAnAliasThatPointsToANonExistentSourceModuleProvidesANiceMessage() throws Exception {
+		given(aliasesFile).hasAlias("alias-ref", "NonExistentClass");
+		when(brjs).runCommand("dep-insight", "app", "alias-ref", "-a");
+		then(output).containsText(
+			"Source file 'NonExistentClass' could not be found.");
+	}
 }
