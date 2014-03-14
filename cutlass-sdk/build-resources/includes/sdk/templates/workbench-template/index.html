@@ -11,11 +11,7 @@
 		<@js.bundle @/>
 		
 		<script type="text/javascript">
-			// Register application EventHub. Required until the following is fixed:
-			// https://github.com/BladeRunnerJS/brjs/issues/354
 			var ServiceRegistry = require( 'br/ServiceRegistry' );
-			var EventHub = require( 'br/EventHub' );
-			ServiceRegistry.registerService( 'br.event-hub', new EventHub() );
 
 			function addEventHubLogger( workbench ) {
 				var eventHub = ServiceRegistry.getService( 'br.event-hub' );
