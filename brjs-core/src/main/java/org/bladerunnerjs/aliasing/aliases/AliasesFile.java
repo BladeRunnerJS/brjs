@@ -98,7 +98,7 @@ public class AliasesFile {
 			aliasDefinition = new AliasDefinition(aliasOverride.getName(), aliasOverride.getClassName(), aliasDefinition.getInterfaceName());
 		}
 		
-		if((aliasDefinition.getClassName() == null) || aliasDefinition.getClassName().equals("")) {
+		if((aliasDefinition.getClassName() == null)) {
 			throw new IncompleteAliasException(file, aliasDefinition.getName());
 		}
 		
