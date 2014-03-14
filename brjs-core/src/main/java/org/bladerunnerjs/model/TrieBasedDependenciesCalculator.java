@@ -111,7 +111,8 @@ public class TrieBasedDependenciesCalculator
 					
 					for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
 						if(!trie.containsKey(aliasOverride.getName())) {
-							addToTrie(trie, aliasOverride.getName(), new AliasReference(aliasOverride.getName()));
+							addToTrie(trie, "'" + aliasOverride.getName() + "'", new AliasReference(aliasOverride.getName()));
+							addToTrie(trie, "\"" + aliasOverride.getName() + "\"", new AliasReference(aliasOverride.getName()));
 						}
 					}
 				}

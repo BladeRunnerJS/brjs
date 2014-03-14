@@ -7,6 +7,7 @@ import java.util.List;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.BundlableNode;
@@ -77,7 +78,7 @@ public class AliasesFile {
 		data.aliasOverrides.add(aliasOverride);
 	}
 	
-	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, ContentFileProcessingException {
+	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException {
 		AliasOverride aliasOverride = getLocalAliasOverride(aliasName);
 		AliasDefinition aliasDefinition = getAliasDefinition(aliasName);
 		AliasOverride groupAliasOverride = getGroupAliasOverride(aliasName);
@@ -95,6 +96,10 @@ public class AliasesFile {
 		}
 		else if(aliasOverride != null) {
 			aliasDefinition = new AliasDefinition(aliasOverride.getName(), aliasOverride.getClassName(), aliasDefinition.getInterfaceName());
+		}
+		
+		if((aliasDefinition.getClassName() == null)) {
+			throw new IncompleteAliasException(file, aliasDefinition.getName());
 		}
 		
 		return aliasDefinition;

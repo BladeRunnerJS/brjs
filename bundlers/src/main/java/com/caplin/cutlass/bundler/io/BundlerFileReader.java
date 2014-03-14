@@ -9,8 +9,6 @@ import java.io.PushbackInputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
-import com.caplin.cutlass.EncodingAccessor;
-
 public class BundlerFileReader extends Reader
 {
 	private boolean readStarted;
@@ -21,7 +19,7 @@ public class BundlerFileReader extends Reader
 	{
 		FileInputStream fileInputStream = new FileInputStream(file);
 		pushbackInputStream = new PushbackInputStream(fileInputStream, 3);
-		inputStreamReader = new InputStreamReader(pushbackInputStream, EncodingAccessor.getDefaultInputEncoding());
+		inputStreamReader = new InputStreamReader(pushbackInputStream, "UTF-8");
 	}
 	
 	@Override

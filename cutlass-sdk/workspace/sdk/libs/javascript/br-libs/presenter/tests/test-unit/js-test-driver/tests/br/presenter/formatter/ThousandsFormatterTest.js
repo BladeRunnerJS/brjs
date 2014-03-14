@@ -3,6 +3,13 @@ ThousandsFormatterTest = TestCase("ThousandsFormatterTest");
 ThousandsFormatterTest.prototype.setUp = function()
 {
 	this.oFormatter = new br.presenter.formatter.ThousandsFormatter();
+	
+	this.definitionRegistry = require('br/TestDefinitionRegistry').install();
+};
+
+ThousandsFormatterTest.prototype.tearDown = function()
+{
+	this.definitionRegistry.uninstall();
 };
 
 ThousandsFormatterTest.prototype.test_nonDecimals = function()
@@ -78,6 +85,14 @@ ThousandsFormatterTest.prototype.test_toString = function() {
 
 ThousandsFormatterTest.prototype.test_preFormatedNumbers = function()
 {
+	var Translator = require('br/i18n/Translator');
+	var I18N = require('br/i18n/I18N');
+	
+	this.definitionRegistry.define('br/I18n', I18N.create(new Translator({
+		"br.i18n.number.grouping.separator":".",
+		"br.i18n.decimal.radix.character":","
+	})));
+	
 	this.oFormatter = new br.presenter.formatter.ThousandsFormatter();
 
 	assertEquals("1,000", this.oFormatter.format("1.000", {}));

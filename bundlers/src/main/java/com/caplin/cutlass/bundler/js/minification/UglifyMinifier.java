@@ -14,8 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 
-import com.caplin.cutlass.EncodingAccessor;
-
 public class UglifyMinifier implements Minifier
 {
 	private ScriptableObject scope;
@@ -75,7 +73,7 @@ public class UglifyMinifier implements Minifier
 		
 		for(File sourceFile : sourceFiles)
 		{
-			String sourceCode = FileUtils.readFileToString(sourceFile, EncodingAccessor.getDefaultInputEncoding());
+			String sourceCode = FileUtils.readFileToString(sourceFile, "UTF-8");
 			convertedSourceFiles.add(new SourceFile(sourceFile.getPath(), sourceCode));
 		}
 		

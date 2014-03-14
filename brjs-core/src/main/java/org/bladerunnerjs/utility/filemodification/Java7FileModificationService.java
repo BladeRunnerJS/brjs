@@ -4,13 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.WatchService;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	private final WatchService watchService;
-	private final ConcurrentMap<String, Java7FileModificationInfo> fileModificationInfos = new ConcurrentHashMap<>();
+	private final Map<String, Java7FileModificationInfo> fileModificationInfos = new HashMap<>();
 	private final PessimisticFileModificationInfo pessimisticFileModificationInfo = new PessimisticFileModificationInfo();
+	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 	private boolean running = true;
 	
 	public Java7FileModificationService() {
@@ -59,7 +60,10 @@ public class Java7FileModificationService implements FileModificationService, Ru
 				fileModificationInfo.close();
 			}
 			
-			watchService.close();
+			// TODO: Waiting on Java bug fix http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8029516, github issue #385
+			if(!isWindows) {
+				 watchService.close();
+			}
 		}
 		catch(InterruptedException | IOException e) {
 			throw new RuntimeException(e);

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.EncodingAccessor;
@@ -57,6 +58,7 @@ public class UnicodeBundlerTest
 		assertEquals("€", results.get("app.eurosign"));
 	}
 	
+	@Ignore // TODO we are no longer relying on the old bladerunner conf and have hard-coded this to UTF-8
 	@Test
 	public void utf8BecomesGarbledWhenInputEncodingIsLatin1() throws Exception
 	{
@@ -77,6 +79,7 @@ public class UnicodeBundlerTest
 		assertEquals("€", results.get("app.eurosign"));
 	}
 	
+	@Ignore // TODO we are no longer relying on the old bladerunner conf and have hard-coded this to UTF-8
 	@Test
 	public void outputEncodingCanBeSetToUtf16() throws Exception
 	{
@@ -87,6 +90,7 @@ public class UnicodeBundlerTest
 		assertEquals("€", results.get("app.eurosign"));
 	}
 	
+	@Ignore // TODO we are no longer relying on the old bladerunner conf and have hard-coded this to UTF-8
 	@Test(expected=JsonSyntaxException.class)
 	public void verifyOutputEncodingIsDefinitelyUtf16() throws Exception
 	{

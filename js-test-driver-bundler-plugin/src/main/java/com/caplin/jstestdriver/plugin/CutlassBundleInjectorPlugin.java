@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.utility.filemodification.OptimisticFileModificationService;
 import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
@@ -31,7 +32,7 @@ public class CutlassBundleInjectorPlugin extends AbstractModule
     			.pkg("brjs.core").logsAt(LogLevel.WARN);
     		logConfigurator.setLogLevel(LogLevel.INFO);
     		
-    		brjs = BRJSAccessor.initialize(new BRJS(new File(".").getCanonicalFile(), logConfigurator));
+    		brjs = BRJSAccessor.initialize(new BRJS(new File(".").getCanonicalFile(), logConfigurator, new OptimisticFileModificationService()));
     		BRJSThreadSafeModelAccessor.initializeModel(brjs);
 		}
 		finally

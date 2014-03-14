@@ -29,9 +29,9 @@ public class BundleSetBuilder {
 	private static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Set<SourceModule> testSourceModules = new LinkedHashSet<>();
-	private final Set<AliasDefinition> activeAliases = new HashSet<>();
+	private final Set<AliasDefinition> activeAliases = new LinkedHashSet<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
-	private final Set<AssetLocation> assetLocations = new HashSet<>();
+	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
 	
@@ -48,7 +48,7 @@ public class BundleSetBuilder {
 			activeAliasList.addAll(activeAliases);
 			resourceLocationList.addAll(assetLocations);
 			
-			for(AliasDefinition aliasDefinition : activeAliases) {
+			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases)) {
 				addSourceModule(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
 			}
 		}
@@ -160,7 +160,7 @@ public class BundleSetBuilder {
 		Set<LinkedAsset> metDependencies = new HashSet<>();		
 		
 		while(!sourceModules.isEmpty()) {
-			Set<SourceModule> unprocessedSourceModules = new HashSet<>();
+			Set<SourceModule> unprocessedSourceModules = new LinkedHashSet<>();
 			boolean progressMade = false;
 			
 			for(SourceModule sourceModule : sourceModules) {

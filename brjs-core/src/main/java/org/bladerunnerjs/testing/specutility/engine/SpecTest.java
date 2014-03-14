@@ -24,6 +24,7 @@ import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.NodeProperties;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.testing.specutility.AppBuilder;
 import org.bladerunnerjs.testing.specutility.AppCommander;
@@ -164,6 +165,7 @@ public abstract class SpecTest
 	protected ExceptionsBuilder given(List<Throwable> exceptions) { return new ExceptionsBuilder(this, exceptions); }
 	public ExceptionsVerifier then(List<Throwable> exceptions) { return new ExceptionsVerifier(this, exceptions); }
 	public StringBuilder unquoted(String string) { return new StringBuilder(string); }
+	public StringBuilder doubleQuoted(String string) { return new StringBuilder("\"" + string + "\""); }
 	
 	// logging
 	public LoggerBuilder given(LogMessageStore logStore) { return new LoggerBuilder(this, logStore); }
@@ -253,6 +255,9 @@ public abstract class SpecTest
 	public AppServerBuilder given(ApplicationServer appServer) { return new AppServerBuilder(this, appServer); }
 	public AppServerCommander when(ApplicationServer appServer) { return new AppServerCommander(this, appServer); }
 	public AppServerVerifier then(ApplicationServer appServer) { return new AppServerVerifier(this, appServer); }
+
+	// Content Plugins
+	public ContentPluginCommander when(ContentPlugin contentPlugin) { return new ContentPluginCommander(this, contentPlugin); }
 	
 	// JettyServer
 	public JettyServerBuilder given(Server jettyServer) { return new JettyServerBuilder(this, jettyServer); }
@@ -271,6 +276,10 @@ public abstract class SpecTest
 	// Dir Observer
 	public SpecTestDirObserverBuilder given(SpecTestDirObserver observer) { return new SpecTestDirObserverBuilder(this, observer); }
 	public SpecTestDirObserverCommander then(SpecTestDirObserver observer) { return new SpecTestDirObserverCommander(this, observer); }
+	
+	//TODO: we might find we need a better way to deal with multiple methods that want to return different verifiers based on a List
+	public RequestListVerifier thenRequests(List<String> requests) { return new RequestListVerifier(this, requests); }
+	
 	
 	private File createTestSdkDirectory() {
 		File sdkDir;

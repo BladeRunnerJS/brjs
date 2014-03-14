@@ -25,7 +25,6 @@ import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.conf.AppConf;
 import com.caplin.cutlass.filter.bundlerfilter.token.CSSBundleTokenProcessor;
 import com.caplin.cutlass.filter.bundlerfilter.token.I18nBundleTokenProcessor;
@@ -84,7 +83,7 @@ public class BundlerTokenFilter implements Filter
 					logger.debug("processing and replacing bundler tokens within response.");
 					
 					StringBuffer filteredResponse = tokenProcessor.replaceTokens(appConf, httpRequest, responseWrapper.getReader());
-					byte[] filteredData = filteredResponse.toString().getBytes(EncodingAccessor.getDefaultOutputEncoding());
+					byte[] filteredData = filteredResponse.toString().getBytes("UTF-8");
 					response.setContentLength(filteredData.length);
 					out.write(filteredData);
 				}

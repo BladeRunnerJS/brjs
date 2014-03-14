@@ -8,6 +8,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -70,7 +71,7 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		Set<SourceModule> dependentSourceModules = new HashSet<>();
+		Set<SourceModule> dependentSourceModules = new LinkedHashSet<>();
 		
 		try {
 			if (fileModifiedChecker.fileModifiedSinceLastCheck() || patchFileModifiedChecker.fileModifiedSinceLastCheck()) {
