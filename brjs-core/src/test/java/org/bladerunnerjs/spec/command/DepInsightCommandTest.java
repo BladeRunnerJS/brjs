@@ -96,6 +96,14 @@ public class DepInsightCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void requestingDependenciesForANonExistentSourceModuleProvidesANiceMessage() throws Exception {
+		given(aspect).hasBeenCreated();
+		when(brjs).runCommand("dep-insight", "app", "NonExistentClass");
+		then(output).containsText(
+			"Source file 'NonExistentClass' could not be found.");
+	}
+	
+	@Test
 	public void resourceDependenciesAreShownAheadOfClassDependenciesSinceTheyReflectUltimateLeafNodesOfGreaterImportanceToTheUser() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")

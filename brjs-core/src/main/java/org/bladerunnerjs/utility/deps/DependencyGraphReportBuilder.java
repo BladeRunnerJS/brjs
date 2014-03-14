@@ -39,7 +39,7 @@ public class DependencyGraphReportBuilder {
 				createReport(browsableNode, linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), false);
 		}
 		catch(RequirePathException e) {
-			throw new ModelOperationException(e);
+			return e.getMessage();
 		}
 	}
 	
