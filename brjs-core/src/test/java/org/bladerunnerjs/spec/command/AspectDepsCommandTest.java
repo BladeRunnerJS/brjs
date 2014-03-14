@@ -89,7 +89,7 @@ public class AspectDepsCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void ifTheSameAssetIsFoundTwiceThenItsOnlyShownTheFirstTimeByDefault() throws Exception {
+	public void ifTheSameAssetIsFoundTwiceThenOnlyTheFirstEncounteredInstanceIsShownByDefault() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classRequires("appns.Class1", "./Class2")
@@ -153,8 +153,6 @@ public class AspectDepsCommandTest extends SpecTest {
 			"    (*) - subsequent instances not shown (use -A or --all to show)");
 	}
 	
-	// TODO: following tests have been switched to use --all as they have not yet been converted based on the new default
-	
 	@Test
 	public void dependenciesThatOccurDueToRelatedResourcesAreShownCorrectly() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
@@ -162,7 +160,7 @@ public class AspectDepsCommandTest extends SpecTest {
 			.and(aspect).classRequires("appns.Class1", "./pkg/NestedClass")
 			.and(aspect).containsFileWithContents("src/appns/pkg/config.xml", "'appns/Class2'")
 			.and(aspect).containsEmptyFile("src/pkg/empty-config.xml");
-		when(brjs).runCommand("aspect-deps", "app", "--all");
+		when(brjs).runCommand("aspect-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
@@ -178,7 +176,7 @@ public class AspectDepsCommandTest extends SpecTest {
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg1.pkg2.NestedClass")
 			.and(aspect).classRequires("appns.Class1", "./pkg1/pkg2/NestedClass")
 			.and(aspect).containsFileWithContents("src/appns/pkg1/config.xml", "'appns/Class2'");
-		when(brjs).runCommand("aspect-deps", "app", "--all");
+		when(brjs).runCommand("aspect-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
@@ -193,7 +191,7 @@ public class AspectDepsCommandTest extends SpecTest {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
 			.and(aspect).hasClass("appns.Class");
-		when(brjs).runCommand("aspect-deps", "app", "--all");
+		when(brjs).runCommand("aspect-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
@@ -209,7 +207,7 @@ public class AspectDepsCommandTest extends SpecTest {
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classRefersToAlias("appns.Class1", "alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class2");
-		when(brjs).runCommand("aspect-deps", "app", "--all");
+		when(brjs).runCommand("aspect-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
@@ -225,7 +223,7 @@ public class AspectDepsCommandTest extends SpecTest {
 			.and(aspect).classRequires("appns.Class1", "./pkg/NestedClass")
 			.and(aspect).containsFileWithContents("src/appns/pkg/config.xml", "'alias-ref'")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class2");
-		when(brjs).runCommand("aspect-deps", "app", "--all");
+		when(brjs).runCommand("aspect-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",

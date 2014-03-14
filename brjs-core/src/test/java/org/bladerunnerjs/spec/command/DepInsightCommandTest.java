@@ -119,13 +119,31 @@ public class DepInsightCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void ifTheSameAssetIsFoundTwiceThenItsDependenciesAreOnlyShownTheFirstTime() throws Exception {
+	public void byDefaultDependenciesAreOnlyShownTheFirstTimeTheyAreEncountered() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classRequires("appns.Class1", "./Class2")
 			.and(aspect).classRequires("appns.Class2", "./Class3")
 			.and(aspect).classRequires("appns.Class3", "./Class1");
-		when(brjs).runCommand("dep-insight", "app", "appns/Class3", "--all"); // TODO: forced to all for the time being to keep working
+		when(brjs).runCommand("dep-insight", "app", "appns/Class3");
+		then(output).containsText(
+			"Source module 'appns/Class3' dependencies found:",
+			"    +--- 'default-aspect/src/appns/Class3.js' (*)",
+			"    |    \\--- 'default-aspect/src/appns/Class2.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/Class1.js'",
+			"    |    |    |    \\--- 'default-aspect/index.html' (seed file)",
+			"",
+			"    (*) - subsequent instances not shown (use -A or --all to show)");
+	}
+	
+	@Test
+	public void whenUsingTheAllSwitchIfTheSameAssetIsFoundTwiceThenItsDependenciesAreOnlyShownTheFirstTime() throws Exception {
+		given(aspect).indexPageRequires("appns/Class1")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classRequires("appns.Class1", "./Class2")
+			.and(aspect).classRequires("appns.Class2", "./Class3")
+			.and(aspect).classRequires("appns.Class3", "./Class1");
+		when(brjs).runCommand("dep-insight", "app", "appns/Class3", "--all");
 		then(output).containsText(
 			"Source module 'appns/Class3' dependencies found:",
 			"    +--- 'default-aspect/src/appns/Class3.js'",
