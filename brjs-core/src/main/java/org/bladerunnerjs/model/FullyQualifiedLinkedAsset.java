@@ -67,11 +67,10 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	public String getAssetPath() {
 		return assetPath;
 	}
-
+	
 	@Override
 	public AssetLocation getAssetLocation()
 	{
 		return assetLocation;
 	}
-	
 }
