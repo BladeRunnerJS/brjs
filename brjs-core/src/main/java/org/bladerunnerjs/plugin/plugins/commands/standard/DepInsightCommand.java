@@ -28,7 +28,8 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the application to show dependencies for"));
 		argsParser.registerParameter(new UnflaggedOption("require-path").setRequired(true).setHelp("the source module to show dependencies for"));
 		argsParser.registerParameter(new UnflaggedOption("aspect-name").setDefault("default").setHelp("the aspect to show dependencies for"));
-		argsParser.registerParameter(new Switch("alias").setShortFlag('a').setDefault("false").setHelp("display dependencies for an alias rather than a require path"));
+		argsParser.registerParameter(new Switch("alias").setShortFlag('a').setLongFlag("alias").setDefault("false").setHelp("display dependencies for an alias rather than a require path"));
+		argsParser.registerParameter(new Switch("all").setShortFlag('A').setLongFlag("all").setDefault("false").setHelp("show all ocurrences of a dependency"));
 	}
 	
 	@Override
@@ -56,6 +57,7 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 		String aspectName = parsedArgs.getString("aspect-name");
 		String requirePathOrAlias = parsedArgs.getString("require-path");
 		boolean isAlias = parsedArgs.getBoolean("alias");
+		boolean showAllDependencies = parsedArgs.getBoolean("all");
 		
 		App app = brjs.app(appName);
 		Aspect aspect = app.aspect(aspectName);
@@ -65,10 +67,10 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 		
 		try {
 			if(isAlias) {
-				out.println(DependencyGraphReportBuilder.createReportForAlias(aspect, requirePathOrAlias));
+				out.println(DependencyGraphReportBuilder.createReportForAlias(aspect, requirePathOrAlias, showAllDependencies));
 			}
 			else {
-				out.println(DependencyGraphReportBuilder.createReport(aspect, requirePathOrAlias));
+				out.println(DependencyGraphReportBuilder.createReport(aspect, requirePathOrAlias, showAllDependencies));
 			}
 		}
 		catch (ModelOperationException e) {
