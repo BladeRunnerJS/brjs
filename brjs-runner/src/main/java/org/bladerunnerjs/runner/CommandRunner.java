@@ -130,7 +130,6 @@ public class CommandRunner {
 	private void setDefaultLogLevel() {
 		LogConfiguration logConfigurator = new ConsoleLoggerConfigurator(getRootLogger());
 		logConfigurator.ammendProfile(LogLevel.INFO)
-			.pkg("brjs.core").logsAt(LogLevel.WARN)
 			.pkg("org.hibernate").logsAt(LogLevel.WARN); // TODO: this is a plugin concern, so should be handled within the model
 		logConfigurator.setLogLevel(LogLevel.INFO);
 	}

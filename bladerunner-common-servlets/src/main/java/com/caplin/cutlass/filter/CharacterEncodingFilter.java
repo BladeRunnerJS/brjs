@@ -13,7 +13,6 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 
-import com.caplin.cutlass.EncodingAccessor;
 import com.caplin.cutlass.ServletModelAccessor;
 
 public class CharacterEncodingFilter implements Filter
@@ -36,11 +35,11 @@ public class CharacterEncodingFilter implements Filter
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
 	{
-		logger.debug("setting character encoding to '" + EncodingAccessor.getDefaultOutputEncoding() + "'");
+		logger.debug("setting character encoding to 'UTF-8'");
 		
 		// TODO: this should actually only be done after the response has come back, and once we know that this is actually character
 		// stream data, but this would be too costly using the current filter set-up
-		response.setCharacterEncoding(EncodingAccessor.getDefaultOutputEncoding());
+		response.setCharacterEncoding("UTF-8");
 		chain.doFilter(request, response);
 	}
 }

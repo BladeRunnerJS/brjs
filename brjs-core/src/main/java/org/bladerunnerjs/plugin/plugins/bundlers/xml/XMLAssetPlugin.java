@@ -55,7 +55,7 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	private class XMLAssetFilter implements AssetFilter {
 		@Override
 		public boolean accept(String assetName) {
-			return (assetName.endsWith(".xml") && !assetName.equals("aliases.xml"));
+			return (assetName.endsWith(".xml") && !assetName.equals("aliases.xml")  && !assetName.equals("aliasDefinitions.xml"));
 		}
 	}
 }

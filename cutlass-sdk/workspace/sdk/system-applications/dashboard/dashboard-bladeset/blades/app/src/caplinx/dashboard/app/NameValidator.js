@@ -6,7 +6,7 @@ caplinx.dashboard.app.NameValidator = function()
 /**
  * @static
  */
-caplinx.dashboard.app.NameValidator.RESERVED_JS_WORDS = ['break', 'case', 'catch', 'continue', 'debugger', 'default', 'delete', 'do', 'else', 'finally', 'for', 'function', 'if', 'in', 'instanceof', 'new', 'return', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void', 'while', 'with', 'class', 'const', 'enum', 'export', 'extends', 'import', 'super', 'implements', 'interface', 'let', 'package', 'private', 'protected', 'public', 'static', 'yield'];
+caplinx.dashboard.app.NameValidator.RESERVED_JS_WORDS = ['break', 'case', 'catch', 'continue', 'deb'+'ugger', 'default', 'delete', 'do', 'else', 'finally', 'for', 'function', 'if', 'in', 'instanceof', 'new', 'return', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void', 'while', 'with', 'class', 'const', 'enum', 'export', 'extends', 'import', 'super', 'implements', 'interface', 'let', 'package', 'private', 'protected', 'public', 'static', 'yield'];
 
 /**
  * @static

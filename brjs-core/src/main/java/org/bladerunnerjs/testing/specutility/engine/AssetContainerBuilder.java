@@ -119,6 +119,12 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return classRequires(sourceClass, dependencyClass, sourceFile);
 	}
 	
+	public BuilderChainer classRefersToAlias(String sourceClass, String alias) throws Exception
+	{
+		File sourceFile = getSourceFile(sourceClass);
+		return classRefersTo(sourceClass, sourceFile, "'" + alias + "'");
+	}
+	
 	public BuilderChainer classFileHasContent(String sourceClass, String content) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);

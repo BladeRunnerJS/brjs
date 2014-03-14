@@ -31,7 +31,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("resources/style.css");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("resources/style.css");
+		then(requestResponse).containsText("resources/style.css");
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("resources/dir1/dir2/style.css");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("resources/dir1/dir2/style.css");
+		then(requestResponse).containsText("resources/dir1/dir2/style.css");
 	}
 	
 	@Test
@@ -92,7 +92,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/common/style.css");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("themes/common/style.css");
+		then(requestResponse).containsText("themes/common/style.css");
 	}
 	
 	@Test
@@ -110,7 +110,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/theme1/style.css");
 		when(app).requestReceived("/default-aspect/css/theme1/bundle.css", requestResponse);
-		then(requestResponse).containsOrderedTextFragments("themes/theme1/style.css");
+		then(requestResponse).containsText("themes/theme1/style.css");
 	}
 	
 	@Test
@@ -191,7 +191,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img.png');}");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/theme_common/img.png\");}");
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img.png\");}");
 	}
 	
 	@Test
@@ -200,7 +200,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img/img.png');}");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/theme_common/img/img.png\");}");
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img/img.png\");}");
 	}
 	
 	@Test
@@ -209,7 +209,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../img.png');}");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/theme_common/img.png\");}");
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img.png\");}");
 	}
 	
 	@Test

@@ -30,6 +30,13 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer indexPageHasAliasReferences(String... aliasReferences) throws Exception 
+	{
+		fileUtil.write(aspect.file("index.html"), generateStringAliasReferencesContent(aliasReferences));	
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer sourceResourceFileRefersTo(String resourceFileName, String... classNames) throws Exception 
 	{
 		fileUtil.write(aspect.assetLocation("src").file(resourceFileName), generateRootRefContentForClasses(classNames));
@@ -63,6 +70,17 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		for(String className : classNames)
 		{
 			content += className + "\n";
+		}
+		return content;
+	}
+	
+	private String generateStringAliasReferencesContent(String... aliasReferences) 
+	{
+		String content = "";
+		
+		for(String alias : aliasReferences)
+		{
+			content += "'" + alias + "'\n";
 		}
 		return content;
 	}

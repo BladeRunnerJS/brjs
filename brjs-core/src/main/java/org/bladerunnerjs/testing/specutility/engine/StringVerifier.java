@@ -24,11 +24,8 @@ public class StringVerifier {
 		this.verifierChainer = new VerifierChainer(specTest);
 	}
 	
-	public VerifierChainer containsText(String... substrings) {
-		for(String substring : substrings)
-		{
-			assertContains(substring, string);
-		}
+	public VerifierChainer containsText(String substring) {
+		assertContains(substring, string);
 		
 		return verifierChainer;
 	}
@@ -155,6 +152,13 @@ public class StringVerifier {
 	}
 
 	public VerifierChainer containsOrderedTextFragments(String... textFragments) {
+		if(textFragments.length == 0) {
+			throw new RuntimeException("containsOrderedTextFragments() invoked without arguments.");
+		}
+		else if(textFragments.length == 1) {
+			throw new RuntimeException("containsOrderedTextFragments() should only be used when there is more than one text fragment; please use containsText() instead.");
+		}
+		
 		List<String> escapedTextFragments = new LinkedList<String>();
 		for (String fragment : textFragments)
 		{
