@@ -234,10 +234,7 @@ file("workspace/sdk/libs/javascript/br-libs").listFiles().each {
 }
 
 // delete a line to enable the tests for that library
-project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('I18n') }.each { it.enabled = false }
 project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Knockout') }.each { it.enabled = false }
-project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Presenter') }.each { it.enabled = false }
-project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Test') }.each { it.enabled = false }
 project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Workbench') }.each { it.enabled = false }
 // ******************************************
 
