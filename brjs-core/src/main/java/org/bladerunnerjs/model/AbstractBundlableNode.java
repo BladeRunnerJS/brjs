@@ -39,7 +39,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		super(rootNode, parent, dir);
 	}
 	
-	public abstract List<LinkedAsset> getSeedFiles();
+	protected abstract List<LinkedAsset> getSeedFiles();
 	
 	@Override
 	public List<LinkedAsset> seedFiles() {
