@@ -90,21 +90,6 @@ public class AspectDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void ifTheSameAssetIsFoundTwiceThenItsDependenciesAreOnlyShownTheFirstTime() throws Exception {
-		given(aspect).indexPageHasContent("'appns/Class1' & 'appns/Class2'")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
-		when(brjs).runCommand("aspect-deps", "app");
-		then(output).containsText(
-			"Aspect 'default' dependencies found:",
-			"    +--- 'default-aspect/index.html' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
-			"    |    \\--- 'default-aspect/src/appns/Class2.js'")
-			.and(output).doesNotContainText("(*) - dependencies omitted (listed previously)");
-	}
-	
-	@Test
-	public void weDontShowADependencyOmittedMessageForAssetsThatDontHaveDependencies() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classRequires("appns.Class1", "./Class2")
@@ -119,6 +104,21 @@ public class AspectDepsCommandTest extends SpecTest {
 			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
 			"",
 			"    (*) - dependencies omitted (listed previously)");
+	}
+	
+	@Test
+	public void weDontShowADependencyOmittedMessageForAssetsThatDontHaveDependencies() throws Exception {
+		given(aspect).indexPageHasContent("'appns/Class1' & 'appns/Class2'")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classRequires("appns.Class1", "./Class2");
+		when(brjs).runCommand("aspect-deps", "app");
+		then(output).containsText(
+			"Aspect 'default' dependencies found:",
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
+			"    |    \\--- 'default-aspect/src/appns/Class2.js'")
+			.and(output).doesNotContainText("(*) - dependencies omitted (listed previously)");
 	}
 	
 	@Test
