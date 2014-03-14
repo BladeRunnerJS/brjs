@@ -38,7 +38,11 @@ public class BRJSServlet extends HttpServlet
 		
 		try {
 			brjs = BRJSThreadSafeModelAccessor.aquireModel();
-			app = brjs.app(new File(servletContext.getRealPath("/")).getName());
+			app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath("/")), App.class);
+			if (app == null)
+			{
+				throw new ServletException("Unable to calculate app for Servlet. Context path for expected app was '" + servletContext.getRealPath("/") + "'.");
+			}
 		}
 		finally {
 			BRJSThreadSafeModelAccessor.releaseModel();
