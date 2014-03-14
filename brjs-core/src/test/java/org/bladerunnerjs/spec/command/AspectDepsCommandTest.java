@@ -139,6 +139,22 @@ public class AspectDepsCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void dependenciesThatOccurDueToNonImmediateRelatedResourcesAreShownCorrectly() throws Exception {
+		given(aspect).indexPageRequires("appns/Class1")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg1.pkg2.NestedClass")
+			.and(aspect).classRequires("appns.Class1", "./pkg1/pkg2/NestedClass")
+			.and(aspect).containsFileWithContents("src/appns/pkg1/config.xml", "'appns/Class2'");
+		when(brjs).runCommand("aspect-deps", "app");
+		then(output).containsText(
+			"Aspect 'default' dependencies found:",
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/pkg1/pkg2/NestedClass.js'",
+			"    |    |    |    \\--- 'default-aspect/src/appns/pkg1/config.xml' (implicit resource)",
+			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
+	}
+	
+	@Test
 	public void aliasedDependenciesFromTheIndexPageAreCorrectlyDisplayed() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
