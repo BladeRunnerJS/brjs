@@ -104,7 +104,7 @@ public class TrieBasedDependenciesCalculator
 	private Trie<Object> createTrie() throws ModelOperationException {
 		Trie<Object> trie = new Trie<Object>();
 		
-		for(AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers()) {
+		for (AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers()) {
 			try {
 				if(assetContainer instanceof BundlableNode) {
 					BundlableNode bundlableNode = (BundlableNode) assetContainer;

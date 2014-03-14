@@ -9,10 +9,7 @@
 	EventHubTest.setUp = function() {
 		hasFired = {};
 
-		// TODO change all references to 'this.eventHub = new (require('br/EventHub'));' back to using ServiceRegistry
-		// this.eventHub = ServiceRegistry.getService('br.event-hub');
-		this.eventHub = new (require('br/EventHub'));
-		this.eventHub.channels ={};
+		this.eventHub = ServiceRegistry.getService('br.event-hub');
 	};
 
 	EventHubTest.callback = function(channel, event) {
@@ -29,7 +26,7 @@
 	//TODO: Don't really like this. why is the channel adding a "name" property onto the Emitter object from the outside?
 	// encapsulation anyone
 	EventHubTest["test canCreateChannels"] = function() {
-		this.eventHub = new (require('br/EventHub'));
+		this.eventHub = ServiceRegistry.getService( 'br.event-hub');
 
 		this.eventHub.channel( 'apple');
 		this.eventHub.channel( 'grape');
@@ -47,7 +44,7 @@
 
 
 	EventHubTest["test canEmitOnCallback"] = function() {
-		this.eventHub = new (require('br/EventHub'));
+		this.eventHub = ServiceRegistry.getService( 'br.event-hub');
 
 		this.eventHub.channel( 'apple' ).on('apple-juice', this.callback('apple', 'apple-juice'));
 		this.eventHub.channel( 'grape' ).on('grape-juice', this.callback('grape', 'grape-juice'));
@@ -71,7 +68,7 @@
 	};
 
 	EventHubTest["test unknownEventBeingTriggeredDoesNotGetFired"] = function() {
-		this.eventHub = new (require('br/EventHub'));
+		this.eventHub = ServiceRegistry.getService( 'br.event-hub');
 
 		this.eventHub.channel( 'apple' ).on('apple-juice', this.callback('apple', 'apple-juice'));
 		this.eventHub.channel( 'apple').trigger('unknown-event');
@@ -80,7 +77,7 @@
 	};
 
 	EventHubTest["test itOnlyTriggersOnceWhenUsingOnce"] = function() {
-		this.eventHub = new (require('br/EventHub'));
+		this.eventHub = ServiceRegistry.getService( 'br.event-hub');
 		this.eventHub.channel( 'apple' ).once('apple-juice', this.callback('apple', 'apple-juice'));
 
 		// First trigger
@@ -93,7 +90,7 @@
 	};
 
 	EventHubTest["test usingOffRemovesTheListenerAndStopsEventsFromBeingFiring"] = function() {
-		this.eventHub = new (require('br/EventHub'));
+		this.eventHub = ServiceRegistry.getService( 'br.event-hub');
 		this.eventHub.channel( 'apple' ).on('apple-juice', this.callback('apple', 'apple-juice'));
 		this.eventHub.channel( 'apple' ).off('apple-juice');
 

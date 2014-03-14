@@ -6,8 +6,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
+import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BundlableNode;
@@ -145,7 +147,26 @@ public class BundleSetBuilder {
 		
 		try {
 			for(String aliasName : aliasNames) {
-				aliases.add(bundlableNode.getAlias(aliasName));
+				
+				//TODO: remove the hack that differs in behaviour if an alias starts with "SERVICE!"
+				
+				boolean isService = aliasName.startsWith("SERVICE!");
+				if (isService)
+				{
+					String serviceName = StringUtils.substringAfter(aliasName, "SERVICE!");
+					try
+					{
+						aliases.add(bundlableNode.getAlias(serviceName));
+					}
+					catch (UnresolvableAliasException ex)
+					{
+						// do nothing with the exception since a service might be configured at runtime
+					}
+				}
+				else
+				{
+					aliases.add(bundlableNode.getAlias(aliasName));					
+				}
 			}
 		}
 		catch(AliasException | ContentFileProcessingException e) {
