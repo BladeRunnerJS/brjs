@@ -33,7 +33,7 @@ public class HostedAppTests extends SpecTest
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(b1).hasClass("appns/bs/b1/Class")
-			.and(workbench).containsFileWithContents("index.html", "require('appns.bs.b1.Class');");
+			.and(workbench).containsFileWithContents("index.html", "require('appns/bs/b1/Class');");
 		
 		appServer = brjs.applicationServer(appServerPort);
 		appServer.start();
