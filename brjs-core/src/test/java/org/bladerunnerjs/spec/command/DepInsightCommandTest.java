@@ -194,7 +194,7 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void requirePrefixDependenciesAreCorrectlyShown() throws Exception {
 		given(aspect).indexPageRequires("appns/pkg1/ClassA")
-			.and(aspect).hasClasses("appns.pkg1.ClassA", "appns.pkg1.ClassB", "appns.pkg2.ClassC")
+			.and(aspect).hasClasses("appns.pkg1.ClassA", "appns.pkg1.ClassB", "appns.pkg1.UnbundledClass", "appns.pkg2.ClassC")
 			.and(aspect).classRequires("appns.pkg1.ClassA", "../pkg2/ClassC")
 			.and(aspect).classRequires("appns.pkg2.ClassC", "../pkg1/ClassB");
 		when(brjs).runCommand("dep-insight", "app", "appns/pkg1", "--prefix", "--all");
