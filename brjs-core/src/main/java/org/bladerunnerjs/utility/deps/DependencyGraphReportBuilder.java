@@ -49,6 +49,19 @@ public class DependencyGraphReportBuilder {
 		}
 	}
 	
+	public static String createReportForRequirePrefix(BrowsableNode browsableNode, String requirePathPrefix, boolean showAllDependencies) throws ModelOperationException {
+		List<LinkedAsset> linkedAssets = new ArrayList<>();
+		
+		for(SourceModule sourceModule : browsableNode.getBundleSet().getSourceModules()) {
+			if(sourceModule.getRequirePath().startsWith(requirePathPrefix)) {
+				linkedAssets.add(sourceModule);
+			}
+		}
+		
+		return "Require path prefix '" + requirePathPrefix + "' dependencies found:\n" +
+		new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
+	}
+	
 	public static String createReportForAlias(BrowsableNode browsableNode, String aliasName, boolean showAllDependencies) throws ModelOperationException {
 		try {
 			AliasDefinition alias = browsableNode.getAlias(aliasName);

@@ -74,6 +74,13 @@ public class DepInsightCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void exceptionIsThrownIfPrefixAndAliasSwitchesAreUsedSimultaneously() throws Exception {
+		given(aspect).hasBeenCreated();
+		when(brjs).runCommand("dep-insight", "app", "require-path", "--prefix", "--alias");
+		then(exceptions).verifyException(CommandArgumentsException.class, unquoted("The --prefix and --alias switches can't both be used at the same time"));
+	}
+	
+	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
@@ -170,6 +177,24 @@ public class DepInsightCommandTest extends SpecTest {
 			"    |    |    \\--- 'default-aspect/src/appns/pkg/InnerClass.js'",
 			"    |    |    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    |    |    \\--- 'default-aspect/index.html' (seed file)");
+	}
+	
+	@Test
+	public void requirePrefixDependenciesAreCorrectlyShown() throws Exception {
+		given(aspect).indexPageRequires("appns/pkg1/ClassA")
+			.and(aspect).hasClasses("appns.pkg1.ClassA", "appns.pkg1.ClassB", "appns.pkg2.ClassC")
+			.and(aspect).classRequires("appns.pkg1.ClassA", "../pkg2/ClassC")
+			.and(aspect).classRequires("appns.pkg2.ClassC", "../pkg1/ClassB");
+		when(brjs).runCommand("dep-insight", "app", "appns/pkg1", "--prefix", "--all");
+		then(output).containsText(
+			"Require path prefix 'appns/pkg1' dependencies found:",
+			"    +--- 'default-aspect/src/appns/pkg1/ClassA.js'",
+			"    |    \\--- 'default-aspect/index.html' (seed file)",
+			"    +--- 'default-aspect/src/appns/pkg1/ClassB.js'",
+			"    |    \\--- 'default-aspect/src/appns/pkg2/ClassC.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/pkg1/ClassA.js' (*)",
+			"",
+			"    (*) - dependencies omitted (listed previously)");
 	}
 	
 	@Test
