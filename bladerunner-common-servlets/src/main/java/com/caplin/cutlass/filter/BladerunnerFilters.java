@@ -66,13 +66,18 @@ public class BladerunnerFilters implements Filter
 	{
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		
-		if(httpRequest.getAttribute("logicalRequestUri") == null)
-		{
-			httpRequest.setAttribute("logicalRequestUri", httpRequest.getRequestURI());
+		if(!httpRequest.getMethod().equals("GET")) {
+			chain.doFilter(request, response);
 		}
-		
-		logger.debug("=> " + this.getClass().getSimpleName() + " processing request for: " + httpRequest.getRequestURI());
-		new VirtualFilterChain(chain, filters).doFilter(request, response);
+		else {
+			if(httpRequest.getAttribute("logicalRequestUri") == null)
+			{
+				httpRequest.setAttribute("logicalRequestUri", httpRequest.getRequestURI());
+			}
+			
+			logger.debug("=> " + this.getClass().getSimpleName() + " processing request for: " + httpRequest.getRequestURI());
+			new VirtualFilterChain(chain, filters).doFilter(request, response);
+		}
 	}
 
 }
