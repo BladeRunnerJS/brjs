@@ -38,9 +38,9 @@ public class AliasModelTest extends SpecTest {
 			aspect = app.aspect("default");
 			aspectAliasesFile = aspect.aliasesFile();
 			bladeset = app.bladeset("bs");
-			bladesetAliasDefinitionsFile = bladeset.assetLocation("src").aliasDefinitionsFile();
+			bladesetAliasDefinitionsFile = bladeset.assetLocation("resources").aliasDefinitionsFile();
 			blade = bladeset.blade("b1");
-			bladeAliasDefinitionsFile = blade.assetLocation("src").aliasDefinitionsFile();
+			bladeAliasDefinitionsFile = blade.assetLocation("resources").aliasDefinitionsFile();
 	}
 	
 	@Test
@@ -65,12 +65,21 @@ public class AliasModelTest extends SpecTest {
 		then(exceptions).verifyException(ContentFileProcessingException.class, doubleQuoted("alias"), doubleQuoted("class"));
 	}
 	
+	// TODO - why does this give an IncompleteAliasException at the aspect level, but the test below it for the blade does not
 	@Test
 	public void aliasesOverridesMustDefineANonEmptyClassName() throws Exception {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspectAliasesFile).hasAlias("appns.the-alias", "");
 		when(aspect).retrievesAlias("appns.the-alias");
 		then(exceptions).verifyException(IncompleteAliasException.class, "appns.the-alias");
+	}
+	
+	@Test
+	public void aliasesCanHaveAnEmptyStringClassReferenceIfTheyProviderAnInterfaceReference() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "");
+		when(aspect).retrievesAlias("appns.bs.b1.the-alias");
+		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
 	@Test
