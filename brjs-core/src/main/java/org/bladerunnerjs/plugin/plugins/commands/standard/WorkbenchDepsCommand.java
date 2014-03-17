@@ -16,6 +16,7 @@ import org.bladerunnerjs.utility.deps.DependencyGraphReportBuilder;
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
 import com.martiansoftware.jsap.JSAPResult;
+import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
@@ -29,6 +30,7 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the application containing the workbench to show dependencies for"));
 		argsParser.registerParameter(new UnflaggedOption("bladeset-name").setRequired(true).setHelp("the bladeset containing the workbench to show dependencies for"));
 		argsParser.registerParameter(new UnflaggedOption("blade-name").setRequired(true).setHelp("the blade containing the workbench to show dependencies for"));
+		argsParser.registerParameter(new Switch("all").setShortFlag('A').setLongFlag("all").setDefault("false").setHelp("show all ocurrences of a dependency"));
 	}
 	
 	@Override
@@ -55,6 +57,7 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 		String appName = parsedArgs.getString("app-name");
 		String bladesetName = parsedArgs.getString("bladeset-name");
 		String bladeName = parsedArgs.getString("blade-name");
+		boolean showAllDependencies = parsedArgs.getBoolean("all");
 		
 		App app = brjs.app(appName);
 		Bladeset bladeset = app.bladeset(bladesetName);
@@ -67,7 +70,7 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 		if(!workbench.dirExists()) throw new NodeDoesNotExistException(workbench, "workbench", this);
 		
 		try {
-			out.println(DependencyGraphReportBuilder.createReport(workbench));
+			out.println(DependencyGraphReportBuilder.createReport(workbench, showAllDependencies));
 		}
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);

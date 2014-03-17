@@ -10,7 +10,6 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.Workbench;
@@ -19,31 +18,51 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class DependencyGraphReportBuilder {
-	public static String createReport(Aspect aspect) throws ModelOperationException {
+	private final List<LinkedAsset> linkedAssets;
+	private final boolean showAllDependencies;
+	private final DependencyInfo dependencyInfo;
+	private final Set<LinkedAsset> manyLinkedAssets;
+	private final StringBuilder reportBuilder;
+	private final MutableBoolean hasOmittedDependencies;
+	
+	public static String createReport(Aspect aspect, boolean showAllDependencies) throws ModelOperationException {
 		return "Aspect '" + aspect.getName() + "' dependencies found:\n" +
-			createReport(aspect, aspect.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(aspect), true);
+			new DependencyGraphReportBuilder(aspect.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(aspect), showAllDependencies).createReport();
 	}
 	
-	public static String createReport(Workbench workbench) throws ModelOperationException {
+	public static String createReport(Workbench workbench, boolean showAllDependencies) throws ModelOperationException {
 		return "Workbench dependencies found:\n" +
-			createReport(workbench, workbench.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(workbench), true);
+			new DependencyGraphReportBuilder(workbench.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(workbench), showAllDependencies).createReport();
 	}
 	
-	public static String createReport(BrowsableNode browsableNode, String requirePath) throws ModelOperationException {
+	public static String createReport(BrowsableNode browsableNode, String requirePath, boolean showAllDependencies) throws ModelOperationException {
 		try {
 			SourceModule sourceModule = browsableNode.getSourceModule(requirePath);
 			List<LinkedAsset> linkedAssets = new ArrayList<>();
 			linkedAssets.add(sourceModule);
 			
 			return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" +
-				createReport(browsableNode, linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), false);
+			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
 		}
 		catch(RequirePathException e) {
 			return e.getMessage();
 		}
 	}
 	
-	public static String createReportForAlias(BrowsableNode browsableNode, String aliasName) throws ModelOperationException {
+	public static String createReportForRequirePrefix(BrowsableNode browsableNode, String requirePathPrefix, boolean showAllDependencies) throws ModelOperationException {
+		List<LinkedAsset> linkedAssets = new ArrayList<>();
+		
+		for(SourceModule sourceModule : browsableNode.getBundleSet().getSourceModules()) {
+			if(sourceModule.getRequirePath().startsWith(requirePathPrefix)) {
+				linkedAssets.add(sourceModule);
+			}
+		}
+		
+		return "Require path prefix '" + requirePathPrefix + "' dependencies found:\n" +
+		new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
+	}
+	
+	public static String createReportForAlias(BrowsableNode browsableNode, String aliasName, boolean showAllDependencies) throws ModelOperationException {
 		try {
 			AliasDefinition alias = browsableNode.getAlias(aliasName);
 			SourceModule sourceModule = browsableNode.getSourceModule(alias.getRequirePath());
@@ -51,7 +70,7 @@ public class DependencyGraphReportBuilder {
 			linkedAssets.add(sourceModule);
 			
 			return "Alias '" + aliasName + "' dependencies found:\n" +
-				createReport(browsableNode, linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), false);
+			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
 		}
 		catch(AliasException | RequirePathException e) {
 			return e.getMessage();
@@ -61,29 +80,62 @@ public class DependencyGraphReportBuilder {
 		}
 	}
 	
-	private static String createReport(BundlableNode bundlableNode, List<LinkedAsset> linkedAssets, DependencyInfo dependencyInfo, boolean isSeed) throws ModelOperationException {
-		StringBuilder stringBuilder = new StringBuilder();
-		HashSet<LinkedAsset> processedAssets = new HashSet<>();
-		MutableBoolean hasOmittedDependencies = new MutableBoolean(false);
+	private DependencyGraphReportBuilder(List<LinkedAsset> linkedAssets, DependencyInfo dependencyInfo, boolean showAllDependencies) throws ModelOperationException {
+		this.linkedAssets = linkedAssets;
+		this.dependencyInfo = dependencyInfo;
+		this.showAllDependencies = showAllDependencies;
 		
-		for(LinkedAsset linkedAsset : linkedAssets) {
-			addDependency(bundlableNode, linkedAsset, dependencyInfo, stringBuilder, processedAssets, hasOmittedDependencies, 1, isSeed);
-		}
-		
-		if(hasOmittedDependencies.isTrue()) {
-			stringBuilder.append("\n    (*) - dependencies omitted (listed previously)");
-		}
-		
-		return stringBuilder.toString();
+		manyLinkedAssets = determineManyLinkedAssets(new HashSet<LinkedAsset>());
+		reportBuilder = new StringBuilder();
+		hasOmittedDependencies = new MutableBoolean(false);
 	}
 	
-	private static void addDependency(BundlableNode bundlableNode, LinkedAsset linkedAsset, DependencyInfo dependencyInfo, StringBuilder stringBuilder, Set<LinkedAsset> processedAssets, MutableBoolean hasOmittedDependencies, int indentLevel, boolean isSeed) throws ModelOperationException {
-		appendAssetPath(linkedAsset, dependencyInfo, stringBuilder, indentLevel, isSeed && (indentLevel == 1), processedAssets.contains(linkedAsset));
+	private String createReport() throws ModelOperationException {
+		HashSet<LinkedAsset> processedAssets = new HashSet<>();
+		for(LinkedAsset linkedAsset : linkedAssets) {
+			addDependency(linkedAsset, processedAssets, 1);
+		}
 		
-		List<LinkedAsset> assetDependencies = getDependencies(bundlableNode, linkedAsset, dependencyInfo);
+		if(!showAllDependencies && !manyLinkedAssets.isEmpty()) {
+			reportBuilder.append("\n    (*) - subsequent instances not shown (use -A or --all to show)");
+		}
+		else if(showAllDependencies && hasOmittedDependencies.isTrue()) {
+			reportBuilder.append("\n    (*) - dependencies omitted (listed previously)");
+		}
+		
+		return reportBuilder.toString();
+	}
+	
+	private Set<LinkedAsset> determineManyLinkedAssets(HashSet<LinkedAsset> processedAssets) {
+		Set<LinkedAsset> manyLinkedAssets = new HashSet<>();
+		for(LinkedAsset linkedAsset : linkedAssets) {
+			buildManyLinkedAssets(linkedAsset, processedAssets, manyLinkedAssets);
+		}
+		
+		return manyLinkedAssets;
+	}
+	
+	private void buildManyLinkedAssets(LinkedAsset linkedAsset, Set<LinkedAsset> processedAssets, Set<LinkedAsset> manyLinkedAssets) {
+		List<LinkedAsset> assetDependencies = getDependencies(linkedAsset);
 		if(processedAssets.add(linkedAsset)) {
 			for(LinkedAsset dependentAsset : assetDependencies) {
-				addDependency(bundlableNode, dependentAsset, dependencyInfo, stringBuilder, processedAssets, hasOmittedDependencies, indentLevel + 1, isSeed);
+				buildManyLinkedAssets(dependentAsset, processedAssets, manyLinkedAssets);
+			}
+		}
+		else {
+			manyLinkedAssets.add(linkedAsset);
+		}
+	}
+	
+	private void addDependency(LinkedAsset linkedAsset, Set<LinkedAsset> processedAssets, int indentLevel) throws ModelOperationException {
+		if(showAllDependencies || !processedAssets.contains(linkedAsset)) {
+			appendAssetPath(linkedAsset, indentLevel, processedAssets.contains(linkedAsset));
+		}
+		
+		List<LinkedAsset> assetDependencies = getDependencies(linkedAsset);
+		if(processedAssets.add(linkedAsset)) {
+			for(LinkedAsset dependentAsset : assetDependencies) {
+				addDependency(dependentAsset, processedAssets, indentLevel + 1);
 			}
 		}
 		else if(assetDependencies.size() > 0) {
@@ -91,43 +143,43 @@ public class DependencyGraphReportBuilder {
 		}
 	}
 	
-	private static void appendAssetPath(LinkedAsset linkedAsset, DependencyInfo dependencyInfo, StringBuilder stringBuilder, int indentLevel, boolean isSeedFile, boolean alreadyProcessedDependency) {
-		stringBuilder.append("    ");
+	private void appendAssetPath(LinkedAsset linkedAsset, int indentLevel, boolean alreadyProcessedDependency) {
+		reportBuilder.append("    ");
 		
 		if(indentLevel == 1) {
-			stringBuilder.append("+--- ");
+			reportBuilder.append("+--- ");
 		}
 		else {
 			for(int i = 0; i < indentLevel; ++i) {
 				if(i == (indentLevel - 1)) {
-					stringBuilder.append("\\--- ");
+					reportBuilder.append("\\--- ");
 				}
 				else {
-					stringBuilder.append("|    ");
+					reportBuilder.append("|    ");
 				}
 			}
 		}
 		
-		stringBuilder.append("'" + linkedAsset.getAssetPath() + "'");
+		reportBuilder.append("'" + linkedAsset.getAssetPath() + "'");
 		
 		if(dependencyInfo.seedAssets.contains(linkedAsset)) {
-			stringBuilder.append(" (seed file)");
+			reportBuilder.append(" (seed file)");
 		}
 		else if(dependencyInfo.resourceAssets.contains(linkedAsset)) {
-			stringBuilder.append(" (implicit resource)");
+			reportBuilder.append(" (implicit resource)");
 		}
 		else if(linkedAsset instanceof AliasAsset) {
-			stringBuilder.append(" (alias dep.)");
+			reportBuilder.append(" (alias dep.)");
 		}
 		
-		if(alreadyProcessedDependency) {
-			stringBuilder.append(" (*)");
+		if((showAllDependencies && alreadyProcessedDependency) || (!showAllDependencies && manyLinkedAssets.contains(linkedAsset))) {
+			reportBuilder.append(" (*)");
 		}
 		
-		stringBuilder.append("\n");
+		reportBuilder.append("\n");
 	}
 	
-	private static List<LinkedAsset> getDependencies(BundlableNode bundlableNode, LinkedAsset linkedAsset, DependencyInfo dependencyInfo) {
+	private List<LinkedAsset> getDependencies(LinkedAsset linkedAsset) {
 		List<LinkedAsset> dependencies =  new ArrayList<>();
 		
 		if(dependencyInfo.map.containsKey(linkedAsset)) {

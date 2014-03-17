@@ -74,6 +74,13 @@ public class DepInsightCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void exceptionIsThrownIfPrefixAndAliasSwitchesAreUsedSimultaneously() throws Exception {
+		given(aspect).hasBeenCreated();
+		when(brjs).runCommand("dep-insight", "app", "require-path", "--prefix", "--alias");
+		then(exceptions).verifyException(CommandArgumentsException.class, unquoted("The --prefix and --alias switches can't both be used at the same time"));
+	}
+	
+	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
@@ -93,6 +100,18 @@ public class DepInsightCommandTest extends SpecTest {
 			"    +--- 'default-aspect/src/appns/Class2.js'",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/index.html'");
+	}
+	
+	@Test
+	public void onlyDependenciesThatAreToBeBundledAreShown() throws Exception {
+		given(aspect).indexPageRequires("appns/Class2")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classRequires("appns.Class1", "./Class2");
+		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
+		then(output).containsText(
+			"Source module 'appns/Class2' dependencies found:",
+			"    +--- 'default-aspect/src/appns/Class2.js'",
+			"    |    \\--- 'default-aspect/index.html'");
 	}
 	
 	@Test
@@ -119,13 +138,31 @@ public class DepInsightCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void ifTheSameAssetIsFoundTwiceThenItsDependenciesAreOnlyShownTheFirstTime() throws Exception {
+	public void byDefaultDependenciesAreOnlyShownTheFirstTimeTheyAreEncountered() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classRequires("appns.Class1", "./Class2")
 			.and(aspect).classRequires("appns.Class2", "./Class3")
 			.and(aspect).classRequires("appns.Class3", "./Class1");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class3");
+		then(output).containsText(
+			"Source module 'appns/Class3' dependencies found:",
+			"    +--- 'default-aspect/src/appns/Class3.js' (*)",
+			"    |    \\--- 'default-aspect/src/appns/Class2.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/Class1.js'",
+			"    |    |    |    \\--- 'default-aspect/index.html' (seed file)",
+			"",
+			"    (*) - subsequent instances not shown (use -A or --all to show)");
+	}
+	
+	@Test
+	public void whenUsingTheAllSwitchIfTheSameAssetIsFoundTwiceThenItsDependenciesAreOnlyShownTheFirstTime() throws Exception {
+		given(aspect).indexPageRequires("appns/Class1")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classRequires("appns.Class1", "./Class2")
+			.and(aspect).classRequires("appns.Class2", "./Class3")
+			.and(aspect).classRequires("appns.Class3", "./Class1");
+		when(brjs).runCommand("dep-insight", "app", "appns/Class3", "--all");
 		then(output).containsText(
 			"Source module 'appns/Class3' dependencies found:",
 			"    +--- 'default-aspect/src/appns/Class3.js'",
@@ -155,6 +192,24 @@ public class DepInsightCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void requirePrefixDependenciesAreCorrectlyShown() throws Exception {
+		given(aspect).indexPageRequires("appns/pkg1/ClassA")
+			.and(aspect).hasClasses("appns.pkg1.ClassA", "appns.pkg1.ClassB", "appns.pkg1.UnbundledClass", "appns.pkg2.ClassC")
+			.and(aspect).classRequires("appns.pkg1.ClassA", "../pkg2/ClassC")
+			.and(aspect).classRequires("appns.pkg2.ClassC", "../pkg1/ClassB");
+		when(brjs).runCommand("dep-insight", "app", "appns/pkg1", "--prefix", "--all");
+		then(output).containsText(
+			"Require path prefix 'appns/pkg1' dependencies found:",
+			"    +--- 'default-aspect/src/appns/pkg1/ClassA.js'",
+			"    |    \\--- 'default-aspect/index.html' (seed file)",
+			"    +--- 'default-aspect/src/appns/pkg1/ClassB.js'",
+			"    |    \\--- 'default-aspect/src/appns/pkg2/ClassC.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/pkg1/ClassA.js' (*)",
+			"",
+			"    (*) - dependencies omitted (listed previously)");
+	}
+	
+	@Test
 	public void aliasedDependenciesAreCorrectlyDisplayed() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
@@ -172,7 +227,7 @@ public class DepInsightCommandTest extends SpecTest {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
 			.and(aspect).hasClass("appns.Class");
-		when(brjs).runCommand("dep-insight", "app", "alias-ref", "-a");
+		when(brjs).runCommand("dep-insight", "app", "alias-ref", "--alias");
 		then(output).containsText(
 			"Alias 'alias-ref' dependencies found:",
 			"    +--- 'default-aspect/src/appns/Class.js'",
@@ -183,7 +238,7 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void requestingDependenciesForANonExistentAliasProvidesANiceMessage() throws Exception {
 		given(aspect).hasBeenCreated();
-		when(brjs).runCommand("dep-insight", "app", "alias-ref", "-a");
+		when(brjs).runCommand("dep-insight", "app", "alias-ref", "--alias");
 		then(output).containsText(
 			"Alias 'alias-ref' has not been defined within '" + aliasesFile.getUnderlyingFile().getPath() + "' or any other files that it inherits from");
 	}
@@ -191,7 +246,7 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void requestingDependenciesForAnAliasThatPointsToANonExistentSourceModuleProvidesANiceMessage() throws Exception {
 		given(aliasesFile).hasAlias("alias-ref", "NonExistentClass");
-		when(brjs).runCommand("dep-insight", "app", "alias-ref", "-a");
+		when(brjs).runCommand("dep-insight", "app", "alias-ref", "--alias");
 		then(output).containsText(
 			"Source file 'NonExistentClass' could not be found.");
 	}
