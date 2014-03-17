@@ -18,7 +18,7 @@ import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class AspectDepsCommand extends ArgsParsingCommandPlugin
+public class ApplicationDepsCommand extends ArgsParsingCommandPlugin
 {
 	private ConsoleWriter out;
 	private BRJS brjs;
@@ -40,13 +40,13 @@ public class AspectDepsCommand extends ArgsParsingCommandPlugin
 	@Override
 	public String getCommandName()
 	{
-		return "aspect-deps";
+		return "app-deps";
 	}
 	
 	@Override
 	public String getCommandDescription()
 	{
-		return "Show dependencies for a given aspect.";
+		return "Show application dependencies for a given aspect.";
 	}
 	
 	@Override
