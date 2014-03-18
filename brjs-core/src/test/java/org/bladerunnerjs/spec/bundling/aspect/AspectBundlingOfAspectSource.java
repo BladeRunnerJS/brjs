@@ -3,7 +3,6 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.exception.CircularDependencyException;
-import org.bladerunnerjs.model.exception.InvalidRequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -96,16 +95,6 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).classRequires("appns.pkg.pkg2.Class1", "../../../../Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRelativeRequirePathException.class, "appns/pkg/pkg2", "../../../../Class2")
-			.whereTopLevelExceptionIs(ContentProcessingException.class);
-	}
-	
-	@Test
-	public void exceptionIsThrownIfRequirePathIsSeperatedByDots() throws Exception {
-		given(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).classFileHasContent("appns.Class1", "require('appns.Class2');");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(InvalidRequirePathException.class, unquoted("require paths should be seperated by the '/' character"), "appns/Class2")
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	
