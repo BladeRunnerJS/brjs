@@ -11,7 +11,10 @@ import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BrowsableNode;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.Workbench;
@@ -28,17 +31,23 @@ public class DependencyGraphReportBuilder {
 	private final MutableBoolean hasOmittedDependencies;
 	
 	public static String createReport(Aspect aspect, boolean showAllDependencies) throws ModelOperationException {
+		fixIncompleteAliases(aspect);
+		
 		return "Aspect '" + aspect.getName() + "' dependencies found:\n" +
 			new DependencyGraphReportBuilder(aspect.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(aspect), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(Workbench workbench, boolean showAllDependencies) throws ModelOperationException {
+		fixIncompleteAliases(workbench);
+		
 		return "Workbench dependencies found:\n" +
 			new DependencyGraphReportBuilder(workbench.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(workbench), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(BrowsableNode browsableNode, String requirePath, boolean showAllDependencies) throws ModelOperationException {
 		try {
+			fixIncompleteAliases(browsableNode);
+			
 			SourceModule sourceModule = browsableNode.getSourceModule(requirePath);
 			List<LinkedAsset> linkedAssets = new ArrayList<>();
 			linkedAssets.add(sourceModule);
@@ -54,6 +63,8 @@ public class DependencyGraphReportBuilder {
 	public static String createReportForRequirePrefix(BrowsableNode browsableNode, String requirePathPrefix, boolean showAllDependencies) throws ModelOperationException {
 		List<LinkedAsset> linkedAssets = new ArrayList<>();
 		
+		fixIncompleteAliases(browsableNode);
+		
 		for(SourceModule sourceModule : browsableNode.getBundleSet().getSourceModules()) {
 			if(sourceModule.getRequirePath().startsWith(requirePathPrefix)) {
 				linkedAssets.add(sourceModule);
@@ -66,16 +77,9 @@ public class DependencyGraphReportBuilder {
 	
 	public static String createReportForAlias(BrowsableNode browsableNode, String aliasName, boolean showAllDependencies) throws ModelOperationException {
 		try {
-			AliasesFile aliasesFile = browsableNode.aliasesFile();
 			List<LinkedAsset> linkedAssets = new ArrayList<>();
 			
-			if(!aliasesFile.hasAlias(aliasName)) {
-				AliasDefinition aliasDefinition = aliasesFile.getAliasDefinition(aliasName);
-				
-				if((aliasDefinition != null) && (aliasDefinition.getInterfaceName() != null)) {
-					aliasesFile.addAlias(new AliasOverride(aliasName, aliasDefinition.getInterfaceName()));
-				}
-			}
+			fixIncompleteAliases(browsableNode);
 			
 			AliasDefinition alias = browsableNode.getAlias(aliasName);
 			SourceModule sourceModule = browsableNode.getSourceModule(alias.getRequirePath());
@@ -89,6 +93,25 @@ public class DependencyGraphReportBuilder {
 		}
 		catch(ContentFileProcessingException e) {
 			throw new ModelOperationException(e);
+		}
+	}
+	
+	private static void fixIncompleteAliases(BundlableNode bundlableNode) {
+		try {
+			AliasesFile aliasesFile = bundlableNode.aliasesFile();
+			
+			for(AssetContainer assetContainer : bundlableNode.getAssetContainers()) {
+				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
+					for(AliasDefinition aliasDefinition : assetLocation.aliasDefinitionsFile().aliases()) {
+						if(!aliasesFile.hasAlias(aliasDefinition.getName()) && (aliasDefinition != null) && (aliasDefinition.getInterfaceName() != null)) {
+							aliasesFile.addAlias(new AliasOverride(aliasDefinition.getName(), aliasDefinition.getInterfaceName()));
+						}
+					}
+				}
+			}
+		}
+		catch(ContentFileProcessingException e) {
+			throw new RuntimeException(e);
 		}
 	}
 	
