@@ -158,9 +158,6 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			"    (*) - dependencies omitted (listed previously)");
 	}
 	
-	// TODO understand why this test thorws an UnresolvedAliasException
-	// Update the output string as necessary, verifying that the br.Class2 dependency gets correctly displayed
-	@Ignore
 	@Test
 	public void dependenciesAreShownForWorkbenchUsingAliasWhenAllArgumentsAreValid() throws Exception {
 		given(brLib).hasClasses("br.Class1", "br.Class2")
@@ -169,12 +166,12 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 			.and(workbench).indexPageRequires("appns/bladeset/blade/Class1");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
 		then(output).containsText(
-			"Workbench dependencies found:",
-			"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
-			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
-			"    +--- 'bladeset-bladeset/blades/blade/workbench/resources/config.xml' (seed file)",
-			"",
-			"    (*) - subsequent instances not shown (use -A or --all to show)");
+				"Workbench dependencies found:",
+				"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
+				"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
+				"    |    |    \\--- 'alias!br.alias' (alias dep.)",
+				"    |    |    |    \\--- '../../libs/javascript/br-libs/br/src/br/Class2.js'" );
 	}
+	
+	
 }
