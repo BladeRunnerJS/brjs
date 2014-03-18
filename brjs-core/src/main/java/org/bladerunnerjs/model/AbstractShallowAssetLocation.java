@@ -72,7 +72,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	{
 		if (requirePath.matches(".*[a-zA-Z0-9]\\.[a-zA-Z0-9].*"))
 		{
-			throw new InvalidRequirePathException("Invalid require path, require paths should be seperated by the '/' character. Did you mean '" + requirePath.replaceAll("([a-zA-Z0-9])\\.([a-zA-Z0-9])", "$1/$2") + "'?");
+			throw new InvalidRequirePathException("Invalid require path '" + requirePath + "', require paths should be seperated by the '/' character. Did you mean '" + requirePath.replaceAll("([a-zA-Z0-9])\\.([a-zA-Z0-9])", "$1/$2") + "'?");
 		}
 		
 		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
