@@ -8,7 +8,6 @@ import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathExceptio
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -110,7 +109,6 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	
-	@Ignore // This should pass
 	@Test
 	public void requireCallDoesNotGetProcessedIfCommentedOutWithTwoSlashes() throws Exception {
 		given(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function(){}; //require('appns/Class2')")
@@ -120,7 +118,15 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 		then(response).doesNotContainText("appns.Class2 = function(){};");
 	}
 	
-	@Ignore // This should pass
+	@Test
+	public void requireCallDoesNotGetProcessedIfCommentedOutWithSlashStar() throws Exception {
+		given(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function(){}; /* require('appns/Class2') */")
+			.and(aspect).containsFileWithContents("src/appns/Class2.js", "appns.Class2 = function(){};")
+			.and(aspect).indexPageRefersTo("appns/Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).doesNotContainText("appns.Class2 = function(){};");
+	}
+	
 	@Test
 	public void requireCallDoesNotGetProcessedIfCommentedOutWithSlashStarStar() throws Exception {
 		given(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function(){}; /** require('appns/Class2') */")
