@@ -123,7 +123,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		
 		if(identifier == null)
 		{
-			String idMessage = (htmlAsset.getAssetLocation().getAssetContainer().isNamespaceEnforced()) ?
+			String idMessage = (htmlAsset.getAssetLocation().assetContainer().isNamespaceEnforced()) ?
 				"a namespaced ID of '" + htmlAsset.getAssetLocation().namespace() + ".*'" : "an ID";
 			
 			throw new NamespaceException( "HTML template found without an identifier: '" +

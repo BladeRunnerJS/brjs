@@ -41,7 +41,7 @@ public class I18nAssetFile implements Asset
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = new File(dir, assetName);
-			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
+			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {

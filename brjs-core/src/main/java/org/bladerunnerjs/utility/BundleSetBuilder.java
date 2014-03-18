@@ -134,7 +134,7 @@ public class BundleSetBuilder {
 				addLinkedAsset(resourceSeedFile);
 			}
 			
-			for(AssetLocation dependentAssetLocation : assetLocation.getDependentAssetLocations()) {
+			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
 				addAssetLocation(dependentAssetLocation);
 			}
 		}

@@ -100,7 +100,7 @@ public class DependencyGraphReportBuilder {
 		try {
 			AliasesFile aliasesFile = bundlableNode.aliasesFile();
 			
-			for(AssetContainer assetContainer : bundlableNode.getAssetContainers()) {
+			for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
 				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 					for(AliasDefinition aliasDefinition : assetLocation.aliasDefinitionsFile().aliases()) {
 						if(!aliasesFile.hasAlias(aliasDefinition.getName()) && (aliasDefinition != null) && (aliasDefinition.getInterfaceName() != null)) {

@@ -69,7 +69,7 @@ public class DependencyInfoFactory {
 		
 		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
 		
-		for(AssetContainer assetContainer : bundlableNode.getAssetContainers()) {
+		for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
 			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 				addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
 			}
@@ -120,7 +120,7 @@ public class DependencyInfoFactory {
 	private static List<AssetLocation> allAssetLocations(SourceModule sourceModule) {
 		List<AssetLocation> assetLocations = new ArrayList<>();
 		assetLocations.add(sourceModule.getAssetLocation());
-		assetLocations.addAll(sourceModule.getAssetLocation().getDependentAssetLocations());
+		assetLocations.addAll(sourceModule.getAssetLocation().dependentAssetLocations());
 		
 		return assetLocations;
 	}

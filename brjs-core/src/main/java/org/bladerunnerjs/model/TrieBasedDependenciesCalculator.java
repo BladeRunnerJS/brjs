@@ -33,7 +33,7 @@ public class TrieBasedDependenciesCalculator
 	{
 		this.asset = asset;
 		assetLocation = asset.getAssetLocation();
-		app = assetLocation.getAssetContainer().getApp();
+		app = assetLocation.assetContainer().app();
 		appProperties = app.nodeProperties("TrieBasedDependenciesAsset");
 		File assetFile = new File( asset.getAssetPath() );
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
@@ -66,7 +66,7 @@ public class TrieBasedDependenciesCalculator
 					if (match instanceof SourceModuleReference) {
 						SourceModuleReference sourceModuleReference = (SourceModuleReference) match;
 						String dependencyRequirePath = sourceModuleReference.getRequirePath();
-						dependentSourceModules.add( assetLocation.getSourceModuleWithRequirePath(dependencyRequirePath) );
+						dependentSourceModules.add( assetLocation.sourceModule(dependencyRequirePath) );
 					}
 					else if (match instanceof AliasReference){
 						AliasReference aliasReference = (AliasReference) match;
@@ -105,7 +105,7 @@ public class TrieBasedDependenciesCalculator
 	private Trie<Object> createTrie() throws ModelOperationException {
 		Trie<Object> trie = new Trie<Object>();
 		
-		for (AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers()) {
+		for (AssetContainer assetContainer : assetLocation.assetContainer().app().getAllAssetContainers()) {
 			try {
 				if(assetContainer instanceof BundlableNode) {
 					BundlableNode bundlableNode = (BundlableNode) assetContainer;

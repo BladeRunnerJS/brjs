@@ -127,7 +127,7 @@ public class AliasesFile {
 		String scenarioName = scenarioName();
 		List<String> groupNames = groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.getAliasDefinitionFiles()) {
+		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.aliasDefinitionFiles()) {
 			AliasDefinition nextAliasDefinition = aliasDefinitionsFile.getAliasDefinition(aliasName, scenarioName, groupNames);
 
 			if (aliasDefinition != null && nextAliasDefinition != null) {
@@ -164,7 +164,7 @@ public class AliasesFile {
 		AliasOverride aliasOverride = null;
 		List<String> groupNames = groupNames();
 		
-		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.getAliasDefinitionFiles()) {
+		for(AliasDefinitionsFile aliasDefinitionsFile : bundlableNode.aliasDefinitionFiles()) {
 			AliasOverride nextAliasOverride = aliasDefinitionsFile.getGroupOverride(aliasName, groupNames);
 			
 			

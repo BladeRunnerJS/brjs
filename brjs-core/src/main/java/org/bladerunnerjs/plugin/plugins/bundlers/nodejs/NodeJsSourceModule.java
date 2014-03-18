@@ -58,7 +58,7 @@ public class NodeJsSourceModule implements SourceModule {
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = new File(dir, assetName);
-			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
+			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
 			fileModifiedChecker = new FileModifiedChecker(assetFile);
@@ -79,7 +79,7 @@ public class NodeJsSourceModule implements SourceModule {
 			}
 			
 			for(String requirePath : requirePaths) {
-				SourceModule sourceModule = assetLocation.getSourceModuleWithRequirePath(requirePath);
+				SourceModule sourceModule = assetLocation.sourceModule(requirePath);
 				
 				if(sourceModule == null) {
 					throw new UnresolvableRequirePathException(requirePath, this.requirePath);

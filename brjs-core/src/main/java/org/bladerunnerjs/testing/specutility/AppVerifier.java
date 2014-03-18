@@ -46,7 +46,7 @@ public class AppVerifier extends NodeVerifier<App> {
 	{
 		for (JsLib lib : app.jsLibs())
 		{
-			assertSame(app, lib.getApp());
+			assertSame(app, lib.app());
 		}
 	}
 	

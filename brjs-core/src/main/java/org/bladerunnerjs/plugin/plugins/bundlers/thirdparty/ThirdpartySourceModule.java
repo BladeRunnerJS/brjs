@@ -41,7 +41,7 @@ public class ThirdpartySourceModule implements SourceModule
 		try {
 			this.assetLocation = assetLocation;
 			this.dir = dir;
-			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), dir);
+			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), dir);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch (ConfigException e) {
@@ -56,8 +56,8 @@ public class ThirdpartySourceModule implements SourceModule
 		
 		try {
 			
-			boolean hasPackageJson = assetLocation.getAssetContainer().file("package.json").isFile();
-			boolean shouldDefineLibrary = hasPackageJson && !assetLocation.getAssetContainer().file(".no-define").isFile();
+			boolean hasPackageJson = assetLocation.assetContainer().file("package.json").isFile();
+			boolean shouldDefineLibrary = hasPackageJson && !assetLocation.assetContainer().file(".no-define").isFile();
 			
 			
 			String defineBlockHeader = String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath());
@@ -143,7 +143,7 @@ public class ThirdpartySourceModule implements SourceModule
 		{
 			for (String dependentLibName : manifest.getDepends())
 			{
-				JsLib dependentLib = assetLocation.getAssetContainer().getApp().nonBladeRunnerLib(dependentLibName);
+				JsLib dependentLib = assetLocation.assetContainer().app().nonBladeRunnerLib(dependentLibName);
 				if (!dependentLib.dirExists())
 				{
 					throw new ConfigException(String.format("Library '%s' depends on '%s', which doesn't exist.", getAssetName(), dependentLibName)) ;

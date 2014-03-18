@@ -145,7 +145,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 			
 			for(ContentPlugin contentPlugin : contentPlugins) {
 				for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-					BladerunnerUri requestPath = new BladerunnerUri(brjs, origAspect.getApp().dir(), contentPath);
+					BladerunnerUri requestPath = new BladerunnerUri(brjs, origAspect.app().dir(), contentPath);
 					ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(requestPath);
 					
 					try(OutputStream outputStream = createBundleSpecificOutputStream(contentPath, warAspect.file(contentPath))) {

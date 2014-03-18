@@ -30,7 +30,7 @@ public class LogicalRequestHandler {
 	public LogicalRequestHandler(BundlableNode bundlableNode)
 	{
 		this.bundlableNode = bundlableNode;
-		this.app = bundlableNode.getApp();
+		this.app = bundlableNode.app();
 		logger = app.root().logger(LoggerType.BUNDLER, getClass());
 	}
 
