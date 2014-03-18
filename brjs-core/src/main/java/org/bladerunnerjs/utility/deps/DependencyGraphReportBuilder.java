@@ -8,6 +8,8 @@ import java.util.Set;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
+import org.bladerunnerjs.aliasing.AliasOverride;
+import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -42,7 +44,7 @@ public class DependencyGraphReportBuilder {
 			linkedAssets.add(sourceModule);
 			
 			return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
 		}
 		catch(RequirePathException e) {
 			return e.getMessage();
@@ -59,18 +61,28 @@ public class DependencyGraphReportBuilder {
 		}
 		
 		return "Require path prefix '" + requirePathPrefix + "' dependencies found:\n" +
-		new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
+		new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, null), showAllDependencies).createReport();
 	}
 	
 	public static String createReportForAlias(BrowsableNode browsableNode, String aliasName, boolean showAllDependencies) throws ModelOperationException {
 		try {
+			AliasesFile aliasesFile = browsableNode.aliasesFile();
+			List<LinkedAsset> linkedAssets = new ArrayList<>();
+			
+			if(!aliasesFile.hasAlias(aliasName)) {
+				AliasDefinition aliasDefinition = aliasesFile.getAliasDefinition(aliasName);
+				
+				if((aliasDefinition != null) && (aliasDefinition.getInterfaceName() != null)) {
+					aliasesFile.addAlias(new AliasOverride(aliasName, aliasDefinition.getInterfaceName()));
+				}
+			}
+			
 			AliasDefinition alias = browsableNode.getAlias(aliasName);
 			SourceModule sourceModule = browsableNode.getSourceModule(alias.getRequirePath());
-			List<LinkedAsset> linkedAssets = new ArrayList<>();
 			linkedAssets.add(sourceModule);
 			
 			return "Alias '" + aliasName + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
 		}
 		catch(AliasException | RequirePathException e) {
 			return e.getMessage();
