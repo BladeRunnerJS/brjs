@@ -75,7 +75,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the name of the app being exported"));
 		argsParser.registerParameter(new UnflaggedOption("war-location").setHelp("the name of the war file to create"));
-		argsParser.registerParameter(new FlaggedOption("minifier").setShortFlag('m').setDefault("default").setHelp("the name of the minifier that will be used to compress the javascript"));
+		argsParser.registerParameter(new FlaggedOption("minifier").setShortFlag('m').setLongFlag("minifier").setDefault("default").setHelp("the name of the minifier that will be used to compress the javascript"));
 	}
 
 	@Override
