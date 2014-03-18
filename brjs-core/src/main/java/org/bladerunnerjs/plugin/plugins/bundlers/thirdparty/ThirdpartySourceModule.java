@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.JsLib;
@@ -84,7 +85,12 @@ public class ThirdpartySourceModule implements SourceModule
 			else if (shouldDefineLibrary)
 			{
 				fileReaders.add( new StringReader( defineBlockFooter ) );
-				fileReaders.add( new StringReader( globaliseModuleContent ) );
+				
+				String sanitizedExports = StringUtils.replaceChars(manifest.getExports(), " ", "");
+				if (!sanitizedExports.contains("{}"))
+				{
+					fileReaders.add( new StringReader( globaliseModuleContent ) );
+				}
 			}
 			
 			fileReaders.add(patch.getReader());

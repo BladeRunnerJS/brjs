@@ -145,7 +145,11 @@ public class BundleSetBuilder {
 		
 		try {
 			for(String aliasName : aliasNames) {
-				aliases.add(bundlableNode.getAlias(aliasName));
+				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				if (alias != null)
+				{
+					aliases.add(alias);
+				}
 			}
 		}
 		catch(AliasException | ContentFileProcessingException e) {

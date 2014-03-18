@@ -41,6 +41,13 @@ public class ConsoleMessageStore {
 		assertContains(expectedConsoleOutput, actualConsoleOutput);
 	}
 	
+	public void verifyDoesNotContainText(String[] text) {
+		String actualConsoleOutput = Joiner.on("\n").join(consoleOutput);
+		String expectedConsoleOutput = Joiner.on("\n").join(text);
+		
+		assertDoesNotContain(expectedConsoleOutput, actualConsoleOutput);
+	}
+	
 	public void add(String message, Object[] params) {
 		messages.add(new LogMessage(message, params).toString());
 		consoleOutput.add(String.format(message, params));

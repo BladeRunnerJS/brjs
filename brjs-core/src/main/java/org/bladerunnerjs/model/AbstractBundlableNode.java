@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.aliasing.IncompleteAliasException;
@@ -39,7 +40,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		super(rootNode, parent, dir);
 	}
 	
-	public abstract List<LinkedAsset> getSeedFiles();
+	protected abstract List<LinkedAsset> getSeedFiles();
 	
 	@Override
 	public List<LinkedAsset> seedFiles() {
@@ -93,7 +94,28 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException {
-		return aliasesFile().getAlias(aliasName);
+		
+		//TODO: remove the hack that differs in behaviour if an alias starts with "SERVICE!"
+		
+		boolean isService = aliasName.startsWith("SERVICE!");
+		if (isService)
+		{
+			aliasName = StringUtils.substringAfter(aliasName, "SERVICE!");
+		}
+		
+		try
+		{
+			return aliasesFile().getAlias(aliasName);
+		}
+		catch (UnresolvableAliasException ex)
+		{
+			if (isService)
+			{
+				// do nothing with the exception since a service might be configured at runtime
+				return null;
+			}
+			throw ex;
+		}
 	}
 	
 	@Override

@@ -60,4 +60,29 @@ public class NodeJsLibTest extends SpecTest {
 		then(response).containsText("thisLib = require('lib');");
 	}
 	
+	// ---------------------------------------- //
+	//TODO: these tests wont be valid when we have proper node.js support
+	@Test 
+	public void librariesWithEmptyObjectExportsDontCreateInvalidJS() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+			.and(sdkLib).containsFile("package.json")
+			.and(sdkLib).containsFileWithContents("library.manifest", "exports: \"{}\"")
+			.and(aspect).indexPageRequires("lib");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsLines(
+				"// lib",
+				"define('lib', function(require, exports, module) {",				
+				"module.exports = function() { };")
+			.and(response).doesNotContainClasses("{} = require('lib');");
+	}
+	@Test 
+	public void librariesWithEmptyObjectAndWhiteSpaceExportsDontCreateInvalidJS() throws Exception {
+		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
+		.and(sdkLib).containsFile("package.json")
+		.and(sdkLib).containsFileWithContents("library.manifest", "exports: \"  {  }  \"")
+		.and(aspect).indexPageRequires("lib");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).doesNotContainClasses("= require('lib');");
+	}
+	// ---------------------------------------- //
 }

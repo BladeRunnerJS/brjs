@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -78,18 +77,38 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsText("br.Class2");
 	}
 	
-	// TODO: #354 adding another test highlighting the alias dependency issue with NodeJS classes
-	@Ignore 
+	// TODO: refactor/remove these tests once we have a more thought-through support for alias and service dependency analysis
+	// e.g. require('alias!someAlias') and require('service!someService');
 	@Test
-	public void sdkLibAliasDefinitionsReferencesAreBundledIfTheyAreReferencedViaAspectClass() throws Exception {
+	public void aliasClassesReferencedByANodeJSSourceModuleAreIncludedInTheBundle() throws Exception {
 		given(brLib).hasClasses("br.Class1", "br.Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
 			.and(aspect).hasNodeJsPackageStyle()
-			.and(aspect).classFileHasContent("Class1", "'br.alias'")
+			.and(aspect).classFileHasContent("Class1", "aliasRegistry.getAlias('br.alias')")
 			.and(aspect).indexPageRequires("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("br.Class2");
 	}
+	@Test
+	public void serviceClassesReferencedByANodeJSSourceModuleAreIncludedInTheBundle() throws Exception {
+		given(brLib).hasClasses("br.Class1", "br.Class2")
+			.and(brLibAliasDefinitionsFile).hasAlias("br.service", "br.Class2")
+			.and(aspect).hasNodeJsPackageStyle()
+			.and(aspect).classFileHasContent("Class1", "serviceRegistry.getService('br.service')")
+			.and(aspect).indexPageRequires("appns.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("br.Class2");
+	}
+	@Test // test exception isnt thrown for services - services can be defined and configure at run time, which differs from aliases
+	public void anExceptionIsntThrownIfAServiceClassesReferencedByANodeJSSourceModuleDoesntExist() throws Exception {
+		given(brLib).hasClasses("br.Class1", "br.Class2")
+    		.and(aspect).hasNodeJsPackageStyle()
+    		.and(aspect).classFileHasContent("Class1", "serviceRegistry.getService('br.service')")
+    		.and(aspect).indexPageRequires("appns.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	// -----------------------------------
 	
 	@Test
 	public void weBundleAClassIfItsAliasIsReferredToInTheIndexPage() throws Exception {
@@ -112,16 +131,14 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsClasses("appns.Class1");
 	}
 	
-	// TODO: get this class working once we add support for requiring aliases (Adam I suggests we can do the same for services and HTML templates too)
-	@Ignore
 	@Test
 	public void weBundleAClassIfItsAliasIsReferredToFromAnotherNodeJsClass() throws Exception {
 		given(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).classFileHasContent("appns.Class1", "'the-alias'");
+			.and(aspect).classFileHasContent("appns.Class1", "aliasRegistry.getAlias('the-alias')");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1", "appns.Class2");
+		then(response).containsDefinedClasses("appns/Class1", "appns/Class2");
 	}
 	
 	@Test

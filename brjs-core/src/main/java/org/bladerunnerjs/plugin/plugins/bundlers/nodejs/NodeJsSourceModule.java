@@ -35,11 +35,10 @@ public class NodeJsSourceModule implements SourceModule {
 	public static final String NODEJS_DEFINE_BLOCK_HEADER = "define('%s', function(require, exports, module) {\n";
 	public static final String NODEJS_DEFINE_BLOCK_FOOTER = "\n});\n";
 
-	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
+	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias|getAlias|getService)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
 	
 	private File assetFile;
 	private Set<String> requirePaths;
-	private List<String> aliasNames;
 	private AssetLocation assetLocation;
 	private List<String> aliases;
 	private FileModifiedChecker fileModifiedChecker;
@@ -151,32 +150,29 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	private void recalculateDependencies() throws ModelOperationException {
 		requirePaths = new HashSet<>();
-		aliasNames = new ArrayList<>();
+		aliases = new ArrayList<>();
 		
 		try(Reader fileReader = getReader()) {
 			StringWriter stringWriter = new StringWriter();
 			IOUtils.copy(fileReader, stringWriter);
 			
 			Matcher m = matcherPattern.matcher(stringWriter.toString());
-			
-			while(m.find()) {
-				boolean isRequirePath = m.group(1).startsWith("require");
+			while (m.find()) {
 				String methodArgument = m.group(2);
 				
-				if(isRequirePath) {
+				if (m.group(1).startsWith("require")) {
 					String requirePath = methodArgument;
 					requirePaths.add(requirePath);
 				}
-				else {
-					aliasNames.add(methodArgument);
+				else if (m.group(1).startsWith("getService")){
+					String serviceAliasName = methodArgument;
+					//TODO: this is a big hack, remove the "SERVICE!" part and the same in BundleSetBuilder
+					aliases.add("SERVICE!"+serviceAliasName);
 				}
-			}
-			
-			aliases = new ArrayList<>();
-			for(@SuppressWarnings("unused") String aliasName : aliasNames) {
-				// TODO: how do I get the AliasDefinition instance?
-				// aliases.add( .... )
-			}
+				else {
+					aliases.add(methodArgument);
+				}
+			}	
 		}
 		catch(IOException e) {
 			throw new ModelOperationException(e);
