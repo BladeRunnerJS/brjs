@@ -118,6 +118,18 @@ public class DepInsightCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void ifTheSourceModuleBeingInspectedIsntToBeBundledThenAllDependenciesAreShown() throws Exception {
+		given(aspect).indexPageRequires("appns/Class3")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
+			.and(aspect).classRequires("appns.Class1", "./Class2");
+		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
+		then(output).containsText(
+			"Source module 'appns/Class2' dependencies found:",
+			"    +--- 'default-aspect/src/appns/Class2.js'",
+			"    |    \\--- 'default-aspect/src/appns/Class1.js'");
+	}
+	
+	@Test
 	public void requestingDependenciesForANonExistentSourceModuleProvidesANiceMessage() throws Exception {
 		given(aspect).hasBeenCreated();
 		when(brjs).runCommand("dep-insight", "app", "NonExistentClass");
