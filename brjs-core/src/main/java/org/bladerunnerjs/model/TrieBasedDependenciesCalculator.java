@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 
@@ -60,7 +61,7 @@ public class TrieBasedDependenciesCalculator
 			dependentSourceModules = new ArrayList<>();
 			aliases = new ArrayList<>();
 			
-			try(Reader reader = asset.getReader()) {
+			try(Reader reader = new JsCommentStrippingReader(asset.getReader(), false)) {
 				for(Object match : getTrie().getMatches(reader)) {
 					if (match instanceof SourceModuleReference) {
 						SourceModuleReference sourceModuleReference = (SourceModuleReference) match;
