@@ -1,4 +1,4 @@
-package com.caplin.cutlass.util;
+package org.bladerunnerjs.utility;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -46,7 +46,7 @@ public class JsCommentStrippingReader extends Reader
 		{
 			char nextChar = (char) nextInt;
 			
-			Utils.ensureCharactersDontMatchMacLineEndings(previousChar, nextChar);
+			ensureCharactersDontMatchMacLineEndings(previousChar, nextChar);
 			switch(state)
 			{
 				case WITHIN_SOURCE:
@@ -182,6 +182,14 @@ public class JsCommentStrippingReader extends Reader
 		}
 		
 		return charactersWritten;
+	}
+	
+	public void ensureCharactersDontMatchMacLineEndings(char previousChar, char nextChar) throws IOException
+	{
+		if (previousChar == '\r' && nextChar != '\n')
+		{
+			throw new IOException("Mac line endings detected. This type of line ending is not supported.");
+		}
 	}
 	
 	private enum CommentStripperState

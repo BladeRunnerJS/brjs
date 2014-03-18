@@ -1,4 +1,4 @@
-package com.caplin.cutlass.util;
+package org.bladerunnerjs.utility;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.junit.Test;
 
 public class JsCommentStrippingReaderTest
