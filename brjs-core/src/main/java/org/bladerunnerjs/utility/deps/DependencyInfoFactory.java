@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
@@ -18,7 +19,7 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class DependencyInfoFactory {
 	public static DependencyInfo buildForwardDependencyMap(BrowsableNode browsableNode) throws ModelOperationException {
-		return buildDependencyGraph(browsableNode, new DependencyAdder() {
+		return buildDependencyGraphFromBundleSet(browsableNode.getBundleSet(), new DependencyAdder() {
 			@Override
 			public void add(DependencyInfo dependencies, LinkedAsset sourceAsset, LinkedAsset targetAsset) {
 				addDependency(dependencies, sourceAsset, targetAsset);
@@ -26,50 +27,94 @@ public class DependencyInfoFactory {
 		});
 	}
 	
-	public static DependencyInfo buildReverseDependencyMap(BrowsableNode browsableNode) throws ModelOperationException {
-		return buildDependencyGraph(browsableNode, new DependencyAdder() {
+	public static DependencyInfo buildReverseDependencyMap(BrowsableNode browsableNode, SourceModule sourceModule) throws ModelOperationException {
+		BundleSet bundleSet = browsableNode.getBundleSet();
+		DependencyAdder dependencyAdder = new DependencyAdder() {
 			@Override
 			public void add(DependencyInfo dependencyInfo, LinkedAsset sourceAsset, LinkedAsset targetAsset) {
 				addDependency(dependencyInfo, targetAsset, sourceAsset);
 			}
-		});
-	}
-	
-	private static DependencyInfo buildDependencyGraph(BrowsableNode browsableNode, DependencyAdder dependencyAdder) throws ModelOperationException {
-		DependencyInfo dependencyInfo = new DependencyInfo();
-		BundleSet bundleSet = browsableNode.getBundleSet();
+		};
+		DependencyInfo reverseDependencyGraph;
 		
-		for(LinkedAsset seedAsset : browsableNode.seedFiles()) {
-			dependencyInfo.seedAssets.add(seedAsset);
-			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(browsableNode));
-			addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, seedAsset);
+		if((sourceModule == null) || bundleSet.getSourceModules().contains(sourceModule)) {
+			reverseDependencyGraph = buildDependencyGraphFromBundleSet(bundleSet, dependencyAdder);
+		}
+		else {
+			reverseDependencyGraph = buildDependencyGraphFromBundlableNode(bundleSet.getBundlableNode(), dependencyAdder);
 		}
 		
+		return reverseDependencyGraph;
+	}
+	
+	private static DependencyInfo buildDependencyGraphFromBundleSet(BundleSet bundleSet, DependencyAdder dependencyAdder) throws ModelOperationException {
+		BundlableNode bundlableNode = bundleSet.getBundlableNode();
+		DependencyInfo dependencyInfo = new DependencyInfo();
+		
+		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
+		
 		for(AssetLocation assetLocation : bundleSet.getResourceNodes()) {
-			for(LinkedAsset resourceAsset : assetLocation.seedResources()) {
-				dependencyInfo.resourceAssets.add(resourceAsset);
-				addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(browsableNode));
-				addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, resourceAsset);
-			}
+			addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
 		}
 		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-			addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(browsableNode));
-			addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(browsableNode));
-			addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, sourceModule);
+			addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, sourceModule);
+		}
+		
+		return dependencyInfo;
+	}
+	
+	private static DependencyInfo buildDependencyGraphFromBundlableNode(BundlableNode bundlableNode, DependencyAdder dependencyAdder) throws ModelOperationException {
+		DependencyInfo dependencyInfo = new DependencyInfo();
+		
+		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
+		
+		for(AssetContainer assetContainer : bundlableNode.getAssetContainers()) {
+			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
+				addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
+			}
 			
-			for(AssetLocation assetLocation : allAssetLocations(sourceModule)) {
-				for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
-					if((assetLocationLinkedAsset.getDependentSourceModules(browsableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
-						dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
-					}
-					
-					addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, assetLocationLinkedAsset);
-				}
+			for(SourceModule sourceModule : assetContainer.sourceModules()) {
+				addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, sourceModule);
 			}
 		}
 		
 		return dependencyInfo;
+	}
+	
+	private static void addSeedDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode, DependencyInfo dependencyInfo)
+		throws ModelOperationException {
+		for(LinkedAsset seedAsset : bundlableNode.seedFiles()) {
+			dependencyInfo.seedAssets.add(seedAsset);
+			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(bundlableNode));
+			addAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, seedAsset);
+		}
+	}
+	
+	private static void addAssetLocationDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
+		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
+		for(LinkedAsset resourceAsset : assetLocation.seedResources()) {
+			dependencyInfo.resourceAssets.add(resourceAsset);
+			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(bundlableNode));
+			addAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
+		}
+	}
+	
+	private static void addSourceModuleDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
+		DependencyInfo dependencyInfo, SourceModule sourceModule) throws ModelOperationException {
+		addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(bundlableNode));
+		addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(bundlableNode));
+		addAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
+		
+		for(AssetLocation assetLocation : allAssetLocations(sourceModule)) {
+			for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
+				if((assetLocationLinkedAsset.getDependentSourceModules(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
+					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
+				}
+				
+				addAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, assetLocationLinkedAsset);
+			}
+		}
 	}
 	
 	private static List<AssetLocation> allAssetLocations(SourceModule sourceModule) {

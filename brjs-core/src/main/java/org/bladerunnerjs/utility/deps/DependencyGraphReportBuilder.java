@@ -44,7 +44,7 @@ public class DependencyGraphReportBuilder {
 			linkedAssets.add(sourceModule);
 			
 			return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
 		}
 		catch(RequirePathException e) {
 			return e.getMessage();
@@ -61,7 +61,7 @@ public class DependencyGraphReportBuilder {
 		}
 		
 		return "Require path prefix '" + requirePathPrefix + "' dependencies found:\n" +
-		new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
+		new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, null), showAllDependencies).createReport();
 	}
 	
 	public static String createReportForAlias(BrowsableNode browsableNode, String aliasName, boolean showAllDependencies) throws ModelOperationException {
@@ -82,7 +82,7 @@ public class DependencyGraphReportBuilder {
 			linkedAssets.add(sourceModule);
 			
 			return "Alias '" + aliasName + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
 		}
 		catch(AliasException | RequirePathException e) {
 			return e.getMessage();
