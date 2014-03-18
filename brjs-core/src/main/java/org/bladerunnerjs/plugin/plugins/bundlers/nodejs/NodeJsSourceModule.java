@@ -25,6 +25,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
@@ -152,7 +153,7 @@ public class NodeJsSourceModule implements SourceModule {
 		requirePaths = new HashSet<>();
 		aliases = new ArrayList<>();
 		
-		try(Reader fileReader = getReader()) {
+		try(Reader fileReader = new JsCommentStrippingReader(getReader(), false)) {
 			StringWriter stringWriter = new StringWriter();
 			IOUtils.copy(fileReader, stringWriter);
 			
