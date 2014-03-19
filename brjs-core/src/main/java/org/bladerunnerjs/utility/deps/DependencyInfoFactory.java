@@ -1,6 +1,5 @@
 package org.bladerunnerjs.utility.deps;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -110,7 +109,7 @@ public class DependencyInfoFactory {
 		addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(bundlableNode));
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
 		
-		for(AssetLocation assetLocation : allAssetLocations(sourceModule)) {
+		for(AssetLocation assetLocation : sourceModule.assetLocations()) {
 			for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
 				if((assetLocationLinkedAsset.getDependentSourceModules(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
 					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
@@ -119,14 +118,6 @@ public class DependencyInfoFactory {
 				addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, assetLocationLinkedAsset);
 			}
 		}
-	}
-	
-	private static List<AssetLocation> allAssetLocations(SourceModule sourceModule) {
-		List<AssetLocation> assetLocations = new ArrayList<>();
-		assetLocations.add(sourceModule.getAssetLocation());
-		assetLocations.addAll(sourceModule.getAssetLocation().dependentAssetLocations());
-		
-		return assetLocations;
 	}
 	
 	private static void addDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencyInfo, LinkedAsset sourceAsset, List<SourceModule> targetAssets) throws ModelOperationException {

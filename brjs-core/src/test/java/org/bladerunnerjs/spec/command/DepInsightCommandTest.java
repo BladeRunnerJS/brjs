@@ -161,10 +161,10 @@ public class DepInsightCommandTest extends SpecTest {
 		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
 		then(output).containsText(
 			"Source module 'appns/Class2' dependencies found:",
-			"    +--- 'default-aspect/src/appns/Class2.js'",
+			"    +--- 'default-aspect/src/appns/Class2.js' (*)",
 			"    |    \\--- 'default-aspect/resources/config.xml' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/index.html' (seed file)");
+			"    |    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
+			"    |    |    |    \\--- 'default-aspect/index.html' (seed file)");
 	}
 	
 	@Test

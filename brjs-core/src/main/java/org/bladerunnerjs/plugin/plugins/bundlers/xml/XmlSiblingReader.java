@@ -165,7 +165,7 @@ public class XmlSiblingReader
 			parent.assertIdentifierCorrectlyNamespaced(identifier);
 		}
 		else {
-			xmlAsset.getAssetLocation().assertIdentifierCorrectlyNamespaced(identifier);
+			xmlAsset.assetLocation().assertIdentifierCorrectlyNamespaced(identifier);
 		}
 	}
 	

@@ -56,7 +56,7 @@ public class I18nAssetFile implements Asset
 	}
 
 	@Override
-	public AssetLocation getAssetLocation()
+	public AssetLocation assetLocation()
 	{
 		return assetLocation;
 	}
@@ -98,7 +98,7 @@ public class I18nAssetFile implements Asset
 		
 		for (String property : i18nProperties.stringPropertyNames())
 		{
-			getAssetLocation().assertIdentifierCorrectlyNamespaced(property);
+			assetLocation().assertIdentifierCorrectlyNamespaced(property);
 			String value = i18nProperties.getProperty(property);
 			propertiesMap.put(property, value);
 		}

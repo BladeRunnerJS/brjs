@@ -33,7 +33,7 @@ public class FileAsset implements Asset {
 	}
 	
 	@Override
-	public AssetLocation getAssetLocation() {
+	public AssetLocation assetLocation() {
 		return assetLocation;
 	}
 	

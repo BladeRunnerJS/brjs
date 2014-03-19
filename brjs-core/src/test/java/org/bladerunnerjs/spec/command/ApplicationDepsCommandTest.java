@@ -103,7 +103,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
 			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
-			"    +--- 'default-aspect/resources/config.xml' (seed file)",
+			"    |    |    |    \\--- 'default-aspect/resources/config.xml' (seed file) (*)",
 			"",
 			"    (*) - subsequent instances not shown (use -A or --all to show)");
 	}
@@ -120,8 +120,10 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
-			"    +--- 'default-aspect/resources/config.xml' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
+			"    |    |    |    \\--- 'default-aspect/resources/config.xml' (seed file)",
+			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
+			"    |    |    \\--- 'default-aspect/resources/config.xml' (seed file) (*)",
+			"    +--- 'default-aspect/resources/config.xml' (seed file) (*)",
 			"",
 			"    (*) - dependencies omitted (listed previously)");
 	}

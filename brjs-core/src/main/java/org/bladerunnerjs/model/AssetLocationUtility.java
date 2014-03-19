@@ -2,7 +2,9 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -10,6 +12,21 @@ public class AssetLocationUtility
 {
 	private final Map<String, Asset> assetFiles = new HashMap<>();
 	private final AssetLocation assetLocation;
+	
+	public static List<AssetLocation> getAllDependentAssetLocations(AssetLocation assetLocation) {
+		List<AssetLocation> assetLocations = new ArrayList<>();
+		addAssetLocation(assetLocation, assetLocations);
+		
+		return assetLocations;
+	}
+	
+	private static void addAssetLocation(AssetLocation assetLocation, List<AssetLocation> assetLocations) {
+		assetLocations.add(assetLocation);
+		
+		for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
+			addAssetLocation(dependentAssetLocation, assetLocations);
+		}
+	}
 	
 	public AssetLocationUtility(AssetLocation assetLocation) {
 		this.assetLocation = assetLocation;
