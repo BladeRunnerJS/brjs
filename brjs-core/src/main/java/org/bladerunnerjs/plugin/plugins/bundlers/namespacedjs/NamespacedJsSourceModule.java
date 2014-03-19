@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetFileInstantationException;
+import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -124,9 +125,14 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public AssetLocation getAssetLocation()
+	public AssetLocation assetLocation()
 	{
 		return assetLocation;
+	}
+	
+	@Override
+	public List<AssetLocation> assetLocations() {
+		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 	}
 	
 	private void recalculateOrderedDependencies(BundlableNode bundlableNode) throws ModelOperationException {

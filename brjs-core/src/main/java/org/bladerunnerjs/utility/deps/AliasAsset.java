@@ -31,7 +31,7 @@ public class AliasAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public AssetLocation getAssetLocation() {
+	public AssetLocation assetLocation() {
 		return null;
 	}
 	

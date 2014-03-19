@@ -91,7 +91,7 @@ public class BundleSet {
 		
 		for (A asset : assets)
 		{
-			if (asset.getAssetLocation().assetContainer().getClass() == assetContainerType)
+			if (asset.assetLocation().assetContainer().getClass() == assetContainerType)
 			{
 				assetsInContainer.add(asset);
 			}

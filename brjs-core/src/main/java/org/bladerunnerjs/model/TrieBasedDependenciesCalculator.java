@@ -32,7 +32,7 @@ public class TrieBasedDependenciesCalculator
 	public TrieBasedDependenciesCalculator(Asset asset)
 	{
 		this.asset = asset;
-		assetLocation = asset.getAssetLocation();
+		assetLocation = asset.assetLocation();
 		app = assetLocation.assetContainer().app();
 		appProperties = app.nodeProperties("TrieBasedDependenciesAsset");
 		File assetFile = new File( asset.getAssetPath() );

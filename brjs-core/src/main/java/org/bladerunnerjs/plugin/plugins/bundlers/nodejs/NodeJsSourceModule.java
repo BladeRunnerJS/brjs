@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
@@ -181,11 +182,16 @@ public class NodeJsSourceModule implements SourceModule {
 	}
 
 	@Override
-	public AssetLocation getAssetLocation()
+	public AssetLocation assetLocation()
 	{
 		return assetLocation;
 	}
-
+	
+	@Override
+	public List<AssetLocation> assetLocations() {
+		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
+	}
+	
 	@Override
 	public void addPatch(SourceModulePatch patch)
 	{

@@ -122,7 +122,7 @@ public class BundleSetBuilder {
 				addSourceModule(sourceModule);
 			}
 			
-			addAssetLocation(linkedAsset.getAssetLocation());
+			addAssetLocation(linkedAsset.assetLocation());
 		}
 		
 	}

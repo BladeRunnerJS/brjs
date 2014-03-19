@@ -9,10 +9,9 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.aliasing.AliasOverride;
+import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -100,12 +99,10 @@ public class DependencyGraphReportBuilder {
 		try {
 			AliasesFile aliasesFile = bundlableNode.aliasesFile();
 			
-			for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
-				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-					for(AliasDefinition aliasDefinition : assetLocation.aliasDefinitionsFile().aliases()) {
-						if(!aliasesFile.hasAlias(aliasDefinition.getName()) && (aliasDefinition != null) && (aliasDefinition.getInterfaceName() != null)) {
-							aliasesFile.addAlias(new AliasOverride(aliasDefinition.getName(), aliasDefinition.getInterfaceName()));
-						}
+			for(AliasDefinitionsFile aliasDefinitionFile : bundlableNode.aliasDefinitionFiles()) {
+				for(AliasDefinition aliasDefinition : aliasDefinitionFile.aliases()) {
+					if(!aliasesFile.hasAlias(aliasDefinition.getName()) && (aliasDefinition != null) && (aliasDefinition.getInterfaceName() != null)) {
+						aliasesFile.addAlias(new AliasOverride(aliasDefinition.getName(), aliasDefinition.getInterfaceName()));
 					}
 				}
 			}

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
@@ -105,9 +106,14 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public AssetLocation getAssetLocation()
+	public AssetLocation assetLocation()
 	{
 		return assetLocation;
+	}
+	
+	@Override
+	public List<AssetLocation> assetLocations() {
+		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 	}
 	
 	@Override

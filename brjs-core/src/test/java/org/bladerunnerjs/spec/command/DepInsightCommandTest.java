@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.DepInsightCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -106,6 +107,20 @@ public class DepInsightCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void dependenciesAreShownForNamespacedClassesToo() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).indexPageRequires("appns/Class1")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classRefersTo("appns.Class1", "appns.Class2");
+		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
+		then(output).containsText(
+			"Source module 'appns/Class2' dependencies found:",
+			"    +--- 'default-aspect/src/appns/Class2.js'",
+			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
+			"    |    |    \\--- 'default-aspect/index.html'");
+	}
+	
+	@Test
 	public void onlyDependenciesThatAreToBeBundledAreShown() throws Exception {
 		given(aspect).indexPageRequires("appns/Class2")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
@@ -146,10 +161,10 @@ public class DepInsightCommandTest extends SpecTest {
 		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
 		then(output).containsText(
 			"Source module 'appns/Class2' dependencies found:",
-			"    +--- 'default-aspect/src/appns/Class2.js'",
+			"    +--- 'default-aspect/src/appns/Class2.js' (*)",
 			"    |    \\--- 'default-aspect/resources/config.xml' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
-			"    |    |    \\--- 'default-aspect/index.html' (seed file)");
+			"    |    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
+			"    |    |    |    \\--- 'default-aspect/index.html' (seed file)");
 	}
 	
 	@Test
@@ -263,10 +278,9 @@ public class DepInsightCommandTest extends SpecTest {
 			"    |    |    \\--- 'default-aspect/index.html' (seed file)");
 	}
 	
+	@Ignore
 	@Test
-	public void dependenciesCanBeShowsnForAnIncompleteAlias() throws Exception {
-		given(exceptions).arentCaught();
-		
+	public void dependenciesCanBeShownForAnIncompleteAlias() throws Exception {
 		given(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
 			.and(aspect).hasClasses("appns.TheClass", "appns.TheInterface")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.TheInterface");
@@ -276,6 +290,17 @@ public class DepInsightCommandTest extends SpecTest {
 			"    +--- 'default-aspect/src/appns/TheInterface.js'",
 			"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
 			"    |    |    \\--- 'default-aspect/index.html' (seed file)");
+	}
+	
+	@Test
+	public void dependenciesCanBeShownForAnIncompleteAliasThatIsntUsedWithinTheApp() throws Exception {
+		given(aspect).hasClass("appns.TheInterface")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.TheInterface");
+		when(brjs).runCommand("dep-insight", "app", "appns.bs.b1.alias-ref", "--alias");
+		then(output).containsText(
+			"Alias 'appns.bs.b1.alias-ref' dependencies found:",
+			"    +--- 'default-aspect/src/appns/TheInterface.js'",
+			"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)");
 	}
 	
 	@Test
