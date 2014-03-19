@@ -128,12 +128,16 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<AliasDefinitionsFile> getAliasDefinitionFiles() {
+	public List<AliasDefinitionsFile> aliasDefinitionFiles() {
 		List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
 		
-		for(AssetContainer assetContainer : getAssetContainers()) {
+		for(AssetContainer assetContainer : assetContainers()) {
 			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-				aliasDefinitionFiles.add(assetLocation.aliasDefinitionsFile());
+				AliasDefinitionsFile aliasDefinitionsFile = assetLocation.aliasDefinitionsFile();
+				
+				if(aliasDefinitionsFile.getUnderlyingFile().exists()) {
+					aliasDefinitionFiles.add(aliasDefinitionsFile);
+				}
 			}
 		}
 		
@@ -201,7 +205,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	private void addMissingAssetContainers(String requirePath, List<AssetContainer> potentialAssetContainers) {
-		for(AssetContainer assetContainer : getAssetContainers()) {
+		for(AssetContainer assetContainer : assetContainers()) {
 			assetContainers.put(assetContainer.requirePrefix(), assetContainer);
 			
 			if(requirePath.startsWith(assetContainer.requirePrefix()) && !potentialAssetContainers.contains(assetContainer)) {

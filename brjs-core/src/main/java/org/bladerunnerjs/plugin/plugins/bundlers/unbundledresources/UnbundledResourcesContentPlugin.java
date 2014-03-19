@@ -76,7 +76,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     			File requestedFile = new File(unbundledResourcesDir, relativeFilePath);
     			if (!requestedFile.isFile())
     			{
-    				App app = bundleSet.getBundlableNode().getApp();
+    				App app = bundleSet.getBundlableNode().app();
     				String requestedFilePathRelativeToApp = RelativePathUtility.get(app.dir().getParentFile(), requestedFile);
     				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToApp+"' does not exist or is not a file.");
     			}

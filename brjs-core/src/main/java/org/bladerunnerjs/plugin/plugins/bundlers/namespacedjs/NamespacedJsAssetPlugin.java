@@ -25,7 +25,7 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		try {
-			if (assetLocation.getJsStyle().equals(NamespacedJsContentPlugin.JS_STYLE))
+			if (assetLocation.jsStyle().equals(NamespacedJsContentPlugin.JS_STYLE))
 			{
 				return assetLocation.obtainMatchingAssets(new SuffixAssetFilter("js"), SourceModule.class, NamespacedJsSourceModule.class);
 			}

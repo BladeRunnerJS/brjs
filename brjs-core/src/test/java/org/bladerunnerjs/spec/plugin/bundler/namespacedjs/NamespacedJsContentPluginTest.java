@@ -53,6 +53,82 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void theBundleContainsClassesThatAreReferredTo() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classRefersTo("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("appns.Class1", "appns.Class2");
+	}
+	
+	@Test
+	public void referencesAreNotProcessedIfCommentedOutWithTwoSlashes() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.TheClass")
+			.and(aspect).indexPageHasContent("// appns.TheClass");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
+	public void referencesAreNotProcessedIfCommentedOutWithSlashStar() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.TheClass")
+			.and(aspect).indexPageHasContent("/* appns.TheClass */");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
+	public void referencesAreNotProcessedIfCommentedOutWithSlashStarStar() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.TheClass")
+			.and(aspect).indexPageHasContent("/** appns.TheClass */");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
+	public void staticReferencesAreNotProcessedIfCommentedOutWithTwoSlashes() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1",
+				"appns.Class1 = function(){};\n" +
+				"// br.Core.extend(appns.Class1, appns.Class2);");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("appns.Class1")
+			.and(requestResponse).doesNotContainClasses("appns.Class2");
+	}
+	
+	@Test
+	public void staticReferencesAreNotProcessedIfCommentedOutWithSlashStar() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1",
+				"appns.Class1 = function(){};\n" +
+				"/* br.Core.extend(appns.Class1, appns.Class2); */");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("appns.Class1")
+			.and(requestResponse).doesNotContainClasses("appns.Class2");
+	}
+	
+	@Test
+	public void staticReferencesAreNotProcessedIfCommentedOutWithSlashSlashStar() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1",
+				"appns.Class1 = function(){};\n" +
+				"/** br.Core.extend(appns.Class1, appns.Class2); */");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("appns.Class1")
+			.and(requestResponse).doesNotContainClasses("appns.Class2");
+	}
+	
+	@Test
 	public void thePackageDefinitionsBlockShouldContainSinglePackageIfThereIsOneTopLevelClass() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1")

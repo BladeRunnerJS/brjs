@@ -73,7 +73,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<AssetContainer> getAssetContainers()
+	public List<AssetContainer> assetContainers()
 	{
 		List<AssetContainer> assetContainers = new ArrayList<AssetContainer>();
 		
@@ -82,7 +82,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		Node testScopeNode = parentNode().parentNode();
 		
 		assetContainers.add(this);
-		assetContainers.addAll( this.getApp().jsLibs() );
+		assetContainers.addAll( this.app().jsLibs() );
 		
 		if (testScopeNode instanceof Blade)
 		{
@@ -97,7 +97,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		}
 		if (testScopeNode instanceof Aspect)
 		{			
-			App app = this.getApp();
+			App app = this.app();
 			Aspect aspect = (Aspect) testScopeNode;
 			
 			assetContainers.add( aspect );
@@ -118,7 +118,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 			assetContainers.add( brjs.locateAncestorNodeOfClass(workbench, Blade.class) );
 			assetContainers.add( brjs.locateAncestorNodeOfClass(workbench, Bladeset.class) );
 			
-			App app = this.getApp();
+			App app = this.app();
 			assetContainers.add( app.aspect("default") );
 			
 		}

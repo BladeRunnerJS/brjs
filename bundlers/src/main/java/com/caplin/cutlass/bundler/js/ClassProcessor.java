@@ -16,6 +16,7 @@ import com.caplin.cutlass.BRJSAccessor;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.utility.JsCommentStrippingReader;
 
 import com.caplin.cutlass.bundler.exception.UnknownBundlerException;
 import com.caplin.cutlass.bundler.io.BundlerFileReaderFactory;
@@ -25,7 +26,6 @@ import com.caplin.cutlass.bundler.js.aliasing.AliasInformation;
 import com.caplin.cutlass.bundler.js.aliasing.ScenarioAliases;
 import com.caplin.cutlass.bundler.js.analyser.CodeAnalyser;
 import com.caplin.cutlass.bundler.js.analyser.NullCodeAnalyser;
-import com.caplin.cutlass.util.JsCommentStrippingReader;
 
 public class ClassProcessor
 {
