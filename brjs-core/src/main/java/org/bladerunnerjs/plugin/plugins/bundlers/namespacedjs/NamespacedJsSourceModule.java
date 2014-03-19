@@ -24,6 +24,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.Ostermiller.util.ConcatReader;
@@ -136,7 +137,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	private void recalculateOrderedDependencies(BundlableNode bundlableNode) throws ModelOperationException {
-		try(Reader reader = getReader()) {
+		try(Reader reader = new JsCommentStrippingReader(getReader(), false)) {
 			orderDependentSourceModules = new ArrayList<>();
 			
 			StringWriter stringWriter = new StringWriter();
