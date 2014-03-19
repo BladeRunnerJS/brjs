@@ -234,7 +234,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void dependenciesCanInvolveARelatedResourcesThatRefersToAnAlias() throws Exception {
+	public void dependenciesCanInvolveARelatedResourceThatRefersToAnAlias() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg.NestedClass")
 			.and(aspect).classRequires("appns.Class1", "./pkg/NestedClass")
