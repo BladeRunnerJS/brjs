@@ -139,6 +139,7 @@ public class DependencyInfoFactory {
 		dependencies.map.get(sourceAsset).add(targetAsset);
 	}
 	
+	// TODO: this method should only be called by scanning all aliases
 	private static void addAliasDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {
 		try {
 			for(String aliasName : linkedAsset.getAliasNames()) {
