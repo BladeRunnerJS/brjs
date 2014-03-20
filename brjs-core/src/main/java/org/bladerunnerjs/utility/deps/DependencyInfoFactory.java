@@ -10,7 +10,6 @@ import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -20,8 +19,8 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class DependencyInfoFactory {
-	public static DependencyInfo buildForwardDependencyMap(BrowsableNode browsableNode) throws ModelOperationException {
-		return buildDependencyGraphFromBundleSet(browsableNode.getBundleSet(), new DependencyAdder() {
+	public static DependencyInfo buildForwardDependencyMap(BundlableNode bundlableNode) throws ModelOperationException {
+		return buildDependencyGraphFromBundleSet(bundlableNode.getBundleSet(), new DependencyAdder() {
 			@Override
 			public void add(DependencyInfo dependencies, LinkedAsset sourceAsset, LinkedAsset targetAsset) {
 				addDependency(dependencies, sourceAsset, targetAsset);
@@ -29,8 +28,8 @@ public class DependencyInfoFactory {
 		});
 	}
 	
-	public static DependencyInfo buildReverseDependencyMap(BrowsableNode browsableNode, SourceModule sourceModule) throws ModelOperationException {
-		BundleSet bundleSet = browsableNode.getBundleSet();
+	public static DependencyInfo buildReverseDependencyMap(BundlableNode bundlableNode, SourceModule sourceModule) throws ModelOperationException {
+		BundleSet bundleSet = bundlableNode.getBundleSet();
 		DependencyAdder dependencyAdder = new DependencyAdder() {
 			@Override
 			public void add(DependencyInfo dependencyInfo, LinkedAsset sourceAsset, LinkedAsset targetAsset) {
