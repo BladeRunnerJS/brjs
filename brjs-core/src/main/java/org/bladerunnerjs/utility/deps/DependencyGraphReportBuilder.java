@@ -125,7 +125,7 @@ public class DependencyGraphReportBuilder {
 	private String createReport() throws ModelOperationException {
 		HashSet<LinkedAsset> processedAssets = new HashSet<>();
 		for(LinkedAsset linkedAsset : linkedAssets) {
-			addDependency(linkedAsset, processedAssets, 1);
+			addDependency(linkedAsset, null, processedAssets, 1);
 		}
 		
 		if(!showAllDependencies && !manyLinkedAssets.isEmpty()) {
@@ -159,15 +159,15 @@ public class DependencyGraphReportBuilder {
 		}
 	}
 	
-	private void addDependency(LinkedAsset linkedAsset, Set<LinkedAsset> processedAssets, int indentLevel) throws ModelOperationException {
+	private void addDependency(LinkedAsset linkedAsset, LinkedAsset referringAsset, Set<LinkedAsset> processedAssets, int indentLevel) throws ModelOperationException {
 		if(showAllDependencies || !processedAssets.contains(linkedAsset)) {
-			appendAssetPath(linkedAsset, indentLevel, processedAssets.contains(linkedAsset));
+			appendAssetPath(linkedAsset, referringAsset, indentLevel, processedAssets.contains(linkedAsset));
 		}
 		
 		List<LinkedAsset> assetDependencies = getDependencies(linkedAsset);
 		if(processedAssets.add(linkedAsset)) {
 			for(LinkedAsset dependentAsset : assetDependencies) {
-				addDependency(dependentAsset, processedAssets, indentLevel + 1);
+				addDependency(dependentAsset, linkedAsset, processedAssets, indentLevel + 1);
 			}
 		}
 		else if(assetDependencies.size() > 0) {
@@ -175,7 +175,7 @@ public class DependencyGraphReportBuilder {
 		}
 	}
 	
-	private void appendAssetPath(LinkedAsset linkedAsset, int indentLevel, boolean alreadyProcessedDependency) {
+	private void appendAssetPath(LinkedAsset linkedAsset, LinkedAsset referringAsset, int indentLevel, boolean alreadyProcessedDependency) {
 		reportBuilder.append("    ");
 		
 		if(indentLevel == 1) {
@@ -196,6 +196,9 @@ public class DependencyGraphReportBuilder {
 		
 		if(dependencyInfo.seedAssets.contains(linkedAsset)) {
 			reportBuilder.append(" (seed file)");
+		}
+		else if((dependencyInfo.staticDeps.get(referringAsset) != null) && dependencyInfo.staticDeps.get(referringAsset).contains(linkedAsset)) {
+			reportBuilder.append(" (static dep.)");
 		}
 		else if(dependencyInfo.resourceAssets.contains(linkedAsset)) {
 			reportBuilder.append(" (implicit resource)");

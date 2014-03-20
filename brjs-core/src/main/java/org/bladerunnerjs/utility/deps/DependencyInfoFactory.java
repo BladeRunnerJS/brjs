@@ -1,5 +1,6 @@
 package org.bladerunnerjs.utility.deps;
 
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -105,7 +106,7 @@ public class DependencyInfoFactory {
 	
 	private static void addSourceModuleDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, SourceModule sourceModule) throws ModelOperationException {
-		addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(bundlableNode));
+		addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(bundlableNode));
 		addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(bundlableNode));
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
 		
@@ -118,6 +119,18 @@ public class DependencyInfoFactory {
 				addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, assetLocationLinkedAsset);
 			}
 		}
+	}
+	
+	private static void addOrderedDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencyInfo, SourceModule sourceModule, List<SourceModule> orderDependentSourceModules) throws ModelOperationException {
+		for(SourceModule dependentSourceModule : orderDependentSourceModules) {
+			if(!dependencyInfo.staticDeps.containsKey(sourceModule)) {
+				dependencyInfo.staticDeps.put(sourceModule, new HashSet<LinkedAsset>());
+			}
+			
+			dependencyInfo.staticDeps.get(sourceModule).add(dependentSourceModule);
+		}
+		
+		addDependencies(dependencyAdder, dependencyInfo, sourceModule, orderDependentSourceModules);
 	}
 	
 	private static void addDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencyInfo, LinkedAsset sourceAsset, List<SourceModule> targetAssets) throws ModelOperationException {
