@@ -1,5 +1,6 @@
-// br.thirdparty('jstestdriverextensions');
-// br.thirdparty('jsmockito');
+br.Core.thirdparty('jstestdriverextensions');
+br.Core.thirdparty('jsmockito');
+br.Core.thirdparty('jshamcrest');
 
 (function() {
 

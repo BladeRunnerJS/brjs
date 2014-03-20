@@ -1,7 +1,7 @@
-// br.require('mock4js');
-
 TranslatorTest = TestCase("TranslatorTest");
 TranslatorTest.prototype.setUp = function() {
+	var Mock4JS = require('mock4js');
+
 	Mock4JS.addMockSupport(window);
 	Mock4JS.clearMocksToVerify();
 	
