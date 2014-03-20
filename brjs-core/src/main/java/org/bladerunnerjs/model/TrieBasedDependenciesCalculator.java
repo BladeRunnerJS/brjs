@@ -152,6 +152,9 @@ public class TrieBasedDependenciesCalculator
 		addToTrie(trie, "<" + key + ">", value);
 		addToTrie(trie, "<" + key + "/", value);
 		addToTrie(trie, "<" + key + " ", value);
+		addToTrie(trie, "<" + key + "\t", value);
+		addToTrie(trie, "<" + key + "\r", value);
+		addToTrie(trie, "<" + key + "\n", value);
 	}
 	
 	private void addToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException
