@@ -55,7 +55,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 		given(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: thirdpartyLib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
-			.and(workbench).indexPageRefersTo("thirdparty-lib1");
+			.and(workbench).indexPageRequires("thirdparty-lib1");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }")
 			.and(exceptions).verifyNoOutstandingExceptions();

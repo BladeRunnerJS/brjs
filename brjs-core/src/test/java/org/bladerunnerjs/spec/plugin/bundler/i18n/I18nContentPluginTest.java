@@ -168,7 +168,7 @@ public class I18nContentPluginTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
-			.and(aspect).indexPageRequires("appns.Class")
+			.and(aspect).indexPageRefersTo("appns.Class")
 			.and(aspect).hasClass("appns.Class")
 			.and(aspect).containsFileWithContents("src/appns/en.properties", "appns.property=property value");
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
@@ -183,7 +183,7 @@ public class I18nContentPluginTest extends SpecTest
 	public void bladePropertiesAreOverriddenByAspectProperties() throws Exception 
 	{
 		given(app).hasBeenCreated()
-			.and(aspect).indexPageRequires("appns.bs.b1.Class")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class")
 			.and(blade).hasClass("appns.bs.b1.Class")
 			.and(blade).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=blade value")
 			.and(aspect).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=aspect value");
