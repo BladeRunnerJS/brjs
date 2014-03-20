@@ -65,8 +65,11 @@ public class TrieBasedDependenciesCalculator
 				for(Object match : getTrie().getMatches(reader)) {
 					if (match instanceof SourceModuleReference) {
 						SourceModuleReference sourceModuleReference = (SourceModuleReference) match;
-						String dependencyRequirePath = sourceModuleReference.getRequirePath();
-						dependentSourceModules.add( assetLocation.sourceModule(dependencyRequirePath) );
+						SourceModule sourceModule = assetLocation.sourceModule(sourceModuleReference.getRequirePath());
+						
+						if(sourceModule != asset) {
+							dependentSourceModules.add(sourceModule);
+						}
 					}
 					else if (match instanceof AliasReference){
 						AliasReference aliasReference = (AliasReference) match;
