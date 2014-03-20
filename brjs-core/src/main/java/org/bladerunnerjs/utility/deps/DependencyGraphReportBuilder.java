@@ -29,6 +29,13 @@ public class DependencyGraphReportBuilder {
 	private final StringBuilder reportBuilder;
 	private final MutableBoolean hasOmittedDependencies;
 	
+	public static String createReport(BundlableNode bundlableNode, boolean showAllDependencies) throws ModelOperationException {
+		fixIncompleteAliases(bundlableNode);
+		
+		return "Bundle '" + bundlableNode.requirePrefix() + "' dependencies found:\n" +
+			new DependencyGraphReportBuilder(bundlableNode.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(bundlableNode), showAllDependencies).createReport();
+	}
+	
 	public static String createReport(Aspect aspect, boolean showAllDependencies) throws ModelOperationException {
 		fixIncompleteAliases(aspect);
 		
