@@ -6,8 +6,12 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.model.BRJS;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.caplin.cutlass.BRJSAccessor;
+import com.caplin.cutlass.testing.BRJSTestFactory;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
@@ -20,6 +24,8 @@ public class IntegrationTestFinderTest
 	@Before
 	public void setup()
 	{
+		BRJS brjs = BRJSTestFactory.createBRJS(new File(TEST_ROOT));
+		BRJSAccessor.initialize(brjs);
 		testFinder = new IntegrationTestFinder();
 	}
 	

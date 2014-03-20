@@ -92,6 +92,20 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void staticDependenciesAreIndicatedInTheReport() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classDependsOn("appns.Class1", "appns.Class2");
+		when(brjs).runCommand("app-deps", "app");
+		then(output).containsText(
+			"Aspect 'default' dependencies found:",
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (static dep.)");
+	}
+	
+	@Test
 	public void ifTheSameAssetIsFoundTwiceThenOnlyTheFirstEncounteredInstanceIsShownByDefault() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
