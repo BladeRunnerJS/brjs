@@ -52,7 +52,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	@Test
 	public void weBundleBootstrapFirst() throws Exception {
 		given(aspect).hasClass("appns.Class1")
-			.and(aspect).indexPageRequires("appns.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js\n"+"exports: lib")
 			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
