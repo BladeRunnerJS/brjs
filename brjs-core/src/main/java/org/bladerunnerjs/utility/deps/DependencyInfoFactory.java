@@ -1,11 +1,15 @@
 package org.bladerunnerjs.utility.deps;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
+import org.bladerunnerjs.aliasing.AliasOverride;
+import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.BundlableNode;
@@ -18,7 +22,7 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 
 public class DependencyInfoFactory {
 	public static DependencyInfo buildForwardDependencyMap(BrowsableNode browsableNode) throws ModelOperationException {
-		return buildDependencyGraph(browsableNode, new DependencyAdder() {
+		return buildDependencyGraphFromBundleSet(browsableNode.getBundleSet(), new DependencyAdder() {
 			@Override
 			public void add(DependencyInfo dependencies, LinkedAsset sourceAsset, LinkedAsset targetAsset) {
 				addDependency(dependencies, sourceAsset, targetAsset);
@@ -26,58 +30,107 @@ public class DependencyInfoFactory {
 		});
 	}
 	
-	public static DependencyInfo buildReverseDependencyMap(BrowsableNode browsableNode) throws ModelOperationException {
-		return buildDependencyGraph(browsableNode, new DependencyAdder() {
+	public static DependencyInfo buildReverseDependencyMap(BrowsableNode browsableNode, SourceModule sourceModule) throws ModelOperationException {
+		BundleSet bundleSet = browsableNode.getBundleSet();
+		DependencyAdder dependencyAdder = new DependencyAdder() {
 			@Override
 			public void add(DependencyInfo dependencyInfo, LinkedAsset sourceAsset, LinkedAsset targetAsset) {
 				addDependency(dependencyInfo, targetAsset, sourceAsset);
 			}
-		});
-	}
-	
-	private static DependencyInfo buildDependencyGraph(BrowsableNode browsableNode, DependencyAdder dependencyAdder) throws ModelOperationException {
-		DependencyInfo dependencyInfo = new DependencyInfo();
-		BundleSet bundleSet = browsableNode.getBundleSet();
+		};
+		DependencyInfo reverseDependencyGraph;
 		
-		for(LinkedAsset seedAsset : browsableNode.seedFiles()) {
-			dependencyInfo.seedAssets.add(seedAsset);
-			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(browsableNode));
-			addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, seedAsset);
+		if((sourceModule == null) || bundleSet.getSourceModules().contains(sourceModule)) {
+			reverseDependencyGraph = buildDependencyGraphFromBundleSet(bundleSet, dependencyAdder);
+		}
+		else {
+			reverseDependencyGraph = buildDependencyGraphFromBundlableNode(bundleSet.getBundlableNode(), dependencyAdder);
 		}
 		
+		return reverseDependencyGraph;
+	}
+	
+	private static DependencyInfo buildDependencyGraphFromBundleSet(BundleSet bundleSet, DependencyAdder dependencyAdder) throws ModelOperationException {
+		BundlableNode bundlableNode = bundleSet.getBundlableNode();
+		DependencyInfo dependencyInfo = new DependencyInfo();
+		
+		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
+		
 		for(AssetLocation assetLocation : bundleSet.getResourceNodes()) {
-			for(LinkedAsset resourceAsset : assetLocation.seedResources()) {
-				dependencyInfo.resourceAssets.add(resourceAsset);
-				addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(browsableNode));
-				addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, resourceAsset);
-			}
+			addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
 		}
 		
 		for(SourceModule sourceModule : bundleSet.getSourceModules()) {
-			addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(browsableNode));
-			addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(browsableNode));
-			addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, sourceModule);
+			addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, sourceModule);
+		}
+		
+		return dependencyInfo;
+	}
+	
+	private static DependencyInfo buildDependencyGraphFromBundlableNode(BundlableNode bundlableNode, DependencyAdder dependencyAdder) throws ModelOperationException {
+		DependencyInfo dependencyInfo = new DependencyInfo();
+		
+		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
+		
+		for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
+			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
+				addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
+			}
 			
-			for(AssetLocation assetLocation : allAssetLocations(sourceModule)) {
-				for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
-					if((assetLocationLinkedAsset.getDependentSourceModules(browsableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
-						dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
-					}
-					
-					addAliasDependencies(dependencyAdder, dependencyInfo, browsableNode, assetLocationLinkedAsset);
-				}
+			for(SourceModule sourceModule : assetContainer.sourceModules()) {
+				addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, sourceModule);
 			}
 		}
 		
 		return dependencyInfo;
 	}
 	
-	private static List<AssetLocation> allAssetLocations(SourceModule sourceModule) {
-		List<AssetLocation> assetLocations = new ArrayList<>();
-		assetLocations.add(sourceModule.getAssetLocation());
-		assetLocations.addAll(sourceModule.getAssetLocation().getDependentAssetLocations());
+	private static void addSeedDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode, DependencyInfo dependencyInfo) throws ModelOperationException {
+		addOutboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode);
 		
-		return assetLocations;
+		for(LinkedAsset seedAsset : bundlableNode.seedFiles()) {
+			dependencyInfo.seedAssets.add(seedAsset);
+			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(bundlableNode));
+			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, seedAsset);
+		}
+	}
+	
+	private static void addAssetLocationDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
+		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
+		for(LinkedAsset resourceAsset : assetLocation.seedResources()) {
+			dependencyInfo.resourceAssets.add(resourceAsset);
+			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(bundlableNode));
+			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
+		}
+	}
+	
+	private static void addSourceModuleDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
+		DependencyInfo dependencyInfo, SourceModule sourceModule) throws ModelOperationException {
+		addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(bundlableNode));
+		addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(bundlableNode));
+		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
+		
+		for(AssetLocation assetLocation : sourceModule.assetLocations()) {
+			for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
+				if((assetLocationLinkedAsset.getDependentSourceModules(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
+					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
+				}
+				
+				addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, assetLocationLinkedAsset);
+			}
+		}
+	}
+	
+	private static void addOrderedDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencyInfo, SourceModule sourceModule, List<SourceModule> orderDependentSourceModules) throws ModelOperationException {
+		for(SourceModule dependentSourceModule : orderDependentSourceModules) {
+			if(!dependencyInfo.staticDeps.containsKey(sourceModule)) {
+				dependencyInfo.staticDeps.put(sourceModule, new HashSet<LinkedAsset>());
+			}
+			
+			dependencyInfo.staticDeps.get(sourceModule).add(dependentSourceModule);
+		}
+		
+		addDependencies(dependencyAdder, dependencyInfo, sourceModule, orderDependentSourceModules);
 	}
 	
 	private static void addDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencyInfo, LinkedAsset sourceAsset, List<SourceModule> targetAssets) throws ModelOperationException {
@@ -87,26 +140,63 @@ public class DependencyInfoFactory {
 	}
 	
 	private static void addDependency(DependencyInfo dependencies, LinkedAsset sourceAsset, LinkedAsset targetAsset) {
+		if(targetAsset == null) {
+			throw new RuntimeException("Attempt to map '" + sourceAsset.getAssetPath() + "' to null.");
+		}
+		else if (sourceAsset == targetAsset) {
+			throw new RuntimeException("Attempt to map '" + sourceAsset.getAssetPath() + "' to '" + targetAsset.getAssetPath() + "'.");
+		}
+		else {
+			Set<LinkedAsset> targetDependencies = dependencies.map.get(sourceAsset);
+			
+ 			if((targetDependencies != null) && targetDependencies.contains(targetAsset) && !dependencies.seedAssets.contains(sourceAsset)) {
+//				throw new RuntimeException("Attempt to re-map '" + sourceAsset.getAssetPath() + "' to '" + targetAsset.getAssetPath() + "'.");
+			}
+		}
+		
 		if(!dependencies.map.containsKey(sourceAsset)) {
 			dependencies.map.put(sourceAsset, new LinkedHashSet<LinkedAsset>());
 		}
 		
+//		System.out.println(sourceAsset.getAssetPath() + " -> " + targetAsset.getAssetPath());
 		dependencies.map.get(sourceAsset).add(targetAsset);
 	}
 	
-	private static void addAliasDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {
+	private static void addOutboundAliasDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode) throws ModelOperationException {
+		try {
+			for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
+				addOutboundAliasDependency(dependencyAdder, dependencies, bundlableNode, bundlableNode.getAlias(aliasOverride.getName()));
+			}
+			
+			for(AliasDefinitionsFile aliasDefinitionFile : bundlableNode.aliasDefinitionFiles()) {
+				for(AliasDefinition aliasDefinition : aliasDefinitionFile.aliases()) {
+					AliasDefinition alias = bundlableNode.getAlias(aliasDefinition.getName());
+					addOutboundAliasDependency(dependencyAdder, dependencies, bundlableNode, alias);
+				}
+			}
+		}
+		catch(ContentFileProcessingException | RequirePathException | AliasException e) {
+			throw new ModelOperationException(e);
+		}
+	}
+	
+	private static void addOutboundAliasDependency(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, AliasDefinition alias) throws RequirePathException {
+		AliasAsset aliasAsset = new AliasAsset(alias);
+		dependencies.aliasAssets.put(alias.getName(), aliasAsset);
+		dependencyAdder.add(dependencies, aliasAsset, bundlableNode.getSourceModule(alias.getRequirePath()));
+	}
+	
+	private static void addInboundAliasDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {
 		try {
 			for(String aliasName : linkedAsset.getAliasNames()) {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
-				AliasAsset aliasAsset = new AliasAsset(alias);
+				AliasAsset aliasAsset = dependencies.aliasAssets.get(alias.getName());
 				dependencyAdder.add(dependencies, linkedAsset, aliasAsset);
-				dependencyAdder.add(dependencies, aliasAsset, bundlableNode.getSourceModule(alias.getRequirePath()));
 			}
 		}
-		catch(AliasException | ContentFileProcessingException | RequirePathException e) {
+		catch(AliasException | ContentFileProcessingException e) {
 			throw new ModelOperationException(e);
 		}
-		
 	}
 	
 	private static interface DependencyAdder {

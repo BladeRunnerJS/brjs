@@ -27,7 +27,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public App getApp() {
+	public App app() {
 		Node node = this.parentNode();
 		
 		while(!(node instanceof App)) {

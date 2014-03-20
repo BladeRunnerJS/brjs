@@ -28,7 +28,7 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 	}
 	
 	@Override
-	public String getJsStyle() {
+	public String jsStyle() {
 		return ThirdpartyAssetLocation.class.getSimpleName();
 	}
 	

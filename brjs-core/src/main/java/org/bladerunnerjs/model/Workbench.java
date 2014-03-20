@@ -52,7 +52,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	
 	@Override
 	public String requirePrefix() {
-		return getApp().getRequirePrefix();
+		return app().getRequirePrefix();
 	}
 	
 	@Override
@@ -61,16 +61,16 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	}
 	
 	@Override
-	public List<AssetContainer> getAssetContainers() {
+	public List<AssetContainer> assetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		assetContainers.add( getApp().aspect("default") );
+		assetContainers.add( app().aspect("default") );
 		
 		assetContainers.add( this );
 		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
 		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
 		
-		for(JsLib jsLib : getApp().jsLibs()) {
+		for(JsLib jsLib : app().jsLibs()) {
 			assetContainers.add(jsLib);
 		}
 		

@@ -71,7 +71,7 @@ br.presenter.formatter.DateFormatter.prototype.parseDate = function(vDate, sDate
 	{
 		return null;
 	}
-	if (vDate.constructor == Date)
+	if (vDate instanceof Date)
 	{
 		sDateFormat = "javascript";
 	}
@@ -128,10 +128,12 @@ br.presenter.formatter.DateFormatter.prototype.formatDate = function(oDate, sDat
  * @private
  */
 br.presenter.formatter.DateFormatter.prototype._adjustDateForTimezone = function(oDate) {
-	var oDateClone = new Date(oDate.getTime());
-	var d = new Date();
-	var timezoneOffsetInHours = -(d.getTimezoneOffset()/60);
-	oDateClone.setHours(oDate.getHours() + timezoneOffsetInHours);
+	var oDateClone = new Date(oDate.getTime()),
+		d = new Date(),
+		timezoneOffsetInMinutes = -(d.getTimezoneOffset());
+
+	oDateClone.setMinutes(oDate.getMinutes() + timezoneOffsetInMinutes);
+
 	return oDateClone;
 };
 

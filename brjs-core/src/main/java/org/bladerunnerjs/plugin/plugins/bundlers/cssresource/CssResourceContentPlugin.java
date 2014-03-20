@@ -91,7 +91,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		try
 		{
-			return getValidContentPaths(bundleSet.getBundlableNode().getApp(), locales);
+			return getValidContentPaths(bundleSet.getBundlableNode().app(), locales);
 		}
 		catch (MalformedTokenException ex)
 		{
@@ -103,7 +103,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		try
 		{
-			return getValidContentPaths(bundleSet.getBundlableNode().getApp(), locales);
+			return getValidContentPaths(bundleSet.getBundlableNode().app(), locales);
 		}
 		catch (MalformedTokenException ex)
 		{
@@ -129,7 +129,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 		else if (contentPath.formName.equals(BLADESET_THEME_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get("bladeset"));
+			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
@@ -141,7 +141,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 		else if (contentPath.formName.equals(BLADE_THEME_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get("bladeset"));
+			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
 			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
@@ -158,7 +158,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 		else if (contentPath.formName.equals(WORKBENCH_RESOURCES_REQUEST))
 		{
-			Bladeset bladeset = bundlableNode.getApp().bladeset(contentPath.properties.get("bladeset"));
+			Bladeset bladeset = bundlableNode.app().bladeset(contentPath.properties.get("bladeset"));
 			Blade blade = bladeset.blade(contentPath.properties.get("blade"));
 			Workbench workbench = blade.workbench();
 			String resourcePath = contentPath.properties.get("resourcePath");
@@ -167,7 +167,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 		else if (contentPath.formName.equals(LIB_REQUEST))
 		{
-			JsLib jsLib = bundlableNode.getApp().jsLib(contentPath.properties.get("lib"));
+			JsLib jsLib = bundlableNode.app().jsLib(contentPath.properties.get("lib"));
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
 			resourceFile = jsLib.file(resourcePath);

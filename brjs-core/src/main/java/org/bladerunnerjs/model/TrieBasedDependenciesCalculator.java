@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 
@@ -31,8 +32,8 @@ public class TrieBasedDependenciesCalculator
 	public TrieBasedDependenciesCalculator(Asset asset)
 	{
 		this.asset = asset;
-		assetLocation = asset.getAssetLocation();
-		app = assetLocation.getAssetContainer().getApp();
+		assetLocation = asset.assetLocation();
+		app = assetLocation.assetContainer().app();
 		appProperties = app.nodeProperties("TrieBasedDependenciesAsset");
 		File assetFile = new File( asset.getAssetPath() );
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
@@ -60,12 +61,12 @@ public class TrieBasedDependenciesCalculator
 			dependentSourceModules = new ArrayList<>();
 			aliases = new ArrayList<>();
 			
-			try(Reader reader = asset.getReader()) {
+			try(Reader reader = new JsCommentStrippingReader(asset.getReader(), false)) {
 				for(Object match : getTrie().getMatches(reader)) {
 					if (match instanceof SourceModuleReference) {
 						SourceModuleReference sourceModuleReference = (SourceModuleReference) match;
 						String dependencyRequirePath = sourceModuleReference.getRequirePath();
-						dependentSourceModules.add( assetLocation.getSourceModuleWithRequirePath(dependencyRequirePath) );
+						dependentSourceModules.add( assetLocation.sourceModule(dependencyRequirePath) );
 					}
 					else if (match instanceof AliasReference){
 						AliasReference aliasReference = (AliasReference) match;
@@ -104,7 +105,7 @@ public class TrieBasedDependenciesCalculator
 	private Trie<Object> createTrie() throws ModelOperationException {
 		Trie<Object> trie = new Trie<Object>();
 		
-		for (AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers()) {
+		for (AssetContainer assetContainer : assetLocation.assetContainer().app().getAllAssetContainers()) {
 			try {
 				if(assetContainer instanceof BundlableNode) {
 					BundlableNode bundlableNode = (BundlableNode) assetContainer;

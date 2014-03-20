@@ -56,7 +56,7 @@ public class AssetContainerVerifier {
 	}
 
 	public void assetLocationHasNoDependencies(String assetLocation) {
-		List<AssetLocation> dependentAssetLocations = assetContainer.assetLocation(assetLocation).getDependentAssetLocations();
+		List<AssetLocation> dependentAssetLocations = assetContainer.assetLocation(assetLocation).dependentAssetLocations();
 		
 		assertEquals("Asset location '" + assetLocation + "' was not expected to have any dependent asset locations.", 0, dependentAssetLocations.size());
 	}
@@ -67,7 +67,7 @@ public class AssetContainerVerifier {
 			throw new RuntimeException("asset location '" + assetLocationPath + "' does not exist.");
 		}
 		
-		List<AssetLocation> actualDependentAssetLocations = assetLocation.getDependentAssetLocations();
+		List<AssetLocation> actualDependentAssetLocations = assetLocation.dependentAssetLocations();
 		
 		assertEquals("Asset location '" + assetLocationPath + "' was expected to have " + expectedAssetLocationDependencies.length + " dependent asset locations.",
 			expectedAssetLocationDependencies.length, actualDependentAssetLocations.size());
@@ -95,7 +95,7 @@ public class AssetContainerVerifier {
 		List<String> assetLocationPaths = new ArrayList<>();
 		
 		for(AssetLocation assetLocation : assetLocations) {
-			assetLocationPaths.add(RelativePathUtility.get(assetLocation.getAssetContainer().dir(), assetLocation.dir()));
+			assetLocationPaths.add(RelativePathUtility.get(assetLocation.assetContainer().dir(), assetLocation.dir()));
 		}
 		
 		return Joiner.on(", ").join(assetLocationPaths);
