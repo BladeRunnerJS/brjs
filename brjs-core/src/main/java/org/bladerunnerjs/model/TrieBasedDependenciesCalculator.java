@@ -112,8 +112,7 @@ public class TrieBasedDependenciesCalculator
 					
 					for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
 						if(!trie.containsKey(aliasOverride.getName())) {
-							addToTrie(trie, "'" + aliasOverride.getName() + "'", new AliasReference(aliasOverride.getName()));
-							addToTrie(trie, "\"" + aliasOverride.getName() + "\"", new AliasReference(aliasOverride.getName()));
+							addQuotedKeyToTrie(trie, aliasOverride.getName(), new AliasReference(aliasOverride.getName()));
 						}
 					}
 				}
@@ -131,8 +130,7 @@ public class TrieBasedDependenciesCalculator
 				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 					for(String aliasName : assetLocation.aliasDefinitionsFile().aliasNames()) {
 						if(!trie.containsKey("'" + aliasName + "'")) {
-							addToTrie(trie, "'" + aliasName + "'", new AliasReference(aliasName));
-							addToTrie(trie, "\"" + aliasName + "\"", new AliasReference(aliasName));
+							addQuotedKeyToTrie(trie, aliasName, new AliasReference(aliasName));
 						}
 					}
 				}
@@ -143,6 +141,14 @@ public class TrieBasedDependenciesCalculator
 		}
 		
 		return trie;
+	}
+	
+	private void addQuotedKeyToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException {
+		addToTrie(trie, "'" + key + "'", value);
+		addToTrie(trie, "\"" + key + "\"", value);
+		addToTrie(trie, "<" + key + ">", value);
+		addToTrie(trie, "<" + key + "/", value);
+		addToTrie(trie, "<" + key + " ", value);
 	}
 	
 	private void addToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException
