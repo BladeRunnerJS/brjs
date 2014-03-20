@@ -132,7 +132,7 @@ public class AliasBundlingTest extends SpecTest {
 	public void weBundleAClassIfItTheAliasReferenceIsInXmlTag() throws Exception {
 		given(aspect).hasClass("appns.Class1")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
-			.and(aspect).indexPageHasContent("<the-alias/>");
+			.and(aspect).indexPageHasContent("<the-alias attr='val'/>");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.Class1");
 	}
