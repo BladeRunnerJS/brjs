@@ -14,7 +14,6 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.BundleDepsCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -86,23 +85,22 @@ public class BundleDepsCommandTest extends SpecTest {
 			.and(aspect).classRequires("appns.Class1", "./Class2");
 		when(brjs).runCommand("bundle-deps", "apps/app/default-aspect");
 		then(output).containsText(
-			"Bundle 'appns' dependencies found:",
+			"Bundle 'apps/app/default-aspect' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'");
 	}
 	
-	@Ignore // This test doesn't work at the moment because of a hack in BundleSetBuilder where it grabs the seed assets by other means if it detects it's dealing with a test-pack
 	@Test
 	public void bladeTestpendenciesCanBeShown() throws Exception {
 		given(bladeTests).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-			.and(aspect).classRequires("appns.bs.b1.Class1", "./Class2");
+			.and(blade).classRequires("appns.bs.b1.Class1", "./Class2");
 		when(brjs).runCommand("bundle-deps", "apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver");
 		then(output).containsText(
-			"Bundle 'appns/bs/b1' dependencies found:",
-			"    +--- 'bs-bladeset/blades/b1/tests/test-unit/js-test-driver/tests/MyTest' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/bs/b1/Class1.js'",
-			"    |    |    \\--- 'default-aspect/src/appns/bs/b1/Class2.js'");
+			"Bundle 'apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver' dependencies found:",
+			"    +--- 'bs-bladeset/blades/b1/tests/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
+			"    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class1.js'",
+			"    |    |    \\--- 'bs-bladeset/blades/b1/src/appns/bs/b1/Class2.js'");
 	}
 }

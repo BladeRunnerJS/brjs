@@ -20,6 +20,7 @@ import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class DependencyGraphReportBuilder {
 	private final List<LinkedAsset> linkedAssets;
@@ -32,7 +33,7 @@ public class DependencyGraphReportBuilder {
 	public static String createReport(BundlableNode bundlableNode, boolean showAllDependencies) throws ModelOperationException {
 		fixIncompleteAliases(bundlableNode);
 		
-		return "Bundle '" + bundlableNode.requirePrefix() + "' dependencies found:\n" +
+		return "Bundle '" + RelativePathUtility.get(bundlableNode.root().dir(), bundlableNode.dir()) + "' dependencies found:\n" +
 			new DependencyGraphReportBuilder(bundlableNode.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(bundlableNode), showAllDependencies).createReport();
 	}
 	
