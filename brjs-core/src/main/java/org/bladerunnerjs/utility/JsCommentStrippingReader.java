@@ -13,8 +13,6 @@ public class JsCommentStrippingReader extends Reader
 	private char previousChar;
 	private StringBuffer overflowBuffer = new StringBuffer();
 	
-	private static final String LINE_SEP = System.getProperty("line.separator");
-	
 	public JsCommentStrippingReader(Reader sourceReader, boolean preserveJsdoc)
 	{
 		this.sourceReader = sourceReader;
@@ -126,10 +124,14 @@ public class JsCommentStrippingReader extends Reader
 					break;
 				
 				case WITHIN_SINGLE_LINE_COMMENT:
-					if(nextChar == '\n')
+					if((nextChar == '\r') || (nextChar == '\n'))
 					{
-						state = CommentStripperState.WITHIN_SOURCE;
-						charactersWritten = write(LINE_SEP, buff, offset, maxCharacters, charactersWritten);
+						if(nextChar == '\n')
+						{
+							state = CommentStripperState.WITHIN_SOURCE;
+						}
+						
+						charactersWritten = write(nextChar, buff, offset, maxCharacters, charactersWritten);
 					}
 					break;
 				
