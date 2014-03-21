@@ -26,9 +26,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	private AliasesFile aliasesFile;
 	private String name;
 	
-	private NodeFileModifiedChecker testSourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
 	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
-	private List<SourceModule> testSourceModules = null;
 	private List<SourceModule> sourceModules = null;
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
@@ -48,13 +46,18 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public List<LinkedAsset> getSeedFiles() 
 	{
-		return new ArrayList<LinkedAsset>( assetLocation("tests").seedResources("js") );
+		List<LinkedAsset> seedFiles = new ArrayList<>();
+		
+		for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
+			for(AssetLocation assetLocation : assetLocations()) {
+				if(isTestAssetLocation(assetLocation)) {
+					seedFiles.addAll(assetPlugin.getTestSourceModules(assetLocation));
+				}
+			}
+		}
+		
+		return seedFiles;
 	}
-	
-	@Override
-	public java.util.List<LinkedAsset> seedFiles() {
-		return getSeedFiles();
-	};
 	
 	@Override
 	public String requirePrefix()
@@ -145,24 +148,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		}
 		
 		return sourceModules;
-	}
-	
-	public List<SourceModule> testSourceModules() {
-		if(testSourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (testSourceModules == null)) {
-			testSourceModules = new ArrayList<SourceModule>();
-			
-			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
-				for (AssetLocation assetLocation : assetLocations())
-				{
-					if ( isTestAssetLocation(assetLocation) )
-					{
-						testSourceModules.addAll(assetPlugin.getTestSourceModules(assetLocation));
-					}
-				}
-			}
-		}
-		
-		return testSourceModules;
 	}
 	
 	@Override

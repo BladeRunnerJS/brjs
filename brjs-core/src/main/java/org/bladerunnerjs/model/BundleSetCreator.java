@@ -18,7 +18,6 @@ public class BundleSetCreator {
 	public class Messages {
 		public static final String BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG = "%s '%s' has no seed files.";
 		public static final String BUNDLABLE_NODE_SEED_FILES_MSG = "%s '%s' contains seed files %s.";
-		public static final String BUNDLABLE_NODE_IS_TEST_PACK = "%s '%s' is a test pack, adding test source modules as seed files.";
 		public static final String APP_SOURCE_LOCATIONS_MSG = "App '%s' has source locations %s.";
 		public static final String FILE_HAS_NO_DEPENDENCIES_MSG = "File '%s' has no dependencies.";
 		public static final String FILE_DEPENDENCIES_MSG = "File '%s' depends on %s.";
@@ -40,24 +39,7 @@ public class BundleSetCreator {
 		
 		logger.debug(Messages.APP_SOURCE_LOCATIONS_MSG, bundlableNode.app().getName(), assetContainerPaths(bundlableNode.app()));
 		
-		
-		List<SourceModule> seedTestSourceModules = new ArrayList<SourceModule>();
-		if (bundlableNode instanceof TestPack)
-		{
-			TestPack testPack = (TestPack) bundlableNode;
-			logger.debug(Messages.BUNDLABLE_NODE_IS_TEST_PACK, bundlableNode.getClass().getSimpleName(), name);
-			
-			seedTestSourceModules = testPack.testSourceModules();
-			if(seedTestSourceModules.isEmpty()) {
-				logger.debug(Messages.BUNDLABLE_NODE_HAS_NO_SEED_FILES_MSG, bundlableNode.getClass().getSimpleName(), name);
-			}
-			else {
-				logger.debug(Messages.BUNDLABLE_NODE_SEED_FILES_MSG, bundlableNode.getClass().getSimpleName(), name, seedFilePaths(bundlableNode, seedTestSourceModules));
-			}
-		}
-		
 		bundleSetBuilder.addSeedFiles(seedFiles);
-		bundleSetBuilder.addTestSourceModules(seedTestSourceModules);
 		
 		return bundleSetBuilder.createBundleSet();
 	}
