@@ -5,7 +5,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AspectBundlingOfMixedSources extends SpecTest {
@@ -56,14 +55,12 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 				"define('sdkNamespaceLib/ProxyClass', function(require, exports, module) { module.exports = sdkNamespaceLib.ProxyClass; });");
 	}
 	
-	// This test highlights an issue where the classes are being written to the bundle in an order which causes a JS syntax error
-	// The behaviour I'm seeing is that the ProxyClass is being loaded before the class it's proxying is being defined
-	@Ignore
 	@Test
 	public void testThatNamespaceStyleLibraryCanProxyToAnotherNamespaceLibraryClassAndGetBundledInAspectIndexPage() throws Exception
 	{
 		given(otherSdkNamespaceLib).classFileHasContent("otherSdkNamespaceLib.Class1", "otherSdkNamespaceLib.Class1 = function() { var x = 'original function'; };")
-			.and(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.ProxyClass", "sdkNamespaceLib.ProxyClass = otherSdkNamespaceLib.Class1;")
+			.and(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.ProxyClass",
+				"sdkNamespaceLib.ProxyClass = otherSdkNamespaceLib.Class1; function neverCalledButForcesLoadOrder() {caplin.extend(sdkNamespaceLib.ProxyClass, otherSdkNamespaceLib.Class1);}")
 			.and(aspect).indexPageHasContent("require('sdkNamespaceLib/ProxyClass')");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
