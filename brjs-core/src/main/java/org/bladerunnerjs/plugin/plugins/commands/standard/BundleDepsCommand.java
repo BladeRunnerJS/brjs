@@ -53,7 +53,7 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String bundleDir = parsedArgs.getString("bundle-dir");
 		boolean showAllDependencies = parsedArgs.getBoolean("all");
-		File bundlableDir = brjs.file(bundleDir);
+		File bundlableDir = brjs.file("sdk/" + bundleDir);
 		
 		if(!bundlableDir.exists()) throw new DirectoryDoesNotExistException(bundlableDir, this);
 		

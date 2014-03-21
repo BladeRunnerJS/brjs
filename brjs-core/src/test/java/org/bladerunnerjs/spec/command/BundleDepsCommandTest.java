@@ -58,13 +58,13 @@ public class BundleDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void exceptionIsThrownIfTheDirectoryDoesntExist() throws Exception {
-		when(brjs).runCommand("bundle-deps", "apps/app/default-aspect");
+		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
 		then(exceptions).verifyException(DirectoryDoesNotExistException.class, unquoted("/apps/app/default-aspect'"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
 	public void exceptionIsThrownIfABundlableNodeCantBeLocated() throws Exception {
-		when(brjs).runCommand("bundle-deps", "apps/app");
+		when(brjs).runCommand("bundle-deps", "../apps/app");
 		then(exceptions).verifyException(InvalidBundlableNodeException.class, "apps/app")
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
@@ -74,7 +74,7 @@ public class BundleDepsCommandTest extends SpecTest {
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(aspect).hasBeenCreated();
-		when(brjs).runCommand("bundle-deps", "apps/app/default-aspect");
+		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -83,7 +83,7 @@ public class BundleDepsCommandTest extends SpecTest {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classRequires("appns.Class1", "./Class2");
-		when(brjs).runCommand("bundle-deps", "apps/app/default-aspect");
+		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
 		then(output).containsText(
 			"Bundle 'apps/app/default-aspect' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
@@ -96,7 +96,7 @@ public class BundleDepsCommandTest extends SpecTest {
 		given(bladeTests).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classRequires("appns.bs.b1.Class1", "./Class2");
-		when(brjs).runCommand("bundle-deps", "apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver");
+		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver");
 		then(output).containsText(
 			"Bundle 'apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver' dependencies found:",
 			"    +--- 'bs-bladeset/blades/b1/tests/test-unit/js-test-driver/tests/MyTest.js' (seed file)",
