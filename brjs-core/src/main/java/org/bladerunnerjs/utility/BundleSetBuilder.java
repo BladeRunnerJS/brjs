@@ -56,16 +56,6 @@ public class BundleSetBuilder {
 			throw new ModelOperationException(e);
 		}
 		
-		if (sourceModules.size() > 0)
-		{
-			try {
-				addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
-			}
-			catch(RequirePathException e) {
-				// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-			}
-		}
-		
 		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), new ArrayList<SourceModule>(testSourceModules), activeAliasList, resourceLocationList);
 	}
 	
@@ -186,6 +176,8 @@ public class BundleSetBuilder {
 			sourceModules = unprocessedSourceModules;
 		}
 		
+		sourceModulesList = orderBootstrapAndDependencies(sourceModulesList);
+		
 		return sourceModulesList;
 	}
 	
@@ -208,5 +200,7 @@ public class BundleSetBuilder {
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
 	}
+	
+	
 	
 }

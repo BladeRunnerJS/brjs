@@ -18,6 +18,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	private Blade blade;
 	private JsLib thirdpartyLib, thirdpartyLib2, bootstrapLib, secondBootstrapLib;
 	private StringBuffer response = new StringBuffer();
+	private JsLib thirdBootstrapLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -34,6 +35,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			thirdpartyLib2 = brjs.sdkNonBladeRunnerLib("thirdparty-lib2");
 			bootstrapLib = brjs.sdkNonBladeRunnerLib("br-bootstrap");
 			secondBootstrapLib = brjs.sdkNonBladeRunnerLib("secondBootstrapLib");
+			thirdBootstrapLib = brjs.sdkNonBladeRunnerLib("thirdBootstrapLib");
 	}
 	
 	// Bootstrap tests --
@@ -84,6 +86,26 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(secondBootstrapLib).hasBeenCreated()
 			.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib")
 			.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsOrderedTextFragments(
+				"// secondBootstrapLib",
+				"// this is secondBootstrapLib",
+				"// br-bootstrap",
+				"appns.Class1" ); 
+	}
+	
+	@Test
+	public void bootstrapCanHaveADependencyChain3LevelsDeep() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+		.and(aspect).indexPageRefersTo("appns.Class1")
+		.and(bootstrapLib).hasBeenCreated()
+		.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
+		.and(secondBootstrapLib).hasBeenCreated()
+		.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib\n"+"depends: thirdBootstrapLib")
+		.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib")
+		.and(thirdBootstrapLib).hasBeenCreated()
+		.and(thirdBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib")
+		.and(thirdBootstrapLib).containsFileWithContents("someFile.js", "// this is thirdBootstrapLib");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				"// secondBootstrapLib",
