@@ -65,11 +65,6 @@ task copyBrowsers(type: Sync) {
 	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
 	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
 	into browserRootDir
-
-eachFile {
-	print it
-}
-
 	doLast {
 		//TODO: this should probabaly be done in a task listener
 		if (file(browserProfileDir).exists()) {
@@ -85,7 +80,30 @@ eachFile {
 		file(browserProfileDir + "/firefox").mkdir();
 			file(browserProfileDir + "/firefox/prefs.js").createNewFile();
 			file(browserProfileDir + "/firefox/prefs.js").text = "user_pref(\"browser.shell.checkDefaultBrowser\", false);\nuser_pref(\"browser.sessionstore.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.recent_crashes\", -1);\n";
-		}
+
+		println ""
+		println "====================="
+		println "project.getRootDir()..."
+		println file( project.getRootDir() )
+		println ""
+		println "project.getRootDir().listFiles()..."
+		project.getRootDir().listFiles().each { println it }
+		println ""
+		println "buildDir..."
+		println file( buildDir )
+		println ""
+		println "buildDir.listFiles()..."
+		file( buildDir ).listFiles().each { println it }
+		println ""
+		println "browserRootDir..."
+		println file( browserRootDir )
+		println ""
+		println "browserRootDir.listFiles()..."
+		file( browserRootDir ).listFiles().each { println it }
+		println ""
+		println "====================="
+
+	}
 }
 
 task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner, configurations.javadocs, configurations.srcJars], {
