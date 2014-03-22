@@ -65,6 +65,11 @@ task copyBrowsers(type: Sync) {
 	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
 	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
 	into browserRootDir
+
+eachFile {
+	print it
+}
+
 	doLast {
 		//TODO: this should probabaly be done in a task listener
 		if (file(browserProfileDir).exists()) {
