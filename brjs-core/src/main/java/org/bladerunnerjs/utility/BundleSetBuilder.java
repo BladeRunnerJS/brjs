@@ -132,6 +132,8 @@ public class BundleSetBuilder {
 		try {
 			for(String aliasName : aliasNames) {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				
+				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
 				if (alias != null)
 				{
 					aliases.add(alias);
