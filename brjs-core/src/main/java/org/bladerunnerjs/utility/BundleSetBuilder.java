@@ -132,13 +132,21 @@ public class BundleSetBuilder {
 		try {
 			for(String aliasName : aliasNames) {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				
+				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
 				if (alias != null)
 				{
+					addSourceModule(bundlableNode.getSourceModule(alias.getRequirePath()));
+					
+					if(alias.getInterfaceName() != null) {
+						addSourceModule(bundlableNode.getSourceModule(alias.getInterfaceRequirePath()));
+					}
+					
 					aliases.add(alias);
 				}
 			}
 		}
-		catch(AliasException | ContentFileProcessingException e) {
+		catch(AliasException | ContentFileProcessingException | RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
 		
