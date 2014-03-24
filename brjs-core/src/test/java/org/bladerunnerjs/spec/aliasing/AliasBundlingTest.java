@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -175,17 +174,16 @@ public class AliasBundlingTest extends SpecTest {
 		given(appConf).hasRequirePrefix("appns")
 			.and(aspect).hasClass("appns.Class1")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.Class1")
-			.and(aspect).indexPageRefersTo("\"appns.bs.b1.the-alias\"");
+			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.Class1");
 	}
 	
-	@Ignore
 	@Test
 	public void weBundleTheCorrespondingInterfaceForAliasesThatSpecifyAnInterface() throws Exception {
 		given(aspect).hasClasses("appns.TheClass", "appns.TheInterface")
-			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.TheClass", "NonExistentInterface")
-			.and(aspect).indexPageRefersTo("'appns.bs.b1.the-alias'");
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.TheClass", "appns.TheInterface")
+			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.TheClass", "appns.TheInterface");
 	}
@@ -247,21 +245,19 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsText("setAliasData({'the-alias':{'class':require('appns/Class1'),'className':'appns.Class1'}})");
 	}
 	
-	@Ignore
 	@Test
 	public void anExceptionIsThrownIfTheClassReferredToByAnAliasDoesntExist() throws Exception {
 		given(aspectAliasesFile).hasAlias("the-alias", "NonExistentClass")
-			.and(aspect).indexPageRefersTo("the-alias");
+			.and(aspect).indexPageHasAliasReferences("the-alias");
 		when(app).requestReceived("/default-aspect/aliasing/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "NonExistentClass");
 	}
 	
-	@Ignore
 	@Test
 	public void anExceptionIsThrownIfTheInterfaceReferredToByAnAliasDoesntExist() throws Exception {
 		given(aspect).hasClass("appns.TheClass")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.TheClass", "NonExistentInterface")
-			.and(aspect).indexPageRefersTo("appns.bs.b1.the-alias");
+			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.the-alias");
 		when(app).requestReceived("/default-aspect/aliasing/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "NonExistentInterface");
 	}
