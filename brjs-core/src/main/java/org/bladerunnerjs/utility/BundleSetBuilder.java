@@ -26,7 +26,8 @@ import com.google.common.base.Joiner;
 
 
 public class BundleSetBuilder {
-	private static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
+	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
+	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
 	private final Set<SourceModule> testSourceModules = new LinkedHashSet<>();
 	private final Set<AliasDefinition> activeAliases = new LinkedHashSet<>();
@@ -56,7 +57,9 @@ public class BundleSetBuilder {
 			throw new ModelOperationException(e);
 		}
 		
-		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), new ArrayList<SourceModule>(testSourceModules), activeAliasList, resourceLocationList);
+		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode).orderSourceModules(sourceModules);
+		
+		return new BundleSet(bundlableNode, orderedSourceModules, new ArrayList<SourceModule>(testSourceModules), activeAliasList, resourceLocationList);
 	}
 	
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
@@ -139,61 +142,6 @@ public class BundleSetBuilder {
 		
 		return aliases;
 	}
-
-	private List<SourceModule> orderSourceModules(Set<SourceModule> sourceModules) throws ModelOperationException {
-		List<SourceModule> orderedSourceModules = new ArrayList<>();
-		Set<LinkedAsset> metDependencies = new HashSet<>();		
-		
-		try {
-			SourceModule bootstrapSourceModule = bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME);
-			if (!sourceModules.isEmpty())
-			{
-				orderedSourceModules.add(bootstrapSourceModule);
-				metDependencies.add(bootstrapSourceModule);
-			}
-		}
-		catch(RequirePathException e) {
-			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-		}
-		
-		while (!sourceModules.isEmpty()) {
-			Set<SourceModule> unprocessedSourceModules = new LinkedHashSet<>();
-			boolean progressMade = false;
-			
-			for(SourceModule sourceModule : sourceModules) {
-				if (dependenciesHaveBeenMet(sourceModule, metDependencies)) {
-					progressMade = true;
-					if (!orderedSourceModules.contains(sourceModule))
-					{
-						orderedSourceModules.add(sourceModule);
-					}
-					metDependencies.add(sourceModule);
-				}
-				else {
-					unprocessedSourceModules.add(sourceModule);
-				}
-			}
-			
-			if (!progressMade)
-			{
-				throw new CircularDependencyException(unprocessedSourceModules);
-			}
-			
-			sourceModules = unprocessedSourceModules;
-		}
-		
-		return orderedSourceModules;
-	}
-	
-	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
-		for(LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule, bundlableNode)) {
-			if(!metDependencies.contains(dependentSourceModule)) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
 	
 	private String sourceFilePaths(List<SourceModule> sourceModules) {
 		List<String> sourceFilePaths = new ArrayList<>();
@@ -203,14 +151,6 @@ public class BundleSetBuilder {
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
-	}
-	
-	
-	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException
-	{
-		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
-//		addBootstrapToDependencies(orderDependentSourceModules);		
-		return orderDependentSourceModules;
 	}
 	
 	private List<SourceModule> getDependentSourceModules(LinkedAsset linkedAsset, BundlableNode bundlableNode) throws ModelOperationException
@@ -233,8 +173,6 @@ public class BundleSetBuilder {
 		}
 		
 	}
-	
-	
 	
 	
 }
