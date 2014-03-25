@@ -26,6 +26,7 @@ import com.google.common.base.Joiner;
 
 
 public class BundleSetBuilder {
+	
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
@@ -57,7 +58,19 @@ public class BundleSetBuilder {
 			throw new ModelOperationException(e);
 		}
 		
-		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode).orderSourceModules(sourceModules);
+		SourceModule bootstrapSourceModule = null;
+		try {
+			if (!sourceModules.isEmpty())
+			{
+				bootstrapSourceModule = bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME);
+				addSourceModule( bootstrapSourceModule );
+			}
+		}
+		catch(RequirePathException e) {
+			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+		}
+		
+		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode).orderSourceModules(bootstrapSourceModule, sourceModules);
 		
 		return new BundleSet(bundlableNode, orderedSourceModules, new ArrayList<SourceModule>(testSourceModules), activeAliasList, resourceLocationList);
 	}
@@ -91,7 +104,7 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		
 		if(linkedAssets.add(linkedAsset)) {
-			List<SourceModule> moduleDependencies = getDependentSourceModules(linkedAsset, bundlableNode);
+			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
 			
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			
@@ -151,28 +164,6 @@ public class BundleSetBuilder {
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
-	}
-	
-	private List<SourceModule> getDependentSourceModules(LinkedAsset linkedAsset, BundlableNode bundlableNode) throws ModelOperationException
-	{
-		List<SourceModule> dependentSourceModules = linkedAsset.getDependentSourceModules(bundlableNode);
-		addBootstrapToDependencies(dependentSourceModules);
-		return dependentSourceModules;
-	}
-	
-	private void addBootstrapToDependencies(List<SourceModule> dependencies)
-	{
-		try {
-			if (!dependencies.isEmpty())
-			{
-				dependencies.add( bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME) );
-			}
-		}
-		catch(RequirePathException e) {
-			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-		}
-		
-	}
-	
+	}	
 	
 }

@@ -11,10 +11,6 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
-
-import com.google.common.base.Joiner;
-
 
 public class SourceModuleDependencyOrderCalculator
 {
@@ -26,19 +22,13 @@ public class SourceModuleDependencyOrderCalculator
 		this.bundlableNode = bundlableNode;
 	}
 	
-	public List<SourceModule> orderSourceModules(Set<SourceModule> sourceModules) throws ModelOperationException {
+	public List<SourceModule> orderSourceModules(SourceModule bootstrapSourceModule, Set<SourceModule> sourceModules) throws ModelOperationException {
 		List<SourceModule> orderedSourceModules = new ArrayList<>();
 		Set<LinkedAsset> metDependencies = new HashSet<>();		
 		
-		try {
-			SourceModule bootstrapSourceModule = bundlableNode.getSourceModule( BundleSetBuilder.BOOTSTRAP_LIB_NAME );
-			if (!sourceModules.isEmpty())
-			{
-				addMetDependencyToOrderedSourceModules(orderedSourceModules, metDependencies, bootstrapSourceModule);
-			}
-		}
-		catch(RequirePathException e) {
-			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+		if (!sourceModules.isEmpty() && bootstrapSourceModule != null)
+		{
+			addMetDependencyToOrderedSourceModules(orderedSourceModules, metDependencies, bootstrapSourceModule);
 		}
 		
 		while (!sourceModules.isEmpty()) {
@@ -85,21 +75,10 @@ public class SourceModuleDependencyOrderCalculator
 		return true;
 	}
 	
-	private String sourceFilePaths(List<SourceModule> sourceModules) {
-		List<String> sourceFilePaths = new ArrayList<>();
-		
-		for(SourceModule sourceModule : sourceModules) {
-			sourceFilePaths.add(sourceModule.getAssetPath());
-		}
-		
-		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
-	}
-	
 	
 	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException
 	{
 		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
-//		addBootstrapToDependencies(orderDependentSourceModules);		
 		return orderDependentSourceModules;
 	}
 	
