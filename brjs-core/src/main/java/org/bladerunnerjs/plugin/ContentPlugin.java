@@ -36,7 +36,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
  *   <li>{@link #getGroupName}</li>
  * </ul>
  */
-public interface ContentPlugin extends Plugin {
+public interface ContentPlugin extends OrderedPlugin {
 	/**
 	 * Returns the prefix that all requests for this content plug-in will begin with.
 	 * 

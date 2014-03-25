@@ -2,6 +2,9 @@ package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +13,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyTagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
 
@@ -35,7 +39,17 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		return "text/javascript";
 	}
-
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return Arrays.asList(ThirdpartyTagHandlerPlugin.class.getCanonicalName());
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{

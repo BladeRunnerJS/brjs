@@ -16,6 +16,16 @@ public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implemen
 	}
 	
 	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return assetLocationPlugin.getPluginsThatMustAppearBeforeThisPlugin();
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return assetLocationPlugin.getPluginsThatMustAppearAfterThisPlugin();
+	}
+	
+	@Override
 	public boolean canHandleAssetContainer(AssetContainer assetContainer) {
 		initializePlugin();
 		return assetLocationPlugin.canHandleAssetContainer(assetContainer);
