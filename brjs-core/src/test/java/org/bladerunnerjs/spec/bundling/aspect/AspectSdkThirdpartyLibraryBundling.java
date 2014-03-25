@@ -7,6 +7,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 //TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'appns' when the default namespace is 'appns')?
@@ -88,9 +89,8 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
-				"// secondBootstrapLib",
-				"// this is secondBootstrapLib",
 				"// br-bootstrap",
+				"// secondBootstrapLib",
 				"appns.Class1" ); 
 	}
 	
@@ -108,9 +108,28 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		.and(thirdBootstrapLib).containsFileWithContents("someFile.js", "// this is thirdBootstrapLib");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
-				"// secondBootstrapLib",
-				"// this is secondBootstrapLib",
 				"// br-bootstrap",
+				"// thirdBootstrapLib",
+				"// secondBootstrapLib",
+				"appns.Class1" ); 
+	}
+	
+	@Test @Ignore
+	public void bootstrapAndItsDependenciesAppearBeforeAllOtherAspectDependencies() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+    		.and(aspect).indexPageRefersTo("appns.Class1", "thirdparty-lib1")
+    		.and(bootstrapLib).hasBeenCreated()
+    		.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
+    		.and(secondBootstrapLib).hasBeenCreated()
+    		.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib\n"+"depends: thirdBootstrapLib")
+    		.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib")
+    		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
+			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsOrderedTextFragments(
+				"// br-bootstrap",
+				"// secondBootstrapLib",
+				"// thirdparty-lib1",
 				"appns.Class1" ); 
 	}
 	

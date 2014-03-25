@@ -88,17 +88,8 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		
 		if(linkedAssets.add(linkedAsset)) {
-			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
-			if (linkedAsset instanceof SourceModule)
-			{
-				try {
-					
-					addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
-				}
-				catch(RequirePathException e) {
-					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-				}
-			}
+			List<SourceModule> moduleDependencies = getDependentSourceModules(linkedAsset, bundlableNode);
+			
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			
 			if(moduleDependencies.isEmpty()) {
@@ -150,17 +141,32 @@ public class BundleSetBuilder {
 	}
 
 	private List<SourceModule> orderSourceModules(Set<SourceModule> sourceModules) throws ModelOperationException {
-		List<SourceModule> sourceModulesList = new ArrayList<>();
+		List<SourceModule> orderedSourceModules = new ArrayList<>();
 		Set<LinkedAsset> metDependencies = new HashSet<>();		
 		
-		while(!sourceModules.isEmpty()) {
+		try {
+			SourceModule bootstrapSourceModule = bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME);
+			if (!sourceModules.isEmpty())
+			{
+				orderedSourceModules.add(bootstrapSourceModule);
+				metDependencies.add(bootstrapSourceModule);
+			}
+		}
+		catch(RequirePathException e) {
+			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+		}
+		
+		while (!sourceModules.isEmpty()) {
 			Set<SourceModule> unprocessedSourceModules = new LinkedHashSet<>();
 			boolean progressMade = false;
 			
 			for(SourceModule sourceModule : sourceModules) {
-				if(dependenciesHaveBeenMet(sourceModule, metDependencies)) {
+				if (dependenciesHaveBeenMet(sourceModule, metDependencies)) {
 					progressMade = true;
-					sourceModulesList.add(sourceModule);
+					if (!orderedSourceModules.contains(sourceModule))
+					{
+						orderedSourceModules.add(sourceModule);
+					}
 					metDependencies.add(sourceModule);
 				}
 				else {
@@ -176,13 +182,11 @@ public class BundleSetBuilder {
 			sourceModules = unprocessedSourceModules;
 		}
 		
-		sourceModulesList = orderBootstrapAndDependencies(sourceModulesList);
-		
-		return sourceModulesList;
+		return orderedSourceModules;
 	}
 	
 	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
-		for(LinkedAsset dependentSourceModule : sourceModule.getOrderDependentSourceModules(bundlableNode)) {
+		for(LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule, bundlableNode)) {
 			if(!metDependencies.contains(dependentSourceModule)) {
 				return false;
 			}
@@ -200,6 +204,36 @@ public class BundleSetBuilder {
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
 	}
+	
+	
+	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException
+	{
+		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
+//		addBootstrapToDependencies(orderDependentSourceModules);		
+		return orderDependentSourceModules;
+	}
+	
+	private List<SourceModule> getDependentSourceModules(LinkedAsset linkedAsset, BundlableNode bundlableNode) throws ModelOperationException
+	{
+		List<SourceModule> dependentSourceModules = linkedAsset.getDependentSourceModules(bundlableNode);
+		addBootstrapToDependencies(dependentSourceModules);
+		return dependentSourceModules;
+	}
+	
+	private void addBootstrapToDependencies(List<SourceModule> dependencies)
+	{
+		try {
+			if (!dependencies.isEmpty())
+			{
+				dependencies.add( bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME) );
+			}
+		}
+		catch(RequirePathException e) {
+			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+		}
+		
+	}
+	
 	
 	
 	
