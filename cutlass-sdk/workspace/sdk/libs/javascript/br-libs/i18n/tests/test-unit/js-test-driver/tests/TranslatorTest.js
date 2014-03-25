@@ -5,11 +5,16 @@ TranslatorTest.prototype.setUp = function() {
 	Mock4JS.addMockSupport(window);
 	Mock4JS.clearMocksToVerify();
 	
-	var MockLocalisedTime = function() {};
-	MockLocalisedTime.prototype.format = function() { return "LocalisedTime.format"; };
+	this.subrealm = realm.subrealm();
+	this.subrealm.install();
 	
-	this.definitionRegistry = require('br/TestDefinitionRegistry').install();
-	this.definitionRegistry.define('br/I18n/LocalisedTime', MockLocalisedTime);
+	var oThis = this;
+	define('br/I18n/LocalisedTime', function(require, exports, module) {
+		var MockLocalisedTime = function() {};
+		MockLocalisedTime.prototype.format = function() { return "LocalisedTime.format"; };
+		
+		module.exports = MockLocalisedTime;
+	});
 	
 	this.messages = {
 		"caplin.test.key": "key 1 value.",
@@ -66,7 +71,7 @@ TranslatorTest.prototype.setUp = function() {
 
 TranslatorTest.prototype.tearDown = function()
 {
-	this.definitionRegistry.uninstall();
+	this.subrealm.uninstall();
 	
 	Mock4JS.verifyAllMocks();
 };
