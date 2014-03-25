@@ -156,8 +156,8 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateEnabled
 	}
 	else {
 		br.util.ElementUtility.addClassName(this.m_eElement, "disabled");
-		br.util.EventUtility.removeEventListener(this.m_nFirstClickListenerId);
-		br.util.EventUtility.removeEventListener(this.m_nSecondClickListenerId);
+		br.util.EventUtility.removeEventListenerById(this.m_nFirstClickListenerId);
+		br.util.EventUtility.removeEventListenerById(this.m_nSecondClickListenerId);
 	}
 };
 
