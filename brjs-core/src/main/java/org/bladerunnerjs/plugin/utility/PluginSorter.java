@@ -10,7 +10,6 @@ import java.util.Set;
 import org.bladerunnerjs.plugin.OrderedPlugin;
 
 public class PluginSorter {
-	// TODO: invalid class detection
 	public static <P extends OrderedPlugin> List<P> sort(List<P> plugins) throws PluginOrderingException, NonExistentPluginException {
 		Map<P, Set<P>> unmetDependencies = getPluginDependencies(plugins);
 		List<P> unorderedPlugins = new ArrayList<>(plugins);
