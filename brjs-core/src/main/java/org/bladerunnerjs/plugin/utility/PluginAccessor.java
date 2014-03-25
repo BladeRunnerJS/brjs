@@ -20,12 +20,22 @@ import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class PluginAccessor {
-	private final PluginLocator pluginLocator;
 	private final CommandList commandList;
+	private final List<ContentPlugin> contentProviders;
+	private final List<TagHandlerPlugin> tagHandlers;
+	private final List<MinifierPlugin> minifiers;
+	private final List<ModelObserverPlugin> modelObservers;
+	private final List<AssetPlugin> assetProducers;
+	private final List<AssetLocationPlugin> assetLocationProducers;
 	
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
-		this.pluginLocator = pluginLocator;
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
+		contentProviders = sort(pluginLocator.getContentPlugins());
+		tagHandlers = sort(pluginLocator.getTagHandlerPlugins());
+		minifiers = pluginLocator.getMinifierPlugins();
+		modelObservers = pluginLocator.getModelObserverPlugins();
+		assetProducers = pluginLocator.getAssetPlugins();
+		assetLocationProducers = sort(pluginLocator.getAssetLocationPlugins());
 	}
 	
 	public List<Plugin> allPlugins() {
@@ -75,7 +85,7 @@ public class PluginAccessor {
 	}
 	
 	public List<ContentPlugin> contentProviders() {
-		return sort( pluginLocator.getContentPlugins() );
+		return contentProviders;
 	}
 	
 	public List<ContentPlugin> contentProviders(String groupName) {
@@ -91,7 +101,7 @@ public class PluginAccessor {
 	}
 	
 	public List<TagHandlerPlugin> tagHandlers() {
-		return sort( pluginLocator.getTagHandlerPlugins() );
+		return tagHandlers;
 	}
 	
 	public List<TagHandlerPlugin> tagHandlers(String groupName) {
@@ -107,7 +117,7 @@ public class PluginAccessor {
 	}
 	
 	public List<MinifierPlugin> minifiers() {
-		return pluginLocator.getMinifierPlugins();
+		return minifiers;
 	}
 	
 	public MinifierPlugin minifier(String minifierSetting) {
@@ -133,15 +143,15 @@ public class PluginAccessor {
 	}
 	
 	public List<ModelObserverPlugin> modelObservers() {
-		return pluginLocator.getModelObserverPlugins();
+		return modelObservers;
 	}
 	
 	public List<AssetPlugin> assetProducers() {
-		return pluginLocator.getAssetPlugins();
+		return assetProducers;
 	}
 	
 	public List<AssetLocationPlugin> assetLocationProducers() {
-		return sort( pluginLocator.getAssetLocationPlugins() );
+		return assetLocationProducers;
 	}
 	
 	public AssetPlugin assetProducer(Class<?> pluginClass ) {
