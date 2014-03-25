@@ -65,13 +65,17 @@
 		aliasRegistry= new AliasRegistry();
 		aliasRegistry.setAliasData(testAliasData);
 
-		this.definitionRegistry = require('br/TestDefinitionRegistry').install();
-		this.definitionRegistry.define('br/AliasRegistry', aliasRegistry);
+		this.subrealm = realm.subrealm();
+		this.subrealm.install();
+
+		define('br/AliasRegistry', function(require, exports, module) {
+			module.exports = aliasRegistry;
+		});
 	};
 
 	AliasRegistryTest.tearDown = function()
 	{
-		this.definitionRegistry.uninstall();
+		this.subrealm.uninstall();
 	};
 
 	AliasRegistryTest["test Service Registry instance can be used"] = function()
