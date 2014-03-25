@@ -357,3 +357,48 @@ MapUtilityTest.prototype.test_deepCopyTest = function()
 	
 	assertTrue("sizes differ", br.util.MapUtility.size(mOrgMap) == br.util.MapUtility.size(mCopy));
 };
+
+MapUtilityTest.prototype.test_hasAllKeys_mapsContainSameKeys = function()
+{
+	var mSource = {a:1, b:2, c:3};
+	var mMap = {a:4, b:5, c:6};
+
+	assertTrue(br.util.MapUtility.hasAllKeys(mSource, mMap));
+};
+
+MapUtilityTest.prototype.test_hasAllKeys_mapsDoesntContainSameKeys = function()
+{
+	var mSource = {a:1, b:2, d:3};
+	var mMap = {a:4, b:5, c:6};
+
+	assertFalse(br.util.MapUtility.hasAllKeys(mSource, mMap));
+};
+
+MapUtilityTest.prototype.test_hasAllKeys_mapsContainNullKeys = function()
+{
+	var mSource = {a:null, b:2, c:3};
+	var mMap = {a:4, b:5, c:6};
+
+	assertTrue(br.util.MapUtility.hasAllKeys(mSource, mMap));
+};
+
+MapUtilityTest.prototype.test_hasAllKeys_emptyArguments = function()
+{
+	// test both empty
+	var mSource = {};
+	var mMap = {};
+
+	assertTrue(br.util.MapUtility.hasAllKeys(mSource, mMap));
+
+	// test first empty
+	mSource = {};
+	mMap = {a:1};
+
+	assertFalse(br.util.MapUtility.hasAllKeys(mSource, mMap));
+
+	// test second empty
+	mSource = {a:1};
+	mMap = {};
+
+	assertTrue(br.util.MapUtility.hasAllKeys(mSource, mMap));
+};
