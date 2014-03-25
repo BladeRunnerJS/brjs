@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
+import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 
 public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	@Override
@@ -23,7 +24,7 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	
 	@Override
 	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return Arrays.asList("org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin");
+		return Arrays.asList(BRJSConformantAssetLocationPlugin.class.getCanonicalName());
 	}
 	
 	@Override

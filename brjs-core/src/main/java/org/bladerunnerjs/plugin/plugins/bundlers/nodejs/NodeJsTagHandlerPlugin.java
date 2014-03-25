@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nTagHandlerPlugin;
 
 public class NodeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private ContentPlugin nodeJsContentPlugin;
@@ -33,7 +34,7 @@ public class NodeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nTagHandlerPlugin");
+		return Arrays.asList(I18nTagHandlerPlugin.class.getCanonicalName());
 	}
 	
 	@Override

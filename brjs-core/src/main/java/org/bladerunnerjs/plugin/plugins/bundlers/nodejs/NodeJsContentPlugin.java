@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -70,7 +71,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin");
+		return Arrays.asList(I18nContentPlugin.class.getCanonicalName());
 	}
 	
 	@Override

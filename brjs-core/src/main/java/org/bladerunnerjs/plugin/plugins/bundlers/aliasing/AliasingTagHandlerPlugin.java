@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsTagHandlerPlugin;
 
 
 public class AliasingTagHandlerPlugin extends AbstractTagHandlerPlugin
@@ -39,7 +40,7 @@ public class AliasingTagHandlerPlugin extends AbstractTagHandlerPlugin
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsTagHandlerPlugin");
+		return Arrays.asList(NamespacedJsTagHandlerPlugin.class.getCanonicalName());
 	}
 	
 	@Override

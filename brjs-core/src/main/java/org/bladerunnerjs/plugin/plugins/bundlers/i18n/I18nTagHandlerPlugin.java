@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyTagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
 
@@ -41,7 +42,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyTagHandlerPlugin");
+		return Arrays.asList(ThirdpartyTagHandlerPlugin.class.getCanonicalName());
 	}
 	
 	@Override
