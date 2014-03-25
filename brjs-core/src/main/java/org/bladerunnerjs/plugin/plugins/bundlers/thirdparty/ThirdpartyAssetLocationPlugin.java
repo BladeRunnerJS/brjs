@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,16 @@ import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return Arrays.asList("org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin");
 	}
 	
 	@Override

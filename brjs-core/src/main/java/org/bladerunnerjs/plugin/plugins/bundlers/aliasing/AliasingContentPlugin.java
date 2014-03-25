@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
@@ -43,6 +44,16 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	@Override
 	public String getRequestPrefix() {
 		return "aliasing";
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin");
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
 	}
 	
 	@Override

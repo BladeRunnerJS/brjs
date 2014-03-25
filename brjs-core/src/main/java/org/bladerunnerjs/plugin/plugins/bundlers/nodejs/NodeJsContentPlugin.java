@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -66,7 +67,17 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 	{
 		return "text/javascript";
 	}
-
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin");
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public ContentPathParser getContentPathParser()
 	{

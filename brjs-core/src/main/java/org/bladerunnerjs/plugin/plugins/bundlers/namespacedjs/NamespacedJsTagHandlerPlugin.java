@@ -2,6 +2,8 @@ package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,16 @@ public class NamespacedJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public String getTagName() {
 		return "namespaced-js";
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsTagHandlerPlugin");
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
 	}
 	
 	@Override

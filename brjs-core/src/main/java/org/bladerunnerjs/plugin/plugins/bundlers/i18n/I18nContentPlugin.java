@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,17 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	{
 		return null;
 	}
-
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyContentPlugin");
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public ContentPathParser getContentPathParser()
 	{

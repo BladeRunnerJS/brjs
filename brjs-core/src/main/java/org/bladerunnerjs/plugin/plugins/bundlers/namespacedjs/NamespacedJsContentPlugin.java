@@ -74,7 +74,17 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	{
 		return "text/javascript";
 	}
-
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin");
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public ContentPathParser getContentPathParser()
 	{

@@ -1,8 +1,6 @@
 package org.bladerunnerjs.plugin.utility;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,6 +13,7 @@ import org.bladerunnerjs.plugin.CommandPlugin;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.ModelObserverPlugin;
+import org.bladerunnerjs.plugin.OrderedPlugin;
 import org.bladerunnerjs.plugin.Plugin;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
@@ -48,7 +47,7 @@ public class PluginAccessor {
 	}
 	
 	public List<CommandPlugin> commands() {
-		return orderPlugins( commandList.getPluginCommands() );
+		return commandList.getPluginCommands();
 	}
 	
 	public ContentPlugin contentProvider(BladerunnerUri requestUri) {
@@ -76,9 +75,9 @@ public class PluginAccessor {
 	}
 	
 	public List<ContentPlugin> contentProviders() {
-		return orderPlugins( pluginLocator.getContentPlugins() );
+		return sort( pluginLocator.getContentPlugins() );
 	}
-
+	
 	public List<ContentPlugin> contentProviders(String groupName) {
 		List<ContentPlugin> contentProviders = new LinkedList<>();
 		
@@ -92,7 +91,7 @@ public class PluginAccessor {
 	}
 	
 	public List<TagHandlerPlugin> tagHandlers() {
-		return orderPlugins( pluginLocator.getTagHandlerPlugins() );
+		return sort( pluginLocator.getTagHandlerPlugins() );
 	}
 	
 	public List<TagHandlerPlugin> tagHandlers(String groupName) {
@@ -108,7 +107,7 @@ public class PluginAccessor {
 	}
 	
 	public List<MinifierPlugin> minifiers() {
-		return orderPlugins( pluginLocator.getMinifierPlugins() );
+		return pluginLocator.getMinifierPlugins();
 	}
 	
 	public MinifierPlugin minifier(String minifierSetting) {
@@ -134,19 +133,18 @@ public class PluginAccessor {
 	}
 	
 	public List<ModelObserverPlugin> modelObservers() {
-		return orderPlugins( pluginLocator.getModelObserverPlugins() );
+		return pluginLocator.getModelObserverPlugins();
 	}
 	
 	public List<AssetPlugin> assetProducers() {
-		return orderPlugins( pluginLocator.getAssetPlugins() );
+		return pluginLocator.getAssetPlugins();
 	}
 	
 	public List<AssetLocationPlugin> assetLocationProducers() {
-		return orderPlugins( pluginLocator.getAssetLocationPlugins() );
+		return sort( pluginLocator.getAssetLocationPlugins() );
 	}
 	
 	public AssetPlugin assetProducer(Class<?> pluginClass ) {
-		
 		AssetPlugin result = null;
 		List<AssetPlugin> assetProducers = assetProducers();
 		for(AssetPlugin producer: assetProducers){
@@ -159,15 +157,12 @@ public class PluginAccessor {
 		return result;
 	}
 	
-	private <P extends Plugin> List<P> orderPlugins(List<P> plugins) {
-		Collections.sort(plugins, new Comparator<Plugin>() {
-			@Override
-			public int compare(Plugin plugin1, Plugin plugin2) {
-				// reverse sort so higher priority == top of list
-				return Integer.compare( PluginPriorityCalculator.priority(plugin2), PluginPriorityCalculator.priority((plugin1)) );
-			}
-		});		
-		return plugins;
+	private <P extends OrderedPlugin> List<P> sort(List<P> plugins) {
+		try {
+			return PluginSorter.sort(plugins);
+		}
+		catch (PluginOrderingException | NonExistentPluginException e) {
+			throw new RuntimeException(e);
+		}
 	}
-	
 }

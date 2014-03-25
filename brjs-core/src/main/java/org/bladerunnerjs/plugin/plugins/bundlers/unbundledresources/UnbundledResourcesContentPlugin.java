@@ -39,6 +39,12 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
+	public void setBRJS(BRJS brjs)
+	{
+		this.brjs = brjs;
+	}
+	
+	@Override
 	public String getRequestPrefix()
 	{
 		return UNBUNDLED_RESOURCES_DIRNAME;
@@ -49,11 +55,15 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	{
 		return "";
 	}
-
+	
 	@Override
-	public void setBRJS(BRJS brjs)
-	{
-		this.brjs = brjs;
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
 	}
 	
 	@Override

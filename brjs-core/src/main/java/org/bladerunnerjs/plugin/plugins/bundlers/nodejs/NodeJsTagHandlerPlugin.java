@@ -2,6 +2,8 @@ package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +29,16 @@ public class NodeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public String getTagName() {
 		return "node-js";
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return Arrays.asList("org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nTagHandlerPlugin");
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
 	}
 	
 	@Override

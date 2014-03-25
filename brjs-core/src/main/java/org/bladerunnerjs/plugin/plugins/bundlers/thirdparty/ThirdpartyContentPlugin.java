@@ -59,7 +59,17 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	public String getGroupName() {
 		return "text/javascript";
 	}
-
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public ContentPathParser getContentPathParser()
 	{
