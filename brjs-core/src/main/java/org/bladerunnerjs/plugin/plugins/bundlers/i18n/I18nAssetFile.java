@@ -100,7 +100,7 @@ public class I18nAssetFile implements Asset
 		{
 			assetLocation().assertIdentifierCorrectlyNamespaced(property);
 			String value = i18nProperties.getProperty(property);
-			propertiesMap.put(property, value);
+			propertiesMap.put(property, value.replaceAll("\n", "\\\\n"));
 		}
 
 		return propertiesMap;
