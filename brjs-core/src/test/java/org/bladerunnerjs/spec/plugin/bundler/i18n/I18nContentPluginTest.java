@@ -243,4 +243,18 @@ public class I18nContentPluginTest extends SpecTest
 						"\"appns.p3\":\"v3\"\n"+
 				"}];");
 	}
+	
+	@Test
+	public void newLinesWithinPropertiesArePreserved() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en.properties", "appns.p1=v\\n1");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(response).textEquals(	
+				"window._brjsI18nProperties = [{\n"+
+						"\"appns.p1\":\"v\\n1\"\n"+
+				"}];");
+	}
 }
