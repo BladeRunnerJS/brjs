@@ -137,10 +137,23 @@ public class CssContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void allCssFilesInNonConformantLibrariesAppearIfAWildcardIsExplicitlySpecified() throws Exception {
+	public void allCssFilesInNonConformantLibrariesAppearIfAildcardIsExplicitlySpecified() throws Exception {
 		given(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: .*\\.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: \"*.css\"\n"+"exports: lib")
+			.and(nonConformantLib).containsFile("style1.css")
+			.and(nonConformantLib).containsFile("style2.css")
+			.and(nonConformantLib).containsFile("dir/style3.css");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css")
+			.and(requestResponse).doesNotContainText("dir/style3.css");
+	}
+	
+	@Test
+	public void allCssFilesInNonConformantLibrariesAppearIfADeepWildcardIsExplicitlySpecified() throws Exception {
+		given(aspect).hasClass("appns.Class1")
+			.and(aspect).indexPageRequires(nonConformantLib)
+			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: \"**/*.css\"\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
