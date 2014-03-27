@@ -16,29 +16,37 @@ public class SourceModuleDependencyOrderCalculator
 {
 	
 	private BundlableNode bundlableNode;
+	private Set<SourceModule> unorderedSourceModules;
+	private SourceModule bootstrapSourceModule;
+	private List<SourceModule> orderedSourceModules;
+	private Set<SourceModule> metDependencies;
 	
-	public SourceModuleDependencyOrderCalculator(BundlableNode bundlableNode)
+	public SourceModuleDependencyOrderCalculator(BundlableNode bundlableNode, SourceModule bootstrapSourceModule, Set<SourceModule> unorderedSourceModules)
 	{
 		this.bundlableNode = bundlableNode;
+		this.bootstrapSourceModule = bootstrapSourceModule;
+		this.unorderedSourceModules = unorderedSourceModules;
+		orderedSourceModules = new ArrayList<SourceModule>();
+		metDependencies = new HashSet<SourceModule>();
 	}
 	
-	public List<SourceModule> orderSourceModules(SourceModule bootstrapSourceModule, Set<SourceModule> sourceModules) throws ModelOperationException {
-		List<SourceModule> orderedSourceModules = new ArrayList<>();
-		Set<LinkedAsset> metDependencies = new HashSet<>();		
+	public List<SourceModule> getOrderedSourceModules() throws ModelOperationException {
+		orderedSourceModules = new ArrayList<>();
+		metDependencies = new HashSet<>();		
 		
-		if (!sourceModules.isEmpty() && bootstrapSourceModule != null)
+		if (!unorderedSourceModules.isEmpty() && bootstrapSourceModule != null)
 		{
-			addMetDependencyToOrderedSourceModules(orderedSourceModules, metDependencies, bootstrapSourceModule);
+			addMetDependencyToOrderedSourceModules(bootstrapSourceModule);
 		}
 		
-		while (!sourceModules.isEmpty()) {
+		while (!unorderedSourceModules.isEmpty()) {
 			Set<SourceModule> unprocessedSourceModules = new LinkedHashSet<>();
 			boolean progressMade = false;
 			
-			for(SourceModule sourceModule : sourceModules) {
-				if (dependenciesHaveBeenMet(sourceModule, metDependencies)) {
+			for(SourceModule sourceModule : unorderedSourceModules) {
+				if (dependenciesHaveBeenMet(sourceModule)) {
 					progressMade = true;
-					addMetDependencyToOrderedSourceModules(orderedSourceModules, metDependencies, sourceModule);
+					addMetDependencyToOrderedSourceModules(sourceModule);
 				}
 				else {
 					unprocessedSourceModules.add(sourceModule);
@@ -50,13 +58,13 @@ public class SourceModuleDependencyOrderCalculator
 				throw new CircularDependencyException(unprocessedSourceModules);
 			}
 			
-			sourceModules = unprocessedSourceModules;
+			unorderedSourceModules = unprocessedSourceModules;
 		}
 		
 		return orderedSourceModules;
 	}
 
-	private void addMetDependencyToOrderedSourceModules(List<SourceModule> orderedSourceModules, Set<LinkedAsset> metDependencies, SourceModule sourceModule)
+	private void addMetDependencyToOrderedSourceModules(SourceModule sourceModule)
 	{
 		if (!orderedSourceModules.contains(sourceModule))
 		{
@@ -65,13 +73,12 @@ public class SourceModuleDependencyOrderCalculator
 		metDependencies.add(sourceModule);
 	}
 	
-	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
-		for(LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule, bundlableNode)) {
+	private boolean dependenciesHaveBeenMet(SourceModule sourceModule) throws ModelOperationException {
+		for (LinkedAsset dependentSourceModule : getOrderDependentSourceModules(sourceModule, bundlableNode)) {
 			if(!metDependencies.contains(dependentSourceModule)) {
 				return false;
 			}
 		}
-		
 		return true;
 	}
 	

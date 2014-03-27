@@ -70,7 +70,7 @@ public class BundleSetBuilder {
 			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
 		}
 		
-		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode).orderSourceModules(bootstrapSourceModule, sourceModules);
+		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrapSourceModule, sourceModules).getOrderedSourceModules();
 		
 		return new BundleSet(bundlableNode, orderedSourceModules, new ArrayList<SourceModule>(testSourceModules), activeAliasList, resourceLocationList);
 	}
