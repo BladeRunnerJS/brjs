@@ -116,7 +116,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	@Test
 	public void bootstrapAndItsDependenciesAppearBeforeAllOtherAspectDependencies() throws Exception {
 		given(aspect).hasClass("appns.Class1")
-    		.and(aspect).indexPageRefersTo("appns.Class1", "thirdparty-lib1")
+    		.and(aspect).indexPageHasContent("appns.Class1   require('thirdparty-lib1');")
     		.and(bootstrapLib).hasBeenCreated()
     		.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
     		.and(secondBootstrapLib).hasBeenCreated()
@@ -145,7 +145,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	@Test  // ignore circular dependencies originating from bootstrap since its our library that doesnt matter if it has a circular dependency
 	public void circularDependenciesOriginatingFromBootstrapAreSilentlyIgnored() throws Exception {
 		given(aspect).hasClass("appns.Class1")
-    		.and(aspect).indexPageRefersTo("appns.Class1", "thirdparty-lib1")
+    		.and(aspect).indexPageHasContent("appns.Class1   require('thirdparty-lib1');")
     		.and(bootstrapLib).hasBeenCreated()
     		.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
     		.and(secondBootstrapLib).hasBeenCreated()
