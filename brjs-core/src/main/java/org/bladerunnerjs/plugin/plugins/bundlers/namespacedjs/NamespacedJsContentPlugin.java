@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -215,7 +216,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 
 	private Map<String, Map<String, ?>> createPackageStructureForCaplinJsClasses(BundleSet bundleSet, List<SourceModule> globalizedModules, Writer writer)
 	{
-		Map<String, Map<String, ?>> packageStructure = new HashMap<>();
+		Map<String, Map<String, ?>> packageStructure = new LinkedHashMap<>();
 
 		for (SourceModule sourceModule : bundleSet.getSourceModules())
 		{
@@ -252,7 +253,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			}
 			else
 			{
-				nextPackage = new HashMap<String, Map<String, ?>>();
+				nextPackage = new LinkedHashMap<String, Map<String, ?>>();
 				currentPackage.put(packageName, nextPackage);
 			}
 

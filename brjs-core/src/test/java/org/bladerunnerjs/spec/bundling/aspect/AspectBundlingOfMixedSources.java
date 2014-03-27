@@ -65,7 +65,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				// globalise the libraries first
-				"mergePackageBlock(window, {\"sdkNamespaceLib\":{},\"otherSdkNamespaceLib\":{}});",
+				"mergePackageBlock(window, {\"otherSdkNamespaceLib\":{},\"sdkNamespaceLib\":{}});",
 				// The class being proxied (the depended-on class) should be added first
 				"otherSdkNamespaceLib.Class1 = function() { var x = 'original function'; };",
 				"define('otherSdkNamespaceLib/Class1', function(require, exports, module) { module.exports = otherSdkNamespaceLib.Class1; });",
