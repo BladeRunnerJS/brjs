@@ -5,6 +5,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -120,7 +121,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(bootstrapLib).hasBeenCreated()
     		.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
     		.and(secondBootstrapLib).hasBeenCreated()
-    		.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib\n"+"depends: thirdBootstrapLib")
+    		.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib")
     		.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib")
     		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }");
@@ -231,7 +232,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRequires(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyNoOutstandingExceptions();
+		then(exceptions).verifyException(ConfigException.class, "thirdparty-lib1", "blabla");
 	}
 	
 	@Test
