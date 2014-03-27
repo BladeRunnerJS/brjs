@@ -35,7 +35,6 @@ public class ApplicationEndToEndTests
 	private static final String APP1_URL = BASE_URL+"/test-app1";
 //	private static final String APP2_URL = BASE_URL+"/test-app2";
 	private static final String AUTH_APP_URL = BASE_URL+"/app-with-authentication";
-	private static final String APP3_URL = BASE_URL+"/test-app3";
 	private static final String APPS = CutlassConfig.APPLICATIONS_DIR;
 	
 	
