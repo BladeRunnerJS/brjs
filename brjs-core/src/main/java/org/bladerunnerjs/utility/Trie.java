@@ -63,18 +63,19 @@ public class Trie<T>
 		
 		List<T> matches = new LinkedList<T>();
 		TrieMatcher matcher = new TrieMatcher();
-		int nextChar;
+		int nextChar, prevChar = 0;
 		
 		while ((nextChar = reader.read()) != -1)
 		{
-			processChar(matches, (char) nextChar, matcher, reader);
+			processChar(matches, (char) nextChar, (char) prevChar, matcher, reader);
+			prevChar = nextChar;
 		}
-		processChar(matches, '\n', matcher, reader);
+		processChar(matches, '\n', (char) prevChar, matcher, reader);
 		
 		return matches;	
 	}
 	
-	private void processChar(List<T> matches, char nextChar, TrieMatcher matcher, Reader reader) throws IOException
+	private void processChar(List<T> matches, char nextChar, char prevChar, TrieMatcher matcher, Reader reader) throws IOException
 	{
 		if (matcher.atRootOfTrie)
 		{
@@ -86,7 +87,7 @@ public class Trie<T>
 		if (nextNode == null)
 		{
 			T trieValue = matcher.previousNode.getValue();
-			if (trieValue != null && isDelimiter(nextChar))
+			if (trieValue != null && (isDelimiter(prevChar) || isDelimiter(nextChar)))
 			{
 				matches.add(trieValue);
 				reader.mark(readAheadLimit);

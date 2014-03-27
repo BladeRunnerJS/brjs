@@ -391,5 +391,19 @@
 		return bMemberOf;
 	};
 
+	/**
+	 * Returns true if the source map contains all the keys of the given map.
+	 * 
+	 * @param {Object} mSource The map you are checking
+	 * @param {Object} mMap The map you are using the check against
+	 * @return {Boolean}
+	 */
+	MapUtility.hasAllKeys = function(mSource, mMap)
+	{
+		return Object.keys(mMap).every(function(sMapKey) {
+			return mSource[sMapKey] !== undefined;
+		});
+	};
+
 	br.util.MapUtility = MapUtility;
 })();

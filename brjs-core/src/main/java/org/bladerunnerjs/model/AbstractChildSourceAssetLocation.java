@@ -40,7 +40,7 @@ public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAs
 	}
 	
 	@Override
-	public List<AssetLocation> getDependentAssetLocations() {
+	public List<AssetLocation> dependentAssetLocations() {
 		return dependentAssetLocations;
 	}
 }

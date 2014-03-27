@@ -23,7 +23,7 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 	}
 	
 	@Override
-	public List<AssetLocation> getDependentAssetLocations()
+	public List<AssetLocation> dependentAssetLocations()
 	{
 		recalcuateDependencies();
 		

@@ -53,6 +53,82 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void theBundleContainsClassesThatAreReferredTo() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classRefersTo("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("appns.Class1", "appns.Class2");
+	}
+	
+	@Test
+	public void referencesAreNotProcessedIfCommentedOutWithTwoSlashes() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.TheClass")
+			.and(aspect).indexPageHasContent("// appns.TheClass");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
+	public void referencesAreNotProcessedIfCommentedOutWithSlashStar() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.TheClass")
+			.and(aspect).indexPageHasContent("/* appns.TheClass */");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
+	public void referencesAreNotProcessedIfCommentedOutWithSlashStarStar() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.TheClass")
+			.and(aspect).indexPageHasContent("/** appns.TheClass */");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
+	public void staticReferencesAreNotProcessedIfCommentedOutWithTwoSlashes() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1",
+				"appns.Class1 = function(){};\n" +
+				"// br.Core.extend(appns.Class1, appns.Class2);");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("appns.Class1")
+			.and(requestResponse).doesNotContainClasses("appns.Class2");
+	}
+	
+	@Test
+	public void staticReferencesAreNotProcessedIfCommentedOutWithSlashStar() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1",
+				"appns.Class1 = function(){};\n" +
+				"/* br.Core.extend(appns.Class1, appns.Class2); */");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("appns.Class1")
+			.and(requestResponse).doesNotContainClasses("appns.Class2");
+	}
+	
+	@Test
+	public void staticReferencesAreNotProcessedIfCommentedOutWithSlashSlashStar() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1",
+				"appns.Class1 = function(){};\n" +
+				"/** br.Core.extend(appns.Class1, appns.Class2); */");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsClasses("appns.Class1")
+			.and(requestResponse).doesNotContainClasses("appns.Class2");
+	}
+	
+	@Test
 	public void thePackageDefinitionsBlockShouldContainSinglePackageIfThereIsOneTopLevelClass() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1")
@@ -162,7 +238,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
-		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"nodejs\":{},\"namespaced\":{}}});");
+		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"namespaced\":{},\"nodejs\":{}}});");
 	}
 	
 	@Test
@@ -173,7 +249,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
-		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"nodejs\":{},\"namespaced\":{}}});");
+		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"namespaced\":{},\"nodejs\":{}}});");
 	}
 	
 	@Test
@@ -239,7 +315,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).classRequires("appns.nodejs.Class1", "appns.nodejs.Class2");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-				"mergePackageBlock(window, {\"appns\":{\"nodejs\":{},\"namespacedjs\":{}}});",
+				"mergePackageBlock(window, {\"appns\":{\"namespacedjs\":{},\"nodejs\":{}}});",
 				"appns.nodejs.Class1 = require('appns/nodejs/Class1');",
 				"appns.namespacedjs.Class1 = function()",
 				"define('appns/namespacedjs/Class1', function(require, exports, module) { module.exports = appns.namespacedjs.Class1;",
@@ -255,7 +331,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
     		.and(aspect).classRefersTo("appns.namespacedjs.Class1", "appns.nodejs.Class1")
     		.and(aspect).classRequires("appns.nodejs.Class1", "appns.nodejs.pkg.Class2");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
-		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"nodejs\":{\"pkg\":{}},\"namespacedjs\":{}}});");
+		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"namespacedjs\":{},\"nodejs\":{\"pkg\":{}}}});");
 	}
 	
 	@Test

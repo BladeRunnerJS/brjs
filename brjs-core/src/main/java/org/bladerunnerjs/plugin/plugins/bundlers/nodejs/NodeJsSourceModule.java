@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
@@ -25,6 +26,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
@@ -57,7 +59,7 @@ public class NodeJsSourceModule implements SourceModule {
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = new File(dir, assetName);
-			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
+			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
 			fileModifiedChecker = new FileModifiedChecker(assetFile);
@@ -78,7 +80,7 @@ public class NodeJsSourceModule implements SourceModule {
 			}
 			
 			for(String requirePath : requirePaths) {
-				SourceModule sourceModule = assetLocation.getSourceModuleWithRequirePath(requirePath);
+				SourceModule sourceModule = assetLocation.sourceModule(requirePath);
 				
 				if(sourceModule == null) {
 					throw new UnresolvableRequirePathException(requirePath, this.requirePath);
@@ -152,7 +154,7 @@ public class NodeJsSourceModule implements SourceModule {
 		requirePaths = new HashSet<>();
 		aliases = new ArrayList<>();
 		
-		try(Reader fileReader = getReader()) {
+		try(Reader fileReader = new JsCommentStrippingReader(getReader(), false)) {
 			StringWriter stringWriter = new StringWriter();
 			IOUtils.copy(fileReader, stringWriter);
 			
@@ -180,11 +182,16 @@ public class NodeJsSourceModule implements SourceModule {
 	}
 
 	@Override
-	public AssetLocation getAssetLocation()
+	public AssetLocation assetLocation()
 	{
 		return assetLocation;
 	}
-
+	
+	@Override
+	public List<AssetLocation> assetLocations() {
+		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
+	}
+	
 	@Override
 	public void addPatch(SourceModulePatch patch)
 	{

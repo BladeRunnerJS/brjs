@@ -19,6 +19,7 @@ public class JsBundlerFileListTestForApp1
 		test = new BundlerFileTester(new JsBundler(), "src/test/resources/generic-bundler/bundler-structure-tests");
 	}
 
+	@Ignore
 	@Test
 	public void appAspectLevelRequestForApp1() throws Exception
 	{

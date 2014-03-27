@@ -52,8 +52,8 @@ public class AppNavigationTest
 			.addChild("l1", "libs/l1")
 			.addChild("br", "../../sdk/libs/javascript/br-libs/br")
 			.addChild("brlib2", "../../sdk/libs/javascript/br-libs/brlib2")
-			.addChild("thirdparty-l2", "../../sdk/libs/javascript/thirdparty/thirdparty-l2")
 			.addChild("thirdparty-l1", "../../sdk/libs/javascript/thirdparty/thirdparty-l1")
+			.addChild("thirdparty-l2", "../../sdk/libs/javascript/thirdparty/thirdparty-l2")
 			.assertModelIsOK();
 	}
 }

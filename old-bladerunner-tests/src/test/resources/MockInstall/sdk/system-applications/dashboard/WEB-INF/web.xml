@@ -1,14 +1,4 @@
 <web-app>
-	<servlet>
-          <servlet-name>CutlassServlets</servlet-name> 
-          <servlet-class>com.caplin.cutlass.servlet.BundlerServlet</servlet-class> 
-          <load-on-startup>1</load-on-startup> 
-      </servlet>
-      <servlet-mapping>
-          <servlet-name>CutlassServlets</servlet-name> 
-          <url-pattern>*.bundle</url-pattern> 
-      </servlet-mapping>
-
 	<!-- start-env: dev -->
       <filter>
           <filter-name>BladerunnerDevFilters</filter-name> 

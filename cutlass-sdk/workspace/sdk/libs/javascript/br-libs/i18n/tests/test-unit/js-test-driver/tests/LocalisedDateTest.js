@@ -15,13 +15,18 @@ LocalisedDateTest.prototype.setUp = function()
 		"br.i18n.date.day.short.wednesday": "Wed"
 	};
 	
-	this.definitionRegistry = require('br/TestDefinitionRegistry').install();
-	this.definitionRegistry.define('br/I18n', I18N.create(new Translator(this.mDateMessages)));
+	this.subrealm = realm.subrealm();
+	this.subrealm.install();
+	
+	var oThis = this;
+	define('br/I18n', function(require, exports, module) {
+		module.exports = I18N.create(new Translator(oThis.mDateMessages));
+	});
 };
 
 LocalisedDateTest.prototype.tearDown = function()
 {
-	this.definitionRegistry.uninstall();
+	this.subrealm.uninstall();
 };
 
 //test seconds since epoch

@@ -86,13 +86,13 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	}
 	
 	@Override
-	public App getApp()
+	public App app()
 	{
 		if (parent == root())
 		{
 			return root().systemApp("SDK");			
 		}
-		return super.getApp();
+		return super.app();
 	}
 	
 	@Override

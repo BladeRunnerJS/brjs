@@ -168,7 +168,7 @@ public class I18nContentPluginTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
-			.and(aspect).indexPageRequires("appns.Class")
+			.and(aspect).indexPageRefersTo("appns.Class")
 			.and(aspect).hasClass("appns.Class")
 			.and(aspect).containsFileWithContents("src/appns/en.properties", "appns.property=property value");
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
@@ -183,7 +183,7 @@ public class I18nContentPluginTest extends SpecTest
 	public void bladePropertiesAreOverriddenByAspectProperties() throws Exception 
 	{
 		given(app).hasBeenCreated()
-			.and(aspect).indexPageRequires("appns.bs.b1.Class")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class")
 			.and(blade).hasClass("appns.bs.b1.Class")
 			.and(blade).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=blade value")
 			.and(aspect).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=aspect value");
@@ -241,6 +241,20 @@ public class I18nContentPluginTest extends SpecTest
 						"\"appns.p1\":\"v1\",\n"+
 						"\"appns.p2\":\"v2\",\n"+
 						"\"appns.p3\":\"v3\"\n"+
+				"}];");
+	}
+	
+	@Test
+	public void newLinesWithinPropertiesArePreserved() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en.properties", "appns.p1=v\\n1");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(response).textEquals(	
+				"window._brjsI18nProperties = [{\n"+
+						"\"appns.p1\":\"v\\n1\"\n"+
 				"}];");
 	}
 }

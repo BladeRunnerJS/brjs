@@ -28,7 +28,7 @@ public final class JsLibAppWrapper implements JsLib {
 	}
 	
 	@Override
-	public App getApp() {
+	public App app() {
 		return jsLibApp;
 	}
 	

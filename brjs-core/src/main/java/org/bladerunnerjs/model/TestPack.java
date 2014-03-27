@@ -26,9 +26,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	private AliasesFile aliasesFile;
 	private String name;
 	
-	private NodeFileModifiedChecker testSourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
 	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
-	private List<SourceModule> testSourceModules = null;
 	private List<SourceModule> sourceModules = null;
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
@@ -48,13 +46,18 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public List<LinkedAsset> getSeedFiles() 
 	{
-		return new ArrayList<LinkedAsset>( assetLocation("tests").seedResources("js") );
+		List<LinkedAsset> seedFiles = new ArrayList<>();
+		
+		for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
+			for(AssetLocation assetLocation : assetLocations()) {
+				if(isTestAssetLocation(assetLocation)) {
+					seedFiles.addAll(assetPlugin.getTestSourceModules(assetLocation));
+				}
+			}
+		}
+		
+		return seedFiles;
 	}
-	
-	@Override
-	public java.util.List<LinkedAsset> seedFiles() {
-		return getSeedFiles();
-	};
 	
 	@Override
 	public String requirePrefix()
@@ -73,7 +76,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<AssetContainer> getAssetContainers()
+	public List<AssetContainer> assetContainers()
 	{
 		List<AssetContainer> assetContainers = new ArrayList<AssetContainer>();
 		
@@ -82,7 +85,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		Node testScopeNode = parentNode().parentNode();
 		
 		assetContainers.add(this);
-		assetContainers.addAll( this.getApp().jsLibs() );
+		assetContainers.addAll( this.app().jsLibs() );
 		
 		if (testScopeNode instanceof Blade)
 		{
@@ -97,7 +100,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		}
 		if (testScopeNode instanceof Aspect)
 		{			
-			App app = this.getApp();
+			App app = this.app();
 			Aspect aspect = (Aspect) testScopeNode;
 			
 			assetContainers.add( aspect );
@@ -118,7 +121,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 			assetContainers.add( brjs.locateAncestorNodeOfClass(workbench, Blade.class) );
 			assetContainers.add( brjs.locateAncestorNodeOfClass(workbench, Bladeset.class) );
 			
-			App app = this.getApp();
+			App app = this.app();
 			assetContainers.add( app.aspect("default") );
 			
 		}
@@ -145,24 +148,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		}
 		
 		return sourceModules;
-	}
-	
-	public List<SourceModule> testSourceModules() {
-		if(testSourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (testSourceModules == null)) {
-			testSourceModules = new ArrayList<SourceModule>();
-			
-			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
-				for (AssetLocation assetLocation : assetLocations())
-				{
-					if ( isTestAssetLocation(assetLocation) )
-					{
-						testSourceModules.addAll(assetPlugin.getTestSourceModules(assetLocation));
-					}
-				}
-			}
-		}
-		
-		return testSourceModules;
 	}
 	
 	@Override
