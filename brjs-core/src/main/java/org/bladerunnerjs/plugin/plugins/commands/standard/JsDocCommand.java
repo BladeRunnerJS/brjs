@@ -65,7 +65,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the application for which jsdoc will be generated"));
-		argsParser.registerParameter(new Switch("verbose-flag").setShortFlag('v').setDefault("false").setHelp("display more console output while generating the jsdoc output"));
+		argsParser.registerParameter(new Switch("verbose-flag").setShortFlag('v').setLongFlag("verbose").setDefault("false").setHelp("display more console output while generating the jsdoc output"));
 	}
 	
 	@Override

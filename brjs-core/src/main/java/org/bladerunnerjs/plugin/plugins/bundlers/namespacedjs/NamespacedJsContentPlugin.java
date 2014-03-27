@@ -23,6 +23,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.json.simple.JSONObject;
@@ -74,7 +75,17 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	{
 		return "text/javascript";
 	}
-
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return Arrays.asList(NodeJsContentPlugin.class.getCanonicalName());
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public ContentPathParser getContentPathParser()
 	{

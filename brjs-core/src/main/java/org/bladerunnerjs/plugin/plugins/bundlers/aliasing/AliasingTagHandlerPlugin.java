@@ -2,6 +2,8 @@ package org.bladerunnerjs.plugin.plugins.bundlers.aliasing;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsTagHandlerPlugin;
 
 
 public class AliasingTagHandlerPlugin extends AbstractTagHandlerPlugin
@@ -34,7 +37,17 @@ public class AliasingTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		return "text/javascript";
 	}
-
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return Arrays.asList(NamespacedJsTagHandlerPlugin.class.getCanonicalName());
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
 	{

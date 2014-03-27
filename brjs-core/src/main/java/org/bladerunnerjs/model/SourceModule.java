@@ -21,4 +21,6 @@ public interface SourceModule extends LinkedAsset {
 	 * @param bundlableNode TODO
 	 */
 	List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException;
+	
+	List<AssetLocation> assetLocations();
 }

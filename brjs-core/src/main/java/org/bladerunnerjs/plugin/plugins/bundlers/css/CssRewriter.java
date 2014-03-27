@@ -21,7 +21,7 @@ public class CssRewriter {
 	
 	public CssRewriter(Asset cssAsset) {
 		this.cssAsset = cssAsset;
-		targetPathCreator = new TargetPathCreator(cssAsset.getAssetLocation().root());
+		targetPathCreator = new TargetPathCreator(cssAsset.assetLocation().root());
 	}
 	
 	public String getFileContents() throws IOException, ContentProcessingException {

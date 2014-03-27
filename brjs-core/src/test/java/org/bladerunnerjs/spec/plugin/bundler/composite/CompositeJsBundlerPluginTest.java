@@ -39,7 +39,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.node.NodeClass", "appns.namespaced.NamespacedClass")
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFile("src.js")
-			.and(aspect).indexPageRefersTo("thirdparty-lib, appns.namespaced.NamespacedClass, appns.node.NodeClass");
+			.and(aspect).indexPageRefersTo("'thirdparty-lib', appns.namespaced.NamespacedClass, appns.node.NodeClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"// thirdparty-lib", 

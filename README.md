@@ -1,6 +1,6 @@
 # BladeRunnerJS (BRJS)
 
-**Divide & conquer web apps**
+**Divide & conquer complex web apps**
 
 ## Getting Started
 

@@ -29,7 +29,6 @@ public class BundleSetBuilder {
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Set<SourceModule> testSourceModules = new LinkedHashSet<>();
 	private final Set<AliasDefinition> activeAliases = new LinkedHashSet<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
@@ -73,25 +72,12 @@ public class BundleSetBuilder {
 		
 		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules).getOrderedSourceModules();
 		
-		return new BundleSet(bundlableNode, orderedSourceModules, new ArrayList<SourceModule>(testSourceModules), activeAliasList, resourceLocationList);
+		return new BundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
 		for(LinkedAsset seedFile : seedFiles) {
 			addLinkedAsset(seedFile);
-		}
-	}
-	
-	public void addTestSourceModules(List<? extends SourceModule> testSourceModules) throws ModelOperationException {
-		for(SourceModule sourceModule : testSourceModules) {
-			addTestSourceModule(sourceModule);
-		}
-	}
-	
-	private void addTestSourceModule(SourceModule sourceModule) throws ModelOperationException {
-		if(testSourceModules.add(sourceModule)) {
-			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
-			addLinkedAsset(sourceModule);
 		}
 	}
 	
@@ -120,7 +106,7 @@ public class BundleSetBuilder {
 				addSourceModule(sourceModule);
 			}
 			
-			addAssetLocation(linkedAsset.getAssetLocation());
+			addAssetLocation(linkedAsset.assetLocation());
 		}
 		
 	}
@@ -132,7 +118,7 @@ public class BundleSetBuilder {
 				addLinkedAsset(resourceSeedFile);
 			}
 			
-			for(AssetLocation dependentAssetLocation : assetLocation.getDependentAssetLocations()) {
+			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
 				addAssetLocation(dependentAssetLocation);
 			}
 		}
@@ -144,13 +130,21 @@ public class BundleSetBuilder {
 		try {
 			for(String aliasName : aliasNames) {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				
+				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
 				if (alias != null)
 				{
+					addSourceModule(bundlableNode.getSourceModule(alias.getRequirePath()));
+					
+					if(alias.getInterfaceName() != null) {
+						addSourceModule(bundlableNode.getSourceModule(alias.getInterfaceRequirePath()));
+					}
+					
 					aliases.add(alias);
 				}
 			}
 		}
-		catch(AliasException | ContentFileProcessingException e) {
+		catch(AliasException | ContentFileProcessingException | RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
 		

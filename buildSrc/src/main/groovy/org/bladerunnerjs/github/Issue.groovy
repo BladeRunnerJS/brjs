@@ -19,7 +19,7 @@ class Issue
 	
 	public String toString()
 	{
-		return "${title} (${url})"
+		return "${title} [${url}](${url})"
 	}
 	
 }

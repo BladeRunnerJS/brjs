@@ -29,7 +29,9 @@ br.presenter.testing.KnockoutInvocationCountPlugin.prototype.init = function (el
 					var allBindings = allBindingsAccessor();
 					
 					try { 
-						handlerReturnValue = handlerFunction.apply(viewModel, arguments);					 	
+						var argsForHandler = ko.utils.makeArray(arguments);
+						argsForHandler.unshift(viewModel);
+						handlerReturnValue = handlerFunction.apply(viewModel, argsForHandler );
 					} finally {
 						if (handlerReturnValue !== true) { // Normally we want to prevent default action. Developer can override this be explicitly returning true.
 							if (event.preventDefault)

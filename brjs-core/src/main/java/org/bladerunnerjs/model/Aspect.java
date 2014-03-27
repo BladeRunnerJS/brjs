@@ -85,7 +85,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	}
 	
 	@Override
-	public List<AssetContainer> getAssetContainers() {
+	public List<AssetContainer> assetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
 		assetContainers.add(this);

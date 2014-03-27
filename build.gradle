@@ -205,7 +205,7 @@ task generateReleaseNotes, {
 			assembledReleaseNotesFile.text += "- ${it.toString()}\n"
 		}
 		assembledReleaseNotesFile.text += "\n"
-		assembledReleaseNotesFile.text += '<sub>Parts of this release note have been auto-generated. If you notice any problems with it, <a href="https://github.com/BladeRunnerJS/brjs/issues/new">tell us</a></sub>\n\n'
+		assembledReleaseNotesFile.text += '<sub>Parts of this release note have been auto-generated. If you notice any problems with it <a href="https://github.com/BladeRunnerJS/brjs/issues/new">tell us</a></sub>\n\n'
 	
     	ant.replace(file: assembledReleaseNotesFile) {
     		replacefilter(token:"@tagVersion@", value:tagVersion)

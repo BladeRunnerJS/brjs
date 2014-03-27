@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.command;
 
+import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -16,6 +17,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	App app;
 	Aspect aspect;
 	AliasesFile aliasesFile;
+	AliasDefinitionsFile bladeAliasDefinitionsFile;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -27,6 +29,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			app = brjs.app("app");
 			aspect = app.aspect("default");
 			aliasesFile = aspect.aliasesFile();
+			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").aliasDefinitionsFile();
 	}
 	
 	@Test
@@ -89,6 +92,20 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void staticDependenciesAreIndicatedInTheReport() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+			.and(aspect).classDependsOn("appns.Class1", "appns.Class2");
+		when(brjs).runCommand("app-deps", "app");
+		then(output).containsText(
+			"Aspect 'default' dependencies found:",
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
+			"    |    |    \\--- 'default-aspect/src/appns/Class2.js' (static dep.)");
+	}
+	
+	@Test
 	public void ifTheSameAssetIsFoundTwiceThenOnlyTheFirstEncounteredInstanceIsShownByDefault() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
@@ -100,7 +117,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
 			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
-			"    +--- 'default-aspect/resources/config.xml' (seed file)",
+			"    |    |    |    \\--- 'default-aspect/resources/config.xml' (seed file) (*)",
 			"",
 			"    (*) - subsequent instances not shown (use -A or --all to show)");
 	}
@@ -117,8 +134,10 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'default-aspect/src/appns/Class1.js'",
 			"    |    |    \\--- 'default-aspect/src/appns/Class2.js'",
-			"    +--- 'default-aspect/resources/config.xml' (seed file)",
-			"    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
+			"    |    |    |    \\--- 'default-aspect/resources/config.xml' (seed file)",
+			"    |    |    |    |    \\--- 'default-aspect/src/appns/Class1.js' (*)",
+			"    |    |    \\--- 'default-aspect/resources/config.xml' (seed file) (*)",
+			"    +--- 'default-aspect/resources/config.xml' (seed file) (*)",
 			"",
 			"    (*) - dependencies omitted (listed previously)");
 	}
@@ -218,7 +237,20 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void dependenciesCanInvolveARelatedResourcesThatRefersToAnAlias() throws Exception {
+	public void incompleteAliasedDependenciesAreCorrectlyDisplayed() throws Exception {
+		given(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.Interface")
+			.and(aspect).hasClasses("appns.Class", "appns.Interface");
+		when(brjs).runCommand("app-deps", "app");
+		then(output).containsText(
+			"Aspect 'default' dependencies found:",
+			"    +--- 'default-aspect/index.html' (seed file)",
+			"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
+			"    |    |    \\--- 'default-aspect/src/appns/Interface.js'");
+	}
+	
+	@Test
+	public void dependenciesCanInvolveARelatedResourceThatRefersToAnAlias() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg.NestedClass")
 			.and(aspect).classRequires("appns.Class1", "./pkg/NestedClass")

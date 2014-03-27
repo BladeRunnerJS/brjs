@@ -24,7 +24,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		
-		for(AssetContainer assetContainer : bundlableNode.getAssetContainers()) {
+		for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
 			ResourcesAssetLocation resourceAssetLocation = (ResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
 			if(resourceAssetLocation != null) {
@@ -48,6 +48,16 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
 	}
 	
 	@Override
