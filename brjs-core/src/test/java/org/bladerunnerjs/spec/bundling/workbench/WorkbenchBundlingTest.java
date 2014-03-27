@@ -20,9 +20,10 @@ public class WorkbenchBundlingTest extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;
-	private JsLib thirdpartyLib, brjsLib;
+	private JsLib thirdpartyLib, brjsLib, appLib;
 	private NamedDirNode workbenchTemplate;
 	private StringBuffer response;
+	private JsLib bootstrapLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -42,6 +43,9 @@ public class WorkbenchBundlingTest extends SpecTest {
 		workbenchTemplate = brjs.template("workbench");
 		brjsLib = brjs.sdkLib("br");
 		thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdparty-lib1");
+		appLib = app.jsLib("appLib");
+		
+		bootstrapLib = brjs.sdkNonBladeRunnerLib("br-bootstrap");
 		
 		response = new StringBuffer();
 
@@ -72,6 +76,33 @@ public class WorkbenchBundlingTest extends SpecTest {
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("appns.Class1")
 			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void weBundleBootstrapSrcInASubDir() throws Exception {
+		given(workbench).hasClass("appns.Class1")
+			.and(workbench).indexPageRefersTo("appns.Class1")
+			.and(bootstrapLib).hasBeenCreated()
+			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
+			.and(bootstrapLib).containsFileWithContents("sub/dir/bootstrap.js", "// this is bootstrap");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("// br-bootstrap");
+		then(response).containsText("// this is bootstrap"); 
+	}
+	
+	@Test
+	public void weBundleBootstrapBeforeOtherLibsFromTheApp() throws Exception {
+		given(workbench).hasClass("appns.Class1")
+    		.and(workbench).indexPageRequires("appLib")
+    		.and(appLib).hasBeenCreated()
+    		.and(appLib).containsFileWithContents("library.manifest", "js: lib.js\n"+"exports: lib")
+    		.and(appLib).containsFileWithContents("lib.js", "// this is appLib")
+    		.and(bootstrapLib).hasBeenCreated()
+    		.and(bootstrapLib).containsFileWithContents("library.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
+    		.and(bootstrapLib).containsFileWithContents("sub/dir/bootstrap.js", "// this is bootstrap");
+    	when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+    	then(response).containsOrderedTextFragments("// br-bootstrap",
+    			"// appLib" );
 	}
 
 	
