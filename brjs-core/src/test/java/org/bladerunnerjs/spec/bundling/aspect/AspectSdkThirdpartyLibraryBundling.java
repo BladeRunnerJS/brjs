@@ -121,7 +121,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(bootstrapLib).hasBeenCreated()
     		.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
     		.and(secondBootstrapLib).hasBeenCreated()
-    		.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib\n"+"depends: thirdBootstrapLib")
+    		.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib")
     		.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib")
     		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }");
