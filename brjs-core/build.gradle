@@ -1,6 +1,11 @@
 
 apply plugin: 'java'
+apply plugin: 'retrolambda'
 apply plugin: com.caplin.gradle.plugins.CompileOnly
+
+retrolambda {
+  javaVersion JavaVersion.VERSION_1_7
+}
 
 sourceSets {
 	test {

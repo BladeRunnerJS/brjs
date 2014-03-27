@@ -23,6 +23,15 @@ if (project.hasProperty(overrideMajorVersionPropertyName)) {
 	projectBuildMajorVersion = project.property(overrideMajorVersionPropertyName)
 }
 
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	
+	dependencies {
+		classpath 'me.tatarka:gradle-retrolambda:1.3.0'
+	}
+}
 
 allprojects {
 	
@@ -73,9 +82,15 @@ subprojects { p ->
 	afterEvaluate { project ->
 		
 		if (project.plugins.hasPlugin(JavaPlugin)) {
-			sourceCompatibility = '1.8'
-			targetCompatibility = '1.8'
-					
+			if(project.name == 'brjs-core') {
+				sourceCompatibility = '1.8'
+				targetCompatibility = '1.8'
+			}
+			else {
+				sourceCompatibility = '1.7'
+				targetCompatibility = '1.7'
+			}
+			
 			project.tasks.withType(Test) { testTask ->
 				test {
 					testLogging {
