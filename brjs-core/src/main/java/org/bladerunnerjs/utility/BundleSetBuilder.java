@@ -17,7 +17,6 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
-import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -59,22 +58,24 @@ public class BundleSetBuilder {
 		}
 		
 		SourceModule bootstrapSourceModule = null;
+		List<SourceModule> bootstrappingSourceModules = new ArrayList<SourceModule>();
 		try {
 			if (!sourceModules.isEmpty())
 			{
 				bootstrapSourceModule = bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME);
 				addSourceModule( bootstrapSourceModule );
+				addAllSourceModuleDependencies(bootstrapSourceModule, bootstrappingSourceModules);
 			}
 		}
 		catch(RequirePathException e) {
 			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
 		}
 		
-		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrapSourceModule, sourceModules).getOrderedSourceModules();
+		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules).getOrderedSourceModules();
 		
 		return new BundleSet(bundlableNode, orderedSourceModules, new ArrayList<SourceModule>(testSourceModules), activeAliasList, resourceLocationList);
 	}
-	
+
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
 		for(LinkedAsset seedFile : seedFiles) {
 			addLinkedAsset(seedFile);
@@ -95,7 +96,7 @@ public class BundleSetBuilder {
 	}
 	
 	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
-		if(sourceModules.add(sourceModule)) {
+		if (sourceModules.add(sourceModule)) {
 			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
 			addLinkedAsset(sourceModule);
 		}
@@ -164,6 +165,29 @@ public class BundleSetBuilder {
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
-	}	
+	}
+	
+	
+	private void addAllSourceModuleDependencies(SourceModule sourceModule, List<SourceModule> sourceModules) throws ModelOperationException
+	{
+		addAllSourceModuleDependencies(sourceModule, sourceModules, new ArrayList<SourceModule>());
+	}
+	
+	private void addAllSourceModuleDependencies(SourceModule sourceModule, List<SourceModule> sourceModules, List<SourceModule> processedModules) throws ModelOperationException
+	{
+		if (processedModules.contains(sourceModule))
+		{
+			return;
+		}
+		processedModules.add(sourceModule);
+		
+		for (SourceModule dependency : sourceModule.getDependentSourceModules(bundlableNode))
+		{
+			if (!sourceModules.contains(dependency)) {
+				addAllSourceModuleDependencies(dependency, sourceModules, processedModules);
+			}
+		}
+		sourceModules.add(sourceModule);
+	}
 	
 }

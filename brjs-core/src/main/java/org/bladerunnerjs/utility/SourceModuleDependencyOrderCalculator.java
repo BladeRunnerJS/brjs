@@ -17,14 +17,14 @@ public class SourceModuleDependencyOrderCalculator
 	
 	private BundlableNode bundlableNode;
 	private Set<SourceModule> unorderedSourceModules;
-	private SourceModule bootstrapSourceModule;
+	private List<SourceModule> bootstrappingSourceModules;
 	private List<SourceModule> orderedSourceModules;
 	private Set<SourceModule> metDependencies;
 	
-	public SourceModuleDependencyOrderCalculator(BundlableNode bundlableNode, SourceModule bootstrapSourceModule, Set<SourceModule> unorderedSourceModules)
+	public SourceModuleDependencyOrderCalculator(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules)
 	{
 		this.bundlableNode = bundlableNode;
-		this.bootstrapSourceModule = bootstrapSourceModule;
+		this.bootstrappingSourceModules = bootstrappingSourceModules;
 		this.unorderedSourceModules = unorderedSourceModules;
 		orderedSourceModules = new ArrayList<SourceModule>();
 		metDependencies = new HashSet<SourceModule>();
@@ -34,9 +34,9 @@ public class SourceModuleDependencyOrderCalculator
 		orderedSourceModules = new ArrayList<>();
 		metDependencies = new HashSet<>();		
 		
-		if (!unorderedSourceModules.isEmpty() && bootstrapSourceModule != null)
+		for (SourceModule bootstrapModule : bootstrappingSourceModules)
 		{
-			addMetDependencyToOrderedSourceModules(bootstrapSourceModule);
+			addMetDependencyToOrderedSourceModules(bootstrapModule);			
 		}
 		
 		while (!unorderedSourceModules.isEmpty()) {
