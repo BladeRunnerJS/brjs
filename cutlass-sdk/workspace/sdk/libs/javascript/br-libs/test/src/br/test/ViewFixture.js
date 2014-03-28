@@ -1,4 +1,5 @@
 br.Core.thirdparty("jquery");
+br.Core.thirdparty("es5-shim");
 
 /**
  * @class
@@ -102,6 +103,36 @@ br.test.ViewFixture.prototype.tearDown = function()
 	{
 		this.m_oBlurHandler.destroy();
 	}
+};
+
+/**
+ * Allows custom view handlers to be added.
+ *
+ * @param {Map} viewHandlersMap A map of handler name to handler class constructor reference.
+ *
+ * @throws {br.Errors.InvalidParametersError} If an attempt is made to override an existing handler.
+ */
+br.test.ViewFixture.prototype.addViewHandlers = function(viewHandlersMap) {
+	var keys = Object.keys(viewHandlersMap),
+		existingHandlers = [];
+
+	keys.forEach(function(key) {
+		if (this.m_mViewHandlers.hasOwnProperty(key)) {
+			existingHandlers.push('\'' + key + '\'');
+			return;
+		}
+	}, this);
+
+	if (existingHandlers.length > 0) {
+		throw new br.Errors.InvalidParametersError(
+			'The following view handlers were not added to the registry as they already exist: ' +
+				existingHandlers.join(',')
+		);
+	}
+
+	keys.forEach(function(key) {
+		this.m_mViewHandlers[key] = new (viewHandlersMap[key])();
+	}, this);
 };
 
 br.test.ViewFixture.prototype.setViewElement = function(eViewElement)
