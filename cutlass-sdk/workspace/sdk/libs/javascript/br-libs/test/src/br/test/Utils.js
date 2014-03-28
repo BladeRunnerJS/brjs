@@ -345,5 +345,5 @@ br.test.Utils._isClickEventWithNoEventOptions = function(sEvent, eElement, mOpti
  */
 br.test.Utils._isClickEventWithNoEventOptionsAndKOIsAvailable = function(sEvent, eElement, mOptions)
 {
-	return br.test.Utils._isClickEventWithNoEventOptions(sEvent, eElement, mOptions) && ko && presenter_ko.utils;
+	return br.test.Utils._isClickEventWithNoEventOptions(sEvent, eElement, mOptions) && presenter_ko && presenter_ko.utils;
 };
