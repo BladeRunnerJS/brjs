@@ -79,7 +79,7 @@ br.util.EventUtility.addEventListener = function(oTargetElem, sEvent, fEventList
  *
  * @param {int} nUniqueListenerId The event Listener Id that was returned by the method {@link #addEventListener}.
  */
-br.util.EventUtility.removeEventListener = function(nUniqueListenerId)
+br.util.EventUtility.removeEventListenerById = function(nUniqueListenerId)
 {
 	br.util.EventUtility._initMap();
 	
@@ -186,7 +186,7 @@ br.util.EventUtility._handlePageUnload = function()
 	// remove all the event handler registered with addEventListener()
 	for (nUniqueListenerId in br.util.EventUtility.m_mEvents)
 	{
-		br.util.EventUtility.removeEventListener(nUniqueListenerId);
+		br.util.EventUtility.removeEventListenerById(nUniqueListenerId);
 	}
 
 	// remove the unload event listener that caused this callback
