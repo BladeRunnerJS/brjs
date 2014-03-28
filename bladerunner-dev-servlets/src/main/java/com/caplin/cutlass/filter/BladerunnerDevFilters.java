@@ -64,7 +64,12 @@ public class BladerunnerDevFilters implements Filter
 	{
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		
-		logger.debug("=> " + this.getClass().getSimpleName() + " processing request for: " + httpRequest.getRequestURI());
-		new VirtualFilterChain(chain, immutableFilters).doFilter(request, response);
+		if(!httpRequest.getMethod().equals("GET")) {
+			chain.doFilter(request, response);
+		}
+		else {
+			logger.debug("=> " + this.getClass().getSimpleName() + " processing request for: " + httpRequest.getRequestURI());
+			new VirtualFilterChain(chain, immutableFilters).doFilter(request, response);
+		}
 	}
 }

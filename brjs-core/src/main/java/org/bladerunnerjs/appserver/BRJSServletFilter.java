@@ -75,24 +75,30 @@ public class BRJSServletFilter implements Filter
 	{
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		String servletPath = request.getServletPath();
 		
-		// TODO: get rid of the `servletPath.endsWith(".bundle")` guard once we drop support for the old bundlers
-		if(servletPath.equals("/brjs") || servletPath.endsWith(".bundle")) {
+		if(!request.getMethod().equals("GET")) {
 			chain.doFilter(request, response);
 		}
 		else {
-			String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath(), "");
-			Matcher contentPluginPrefixMatcher = contentPluginPrefixPattern.matcher(requestPath);
+			String servletPath = request.getServletPath();
 			
-			if(requestPath.endsWith("/index.html") || requestPath.endsWith("/index.jsp")) {
-				filterIndexPage(request, response, chain);
-			}
-			else if(contentPluginPrefixMatcher.matches()) {
-				request.getRequestDispatcher("/brjs" + requestPath).forward(request, response);
+			// TODO: get rid of the `servletPath.endsWith(".bundle")` guard once we drop support for the old bundlers
+			if(servletPath.equals("/brjs") || servletPath.endsWith(".bundle")) {
+				chain.doFilter(request, response);
 			}
 			else {
-				chain.doFilter(request, response);
+				String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath(), "");
+				Matcher contentPluginPrefixMatcher = contentPluginPrefixPattern.matcher(requestPath);
+				
+				if(requestPath.endsWith("/index.html") || requestPath.endsWith("/index.jsp")) {
+					filterIndexPage(request, response, chain);
+				}
+				else if(contentPluginPrefixMatcher.matches()) {
+					request.getRequestDispatcher("/brjs" + requestPath).forward(request, response);
+				}
+				else {
+					chain.doFilter(request, response);
+				}
 			}
 		}
 	}
