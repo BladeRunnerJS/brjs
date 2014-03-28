@@ -1,10 +1,6 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.common.base.Joiner;
 
 public class BRJSMemoizationFileAccessException extends SecurityException {
 	private static final long serialVersionUID = 1L;
@@ -14,12 +10,20 @@ public class BRJSMemoizationFileAccessException extends SecurityException {
 	}
 	
 	private static String getScopes(File[] scopeFiles) {
-		List<String> filePaths = new ArrayList<>();
+		StringBuffer stringBuffer = new StringBuffer();
+		boolean firstFile = true;
 		
 		for(File scopeFile : scopeFiles) {
-			filePaths.add("'" + scopeFile.getAbsolutePath() + "'");
+			if(firstFile) {
+				firstFile = false;
+			}
+			else {
+				stringBuffer.append(", ");
+			}
+			
+			stringBuffer.append("'" + scopeFile.getAbsolutePath() + "'");
 		}
 		
-		return Joiner.on(", ").join(filePaths);
+		return stringBuffer.toString();
 	}
 }
