@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
+
 public class BRJSMemoizationFileAccessException extends SecurityException {
 	private static final long serialVersionUID = 1L;
 	
