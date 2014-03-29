@@ -24,6 +24,8 @@ configurations {
 }
 
 dependencies {
+	retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:1.1.4'
+	
 	compile project(":brjs-logger")
 	compile dependency('commons-io')
 	compile dependency('commons-lang3')
