@@ -46,6 +46,7 @@ public class BRJSIOTest {
 	@Test
 	public void weCanReadAFileIfWeveLimitedAccessButHaveNotYetInstalledTheAccessChecker() throws Exception {
 		try(FileAccessLimitScope scope = io.limitAccessToWithin(new File[] {subDir1})) {
+			scope.preventCompilerWarning();
 			assertEquals("Hello World!", FileUtils.readFileToString(tempHelloWorldFile));
 		}
 	}
@@ -55,6 +56,7 @@ public class BRJSIOTest {
 		io.installFileAccessChecker();
 		
 		try(FileAccessLimitScope scope = io.limitAccessToWithin(new File[] {subDir1})) {
+			scope.preventCompilerWarning();
 			FileUtils.readFileToString(tempHelloWorldFile);
 		}
 	}
@@ -64,6 +66,7 @@ public class BRJSIOTest {
 		io.installFileAccessChecker();
 		
 		try(FileAccessLimitScope scope = io.limitAccessToWithin(new File[] {tempDir})) {
+			scope.preventCompilerWarning();
 			FileUtils.readFileToString(tempHelloWorldFile);
 		}
 	}
@@ -73,6 +76,7 @@ public class BRJSIOTest {
 		io.installFileAccessChecker();
 		
 		try(FileAccessLimitScope scope = io.limitAccessToWithin(new File[] {tempDir})) {
+			scope.preventCompilerWarning();
 			FileUtils.readFileToString(subDir1HelloWorldFile);
 		}
 	}
@@ -82,6 +86,7 @@ public class BRJSIOTest {
 		io.installFileAccessChecker();
 		
 		try(FileAccessLimitScope scope = io.limitAccessToWithin(new File[] {subDir1, subDir2})) {
+			scope.preventCompilerWarning();
 			FileUtils.readFileToString(subDir1HelloWorldFile);
 		}
 	}
@@ -91,7 +96,10 @@ public class BRJSIOTest {
 		io.installFileAccessChecker();
 		
 		try(FileAccessLimitScope innerScope = io.limitAccessToWithin(new File[] {subDir1, subDir2})) {
+			innerScope.preventCompilerWarning();
+			
 			try(FileAccessLimitScope outerScope = io.limitAccessToWithin(new File[] {subDir2})) {
+				outerScope.preventCompilerWarning();
 				FileUtils.readFileToString(subDir1HelloWorldFile);
 			}
 		}
@@ -102,7 +110,10 @@ public class BRJSIOTest {
 		io.installFileAccessChecker();
 		
 		try(FileAccessLimitScope innerScope = io.limitAccessToWithin(new File[] {subDir1, subDir2})) {
+			innerScope.preventCompilerWarning();
+			
 			try(FileAccessLimitScope outerScope = io.limitAccessToWithin(new File[] {subDir1})) {
+				outerScope.preventCompilerWarning();
 				FileUtils.readFileToString(subDir1HelloWorldFile);
 			}
 		}
@@ -113,8 +124,13 @@ public class BRJSIOTest {
 		io.installFileAccessChecker();
 		
 		try(FileAccessLimitScope rootScope = io.limitAccessToWithin(new File[] {tempDir})) {
+			rootScope.preventCompilerWarning();
+			
 			try(FileAccessLimitScope innerScope = io.limitAccessToWithin(new File[] {subDir1, subDir2})) {
+				innerScope.preventCompilerWarning();
+				
 				try(FileAccessLimitScope outerScope = io.limitAccessToWithin(new File[] {subDir1})) {
+					outerScope.preventCompilerWarning();
 					FileUtils.readFileToString(subDir1HelloWorldFile);
 				}
 			}

@@ -32,6 +32,7 @@ public class MemoizedValue<T extends Object> {
 	public T value(Getter getter) {
 		if(valueNeedsToBeRecomputed()) {
 			try(FileAccessLimitScope scope = brjs.io().limitAccessToWithin(watchItems)) {
+				scope.preventCompilerWarning();
 				value = (T) getter.get();
 			}
 		}
