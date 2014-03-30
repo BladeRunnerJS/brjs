@@ -13,7 +13,7 @@ public class BRJSIO {
 	}
 	
 	public void installFileAccessChecker() {
-		System.setSecurityManager(securityManager);
+//		System.setSecurityManager(securityManager);
 	}
 	
 	public void uninstallFileAccessChecker() {
