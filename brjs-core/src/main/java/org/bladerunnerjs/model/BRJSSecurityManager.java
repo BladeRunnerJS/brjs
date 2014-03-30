@@ -118,6 +118,7 @@ public class BRJSSecurityManager extends SecurityManager {
 		// do nothing
 	}
 	
+	@Deprecated
 	public void checkMulticast(InetAddress maddr, byte ttl) {
 		// do nothing
 	}
@@ -134,13 +135,16 @@ public class BRJSSecurityManager extends SecurityManager {
 		// do nothing
 	}
 	
+	@Deprecated
 	public void checkSystemClipboardAccess() {
 		// do nothing
 	}
 	
+	@Deprecated
 	public void checkAwtEventQueueAccess() {
 		// do nothing
 	}
+	
 	
 	public void checkPackageAccess(String pkg) {
 		// do nothing
@@ -154,6 +158,7 @@ public class BRJSSecurityManager extends SecurityManager {
 		// do nothing
 	}
 	
+	@Deprecated
 	public void checkMemberAccess(Class<?> clazz, int which) {
 		// do nothing
 	}
