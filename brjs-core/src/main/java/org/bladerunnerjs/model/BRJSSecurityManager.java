@@ -14,18 +14,20 @@ public class BRJSSecurityManager extends SecurityManager {
 	}
 	
 	private void assertWithinScope(File file) throws BRJSMemoizationFileAccessException {
-		for(File[] scopeFiles : activeScopes.values()) {
-			boolean withinScope = false;
-			
-			for(File scopeFile : scopeFiles) {
-				if(isAncestor(file, scopeFile)) {
-					withinScope = true;
-					break;
+		if(!file.getName().endsWith(".class") && !file.getName().endsWith(".jar")) {
+			for(File[] scopeFiles : activeScopes.values()) {
+				boolean withinScope = false;
+				
+				for(File scopeFile : scopeFiles) {
+					if(isAncestor(file, scopeFile)) {
+						withinScope = true;
+						break;
+					}
 				}
-			}
-			
-			if(!withinScope) {
-				throw new BRJSMemoizationFileAccessException(file, scopeFiles);
+				
+				if(!withinScope) {
+					throw new BRJSMemoizationFileAccessException(file, scopeFiles);
+				}
 			}
 		}
 	}
