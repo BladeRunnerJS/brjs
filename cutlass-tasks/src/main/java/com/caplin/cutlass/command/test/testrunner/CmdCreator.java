@@ -5,6 +5,11 @@ import java.util.Formatter;
 
 public class CmdCreator {
 	public static String[] cmd(String cmd, Object... parameters) {
+		System.out.println(">>> command: " + cmd);
+		if(parameters.length > 0) {
+			System.out.println(">>> parameters[0]: " + parameters[0]);
+		}
+		
 		if(cmd.startsWith("..")) {
 			cmd = new File(cmd).getAbsolutePath();
 		}
