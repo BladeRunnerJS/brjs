@@ -6,9 +6,9 @@ public class CmdCreator {
 	public static String[] cmd(String cmd, Object... parameters) {
 		StringBuilder stringBuilder = new StringBuilder();
 		Formatter formatter = new Formatter(stringBuilder);
-		formatter.format(cmd.replaceAll(" ", "\\$\\$"), parameters);
+		formatter.format(cmd, parameters);
 		formatter.close();
-	  return stringBuilder.toString().split("\\$\\$");	
+	  return stringBuilder.toString().replaceAll("\\$\\$", " ").split(" ");
 	}
 	
 	public static String printCmd(String[] args) {
