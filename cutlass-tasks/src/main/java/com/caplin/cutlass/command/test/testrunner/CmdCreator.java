@@ -1,9 +1,14 @@
 package com.caplin.cutlass.command.test.testrunner;
 
+import java.io.File;
 import java.util.Formatter;
 
 public class CmdCreator {
 	public static String[] cmd(String cmd, Object... parameters) {
+		if(cmd.startsWith("..")) {
+			cmd = new File(cmd).getAbsolutePath();
+		}
+		
 		StringBuilder stringBuilder = new StringBuilder();
 		Formatter formatter = new Formatter(stringBuilder);
 		formatter.format(cmd, parameters);
