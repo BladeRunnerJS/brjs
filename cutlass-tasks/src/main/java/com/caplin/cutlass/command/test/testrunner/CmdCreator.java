@@ -1,6 +1,5 @@
 package com.caplin.cutlass.command.test.testrunner;
 
-import java.io.File;
 import java.util.Formatter;
 
 public class CmdCreator {
@@ -8,10 +7,6 @@ public class CmdCreator {
 		System.out.println(">>> command: " + cmd);
 		if(parameters.length > 0) {
 			System.out.println(">>> parameters[0]: " + parameters[0]);
-		}
-		
-		if(cmd.startsWith("..")) {
-			cmd = new File(cmd).getAbsolutePath();
 		}
 		
 		StringBuilder stringBuilder = new StringBuilder();

@@ -423,7 +423,9 @@ public class TestRunner {
 		logger.debug("Starting browser processes...");
 		int browserNo = 1;
 		for(String browser : browsers) {
-			String[] args = CmdCreator.cmd("%s http://localhost:%s/capture?strict", browser, portNumber);
+			String[] browserArgs = browser.replaceAll("\\$\\$", " ").split(" ");
+			browserArgs[0] = new File(browserArgs[0]).getAbsolutePath();
+			String[] args = CmdCreator.cmd("%s http://localhost:%s/capture?strict", Joiner.on(" ").join(browserArgs), portNumber);
 			logger.debug("Running command: " + CmdCreator.printCmd(args));
 			try 
 			{
