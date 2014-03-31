@@ -27,12 +27,17 @@ public class BundleStubCreator
 		{
 			File requestedFile = new File(baseDirectory, resourceToLoad);
 			
-			if(fileIsInBundlesDirectory(requestedFile) && !requestedFile.exists())
+			if(fileIsInBundlesDirectory(requestedFile) && !requestedFile.exists() && isNotWildcardFilename(requestedFile))
 			{
 				requestedFile.getParentFile().mkdirs();
 				requestedFile.createNewFile();
 			}
 		}
+	}
+
+	private static boolean isNotWildcardFilename(File requestedFile)
+	{
+		return !requestedFile.getName().contains("*");
 	}
 
 	private static Map<String, Object> getMapFromYamlConfig(File jsTestDriverConf) throws FileNotFoundException, YamlException, IOException
