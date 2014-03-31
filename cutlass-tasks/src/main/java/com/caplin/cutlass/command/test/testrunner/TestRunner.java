@@ -27,7 +27,6 @@ import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
 import com.caplin.cutlass.CutlassConfig;
@@ -434,8 +433,7 @@ public class TestRunner {
 			}
 			catch (IOException e)
 			{
-				String browserString = browser == null ? "" : "'" + browser + "' "; 
-				throw new BrowserNotFoundException(browserString, config.getRelativeDir().getPath());
+				throw new BrowserIOException(args, config.getRelativeDir().getPath(), e);
 			}
 			
 		}

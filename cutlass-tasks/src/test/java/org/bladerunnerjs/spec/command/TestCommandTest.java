@@ -5,7 +5,7 @@ import java.io.File;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
+import com.caplin.cutlass.command.test.testrunner.BrowserIOException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,7 +53,7 @@ public class TestCommandTest extends SpecTest
 			.and(app).hasBeenCreated();
 
 		when(brjs).runCommand("test", "../apps");
-		then(exceptions).verifyException(BrowserNotFoundException.class, 
+		then(exceptions).verifyException(BrowserIOException.class, 
 				unquoted("Could not find the browser on disk. Please check your test config inside\n '" + sdkDir.getParentFile().getPath() + "/conf'"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
