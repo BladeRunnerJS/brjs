@@ -27,7 +27,7 @@ public class BundleStubCreator
 		{
 			File requestedFile = new File(baseDirectory, resourceToLoad);
 			
-			if(fileIsValidBundleName(requestedFile) && fileIsInBundlesDirectory(requestedFile) && !requestedFile.exists())
+			if(fileIsInBundlesDirectory(requestedFile) && !requestedFile.exists())
 			{
 				requestedFile.getParentFile().mkdirs();
 				requestedFile.createNewFile();
@@ -66,12 +66,6 @@ public class BundleStubCreator
 		resources.addAll(getSafeCollectionFromMap(configMap, "load"));
 		resources.addAll(getSafeCollectionFromMap(configMap, "serve"));
 		return resources;
-	}
-	
-	private static boolean fileIsValidBundleName(File file)
-	{
-		String absolutePath = file.getAbsolutePath();
-		return absolutePath.endsWith(".bundle") && !absolutePath.contains("*") && !absolutePath.contains("?");
 	}
 
 	private static boolean fileIsInBundlesDirectory(File file)
