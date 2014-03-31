@@ -96,7 +96,7 @@ public class ThirdpartySourceModule implements SourceModule
 			
 			fileReaders.add(patch.getReader());
 		}
-		catch (ConfigException | IOException e)
+		catch (ConfigException e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -152,14 +152,14 @@ public class ThirdpartySourceModule implements SourceModule
 				JsLib dependentLib = assetLocation.assetContainer().app().nonBladeRunnerLib(dependentLibName);
 				if (!dependentLib.dirExists())
 				{
-					throw new ConfigException(String.format("Library '%s' depends on '%s', which doesn't exist.", getAssetName(), dependentLibName)) ;
+					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
 				}
 				dependentLibs.addAll(dependentLib.sourceModules());
 			}
 		}
 		catch (ConfigException ex)
 		{
-			new ModelOperationException( ex );
+			throw new ModelOperationException( ex );
 		}
 		
 		return new ArrayList<SourceModule>( dependentLibs );

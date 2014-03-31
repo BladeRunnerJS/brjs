@@ -29,7 +29,7 @@ br.presenter.testing.KnockoutInvocationCountPlugin.prototype.init = function (el
 					var allBindings = allBindingsAccessor();
 					
 					try { 
-						var argsForHandler = ko.utils.makeArray(arguments);
+						var argsForHandler = presenter_ko.utils.makeArray(arguments);
 						argsForHandler.unshift(viewModel);
 						handlerReturnValue = handlerFunction.apply(viewModel, argsForHandler );
 					} finally {

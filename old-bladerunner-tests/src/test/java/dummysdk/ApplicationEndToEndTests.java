@@ -35,7 +35,6 @@ public class ApplicationEndToEndTests
 	private static final String APP1_URL = BASE_URL+"/test-app1";
 //	private static final String APP2_URL = BASE_URL+"/test-app2";
 	private static final String AUTH_APP_URL = BASE_URL+"/app-with-authentication";
-	private static final String APP3_URL = BASE_URL+"/test-app3";
 	private static final String APPS = CutlassConfig.APPLICATIONS_DIR;
 	
 	
@@ -96,6 +95,7 @@ public class ApplicationEndToEndTests
 			.sameAsRequestFor(AUTH_APP_URL+"/login-aspect/index.html");
 	}
 	
+	@Ignore //TODO: rewrite this test in brjs-core and change it to use the new bundler
 	@Test
 	public void testThirdpartyBundleFilterSetsCorrectContentType() throws Exception
 	{
@@ -109,26 +109,7 @@ public class ApplicationEndToEndTests
 		.statusCodeIs(200).contentTypeIs("text/javascript");
 	}
 	
-	@Test
-	public void testRequestToJsBundle() throws Exception 
-	{
-		tester.whenRequestMadeTo(APP1_URL+"/js/js.bundle")
-			.statusCodeIs(200).contentTypeIs("text/javascript")
-			.responseIsConcatenationOfFiles(new String[]{
-					APPS + "/test-app1/default-aspect/src/section/xmlDepend.js",
-					SDK_DIR + "/libs/javascript/caplin/src/br/bootstrap.js",
-					SDK_DIR + "/libs/javascript/thirdparty/jquery/jQuery.js",
-					SDK_DIR + "/libs/javascript/thirdparty/knockout/knockout.js",
-					APPS + "/test-app1/default-aspect/src/section/app/main1.js", 
-					APPS + "/test-app1/default-aspect/src/section/app/main2.js", 
-					APPS + "/test-app1/a-bladeset/src/section/a/app/bladeset1.js", 
-					APPS + "/test-app1/a-bladeset/src/section/a/app/bladeset2.js", 
-					APPS + "/test-app1/a-bladeset/blades/blade1/src/section/a/blade1/app/blade1.js", 
-					APPS + "/test-app1/a-bladeset/blades/blade1/src/section/a/blade1/app/blade2.js",
-					APPS + "/test-app1/a-bladeset/blades/blade1/src/section/a/blade1/xmlDepend.js",
-					APPS + "/test-app1/a-bladeset/src/section/a/xmlDepend.js"});
-	}
-	
+	@Ignore //TODO: rewrite this test in brjs-core and change it to use the new bundler
 	@Test
 	public void testRequestToJsBundleWithVersionString() throws Exception 
 	{
@@ -150,14 +131,6 @@ public class ApplicationEndToEndTests
 		.sameAsRequestFor(APP1_URL+"/js/js.bundle");
 	}
 	
-	@Test
-	public void testRequestDoesnotContainNamespaceFromOtherApp() throws Exception 
-	{
-		tester.whenRequestMadeTo(APP3_URL+"/js/js.bundle")
-			.statusCodeIs(200).contentTypeIs("text/javascript")
-			.responseDoesntContain("section");
-	}
-	
 	@Test @Ignore // this test is duplicated in BRJSApplicationServerTest and is unreliable when run with other tests (it passes individually)
 	public void testNewContextsCanBeAddedAfterServerHasStarted() throws Exception
 	{
@@ -172,6 +145,7 @@ public class ApplicationEndToEndTests
 		tester.pollServerForStatusCode(BASE_URL+"/newly-created-app", 200);
 	}
 	
+	@Ignore //TODO: rewrite this test in brjs-core and change it to use the new bundler
 	@Test
 	public void testRequestToJsBundleWhenInsideAnSVNEnvironment() throws Exception 
 	{	

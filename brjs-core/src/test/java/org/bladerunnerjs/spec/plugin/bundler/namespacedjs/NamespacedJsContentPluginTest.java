@@ -238,7 +238,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
-		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"nodejs\":{},\"namespaced\":{}}});");
+		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"namespaced\":{},\"nodejs\":{}}});");
 	}
 	
 	@Test
@@ -249,7 +249,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
-		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"nodejs\":{},\"namespaced\":{}}});");
+		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"namespaced\":{},\"nodejs\":{}}});");
 	}
 	
 	@Test
@@ -315,7 +315,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).classRequires("appns.nodejs.Class1", "appns.nodejs.Class2");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-				"mergePackageBlock(window, {\"appns\":{\"nodejs\":{},\"namespacedjs\":{}}});",
+				"mergePackageBlock(window, {\"appns\":{\"namespacedjs\":{},\"nodejs\":{}}});",
 				"appns.nodejs.Class1 = require('appns/nodejs/Class1');",
 				"appns.namespacedjs.Class1 = function()",
 				"define('appns/namespacedjs/Class1', function(require, exports, module) { module.exports = appns.namespacedjs.Class1;",
@@ -331,7 +331,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
     		.and(aspect).classRefersTo("appns.namespacedjs.Class1", "appns.nodejs.Class1")
     		.and(aspect).classRequires("appns.nodejs.Class1", "appns.nodejs.pkg.Class2");
 		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
-		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"nodejs\":{\"pkg\":{}},\"namespacedjs\":{}}});");
+		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"namespacedjs\":{},\"nodejs\":{\"pkg\":{}}}});");
 	}
 	
 	@Test
