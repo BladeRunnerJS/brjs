@@ -44,7 +44,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	@Override
-	public String getJsStyle() {
+	public String jsStyle() {
 		return JsStyleUtility.getJsStyle(dir());
 	}
 	
@@ -68,24 +68,19 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	@Override
-	public SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException
+	public SourceModule sourceModule(String requirePath) throws RequirePathException
 	{
-		if (requirePath.matches(".*[a-zA-Z0-9]\\.[a-zA-Z0-9].*"))
-		{
-			throw new InvalidRequirePathException("Invalid require path, require paths should be seperated by the '/' character. Did you mean '" + requirePath.replaceAll("([a-zA-Z0-9])\\.([a-zA-Z0-9])", "$1/$2") + "'?");
-		}
-		
 		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
 
 		SourceModule sourceModule;
-		if (getAssetContainer() instanceof TestPack)
+		if (assetContainer() instanceof TestPack)
 		{
-			TestPack testPack = (TestPack) getAssetContainer();
-			sourceModule = findSourceModuleWithRequirePath(testPack.getAssetContainers(), canonicalRequirePath);
+			TestPack testPack = (TestPack) assetContainer();
+			sourceModule = findSourceModuleWithRequirePath(testPack.assetContainers(), canonicalRequirePath);
 		}
 		else if (!sourceModules.containsKey(requirePath)) 
 		{
-			sourceModule = findSourceModuleWithRequirePath(getAssetContainer().getApp().getAllAssetContainers(), canonicalRequirePath);
+			sourceModule = findSourceModuleWithRequirePath(assetContainer().app().getAllAssetContainers(), canonicalRequirePath);
 			if (sourceModule != null)
 			{
 				sourceModules.put(requirePath, sourceModule);
@@ -178,13 +173,13 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 
 	@Override
-	public AssetContainer getAssetContainer()
+	public AssetContainer assetContainer()
 	{
 		return assetContainer;
 	}
 
 	@Override
-	public List<AssetLocation> getDependentAssetLocations()
+	public List<AssetLocation> dependentAssetLocations()
 	{
 		return dependentAssetLocations;
 	}

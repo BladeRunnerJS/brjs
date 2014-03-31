@@ -187,9 +187,9 @@ public class TrieTest
 		trie.add("o.1", test_object_1);
 		trie.add("o/2", test_object_2);
 		trie.add("o*3", test_object_3);
-		trie.add("o_4", test_object_4);
+		trie.add("o 4", test_object_4);
 		
-		StringReader reader = new StringReader("o.1 o/2 o*3 o_4");
+		StringReader reader = new StringReader("o.1 o/2 o*3 o 4");
 		
 		List<TestObject> foundObjects = trie.getMatches(reader);
 		assertEquals(4, foundObjects.size());
@@ -197,6 +197,20 @@ public class TrieTest
 		assertEquals(test_object_2, foundObjects.get(1));
 		assertEquals(test_object_3, foundObjects.get(2));
 		assertEquals(test_object_4, foundObjects.get(3));
+	}
+	
+	@Test
+	public void keysCanStartAndEndWithSpaces() throws Exception
+	{
+		trie.add("key1 ", test_object_1);
+		trie.add(" key2", test_object_2);
+		
+		StringReader reader = new StringReader("key1 xxx key2");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(2, foundObjects.size());
+		assertEquals(test_object_1, foundObjects.get(0));
+		assertEquals(test_object_2, foundObjects.get(1));
 	}
 	
 	/* TestObject so the Trie is using Objects to ensure the same object instance is returned, but with a toString() that returns a name to help debugging */

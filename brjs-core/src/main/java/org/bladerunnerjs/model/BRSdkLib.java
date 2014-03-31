@@ -25,7 +25,7 @@ public class BRSdkLib extends BRLib
 	}
 
 	@Override
-	public App getApp()
+	public App app()
 	{
 		return root().systemApp(DUMMY_SDK_APP_NAME);
 	}

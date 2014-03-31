@@ -33,6 +33,8 @@ public class CopyBladesetCommandTest
 		FileUtils.copyDirectory(testDirectory.getAbsoluteFile(), tempDir);
 		
 		tempSdkBaseDir = new File(tempDir, SDK_DIR);
+		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempSdkBaseDir));
+		
 		copyBladesetCommand = new CopyBladesetCommand(tempSdkBaseDir);
 		
 		targetBladesetDirectory = new File(tempDir, APPLICATIONS_DIR + "/targetApplication/a-bladeset");
@@ -40,8 +42,6 @@ public class CopyBladesetCommandTest
 		
 		targetFxBladesetDirectory = new File(tempDir, APPLICATIONS_DIR + "/targetApplication/fx-bladeset");
 		targetFxBladeJsFile = new File(targetFxBladesetDirectory, "blades/a-blade/src/novox/fx/a-blade/ABladeClass.js");
-		
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempSdkBaseDir));
 	}
 	
 	@Test (expected=CommandArgumentsException.class)

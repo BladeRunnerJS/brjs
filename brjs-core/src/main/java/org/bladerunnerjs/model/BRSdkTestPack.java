@@ -21,7 +21,7 @@ public class BRSdkTestPack extends TestPack
 	}
 	
 	@Override
-	public App getApp()
+	public App app()
 	{
 		return root().systemApp("dummy-sdk-app");
 	}

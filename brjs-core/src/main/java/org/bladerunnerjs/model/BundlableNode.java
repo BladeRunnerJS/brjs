@@ -26,10 +26,10 @@ public interface BundlableNode extends Node, AssetContainer {
 	/**
 	 * Returns all AssetContainers that contain resources that can potentially be bundled for this BundleableNode
 	 */
-	List<AssetContainer> getAssetContainers();
+	List<AssetContainer> assetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;
 	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException;
-	List<AliasDefinitionsFile> getAliasDefinitionFiles();
+	List<AliasDefinitionsFile> aliasDefinitionFiles();
 	
 	void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 }

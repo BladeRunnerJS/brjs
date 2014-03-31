@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -201,4 +202,26 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
 		then(pageResponse).containsText("$£€");
 	}
+	
+	@Test
+	public void exceptionIsThrownIfAJSFileInTheManifestDoesntExist() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: doesnt-exist.js\n"+"exports: lib");
+		when(app).requestReceived("/default-aspect/thirdparty/thirdparty-lib/bundle.js", pageResponse);
+		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "apps/app1/thirdparty-libraries/thirdparty-lib/library.manifest");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfADependentLibraryDoesntExist() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).indexPageRequires(thirdpartyLib)
+			.and(thirdpartyLib).hasBeenCreated()
+			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends: invalid-lib\n"+"exports: lib");
+		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", pageResponse);
+		then(exceptions).verifyException(ConfigException.class, "thirdparty-lib", "invalid-lib");
+	}
+	
 }

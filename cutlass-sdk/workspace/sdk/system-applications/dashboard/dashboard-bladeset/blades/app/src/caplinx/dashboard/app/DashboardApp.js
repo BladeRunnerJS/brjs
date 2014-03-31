@@ -11,8 +11,7 @@ caplinx.dashboard.app.DashboardApp = function(oDashboardService, oPageUrlService
 	this.m_oPresenterComponent = new br.presenter.component.PresenterComponent("caplinx.dashboard.app.root", this.m_oPresentationModel);
 	
 	// TODO: update dashboard to use new component interface.
-	
-//	this.m_oPresenterComponent.setFrame(new caplin.component.frame.ComponentFrame()); // TODO: add proper frame support
+	// TODO: add proper frame support
 	eDisplayElement.appendChild(this.m_oPresenterComponent.getElement());
 
 	//	this.m_oPresenterComponent.onOpen();

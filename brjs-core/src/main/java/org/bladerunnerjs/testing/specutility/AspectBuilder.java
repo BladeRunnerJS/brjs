@@ -46,7 +46,9 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 	
 	public BuilderChainer indexPageHasContent(String content) throws Exception 
 	{
-		return indexPageRefersTo(content);
+		fileUtil.write(aspect.file("index.html"), content);	
+		
+		return builderChainer;
 	}
 
 	public BuilderChainer indexPageRequires(JsLib thirdpartyLib) throws Exception
@@ -56,6 +58,10 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 	
 	public BuilderChainer indexPageRequires(String requirePath) throws Exception
 	{
+		if(requirePath.contains(".")) {
+			throw new RuntimeException("The '" + requirePath + "' require path contains a dot. Did you mean to use indexPageRefersTo() instead?");
+		}
+		
 		fileUtil.write(aspect.file("index.html"), "require('"+requirePath+"');");
 		
 		return builderChainer;
@@ -69,6 +75,10 @@ public class AspectBuilder extends AssetContainerBuilder<Aspect> {
 		
 		for(String className : classNames)
 		{
+			if(className.contains("/")) {
+				throw new RuntimeException("The '" + className + "' class name contains a slash. Did you mean to use indexPageRequires() instead?");
+			}
+			
 			content += className + "\n";
 		}
 		return content;

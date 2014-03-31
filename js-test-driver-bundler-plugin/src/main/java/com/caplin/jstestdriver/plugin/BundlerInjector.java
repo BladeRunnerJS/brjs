@@ -24,6 +24,10 @@ public class BundlerInjector implements ResourcePreProcessor
 		bundlerHandlers.put("i18n.bundle", new BRJSWritingResourceBundlerHandler("i18n/en_GB.js", false));
 		bundlerHandlers.put("xml.bundle", new BRJSWritingResourceBundlerHandler("bundle.xml", true));
 		bundlerHandlers.put("html.bundle", new BRJSWritingResourceBundlerHandler("bundle.html", true));
+		
+		// TODO: replace with a catch-all handler
+		bundlerHandlers.put("bundle.xml", new BRJSWritingResourceBundlerHandler("bundle.xml", true));
+		bundlerHandlers.put("bundle.html", new BRJSWritingResourceBundlerHandler("bundle.html", true));
 	}
 
 	@Override

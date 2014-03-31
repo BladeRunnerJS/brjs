@@ -52,7 +52,7 @@ public class AspectVerifier extends NodeVerifier<Aspect> {
 		SourceModule sourceModule = aspect.getSourceModule(sourceModulePath);
 		AssetLocation assetLocation = aspect.assetLocation(assetLocationPath);
 		
-		assertEquals("Source module '" + sourceModulePath + "' did not have the asset location '" + assetLocationPath + "'.", assetLocation.dir().getPath(), sourceModule.getAssetLocation().dir().getPath());
+		assertEquals("Source module '" + sourceModulePath + "' did not have the asset location '" + assetLocationPath + "'.", assetLocation.dir().getPath(), sourceModule.assetLocation().dir().getPath());
 		
 		return verifierChainer;
 	}

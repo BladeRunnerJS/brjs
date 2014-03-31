@@ -137,6 +137,11 @@ DateFormatterTest.prototype.test_adjustForTimeZoneReadjustsTimeWhenTimeZoneChang
 	this.assertFormatWithTimezone("YYYY-MM-DD HH:mm:ss", "2010-11-12 16:14:15", this.oDate, "javascript");
 };
 
+DateFormatterTest.prototype.test_adjustForTimeZoneWorksWithHalfHourTimeZones = function() {
+	this.fixTimeZone(-90);
+	this.assertFormatWithTimezone("YYYY-MM-DD HH:mm:ss", "2010-11-12 14:44:15", this.oDate, "javascript");
+};
+
 DateFormatterTest.prototype.test_toString = function() {
 	assertEquals("string", typeof this.oFormatter.toString());
 };

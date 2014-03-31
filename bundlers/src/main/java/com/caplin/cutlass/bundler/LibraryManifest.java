@@ -50,7 +50,7 @@ public class LibraryManifest
 		}
 	}
 	
-	public List<String> getManifestFileProperty(Properties manifestFile, String propertyName)
+	private List<String> getManifestFileProperty(Properties manifestFile, String propertyName)
 	{
 		List<String> propertyValues = new ArrayList<String>();
 		String propertyValueString = manifestFile.getProperty(propertyName);

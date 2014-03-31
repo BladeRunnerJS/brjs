@@ -57,6 +57,16 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
+	}
+	
+	@Override
 	public ContentPathParser getContentPathParser() {
 		return contentPathParser;
 	}
@@ -91,7 +101,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 //			List<Asset> cssAssets = bundleSet.getResourceFiles("css");
 			List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
 			for(Asset cssAsset : cssAssets) {
-				String assetThemeName = getThemeName(cssAsset.getAssetLocation());
+				String assetThemeName = getThemeName(cssAsset.assetLocation());
 				
 				if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(pattern)) {
 					writeAsset(cssAsset, writer);

@@ -7,7 +7,7 @@ import java.util.List;
  *
  */
 public interface AssetContainer extends BRJSNode {
-	App getApp();
+	App app();
 	String requirePrefix();
 	String namespace();
 	boolean isNamespaceEnforced();

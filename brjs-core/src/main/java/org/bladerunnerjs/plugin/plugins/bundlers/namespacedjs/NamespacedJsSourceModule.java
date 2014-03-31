@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetFileInstantationException;
+import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -23,6 +24,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.Ostermiller.util.ConcatReader;
@@ -124,13 +126,18 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public AssetLocation getAssetLocation()
+	public AssetLocation assetLocation()
 	{
 		return assetLocation;
 	}
 	
+	@Override
+	public List<AssetLocation> assetLocations() {
+		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
+	}
+	
 	private void recalculateOrderedDependencies(BundlableNode bundlableNode) throws ModelOperationException {
-		try(Reader reader = getReader()) {
+		try(Reader reader = new JsCommentStrippingReader(getReader(), false)) {
 			orderDependentSourceModules = new ArrayList<>();
 			
 			StringWriter stringWriter = new StringWriter();
