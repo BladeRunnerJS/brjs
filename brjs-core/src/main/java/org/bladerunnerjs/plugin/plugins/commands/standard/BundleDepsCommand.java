@@ -54,12 +54,13 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 		String bundleDir = parsedArgs.getString("bundle-dir");
 		boolean showAllDependencies = parsedArgs.getBoolean("all");
 		File bundlableDir = brjs.file("sdk/" + bundleDir);
+		String relativePath = brjs.file("sdk").toPath().relativize(bundlableDir.toPath()).toString().replace("\\", "/");
 		
-		if(!bundlableDir.exists()) throw new DirectoryDoesNotExistException(bundlableDir, this);
+		if(!bundlableDir.exists()) throw new DirectoryDoesNotExistException(relativePath, this);
 		
 		BundlableNode bundlableNode = brjs.locateFirstBundlableAncestorNode(bundlableDir);
 		
-		if(bundlableNode == null) throw new InvalidBundlableNodeException(bundlableDir, this);
+		if(bundlableNode == null) throw new InvalidBundlableNodeException(relativePath, this);
 		
 		try {
 			out.println(DependencyGraphReportBuilder.createReport(bundlableNode, showAllDependencies));
