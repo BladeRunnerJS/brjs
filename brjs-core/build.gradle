@@ -3,8 +3,17 @@ apply plugin: 'java'
 apply plugin: 'retrolambda'
 apply plugin: com.caplin.gradle.plugins.CompileOnly
 
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath dependency('gradle-retrolambda')
+	}
+}
+
 retrolambda {
-  javaVersion JavaVersion.VERSION_1_7
+	javaVersion JavaVersion.VERSION_1_7
 }
 
 sourceSets {
@@ -24,7 +33,7 @@ configurations {
 }
 
 dependencies {
-	retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:1.1.4'
+	retrolambdaConfig dependency('retrolambda')
 	
 	compile project(":brjs-logger")
 	compile dependency('commons-io')
