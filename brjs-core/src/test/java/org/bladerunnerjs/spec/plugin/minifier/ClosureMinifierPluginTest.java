@@ -77,7 +77,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		given(blade).hasNamespacedJsPackageStyle("src/appns/bs/b1")
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
-			.and(blade).classRefersTo("appns.bs.b1.Class1", "appns.bs.b1.Class2");
+			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 	}
@@ -89,7 +89,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(aspect).hasNodeJsPackageStyle("appns/node")
 			.and(aspect).hasClasses("appns.cjs.Class", "appns.node.Class")
 			.and(aspect).indexPageRefersTo("appns.cjs.Class")
-			.and(aspect).classRefersTo("appns.cjs.Class",  "appns.node.Class");
+			.and(aspect).classDependsOn("appns.cjs.Class",  "appns.node.Class");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.cjs.Class", "appns.node.Class");
 	}

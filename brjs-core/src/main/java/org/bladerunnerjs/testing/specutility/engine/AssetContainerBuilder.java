@@ -87,25 +87,20 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 
 	
 	
-	public BuilderChainer classRefersTo(String sourceClass, String... referencedClasses) throws Exception
+	public BuilderChainer classDependsOn(String sourceClass, String... referencedClasses) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
 		return classRefersTo(sourceClass, sourceFile, referencedClasses);
 	}
 	
-	public BuilderChainer testClassRefersTo(String sourceClass, String... referencedClasses) throws Exception
+	public BuilderChainer testClassDependsOn(String sourceClass, String... referencedClasses) throws Exception
 	{
 		File sourceFile = getTestSourceFile(sourceClass);
 		return classRefersTo(sourceClass, sourceFile, referencedClasses);
 	}
 	
-	public BuilderChainer classDependsOn(String dependentClass, String referencedClass) throws Exception {
+	public BuilderChainer classExtends(String dependentClass, String referencedClass) throws Exception {
 		File dependentSourceFile = getSourceFile(dependentClass);
-		return classDependsOn(dependentClass, referencedClass, dependentSourceFile);
-	}
-	
-	public BuilderChainer testClassDependsOn(String dependentClass, String referencedClass) throws Exception {
-		File dependentSourceFile = getTestSourceFile(dependentClass);
 		return classDependsOn(dependentClass, referencedClass, dependentSourceFile);
 	}
 	
@@ -133,13 +128,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	public BuilderChainer classRefersToThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
+	public BuilderChainer classDependsOnThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
+			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
 		}
 		
 		fileUtil.write(sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');", true);

@@ -42,7 +42,7 @@ public class TestPackBundlingTest extends SpecTest
 			.and(aspectUTs).hasClass("aspectUT.Class1")
 			.and(aspect).hasTestClass("appns.Class1")
 			.and(aspectUTs).testRefersTo("pkg/test.js", "aspectUT.Class1")
-			.and(aspectUTs).classRefersTo("aspectUT.Class1", "appns.Class1");
+			.and(aspectUTs).classDependsOn("aspectUT.Class1", "appns.Class1");
 		then(aspectUTs).bundledFilesEquals(
 				aspectUTs.testSource().file("aspectUT/Class1.js"),
 				aspect.assetLocation("src-test").file("appns/Class1.js"));

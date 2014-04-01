@@ -111,7 +111,7 @@ public class DepInsightCommandTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRefersTo("appns.Class1", "appns.Class2");
+			.and(aspect).classDependsOn("appns.Class1", "appns.Class2");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
 		then(output).containsText(
 			"Source module 'appns/Class2' dependencies found:",

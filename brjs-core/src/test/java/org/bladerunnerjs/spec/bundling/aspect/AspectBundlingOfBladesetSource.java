@@ -42,7 +42,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	public void weBundleImplicitTransitiveDependenciesFromABladeset() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.bs.Class1", "appns.bs.Class2");
@@ -61,7 +61,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	public void weDontBundleABladesetClassIfItIsNotReferredToByAnAspect() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.bs.Class2")
@@ -83,7 +83,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClass("appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
-			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.NonExistentClass");
+			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.NonExistentClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyNoOutstandingExceptions();
 	}

@@ -200,8 +200,8 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	public void circularDependenciesCauseAnExceptionToBeThrown() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageHasContent("appns.Class1")
-			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
-			.and(aspect).classDependsOn("appns.Class2", "appns.Class1");
+			.and(aspect).classExtends("appns.Class1", "appns.Class2")
+			.and(aspect).classExtends("appns.Class2", "appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(CircularDependencyException.class, "appns/Class1", "appns/Class2");
 	}
@@ -210,9 +210,9 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 	public void indirectCircularDependenciesCauseAnExceptionToBeThrown() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageHasContent("appns.Class1")
-			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
-			.and(aspect).classDependsOn("appns.Class2", "appns.Class3")
-			.and(aspect).classDependsOn("appns.Class3", "appns.Class1");
+			.and(aspect).classExtends("appns.Class1", "appns.Class2")
+			.and(aspect).classExtends("appns.Class2", "appns.Class3")
+			.and(aspect).classExtends("appns.Class3", "appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(CircularDependencyException.class, "appns/Class1", "appns/Class2", "appns/Class3");
 	}

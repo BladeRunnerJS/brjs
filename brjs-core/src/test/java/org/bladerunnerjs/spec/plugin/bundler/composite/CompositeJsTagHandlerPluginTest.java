@@ -136,7 +136,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(thirdpartyLib).containsFile("file1.js")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
-			.and(blade).classRefersToThirdpartyLib("appns.bs.b1.Class1", thirdpartyLib)
+			.and(blade).classDependsOnThirdpartyLib("appns.bs.b1.Class1", thirdpartyLib)
 			.and(workbench).indexPageHasContent("<@js.bundle@/>\n"+
 					"appns.bs.b1.Class1\n"+
 					"appns.Class1\n");

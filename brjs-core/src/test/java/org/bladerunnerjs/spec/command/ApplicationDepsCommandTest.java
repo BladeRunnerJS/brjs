@@ -96,7 +96,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classDependsOn("appns.Class1", "appns.Class2");
+			.and(aspect).classExtends("appns.Class1", "appns.Class2");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",

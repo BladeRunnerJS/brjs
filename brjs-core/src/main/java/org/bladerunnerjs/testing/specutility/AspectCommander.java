@@ -102,21 +102,21 @@ public class AspectCommander extends NodeCommander<Aspect> {
 	
 	public CommanderChainer classRefersTo(String sourceClass, String... referencedClasses) throws Exception
 	{
-		aspectBuilder.classRefersTo(sourceClass, referencedClasses);
+		aspectBuilder.classDependsOn(sourceClass, referencedClasses);
 		
 		return commanderChainer;
 	}
 	
 	public CommanderChainer classDependsOn(String dependentClass, String referencedClass) throws Exception
 	{
-		aspectBuilder.classDependsOn(dependentClass, referencedClass);
+		aspectBuilder.classExtends(dependentClass, referencedClass);
 		
 		return commanderChainer;
 	}
 	
-	public CommanderChainer classRefersToThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
+	public CommanderChainer classDependsOnThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
-		aspectBuilder.classRefersToThirdpartyLib(sourceClass, thirdpartyLib);
+		aspectBuilder.classDependsOnThirdpartyLib(sourceClass, thirdpartyLib);
 		
 		return commanderChainer;
 	}

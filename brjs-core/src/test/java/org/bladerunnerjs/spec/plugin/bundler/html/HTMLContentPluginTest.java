@@ -87,7 +87,7 @@ public class HTMLContentPluginTest extends SpecTest
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
-			.and(aspect).classDependsOn("appns.Class1", "appns.bs.b1.Class1")
+			.and(aspect).classExtends("appns.Class1", "appns.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
 		then(response).containsText("TESTCONTENT");

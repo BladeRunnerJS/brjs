@@ -46,7 +46,7 @@ public class AspectUserLibBundling extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
-			.and(aspect).classRefersTo("appns.Class1", "userLib.Class1");
+			.and(aspect).classDependsOn("appns.Class1", "userLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("userLib.Class1");
 	}

@@ -37,7 +37,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	public void weBundleBladesetFilesInUTs() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladesetUTs).testRefersTo("pkg/test.js", "appns.bs.Class1");
 		then(bladesetUTs).bundledFilesEquals(
 				bladeset.assetLocation("src").file("appns/bs/Class1.js"),
@@ -48,7 +48,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	public void weBundleBladesetFilesInATs() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1");
 		then(bladesetATs).bundledFilesEquals(
 				bladeset.assetLocation("src").file("appns/bs/Class1.js"),
@@ -60,7 +60,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladesetUTs).containsFile("src-test/pkg/Util.js")
 			.and(bladeset).hasClasses("appns.bs.Class1")
-			.and(bladesetUTs).classDependsOn("pkg.Util", "appns.bs.Class1")
+			.and(bladesetUTs).classExtends("pkg.Util", "appns.bs.Class1")
 			.and(bladesetUTs).testRefersTo("pkg/test.js", "pkg.Util");
 		then(bladesetUTs).bundledFilesEquals(
 			bladeset.assetLocation("src").file("appns/bs/Class1.js"),
@@ -71,7 +71,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	public void noExceptionsAreThrownIfTheBladesetSrcFolderHasAHiddenFolder() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).hasDir("src/.svn")
 			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1");
 		then(bladesetATs).bundledFilesEquals(
@@ -83,7 +83,7 @@ public class BladesetTestPackBundlingTest extends SpecTest
 	public void bladesetTestsCannotDependOnBlades() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
-			.and(bladeset).classRefersTo("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1")
 			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1", "appns.bs.b1.Class1");
