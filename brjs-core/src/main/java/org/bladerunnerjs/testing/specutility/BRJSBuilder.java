@@ -210,6 +210,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenCreated() throws Exception
 	{
 		brjs = specTest.createModel();
+		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
 		
@@ -221,6 +222,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasBeenAuthenticallyCreated() throws Exception
 	{
 		brjs = specTest.createNonTestModel();
+		brjs.io().installFileAccessChecker();
 		specTest.brjs = brjs;
 		this.node = brjs;
 		

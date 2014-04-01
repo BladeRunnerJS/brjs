@@ -75,6 +75,8 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Map<String, FileIterator> fileIterators = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private final FileModificationService fileModificationService;
+	private final BRJSIO io = new BRJSIO();
+	private final File libsDir = file("sdk/libs/javascript");
 	private boolean closed = false;
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
@@ -207,6 +209,10 @@ public class BRJS extends AbstractBRJSRootNode
 		this.workingDir = new WorkingDirNode(this, workingDir);
 	}
 	
+	public BRJSIO io() {
+		return io;
+	}
+	
 	public List<App> apps()
 	{
 		return children(apps);
@@ -225,6 +231,10 @@ public class BRJS extends AbstractBRJSRootNode
 	public App systemApp(String appName)
 	{
 		return child(systemApps, appName);
+	}
+	
+	public File libsDir() {
+		return libsDir;
 	}
 	
 	public List<JsLib> sdkLibs()

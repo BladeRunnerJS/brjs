@@ -114,6 +114,7 @@ public abstract class SpecTest
 	@After
 	public void cleanUp() {
 		if(brjs != null) {
+			brjs.io().uninstallFileAccessChecker();
 			brjs.close();
 		}
 	}
