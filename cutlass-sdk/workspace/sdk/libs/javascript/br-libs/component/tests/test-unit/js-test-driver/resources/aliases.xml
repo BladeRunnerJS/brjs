@@ -1,0 +1,3 @@
+<aliases xmlns="http://schema.caplin.com/CaplinTrader/aliases">
+    <alias name="br.component.testSerializableComponent" class="br.component.TestSerializableComponent" />
+</aliases>

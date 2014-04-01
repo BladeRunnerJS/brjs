@@ -5,7 +5,7 @@
 	</alias>
 	<alias name="br.event-hub" defaultClass="br.EventHub"/>
 	<alias 	name="br.xml-service" defaultClass="br.services.BRXmlResourceService" />
-	
+
 	<alias name="br.presenter-component" defaultClass="br.presenter.PresenterComponentFactory" />
 	<alias name="br.date-picker" defaultClass="br.presenter.control.datefield.JQueryDatePickerControl" />
 	<alias name="br.toggle-switch" defaultClass="br.presenter.control.selectionfield.ToggleSwitchControl" />
