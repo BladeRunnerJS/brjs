@@ -23,6 +23,15 @@ if (project.hasProperty(overrideMajorVersionPropertyName)) {
 	projectBuildMajorVersion = project.property(overrideMajorVersionPropertyName)
 }
 
+
+[ "JAVA8_HOME", "JAVA7_HOME" ].each { envName ->
+	def property = System.getenv()[envName]
+	if (property == null)
+	{
+		throw new GradleException("The environment variable '${envName} must be set for the build to work correctly, please make sure it is set. Refer to README.md for info on the dev environment setup.")
+	}
+}
+
 allprojects {
 	
 	ext {
