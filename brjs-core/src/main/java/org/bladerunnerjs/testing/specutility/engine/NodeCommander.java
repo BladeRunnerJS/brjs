@@ -19,41 +19,25 @@ public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	}
 	
 	public CommanderChainer create() {
-		call(new Command() {
-			public void call() throws Exception {
-				node.create();
-			}
-		});
+		call(() -> node.create());
 		
 		return commanderChainer;
 	}
 	
 	public CommanderChainer populate() throws Exception {
-		call(new Command() {
-			public void call() throws Exception {
-				((BRJSNode) node).populate();
-			}
-		});
+		call(() -> ((BRJSNode) node).populate());
 		
 		return commanderChainer;
 	}
 	
 	public CommanderChainer delete() {
-		call(new Command() {
-			public void call() throws Exception {
-				node.delete();
-			}
-		});
+		call(() -> node.delete());
 		
 		return commanderChainer;
 	}
 	
 	public CommanderChainer ready() {
-		call(new Command() {
-			public void call() throws Exception {
-				node.ready();
-			}
-		});
+		call(() -> node.ready());
 		
 		return commanderChainer;
 	}

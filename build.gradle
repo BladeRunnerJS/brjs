@@ -24,6 +24,14 @@ if (project.hasProperty(overrideMajorVersionPropertyName)) {
 }
 
 
+[ "JAVA8_HOME", "JAVA7_HOME" ].each { envName ->
+	def property = System.getenv()[envName]
+	if (property == null)
+	{
+		throw new GradleException("The environment variable '${envName} must be set for the build to work correctly, please make sure it is set. Refer to README.md for info on the dev environment setup.")
+	}
+}
+
 allprojects {
 	
 	ext {
@@ -73,9 +81,15 @@ subprojects { p ->
 	afterEvaluate { project ->
 		
 		if (project.plugins.hasPlugin(JavaPlugin)) {
-			sourceCompatibility = '1.7'
-			targetCompatibility = '1.7'
-					
+			if(project.name == 'brjs-core') {
+				sourceCompatibility = '1.8'
+				targetCompatibility = '1.8'
+			}
+			else {
+				sourceCompatibility = '1.7'
+				targetCompatibility = '1.7'
+			}
+			
 			project.tasks.withType(Test) { testTask ->
 				test {
 					testLogging {

@@ -2,8 +2,10 @@ package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -29,6 +31,7 @@ public class BundleSetBuilder {
 	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
 	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
+	private final Map<SourceModule, Set<SourceModule>> orderDependentSourceModuleDependencies = new LinkedHashMap<>();
 	private final Set<AliasDefinition> activeAliases = new LinkedHashSet<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
 	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
@@ -70,7 +73,7 @@ public class BundleSetBuilder {
 			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
 		}
 		
-		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules).getOrderedSourceModules();
+		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules, orderDependentSourceModuleDependencies).getOrderedSourceModules();
 		
 		return new BundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
 	}
@@ -134,10 +137,11 @@ public class BundleSetBuilder {
 				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
 				if (alias != null)
 				{
-					addSourceModule(bundlableNode.getSourceModule(alias.getRequirePath()));
+					SourceModule sourceModule = bundlableNode.getSourceModule(alias.getRequirePath());
+					addSourceModule(sourceModule);
 					
 					if(alias.getInterfaceName() != null) {
-						addSourceModule(bundlableNode.getSourceModule(alias.getInterfaceRequirePath()));
+						addOrderDependentSourceModuleDependency(sourceModule, bundlableNode.getSourceModule(alias.getInterfaceRequirePath()));
 					}
 					
 					aliases.add(alias);
@@ -149,6 +153,17 @@ public class BundleSetBuilder {
 		}
 		
 		return aliases;
+	}
+	
+	private void addOrderDependentSourceModuleDependency(SourceModule sourceModule, SourceModule dependency) throws ModelOperationException {
+		if(sourceModule != dependency) {
+			if(!orderDependentSourceModuleDependencies.containsKey(sourceModule)) {
+				orderDependentSourceModuleDependencies.put(sourceModule, new LinkedHashSet<SourceModule>());
+			}
+			
+			addSourceModule(dependency);
+			orderDependentSourceModuleDependencies.get(sourceModule).add(dependency);
+		}
 	}
 	
 	private String sourceFilePaths(List<SourceModule> sourceModules) {

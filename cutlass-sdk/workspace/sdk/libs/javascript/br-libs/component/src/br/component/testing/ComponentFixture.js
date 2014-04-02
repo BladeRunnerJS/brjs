@@ -205,8 +205,9 @@
 		var oComponent = null;
 		if (Component.prototype.createFromXml) {
 			oComponent = (new Component()).createFromXml(sXml);
-		} else {
-			oComponent = Component.deserialize(sXml);
+		}
+		else if (Component.prototype.deserialize) {
+			oComponent = (new Component()).deserialize(sXml);
 		}
 		
 		this._setComponent(oComponent);
