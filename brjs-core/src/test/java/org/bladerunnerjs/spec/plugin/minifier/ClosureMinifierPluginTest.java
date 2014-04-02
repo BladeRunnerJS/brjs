@@ -87,11 +87,11 @@ public class ClosureMinifierPluginTest extends SpecTest
 	{
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/cjs")
 			.and(aspect).hasNodeJsPackageStyle("appns/node")
-			.and(aspect).hasClasses("appns.cjs.Class", "appns.node.Class")
+			.and(aspect).hasClasses("appns.cjs.Class", "appns.node.NodeClass")
 			.and(aspect).indexPageRefersTo("appns.cjs.Class")
-			.and(aspect).classDependsOn("appns.cjs.Class",  "appns.node.Class");
+			.and(aspect).classDependsOn("appns.cjs.Class",  "appns.node.NodeClass");
 		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).containsMinifiedClasses("appns.cjs.Class", "appns.node.Class");
+		then(response).containsMinifiedClasses("appns.cjs.Class", "NodeClass"); //TODO: have better NodeJS minified class handling
 	}
 	
 	@Test

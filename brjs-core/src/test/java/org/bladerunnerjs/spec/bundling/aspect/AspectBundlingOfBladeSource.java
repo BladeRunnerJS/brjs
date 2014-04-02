@@ -59,7 +59,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		given(blade).hasClass("appns.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.b1.Class1");
+		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
 	}
 	
 	@Test
@@ -78,7 +78,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(blade).classRequires("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
+		then(response).containsNodeJsClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 	}
 	
 	@Test
@@ -103,7 +103,8 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.Class1", "appns.bs.b1.Class1");
+		then(response).containsNodeJsClasses("appns.bs.Class1")
+			.and(response).containsClasses("appns.bs.b1.Class1");
 	}
 	
 	@Test
@@ -194,6 +195,6 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(bladeWithSubstringOfAnotherBlade).hasClass("appns.bs.b1b.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1b.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).doesNotContainClasses("appns.bs.b1.Class1");
+		then(response).doesNotContainText("appns.bs.b1.Class1 = function() {");
 	}
 }

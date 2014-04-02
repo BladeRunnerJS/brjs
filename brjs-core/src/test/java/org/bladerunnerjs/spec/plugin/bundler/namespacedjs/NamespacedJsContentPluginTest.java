@@ -95,7 +95,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classFileHasContent("appns.Class1",
-				"appns.Class1 = function(){};\n" +
+				"appns.Class1 = function() {};\n" +
 				"// br.Core.extend(appns.Class1, appns.Class2);");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.Class1")
@@ -108,7 +108,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classFileHasContent("appns.Class1",
-				"appns.Class1 = function(){};\n" +
+				"appns.Class1 = function() {};\n" +
 				"/* br.Core.extend(appns.Class1, appns.Class2); */");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.Class1")
@@ -121,7 +121,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classFileHasContent("appns.Class1",
-				"appns.Class1 = function(){};\n" +
+				"appns.Class1 = function() {};\n" +
 				"/** br.Core.extend(appns.Class1, appns.Class2); */");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.Class1")

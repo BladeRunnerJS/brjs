@@ -71,7 +71,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
 		when(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "require('sdkLib/Class2')")
     		.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-    	then(response).containsClasses("sdkLib.Class2");
+    	then(response).containsNodeJsClasses("sdkLib.Class2");
 	}
 	
 }

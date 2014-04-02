@@ -59,6 +59,6 @@ public class AspectUserLibBundling extends SpecTest {
 			.and(aspect).hasClass("appns.Class1")
 			.and(aspect).classRequires("appns.Class1", "userLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("userLib.Class1");
+		then(response).containsNodeJsClasses("userLib.Class1");
 	}
 }

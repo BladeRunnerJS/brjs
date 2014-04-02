@@ -35,7 +35,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 		given(bladeset).hasClass("appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.Class1");
+		then(response).containsNodeJsClasses("appns.bs.Class1");
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
 			.and(bladeset).classRequires("appns.bs.Class1", "appns.bs.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.Class1", "appns.bs.Class2");
+		then(response).containsNodeJsClasses("appns.bs.Class1", "appns.bs.Class2");
 	}
 	
 	@Test	// bladeset unhappy paths

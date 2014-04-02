@@ -31,10 +31,10 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/node-js/module/appns/Class1.js", requestResponse);
 		then(requestResponse).containsLines(
 			"define('appns/Class1', function(require, exports, module) {",
-			"appns.Class1 = function() {",
-			"};",
-			"module.exports = appns.Class1;",
-			"\n});");
+			"Class1 = function() {",
+			"};\n",
+			"module.exports = Class1;\n",
+			"});");
 	}
 	
 	@Test
@@ -45,9 +45,9 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/node-js/module/sdkLib/Class1.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 			"define('sdkLib/Class1', function(require, exports, module) {",
-			"sdkLib.Class1 = function() {",
+			"Class1 = function() {",
 			"};",
-			"module.exports = sdkLib.Class1;",
+			"module.exports = Class1;",
 			"sdkLib.Class1.patch = function() {}",
 			"\n});");
 	}

@@ -49,7 +49,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 		given(aspect).hasClass("appns.Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1");
+		then(response).containsNodeJsClasses("appns.Class1");
 	}
 	
 	@Test
@@ -58,7 +58,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classRequires("appns.Class1", "./Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1", "appns.Class2");
+		then(response).containsNodeJsClasses("appns.Class1", "appns.Class2");
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.pkg.Class1")
 			.and(aspect).classRequires("appns.pkg.Class1", "./Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.pkg.Class1", "appns.pkg.Class2");
+		then(response).containsNodeJsClasses("appns.pkg.Class1", "appns.pkg.Class2");
 	}
 	
 	@Test
@@ -76,7 +76,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.pkg.Class1")
 			.and(aspect).classRequires("appns.pkg.Class1", "../Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.pkg.Class1", "appns.Class2");
+		then(response).containsNodeJsClasses("appns.pkg.Class1", "appns.Class2");
 	}
 	
 	@Test
@@ -85,7 +85,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.pkg.pkg2.Class1")
 			.and(aspect).classRequires("appns.pkg.pkg2.Class1", "../../Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.pkg.pkg2.Class1", "appns.Class2");
+		then(response).containsNodeJsClasses("appns.pkg.pkg2.Class1", "appns.Class2");
 	}
 	
 	@Test

@@ -38,7 +38,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 		given(aspect).hasClasses("appns.Class1")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1");
+		then(response).containsNodeJsClasses("appns.Class1");
 	}
 
 	// Bladeset
@@ -47,7 +47,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.Class1");
+		then(response).containsNodeJsClasses("appns.bs.Class1");
 	}
 	
 	// Blade
@@ -56,7 +56,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 		given(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.b1.Class1");
+		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
 	}
 	
 	// SDK BRJS Lib

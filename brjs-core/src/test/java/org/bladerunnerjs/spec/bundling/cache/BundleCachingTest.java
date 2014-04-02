@@ -36,7 +36,7 @@ public class BundleCachingTest extends SpecTest
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
 		when(aspect).indexPageRefersTo("appns.Class2")
 			.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class2")
+		then(response).containsNodeJsClasses("appns.Class2")
 			.and(response).doesNotContainText("appns.Class1");
 	}
 	
@@ -55,8 +55,8 @@ public class BundleCachingTest extends SpecTest
 				"// thirdpartyLib", 
 				"thirdpartyLib content", 
 				"mergePackageBlock(window, {\"appns\":{}});",
-				"appns.Class1 = function()",
-				"module.exports = appns.Class1",
+				"Class1 = function()",
+				"module.exports = Class1",
 				"define('appns/Class1', function(require, exports, module)");
 	}
 	
@@ -68,7 +68,7 @@ public class BundleCachingTest extends SpecTest
 		when(aspect).resourceFileRefersTo("html/view.html", "appns.Class2")
 			.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).doesNotContainText("appns.Class1")
-			.and(response).containsClasses("appns.Class2");
+			.and(response).containsNodeJsClasses("appns.Class2");
 	}
 	
 	@Test

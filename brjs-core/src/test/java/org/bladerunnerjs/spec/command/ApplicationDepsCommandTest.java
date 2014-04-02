@@ -225,7 +225,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRefersToAlias("appns.Class1", "alias-ref")
+			.and(aspect).classDependsOnAlias("appns.Class1", "alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class2");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(

@@ -31,7 +31,7 @@ public class AspectBundlingOfXML extends SpecTest {
 		given(aspect).hasClasses("appns.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1");
+		then(response).containsNodeJsClasses("appns.Class1");
 	}
 
 	@Test
@@ -40,7 +40,7 @@ public class AspectBundlingOfXML extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).sourceResourceFileRefersTo("appns/config.xml", "appns.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1", "appns.Class2");
+		then(response).containsNodeJsClasses("appns.Class1", "appns.Class2");
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class AspectBundlingOfXML extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).sourceResourceFileRefersTo("appns/pkg/config.xml", "appns.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1");
+		then(response).containsNodeJsClasses("appns.Class1");
 	}
 	
 	@Test
@@ -58,7 +58,7 @@ public class AspectBundlingOfXML extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.pkg.Class1")
 			.and(aspect).sourceResourceFileRefersTo("appns/config.xml", "appns.pkg.Class2");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.pkg.Class1", "appns.pkg.Class2");
+		then(response).containsNodeJsClasses("appns.pkg.Class1", "appns.pkg.Class2");
 	}
 	
 	@Test
@@ -66,7 +66,7 @@ public class AspectBundlingOfXML extends SpecTest {
 		given(aspect).hasClasses("appns.Class1")
 			.and(aspect).resourceFileRefersTo("config.xml", "appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1");
+		then(response).containsNodeJsClasses("appns.Class1");
 	}
 	
 	@Test
@@ -78,7 +78,7 @@ public class AspectBundlingOfXML extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).resourceFileRefersTo("xml/dir1/config.xml", "appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class1");
+		then(response).containsNodeJsClasses("appns.Class1");
 	}
 	
 	// Bladeset XML
@@ -87,7 +87,7 @@ public class AspectBundlingOfXML extends SpecTest {
 		given(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.bs.Class1");
+		then(response).containsNodeJsClasses("appns.bs.Class1");
 	}
 
 	

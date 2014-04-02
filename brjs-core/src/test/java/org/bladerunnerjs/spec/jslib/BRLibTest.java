@@ -37,7 +37,7 @@ public class BRLibTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns.AspectClass", "foo.bar.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("foo.bar.SdkClass");
+		then(response).containsNodeJsClasses("foo.bar.SdkClass");
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class BRLibTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns.AspectClass", "foo.Bar");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("foo.Bar");
+		then(response).containsNodeJsClasses("foo.Bar");
 	}
 	
 }

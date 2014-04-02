@@ -43,7 +43,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"// thirdparty-lib", 
-				"module.exports = appns.node.NodeClass",
+				"module.exports = NodeClass",
 				"appns.namespaced.NamespacedClass = function");
 	}
 	
