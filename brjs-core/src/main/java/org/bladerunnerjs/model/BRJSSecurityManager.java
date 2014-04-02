@@ -14,7 +14,8 @@ public class BRJSSecurityManager extends SecurityManager {
 	}
 	
 	private void assertWithinScope(File file) throws BRJSMemoizationFileAccessException {
-		if(!file.getName().endsWith(".class") && !file.getName().endsWith(".jar")) {
+		// TODO: we need a strategy to deal with '.js-style' file so that all FileInfo objects for directories and '.js' files beneath a modified '.js-style' have their last-modified updated
+		if(!file.getName().equals(".js-style") && !file.getName().endsWith(".class") && !file.getName().endsWith(".jar")) {
 			for(File[] scopeFiles : activeScopes.values()) {
 				boolean withinScope = false;
 				

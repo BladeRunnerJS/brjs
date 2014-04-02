@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
@@ -23,6 +24,11 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	private final NodeMap<TypedTestPack> testTypes;
 	private final NodeMap<Theme> themes;
 	private String name;
+	
+	private final MemoizedValue<List<LinkedAsset>> seedFileList = new MemoizedValue<>(root(), dir(), root().conf().file("bladerunner.conf"));
+	private final MemoizedValue<List<AssetContainer>> assetContainerList = new MemoizedValue<>(root(), parent().dir(), root().libsDir());
+	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>(root(), file("tests"));
+	private final MemoizedValue<List<Theme>> themesList = new MemoizedValue<>(root(), file("themes"));
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -41,7 +47,9 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	
 	@Override
 	public List<LinkedAsset> getSeedFiles() {
-		return IndexPageSeedFileLocator.getSeedFiles(this);
+		return seedFileList.value(() -> {
+			return IndexPageSeedFileLocator.getSeedFiles(this);
+		});
 	}
 	
 	@Override
@@ -86,12 +94,14 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	
 	@Override
 	public List<AssetContainer> assetContainers() {
-		List<AssetContainer> assetContainers = new ArrayList<>();
-		
-		assetContainers.add(this);
-		assetContainers.addAll(parent().getNonAspectAssetContainers());
-		
-		return assetContainers;
+		return assetContainerList.value(() -> {
+			List<AssetContainer> assetContainers = new ArrayList<>();
+			
+			assetContainers.add(this);
+			assetContainers.addAll(parent().getNonAspectAssetContainers());
+			
+			return assetContainers;
+		});
 	}
 	
 	public App parent()
@@ -108,7 +118,9 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return children(testTypes);
+		return testTypesList.value(() -> {
+			return children(testTypes);
+		});
 	}
 	
 	@Override
@@ -120,7 +132,9 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	@Override
 	public List<Theme> themes()
 	{
-		return children(themes);
+		return themesList.value(() -> {
+			return children(themes);
+		});
 	}
 	
 	@Override

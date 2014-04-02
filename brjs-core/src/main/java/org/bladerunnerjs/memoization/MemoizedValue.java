@@ -29,7 +29,7 @@ public class MemoizedValue<T extends Object> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public T value(Getter getter) {
+	public <E extends Exception> T value(Getter<E> getter) throws E {
 		if(valueNeedsToBeRecomputed()) {
 			try(FileAccessLimitScope scope = brjs.io().limitAccessToWithin(watchItems)) {
 				scope.preventCompilerWarning();

@@ -5,4 +5,9 @@ public class OptimisticFileModificationInfo implements FileModificationInfo {
 	public long getLastModified() {
 		return 1;
 	}
+	
+	@Override
+	public void resetLastModified() {
+		// do nothing
+	}
 }

@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
@@ -31,6 +32,7 @@ import com.Ostermiller.util.ConcatReader;
 
 public class NamespacedJsSourceModule implements SourceModule {
 	private static final Pattern extendPattern = Pattern.compile("(caplin|br\\.Core)\\.(extend|implement|inherit)\\([^,]+,\\s*([^)]+)\\)");
+	private static final String DEFINE_BLOCK = "\ndefine('%s', function(require, exports, module) { module.exports = %s; });";
 	
 	private List<SourceModule> orderDependentSourceModules;
 	private FileModifiedChecker fileModifiedChecker;
@@ -43,7 +45,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private FileModifiedChecker patchFileModifiedChecker;
 
 	private TrieBasedDependenciesCalculator dependencyCalculator;
-
+	
+	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -58,6 +61,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 			linkedAsset = new FullyQualifiedLinkedAsset();
 			linkedAsset.initialize(assetLocation, dir, assetName);
 			dependencyCalculator = new TrieBasedDependenciesCalculator(this);
+			assetLocationsList = new MemoizedValue<>(assetLocation.root(), assetLocation.assetContainer().dir());
 		}
 		catch(RequirePathException e) {
 			throw new AssetFileInstantationException(e);
@@ -66,6 +70,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+		// TODO: is this a bug since we are returning all dependencies, whether they are reachable via the bundlable node or not?
 		return dependencyCalculator.getCalculatedDependentSourceModules();
 	}
 	
@@ -76,11 +81,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public Reader getReader() throws IOException {
-		
-		String defineBlock = "\ndefine('%s', function(require, exports, module) { " +
-							 	"module.exports = %s;" +
-							 " });";
-		String formattedDefineBlock = String.format(defineBlock, requirePath, className);
+		String formattedDefineBlock = String.format(DEFINE_BLOCK, requirePath, className);
 		Reader[] readers = new Reader[] { linkedAsset.getReader(), patch.getReader(), new StringReader(formattedDefineBlock) };
 		return new ConcatReader( readers );
 	}
@@ -133,7 +134,9 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
+		return assetLocationsList.value(() -> {
+			return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
+		});
 	}
 	
 	private void recalculateOrderedDependencies(BundlableNode bundlableNode) throws ModelOperationException {

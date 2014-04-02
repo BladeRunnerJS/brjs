@@ -6,11 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
+	
+	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>(root(), dir());
 	
 	public AbstractSourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
 		super(rootNode, parent, dir, dependentAssetLocations);
@@ -26,9 +29,11 @@ public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLo
 	}
 	
 	public List<AssetLocation> getChildAssetLocations() {
-		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
-		addChildAssetLocations(assetLocations, dir());
-		return assetLocations;
+		return childAssetLocationList.value(() -> {
+			List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
+			addChildAssetLocations(assetLocations, dir());
+			return assetLocations;
+		});
 	}
 	
 	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
