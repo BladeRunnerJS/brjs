@@ -185,7 +185,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", "appns.TheClass", "appns.TheInterface")
 			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.the-alias");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.TheClass", "appns.TheInterface");
+		then(response).containsOrderedTextFragments("define('appns/TheInterface'", "define('appns/TheClass'"); // TODO: create a containsOrderedClass() method once Andy Berry has finished the test re-factoring
 	}
 	
 	@Test
