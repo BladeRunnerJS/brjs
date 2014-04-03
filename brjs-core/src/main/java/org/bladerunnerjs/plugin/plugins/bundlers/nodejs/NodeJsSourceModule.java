@@ -63,7 +63,8 @@ public class NodeJsSourceModule implements SourceModule {
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			computedValue = new MemoizedValue<>(assetLocation.root(), assetFile, assetLocation.root().conf().file("bladerunner.conf"), assetLocation.root().jsPatches().dir());
+			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
+			computedValue = new MemoizedValue<>(assetLocation.root(), assetFile, patch.getPatchFile(), assetLocation.root().conf().file("bladerunner.conf"));
 			assetLocationsList = new MemoizedValue<>(assetLocation.root(), assetLocation.assetContainer().dir());
 		}
 		catch(RequirePathException | ConfigException e) {
@@ -158,12 +159,6 @@ public class NodeJsSourceModule implements SourceModule {
 		return assetLocationsList.value(() -> {
 			return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 		});
-	}
-	
-	@Override
-	public void addPatch(SourceModulePatch patch)
-	{
-		this.patch = patch;
 	}
 	
 	private ComputedValue getComputedValue() throws ModelOperationException {

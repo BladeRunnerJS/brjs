@@ -57,12 +57,6 @@ public class AssetLocationUtility
 			A assetFile = (A) ctor.newInstance();
 			assetFile.initialize(assetLocation, dir, assetName);
 			
-			if (assetFile instanceof SourceModule)
-			{
-				SourceModule sourceModule = (SourceModule) assetFile;
-				sourceModule.addPatch( SourceModulePatch.getPatchForRequirePath(assetLocation, sourceModule.getRequirePath()) );
-			}
-			
 			return assetFile;
 		}
 		catch(AssetFileInstantationException ex) {

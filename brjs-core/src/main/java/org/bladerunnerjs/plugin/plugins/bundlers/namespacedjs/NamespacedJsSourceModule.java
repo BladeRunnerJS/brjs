@@ -60,6 +60,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 			fileModifiedChecker = new FileModifiedChecker(assetFile);
 			linkedAsset = new FullyQualifiedLinkedAsset();
 			linkedAsset.initialize(assetLocation, dir, assetName);
+			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
+			patchFileModifiedChecker = new FileModifiedChecker(patch.getPatchFile());
 			dependencyCalculator = new TrieBasedDependenciesCalculator(this);
 			assetLocationsList = new MemoizedValue<>(assetLocation.root(), assetLocation.assetContainer().dir());
 		}
@@ -162,12 +164,5 @@ public class NamespacedJsSourceModule implements SourceModule {
 		catch(IOException | RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
-	}
-
-	@Override
-	public void addPatch(SourceModulePatch patch)
-	{
-		this.patch = patch;
-		patchFileModifiedChecker = new FileModifiedChecker(patch.getPatchFile());
 	}
 }
