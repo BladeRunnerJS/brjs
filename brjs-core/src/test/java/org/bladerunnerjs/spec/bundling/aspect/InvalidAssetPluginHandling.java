@@ -7,8 +7,6 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-import InvalidLocationJsAssetPlugin.InvalidAssetPlugin;
-
 public class InvalidAssetPluginHandling extends SpecTest {
 	private App app;
 	private Aspect aspect;
