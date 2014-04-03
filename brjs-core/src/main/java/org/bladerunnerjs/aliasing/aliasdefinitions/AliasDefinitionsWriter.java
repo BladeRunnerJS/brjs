@@ -31,9 +31,12 @@ public class AliasDefinitionsWriter {
 			XMLBuilder builder = XMLBuilder.create("aliasDefinitions").ns("http://schema.caplin.com/CaplinTrader/aliasDefinitions");
 			
 			for (AliasDefinition aliasDefinition : data.aliasDefinitions) {
-				XMLBuilder aliasBuilder = builder.e("alias").a("name", aliasDefinition.getName())
-					.a("defaultClass", aliasDefinition.getClassName());
+				XMLBuilder aliasBuilder = builder.e("alias").a("name", aliasDefinition.getName());
 				Map<String, AliasOverride> scenarioAliases = data.getScenarioAliases(aliasDefinition.getName());
+				
+				if(aliasDefinition.getClassName() != null) {
+					aliasBuilder.a("defaultClass", aliasDefinition.getClassName());
+				}
 				
 				if(aliasDefinition.getInterfaceName() != null) {
 					aliasBuilder.a("interface", aliasDefinition.getInterfaceName());

@@ -16,6 +16,7 @@ public class Java7FileModificationInfo implements FileModificationInfo {
 	private final WatchKey watchKey;
 	private final Java7FileModificationInfo parentModificationInfo;
 	private long lastModified = (new Date()).getTime();
+	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 	
 	public Java7FileModificationInfo(WatchService watchService, File dir, Java7FileModificationInfo parentModificationInfo) {
 		try {
@@ -36,7 +37,7 @@ public class Java7FileModificationInfo implements FileModificationInfo {
 		List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
 		
 		if(watchEvents.size() > 0) {
-			// TODO: we shouldn't update last-modified if the only changes to are hidden files
+			// TODO: we shouldn't update last-modified if the only changes are to hidden files
 			updateLastModified();
 			
 			for(WatchEvent<?> watchEvent : watchEvents) {
@@ -48,8 +49,11 @@ public class Java7FileModificationInfo implements FileModificationInfo {
 		}
 	}
 	
+	// TODO: Waiting on Java bug fix http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8029516, github issue #385
 	public void close() {
-		watchKey.cancel();
+		if(!isWindows) {
+			watchKey.cancel();
+		}
 	}
 	
 	private void updateLastModified() {

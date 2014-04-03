@@ -59,7 +59,17 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	public String getGroupName() {
 		return "text/javascript";
 	}
-
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return new ArrayList<>();
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public ContentPathParser getContentPathParser()
 	{
@@ -86,7 +96,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 			}
 			else if(contentPath.formName.equals("file-request")) {
 				String libName = contentPath.properties.get("module");
-				App app = bundleSet.getBundlableNode().getApp();
+				App app = bundleSet.getBundlableNode().app();
 				JsLib lib = app.nonBladeRunnerLib(libName);
 				if (!lib.dirExists())
 				{

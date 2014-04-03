@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.*
 
 apply plugin: 'maven'
 
-configurations { 
+configurations {
 	system
 	application
 	systemApp {
@@ -13,10 +13,10 @@ configurations {
 	testRunner
 	javadocs
 	srcJars
-	
+
 	browsers_dep
 	browsers_webdriver
-} 
+}
 
 dependencies {
 	system project(path: ':cutlass-tasks')
@@ -24,7 +24,7 @@ dependencies {
 	system project(path: ':brjs-logger')
 	system project(":brjs-logger-binding")
 	system dependency('selenium-java')
-	
+
 	application project(path: ':bladerunner-dev-servlets')
 	application project(path: ':bladerunner-common-servlets')
 	application project(path: ':bladerunner-prod-servlets')
@@ -33,11 +33,11 @@ dependencies {
 	application (dependency('jsp-2.1-glassfish')) {
 		exclude module: 'ant'
 	}
-	
+
 	javadocs project(path: ':brjs-core', configuration:'javadocs')
-	
+
 	srcJars project(path: ':brjs-core', configuration:'srcJar')
-	
+
 	systemApp (project(path: ':system-app-servlets'))
 
 	testRunner dependency('JsTestDriver')
@@ -50,10 +50,10 @@ dependencies {
 	testRunner project(path: ':brjs-logger')
 	testRunner project(path: ':brjs-logger-binding')
 	testRunner files('build-resources/JsTestDriver.conf')
-	
+
 	browsers_dep dependency('chrome-stable')
 	browsers_dep dependency('firefox-stable')
-	
+
 	browsers_webdriver dependency('firefox-webdriver')
 }
 
@@ -85,23 +85,23 @@ task copyBrowsers(type: Sync) {
 
 task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner, configurations.javadocs, configurations.srcJars], {
 	def includesDir = "build-resources/includes"
-	
+
 	destinationDir file("${projectDir.path}/workspace")
-	
+
 	inputs.property "sdkVersion", buildVersion
-	inputs.property "buildHostname", buildHostname	
-	
+	inputs.property "buildHostname", buildHostname
+
 	from ("${includesDir}")
 	{
 		include "LICENSE"
 		include "README.txt"
 	}
-	
+
 	from ("${includesDir}/apps")
 	{
 		into "apps"
 	}
-	
+
 	from ("${includesDir}/conf")
 	{
 		into "conf"
@@ -111,12 +111,12 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		into "conf"
 		include "test-runner.conf"
 	}
-	
+
 	from ("${includesDir}/sdk") {
 		into "sdk"
 		exclude "version.txt"
 	}
-	
+
 	from ("${includesDir}/sdk") {
 		into "sdk"
 		include "version.txt"
@@ -127,7 +127,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 			buildHostname:buildHostname
 		] )
 	}
-	
+
 	from (configurations.system)
 	{
 		into "sdk/libs/java/system"
@@ -169,13 +169,13 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		rename 'js-test-driver-bundler-plugin-.*', 'js-test-driver-bundler-plugin.jar'
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
-	
+
 	from ("${includesDir}/licenses")
 	{
 		into "licenses"
 	}
-	
-	
+
+
 	doFirst {
 		delete file("workspace/sdk/libs/java")
 		delete file("workspace/sdk/docs")
@@ -203,44 +203,14 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 		workingDir = "workspace/sdk"
 		testType = taskTestType
 		browsers = browser
-		testDir = taskTestDir 
+		testDir = taskTestDir
 	}
 }
 
-//TODO: enable these once all JS tests are passing
-//createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
-//createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
-//createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
 
-
-//TODO: delete this once all JS tests are passing (delete down to ******)
-task testJsIE, {}
-task testJsChrome, {}
-task testJsFirefox, {}
-
-file("workspace/sdk/libs/javascript/br-libs").listFiles().each {
-	if (it.isDirectory())
-	{
-		def dirName = it.getName()
-		def testName = dirName.capitalize()
-		def testJsIEDependency = createTestTask "testJs${testName}IE", "libs/javascript/br-libs/${dirName}", "ALL", "ie"
-		def testJsChromeDependency = createTestTask "testJs${testName}Chrome", "libs/javascript/br-libs/${dirName}", "ALL", "chrome"
-		def testJsFirefoxDependency = createTestTask "testJs${testName}Firefox", "libs/javascript/br-libs/${dirName}", "ALL", "firefox"
-		
-		testJsIE.dependsOn testJsIEDependency
-		testJsChrome.dependsOn testJsChromeDependency
-		testJsFirefox.dependsOn testJsFirefoxDependency
-	}
-}
-
-// delete a line to enable the tests for that library
-project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('I18n') }.each { it.enabled = false }
-project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Knockout') }.each { it.enabled = false }
-project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Presenter') }.each { it.enabled = false }
-project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Test') }.each { it.enabled = false }
-project.tasks.matching { it.name.startsWith('testJs') && it.name.contains('Workbench') }.each { it.enabled = false }
-// ******************************************
-
+createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
+createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
+createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
 
 createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
 createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
@@ -319,7 +289,7 @@ task checkVersionTxt, dependsOn: explodeSdk, {
 	}
 }
 check.dependsOn checkVersionTxt
-		
+
 
 task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, dependsOn: explodeSdk, {
 	checkRoot = file(explodedSdkDir)
@@ -339,7 +309,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
 		"*/sdk/templates/*/*",
 		"*/sdk/templates/*/tests/*",
-		"*/sdk/docs/javadoc/*/*",
+        "*/sdk/docs/javadoc/*",
+		"*/sdk/docs/javadoc/**/*",
 		"*/README.txt",
 		"*/LICENSE",
 		"*/apps/apps.txt",
@@ -366,7 +337,7 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	]
 }
 check.dependsOn checkSdkStructure
-	
+
 clean {
 	doFirst {
 		ant.delete(includeemptydirs: 'true') {

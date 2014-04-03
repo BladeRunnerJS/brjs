@@ -21,8 +21,6 @@ import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.command.analyse.DependencyAnalyserCommand;
-import com.caplin.cutlass.command.analyse.PackageDepsCommand;
 import com.caplin.cutlass.command.check.CheckCommand;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
 import com.caplin.cutlass.command.importing.ImportApplicationCommand;
@@ -129,7 +127,6 @@ public class CommandRunner {
 	private void setDefaultLogLevel() {
 		LogConfiguration logConfigurator = new ConsoleLoggerConfigurator(getRootLogger());
 		logConfigurator.ammendProfile(LogLevel.INFO)
-			.pkg("brjs.core").logsAt(LogLevel.WARN)
 			.pkg("org.hibernate").logsAt(LogLevel.WARN); // TODO: this is a plugin concern, so should be handled within the model
 		logConfigurator.setLogLevel(LogLevel.INFO);
 	}
@@ -137,13 +134,11 @@ public class CommandRunner {
 	private void injectLegacyCommands(BRJS brjs) {
 		try {
 			CommandList commandList = brjs.plugins().commandList();
-			commandList.addCommand(new DependencyAnalyserCommand(brjs));
 			commandList.addCommand(new CheckCommand());
 			commandList.addCommand(new CopyBladesetCommand( brjs.root().dir() ));
 			commandList.addCommand(new ImportApplicationCommand( brjs ));
 			commandList.addCommand(new TestCommand());
 			commandList.addCommand(new TestServerCommand());
-			commandList.addCommand(new PackageDepsCommand());
 			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
 //			commandList.addCommand(new ExportApplicationCommand(  ));
 		}

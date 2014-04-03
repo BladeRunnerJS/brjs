@@ -3,7 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +12,8 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.memoization.Getter;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
@@ -35,6 +37,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private final NodeMap<Bladeset> bladesets;
 	private final NodeMap<Aspect> aspects;
 	private final NodeMap<StandardJsLib> jsLibs;
+	
+	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>(root(), dir(), root().libsDir());
 	
 	private String name;
 	private AppConf appConf;
@@ -68,16 +72,21 @@ public class App extends AbstractBRJSNode implements NamedNode
 	 * This is different to BundleableNode.getAssetContainers which returns only the valid AssetContainers for a given BundleableNode.
 	 */
 	public List<AssetContainer> getAllAssetContainers() {
-		List<AssetContainer> assetContainers = new ArrayList<>();
-		
-		for(Aspect aspect : aspects()) {
-			assetContainers.add(aspect);
-			addAllTestPacks(assetContainers, aspect.testTypes());
-		}
-		
-		assetContainers.addAll(getNonAspectAssetContainers());
-		
-		return assetContainers;
+		return assetContainers.value(new Getter() {
+			@Override
+			public Object get() {
+				List<AssetContainer> assetContainersList = new ArrayList<>();
+				
+				for(Aspect aspect : aspects()) {
+					assetContainersList.add(aspect);
+					addAllTestPacks(assetContainersList, aspect.testTypes());
+				}
+				
+				assetContainersList.addAll(getNonAspectAssetContainers());
+				
+				return assetContainersList;
+			}
+		});
 	}
 	
 	public List<AssetContainer> getNonAspectAssetContainers() {
@@ -268,7 +277,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<JsLib> nonBladeRunnerLibs()
 	{
-		Map<String, JsLib> libs = new HashMap<String,JsLib>();
+		Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
 		
 		for (JsLib lib : root().sdkNonBladeRunnerLibs())
 		{

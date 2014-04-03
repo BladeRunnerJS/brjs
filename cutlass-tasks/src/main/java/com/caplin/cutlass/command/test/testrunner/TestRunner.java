@@ -115,7 +115,7 @@ public class TestRunner {
 			
 			try {
 				Thread.sleep(DEFAULT_SLEEP_TIME); // slight pause before we display message in case there is any browser output
-				logger.info("Server running, " + Messages.SERVER_STOP_INSTRUCTION_MESSAGE);
+				logger.info("Server running on port " + config.getPortNumber() + ", " + Messages.SERVER_STOP_INSTRUCTION_MESSAGE);
 				logger.info("");
 				
 				while(System.in.available() == 0) {

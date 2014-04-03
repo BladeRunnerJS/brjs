@@ -124,7 +124,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-			.and(blade).classRefersTo("appns.bs.b1.Class1", appThirdparty.getName(), "appns.bs.b1.Class2")
+			.and(blade).classRefersTo("appns.bs.b1.Class1", "'" + appThirdparty.getName() + "'", "appns.bs.b1.Class2")
 			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
 		then(bladeATs).bundledFilesEquals(
 				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),

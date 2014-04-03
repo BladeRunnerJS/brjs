@@ -50,7 +50,7 @@ public class SourceModulePatch
 	{		
 		if (fileModificationInfo == null || fileModificationInfo.getLastModified() < lastModified())
 		{
-    		if ( !(assetLocation.getAssetContainer() instanceof JsLib) )
+    		if ( !(assetLocation.assetContainer() instanceof JsLib) )
     		{
     			patchFileReader = new StringReader("");
     		}

@@ -8,8 +8,8 @@
 
 	EventHubTest.setUp = function() {
 		hasFired = {};
-		this.eventHub = ServiceRegistry.getService( 'br.event-hub');
-		this.eventHub.channels ={};
+
+		this.eventHub = ServiceRegistry.getService('br.event-hub');
 	};
 
 	EventHubTest.callback = function(channel, event) {

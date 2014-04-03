@@ -75,7 +75,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption("app-name").setRequired(true).setHelp("the name of the app being exported"));
 		argsParser.registerParameter(new UnflaggedOption("war-location").setHelp("the name of the war file to create"));
-		argsParser.registerParameter(new FlaggedOption("minifier").setShortFlag('m').setDefault("default").setHelp("the name of the minifier that will be used to compress the javascript"));
+		argsParser.registerParameter(new FlaggedOption("minifier").setShortFlag('m').setLongFlag("minifier").setDefault("default").setHelp("the name of the minifier that will be used to compress the javascript"));
 	}
 
 	@Override
@@ -119,8 +119,6 @@ public class WarCommand extends ArgsParsingCommandPlugin
 						}
 					}
 					
-					FileUtility.copyDirectoryIfExists(origAspect.unbundledResources().dir(), warAspect.unbundledResources().dir());
-					
 					createAspectBundles(origAspect, warAspect, contentPlugins, origApp.appConf().getLocales().split(","));
 				}
 				
@@ -147,7 +145,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 			
 			for(ContentPlugin contentPlugin : contentPlugins) {
 				for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-					BladerunnerUri requestPath = new BladerunnerUri(brjs, origAspect.getApp().dir(), contentPath);
+					BladerunnerUri requestPath = new BladerunnerUri(brjs, origAspect.app().dir(), contentPath);
 					ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(requestPath);
 					
 					try(OutputStream outputStream = createBundleSpecificOutputStream(contentPath, warAspect.file(contentPath))) {

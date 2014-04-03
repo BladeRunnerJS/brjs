@@ -52,17 +52,6 @@
 	
 	
 	<!-- start-env: dev -->
-	<servlet>
-		<servlet-name>cutlass-bundlers</servlet-name>
-		<servlet-class>com.caplin.cutlass.servlet.BundlerServlet
-		</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>cutlass-bundlers</servlet-name>
-		<url-pattern>*.bundle</url-pattern>
-	</servlet-mapping>
-	
 	<filter>
 		<filter-name>cutlass-dev-filters</filter-name>
 		<filter-class>com.caplin.cutlass.filter.BladerunnerDevFilters

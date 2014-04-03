@@ -11,15 +11,13 @@ import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class BundleSet {
 	private final List<SourceModule> sourceModules;
-	private final List<SourceModule> testSourceModules;
 	private final List<AliasDefinition> activeAliases;
 	private final List<AssetLocation> resourceLocations;
 	private BundlableNode bundlableNode;
 	
-	public BundleSet(BundlableNode bundlableNode, List<SourceModule> sourceModules, List<SourceModule> testSourceModules, List<AliasDefinition> activeAliases, List<AssetLocation> resources) {
+	public BundleSet(BundlableNode bundlableNode, List<SourceModule> sourceModules, List<AliasDefinition> activeAliases, List<AssetLocation> resources) {
 		this.bundlableNode = bundlableNode;
 		this.sourceModules = sourceModules;
-		this.testSourceModules = testSourceModules;
 		this.activeAliases = activeAliases;
 		this.resourceLocations = resources;
 	}
@@ -30,10 +28,6 @@ public class BundleSet {
 	
 	public List<SourceModule> getSourceModules() {
 		return sourceModules;
-	}
-	
-	public List<SourceModule> getTestSourceModules() {
-		return testSourceModules;
 	}
 	
 	public List<AliasDefinition> getActiveAliases() {
@@ -91,7 +85,7 @@ public class BundleSet {
 		
 		for (A asset : assets)
 		{
-			if (asset.getAssetLocation().getAssetContainer().getClass() == assetContainerType)
+			if (asset.assetLocation().assetContainer().getClass() == assetContainerType)
 			{
 				assetsInContainer.add(asset);
 			}

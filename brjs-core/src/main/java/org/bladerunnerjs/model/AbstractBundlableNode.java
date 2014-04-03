@@ -7,8 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
@@ -38,7 +40,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		super(rootNode, parent, dir);
 	}
 	
-	public abstract List<LinkedAsset> getSeedFiles();
+	protected abstract List<LinkedAsset> getSeedFiles();
 	
 	@Override
 	public List<LinkedAsset> seedFiles() {
@@ -91,8 +93,29 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, ContentFileProcessingException {
-		return aliasesFile().getAlias(aliasName);
+	public AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException {
+		
+		//TODO: remove the hack that differs in behaviour if an alias starts with "SERVICE!"
+		
+		boolean isService = aliasName.startsWith("SERVICE!");
+		if (isService)
+		{
+			aliasName = StringUtils.substringAfter(aliasName, "SERVICE!");
+		}
+		
+		try
+		{
+			return aliasesFile().getAlias(aliasName);
+		}
+		catch (UnresolvableAliasException ex)
+		{
+			if (isService)
+			{
+				// do nothing with the exception since a service might be configured at runtime
+				return null;
+			}
+			throw ex;
+		}
 	}
 	
 	@Override
@@ -105,12 +128,16 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<AliasDefinitionsFile> getAliasDefinitionFiles() {
+	public List<AliasDefinitionsFile> aliasDefinitionFiles() {
 		List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
 		
-		for(AssetContainer assetContainer : getAssetContainers()) {
+		for(AssetContainer assetContainer : assetContainers()) {
 			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-				aliasDefinitionFiles.add(assetLocation.aliasDefinitionsFile());
+				AliasDefinitionsFile aliasDefinitionsFile = assetLocation.aliasDefinitionsFile();
+				
+				if(aliasDefinitionsFile.getUnderlyingFile().exists()) {
+					aliasDefinitionFiles.add(aliasDefinitionsFile);
+				}
 			}
 		}
 		
@@ -178,7 +205,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	private void addMissingAssetContainers(String requirePath, List<AssetContainer> potentialAssetContainers) {
-		for(AssetContainer assetContainer : getAssetContainers()) {
+		for(AssetContainer assetContainer : assetContainers()) {
 			assetContainers.put(assetContainer.requirePrefix(), assetContainer);
 			
 			if(requirePath.startsWith(assetContainer.requirePrefix()) && !potentialAssetContainers.contains(assetContainer)) {

@@ -13,6 +13,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 
@@ -31,8 +32,8 @@ public class TrieBasedDependenciesCalculator
 	public TrieBasedDependenciesCalculator(Asset asset)
 	{
 		this.asset = asset;
-		assetLocation = asset.getAssetLocation();
-		app = assetLocation.getAssetContainer().getApp();
+		assetLocation = asset.assetLocation();
+		app = assetLocation.assetContainer().app();
 		appProperties = app.nodeProperties("TrieBasedDependenciesAsset");
 		File assetFile = new File( asset.getAssetPath() );
 		fileModifiedChecker = new FileModifiedChecker(assetFile);
@@ -60,12 +61,15 @@ public class TrieBasedDependenciesCalculator
 			dependentSourceModules = new ArrayList<>();
 			aliases = new ArrayList<>();
 			
-			try(Reader reader = asset.getReader()) {
+			try(Reader reader = new JsCommentStrippingReader(asset.getReader(), false)) {
 				for(Object match : getTrie().getMatches(reader)) {
 					if (match instanceof SourceModuleReference) {
 						SourceModuleReference sourceModuleReference = (SourceModuleReference) match;
-						String dependencyRequirePath = sourceModuleReference.getRequirePath();
-						dependentSourceModules.add( assetLocation.getSourceModuleWithRequirePath(dependencyRequirePath) );
+						SourceModule sourceModule = assetLocation.sourceModule(sourceModuleReference.getRequirePath());
+						
+						if(sourceModule != asset) {
+							dependentSourceModules.add(sourceModule);
+						}
 					}
 					else if (match instanceof AliasReference){
 						AliasReference aliasReference = (AliasReference) match;
@@ -104,24 +108,23 @@ public class TrieBasedDependenciesCalculator
 	private Trie<Object> createTrie() throws ModelOperationException {
 		Trie<Object> trie = new Trie<Object>();
 		
-		for(AssetContainer assetContainer : assetLocation.getAssetContainer().getApp().getAllAssetContainers()) {
+		for (AssetContainer assetContainer : assetLocation.assetContainer().app().getAllAssetContainers()) {
 			try {
 				if(assetContainer instanceof BundlableNode) {
 					BundlableNode bundlableNode = (BundlableNode) assetContainer;
 					
 					for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
 						if(!trie.containsKey(aliasOverride.getName())) {
-							addToTrie(trie, "'" + aliasOverride.getName() + "'", new AliasReference(aliasOverride.getName()));
-							addToTrie(trie, "\"" + aliasOverride.getName() + "\"", new AliasReference(aliasOverride.getName()));
+							addQuotedKeyToTrie(trie, aliasOverride.getName(), new AliasReference(aliasOverride.getName()));
 						}
 					}
 				}
 				
 				for(SourceModule sourceModule : assetContainer.sourceModules()) {
 					if (!sourceModule.getAssetPath().equals(asset.getAssetPath())) {
-						addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule.getRequirePath()));
-						if (sourceModule.getClassname() != null)
-						{
+						addQuotedKeyToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule.getRequirePath()));
+						
+						if (sourceModule.getClassname() != null) {
 							addToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule.getRequirePath()));
 						}
 					}
@@ -130,8 +133,7 @@ public class TrieBasedDependenciesCalculator
 				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 					for(String aliasName : assetLocation.aliasDefinitionsFile().aliasNames()) {
 						if(!trie.containsKey("'" + aliasName + "'")) {
-							addToTrie(trie, "'" + aliasName + "'", new AliasReference(aliasName));
-							addToTrie(trie, "\"" + aliasName + "\"", new AliasReference(aliasName));
+							addQuotedKeyToTrie(trie, aliasName, new AliasReference(aliasName));
 						}
 					}
 				}
@@ -142,6 +144,17 @@ public class TrieBasedDependenciesCalculator
 		}
 		
 		return trie;
+	}
+	
+	private void addQuotedKeyToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException {
+		addToTrie(trie, "'" + key + "'", value);
+		addToTrie(trie, "\"" + key + "\"", value);
+		addToTrie(trie, "<" + key + ">", value);
+		addToTrie(trie, "<" + key + "/", value);
+		addToTrie(trie, "<" + key + " ", value);
+		addToTrie(trie, "<" + key + "\t", value);
+		addToTrie(trie, "<" + key + "\r", value);
+		addToTrie(trie, "<" + key + "\n", value);
 	}
 	
 	private void addToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException

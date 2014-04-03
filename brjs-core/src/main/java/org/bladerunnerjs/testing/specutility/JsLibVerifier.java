@@ -31,7 +31,7 @@ public class JsLibVerifier extends NodeVerifier<JsLib> {
 
 	public VerifierChainer getAppReturns(App app)
 	{
-		assertSame(app, jsLib.getApp());
+		assertSame(app, jsLib.app());
 		
 		return verifierChainer;
 	}

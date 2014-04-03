@@ -41,7 +41,7 @@ public class I18nAssetFile implements Asset
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = new File(dir, assetName);
-			assetPath = RelativePathUtility.get(assetLocation.getAssetContainer().getApp().dir(), assetFile);
+			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
@@ -56,7 +56,7 @@ public class I18nAssetFile implements Asset
 	}
 
 	@Override
-	public AssetLocation getAssetLocation()
+	public AssetLocation assetLocation()
 	{
 		return assetLocation;
 	}
@@ -98,9 +98,9 @@ public class I18nAssetFile implements Asset
 		
 		for (String property : i18nProperties.stringPropertyNames())
 		{
-			getAssetLocation().assertIdentifierCorrectlyNamespaced(property);
+			assetLocation().assertIdentifierCorrectlyNamespaced(property);
 			String value = i18nProperties.getProperty(property);
-			propertiesMap.put(property, value);
+			propertiesMap.put(property, value.replaceAll("\n", "\\\\n"));
 		}
 
 		return propertiesMap;

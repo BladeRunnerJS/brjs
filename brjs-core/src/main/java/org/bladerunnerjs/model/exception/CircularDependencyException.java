@@ -20,7 +20,7 @@ public class CircularDependencyException extends ModelOperationException {
 	
 	@Override
 	public String getMessage() {
-		return "Circular dependency between class files prevented following classes from being written: " + Joiner.on(", ").join(getRequirePaths(unprocessedSourceModules));
+		return "Circular dependency involving the classes " + (Joiner.on(", ").join(getRequirePaths(unprocessedSourceModules)) + " prevented the bundle from being written.");
 	}
 	
 	private List<String> getRequirePaths(Set<SourceModule> sourceModules) {

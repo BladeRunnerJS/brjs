@@ -1,6 +1,7 @@
 "use strict";
 
-var BRHtmlResourceService = require('./BRHtmlResourceService'); 
+var br = require('br/Core');
+var BRHtmlResourceService = require('./BRHtmlResourceService');
 
 /**
  * @constructor
@@ -18,6 +19,6 @@ function JSTDHtmlResourceService(sUrl) {
 	BRHtmlResourceService.call(this, sUrl || sDefaultUrl);
 }
 
-br.Core.extend(JSTDHtmlResourceService, BRHtmlResourceService);
+br.extend(JSTDHtmlResourceService, BRHtmlResourceService);
 
 module.exports = JSTDHtmlResourceService;

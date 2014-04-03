@@ -2,8 +2,10 @@ package org.bladerunnerjs.utility;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -17,7 +19,6 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
-import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -26,12 +27,14 @@ import com.google.common.base.Joiner;
 
 
 public class BundleSetBuilder {
-	private static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
+	
+	public static final String BOOTSTRAP_LIB_NAME = "br-bootstrap";
+	
 	private final Set<SourceModule> sourceModules = new LinkedHashSet<>();
-	private final Set<SourceModule> testSourceModules = new LinkedHashSet<>();
-	private final Set<AliasDefinition> activeAliases = new HashSet<>();
+	private final Map<SourceModule, Set<SourceModule>> orderDependentSourceModuleDependencies = new LinkedHashMap<>();
+	private final Set<AliasDefinition> activeAliases = new LinkedHashSet<>();
 	private final Set<LinkedAsset> linkedAssets = new HashSet<LinkedAsset>();
-	private final Set<AssetLocation> assetLocations = new HashSet<>();
+	private final Set<AssetLocation> assetLocations = new LinkedHashSet<>();
 	private final BundlableNode bundlableNode;
 	private final Logger logger;
 	
@@ -48,7 +51,7 @@ public class BundleSetBuilder {
 			activeAliasList.addAll(activeAliases);
 			resourceLocationList.addAll(assetLocations);
 			
-			for(AliasDefinition aliasDefinition : activeAliases) {
+			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases)) {
 				addSourceModule(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
 			}
 		}
@@ -56,40 +59,33 @@ public class BundleSetBuilder {
 			throw new ModelOperationException(e);
 		}
 		
-		if (sourceModules.size() > 0)
-		{
-			try {
-				addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
-			}
-			catch(RequirePathException e) {
-				// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+		SourceModule bootstrapSourceModule = null;
+		List<SourceModule> bootstrappingSourceModules = new ArrayList<SourceModule>();
+		try {
+			if (!sourceModules.isEmpty())
+			{
+				bootstrapSourceModule = bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME);
+				addSourceModule( bootstrapSourceModule );
+				addAllSourceModuleDependencies(bootstrapSourceModule, bootstrappingSourceModules);
 			}
 		}
+		catch(RequirePathException e) {
+			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
+		}
 		
-		return new BundleSet(bundlableNode, orderSourceModules(sourceModules), new ArrayList<SourceModule>(testSourceModules), activeAliasList, resourceLocationList);
+		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules, orderDependentSourceModuleDependencies).getOrderedSourceModules();
+		
+		return new BundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
 	}
-	
+
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
 		for(LinkedAsset seedFile : seedFiles) {
 			addLinkedAsset(seedFile);
 		}
 	}
 	
-	public void addTestSourceModules(List<? extends SourceModule> testSourceModules) throws ModelOperationException {
-		for(SourceModule sourceModule : testSourceModules) {
-			addTestSourceModule(sourceModule);
-		}
-	}
-	
-	private void addTestSourceModule(SourceModule sourceModule) throws ModelOperationException {
-		if(testSourceModules.add(sourceModule)) {
-			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
-			addLinkedAsset(sourceModule);
-		}
-	}
-	
 	private void addSourceModule(SourceModule sourceModule) throws ModelOperationException {
-		if(sourceModules.add(sourceModule)) {
+		if (sourceModules.add(sourceModule)) {
 			activeAliases.addAll(getAliases(sourceModule.getAliasNames()));
 			addLinkedAsset(sourceModule);
 		}
@@ -99,16 +95,7 @@ public class BundleSetBuilder {
 		
 		if(linkedAssets.add(linkedAsset)) {
 			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
-			if (linkedAsset instanceof SourceModule)
-			{
-				try {
-					
-					addSourceModule(bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME));
-				}
-				catch(RequirePathException e) {
-					// do nothing: 'bootstrap' is only an implicit dependency if it exists 
-				}
-			}
+			
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			
 			if(moduleDependencies.isEmpty()) {
@@ -122,7 +109,7 @@ public class BundleSetBuilder {
 				addSourceModule(sourceModule);
 			}
 			
-			addAssetLocation(linkedAsset.getAssetLocation());
+			addAssetLocation(linkedAsset.assetLocation());
 		}
 		
 	}
@@ -134,7 +121,7 @@ public class BundleSetBuilder {
 				addLinkedAsset(resourceSeedFile);
 			}
 			
-			for(AssetLocation dependentAssetLocation : assetLocation.getDependentAssetLocations()) {
+			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
 				addAssetLocation(dependentAssetLocation);
 			}
 		}
@@ -145,54 +132,38 @@ public class BundleSetBuilder {
 		
 		try {
 			for(String aliasName : aliasNames) {
-				aliases.add(bundlableNode.getAlias(aliasName));
+				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				
+				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
+				if (alias != null)
+				{
+					SourceModule sourceModule = bundlableNode.getSourceModule(alias.getRequirePath());
+					addSourceModule(sourceModule);
+					
+					if(alias.getInterfaceName() != null) {
+						addOrderDependentSourceModuleDependency(sourceModule, bundlableNode.getSourceModule(alias.getInterfaceRequirePath()));
+					}
+					
+					aliases.add(alias);
+				}
 			}
 		}
-		catch(AliasException | ContentFileProcessingException e) {
+		catch(AliasException | ContentFileProcessingException | RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
 		
 		return aliases;
 	}
-
-	private List<SourceModule> orderSourceModules(Set<SourceModule> sourceModules) throws ModelOperationException {
-		List<SourceModule> sourceModulesList = new ArrayList<>();
-		Set<LinkedAsset> metDependencies = new HashSet<>();		
-		
-		while(!sourceModules.isEmpty()) {
-			Set<SourceModule> unprocessedSourceModules = new HashSet<>();
-			boolean progressMade = false;
-			
-			for(SourceModule sourceModule : sourceModules) {
-				if(dependenciesHaveBeenMet(sourceModule, metDependencies)) {
-					progressMade = true;
-					sourceModulesList.add(sourceModule);
-					metDependencies.add(sourceModule);
-				}
-				else {
-					unprocessedSourceModules.add(sourceModule);
-				}
-			}
-			
-			if (!progressMade)
-			{
-				throw new CircularDependencyException(unprocessedSourceModules);
-			}
-			
-			sourceModules = unprocessedSourceModules;
-		}
-		
-		return sourceModulesList;
-	}
 	
-	private boolean dependenciesHaveBeenMet(SourceModule sourceModule, Set<LinkedAsset> metDependencies) throws ModelOperationException {
-		for(LinkedAsset dependentSourceModule : sourceModule.getOrderDependentSourceModules(bundlableNode)) {
-			if(!metDependencies.contains(dependentSourceModule)) {
-				return false;
+	private void addOrderDependentSourceModuleDependency(SourceModule sourceModule, SourceModule dependency) throws ModelOperationException {
+		if(sourceModule != dependency) {
+			if(!orderDependentSourceModuleDependencies.containsKey(sourceModule)) {
+				orderDependentSourceModuleDependencies.put(sourceModule, new LinkedHashSet<SourceModule>());
 			}
+			
+			addSourceModule(dependency);
+			orderDependentSourceModuleDependencies.get(sourceModule).add(dependency);
 		}
-		
-		return true;
 	}
 	
 	private String sourceFilePaths(List<SourceModule> sourceModules) {
@@ -203,6 +174,29 @@ public class BundleSetBuilder {
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
+	}
+	
+	
+	private void addAllSourceModuleDependencies(SourceModule sourceModule, List<SourceModule> sourceModules) throws ModelOperationException
+	{
+		addAllSourceModuleDependencies(sourceModule, sourceModules, new ArrayList<SourceModule>());
+	}
+	
+	private void addAllSourceModuleDependencies(SourceModule sourceModule, List<SourceModule> sourceModules, List<SourceModule> processedModules) throws ModelOperationException
+	{
+		if (processedModules.contains(sourceModule))
+		{
+			return;
+		}
+		processedModules.add(sourceModule);
+		
+		for (SourceModule dependency : sourceModule.getDependentSourceModules(bundlableNode))
+		{
+			if (!sourceModules.contains(dependency)) {
+				addAllSourceModuleDependencies(dependency, sourceModules, processedModules);
+			}
+		}
+		sourceModules.add(sourceModule);
 	}
 	
 }

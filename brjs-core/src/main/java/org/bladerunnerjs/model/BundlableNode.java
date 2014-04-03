@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AmbiguousAliasException;
+import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
@@ -25,10 +26,10 @@ public interface BundlableNode extends Node, AssetContainer {
 	/**
 	 * Returns all AssetContainers that contain resources that can potentially be bundled for this BundleableNode
 	 */
-	List<AssetContainer> getAssetContainers();
+	List<AssetContainer> assetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;
-	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, ContentFileProcessingException;
-	List<AliasDefinitionsFile> getAliasDefinitionFiles();
+	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException;
+	List<AliasDefinitionsFile> aliasDefinitionFiles();
 	
 	void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 }

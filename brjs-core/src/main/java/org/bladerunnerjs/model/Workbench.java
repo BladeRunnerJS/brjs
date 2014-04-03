@@ -9,12 +9,13 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.IndexPageSeedFileLocator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public final class Workbench extends AbstractBrowsableNode implements TestableNode 
+public final class Workbench extends AbstractBrowsableNode implements TestableNode, ThemeableNode
 {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
 	private final NodeMap<TypedTestPack> testTypes;
@@ -51,7 +52,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	
 	@Override
 	public String requirePrefix() {
-		return getApp().getRequirePrefix();
+		return app().getRequirePrefix();
 	}
 	
 	@Override
@@ -60,16 +61,16 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	}
 	
 	@Override
-	public List<AssetContainer> getAssetContainers() {
+	public List<AssetContainer> assetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		assetContainers.add( getApp().aspect("default") );
+		assetContainers.add( app().aspect("default") );
 		
 		assetContainers.add( this );
 		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
 		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );
 		
-		for(JsLib jsLib : getApp().jsLibs()) {
+		for(JsLib jsLib : app().jsLibs()) {
 			assetContainers.add(jsLib);
 		}
 		
@@ -94,11 +95,13 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 		return child(testTypes, typedTestPackName);
 	}
 	
+	@Override
 	public List<Theme> themes()
 	{
 		return children(themes);
 	}
 	
+	@Override
 	public Theme theme(String themeName)
 	{
 		return child(themes, themeName);

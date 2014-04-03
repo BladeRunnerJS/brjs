@@ -14,18 +14,18 @@ import org.bladerunnerjs.plugin.AssetPlugin;
  *
  */
 public interface AssetLocation extends BRJSNode {
-	String getJsStyle();
+	String jsStyle();
 	String requirePrefix() throws RequirePathException;
 	String namespace() throws RequirePathException;
 	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException;
-	SourceModule getSourceModuleWithRequirePath(String requirePath) throws RequirePathException;
+	SourceModule sourceModule(String requirePath) throws RequirePathException;
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAsset> seedResources();
 	List<LinkedAsset> seedResources(String fileExtension);
 	List<Asset> bundleResources(String fileExtension);
 	List<Asset> bundleResources(AssetPlugin assetProducer);
-	AssetContainer getAssetContainer();
-	List<AssetLocation> getDependentAssetLocations();
+	AssetContainer assetContainer();
+	List<AssetLocation> dependentAssetLocations();
 	<A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException;
 	
 	/**

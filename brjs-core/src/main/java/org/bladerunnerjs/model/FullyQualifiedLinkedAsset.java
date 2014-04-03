@@ -26,7 +26,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	{
 		try {
 			this.assetLocation = assetLocation;
-			app = assetLocation.getAssetContainer().getApp();
+			app = assetLocation.assetContainer().app();
 			this.assetFile = new File(dir, assetName);
 			assetPath = RelativePathUtility.get(app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
@@ -67,11 +67,10 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	public String getAssetPath() {
 		return assetPath;
 	}
-
+	
 	@Override
-	public AssetLocation getAssetLocation()
+	public AssetLocation assetLocation()
 	{
 		return assetLocation;
 	}
-	
 }

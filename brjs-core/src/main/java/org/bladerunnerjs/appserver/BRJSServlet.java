@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -37,7 +38,11 @@ public class BRJSServlet extends HttpServlet
 		
 		try {
 			brjs = BRJSThreadSafeModelAccessor.aquireModel();
-			app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath(".")), App.class);
+			app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath("/")), App.class);
+			if (app == null)
+			{
+ 				throw new ServletException("Unable to calculate app for Servlet. Context path for expected app was '" + servletContext.getRealPath("/") + "'.");
+ 			}
 		}
 		finally {
 			BRJSThreadSafeModelAccessor.releaseModel();
@@ -63,7 +68,12 @@ public class BRJSServlet extends HttpServlet
 			
 			response.setContentType(contentType);
 			BladerunnerUri bladerunnerUri = new BladerunnerUri(brjs, servletContext, request);
-			app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri.logicalPath, response.getOutputStream());
+			BundlableNode bundlableNode = app.getBundlableNode(bladerunnerUri);
+			if (bundlableNode == null)
+			{
+				throw new ResourceNotFoundException("Unable to find BundlableNode for URL " + request.getRequestURI());
+			}
+			bundlableNode.handleLogicalRequest(bladerunnerUri.logicalPath, response.getOutputStream());
 		} catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException | ConfigException e) {
 			throw new ServletException(e);
 		}

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.bundler.js.analyser.HTMLCodeUnitVisitor;
@@ -24,6 +25,7 @@ public class AnalyserTest
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(testStructures)));
 	}
 	
+	@Ignore
 	@Test
 	public void testAnalyserOnApp1WithTextOutput() throws Exception
 	{
@@ -65,6 +67,7 @@ public class AnalyserTest
 		assertEquals(expected, result);
 	}
 	
+	@Ignore
 	@Test
 	public void testAnalyserOnApp1WithJSONOutput() throws Exception
 	{
@@ -93,6 +96,7 @@ public class AnalyserTest
 		assertEquals(expected, result);
 	}
 	
+	@Ignore
 	@Test
 	public void testAnalyserOnApp1WithHTMLOutput() throws Exception
 	{

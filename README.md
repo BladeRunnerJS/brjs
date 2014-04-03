@@ -1,6 +1,6 @@
 # BladeRunnerJS (BRJS)
 
-**Divide & conquer web apps**
+**Divide & conquer complex web apps**
 
 ## Getting Started
 
@@ -31,6 +31,17 @@ If you are interested in contributing to the BRJS core toolkit then the followin
     git submodule update
 
 You may need to run `git submodule sync` and `git submodule update` when changing branches if submodules have changed.
+
+#### Install JDK
+
+BRJS is written and compiled using Java 8, but we distribute it and run the tests against it using Java 7, courtesy of [retrolambda](https://github.com/orfjackal/retrolambda). Because of this, you will need to do the following:
+
+  * Install both Java 7 and Java 8 JDKs.
+  * Configure `JAVA7_HOME` to point to the Java 7 JDK home directory.
+  * Configure `JAVA8_HOME` to point to the Java 8 JDK home directory.
+  * Configure `JAVA_HOME` to point to either the Java 7 or the Java 8 JDK home directory, as you prefer.
+  * Configure the `path` environment variable to include `$JAVA_HOME/bin`.
+
 
 #### Build a Distributable Zip
 
