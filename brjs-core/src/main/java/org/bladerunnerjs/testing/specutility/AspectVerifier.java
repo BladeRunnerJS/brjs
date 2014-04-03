@@ -36,7 +36,7 @@ public class AspectVerifier extends NodeVerifier<Aspect> {
 		return verifierChainer;
 	}
 	
-	public VerifierChainer hasSourceModules(SourceModuleDescriptor... sourceModules) throws Exception {
+	public VerifierChainer hasSourceModules(String... sourceModules) throws Exception {
 		assetContainerVerifier.hasSourceModules(sourceModules);
 		
 		return verifierChainer;
