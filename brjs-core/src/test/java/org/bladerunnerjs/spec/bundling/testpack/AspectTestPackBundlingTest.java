@@ -90,7 +90,7 @@ public class AspectTestPackBundlingTest extends SpecTest
 	
 	@Test
 	public void allTestResourcesAreBundled() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspectUTs).hasNamespacedJsPackageStyle()
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1")
 			.and(aspectUTs).containsFileWithContents("resources/en.properties", "appns.prop=val");

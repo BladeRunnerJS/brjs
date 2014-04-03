@@ -32,7 +32,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 	
 	@Test
 	public void weDoNoIncludePatchesForClassesThatArentUsed() throws Exception {
-		given(sdkJsLib).hasClasses("sdkLib.Class", "sdkLib.AnotherClass")
+		given(sdkJsLib).hasClasses("sdkLib/Class", "sdkLib/AnotherClass")
     		.and(aspect).indexPageRequires("sdkLib/Class")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/AnotherClass.js", "sdkLib.AnotherClass.patch = function() {}");
     	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -44,7 +44,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 	@Test
 	public void usefulLoggingIsOutputWhenAPatchIsApplied() throws Exception {
 		given(logging).enabled()
-			.and(sdkJsLib).hasClasses("sdkLib.Class", "sdkLib.AnotherClass")
+			.and(sdkJsLib).hasClasses("sdkLib/Class", "sdkLib/AnotherClass")
     		.and(aspect).indexPageRequires("sdkLib/Class")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}");
     	when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -54,7 +54,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 	
 	@Test
 	public void updatedPatchesAreIncludedInEachBundle_WeDoNotCacheThePatchContent() throws Exception {
-    	given(sdkJsLib).hasClasses("sdkLib.Class")
+    	given(sdkJsLib).hasClasses("sdkLib/Class")
     		.and(aspect).indexPageRequires("sdkLib/Class")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}")
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
@@ -65,7 +65,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 	
 	@Test
 	public void newRequiresAreIncludedInTheBundle_WeDontNotCacheThePatchRequires() throws Exception {
-    	given(sdkJsLib).hasClasses("sdkLib.Class1", "sdkLib.Class2")
+    	given(sdkJsLib).hasClasses("sdkLib/Class1", "sdkLib/Class2")
     		.and(aspect).indexPageRequires("sdkLib/Class1")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "sdkLib.Class1.patch = function() {}")
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");

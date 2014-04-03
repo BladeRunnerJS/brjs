@@ -80,7 +80,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("ingoredFile.js", "require('appns.class1')\n")
 			.and(thirdpartyLib).containsFileWithContents("ingoredFile.html", "appns.class1\n")
 			.and(thirdpartyLib).containsFileWithContents("ingoredFile.xml", "appns.class1'")
-			.and(aspect).hasClass("appns.class1")
+			.and(aspect).hasClass("appns/class1")
 			.and(aspect).indexPageHasContent("require('"+thirdpartyLib.getName()+"')");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", pageResponse);
 		then(pageResponse).containsText("file1.js")

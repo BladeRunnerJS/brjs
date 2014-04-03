@@ -41,7 +41,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGeneratedByDefault() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
@@ -50,7 +50,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	
 	@Test
 	public void inProdASingleBundlerRequestIsGeneratedByDefault() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
@@ -73,7 +73,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	
 	@Test
 	public void prodMinifierAttributeCanAllowJsFilesToBeServedAsSeparateFiles() throws Exception {		
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
@@ -84,7 +84,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void theAliasBlobRequestIsOutputLast() throws Exception {
 		given(aspect).hasNodeJsPackageStyle("src/appns/node")
 		.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-		.and(aspect).hasClass("appns.node.Class")
+		.and(aspect).hasClass("appns/node/Class")
 		.and(aspect).hasClass("appns.namespaced.Class")
 		.and(brbootstrap).containsFileWithContents("library.manifest", "exports: brbootstrap")
 		.and(brbootstrap).containsFile("bootstrap.js")
@@ -108,7 +108,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void seperateScriptTagsAreGeneratedInTheCorrectOrder() throws Exception {
 		given(aspect).hasNodeJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-			.and(aspect).hasClass("appns.node.Class")
+			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
 			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: brbootstrap")
 			.and(brbootstrap).containsFile("bootstrap.js")

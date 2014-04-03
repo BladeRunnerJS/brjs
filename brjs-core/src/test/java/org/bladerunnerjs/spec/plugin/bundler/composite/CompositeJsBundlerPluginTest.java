@@ -36,7 +36,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	@Test
 	public void thirdpartyAppearsFirstAndNamespacedModulesAppearLastInTheBundle() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-			.and(aspect).hasClasses("appns.node.NodeClass", "appns.namespaced.NamespacedClass")
+			.and(aspect).hasClasses("appns/node/NodeClass", "appns.namespaced.NamespacedClass")
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFile("src.js")
 			.and(aspect).indexPageRefersTo("'thirdparty-lib', appns.namespaced.NamespacedClass, appns.node.NodeClass");
@@ -49,8 +49,8 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void theAliasBlobIsOutputLast() throws Exception {
-		given(aspect).classRequires("appns.Class1", "br/AliasRegistry")
-			.and(brLib).hasClass("br.AliasRegistry")
+		given(aspect).classRequires("appns/Class1", "br/AliasRegistry")
+			.and(brLib).hasClass("br/AliasRegistry")
 			.and(aspectAliasesFile).hasAlias("the-alias", "appns.Class1")
 			.and(aspect).indexPageRefersTo("\"the-alias\"")
 			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: lib")
@@ -67,7 +67,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void bundlesAreIncludedInTheRightOrder() throws Exception {
 		given(aspect).hasNodeJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-			.and(aspect).hasClass("appns.node.Class")
+			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
 			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("bootstrap.js")
@@ -90,7 +90,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	public void i18nBundleIsNotIncluded() throws Exception {
 		given(aspect).hasNodeJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-			.and(aspect).hasClass("appns.node.Class")
+			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
 			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("bootstrap.js")

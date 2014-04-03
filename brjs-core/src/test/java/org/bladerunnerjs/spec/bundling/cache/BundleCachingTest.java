@@ -30,8 +30,8 @@ public class BundleCachingTest extends SpecTest
 	// Cache tests should be irrespective of JS style (namespace/node)
 	@Test
 	public void weDoNotCacheIndexPageReferencesToSourceClasses() throws Exception {
-		given(aspect).hasClass("appns.Class1")
-			.and(aspect).hasClass("appns.Class2")
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).hasClass("appns/Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
 		when(aspect).indexPageRefersTo("appns.Class2")
@@ -42,7 +42,7 @@ public class BundleCachingTest extends SpecTest
 	
 	@Test
 	public void weDoNotCacheAspectSourceDependencies() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
@@ -62,7 +62,7 @@ public class BundleCachingTest extends SpecTest
 	
 	@Test
 	public void weDoNotCacheDependentSourceModulesInLinkedAssetFiles() throws Exception {
-		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+		given(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.Class1")
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
 		when(aspect).resourceFileRefersTo("html/view.html", "appns.Class2")

@@ -76,7 +76,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 	public void aspectBundlesContainAppLegacyThirdpartyLibsIfTheyAreRequiredInAClass() throws Exception {
 		given(appThirdparty).containsFileWithContents("library.manifest", "js: src.js\n"+"exports: appThirdparty")
 			.and(appThirdparty).containsFile("src.js")
-			.and(aspect).classRequires("appns.Class1", "app-thirdparty")
+			.and(aspect).classRequires("appns/Class1", "app-thirdparty")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("src.js");

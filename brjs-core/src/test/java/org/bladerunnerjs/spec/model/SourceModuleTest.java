@@ -26,7 +26,7 @@ public class SourceModuleTest extends SpecTest {
 	
 	@Test
 	public void aspectSourceModulesAndAssetLocationsAreAsExpected() throws Exception {
-		given(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg.Class3")
+		given(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/pkg/Class3")
 			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml", "themes/theme1/style.css");
 		then(aspect).hasSourceModules("appns/Class1", "appns/Class2", "appns/pkg/Class3")
 			.and(aspect).hasAssetLocations("resources", "src", "src/appns", "src/appns/pkg", "src-test")
@@ -40,7 +40,7 @@ public class SourceModuleTest extends SpecTest {
 	
 	@Test
 	public void brjsLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
-		given(brjsLib).hasClasses("brjslib.Class1", "brjslib.Class2", "brjslib.pkg.Class3")
+		given(brjsLib).hasClasses("brjslib/Class1", "brjslib/Class2", "brjslib/pkg/Class3")
 			.and(brjsLib).containsFiles("resources/config1.xml", "resources/dir/config2.xml", "themes/theme1/style.css");
 		then(brjsLib).hasSourceModules("brjslib/Class1", "brjslib/Class2", "brjslib/pkg/Class3")
 			.and(brjsLib).hasAssetLocations("resources", "src", "src/brjslib", "src/brjslib/pkg", "src-test")

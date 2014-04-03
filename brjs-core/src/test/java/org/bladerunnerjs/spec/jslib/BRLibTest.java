@@ -31,35 +31,35 @@ public class BRLibTest extends SpecTest {
 	
 	@Test
 	public void sdkLibrariesCanHaveARequirePrefixThatsDifferentToTheirName() throws Exception {
-		given(aspect).hasClass("appns.AspectClass")
+		given(aspect).hasClass("appns/AspectClass")
 			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo/bar")
-			.and(sdkLib).hasClass("foo.bar.SdkClass")
+			.and(sdkLib).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns.AspectClass", "foo.bar.SdkClass");
+			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("foo.bar.SdkClass");
 	}
 	
 	@Test
 	public void sdkLibrariesMustHaveARequirePrefixWithCorrectFormat() throws Exception {
-		given(aspect).hasClass("appns.AspectClass")
+		given(aspect).hasClass("appns/AspectClass")
 			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo.bar")
-			.and(sdkLib).hasClass("foo.bar.SdkClass")
+			.and(sdkLib).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns.AspectClass", "foo.bar.SdkClass");
+			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(ConfigException.class, "foo.bar", "sdk/libs/javascript/br-libs/br/br.manifest", BRLibConf.REQUIRE_PREFIX_REGEX);
 	}
 	
 	@Test
 	public void aLibraryCanHaveTheSameRequirePrefixAsAClassInADifferentLibraryIfItHasADifferentCase() throws Exception {
-		given(aspect).hasClass("appns.AspectClass")
+		given(aspect).hasClass("appns/AspectClass")
 			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo")
-			.and(sdkLib).hasClass("foo.Bar")
+			.and(sdkLib).hasClass("foo/Bar")
 			.and(sdkLib2).containsFileWithContents("br.manifest", "requirePrefix: foo/bar")
-			.and(sdkLib2).hasClass("foo.bar.SdkClass")
+			.and(sdkLib2).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns.AspectClass", "foo.Bar");
+			.and(aspect).classRequires("appns/AspectClass", "foo.Bar");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("foo.Bar");
 	}

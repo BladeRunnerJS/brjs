@@ -54,10 +54,10 @@ public class AspectUserLibBundling extends SpecTest {
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreRequiredInAClass() throws Exception {
 		given(userLib).hasNodeJsPackageStyle()
-			.and(userLib).hasClass("userLib.Class1")
+			.and(userLib).hasClass("userLib/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).hasClass("appns.Class1")
-			.and(aspect).classRequires("appns.Class1", "userLib.Class1");
+			.and(aspect).hasClass("appns/Class1")
+			.and(aspect).classRequires("appns/Class1", "userLib.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("userLib.Class1");
 	}

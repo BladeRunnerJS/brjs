@@ -33,7 +33,7 @@ public class InvalidAssetPluginHandling extends SpecTest {
 		invalidAssetPlugin.enable();
 		
 		given(app).hasBeenCreated()
-			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en/combined/bundle.js", pageResponse);
 		then(exceptions).verifyException(AssetFileInstantationException.class);

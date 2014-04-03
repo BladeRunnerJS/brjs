@@ -51,7 +51,7 @@ public class TestPackBundlingTest extends SpecTest
 	@Test
 	public void testCodeCanUseRequires() throws Exception {
 		given(aspect).hasNodeJsPackageStyle()
-    		.and(aspect).hasClasses("appns.Class1")
+    		.and(aspect).hasClasses("appns/Class1")
     		.and(aspectUTs).testRequires("pkg/test.js", "appns/Class1");
     	then(aspectUTs).bundledFilesEquals(aspect.assetLocation("src").file("appns/Class1.js"));
 	}

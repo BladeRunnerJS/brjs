@@ -26,7 +26,7 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void classesAreAutomaticallyWrappedInAClosure() throws Exception {
-		given(aspect).hasClasses("appns.Class1")
+		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/node-js/module/appns/Class1.js", requestResponse);
 		then(requestResponse).containsLines(
@@ -39,7 +39,7 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void jsPatchesAreIncludedInTheClosure() throws Exception {
-		given(sdkJsLib).hasClasses("sdkLib.Class1")
+		given(sdkJsLib).hasClasses("sdkLib/Class1")
 			.and(aspect).indexPageRefersTo("sdkLib.Class1")
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "sdkLib.Class1.patch = function() {}");
 		when(app).requestReceived("/default-aspect/node-js/module/sdkLib/Class1.js", requestResponse);
@@ -54,7 +54,7 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 	
 	@Test
 	public void requiresInPatchesArePulledInToTheBundle() throws Exception {
-		given(sdkJsLib).hasClasses("sdkLib.Class1", "sdkLib.Class2")
+		given(sdkJsLib).hasClasses("sdkLib/Class1", "sdkLib/Class2")
 			.and(aspect).indexPageRefersTo("sdkLib.Class1")
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "require('sdkLib/Class2')");
 		when(app).requestReceived("/default-aspect/node-js/bundle.js", requestResponse);

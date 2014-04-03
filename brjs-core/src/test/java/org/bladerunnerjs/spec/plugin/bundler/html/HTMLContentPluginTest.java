@@ -42,7 +42,7 @@ public class HTMLContentPluginTest extends SpecTest
 	
 	@Test
 	public void aspectHTMlFilesBundleFailsWithWrongNamespace() throws Exception {
-		given(blade).hasClass("appns.bs.b1.Class")
+		given(blade).hasClass("appns/bs/b1/Class")
 			.and(blade).resourceFileContains("html/view.html", "<div id='xxxxx.view'>TESTCONTENT</div>")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
@@ -74,7 +74,7 @@ public class HTMLContentPluginTest extends SpecTest
 	@Test
 	public void bladeHTMlFilesAreBundledIfTheirClassIsReferencedInsideIndexPage() throws Exception {
 		given(blade).resourceFileContains("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
-			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
 		then(response).containsText("TESTCONTENT");
@@ -95,7 +95,7 @@ public class HTMLContentPluginTest extends SpecTest
 
 	@Test
 	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAspectIndexPage() throws Exception {
-		given(blade).hasClass("appns.bs.b1.Class1")
+		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(blade).resourceFileContains("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
@@ -108,7 +108,7 @@ public class HTMLContentPluginTest extends SpecTest
 	// TODO this test should pass
 	@Test
 	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAnAspectHTMLResourceFile() throws Exception {
-		given(blade).hasClass("appns.bs.b1.Class1")
+		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(blade).resourceFileContains("html/view.html", "<div id='appns.bs.b1.view'>TESTCONTENT</div>")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
@@ -124,7 +124,7 @@ public class HTMLContentPluginTest extends SpecTest
 	@Test
 	public void bladeHTMlFilesBundleFailsWithWrongNamespace() throws Exception {
 		given(blade).resourceFileContains("html/view.html", "<div id='appns.bs.badnamespace.view'>TESTCONTENT</div>")
-			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
 		then(exceptions).verifyException(NamespaceException.class, "appns.bs.badnamespace.view", "appns.bs.b1.*");
@@ -143,7 +143,7 @@ public class HTMLContentPluginTest extends SpecTest
 	@Test
 	public void enforcedNamespacesAreCalculatedUsingTheAssetLocation() throws Exception {
 		given(blade).containsFileWithContents("src/appns/bs/b1/some/pkg/view.html", "<div id='appns.bs.badnamespace.view'>TESTCONTENT</div>")
-			.and(blade).hasClass("appns.bs.b1.some.pkg.Class1")
+			.and(blade).hasClass("appns/bs/b1/some/pkg/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.some.pkg.Class1");
 		when(app).requestReceived("/default-aspect/bundle.html", response);
 		then(exceptions).verifyException(NamespaceException.class, "appns.bs.badnamespace.view", "appns.bs.b1.some.pkg.*");

@@ -59,7 +59,7 @@ public class XMLContentPluginTest extends SpecTest{
 	public void aspectXmlFilesBundlingFailsWithWrongNamespace() throws Exception {
 		String config = getSimpleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
-			.and(blade).hasClass("appns.bs.b1.Class")
+			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(blade).resourceFileContains("xml/gridDefinitions.xml", xml(getProviderMapping("xxxxx.Provider"), true))
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class");
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
@@ -133,7 +133,7 @@ public class XMLContentPluginTest extends SpecTest{
 	public void bladeXmlFilesAreBundledIfTheirClassIsReferencedInsideIndexPage() throws Exception {
 		String config = getSimpleConfig();
 		given(blade).resourceFileContains("xml/gridDefinitions.xml", xml( getProviderMapping("appns.bs.b1.DatProvider1"), true))
-			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 		    .and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config);
 		when(app).requestReceived("/default-aspect/bundle.xml", response);
@@ -159,7 +159,7 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void bladeXMLFilesAreBundledIfTheBladeIsReferredToByAspectIndexPage() throws Exception {
 		String config = getSimpleConfig();
-		given(blade).hasClass("appns.bs.b1.Class1")
+		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(blade).resourceFileContains("xml/gridDefinitions.xml", xml( getProviderMapping("appns.bs.b1.DatProvider1"), true))
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
@@ -173,7 +173,7 @@ public class XMLContentPluginTest extends SpecTest{
 	@Test
 	public void bladeXMLFilesAreBundledIfTheBladeIsReferredToByAnAspectHTMLResourceFile() throws Exception {
 		String config = getSimpleConfig();
-		given(blade).hasClass("appns.bs.b1.Class1")
+		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)	
 			.and(blade).resourceFileContains("xml/gridDefinitions.xml", xml( getProviderMapping("appns.bs.b1.DatProvider1"), true))
 			.and(blade).hasNamespacedJsPackageStyle()

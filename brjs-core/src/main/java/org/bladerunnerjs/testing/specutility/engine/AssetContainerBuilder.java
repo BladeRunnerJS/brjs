@@ -189,7 +189,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
+			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "' for dir '"+sourceFile.getParentFile().getPath()+"'.");
 		}
 		
 		String classReferencesContent = "var someFunction = function() {\n";
@@ -212,7 +212,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NodeJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
+			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to '"+NodeJsContentPlugin.JS_STYLE+"' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
 		dependencyClass = dependencyClass.replaceAll("\\.(\\w)", "/$1");
@@ -229,6 +229,10 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String classBody;
 		
 		if(jsStyle.equals(NodeJsContentPlugin.JS_STYLE)) {
+			if (className.contains("."))
+			{
+				throw new RuntimeException("Require paths must not contain the '.' character");
+			}
 			className = className.replaceAll("\\.", "/");
 			String nodeJsClassName = StringUtils.substringAfterLast(className, "/");
 			classBody = nodeJsClassName + " = function() {\n"+
@@ -237,7 +241,10 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 				"module.exports = " + nodeJsClassName + ";\n";
 		}
 		else if(jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
-			className = className.replaceAll("/", ".");
+			if (className.contains("/"))
+			{
+				throw new RuntimeException("Class names must not contain the '/' character");
+			}
 			classBody = className + " = function() {\n};\n";
 		}
 		else {
