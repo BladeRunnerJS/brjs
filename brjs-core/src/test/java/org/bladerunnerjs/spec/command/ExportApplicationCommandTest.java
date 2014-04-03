@@ -40,13 +40,13 @@ public class ExportApplicationCommandTest extends SpecTest {
 	}
 	
 	@Test
-	public void appCanBeExported() throws Exception {
+	public void appCanBeExportedAndZipContentsAreCorrect() throws Exception {
 		given(app).hasBeenCreated()
 			.and(aspect).classFileHasContent("appns.Class1", "default aspect src");
-		when(brjs).runCommand("export-app", "app1");
-		then(brjs).hasFile("generated/exported-app/app1.zip");
+		when(brjs).runCommand("export-app", "app1")
+			.and(brjs).zipFileIsExtractedTo("generated/exported-app/app1.zip", "generated/exported-app/app1");
+		then(brjs).hasFile("generated/exported-app/app1.zip")
+			.and(brjs).hasFile("generated/exported-app/app1/app1/default-aspect/src/appns/Class1.js");
 	}
-	
-	// TODO port over other tests
 
 }

@@ -1,7 +1,6 @@
 package com.caplin.cutlass.util;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.comparator.NameFileComparator;
 import org.apache.commons.io.comparator.PathFileComparator;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -16,9 +15,6 @@ import org.bladerunnerjs.utility.DeleteTempFileShutdownHook;
 
 import java.io.*;
 import java.util.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 
 public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 	public static List<File> listDirs(File dir)
@@ -40,52 +36,6 @@ public class FileUtility extends org.bladerunnerjs.utility.FileUtility {
 	public static File[] sortFiles(File[] files)
 	{
 		return sortFiles( Arrays.asList(files) ).toArray(new File[0]);
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public static void unzip(ZipFile zipFile, File targetLocation) throws IOException {			 
-		Enumeration files = zipFile.entries();
-		File f = null;
-		FileOutputStream fos = null;
-		
-		while (files.hasMoreElements()) {
-			try {
-				ZipEntry entry = (ZipEntry) files.nextElement();
-				InputStream eis = zipFile.getInputStream(entry);
-				
-				f = new File(targetLocation, entry.getName());
-				
-				if (entry.isDirectory()) 
-				{
-					f.mkdirs();
-					continue;
-				} 
-				else {
-					f.getParentFile().mkdirs();
-					f.createNewFile();
-				}
-			
-				fos = new FileOutputStream(f);
-				IOUtils.copy(eis, fos);
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-				continue;		  
-			} 
-			finally {
-				if (fos != null) 
-				{
-					try {
-						fos.close();
-					}
-					catch (IOException e) {
-						// ignore
-					}
-				}
-			}
-		}
-		zipFile.close();
 	}
 
 	public static List<File> getAllFilesAndFoldersMatchingFilterIncludingSubdirectories(File directory, FileFilter filter)
