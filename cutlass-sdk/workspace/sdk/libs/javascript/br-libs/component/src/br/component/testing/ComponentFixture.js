@@ -85,6 +85,17 @@
 	};
 
 	/**
+	 * Allows custom view handlers to be added. The ViewFixture's addViewHandlers method throws an exception if an attempt is
+	 *  made to override an existing handler.
+	 *
+	 * @param {Map} viewHandlersMap A map of handler name to handler class constructor reference
+	 */
+	ComponentFixture.prototype.addViewFixtureHandlers = function(viewHandlersMap) {
+		this.m_oViewFixture.addViewHandlers(viewHandlersMap);
+	};
+
+
+	/**
 	 * ComponentFixture handles the 'opened' property.
 	 * 
 	 * @param {String} sProperty name of the property

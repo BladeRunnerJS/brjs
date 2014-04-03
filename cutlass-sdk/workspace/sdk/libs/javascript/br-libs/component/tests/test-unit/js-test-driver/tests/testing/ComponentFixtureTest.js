@@ -77,6 +77,25 @@ ComponentFixtureTest.prototype.test_fixtureMustBeInstantiatedWithXMLAndModelFixt
 	);
 };
 
+/*
+ * Adding a view handler to the captive ViewFixture
+ */
+ComponentFixtureTest.prototype.test_aNewViewHandlerCanBeAdded = function() {
+	var oComponentFixture = new br.component.testing.ComponentFixture("<component/>",
+		this.m_oMockModelFixture.proxy(), this.m_oMockViewFixture.proxy());
+
+	var viewHandlerMap = {
+		'new-value': function() {
+			this.get = function() { return 'new (valid) handler get response'; };
+			this.set = function() {};
+		}
+	};
+
+	this.m_oMockViewFixture.expects(once()).addViewHandlers(viewHandlerMap);
+	oComponentFixture.addViewFixtureHandlers(viewHandlerMap);
+};
+
+
 /* ********************************************************************
 *						 Handling 'opened'
 **********************************************************************/
