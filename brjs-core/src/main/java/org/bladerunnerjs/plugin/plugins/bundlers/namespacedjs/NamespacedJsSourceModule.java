@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -24,7 +25,6 @@ import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
-import org.bladerunnerjs.utility.FileModifiedChecker;
 import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -34,18 +34,14 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private static final Pattern extendPattern = Pattern.compile("(caplin|br\\.Core)\\.(extend|implement|inherit)\\([^,]+,\\s*([^)]+)\\)");
 	private static final String DEFINE_BLOCK = "\ndefine('%s', function(require, exports, module) { module.exports = %s; });";
 	
-	private List<SourceModule> orderDependentSourceModules;
-	private FileModifiedChecker fileModifiedChecker;
 	private LinkedAsset linkedAsset;
 	private AssetLocation assetLocation;
 	private String requirePath;
 	private String className;
-
 	private SourceModulePatch patch;
-	private FileModifiedChecker patchFileModifiedChecker;
-
 	private TrieBasedDependenciesCalculator dependencyCalculator;
 	
+	private MemoizedValue<List<SourceModule>> orderDependentSourceModulesList;
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	
 	@Override
@@ -57,12 +53,11 @@ public class NamespacedJsSourceModule implements SourceModule {
 			this.assetLocation = assetLocation;
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
-			fileModifiedChecker = new FileModifiedChecker(assetFile);
 			linkedAsset = new FullyQualifiedLinkedAsset();
 			linkedAsset.initialize(assetLocation, dir, assetName);
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-			patchFileModifiedChecker = new FileModifiedChecker(patch.getPatchFile());
-			dependencyCalculator = new TrieBasedDependenciesCalculator(this);
+			dependencyCalculator = new TrieBasedDependenciesCalculator(this, assetFile, patch.getPatchFile());
+			orderDependentSourceModulesList = new MemoizedValue<>(assetLocation.root(), assetLocation.root().dir());
 			assetLocationsList = new MemoizedValue<>(assetLocation.root(), assetLocation.assetContainer().dir());
 		}
 		catch(RequirePathException e) {
@@ -105,11 +100,35 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck() || patchFileModifiedChecker.fileModifiedSinceLastCheck()) {
-			recalculateOrderedDependencies(bundlableNode);
-		}
-		
-		return orderDependentSourceModules;
+		return orderDependentSourceModulesList.value(new Getter<ModelOperationException>(){
+			@Override
+			public Object get() throws ModelOperationException {
+				List<SourceModule> orderDependentSourceModules = new ArrayList<>();
+				
+				try(Reader reader = new JsCommentStrippingReader(getReader(), false)) {
+					StringWriter stringWriter = new StringWriter();
+					IOUtils.copy(reader, stringWriter);
+					Matcher matcher = extendPattern.matcher(stringWriter.toString());
+					
+					while (matcher.find()) {
+						String referencedClass = matcher.group(3);
+						String requirePath = referencedClass.replaceAll("\\.", "/");
+						
+						try {
+							orderDependentSourceModules.add(bundlableNode.getSourceModule(requirePath));
+						}
+						catch(UnresolvableRequirePathException e) {
+							// TODO: log the fact that the thing being extended was not found to be a fully qualified class name (probably a variable name), and so is being ignored for the purposes of bundling.
+						}
+					}
+				}
+				catch(IOException | RequirePathException e) {
+					throw new ModelOperationException(e);
+				}
+				
+				return orderDependentSourceModules;
+			}
+		});
 	}
 	
 	@Override
@@ -139,30 +158,5 @@ public class NamespacedJsSourceModule implements SourceModule {
 		return assetLocationsList.value(() -> {
 			return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 		});
-	}
-	
-	private void recalculateOrderedDependencies(BundlableNode bundlableNode) throws ModelOperationException {
-		try(Reader reader = new JsCommentStrippingReader(getReader(), false)) {
-			orderDependentSourceModules = new ArrayList<>();
-			
-			StringWriter stringWriter = new StringWriter();
-			IOUtils.copy(reader, stringWriter);
-			Matcher matcher = extendPattern.matcher(stringWriter.toString());
-			
-			while (matcher.find()) {
-				String referencedClass = matcher.group(3);
-				String requirePath = referencedClass.replaceAll("\\.", "/");
-				
-				try {
-					orderDependentSourceModules.add(bundlableNode.getSourceModule(requirePath));
-				}
-				catch(UnresolvableRequirePathException e) {
-					// TODO: log the fact that the thing being extended was not found to be a fully qualified class name (probably a variable name), and so is being ignored for the purposes of bundling.
-				}
-			}
-		}
-		catch(IOException | RequirePathException e) {
-			throw new ModelOperationException(e);
-		}
 	}
 }

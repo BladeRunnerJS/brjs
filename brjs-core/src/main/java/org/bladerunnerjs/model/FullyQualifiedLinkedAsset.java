@@ -30,7 +30,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 			this.assetFile = new File(dir, assetName);
 			assetPath = RelativePathUtility.get(app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			dependencyCalculator = new TrieBasedDependenciesCalculator(this);
+			dependencyCalculator = new TrieBasedDependenciesCalculator(this, assetFile);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
