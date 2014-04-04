@@ -28,8 +28,8 @@ public class JsStringStrippingReaderTest
 		);
 	}
 	
-	@Test @Ignore
-	public void sourceWithDoubleQuotedStringsIfRemoved() throws IOException
+	@Test
+	public void sourceWithDoubleQuotedStringsIsRemoved() throws IOException
 	{
 		stripStringsAndAssertEquals(
 			lines(
@@ -40,7 +40,41 @@ public class JsStringStrippingReaderTest
 				"")
 		);
 	}
+
+	@Test
+	public void sourceAfterADoublyQuotedStringsIsNotRemoved() throws IOException
+	{
+		stripStringsAndAssertEquals(
+			lines(
+				"\"is a string\" more non string stuff"),
+			lines(
+				" more non string stuff")
+		);
+	}
 	
+	@Test
+	public void sourceWithSingleQuotedStringsIsRemoved() throws IOException
+	{
+		stripStringsAndAssertEquals(
+			lines(
+				"not a string",
+				"'is a string'"),
+			lines(
+				"not a string",
+				"")
+		);
+	}
+	
+	@Test
+	public void sourceAfterASinglyQuotedStringsIsNotRemoved() throws IOException
+	{
+		stripStringsAndAssertEquals(
+			lines(
+				"'is a string' more non string stuff"),
+			lines(
+				" more non string stuff")
+		);
+	}
 	
 	private String lines(String... input)
 	{
