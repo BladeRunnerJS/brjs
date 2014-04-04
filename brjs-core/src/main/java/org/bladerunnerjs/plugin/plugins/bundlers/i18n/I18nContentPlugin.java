@@ -74,7 +74,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	@Override
 	public String getGroupName()
 	{
-		return null;
+		return "text/javascript";
 	}
 	
 	@Override
