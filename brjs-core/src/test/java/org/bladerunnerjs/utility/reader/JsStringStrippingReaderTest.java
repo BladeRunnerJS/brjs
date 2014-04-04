@@ -8,7 +8,6 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -28,6 +27,8 @@ public class JsStringStrippingReaderTest
 		);
 	}
 	
+	/* double quout scenarios */
+	
 	@Test
 	public void sourceWithDoubleQuotedStringsIsRemoved() throws IOException
 	{
@@ -37,6 +38,17 @@ public class JsStringStrippingReaderTest
 				"\"is a string\""),
 			lines(
 				"not a string",
+				"")
+		);
+	}
+	
+	@Test
+	public void doubleQuotedStringContainingASingleQuotedStringIsCompletelyRemoved() throws IOException
+	{
+		stripStringsAndAssertEquals(
+			lines(
+				"\"is a 'quoted' string\""),
+			lines(
 				"")
 		);
 	}
@@ -51,6 +63,19 @@ public class JsStringStrippingReaderTest
 				" more non string stuff")
 		);
 	}
+	
+	@Test
+	public void sourceBeforeADoublyQuotedStringsIsNotRemoved() throws IOException
+	{
+		stripStringsAndAssertEquals(
+			lines(
+				"non string stuff \"is a string\""),
+			lines(
+				"non string stuff ")
+		);
+	}
+	
+	/* single quout scenarios */
 	
 	@Test
 	public void sourceWithSingleQuotedStringsIsRemoved() throws IOException
@@ -73,6 +98,28 @@ public class JsStringStrippingReaderTest
 				"'is a string' more non string stuff"),
 			lines(
 				" more non string stuff")
+		);
+	}
+	
+	@Test
+	public void sourceBeforeASinglyQuotedStringsIsNotRemoved() throws IOException
+	{
+		stripStringsAndAssertEquals(
+			lines(
+				"non string stuff \"is a string\""),
+			lines(
+				"non string stuff ")
+		);
+	}
+	
+	@Test
+	public void singleQuotedStringContainingADoubleQuotedStringIsCompletelyRemoved() throws IOException
+	{
+		stripStringsAndAssertEquals(
+			lines(
+				"'is a \"quoted\" string'"),
+			lines(
+				"")
 		);
 	}
 	
