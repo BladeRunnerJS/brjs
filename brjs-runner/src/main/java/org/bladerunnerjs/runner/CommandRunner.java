@@ -140,7 +140,6 @@ public class CommandRunner {
 			commandList.addCommand(new TestCommand());
 			commandList.addCommand(new TestServerCommand());
 			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
-//			commandList.addCommand(new ExportApplicationCommand(  ));
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
