@@ -67,7 +67,8 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException 
+	{
 		String appName = parsedArgs.getString("app-name");
 		String disclaimer = "/*\n* " + parsedArgs.getString("disclaimer") + "\n*/\n\n";
 		App app = brjs.app(appName);
@@ -78,17 +79,15 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 
 		try 
 		{
-			File existingAppDir = app.dir();
-			
 			File temporaryExportDir = FileUtility.createTemporaryDirectory(appName);
 			
 			IOFileFilter excludeUserLibraryTestsFilter = createExcludeUserLibsTestsFilter(appName);
-			IOFileFilter excludeDirFilter = new ExcludeDirFileFilter("js-test-driver", "bundles");
-			IOFileFilter excludeJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("brjs-"),new SuffixFileFilter(".jar")));
-			IOFileFilter filter = new AndFileFilter(excludeDirFilter, excludeJarFilter);
-			filter = new AndFileFilter(filter, excludeUserLibraryTestsFilter);
+			NotFileFilter brjsJarFilter = new NotFileFilter(new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar")));
+			IOFileFilter combinedFilter = new AndFileFilter(new ExcludeDirFileFilter("js-test-driver", "bundles"), brjsJarFilter);
 			
-			createResourcesFromSdkTemplate(existingAppDir, temporaryExportDir, filter);
+			combinedFilter = new AndFileFilter(combinedFilter, excludeUserLibraryTestsFilter);
+			
+			createResourcesFromSdkTemplate(app.dir(), temporaryExportDir, combinedFilter);
 			includeDisclaimerInDirectoryClasses(new File(temporaryExportDir, "libs"), disclaimer);
 			FileUtility.zipFolder(temporaryExportDir, destinationZipLocation, false);
 		}
@@ -100,14 +99,14 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 		logger.info("Successfully exported application '" + appName + "'");
 		logger.info(" " + destinationZipLocation.getAbsolutePath());
 	}
+
 	
-	// Private
 	private void createResourcesFromSdkTemplate(File templateDir, File targetDir, FileFilter fileFilter) throws IOException
 	{
 		ArrayList<File> addList = new ArrayList<File>();
 		recurseIntoSubfoldersAndAddAllFilesMatchingFilter(addList, templateDir, fileFilter);
 		
-		if (targetDir.exists() == false)
+		if (!targetDir.exists())
 		{
 			targetDir.mkdirs();
 		}
