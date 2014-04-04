@@ -76,6 +76,19 @@ public class JsStringStrippingReaderTest
 		);
 	}
 	
+	@Test
+	public void doubleQuotedStringBlocksAreTerminatedOnANewline() throws IOException
+	{
+		stripStringsAndAssertEquals(
+			lines(
+				"\"unclosed string...",
+				"new content"),
+			lines(
+				"new content")
+		);
+	}
+	
+	
 	/* single quout scenarios */
 	
 	@Test
@@ -123,6 +136,19 @@ public class JsStringStrippingReaderTest
 				"")
 		);
 	}
+	
+	@Test
+	public void singleeQuotedStringBlocksAreTerminatedOnANewline() throws IOException
+	{
+		stripStringsAndAssertEquals(
+			lines(
+				"'unclosed string...",
+				"new content"),
+			lines(
+				"new content")
+		);
+	}
+	
 	
 	private String lines(String... input)
 	{

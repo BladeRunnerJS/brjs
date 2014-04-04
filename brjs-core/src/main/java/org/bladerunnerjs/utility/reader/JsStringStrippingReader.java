@@ -49,13 +49,13 @@ public class JsStringStrippingReader extends AbstractStrippingReader
 				}
 				break;
 			case WITHIN_DOUBLY_QUOTED_STRING:
-				if (nextChar == '"')
+				if (nextChar == '"' || nextChar == '\n')
 				{
 					state = CommentStripperState.WITHIN_SOURCE;
 				}
 				break;
 			case WITHIN_SINGLY_QUOTED_STRING:
-				if (nextChar == '\'')
+				if (nextChar == '\'' || nextChar == '\n')
 				{
 					state = CommentStripperState.WITHIN_SOURCE;
 				}

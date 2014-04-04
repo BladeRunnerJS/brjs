@@ -29,12 +29,14 @@ public class JsCodeBlockStrippingReader extends AbstractStrippingReader
 		}
 		else if (nextChar == '}')
 		{
-			depthCount = Math.max(0, depthCount--);
+			depthCount = Math.max( 0, --depthCount );
 		}
-		
-		if (depthCount == 0)
+		else
 		{
-			return new char[] { nextChar };			
+			if (depthCount == 0)
+			{
+				return new char[] { nextChar };			
+			}
 		}
 		return emptyChars;
 	}

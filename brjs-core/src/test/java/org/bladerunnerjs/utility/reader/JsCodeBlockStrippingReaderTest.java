@@ -41,6 +41,89 @@ public class JsCodeBlockStrippingReaderTest
 		);
 	}
 	
+	@Test
+	public void sourceInsidenestedBracesIsRemoved() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"some content",
+				"{ abc { more content } }"),
+			lines(
+				"some content",
+				"")
+		);
+	}
+	
+	@Test
+	public void sourceAfterBracesIsNotRemoved() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"{ code block } some content"),
+			lines(
+				" some content")
+		);
+	}
+	
+	@Test
+	public void sourceBeforeBracesIsNotRemoved() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"{ code block } some content"),
+			lines(
+				" some content")
+		);
+	}
+	
+	@Test
+	public void codeBlocksSpanningMultipleLinesAreRemoved() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"{",
+				"multi",
+				"line",
+				"code block",
+				"}"),
+			lines(
+				"")
+		);
+	}
+	
+	@Test
+	public void contentAfterMultipleLineCodeBlocksIsNotRemoved() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"{",
+				"multi",
+				"line",
+				"code block",
+				"}",
+				"some content"),
+			lines(
+				"",
+				"some content")
+		);
+	}
+	
+	@Test
+	public void contentBeforeMultipleLineCodeBlocksIsNotRemoved() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"some content",
+				"{",
+				"multi",
+				"line",
+				"code block",
+				"}"),
+			lines(
+				"some content",
+				"")
+		);
+	}
 	
 	
 	private String lines(String... input)
