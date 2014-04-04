@@ -169,7 +169,7 @@ public class I18nContentPluginTest extends SpecTest
 		given(app).hasBeenCreated()
 			.and(aspect).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("appns.Class")
-			.and(aspect).hasClass("appns.Class")
+			.and(aspect).hasClass("appns/Class")
 			.and(aspect).containsFileWithContents("src/appns/en.properties", "appns.property=property value");
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
@@ -184,7 +184,7 @@ public class I18nContentPluginTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class")
-			.and(blade).hasClass("appns.bs.b1.Class")
+			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(blade).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=blade value")
 			.and(aspect).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=aspect value");
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
@@ -199,7 +199,7 @@ public class I18nContentPluginTest extends SpecTest
 	{
 		given(app).hasBeenCreated()
 		.and(workbench).indexPageRequires("appns.bs.b1.Class")
-		.and(blade).hasClass("appns.bs.b1.Class")
+		.and(blade).hasClass("appns/bs/b1/Class")
 		.and(blade).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=blade value")
 		.and(workbench).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=workbench value");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/i18n/en_GB.js", response);
@@ -212,7 +212,7 @@ public class I18nContentPluginTest extends SpecTest
 	@Test
 	public void i18nPropertyKeysMustMatchTheAspectNamespace() throws Exception 
 	{
-		given(blade).hasClass("appns.bs.b1.Class")
+		given(blade).hasClass("appns/bs/b1/Class")
 			.and(blade).containsFileWithContents("resources/en_GB.properties", "some.property=property value")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class");
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);

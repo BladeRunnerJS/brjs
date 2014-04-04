@@ -73,7 +73,7 @@ public class NodeJsLibTest extends SpecTest {
 				"// lib",
 				"define('lib', function(require, exports, module) {",				
 				"module.exports = function() { };")
-			.and(response).doesNotContainClasses("{} = require('lib');");
+			.and(response).doesNotContainText("{} = require('lib');");
 	}
 	@Test 
 	public void librariesWithEmptyObjectAndWhiteSpaceExportsDontCreateInvalidJS() throws Exception {
@@ -82,7 +82,7 @@ public class NodeJsLibTest extends SpecTest {
 		.and(sdkLib).containsFileWithContents("library.manifest", "exports: \"  {  }  \"")
 		.and(aspect).indexPageRequires("lib");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).doesNotContainClasses("= require('lib');");
+		then(response).doesNotContainText("= require('lib');");
 	}
 	// ---------------------------------------- //
 }

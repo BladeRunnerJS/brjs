@@ -98,7 +98,7 @@ public class BladeTest extends SpecTest {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(blade1).hasClass("appns.bs.b1.Class1")
 			.and(blade2).hasClass("appns.bs.b2.Class1")
-			.and(blade2).classRefersTo("appns.bs.b2.Class1", "appns.bs.b1.blade.Class1")
+			.and(blade2).classDependsOn("appns.bs.b2.Class1", "appns.bs.b1.blade.Class1")
 			.and(aspect).indexPageRefersTo("blade2.Class2");
 		when(aspect).getBundleInfo();
 //		then(exceptions).verifyException(BundleSetException.class, blade2.getName() //some other information);

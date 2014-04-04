@@ -7,8 +7,6 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-import InvalidLocationJsAssetPlugin.InvalidAssetPlugin;
-
 public class InvalidAssetPluginHandling extends SpecTest {
 	private App app;
 	private Aspect aspect;
@@ -33,7 +31,7 @@ public class InvalidAssetPluginHandling extends SpecTest {
 		invalidAssetPlugin.enable();
 		
 		given(app).hasBeenCreated()
-			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en/combined/bundle.js", pageResponse);
 		then(exceptions).verifyException(AssetFileInstantationException.class);

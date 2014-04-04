@@ -42,7 +42,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	// Bootstrap tests --
 	@Test
 	public void weBundleBootstrapIfItExists() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js\n"+"exports: lib")
@@ -54,7 +54,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test
 	public void weBundleBootstrapFirst() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js\n"+"exports: lib")
@@ -68,7 +68,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test
 	public void weBundleBootstrapSrcInASubDir() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
@@ -80,7 +80,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test
 	public void bootstrapCanDependOnAnotherLibraryWhichIsBundledBeforeTheRestOfTheBundle() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
@@ -96,7 +96,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test
 	public void bootstrapCanHaveADependencyChain3LevelsDeep() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 		.and(aspect).indexPageRefersTo("appns.Class1")
 		.and(bootstrapLib).hasBeenCreated()
 		.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
@@ -116,7 +116,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test
 	public void bootstrapAndItsDependenciesAppearBeforeAllOtherAspectDependencies() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
     		.and(aspect).indexPageHasContent("appns.Class1   require('thirdparty-lib1');")
     		.and(bootstrapLib).hasBeenCreated()
     		.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
@@ -145,7 +145,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	
 	@Test  // ignore circular dependencies originating from bootstrap since its our library that doesnt matter if it has a circular dependency
 	public void circularDependenciesOriginatingFromBootstrapAreSilentlyIgnored() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
     		.and(aspect).indexPageHasContent("appns.Class1   require('thirdparty-lib1');")
     		.and(bootstrapLib).hasBeenCreated()
     		.and(bootstrapLib).containsFileWithContents("library.manifest", "depends: secondBootstrapLib\n"+"exports: lib")
@@ -179,7 +179,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		given(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
-			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).classRequiresThirdpartyLib("appns.Class1", thirdpartyLib)
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -191,7 +191,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		given(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
-			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
+			.and(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
 			.and(bladeset).classRequiresThirdpartyLib("appns.bs.Class1", thirdpartyLib)
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -203,7 +203,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		given(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
-			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
+			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(blade).classRequiresThirdpartyLib("appns.bs.b1.Class1", thirdpartyLib)
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -229,7 +229,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		given(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends: blabla\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
-			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(thirdpartyLib);
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(exceptions).verifyException(ConfigException.class, "thirdparty-lib1", "blabla");

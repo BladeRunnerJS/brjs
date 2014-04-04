@@ -23,9 +23,9 @@ public class NodeJsTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inDevSeparateJsFileRequestsAreGenerated() throws Exception {
-		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+		given(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).classRequires("appns.Class1", "appns.Class2")
+			.and(aspect).classRequires("appns/Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("node-js/module/appns/Class1.js", "node-js/module/appns/Class2.js");
@@ -33,9 +33,9 @@ public class NodeJsTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void inProdASingleBundleRequestIsGenerated() throws Exception {
-		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+		given(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).classRequires("appns.Class1", "appns.Class2")
+			.and(aspect).classRequires("appns/Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("node-js/bundle.js");
@@ -43,9 +43,9 @@ public class NodeJsTagHandlerPluginTest extends SpecTest {
 
 	@Test
 	public void appendsCommentToTheTopOfRequiredClassesWhenNodeJsStyleIsRequested() throws Exception {
-		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+		given(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).classRequires("appns.Class1", "appns.Class2")
+			.and(aspect).classRequires("appns/Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(app).requestReceived("/default-aspect/node-js/bundle.js", pageResponse);
 		then(pageResponse).containsText("// appns/Class2\n" + "define('appns/Class2', function(")
@@ -54,8 +54,8 @@ public class NodeJsTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void theBundleIsEmptyIfWeDontReferToAnyOfTheClasses() throws Exception {
-		given(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "appns.Class2")
+		given(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@node-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).isEmpty();

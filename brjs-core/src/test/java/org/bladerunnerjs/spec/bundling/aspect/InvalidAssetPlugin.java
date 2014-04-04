@@ -1,4 +1,4 @@
-package InvalidLocationJsAssetPlugin;
+package org.bladerunnerjs.spec.bundling.aspect;
 
 import java.util.ArrayList;
 import java.util.List;

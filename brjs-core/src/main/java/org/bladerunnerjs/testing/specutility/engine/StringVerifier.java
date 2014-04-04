@@ -51,7 +51,18 @@ public class StringVerifier {
 	
 	public VerifierChainer containsClasses(String... classes) {
 		for(String className : classes) {
-			containsText(className + " = function()");
+			containsText(className + " = function() {");
+		}
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer containsNodeJsClasses(String... classes) {
+		for(String className : classes) {
+			className = className.replaceAll("\\.", "/");
+			className = StringUtils.substringAfterLast(className, "/");
+			containsText(className + " = function() {\n");
+			containsText("exports = " + className);
 		}
 		
 		return verifierChainer;
@@ -134,6 +145,9 @@ public class StringVerifier {
 	{
 		for(String className : classes) {
 			doesNotContainText(className + " = function()");
+			String nodeJsClassName = className.replaceAll("\\.", "/");
+			nodeJsClassName = StringUtils.substringAfterLast(nodeJsClassName, "/");
+			doesNotContainText(nodeJsClassName + " = function()");
 		}
 		
 		return verifierChainer;

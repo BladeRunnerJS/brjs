@@ -81,8 +81,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	@Test
 	public void dependenciesAreShownWhenAllArgumentsAreValid() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
@@ -96,7 +96,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classDependsOn("appns.Class1", "appns.Class2");
+			.and(aspect).classExtends("appns.Class1", "appns.Class2");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
@@ -108,8 +108,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	@Test
 	public void ifTheSameAssetIsFoundTwiceThenOnlyTheFirstEncounteredInstanceIsShownByDefault() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2")
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2")
 			.and(aspect).containsFileWithContents("resources/config.xml", "'appns/Class1'");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
@@ -125,8 +125,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	@Test
 	public void withTheAllSwitchIfTheSameAssetIsFoundTwiceThenItsDependenciesAreOnlyShownTheFirstTime() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2")
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2")
 			.and(aspect).containsFileWithContents("resources/config.xml", "'appns/Class1'");
 		when(brjs).runCommand("app-deps", "app", "--all");
 		then(output).containsText(
@@ -145,8 +145,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	@Test
 	public void weDontShowADependencyOmittedMessageForAssetsThatDontHaveDependencies() throws Exception {
 		given(aspect).indexPageHasContent("'appns/Class1' & 'appns/Class2'")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
@@ -161,8 +161,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	@Test
 	public void weDoShowASubsequentInstanceNotShownMessageForAssetsThatDontHaveDependencies() throws Exception {
 		given(aspect).indexPageHasContent("'appns/Class1' & 'appns/Class2'")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2");
 		when(brjs).runCommand("app-deps", "app", "-A");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
@@ -176,8 +176,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	@Test
 	public void dependenciesThatOccurDueToRelatedResourcesAreShownCorrectly() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg.NestedClass")
-			.and(aspect).classRequires("appns.Class1", "./pkg/NestedClass")
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/pkg/NestedClass")
+			.and(aspect).classRequires("appns/Class1", "./pkg/NestedClass")
 			.and(aspect).containsFileWithContents("src/appns/pkg/config.xml", "'appns/Class2'")
 			.and(aspect).containsEmptyFile("src/pkg/empty-config.xml");
 		when(brjs).runCommand("app-deps", "app");
@@ -193,8 +193,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	@Test
 	public void dependenciesThatOccurDueToNonImmediateRelatedResourcesAreShownCorrectly() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg1.pkg2.NestedClass")
-			.and(aspect).classRequires("appns.Class1", "./pkg1/pkg2/NestedClass")
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/pkg1/pkg2/NestedClass")
+			.and(aspect).classRequires("appns/Class1", "./pkg1/pkg2/NestedClass")
 			.and(aspect).containsFileWithContents("src/appns/pkg1/config.xml", "'appns/Class2'");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
@@ -210,7 +210,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	public void aliasedDependenciesFromTheIndexPageAreCorrectlyDisplayed() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
-			.and(aspect).hasClass("appns.Class");
+			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
@@ -225,7 +225,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRefersToAlias("appns.Class1", "alias-ref")
+			.and(aspect).classDependsOnAlias("appns.Class1", "alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class2");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
@@ -240,7 +240,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	public void incompleteAliasedDependenciesAreCorrectlyDisplayed() throws Exception {
 		given(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.Interface")
-			.and(aspect).hasClasses("appns.Class", "appns.Interface");
+			.and(aspect).hasClasses("appns/Class", "appns/Interface");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
@@ -252,8 +252,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	@Test
 	public void dependenciesCanInvolveARelatedResourceThatRefersToAnAlias() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg.NestedClass")
-			.and(aspect).classRequires("appns.Class1", "./pkg/NestedClass")
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/pkg/NestedClass")
+			.and(aspect).classRequires("appns/Class1", "./pkg/NestedClass")
 			.and(aspect).containsFileWithContents("src/appns/pkg/config.xml", "'alias-ref'")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class2");
 		when(brjs).runCommand("app-deps", "app");

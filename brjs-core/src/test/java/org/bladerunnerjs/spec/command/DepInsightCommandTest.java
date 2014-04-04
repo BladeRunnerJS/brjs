@@ -88,7 +88,7 @@ public class DepInsightCommandTest extends SpecTest {
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
-			.and(aspect).hasClass("appns.Class");
+			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
@@ -96,8 +96,8 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void dependenciesAreShownWhenAllArgumentsAreValid() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
 		then(output).containsText(
 			"Source module 'appns/Class2' dependencies found:",
@@ -111,7 +111,7 @@ public class DepInsightCommandTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRefersTo("appns.Class1", "appns.Class2");
+			.and(aspect).classDependsOn("appns.Class1", "appns.Class2");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
 		then(output).containsText(
 			"Source module 'appns/Class2' dependencies found:",
@@ -123,8 +123,8 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void onlyDependenciesThatAreToBeBundledAreShown() throws Exception {
 		given(aspect).indexPageRequires("appns/Class2")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
 		then(output).containsText(
 			"Source module 'appns/Class2' dependencies found:",
@@ -135,8 +135,8 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void ifTheSourceModuleBeingInspectedIsntToBeBundledThenAllDependenciesAreShown() throws Exception {
 		given(aspect).indexPageRequires("appns/Class3")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/Class3")
+			.and(aspect).classRequires("appns/Class1", "./Class2");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
 		then(output).containsText(
 			"Source module 'appns/Class2' dependencies found:",
@@ -155,8 +155,8 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void resourceDependenciesAreShownAheadOfClassDependenciesSinceTheyReflectUltimateLeafNodesOfGreaterImportanceToTheUser() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2")
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2")
 			.and(aspect).containsFileWithContents("resources/config.xml", "'appns/Class2'");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
 		then(output).containsText(
@@ -170,10 +170,10 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void byDefaultDependenciesAreOnlyShownTheFirstTimeTheyAreEncountered() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2")
-			.and(aspect).classRequires("appns.Class2", "./Class3")
-			.and(aspect).classRequires("appns.Class3", "./Class1");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2")
+			.and(aspect).classRequires("appns/Class2", "./Class3")
+			.and(aspect).classRequires("appns/Class3", "./Class1");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class3");
 		then(output).containsText(
 			"Source module 'appns/Class3' dependencies found:",
@@ -188,10 +188,10 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void whenUsingTheAllSwitchIfTheSameAssetIsFoundTwiceThenItsDependenciesAreOnlyShownTheFirstTime() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2")
-			.and(aspect).classRequires("appns.Class2", "./Class3")
-			.and(aspect).classRequires("appns.Class3", "./Class1");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2")
+			.and(aspect).classRequires("appns/Class2", "./Class3")
+			.and(aspect).classRequires("appns/Class3", "./Class1");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class3", "--all");
 		then(output).containsText(
 			"Source module 'appns/Class3' dependencies found:",
@@ -207,8 +207,8 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void dependenciesThatOccurDueToRelatedResourcesAreShownCorrectly() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.pkg.InnerClass")
-			.and(aspect).classRequires("appns.Class1", "./pkg/InnerClass")
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/pkg/InnerClass")
+			.and(aspect).classRequires("appns/Class1", "./pkg/InnerClass")
 			.and(aspect).containsFileWithContents("src/appns/pkg/config.xml", "'appns/Class2'")
 			.and(aspect).containsEmptyFile("empty-config.xml");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class2");
@@ -224,9 +224,9 @@ public class DepInsightCommandTest extends SpecTest {
 	@Test
 	public void requirePrefixDependenciesAreCorrectlyShown() throws Exception {
 		given(aspect).indexPageRequires("appns/pkg1/ClassA")
-			.and(aspect).hasClasses("appns.pkg1.ClassA", "appns.pkg1.ClassB", "appns.pkg1.UnbundledClass", "appns.pkg2.ClassC")
-			.and(aspect).classRequires("appns.pkg1.ClassA", "../pkg2/ClassC")
-			.and(aspect).classRequires("appns.pkg2.ClassC", "../pkg1/ClassB");
+			.and(aspect).hasClasses("appns/pkg1/ClassA", "appns/pkg1/ClassB", "appns/pkg1/UnbundledClass", "appns/pkg2/ClassC")
+			.and(aspect).classRequires("appns/pkg1/ClassA", "../pkg2/ClassC")
+			.and(aspect).classRequires("appns/pkg2/ClassC", "../pkg1/ClassB");
 		when(brjs).runCommand("dep-insight", "app", "appns/pkg1", "--prefix", "--all");
 		then(output).containsText(
 			"Require path prefix 'appns/pkg1' dependencies found:",
@@ -243,7 +243,7 @@ public class DepInsightCommandTest extends SpecTest {
 	public void aliasedDependenciesAreCorrectlyDisplayed() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
-			.and(aspect).hasClass("appns.Class");
+			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("dep-insight", "app", "appns/Class");
 		then(output).containsText(
 			"Source module 'appns/Class' dependencies found:",
@@ -256,7 +256,7 @@ public class DepInsightCommandTest extends SpecTest {
 	public void weCanShowDependenciesForAnAliasToo() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias-ref")
 			.and(aliasesFile).hasAlias("alias-ref", "appns.Class")
-			.and(aspect).hasClass("appns.Class");
+			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("dep-insight", "app", "alias-ref", "--alias");
 		then(output).containsText(
 			"Alias 'alias-ref' dependencies found:",
@@ -269,7 +269,7 @@ public class DepInsightCommandTest extends SpecTest {
 	public void anAliasNameWithASpaceIsntMistakenlyRecognizedAsAnAspect() throws Exception {
 		given(aspect).indexPageHasAliasReferences("alias ref")
 			.and(aliasesFile).hasAlias("alias ref", "appns.Class")
-			.and(aspect).hasClass("appns.Class");
+			.and(aspect).hasClass("appns/Class");
 		when(brjs).runCommand("dep-insight", "app", "alias ref", "--alias");
 		then(output).containsText(
 			"Alias 'alias ref' dependencies found:",
@@ -294,7 +294,7 @@ public class DepInsightCommandTest extends SpecTest {
 	
 	@Test
 	public void dependenciesCanBeShownForAnIncompleteAliasThatIsntUsedWithinTheApp() throws Exception {
-		given(aspect).hasClass("appns.TheInterface")
+		given(aspect).hasClass("appns/TheInterface")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.TheInterface");
 		when(brjs).runCommand("dep-insight", "app", "appns.bs.b1.alias-ref", "--alias");
 		then(output).containsText(

@@ -35,7 +35,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 	// Aspect
 	@Test
 	public void aspectI18NFilesAreBundledWhenAspectSrcAreReferenced() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).containsFileWithContents("resources/i18n/en/en.properties", "appns.token=aspect token")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
@@ -45,7 +45,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 //	// Bladeset
 	@Test
 	public void bladesetI18NFilesAreBundledWhenBladesetSrcAreReferenced() throws Exception {
-		given(bladeset).hasClasses("appns.bs.Class1")
+		given(bladeset).hasClasses("appns/bs/Class1")
 			.and(bladeset).containsFileWithContents("resources/i18n/en/en.properties", "appns.bs.token=bladeset token")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
@@ -55,7 +55,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 	// Blade
 	@Test
 	public void bladeI18NFilesAreBundledWhenBladeSrcIsReferenced() throws Exception {
-		given(blade).hasClasses("appns.bs.b1.Class1")
+		given(blade).hasClasses("appns/bs/b1/Class1")
 			.and(blade).containsFileWithContents("resources/i18n/en/en.properties", "appns.bs.b1.token=blade token")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);

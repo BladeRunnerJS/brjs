@@ -108,7 +108,7 @@ public class BRJSServletTest extends SpecTest
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.cjs.Class")
-			.and(blade).classRefersTo("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
+			.and(blade).classDependsOn("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
 		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
