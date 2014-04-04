@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 
 
-public class JsStringStrippingReader extends Reader
+public class JsStringStrippingReader extends AbstractStrippingReader
 {
 
 	private Reader sourceReader;

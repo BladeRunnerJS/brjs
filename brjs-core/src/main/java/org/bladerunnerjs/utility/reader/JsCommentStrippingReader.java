@@ -3,8 +3,20 @@ package org.bladerunnerjs.utility.reader;
 import java.io.IOException;
 import java.io.Reader;
 
-public class JsCommentStrippingReader extends Reader
+public class JsCommentStrippingReader extends AbstractStrippingReader
 {
+	private enum CommentStripperState
+	{
+		WITHIN_SOURCE,
+		WITHIN_SINGLY_QUOTED_STRING,
+		WITHIN_DOUBLY_QUOTED_STRING,
+		WITHIN_SINGLE_LINE_COMMENT,
+		WITHIN_MULTI_LINE_COMMENT,
+		WITHIN_JSDOC_COMMENT,
+		FORWARD_SLASH_DETECTED,
+		FORWARD_SLASH_ASTERISK_DETECTED
+	}
+	
 	private static final int MAX_SINGLE_WRITE = 3;
 	
 	private final Reader sourceReader;
@@ -161,48 +173,4 @@ public class JsCommentStrippingReader extends Reader
 		return (charactersWritten == 0) ? -1 : charactersWritten;
 	}
 	
-	private int write(String characters, char[] buff, int offset, int maxCharacters, int charactersWritten)
-	{
-		for(int i = 0, l = characters.length(); i < l; ++i)
-		{
-			charactersWritten = write(characters.charAt(i), buff, offset, maxCharacters, charactersWritten);
-		}
-		
-		return charactersWritten;
-	}
-	
-	private int write(char nextChar, char[] buff, int offset, int maxCharacters, int charactersWritten)
-	{
-		if(charactersWritten < maxCharacters)
-		{
-			buff[offset + charactersWritten] = nextChar;
-			charactersWritten++;
-		}
-		else
-		{
-			overflowBuffer.append(nextChar);
-		}
-		
-		return charactersWritten;
-	}
-	
-	public void ensureCharactersDontMatchMacLineEndings(char previousChar, char nextChar) throws IOException
-	{
-		if (previousChar == '\r' && nextChar != '\n')
-		{
-			throw new IOException("Mac line endings detected. This type of line ending is not supported.");
-		}
-	}
-	
-	private enum CommentStripperState
-	{
-		WITHIN_SOURCE,
-		WITHIN_SINGLY_QUOTED_STRING,
-		WITHIN_DOUBLY_QUOTED_STRING,
-		WITHIN_SINGLE_LINE_COMMENT,
-		WITHIN_MULTI_LINE_COMMENT,
-		WITHIN_JSDOC_COMMENT,
-		FORWARD_SLASH_DETECTED,
-		FORWARD_SLASH_ASTERISK_DETECTED
-	}
 }
