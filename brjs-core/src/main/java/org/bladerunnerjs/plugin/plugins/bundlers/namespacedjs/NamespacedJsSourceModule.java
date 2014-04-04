@@ -24,8 +24,8 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
-import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 import com.Ostermiller.util.ConcatReader;
 

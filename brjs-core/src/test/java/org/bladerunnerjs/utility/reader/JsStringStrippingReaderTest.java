@@ -1,4 +1,4 @@
-package org.bladerunnerjs.utility;
+package org.bladerunnerjs.utility.reader;
 
 import static org.junit.Assert.assertEquals;
 

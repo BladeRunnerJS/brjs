@@ -13,9 +13,9 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.EmptyTrieKeyException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
-import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
+import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 
 public class TrieBasedDependenciesCalculator

@@ -1,13 +1,13 @@
-package org.bladerunnerjs.utility;
+package org.bladerunnerjs.utility.reader;
 
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.junit.Test;
 
 public class JsCommentStrippingReaderTest
