@@ -3,6 +3,7 @@ package org.bladerunnerjs.utility.reader;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -276,10 +277,10 @@ public class JsCommentStrippingReaderTest
 	
 	private String stripComments(String input, boolean preserveJsdoc) throws IOException
 	{
-		try(JsCommentStrippingReader commentStrippingReader = new JsCommentStrippingReader(new StringReader(input), preserveJsdoc);
+		try(Reader reader = new JsCommentStrippingReader(new StringReader(input), preserveJsdoc);
 		    StringWriter stringWriter = new StringWriter())
 		{
-			IOUtils.copy(commentStrippingReader, stringWriter);
+			IOUtils.copy(reader, stringWriter);
 
 			return stringWriter.toString();
 		}

@@ -3,6 +3,7 @@ package org.bladerunnerjs.utility.reader;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -130,10 +131,10 @@ public class JsStringStrippingReaderTest
 	
 	private void stripStringsAndAssertEquals(String input, String expectedOutput) throws IOException
 	{
-		try(JsStringStrippingReader commentStrippingReader = new JsStringStrippingReader(new StringReader(input));
+		try(Reader reader = new JsStringStrippingReader(new StringReader(input));
 			    StringWriter stringWriter = new StringWriter())
 			{
-				IOUtils.copy(commentStrippingReader, stringWriter);
+				IOUtils.copy(reader, stringWriter);
 				assertEquals( expectedOutput, stringWriter.toString() );
 			}
 	}
