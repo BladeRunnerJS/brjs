@@ -19,158 +19,137 @@ public class JsCommentStrippingReader extends AbstractStrippingReader
 	
 	private static final int MAX_SINGLE_WRITE = 3;
 	
-	private final Reader sourceReader;
 	private final boolean preserveJsdoc;
 	private CommentStripperState state;
-	private char previousChar;
-	private StringBuffer overflowBuffer = new StringBuffer();
 	
 	public JsCommentStrippingReader(Reader sourceReader, boolean preserveJsdoc)
 	{
-		this.sourceReader = sourceReader;
+		super(sourceReader);
 		this.preserveJsdoc = preserveJsdoc;
 		state = CommentStripperState.WITHIN_SOURCE;
 	}
 	
 	@Override
-	public void close() throws IOException
+	protected int getMaxSingleWrite()
 	{
-		sourceReader.close();
+		return MAX_SINGLE_WRITE;
 	}
 	
-	@Override
-	public int read(char[] buff, int offset, int maxCharacters) throws IOException
+	protected char[] handleNextCharacter(char nextChar, char previousChar) throws IOException
 	{
-		int charactersWritten = 0;
-		int maxEfficientCharacters = Math.max(1, maxCharacters - MAX_SINGLE_WRITE + 1);
-		int nextInt;
+		StringBuffer newChars = new StringBuffer();
 		
-		if(overflowBuffer.length() > 0)
+		switch(state)
 		{
-			String overflowString = overflowBuffer.toString();
-			overflowBuffer.setLength(0);
-			charactersWritten = write(overflowString, buff, offset, maxCharacters, charactersWritten);
-		}
-		
-		while((charactersWritten < maxEfficientCharacters) && ((nextInt = sourceReader.read()) != -1))
-		{
-			char nextChar = (char) nextInt;
+			case WITHIN_SOURCE:
+				// Note: the previousChar check is a get out for not properly dealing with literal regular expressions
+				if((nextChar == '/') && (previousChar != '\\'))
+				{
+					state = CommentStripperState.FORWARD_SLASH_DETECTED;
+				}
+				else if(nextChar == '\'')
+				{
+					state = CommentStripperState.WITHIN_SINGLY_QUOTED_STRING;
+					newChars.append(nextChar);
+				}
+				else if(nextChar == '"')
+				{
+					state = CommentStripperState.WITHIN_DOUBLY_QUOTED_STRING;
+					newChars.append(nextChar);
+				}
+				else
+				{
+					newChars.append(nextChar);
+				}
+				break;
 			
-			ensureCharactersDontMatchMacLineEndings(previousChar, nextChar);
-			switch(state)
-			{
-				case WITHIN_SOURCE:
-					// Note: the previousChar check is a get out for not properly dealing with literal regular expressions
-					if((nextChar == '/') && (previousChar != '\\'))
-					{
-						state = CommentStripperState.FORWARD_SLASH_DETECTED;
-					}
-					else if(nextChar == '\'')
-					{
-						state = CommentStripperState.WITHIN_SINGLY_QUOTED_STRING;
-						charactersWritten = write(nextChar, buff, offset, maxCharacters, charactersWritten);
-					}
-					else if(nextChar == '"')
-					{
-						state = CommentStripperState.WITHIN_DOUBLY_QUOTED_STRING;
-						charactersWritten = write(nextChar, buff, offset, maxCharacters, charactersWritten);
-					}
-					else
-					{
-						charactersWritten = write(nextChar, buff, offset, maxCharacters, charactersWritten);
-					}
-					break;
+			case WITHIN_SINGLY_QUOTED_STRING:
+				newChars.append(nextChar);
 				
-				case WITHIN_SINGLY_QUOTED_STRING:
-					charactersWritten = write(nextChar, buff, offset, maxCharacters, charactersWritten);
+				// Note: the new-line check is a get out for not properly dealing with literal regular expressions
+				if(((nextChar == '\'') && (previousChar != '\\')) || (nextChar == '\n'))
+				{
+					state = CommentStripperState.WITHIN_SOURCE;
+				}
+				break;
+			
+			case WITHIN_DOUBLY_QUOTED_STRING:
+				newChars.append(nextChar);
+				
+				// Note: the new-line check is a get out for not properly dealing with literal regular expressions
+				if(((nextChar == '"') && (previousChar != '\\')) || (nextChar == '\n'))
+				{
+					state = CommentStripperState.WITHIN_SOURCE;
+				}
+				break;
+			
+			case FORWARD_SLASH_DETECTED:
+				if(nextChar == '/')
+				{
+					state = CommentStripperState.WITHIN_SINGLE_LINE_COMMENT;
+				}
+				else if(nextChar == '*')
+				{
+					state = CommentStripperState.FORWARD_SLASH_ASTERISK_DETECTED;
+				}
+				else
+				{
+					state = CommentStripperState.WITHIN_SOURCE;
+					newChars.append(previousChar);
+					newChars.append(nextChar);
+				}
+				break;
+			
+			case FORWARD_SLASH_ASTERISK_DETECTED:
+				if(nextChar == '*')
+				{
+					state = CommentStripperState.WITHIN_JSDOC_COMMENT;
 					
-					// Note: the new-line check is a get out for not properly dealing with literal regular expressions
-					if(((nextChar == '\'') && (previousChar != '\\')) || (nextChar == '\n'))
-					{
-						state = CommentStripperState.WITHIN_SOURCE;
-					}
-					break;
-				
-				case WITHIN_DOUBLY_QUOTED_STRING:
-					charactersWritten = write(nextChar, buff, offset, maxCharacters, charactersWritten);
-					
-					// Note: the new-line check is a get out for not properly dealing with literal regular expressions
-					if(((nextChar == '"') && (previousChar != '\\')) || (nextChar == '\n'))
-					{
-						state = CommentStripperState.WITHIN_SOURCE;
-					}
-					break;
-				
-				case FORWARD_SLASH_DETECTED:
-					if(nextChar == '/')
-					{
-						state = CommentStripperState.WITHIN_SINGLE_LINE_COMMENT;
-					}
-					else if(nextChar == '*')
-					{
-						state = CommentStripperState.FORWARD_SLASH_ASTERISK_DETECTED;
-					}
-					else
-					{
-						state = CommentStripperState.WITHIN_SOURCE;
-						charactersWritten = write(previousChar, buff, offset, maxCharacters, charactersWritten);
-						charactersWritten = write(nextChar, buff, offset, maxCharacters, charactersWritten);
-					}
-					break;
-				
-				case FORWARD_SLASH_ASTERISK_DETECTED:
-					if(nextChar == '*')
-					{
-						state = CommentStripperState.WITHIN_JSDOC_COMMENT;
-						
-						if(preserveJsdoc)
-						{
-							charactersWritten = write("/**", buff, offset, maxCharacters, charactersWritten);
-						}
-					}
-					else
-					{
-						state = CommentStripperState.WITHIN_MULTI_LINE_COMMENT;
-					}
-					
-					break;
-				
-				case WITHIN_SINGLE_LINE_COMMENT:
-					if((nextChar == '\r') || (nextChar == '\n'))
-					{
-						if(nextChar == '\n')
-						{
-							state = CommentStripperState.WITHIN_SOURCE;
-						}
-						
-						charactersWritten = write(nextChar, buff, offset, maxCharacters, charactersWritten);
-					}
-					break;
-				
-				case WITHIN_MULTI_LINE_COMMENT:
-					if((nextChar == '/') && (previousChar == '*'))
-					{
-						state = CommentStripperState.WITHIN_SOURCE;
-					}
-					break;
-				
-				case WITHIN_JSDOC_COMMENT:
 					if(preserveJsdoc)
 					{
-						charactersWritten = write(nextChar, buff, offset, maxCharacters, charactersWritten);
+						newChars.append("/**");
 					}
-					
-					if((nextChar == '/') && (previousChar == '*'))
+				}
+				else
+				{
+					state = CommentStripperState.WITHIN_MULTI_LINE_COMMENT;
+				}
+				
+				break;
+			
+			case WITHIN_SINGLE_LINE_COMMENT:
+				if((nextChar == '\r') || (nextChar == '\n'))
+				{
+					if(nextChar == '\n')
 					{
 						state = CommentStripperState.WITHIN_SOURCE;
 					}
-					break;
-			}
+					
+					newChars.append(nextChar);
+				}
+				break;
 			
-			previousChar = nextChar;
+			case WITHIN_MULTI_LINE_COMMENT:
+				if((nextChar == '/') && (previousChar == '*'))
+				{
+					state = CommentStripperState.WITHIN_SOURCE;
+				}
+				break;
+			
+			case WITHIN_JSDOC_COMMENT:
+				if(preserveJsdoc)
+				{
+					newChars.append(nextChar);
+				}
+				
+				if((nextChar == '/') && (previousChar == '*'))
+				{
+					state = CommentStripperState.WITHIN_SOURCE;
+				}
+				break;
 		}
 		
-		return (charactersWritten == 0) ? -1 : charactersWritten;
+		return newChars.toString().toCharArray();
 	}
 	
 }

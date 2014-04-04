@@ -6,24 +6,23 @@ import java.io.Reader;
 
 public class JsStringStrippingReader extends AbstractStrippingReader
 {
-
-	private Reader sourceReader;
-
+	
 	public JsStringStrippingReader(Reader sourceReader)
 	{
-		this.sourceReader = sourceReader;
-	}
-
-	@Override
-	public void close() throws IOException
-	{
-		sourceReader.close();
+		super(sourceReader);
 	}
 	
 	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException
+	int getMaxSingleWrite()
 	{
-		return sourceReader.read(cbuf, off, len);
+		return 1;
 	}
+	
+	@Override
+	protected char[] handleNextCharacter(char nextChar, char previousChar) throws IOException
+	{
+		return new char[] { nextChar };
+	}
+	
 
 }
