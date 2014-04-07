@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -26,9 +25,9 @@ import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 import com.Ostermiller.util.ConcatReader;
@@ -74,26 +73,14 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		Set<SourceModule> dependentSourceModules = new LinkedHashSet<>();
-		
 		try {
-			for(String requirePath : requirePaths()) {
-				SourceModule sourceModule = assetLocation.sourceModule(requirePath);
-				
-				if(sourceModule == null) {
-					throw new UnresolvableRequirePathException(requirePath, this.requirePath);
-				}
-				
-				dependentSourceModules.add(sourceModule);
-			}
+			return SourceModuleResolver.getSourceModules(assetLocation, requirePaths(), this.requirePath);
 		}
-		catch(RequirePathException e) {
+		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
-		
-		return new ArrayList<SourceModule>( dependentSourceModules );
 	}
-
+	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
 		return getComputedValue().aliases;
