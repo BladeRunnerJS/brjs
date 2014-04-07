@@ -10,7 +10,7 @@ import java.util.Map;
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	private final WatchService watchService;
 	private final Map<String, Java7FileModificationInfo> fileModificationInfos = new HashMap<>();
-	private final PessimisticFileModificationInfo pessimisticFileModificationInfo = new PessimisticFileModificationInfo();
+	private final OptimisticFileModificationInfo optimisticFileModificationInfo = new OptimisticFileModificationInfo();
 	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 	private boolean running = true;
 	
@@ -36,8 +36,13 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	
 	@Override
 	public FileModificationInfo getModificationInfo(File file) {
+		// TODO: remove this if block once we have a better solution for watching individual files
+		if(file.exists() && file.isFile()) {
+			file = file.getParentFile();
+		}
+		
 		FileModificationInfo fileModificationInfo = fileModificationInfos.get(file.getAbsolutePath());
-		return (fileModificationInfo != null) ? fileModificationInfo : pessimisticFileModificationInfo;
+		return (fileModificationInfo != null) ? fileModificationInfo : optimisticFileModificationInfo;
 	}
 	
 	@Override
