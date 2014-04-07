@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.UnicodeReader;
 
 /**
@@ -44,12 +46,17 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return dependencyCalculator.getCalculatedDependentSourceModules();
+		try {
+			return SourceModuleResolver.getSourceModules(assetLocation, dependencyCalculator.getRequirePaths(), assetPath);
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return dependencyCalculator.getCalculataedAliases();
+		return dependencyCalculator.getAliases();
 	}
 	
 	@Override

@@ -27,6 +27,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.SourceModuleResolver;
 
 import com.Ostermiller.util.ConcatReader;
 
@@ -68,12 +69,17 @@ public class NamespacedJsSourceModule implements SourceModule {
 	@Override
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		// TODO: is this a bug since we are returning all dependencies, whether they are reachable via the bundlable node or not?
-		return dependencyCalculator.getCalculatedDependentSourceModules();
+		try {
+			return SourceModuleResolver.getSourceModules(assetLocation, dependencyCalculator.getRequirePaths(), requirePath);
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return dependencyCalculator.getCalculataedAliases();
+		return dependencyCalculator.getAliases();
 	}
 	
 	@Override
