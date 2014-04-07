@@ -33,7 +33,7 @@ public class TrieBasedDependenciesCalculator
 		List<File> scopeFiles = new ArrayList<>();
 		scopeFiles.addAll(Arrays.asList(readerFiles));
 		scopeFiles.addAll(Arrays.asList(new File[] {assetLocation.root().conf().file("bladerunner.conf"), app.dir(), app.root().libsDir()}));
-		computedValue = new MemoizedValue<>(assetLocation.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
+		computedValue = new MemoizedValue<>("TrieBasedDependenciesCalculator.computedValue", assetLocation.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
 	}
 	
 	public List<SourceModule> getCalculatedDependentSourceModules() throws ModelOperationException

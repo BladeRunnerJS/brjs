@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
 	
-	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>(root(), dir());
+	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>("AssetLocation.childAssetLocations", root(), dir());
 	
 	public AbstractSourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
 		super(rootNode, parent, dir, dependentAssetLocations);

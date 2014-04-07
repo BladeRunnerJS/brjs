@@ -26,7 +26,7 @@ public class TrieFactory {
 	
 	private TrieFactory(App app) {
 		this.app = app;
-		trie = new MemoizedValue<>(app.root(), app.dir(), app.root().libsDir(), app.root().conf().file("bladerunner.conf"));
+		trie = new MemoizedValue<>("TrieFactory.trie", app.root(), app.dir(), app.root().libsDir(), app.root().conf().file("bladerunner.conf"));
 	}
 	
 	public Trie<Object> createTrie() throws ModelOperationException {

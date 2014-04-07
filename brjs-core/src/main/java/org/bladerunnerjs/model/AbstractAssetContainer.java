@@ -17,8 +17,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private AssetLocationPlugin previousAssetLocationPlugin;
 	private Map<String, AssetLocation> assetLocationCache;
 	
-	private final MemoizedValue<List<SourceModule>> sourceModulesList = new MemoizedValue<>(root(), root().dir());
-	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>(root(), root().dir());
+	private final MemoizedValue<List<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", root(), root().dir());
+	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", root(), root().dir());
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);

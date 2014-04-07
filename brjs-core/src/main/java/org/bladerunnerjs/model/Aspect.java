@@ -25,10 +25,10 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	private final NodeMap<Theme> themes;
 	private String name;
 	
-	private final MemoizedValue<List<LinkedAsset>> seedFileList = new MemoizedValue<>(root(), dir(), root().conf().file("bladerunner.conf"));
-	private final MemoizedValue<List<AssetContainer>> assetContainerList = new MemoizedValue<>(root(), parent().dir(), root().libsDir());
-	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>(root(), file("tests"));
-	private final MemoizedValue<List<Theme>> themesList = new MemoizedValue<>(root(), file("themes"));
+	private final MemoizedValue<List<LinkedAsset>> seedFileList = new MemoizedValue<>("Aspect.seedFiles", root(), dir(), root().conf().file("bladerunner.conf"));
+	private final MemoizedValue<List<AssetContainer>> assetContainerList = new MemoizedValue<>("Aspect.assetContainer", root(), parent().dir(), root().libsDir());
+	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("Aspect.testTypes", root(), file("tests"));
+	private final MemoizedValue<List<Theme>> themesList = new MemoizedValue<>("Aspect.themes", root(), file("themes"));
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{

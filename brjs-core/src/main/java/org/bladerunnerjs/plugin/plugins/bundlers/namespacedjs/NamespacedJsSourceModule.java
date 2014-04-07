@@ -57,8 +57,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 			linkedAsset.initialize(assetLocation, dir, assetName);
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 			dependencyCalculator = new TrieBasedDependenciesCalculator(this, assetFile, patch.getPatchFile());
-			orderDependentSourceModulesList = new MemoizedValue<>(assetLocation.root(), assetLocation.root().dir());
-			assetLocationsList = new MemoizedValue<>(assetLocation.root(), assetLocation.assetContainer().dir());
+			orderDependentSourceModulesList = new MemoizedValue<>("NamespacedJsSourceModule.orderDependentSourceModules", assetLocation.root(), assetLocation.root().dir());
+			assetLocationsList = new MemoizedValue<>("NamespacedJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 		}
 		catch(RequirePathException e) {
 			throw new AssetFileInstantationException(e);

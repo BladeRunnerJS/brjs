@@ -64,8 +64,8 @@ public class NodeJsSourceModule implements SourceModule {
 			className = requirePath.replaceAll("/", ".");
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-			computedValue = new MemoizedValue<>(assetLocation.root(), assetFile, patch.getPatchFile(), assetLocation.root().conf().file("bladerunner.conf"));
-			assetLocationsList = new MemoizedValue<>(assetLocation.root(), assetLocation.assetContainer().dir());
+			computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), assetLocation.root().conf().file("bladerunner.conf"));
+			assetLocationsList = new MemoizedValue<>("NodeJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 		}
 		catch(RequirePathException | ConfigException e) {
 			throw new AssetFileInstantationException(e);

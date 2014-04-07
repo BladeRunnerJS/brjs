@@ -22,7 +22,7 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	private Node parent;
 	private final NodeMap<TypedTestPack> testTypes;
 	
-	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>(root(), file("tests"));
+	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("StandardJsLib.testTypes", root(), file("tests"));
 	
 	public StandardJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{

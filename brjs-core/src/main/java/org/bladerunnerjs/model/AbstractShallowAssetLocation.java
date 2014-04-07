@@ -30,10 +30,10 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	protected final AssetLocationUtility assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
-	private final MemoizedValue<String> jsStyle = new MemoizedValue<>(root(), dir());
+	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
 	private final MemoizedValue<String> requirePrefix;
 	private final MemoizedValue<String> namespace;
-	private final MemoizedValue<List<LinkedAsset>> seedResourcesList = new MemoizedValue<>(root(), root().dir());
+	private final MemoizedValue<List<LinkedAsset>> seedResourcesList = new MemoizedValue<>("AssetLocation.seedResources", root(), root().dir());
 	
 	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
 	{
@@ -46,8 +46,8 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		super(rootNode, parent, dir);
 		this.assetContainer = (AssetContainer) parent;
 		assetLocator = new AssetLocationUtility(this);
-		requirePrefix = new MemoizedValue<>(root(), dir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
-		namespace = new MemoizedValue<>(root(), root().dir());
+		requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), dir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
+		namespace = new MemoizedValue<>("AssetLocation.namespace", root(), root().dir());
 	}
 	
 	@Override

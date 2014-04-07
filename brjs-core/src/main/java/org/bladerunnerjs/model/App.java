@@ -37,12 +37,12 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private final NodeMap<Aspect> aspects;
 	private final NodeMap<StandardJsLib> jsLibs;
 	
-	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>(root(), dir(), root().libsDir());
-	private final MemoizedValue<List<AssetContainer>> nonAspectAssetContainers = new MemoizedValue<>(root(), dir(), root().libsDir());
-	private final MemoizedValue<List<Bladeset>> bladesetList = new MemoizedValue<>(root(), dir());
-	private final MemoizedValue<List<Aspect>> aspectList = new MemoizedValue<>(root(), dir());
-	private final MemoizedValue<List<JsLib>> jsLibsList = new MemoizedValue<>(root(), dir(), root().libsDir());
-	private final MemoizedValue<List<JsLib>> nonBladeRunnerLibsList = new MemoizedValue<>(root(), dir(), root().libsDir());
+	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>("BRJS.assetContainers", root(), dir(), root().libsDir());
+	private final MemoizedValue<List<AssetContainer>> nonAspectAssetContainers = new MemoizedValue<>("BRJS.nonAspectAssetContainers", root(), dir(), root().libsDir());
+	private final MemoizedValue<List<Bladeset>> bladesetList = new MemoizedValue<>("BRJS.bladesets", root(), dir());
+	private final MemoizedValue<List<Aspect>> aspectList = new MemoizedValue<>("BRJS.aspects", root(), dir());
+	private final MemoizedValue<List<JsLib>> jsLibsList = new MemoizedValue<>("BRJS.jsLibs", root(), dir(), root().libsDir());
+	private final MemoizedValue<List<JsLib>> nonBladeRunnerLibsList = new MemoizedValue<>("BRJS.nonBladeRunnerLibs", root(), dir(), root().libsDir());
 	
 	private String name;
 	private AppConf appConf;

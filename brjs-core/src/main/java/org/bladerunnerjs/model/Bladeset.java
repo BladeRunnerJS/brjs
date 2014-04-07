@@ -19,7 +19,7 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	private final NodeMap<Blade> blades;
 	private String name;
 	
-	private final MemoizedValue<List<Blade>> bladeList = new MemoizedValue<>(root(), file("blades"));
+	private final MemoizedValue<List<Blade>> bladeList = new MemoizedValue<>("Bladeset.blades", root(), file("blades"));
 
 	public Bladeset(RootNode rootNode, Node parent, File dir, String name)
 	{
