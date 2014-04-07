@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.InvalidRequirePathException;
@@ -29,35 +30,47 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	protected final AssetLocationUtility assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
+	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
+	private final MemoizedValue<String> requirePrefix;
+	private final MemoizedValue<String> namespace;
+	private final MemoizedValue<List<LinkedAsset>> seedResourcesList = new MemoizedValue<>("AssetLocation.seedResources", root(), root().dir());
+	
 	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
 	{
 		this(rootNode, parent, dir);
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
-	
 	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
 		this.assetContainer = (AssetContainer) parent;
 		assetLocator = new AssetLocationUtility(this);
+		requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), dir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
+		namespace = new MemoizedValue<>("AssetLocation.namespace", root(), root().dir());
 	}
 	
 	@Override
 	public String jsStyle() {
-		return JsStyleUtility.getJsStyle(dir());
+		return jsStyle.value(() -> {
+			return JsStyleUtility.getJsStyle(dir());
+		});
 	}
 	
 	@Override
 	public String requirePrefix() throws RequirePathException {
-		String relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir());
-		
-		return assetContainer.requirePrefix() + "/" + relativeRequirePath;
+		return requirePrefix.value(() -> {
+			String relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir());
+			
+			return assetContainer.requirePrefix() + "/" + relativeRequirePath;
+		});
 	}
 	
 	@Override
 	public String namespace() throws RequirePathException {
-		return requirePrefix().replace("/", ".");
+		return namespace.value(() -> {
+			return requirePrefix().replace("/", ".");
+		});
 	}
 	
 	@Override
@@ -96,8 +109,6 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 			return sourceModule;
 		}
 		
-		
-		
 		throw new InvalidRequirePathException("Unable to find SourceModule for require path '"+requirePath+"'. It either does not exist or it is outside of the scope for this request.");
 	}
 
@@ -117,7 +128,6 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		return null;
 	}
 	
-	
 	@Override
 	public AliasDefinitionsFile aliasDefinitionsFile() {		
 		if(aliasDefinitionsFile == null) {
@@ -129,13 +139,15 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		
 	@Override
 	public List<LinkedAsset> seedResources() {
-		List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
+		return seedResourcesList.value(() -> {
+			List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
-		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			seedResources.addAll(assetPlugin.getLinkedAssets(this));
-		}
-		
-		return seedResources;
+			for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
+				seedResources.addAll(assetPlugin.getLinkedAssets(this));
+			}
+			
+			return seedResources;
+		});
 	}
 	
 	
@@ -253,7 +265,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 					break;
 			}
 		}
+		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
 	}
-	
 }

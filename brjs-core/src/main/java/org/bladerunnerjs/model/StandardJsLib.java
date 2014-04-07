@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -20,6 +21,8 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	private JsLibConf libConf;
 	private Node parent;
 	private final NodeMap<TypedTestPack> testTypes;
+	
+	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("StandardJsLib.testTypes", root(), file("tests"));
 	
 	public StandardJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -156,7 +159,9 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return children(testTypes);
+		return testTypesList.value(() -> {
+			return children(testTypes);
+		});
 	}
 	
 	@Override
