@@ -1,4 +1,4 @@
-package com.caplin.jstestdriver.plugin;
+package org.bladerunnerjs.jstestdriver;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +16,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 import com.google.jstestdriver.hooks.ResourcePreProcessor;
 
-public class CutlassBundleInjectorPlugin extends AbstractModule
+public class BRJSBundleInjector extends AbstractModule
 {	
-	public CutlassBundleInjectorPlugin() throws IOException
+	public BRJSBundleInjector() throws IOException
 	{
 		BRJS brjs = null;
 		try

@@ -1,4 +1,4 @@
-package com.caplin.jstestdriver.plugin;
+package org.bladerunnerjs.jstestdriver;
 
 import java.io.File;
 import java.util.List;

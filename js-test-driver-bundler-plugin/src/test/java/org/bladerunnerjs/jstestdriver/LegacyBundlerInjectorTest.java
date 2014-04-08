@@ -1,4 +1,4 @@
-package com.caplin.jstestdriver.plugin;
+package org.bladerunnerjs.jstestdriver;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
+import org.bladerunnerjs.jstestdriver.BundlerHandler;
+import org.bladerunnerjs.jstestdriver.BundlerInjector;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
