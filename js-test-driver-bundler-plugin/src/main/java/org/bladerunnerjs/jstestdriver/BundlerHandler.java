@@ -17,13 +17,13 @@ import org.bladerunnerjs.model.BundlableNode;
 import com.google.jstestdriver.FileInfo;
 import com.google.jstestdriver.hooks.ResourcePreProcessor;
 
-public class BundlerInjector implements ResourcePreProcessor
+public class BundlerHandler implements ResourcePreProcessor
 {	
 	protected Map<String,String> bundlerHandlerPaths = new HashMap<>();
 
 	private static final String BUNDLE_PREFIX = "bundles/";
 	
-	public BundlerInjector() throws Exception
+	public BundlerHandler() throws Exception
 	{
 		bundlerHandlerPaths.put("js.bundle", "js/dev/en_GB/combined/bundle.js");
 		bundlerHandlerPaths.put("css.bundle", "css/common/bundle.css");

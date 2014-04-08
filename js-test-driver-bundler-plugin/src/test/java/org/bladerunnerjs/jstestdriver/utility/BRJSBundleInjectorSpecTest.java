@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.jstestdriver.BundlerInjector;
+import org.bladerunnerjs.jstestdriver.BundlerHandler;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 
@@ -49,7 +49,7 @@ public class BRJSBundleInjectorSpecTest extends SpecTest
 				String absoluteInputFilePath = testPack.file(filePath).getAbsolutePath();
 				inputFiles.add( new FileInfo(absoluteInputFilePath, -1, -1, false, false, null, absoluteInputFilePath) );
 			}
-			new BundlerInjector().processDependencies(inputFiles);
+			new BundlerHandler().processDependencies(inputFiles);
 		}
 	}
 	
