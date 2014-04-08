@@ -7,4 +7,9 @@ public class PessimisticFileModificationInfo implements FileModificationInfo {
 	public long getLastModified() {
 		return ++lastModified;
 	}
+	
+	@Override
+	public void resetLastModified() {
+		// do nothing
+	}
 }

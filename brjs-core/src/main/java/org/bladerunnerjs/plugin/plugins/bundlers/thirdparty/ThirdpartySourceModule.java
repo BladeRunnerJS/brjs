@@ -44,6 +44,7 @@ public class ThirdpartySourceModule implements SourceModule
 			this.dir = dir;
 			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), dir);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 		}
 		catch (ConfigException e) {
 			throw new RuntimeException(e);
@@ -192,11 +193,4 @@ public class ThirdpartySourceModule implements SourceModule
 	{
 		return getDependentSourceModules(bundlableNode);
 	}
-
-	@Override
-	public void addPatch(SourceModulePatch patch)
-	{
-		this.patch = patch;
-	}
-	
 }

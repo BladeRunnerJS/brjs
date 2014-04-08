@@ -6,21 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.filemodification.NodeFileModifiedChecker;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private AssetLocationPlugin previousAssetLocationPlugin;
 	private Map<String, AssetLocation> assetLocationCache;
 	
-	private List<AssetLocation> assetLocations;
-	private NodeFileModifiedChecker assetLocationsFileModifiedChecker = new NodeFileModifiedChecker(this);
-	private List<SourceModule> sourceModules;
-	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
+	private final MemoizedValue<List<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", root(), root().dir());
+	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", root(), root().dir());
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -44,8 +42,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<SourceModule> sourceModules() {
-		if(sourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (sourceModules == null)) {
-			sourceModules = new ArrayList<SourceModule>();
+		return sourceModulesList.value(() -> {
+			List<SourceModule> sourceModules = new ArrayList<SourceModule>();
 			
 			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 				for (AssetLocation assetLocation : assetLocations())
@@ -53,9 +51,9 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 					sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
 				}
 			}
-		}
-		
-		return sourceModules;
+			
+			return sourceModules;
+		});
 	}
 	
 	@Override
@@ -92,7 +90,9 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		if(assetLocationsFileModifiedChecker.hasChangedSinceLastCheck() || (assetLocations == null)) {
+		return assetLocationsList.value(() -> {
+			List<AssetLocation> assetLocations = null;
+			
 			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
 				if(assetLocationPlugin.canHandleAssetContainer(this)) {
 					if(assetLocationPlugin != previousAssetLocationPlugin) {
@@ -104,9 +104,9 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 					break;
 				}
 			}
-		}
-		
-		return assetLocations;
+			
+			return assetLocations;
+		});
 	}
 	
 	private String normalizePath(String path) {

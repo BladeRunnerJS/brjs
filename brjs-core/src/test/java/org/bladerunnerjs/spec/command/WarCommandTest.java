@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class WarCommandTest extends SpecTest {
 	private App app;
-	private Aspect aspect;
+	private Aspect aspect, mobileAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -24,6 +24,7 @@ public class WarCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			mobileAspect = app.aspect("mobile");
 	}
 	
 	@Test
@@ -48,7 +49,11 @@ public class WarCommandTest extends SpecTest {
 	
 	@Test
 	public void exportingAnAppWithoutSpecifyingAnWarLocationCausesAWarToBeCreatedWithTheSameNameAsTheApp() throws Exception {
-		given(app).hasBeenCreated();
+		given(app).hasBeenCreated()
+			.and(aspect).hasClass("Class1")
+			.and(aspect).indexPageHasContent("default aspect")
+			.and(mobileAspect).hasClass("Class1")
+			.and(mobileAspect).indexPageHasContent("mobile aspect");
 		when(brjs).runCommand("war", "app1");
 		then(brjs).hasFile("app1.war");
 	}

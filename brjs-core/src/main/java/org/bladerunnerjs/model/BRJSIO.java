@@ -13,10 +13,21 @@ public class BRJSIO {
 	}
 	
 	public void installFileAccessChecker() {
+		executeFileAccessingStaticInitializers();
 		System.setSecurityManager(securityManager);
 	}
 	
 	public void uninstallFileAccessChecker() {
 		System.setSecurityManager(null);
+	}
+	
+	private void executeFileAccessingStaticInitializers() {
+		try {
+			Class.forName("org.bladerunnerjs.aliasing.aliases.AliasesReader");
+			Class.forName("org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsReader");
+		}
+		catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
