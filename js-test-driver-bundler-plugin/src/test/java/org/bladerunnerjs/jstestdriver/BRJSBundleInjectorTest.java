@@ -106,9 +106,9 @@ public class BRJSBundleInjectorTest extends BRJSBundleInjectorSpecTest
 	{
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
 			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js.bundle" );
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/js.bundle" );
 		thenJstdTests(aspectTestPack).testBundleContainsText(
-					"bundles/js.bundle",
+					"bundles/js/js.bundle",
 					"// some SDK src code" );
 	}
 	
@@ -154,9 +154,9 @@ public class BRJSBundleInjectorTest extends BRJSBundleInjectorSpecTest
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
 			.and(aspect).containsFileWithContents("resources/en_GB.properties", "appns.prop = some prop")
     		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n.bundle" );
+    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/i18n.bundle" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/i18n.bundle",
+    				"bundles/i18n/i18n.bundle",
     				"\"appns.prop\":\"some prop\"" );
 	}
 	

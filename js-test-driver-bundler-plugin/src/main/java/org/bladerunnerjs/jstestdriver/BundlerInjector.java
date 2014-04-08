@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,52 +35,47 @@ public class BundlerInjector implements ResourcePreProcessor
 	@Override
 	public List<FileInfo> processDependencies(List<FileInfo> files)
 	{
-		List<FileInfo> returnedFileList = new ArrayList<FileInfo>();
 		for (FileInfo currentFileInfo : files)
 		{
 			File currentFile = new File(currentFileInfo.getFilePath());
-			
-			if (!currentFile.getPath().contains(BUNDLE_PREFIX))
+			if (currentFile.getPath().contains(BUNDLE_PREFIX))
 			{
-				returnedFileList.add(currentFileInfo);
-			}
-			else
-			{
-				returnedFileList.add(currentFileInfo);
-    			handleBundleRequest(currentFile);
+				String modelRequestPath = getModelRequestPath(currentFile);
+				createParentDirectory(currentFile);
+				OutputStream outputStream = createBundleOutputStream(currentFile);
+				handleBundleRequest(currentFile, modelRequestPath, outputStream);
 			}
 		}
 
-		return returnedFileList;
+		return files;
 	}
 
-	private void handleBundleRequest(File bundlerFile)
+	private String getModelRequestPath(File bundleFile)
 	{
-		String bundlerPath = StringUtils.substringAfter(bundlerFile.getPath(), BUNDLE_PREFIX);
-		String brjsRequestPath;
+		String bundlerPath = StringUtils.substringAfter(bundleFile.getPath(), BUNDLE_PREFIX);
 		
-		if (bundlerHandlerPaths.containsKey(bundlerPath))
-		{
-			brjsRequestPath = bundlerHandlerPaths.get(bundlerPath);
-		}
-		else
+		String bundleKey = (bundlerPath.contains("/")) ? StringUtils.substringAfterLast(bundlerPath, "/") : bundlerPath;
+		String brjsRequestPath = bundlerHandlerPaths.get(bundleKey);
+		
+		if (brjsRequestPath == null)
 		{
 			brjsRequestPath = bundlerPath;
 		}
 		
-		createParentDirectory(bundlerFile);
-		
-		OutputStream outputStream = createBundleOutputStream(bundlerFile);
-		
+		return brjsRequestPath;
+	}
+	
+	private void handleBundleRequest(File bundleFile, String brjsRequestPath, OutputStream outputStream)
+	{
 		BRJS brjs = null;
 		try
 		{
     		brjs = BRJSThreadSafeModelAccessor.aquireModel();
     		
-    		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundlerFile, BundlableNode.class);
+    		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
     		if (bundlableNode == null)
     		{
-    			throw new RuntimeException("Unable to calculate bundlable node for the bundler file: " + bundlerFile.getAbsolutePath());
+    			throw new RuntimeException("Unable to calculate bundlable node for the bundler file: " + bundleFile.getAbsolutePath());
     		}
     		
     		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream);
@@ -100,9 +94,9 @@ public class BundlerInjector implements ResourcePreProcessor
 			{
 				outputStream.close();
 			}
-			catch (IOException e)
+			catch (IOException ex)
 			{
-				e.printStackTrace();
+				throw new RuntimeException(ex);
 			}
 		}
 		
