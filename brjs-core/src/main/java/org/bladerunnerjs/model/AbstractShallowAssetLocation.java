@@ -84,31 +84,31 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	public SourceModule sourceModule(String requirePath) throws RequirePathException
 	{
 		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
-
-		SourceModule sourceModule;
-		if (assetContainer() instanceof TestPack)
+		AssetContainer assetContainer = assetContainer();
+		
+		if (sourceModules.containsKey(requirePath))
 		{
-			TestPack testPack = (TestPack) assetContainer();
-			sourceModule = findSourceModuleWithRequirePath(testPack.assetContainers(), canonicalRequirePath);
+			return sourceModules.get(requirePath);
 		}
-		else if (!sourceModules.containsKey(requirePath)) 
+		
+		List<AssetContainer> searchableAssetContainers;
+		if (assetContainer instanceof BundlableNode)
 		{
-			sourceModule = findSourceModuleWithRequirePath(assetContainer().app().getAllAssetContainers(), canonicalRequirePath);
-			if (sourceModule != null)
-			{
-				sourceModules.put(requirePath, sourceModule);
-			}
+			searchableAssetContainers = ((BundlableNode) assetContainer).assetContainers();
 		}
 		else
 		{
-			sourceModule = sourceModules.get(requirePath);
+			searchableAssetContainers = assetContainer().app().getAllAssetContainers();
 		}
+		
+		SourceModule sourceModule = findSourceModuleWithRequirePath(searchableAssetContainers, canonicalRequirePath);
 		
 		if (sourceModule != null)
 		{
+			sourceModules.put(requirePath, sourceModule);
 			return sourceModule;
 		}
-		
+	
 		throw new InvalidRequirePathException("Unable to find SourceModule for require path '"+requirePath+"'. It either does not exist or it is outside of the scope for this request.");
 	}
 

@@ -12,15 +12,13 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
-import org.bladerunnerjs.model.TestAssetLocation;
-import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.ThemeAssetLocation;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.WorkbenchResourcesAssetLocation;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 
 public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlugin {
+	
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		
@@ -70,28 +68,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	{
 		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
 		
-		try
-		{
-    		if (assetContainer instanceof TestPack)
-    		{
-				addTestPackAssetLocations(assetContainer, assetLocationCache, assetLocations);
-    		}
-    		else
-    		{
-    			addNonTestPackAssetLocations(assetContainer, assetLocationCache, assetLocations);
-    		}
-		}
-		catch (ConfigException e)
-		{
-			throw new RuntimeException(e);
-		}
-    		
-		return assetLocations;
-	}
-
-	private void addNonTestPackAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache, List<AssetLocation> assetLocations) throws ConfigException
-	{
-		if(!assetLocationCache.containsKey("resources")) {
+		if (!assetLocationCache.containsKey("resources")) {
 			AssetLocation resourcesAssetLocation;
 			if (assetContainer instanceof Workbench)
 			{
@@ -113,26 +90,8 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		SourceAssetLocation srcTestAssetLocation = (SourceAssetLocation) assetLocationCache.get("src-test");
 		assetLocations.add(srcTestAssetLocation);
 		assetLocations.addAll( srcTestAssetLocation.getChildAssetLocations() ) ;
-	}
-	
-	private void addTestPackAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache, List<AssetLocation> assetLocations) throws ConfigException
-	{
-		TestPack testPack = (TestPack) assetContainer;
-		
-		if(!assetLocationCache.containsKey("resources")) {
-			assetLocationCache.put( "resources", new ResourcesAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources")) );
-			assetLocationCache.put( "src-test", new SourceAssetLocation(assetContainer.root(), assetContainer, testPack.testSource().dir()) );
-			assetLocationCache.put( "tests", new TestAssetLocation(assetContainer.root(), assetContainer, testPack.tests().dir(), assetLocationCache.get("resources"), assetLocationCache.get("src-test")) );
-		}
-		
-		TestAssetLocation tests = (TestAssetLocation) assetLocationCache.get("tests");
-		SourceAssetLocation testSource = (SourceAssetLocation) assetLocationCache.get("src-test");
-		
-		assetLocations.add(assetLocationCache.get("resources"));
-		assetLocations.add(tests);
-		assetLocations.addAll(tests.getChildAssetLocations());
-		assetLocations.add(testSource);
-		assetLocations.addAll(testSource.getChildAssetLocations());
+    		
+		return assetLocations;
 	}
 
 }
