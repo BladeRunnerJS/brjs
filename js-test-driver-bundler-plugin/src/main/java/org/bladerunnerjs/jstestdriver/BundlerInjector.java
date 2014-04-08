@@ -1,33 +1,36 @@
 package org.bladerunnerjs.jstestdriver;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BundlableNode;
 
-import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.google.jstestdriver.FileInfo;
 import com.google.jstestdriver.hooks.ResourcePreProcessor;
 
 public class BundlerInjector implements ResourcePreProcessor
-{
-	protected Map<String,BundlerHandler> bundlerHandlers;
+{	
+	protected Map<String,String> bundlerHandlerPaths = new HashMap<>();
 
+	private static final String BUNDLE_PREFIX = "bundles/";
+	
 	public BundlerInjector() throws Exception
 	{
-		bundlerHandlers = new HashMap<String,BundlerHandler>();
-		bundlerHandlers.put("js.bundle", new BRJSWritingResourceBundlerHandler("js/dev/en_GB/combined/bundle.js", false));
-		bundlerHandlers.put("css.bundle", new BRJSWritingResourceBundlerHandler("css/common/bundle.css", true));
-		bundlerHandlers.put("i18n.bundle", new BRJSWritingResourceBundlerHandler("i18n/en_GB.js", false));
-		bundlerHandlers.put("xml.bundle", new BRJSWritingResourceBundlerHandler("bundle.xml", true));
-		bundlerHandlers.put("html.bundle", new BRJSWritingResourceBundlerHandler("bundle.html", true));
-		
-		// TODO: replace with a catch-all handler
-		bundlerHandlers.put("bundle.xml", new BRJSWritingResourceBundlerHandler("bundle.xml", true));
-		bundlerHandlers.put("bundle.html", new BRJSWritingResourceBundlerHandler("bundle.html", true));
+		bundlerHandlerPaths.put("js.bundle", "js/dev/en_GB/combined/bundle.js");
+		bundlerHandlerPaths.put("css.bundle", "css/common/bundle.css");
+		bundlerHandlerPaths.put("i18n.bundle", "i18n/en_GB.js");
+		bundlerHandlerPaths.put("xml.bundle", "bundle.xml");
+		bundlerHandlerPaths.put("html.bundle", "bundle.html");
 	}
 
 	@Override
@@ -37,39 +40,72 @@ public class BundlerInjector implements ResourcePreProcessor
 		for (FileInfo currentFileInfo : files)
 		{
 			File currentFile = new File(currentFileInfo.getFilePath());
-			List<BundlerHandler> validBundlerHandlers = getBundlerHandlersForExtension(currentFile);
-			if (validBundlerHandlers.size() < 1)
+			
+			if (!currentFile.getPath().contains(BUNDLE_PREFIX))
 			{
-				// No bundler, so just return this as a resource.
 				returnedFileList.add(currentFileInfo);
 			}
 			else
 			{
-				/* 	TODO This is a hack so that we only pass the .bundle file as a dependency as we just write to it.
-					The writing resource handler will always return an empty list */
-				try
-				{
-					returnedFileList.addAll(getBundledFilesForEachBundlerHandler(currentFile, validBundlerHandlers));
-				}
-				catch (RuntimeException ex)
-				{
-					// TODO: experimental logging added -- remove when finished
-					ex.printStackTrace();
-					
-					throw ex;
-				}
-				catch (Exception ex)
-				{
-					// TODO: experimental logging added -- remove when finished
-					ex.printStackTrace();
-					
-					throw new RuntimeException(ex);
-				}
-				returnedFileList.add(currentFileInfo); 
+				returnedFileList.add(currentFileInfo);
+    			handleBundleRequest(currentFile);
 			}
 		}
 
 		return returnedFileList;
+	}
+
+	private void handleBundleRequest(File bundlerFile)
+	{
+		String bundlerPath = StringUtils.substringAfter(bundlerFile.getPath(), BUNDLE_PREFIX);
+		String brjsRequestPath;
+		
+		if (bundlerHandlerPaths.containsKey(bundlerPath))
+		{
+			brjsRequestPath = bundlerHandlerPaths.get(bundlerPath);
+		}
+		else
+		{
+			brjsRequestPath = bundlerPath;
+		}
+		
+		createParentDirectory(bundlerFile);
+		
+		OutputStream outputStream = createBundleOutputStream(bundlerFile);
+		
+		BRJS brjs = null;
+		try
+		{
+    		brjs = BRJSThreadSafeModelAccessor.aquireModel();
+    		
+    		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundlerFile, BundlableNode.class);
+    		if (bundlableNode == null)
+    		{
+    			throw new RuntimeException("Unable to calculate bundlable node for the bundler file: " + bundlerFile.getAbsolutePath());
+    		}
+    		
+    		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream);
+		}
+		catch (Exception ex)
+		{
+			throw new RuntimeException("There was an error while bundling.", ex);
+		}
+		finally 
+		{
+			if (brjs != null)
+			{
+				BRJSThreadSafeModelAccessor.releaseModel();
+			}
+			try
+			{
+				outputStream.close();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	@Override
@@ -84,63 +120,52 @@ public class BundlerInjector implements ResourcePreProcessor
 		return files;
 	}
 
-	protected void setBundlerHandlers(Map<String,BundlerHandler> bundlerHandlers)
+	
+	
+	
+	
+	
+	private void createParentDirectory(File bundlerFile)
 	{
-		this.bundlerHandlers = bundlerHandlers;
-	}
+		boolean parentDirCreationFailed = false;
+		boolean filesCreated = false;
 
-	private List<BundlerHandler> getBundlerHandlersForExtension(File thisFile)
+		Exception failureException = null;
+
+		try
+		{
+			filesCreated = bundlerFile.getParentFile().mkdirs();
+		}
+		catch (Exception ex)
+		{
+			parentDirCreationFailed = true;
+			failureException = ex;
+		}
+		if ((!filesCreated && !bundlerFile.getParentFile().exists()) || parentDirCreationFailed)
+		{
+			throw new RuntimeException("Unable to create parent directory: " + bundlerFile.getParentFile() + ((failureException != null) ? "\n" + failureException.toString() : ""));
+		}
+	}
+	
+	private OutputStream createBundleOutputStream(File bundlerFile)
 	{
-		List<BundlerHandler> validBundlerHandlers = new ArrayList<BundlerHandler>();
-		String thisFileName = thisFile.getName();
+		OutputStream outputStream = null;
 		
-		for (String handlerExtension : bundlerHandlers.keySet())
+		try
 		{
-			boolean isAbsoluteMatch = thisFileName.equals(handlerExtension);
-			boolean hasValidMatchingExtension = thisFileName.endsWith("_" + handlerExtension);
-			
-			if (isAbsoluteMatch || hasValidMatchingExtension)
+			if (bundlerFile.exists())
 			{
-				validBundlerHandlers.add( bundlerHandlers.get(handlerExtension) );
+				bundlerFile.delete();
 			}
+			bundlerFile.createNewFile();
+			outputStream = new BufferedOutputStream(new FileOutputStream(bundlerFile));
 		}
-		return validBundlerHandlers;
-	}
-
-	private List<FileInfo> getBundledFilesForEachBundlerHandler(File bundleFile, List<BundlerHandler> bundlerHandlers) throws Exception
-	{
-		List<FileInfo> returnedFileList = new ArrayList<FileInfo>();
-		File rootDir = getRootDirForBundleFile(bundleFile);
-		File testDir = getTestDirForBundleFile(bundleFile);
-
-		for (BundlerHandler handler : bundlerHandlers)
+		catch (Exception ex)
 		{
-			addBundledFilesToCurrentFileList(handler, returnedFileList, handler.getBundledFiles(rootDir, testDir, bundleFile));
+			throw new RuntimeException("Unable to create or write to file: " + bundlerFile.getPath() + "\n", ex);
 		}
-		return returnedFileList;
+		
+		return outputStream;
 	}
-
-	private File getRootDirForBundleFile(File bundleFile)
-	{
-		return CutlassDirectoryLocator.getScopePath(bundleFile);
-	}
-
-	private File getTestDirForBundleFile(File bundleFile)
-	{
-		if (bundleFile.getAbsolutePath().contains(BundlerHandler.BUNDLE_PREFIX))
-		{
-			return new File(StringUtils.substringBefore(bundleFile.getAbsolutePath(), BundlerHandler.BUNDLE_PREFIX).replace("\\", "/"));			
-		}
-		throw new RuntimeException("The path " + bundleFile.getAbsolutePath() + 
-				" does not contain the directory " + BundlerHandler.BUNDLE_PREFIX + " so the test dir for the bundle cannot be calculated.");
-	}
-
-	private void addBundledFilesToCurrentFileList(BundlerHandler handler, List<FileInfo> currentFileList, List<File> bundledFiles)
-	{
-		for (File thisFile : bundledFiles)
-		{
-			currentFileList.add(new FileInfo(thisFile.getPath(), -1, -1, false, handler.serveOnly(), null, thisFile.getPath()));
-		}
-	}
-
+	
 }
