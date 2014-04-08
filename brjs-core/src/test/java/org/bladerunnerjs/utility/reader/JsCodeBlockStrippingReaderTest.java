@@ -125,6 +125,55 @@ public class JsCodeBlockStrippingReaderTest
 		);
 	}
 	
+	@Test
+	public void selfExecutingFunctionsAtTheStartOfAClassAreNotStripped() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"(function() {",
+					"some code...",
+					"})()"),
+				lines(
+					"(function() ",
+					"some code...",
+					")()")
+			);
+	}
+	
+	@Test
+	public void selfExecutingFunctionsPrefixedByASemicolonAtTheStartOfAClassAreNotStripped() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					";(function() {",
+					"some code...",
+					"})()"),
+				lines(
+					"(function() ",
+					"some code...",
+					")()")
+			);
+	}
+	
+	@Test
+	public void codeBlocksInSelfExecutingFunctionsAreStripped() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"(function() {",
+					"some code...",
+					"function() {",
+					"  inner code block...",
+					"}",
+					")()"),
+				lines(
+					"(function() ",
+					"some code...",
+					"function() ",
+					")()")
+			);
+	}
+	
 	
 	private String lines(String... input)
 	{
