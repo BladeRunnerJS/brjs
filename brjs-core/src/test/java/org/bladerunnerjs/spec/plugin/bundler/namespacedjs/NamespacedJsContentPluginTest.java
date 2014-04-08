@@ -366,4 +366,63 @@ public class NamespacedJsContentPluginTest extends SpecTest {
     	then(requestResponse).doesNotContainText( "sdkLib.subPkg.LibTest = require" );
 	}
 	
+	@Test
+	public void dependenciesOfStaticDependenciesAreIncludedInTheRightOrder() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).classFileHasContent("appns.Class1",
+					"appns.Class1 = function() {};\n" +
+					"appns.Class2();")
+			.and(aspect).classFileHasContent("appns.Class2",
+					"appns.Class2 = function() {\n" +
+					"	appns.Class3();\n" +
+					"};\n")
+			.and(aspect).classFileHasContent("appns.Class3",
+					"appns.Class3 = function() {};\n");
+    	when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+    	then(requestResponse).containsOrderedTextFragments(
+    			"appns.Class2 = function()",
+    			"appns.Class3 = function()",
+    			"appns.Class1 = function()");
+	}
+	
+	@Test
+	public void staticDependenciesOfStaticDependenciesAreIncludedInTheRightOrder() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+		.and(aspect).hasClasses("appns.Class1", "appns.Class2", "appns.Class3")
+		.and(aspect).indexPageRefersTo("appns.Class1")
+		.and(aspect).classFileHasContent("appns.Class1",
+				"appns.Class1 = function() {};\n" +
+				"appns.Class2();")
+				.and(aspect).classFileHasContent("appns.Class2",
+						"appns.Class2 = function() {};\n" +
+						"appns.Class3();\n")
+						.and(aspect).classFileHasContent("appns.Class3",
+								"appns.Class3 = function() {};\n");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"appns.Class3 = function()",
+				"appns.Class2 = function()",
+				"appns.Class1 = function()");
+	}
+	
+	@Test
+	public void selfExecutingFunctionsDontPreventCorrectCalculationOfStaticDependencies() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+		.and(aspect).hasClasses("appns.Class1", "appns.Class2")
+		.and(aspect).indexPageRefersTo("appns.Class1")
+		.and(aspect).classFileHasContent("appns.Class1",
+				";(function() {\n" +
+				"appns.Class1 = function() {};\n" +
+				"appns.Class2();\n" +
+				"});")
+		.and(aspect).classFileHasContent("appns.Class2",
+				"appns.Class2 = function() {};");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"appns.Class2 = function()",
+				"appns.Class1 = function()");
+	}
+	
 }

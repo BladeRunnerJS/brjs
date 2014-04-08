@@ -10,7 +10,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.utility.JsCommentStrippingReader;
+import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 public class JsCommentStripperCommand
 {

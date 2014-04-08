@@ -11,7 +11,6 @@ import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.utility.JsCommentStrippingReader;
 import org.bladerunnerjs.utility.Trie;
 
 public class TrieBasedDependenciesCalculator
@@ -36,23 +35,24 @@ public class TrieBasedDependenciesCalculator
 		computedValue = new MemoizedValue<>("TrieBasedDependenciesCalculator.computedValue", assetLocation.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
 	}
 	
-	public List<SourceModule> getCalculatedDependentSourceModules() throws ModelOperationException
+	public List<SourceModule> getCalculatedDependentSourceModules(Reader reader) throws ModelOperationException
 	{
-		return getComputedValue().dependentSourceModules;
+		return getComputedValue(reader).dependentSourceModules;
 	}
 	
-	public List<String> getCalculataedAliases() throws ModelOperationException
+	public List<String> getCalculataedAliases(Reader reader) throws ModelOperationException
 	{
-		return getComputedValue().aliases;
+		return getComputedValue(reader).aliases;
 	}
 	
-	private ComputedValue getComputedValue() throws ModelOperationException {
+	private ComputedValue getComputedValue(final Reader reader) throws ModelOperationException {
 		return computedValue.value(new Getter<ModelOperationException>() {
 			@Override
 			public Object get() throws ModelOperationException {
 				ComputedValue computedValue = new ComputedValue();
 				
-				try(Reader reader = new JsCommentStrippingReader(asset.getReader(), false)) {
+				
+				try {
 					Trie<Object> trie = trieFactory.createTrie();
 					
 					for(Object match : trie.getMatches(reader)) {
