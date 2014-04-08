@@ -3,9 +3,11 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -18,7 +20,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private Map<String, AssetLocation> assetLocationCache;
 	
 	private final MemoizedValue<List<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", root(), root().dir());
-	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", root(), root().dir());
+	private final MemoizedValue<Map<String,AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocations", root(), root().dir());
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -69,29 +71,19 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public AssetLocation assetLocation(String locationPath) {
-		String normalizedLocationPath = normalizePath(locationPath);
-		AssetLocation assetLocation = null;
-		
-		List<AssetLocation> assetLocations = assetLocations();
-		if (assetLocations != null)
-		{
-			for(AssetLocation nextAssetLocation : assetLocations) {
-				String nextLocationPath = normalizePath(RelativePathUtility.get(dir(), nextAssetLocation.dir()));
-				
-				if(nextLocationPath.equals(normalizedLocationPath)) {
-					assetLocation = nextAssetLocation;
-					break;
-				}
-			}
-		}
-		
-		return assetLocation;
+		locationPath = locationPath.endsWith("/") ? StringUtils.substringBeforeLast(locationPath, "/") : locationPath;
+		return namedAssetLocations().get(locationPath);
 	}
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		return assetLocationsList.value(() -> {
-			List<AssetLocation> assetLocations = null;
+		return new ArrayList<AssetLocation>( namedAssetLocations().values() );
+	}
+	
+	@Override
+	public Map<String,AssetLocation> namedAssetLocations() {
+		return assetLocationsMap.value(() -> {
+			Map<String,AssetLocation> assetLocations = new LinkedHashMap<>();
 			
 			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
 				if(assetLocationPlugin.canHandleAssetContainer(this)) {
@@ -100,7 +92,13 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 						assetLocationCache = new HashMap<>();
 					}
 					
-					assetLocations = assetLocationPlugin.getAssetLocations(this, assetLocationCache);
+					
+					for (AssetLocation assetLocation : assetLocationPlugin.getAssetLocations(this, assetLocationCache))
+					{
+						String locationPath = normalizePath(RelativePathUtility.get(dir(), assetLocation.dir()));
+						locationPath = locationPath.endsWith("/") ? StringUtils.substringBeforeLast(locationPath, "/") : locationPath;
+						assetLocations.put( locationPath, assetLocation );
+					}
 					break;
 				}
 			}
