@@ -85,7 +85,7 @@ public class CreateAppCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheAppAlreadyExists() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-app", "app", "appx");
-		then(exceptions).verifyException(NodeAlreadyExistsException.class, unquoted(app.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeAlreadyExistsException.class, unquoted(app.getName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
