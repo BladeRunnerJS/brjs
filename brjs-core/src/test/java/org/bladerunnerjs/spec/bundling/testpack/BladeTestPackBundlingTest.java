@@ -1,7 +1,6 @@
 package org.bladerunnerjs.spec.bundling.testpack;
 
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
@@ -14,7 +13,6 @@ import org.junit.Test;
 public class BladeTestPackBundlingTest extends SpecTest
 {
 	private App app;
-	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
 	private TestPack bladeUTs, bladeATs;
@@ -28,7 +26,6 @@ public class BladeTestPackBundlingTest extends SpecTest
 			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
-			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			bladeUTs = blade.testType("unit").testTech("TEST_TECH");
@@ -101,20 +98,6 @@ public class BladeTestPackBundlingTest extends SpecTest
 				blade.assetLocation("src").file("appns/bs/b1/Class2.js"),
 				bladeset.assetLocation("src").file("appns/bs/Class1.js"),
 				bladeset.assetLocation("src").file("appns/bs/Class2.js"));
-	}
-	
-	@Test
-	public void weCanBundleAspectSrcCodeInATs() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).classFileHasContent("appns.Class1", "aspect content")
-			.and(blade).hasNamespacedJsPackageStyle()
-			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.Class1", "appns.bs.b1.Class2")
-			.and(bladeATs).testRefersTo("pkg/test.js", "appns.bs.b1.Class1");
-		then(bladeATs).bundledFilesEquals(
-				blade.assetLocation("src").file("appns/bs/b1/Class1.js"),
-				blade.assetLocation("src").file("appns/bs/b1/Class2.js"),
-				aspect.assetLocation("src").file("appns/Class1.js"));
 	}
 	
 	@Test

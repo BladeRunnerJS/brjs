@@ -74,7 +74,7 @@ public class NodeJsSourceModule implements SourceModule {
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			return SourceModuleResolver.getSourceModules(assetLocation, requirePaths(), this.requirePath);
+			return SourceModuleResolver.getSourceModules(assetLocation, requirePaths(), this.requirePath, bundlableNode, false);
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);

@@ -47,7 +47,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			return SourceModuleResolver.getSourceModules(assetLocation, dependencyCalculator.getRequirePaths(), assetPath);
+			return SourceModuleResolver.getSourceModules(assetLocation, dependencyCalculator.getRequirePaths(), assetPath, bundlableNode, true);
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);

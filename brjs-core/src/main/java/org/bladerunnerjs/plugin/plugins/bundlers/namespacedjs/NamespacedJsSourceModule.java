@@ -70,7 +70,7 @@ public class NamespacedJsSourceModule implements SourceModule {
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		// TODO: is this a bug since we are returning all dependencies, whether they are reachable via the bundlable node or not?
 		try {
-			return SourceModuleResolver.getSourceModules(assetLocation, dependencyCalculator.getRequirePaths(), requirePath);
+			return SourceModuleResolver.getSourceModules(assetLocation, dependencyCalculator.getRequirePaths(), requirePath, bundlableNode, true);
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
