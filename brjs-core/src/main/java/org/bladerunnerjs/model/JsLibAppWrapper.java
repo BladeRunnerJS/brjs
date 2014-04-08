@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
@@ -73,7 +74,7 @@ public final class JsLibAppWrapper implements JsLib {
 	}
 	
 	@Override
-	public List<SourceModule> sourceModules() {
+	public Set<SourceModule> sourceModules() {
 		return wrappedJsLib.sourceModules();
 	}
 	

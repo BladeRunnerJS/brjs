@@ -2,8 +2,10 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
@@ -27,7 +29,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	private String name;
 	
 	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
-	private List<SourceModule> sourceModules = null;
+	private Set<SourceModule> sourceModules = null;
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -132,9 +134,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<SourceModule> sourceModules() {
+	public Set<SourceModule> sourceModules() {
 		if(sourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (sourceModules == null)) {
-			sourceModules = new ArrayList<SourceModule>();
+			sourceModules = new LinkedHashSet<SourceModule>();
 			
 			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 				for (AssetLocation assetLocation : assetLocations())

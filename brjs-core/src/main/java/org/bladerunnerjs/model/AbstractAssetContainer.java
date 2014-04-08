@@ -1,10 +1,11 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
@@ -17,7 +18,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private AssetLocationPlugin previousAssetLocationPlugin;
 	private Map<String, AssetLocation> assetLocationCache;
 	
-	private final MemoizedValue<List<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", root(), root().dir());
+	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", root(), root().dir());
 	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", root(), root().dir());
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
@@ -41,9 +42,9 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public List<SourceModule> sourceModules() {
+	public Set<SourceModule> sourceModules() {
 		return sourceModulesList.value(() -> {
-			List<SourceModule> sourceModules = new ArrayList<SourceModule>();
+			Set<SourceModule> sourceModules = new LinkedHashSet<SourceModule>();
 			
 			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 				for (AssetLocation assetLocation : assetLocations())
