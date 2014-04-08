@@ -6,13 +6,16 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
@@ -44,6 +47,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	private MemoizedValue<List<SourceModule>> orderDependentSourceModulesList;
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
+	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -68,9 +72,15 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		// TODO: is this a bug since we are returning all dependencies, whether they are reachable via the bundlable node or not?
+		if(!sourceModuleResolvers.containsKey(bundlableNode)) {
+			App app = assetLocation.assetContainer().app();
+			
+			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, requirePath, true, app.dir(), app.root().libsDir()));
+		}
+		SourceModuleResolver sourceModuleResolver = sourceModuleResolvers.get(bundlableNode);
+		
 		try {
-			return SourceModuleResolver.getSourceModules(assetLocation, dependencyCalculator.getRequirePaths(), requirePath, bundlableNode, true);
+			return sourceModuleResolver.getSourceModules(dependencyCalculator.getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);

@@ -7,8 +7,10 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +18,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -51,6 +54,7 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	private MemoizedValue<ComputedValue> computedValue;
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
+	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -73,8 +77,14 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+		if(!sourceModuleResolvers.containsKey(bundlableNode)) {
+			App app = assetLocation.assetContainer().app();
+			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, assetPath, false, app.dir(), app.root().libsDir()));
+		}
+		SourceModuleResolver sourceModuleResolver = sourceModuleResolvers.get(bundlableNode);
+		
 		try {
-			return SourceModuleResolver.getSourceModules(assetLocation, requirePaths(), this.requirePath, bundlableNode, false);
+			return sourceModuleResolver.getSourceModules(requirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
