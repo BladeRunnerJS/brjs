@@ -20,13 +20,19 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private AssetLocationPlugin previousAssetLocationPlugin;
 	private Map<String, AssetLocation> assetLocationCache;
 	
-	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", root(), root().dir());
-	private final MemoizedValue<Map<String, SourceModule>> sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", root(), root().dir());
-	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", root(), root().dir());
-	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", root(), root().dir());
+	private final MemoizedValue<Set<SourceModule>> sourceModulesList;
+	private final MemoizedValue<Map<String, SourceModule>> sourceModulesMap;
+	private final MemoizedValue<List<AssetLocation>> assetLocationsList;
+	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap;
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
+		
+		File[] scopeFileArray = getScopeFiles();
+		sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", root(), scopeFileArray);
+		sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", root(), scopeFileArray);
+		assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", root(), scopeFileArray);
+		assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", root(), scopeFileArray);
 	}
 	
 	@Override
@@ -107,6 +113,18 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			
 			return assetLocationsMap;
 		});
+	}
+	
+	private File[] getScopeFiles() {
+		List<File> scopeFiles = new ArrayList<>();
+		scopeFiles.add(dir());
+		scopeFiles.add(root().conf().file("bladerunner.conf"));
+		
+		if(!(this instanceof JsLib)) {
+			scopeFiles.add(app().file("app.conf"));
+		}
+		
+		return scopeFiles.toArray(new File[scopeFiles.size()]);
 	}
 	
 	private String normalizePath(String path) {
