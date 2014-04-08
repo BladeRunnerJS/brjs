@@ -1,7 +1,7 @@
-br.Core.thirdparty("presenter-knockout");
-
 (function() {
 	"use strict";
+	
+	br.Core.thirdparty("presenter-knockout");
 	
 	var Utility = require('br/core/Utility');
 	var Errors = require('br/Errors');
