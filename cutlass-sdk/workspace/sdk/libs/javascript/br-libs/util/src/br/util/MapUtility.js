@@ -248,28 +248,30 @@
 		throwOnDuplicateKey = (typeof throwOnDuplicateKey === 'undefined' ? true : throwOnDuplicateKey);
 		isDeepCopy = (typeof isDeepCopy === 'undefined' ? false : isDeepCopy);
 
-		var merged = {};
+		var currMap,
+			merged = {};
 		for (var i = 0, len = mergeMapArr.length; i < len; ++i) {
-			if (!(mergeMapArr[i] instanceof Object)) {
+			currMap = mergeMapArr[i];
+			if (typeof currMap !== 'object' || currMap === null) {
 				throw new Errors.InvalidParametersError('Failed to merge maps; one of the specified maps was of an invalid type');
 			}
 
-			for (var key in mergeMapArr[i]) {
+			for (var key in currMap) {
 				if (overwriteDuplicateKeys !== true && typeof merged[key] !== 'undefined') {
 					if (throwOnDuplicateKey) {
-						throw new Errors.InvalidParametersError('Failed to merge maps due to a duplicate key \'' + key + '\': conflicting values \'' + merged[key] + '\'/\'' + mergeMapArr[i][key] + '\'');
+						throw new Errors.InvalidParametersError('Failed to merge maps due to a duplicate key \'' + key + '\': conflicting values \'' + merged[key] + '\'/\'' + currMap[key] + '\'');
 					}
 					// do not overwrite the value, keep the original and continue with next value
 					continue;
 				}
 
-				if (typeof merged[key] === 'object' && typeof mergeMapArr[i][key] == 'object' && isDeepCopy ) {
-					merged[key] = this.mergeMaps([mergeMapArr[i][key], merged[key]], throwOnDuplicateKey, throwOnDuplicateKey, true);
-				} else if (!merged[key] && typeof mergeMapArr[i][key] == 'object' && isDeepCopy ) {
-					merged[key] = this.copy(mergeMapArr[i][key], {}, true );
+				if (typeof merged[key] === 'object' && typeof currMap[key] == 'object' && isDeepCopy ) {
+					merged[key] = this.mergeMaps([currMap[key], merged[key]], throwOnDuplicateKey, throwOnDuplicateKey, true);
+				} else if (!merged[key] && typeof currMap[key] == 'object' && isDeepCopy ) {
+					merged[key] = this.copy(currMap[key], {}, true );
 				} else {
 					// shallow copy
-					merged[key] = mergeMapArr[i][key];
+					merged[key] = currMap[key];
 				}
 			}
 		}
