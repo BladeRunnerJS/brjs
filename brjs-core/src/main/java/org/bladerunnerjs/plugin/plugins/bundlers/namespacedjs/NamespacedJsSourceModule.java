@@ -4,14 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -24,14 +18,14 @@ import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
+import org.bladerunnerjs.utility.reader.JsStringStrippingReader;
 
 import com.Ostermiller.util.ConcatReader;
 
 public class NamespacedJsSourceModule implements SourceModule {
-	private static final Pattern extendPattern = Pattern.compile("(caplin|br\\.Core)\\.(extend|implement|inherit)\\([^,]+,\\s*([^)]+)\\)");
 	private static final String DEFINE_BLOCK = "\ndefine('%s', function(require, exports, module) { module.exports = %s; });";
 	
 	private LinkedAsset linkedAsset;
@@ -40,8 +34,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private String className;
 	private SourceModulePatch patch;
 	private TrieBasedDependenciesCalculator dependencyCalculator;
+	private TrieBasedDependenciesCalculator staticDependencyCalculator;
 	
-	private MemoizedValue<List<SourceModule>> orderDependentSourceModulesList;
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	
 	@Override
@@ -57,7 +51,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 			linkedAsset.initialize(assetLocation, dir, assetName);
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 			dependencyCalculator = new TrieBasedDependenciesCalculator(this, assetFile, patch.getPatchFile());
-			orderDependentSourceModulesList = new MemoizedValue<>("NamespacedJsSourceModule.orderDependentSourceModules", assetLocation.root(), assetLocation.root().dir());
+			staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, assetFile, patch.getPatchFile());
 			assetLocationsList = new MemoizedValue<>("NamespacedJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 		}
 		catch(RequirePathException e) {
@@ -68,12 +62,24 @@ public class NamespacedJsSourceModule implements SourceModule {
 	@Override
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		// TODO: is this a bug since we are returning all dependencies, whether they are reachable via the bundlable node or not?
-		return dependencyCalculator.getCalculatedDependentSourceModules();
+		try (Reader commentStrippingReader = new JsCommentStrippingReader(getReader(), false)) {
+			return dependencyCalculator.getCalculatedDependentSourceModules(commentStrippingReader);			
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return dependencyCalculator.getCalculataedAliases();
+		try (Reader commentStrippingReader = new JsCommentStrippingReader(getReader(), false)) {			
+			return dependencyCalculator.getCalculataedAliases(commentStrippingReader);
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	@Override
@@ -99,36 +105,18 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return orderDependentSourceModulesList.value(new Getter<ModelOperationException>(){
-			@Override
-			public Object get() throws ModelOperationException {
-				List<SourceModule> orderDependentSourceModules = new ArrayList<>();
-				
-				try(Reader reader = new JsCommentStrippingReader(getReader(), false)) {
-					StringWriter stringWriter = new StringWriter();
-					IOUtils.copy(reader, stringWriter);
-					Matcher matcher = extendPattern.matcher(stringWriter.toString());
-					
-					while (matcher.find()) {
-						String referencedClass = matcher.group(3);
-						String requirePath = referencedClass.replaceAll("\\.", "/");
-						
-						try {
-							orderDependentSourceModules.add(bundlableNode.getSourceModule(requirePath));
-						}
-						catch(UnresolvableRequirePathException e) {
-							// TODO: log the fact that the thing being extended was not found to be a fully qualified class name (probably a variable name), and so is being ignored for the purposes of bundling.
-						}
-					}
-				}
-				catch(IOException | RequirePathException e) {
-					throw new ModelOperationException(e);
-				}
-				
-				return orderDependentSourceModules;
-			}
-		});
+	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {				
+		try (
+			Reader commentStrippingReader = new JsCommentStrippingReader(getReader(), false);
+			Reader commentStrippingAndStringStrippingReader = new JsStringStrippingReader(commentStrippingReader);
+			Reader commentStrippingAndStringStrippingAndCodeBlockStrippingReader = new JsCodeBlockStrippingReader(commentStrippingAndStringStrippingReader);
+		) {
+			return staticDependencyCalculator.getCalculatedDependentSourceModules(commentStrippingAndStringStrippingAndCodeBlockStrippingReader);
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	@Override

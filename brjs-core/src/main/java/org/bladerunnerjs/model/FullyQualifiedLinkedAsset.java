@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
+import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 /**
  * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
@@ -44,12 +45,24 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return dependencyCalculator.getCalculatedDependentSourceModules();
+		try (Reader commentStrippingReader = new JsCommentStrippingReader(getReader(), false)) {			
+			return dependencyCalculator.getCalculatedDependentSourceModules(commentStrippingReader);
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return dependencyCalculator.getCalculataedAliases();
+		try (Reader commentStrippingReader = new JsCommentStrippingReader(getReader(), false)) {
+			return dependencyCalculator.getCalculataedAliases(commentStrippingReader);
+		}
+		catch (IOException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	@Override
