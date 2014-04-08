@@ -33,7 +33,7 @@ import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 import com.google.jstestdriver.FileInfo;
 
-public class BundlerInjectorTest {
+public class LegacyBundlerInjectorTest {
 
 	private BundlerHandler jsBundleHandler;
 	private BundlerHandler cssBundleHandler;
