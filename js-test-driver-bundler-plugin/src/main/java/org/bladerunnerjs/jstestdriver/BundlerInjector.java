@@ -20,7 +20,7 @@ public class BundlerInjector implements ResourcePreProcessor
 	{
 		bundlerHandlers = new HashMap<String,BundlerHandler>();
 		bundlerHandlers.put("js.bundle", new BRJSWritingResourceBundlerHandler("js/dev/en_GB/combined/bundle.js", false));
-		bundlerHandlers.put("css.bundle", new BRJSWritingResourceBundlerHandler("css/standard_en_GB/bundle.css", true));
+		bundlerHandlers.put("css.bundle", new BRJSWritingResourceBundlerHandler("css/common/bundle.css", true));
 		bundlerHandlers.put("i18n.bundle", new BRJSWritingResourceBundlerHandler("i18n/en_GB.js", false));
 		bundlerHandlers.put("xml.bundle", new BRJSWritingResourceBundlerHandler("bundle.xml", true));
 		bundlerHandlers.put("html.bundle", new BRJSWritingResourceBundlerHandler("bundle.html", true));
