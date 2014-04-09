@@ -202,25 +202,42 @@ task generateReleaseNotes, {
 			}
 		}
 		
+		
+		def appendToReleaseNotes = []
+		
+		appendToReleaseNotes << ""
+		appendToReleaseNotes << "<br/>"
+		appendToReleaseNotes << "-------------"
+		appendToReleaseNotes << "### Closed Issues"
+		appendToReleaseNotes << "The following issues labelled ${issueIncludeLabelsString} have been closed:"
+		appendToReleaseNotes << ""
+		releaseNoteIssues.each {
+			appendToReleaseNotes << "- ${it.toString()}"
+		}
+		appendToReleaseNotes << ""
+		appendToReleaseNotes << "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} from ${milestoneIds.size} milestones: "
+		milestoneIds.each { milestoneId ->
+			if (milestoneId != milestoneIds.first()) { 
+				appendToReleaseNotes << "; "
+			}
+			def milestoneUrl = githubApi.getMilestoneUrl(milestoneId)
+					appendToReleaseNotes << "<a href=\"${milestoneUrl}\">${milestoneUrl}</a>"
+		}
+		appendToReleaseNotes << "</sub>"
+		appendToReleaseNotes << ""		
+		appendToReleaseNotes << "### Found an Issue?"
+		appendToReleaseNotes << "- [https://github.com/BladeRunnerJS/brjs/issues](https://github.com/BladeRunnerJS/brjs/issues) for any existing issues"
+		appendToReleaseNotes << "- [https://github.com/BladeRunnerJS/brjs/issues/new](https://github.com/BladeRunnerJS/brjs/issues/new) to raise a new issues."
+		appendToReleaseNotes << ""
+		appendToReleaseNotes << ""
+		appendToReleaseNotes << '<sub>Parts of this release note have been auto-generated. If you notice any problems with it <a href="https://github.com/BladeRunnerJS/brjs/issues/new">tell us</a></sub>' 
+		appendToReleaseNotes << ""
+		appendToReleaseNotes << ""
+	
 		assembledReleaseNotesFile.parentFile.mkdirs()
 		assembledReleaseNotesFile.createNewFile()
-		assembledReleaseNotesFile.text = releaseNoteFile.text
-		assembledReleaseNotesFile.text += "\n\n"
-		assembledReleaseNotesFile.text += "-------------\n"
-		assembledReleaseNotesFile.text += "### Closed Issues\n"
-		assembledReleaseNotesFile.text += "<sup>${issues.size} issues closed; ${releaseNoteIssues.size} labelled ${issueIncludeLabelsString} from ${milestoneIds.size} milestones: "
-		milestoneIds.each { milestoneId ->
-			if (milestoneId != milestoneIds.first()) { assembledReleaseNotesFile.text += "; " }
-			def milestoneUrl = githubApi.getMilestoneUrl(milestoneId)
-			assembledReleaseNotesFile.text += "<a href=\"${milestoneUrl}\">${milestoneUrl}</a>"
-		}
-		assembledReleaseNotesFile.text += "</sub>\n\n"
-		releaseNoteIssues.each {
-			assembledReleaseNotesFile.text += "- ${it.toString()}\n"
-		}
-		assembledReleaseNotesFile.text += "\n"
-		assembledReleaseNotesFile.text += '<sub>Parts of this release note have been auto-generated. If you notice any problems with it <a href="https://github.com/BladeRunnerJS/brjs/issues/new">tell us</a></sub>\n\n'
-	
+		assembledReleaseNotesFile.text = releaseNoteFile.text + "\n" + appendToReleaseNotes.join("\n")
+		
     	ant.replace(file: assembledReleaseNotesFile) {
     		replacefilter(token:"@tagVersion@", value:tagVersion)
     		replacefilter(token:"@buildVersion@", value:buildVersion)
