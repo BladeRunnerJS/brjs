@@ -96,6 +96,11 @@ public class BundleSetBuilder {
 		if(linkedAssets.add(linkedAsset)) {
 			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
 			
+			if (linkedAsset instanceof SourceModule)
+			{
+				moduleDependencies.addAll( ((SourceModule) linkedAsset).getOrderDependentSourceModules(bundlableNode) );
+			}
+			
 			activeAliases.addAll(getAliases(linkedAsset.getAliasNames()));
 			
 			if(moduleDependencies.isEmpty()) {

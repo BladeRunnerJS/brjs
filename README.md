@@ -42,6 +42,9 @@ BRJS is written and compiled using Java 8, but we distribute it and run the test
   * Configure `JAVA_HOME` to point to either the Java 7 or the Java 8 JDK home directory, as you prefer.
   * Configure the `path` environment variable to include `$JAVA_HOME/bin`.
 
+If you install Java using the Windows installer than it places a 'java' executable in 'C:\windows\system32' that proxies to the most recently installed version of Java. You will either need to install your preferred implementation of Java last, or ensure that the path to the Java 'bin' directory appears before 'C:\windows\system32'.
+
+
 
 #### Build a Distributable Zip
 
