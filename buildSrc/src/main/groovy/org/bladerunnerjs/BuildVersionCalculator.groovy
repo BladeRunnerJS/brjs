@@ -93,6 +93,19 @@ class BuildVersionCalculator
 		p.logger.warn "The hostname was calculated as '${hostname}', you should set your hostname so this build can be traced back to this machine."
 		return hostname
 	}
+
+	static String calculateCurrentBranch(Project p)
+	{
+		def stdout = new ByteArrayOutputStream()
+		def stderr = new ByteArrayOutputStream()
+		p.exec {
+			commandLine 'git', 'rev-parse', '--abbrev-ref', 'HEAD'
+			standardOutput = stdout
+			errorOutput = stderr
+		}
+		def branch = stdout.toString().trim()
+		return branch
+	}
 	
 	
 	////////////////////////////////////////////////////////

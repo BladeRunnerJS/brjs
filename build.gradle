@@ -5,10 +5,12 @@ def projectBuildMajorVersion = org.bladerunnerjs.BuildVersionCalculator.calculat
 def projectVersionIsDirty = org.bladerunnerjs.BuildVersionCalculator.isVersionDirty(project)
 def projectBuildDate = org.bladerunnerjs.BuildVersionCalculator.calculateBuildDate(project)
 def projectBuildHostname = org.bladerunnerjs.BuildVersionCalculator.calculateBuildHostname(project)
+def projectCurrentBranch = org.bladerunnerjs.BuildVersionCalculator.calculateCurrentBranch(project)
 
 logger.info "Build version calculated as: ${projectBuildVersion}"
 logger.info "Build date is: ${projectBuildDate}"
 logger.info "Build hostname is: ${projectBuildHostname}"
+logger.info "Build branch is: ${projectCurrentBranch}"
 
 
 def overrideBuildVersionPropertyName = "overrideBuildVersion"
@@ -30,6 +32,10 @@ if (project.hasProperty(overrideMajorVersionPropertyName)) {
 	{
 		throw new GradleException("The environment variable '${envName} must be set for the build to work correctly, please make sure it is set. Refer to README.md for info on the dev environment setup.")
 	}
+}
+
+ext {
+	RELEASE_BRANCH = "master"
 }
 
 allprojects {
@@ -246,12 +252,17 @@ task generateReleaseNotes, {
 }
 
 
-task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', build], {
+//task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', build], {
+	task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip'], {
 	doLast {
 		def cutlassSdkProject = project(':cutlass-sdk')
 		def brjsZipPattern = "**/BladeRunnerJS-${projectBuildVersion}.zip"
 		def brjsZip = fileTree(dir:cutlassSdkProject.buildDir, include:brjsZipPattern).singleFile
 
+		if (!projectCurrentBranch.equals(RELEASE_BRANCH))
+		{
+			throw new GradleException("BladeRunnerJS ${projectBuildVersion} can only be released from '${RELEASE_BRANCH}' branch, you are currently on '${projectCurrentBranch}'.")			
+		}		
 		if (projectVersionIsDirty)
 		{
 			throw new GradleException("Project version is dirty, this version (${projectBuildVersion}) cannot be released.")
