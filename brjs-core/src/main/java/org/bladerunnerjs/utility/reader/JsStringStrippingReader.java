@@ -22,7 +22,7 @@ public class JsStringStrippingReader extends AbstractStrippingReader
 	}
 	
 	@Override
-	int getMaxSingleWrite()
+	protected int getMaxSingleWrite()
 	{
 		return 1;
 	}

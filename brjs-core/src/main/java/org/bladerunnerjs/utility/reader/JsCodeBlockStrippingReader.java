@@ -2,17 +2,21 @@ package org.bladerunnerjs.utility.reader;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class JsCodeBlockStrippingReader extends AbstractStrippingReader
 {
-	private static final char[] SELF_EXECUTING_FUNCTION_DEFINITION = "(function()".toCharArray();
+	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "[\\(|\\!|\\~|\\-|\\+]function\\s*\\(\\s*\\)\\s*\\{";
+	private static final Pattern SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN = Pattern.compile(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX);
+
+	private static final int MIN_BUFFERED_CHARS = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length(); // buffer the length of the function definition
 	
-	private char[] emptyChars = new char[0];
-	int charCount = 0;
-	int nestedCodeBlockDepth = 0;
+	private StringBuffer charBuffer = new StringBuffer();
 	int depthCount = 0;
-	boolean possibleSelfExecutingFunction = true;
 
 	public JsCodeBlockStrippingReader(Reader sourceReader)
 	{
@@ -20,7 +24,7 @@ public class JsCodeBlockStrippingReader extends AbstractStrippingReader
 	}
 
 	@Override
-	int getMaxSingleWrite()
+	protected int getMaxSingleWrite()
 	{
 		return 1;
 	}
@@ -28,44 +32,62 @@ public class JsCodeBlockStrippingReader extends AbstractStrippingReader
 	@Override
 	protected char[] handleNextCharacter(char nextChar, char previousChar) throws IOException
 	{
-		// handle self executing functions prefixed by a ;
-		if (charCount == 0 && nextChar == ';')
+		charBuffer.append(nextChar);
+		
+		if (charBuffer.length() < MIN_BUFFERED_CHARS)
 		{
-			return emptyChars;
+			return "".toCharArray();
 		}
 		
-		if ( possibleSelfExecutingFunction && SELF_EXECUTING_FUNCTION_DEFINITION[charCount] == nextChar )
-		{
-			possibleSelfExecutingFunction = true;
-			if ( (charCount+1) == SELF_EXECUTING_FUNCTION_DEFINITION.length)
-			{
-				nestedCodeBlockDepth++;
-				possibleSelfExecutingFunction = false;
-			}
-		}
-		else
-		{
-			possibleSelfExecutingFunction = false;
-		}
-		charCount++;
+		return handleNextBufferedCharacter();
+	}
+
+	@Override
+	protected char[] flush() throws IOException
+	{
+		StringBuffer flushedChars = new StringBuffer();
 		
-		if (nextChar == '{')
+		while (charBuffer.length() > 0)
+		{
+			flushedChars.append( handleNextBufferedCharacter() );
+		}
+		
+		return flushedChars.toString().toCharArray();
+	}
+	
+	private char[] handleNextBufferedCharacter() throws IOException
+	{
+		Matcher selfExecFunctionMatcher = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher( charBuffer.toString() );
+		if ( selfExecFunctionMatcher.find() )
+		{
+			charBuffer = new StringBuffer( selfExecFunctionMatcher.replaceAll("{") );
+			depthCount--;
+		}
+		
+		char nextBufferedChar = charBuffer.charAt(0);
+		charBuffer.deleteCharAt(0);
+		return handleNextCharacter( nextBufferedChar );
+	}
+	
+	private char[] handleNextCharacter(char processChar) throws IOException
+	{
+		if (processChar == '{')
 		{
 			depthCount++;
 		}
-		else if (nextChar == '}')
+		else if (processChar == '}')
 		{
-			depthCount = Math.max( nestedCodeBlockDepth, --depthCount );
+			depthCount = Math.max( 0, --depthCount );
 		}
 		else
 		{
-			if (depthCount <= nestedCodeBlockDepth)
+			if (depthCount <= 0)
 			{
-				return new char[] { nextChar };			
+				return new char[] { processChar };			
 			}
 		}
 		
-		return emptyChars;
+		return "".toCharArray();
 	}
-
+	
 }

@@ -134,7 +134,7 @@ public class JsCodeBlockStrippingReaderTest
 					"some code...",
 					"})()"),
 				lines(
-					"(function() ",
+					"",
 					"some code...",
 					")()")
 			);
@@ -149,7 +149,7 @@ public class JsCodeBlockStrippingReaderTest
 					"some code...",
 					"})()"),
 				lines(
-					"(function() ",
+					";",
 					"some code...",
 					")()")
 			);
@@ -167,13 +167,50 @@ public class JsCodeBlockStrippingReaderTest
 					"}",
 					")()"),
 				lines(
-					"(function() ",
+					"",
 					"some code...",
 					"function() ",
 					")()")
 			);
 	}
 	
+	@Test
+	public void selfExecutingFunctionsCanAppearAnywhereInTheClass() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"some code...",
+					"(function() {",
+					"some more code...",
+					"})()"),
+				lines(
+					"some code...",
+					"",
+					"some more code...",
+					")()")
+			);
+	}
+	
+	@Test
+	public void codeBlocksInSelfExecutingFunctionsInTheMiddleOfAClassAreStripped() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"some code...",
+				"(function() {",
+				"some more code...",
+				"function() {",
+				"  inner code block...",
+				"}",
+				")()"),
+			lines(
+				"some code...",
+				"",
+				"some more code...",
+				"function() ",
+				")()")
+		);
+	}
 	
 	private String lines(String... input)
 	{
