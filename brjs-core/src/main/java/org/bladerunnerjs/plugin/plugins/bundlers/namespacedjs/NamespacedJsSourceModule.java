@@ -19,9 +19,8 @@ import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingReader;
-import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
-import org.bladerunnerjs.utility.reader.JsStringStrippingReader;
+import org.bladerunnerjs.utility.reader.JsCommentAndCodeBlockStrippingReaderFactory;
+import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
 
@@ -50,8 +49,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 			linkedAsset = new FullyQualifiedLinkedAsset();
 			linkedAsset.initialize(assetLocation, dir, assetName);
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-			dependencyCalculator = new TrieBasedDependenciesCalculator(this, assetFile, patch.getPatchFile());
-			staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, assetFile, patch.getPatchFile());
+			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(), assetFile, patch.getPatchFile());
+			staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(), assetFile, patch.getPatchFile());
 			assetLocationsList = new MemoizedValue<>("NamespacedJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 		}
 		catch(RequirePathException e) {
@@ -62,24 +61,12 @@ public class NamespacedJsSourceModule implements SourceModule {
 	@Override
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		// TODO: is this a bug since we are returning all dependencies, whether they are reachable via the bundlable node or not?
-		try (Reader commentStrippingReader = new JsCommentStrippingReader(getReader(), false)) {
-			return dependencyCalculator.getCalculatedDependentSourceModules(commentStrippingReader);			
-		}
-		catch (IOException ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		return dependencyCalculator.getCalculatedDependentSourceModules();
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		try (Reader commentStrippingReader = new JsCommentStrippingReader(getReader(), false)) {			
-			return dependencyCalculator.getCalculataedAliases(commentStrippingReader);
-		}
-		catch (IOException ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		return dependencyCalculator.getCalculataedAliases();
 	}
 	
 	@Override
@@ -106,17 +93,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {				
-		try (
-			Reader commentStrippingReader = new JsCommentStrippingReader(getReader(), false);
-			Reader commentStrippingAndStringStrippingReader = new JsStringStrippingReader(commentStrippingReader);
-			Reader commentStrippingAndStringStrippingAndCodeBlockStrippingReader = new JsCodeBlockStrippingReader(commentStrippingAndStringStrippingReader);
-		) {
-			return staticDependencyCalculator.getCalculatedDependentSourceModules(commentStrippingAndStringStrippingAndCodeBlockStrippingReader);
-		}
-		catch (IOException ex)
-		{
-			throw new RuntimeException(ex);
-		}
+		return staticDependencyCalculator.getCalculatedDependentSourceModules();
 	}
 	
 	@Override
