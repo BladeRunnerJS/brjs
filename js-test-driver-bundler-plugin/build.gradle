@@ -8,7 +8,9 @@ dependencies {
 	compile dependency('commons-lang3')
 	
 	compileOnly dependency('JsTestDriver')
-	
+
+    testCompile project(':brjs-core')
+    testCompile dependency('httpclient')
 	testCompile dependency('junit')
 	testCompile dependency('mockito-core')
 	testCompile dependency('JsTestDriver')
