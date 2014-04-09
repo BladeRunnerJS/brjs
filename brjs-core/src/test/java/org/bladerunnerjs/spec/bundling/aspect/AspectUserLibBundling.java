@@ -9,8 +9,8 @@ import org.junit.Test;
 
 public class AspectUserLibBundling extends SpecTest {
 	private App app;
-	private Aspect aspect, otherAspect;
-	private JsLib userLib, otherUserLib;
+	private Aspect aspect;
+	private JsLib userLib;
 	private StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -22,10 +22,8 @@ public class AspectUserLibBundling extends SpecTest {
 			
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			otherAspect = app.aspect("other");
 			
 			userLib = app.jsLib("userLib");
-			otherUserLib = app.jsLib("otherUserLib");
 	}
 
 	// ----------------------------- U S E R   J S   L I B S --------------------------------
@@ -63,20 +61,5 @@ public class AspectUserLibBundling extends SpecTest {
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("userLib.Class1");
 	}
-	
-	// dependencies across multiple aspects
-	@Test
-	public void canBundleDependenciesForAnotherAspectCorrectly() throws Exception {
-		given(userLib).hasNodeJsPackageStyle()
-			.and(userLib).hasClass("userLib/Class1")
-			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).hasClass("appns/Class1")
-			.and(aspect).classRequires("appns/Class1", "userLib.Class1")
-			.and(otherUserLib).hasNodeJsPackageStyle()
-			.and(otherUserLib).hasClass("otherUserLib/Class1")
-			.and(otherAspect).indexPageRefersTo("otherUserLib.Class1");
-		when(app).requestReceived("/other-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("otherUserLib.Class1")
-			.and(response).doesNotContainText("userLib/Class1");
-	}
+
 }
