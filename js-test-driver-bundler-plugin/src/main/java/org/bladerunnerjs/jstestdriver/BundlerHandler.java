@@ -25,11 +25,19 @@ public class BundlerHandler implements ResourcePreProcessor
 	
 	public BundlerHandler() throws Exception
 	{
+		// legacy paths
 		bundlerHandlerPaths.put("js.bundle", "js/dev/en_GB/combined/bundle.js");
 		bundlerHandlerPaths.put("css.bundle", "css/common/bundle.css");
 		bundlerHandlerPaths.put("i18n.bundle", "i18n/en_GB.js");
 		bundlerHandlerPaths.put("xml.bundle", "bundle.xml");
 		bundlerHandlerPaths.put("html.bundle", "bundle.html");
+		
+		// logical/utility paths
+		bundlerHandlerPaths.put("bundle.js", "js/dev/en_GB/combined/bundle.js");
+		bundlerHandlerPaths.put("bundle.css", "css/common/bundle.css");
+		bundlerHandlerPaths.put("bundle.i18n", "i18n/en_GB.js");
+		bundlerHandlerPaths.put("bundle.xml", "bundle.xml");
+		bundlerHandlerPaths.put("bundle.html", "bundle.html");
 	}
 
 	@Override
