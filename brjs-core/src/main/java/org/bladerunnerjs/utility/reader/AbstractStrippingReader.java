@@ -23,9 +23,12 @@ public abstract class AbstractStrippingReader extends Reader
 		sourceReader.close();
 	}
 	
-	abstract int getMaxSingleWrite();
-	
+	protected abstract int getMaxSingleWrite();
 	protected abstract char[] handleNextCharacter(char nextChar, char previousChar) throws IOException;
+	
+	protected char[] flush() throws IOException {
+		return "".toCharArray();
+	}
 	
 	@Override
 	public int read(char[] buff, int offset, int maxCharacters) throws IOException
@@ -52,6 +55,11 @@ public abstract class AbstractStrippingReader extends Reader
 			charactersWritten = write(charsToWrite, buff, offset, maxCharacters, charactersWritten);
 			
 			previousChar = nextChar;
+		}
+		
+		if (charactersWritten == 0) {
+			char[] flushedChars = flush();
+			charactersWritten = write(flushedChars, buff, offset, maxCharacters, charactersWritten);
 		}
 		
 		return (charactersWritten == 0) ? -1 : charactersWritten;

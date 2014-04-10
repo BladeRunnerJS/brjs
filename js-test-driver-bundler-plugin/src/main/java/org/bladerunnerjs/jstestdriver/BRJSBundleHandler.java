@@ -1,4 +1,4 @@
-package com.caplin.jstestdriver.plugin;
+package org.bladerunnerjs.jstestdriver;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +16,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.Multibinder;
 import com.google.jstestdriver.hooks.ResourcePreProcessor;
 
-public class CutlassBundleInjectorPlugin extends AbstractModule
+public class BRJSBundleHandler extends AbstractModule
 {	
-	public CutlassBundleInjectorPlugin() throws IOException
+	public BRJSBundleHandler() throws IOException
 	{
 		BRJS brjs = null;
 		try
@@ -44,6 +44,6 @@ public class CutlassBundleInjectorPlugin extends AbstractModule
 	@Override
 	protected void configure()
 	{
-		Multibinder.newSetBinder(binder(), ResourcePreProcessor.class).addBinding().to(BundlerInjector.class);
+		Multibinder.newSetBinder(binder(), ResourcePreProcessor.class).addBinding().to(BundlerHandler.class);
 	}
 }

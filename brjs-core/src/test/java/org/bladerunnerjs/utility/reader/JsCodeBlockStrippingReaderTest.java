@@ -134,7 +134,7 @@ public class JsCodeBlockStrippingReaderTest
 					"some code...",
 					"})()"),
 				lines(
-					"(function() ",
+					"",
 					"some code...",
 					")()")
 			);
@@ -149,7 +149,7 @@ public class JsCodeBlockStrippingReaderTest
 					"some code...",
 					"})()"),
 				lines(
-					"(function() ",
+					";",
 					"some code...",
 					")()")
 			);
@@ -167,13 +167,107 @@ public class JsCodeBlockStrippingReaderTest
 					"}",
 					")()"),
 				lines(
-					"(function() ",
+					"",
 					"some code...",
 					"function() ",
 					")()")
 			);
 	}
 	
+	@Test
+	public void selfExecutingFunctionsCanAppearAnywhereInTheClass() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"some code...",
+					"(function() {",
+					"some more code...",
+					"})()"),
+				lines(
+					"some code...",
+					"",
+					"some more code...",
+					")()")
+			);
+	}
+	
+	@Test
+	public void codeBlocksInSelfExecutingFunctionsInTheMiddleOfAClassAreStripped() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"some code...",
+				"(function() {",
+				"some more code...",
+				"function() {",
+				"  inner code block...",
+				"}",
+				")()"),
+			lines(
+				"some code...",
+				"",
+				"some more code...",
+				"function() ",
+				")()")
+		);
+	}
+	
+	@Test
+	public void selfExecutingFunctionsCanHaveArguments() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"(function(arg1, arg2) {",
+					"some code...",
+					"})()",
+					"some more code...",
+					"(function(arg1,arg3) {",
+					"yet more code...",
+					"})()"),
+				lines(
+					"",
+					"some code...",
+					")()",
+					"some more code...",
+					"",
+					"yet more code...",
+					")()")
+			);
+	}
+	
+	@Test
+	public void alternativeSelfExecutingFunctionFormatsAreSupported() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"new function() {",
+					"some code...",
+					"}"),
+				lines(
+					"",
+					"some code...",
+					"")
+			);
+	}
+	
+	@Test
+	public void selfExecutingFunctionsCanBeImmediatelyWithinAnotherSelefExecutingFunction() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"(function() {",
+					"(function() {",
+					"some code...",
+					"})()",
+					")()"),
+				lines(
+					"",
+					"",
+					"some code...",
+					")()",
+					")()")
+			);
+	}
 	
 	private String lines(String... input)
 	{
