@@ -3,13 +3,13 @@ apply plugin: 'java'
 apply plugin: com.caplin.gradle.plugins.CompileOnly
 
 dependencies {
-	compile project(':bundlers')
+	compile project(':brjs-core')
+	compile project(":cutlass-common")
 	compile project(':brjs-logger-binding')
 	compile dependency('commons-lang3')
 	
 	compileOnly dependency('JsTestDriver')
-
-    testCompile project(':brjs-core')
+	
     testCompile dependency('httpclient')
 	testCompile dependency('junit')
 	testCompile dependency('mockito-core')
