@@ -149,6 +149,12 @@ public final class JsLibAppWrapper implements JsLib {
 	}
 	
 	@Override
+	public List<String> getAssetLocationPaths()
+	{
+		return wrappedJsLib.getAssetLocationPaths();
+	}
+	
+	@Override
 	public boolean containsFile(String filePath) {
 		return wrappedJsLib.containsFile(filePath);
 	}

@@ -17,4 +17,5 @@ public interface AssetContainer extends BRJSNode {
 	List<AssetContainer> scopeAssetContainers();
 	AssetLocation assetLocation(String locationPath);
 	List<AssetLocation> assetLocations();
+	List<String> getAssetLocationPaths();
 }
