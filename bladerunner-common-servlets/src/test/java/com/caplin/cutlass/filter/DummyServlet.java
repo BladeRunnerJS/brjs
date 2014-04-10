@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.caplin.cutlass.bundler.exception.UnknownBundlerException;
-
 @SuppressWarnings("serial")
 public class DummyServlet extends HttpServlet
 {
@@ -61,4 +59,14 @@ public class DummyServlet extends HttpServlet
 		}
 	}
 
+	
+	public class UnknownBundlerException extends RuntimeException {
+
+		private static final long serialVersionUID = -8855303440924373407L;
+		
+		public UnknownBundlerException(Exception e) {
+			super(e);
+		}
+
+	}
 }
