@@ -134,4 +134,14 @@ public class BladeTestPackBundlingTest extends SpecTest
 				browserModules.dir());
 	}
 	
+	@Test
+	public void bladesCanNotDependOnTestClasses() throws Exception {
+		given(blade).hasNamespacedJsPackageStyle()
+			.and(blade).hasClasses("appns.bs.b1.BladeClass")
+			.and(bladeUTs).containsFile("src-test/pkg/Util.js")
+			.and(blade).classDependsOn("appns.bs.b1.BladeClass", "pkg.Util")
+			.and(bladeUTs).testRefersTo("pkg/test.js", "appns.bs.b1.BladeClass");
+		then(bladeUTs).bundledFilesEquals(
+				blade.assetLocation("src").file("appns/bs/b1/BladeClass.js"));
+	}
 }

@@ -153,6 +153,10 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		requestHandler.handle( logicalRequestPath, os);
 	}
 	
+	@Override
+	public List<AssetContainer> scopeAssetContainers() {
+		return assetContainers();
+	}
 	
 	private List<AssetContainer> getPotentialAssetContainers(String requirePath) {
 		List<AssetContainer> potentialAssetContainers = new ArrayList<>();

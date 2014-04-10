@@ -4,11 +4,8 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.TestPack;
-import org.bladerunnerjs.model.exception.InvalidRequirePathException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -80,9 +77,6 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			bladeset.assetLocation("src").file("appns/bs/Class2.js"));
 	}
 	
-	@Ignore
-	// Added a temporary ignore since we are switch from using app based tries for everything, to scope specific tries,
-	// to prevent blades from referring to test, workbench or aspect classes.
 	@Test
 	public void bladesetTestsCannotDependOnBlades() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
@@ -91,8 +85,8 @@ public class BladesetTestPackBundlingTest extends SpecTest
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1")
 			.and(bladesetATs).testRefersTo("pkg/test.js", "appns.bs.Class1", "appns.bs.b1.Class1");
-		when(bladesetATs).bundleSetGenerated();
-		then(exceptions).verifyException(InvalidRequirePathException.class, "appns/bs/b1/Class1")
-			.whereTopLevelExceptionIs(ModelOperationException.class);
+		then(bladesetATs).bundledFilesEquals(
+			bladeset.assetLocation("src").file("appns/bs/Class1.js"),
+			bladeset.assetLocation("src").file("appns/bs/Class2.js"));
 	}
 }

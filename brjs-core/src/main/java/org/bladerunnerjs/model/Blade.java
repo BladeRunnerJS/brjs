@@ -1,6 +1,8 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
@@ -18,14 +20,26 @@ import org.bladerunnerjs.utility.NameValidator;
 public final class Blade extends AbstractComponent implements NamedNode
 {
 	private final NodeItem<Workbench> workbench = new NodeItem<>(Workbench.class, "workbench");
-	private String name;
-
+	private final String name;
+	private final List<AssetContainer> bladeAssetContainers;
+	
 	public Blade(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
+		bladeAssetContainers = new ArrayList<>();
+		bladeAssetContainers.add(this);
+		bladeAssetContainers.add((Bladeset) parent);
 		
 		registerInitializedNode();
+	}
+	
+	@Override
+	public List<AssetContainer> scopeAssetContainers() {
+		List<AssetContainer> scopeAssetContainers = new ArrayList<>(bladeAssetContainers);
+		scopeAssetContainers.addAll(app().jsLibs());
+		
+		return scopeAssetContainers;
 	}
 	
 	public static NodeMap<Blade> createNodeSet(RootNode rootNode)

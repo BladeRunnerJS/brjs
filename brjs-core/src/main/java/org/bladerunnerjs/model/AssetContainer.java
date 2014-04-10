@@ -14,6 +14,7 @@ public interface AssetContainer extends BRJSNode {
 	boolean isNamespaceEnforced();
 	Set<SourceModule> sourceModules();
 	SourceModule sourceModule(String requirePath);
+	List<AssetContainer> scopeAssetContainers();
 	AssetLocation assetLocation(String locationPath);
 	List<AssetLocation> assetLocations();
 }

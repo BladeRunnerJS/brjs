@@ -29,7 +29,7 @@ public class TrieBasedDependenciesCalculator
 		this.readerFactory = readerFactory;
 		assetLocation = asset.assetLocation();
 		app = assetLocation.assetContainer().app();
-		trieFactory = TrieFactory.getFactoryForApp(app);
+		trieFactory = TrieFactory.getFactoryForAssetContainer(assetLocation.assetContainer());
 		
 		List<File> scopeFiles = new ArrayList<>();
 		scopeFiles.addAll(Arrays.asList(readerFiles));

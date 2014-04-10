@@ -84,6 +84,11 @@ public final class JsLibAppWrapper implements JsLib {
 	}
 	
 	@Override
+	public List<AssetContainer> scopeAssetContainers() {
+		return wrappedJsLib.scopeAssetContainers();
+	}
+	
+	@Override
 	public String getTemplateName() {
 		return wrappedJsLib.getTemplateName();
 	}
