@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,14 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
+	public File[] scopeFiles() {
+		List<File> scopeFiles = new ArrayList<>(Arrays.asList(testScope().scopeFiles()));
+		scopeFiles.add(dir());
+		
+		return scopeFiles.toArray(new File[scopeFiles.size()]);
+	}
+	
+	@Override
 	public List<LinkedAsset> getSeedFiles() 
 	{
 		List<LinkedAsset> seedFiles = new ArrayList<>();
@@ -69,7 +78,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public String namespace() {
-		return ((AssetContainer) parentNode().parentNode()).namespace(); //TOOD: refactor this
+		return testScope().namespace();
 	}
 	
 	@Override
@@ -80,7 +89,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public List<AssetContainer> assetContainers()
 	{
-		List<AssetContainer> assetContainers = new ArrayList<>(((AssetContainer) parentNode().parentNode()).scopeAssetContainers());
+		List<AssetContainer> assetContainers = new ArrayList<>(testScope().scopeAssetContainers());
 		assetContainers.add(this);
 		
 		return assetContainers;
@@ -131,7 +140,11 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public String getTemplateName()
 	{
-		return parentNode().parentNode().getClass().getSimpleName().toLowerCase() + "-" + name;
+		return testScope().getClass().getSimpleName().toLowerCase() + "-" + name;
+	}
+	
+	public AssetContainer testScope() {
+		return (AssetContainer) parentNode().parentNode();
 	}
 	
 	public AliasesFile aliasesFile()

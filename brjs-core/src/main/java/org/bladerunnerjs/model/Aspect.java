@@ -24,9 +24,10 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	private final NodeMap<TypedTestPack> testTypes;
 	private final NodeMap<Theme> themes;
 	private String name;
+	private File[] scopeFiles;
 	
 	private final MemoizedValue<List<LinkedAsset>> seedFileList = new MemoizedValue<>("Aspect.seedFiles", root(), dir(), root().conf().file("bladerunner.conf"));
-	private final MemoizedValue<List<AssetContainer>> assetContainerList = new MemoizedValue<>("Aspect.assetContainer", root(), parent().dir(), root().libsDir());
+	private final MemoizedValue<List<AssetContainer>> assetContainerList = new MemoizedValue<>("Aspect.assetContainer", this);
 	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("Aspect.testTypes", root(), file("tests"));
 	private final MemoizedValue<List<Theme>> themesList = new MemoizedValue<>("Aspect.themes", root(), file("themes"));
 	
@@ -43,6 +44,15 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public static NodeMap<Aspect> createNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, Aspect.class, null, "-aspect$");
+	}
+	
+	@Override
+	public File[] scopeFiles() {
+		if(scopeFiles == null) {
+			scopeFiles = new File[] {app().dir(), root().libsDir(), root().conf().file("bladerunner.conf")};
+		}
+		
+		return scopeFiles;
 	}
 	
 	@Override

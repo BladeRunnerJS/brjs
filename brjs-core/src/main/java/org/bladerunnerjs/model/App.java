@@ -47,6 +47,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private String name;
 	private AppConf appConf;
 	private final Logger logger;
+	private File[] scopeFiles;
 	
 	public App(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -69,6 +70,15 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public static NodeMap<App> createSystemAppNodeSet(BRJS brjs)
 	{
 		return new NodeMap<>(brjs, App.class, "sdk/system-applications", null);
+	}
+	
+	@Override
+	public File[] scopeFiles() {
+		if(scopeFiles == null) {
+			scopeFiles = new File[] {dir(), root().libsDir(), root().conf().file("bladerunner.conf")};
+		}
+		
+		return scopeFiles;
 	}
 	
 	/**
@@ -314,5 +324,13 @@ public class App extends AbstractBRJSNode implements NamedNode
 			return new JsLibAppWrapper(this, sdkLib);
 		}
 		return appLib;
+	}
+	
+	public File libsDir() {
+		return file("libs");
+	}
+	
+	public File thirdpartyLibsDir() {
+		return file("thirdparty-libraries");
 	}
 }

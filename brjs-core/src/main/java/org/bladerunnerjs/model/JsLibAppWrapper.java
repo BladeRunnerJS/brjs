@@ -18,6 +18,7 @@ import org.bladerunnerjs.utility.ObserverList;
 public final class JsLibAppWrapper implements JsLib {
 	private App jsLibApp;
 	private JsLib wrappedJsLib;
+	private File[] scopeFiles;
 	
 	public JsLibAppWrapper(App jsLibApp, JsLib jsLib) {
 		this.jsLibApp = jsLibApp;
@@ -121,6 +122,15 @@ public final class JsLibAppWrapper implements JsLib {
 	@Override
 	public File file(String filePath) {
 		return wrappedJsLib.file(filePath);
+	}
+	
+	@Override
+	public File[] scopeFiles() {
+		if(scopeFiles == null) {
+			scopeFiles = new File[] {app().libsDir(), app().thirdpartyLibsDir(), root().libsDir(), root().conf().file("bladerunner.conf")};
+		}
+		
+		return scopeFiles;
 	}
 	
 	@Override
