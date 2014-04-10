@@ -46,7 +46,7 @@ public class BundlerHandler implements ResourcePreProcessor
 		for (FileInfo currentFileInfo : files)
 		{
 			File currentFile = new File(currentFileInfo.getFilePath());
-			if (currentFile.getPath().contains(BUNDLE_PREFIX))
+			if (currentFile.getAbsolutePath().contains(BUNDLE_PREFIX))
 			{
 				String modelRequestPath = getModelRequestPath(currentFile);
 				createParentDirectory(currentFile);
@@ -60,7 +60,7 @@ public class BundlerHandler implements ResourcePreProcessor
 
 	private String getModelRequestPath(File bundleFile)
 	{
-		String bundlerPath = StringUtils.substringAfter(bundleFile.getPath(), BUNDLE_PREFIX);
+		String bundlerPath = StringUtils.substringAfter(bundleFile.getAbsolutePath(), BUNDLE_PREFIX);
 		
 		String bundleKey = (bundlerPath.contains("/")) ? StringUtils.substringAfterLast(bundlerPath, "/") : bundlerPath;
 		String brjsRequestPath = bundlerHandlerPaths.get(bundleKey);
@@ -164,7 +164,7 @@ public class BundlerHandler implements ResourcePreProcessor
 		}
 		catch (Exception ex)
 		{
-			throw new RuntimeException("Unable to create or write to file: " + bundlerFile.getPath() + "\n", ex);
+			throw new RuntimeException("Unable to create or write to file: " + bundlerFile.getAbsolutePath() + "\n", ex);
 		}
 		
 		return outputStream;
