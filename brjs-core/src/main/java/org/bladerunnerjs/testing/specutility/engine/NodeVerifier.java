@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 import org.bladerunnerjs.utility.FileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
@@ -90,6 +91,20 @@ public abstract class NodeVerifier<N extends Node> {
 	
 	public VerifierChainer jsStyleIs(String jsStyle) {
 		assertEquals(jsStyle, JsStyleUtility.getJsStyle(node.dir()));
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer containsPersistentNodeProperty(String pluginName, String propertyName, String propertyValue) throws PropertiesException
+	{
+		assertEquals(propertyValue, node.nodeProperties(pluginName).getPersisentProperty(propertyName));
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer containsTransientNodeProperty(String pluginName, String propertyName, String propertyValue)
+	{
+		assertEquals(propertyValue, node.nodeProperties(pluginName).getTransientProperty(propertyName));
 		
 		return verifierChainer;
 	}
