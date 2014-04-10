@@ -9,8 +9,8 @@ import org.junit.Test;
 
 public class AspectBundlingOfMixedSources extends SpecTest {
 	private App app;
-	private Aspect aspect;
-	private JsLib sdkNamespaceLib, otherSdkNamespaceLib, sdkNodeJsLib;
+	private Aspect aspect, otherAspect;
+	private JsLib sdkNamespaceLib, otherSdkNamespaceLib, sdkNodeJsLib, userLib, otherUserLib;
 	private StringBuffer response = new StringBuffer();
 
 	
@@ -24,13 +24,22 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		app = brjs.app("app1");
 		aspect = app.aspect("default");
 
+		otherAspect = app.aspect("other");
+		userLib = app.jsLib("userLib");
+		otherUserLib = app.jsLib("otherUserLib");
+		
 		sdkNamespaceLib = brjs.sdkLib("sdkNamespaceLib");
 		otherSdkNamespaceLib = brjs.sdkLib("otherSdkNamespaceLib");
 		sdkNodeJsLib = brjs.sdkLib("sdkNodeJsLib");
 		
+
 		given(sdkNamespaceLib).hasNamespacedJsPackageStyle()
 			.and(otherSdkNamespaceLib).hasNamespacedJsPackageStyle()
-			.and(sdkNodeJsLib).hasNodeJsPackageStyle();
+			.and(sdkNodeJsLib).hasNodeJsPackageStyle()
+			.and(userLib).hasNodeJsPackageStyle()
+			.and(userLib).hasClass("userLib/Class1")
+			.and(otherUserLib).hasNodeJsPackageStyle()
+			.and(otherUserLib).hasClass("otherUserLib/Class1");
 	}
 	
 	// Namespace and NodeJS styles together
@@ -72,6 +81,20 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 				// The library class doing the proxying should be added next
 				"sdkNamespaceLib.ProxyClass = otherSdkNamespaceLib.Class1;",
 				"define('sdkNamespaceLib/ProxyClass', function(require, exports, module) { module.exports = sdkNamespaceLib.ProxyClass; });");
+	}
+	
+	
+	// dependencies across multiple aspects
+	@Test
+	public void canBundleDependenciesForAnotherAspectCorrectlyWithNodeJsLibsAndSdkNamespaceLib() throws Exception {
+		given(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.Class1", "function empty() {};")
+			.and(aspect).indexPageRefersTo("appns.Class1", "sdkNodeJsLib.Class1")
+			.and(aspect).hasClass("appns/Class1")
+			.and(aspect).classRequires("appns/Class1", "userLib.Class1")
+			.and(otherAspect).indexPageRefersTo("otherUserLib.Class1", "sdkNamespaceLib.Class1");
+		when(app).requestReceived("/other-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsNodeJsClasses("otherUserLib.Class1")
+			.and(response).doesNotContainText("userLib");
 	}
 	
 }
