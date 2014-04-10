@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,15 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	public static NodeMap<Bladeset> createNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, Bladeset.class, null, "-bladeset$");
+	}
+	
+	@Override
+	public List<AssetContainer> scopeAssetContainers() {
+		List<AssetContainer> scopeAssetContainers = new ArrayList<>();
+		scopeAssetContainers.add(this);
+		scopeAssetContainers.addAll(app().jsLibs());
+		
+		return scopeAssetContainers;
 	}
 	
 	@Override

@@ -14,6 +14,7 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
@@ -133,7 +134,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
-					writer.write(getGlobalizedNonNamespacedDependenciesContent(jsModule, new ArrayList<SourceModule>()));
+					writer.write(getGlobalizedNonNamespacedDependenciesContent(bundleSet.getBundlableNode(), jsModule, new ArrayList<SourceModule>()));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
@@ -149,7 +150,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 					{
 						if (sourceModule instanceof NamespacedJsSourceModule)
 						{
-							contentBuffer.write(getGlobalizedNonNamespacedDependenciesContent(sourceModule, processedGlobalizedSourceModules));
+							contentBuffer.write(getGlobalizedNonNamespacedDependenciesContent(bundleSet.getBundlableNode(), sourceModule, processedGlobalizedSourceModules));
 							contentBuffer.write("// " + sourceModule.getRequirePath() + "\n");
 							IOUtils.copy(sourceModule.getReader(), contentBuffer);
 							contentBuffer.write("\n\n");
@@ -207,7 +208,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		{
 			if (sourceModule instanceof NamespacedJsSourceModule)
 			{
-				getGlobalizedNonNamespacedDependenciesContent(sourceModule, processedGlobalizedSourceModules);
+				getGlobalizedNonNamespacedDependenciesContent(bundleSet.getBundlableNode(), sourceModule, processedGlobalizedSourceModules);
 			}
 		}
 		return processedGlobalizedSourceModules;
@@ -283,11 +284,11 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		}
 	}
 
-	private String getGlobalizedNonNamespacedDependenciesContent(SourceModule sourceModule, List<SourceModule> globalizedModules) throws ModelOperationException, RequirePathException
+	private String getGlobalizedNonNamespacedDependenciesContent(BundlableNode bundlableNode, SourceModule sourceModule, List<SourceModule> globalizedModules) throws ModelOperationException, RequirePathException
 	{
 		StringBuffer stringBuffer = new StringBuffer();
 
-		for (SourceModule dependentSourceModule : sourceModule.getDependentSourceModules(null))
+		for (SourceModule dependentSourceModule : sourceModule.getDependentSourceModules(bundlableNode))
 		{
 			stringBuffer.append( getGlobalizedNonNamespaceSourceModuleContent(dependentSourceModule, globalizedModules) );
 		}

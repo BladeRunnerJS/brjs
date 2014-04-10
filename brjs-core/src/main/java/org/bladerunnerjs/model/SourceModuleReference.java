@@ -1,13 +1,19 @@
 package org.bladerunnerjs.model;
 
 public class SourceModuleReference {
-	private String requirePath;
+	private final String requirePath;
+	private final String assetPath;
 	
-	public SourceModuleReference(String requirePath) {
-		this.requirePath = requirePath;
+	public SourceModuleReference(SourceModule sourceModule) {
+		requirePath = sourceModule.getRequirePath();
+		assetPath = sourceModule.getAssetPath();
 	}
 	
 	public String getRequirePath() {
 		return requirePath;
+	}
+	
+	public Object getAssetPath() {
+		return assetPath;
 	}
 }

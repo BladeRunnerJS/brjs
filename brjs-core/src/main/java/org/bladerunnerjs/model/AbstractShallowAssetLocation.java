@@ -84,24 +84,13 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	public SourceModule sourceModule(String requirePath) throws RequirePathException
 	{
 		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
-		AssetContainer assetContainer = assetContainer();
 		
 		if (sourceModules.containsKey(requirePath))
 		{
 			return sourceModules.get(requirePath);
 		}
 		
-		List<AssetContainer> searchableAssetContainers;
-		if (assetContainer instanceof BundlableNode)
-		{
-			searchableAssetContainers = ((BundlableNode) assetContainer).assetContainers();
-		}
-		else
-		{
-			searchableAssetContainers = assetContainer().app().getAllAssetContainers();
-		}
-		
-		SourceModule sourceModule = findSourceModuleWithRequirePath(searchableAssetContainers, canonicalRequirePath);
+		SourceModule sourceModule = findSourceModuleWithRequirePath(assetContainer().app().getAllAssetContainers(), canonicalRequirePath);
 		
 		if (sourceModule != null)
 		{
