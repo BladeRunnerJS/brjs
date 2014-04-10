@@ -23,6 +23,7 @@ public class BRJSIO {
 	
 	private void executeFileAccessingStaticInitializers() {
 		try {
+			Class.forName("java.util.Currency");
 			Class.forName("org.bladerunnerjs.aliasing.aliases.AliasesReader");
 			Class.forName("org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsReader");
 		}
