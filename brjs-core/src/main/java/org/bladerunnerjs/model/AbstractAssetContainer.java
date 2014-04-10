@@ -28,11 +28,10 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 		
-		File[] scopeFileArray = getScopeFiles();
-		sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", root(), scopeFileArray);
-		sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", root(), scopeFileArray);
-		assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", root(), scopeFileArray);
-		assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", root(), scopeFileArray);
+		sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", this);
+		sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
+		assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", this);
+		assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
 	}
 	
 	@Override
@@ -113,18 +112,6 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			
 			return assetLocationsMap;
 		});
-	}
-	
-	private File[] getScopeFiles() {
-		List<File> scopeFiles = new ArrayList<>();
-		scopeFiles.add(dir());
-		scopeFiles.add(root().conf().file("bladerunner.conf"));
-		
-		if(!(this instanceof JsLib)) {
-			scopeFiles.add(app().file("app.conf"));
-		}
-		
-		return scopeFiles.toArray(new File[scopeFiles.size()]);
 	}
 	
 	private String normalizePath(String path) {

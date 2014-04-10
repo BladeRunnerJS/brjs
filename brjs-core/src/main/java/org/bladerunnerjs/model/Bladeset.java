@@ -19,6 +19,7 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 {
 	private final NodeMap<Blade> blades;
 	private String name;
+	private File[] scopeFiles;
 	
 	private final MemoizedValue<List<Blade>> bladeList = new MemoizedValue<>("Bladeset.blades", root(), file("blades"));
 
@@ -34,6 +35,15 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	public static NodeMap<Bladeset> createNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, Bladeset.class, null, "-bladeset$");
+	}
+	
+	@Override
+	public File[] scopeFiles() {
+		if(scopeFiles == null) {
+			scopeFiles = new File[] {dir(), app().libsDir(), app().thirdpartyLibsDir(), root().libsDir(), root().conf().file("bladerunner.conf")};
+		}
+		
+		return scopeFiles;
 	}
 	
 	@Override

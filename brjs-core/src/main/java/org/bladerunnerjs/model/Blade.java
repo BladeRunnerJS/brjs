@@ -35,6 +35,11 @@ public final class Blade extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
+	public File[] scopeFiles() {
+		return parent().scopeFiles();
+	}
+	
+	@Override
 	public List<AssetContainer> scopeAssetContainers() {
 		List<AssetContainer> scopeAssetContainers = new ArrayList<>(bladeAssetContainers);
 		scopeAssetContainers.addAll(app().jsLibs());

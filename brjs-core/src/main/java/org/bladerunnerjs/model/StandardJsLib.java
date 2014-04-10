@@ -22,6 +22,7 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	private JsLibConf libConf;
 	private Node parent;
 	private final NodeMap<TypedTestPack> testTypes;
+	private File[] scopeFiles;
 	
 	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("StandardJsLib.testTypes", root(), file("tests"));
 	
@@ -50,6 +51,16 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	public static NodeMap<StandardJsLib> createAppNonBladeRunnerLibNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, StandardJsLib.class, "thirdparty-libraries", null);
+	}
+	
+	@Override
+	public File[] scopeFiles() {
+		if(scopeFiles == null) {
+			// TODO: perhaps all library objects should be app specific (even when they are only in the sdk) so that libraries can be cached better
+			scopeFiles = new File[] {root().dir()};
+		}
+		
+		return scopeFiles;
 	}
 	
 	@Override
