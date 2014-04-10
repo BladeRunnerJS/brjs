@@ -12,21 +12,21 @@ import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 
 public class TrieFactory {
 	private final MemoizedValue<Trie<Object>> trie;
-	private final App app;
+	private final AssetContainer assetContainer;
 	
-	public static TrieFactory getFactoryForApp(App app) {
-		NodeProperties appProperties = app.nodeProperties("TrieFactory");
+	public static TrieFactory getFactoryForAssetContainer(AssetContainer assetContainer) {
+		NodeProperties nodeProperties = assetContainer.nodeProperties("TrieFactory");
 		
-		if(appProperties.getTransientProperty("trieFactoryInstance") == null) {
-			appProperties.setTransientProperty("trieFactoryInstance", new TrieFactory(app));
+		if(nodeProperties.getTransientProperty("trieFactoryInstance") == null) {
+			nodeProperties.setTransientProperty("trieFactoryInstance", new TrieFactory(assetContainer));
 		}
 		
-		return (TrieFactory) appProperties.getTransientProperty("trieFactoryInstance");
+		return (TrieFactory) nodeProperties.getTransientProperty("trieFactoryInstance");
 	}
 	
-	private TrieFactory(App app) {
-		this.app = app;
-		trie = new MemoizedValue<>("TrieFactory.trie", app.root(), app.dir(), app.root().libsDir(), app.root().conf().file("bladerunner.conf"));
+	private TrieFactory(AssetContainer assetContainer) {
+		this.assetContainer = assetContainer;
+		trie = new MemoizedValue<>("TrieFactory.trie", assetContainer.root(), assetContainer.root().dir()); // TODO: the scope should correlate to the scopeAssetContainers() method
 	}
 	
 	public Trie<Object> createTrie() throws ModelOperationException {
@@ -35,7 +35,7 @@ public class TrieFactory {
 			public Object get() throws RuntimeException, ModelOperationException {
 				Trie<Object> trie = new Trie<Object>();
 				
-				for (AssetContainer assetContainer : app.getAllAssetContainers()) {
+				for (AssetContainer assetContainer : assetContainer.scopeAssetContainers()) {
 					try {
 						if(assetContainer instanceof BundlableNode) {
 							BundlableNode bundlableNode = (BundlableNode) assetContainer;
@@ -48,10 +48,10 @@ public class TrieFactory {
 						}
 						
 						for(SourceModule sourceModule : assetContainer.sourceModules()) {
-							addQuotedKeyToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule.getRequirePath()));
+							addQuotedKeyToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
 							
 							if (sourceModule.getClassname() != null) {
-								addToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule.getRequirePath()));
+								addToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule));
 							}
 						}
 						

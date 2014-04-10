@@ -10,7 +10,6 @@ import java.util.List;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.reader.ReaderFactory;
 
@@ -30,7 +29,7 @@ public class TrieBasedDependenciesCalculator
 		this.readerFactory = readerFactory;
 		assetLocation = asset.assetLocation();
 		app = assetLocation.assetContainer().app();
-		trieFactory = TrieFactory.getFactoryForApp(app);
+		trieFactory = TrieFactory.getFactoryForAssetContainer(assetLocation.assetContainer());
 		
 		List<File> scopeFiles = new ArrayList<>();
 		scopeFiles.addAll(Arrays.asList(readerFiles));
@@ -38,12 +37,12 @@ public class TrieBasedDependenciesCalculator
 		computedValue = new MemoizedValue<>("TrieBasedDependenciesCalculator.computedValue", assetLocation.root(), scopeFiles.toArray(new File[scopeFiles.size()]));
 	}
 	
-	public List<SourceModule> getCalculatedDependentSourceModules() throws ModelOperationException
+	public List<String> getRequirePaths() throws ModelOperationException
 	{
-		return getComputedValue().dependentSourceModules;
+		return getComputedValue().requirePaths;
 	}
 	
-	public List<String> getCalculataedAliases() throws ModelOperationException
+	public List<String> getAliases() throws ModelOperationException
 	{
 		return getComputedValue().aliases;
 	}
@@ -60,10 +59,9 @@ public class TrieBasedDependenciesCalculator
 					for(Object match : trie.getMatches(reader)) {
 						if (match instanceof SourceModuleReference) {
 							SourceModuleReference sourceModuleReference = (SourceModuleReference) match;
-							SourceModule sourceModule = assetLocation.sourceModule(sourceModuleReference.getRequirePath());
 							
-							if(sourceModule != asset) {
-								computedValue.dependentSourceModules.add(sourceModule);
+							if(!asset.getAssetPath().equals(sourceModuleReference.getAssetPath())) {
+								computedValue.requirePaths.add(sourceModuleReference.getRequirePath());
 							}
 						}
 						else if (match instanceof AliasReference){
@@ -80,7 +78,7 @@ public class TrieBasedDependenciesCalculator
 						}
 					}
 				}
-				catch (IOException | RequirePathException ex)
+				catch (IOException ex)
 				{
 					throw new ModelOperationException(ex);
 				}
@@ -91,7 +89,7 @@ public class TrieBasedDependenciesCalculator
  	}
 	
 	private class ComputedValue {
-		public List<SourceModule> dependentSourceModules = new ArrayList<>();
+		public List<String> requirePaths = new ArrayList<>();
 		public List<String> aliases = new ArrayList<>();
 	}
 }

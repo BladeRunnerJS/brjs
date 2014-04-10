@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
@@ -19,6 +22,7 @@ import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.reader.JsCommentAndCodeBlockStrippingReaderFactory;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 
@@ -36,6 +40,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private TrieBasedDependenciesCalculator staticDependencyCalculator;
 	
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
+	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
+	private final Map<BundlableNode, SourceModuleResolver> staticSourceModuleResolvers = new HashMap<>();
 	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
@@ -60,13 +66,24 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
  	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		// TODO: is this a bug since we are returning all dependencies, whether they are reachable via the bundlable node or not?
-		return dependencyCalculator.getCalculatedDependentSourceModules();
+		if(!sourceModuleResolvers.containsKey(bundlableNode)) {
+			App app = assetLocation.assetContainer().app();
+			
+			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, requirePath, true, app.dir(), app.root().libsDir()));
+		}
+		SourceModuleResolver sourceModuleResolver = sourceModuleResolvers.get(bundlableNode);
+		
+		try {
+			return sourceModuleResolver.getSourceModules(dependencyCalculator.getRequirePaths());
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return dependencyCalculator.getCalculataedAliases();
+		return dependencyCalculator.getAliases();
 	}
 	
 	@Override
@@ -92,8 +109,20 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {				
-		return staticDependencyCalculator.getCalculatedDependentSourceModules();
+	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+		if(!staticSourceModuleResolvers.containsKey(bundlableNode)) {
+			App app = assetLocation.assetContainer().app();
+			
+			staticSourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, requirePath, true, app.dir(), app.root().libsDir()));
+		}
+		SourceModuleResolver staticSourceModuleResolver = staticSourceModuleResolvers.get(bundlableNode);
+		
+		try {
+			return staticSourceModuleResolver.getSourceModules(staticDependencyCalculator.getRequirePaths());
+		}
+		catch (RequirePathException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 	
 	@Override
