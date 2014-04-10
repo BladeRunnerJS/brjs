@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,10 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		return new NodeMap<>(rootNode, StandardJsLib.class, "thirdparty-libraries", null);
 	}
 	
+	@Override
+	public List<AssetContainer> scopeAssetContainers() {
+		return new ArrayList<>(app().jsLibs());
+	}
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
@@ -169,5 +174,4 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	{
 		return child(testTypes, testTypeName);
 	}
-	
 }

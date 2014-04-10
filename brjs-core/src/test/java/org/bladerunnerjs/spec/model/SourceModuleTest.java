@@ -30,8 +30,8 @@ public class SourceModuleTest extends SpecTest {
 			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml", "themes/theme1/style.css");
 		then(aspect).hasSourceModules("appns/Class1", "appns/Class2", "appns/pkg/Class3")
 			.and(aspect).hasAssetLocations("resources", "src", "src/appns", "src/appns/pkg", "src-test")
-			.and(aspect).sourceModuleHasAssetLocation("appns/Class1", "src/appns/")
-			.and(aspect).sourceModuleHasAssetLocation("appns/pkg/Class3", "src/appns/pkg/")
+			.and(aspect).sourceModuleHasAssetLocation("appns/Class1", "src/appns")
+			.and(aspect).sourceModuleHasAssetLocation("appns/pkg/Class3", "src/appns/pkg")
 			.and(aspect).assetLocationHasDependencies("resources", "themes/theme1")
 			.and(aspect).assetLocationHasDependencies("src", "resources")
 			.and(aspect).assetLocationHasDependencies("src/appns", "src")

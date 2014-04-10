@@ -235,6 +235,40 @@ public class JsCodeBlockStrippingReaderTest
 			);
 	}
 	
+	@Test
+	public void alternativeSelfExecutingFunctionFormatsAreSupported() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"new function() {",
+					"some code...",
+					"}"),
+				lines(
+					"",
+					"some code...",
+					"")
+			);
+	}
+	
+	@Test
+	public void selfExecutingFunctionsCanBeImmediatelyWithinAnotherSelefExecutingFunction() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"(function() {",
+					"(function() {",
+					"some code...",
+					"})()",
+					")()"),
+				lines(
+					"",
+					"",
+					"some code...",
+					")()",
+					")()")
+			);
+	}
+	
 	private String lines(String... input)
 	{
 		return StringUtils.join(input, "\n");

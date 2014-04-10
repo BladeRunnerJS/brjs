@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.exception.CircularDependencyException;
 import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -15,6 +16,7 @@ import org.junit.Test;
 public class AspectBundlingOfAspectSource extends SpecTest {
 	private App app;
 	private Aspect aspect;
+	private Aspect otherAspect;
 
 	private StringBuffer response = new StringBuffer();
 	
@@ -26,6 +28,7 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			otherAspect = app.aspect("other");
 	}
 	
 	@Test
@@ -50,6 +53,23 @@ public class AspectBundlingOfAspectSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.Class1");
+	}
+	
+	@Test
+	public void weDontBundleNamespacedClassesFromOtherAspects() throws Exception {
+		given(otherAspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).doesNotContainClasses("appns.Class1");
+	}
+	
+	@Test
+	public void weThrowAnExceptionIfARequiredNodeJsClassIsOnlyAvailableInAnotherAspect() throws Exception {
+		given(otherAspect).hasClass("appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "appns/Class2")
+			.and(aspect).indexPageRefersTo("appns.Class1");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/Class2");
 	}
 	
 	@Test

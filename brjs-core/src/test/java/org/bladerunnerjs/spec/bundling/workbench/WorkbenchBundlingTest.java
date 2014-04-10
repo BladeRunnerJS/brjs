@@ -167,5 +167,14 @@ public class WorkbenchBundlingTest extends SpecTest {
 													"<div id='tree-view'></div>");
 	}
 	
-	
+	@Test
+	public void bladesCanNotDependOnWorkbenchClasses() throws Exception {
+		given(blade).hasNamespacedJsPackageStyle()
+			.and(workbench).hasClass("appns.WorkbenchClass")
+			.and(blade).classDependsOn("appns.bs.b1.BladeClass", "appns.WorkbenchClass")
+			.and(workbench).indexPageRefersTo("appns.bs.b1.BladeClass");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("appns.bs.b1.BladeClass =")
+			.and(response).doesNotContainText("appns.WorkbenchClass =");
+	}
 }

@@ -197,4 +197,17 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).doesNotContainText("appns.bs.b1.Class1 = function() {");
 	}
+	
+	@Test
+	public void bladesCanNotDependOnAspectClasses() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(blade).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.AspectClass")
+			.and(blade).hasClass("appns.bs.b1.BladeClass")
+			.and(blade).classDependsOn("appns.bs.b1.BladeClass", "appns.AspectClass")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.BladeClass");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("appns.bs.b1.BladeClass =")
+			.and(response).doesNotContainText("appns.AspectClass =");
+	}
 }

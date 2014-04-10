@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetContainer;
@@ -22,7 +23,7 @@ public class AssetContainerVerifier {
 	}
 	
 	public void hasSourceModules(String... expectedSourceModules) throws Exception {
-		List<SourceModule> actualSourceModules = assetContainer.sourceModules();
+		Set<SourceModule> actualSourceModules = assetContainer.sourceModules();
 		
 		assertEquals("Source modules [" + renderSourceModules(actualSourceModules) + "] was expected to contain " + expectedSourceModules.length + " item(s).", expectedSourceModules.length, actualSourceModules.size());
 		
@@ -76,7 +77,7 @@ public class AssetContainerVerifier {
 		}
 	}
 	
-	private String renderSourceModules(List<SourceModule> sourceModules) {
+	private String renderSourceModules(Set<SourceModule> sourceModules) {
 		List<String> sourceModulePaths = new ArrayList<>();
 		
 		for(SourceModule sourceModule : sourceModules) {
