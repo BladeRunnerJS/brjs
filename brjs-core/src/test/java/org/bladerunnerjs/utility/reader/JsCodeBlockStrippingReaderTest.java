@@ -212,6 +212,29 @@ public class JsCodeBlockStrippingReaderTest
 		);
 	}
 	
+	@Test
+	public void selfExecutingFunctionsCanHaveArguments() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"(function(arg1, arg2) {",
+					"some code...",
+					"})()",
+					"some more code...",
+					"(function(arg1,arg3) {",
+					"yet more code...",
+					"})()"),
+				lines(
+					"",
+					"some code...",
+					")()",
+					"some more code...",
+					"",
+					"yet more code...",
+					")()")
+			);
+	}
+	
 	private String lines(String... input)
 	{
 		return StringUtils.join(input, "\n");

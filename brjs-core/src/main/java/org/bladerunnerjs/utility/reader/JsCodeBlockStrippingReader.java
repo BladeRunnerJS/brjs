@@ -2,15 +2,13 @@ package org.bladerunnerjs.utility.reader;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class JsCodeBlockStrippingReader extends AbstractStrippingReader
 {
-	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "[\\(|\\!|\\~|\\-|\\+]function\\s*\\(\\s*\\)\\s*\\{";
+	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "[\\(|\\!|\\~|\\-|\\+]function\\s*\\([^\\)]*\\)\\s*\\{";
 	private static final Pattern SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN = Pattern.compile(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX);
 
 	private static final int MIN_BUFFERED_CHARS = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length(); // buffer the length of the function definition
