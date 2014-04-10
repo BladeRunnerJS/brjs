@@ -80,55 +80,8 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public List<AssetContainer> assetContainers()
 	{
-		List<AssetContainer> assetContainers = new ArrayList<AssetContainer>();
-		
-		BRJS brjs = root();
-		
-		Node testScopeNode = parentNode().parentNode();
-		
+		List<AssetContainer> assetContainers = new ArrayList<>(((AssetContainer) parentNode().parentNode()).scopeAssetContainers());
 		assetContainers.add(this);
-		assetContainers.addAll( this.app().jsLibs() );
-		
-		if (testScopeNode instanceof Blade)
-		{
-			Blade blade = (Blade) testScopeNode;
-			assetContainers.add( blade );
-			assetContainers.add( (Bladeset)blade.parentNode() );
-		}
-		if (testScopeNode instanceof Bladeset)
-		{
-			Bladeset bladeset = (Bladeset) testScopeNode;
-			assetContainers.add( bladeset );
-		}
-		if (testScopeNode instanceof Aspect)
-		{			
-			App app = this.app();
-			Aspect aspect = (Aspect) testScopeNode;
-			
-			assetContainers.add( aspect );
-			
-			List<Bladeset> bladesets = app.bladesets();
-			List<Blade> blades = new ArrayList<Blade>();
-			for (Bladeset bladeset : bladesets)
-			{
-				blades.addAll( bladeset.blades() );
-			}
-			
-			assetContainers.addAll( bladesets );
-			assetContainers.addAll( blades );
-		}
-		if (testScopeNode instanceof Workbench)
-		{
-			Workbench workbench = (Workbench) testScopeNode;
-			assetContainers.add( brjs.locateAncestorNodeOfClass(workbench, Blade.class) );
-			assetContainers.add( brjs.locateAncestorNodeOfClass(workbench, Bladeset.class) );
-			
-			App app = this.app();
-			assetContainers.add( app.aspect("default") );
-			
-		}
-		
-		//TODO: do we need to add support for 'sdk' level
 		
 		return assetContainers;
 	}
