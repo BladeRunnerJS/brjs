@@ -20,7 +20,6 @@ import org.bladerunnerjs.model.BRJS;
 
 import com.caplin.cutlass.filter.bundlerfilter.contenttype.BundlerContentTypeFilter;
 import com.caplin.cutlass.filter.sectionfilter.SectionRedirectFilter;
-import com.caplin.cutlass.filter.thirdpartyfilter.ThirdPartyResourceFilter;
 import com.caplin.cutlass.filter.tokenfilter.TokenisingServletFilter;
 import com.caplin.cutlass.filter.versionfilter.VersionRedirectFilter;
 
@@ -31,7 +30,6 @@ public class BladerunnerFilters implements Filter
 	
 	public BladerunnerFilters() throws ServletException
 	{
-		filters.add(new ThirdPartyResourceFilter());
 		filters.add(new VersionRedirectFilter());
 		filters.add(new SectionRedirectFilter());
 		filters.add(new TokenisingServletFilter());
