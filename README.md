@@ -2,6 +2,8 @@
 
 **Divide & conquer complex web apps**
 
+[![Build Status](https://travis-ci.org/BladeRunnerJS/brjs.svg)](https://travis-ci.org/BladeRunnerJS/brjs)
+
 ## Getting Started
 
 The best way to get started depends on why you're here.
