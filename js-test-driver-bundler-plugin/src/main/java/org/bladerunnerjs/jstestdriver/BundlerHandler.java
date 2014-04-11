@@ -25,10 +25,11 @@ public class BundlerHandler implements ResourcePreProcessor
 	
 	public BundlerHandler() throws Exception
 	{
-		// legacy paths
+		// legacy paths - these are matched against the last part of the bundle path - e.g. js/js.bundle would match js.bundle
 		bundlerHandlerPaths.put("js.bundle", "js/dev/en_GB/combined/bundle.js");
 		bundlerHandlerPaths.put("css.bundle", "css/common/bundle.css");
 		bundlerHandlerPaths.put("i18n.bundle", "i18n/en_GB.js");
+		bundlerHandlerPaths.put("(.*)_i18n.bundle", "i18n/$1.js"); // .* is a bad regex for a locale but since this is simply for legacy support we can get away with it
 		bundlerHandlerPaths.put("xml.bundle", "bundle.xml");
 		bundlerHandlerPaths.put("html.bundle", "bundle.html");
 		
@@ -64,7 +65,7 @@ public class BundlerHandler implements ResourcePreProcessor
 				.replace(File.separator, "/");
 		
 		String bundleKey = (bundlerPath.contains("/")) ? StringUtils.substringAfterLast(bundlerPath, "/") : bundlerPath;
-		String brjsRequestPath = bundlerHandlerPaths.get(bundleKey);
+		String brjsRequestPath = lookupRequestPathFromKnownBundlePaths(bundleKey);
 		
 		if (brjsRequestPath == null)
 		{
@@ -74,6 +75,20 @@ public class BundlerHandler implements ResourcePreProcessor
 		return brjsRequestPath;
 	}
 	
+	private String lookupRequestPathFromKnownBundlePaths(String bundleKey)
+	{
+		for (String keyRegex : bundlerHandlerPaths.keySet())
+		{
+			if (bundleKey.matches(keyRegex))
+			{
+				String bundlerConvertedPath = bundlerHandlerPaths.get(keyRegex);
+				String bundlerPath = bundleKey.replaceAll(keyRegex, bundlerConvertedPath);
+				return bundlerPath;
+			}
+		}
+		return null;
+	}
+
 	private void handleBundleRequest(File bundleFile, String brjsRequestPath, OutputStream outputStream)
 	{
 		BRJS brjs = null;

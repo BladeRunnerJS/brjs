@@ -160,4 +160,28 @@ public class BRJSBundleInjectorTest extends BRJSBundleInjectorSpecTest
     				"\"appns.prop\":\"some prop\"" );
 	}
 	
+	@Test
+	public void legacyI18nBundleUrlsContainingTheLanguageInformationCanBeUsedAsABundlePath() throws Exception
+	{
+		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
+			.and(aspect).containsFileWithContents("resources/en.properties", "appns.prop = some prop")
+    		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
+    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_i18n.bundle" );
+    	thenJstdTests(aspectTestPack).testBundleContainsText(
+    				"bundles/i18n/en_i18n.bundle",
+    				"\"appns.prop\":\"some prop\"" );
+	}
+	
+	@Test
+	public void legacyI18nBundleUrlsContainingTheFullLocaleInformationCanBeUsedAsABundlePath() throws Exception
+	{
+		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
+		.and(aspect).containsFileWithContents("resources/en.properties", "appns.prop = some prop")
+		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_GB_i18n.bundle" );
+		thenJstdTests(aspectTestPack).testBundleContainsText(
+				"bundles/i18n/en_GB_i18n.bundle",
+				"\"appns.prop\":\"some prop\"" );
+	}
+	
 }
