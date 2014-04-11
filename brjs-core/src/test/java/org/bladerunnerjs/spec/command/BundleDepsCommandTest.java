@@ -83,8 +83,8 @@ public class BundleDepsCommandTest extends SpecTest {
 	@Test
 	public void dependenciesAreShownWhenAllArgumentsAreValid() throws Exception {
 		given(aspect).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2");
 		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
 		then(output).containsText(
 			"Bundle 'apps/app/default-aspect' dependencies found:",
@@ -96,8 +96,8 @@ public class BundleDepsCommandTest extends SpecTest {
 	@Test
 	public void bladeTestpendenciesCanBeShown() throws Exception {
 		given(bladeTests).containsFileWithContents("MyTest.js", "require('appns/bs/b1/Class1')")
-			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
-			.and(blade).classRequires("appns.bs.b1.Class1", "./Class2");
+			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
+			.and(blade).classRequires("appns/bs/b1/Class1", "./Class2");
 		when(brjs).runCommand("bundle-deps", "../apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver");
 		then(output).containsText(
 			"Bundle 'apps/app/bs-bladeset/blades/b1/tests/test-unit/js-test-driver' dependencies found:",

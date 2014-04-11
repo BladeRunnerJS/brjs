@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 public class FileUtility {
 	public static File createTemporaryDirectory(String prependedFolderName) throws IOException
@@ -39,6 +43,8 @@ public class FileUtility {
 	
 	public static void zipFolder(File srcFolder, File destZipFile, boolean zipOnlySrcFolderContentsAndNotSrcFolder) throws IOException
 	{
+		destZipFile.getParentFile().mkdirs();
+		
 		FileOutputStream fileWriter = new FileOutputStream(destZipFile);
 		ZipOutputStream zip = new ZipOutputStream(fileWriter);
 		
@@ -108,5 +114,51 @@ public class FileUtility {
 				}
 			}
 		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static void unzip(ZipFile zipFile, File targetLocation) throws IOException {			 
+		Enumeration files = zipFile.entries();
+		File f = null;
+		FileOutputStream fos = null;
+		
+		while (files.hasMoreElements()) {
+			try {
+				ZipEntry entry = (ZipEntry) files.nextElement();
+				InputStream eis = zipFile.getInputStream(entry);
+				
+				f = new File(targetLocation, entry.getName());
+				
+				if (entry.isDirectory()) 
+				{
+					f.mkdirs();
+					continue;
+				} 
+				else {
+					f.getParentFile().mkdirs();
+					f.createNewFile();
+				}
+			
+				fos = new FileOutputStream(f);
+				IOUtils.copy(eis, fos);
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+				continue;		  
+			} 
+			finally {
+				if (fos != null) 
+				{
+					try {
+						fos.close();
+					}
+					catch (IOException e) {
+						// ignore
+					}
+				}
+			}
+		}
+		zipFile.close();
 	}
 }

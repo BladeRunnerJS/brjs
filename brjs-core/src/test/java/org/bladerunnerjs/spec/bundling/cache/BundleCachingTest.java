@@ -30,45 +30,45 @@ public class BundleCachingTest extends SpecTest
 	// Cache tests should be irrespective of JS style (namespace/node)
 	@Test
 	public void weDoNotCacheIndexPageReferencesToSourceClasses() throws Exception {
-		given(aspect).hasClass("appns.Class1")
-			.and(aspect).hasClass("appns.Class2")
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).hasClass("appns/Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
 		when(aspect).indexPageRefersTo("appns.Class2")
 			.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsClasses("appns.Class2")
+		then(response).containsNodeJsClasses("appns.Class2")
 			.and(response).doesNotContainText("appns.Class1");
 	}
 	
 	@Test
 	public void weDoNotCacheAspectSourceDependencies() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
 		when(thirdpartyLib).populate()
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file1.js", "thirdpartyLib content")
-			.and(aspect).classRefersToThirdpartyLib("appns.Class1", thirdpartyLib)
+			.and(aspect).classDependsOnThirdpartyLib("appns.Class1", thirdpartyLib)
 			.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				"// thirdpartyLib", 
 				"thirdpartyLib content", 
 				"mergePackageBlock(window, {\"appns\":{}});",
-				"appns.Class1 = function()",
-				"module.exports = appns.Class1",
+				"Class1 = function()",
+				"module.exports = Class1",
 				"define('appns/Class1', function(require, exports, module)");
 	}
 	
 	@Test
 	public void weDoNotCacheDependentSourceModulesInLinkedAssetFiles() throws Exception {
-		given(aspect).hasClasses("appns.Class1", "appns.Class2")
+		given(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.Class1")
 			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
 		when(aspect).resourceFileRefersTo("html/view.html", "appns.Class2")
 			.and(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).doesNotContainText("appns.Class1")
-			.and(response).containsClasses("appns.Class2");
+			.and(response).containsNodeJsClasses("appns.Class2");
 	}
 	
 	@Test

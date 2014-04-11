@@ -33,6 +33,11 @@ public class Java7FileModificationInfo implements FileModificationInfo {
 		return lastModified;
 	}
 	
+	@Override
+	public void resetLastModified() {
+		lastModified = (new Date()).getTime();;
+	}
+	
 	public void doPoll() {
 		List<WatchEvent<?>> watchEvents = watchKey.pollEvents();
 		

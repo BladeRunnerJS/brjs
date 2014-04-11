@@ -26,7 +26,7 @@ public class NamespacedJsTagHandlerPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).classRefersTo("appns.Class1", "appns.Class2")
+			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class1.js", "namespaced-js/module/appns/Class2.js", "namespaced-js/globalize-extra-classes.js");
@@ -37,7 +37,7 @@ public class NamespacedJsTagHandlerPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).classRefersTo("appns.Class1", "appns.Class2")
+			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("namespaced-js/bundle.js");
@@ -48,7 +48,7 @@ public class NamespacedJsTagHandlerPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
-			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
+			.and(aspect).classExtends("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageHasContent("<@namespaced-js@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
 		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class2.js", "namespaced-js/module/appns/Class1.js", "namespaced-js/globalize-extra-classes.js"); // TODO: enforce ordering

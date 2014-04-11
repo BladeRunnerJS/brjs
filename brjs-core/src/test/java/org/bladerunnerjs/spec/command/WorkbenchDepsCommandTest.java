@@ -112,8 +112,8 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	@Test
 	public void dependenciesAreShownWhenAllArgumentsAreValid() throws Exception {
 		given(workbench).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2");
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
 		then(output).containsText(
 			"Workbench dependencies found:",
@@ -125,8 +125,8 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	@Test
 	public void ifTheSameAssetIsFoundTwiceThenOnlyTheFirstEncounteredInstanceIsShownByDefault() throws Exception {
 		given(workbench).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2")
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2")
 			.and(workbench).containsFileWithContents("resources/config.xml", "'appns/Class1'"); // TODO: if we make this an aspect resource it doesn't work suggesting a bug -- make me feel even more strongly there should be a method which provides all asset locations, including transitive deps.
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
 		then(output).containsText(
@@ -142,8 +142,8 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	@Test
 	public void withTheAllSwitchIfTheSameAssetIsFoundTwiceThenItsDependenciesAreOnlyShownTheFirstTime() throws Exception {
 		given(workbench).indexPageRequires("appns/Class1")
-			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
-			.and(aspect).classRequires("appns.Class1", "./Class2")
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
+			.and(aspect).classRequires("appns/Class1", "./Class2")
 			.and(workbench).containsFileWithContents("resources/config.xml", "'appns/Class1'");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade", "--all");
 		then(output).containsText(
@@ -159,7 +159,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void dependenciesAreShownForWorkbenchUsingAliasWhenAllArgumentsAreValid() throws Exception {
-		given(brLib).hasClasses("br.Class1", "br.Class2")
+		given(brLib).hasClasses("br/Class1", "br/Class2")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
 			.and(blade).classFileHasContent("appns/bladeset/blade/Class1", "ServiceRegistry.getService('br.alias')")
 			.and(workbench).indexPageRequires("appns/bladeset/blade/Class1");

@@ -80,7 +80,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleBootstrapSrcInASubDir() throws Exception {
-		given(workbench).hasClass("appns.Class1")
+		given(workbench).hasClass("appns/Class1")
 			.and(workbench).indexPageRefersTo("appns.Class1")
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
@@ -92,7 +92,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	
 	@Test
 	public void weBundleBootstrapBeforeOtherLibsFromTheApp() throws Exception {
-		given(workbench).hasClass("appns.Class1")
+		given(workbench).hasClass("appns/Class1")
     		.and(workbench).indexPageRequires("appLib")
     		.and(appLib).hasBeenCreated()
     		.and(appLib).containsFileWithContents("library.manifest", "js: lib.js\n"+"exports: lib")
@@ -110,7 +110,7 @@ public class WorkbenchBundlingTest extends SpecTest {
  	@Test
  	public void aspectCssFilesAreBundledInTheWorkbench() throws Exception {
 		given(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content")
-			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClass("appns/Class1")
     		.and(workbench).indexPageRefersTo("appns.Class1");
  		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", response);
  		then(response).containsText("ASPECT theme content");
@@ -119,7 +119,7 @@ public class WorkbenchBundlingTest extends SpecTest {
  	@Test
  	public void aspectCssFilesAreBundledInTheWorkbenchEvenIfAspectSrcIsntUsed() throws Exception {
  		given(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content")
-        	.and(workbench).hasClass("appns.workbench.Class1")
+        	.and(workbench).hasClass("appns/workbench/Class1")
         	.and(workbench).indexPageRefersTo("appns.workbench.Class1");
  		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", response);
  		then(response).containsText("ASPECT theme content");
@@ -167,5 +167,14 @@ public class WorkbenchBundlingTest extends SpecTest {
 													"<div id='tree-view'></div>");
 	}
 	
-	
+	@Test
+	public void bladesCanNotDependOnWorkbenchClasses() throws Exception {
+		given(blade).hasNamespacedJsPackageStyle()
+			.and(workbench).hasClass("appns.WorkbenchClass")
+			.and(blade).classDependsOn("appns.bs.b1.BladeClass", "appns.WorkbenchClass")
+			.and(workbench).indexPageRefersTo("appns.bs.b1.BladeClass");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsText("appns.bs.b1.BladeClass =")
+			.and(response).doesNotContainText("appns.WorkbenchClass =");
+	}
 }

@@ -27,7 +27,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void cssFilesInResourcesAppearInTheCommonTheme() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("resources/style.css");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
@@ -36,7 +36,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void cssFilesInResourcesAppearDontAppearInAnyOtherThemes() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("resources/style.css");
 		when(app).requestReceived("/default-aspect/css/theme1/bundle.css", requestResponse);
@@ -45,7 +45,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void cssFilesDeepWithinResourcesAppearInTheTheme() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("resources/dir1/dir2/style.css");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
@@ -54,7 +54,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void cssFilesInNonConformantLibrariesAppearInTheCommonTheme() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: style1.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
@@ -66,7 +66,7 @@ public class CssContentPluginTest extends SpecTest {
 
 	@Test
 	public void cssFilesInNonConformantLibrariesAppearAreAllBundledInCommonThemeWhenYouDontSpecifyCssManifestConfig() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("library.manifest", "js: foo.js\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("foo.js")
@@ -78,7 +78,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void cssFilesInNonConformantLibrariesDontAppearInAnyOtherThemes() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: style.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style.css");
@@ -88,7 +88,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void commonThemeCssFilesAppearInTheCommonTheme() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/common/style.css");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
@@ -97,7 +97,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void commonThemeCssFilesDontAppearInAnyOtherThemes() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/common/style.css");
 		when(app).requestReceived("/default-aspect/css/theme1/bundle.css", requestResponse);
@@ -106,7 +106,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void nonCommonThemeCssFilesAppearInTheRelevantTheme() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/theme1/style.css");
 		when(app).requestReceived("/default-aspect/css/theme1/bundle.css", requestResponse);
@@ -115,7 +115,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void nonCommonThemeCssFilesDontAppearInAnyOtherThemes() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/theme1/style.css");
 		when(app).requestReceived("/default-aspect/css/commmon/bundle.css", requestResponse);
@@ -124,7 +124,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void allNonNestedCssFilesInNonConformantLibrariesAppearIfLeftUnspecified() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("library.manifest", "js: script.js\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("script.js")
@@ -138,7 +138,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void allCssFilesInNonConformantLibrariesAppearIfAildcardIsExplicitlySpecified() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: \"*.css\"\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
@@ -151,7 +151,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void allCssFilesInNonConformantLibrariesAppearIfADeepWildcardIsExplicitlySpecified() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: \"**/*.css\"\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
@@ -163,7 +163,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void nonLocaleRequestsBundleNonLocaleOnlyStylesheets() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
@@ -175,7 +175,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void languageRequestsBundleLanguageOnlyStylesheets() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
 		when(app).requestReceived("/default-aspect/css/common_de/bundle.css", requestResponse);
@@ -187,7 +187,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void localeRequestsBundleLocaleOnlyStylesheets() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
 		when(app).requestReceived("/default-aspect/css/common_de_DE/bundle.css", requestResponse);
@@ -200,7 +200,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void referringToAnImageCausesACssResourceRequestToBeCreated() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img.png');}");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
@@ -209,7 +209,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void referringToANestedImageCausesANestedCssResourceRequestToBeCreated() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img/img.png');}");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
@@ -218,7 +218,7 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void referringToAParentImageCausesAParentCssResourceRequestToBeCreated() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../img.png');}");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
@@ -229,7 +229,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void weCanUseUTF8() throws Exception {
 		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
 			.and().activeEncodingIs("UTF-8")
-			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("resources/style.css", "/* $£€ */");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
@@ -240,7 +240,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void weCanUseLatin1() throws Exception {
 		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
 			.and().activeEncodingIs("ISO-8859-1")
-			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("resources/style.css", "/* $£ */");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
@@ -251,7 +251,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void weCanUseUnicodeFilesWithABomMarkerEvenWhenThisIsNotTheDefaultEncoding() throws Exception {
 		given(bladerunnerConf).defaultFileCharacterEncodingIs("ISO-8859-1")
 			.and().activeEncodingIs("UTF-16")
-			.and(aspect).hasClass("appns.Class1")
+			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("resources/style.css", "/* $£€ */");
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);

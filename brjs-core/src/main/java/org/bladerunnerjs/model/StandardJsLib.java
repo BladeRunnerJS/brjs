@@ -1,11 +1,13 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -20,6 +22,9 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	private JsLibConf libConf;
 	private Node parent;
 	private final NodeMap<TypedTestPack> testTypes;
+	private File[] scopeFiles;
+	
+	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("StandardJsLib.testTypes", root(), file("tests"));
 	
 	public StandardJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -48,6 +53,20 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		return new NodeMap<>(rootNode, StandardJsLib.class, "thirdparty-libraries", null);
 	}
 	
+	@Override
+	public File[] scopeFiles() {
+		if(scopeFiles == null) {
+			// TODO: perhaps all library objects should be app specific (even when they are only in the sdk) so that libraries can be cached better
+			scopeFiles = new File[] {root().dir()};
+		}
+		
+		return scopeFiles;
+	}
+	
+	@Override
+	public List<AssetContainer> scopeAssetContainers() {
+		return new ArrayList<>(app().jsLibs());
+	}
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
@@ -156,7 +175,9 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return children(testTypes);
+		return testTypesList.value(() -> {
+			return children(testTypes);
+		});
 	}
 	
 	@Override
@@ -164,5 +185,4 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	{
 		return child(testTypes, testTypeName);
 	}
-	
 }

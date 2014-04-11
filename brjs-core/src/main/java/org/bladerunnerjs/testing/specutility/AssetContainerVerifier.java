@@ -1,11 +1,11 @@
 package org.bladerunnerjs.testing.specutility;
 
 import static org.junit.Assert.*;
-import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetContainer;
@@ -22,22 +22,18 @@ public class AssetContainerVerifier {
 		this.assetContainer = assetContainer;
 	}
 	
-	public void hasSourceModules(SourceModuleDescriptor[] expectedSourceModules) throws Exception {
-		List<SourceModule> actualSourceModules = assetContainer.sourceModules();
+	public void hasSourceModules(String... expectedSourceModules) throws Exception {
+		Set<SourceModule> actualSourceModules = assetContainer.sourceModules();
 		
 		assertEquals("Source modules [" + renderSourceModules(actualSourceModules) + "] was expected to contain " + expectedSourceModules.length + " item(s).", expectedSourceModules.length, actualSourceModules.size());
 		
 		int i = 0;
 		for(SourceModule actualSourceModule : actualSourceModules) {
-			SourceModuleDescriptor expectedSourceModule = expectedSourceModules[i++];
+			String expectedSourceModule = expectedSourceModules[i++];
 			StringWriter sourceModuleContents = new StringWriter();
 			
-			assertEquals("Source module " + i + " differs from what's expected.", expectedSourceModule.requirePath, actualSourceModule.getRequirePath());
+			assertEquals("Source module " + i + " differs from what's expected.", expectedSourceModule, actualSourceModule.getRequirePath());
 			IOUtils.copy(actualSourceModule.getReader(), sourceModuleContents);
-			
-			for(String expectedFilePath : expectedSourceModule.filePaths) {
-				assertContains(expectedFilePath, sourceModuleContents.toString());
-			}
 		}
 	}
 	
@@ -81,7 +77,7 @@ public class AssetContainerVerifier {
 		}
 	}
 	
-	private String renderSourceModules(List<SourceModule> sourceModules) {
+	private String renderSourceModules(Set<SourceModule> sourceModules) {
 		List<String> sourceModulePaths = new ArrayList<>();
 		
 		for(SourceModule sourceModule : sourceModules) {

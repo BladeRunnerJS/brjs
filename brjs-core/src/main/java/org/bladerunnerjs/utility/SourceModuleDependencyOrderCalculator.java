@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.model.BundlableNode;
@@ -20,12 +21,14 @@ public class SourceModuleDependencyOrderCalculator
 	private List<SourceModule> bootstrappingSourceModules;
 	private List<SourceModule> orderedSourceModules;
 	private Set<SourceModule> metDependencies;
+	private final Map<SourceModule, Set<SourceModule>> orderDependentSourceModuleDependencies;
 	
-	public SourceModuleDependencyOrderCalculator(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules)
+	public SourceModuleDependencyOrderCalculator(BundlableNode bundlableNode, List<SourceModule> bootstrappingSourceModules, Set<SourceModule> unorderedSourceModules, Map<SourceModule, Set<SourceModule>> orderDependentSourceModuleDependencies)
 	{
 		this.bundlableNode = bundlableNode;
 		this.bootstrappingSourceModules = bootstrappingSourceModules;
 		this.unorderedSourceModules = unorderedSourceModules;
+		this.orderDependentSourceModuleDependencies = orderDependentSourceModuleDependencies;
 		orderedSourceModules = new ArrayList<SourceModule>();
 		metDependencies = new HashSet<SourceModule>();
 	}
@@ -85,7 +88,12 @@ public class SourceModuleDependencyOrderCalculator
 	
 	private List<SourceModule> getOrderDependentSourceModules(SourceModule sourceModule, BundlableNode bundlableNode) throws ModelOperationException
 	{
-		List<SourceModule> orderDependentSourceModules = sourceModule.getOrderDependentSourceModules(bundlableNode);
+		List<SourceModule> orderDependentSourceModules = new ArrayList<>(sourceModule.getOrderDependentSourceModules(bundlableNode));
+		
+		if(orderDependentSourceModuleDependencies.containsKey(sourceModule)) {
+			orderDependentSourceModules.addAll(orderDependentSourceModuleDependencies.get(sourceModule));
+		}
+		
 		return orderDependentSourceModules;
 	}
 	

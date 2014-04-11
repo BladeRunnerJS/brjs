@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -87,26 +88,27 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 
 	
 	
-	public BuilderChainer classRefersTo(String sourceClass, String... referencedClasses) throws Exception
+	public BuilderChainer classDependsOn(String sourceClass, String... referencedClasses) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		return classRefersTo(sourceClass, sourceFile, referencedClasses);
+		return classDependsOn(sourceClass, sourceFile, referencedClasses);
 	}
 	
-	public BuilderChainer testClassRefersTo(String sourceClass, String... referencedClasses) throws Exception
+	public BuilderChainer testClassDependsOn(String sourceClass, String... referencedClasses) throws Exception
 	{
 		File sourceFile = getTestSourceFile(sourceClass);
-		return classRefersTo(sourceClass, sourceFile, referencedClasses);
+		return classDependsOn(sourceClass, sourceFile, referencedClasses);
 	}
 	
-	public BuilderChainer classDependsOn(String dependentClass, String referencedClass) throws Exception {
+	public BuilderChainer classExtends(String dependentClass, String referencedClass) throws Exception {
 		File dependentSourceFile = getSourceFile(dependentClass);
-		return classDependsOn(dependentClass, referencedClass, dependentSourceFile);
-	}
-	
-	public BuilderChainer testClassDependsOn(String dependentClass, String referencedClass) throws Exception {
-		File dependentSourceFile = getTestSourceFile(dependentClass);
-		return classDependsOn(dependentClass, referencedClass, dependentSourceFile);
+		
+		String classBody = getClassBody(dependentClass);
+		String extendString = "br.Core.extend(" + dependentClass + ", " + referencedClass + ");\n";
+		
+		fileUtil.write(dependentSourceFile, classBody + extendString);
+		
+		return builderChainer;
 	}
 	
 	public BuilderChainer classRequires(String sourceClass, String dependencyClass) throws Exception {
@@ -119,10 +121,10 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return classRequires(sourceClass, dependencyClass, sourceFile);
 	}
 	
-	public BuilderChainer classRefersToAlias(String sourceClass, String alias) throws Exception
+	public BuilderChainer classDependsOnAlias(String sourceClass, String alias) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
-		return classRefersTo(sourceClass, sourceFile, "'" + alias + "'");
+		return classDependsOn(sourceClass, sourceFile, "'" + alias + "'");
 	}
 	
 	public BuilderChainer classFileHasContent(String sourceClass, String content) throws Exception
@@ -133,13 +135,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
-	public BuilderChainer classRefersToThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
+	public BuilderChainer classDependsOnThirdpartyLib(String sourceClass, JsLib thirdpartyLib) throws Exception
 	{
 		File sourceFile = getSourceFile(sourceClass);
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRefersToThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
+			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
 		}
 		
 		fileUtil.write(sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');", true);
@@ -182,34 +184,25 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	}
 	
 	
-	private BuilderChainer classRefersTo(String sourceClass, File sourceFile, String... referencedClasses) throws Exception
+	private BuilderChainer classDependsOn(String sourceClass, File sourceFile, String... referencedClasses) throws Exception
 	{
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
+			throw new RuntimeException("classRefersTo() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "' for dir '"+sourceFile.getParentFile().getPath()+"'.");
 		}
 		
-		String classReferencesContent = "";
+		String classReferencesContent = "var someFunction = function() {\n";
 		for(String referencedClass : referencedClasses)
 		{
-			classReferencesContent += getClassBody(sourceClass) + "var obj = new " + referencedClass + "();\n";
+			classReferencesContent += "\tnew " + referencedClass + "();\n";
 		}
+		classReferencesContent += "};\n";
 		
-		fileUtil.write(sourceFile, classReferencesContent);
-		
-		return builderChainer;
-	}
-	
-	private BuilderChainer classDependsOn(String dependentClass, String referencedClass, File dependentSourceFile) throws Exception
-	{
-		String jsStyle = JsStyleUtility.getJsStyle(dependentSourceFile.getParentFile());
-		
-		if(!jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classDependsOn() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
+		if (referencedClasses.length > 0)
+		{
+			fileUtil.write(sourceFile, getClassBody(sourceClass) + classReferencesContent);
 		}
-		
-		fileUtil.write(dependentSourceFile, getCaplinJsClassBody(dependentClass, referencedClass));
 		
 		return builderChainer;
 	}
@@ -219,10 +212,13 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String jsStyle = JsStyleUtility.getJsStyle(sourceFile.getParentFile());
 		
 		if(!jsStyle.equals(NodeJsContentPlugin.JS_STYLE)) {
-			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to 'node.js' for dir '"+sourceFile.getParentFile().getPath()+"'");
+			throw new RuntimeException("classRequires() can only be used if packageOfStyle() has not been used, or has been set to '"+NodeJsContentPlugin.JS_STYLE+"' for dir '"+sourceFile.getParentFile().getPath()+"'");
 		}
 		
-		fileUtil.write(sourceFile, getNodeJsClassBody(sourceClass, dependencyClass));
+		dependencyClass = dependencyClass.replaceAll("\\.(\\w)", "/$1");
+		String classRef = StringUtils.substringAfterLast(dependencyClass, "/");
+		String requireString = "var " + classRef + " = require('" + dependencyClass + "');\n";
+		fileUtil.write(sourceFile, requireString + getClassBody(sourceClass));
 		
 		return builderChainer;
 	}
@@ -233,9 +229,22 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		String classBody;
 		
 		if(jsStyle.equals(NodeJsContentPlugin.JS_STYLE)) {
-			classBody = className + " = function() {\n};\nmodule.exports = " + className + ";\n";
+			if (className.contains("."))
+			{
+				throw new RuntimeException("Require paths must not contain the '.' character");
+			}
+			className = className.replaceAll("\\.", "/");
+			String nodeJsClassName = StringUtils.substringAfterLast(className, "/");
+			classBody = nodeJsClassName + " = function() {\n"+
+				"};\n" +
+				"\n" +
+				"module.exports = " + nodeJsClassName + ";\n";
 		}
 		else if(jsStyle.equals(NamespacedJsContentPlugin.JS_STYLE)) {
+			if (className.contains("/"))
+			{
+				throw new RuntimeException("Class names must not contain the '/' character");
+			}
 			classBody = className + " = function() {\n};\n";
 		}
 		else {
@@ -243,16 +252,6 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		}
 		
 		return classBody;
-	}
-	
-	private String getNodeJsClassBody(String sourceClass, String destClass) {
-		String classRef = sourceClass.substring(sourceClass.lastIndexOf('.') + 1);
-		String destClassRequirePath = destClass.replaceAll("([\\w])\\.", "$1/").replaceAll("\\.js$", "");
-		return "var " + classRef + " = require('" + destClassRequirePath + "');\n" + getClassBody(sourceClass);
-	}
-	
-	private String getCaplinJsClassBody(String sourceClass, String destClass) {
-		return getClassBody(sourceClass) + "br.Core.extend(" + sourceClass + ", " + destClass + ");\n";
 	}
 	
 }

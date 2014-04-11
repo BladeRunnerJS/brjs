@@ -36,7 +36,7 @@ public class AspectBundlingOfCSS extends SpecTest {
 	// Aspect
  	@Test
  	public void aspectCssFilesAreBundled() throws Exception {
-		given(aspect).hasClass("appns.Class1")
+		given(aspect).hasClass("appns/Class1")
 			.and(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content")
 			.and(aspect).indexPageRefersTo("appns.Class1");
  		when(app).requestReceived("/default-aspect/css/standard/bundle.css", response);
@@ -46,7 +46,7 @@ public class AspectBundlingOfCSS extends SpecTest {
 	// Bladeset
  	@Test
  	public void bladesetCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
-		given(bladeset).hasClass("appns.bs.Class1")
+		given(bladeset).hasClass("appns/bs/Class1")
 			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
  		when(app).requestReceived("/default-aspect/css/standard/bundle.css", response);
@@ -56,7 +56,7 @@ public class AspectBundlingOfCSS extends SpecTest {
 	// Blade
 	@Test
  	public void bladeCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
-		given(blade).hasClass("appns.bs.b1.Class1")
+		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
  		when(app).requestReceived("/default-aspect/css/standard/bundle.css", response);
