@@ -21,7 +21,7 @@ public class BundlerHandler implements ResourcePreProcessor
 {	
 	protected Map<String,String> bundlerHandlerPaths = new HashMap<>();
 
-	private static final String BUNDLE_PREFIX = "bundles/";
+	private static final String BUNDLE_PREFIX = "bundles" + File.separator;
 	
 	public BundlerHandler() throws Exception
 	{
@@ -60,7 +60,8 @@ public class BundlerHandler implements ResourcePreProcessor
 
 	private String getModelRequestPath(File bundleFile)
 	{
-		String bundlerPath = StringUtils.substringAfter(bundleFile.getAbsolutePath(), BUNDLE_PREFIX);
+		String bundlerPath = StringUtils.substringAfter(bundleFile.getAbsolutePath(), BUNDLE_PREFIX)
+				.replace(File.separator, "/");
 		
 		String bundleKey = (bundlerPath.contains("/")) ? StringUtils.substringAfterLast(bundlerPath, "/") : bundlerPath;
 		String brjsRequestPath = bundlerHandlerPaths.get(bundleKey);
@@ -121,11 +122,6 @@ public class BundlerHandler implements ResourcePreProcessor
 	{
 		return files;
 	}
-
-	
-	
-	
-	
 	
 	private void createParentDirectory(File bundlerFile)
 	{
