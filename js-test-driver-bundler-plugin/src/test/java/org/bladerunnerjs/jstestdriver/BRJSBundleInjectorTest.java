@@ -184,4 +184,18 @@ public class BRJSBundleInjectorTest extends BRJSBundleInjectorSpecTest
 				"\"appns.prop\":\"some prop\"" );
 	}
 	
+	@Test
+	public void logicalRequestPathsDontPreventUseOfFullModelPaths() throws Exception
+	{
+		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code\nvar a = function(){}")
+			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/en_GB/closure-whitespace/bundle.js" );
+		thenJstdTests(aspectTestPack).testBundleContainsText(
+					"bundles/js/dev/en_GB/closure-whitespace/bundle.js",
+					"var a=function(){}" );
+		thenJstdTests(aspectTestPack).testBundleDoesNotContainText(
+				"bundles/js/dev/en_GB/closure-whitespace/bundle.js",
+				"// some SDK src code" );
+	}
+	
 }
