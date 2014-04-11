@@ -2,7 +2,7 @@ package org.bladerunnerjs.utility.filemodification;
 
 public class InfoFileModifiedChecker implements FileModifiedChecker {
 	private FileModificationInfo fileModificationInfo;
-	private long lastModifiedTime = 0;
+	private long lastModifiedTime = -1;
 	
 	public InfoFileModifiedChecker(FileModificationInfo fileModificationInfo) {
 		this.fileModificationInfo = fileModificationInfo;
