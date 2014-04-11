@@ -8,8 +8,8 @@ public class BRJSIO {
 	private final Map<FileAccessLimitScope, File[]> activeScopes = new HashMap<>();
 	private final SecurityManager securityManager = new BRJSSecurityManager(activeScopes);
 	
-	public FileAccessLimitScope limitAccessToWithin(File[] watchItems) {
-		return new FileAccessLimitScope(activeScopes, watchItems);
+	public FileAccessLimitScope limitAccessToWithin(String scopeIdentifier, File[] watchItems) {
+		return new FileAccessLimitScope(scopeIdentifier, activeScopes, watchItems);
 	}
 	
 	public void installFileAccessChecker() {

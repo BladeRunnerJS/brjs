@@ -2,6 +2,7 @@ package org.bladerunnerjs.memoization;
 
 import java.io.File;
 import java.util.ArrayList;
+//import java.util.Date;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
@@ -19,12 +20,14 @@ public class MemoizedValue<T extends Object> {
 	private final BRJS brjs;
 	private T value;
 	private final Logger logger;
+	private final String valueIdentifier;
 	
 	public MemoizedValue(String valueIdentifier, BRJSNode node) {
 		this(valueIdentifier, node.root(), node.scopeFiles());
 	}
 	
 	public MemoizedValue(String valueIdentifier, BRJS brjs, File... watchItems) {
+		this.valueIdentifier = valueIdentifier;
 		this.brjs = brjs;
 		this.watchItems = watchItems;
 		logger = brjs.logger(LoggerType.UTIL, getClass());
@@ -44,7 +47,7 @@ public class MemoizedValue<T extends Object> {
 		if(valueNeedsToBeRecomputed()) {
 			logger.debug(valueRecomputedLogMessage);
 			
-			try(FileAccessLimitScope scope = brjs.io().limitAccessToWithin(watchItems)) {
+			try(FileAccessLimitScope scope = brjs.io().limitAccessToWithin(valueIdentifier, watchItems)) {
 				scope.preventCompilerWarning();
 				value = (T) getter.get();
 			}
