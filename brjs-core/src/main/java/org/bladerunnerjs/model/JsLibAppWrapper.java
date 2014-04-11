@@ -213,11 +213,6 @@ public final class JsLibAppWrapper implements JsLib {
 	public void discoverAllChildren() {
 		wrappedJsLib.discoverAllChildren();
 	}
-	
-	@Override
-	public long lastModified() {
-		return wrappedJsLib.lastModified();
-	}
 
 	@Override
 	public void runTests(TestType... testTypes)

@@ -14,6 +14,7 @@ import org.bladerunnerjs.aliasing.IncompleteAliasException;
 import org.bladerunnerjs.aliasing.UnresolvableAliasException;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.AmbiguousRequirePathException;
@@ -25,19 +26,22 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.utility.LogicalRequestHandler;
-import org.bladerunnerjs.utility.filemodification.NodeFileModifiedChecker;
 
 import com.google.common.base.Joiner;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private AliasesFile aliasesFile;
 	private Map<String, AssetContainer> assetContainers = new HashMap<>();
-	private BundleSet bundleSet;
-	private NodeFileModifiedChecker bundleSetFileModifiedChecker = new NodeFileModifiedChecker(this);
 	private LogicalRequestHandler requestHandler;
+	private final MemoizedValue<BundleSet> bundleSet;
+	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList;
+	private final Map<String, MemoizedValue<List<AssetContainer>>> potentialAssetContainersSet = new HashMap<>();
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
+		
+		bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
+		aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
 	}
 	
 	protected abstract List<LinkedAsset> getSeedFiles();
@@ -120,28 +124,28 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
-		if(bundleSetFileModifiedChecker.hasChangedSinceLastCheck() || (bundleSet == null)) {
-			bundleSet = BundleSetCreator.createBundleSet(this);
-		}
-		
-		return bundleSet;
+		return bundleSet.value(() -> {
+			return BundleSetCreator.createBundleSet(this);
+		});
 	}
 	
 	@Override
 	public List<AliasDefinitionsFile> aliasDefinitionFiles() {
-		List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
-		
-		for(AssetContainer assetContainer : assetContainers()) {
-			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-				AliasDefinitionsFile aliasDefinitionsFile = assetLocation.aliasDefinitionsFile();
-				
-				if(aliasDefinitionsFile.getUnderlyingFile().exists()) {
-					aliasDefinitionFiles.add(aliasDefinitionsFile);
+		return aliasDefinitionFilesList.value(() -> {
+			List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
+			
+			for(AssetContainer assetContainer : assetContainers()) {
+				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
+					AliasDefinitionsFile aliasDefinitionsFile = assetLocation.aliasDefinitionsFile();
+					
+					if(aliasDefinitionsFile.getUnderlyingFile().exists()) {
+						aliasDefinitionFiles.add(aliasDefinitionsFile);
+					}
 				}
 			}
-		}
-		
-		return aliasDefinitionFiles;
+			
+			return aliasDefinitionFiles;
+		});
 	}
 	
 	@Override
@@ -159,34 +163,42 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	private List<AssetContainer> getPotentialAssetContainers(String requirePath) {
-		List<AssetContainer> potentialAssetContainers = new ArrayList<>();
-		int requirePrefixSize = 0;
-		AssetContainer prevAssetContainer, nextAssetContainer = null;
-		boolean assetContainersMayStillExist = true;
+		if(!potentialAssetContainersSet.containsKey(requirePath)) {
+			potentialAssetContainersSet.put(requirePath, new MemoizedValue<>("BundlableNode.potentialAssetContainersList#", root(), root().dir()));
+		}
 		
-		do {
-			String requirePrefix = getRequirePrefix(requirePath, ++requirePrefixSize);
+		MemoizedValue<List<AssetContainer>> potentialAssetContainersList = potentialAssetContainersSet.get(requirePath);
+		
+		return potentialAssetContainersList.value(() -> {
+			List<AssetContainer> potentialAssetContainers = new ArrayList<>();
+			int requirePrefixSize = 0;
+			AssetContainer prevAssetContainer, nextAssetContainer = null;
+			boolean assetContainersMayStillExist = true;
 			
-			if(requirePrefix == null) {
-				assetContainersMayStillExist = false;
-			}
-			else {
-				prevAssetContainer = nextAssetContainer;
-				nextAssetContainer = assetContainers .get(requirePrefix);
+			do {
+				String requirePrefix = getRequirePrefix(requirePath, ++requirePrefixSize);
 				
-				if(nextAssetContainer != null) {
-					potentialAssetContainers.add(nextAssetContainer);
-				}
-				else if(moreAssetContainersMayExistOnDisk(requirePrefixSize, prevAssetContainer)) {
-					addMissingAssetContainers(requirePath, potentialAssetContainers);
-				}
-				else {
+				if(requirePrefix == null) {
 					assetContainersMayStillExist = false;
 				}
-			}
-		} while(assetContainersMayStillExist);
-		
-		return potentialAssetContainers;
+				else {
+					prevAssetContainer = nextAssetContainer;
+					nextAssetContainer = assetContainers .get(requirePrefix);
+					
+					if(nextAssetContainer != null) {
+						potentialAssetContainers.add(nextAssetContainer);
+					}
+					else if(moreAssetContainersMayExistOnDisk(requirePrefixSize, prevAssetContainer)) {
+						addMissingAssetContainers(requirePath, potentialAssetContainers);
+					}
+					else {
+						assetContainersMayStillExist = false;
+					}
+				}
+			} while(assetContainersMayStillExist);
+			
+			return potentialAssetContainers;
+		});
 	}
 	
 	private String getRequirePrefix(String requirePath, int i) {
