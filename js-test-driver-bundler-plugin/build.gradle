@@ -6,6 +6,7 @@ dependencies {
 	compile project(':bundlers')
 	compile project(':brjs-logger-binding')
 	compile dependency('commons-lang3')
+	compile dependency('guava')
 	
 	compileOnly dependency('JsTestDriver')
 

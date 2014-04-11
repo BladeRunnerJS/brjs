@@ -31,7 +31,7 @@ Dependencies.putAll([
 	'xom'						:	'xom:xom:1.2.5',
 	'javassist'					:	'org.javassist:javassist:3.16.1-GA',
 	'servlet-api'				:	'javax.servlet:servlet-api:2.5',	/* do not update - this is the version Tomcat 6.0.x uses */
-	'guava'						:	'com.google.guava:guava:12.0',
+	'guava'						:	'com.google.guava:guava:14.0.1',
 	'gson'						:	'com.google.code.gson:gson:2.2.2',
 	'json-simple'				:	'com.googlecode.json-simple:json-simple:1.1.1',
 	'hibernate-core'			:	'org.hibernate:hibernate-core:3.6.10.Final',
