@@ -6,6 +6,7 @@ import org.bladerunnerjs.plugin.plugins.commands.core.HelpCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockCommandPlugin;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -77,6 +78,7 @@ public class HelpCommandTest extends SpecTest
 			"  Command #1 help.");
 	}
 	
+	@Ignore
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
