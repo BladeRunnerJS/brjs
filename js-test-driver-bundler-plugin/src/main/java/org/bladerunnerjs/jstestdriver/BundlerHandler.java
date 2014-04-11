@@ -88,10 +88,10 @@ public class BundlerHandler implements ResourcePreProcessor
 			}
 		}
 		
-//		if (logicalBundlerHandlerPaths.containsKey(bundlerFilePath))
-//		{
-//			return logicalBundlerHandlerPaths.get(bundlerFilePath);
-//		}
+		if (logicalBundlerHandlerPaths.containsKey(bundlerFilePath))
+		{
+			return logicalBundlerHandlerPaths.get(bundlerFilePath);
+		}
 		
 		return null;
 	}

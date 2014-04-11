@@ -198,4 +198,15 @@ public class BRJSBundleInjectorTest extends BRJSBundleInjectorSpecTest
 				"// some SDK src code" );
 	}
 	
+	@Test
+	public void logicalJsRequestPathsCanBeUsedAsABundlePath() throws Exception
+	{
+		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
+			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/bundle.js" );
+		thenJstdTests(aspectTestPack).testBundleContainsText(
+					"bundles/bundle.js",
+					"// some SDK src code" );
+	}
+	
 }
