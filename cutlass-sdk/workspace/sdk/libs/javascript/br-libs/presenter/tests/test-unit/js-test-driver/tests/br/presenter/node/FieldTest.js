@@ -27,7 +27,7 @@ FieldTest.prototype.test_editablePropertyCanBePassedForValueInConstructor = func
 FieldTest.prototype.test_cannotPassNonEditablePropertyInConstructor = function() {
 	assertException("Can't pass non-editable properties into Field", function(){
 		new br.presenter.node.Field(new br.presenter.property.WritableProperty("value"));
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 FieldTest.prototype.test_hasErrorAndFailureMessageAreSetCorrectly = function()

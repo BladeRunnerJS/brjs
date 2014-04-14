@@ -82,7 +82,7 @@ br.presenter.node.SelectionField = function(vOptions, vValue)
 	this.options.addChangeListener(this, "_automaticallyUpdateValueOnOptionsChange");
 
 	if((vValue instanceof br.presenter.property.Property) && !(vValue instanceof br.presenter.property.EditableProperty)){
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "SelectionField constructor: can't pass non-editable property as parameter");
+		throw new br.Errors.InvalidParametersError("SelectionField constructor: can't pass non-editable property as parameter");
 	}
 	
 	/** @private */

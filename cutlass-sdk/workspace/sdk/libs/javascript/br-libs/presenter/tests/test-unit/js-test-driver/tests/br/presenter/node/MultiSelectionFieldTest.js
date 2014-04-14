@@ -93,7 +93,7 @@ MultiSelectionFieldTest.prototype.test_defaultValuesCannotBePassedIntoConstructo
 	var oProperty = new br.presenter.property.WritableProperty(["option1"]);
 	assertException("1a", function(){
 		var oMultiSelectionField = new br.presenter.node.MultiSelectionField(["option1", "option2"], oProperty);
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 MultiSelectionFieldTest.prototype.test_theValueDefaultsToEmptyIfNotSpecified = function()
@@ -129,7 +129,7 @@ MultiSelectionFieldTest.prototype.test_nonEditablePropertiesCanNotBePassedInViaC
 	assertException("1a", function(){
 		new br.presenter.node.MultiSelectionField(["option1", "option2"],
 			new br.presenter.property.WritableProperty(["option1"]));
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 MultiSelectionFieldTest.prototype.test_passingANonExistentOptionAsAnEditablePropertyStillCausesAnError = function() {
