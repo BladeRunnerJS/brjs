@@ -105,7 +105,7 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public BRJS(File brjsDir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) {
-		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(), loggerFactory, consoleWriter);
+		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(loggerFactory), loggerFactory, consoleWriter);
 	}
 	
 	public BRJS(File brjsDir, FileModificationService fileModificationService) {

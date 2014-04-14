@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.logging.LoggerType;
+
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	public static final String THREAD_IDENTIFIER = "file-modification-service";
 	
@@ -16,9 +20,11 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 	private boolean running = true;
 	private File rootDir;
+	private final Logger logger;
 	
-	public Java7FileModificationService() {
+	public Java7FileModificationService(LoggerFactory loggerFactory) {
 		try {
+			logger = loggerFactory.getLogger(LoggerType.UTIL, getClass());
 			watchService = FileSystems.getDefault().newWatchService();
 		}
 		catch (IOException e) {
@@ -96,5 +102,9 @@ public class Java7FileModificationService implements FileModificationService, Ru
 				watchDirectory(childFile, fileModificationInfo, lastModified);
 			}
 		}
+	}
+
+	public Logger getLogger() {
+		return logger;
 	}
 }

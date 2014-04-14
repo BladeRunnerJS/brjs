@@ -15,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class Java7DirectoryModificationInfo implements WatchingFileModificationInfo {
@@ -26,6 +27,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 	private final String relativeDirPath;
 	private Set<WatchingFileModificationInfo> children = new LinkedHashSet<>();
+	private Logger logger;
 	
 	public Java7DirectoryModificationInfo(Java7FileModificationService fileModificationService, WatchService watchService, File dir, WatchingFileModificationInfo parentModificationInfo) {
 		try {
@@ -33,6 +35,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 			this.dir = dir;
 			this.parentModificationInfo = parentModificationInfo;
 			relativeDirPath = RelativePathUtility.get(fileModificationService.getRootDir(), dir);
+			logger = fileModificationService.getLogger();
 			
 			if(parentModificationInfo != null) {
 				parentModificationInfo.addChild(this);
@@ -94,8 +97,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 			Path path = (Path) watchEvent.context();
 			File contextFile = new File(dir, path.toString());
 			
-			// TODO: convert to debug log
-			System.out.println(relativeDirPath + "/" + path.toString() + " (" + watchEvent.kind().name() + ")");
+			logger.debug("%s/%s (%s)", relativeDirPath, path, watchEvent.kind().name());
 			
 			if(!contextFile.isHidden()) {
 				filesUpdated = true;
