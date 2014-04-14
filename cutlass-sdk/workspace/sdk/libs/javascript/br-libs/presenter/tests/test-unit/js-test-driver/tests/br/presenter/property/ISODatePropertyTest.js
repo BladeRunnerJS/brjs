@@ -42,7 +42,7 @@ ISODatePropertyTest.prototype.test_constructingISODatePropertiesWithInvalidDates
 	{
 		assertException("1a", function(){
 			var oISODateProperty = new br.presenter.property.ISODateProperty(oThis.pInvalidDateStrings[i]);
-		}, br.Errors.LEGACY);
+		}, br.Errors.INVALID_PARAMETERS);
 	}
 };
 
@@ -82,7 +82,7 @@ ISODatePropertyTest.prototype.test_cannotSetISODatePropertiesWithInvalidDatesThr
 	{
 		assertException("1a", function(){
 			oISODateProperty.setValue(oThis.pInvalidDateStrings[i]);
-		}, br.Errors.LEGACY);
+		}, br.Errors.INVALID_PARAMETERS);
 	}
 };
 

@@ -74,5 +74,5 @@ DateFieldTest.prototype.test_constructingDateFieldWithStartAndEndDateTheWrongWay
 {
 	assertException("1a", function(){
 		var oDateField = new br.presenter.node.DateField(null,"2001-01-01","2000-01-01");
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };

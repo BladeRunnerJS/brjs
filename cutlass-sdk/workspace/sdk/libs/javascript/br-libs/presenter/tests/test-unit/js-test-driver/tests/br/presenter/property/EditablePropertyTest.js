@@ -382,7 +382,7 @@ EditablePropertyTest.prototype.test_exceptionIsThrownIfParserDoesNotImplementPar
 	
 	assertException("1a", function(){
 		oEditableProperty.addParser({});
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 EditablePropertyTest.prototype.test_exceptionIsThrownIfValidatorDoesNotImplementValidatorInterface = function()
@@ -391,7 +391,7 @@ EditablePropertyTest.prototype.test_exceptionIsThrownIfValidatorDoesNotImplement
 	
 	assertException("1a", function(){
 		oEditableProperty.addValidator({});
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 EditablePropertyTest.prototype.test_setUserEnteredValueProvidesADefaultParserAttributeMapIfNotProvided = function()
@@ -458,7 +458,7 @@ EditablePropertyTest.prototype.test_specifyingANonExistentValidationErrorListene
 	
 	assertException("1a", function(){
 		oProperty.addValidationErrorListener(oListenerMock.proxy(), "noSuchMethod");
-	}, br.Errors.LEGACY);
+	}, 'TypeError');
 };
 
 EditablePropertyTest.prototype.test_weCanRequestForTheListenerToInvokeCallbackImmediatelyForValidationErrorListener = function()
@@ -493,7 +493,7 @@ EditablePropertyTest.prototype.test_specifyingANonExistentValidationSuccessListe
 
 	assertException("1a", function(){
 		oProperty.addValidationSuccessListener(oListenerMock.proxy(), "noSuchMethod");
-	}, br.Errors.LEGACY);
+	}, 'TypeError');
 };
 
 EditablePropertyTest.prototype.test_weCanRequestForTheListenerToInvokeCallbackImmediatelyForValidationSuccessListener = function()

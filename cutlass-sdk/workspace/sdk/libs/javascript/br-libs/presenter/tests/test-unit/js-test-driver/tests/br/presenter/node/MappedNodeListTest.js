@@ -33,7 +33,7 @@ MappedNodeListTest.prototype.test_cannotConstructAMappedNodeListWithAnArray = fu
 	var pBadNodes = [this._createAChildNode("n1"), this._createAChildNode("n2")];
 	assertException("Only arrays of key-node pairs allowed", function() {
 		var oMapList = new br.presenter.node.MappedNodeList(pBadNodes);
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 MappedNodeListTest.prototype.test_constructingAMappedNodeListWithAnArrayOfNonPairsThrowsAnException = function()
@@ -41,12 +41,12 @@ MappedNodeListTest.prototype.test_constructingAMappedNodeListWithAnArrayOfNonPai
 	var pBadNodes = [[this._createAChildNode("n1")], [this._createAChildNode("n2")]];
 	assertException("Only arrays of key-node pairs allowed", function() {
 		var oMapList = new br.presenter.node.MappedNodeList(pBadNodes);
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 
 	pBadNodes = [["n1", this._createAChildNode("n1"), "blah"], ["n2", this._createAChildNode("n2"), "blah"]];
 	assertException("Only arrays of key-node pairs allowed", function() {
 		var oMapList = new br.presenter.node.MappedNodeList(pBadNodes);
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 MappedNodeListTest.prototype.test_canUpdateValuesInAMappedNodeList = function()

@@ -29,7 +29,7 @@ br.presenter.util.ObjectGraphCrawler.prototype.getValueFromObject = function(oRo
 		}
 		else
 		{
-			throw new br.Errors.CustomError(br.Errors.LEGACY, 'The method "' + sGetterName + '" or object "' +  vPathElement + '" could not be found when searching for property "' + sInitialParts + '"');
+			throw new br.Errors.InvalidParametersError('The method "' + sGetterName + '" or object "' +  vPathElement + '" could not be found when searching for property "' + sInitialParts + '"');
 		}
 	}
 	
@@ -45,7 +45,7 @@ br.presenter.util.ObjectGraphCrawler.prototype.getValueFromObject = function(oRo
 		}
 		else
 		{
-			throw new br.Errors.CustomError(br.Errors.LEGACY, 'The method "' +  sGetterName + '" returned ' + vNode + ' when searching for property "' + sInitialParts + '"');
+			throw new br.Errors.InvalidParametersError('The method "' +  sGetterName + '" returned ' + vNode + ' when searching for property "' + sInitialParts + '"');
 		}
 	}
 };
@@ -73,7 +73,7 @@ br.presenter.util.ObjectGraphCrawler.prototype.setValueForObject = function(oRoo
 		}
 		else
 		{
-			throw new br.Errors.CustomError(br.Errors.LEGACY, 'The method "' + sSetterName  + '" does not exist');
+			throw new br.Errors.InvalidParametersError('The method "' + sSetterName  + '" does not exist');
 		}	
 	}
 };

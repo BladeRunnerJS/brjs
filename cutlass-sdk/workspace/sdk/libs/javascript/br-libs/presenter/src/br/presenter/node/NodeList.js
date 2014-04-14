@@ -101,7 +101,7 @@ br.presenter.node.NodeList.prototype.addListener = function(oListener, bNotifyIm
 {
 	if(!br.Core.fulfills(oListener, br.presenter.node.NodeListListener))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "oListener was not an instance of NodeListListener");
+		throw new br.Errors.InvalidParametersError("oListener was not an instance of NodeListListener");
 	}
 
 	this.m_oObservable.addObserver(oListener);

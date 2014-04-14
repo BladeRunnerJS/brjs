@@ -42,11 +42,11 @@ br.presenter.testing.PresenterComponentFixture = function(sTemplateId, sPresenta
 {
 	if(!sTemplateId)
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "PresenterComponentFixture must be provided with a view template id");
+		throw new br.Errors.InvalidParametersError("PresenterComponentFixture must be provided with a view template id");
 	}
 	if(!sPresentationModel)
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "PresenterComponentFixture must be provided with a presentation model");
+		throw new br.Errors.InvalidParametersError("PresenterComponentFixture must be provided with a presentation model");
 	}
 	
 	var sPresenterComponentXML = 

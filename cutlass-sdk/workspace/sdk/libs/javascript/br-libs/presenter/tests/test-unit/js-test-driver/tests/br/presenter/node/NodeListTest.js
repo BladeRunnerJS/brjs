@@ -81,7 +81,7 @@ NodeListTest.prototype.test_anExceptionIsThrownWhenAddingAListenerWhichIsNotAnIn
 	var oNodeList = new br.presenter.node.NodeList();
 	assertException("Exception on bad listener object", function(){
 		oNodeList.addListener({});
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 NodeListTest.prototype.test_canSuccessfullyAddAndRemoveListeners = function()
@@ -188,7 +188,7 @@ NodeListTest.prototype.test_specifyingANonExistentChangeListenerMethodCausesAnEx
 
 	assertException("Exception when method non-existent on listener", function(){
 		oNodeList.addChangeListener(oListenerMock.proxy(), "noSuchMethod");
-	}, br.Errors.LEGACY);
+	}, 'TypeError');
 };
 
 

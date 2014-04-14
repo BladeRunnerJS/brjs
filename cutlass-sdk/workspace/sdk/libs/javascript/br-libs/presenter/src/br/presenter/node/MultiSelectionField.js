@@ -27,7 +27,7 @@ br.presenter.node.MultiSelectionField = function(vOptions, vValues)
 {
 	if((vValues instanceof br.presenter.property.Property) && !(vValues instanceof br.presenter.property.EditableProperty))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "MultiSelectionField constructor: can't pass non-editable property as parameter");
+		throw new br.Errors.InvalidParametersError("MultiSelectionField constructor: can't pass non-editable property as parameter");
 	}
 	vValues = vValues || [];
 	

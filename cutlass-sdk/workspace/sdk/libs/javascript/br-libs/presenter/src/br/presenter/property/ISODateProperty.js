@@ -64,7 +64,7 @@ br.presenter.property.ISODateProperty.prototype._validateDate = function(vDate)
 	this.m_oDateValidator.validate(vDate, {}, oValidationResult);
 	if(!oValidationResult.isValid())
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, oValidationResult.getFailureMessage());
+		throw new br.Errors.InvalidParametersError(oValidationResult.getFailureMessage());
 	}
 	else
 	{

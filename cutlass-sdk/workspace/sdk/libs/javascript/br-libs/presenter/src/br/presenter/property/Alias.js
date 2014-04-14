@@ -15,7 +15,7 @@ br.presenter.property.Alias = function(oProperty)
 {
 	if (!(oProperty instanceof br.presenter.property.Property))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "An Alias can only constructed with a presenter Property");
+		throw new br.Errors.InvalidParametersError("An Alias can only constructed with a presenter Property");
 	}
 	/** @private */
 	this.m_oWrappedProperty = oProperty;
