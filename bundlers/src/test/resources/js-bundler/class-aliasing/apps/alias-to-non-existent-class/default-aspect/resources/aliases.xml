@@ -1,4 +1,0 @@
-<aliases xmlns="http://schema.caplin.com/CaplinTrader/aliases">
-	<alias name="valid-alias" class="novox.g1.AliasClass1"/>
-	<alias name="invalid-alias" class="novox.NoSuchClass"/>
-</aliases>

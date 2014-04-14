@@ -9,12 +9,12 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.StringUtils;
-
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+
 import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.bundler.BundlerFileUtils;
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.model.path.AppPath;
@@ -70,7 +70,7 @@ public class TestCompiler
 	
 	private void verifyClassNames(File classesDir, boolean isTestDir) throws CommandOperationException
 	{
-		List<File> sourceFiles = BundlerFileUtils.recursiveListFiles(classesDir, new SuffixFileFilter(".java"));
+		List<File> sourceFiles = recursiveListFiles(classesDir, new SuffixFileFilter(".java"));
 		
 		for(File sourceFile : sourceFiles)
 		{
@@ -116,7 +116,7 @@ public class TestCompiler
 
 	public List<Class<?>> loadClasses(List<File> classDirs) throws CommandOperationException
 	{
-		List<File> classFiles = BundlerFileUtils.recursiveListFiles(classDirs, new SuffixFileFilter(".class"));
+		List<File> classFiles = recursiveListFiles(classDirs, new SuffixFileFilter(".class"));
    		List<Class<?>> loadedClasses = new ArrayList<Class<?>>();
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		
@@ -169,6 +169,43 @@ public class TestCompiler
 		File temporaryClassesDir = FileUtility.createTemporaryDirectory("cutlass-compiled-tests");
 		
 		return new File(temporaryClassesDir, CutlassConfig.TEST_INTEGRATION_CLASSES_DIRNAME);
+	}
+	
+	
+	
+	private static List<File> recursiveListFiles(List<File> roots, IOFileFilter filter)
+	{
+		List<File> files = new ArrayList<File>();
+		for (File root : roots)
+		{
+			recursiveListFiles(root, files, filter);
+		}
+		return files;
+	}
+	
+	private static List<File> recursiveListFiles(File root, IOFileFilter filter)
+	{
+		List<File> files = new ArrayList<File>();
+		recursiveListFiles(root, files, filter);
+		return files;
+	}
+	
+	private static void recursiveListFiles(File root, List<File> files, IOFileFilter filter)
+	{
+		if(!root.isHidden() && root.getName().charAt(0) != '.')
+		{
+			if (root.isDirectory())
+			{
+				for (File child : FileUtility.sortFiles(root.listFiles()))
+				{
+					recursiveListFiles(child, files, filter);
+				}
+			}
+			else if (root.isFile() && filter.accept(root, root.getName()))
+			{
+				files.add(root.getAbsoluteFile());
+			}
+		}
 	}
 	
 }

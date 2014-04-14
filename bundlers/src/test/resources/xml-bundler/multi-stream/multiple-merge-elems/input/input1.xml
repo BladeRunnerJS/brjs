@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<unitTest>
-	<mergeElem id="id1" name="elem1.1"/>
-	<mergeElem id="id1" name="elem1.2"/>
-	<mergeElem id="id2" name="elem1.3"/>
-</unitTest>

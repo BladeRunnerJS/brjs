@@ -1,5 +1,0 @@
-<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
-	<alias name="foo-bar" defaultClass="novox.LibClass" interface="novox.TheAliasInterface"/>
-	
-	<alias name="aliasWithNoDefaultClass" interface="novox.MyInterface"/>
-</aliasDefinitions>

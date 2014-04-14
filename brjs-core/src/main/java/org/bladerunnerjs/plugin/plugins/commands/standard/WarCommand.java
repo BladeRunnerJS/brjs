@@ -97,7 +97,6 @@ public class WarCommand extends ArgsParsingCommandPlugin
 				
 				FileUtility.copyDirectoryIfExists(origApp.file("WEB-INF"), warApp.file("WEB-INF"));
 				warApp.file("WEB-INF/jetty-env.xml").delete();
-				warApp.file("WEB-INF/lib/bladerunner-dev-servlets.jar").delete();
 				
 				if (warApp.file("WEB-INF/web.xml").exists()) {
 					WebXmlCompiler.compile(warApp.file("WEB-INF/web.xml"));

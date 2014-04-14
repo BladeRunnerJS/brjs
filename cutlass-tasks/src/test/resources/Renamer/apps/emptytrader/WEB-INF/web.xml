@@ -57,20 +57,6 @@
 		<res-auth>Container</res-auth>
 	</resource-ref>
 	
-	<!-- start-env: dev -->
-	<filter>
-		<filter-name>cutlass-dev-filters</filter-name>
-		<filter-class>com.caplin.cutlass.filter.BladerunnerDevFilters
-		</filter-class>
-	</filter>
-    <filter-mapping>
-		<filter-name>cutlass-dev-filters</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-	</filter-mapping>
-	<!-- end-env -->
-	
 	<filter>
 		<filter-name>cutlass-filters</filter-name>
 		<filter-class>com.caplin.cutlass.filter.BladerunnerFilters</filter-class>

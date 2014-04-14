@@ -77,8 +77,7 @@ public class BRJSServletFilter implements Filter
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		String servletPath = request.getServletPath();
 		
-		// TODO: get rid of the `servletPath.endsWith(".bundle")` guard once we drop support for the old bundlers
-		if(servletPath.equals("/brjs") || servletPath.endsWith(".bundle")) {
+		if ( servletPath.equals("/brjs") ) {
 			chain.doFilter(request, response);
 		}
 		else {
