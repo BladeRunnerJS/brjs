@@ -38,7 +38,9 @@ import com.caplin.cutlass.ServletModelAccessor;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.logging.NullLogConfigurator;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 import com.caplin.cutlass.util.FileUtility;
 import com.google.gson.Gson;
@@ -101,7 +103,11 @@ public class RestApiServlet extends HttpServlet
 	public void init(final ServletConfig config) throws ServletException
 	{
 		context = config.getServletContext();
-		brjs = ServletModelAccessor.initializeAndGetModel(context);
+		
+		File contextDir = new File( context.getRealPath("/") );
+		brjs = new BRJS(contextDir, new NullLogConfigurator(), new PessimisticFileModificationService());
+		ServletModelAccessor.initializeModel( brjs );
+		
 		if (apiService == null) { apiService = new RestApiService(brjs); };
 		logger = brjs.logger(LoggerType.SERVLET, this.getClass());
 	}
