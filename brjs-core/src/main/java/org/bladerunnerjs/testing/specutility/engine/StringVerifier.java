@@ -194,4 +194,11 @@ public class StringVerifier {
 		textEquals((String) o);
 		return true;
 	}
+	
+	@Override /* override this to prevent compiler warnings */
+	public int hashCode()
+	{
+		return string.hashCode();
+	}
+	
 }

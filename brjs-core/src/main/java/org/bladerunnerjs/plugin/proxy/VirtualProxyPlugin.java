@@ -60,6 +60,12 @@ public class VirtualProxyPlugin implements Plugin {
 		return plugin == otherPlugin;
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		return plugin.hashCode();
+	}
+	
 	public Plugin getUnderlyingPlugin() {
 		initializePlugin();
 		

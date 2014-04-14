@@ -2,6 +2,8 @@ package org.bladerunnerjs.testing.utility;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.Joiner;
 
 
@@ -25,6 +27,12 @@ public class LogMessage
 		}
 		LogMessage m = (LogMessage) o;
 		return ( message.equals(m.message) && Arrays.equals(params, m.params) );
+	}
+	
+	@Override /* overridden to keep the compiler happy */
+	public int hashCode()
+	{
+		return toString().hashCode();
 	}
 	
 	@Override
