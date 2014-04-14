@@ -109,7 +109,7 @@ subprojects { p ->
 			}
 			
 			project.tasks.withType(JavaCompile) {
-				options.compilerArgs += ['-Xlint:all']
+				options.compilerArgs += ['-Xlint:all,-path']
 				options.encoding = 'UTF-8'
 			}
 		}
