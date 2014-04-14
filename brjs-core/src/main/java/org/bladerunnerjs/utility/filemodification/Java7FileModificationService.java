@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
+	public static final String THREAD_IDENTIFIER = "file-modification-service";
+	
 	private final WatchService watchService;
 	private final Map<String, ProxyFileModificationInfo> fileModificationInfos = new ConcurrentHashMap<>();
 	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
@@ -59,6 +61,8 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	@Override
 	public void run() {
 		try {
+			Thread.currentThread().setName(THREAD_IDENTIFIER);
+			
 			while(running) {
 				for(ProxyFileModificationInfo fileModificationInfo : fileModificationInfos.values()) {
 					fileModificationInfo.pollWatchEvents();
