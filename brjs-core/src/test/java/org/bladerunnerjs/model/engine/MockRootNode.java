@@ -36,7 +36,13 @@ public class MockRootNode implements RootNode
 	{
 		return null;
 	}
-
+	
+	@Override
+	public File[] scopeFiles()
+	{
+		return null;
+	}
+	
 	@Override
 	public boolean dirExists()
 	{

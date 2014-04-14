@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.*
 
 apply plugin: 'maven'
 
+
 configurations {
 	system
 	application
@@ -337,7 +338,9 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 }
 check.dependsOn checkSdkStructure
 
-clean {
+
+task cleanWorkspaceFiles {
+	outputs.upToDateWhen { false }
 	doFirst {
 		ant.delete(includeemptydirs: 'true') {
 			fileset(dir: 'workspace') {
@@ -345,10 +348,22 @@ clean {
 				exclude(name: 'sdk/system-applications/**/*')
 				exclude(name: 'sdk/libs/javascript/**/*')
 			}
-    	fileTree(dir:projectDir, include:"**/bundles/*.bundle").each { delete it }
-    	fileTree(dir:"workspace/sdk/system-applications", include:"**/WEB-INF/lib/brjs-*.jar").each { delete it }
 		}
+		ant.delete(includeemptydirs: 'true') {
+			fileset(dir: 'workspace') {
+				include(name: '**/test-*/**/bundles/')
+			}
+		}
+    	ant.delete(includeemptydirs: 'true') {
+    		fileset(dir: 'workspace/sdk/system-applications') {
+    			include(name: '**/WEB-INF/lib/brjs-*.jar')
+    		}
+    	}
 	}
+}
+
+clean {
+	dependsOn cleanWorkspaceFiles
 }
 
 

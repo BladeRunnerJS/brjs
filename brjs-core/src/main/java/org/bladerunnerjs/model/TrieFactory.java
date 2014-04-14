@@ -26,7 +26,7 @@ public class TrieFactory {
 	
 	private TrieFactory(AssetContainer assetContainer) {
 		this.assetContainer = assetContainer;
-		trie = new MemoizedValue<>("TrieFactory.trie", assetContainer.root(), assetContainer.root().dir()); // TODO: the scope should correlate to the scopeAssetContainers() method
+		trie = new MemoizedValue<>("TrieFactory.trie", assetContainer);
 	}
 	
 	public Trie<Object> createTrie() throws ModelOperationException {

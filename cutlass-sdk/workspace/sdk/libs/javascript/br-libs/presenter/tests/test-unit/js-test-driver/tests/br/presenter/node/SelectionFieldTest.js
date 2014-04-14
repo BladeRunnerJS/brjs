@@ -57,7 +57,7 @@ SelectionFieldTest.prototype.test_defaultValuesCannotBePassedIntoConstructorAsNo
 	var oProperty = new br.presenter.property.WritableProperty("option1");
 	assertException("1a", function(){
 		var oSelectionField = new br.presenter.node.SelectionField(["option1", "option2"], oProperty);
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 SelectionFieldTest.prototype.test_theValueDefaultsToTheFirstOptionIfNotSpecified = function()
@@ -97,7 +97,7 @@ SelectionFieldTest.prototype.test_nonEditablePropertiesCanNotBePassedInViaConstr
 	assertException("1a", function(){
 		new br.presenter.node.SelectionField(["option1", "option2"],
 			new br.presenter.property.WritableProperty("option1"));
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 SelectionFieldTest.prototype.test_passingANonExistentOptionAsAnEditablePropertyStillCausesAnError = function() {

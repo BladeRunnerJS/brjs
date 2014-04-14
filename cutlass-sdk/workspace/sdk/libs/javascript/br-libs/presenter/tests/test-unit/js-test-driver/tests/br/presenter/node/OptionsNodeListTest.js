@@ -48,7 +48,7 @@ OptionsNodeListTest.prototype.test_failIfOptionsNodeListIsInstantiatedWithAPrope
 	var oProperty = new br.presenter.property.WritableProperty(["a"]);
 	assertException("Properties not allowed inside OptionsNodeList", function(){
 		var oOptions = new br.presenter.node.OptionsNodeList(oProperty);
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 OptionsNodeListTest.prototype.test_getFirstOption = function()

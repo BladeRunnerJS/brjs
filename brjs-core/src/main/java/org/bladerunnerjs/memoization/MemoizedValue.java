@@ -7,6 +7,7 @@ import java.util.List;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.FileAccessLimitScope;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
@@ -18,6 +19,10 @@ public class MemoizedValue<T extends Object> {
 	private final BRJS brjs;
 	private T value;
 	private final Logger logger;
+	
+	public MemoizedValue(String valueIdentifier, BRJSNode node) {
+		this(valueIdentifier, node.root(), node.scopeFiles());
+	}
 	
 	public MemoizedValue(String valueIdentifier, BRJS brjs, File... watchItems) {
 		this.brjs = brjs;

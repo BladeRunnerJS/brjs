@@ -34,7 +34,7 @@ br.presenter.property.Property = function(vValue)
 
 	if (vValue instanceof Array) {
 		if (this._containsPresentationNode(vValue)) {
-			throw new br.Errors.CustomError(br.Errors.LEGACY, "Array passed into property instance contains a PresentationNode, use NodeList instead.");
+			throw new br.Errors.InvalidParametersError("Array passed into property instance contains a PresentationNode, use NodeList instead.");
 		}
 	}
 
@@ -145,7 +145,7 @@ br.presenter.property.Property.prototype.addFormatter = function(oFormatter, mCo
 {
 	if(!br.Core.fulfills(oFormatter, br.presenter.formatter.Formatter))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "oFormatter was not an instance of Formatter");
+		throw new br.Errors.InvalidParametersError("oFormatter was not an instance of Formatter");
 	}
 
 	var oFormatterPair = {formatter:oFormatter, config:mConfig};
@@ -165,7 +165,7 @@ br.presenter.property.Property.prototype.addListener = function(oListener, bNoti
 {
 	if(!br.Core.fulfills(oListener, br.presenter.property.PropertyListener))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "oListener was not an instance of PropertyListener");
+		throw new br.Errors.InvalidParametersError("oListener was not an instance of PropertyListener");
 	}
 
 	this.m_oObservable.addObserver(oListener);

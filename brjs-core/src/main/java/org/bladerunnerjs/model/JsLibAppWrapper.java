@@ -18,6 +18,7 @@ import org.bladerunnerjs.utility.ObserverList;
 public final class JsLibAppWrapper implements JsLib {
 	private App jsLibApp;
 	private JsLib wrappedJsLib;
+	private File[] scopeFiles;
 	
 	public JsLibAppWrapper(App jsLibApp, JsLib jsLib) {
 		this.jsLibApp = jsLibApp;
@@ -124,6 +125,15 @@ public final class JsLibAppWrapper implements JsLib {
 	}
 	
 	@Override
+	public File[] scopeFiles() {
+		if(scopeFiles == null) {
+			scopeFiles = new File[] {app().libsDir(), app().thirdpartyLibsDir(), root().libsDir(), root().conf().file("bladerunner.conf")};
+		}
+		
+		return scopeFiles;
+	}
+	
+	@Override
 	public void populate(String libNamespace) throws InvalidNameException, ModelUpdateException {
 		wrappedJsLib.populate(libNamespace);
 	}
@@ -136,6 +146,12 @@ public final class JsLibAppWrapper implements JsLib {
 	@Override
 	public List<AssetLocation> assetLocations() {
 		return wrappedJsLib.assetLocations();
+	}
+	
+	@Override
+	public List<String> getAssetLocationPaths()
+	{
+		return wrappedJsLib.getAssetLocationPaths();
 	}
 	
 	@Override
@@ -196,11 +212,6 @@ public final class JsLibAppWrapper implements JsLib {
 	@Override
 	public void discoverAllChildren() {
 		wrappedJsLib.discoverAllChildren();
-	}
-	
-	@Override
-	public long lastModified() {
-		return wrappedJsLib.lastModified();
 	}
 
 	@Override

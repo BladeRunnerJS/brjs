@@ -214,6 +214,8 @@ task generateReleaseNotes, {
 		appendToReleaseNotes << ""
 		appendToReleaseNotes << "<br/>"
 		appendToReleaseNotes << "-------------"
+		appendToReleaseNotes << "**Travis Build Status for @tagVersion@:**&nbsp;&nbsp;&nbsp;[![Build Status](https://travis-ci.org/BladeRunnerJS/brjs.svg?branch=@tagVersion@)](https://travis-ci.org/BladeRunnerJS/brjs)"
+		appendToReleaseNotes << ""		
 		appendToReleaseNotes << "### Closed Issues"
 		appendToReleaseNotes << "The following issues labelled ${issueIncludeLabelsString} have been closed:"
 		appendToReleaseNotes << ""
@@ -252,8 +254,7 @@ task generateReleaseNotes, {
 }
 
 
-//task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', build], {
-	task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip'], {
+task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', build], {
 	doLast {
 		def cutlassSdkProject = project(':cutlass-sdk')
 		def brjsZipPattern = "**/BladeRunnerJS-${projectBuildVersion}.zip"

@@ -43,11 +43,13 @@ public abstract class AbstractNode implements Node
 	protected RootNode rootNode;
 	private Node parent;
 	protected File dir;
+	private File[] scopeFiles;
 	
 	public AbstractNode(RootNode rootNode, Node parent, File dir) {
 		this.rootNode = rootNode;
 		this.parent = parent;
 		this.dir = (dir == null) ? null : new File(getNormalizedPath(dir));
+		scopeFiles = new File[] {dir};
 	}
 	
 	public AbstractNode() {
@@ -70,6 +72,12 @@ public abstract class AbstractNode implements Node
 	public File dir()
 	{
 		return dir;
+	}
+	
+	@Override
+	public File[] scopeFiles()
+	{
+		return scopeFiles;
 	}
 	
 	@Override

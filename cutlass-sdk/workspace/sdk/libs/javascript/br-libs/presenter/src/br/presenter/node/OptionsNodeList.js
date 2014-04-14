@@ -143,7 +143,7 @@ br.presenter.node.OptionsNodeList.prototype._getOptionObjects = function(vOption
 	vOptions = vOptions || [];
 	if(vOptions instanceof br.presenter.property.Property)
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "OptionsNodeList only accepts maps or arrays");
+		throw new br.Errors.InvalidParametersError("OptionsNodeList only accepts maps or arrays");
 	}
 
 	var pResult = [];

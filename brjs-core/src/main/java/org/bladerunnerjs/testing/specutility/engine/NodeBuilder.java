@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.utility.FileUtil;
 
@@ -82,6 +83,20 @@ public abstract class NodeBuilder<N extends Node> {
 	public BuilderChainer hasDir(String filePath)
 	{
 		node.file(filePath).mkdirs();
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasPersistentNodeProperty(String pluginName, String propertyName, String propertyValue) throws PropertiesException
+	{
+		node.nodeProperties(pluginName).setPersisentProperty(propertyName, propertyValue);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasTransientNodeProperty(String pluginName, String propertyName, String propertyValue)
+	{
+		node.nodeProperties(pluginName).setTransientProperty(propertyName, propertyValue);
 		
 		return builderChainer;
 	}

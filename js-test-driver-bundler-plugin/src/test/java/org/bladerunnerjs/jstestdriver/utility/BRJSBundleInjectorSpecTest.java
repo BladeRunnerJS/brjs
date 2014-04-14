@@ -68,7 +68,17 @@ public class BRJSBundleInjectorSpecTest extends SpecTest
 			String bundleFileContents = FileUtils.readFileToString(bundleFile);
 			if (!bundleFileContents.contains(expectedContents))
 			{
-				assertEquals( "bundle file didnt contain expected text", bundleFileContents, expectedContents );				
+				assertEquals( "bundle file didnt contain expected text", expectedContents, bundleFileContents );				
+			}
+		}
+
+		public void testBundleDoesNotContainText(String bundleFilePath, String doesNotContainContents) throws IOException
+		{
+			File bundleFile = testPack.file(bundleFilePath);
+			String bundleFileContents = FileUtils.readFileToString(bundleFile);
+			if (bundleFileContents.contains(doesNotContainContents))
+			{
+				assertEquals( "bundle file didnt contain expected text", doesNotContainContents, bundleFileContents );				
 			}
 		}
 		

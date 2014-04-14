@@ -29,5 +29,5 @@ br.presenter.node.TemplateAware = function()
  * @type String
  */
 br.presenter.node.TemplateAware.prototype.getTemplateName = function() {
-	throw new br.Errors.CustomError(br.Errors.LEGACY, "This method should be overridden.");
+	throw new br.Errors.UnimplementedInterfaceError("This method should be overridden.");
 };

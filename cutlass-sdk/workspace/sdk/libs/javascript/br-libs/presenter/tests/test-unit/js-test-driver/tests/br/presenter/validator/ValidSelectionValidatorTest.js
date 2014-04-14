@@ -15,13 +15,13 @@ ValidSelectionValidatorTest.prototype.test_cannotConstructValidSelectionValidato
 {
 	assertException("1a", function(){
 		new br.presenter.validator.ValidSelectionValidator();
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 	assertException("1b", function(){
 		new br.presenter.validator.ValidSelectionValidator("a");
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 	assertException("1c", function(){
 		new br.presenter.validator.ValidSelectionValidator(["a", "b"]);
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 ValidSelectionValidatorTest.prototype.test_knownOptionValuesValidateSuccessfully = function()

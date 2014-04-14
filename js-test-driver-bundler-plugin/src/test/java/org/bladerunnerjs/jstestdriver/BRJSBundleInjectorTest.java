@@ -160,4 +160,53 @@ public class BRJSBundleInjectorTest extends BRJSBundleInjectorSpecTest
     				"\"appns.prop\":\"some prop\"" );
 	}
 	
+	@Test
+	public void legacyI18nBundleUrlsContainingTheLanguageInformationCanBeUsedAsABundlePath() throws Exception
+	{
+		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
+			.and(aspect).containsFileWithContents("resources/en.properties", "appns.prop = some prop")
+    		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
+    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_i18n.bundle" );
+    	thenJstdTests(aspectTestPack).testBundleContainsText(
+    				"bundles/i18n/en_i18n.bundle",
+    				"\"appns.prop\":\"some prop\"" );
+	}
+	
+	@Test
+	public void legacyI18nBundleUrlsContainingTheFullLocaleInformationCanBeUsedAsABundlePath() throws Exception
+	{
+		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
+		.and(aspect).containsFileWithContents("resources/en.properties", "appns.prop = some prop")
+		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_GB_i18n.bundle" );
+		thenJstdTests(aspectTestPack).testBundleContainsText(
+				"bundles/i18n/en_GB_i18n.bundle",
+				"\"appns.prop\":\"some prop\"" );
+	}
+	
+	@Test
+	public void logicalRequestPathsDontPreventUseOfFullModelPaths() throws Exception
+	{
+		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code\nvar a = function(){}")
+			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/en_GB/closure-whitespace/bundle.js" );
+		thenJstdTests(aspectTestPack).testBundleContainsText(
+					"bundles/js/dev/en_GB/closure-whitespace/bundle.js",
+					"var a=function(){}" );
+		thenJstdTests(aspectTestPack).testBundleDoesNotContainText(
+				"bundles/js/dev/en_GB/closure-whitespace/bundle.js",
+				"// some SDK src code" );
+	}
+	
+	@Test
+	public void logicalJsRequestPathsCanBeUsedAsABundlePath() throws Exception
+	{
+		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
+			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/bundle.js" );
+		thenJstdTests(aspectTestPack).testBundleContainsText(
+					"bundles/bundle.js",
+					"// some SDK src code" );
+	}
+	
 }

@@ -43,7 +43,7 @@ PresenterComponentFactoryTest.prototype.test_anExceptionIsThrownIfThePresentatio
 
 		var oError = oPCF.createFromXml(presenterXML);
 
-	}, br.Errors.LEGACY_ERROR);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 PresenterComponentFactoryTest.prototype.test_aPresenterComponentIsReturnedWhenValidXmlIsProvided = function()

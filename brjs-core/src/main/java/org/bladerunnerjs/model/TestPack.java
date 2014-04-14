@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Set;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -18,7 +20,6 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.NameValidator;
-import org.bladerunnerjs.utility.filemodification.NodeFileModifiedChecker;
 
 
 public class TestPack extends AbstractBundlableNode implements NamedNode
@@ -27,15 +28,14 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	private final NodeItem<DirNode> testSource = new NodeItem<>(DirNode.class, "src-test");
 	private AliasesFile aliasesFile;
 	private String name;
-	
-	private NodeFileModifiedChecker sourceModulesFileModifiedChecker = new NodeFileModifiedChecker(this);
-	private Set<SourceModule> sourceModules = null;
+	private final MemoizedValue<Set<SourceModule>> sourceModulesList;
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
 		
+		sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir());
 		// TODO: we should never call registerInitializedNode() from a non-final class
 		registerInitializedNode();
 	}
@@ -43,6 +43,14 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	public static NodeMap<TestPack> createNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, TestPack.class, "", null);
+	}
+	
+	@Override
+	public File[] scopeFiles() {
+		List<File> scopeFiles = new ArrayList<>(Arrays.asList(testScope().scopeFiles()));
+		scopeFiles.add(dir());
+		
+		return scopeFiles.toArray(new File[scopeFiles.size()]);
 	}
 	
 	@Override
@@ -69,7 +77,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public String namespace() {
-		return ((AssetContainer) parentNode().parentNode()).namespace(); //TOOD: refactor this
+		return testScope().namespace();
 	}
 	
 	@Override
@@ -80,7 +88,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public List<AssetContainer> assetContainers()
 	{
-		List<AssetContainer> assetContainers = new ArrayList<>(((AssetContainer) parentNode().parentNode()).scopeAssetContainers());
+		List<AssetContainer> assetContainers = new ArrayList<>(testScope().scopeAssetContainers());
 		assetContainers.add(this);
 		
 		return assetContainers;
@@ -88,8 +96,8 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public Set<SourceModule> sourceModules() {
-		if(sourceModulesFileModifiedChecker.hasChangedSinceLastCheck() || (sourceModules == null)) {
-			sourceModules = new LinkedHashSet<SourceModule>();
+		return sourceModulesList.value(() -> {
+			Set<SourceModule> sourceModules = new LinkedHashSet<SourceModule>();
 			
 			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 				for (AssetLocation assetLocation : assetLocations())
@@ -100,9 +108,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 					}
 				}
 			}
-		}
-		
-		return sourceModules;
+			
+			return sourceModules;
+		});
 	}
 	
 	@Override
@@ -131,7 +139,11 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public String getTemplateName()
 	{
-		return parentNode().parentNode().getClass().getSimpleName().toLowerCase() + "-" + name;
+		return testScope().getClass().getSimpleName().toLowerCase() + "-" + name;
+	}
+	
+	public AssetContainer testScope() {
+		return (AssetContainer) parentNode().parentNode();
 	}
 	
 	public AliasesFile aliasesFile()

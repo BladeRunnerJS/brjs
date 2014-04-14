@@ -19,25 +19,27 @@ import com.google.jstestdriver.hooks.ResourcePreProcessor;
 
 public class BundlerHandler implements ResourcePreProcessor
 {	
-	protected Map<String,String> bundlerHandlerPaths = new HashMap<>();
+	protected Map<String,String> legacyBundlerHandlerPaths = new HashMap<>();
+	protected Map<String,String> logicalBundlerHandlerPaths = new HashMap<>();
 
-	private static final String BUNDLE_PREFIX = "bundles/";
+	private static final String BUNDLE_PREFIX = "bundles" + File.separator;
 	
 	public BundlerHandler() throws Exception
 	{
-		// legacy paths
-		bundlerHandlerPaths.put("js.bundle", "js/dev/en_GB/combined/bundle.js");
-		bundlerHandlerPaths.put("css.bundle", "css/common/bundle.css");
-		bundlerHandlerPaths.put("i18n.bundle", "i18n/en_GB.js");
-		bundlerHandlerPaths.put("xml.bundle", "bundle.xml");
-		bundlerHandlerPaths.put("html.bundle", "bundle.html");
+		// legacy paths - these are matched against the last part of the bundle path - e.g. js/js.bundle would match js.bundle
+		legacyBundlerHandlerPaths.put("js.bundle", "js/dev/en_GB/combined/bundle.js");
+		legacyBundlerHandlerPaths.put("css.bundle", "css/common/bundle.css");
+		legacyBundlerHandlerPaths.put("i18n.bundle", "i18n/en_GB.js");
+		legacyBundlerHandlerPaths.put("(.*)_i18n.bundle", "i18n/$1.js"); // .* is a bad regex for a locale but since this is simply for legacy support we can get away with it
+		legacyBundlerHandlerPaths.put("xml.bundle", "bundle.xml");
+		legacyBundlerHandlerPaths.put("html.bundle", "bundle.html");
 		
 		// logical/utility paths
-		bundlerHandlerPaths.put("bundle.js", "js/dev/en_GB/combined/bundle.js");
-		bundlerHandlerPaths.put("bundle.css", "css/common/bundle.css");
-		bundlerHandlerPaths.put("bundle.i18n", "i18n/en_GB.js");
-		bundlerHandlerPaths.put("bundle.xml", "bundle.xml");
-		bundlerHandlerPaths.put("bundle.html", "bundle.html");
+		logicalBundlerHandlerPaths.put("bundle.js", "js/dev/en_GB/combined/bundle.js");
+		logicalBundlerHandlerPaths.put("bundle.css", "css/common/bundle.css");
+		logicalBundlerHandlerPaths.put("bundle.i18n", "i18n/en_GB.js");
+		logicalBundlerHandlerPaths.put("bundle.xml", "bundle.xml");
+		logicalBundlerHandlerPaths.put("bundle.html", "bundle.html");
 	}
 
 	@Override
@@ -46,7 +48,7 @@ public class BundlerHandler implements ResourcePreProcessor
 		for (FileInfo currentFileInfo : files)
 		{
 			File currentFile = new File(currentFileInfo.getFilePath());
-			if (currentFile.getPath().contains(BUNDLE_PREFIX))
+			if (currentFile.getAbsolutePath().contains(BUNDLE_PREFIX))
 			{
 				String modelRequestPath = getModelRequestPath(currentFile);
 				createParentDirectory(currentFile);
@@ -60,10 +62,10 @@ public class BundlerHandler implements ResourcePreProcessor
 
 	private String getModelRequestPath(File bundleFile)
 	{
-		String bundlerPath = StringUtils.substringAfter(bundleFile.getPath(), BUNDLE_PREFIX);
+		String bundlerPath = StringUtils.substringAfter(bundleFile.getAbsolutePath(), BUNDLE_PREFIX)
+				.replace(File.separator, "/");
 		
-		String bundleKey = (bundlerPath.contains("/")) ? StringUtils.substringAfterLast(bundlerPath, "/") : bundlerPath;
-		String brjsRequestPath = bundlerHandlerPaths.get(bundleKey);
+		String brjsRequestPath = lookupRequestPathFromKnownBundlePaths(bundlerPath);
 		
 		if (brjsRequestPath == null)
 		{
@@ -73,6 +75,27 @@ public class BundlerHandler implements ResourcePreProcessor
 		return brjsRequestPath;
 	}
 	
+	private String lookupRequestPathFromKnownBundlePaths(String bundlerFilePath)
+	{
+		String legacyBundleKey = (bundlerFilePath.contains("/")) ? StringUtils.substringAfterLast(bundlerFilePath, "/") : bundlerFilePath;
+		for (String keyRegex : legacyBundlerHandlerPaths.keySet())
+		{
+			if (legacyBundleKey.matches(keyRegex))
+			{
+				String bundlerConvertedPath = legacyBundlerHandlerPaths.get(keyRegex);
+				String bundlerPath = legacyBundleKey.replaceAll(keyRegex, bundlerConvertedPath);
+				return bundlerPath;
+			}
+		}
+		
+		if (logicalBundlerHandlerPaths.containsKey(bundlerFilePath))
+		{
+			return logicalBundlerHandlerPaths.get(bundlerFilePath);
+		}
+		
+		return null;
+	}
+
 	private void handleBundleRequest(File bundleFile, String brjsRequestPath, OutputStream outputStream)
 	{
 		BRJS brjs = null;
@@ -121,11 +144,6 @@ public class BundlerHandler implements ResourcePreProcessor
 	{
 		return files;
 	}
-
-	
-	
-	
-	
 	
 	private void createParentDirectory(File bundlerFile)
 	{
@@ -164,7 +182,7 @@ public class BundlerHandler implements ResourcePreProcessor
 		}
 		catch (Exception ex)
 		{
-			throw new RuntimeException("Unable to create or write to file: " + bundlerFile.getPath() + "\n", ex);
+			throw new RuntimeException("Unable to create or write to file: " + bundlerFile.getAbsolutePath() + "\n", ex);
 		}
 		
 		return outputStream;
