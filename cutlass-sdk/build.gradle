@@ -44,8 +44,6 @@ dependencies {
 	testRunner dependency('validation-api')
 	testRunner dependency('bval-jsr303')
 	testRunner dependency('sjsxp')
-	// Note: don't try to add support for transitive dependencies here as it will just fail
-	testRunner project(path: ':js-test-driver-bundler-plugin', transitive : false)
 
 	testRunner project(path: ':brjs-logger')
 	testRunner project(path: ':brjs-logger-binding')
@@ -166,7 +164,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	from (configurations.testRunner)
 	{
 		into "sdk/libs/java/testRunner"
-		rename 'js-test-driver-bundler-plugin-.*', 'js-test-driver-bundler-plugin.jar'
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
 
@@ -299,7 +296,6 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/brjs.cmd",
 		"*/sdk/version.txt",
 		"*/sdk/libs/java/testRunner/*",
-		"*/sdk/libs/java/testRunner/js-test-driver-bundler-plugin.jar", /* make sure this isnt versioned */
 		"*/sdk/libs/java/system/*",
 		"*/sdk/libs/java/application/**",
 		"*/sdk/libs/javascript/br-libs/*/src/**",
