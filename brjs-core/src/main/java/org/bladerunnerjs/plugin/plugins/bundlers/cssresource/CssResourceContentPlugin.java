@@ -280,7 +280,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
     		File themeDir = theme.dir();
     		if (themeDir.isDirectory())
     		{
-        		for (File file : brjs.getFileIterator(themeDir).nestedFiles())
+        		for (File file : brjs.getFileInfo(themeDir).nestedFiles())
         		{
         			if (file.isFile() && !file.getName().endsWith(".css"))
         			{
@@ -295,7 +295,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		if (resourcesDir.isDirectory())
 		{
-			for (File file : brjs.getFileIterator(resourcesDir).nestedFiles())
+			for (File file : brjs.getFileInfo(resourcesDir).nestedFiles())
 			{
 				if (file.isFile() && !file.getName().endsWith(".css"))
 				{

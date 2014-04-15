@@ -112,7 +112,7 @@ public abstract class AbstractNode implements Node
 				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
 				
-				rootNode.getFileIterator(dir().getParentFile()).refresh();
+				rootNode.getFileInfo(dir().getParentFile()).resetLastModified();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);

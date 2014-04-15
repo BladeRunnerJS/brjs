@@ -60,7 +60,7 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 			themeAssetLocations = new HashMap<>();
 			
 			if(themesDir.exists()) {
-				for(File themeDir : root().getFileIterator(themesDir).dirs()) {
+				for(File themeDir : root().getFileInfo(themesDir).dirs()) {
 					String themeName = themeDir.getName();
 					ThemeAssetLocation themeAssetLocation = ((previousThemeAssetLocations != null) && previousThemeAssetLocations.containsKey(themeName)) ?
 						previousThemeAssetLocations.get(themeName) : new ThemeAssetLocation(root(), assetContainer, new File(themesDir, themeName));

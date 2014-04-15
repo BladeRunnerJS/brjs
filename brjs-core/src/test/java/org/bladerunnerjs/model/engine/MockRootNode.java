@@ -5,13 +5,14 @@ import java.io.File;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
-import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.ObserverList;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
 
@@ -206,8 +207,8 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public FileIterator getFileIterator(File dir) {
-		return new FileIterator(this, new PessimisticFileModificationInfo(), null);
+	public FileInfo getFileInfo(File dir) {
+		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo());
 	}
 
 	@Override

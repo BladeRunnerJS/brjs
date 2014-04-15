@@ -27,7 +27,7 @@ public class ThemeAssetLocation extends DeepAssetLocation {
 			List<String> themes = new ArrayList<>();
 			
 			if(dir().exists()) {
-				for(File dir : brjs.getFileIterator(dir()).dirs()) {
+				for(File dir : brjs.getFileInfo(dir()).dirs()) {
 					themes.add(dir.getName());
 				}
 			}

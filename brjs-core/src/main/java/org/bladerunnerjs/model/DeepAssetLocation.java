@@ -41,7 +41,7 @@ public class DeepAssetLocation extends AbstractShallowAssetLocation {
 	private <A extends Asset> void addAllMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
 		addMatchingAssets(dir, assetFilter, assetClass, assets);
 		
-		for(File childDir : root().getFileIterator(dir).dirs()) {
+		for(File childDir : root().getFileInfo(dir).dirs()) {
 			addAllMatchingAssets(childDir, assetFilter, assetClass, assets);
 		}
 	}

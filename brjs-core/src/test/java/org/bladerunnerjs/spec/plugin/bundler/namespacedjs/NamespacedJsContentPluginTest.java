@@ -186,8 +186,6 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void requiresAreAlsoAutomaticallyAddedWithinTheBundledResponse() throws Exception {
-		given(exceptions).arentCaught();
-		
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClasses("appns.namespaced.Class", "appns/nodejs/Class")
 			.and(aspect).indexPageRefersTo("appns.namespaced.Class")

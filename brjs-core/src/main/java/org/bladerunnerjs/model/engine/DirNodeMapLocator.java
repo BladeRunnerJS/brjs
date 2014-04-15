@@ -27,7 +27,7 @@ public class DirNodeMapLocator implements NodeMapLocator
 		{
 			String dirNameMatcher = getDirNameMatcher(dirNameFilter);
 			
-			for(File file : rootNode.getFileIterator(childDir).dirs())
+			for(File file : rootNode.getFileInfo(childDir).dirs())
 			{
 				if( file.isDirectory() && (dirNameMatcher == null || file.getName().matches(dirNameMatcher) ) )
 				{

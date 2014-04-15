@@ -40,7 +40,7 @@ public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLo
 	{
 		if (findInDir.isDirectory())
 		{
-			for (File childDir : root().getFileIterator(findInDir).dirs())
+			for (File childDir : root().getFileInfo(findInDir).dirs())
 			{
 				if (childDir != dir())
 				{
