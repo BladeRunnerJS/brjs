@@ -52,7 +52,6 @@ public class StandardFileInfo implements FileInfo {
 	@Override
 	public void resetLastModified() {
 		fileModificationInfo.resetLastModified();
-		fileIterator.refresh(); // TODO: we shouldn't need a separate refresh mechanism since the interator should be using the FMI to determine when to recalculate stuff
 	}
 	
 	@Override

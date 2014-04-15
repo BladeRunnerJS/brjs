@@ -30,11 +30,6 @@ public class StandardFileIterator implements FileIterator {
 		fileModificationChecker = new InfoFileModifiedChecker(fileModificationInfo);
 	}
 	
-	public void refresh() {
-		files = null;
-		dirs = null;
-	}
-	
 	@Override
 	public List<File> files() {
 		updateIfChangeDetected();
@@ -73,7 +68,7 @@ public class StandardFileIterator implements FileIterator {
 	}
 	
 	private void updateIfChangeDetected() {
-		if((fileModificationChecker.hasChangedSinceLastCheck()) || (files == null)) {
+		if(fileModificationChecker.hasChangedSinceLastCheck()) {
 			// TODO: see if this guard can be removed (it currently prevents an exception that can be seen when running gradle testJava, but that doesn't fail the build)
 			// once we've added support for automatically adding and removing watchers and file iterators as directories come and go
 			if(dir.exists()) {
