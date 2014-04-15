@@ -12,9 +12,9 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
-import org.bladerunnerjs.utility.filemodification.FileModificationService;
 
 public class FileIterator {
 	private final IOFileFilter dirFilter = FileFilterUtils.and(DirectoryFileFilter.INSTANCE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
@@ -24,10 +24,10 @@ public class FileIterator {
 	private List<File> files;
 	private List<File> dirs;
 	
-	public FileIterator(RootNode rootNode, FileModificationService fileModificationService, File dir) {
+	public FileIterator(RootNode rootNode, FileModificationInfo fileModificationInfo, File dir) {
 		this.brjs = rootNode;
 		this.dir = dir;
-		fileModificationChecker = new InfoFileModifiedChecker(fileModificationService.getModificationInfo(dir));
+		fileModificationChecker = new InfoFileModifiedChecker(fileModificationInfo);
 	}
 	
 	public void refresh() {

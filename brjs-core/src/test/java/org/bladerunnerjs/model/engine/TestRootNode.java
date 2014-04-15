@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.testing.utility.MockLoggerFactory;
 import org.bladerunnerjs.utility.FileIterator;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
 
 
 public final class TestRootNode extends AbstractRootNode
@@ -87,6 +87,6 @@ public final class TestRootNode extends AbstractRootNode
 	
 	@Override
 	public FileIterator getFileIterator(File dir) {
-		return new FileIterator(this, new PessimisticFileModificationService(), dir);
+		return new FileIterator(this, new PessimisticFileModificationInfo(), dir);
 	}
 }

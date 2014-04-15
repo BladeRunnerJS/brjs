@@ -13,7 +13,7 @@ import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.ObserverList;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
 
 
 public class MockRootNode implements RootNode
@@ -207,7 +207,7 @@ public class MockRootNode implements RootNode
 
 	@Override
 	public FileIterator getFileIterator(File dir) {
-		return new FileIterator(this, new PessimisticFileModificationService(), null);
+		return new FileIterator(this, new PessimisticFileModificationInfo(), null);
 	}
 
 	@Override
