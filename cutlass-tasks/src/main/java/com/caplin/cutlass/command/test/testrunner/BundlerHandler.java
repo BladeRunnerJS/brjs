@@ -3,14 +3,12 @@ package com.caplin.cutlass.command.test.testrunner;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 
@@ -19,8 +17,9 @@ public class BundlerHandler
 {	
 	protected Map<String,String> legacyBundlerHandlerPaths = new HashMap<>();
 	protected Map<String,String> logicalBundlerHandlerPaths = new HashMap<>();
+	private BRJS brjs;
 	
-	public BundlerHandler()
+	public BundlerHandler(BRJS brjs)
 	{
 		// legacy paths - these are matched against the last part of the bundle path - e.g. js/js.bundle would match js.bundle
 		legacyBundlerHandlerPaths.put("js.bundle", "js/dev/en_GB/combined/bundle.js");
@@ -36,6 +35,8 @@ public class BundlerHandler
 		logicalBundlerHandlerPaths.put("bundle.i18n", "i18n/en_GB.js");
 		logicalBundlerHandlerPaths.put("bundle.xml", "bundle.xml");
 		logicalBundlerHandlerPaths.put("bundle.html", "bundle.html");
+		
+		this.brjs = brjs;
 	}
 
 	
@@ -81,11 +82,8 @@ public class BundlerHandler
 
 	private void handleBundleRequest(File bundleFile, String brjsRequestPath, OutputStream outputStream)
 	{
-		BRJS brjs = null;
 		try
 		{
-    		brjs = BRJSThreadSafeModelAccessor.aquireModel();
-    		
     		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
     		if (bundlableNode == null)
     		{
@@ -98,22 +96,6 @@ public class BundlerHandler
 		{
 			throw new RuntimeException("There was an error while bundling.", ex);
 		}
-		finally 
-		{
-			if (brjs != null)
-			{
-				BRJSThreadSafeModelAccessor.releaseModel();
-			}
-			try
-			{
-				outputStream.close();
-			}
-			catch (IOException ex)
-			{
-				throw new RuntimeException(ex);
-			}
-		}
-		
 	}	
 	
 	private static OutputStream createBundleOutputStream(File bundlerFile)

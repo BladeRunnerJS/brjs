@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.BRJS;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -21,7 +22,7 @@ public class JsTestDriverBundleCreator
 
 	public static final String BUNDLES_DIR_NAME = "bundles";
 	
-	public static void createRequiredBundles(File jsTestDriverConf) throws IOException
+	public static void createRequiredBundles(BRJS brjs, File jsTestDriverConf) throws IOException
 	{
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
 		FileUtils.deleteQuietly(bundlesDir);
@@ -32,7 +33,7 @@ public class JsTestDriverBundleCreator
 		File baseDirectory = getBaseDirectory(jsTestDriverConf, configMap);
 		
 		
-		BundlerHandler bundlerHandler = new BundlerHandler();
+		BundlerHandler bundlerHandler = new BundlerHandler(brjs);
 		
 		for (String resourceToLoad : getListOfResourcesToLoad(configMap))
 		{
