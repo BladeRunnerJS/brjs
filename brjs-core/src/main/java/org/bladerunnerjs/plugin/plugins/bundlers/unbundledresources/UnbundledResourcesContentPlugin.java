@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -127,7 +128,9 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		{
 			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFiles())
 			{
-				if (file.isFile())
+				FileInfo fileInfo = brjs.getFileInfo(file);
+				
+				if (!fileInfo.isDirectory())
 				{
         			String relativePath = RelativePathUtility.get(unbundledResourcesDir, file);
         			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);

@@ -15,6 +15,7 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
@@ -43,6 +44,7 @@ public abstract class AbstractNode implements Node
 	protected RootNode rootNode;
 	private Node parent;
 	protected File dir;
+	private FileInfo dirInfo;
 	private File[] scopeFiles;
 	
 	public AbstractNode(RootNode rootNode, Node parent, File dir) {
@@ -83,7 +85,11 @@ public abstract class AbstractNode implements Node
 	@Override
 	public boolean dirExists()
 	{
-		return (dir == null) ? false : dir.exists();
+		if((dirInfo == null) && (dir != null)) {
+			dirInfo = rootNode.getFileInfo(dir);
+		}
+		
+		return (dirInfo == null) ? false : dirInfo.exists();
 	}
 	
 	@Override
