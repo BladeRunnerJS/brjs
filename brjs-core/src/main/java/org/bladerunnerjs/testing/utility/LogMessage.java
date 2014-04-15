@@ -2,8 +2,6 @@ package org.bladerunnerjs.testing.utility;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.Joiner;
 
 
