@@ -10,8 +10,9 @@ public class InfoFileModifiedChecker implements FileModifiedChecker {
 	
 	@Override
 	public boolean hasChangedSinceLastCheck() {
-		boolean hasChangedSinceLastCheck = (fileModificationInfo.getLastModified() > lastModifiedTime);
-		lastModifiedTime = fileModificationInfo.getLastModified();
+		long newLastModified = fileModificationInfo.getLastModified();
+		boolean hasChangedSinceLastCheck = (newLastModified > lastModifiedTime);
+		lastModifiedTime = newLastModified;
 		
 		return hasChangedSinceLastCheck;
 	}

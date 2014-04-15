@@ -127,7 +127,7 @@ public final class JsLibAppWrapper implements JsLib {
 	@Override
 	public File[] scopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {app().libsDir(), app().thirdpartyLibsDir(), root().libsDir(), root().conf().file("bladerunner.conf")};
+			scopeFiles = new File[] {app().libsDir(), app().thirdpartyLibsDir(), root().libsDir(), root().file("js-patches"), root().conf().file("bladerunner.conf")};
 		}
 		
 		return scopeFiles;

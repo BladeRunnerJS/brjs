@@ -30,7 +30,6 @@ import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
-import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
@@ -72,7 +71,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
-	private final Map<String, FileIterator> fileIterators = new HashMap<>();
+	private final Map<String, FileInfo> fileInfos = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private final FileModificationService fileModificationService;
 	private final BRJSIO io = new BRJSIO();
@@ -154,21 +153,6 @@ public class BRJS extends AbstractBRJSRootNode
 				throw new ModelUpdateException(e);
 			}
 		}
-	}
-	
-	@Override
-	public FileIterator getFileIterator(File dir) {
-		if(!dir.exists()) {
-			throw new IllegalStateException("a file iterator can not be created for the non-existent directory '" + dir.getPath() + "' ");
-		}
-		
-		String dirPath = dir.getPath();
-		
-		if(!fileIterators.containsKey(dirPath)) {
-			fileIterators.put(dirPath, new FileIterator(this, fileModificationService, dir));
-		}
-		
-		return fileIterators.get(dirPath);
 	}
 	
 	@Override
@@ -379,7 +363,14 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
-	public FileModificationInfo getModificationInfo(File file) {
-		return fileModificationService.getModificationInfo(file);
+	public FileInfo getFileInfo(File file) {
+		String filePath = file.getPath();
+		
+		if(!fileInfos.containsKey(filePath)) {
+			FileModificationInfo fileModificationInfo = fileModificationService.getModificationInfo(file);
+			fileInfos.put(filePath, new StandardFileInfo(file, this,  fileModificationInfo));
+		}
+		
+		return fileInfos.get(filePath);
 	}
 }

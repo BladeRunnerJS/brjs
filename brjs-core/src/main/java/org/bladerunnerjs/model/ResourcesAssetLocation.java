@@ -19,7 +19,7 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 		super(root, assetContainer, file);
 		
 		themesDir = assetContainer.file("themes");
-		fileModifiedChecker = new InfoFileModifiedChecker(root().getModificationInfo(themesDir));
+		fileModifiedChecker = new InfoFileModifiedChecker(root().getFileInfo(themesDir));
 	}
 	
 	@Override
@@ -58,9 +58,10 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 		if(fileModifiedChecker.hasChangedSinceLastCheck() || (themeAssetLocations == null)) {
 			Map<String, ThemeAssetLocation> previousThemeAssetLocations = themeAssetLocations;
 			themeAssetLocations = new HashMap<>();
+			FileInfo themeDirInfo = root().getFileInfo(themesDir);
 			
-			if(themesDir.exists()) {
-				for(File themeDir : root().getFileIterator(themesDir).dirs()) {
+			if(themeDirInfo.exists()) {
+				for(File themeDir : themeDirInfo.dirs()) {
 					String themeName = themeDir.getName();
 					ThemeAssetLocation themeAssetLocation = ((previousThemeAssetLocations != null) && previousThemeAssetLocations.containsKey(themeName)) ?
 						previousThemeAssetLocations.get(themeName) : new ThemeAssetLocation(root(), assetContainer, new File(themesDir, themeName));

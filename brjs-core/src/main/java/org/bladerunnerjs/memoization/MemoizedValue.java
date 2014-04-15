@@ -38,7 +38,7 @@ public class MemoizedValue<T extends Object> {
 		}
 		
 		for(File watchItem : watchItems) {
-			watchList.add(new InfoFileModifiedChecker(brjs.getModificationInfo(watchItem)));
+			watchList.add(new InfoFileModifiedChecker(brjs.getFileInfo(watchItem)));
 		}
 	}
 	

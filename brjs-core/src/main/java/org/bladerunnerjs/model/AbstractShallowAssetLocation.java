@@ -212,8 +212,10 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	protected <A extends Asset> void addMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
-		for(File file : root().getFileIterator(dir).files()) {
-			if(!file.isDirectory() && assetFilter.accept(file.getName())) {
+		for(File file : root().getFileInfo(dir).files()) {
+			FileInfo fileInfo = root().getFileInfo(file);
+			
+			if(!fileInfo.isDirectory() && assetFilter.accept(file.getName())) {
 				assets.add(obtainAsset(assetClass, file.getParentFile(), file.getName()));
 			}
 		}

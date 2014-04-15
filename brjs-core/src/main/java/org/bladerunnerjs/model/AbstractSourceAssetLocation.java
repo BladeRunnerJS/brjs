@@ -38,9 +38,11 @@ public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLo
 	
 	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
 	{
-		if (findInDir.isDirectory())
+		FileInfo dirInfo = root().getFileInfo(findInDir);
+		
+		if (dirInfo.isDirectory())
 		{
-			for (File childDir : root().getFileIterator(findInDir).dirs())
+			for (File childDir : dirInfo.dirs())
 			{
 				if (childDir != dir())
 				{

@@ -4,13 +4,14 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.testing.utility.MockLoggerFactory;
-import org.bladerunnerjs.utility.FileIterator;
-import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
 
 
 public final class TestRootNode extends AbstractRootNode
@@ -86,7 +87,7 @@ public final class TestRootNode extends AbstractRootNode
 	}
 	
 	@Override
-	public FileIterator getFileIterator(File dir) {
-		return new FileIterator(this, new PessimisticFileModificationService(), dir);
+	public FileInfo getFileInfo(File dir) {
+		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo());
 	}
 }

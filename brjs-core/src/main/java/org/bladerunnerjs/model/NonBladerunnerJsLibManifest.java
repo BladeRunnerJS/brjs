@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibManifest>
@@ -15,13 +14,13 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	
 	public static final String commaWithOptionalSpacesSeparator = "[\\s]*,[\\s]*";
 	
-	private final FileIterator fileIterator;
+	private final FileInfo fileInfo;
 	private final File assetLocationDir;
 	private final AssetLocation assetLocation;
 	
 	public NonBladerunnerJsLibManifest(AssetLocation assetLocation) throws ConfigException {
 		super(assetLocation, YamlNonBladerunnerLibManifest.class, assetLocation.file(LIBRARY_MANIFEST_FILENAME));
-		fileIterator = assetLocation.root().getFileIterator(assetLocation.dir());
+		fileInfo = assetLocation.root().getFileInfo(assetLocation.dir());
 		assetLocationDir = assetLocation.dir();
 		this.assetLocation = assetLocation;
 	}
@@ -92,7 +91,7 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	private List<File> getFilesWithPaths(List<String> filePaths) throws ConfigException
 	{
 		List<File> foundFiles = new ArrayList<File>();
-		List<File> files = fileIterator.nestedFiles();
+		List<File> files = fileInfo.nestedFiles();
 		
 		for (String filePath : filePaths)
 		{
@@ -118,7 +117,7 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	private List<File> findAllFilesWithExtension(String extension, boolean includeNestedDirs)
 	{
 		List<File> foundFiles = new ArrayList<File>();
-		List<File> files = (includeNestedDirs) ? fileIterator.nestedFiles() : fileIterator.files();
+		List<File> files = (includeNestedDirs) ? fileInfo.nestedFiles() : fileInfo.files();
 		
 		for (File f : files)
 		{
