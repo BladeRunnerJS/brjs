@@ -55,13 +55,18 @@ public class StandardFileInfo implements FileInfo {
 	}
 	
 	@Override
-	public List<File> files() {
-		return fileIterator.files();
+	public List<File> filesAndDirs() {
+		return fileIterator.filesAndDirs();
 	}
 	
 	@Override
-	public List<File> files(IOFileFilter fileFilter) {
-		return fileIterator.files(fileFilter);
+	public List<File> filesAndDirs(IOFileFilter fileFilter) {
+		return fileIterator.filesAndDirs(fileFilter);
+	}
+	
+	@Override
+	public List<File> files() {
+		return fileIterator.files();
 	}
 	
 	@Override
@@ -70,7 +75,7 @@ public class StandardFileInfo implements FileInfo {
 	}
 	
 	@Override
-	public List<File> nestedFiles() {
-		return fileIterator.nestedFiles();
+	public List<File> nestedFilesAndDirs() {
+		return fileIterator.nestedFilesAndDirs();
 	}
 }

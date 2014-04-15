@@ -10,8 +10,9 @@ import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 public interface FileInfo extends FileModificationInfo, FileIterator {
 	boolean exists();
 	boolean isDirectory();
+	List<File> filesAndDirs();
+	List<File> filesAndDirs(IOFileFilter fileFilter);
 	List<File> files();
-	List<File> files(IOFileFilter fileFilter);
 	List<File> dirs();
-	List<File> nestedFiles();
+	List<File> nestedFilesAndDirs();
 }

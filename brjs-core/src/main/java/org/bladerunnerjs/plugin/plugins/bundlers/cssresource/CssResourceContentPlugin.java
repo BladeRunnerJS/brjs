@@ -283,7 +283,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
     		
     		if (themeDirInfo.isDirectory())
     		{
-        		for (File file : themeDirInfo.nestedFiles())
+        		for (File file : themeDirInfo.nestedFilesAndDirs())
         		{
         			FileInfo fileInfo = brjs.getFileInfo(file);
         			
@@ -300,7 +300,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		if (resourcesDir.isDirectory())
 		{
-			for (File file : brjs.getFileInfo(resourcesDir).nestedFiles())
+			for (File file : brjs.getFileInfo(resourcesDir).nestedFilesAndDirs())
 			{
 				if (file.isFile() && !file.getName().endsWith(".css"))
 				{

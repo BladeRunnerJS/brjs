@@ -126,7 +126,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		
 		try
 		{
-			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFiles())
+			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFilesAndDirs())
 			{
 				FileInfo fileInfo = brjs.getFileInfo(file);
 				
