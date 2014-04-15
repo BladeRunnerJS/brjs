@@ -34,6 +34,7 @@ import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
+import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
 import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 
@@ -368,7 +369,8 @@ public class BRJS extends AbstractBRJSRootNode
 		String filePath = file.getPath();
 		
 		if(!fileInfos.containsKey(filePath)) {
-			fileInfos.put(filePath, new StandardFileInfo(file, this,  fileModificationService.getModificationInfo(file)));
+			FileModificationInfo fileModificationInfo = fileModificationService.getModificationInfo(file);
+			fileInfos.put(filePath, new StandardFileInfo(file, this,  fileModificationInfo));
 		}
 		
 		return fileInfos.get(filePath);
