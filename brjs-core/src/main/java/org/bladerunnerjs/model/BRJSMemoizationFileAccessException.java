@@ -6,8 +6,8 @@ import java.io.File;
 public class BRJSMemoizationFileAccessException extends SecurityException {
 	private static final long serialVersionUID = 1L;
 	
-	public BRJSMemoizationFileAccessException(File file, File[] scopeFiles) {
-		super("The file '" + file.getAbsolutePath() + "' was not within any of the allowed scopes: " + getScopes(scopeFiles));
+	public BRJSMemoizationFileAccessException(File file, File[] scopeFiles, String scopeIdentifier) {
+		super("The file '" + file.getAbsolutePath() + "' was not within any of the allowed scopes for '" + scopeIdentifier + "': " + getScopes(scopeFiles));
 	}
 	
 	private static String getScopes(File[] scopeFiles) {

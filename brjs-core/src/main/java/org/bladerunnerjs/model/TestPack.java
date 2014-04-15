@@ -35,7 +35,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		super(rootNode, parent, dir);
 		this.name = name;
 		
-		sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir());
+		sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), root().conf().file("bladerunner.conf"));
 		// TODO: we should never call registerInitializedNode() from a non-final class
 		registerInitializedNode();
 	}

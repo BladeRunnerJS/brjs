@@ -4,18 +4,27 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.WatchService;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.logging.LoggerType;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
+	public static final String THREAD_IDENTIFIER = "file-modification-service";
+	
 	private final WatchService watchService;
-	private final Map<String, Java7FileModificationInfo> fileModificationInfos = new HashMap<>();
-	private final OptimisticFileModificationInfo optimisticFileModificationInfo = new OptimisticFileModificationInfo();
+	private final Map<String, ProxyFileModificationInfo> fileModificationInfos = new ConcurrentHashMap<>();
 	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 	private boolean running = true;
+	private File rootDir;
+	private final Logger logger;
 	
-	public Java7FileModificationService() {
+	public Java7FileModificationService(LoggerFactory loggerFactory) {
 		try {
+			logger = loggerFactory.getLogger(LoggerType.UTIL, getClass());
 			watchService = FileSystems.getDefault().newWatchService();
 		}
 		catch (IOException e) {
@@ -23,10 +32,15 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		}
 	}
 	
+	public File getRootDir() {
+		return rootDir;
+	}
+	
 	@Override
 	public void setRootDir(File rootDir) {
 		try {
-			initializeWatchers(rootDir.getCanonicalFile(), null);
+			this.rootDir = rootDir;
+			watchDirectory(rootDir.getCanonicalFile(), null, new Date().getTime());
 			new Thread(this).start();
 		}
 		catch (IOException e) {
@@ -35,14 +49,14 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	@Override
-	public FileModificationInfo getModificationInfo(File file) {
-		// TODO: remove this if block once we have a better solution for watching individual files
-		if(file.exists() && file.isFile()) {
-			file = file.getParentFile();
+	public ProxyFileModificationInfo getModificationInfo(File file) {
+		String absoluteFilePath = file.getAbsolutePath();
+		
+		if(!fileModificationInfos.containsKey(absoluteFilePath)) {
+			fileModificationInfos.put(absoluteFilePath, new ProxyFileModificationInfo(this));
 		}
 		
-		FileModificationInfo fileModificationInfo = fileModificationInfos.get(file.getAbsolutePath());
-		return (fileModificationInfo != null) ? fileModificationInfo : optimisticFileModificationInfo;
+		return fileModificationInfos.get(absoluteFilePath);
 	}
 	
 	@Override
@@ -53,16 +67,18 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	@Override
 	public void run() {
 		try {
+			Thread.currentThread().setName(THREAD_IDENTIFIER);
+			
 			while(running) {
-				for(Java7FileModificationInfo fileModificationInfo : fileModificationInfos.values()) {
-					fileModificationInfo.doPoll();
+				for(ProxyFileModificationInfo fileModificationInfo : fileModificationInfos.values()) {
+					fileModificationInfo.pollWatchEvents();
 				}
 				
 				Thread.sleep(100);
 			}
 			
-			for(Java7FileModificationInfo fileModificationInfo : fileModificationInfos.values()) {
-				fileModificationInfo.close();
+			for(ProxyFileModificationInfo fileModificationInfo : fileModificationInfos.values()) {
+				fileModificationInfo.closeWatchListener();
 			}
 			
 			// TODO: Waiting on Java bug fix http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8029516, github issue #385
@@ -75,14 +91,20 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		}
 	}
 	
-	private void initializeWatchers(File dir, Java7FileModificationInfo parentModificationInfo) {
-		Java7FileModificationInfo fileModificationInfo = new Java7FileModificationInfo(watchService, dir, parentModificationInfo);
-		fileModificationInfos.put(dir.getAbsolutePath(), fileModificationInfo);
+	void watchDirectory(File file, WatchingFileModificationInfo parentModificationInfo, long lastModified) {
+		ProxyFileModificationInfo proxyFMI = getModificationInfo(file);
+		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(this, watchService, file, parentModificationInfo) :
+			new Java7FileModificationInfo(parentModificationInfo, file);
+		proxyFMI.setFileModificationInfo(fileModificationInfo);
 		
-		for(File file : dir.listFiles()) {
-			if(file.isDirectory()) {
-				initializeWatchers(file, fileModificationInfo);
+		if(file.isDirectory()) {
+			for(File childFile : file.listFiles()) {
+				watchDirectory(childFile, fileModificationInfo, lastModified);
 			}
 		}
+	}
+
+	public Logger getLogger() {
+		return logger;
 	}
 }

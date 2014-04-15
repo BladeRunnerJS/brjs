@@ -5,8 +5,10 @@ import java.util.Map;
 
 public class FileAccessLimitScope implements AutoCloseable {
 	private final Map<FileAccessLimitScope, File[]> activeScopes;
+	private final String scopeIdentifier;
 	
-	public FileAccessLimitScope(Map<FileAccessLimitScope, File[]> activeScopes, File[] watchItems) {
+	public FileAccessLimitScope(String scopeIdentifier, Map<FileAccessLimitScope, File[]> activeScopes, File[] watchItems) {
+		this.scopeIdentifier = scopeIdentifier;
 		this.activeScopes = activeScopes;
 		activeScopes.put(this, watchItems);
 	}
@@ -14,6 +16,10 @@ public class FileAccessLimitScope implements AutoCloseable {
 	@Override
 	public void close() {
 		activeScopes.remove(this);
+	}
+	
+	public String getScopeIdentifier() {
+		return scopeIdentifier;
 	}
 	
 	public void preventCompilerWarning() {
