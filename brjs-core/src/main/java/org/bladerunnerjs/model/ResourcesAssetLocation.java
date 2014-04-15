@@ -19,7 +19,7 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 		super(root, assetContainer, file);
 		
 		themesDir = assetContainer.file("themes");
-		fileModifiedChecker = new InfoFileModifiedChecker(root().getModificationInfo(themesDir));
+		fileModifiedChecker = new InfoFileModifiedChecker(root().getFileInfo(themesDir));
 	}
 	
 	@Override

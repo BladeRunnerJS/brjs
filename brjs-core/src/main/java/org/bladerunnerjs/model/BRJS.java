@@ -379,7 +379,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
-	public FileModificationInfo getModificationInfo(File file) {
+	public FileModificationInfo getFileInfo(File file) {
 		return fileModificationService.getModificationInfo(file);
 	}
 }

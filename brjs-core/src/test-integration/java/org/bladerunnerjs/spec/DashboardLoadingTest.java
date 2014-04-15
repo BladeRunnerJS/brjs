@@ -48,11 +48,11 @@ public class DashboardLoadingTest extends SpecTest
 	}
 	
 	private void touchFile(File file) {
-		brjs.getModificationInfo(file).resetLastModified();
+		brjs.getFileInfo(file).resetLastModified();
 		
 		while(!file.equals(brjs.dir())) {
 			file = file.getParentFile();
-			brjs.getModificationInfo(file).resetLastModified();
+			brjs.getFileInfo(file).resetLastModified();
 		}
 	}
 }
