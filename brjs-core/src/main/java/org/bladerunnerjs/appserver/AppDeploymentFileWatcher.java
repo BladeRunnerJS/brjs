@@ -44,9 +44,11 @@ public class AppDeploymentFileWatcher extends Thread
 		this.brjs = brjs;
 		
 		for(File rootWatchDir : rootWatchDirs) {
-			if (rootWatchDir.isDirectory())
+			FileInfo rootWatchDirInfo = brjs.getFileInfo(rootWatchDir);
+			
+			if (rootWatchDirInfo.isDirectory())
 			{
-				watchDirIterators.add(brjs.getFileInfo(rootWatchDir));
+				watchDirIterators.add(rootWatchDirInfo);
 			}
 		}
 	}

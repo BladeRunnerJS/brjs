@@ -58,9 +58,10 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 		if(fileModifiedChecker.hasChangedSinceLastCheck() || (themeAssetLocations == null)) {
 			Map<String, ThemeAssetLocation> previousThemeAssetLocations = themeAssetLocations;
 			themeAssetLocations = new HashMap<>();
+			FileInfo themeDirInfo = root().getFileInfo(themesDir);
 			
-			if(themesDir.exists()) {
-				for(File themeDir : root().getFileInfo(themesDir).dirs()) {
+			if(themeDirInfo.exists()) {
+				for(File themeDir : themeDirInfo.dirs()) {
 					String themeName = themeDir.getName();
 					ThemeAssetLocation themeAssetLocation = ((previousThemeAssetLocations != null) && previousThemeAssetLocations.containsKey(themeName)) ?
 						previousThemeAssetLocations.get(themeName) : new ThemeAssetLocation(root(), assetContainer, new File(themesDir, themeName));
