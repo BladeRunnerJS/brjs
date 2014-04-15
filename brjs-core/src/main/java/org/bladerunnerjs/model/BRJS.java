@@ -34,7 +34,6 @@ import org.bladerunnerjs.utility.FileIterator;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
-import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
 import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 
@@ -73,6 +72,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
 	private final Map<String, FileIterator> fileIterators = new HashMap<>();
+	private final Map<String, FileInfo> fileInfos = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private final FileModificationService fileModificationService;
 	private final BRJSIO io = new BRJSIO();
@@ -154,21 +154,6 @@ public class BRJS extends AbstractBRJSRootNode
 				throw new ModelUpdateException(e);
 			}
 		}
-	}
-	
-	@Override
-	public FileIterator getFileIterator(File dir) {
-		if(!dir.exists()) {
-			throw new IllegalStateException("a file iterator can not be created for the non-existent directory '" + dir.getPath() + "' ");
-		}
-		
-		String dirPath = dir.getPath();
-		
-		if(!fileIterators.containsKey(dirPath)) {
-			fileIterators.put(dirPath, new FileIterator(this, fileModificationService, dir));
-		}
-		
-		return fileIterators.get(dirPath);
 	}
 	
 	@Override
@@ -379,7 +364,28 @@ public class BRJS extends AbstractBRJSRootNode
 		return appServer;
 	}
 	
-	public FileModificationInfo getFileInfo(File file) {
-		return fileModificationService.getModificationInfo(file);
+	public FileInfo getFileInfo(File file) {
+		String filePath = file.getPath();
+		
+		if(!fileInfos.containsKey(filePath)) {
+			fileInfos.put(filePath, new StandardFileInfo(file, this,  fileModificationService.getModificationInfo(file)));
+		}
+		
+		return fileInfos.get(filePath);
+	}
+	
+	@Override
+	public FileIterator getFileIterator(File dir) {
+		if(!dir.exists()) {
+			throw new IllegalStateException("a file iterator can not be created for the non-existent directory '" + dir.getPath() + "' ");
+		}
+		
+		String dirPath = dir.getPath();
+		
+		if(!fileIterators.containsKey(dirPath)) {
+			fileIterators.put(dirPath, new FileIterator(this, fileModificationService, dir));
+		}
+		
+		return fileIterators.get(dirPath);
 	}
 }
