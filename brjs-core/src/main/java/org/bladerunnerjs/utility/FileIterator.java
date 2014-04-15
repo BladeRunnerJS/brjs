@@ -10,5 +10,5 @@ public interface FileIterator {
 	List<File> filesAndDirs(IOFileFilter fileFilter);
 	List<File> files();
 	List<File> dirs();
-	List<File> nestedFilesAndDirs();
+	List<File> nestedFiles();
 }

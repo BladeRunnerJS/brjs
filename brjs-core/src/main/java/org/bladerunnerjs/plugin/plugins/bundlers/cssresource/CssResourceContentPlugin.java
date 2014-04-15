@@ -283,11 +283,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
     		
     		if (themeDirInfo.isDirectory())
     		{
-        		for (File file : themeDirInfo.nestedFilesAndDirs())
+        		for (File file : themeDirInfo.nestedFiles())
         		{
-        			FileInfo fileInfo = brjs.getFileInfo(file);
-        			
-        			if (!fileInfo.isDirectory() && !file.getName().endsWith(".css"))
+        			if (!file.getName().endsWith(".css"))
         			{
         				String assetPath = RelativePathUtility.get(themeDir, file);
         				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { theme.getName(), assetPath } );
@@ -300,7 +298,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		if (resourcesDir.isDirectory())
 		{
-			for (File file : brjs.getFileInfo(resourcesDir).nestedFilesAndDirs())
+			for (File file : brjs.getFileInfo(resourcesDir).nestedFiles())
 			{
 				if (file.isFile() && !file.getName().endsWith(".css"))
 				{

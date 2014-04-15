@@ -75,7 +75,7 @@ public class StandardFileInfo implements FileInfo {
 	}
 	
 	@Override
-	public List<File> nestedFilesAndDirs() {
-		return fileIterator.nestedFilesAndDirs();
+	public List<File> nestedFiles() {
+		return fileIterator.nestedFiles();
 	}
 }

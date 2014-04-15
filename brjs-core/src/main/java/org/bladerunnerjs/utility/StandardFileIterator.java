@@ -75,9 +75,9 @@ public class StandardFileIterator implements FileIterator {
 	}
 	
 	@Override
-	public List<File> nestedFilesAndDirs() {
+	public List<File> nestedFiles() {
 		List<File> nestedFiles = new ArrayList<>();
-		populateNestedFilesAndDirs(this, nestedFiles, brjs);
+		populateNestedFiles(this, nestedFiles, brjs);
 		return nestedFiles;
 	}
 	
@@ -90,11 +90,11 @@ public class StandardFileIterator implements FileIterator {
 		}
 	}
 	
-	private static void populateNestedFilesAndDirs(FileIterator fileIterator, List<File> nestedFilesAndDirs, RootNode rootNode) {
-		nestedFilesAndDirs.addAll(fileIterator.filesAndDirs());
+	private static void populateNestedFiles(FileIterator fileIterator, List<File> nestedFiles, RootNode rootNode) {
+		nestedFiles.addAll(fileIterator.files());
 		
 		for(File dir : fileIterator.dirs()) {
-			populateNestedFilesAndDirs(rootNode.getFileInfo(dir), nestedFilesAndDirs, rootNode);
+			populateNestedFiles(rootNode.getFileInfo(dir), nestedFiles, rootNode);
 		}
 	}
 }
