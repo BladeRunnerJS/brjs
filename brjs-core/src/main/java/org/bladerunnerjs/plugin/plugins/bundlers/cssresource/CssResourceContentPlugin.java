@@ -285,9 +285,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
     		{
         		for (File file : themeDirInfo.nestedFiles())
         		{
-        			FileInfo fileInfo = brjs.getFileInfo(file);
-        			
-        			if (!fileInfo.isDirectory() && !file.getName().endsWith(".css"))
+        			if (!file.getName().endsWith(".css"))
         			{
         				String assetPath = RelativePathUtility.get(themeDir, file);
         				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { theme.getName(), assetPath } );

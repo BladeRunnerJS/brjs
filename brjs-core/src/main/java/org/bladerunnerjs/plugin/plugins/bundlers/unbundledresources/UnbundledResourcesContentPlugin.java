@@ -128,14 +128,9 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		{
 			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFiles())
 			{
-				FileInfo fileInfo = brjs.getFileInfo(file);
-				
-				if (!fileInfo.isDirectory())
-				{
-        			String relativePath = RelativePathUtility.get(unbundledResourcesDir, file);
-        			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);
-        			requestPaths.add(calculatedPath);
-				}
+    			String relativePath = RelativePathUtility.get(unbundledResourcesDir, file);
+    			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);
+    			requestPaths.add(calculatedPath);
 			}
 		}
 		catch (MalformedTokenException e)

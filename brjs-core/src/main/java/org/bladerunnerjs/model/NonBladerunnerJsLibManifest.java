@@ -117,7 +117,7 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	private List<File> findAllFilesWithExtension(String extension, boolean includeNestedDirs)
 	{
 		List<File> foundFiles = new ArrayList<File>();
-		List<File> files = (includeNestedDirs) ? fileInfo.nestedFiles() : fileInfo.files();
+		List<File> files = (includeNestedDirs) ? fileInfo.nestedFiles() : fileInfo.filesAndDirs();
 		
 		for (File f : files)
 		{
