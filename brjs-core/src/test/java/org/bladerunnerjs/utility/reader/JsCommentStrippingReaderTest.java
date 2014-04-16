@@ -258,8 +258,41 @@ public class JsCommentStrippingReaderTest
 		stripComments( 	"some content \r" + // \r is the line ending - so this would be 2 separate lines in a file
 						"more content", true);
 	}
-
 	
+	@Test
+	public void largeSourceWithNoCommentsIsLeftUntouched() throws IOException
+	{
+		stripCommentsAndAssertEquals( 
+			lines(
+				pad(4090),
+				"line1",
+				"line2" ), 
+			lines(
+				pad(4090),
+				"line1",
+				"line2" ) 
+		);
+	}
+	
+	@Test
+	public void largeSourceWithCommentsAreStripped() throws IOException
+	{
+		stripCommentsAndAssertEquals( 
+			lines(
+				pad(4090),
+				"// comment",
+				"line 2"), 
+			lines(
+				pad(4090),
+				"",
+				"line 2") 
+		);
+	}
+	
+	private String pad(int size) {
+		return StringUtils.leftPad("", size, ' ');
+	}
+
 	private String lines(String... input)
 	{
 		return StringUtils.join(input, "\n");
