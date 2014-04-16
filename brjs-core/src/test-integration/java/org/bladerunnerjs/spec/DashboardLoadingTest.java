@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Scanner;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -12,7 +13,21 @@ import org.junit.Test;
 public class DashboardLoadingTest extends SpecTest
 {
 	private App dashboard;
-
+	
+	public static void main(String[] args) throws Exception {
+		try(Scanner keyboard = new Scanner(System.in)) {
+			System.out.println("Press enter to continue");
+			keyboard.nextLine();
+			System.out.println("Running test...");
+		}
+		
+		DashboardLoadingTest test = new DashboardLoadingTest();
+		test.resetTestObjects();
+		test.initTestObjects();
+		test.dashboardTest();
+		test.cleanUp();
+	}
+	
 	@Before
 	public void initTestObjects() throws Exception {
 		testSdkDirectory = new File("../cutlass-sdk/workspace/sdk/").getCanonicalFile();
