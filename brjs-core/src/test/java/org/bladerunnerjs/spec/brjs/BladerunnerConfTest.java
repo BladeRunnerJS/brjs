@@ -7,7 +7,6 @@ import org.junit.Test;
 
 
 public class BladerunnerConfTest extends SpecTest {
-	// TODO: add a test that shows the object updates if the conf file is modified
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -98,4 +97,13 @@ public class BladerunnerConfTest extends SpecTest {
 		when(brjs).bladerunnerConf();
 		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/bladerunner.conf").getPath(), unquoted("Unable to find property 'sillyProperty'"));
 	}
+	
+	@Test
+	public void theModelUpdatesWhenTheUnderlyingFileIsChanged() throws Exception {
+		given(brjs).containsFileWithContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm")
+			.and(brjs.bladerunnerConf()).browserCharacterEncodingIs("UTF-8");
+		when(brjs).containsFileWithContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: ISO-8859-1\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs.bladerunnerConf().getBrowserCharacterEncoding().toString()).textEquals("ISO-8859-1");
+	}
+	
 }

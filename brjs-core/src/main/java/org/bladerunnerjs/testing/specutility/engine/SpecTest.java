@@ -189,6 +189,7 @@ public abstract class SpecTest
 	
 	// StringBuffer
 	public StringVerifier then(StringBuffer stringBuffer) { return new StringVerifier(this, stringBuffer); }
+	public StringVerifier then(String string) { return new StringVerifier(this, string); }
 	
 	// BRJS
 	public BRJSBuilder given(BRJS brjs) { return new BRJSBuilder(this, brjs); }
