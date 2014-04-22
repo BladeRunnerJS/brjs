@@ -17,6 +17,7 @@ public class MemoizedValue<T extends Object> {
 	private final List<FileModifiedChecker> watchList = new ArrayList<>();
 	private final File[] watchItems;
 	private final String valueRecomputedLogMessage;
+	private boolean exceptionThrownOnLastCompute;
 	private final BRJS brjs;
 	private T value;
 	private final Logger logger;
@@ -49,7 +50,12 @@ public class MemoizedValue<T extends Object> {
 			
 			try(FileAccessLimitScope scope = brjs.io().limitAccessToWithin(valueIdentifier, watchItems)) {
 				scope.preventCompilerWarning();
+				exceptionThrownOnLastCompute = false;
 				value = (T) getter.get();
+			}
+			catch(Throwable e) {
+				exceptionThrownOnLastCompute = true;
+				throw e;
 			}
 		}
 		
@@ -57,7 +63,7 @@ public class MemoizedValue<T extends Object> {
 	}
 	
 	private boolean valueNeedsToBeRecomputed() {
-		boolean valueNeedsToBeRecomputed = false;
+		boolean valueNeedsToBeRecomputed = exceptionThrownOnLastCompute;
 		
 		for(FileModifiedChecker fileModifiedChecker : watchList) {
 			if(fileModifiedChecker.hasChangedSinceLastCheck()) {
