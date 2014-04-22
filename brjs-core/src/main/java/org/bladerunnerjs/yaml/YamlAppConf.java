@@ -20,8 +20,8 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	
 	@Override
 	public void initialize() {
-		requirePrefix = "appns";
-		locales = "en";
+		requirePrefix = getDefault(requirePrefix, "appns");
+		locales = getDefault(locales, "en");
 	}
 	
 	@Override
