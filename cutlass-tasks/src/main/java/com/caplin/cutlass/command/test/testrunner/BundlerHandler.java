@@ -3,6 +3,7 @@ package com.caplin.cutlass.command.test.testrunner;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,8 +41,12 @@ public class BundlerHandler
 	}
 
 	
-	public void createBundleFile(File bundleFile, String bundlePath)
+	public void createBundleFile(File bundleFile, String bundlePath) throws IOException
 	{
+		if (bundlePath.contains("\\"))
+		{
+			throw new IOException("Invalid bundlePath - it should not contain '\', only '/' as a seperator");
+		}
 		OutputStream outputStream = createBundleOutputStream(bundleFile);
 		String modelRequestPath = getModelRequestPath(bundlePath);
 		handleBundleRequest(bundleFile, modelRequestPath, outputStream);

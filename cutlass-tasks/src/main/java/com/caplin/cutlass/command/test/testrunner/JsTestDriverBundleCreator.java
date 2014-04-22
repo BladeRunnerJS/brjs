@@ -42,9 +42,8 @@ public class JsTestDriverBundleCreator
 			if (fileIsInBundlesDirectory(requestedFile) && isNotWildcardFilename(requestedFile))
 			{
 				String bundlePath = StringUtils.substringAfterLast( requestedFile.getAbsolutePath(), BUNDLES_DIR_NAME+File.separator);
+				bundlePath = bundlePath.replaceAll("\\", "/");
 				bundlerHandler.createBundleFile(requestedFile, bundlePath);
-				
-				
 			}
 		}
 	}
