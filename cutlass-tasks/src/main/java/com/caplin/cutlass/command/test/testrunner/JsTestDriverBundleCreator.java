@@ -10,27 +10,41 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.BRJS;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
-public class BundleStubCreator
+public class JsTestDriverBundleCreator
 {
 
-	public static void createRequiredStubs(File jsTestDriverConf) throws IOException
+	public static final String BUNDLES_DIR_NAME = "bundles";
+	
+	public static void createRequiredBundles(BRJS brjs, File jsTestDriverConf) throws IOException
 	{
+		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
+		FileUtils.deleteQuietly(bundlesDir);
+		bundlesDir.mkdir();
+		
 		Map<String, Object> configMap = getMapFromYamlConfig(jsTestDriverConf);
 		
 		File baseDirectory = getBaseDirectory(jsTestDriverConf, configMap);
 		
-		for(String resourceToLoad : getListOfResourcesToLoad(configMap))
+		
+		BundlerHandler bundlerHandler = new BundlerHandler(brjs);
+		
+		for (String resourceToLoad : getListOfResourcesToLoad(configMap))
 		{
 			File requestedFile = new File(baseDirectory, resourceToLoad);
 			
-			if(fileIsInBundlesDirectory(requestedFile) && !requestedFile.exists() && isNotWildcardFilename(requestedFile))
+			if (fileIsInBundlesDirectory(requestedFile) && isNotWildcardFilename(requestedFile))
 			{
-				requestedFile.getParentFile().mkdirs();
-				requestedFile.createNewFile();
+				String bundlePath = StringUtils.substringAfterLast( requestedFile.getAbsolutePath(), BUNDLES_DIR_NAME+File.separator);
+				bundlerHandler.createBundleFile(requestedFile, bundlePath);
+				
+				
 			}
 		}
 	}
@@ -80,7 +94,7 @@ public class BundleStubCreator
 		{
 			return false;
 		}
-		if(parent.getName().equals("bundles"))
+		if(parent.getName().equals(BUNDLES_DIR_NAME))
 		{
 			return true;
 		}
@@ -99,5 +113,7 @@ public class BundleStubCreator
 		{
 			return collection;
 		}
-	}
+	}	
+	
+	
 }

@@ -1,21 +1,20 @@
-package org.bladerunnerjs.jstestdriver.utility;
+package com.caplin.cutlass.command.test.testrunner.specutility;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.jstestdriver.BundlerHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 
-import com.google.jstestdriver.FileInfo;
+import com.caplin.cutlass.command.test.testrunner.BundlerHandler;
+import com.caplin.cutlass.command.test.testrunner.JsTestDriverBundleCreator;
 
 import static org.junit.Assert.*;
 
 
-public class BRJSBundleInjectorSpecTest extends SpecTest
+public class BundlerHandlerSpecTest extends SpecTest
 {
 
 	protected JSTDTestPackCommander whenJstdTests(TestPack testPack)
@@ -35,21 +34,16 @@ public class BRJSBundleInjectorSpecTest extends SpecTest
 
 		private TestPack testPack;
 		
-		List<FileInfo> inputFiles = new ArrayList<FileInfo>();
-		
 		public JSTDTestPackCommander(TestPack testPack)
 		{
 			this.testPack = testPack;
 		}
 
-		public void runWithPaths(String... requestPaths) throws Exception
+		public void runWithPaths(String requestPath) throws Exception
 		{
-			for (String filePath : requestPaths)
-			{
-				String absoluteInputFilePath = testPack.file(filePath).getAbsolutePath();
-				inputFiles.add( new FileInfo(absoluteInputFilePath, -1, -1, false, false, null, absoluteInputFilePath) );
-			}
-			new BundlerHandler().processDependencies(inputFiles);
+			File bundleFile = testPack.file(requestPath);
+			String bundlePath = StringUtils.substringAfterLast(bundleFile.getAbsolutePath(), JsTestDriverBundleCreator.BUNDLES_DIR_NAME+File.separator);
+			new BundlerHandler(brjs).createBundleFile(bundleFile, bundlePath);
 		}
 	}
 	

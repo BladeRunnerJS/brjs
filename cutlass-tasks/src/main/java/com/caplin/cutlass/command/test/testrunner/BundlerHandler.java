@@ -1,30 +1,25 @@
-package org.bladerunnerjs.jstestdriver;
+package com.caplin.cutlass.command.test.testrunner;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 
-import com.google.jstestdriver.FileInfo;
-import com.google.jstestdriver.hooks.ResourcePreProcessor;
 
-public class BundlerHandler implements ResourcePreProcessor
+public class BundlerHandler
 {	
 	protected Map<String,String> legacyBundlerHandlerPaths = new HashMap<>();
 	protected Map<String,String> logicalBundlerHandlerPaths = new HashMap<>();
-
-	private static final String BUNDLE_PREFIX = "bundles" + File.separator;
+	private BRJS brjs;
 	
-	public BundlerHandler() throws Exception
+	public BundlerHandler(BRJS brjs)
 	{
 		// legacy paths - these are matched against the last part of the bundle path - e.g. js/js.bundle would match js.bundle
 		legacyBundlerHandlerPaths.put("js.bundle", "js/dev/en_GB/combined/bundle.js");
@@ -40,31 +35,20 @@ public class BundlerHandler implements ResourcePreProcessor
 		logicalBundlerHandlerPaths.put("bundle.i18n", "i18n/en_GB.js");
 		logicalBundlerHandlerPaths.put("bundle.xml", "bundle.xml");
 		logicalBundlerHandlerPaths.put("bundle.html", "bundle.html");
-	}
-
-	@Override
-	public List<FileInfo> processDependencies(List<FileInfo> files)
-	{
-		for (FileInfo currentFileInfo : files)
-		{
-			File currentFile = new File(currentFileInfo.getFilePath());
-			if (currentFile.getAbsolutePath().contains(BUNDLE_PREFIX))
-			{
-				String modelRequestPath = getModelRequestPath(currentFile);
-				createParentDirectory(currentFile);
-				OutputStream outputStream = createBundleOutputStream(currentFile);
-				handleBundleRequest(currentFile, modelRequestPath, outputStream);
-			}
-		}
-
-		return files;
-	}
-
-	private String getModelRequestPath(File bundleFile)
-	{
-		String bundlerPath = StringUtils.substringAfter(bundleFile.getAbsolutePath(), BUNDLE_PREFIX)
-				.replace(File.separator, "/");
 		
+		this.brjs = brjs;
+	}
+
+	
+	public void createBundleFile(File bundleFile, String bundlePath)
+	{
+		OutputStream outputStream = createBundleOutputStream(bundleFile);
+		String modelRequestPath = getModelRequestPath(bundlePath);
+		handleBundleRequest(bundleFile, modelRequestPath, outputStream);
+	}
+
+	private String getModelRequestPath(String bundlerPath)
+	{
 		String brjsRequestPath = lookupRequestPathFromKnownBundlePaths(bundlerPath);
 		
 		if (brjsRequestPath == null)
@@ -98,11 +82,8 @@ public class BundlerHandler implements ResourcePreProcessor
 
 	private void handleBundleRequest(File bundleFile, String brjsRequestPath, OutputStream outputStream)
 	{
-		BRJS brjs = null;
 		try
 		{
-    		brjs = BRJSThreadSafeModelAccessor.aquireModel();
-    		
     		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
     		if (bundlableNode == null)
     		{
@@ -115,77 +96,22 @@ public class BundlerHandler implements ResourcePreProcessor
 		{
 			throw new RuntimeException("There was an error while bundling.", ex);
 		}
-		finally 
-		{
-			if (brjs != null)
-			{
-				BRJSThreadSafeModelAccessor.releaseModel();
-			}
-			try
-			{
-				outputStream.close();
-			}
-			catch (IOException ex)
-			{
-				throw new RuntimeException(ex);
-			}
-		}
-		
-	}
-
-	@Override
-	public List<FileInfo> processPlugins(List<FileInfo> files)
-	{
-		return files;
-	}
-
-	@Override
-	public List<FileInfo> processTests(List<FileInfo> files)
-	{
-		return files;
-	}
+	}	
 	
-	private void createParentDirectory(File bundlerFile)
+	private static OutputStream createBundleOutputStream(File bundlerFile)
 	{
-		boolean parentDirCreationFailed = false;
-		boolean filesCreated = false;
-
-		Exception failureException = null;
-
 		try
 		{
-			filesCreated = bundlerFile.getParentFile().mkdirs();
-		}
-		catch (Exception ex)
-		{
-			parentDirCreationFailed = true;
-			failureException = ex;
-		}
-		if ((!filesCreated && !bundlerFile.getParentFile().exists()) || parentDirCreationFailed)
-		{
-			throw new RuntimeException("Unable to create parent directory: " + bundlerFile.getParentFile() + ((failureException != null) ? "\n" + failureException.toString() : ""));
-		}
-	}
-	
-	private OutputStream createBundleOutputStream(File bundlerFile)
-	{
-		OutputStream outputStream = null;
-		
-		try
-		{
-			if (bundlerFile.exists())
-			{
-				bundlerFile.delete();
-			}
+			FileUtils.deleteQuietly(bundlerFile);
+			bundlerFile.getParentFile().mkdirs();
 			bundlerFile.createNewFile();
-			outputStream = new BufferedOutputStream(new FileOutputStream(bundlerFile));
+			return new BufferedOutputStream(new FileOutputStream(bundlerFile));
 		}
 		catch (Exception ex)
 		{
 			throw new RuntimeException("Unable to create or write to file: " + bundlerFile.getAbsolutePath() + "\n", ex);
 		}
-		
-		return outputStream;
 	}
+	
 	
 }

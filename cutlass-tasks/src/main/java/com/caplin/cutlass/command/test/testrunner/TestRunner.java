@@ -352,7 +352,7 @@ public class TestRunner {
 			{
 				testResultsDir.mkdirs();
 			}
-			BundleStubCreator.createRequiredStubs(configFile);
+			JsTestDriverBundleCreator.createRequiredBundles(brjs, configFile);
 			String javaOpts = getJavaOpts();
 			javaOpts += (!javaOpts.equals("")) ? "$$" : "";
 

@@ -1,7 +1,6 @@
-package org.bladerunnerjs.jstestdriver;
+package com.caplin.cutlass.command.test.testrunner;
 
 import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
-import org.bladerunnerjs.jstestdriver.utility.BRJSBundleInjectorSpecTest;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.TestPack;
@@ -9,8 +8,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.caplin.cutlass.command.test.testrunner.specutility.BundlerHandlerSpecTest;
 
-public class BRJSBundleInjectorTest extends BRJSBundleInjectorSpecTest
+
+public class BundlerHandlerTest extends BundlerHandlerSpecTest
 {
 
 	private App app;
