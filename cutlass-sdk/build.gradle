@@ -205,7 +205,8 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 }
 
 
-createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
+createTestTask "testJsUTsIE", "libs/javascript", "UTs", "ie"
+createTestTask "testJsATsIE", "libs/javascript", "ATs", "ie"
 createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
 createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
 
@@ -216,7 +217,7 @@ createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
 
 task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome]
 task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox]
-task testIE, dependsOn: [testJsIE, testSystemAppsIE]
+task testIE, dependsOn: [testJsUTsIE, testJsATsIE, testSystemAppsIE]
 task test, dependsOn: testChrome
 
 
