@@ -21,10 +21,10 @@ public class YamlNonBladerunnerLibManifest extends AbstractYamlConfFile
 	
 	@Override
 	public void initialize() {
-		depends = "";
-		js = "";
-		css = "";
-		exports = "";
+		depends = getDefault(depends, "");
+		js = getDefault(js, "");
+		css = getDefault(css, "");
+		exports = getDefault(exports, "");
 	}
 	
 	@Override

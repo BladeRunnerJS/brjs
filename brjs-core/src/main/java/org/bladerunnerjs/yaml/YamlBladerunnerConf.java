@@ -10,6 +10,7 @@ import org.bladerunnerjs.utility.ConfigValidationChecker;
 
 
 public class YamlBladerunnerConf extends AbstractYamlConfFile {
+	
 	@Min(value=1)
 	@Max(value=65535)
 	public int jettyPort;
@@ -32,10 +33,10 @@ public class YamlBladerunnerConf extends AbstractYamlConfFile {
 	
 	@Override
 	public void initialize() {
-		jettyPort = 7070;
-		defaultFileCharacterEncoding = "UTF-8";
-		browserCharacterEncoding = "UTF-8";
-		loginRealm = "BladeRunnerLoginRealm";
+		jettyPort = getDefault(jettyPort, 7070);
+		defaultFileCharacterEncoding = getDefault(defaultFileCharacterEncoding, "UTF-8");
+		browserCharacterEncoding = getDefault(browserCharacterEncoding, "UTF-8");
+		loginRealm = getDefault(loginRealm, "BladeRunnerLoginRealm");
 	}
 	
 	@Override
