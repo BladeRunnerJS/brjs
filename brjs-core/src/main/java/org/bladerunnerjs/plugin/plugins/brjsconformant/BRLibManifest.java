@@ -24,5 +24,11 @@ public class BRLibManifest extends ConfFile<BRLibConf> {
 	{
 		return lib.file(BR_MANIFEST_FILENAME).isFile();
 	}
+
+	public boolean getEnforcedNamespaces() throws ConfigException
+	{
+		reloadConfIfChanged();
+		return conf.enforcedNamespaces;
+	}
 	
 }
