@@ -130,9 +130,10 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		NameValidator.assertValidRootPackageName(this, libNamespace);
 		
 		try {
+			create();
 			libConf().setLibNamespace(libNamespace);
-			populate();
 			libConf().write();
+			BRJSNodeHelper.populate(this, true);
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {
