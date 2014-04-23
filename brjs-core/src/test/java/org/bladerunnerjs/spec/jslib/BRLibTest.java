@@ -65,7 +65,7 @@ public class BRLibTest extends SpecTest {
 	}
 	
 	@Test
-	public void sdkLibrariesCanOptionallyDisableNamespaceEnforcementBySettingAnEmptyRequirePrefix() throws Exception {
+	public void sdkLibrariesCanOptionallyDisableJsNamespaceEnforcementBySettingAnEmptyRequirePrefix() throws Exception {
 		given(aspect).hasClass("appns/AspectClass")
 			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: ")
 			.and(sdkLib).hasClass("foo/bar/SdkClass")
@@ -73,6 +73,18 @@ public class BRLibTest extends SpecTest {
 			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 			then(response).containsNodeJsClasses("foo.bar.SdkClass");
+	}
+	
+
+	@Test
+	public void sdkLibrariesCanOptionallyDisableI18nNamespaceEnforcementBySettingAnEmptyRequirePrefix() throws Exception {
+		given(aspect).indexPageRefersTo("sdklib.SdkClass")
+			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: ")
+			.and(sdkLib).hasClass("sdklib/SdkClass")
+			.and(sdkLib).containsFileWithContents("resources/en_GB.properties", "some.property=property value");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(response).containsText(	
+				"\"some.property\":\"property value\"\n" );		
 	}
 	
 }
