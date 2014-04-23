@@ -19,6 +19,7 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -29,11 +30,21 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	private final List<Asset> emptyAssetList = new ArrayList<>();
 	private final List<AssetLocation> emptyAssetLocationList = new ArrayList<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
+	private BRLibManifest libManifest;
 	
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
 	
 	public BRJSConformantRootAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
+		
+		if(assetContainer() instanceof JsLib) {
+			try {
+				libManifest = new BRLibManifest((JsLib) assetContainer());
+			}
+			catch (ConfigException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 	
 	@Override
@@ -50,14 +61,31 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	
 	@Override
 	public String requirePrefix() throws RequirePathException {
-		// TODO: integrate the code in BRLib
-		return ((JsLib) assetContainer()).getName();
+		if (!libManifest.manifestExists()) {
+			return ((JsLib) assetContainer()).getName();
+		}
+		
+		try {
+			return libManifest.getRequirePrefix();
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 	
 	@Override
 	public String namespace() throws RequirePathException {
-		// TODO: integrate the code in BRLib
-		return requirePrefix().replace("/", ".");
+		if (!libManifest.manifestExists()) {
+			return requirePrefix().replace("/", ".");
+		}
+		
+		try {
+			return libManifest.getRequirePrefix().replace("/", ".");
+		}
+		catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override

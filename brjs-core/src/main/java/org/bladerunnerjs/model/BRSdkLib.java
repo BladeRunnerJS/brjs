@@ -8,7 +8,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 
-public class BRSdkLib extends BRLib
+public class BRSdkLib extends StandardJsLib
 {
 	private static final String DUMMY_SDK_APP_NAME = "dummy-sdk-app"; // we need a dummy SDK app since SDK libs dont live inside an app
 	private final NodeMap<BRSdkTypedTestPack> testTypes;
@@ -18,12 +18,12 @@ public class BRSdkLib extends BRLib
 		super(rootNode, parent, dir, name);
 		testTypes = BRSdkTypedTestPack.createSdkTestPackNodeSet(rootNode);
 	}
-	
+
 	public static NodeMap<BRSdkLib> createSdkLibNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, BRSdkLib.class, "sdk/libs/javascript/br-libs", null);
 	}
-
+	
 	@Override
 	public App app()
 	{
@@ -41,5 +41,4 @@ public class BRSdkLib extends BRLib
 	{
 		return child(testTypes, testTypeName);
 	}
-	
 }
