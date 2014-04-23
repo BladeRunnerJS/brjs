@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
@@ -56,6 +57,10 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, StandardJsLib.class, "libs", null);
+	}
+	
+	public AssetLocation rootAssetLocation() {
+		return assetLocation("");
 	}
 	
 	@Override
@@ -152,7 +157,22 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	
 	@Override
 	public String requirePrefix() {
-		return getName();
+		try {
+			return rootAssetLocation().requirePrefix();
+		}
+		catch(RequirePathException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public String namespace() {
+		try {
+			return rootAssetLocation().namespace();
+		}
+		catch(RequirePathException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override

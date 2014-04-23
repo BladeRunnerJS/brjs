@@ -68,7 +68,9 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	{
 		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
 		
-		if (!assetLocationCache.containsKey("resources")) {
+		if (!assetLocationCache.containsKey("root")) {
+			assetLocationCache.put("root", new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
+			
 			AssetLocation resourcesAssetLocation;
 			if (assetContainer instanceof Workbench)
 			{
@@ -83,6 +85,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 			assetLocationCache.put( "src-test", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src-test")) );
 		}
 		
+		assetLocations.add(assetLocationCache.get("root"));
 		assetLocations.add(assetLocationCache.get("resources"));
 		SourceAssetLocation srcAssetLocation = (SourceAssetLocation) assetLocationCache.get("src");
 		assetLocations.add(srcAssetLocation);
