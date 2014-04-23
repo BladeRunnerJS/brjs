@@ -65,26 +65,25 @@ public class BRLibTest extends SpecTest {
 	}
 	
 	@Test
-	public void sdkLibrariesCanOptionallyDisableJsNamespaceEnforcementBySettingAnEmptyRequirePrefix() throws Exception {
-		given(aspect).hasClass("appns/AspectClass")
-			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: ")
-			.and(sdkLib).hasClass("foo/bar/SdkClass")
-			.and(aspect).indexPageRefersTo("appns.AspectClass")
-			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
+	public void sdkLibrariesCanOptionallyDisableJsNamespaceEnforcement() throws Exception {
+		given(aspect).indexPageRefersTo("sdklib.SdkClass", "anotherRootPkg.SdkClass")
+			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: sdklib\n"+"enforcedNamespaces: false")
+			.and(sdkLib).hasClass("sdklib/SdkClass")
+			.and(sdkLib).hasClass("anotherRootPkg/SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-			then(response).containsNodeJsClasses("foo.bar.SdkClass");
+		then(response).containsNodeJsClasses("sdklib.SdkClass")
+			.and(response).containsNodeJsClasses("anotherRootPkg.SdkClass");
 	}
 	
-
 	@Test
-	public void sdkLibrariesCanOptionallyDisableI18nNamespaceEnforcementBySettingAnEmptyRequirePrefix() throws Exception {
+	public void sdkLibrariesCanOptionallyDisableI18nNamespaceEnforcement() throws Exception {
 		given(aspect).indexPageRefersTo("sdklib.SdkClass")
-			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: ")
-			.and(sdkLib).hasClass("sdklib/SdkClass")
-			.and(sdkLib).containsFileWithContents("resources/en_GB.properties", "some.property=property value");
+    		.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: sdklib\n"+"enforcedNamespaces: false")
+    		.and(sdkLib).hasClass("sdklib/SdkClass")
+    		.and(sdkLib).containsFileWithContents("resources/en_GB.properties", "sdklib.property=property value\n" + "anotherRootPkg.property=another value");
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
-		then(response).containsText(	
-				"\"some.property\":\"property value\"\n" );		
+		then(response).containsText("\"sdklib.property\":\"property value\"")
+			.and(response).containsText("\"anotherRootPkg.property\":\"another value\"");
 	}
 	
 }

@@ -67,4 +67,16 @@ public class BRLib extends StandardJsLib
 		}
 	}
 	
+	@Override
+	public boolean isNamespaceEnforced() {
+		try
+		{
+			return libManifest.getEnforcedNamespaces();
+		}
+		catch (ConfigException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
 }

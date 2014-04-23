@@ -29,7 +29,7 @@ public class JsTestDriverBundleCreator
 			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException
 	{
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
-		FileUtils.deleteQuietly(bundlesDir);
+		FileUtils.deleteDirectory(bundlesDir);
 		bundlesDir.mkdir();
 		
 		Map<String, Object> configMap = getMapFromYamlConfig(jsTestDriverConf);
