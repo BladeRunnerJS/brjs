@@ -101,9 +101,7 @@ public class BundlerHandler
 	
 	private static OutputStream createBundleOutputStream(File bundlerFile) throws IOException
 	{
-		FileUtils.deleteQuietly(bundlerFile);
 		bundlerFile.getParentFile().mkdirs();
-		bundlerFile.createNewFile();
 		return new BufferedOutputStream(new FileOutputStream(bundlerFile));
 	}
 	
