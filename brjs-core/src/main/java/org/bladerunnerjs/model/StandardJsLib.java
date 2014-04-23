@@ -53,6 +53,11 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		return new NodeMap<>(rootNode, StandardJsLib.class, "thirdparty-libraries", null);
 	}
 	
+	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)
+	{
+		return new NodeMap<>(rootNode, StandardJsLib.class, "libs", null);
+	}
+	
 	@Override
 	public File[] scopeFiles() {
 		if(scopeFiles == null) {

@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRLibManifest;
@@ -24,11 +23,6 @@ public class BRLib extends StandardJsLib
 		{
 			throw new RuntimeException(e);
 		}
-	}
-	
-	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, StandardJsLib.class, "libs", null);
 	}
 	
 	@Override
