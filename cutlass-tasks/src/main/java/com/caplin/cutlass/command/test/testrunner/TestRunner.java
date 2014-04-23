@@ -390,7 +390,7 @@ public class TestRunner {
 			logger.info("Tests Passed.");
 		}
 		catch(Exception e) {
-			logger.info("Unexpected Exception:", e);
+			logger.info("Unexpected Exception:\n%s", e);
 			return false;
 		}
 		
