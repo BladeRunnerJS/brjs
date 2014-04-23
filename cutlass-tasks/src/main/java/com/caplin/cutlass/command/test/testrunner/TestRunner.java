@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
@@ -390,7 +391,7 @@ public class TestRunner {
 			logger.info("Tests Passed.");
 		}
 		catch(Exception e) {
-			logger.info("Unexpected Exception:\n%s", e);
+			logger.info("Unexpected Exception:\n%s", ExceptionUtils.getStackTrace(e));
 			return false;
 		}
 		

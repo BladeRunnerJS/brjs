@@ -19,15 +19,15 @@ public class ConfFactory {
 		
 		if(confFile.exists()) {
 			conf = readConf(confFile, confClass, defaultFileCharacterEncoding);
-			conf.setNode(node);
-			conf.setConfFile(confFile);
-			conf.verify();
 		}
 		else {
 			conf = newConf(confClass);
-			conf.setNode(node);
-			conf.setConfFile(confFile);
+			
 		}
+		
+		conf.setNode(node);
+		conf.setConfFile(confFile);
+		conf.verify();
 		
 		return conf;
 	}
@@ -55,11 +55,12 @@ public class ConfFactory {
 			
 			try(Reader fileReader = new UnicodeReader(confFile, defaultFileCharacterEncoding)) {
 				if(!fileReader.ready()) {
-					throw new ConfigException("'" + confFile.getPath() + "' is empty, either add some configuration or delete it to use the default configuration.");
+					return newConf(confClass);
 				}
 				
 				reader = new YamlReader(fileReader);
 				conf = reader.read(confClass);
+				conf.initialize();
 			}
 			finally {
 				if(reader != null) {

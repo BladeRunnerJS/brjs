@@ -21,7 +21,7 @@ public class BRLibConf extends AbstractYamlConfFile {
 	
 	@Override
 	public void initialize() {
-		requirePrefix = "";
+		requirePrefix = getDefault(requirePrefix, "");
 	}
 	
 	@Override

@@ -19,7 +19,7 @@ public class YamlTestRunnerConf extends AbstractYamlConfFile {
 	
 	@Override
 	public void initialize() {
-		defaultBrowser = "chrome";
+		defaultBrowser = getDefault(defaultBrowser, "chrome");
 		browserPaths.put("windows", new HashMap<String, String>());
 		browserPaths.put("mac", new HashMap<String, String>());
 		browserPaths.put("linux", new HashMap<String, String>());

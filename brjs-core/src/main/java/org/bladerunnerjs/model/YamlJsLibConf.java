@@ -17,7 +17,7 @@ public class YamlJsLibConf extends AbstractYamlConfFile {
 	
 	@Override
 	public void initialize() {
-		libNamespace = "libns";
+		libNamespace = getDefault(libNamespace, "libns");
 	}
 	
 	@Override
