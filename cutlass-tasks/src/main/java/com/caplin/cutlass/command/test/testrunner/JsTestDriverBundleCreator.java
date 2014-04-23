@@ -13,6 +13,9 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -22,7 +25,8 @@ public class JsTestDriverBundleCreator
 
 	public static final String BUNDLES_DIR_NAME = "bundles";
 	
-	public static void createRequiredBundles(BRJS brjs, File jsTestDriverConf) throws IOException
+	public static void createRequiredBundles(BRJS brjs, File jsTestDriverConf)
+			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException
 	{
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
 		FileUtils.deleteQuietly(bundlesDir);
