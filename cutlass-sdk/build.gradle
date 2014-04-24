@@ -28,11 +28,7 @@ dependencies {
 
 	application project(path: ':bladerunner-common-servlets')
 	application project(path: ':bladerunner-prod-servlets')
-	application dependency('h2')
 	application dependency('javassist')
-	application (dependency('jsp-2.1-glassfish')) {
-		exclude module: 'ant'
-	}
 
 	javadocs project(path: ':brjs-core', configuration:'javadocs')
 
@@ -207,6 +203,7 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 
 createTestTask "testJsUTsIE", "libs/javascript", "UTs", "ie"
 createTestTask "testJsATsIE", "libs/javascript", "ATs", "ie"
+task testJsIE, dependsOn: [testJsUTsIE, testJsATsIE]
 createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
 createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
 
@@ -217,7 +214,7 @@ createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
 
 task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome]
 task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox]
-task testIE, dependsOn: [testJsUTsIE, testJsATsIE, testSystemAppsIE]
+task testIE, dependsOn: [testJsIE, testSystemAppsIE]
 task test, dependsOn: testChrome
 
 
@@ -374,10 +371,12 @@ class DistZipPathLogger extends BuildAdapter {
 		this.archivePath = archivePath
 	}
 	void buildFinished(BuildResult result) {
-		println ""
-		println "----"
-		println "BladeRunnerJS ${buildVersion} built and zipped to ${archivePath}"
-		println "----"
-		println ""
+		if (!result.failure) {
+    		println ""
+    		println "----"
+    		println "BladeRunnerJS ${buildVersion} built and zipped to ${archivePath}"
+    		println "----"
+    		println ""
+		}
 	}
 }
