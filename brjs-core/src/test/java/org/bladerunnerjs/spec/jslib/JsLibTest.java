@@ -21,7 +21,8 @@ public class JsLibTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsAssetLocationProducers()
+			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			lib = app.jsLib("lib1");
 			badLib = app.jsLib("%$&@");

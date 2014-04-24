@@ -9,7 +9,6 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
@@ -95,11 +94,6 @@ public final class JsLibAppWrapper implements JsLib {
 	}
 	
 	@Override
-	public JsLibConf libConf() throws ConfigException {
-		return wrappedJsLib.libConf();
-	}
-	
-	@Override
 	public Node parentNode() {
 		return wrappedJsLib.parentNode();
 	}
@@ -146,6 +140,11 @@ public final class JsLibAppWrapper implements JsLib {
 	@Override
 	public List<AssetLocation> assetLocations() {
 		return wrappedJsLib.assetLocations();
+	}
+	
+	@Override
+	public RootAssetLocation rootAssetLocation() {
+		return wrappedJsLib.rootAssetLocation();
 	}
 	
 	@Override

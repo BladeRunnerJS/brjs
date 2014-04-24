@@ -20,7 +20,6 @@ import org.bladerunnerjs.utility.TestRunner;
 public class StandardJsLib extends AbstractAssetContainer implements JsLib
 {
 	private String name;
-	private JsLibConf libConf;
 	private Node parent;
 	private final NodeMap<TypedTestPack> testTypes;
 	private File[] scopeFiles;
@@ -59,10 +58,6 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		return new NodeMap<>(rootNode, StandardJsLib.class, "libs", null);
 	}
 	
-	public AssetLocation rootAssetLocation() {
-		return assetLocation("");
-	}
-	
 	@Override
 	public File[] scopeFiles() {
 		if(scopeFiles == null) {
@@ -81,12 +76,7 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
-		try {
-			transformations.put("libns", libConf().getLibNamespace());
-		}
-		catch(ConfigException e) {
-			throw new ModelUpdateException(e);
-		}
+		transformations.put("libns", namespace());
 	}
 	
 	@Override
@@ -125,24 +115,18 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	}
 	
 	@Override
-	public JsLibConf libConf() throws ConfigException
-	{
-		if(libConf == null) {
-			libConf = new JsLibConf(this);
-		}
-		
-		return libConf ;
-	}
-	
-	@Override
 	public void populate(String libNamespace) throws InvalidNameException, ModelUpdateException
 	{
 		NameValidator.assertValidRootPackageName(this, libNamespace);
 		
 		try {
 			create();
-			libConf().setLibNamespace(libNamespace);
-			libConf().write();
+			
+			RootAssetLocation rootAssetLocation = rootAssetLocation();
+			if(rootAssetLocation != null) {
+				rootAssetLocation().setNamespace(libNamespace);
+			}
+			
 			BRJSNodeHelper.populate(this, true);
 		}
 		catch (ConfigException e) {
@@ -158,7 +142,8 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	@Override
 	public String requirePrefix() {
 		try {
-			return rootAssetLocation().requirePrefix();
+			RootAssetLocation rootAssetLocation = rootAssetLocation();
+			return (rootAssetLocation != null) ? rootAssetLocation().requirePrefix() : getName();
 		}
 		catch(RequirePathException e) {
 			throw new RuntimeException(e);
@@ -168,7 +153,8 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	@Override
 	public String namespace() {
 		try {
-			return rootAssetLocation().namespace();
+			RootAssetLocation rootAssetLocation = rootAssetLocation();
+			return (rootAssetLocation != null) ? rootAssetLocation().namespace() : requirePrefix().replace("/", ".");
 		}
 		catch(RequirePathException e) {
 			throw new RuntimeException(e);

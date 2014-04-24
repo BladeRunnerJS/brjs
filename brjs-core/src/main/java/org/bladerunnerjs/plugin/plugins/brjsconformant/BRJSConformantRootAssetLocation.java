@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.InstantiatedBRJSNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAsset;
+import org.bladerunnerjs.model.RootAssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -25,7 +26,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
-public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
+public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implements RootAssetLocation {
 	private final List<LinkedAsset> emptyLinkedAssetList = new ArrayList<>();
 	private final List<Asset> emptyAssetList = new ArrayList<>();
 	private final List<AssetLocation> emptyAssetLocationList = new ArrayList<>();
@@ -145,5 +146,10 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	@Override
 	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException {
 		return new ArrayList<A>();
+	}
+
+	@Override
+	public void setNamespace(String namespace) throws ConfigException {
+		libManifest.setRequirePrefix(namespace.replace('.', '/'));
 	}
 }
