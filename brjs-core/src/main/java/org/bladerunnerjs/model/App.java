@@ -211,7 +211,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 			List<JsLib> appJsLibs = new ArrayList<JsLib>();
 			appJsLibs.addAll( children(jsLibs) );
 			
-			for (JsLib lib : root().sdkLibs())
+			for (SdkJsLib lib : root().sdkLibs())
 			{
 				appJsLibs.add( new AppSdkJsLib(this, lib) );
 			}
@@ -301,7 +301,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return nonBladeRunnerLibsList.value(() -> {
 			Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
 			
-			for (JsLib lib : root().sdkNonBladeRunnerLibs())
+			for (SdkJsLib lib : root().sdkNonBladeRunnerLibs())
 			{
 				libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
 			}
@@ -317,7 +317,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public JsLib nonBladeRunnerLib(String libName)
 	{
 		JsLib appLib = child(nonBladeRunnerLibs, libName);
-		JsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
+		SdkJsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())
 		{

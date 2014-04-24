@@ -44,11 +44,6 @@ public class AppJsLib extends AbstractAssetContainer implements JsLib
 		this(rootNode, parent, dir, null);
 	}
 	
-	public static NodeMap<AppJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, AppJsLib.class, "sdk/libs/javascript/thirdparty", null);
-	}
-	
 	public static NodeMap<AppJsLib> createAppNonBladeRunnerLibNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, AppJsLib.class, "thirdparty-libraries", null);

@@ -18,7 +18,12 @@ public class SdkJsLib extends AppJsLib
 		super(rootNode, parent, dir, name);
 		testTypes = BRSdkTypedTestPack.createSdkTestPackNodeSet(rootNode);
 	}
-
+	
+	public static NodeMap<SdkJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
+	{
+		return new NodeMap<>(rootNode, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
+	}
+	
 	public static NodeMap<SdkJsLib> createSdkLibNodeSet(RootNode rootNode)
 	{
 		return new NodeMap<>(rootNode, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);

@@ -53,7 +53,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeMap<App> apps = App.createAppNodeSet(this);
 	private final NodeMap<App> systemApps = App.createSystemAppNodeSet(this);
 	private final NodeMap<SdkJsLib> sdkLibs = SdkJsLib.createSdkLibNodeSet(this);
-	private final NodeMap<AppJsLib> sdkNonBladeRunnerLibs = AppJsLib.createSdkNonBladeRunnerLibNodeSet(this);
+	private final NodeMap<SdkJsLib> sdkNonBladeRunnerLibs = SdkJsLib.createSdkNonBladeRunnerLibNodeSet(this);
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(DirNode.class, "js-patches");
 	private final NodeMap<NamedDirNode> templates = new NodeMap<>(this, NamedDirNode.class, "sdk/templates", "-template$");
 	private final NodeItem<DirNode> appJars = new NodeItem<>(DirNode.class, "sdk/libs/java/application");
@@ -221,9 +221,9 @@ public class BRJS extends AbstractBRJSRootNode
 		return libsDir;
 	}
 	
-	public List<JsLib> sdkLibs()
+	public List<SdkJsLib> sdkLibs()
 	{
-		return new ArrayList<JsLib>( children(sdkLibs) );
+		return new ArrayList<SdkJsLib>( children(sdkLibs) );
 	}
 	
 	public JsLib sdkLib(String libName)
@@ -231,17 +231,17 @@ public class BRJS extends AbstractBRJSRootNode
 		return child(sdkLibs, libName);
 	}
 	
-	public List<JsLib> sdkNonBladeRunnerLibs()
+	public List<SdkJsLib> sdkNonBladeRunnerLibs()
 	{
-		List<JsLib> typeCastLibs = new ArrayList<JsLib>();
-		for (JsLib jsLib : children(sdkNonBladeRunnerLibs))
+		List<SdkJsLib> typeCastLibs = new ArrayList<>();
+		for (SdkJsLib jsLib : children(sdkNonBladeRunnerLibs))
 		{
 			typeCastLibs.add(jsLib);
 		}
 		return typeCastLibs;
 	}
 	
-	public JsLib sdkNonBladeRunnerLib(String libName)
+	public SdkJsLib sdkNonBladeRunnerLib(String libName)
 	{
 		return child(sdkNonBladeRunnerLibs, libName);
 	}
