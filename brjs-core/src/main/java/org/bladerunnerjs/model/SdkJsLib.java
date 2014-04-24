@@ -4,19 +4,25 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 
-public class SdkJsLib extends AppJsLib
+public class SdkJsLib extends AbstractJsLib
 {
-	private static final String DUMMY_SDK_APP_NAME = "dummy-sdk-app"; // we need a dummy SDK app since SDK libs dont live inside an app
 	private final NodeMap<BRSdkTypedTestPack> testTypes;
+	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("SdkJsLib.testTypes", root(), file("tests"));
 	
 	public SdkJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
-		super(rootNode, parent, dir, name);
+		super(rootNode, parent, dir);
 		testTypes = BRSdkTypedTestPack.createSdkTestPackNodeSet(rootNode);
+	}
+	
+	public SdkJsLib(RootNode rootNode, Node parent, File dir)
+	{
+		this(rootNode, parent, dir, null);
 	}
 	
 	public static NodeMap<SdkJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
@@ -32,13 +38,15 @@ public class SdkJsLib extends AppJsLib
 	@Override
 	public App app()
 	{
-		return root().systemApp(DUMMY_SDK_APP_NAME);
+		return root().systemApp("SDK");			
 	}
 	
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return new ArrayList<TypedTestPack>( children(testTypes) );
+		return testTypesList.value(() -> {
+			return new ArrayList<TypedTestPack>( children(testTypes) );
+		});
 	}
 	
 	@Override
