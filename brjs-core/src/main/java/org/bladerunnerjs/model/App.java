@@ -32,10 +32,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeMap<StandardJsLib> nonBladeRunnerLibs;
+	private final NodeMap<AppJsLib> nonBladeRunnerLibs;
 	private final NodeMap<Bladeset> bladesets;
 	private final NodeMap<Aspect> aspects;
-	private final NodeMap<StandardJsLib> jsLibs;
+	private final NodeMap<AppJsLib> jsLibs;
 	
 	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>("BRJS.assetContainers", root(), dir(), root().libsDir());
 	private final MemoizedValue<List<AssetContainer>> nonAspectAssetContainers = new MemoizedValue<>("BRJS.nonAspectAssetContainers", root(), dir(), root().libsDir());
@@ -53,10 +53,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		nonBladeRunnerLibs = StandardJsLib.createAppNonBladeRunnerLibNodeSet(rootNode);
+		nonBladeRunnerLibs = AppJsLib.createAppNonBladeRunnerLibNodeSet(rootNode);
 		bladesets = Bladeset.createNodeSet(rootNode);
 		aspects = Aspect.createNodeSet(rootNode);
-		jsLibs = BRLib.createAppNodeSet(rootNode);
+		jsLibs = AppJsLib.createAppNodeSet(rootNode);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 		
 		registerInitializedNode();
@@ -211,9 +211,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 			List<JsLib> appJsLibs = new ArrayList<JsLib>();
 			appJsLibs.addAll( children(jsLibs) );
 			
-			for (JsLib lib : root().sdkLibs())
+			for (SdkJsLib lib : root().sdkLibs())
 			{
-				appJsLibs.add( new JsLibAppWrapper(this, lib) );
+				appJsLibs.add( new AppSdkJsLib(this, lib) );
 			}
 			appJsLibs.addAll( nonBladeRunnerLibs() );
 			
@@ -301,9 +301,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return nonBladeRunnerLibsList.value(() -> {
 			Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
 			
-			for (JsLib lib : root().sdkNonBladeRunnerLibs())
+			for (SdkJsLib lib : root().sdkNonBladeRunnerLibs())
 			{
-				libs.put(lib.getName(), new JsLibAppWrapper(this, lib) );			
+				libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
 			}
 			for (JsLib lib : children(nonBladeRunnerLibs))
 			{
@@ -317,11 +317,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public JsLib nonBladeRunnerLib(String libName)
 	{
 		JsLib appLib = child(nonBladeRunnerLibs, libName);
-		JsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
+		SdkJsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())
 		{
-			return new JsLibAppWrapper(this, sdkLib);
+			return new AppSdkJsLib(this, sdkLib);
 		}
 		return appLib;
 	}

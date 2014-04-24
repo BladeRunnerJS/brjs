@@ -9,119 +9,113 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.ObserverList;
 
-public final class JsLibAppWrapper implements JsLib {
-	private App jsLibApp;
-	private JsLib wrappedJsLib;
+public final class AppSdkJsLib implements JsLib {
+	private App app;
+	private JsLib sdkJsLib;
 	private File[] scopeFiles;
 	
-	public JsLibAppWrapper(App jsLibApp, JsLib jsLib) {
-		this.jsLibApp = jsLibApp;
-		this.wrappedJsLib = jsLib;
+	public AppSdkJsLib(App app, SdkJsLib sdkJsLib) {
+		this.app = app;
+		this.sdkJsLib = sdkJsLib;
 	}
 	
 	public JsLib getWrappedJsLib() {
-		return wrappedJsLib;
+		return sdkJsLib;
 	}
 	
 	@Override
 	public App app() {
-		return jsLibApp;
+		return app;
 	}
 	
 	@Override
 	public String getName() {
-		return wrappedJsLib.getName();
+		return sdkJsLib.getName();
 	}
 	
 	@Override
 	public boolean isValidName() {
-		return wrappedJsLib.isValidName();
+		return sdkJsLib.isValidName();
 	}
 	
 	@Override
 	public void assertValidName() throws InvalidNameException {
-		wrappedJsLib.assertValidName();
+		sdkJsLib.assertValidName();
 	}
 	
 	@Override
 	public String namespace() {
-		return wrappedJsLib.namespace();
+		return sdkJsLib.namespace();
 	}
 	
 	@Override
 	public boolean isNamespaceEnforced() {
-		return wrappedJsLib.isNamespaceEnforced();
+		return sdkJsLib.isNamespaceEnforced();
 	}
 	
 	@Override
 	public BRJS root() {
-		return wrappedJsLib.root();
+		return sdkJsLib.root();
 	}
 	
 	@Override
 	public String requirePrefix() {
-		return wrappedJsLib.requirePrefix();
+		return sdkJsLib.requirePrefix();
 	}
 	
 	@Override
 	public void populate() throws InvalidNameException, ModelUpdateException {
-		wrappedJsLib.populate();
+		sdkJsLib.populate();
 	}
 	
 	@Override
 	public Set<SourceModule> sourceModules() {
-		return wrappedJsLib.sourceModules();
+		return sdkJsLib.sourceModules();
 	}
 	
 	@Override
 	public SourceModule sourceModule(String requirePath) {
-		return wrappedJsLib.sourceModule(requirePath);
+		return sdkJsLib.sourceModule(requirePath);
 	}
 	
 	@Override
 	public List<AssetContainer> scopeAssetContainers() {
-		return wrappedJsLib.scopeAssetContainers();
+		return sdkJsLib.scopeAssetContainers();
 	}
 	
 	@Override
 	public String getTemplateName() {
-		return wrappedJsLib.getTemplateName();
-	}
-	
-	@Override
-	public JsLibConf libConf() throws ConfigException {
-		return wrappedJsLib.libConf();
+		return sdkJsLib.getTemplateName();
 	}
 	
 	@Override
 	public Node parentNode() {
-		return wrappedJsLib.parentNode();
+		return sdkJsLib.parentNode();
 	}
 	
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException {
-		wrappedJsLib.addTemplateTransformations(transformations);
+		sdkJsLib.addTemplateTransformations(transformations);
 	}
 	
 	@Override
 	public AssetLocation assetLocation(String locationPath) {
-		return wrappedJsLib.assetLocation(locationPath);
+		return sdkJsLib.assetLocation(locationPath);
 	}
 	
 	@Override
 	public File dir() {
-		return wrappedJsLib.dir();
+		return sdkJsLib.dir();
 	}
 	
 	@Override
 	public File file(String filePath) {
-		return wrappedJsLib.file(filePath);
+		return sdkJsLib.file(filePath);
 	}
 	
 	@Override
@@ -135,100 +129,105 @@ public final class JsLibAppWrapper implements JsLib {
 	
 	@Override
 	public void populate(String libNamespace) throws InvalidNameException, ModelUpdateException {
-		wrappedJsLib.populate(libNamespace);
+		sdkJsLib.populate(libNamespace);
 	}
 	
 	@Override
 	public boolean dirExists() {
-		return wrappedJsLib.dirExists();
+		return sdkJsLib.dirExists();
 	}
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		return wrappedJsLib.assetLocations();
+		return sdkJsLib.assetLocations();
+	}
+	
+	@Override
+	public RootAssetLocation rootAssetLocation() {
+		return sdkJsLib.rootAssetLocation();
 	}
 	
 	@Override
 	public List<String> getAssetLocationPaths()
 	{
-		return wrappedJsLib.getAssetLocationPaths();
+		return sdkJsLib.getAssetLocationPaths();
 	}
 	
 	@Override
 	public boolean containsFile(String filePath) {
-		return wrappedJsLib.containsFile(filePath);
+		return sdkJsLib.containsFile(filePath);
 	}
 	
 	@Override
 	public void create() throws InvalidNameException, ModelUpdateException {
-		wrappedJsLib.create();
+		sdkJsLib.create();
 	}
 	
 	@Override
 	public void ready() {
-		wrappedJsLib.ready();
+		sdkJsLib.ready();
 	}
 	
 	@Override
 	public void delete() throws ModelUpdateException {
-		wrappedJsLib.delete();
+		sdkJsLib.delete();
 	}
 	
 	@Override
 	public File storageDir(String pluginName) {
-		return wrappedJsLib.storageDir(pluginName);
+		return sdkJsLib.storageDir(pluginName);
 	}
 	
 	@Override
 	public File storageFile(String pluginName, String filePath) {
-		return wrappedJsLib.storageFile(pluginName, filePath);
+		return sdkJsLib.storageFile(pluginName, filePath);
 	}
 	
 	@Override
 	public NodeProperties nodeProperties(String pluginName) {
-		return wrappedJsLib.nodeProperties(pluginName);
+		return sdkJsLib.nodeProperties(pluginName);
 	}
 	
 	@Override
 	public void addObserver(EventObserver observer) {
-		wrappedJsLib.addObserver(observer);
+		sdkJsLib.addObserver(observer);
 	}
 	
 	@Override
 	public void addObserver(Class<? extends Event> eventType, EventObserver observer) {
-		wrappedJsLib.addObserver(eventType, observer);
+		sdkJsLib.addObserver(eventType, observer);
 	}
 	
 	@Override
 	public void notifyObservers(Event event, Node notifyForNode) {
-		wrappedJsLib.notifyObservers(event, notifyForNode);
+		sdkJsLib.notifyObservers(event, notifyForNode);
 	}
 	
 	@Override
 	public ObserverList getObservers() {
-		return wrappedJsLib.getObservers();
+		return sdkJsLib.getObservers();
 	}
 	
 	@Override
 	public void discoverAllChildren() {
-		wrappedJsLib.discoverAllChildren();
+		sdkJsLib.discoverAllChildren();
 	}
 
 	@Override
 	public void runTests(TestType... testTypes)
 	{
-		wrappedJsLib.runTests(testTypes);
+		sdkJsLib.runTests(testTypes);
 	}
 
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return wrappedJsLib.testTypes();
+		return sdkJsLib.testTypes();
 	}
 
 	@Override
 	public TypedTestPack testType(String type)
 	{
-		return wrappedJsLib.testType(type);
+		return sdkJsLib.testType(type);
 	}
 }

@@ -20,6 +20,11 @@ public class BRLibManifest extends ConfFile<BRLibConf> {
 		return conf.requirePrefix;
 	}
 	
+	public void setRequirePrefix(String requirePrefix) throws ConfigException {
+		conf.requirePrefix = requirePrefix;
+		verifyAndAutoWrite();
+	}
+	
 	public boolean manifestExists()
 	{
 		return lib.file(BR_MANIFEST_FILENAME).isFile();

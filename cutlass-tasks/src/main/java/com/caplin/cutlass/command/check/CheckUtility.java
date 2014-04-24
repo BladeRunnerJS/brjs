@@ -16,11 +16,13 @@ import org.apache.commons.io.filefilter.AndFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
-
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+
 import com.caplin.cutlass.util.FileUtility;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.SdkJsLib;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
@@ -200,7 +202,7 @@ public class CheckUtility
 		jarsToAdd.add(sdkLibSystemJar);
 	}
 
-	public void checkForApplicationThirdpartyLibraries(StringBuilder messageToShowUser, List<JsLib> sdkThirdpartyLibraries, App application)
+	public void checkForApplicationThirdpartyLibraries(StringBuilder messageToShowUser, List<SdkJsLib> sdkThirdpartyLibraries, App application)
 	{
 		if (sdkThirdpartyLibraries.size() == 0) 
 		{
@@ -222,7 +224,7 @@ public class CheckUtility
 		}
 	}
 
-	private List<File> getOverridenThirdpartyLibraries(File appThirdpartyDir, List<JsLib> sdkThirdpartyLibraries)
+	private List<File> getOverridenThirdpartyLibraries(File appThirdpartyDir, List<SdkJsLib> sdkThirdpartyLibraries)
 	{
 		List<File> overridenThirdpartyLibraries = new ArrayList<File>();
 		
