@@ -75,7 +75,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	
 	@Override
 	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
-		if(assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace() + ".")) {
+		if(assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace())) {
 			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace() + ".*' was expected.");
 		}
 	}

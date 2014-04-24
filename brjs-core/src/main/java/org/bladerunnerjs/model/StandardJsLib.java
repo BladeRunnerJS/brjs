@@ -25,6 +25,7 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	private File[] scopeFiles;
 	
 	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("StandardJsLib.testTypes", root(), file("tests"));
+	private final MemoizedValue<Boolean> isNamespaceEnforcedValue = new MemoizedValue<Boolean>("BRLib.isNamespaceEnforcedValue", root(), file("no-namespace-enforcement"));
 	
 	public StandardJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -163,7 +164,10 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	
 	@Override
 	public boolean isNamespaceEnforced() {
-		return true;
+		return isNamespaceEnforcedValue.value(() -> {
+			// secret mechanism for CaplinTrader, to aid with backwards compatibility
+			return (file("no-namespace-enforcement").exists()) ? false : true;
+		});
 	}
 	
 	@Override

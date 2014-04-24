@@ -64,4 +64,26 @@ public class BRLibTest extends SpecTest {
 		then(response).containsNodeJsClasses("foo.Bar");
 	}
 	
+	@Test
+	public void sdkLibrariesCanOptionallyDisableJsNamespaceEnforcement() throws Exception {
+		given(aspect).indexPageRefersTo("br.SdkClass", "anotherRootPkg.SdkClass")
+			.and(sdkLib).containsFile("no-namespace-enforcement")
+			.and(sdkLib).hasClass("br/SdkClass")
+			.and(sdkLib).hasClass("anotherRootPkg/SdkClass");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsNodeJsClasses("br.SdkClass")
+			.and(response).containsNodeJsClasses("anotherRootPkg.SdkClass");
+	}
+	
+	@Test
+	public void sdkLibrariesCanOptionallyDisableI18nNamespaceEnforcement() throws Exception {
+		given(aspect).indexPageRefersTo("br.SdkClass")
+    		.and(sdkLib).containsFile("no-namespace-enforcement")
+    		.and(sdkLib).hasClass("br/SdkClass")
+    		.and(sdkLib).containsFileWithContents("resources/en_GB.properties", "br.property=property value\n" + "anotherRootPkg.property=another value");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(response).containsText("\"br.property\":\"property value\"")
+			.and(response).containsText("\"anotherRootPkg.property\":\"another value\"");
+	}
+	
 }

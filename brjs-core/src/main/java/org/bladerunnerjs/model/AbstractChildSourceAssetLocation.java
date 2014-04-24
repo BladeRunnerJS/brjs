@@ -35,7 +35,7 @@ public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAs
 			String locationRequirePrefix = RelativePathUtility.get(assetContainer.dir(), dir()).replaceAll("/$", "");
 			locationRequirePrefix = StringUtils.substringAfter(locationRequirePrefix, "/");
 			
-			if(!locationRequirePrefix.startsWith(containerRequirePrefix)) {
+			if (assetContainer.isNamespaceEnforced() && !locationRequirePrefix.startsWith(containerRequirePrefix)) {
 				// TODO: use dir().getPath() instead of locationRequirePrefix for a clearer error message
 				throw new InvalidRequirePathException("Source module containing directory '" + locationRequirePrefix + "' does not start with correct require prefix '" + containerRequirePrefix + "'.");
 			}

@@ -1,11 +1,14 @@
 language: java
 jdk:
-    - oraclejdk8
-
+- oraclejdk8
 before_install:
-    - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
-    - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
+- export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
+- export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
 install:
-    - TERM=dumb ./gradlew compileJava
+- TERM=dumb ./gradlew compileJava
 script:
-    - TERM=dumb ./gradlew testJava
+- TERM=dumb ./gradlew testJava
+notifications:
+  hipchat:
+    rooms:
+      secure: kCMCO2aez+lZZtBi1g4O3z92teXx2rxifVWgwwTloE/Oyi8t3+NPu7932QOg1ZlHiIFRh9ncSsM00y/gN3pp1f6Q7nm+5UxFflTHqTRrrsHe0Tgjj+bl86yGjoY4KWEhuNq9rxEo7ciMB5aYcXEeGVc34XghUaa/3FNQWg2NArA=

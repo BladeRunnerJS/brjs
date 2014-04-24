@@ -7,7 +7,6 @@ import org.junit.Test;
 
 
 public class BladerunnerConfTest extends SpecTest {
-	// TODO: add a test that shows the object updates if the conf file is modified
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -22,10 +21,9 @@ public class BladerunnerConfTest extends SpecTest {
 	}
 	
 	@Test
-	public void readingBladerunnerConfWithMissingLoginReamlThrowsException() throws Exception {
+	public void readingBladerunnerConfWithMissingLoginReamlUsesTheDefault() throws Exception {
 		given(brjs).containsFileWithContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 7070");
-		when(brjs).bladerunnerConf();
-		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/bladerunner.conf").getPath(), unquoted("'loginRealm' may not be null"));
+		then(brjs.bladerunnerConf().getLoginRealm()).textEquals("BladeRunnerLoginRealm");
 	}
 	
 	@Test
@@ -36,17 +34,16 @@ public class BladerunnerConfTest extends SpecTest {
 	}
 	
 	@Test
-	public void readingAnEmptyBladerunnerConfFileWillCauseAnException() throws Exception {
+	public void readingAnEmptyBladerunnerConfWillUseTheDefaultValues() throws Exception {
 		given(brjs).containsEmptyFile("conf/bladerunner.conf");
-		when(brjs).bladerunnerConf();
-		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/bladerunner.conf").getPath(), unquoted("is empty"));
+		then(brjs.bladerunnerConf().getLoginRealm()).textEquals("BladeRunnerLoginRealm")
+			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	
 	@Test
-	public void readingAnBladerunnerConfFileWithMissingValuesWillCauseAnException() throws Exception {
+	public void readingAnBladerunnerConfFileWithMissingValuesWillUseTheDefault() throws Exception {
 		given(brjs).containsFileWithContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
-		when(brjs).bladerunnerConf();
-		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/bladerunner.conf").getPath(), unquoted("'browserCharacterEncoding' may not be null"));
+		then(brjs.bladerunnerConf().getBrowserCharacterEncoding()).textEquals("UTF-8");
 	}
 	
 	@Test
@@ -58,7 +55,7 @@ public class BladerunnerConfTest extends SpecTest {
 	
 	@Test
 	public void jettyPortValuesLessThanOneCauseAnException() throws Exception {
-		given(brjs).containsFileWithContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 0\nloginRealm: BladeRunnerLoginRealm");
+		given(brjs).containsFileWithContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: -1\nloginRealm: BladeRunnerLoginRealm");
 		when(brjs).bladerunnerConf();
 		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/bladerunner.conf").getPath(), unquoted("jettyPort' must be greater than or equal to 1"));
 	}
@@ -98,4 +95,13 @@ public class BladerunnerConfTest extends SpecTest {
 		when(brjs).bladerunnerConf();
 		then(exceptions).verifyException(ConfigException.class, brjs.file("conf/bladerunner.conf").getPath(), unquoted("Unable to find property 'sillyProperty'"));
 	}
+	
+	@Test
+	public void theModelUpdatesWhenTheUnderlyingFileIsChanged() throws Exception {
+		given(brjs).containsFileWithContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: UTF-8\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm")
+			.and(brjs.bladerunnerConf()).browserCharacterEncodingIs("UTF-8");
+		when(brjs).containsFileWithContents("conf/bladerunner.conf", "defaultFileCharacterEncoding: UTF-8\nbrowserCharacterEncoding: ISO-8859-1\njettyPort: 7070\nloginRealm: BladeRunnerLoginRealm");
+		then(brjs.bladerunnerConf().getBrowserCharacterEncoding().toString()).textEquals("ISO-8859-1");
+	}
+	
 }

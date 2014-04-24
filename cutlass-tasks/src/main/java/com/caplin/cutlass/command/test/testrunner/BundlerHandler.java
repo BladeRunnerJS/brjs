@@ -8,10 +8,12 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 
 public class BundlerHandler
@@ -41,11 +43,11 @@ public class BundlerHandler
 	}
 
 	
-	public void createBundleFile(File bundleFile, String bundlePath) throws IOException
+	public void createBundleFile(File bundleFile, String bundlePath) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException
 	{
 		if (bundlePath.contains("\\"))
 		{
-			throw new IOException("Invalid bundlePath - it should not contain '\', only '/' as a seperator");
+			throw new IllegalArgumentException("Invalid bundlePath - it should not contain '\', only '/' as a seperator");
 		}
 		OutputStream outputStream = createBundleOutputStream(bundleFile);
 		String modelRequestPath = getModelRequestPath(bundlePath);
@@ -85,37 +87,21 @@ public class BundlerHandler
 		return null;
 	}
 
-	private void handleBundleRequest(File bundleFile, String brjsRequestPath, OutputStream outputStream)
+	private void handleBundleRequest(File bundleFile, String brjsRequestPath, OutputStream outputStream) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
 	{
-		try
+		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
+		if (bundlableNode == null)
 		{
-    		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
-    		if (bundlableNode == null)
-    		{
-    			throw new RuntimeException("Unable to calculate bundlable node for the bundler file: " + bundleFile.getAbsolutePath());
-    		}
-    		
-    		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream);
+			throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundler file: " + bundleFile.getAbsolutePath());
 		}
-		catch (Exception ex)
-		{
-			throw new RuntimeException("There was an error while bundling.", ex);
-		}
+		
+		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream);
 	}	
 	
-	private static OutputStream createBundleOutputStream(File bundlerFile)
+	private static OutputStream createBundleOutputStream(File bundlerFile) throws IOException
 	{
-		try
-		{
-			FileUtils.deleteQuietly(bundlerFile);
-			bundlerFile.getParentFile().mkdirs();
-			bundlerFile.createNewFile();
-			return new BufferedOutputStream(new FileOutputStream(bundlerFile));
-		}
-		catch (Exception ex)
-		{
-			throw new RuntimeException("Unable to create or write to file: " + bundlerFile.getAbsolutePath() + "\n", ex);
-		}
+		bundlerFile.getParentFile().mkdirs();
+		return new BufferedOutputStream(new FileOutputStream(bundlerFile));
 	}
 	
 	
