@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -12,6 +13,7 @@ public class BRLib extends StandardJsLib
 {
 	
 	private final BRLibManifest libManifest;
+	private final MemoizedValue<Boolean> isNamespaceEnforcedValue;
 	
 	public BRLib(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -24,6 +26,7 @@ public class BRLib extends StandardJsLib
 		{
 			throw new RuntimeException(e);
 		}
+		isNamespaceEnforcedValue = new MemoizedValue<Boolean>("BRLib.isNamespaceEnforcedValue", root(), libManifest.getConfFile());
 	}
 	
 	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)
@@ -71,7 +74,9 @@ public class BRLib extends StandardJsLib
 	public boolean isNamespaceEnforced() {
 		try
 		{
-			return libManifest.getEnforcedNamespaces();
+    		return isNamespaceEnforcedValue.value(() -> {
+    				return libManifest.getEnforcedNamespaces();
+    		});
 		}
 		catch (ConfigException e)
 		{
