@@ -17,7 +17,7 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
-public class StandardJsLib extends AbstractAssetContainer implements JsLib
+public class AppJsLib extends AbstractAssetContainer implements JsLib
 {
 	private String name;
 	private Node parent;
@@ -27,7 +27,7 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("StandardJsLib.testTypes", root(), file("tests"));
 	private final MemoizedValue<Boolean> isNamespaceEnforcedValue = new MemoizedValue<Boolean>("BRLib.isNamespaceEnforcedValue", root(), file("no-namespace-enforcement"));
 	
-	public StandardJsLib(RootNode rootNode, Node parent, File dir, String name)
+	public AppJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
@@ -38,25 +38,25 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 		registerInitializedNode();
 	}
 	
-	public StandardJsLib(RootNode rootNode, Node parent, File dir)
+	public AppJsLib(RootNode rootNode, Node parent, File dir)
 	{
 		// TODO: can we avoid having to have a null name for a NamedNode that is available as a single item through the model
 		this(rootNode, parent, dir, null);
 	}
 	
-	public static NodeMap<StandardJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
+	public static NodeMap<AppJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(rootNode, StandardJsLib.class, "sdk/libs/javascript/thirdparty", null);
+		return new NodeMap<>(rootNode, AppJsLib.class, "sdk/libs/javascript/thirdparty", null);
 	}
 	
-	public static NodeMap<StandardJsLib> createAppNonBladeRunnerLibNodeSet(RootNode rootNode)
+	public static NodeMap<AppJsLib> createAppNonBladeRunnerLibNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(rootNode, StandardJsLib.class, "thirdparty-libraries", null);
+		return new NodeMap<>(rootNode, AppJsLib.class, "thirdparty-libraries", null);
 	}
 	
-	public static NodeMap<StandardJsLib> createAppNodeSet(RootNode rootNode)
+	public static NodeMap<AppJsLib> createAppNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(rootNode, StandardJsLib.class, "libs", null);
+		return new NodeMap<>(rootNode, AppJsLib.class, "libs", null);
 	}
 	
 	@Override

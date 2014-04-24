@@ -14,12 +14,12 @@ import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.ObserverList;
 
-public final class JsLibAppWrapper implements JsLib {
+public final class AppSdkJsLib implements JsLib {
 	private App jsLibApp;
 	private JsLib wrappedJsLib;
 	private File[] scopeFiles;
 	
-	public JsLibAppWrapper(App jsLibApp, JsLib jsLib) {
+	public AppSdkJsLib(App jsLibApp, JsLib jsLib) {
 		this.jsLibApp = jsLibApp;
 		this.wrappedJsLib = jsLib;
 	}
