@@ -10,8 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BRJSIOTest {
-	private final BRJSIO io = new BRJSIO();
+public class IOTest {
+	private final IO io = new IO();
 	private File tempDir;
 	private File subDir1;
 	private File subDir2;

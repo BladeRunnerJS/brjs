@@ -10,10 +10,10 @@ import java.util.Set;
 
 public class NodeMap<N extends Node>
 {
-	public Map<String, N> nodes = new HashMap<>();
-	public Class<N> nodeClass;
+	public final Map<String, N> nodes = new HashMap<>();
+	public final Class<N> nodeClass;
 	
-	private List<NodeMapLocator> nodeMapLocators = new ArrayList<>();
+	private final List<NodeMapLocator> nodeMapLocators = new ArrayList<>();
 	private final File dir;
 	private final RootNode rootNode;
 	

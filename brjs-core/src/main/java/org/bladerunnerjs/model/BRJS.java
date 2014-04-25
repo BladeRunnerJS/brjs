@@ -74,7 +74,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Map<String, FileInfo> fileInfos = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private final FileModificationService fileModificationService;
-	private final BRJSIO io = new BRJSIO();
+	private final IO io = new IO();
 	private final File libsDir = file("sdk/libs/javascript");
 	private boolean closed = false;
 	
@@ -193,7 +193,8 @@ public class BRJS extends AbstractBRJSRootNode
 		this.workingDir = new WorkingDirNode(this, workingDir);
 	}
 	
-	public BRJSIO io() {
+	@Override
+	public IO io() {
 		return io;
 	}
 	
