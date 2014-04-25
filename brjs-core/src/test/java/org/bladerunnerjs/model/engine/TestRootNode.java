@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -20,6 +21,7 @@ public final class TestRootNode extends AbstractRootNode
 	NodeMap<TestChildNode> multiLocationChildNodes = new NodeMap<>(this, TestChildNode.class, "set-primary-location", "^child-");
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(TestMultiLocationItemNode.class, "single-item-primary-location");
+	private final IO io = new IO();
 	
 	public TestRootNode(File dir)
 	{
@@ -89,5 +91,10 @@ public final class TestRootNode extends AbstractRootNode
 	@Override
 	public FileInfo getFileInfo(File dir) {
 		return new StandardFileInfo(dir, null, new PessimisticFileModificationInfo());
+	}
+	
+	@Override
+	public IO io() {
+		return io ;
 	}
 }

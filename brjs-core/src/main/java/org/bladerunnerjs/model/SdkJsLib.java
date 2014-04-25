@@ -17,7 +17,7 @@ public class SdkJsLib extends AbstractJsLib
 	public SdkJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
-		testTypes = BRSdkTypedTestPack.createSdkTestPackNodeSet(rootNode);
+		testTypes = BRSdkTypedTestPack.createSdkTestPackNodeSet(this);
 	}
 	
 	public SdkJsLib(RootNode rootNode, Node parent, File dir)
@@ -25,14 +25,14 @@ public class SdkJsLib extends AbstractJsLib
 		this(rootNode, parent, dir, null);
 	}
 	
-	public static NodeMap<SdkJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
+	public static NodeMap<SdkJsLib> createSdkNonBladeRunnerLibNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
+		return new NodeMap<>(node, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
 	}
 	
-	public static NodeMap<SdkJsLib> createSdkLibNodeSet(RootNode rootNode)
+	public static NodeMap<SdkJsLib> createSdkLibNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
+		return new NodeMap<>(node, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
 	}
 	
 	@Override

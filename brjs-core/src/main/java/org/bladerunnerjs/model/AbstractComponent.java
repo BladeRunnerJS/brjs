@@ -17,8 +17,8 @@ public abstract class AbstractComponent extends AbstractAssetContainer implement
 	
 	public AbstractComponent(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
-		themes = Theme.createNodeSet(rootNode);
-		testTypes = TypedTestPack.createNodeSet(rootNode);
+		themes = Theme.createNodeSet(this);
+		testTypes = TypedTestPack.createNodeSet(this);
 	}
 	
 	@Override

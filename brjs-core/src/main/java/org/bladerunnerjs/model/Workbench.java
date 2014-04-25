@@ -25,8 +25,8 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
-		testTypes = TypedTestPack.createNodeSet(rootNode);
-		themes = Theme.createNodeSet(rootNode);
+		testTypes = TypedTestPack.createNodeSet(this);
+		themes = Theme.createNodeSet(this);
 		
 		registerInitializedNode();
 	}

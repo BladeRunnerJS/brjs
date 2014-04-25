@@ -27,14 +27,14 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		blades = Blade.createNodeSet(rootNode);
+		blades = Blade.createNodeSet(this);
 		
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<Bladeset> createNodeSet(RootNode rootNode)
+	public static NodeMap<Bladeset> createNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, Bladeset.class, null, "-bladeset$");
+		return new NodeMap<>(node, Bladeset.class, null, "-bladeset$");
 	}
 	
 	@Override

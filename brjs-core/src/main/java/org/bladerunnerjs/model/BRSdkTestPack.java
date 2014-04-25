@@ -15,9 +15,9 @@ public class BRSdkTestPack extends TestPack
 		super(rootNode, parent, dir, name);
 	}
 	
-	public static NodeMap<BRSdkTestPack> createBrSdkTestPackNodeSet(RootNode rootNode)
+	public static NodeMap<BRSdkTestPack> createBrSdkTestPackNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, BRSdkTestPack.class, "", null);
+		return new NodeMap<>(node, BRSdkTestPack.class, "", null);
 	}
 	
 	@Override

@@ -23,15 +23,15 @@ public class TypedTestPack extends SourceResources implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		technologyTestPacks = TestPack.createNodeSet(rootNode);
+		technologyTestPacks = TestPack.createNodeSet(this);
 		
 		// TODO: we should never call registerInitializedNode() from a non-final class
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<TypedTestPack> createNodeSet(RootNode rootNode)
+	public static NodeMap<TypedTestPack> createNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, TypedTestPack.class, "tests", "^test-");
+		return new NodeMap<>(node, TypedTestPack.class, "tests", "^test-");
 	}
 	
 	@Override

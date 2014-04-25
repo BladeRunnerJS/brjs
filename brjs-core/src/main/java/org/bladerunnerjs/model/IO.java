@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BRJSIO {
+public class IO {
 	private final Map<FileAccessLimitScope, File[]> activeScopes = new HashMap<>();
 	private final SecurityManager securityManager = new BRJSSecurityManager(activeScopes);
 	
