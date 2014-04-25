@@ -1,4 +1,3 @@
 #NOTE: We use the 'debug' version of Knockout so it isn't minified. When upgrading make sure to set the 'DEBUG' to false again.
-depends: jquery
 js: knockout-3.0.0.debug.js
 exports: ko
