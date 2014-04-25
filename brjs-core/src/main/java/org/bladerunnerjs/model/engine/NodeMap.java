@@ -83,7 +83,7 @@ public class NodeMap<N extends Node>
 		return childDir;
 	}
 	
-	public List<String> getPossibleDirNames(String childName)
+	private List<String> getPossibleDirNames(String childName)
 	{
 		List<String> dirNames = new ArrayList<String>();
 		
