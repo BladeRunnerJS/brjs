@@ -12,45 +12,43 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
-public class StandardJsLib extends AbstractAssetContainer implements JsLib
+public abstract class AbstractJsLib extends AbstractAssetContainer implements JsLib
 {
 	private String name;
-	private JsLibConf libConf;
 	private Node parent;
-	private final NodeMap<TypedTestPack> testTypes;
 	private File[] scopeFiles;
 	
-	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("StandardJsLib.testTypes", root(), file("tests"));
+	private final MemoizedValue<Boolean> isNamespaceEnforcedValue = new MemoizedValue<Boolean>("AbstractJsLib.isNamespaceEnforcedValue", root(), file("no-namespace-enforcement"));
 	
-	public StandardJsLib(RootNode rootNode, Node parent, File dir, String name)
+	public AbstractJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
 		this.parent = parent;
-		testTypes = TypedTestPack.createNodeSet(rootNode);
 		
 		// TODO: we should never call registerInitializedNode() from a non-final class
 		registerInitializedNode();
 	}
 	
-	public StandardJsLib(RootNode rootNode, Node parent, File dir)
+	public AbstractJsLib(RootNode rootNode, Node parent, File dir)
 	{
 		// TODO: can we avoid having to have a null name for a NamedNode that is available as a single item through the model
 		this(rootNode, parent, dir, null);
 	}
 	
-	public static NodeMap<StandardJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
+	public static NodeMap<SdkJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(rootNode, StandardJsLib.class, "sdk/libs/javascript/thirdparty", null);
+		return new NodeMap<>(rootNode, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
 	}
 	
-	public static NodeMap<StandardJsLib> createAppNonBladeRunnerLibNodeSet(RootNode rootNode)
+	public static NodeMap<SdkJsLib> createSdkLibNodeSet(RootNode rootNode)
 	{
-		return new NodeMap<>(rootNode, StandardJsLib.class, "thirdparty-libraries", null);
+		return new NodeMap<>(rootNode, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
 	}
 	
 	@Override
@@ -71,12 +69,7 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
-		try {
-			transformations.put("libns", libConf().getLibNamespace());
-		}
-		catch(ConfigException e) {
-			throw new ModelUpdateException(e);
-		}
+		transformations.put("libns", namespace());
 	}
 	
 	@Override
@@ -105,34 +98,19 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	}
 	
 	@Override
-	public App app()
-	{
-		if (parent == root())
-		{
-			return root().systemApp("SDK");			
-		}
-		return super.app();
-	}
-	
-	@Override
-	public JsLibConf libConf() throws ConfigException
-	{
-		if(libConf == null) {
-			libConf = new JsLibConf(this);
-		}
-		
-		return libConf ;
-	}
-	
-	@Override
 	public void populate(String libNamespace) throws InvalidNameException, ModelUpdateException
 	{
 		NameValidator.assertValidRootPackageName(this, libNamespace);
 		
 		try {
-			libConf().setLibNamespace(libNamespace);
-			populate();
-			libConf().write();
+			create();
+			
+			RootAssetLocation rootAssetLocation = rootAssetLocation();
+			if(rootAssetLocation != null) {
+				rootAssetLocation().setNamespace(libNamespace);
+			}
+			
+			BRJSNodeHelper.populate(this, true);
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {
@@ -146,12 +124,32 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	
 	@Override
 	public String requirePrefix() {
-		return getName();
+		try {
+			RootAssetLocation rootAssetLocation = rootAssetLocation();
+			return (rootAssetLocation != null) ? rootAssetLocation().requirePrefix() : getName();
+		}
+		catch(RequirePathException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public String namespace() {
+		try {
+			RootAssetLocation rootAssetLocation = rootAssetLocation();
+			return (rootAssetLocation != null) ? rootAssetLocation().namespace() : requirePrefix().replace("/", ".");
+		}
+		catch(RequirePathException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
 	public boolean isNamespaceEnforced() {
-		return true;
+		return isNamespaceEnforcedValue.value(() -> {
+			// secret mechanism for CaplinTrader, to aid with backwards compatibility
+			return (file("no-namespace-enforcement").exists()) ? false : true;
+		});
 	}
 	
 	@Override
@@ -170,19 +168,5 @@ public class StandardJsLib extends AbstractAssetContainer implements JsLib
 	public void runTests(TestType... testTypes)
 	{
 		TestRunner.runTests(testTypes);
-	}
-	
-	@Override
-	public List<TypedTestPack> testTypes()
-	{
-		return testTypesList.value(() -> {
-			return children(testTypes);
-		});
-	}
-	
-	@Override
-	public TypedTestPack testType(String testTypeName)
-	{
-		return child(testTypes, testTypeName);
 	}
 }

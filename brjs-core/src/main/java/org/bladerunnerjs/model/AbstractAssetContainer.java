@@ -75,6 +75,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
+	public RootAssetLocation rootAssetLocation() {
+		AssetLocation assetLocation = assetLocation("");
+		return ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
+	}
+	
+	@Override
 	public List<String> getAssetLocationPaths()
 	{
 		List<String> assetLocationPaths = new ArrayList<String>();

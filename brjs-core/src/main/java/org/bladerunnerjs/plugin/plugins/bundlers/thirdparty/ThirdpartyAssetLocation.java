@@ -8,10 +8,12 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetFilter;
 import org.bladerunnerjs.model.DeepAssetLocation;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 
 public class ThirdpartyAssetLocation extends DeepAssetLocation {
 	private final NonBladerunnerJsLibManifest manifest;
@@ -30,6 +32,11 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 	@Override
 	public String jsStyle() {
 		return ThirdpartyAssetLocation.class.getSimpleName();
+	}
+	
+	@Override
+	public String requirePrefix() throws RequirePathException {
+		return ((JsLib) assetContainer()).getName();
 	}
 	
 	@Override

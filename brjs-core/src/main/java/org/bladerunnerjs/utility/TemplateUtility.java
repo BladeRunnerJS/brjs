@@ -19,11 +19,15 @@ import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 public class TemplateUtility
 {
 	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations) throws TemplateInstallationException {
+		installTemplate(node, templateName, transformations, false);
+	}
+	
+	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
 		try {
 			if(node.dirExists() && !(node instanceof BRJS)) {
 				List<File> dirContents = node.root().getFileInfo(node.dir()).filesAndDirs();
 				
-				if(dirContents.size() != 0) {
+				if((dirContents.size() != 0) && !allowNonEmptyDirectories) {
 					throw new DirectoryAlreadyExistsException(node);
 				}
 			}
