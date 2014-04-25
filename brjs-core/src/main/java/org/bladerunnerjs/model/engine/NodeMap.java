@@ -14,13 +14,15 @@ public class NodeMap<N extends Node>
 	public Class<N> nodeClass;
 	
 	private List<NodeMapLocator> nodeMapLocators = new ArrayList<>();
+	private final File dir;
 	private final RootNode rootNode;
 	
-	public NodeMap(RootNode rootNode, Class<N> nodeClass, String subDirPath, String dirNameFilter)
+	public NodeMap(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter)
 	{
 		this.nodeClass = nodeClass;
+		dir = node.dir();
+		rootNode = node.root();
 		nodeMapLocators.add(new DirNodeMapLocator(rootNode, subDirPath, dirNameFilter));
-		this.rootNode = rootNode;
 	}
 	
 	public void addAlternateLocation(String subDirPath, String dirNameFilter)
@@ -33,7 +35,7 @@ public class NodeMap<N extends Node>
 		nodeMapLocators.add(new SingleDirNodeMapLocator(itemName, subDirPath));
 	}
 	
-	public List<String> getLocatorNames(File dir)
+	public List<String> getLocatorNames()
 	{
 		Set<String> visitedLocatorNames = new LinkedHashSet<>();
 		List<String> locatorNames = new ArrayList<>();
@@ -58,7 +60,7 @@ public class NodeMap<N extends Node>
 		return locatorNames;
 	}
 	
-	public File getDir(File dir, String childName)
+	public File getDir(String childName)
 	{
 		List<String> possibleDirNames = getPossibleDirNames(childName);
 		File childDir = null;

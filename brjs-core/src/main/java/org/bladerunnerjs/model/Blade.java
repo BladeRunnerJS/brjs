@@ -47,9 +47,9 @@ public final class Blade extends AbstractComponent implements NamedNode
 		return scopeAssetContainers;
 	}
 	
-	public static NodeMap<Blade> createNodeSet(RootNode rootNode)
+	public static NodeMap<Blade> createNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, Blade.class, "blades", null);
+		return new NodeMap<>(node, Blade.class, "blades", null);
 	}
 	
 	@Override

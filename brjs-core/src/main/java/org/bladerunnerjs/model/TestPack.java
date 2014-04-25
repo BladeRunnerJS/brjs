@@ -40,9 +40,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<TestPack> createNodeSet(RootNode rootNode)
+	public static NodeMap<TestPack> createNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, TestPack.class, "", null);
+		return new NodeMap<>(node, TestPack.class, "", null);
 	}
 	
 	@Override

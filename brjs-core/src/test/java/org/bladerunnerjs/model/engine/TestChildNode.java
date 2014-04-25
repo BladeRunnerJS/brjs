@@ -22,7 +22,7 @@ public final class TestChildNode extends AbstractNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		grandChildNodes = new NodeMap<>(rootNode, TestGrandChildNode.class, "grandchild", null);
+		grandChildNodes = new NodeMap<>(this, TestGrandChildNode.class, "grandchild", null);
 		
 		registerInitializedNode();
 	}

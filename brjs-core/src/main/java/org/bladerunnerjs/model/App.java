@@ -53,23 +53,23 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		nonBladeRunnerLibs = AppJsLib.createAppNonBladeRunnerLibNodeSet(rootNode);
-		bladesets = Bladeset.createNodeSet(rootNode);
-		aspects = Aspect.createNodeSet(rootNode);
-		jsLibs = AppJsLib.createAppNodeSet(rootNode);
+		nonBladeRunnerLibs = AppJsLib.createAppNonBladeRunnerLibNodeSet(this);
+		bladesets = Bladeset.createNodeSet(this);
+		aspects = Aspect.createNodeSet(this);
+		jsLibs = AppJsLib.createAppNodeSet(this);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 		
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<App> createAppNodeSet(BRJS brjs)
+	public static NodeMap<App> createAppNodeSet(Node node)
 	{
-		return new NodeMap<>(brjs, App.class, "apps", null);
+		return new NodeMap<>(node, App.class, "apps", null);
 	}
 	
-	public static NodeMap<App> createSystemAppNodeSet(BRJS brjs)
+	public static NodeMap<App> createSystemAppNodeSet(Node node)
 	{
-		return new NodeMap<>(brjs, App.class, "sdk/system-applications", null);
+		return new NodeMap<>(node, App.class, "sdk/system-applications", null);
 	}
 	
 	@Override

@@ -16,7 +16,7 @@ public class AppJsLib extends AbstractJsLib
 	public AppJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir, name);
-		testTypes = TypedTestPack.createNodeSet(rootNode);
+		testTypes = TypedTestPack.createNodeSet(this);
 	}
 	
 	public AppJsLib(RootNode rootNode, Node parent, File dir)
@@ -24,14 +24,14 @@ public class AppJsLib extends AbstractJsLib
 		this(rootNode, parent, dir, null);
 	}
 	
-	public static NodeMap<AppJsLib> createAppNonBladeRunnerLibNodeSet(RootNode rootNode)
+	public static NodeMap<AppJsLib> createAppNonBladeRunnerLibNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, AppJsLib.class, "thirdparty-libraries", null);
+		return new NodeMap<>(node, AppJsLib.class, "thirdparty-libraries", null);
 	}
 	
-	public static NodeMap<AppJsLib> createAppNodeSet(RootNode rootNode)
+	public static NodeMap<AppJsLib> createAppNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, AppJsLib.class, "libs", null);
+		return new NodeMap<>(node, AppJsLib.class, "libs", null);
 	}
 	
 	@Override

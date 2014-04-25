@@ -15,12 +15,12 @@ public class BRSdkTypedTestPack extends TypedTestPack
 	public BRSdkTypedTestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir, name);
-		technologyTestPacks = BRSdkTestPack.createBrSdkTestPackNodeSet(rootNode);
+		technologyTestPacks = BRSdkTestPack.createBrSdkTestPackNodeSet(this);
 	}
 	
-	public static NodeMap<BRSdkTypedTestPack> createSdkTestPackNodeSet(RootNode rootNode)
+	public static NodeMap<BRSdkTypedTestPack> createSdkTestPackNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, BRSdkTypedTestPack.class, "tests", "^test-");
+		return new NodeMap<>(node, BRSdkTypedTestPack.class, "tests", "^test-");
 	}
 	
 	public List<TestPack> testTechs()

@@ -35,15 +35,15 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		testTypes = TypedTestPack.createNodeSet(rootNode);
-		themes = Theme.createNodeSet(rootNode);
+		testTypes = TypedTestPack.createNodeSet(this);
+		themes = Theme.createNodeSet(this);
 		
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<Aspect> createNodeSet(RootNode rootNode)
+	public static NodeMap<Aspect> createNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, Aspect.class, null, "-aspect$");
+		return new NodeMap<>(node, Aspect.class, null, "-aspect$");
 	}
 	
 	@Override

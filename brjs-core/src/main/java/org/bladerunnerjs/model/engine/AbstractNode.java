@@ -246,7 +246,7 @@ public abstract class AbstractNode implements Node
 	protected <N extends Node> List<N> children(NodeMap<N> children)
 	{
 		List<N> childList = new ArrayList<>();
-		List<String> locatorNames = children.getLocatorNames(dir);
+		List<String> locatorNames = children.getLocatorNames();
 		
 		for(String locatorName : locatorNames)
 		{
@@ -261,7 +261,7 @@ public abstract class AbstractNode implements Node
 	{
 		if(!children.nodes.containsKey(childName))
 		{
-			File childPath = children.getDir(dir, childName);
+			File childPath = children.getDir(childName);
 			N child = (N) rootNode.getRegisteredNode(childPath);
 			
 			if(child == null)
