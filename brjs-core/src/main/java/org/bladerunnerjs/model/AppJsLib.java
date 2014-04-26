@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public class AppJsLib extends AbstractJsLib
 {
-	private final NodeMap<TypedTestPack> testTypes;
+	private final NodeList<TypedTestPack> testTypes;
 	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("AppJsLib.testTypes", root(), file("tests"));
 	
 	public AppJsLib(RootNode rootNode, Node parent, File dir, String name)
@@ -24,27 +24,27 @@ public class AppJsLib extends AbstractJsLib
 		this(rootNode, parent, dir, null);
 	}
 	
-	public static NodeMap<AppJsLib> createAppNonBladeRunnerLibNodeSet(Node node)
+	public static NodeList<AppJsLib> createAppNonBladeRunnerLibNodeSet(Node node)
 	{
-		return new NodeMap<>(node, AppJsLib.class, "thirdparty-libraries", null);
+		return new NodeList<>(node, AppJsLib.class, "thirdparty-libraries", null);
 	}
 	
-	public static NodeMap<AppJsLib> createAppNodeSet(Node node)
+	public static NodeList<AppJsLib> createAppNodeSet(Node node)
 	{
-		return new NodeMap<>(node, AppJsLib.class, "libs", null);
+		return new NodeList<>(node, AppJsLib.class, "libs", null);
 	}
 	
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
 		return testTypesList.value(() -> {
-			return children(testTypes);
+			return testTypes.list();
 		});
 	}
 	
 	@Override
 	public TypedTestPack testType(String testTypeName)
 	{
-		return child(testTypes, testTypeName);
+		return testTypes.item(testTypeName);
 	}
 }

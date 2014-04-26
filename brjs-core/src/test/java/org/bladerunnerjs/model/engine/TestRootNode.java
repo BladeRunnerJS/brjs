@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.testing.utility.MockLoggerFactory;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
@@ -17,8 +16,8 @@ import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInf
 
 public final class TestRootNode extends AbstractRootNode
 {
-	NodeMap<TestChildNode> childNodes = new NodeMap<>(this, TestChildNode.class, null, "^child-");
-	NodeMap<TestChildNode> multiLocationChildNodes = new NodeMap<>(this, TestChildNode.class, "set-primary-location", "^child-");
+	NodeList<TestChildNode> childNodes = new NodeList<>(this, TestChildNode.class, null, "^child-");
+	NodeList<TestChildNode> multiLocationChildNodes = new NodeList<>(this, TestChildNode.class, "set-primary-location", "^child-");
 	NodeItem<TestItemNode> itemNode = new NodeItem<>(TestItemNode.class, "single-item");
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(TestMultiLocationItemNode.class, "single-item-primary-location");
 	private final IO io = new IO();
@@ -60,22 +59,22 @@ public final class TestRootNode extends AbstractRootNode
 	
 	public List<TestChildNode> childNodes()
 	{
-		return children(childNodes);
+		return childNodes.list();
 	}
 	
 	public TestChildNode childNode(String childName)
 	{
-		return child(childNodes, childName);
+		return childNodes.item(childName);
 	}
 	
 	public List<TestChildNode> multiLocationChildNodes()
 	{
-		return children(multiLocationChildNodes);
+		return multiLocationChildNodes.list();
 	}
 	
 	public TestChildNode multiLocationChildNode(String childName)
 	{
-		return child(multiLocationChildNodes, childName);
+		return multiLocationChildNodes.item(childName);
 	}
 	
 	public TestItemNode itemNode()

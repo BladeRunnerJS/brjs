@@ -10,7 +10,7 @@ import javax.naming.InvalidNameException;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -21,8 +21,8 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode, ThemeableNode
 {
-	private final NodeMap<TypedTestPack> testTypes;
-	private final NodeMap<Theme> themes;
+	private final NodeList<TypedTestPack> testTypes;
+	private final NodeList<Theme> themes;
 	private String name;
 	private File[] scopeFiles;
 	
@@ -41,9 +41,9 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<Aspect> createNodeSet(Node node)
+	public static NodeList<Aspect> createNodeSet(Node node)
 	{
-		return new NodeMap<>(node, Aspect.class, null, "-aspect$");
+		return new NodeList<>(node, Aspect.class, null, "-aspect$");
 	}
 	
 	@Override
@@ -129,27 +129,27 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public List<TypedTestPack> testTypes()
 	{
 		return testTypesList.value(() -> {
-			return children(testTypes);
+			return testTypes.list();
 		});
 	}
 	
 	@Override
 	public TypedTestPack testType(String typedTestPackName)
 	{
-		return child(testTypes, typedTestPackName);
+		return testTypes.item(typedTestPackName);
 	}
 	
 	@Override
 	public List<Theme> themes()
 	{
 		return themesList.value(() -> {
-			return children(themes);
+			return themes.list();
 		});
 	}
 	
 	@Override
 	public Theme theme(String themeName)
 	{
-		return child(themes, themeName);
+		return themes.item(themeName);
 	}
 }

@@ -208,9 +208,11 @@ public abstract class AbstractNode implements Node
 		{
 			for(Field field : getAllFields(getClass()))
 			{
-				if(field.getType() == NodeMap.class)
+				if(field.getType() == NodeList.class)
 				{
-					discoverAllChildren(children((NodeMap<Node>) field.get(this)));
+					NodeList<Node> nodeList = (NodeList<Node>) field.get(this);
+					
+					discoverAllChildren(nodeList.list());
 				}
 				else if(field.getType() == NodeItem.class)
 				{
@@ -241,38 +243,6 @@ public abstract class AbstractNode implements Node
 		catch(NodeAlreadyRegisteredException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	protected <N extends Node> List<N> children(NodeMap<N> children)
-	{
-		List<N> childList = new ArrayList<>();
-		List<String> locatorNames = children.getLocatorNames();
-		
-		for(String locatorName : locatorNames)
-		{
-			childList.add(child(children, locatorName));
-		}
-		
-		return childList;
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected <N extends Node> N child(NodeMap<N> children, String childName)
-	{
-		if(!children.nodes.containsKey(childName))
-		{
-			File childPath = children.getDir(childName);
-			N child = (N) rootNode.getRegisteredNode(childPath);
-			
-			if(child == null)
-			{
-				child = (N) NodeCreator.createNode(rootNode, this, childPath, childName, children.nodeClass);
-			}
-			
-			children.nodes.put(childName, child);
-		}
-		
-		return children.nodes.get(childName);
 	}
 	
 	protected <N extends Node> List<N> items(NodeItem<N> nodeItem)

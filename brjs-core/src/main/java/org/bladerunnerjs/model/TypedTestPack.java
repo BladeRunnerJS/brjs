@@ -8,7 +8,7 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
@@ -16,7 +16,7 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class TypedTestPack extends SourceResources implements NamedNode
 {
-	private final NodeMap<TestPack> technologyTestPacks;
+	private final NodeList<TestPack> technologyTestPacks;
 	private String name;
 	
 	public TypedTestPack(RootNode rootNode, Node parent, File dir, String name)
@@ -29,9 +29,9 @@ public class TypedTestPack extends SourceResources implements NamedNode
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<TypedTestPack> createNodeSet(Node node)
+	public static NodeList<TypedTestPack> createNodeSet(Node node)
 	{
-		return new NodeMap<>(node, TypedTestPack.class, "tests", "^test-");
+		return new NodeList<>(node, TypedTestPack.class, "tests", "^test-");
 	}
 	
 	@Override
@@ -59,11 +59,11 @@ public class TypedTestPack extends SourceResources implements NamedNode
 	
 	public List<TestPack> testTechs()
 	{
-		return children(technologyTestPacks);
+		return technologyTestPacks.list();
 	}
 
 	public TestPack testTech(String technologyName)
 	{
-		return child(technologyTestPacks, technologyName);
+		return technologyTestPacks.item(technologyName);
 	}
 }

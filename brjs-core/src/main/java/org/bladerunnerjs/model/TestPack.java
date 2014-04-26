@@ -15,7 +15,7 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -40,9 +40,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<TestPack> createNodeSet(Node node)
+	public static NodeList<TestPack> createNodeSet(Node node)
 	{
-		return new NodeMap<>(node, TestPack.class, "", null);
+		return new NodeList<>(node, TestPack.class, "", null);
 	}
 	
 	@Override

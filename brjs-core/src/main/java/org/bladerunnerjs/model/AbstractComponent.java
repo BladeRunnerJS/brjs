@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.utility.TestRunner;
@@ -12,8 +12,8 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public abstract class AbstractComponent extends AbstractAssetContainer implements TestableNode, ThemeableNode
 {
-	private final NodeMap<Theme> themes;
-	private final NodeMap<TypedTestPack> testTypes;
+	private final NodeList<Theme> themes;
+	private final NodeList<TypedTestPack> testTypes;
 	
 	public AbstractComponent(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -24,13 +24,13 @@ public abstract class AbstractComponent extends AbstractAssetContainer implement
 	@Override
 	public List<Theme> themes()
 	{
-		return children(this.themes);
+		return themes.list();
 	}
 	
 	@Override
 	public Theme theme(String name)
 	{
-		return child(this.themes, name);
+		return themes.item(name);
 	}
 	
 	@Override
@@ -42,12 +42,12 @@ public abstract class AbstractComponent extends AbstractAssetContainer implement
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return children(testTypes);
+		return testTypes.list();
 	}
 	
 	@Override
 	public TypedTestPack testType(String testTypeName)
 	{
-		return child(testTypes, testTypeName);
+		return testTypes.item(testTypeName);
 	}
 }
