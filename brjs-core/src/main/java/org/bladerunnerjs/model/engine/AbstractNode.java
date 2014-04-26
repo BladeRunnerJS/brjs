@@ -247,7 +247,7 @@ public abstract class AbstractNode implements Node
 	
 	protected <N extends Node> List<N> items(NodeItem<N> nodeItem)
 	{
-		File itemDir = nodeItem.getItemDir(dir);
+		File itemDir = nodeItem.getNodeDir(dir);
 		List<N> itemNodes = new ArrayList<>();
 		
 		if(itemDir.exists())
@@ -265,7 +265,7 @@ public abstract class AbstractNode implements Node
 			try
 			{
 				Constructor<N> classConstructor = nodeItem.nodeClass.getConstructor(RootNode.class, Node.class, File.class);
-				nodeItem.item = classConstructor.newInstance(rootNode, this, nodeItem.getItemDir(dir));
+				nodeItem.item = classConstructor.newInstance(rootNode, this, nodeItem.getNodeDir(dir));
 			}
 			catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
 				NoSuchMethodException | SecurityException e)

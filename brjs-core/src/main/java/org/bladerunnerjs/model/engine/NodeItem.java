@@ -9,48 +9,48 @@ public class NodeItem<N extends Node>
 	public N item;
 	public Class<N> nodeClass;
 	
-	private List<NodeItemLocator> nodeItemLocators = new ArrayList<>();
+	private List<NodeLocator> nodeItemLocators = new ArrayList<>();
 	
 	public NodeItem(Class<N> nodeClass, String subDirPath)
 	{
 		this.nodeClass = nodeClass;
-		nodeItemLocators.add(new DirNodeItemLocator(subDirPath));
+		nodeItemLocators.add(new DirectoryNodeLocator(subDirPath));
 	}
 	
 	public void addLegacyLocation(String subDirPath)
 	{
-		nodeItemLocators.add(new DirNodeItemLocator(subDirPath));
+		nodeItemLocators.add(new DirectoryNodeLocator(subDirPath));
 	}
 	
-	public File getItemDir(File sourceDir)
+	public File getNodeDir(File dir)
 	{
-		File itemDir = null;
+		File nodeDir = null;
 		
-		for(NodeItemLocator nodeItemLocator : nodeItemLocators)
+		for(NodeLocator nodeItemLocator : nodeItemLocators)
 		{
-			File nextItemDir = nodeItemLocator.getDir(sourceDir);
+			File nextNodeDir = nodeItemLocator.getNodeDir(dir);
 			
-			if(nextItemDir.exists())
+			if(nextNodeDir.exists())
 			{
-				if(itemDir == null)
+				if(nodeDir == null)
 				{
-					itemDir = nextItemDir;
+					nodeDir = nextNodeDir;
 				}
 				else
 				{
-					throw new BladeRunnerDirectoryException("Directory ambiguity: new directory '" + itemDir.getAbsolutePath() +
-						"' and legacy directory '" + nextItemDir.getAbsolutePath() + "' can't both exist at the same time.");
+					throw new BladeRunnerDirectoryException("Directory ambiguity: new directory '" + nodeDir.getAbsolutePath() +
+						"' and legacy directory '" + nextNodeDir.getAbsolutePath() + "' can't both exist at the same time.");
 				}
 			}
 		}
 		
 		// if the directory doesn't presently exist at any of the potential locations then ensure it will be created in the
 		// currently recommended location if create() or populate() are ever called
-		if(itemDir == null)
+		if(nodeDir == null)
 		{
-			itemDir = nodeItemLocators.get(0).getDir(sourceDir);
+			nodeDir = nodeItemLocators.get(0).getNodeDir(dir);
 		}
 		
-		return itemDir;
+		return nodeDir;
 	}
 }
