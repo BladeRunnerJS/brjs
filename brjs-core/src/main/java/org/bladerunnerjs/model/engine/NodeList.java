@@ -28,33 +28,29 @@ public class NodeList<N extends Node> {
 	}
 	
 	public List<N> list() {
-		return children(nodeMap);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private N child(NodeMap<N> children, String childName) {
-		if (!children.nodes.containsKey(childName)) {
-			File childPath = children.getDir(childName);
-			N child = (N) node.root().getRegisteredNode(childPath);
-			
-			if (child == null) {
-				child = (N) NodeCreator.createNode(node.root(), node, childPath, childName, children.nodeClass);
-			}
-			
-			children.nodes.put(childName, child);
-		}
-		
-		return children.nodes.get(childName);
-	}
-	
-	private List<N> children(NodeMap<N> children) {
 		List<N> childList = new ArrayList<>();
-		List<String> locatorNames = children.getLocatorNames();
+		List<String> locatorNames = nodeMap.getLocatorNames();
 		
 		for (String locatorName : locatorNames) {
-			childList.add(child(children, locatorName));
+			childList.add(child(nodeMap, locatorName));
 		}
 		
 		return childList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private N child(NodeMap<N> nodeMap, String childName) {
+		if (!nodeMap.nodes.containsKey(childName)) {
+			File childPath = nodeMap.getDir(childName);
+			N child = (N) node.root().getRegisteredNode(childPath);
+			
+			if (child == null) {
+				child = (N) NodeCreator.createNode(node.root(), node, childPath, childName, nodeMap.nodeClass);
+			}
+			
+			nodeMap.nodes.put(childName, child);
+		}
+		
+		return nodeMap.nodes.get(childName);
 	}
 }
