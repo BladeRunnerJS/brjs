@@ -93,16 +93,16 @@ public class BRJS extends AbstractBRJSRootNode
 		systemApps = App.createSystemAppNodeSet(this);
 		sdkLibs = SdkJsLib.createSdkLibNodeSet(this);
 		sdkNonBladeRunnerLibs = SdkJsLib.createSdkNonBladeRunnerLibNodeSet(this);
-		jsPatches = new NodeItem<>(DirNode.class, "js-patches");
+		jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
 		templates = new NodeList<>(this, NamedDirNode.class, "sdk/templates", "-template$");
-		appJars = new NodeItem<>(DirNode.class, "sdk/libs/java/application");
-		configuration = new NodeItem<>(DirNode.class, "conf");
-		systemJars = new NodeItem<>(DirNode.class, "sdk/libs/java/system");
-		testJars = new NodeItem<>(DirNode.class, "sdk/libs/java/testRunner");
-		userJars = new NodeItem<>(DirNode.class, "conf/java");
-		logs = new NodeItem<>(DirNode.class, "sdk/log");
-		apiDocs = new NodeItem<>(DirNode.class, "sdk/docs/jsdoc");
-		testResults = new NodeItem<>(DirNode.class, "sdk/test-results");
+		appJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/application");
+		configuration = new NodeItem<>(this, DirNode.class, "conf");
+		systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");
+		testJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/testRunner");
+		userJars = new NodeItem<>(this, DirNode.class, "conf/java");
+		logs = new NodeItem<>(this, DirNode.class, "sdk/log");
+		apiDocs = new NodeItem<>(this, DirNode.class, "sdk/docs/jsdoc");
+		testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 		
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
@@ -265,7 +265,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public DirNode jsPatches()
 	{
-		return item(jsPatches);
+		return jsPatches.item();
 	}
 	
 	public List<NamedDirNode> templates()
@@ -281,42 +281,42 @@ public class BRJS extends AbstractBRJSRootNode
 	// TODO: delete this method -- the test results should live within a generated directory
 	public DirNode testResults()
 	{
-		return item(testResults);
+		return testResults.item();
 	}
 	
 	public DirNode appJars()
 	{
-		return item(appJars);
+		return appJars.item();
 	}
 	
 	public DirNode conf()
 	{
-		return item(configuration);
+		return configuration.item();
 	}
 	
 	public DirNode systemJars()
 	{
-		return item(systemJars);
+		return systemJars.item();
 	}
 	
 	public DirNode testJars()
 	{
-		return item(testJars);
+		return testJars.item();
 	}
 	
 	public DirNode userJars()
 	{
-		return item(userJars);
+		return userJars.item();
 	}
 	
 	public DirNode logs()
 	{
-		return item(logs);
+		return logs.item();
 	}
 	
 	public DirNode apiDocs()
 	{
-		return item(apiDocs);
+		return apiDocs.item();
 	}
 	
 	public VersionInfo versionInfo()

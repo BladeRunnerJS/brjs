@@ -19,7 +19,7 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public final class Blade extends AbstractComponent implements NamedNode
 {
-	private final NodeItem<Workbench> workbench = new NodeItem<>(Workbench.class, "workbench");
+	private final NodeItem<Workbench> workbench = new NodeItem<>(this, Workbench.class, "workbench");
 	private final String name;
 	private final List<AssetContainer> bladeAssetContainers;
 	
@@ -104,6 +104,6 @@ public final class Blade extends AbstractComponent implements NamedNode
 	
 	public Workbench workbench()
 	{
-		return item(workbench);
+		return workbench.item();
 	}
 }

@@ -18,8 +18,8 @@ public final class TestRootNode extends AbstractRootNode
 {
 	NodeList<TestChildNode> childNodes = new NodeList<>(this, TestChildNode.class, null, "^child-");
 	NodeList<TestChildNode> multiLocationChildNodes = new NodeList<>(this, TestChildNode.class, "set-primary-location", "^child-");
-	NodeItem<TestItemNode> itemNode = new NodeItem<>(TestItemNode.class, "single-item");
-	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(TestMultiLocationItemNode.class, "single-item-primary-location");
+	NodeItem<TestItemNode> itemNode = new NodeItem<>(this, TestItemNode.class, "single-item");
+	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(this, TestMultiLocationItemNode.class, "single-item-primary-location");
 	private final IO io = new IO();
 	
 	public TestRootNode(File dir)
@@ -79,12 +79,12 @@ public final class TestRootNode extends AbstractRootNode
 	
 	public TestItemNode itemNode()
 	{
-		return item(itemNode);
+		return itemNode.item();
 	}
 	
 	public TestMultiLocationItemNode multiLocationItemNode()
 	{
-		return item(multiLocationItemNode);
+		return multiLocationItemNode.item();
 	}
 	
 	@Override

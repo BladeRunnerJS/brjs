@@ -2,9 +2,7 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -216,7 +214,9 @@ public abstract class AbstractNode implements Node
 				}
 				else if(field.getType() == NodeItem.class)
 				{
-					discoverAllChildren(items((NodeItem<Node>) field.get(this)));
+					NodeItem<Node> nodeItem = (NodeItem<Node>) field.get(this);
+					
+					discoverAllChildren(nodeItem.items());
 				}
 			}
 		}
@@ -243,38 +243,6 @@ public abstract class AbstractNode implements Node
 		catch(NodeAlreadyRegisteredException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	protected <N extends Node> List<N> items(NodeItem<N> nodeItem)
-	{
-		File itemDir = nodeItem.getNodeDir(dir);
-		List<N> itemNodes = new ArrayList<>();
-		
-		if(itemDir.exists())
-		{
-			itemNodes.add(item(nodeItem));
-		}
-		
-		return itemNodes;
-	}
-	
-	protected <N extends Node> N item(NodeItem<N> nodeItem)
-	{
-		if(nodeItem.item == null)
-		{
-			try
-			{
-				Constructor<N> classConstructor = nodeItem.nodeClass.getConstructor(RootNode.class, Node.class, File.class);
-				nodeItem.item = classConstructor.newInstance(rootNode, this, nodeItem.getNodeDir(dir));
-			}
-			catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
-				NoSuchMethodException | SecurityException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-		
-		return nodeItem.item;
 	}
 	
 	protected String getNormalizedPath(File dir) {

@@ -18,7 +18,7 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public final class Workbench extends AbstractBrowsableNode implements TestableNode, ThemeableNode
 {
-	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
+	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
 	private final NodeList<TypedTestPack> testTypes;
 	private final NodeList<Theme> themes;
 	
@@ -41,7 +41,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 
 	public DirNode styleResources()
 	{
-		return item(styleResources);
+		return styleResources.item();
 	}
 		
 	public Blade parent()

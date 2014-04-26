@@ -1,18 +1,21 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NodeItem<N extends Node>
 {
+	private final Node node;
+	private final Class<N> nodeClass;
+	private final List<NodeLocator> nodeItemLocators = new ArrayList<>();
 	public N item;
-	public Class<N> nodeClass;
 	
-	private List<NodeLocator> nodeItemLocators = new ArrayList<>();
-	
-	public NodeItem(Class<N> nodeClass, String subDirPath)
+	public NodeItem(Node node, Class<N> nodeClass, String subDirPath)
 	{
+		this.node = node;
 		this.nodeClass = nodeClass;
 		nodeItemLocators.add(new DirectoryNodeLocator(subDirPath));
 	}
@@ -22,7 +25,39 @@ public class NodeItem<N extends Node>
 		nodeItemLocators.add(new DirectoryNodeLocator(subDirPath));
 	}
 	
-	public File getNodeDir(File dir)
+	public List<N> items()
+	{
+		File itemDir = getNodeDir(node.dir());
+		List<N> itemNodes = new ArrayList<>();
+		
+		if(itemDir.exists())
+		{
+			itemNodes.add(item());
+		}
+		
+		return itemNodes;
+	}
+	
+	public N item()
+	{
+		if(item == null)
+		{
+			try
+			{
+				Constructor<N> classConstructor = nodeClass.getConstructor(RootNode.class, Node.class, File.class);
+				item = classConstructor.newInstance(node.root(), node, getNodeDir(node.dir()));
+			}
+			catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+				NoSuchMethodException | SecurityException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+		
+		return item;
+	}
+	
+	private File getNodeDir(File dir)
 	{
 		File nodeDir = null;
 		
