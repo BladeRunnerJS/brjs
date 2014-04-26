@@ -10,10 +10,10 @@ import java.util.Set;
 
 public class NodeMap<N extends Node>
 {
-	public final Map<String, N> nodes = new HashMap<>();
+	public final Map<String, N> namedNodes = new HashMap<>();
 	public final Class<N> nodeClass;
 	
-	private final List<NodeMapLocator> nodeMapLocators = new ArrayList<>();
+	private final List<NamedNodeLocator> namedNodeLocators = new ArrayList<>();
 	private final File dir;
 	private final RootNode rootNode;
 	
@@ -22,47 +22,45 @@ public class NodeMap<N extends Node>
 		this.nodeClass = nodeClass;
 		dir = node.dir();
 		rootNode = node.root();
-		nodeMapLocators.add(new DirNodeMapLocator(rootNode, subDirPath, dirNameFilter));
+		namedNodeLocators.add(new DirectoryContentsNamedNodeLocator(rootNode, subDirPath, dirNameFilter));
 	}
 	
 	public void addAlternateLocation(String subDirPath, String dirNameFilter)
 	{
-		nodeMapLocators.add(new DirNodeMapLocator(rootNode, subDirPath, dirNameFilter));
+		namedNodeLocators.add(new DirectoryContentsNamedNodeLocator(rootNode, subDirPath, dirNameFilter));
 	}
 	
 	public void addAdditionalNamedLocation(String itemName, String subDirPath)
 	{
-		nodeMapLocators.add(new SingleDirNodeMapLocator(itemName, subDirPath));
+		namedNodeLocators.add(new SingleDirectoryNamedNodeLocator(itemName, subDirPath));
 	}
 	
-	public List<String> getLocatorNames()
+	public List<String> getLogicalNodeNames()
 	{
-		Set<String> visitedLocatorNames = new LinkedHashSet<>();
-		List<String> locatorNames = new ArrayList<>();
+		Set<String> combinedLogicalNodeNames = new LinkedHashSet<>();
 		
-		for(NodeMapLocator nodeMapLocator : nodeMapLocators)
+		for(NamedNodeLocator namedNodeLocator : namedNodeLocators)
 		{
-			List<String> names = nodeMapLocator.getDirs(dir);
+			List<String> logicalNodeNames = namedNodeLocator.getLogicalNodeNames(dir);
 			
-			for(String name : names)
+			for(String logicalNodeName : logicalNodeNames)
 			{
-				if(visitedLocatorNames.contains(name))
+				if(combinedLogicalNodeNames.contains(logicalNodeName))
 				{
-					throw new BladeRunnerDirectoryException("There are two directories that both have the logical name '" + name + "' within the directory '" + dir.getPath() + "'");
+					throw new BladeRunnerDirectoryException("There are two directories that both have the logical name '" + logicalNodeName + "' within the directory '" + dir.getPath() + "'");
 				}
 				
-				visitedLocatorNames.add(name);
+				combinedLogicalNodeNames.add(logicalNodeName);
 			}
 			
 		}
-		locatorNames.addAll(visitedLocatorNames);
 		
-		return locatorNames;
+		return new ArrayList<>(combinedLogicalNodeNames);
 	}
 	
-	public File getDir(String childName)
+	public File getNodeDir(String logicalNodeName)
 	{
-		List<String> possibleDirNames = getPossibleDirNames(childName);
+		List<String> possibleDirNames = getPossibleDirNames(logicalNodeName);
 		File childDir = null;
 		
 		for(String dirName : possibleDirNames)
@@ -83,18 +81,18 @@ public class NodeMap<N extends Node>
 		return childDir;
 	}
 	
-	private List<String> getPossibleDirNames(String childName)
+	private List<String> getPossibleDirNames(String logicalNodeName)
 	{
-		List<String> dirNames = new ArrayList<String>();
+		List<String> possibleDirNames = new ArrayList<String>();
 		
-		for(NodeMapLocator nodeMapLocator : nodeMapLocators)
+		for(NamedNodeLocator namedNodeLocator : namedNodeLocators)
 		{
-			if(nodeMapLocator.canHandleName(childName))
+			if(namedNodeLocator.couldSupportLogicalNodeName(logicalNodeName))
 			{
-				dirNames.add(nodeMapLocator.getDirName(childName));
+				possibleDirNames.add(namedNodeLocator.getDirName(logicalNodeName));
 			}
 		}
 		
-		return dirNames;
+		return possibleDirNames;
 	}
 }

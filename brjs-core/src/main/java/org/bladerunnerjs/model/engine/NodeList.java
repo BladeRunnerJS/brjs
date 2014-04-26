@@ -29,10 +29,10 @@ public class NodeList<N extends Node> {
 	
 	public List<N> list() {
 		List<N> childList = new ArrayList<>();
-		List<String> locatorNames = nodeMap.getLocatorNames();
+		List<String> nodeNames = nodeMap.getLogicalNodeNames();
 		
-		for (String locatorName : locatorNames) {
-			childList.add(child(nodeMap, locatorName));
+		for (String nodeName : nodeNames) {
+			childList.add(child(nodeMap, nodeName));
 		}
 		
 		return childList;
@@ -40,17 +40,17 @@ public class NodeList<N extends Node> {
 	
 	@SuppressWarnings("unchecked")
 	private N child(NodeMap<N> nodeMap, String childName) {
-		if (!nodeMap.nodes.containsKey(childName)) {
-			File childPath = nodeMap.getDir(childName);
+		if (!nodeMap.namedNodes.containsKey(childName)) {
+			File childPath = nodeMap.getNodeDir(childName);
 			N child = (N) node.root().getRegisteredNode(childPath);
 			
 			if (child == null) {
 				child = (N) NodeCreator.createNode(node.root(), node, childPath, childName, nodeMap.nodeClass);
 			}
 			
-			nodeMap.nodes.put(childName, child);
+			nodeMap.namedNodes.put(childName, child);
 		}
 		
-		return nodeMap.nodes.get(childName);
+		return nodeMap.namedNodes.get(childName);
 	}
 }
