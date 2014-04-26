@@ -19,7 +19,7 @@ import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -64,12 +64,12 @@ public class BRJS extends AbstractBRJSRootNode
 	private final File libsDir = file("sdk/libs/javascript");
 	private boolean closed = false;
 	
-	private final NodeMap<App> apps;
-	private final NodeMap<App> systemApps;
-	private final NodeMap<SdkJsLib> sdkLibs;
-	private final NodeMap<SdkJsLib> sdkNonBladeRunnerLibs;
+	private final NodeList<App> apps;
+	private final NodeList<App> systemApps;
+	private final NodeList<SdkJsLib> sdkLibs;
+	private final NodeList<SdkJsLib> sdkNonBladeRunnerLibs;
 	private final NodeItem<DirNode> jsPatches;
-	private final NodeMap<NamedDirNode> templates;
+	private final NodeList<NamedDirNode> templates;
 	private final NodeItem<DirNode> appJars;
 	private final NodeItem<DirNode> configuration;
 	private final NodeItem<DirNode> systemJars;
@@ -93,16 +93,16 @@ public class BRJS extends AbstractBRJSRootNode
 		systemApps = App.createSystemAppNodeSet(this);
 		sdkLibs = SdkJsLib.createSdkLibNodeSet(this);
 		sdkNonBladeRunnerLibs = SdkJsLib.createSdkNonBladeRunnerLibNodeSet(this);
-		jsPatches = new NodeItem<>(DirNode.class, "js-patches");
-		templates = new NodeMap<>(this, NamedDirNode.class, "sdk/templates", "-template$");
-		appJars = new NodeItem<>(DirNode.class, "sdk/libs/java/application");
-		configuration = new NodeItem<>(DirNode.class, "conf");
-		systemJars = new NodeItem<>(DirNode.class, "sdk/libs/java/system");
-		testJars = new NodeItem<>(DirNode.class, "sdk/libs/java/testRunner");
-		userJars = new NodeItem<>(DirNode.class, "conf/java");
-		logs = new NodeItem<>(DirNode.class, "sdk/log");
-		apiDocs = new NodeItem<>(DirNode.class, "sdk/docs/jsdoc");
-		testResults = new NodeItem<>(DirNode.class, "sdk/test-results");
+		jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
+		templates = new NodeList<>(this, NamedDirNode.class, "sdk/templates", "-template$");
+		appJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/application");
+		configuration = new NodeItem<>(this, DirNode.class, "conf");
+		systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");
+		testJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/testRunner");
+		userJars = new NodeItem<>(this, DirNode.class, "conf/java");
+		logs = new NodeItem<>(this, DirNode.class, "sdk/log");
+		apiDocs = new NodeItem<>(this, DirNode.class, "sdk/docs/jsdoc");
+		testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 		
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
@@ -216,22 +216,22 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> apps()
 	{
-		return children(apps);
+		return apps.list();
 	}
 	
 	public App app(String appName)
 	{
-		return child(apps, appName);
+		return apps.item(appName);
 	}
 	
 	public List<App> systemApps()
 	{
-		return children(systemApps);
+		return systemApps.list();
 	}
 	
 	public App systemApp(String appName)
 	{
-		return child(systemApps, appName);
+		return systemApps.item(appName);
 	}
 	
 	public File libsDir() {
@@ -240,18 +240,18 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<SdkJsLib> sdkLibs()
 	{
-		return new ArrayList<SdkJsLib>( children(sdkLibs) );
+		return new ArrayList<SdkJsLib>( sdkLibs.list() );
 	}
 	
 	public JsLib sdkLib(String libName)
 	{
-		return child(sdkLibs, libName);
+		return sdkLibs.item(libName);
 	}
 	
 	public List<SdkJsLib> sdkNonBladeRunnerLibs()
 	{
 		List<SdkJsLib> typeCastLibs = new ArrayList<>();
-		for (SdkJsLib jsLib : children(sdkNonBladeRunnerLibs))
+		for (SdkJsLib jsLib : sdkNonBladeRunnerLibs.list())
 		{
 			typeCastLibs.add(jsLib);
 		}
@@ -260,63 +260,63 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public SdkJsLib sdkNonBladeRunnerLib(String libName)
 	{
-		return child(sdkNonBladeRunnerLibs, libName);
+		return sdkNonBladeRunnerLibs.item(libName);
 	}
 	
 	public DirNode jsPatches()
 	{
-		return item(jsPatches);
+		return jsPatches.item();
 	}
 	
 	public List<NamedDirNode> templates()
 	{
-		return children(templates);
+		return templates.list();
 	}
 	
 	public NamedDirNode template(String templateName)
 	{
-		return child(templates, templateName);
+		return templates.item(templateName);
 	}
 	
 	// TODO: delete this method -- the test results should live within a generated directory
 	public DirNode testResults()
 	{
-		return item(testResults);
+		return testResults.item();
 	}
 	
 	public DirNode appJars()
 	{
-		return item(appJars);
+		return appJars.item();
 	}
 	
 	public DirNode conf()
 	{
-		return item(configuration);
+		return configuration.item();
 	}
 	
 	public DirNode systemJars()
 	{
-		return item(systemJars);
+		return systemJars.item();
 	}
 	
 	public DirNode testJars()
 	{
-		return item(testJars);
+		return testJars.item();
 	}
 	
 	public DirNode userJars()
 	{
-		return item(userJars);
+		return userJars.item();
 	}
 	
 	public DirNode logs()
 	{
-		return item(logs);
+		return logs.item();
 	}
 	
 	public DirNode apiDocs()
 	{
-		return item(apiDocs);
+		return apiDocs.item();
 	}
 	
 	public VersionInfo versionInfo()

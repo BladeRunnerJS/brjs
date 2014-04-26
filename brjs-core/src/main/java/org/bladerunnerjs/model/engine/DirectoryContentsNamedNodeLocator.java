@@ -6,13 +6,13 @@ import java.util.List;
 
 import org.bladerunnerjs.model.FileInfo;
 
-public class DirNodeMapLocator implements NodeMapLocator
+public class DirectoryContentsNamedNodeLocator implements NamedNodeLocator
 {
 	private String subDirPath;
 	private String dirNameFilter;
 	private RootNode rootNode;
 	
-	public DirNodeMapLocator(RootNode rootNode, String subDirPath, String dirNameFilter)
+	public DirectoryContentsNamedNodeLocator(RootNode rootNode, String subDirPath, String dirNameFilter)
 	{
 		this.rootNode = rootNode;
 		this.subDirPath = subDirPath;
@@ -20,7 +20,7 @@ public class DirNodeMapLocator implements NodeMapLocator
 	}
 	
 	@Override
-	public List<String> getDirs(File sourceDir)
+	public List<String> getLogicalNodeNames(File sourceDir)
 	{
 		List<String> dirSet = new ArrayList<>();
 		File childDir = (subDirPath == null) ? sourceDir : new File(sourceDir, subDirPath);
@@ -51,27 +51,29 @@ public class DirNodeMapLocator implements NodeMapLocator
 	}
 	
 	@Override
-	public boolean canHandleName(String childName)
+	public boolean couldSupportLogicalNodeName(String logicalNodeName)
 	{
 		return true;
 	}
 	
 	@Override
-	public String getDirName(String childName)
+	public String getDirName(String logicalNodeName)
 	{
+		String dirName = logicalNodeName;
+		
 		if(dirNameFilter != null)
 		{
 			if(dirNameFilter.startsWith("^"))
 			{
-				childName = dirNameFilter.substring(1) + childName;
+				dirName = dirNameFilter.substring(1) + dirName;
 			}
 			else if(dirNameFilter.endsWith("$"))
 			{
-				childName = childName + dirNameFilter.substring(0, dirNameFilter.length() - 1);
+				dirName = dirName + dirNameFilter.substring(0, dirNameFilter.length() - 1);
 			}
 		}
 		
-		return (subDirPath == null) ? childName : subDirPath + "/" + childName;
+		return (subDirPath == null) ? dirName : subDirPath + "/" + dirName;
 	}
 	
 	private String getDirNameMatcher(String dirNameFilter)

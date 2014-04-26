@@ -2,7 +2,7 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 
-public interface NodeItemLocator
+public interface NodeLocator
 {
-	File getDir(File sourceDir);
+	File getNodeDir(File sourceDir);
 }

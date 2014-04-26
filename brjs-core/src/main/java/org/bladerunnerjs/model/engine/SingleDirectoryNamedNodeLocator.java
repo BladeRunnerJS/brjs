@@ -4,19 +4,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingleDirNodeMapLocator implements NodeMapLocator
+public class SingleDirectoryNamedNodeLocator implements NamedNodeLocator
 {
 	private String dirName;
 	private String subDirPath;
 	
-	public SingleDirNodeMapLocator(String dirName, String subDirPath)
+	public SingleDirectoryNamedNodeLocator(String dirName, String subDirPath)
 	{
 		this.dirName = dirName;
 		this.subDirPath = subDirPath;
 	}
 	
 	@Override
-	public List<String> getDirs(File sourceDir)
+	public List<String> getLogicalNodeNames(File sourceDir)
 	{
 		List<String> dirs = new ArrayList<>();
 		File dirFile = new File(sourceDir, subDirPath);
@@ -30,13 +30,13 @@ public class SingleDirNodeMapLocator implements NodeMapLocator
 	}
 	
 	@Override
-	public boolean canHandleName(String childName)
+	public boolean couldSupportLogicalNodeName(String logicalNodeName)
 	{
-		return childName.equals(dirName);
+		return logicalNodeName.equals(dirName);
 	}
 	
 	@Override
-	public String getDirName(String childName)
+	public String getDirName(String logicalNodeName)
 	{
 		return subDirPath;
 	}

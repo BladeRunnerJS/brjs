@@ -15,7 +15,7 @@ import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -32,10 +32,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeMap<AppJsLib> nonBladeRunnerLibs;
-	private final NodeMap<Bladeset> bladesets;
-	private final NodeMap<Aspect> aspects;
-	private final NodeMap<AppJsLib> jsLibs;
+	private final NodeList<AppJsLib> nonBladeRunnerLibs;
+	private final NodeList<Bladeset> bladesets;
+	private final NodeList<Aspect> aspects;
+	private final NodeList<AppJsLib> jsLibs;
 	
 	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>("BRJS.assetContainers", root(), dir(), root().libsDir());
 	private final MemoizedValue<List<AssetContainer>> nonAspectAssetContainers = new MemoizedValue<>("BRJS.nonAspectAssetContainers", root(), dir(), root().libsDir());
@@ -62,14 +62,14 @@ public class App extends AbstractBRJSNode implements NamedNode
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<App> createAppNodeSet(Node node)
+	public static NodeList<App> createAppNodeSet(Node node)
 	{
-		return new NodeMap<>(node, App.class, "apps", null);
+		return new NodeList<>(node, App.class, "apps", null);
 	}
 	
-	public static NodeMap<App> createSystemAppNodeSet(Node node)
+	public static NodeList<App> createSystemAppNodeSet(Node node)
 	{
-		return new NodeMap<>(node, App.class, "sdk/system-applications", null);
+		return new NodeList<>(node, App.class, "sdk/system-applications", null);
 	}
 	
 	@Override
@@ -184,32 +184,32 @@ public class App extends AbstractBRJSNode implements NamedNode
 	public List<Bladeset> bladesets()
 	{
 		return bladesetList.value(() -> {
-			return children(bladesets);
+			return bladesets.list();
 		});
 	}
 	
 	public Bladeset bladeset(String bladesetName)
 	{
-		return child(bladesets, bladesetName);
+		return bladesets.item(bladesetName);
 	}
 
 	public List<Aspect> aspects()
 	{
 		return aspectList.value(() -> {
-			return children(aspects);
+			return aspects.list();
 		});
 	}
 	
 	public Aspect aspect(String aspectName)
 	{
-		return child(aspects, aspectName);
+		return aspects.item(aspectName);
 	}
 	
 	public List<JsLib> jsLibs()
 	{
 		return jsLibsList.value(() -> {
 			List<JsLib> appJsLibs = new ArrayList<JsLib>();
-			appJsLibs.addAll( children(jsLibs) );
+			appJsLibs.addAll( jsLibs.list() );
 			
 			for (SdkJsLib lib : root().sdkLibs())
 			{
@@ -231,7 +231,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 			}
 		}
 		
-		return child(jsLibs, jsLibName);
+		return jsLibs.item(jsLibName);
 	}
 	
 	@Override
@@ -305,7 +305,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 			{
 				libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
 			}
-			for (JsLib lib : children(nonBladeRunnerLibs))
+			for (JsLib lib : nonBladeRunnerLibs.list())
 			{
 				libs.put(lib.getName(), lib );			
 			}
@@ -316,7 +316,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public JsLib nonBladeRunnerLib(String libName)
 	{
-		JsLib appLib = child(nonBladeRunnerLibs, libName);
+		JsLib appLib = nonBladeRunnerLibs.item(libName);
 		SdkJsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())

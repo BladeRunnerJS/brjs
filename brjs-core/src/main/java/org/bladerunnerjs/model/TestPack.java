@@ -15,7 +15,7 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -24,8 +24,8 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class TestPack extends AbstractBundlableNode implements NamedNode
 {
-	private final NodeItem<DirNode> tests = new NodeItem<>(DirNode.class, "tests");
-	private final NodeItem<DirNode> testSource = new NodeItem<>(DirNode.class, "src-test");
+	private final NodeItem<DirNode> tests = new NodeItem<>(this, DirNode.class, "tests");
+	private final NodeItem<DirNode> testSource = new NodeItem<>(this, DirNode.class, "src-test");
 	private AliasesFile aliasesFile;
 	private String name;
 	private final MemoizedValue<Set<SourceModule>> sourceModulesList;
@@ -40,9 +40,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<TestPack> createNodeSet(Node node)
+	public static NodeList<TestPack> createNodeSet(Node node)
 	{
-		return new NodeMap<>(node, TestPack.class, "", null);
+		return new NodeList<>(node, TestPack.class, "", null);
 	}
 	
 	@Override
@@ -157,12 +157,12 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	public DirNode testSource()
 	{
-		return item(testSource);
+		return testSource.item();
 	}
 	
 	public DirNode tests()
 	{
-		return item(tests);
+		return tests.item();
 	}
 	
 	

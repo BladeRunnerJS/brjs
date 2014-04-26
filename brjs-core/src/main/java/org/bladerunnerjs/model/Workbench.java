@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -18,9 +18,9 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public final class Workbench extends AbstractBrowsableNode implements TestableNode, ThemeableNode
 {
-	private final NodeItem<DirNode> styleResources = new NodeItem<>(DirNode.class, "resources/style");
-	private final NodeMap<TypedTestPack> testTypes;
-	private final NodeMap<Theme> themes;
+	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
+	private final NodeList<TypedTestPack> testTypes;
+	private final NodeList<Theme> themes;
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
@@ -41,7 +41,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 
 	public DirNode styleResources()
 	{
-		return item(styleResources);
+		return styleResources.item();
 	}
 		
 	public Blade parent()
@@ -95,24 +95,24 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return children(testTypes);
+		return testTypes.list();
 	}
 	
 	@Override
 	public TypedTestPack testType(String typedTestPackName)
 	{
-		return child(testTypes, typedTestPackName);
+		return testTypes.item(typedTestPackName);
 	}
 	
 	@Override
 	public List<Theme> themes()
 	{
-		return children(themes);
+		return themes.list();
 	}
 	
 	@Override
 	public Theme theme(String themeName)
 	{
-		return child(themes, themeName);
+		return themes.item(themeName);
 	}
 }

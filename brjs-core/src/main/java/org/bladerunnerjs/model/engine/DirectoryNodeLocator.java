@@ -2,17 +2,17 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 
-public class DirNodeItemLocator implements NodeItemLocator
+public class DirectoryNodeLocator implements NodeLocator
 {
 	private String subDirPath;
 	
-	public DirNodeItemLocator(String subDirPath)
+	public DirectoryNodeLocator(String subDirPath)
 	{
 		this.subDirPath = subDirPath;
 	}
 	
 	@Override
-	public File getDir(File sourceDir)
+	public File getNodeDir(File sourceDir)
 	{
 		return new File(sourceDir, subDirPath);
 	}

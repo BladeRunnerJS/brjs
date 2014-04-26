@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public class SdkJsLib extends AbstractJsLib
 {
-	private final NodeMap<BRSdkTypedTestPack> testTypes;
+	private final NodeList<BRSdkTypedTestPack> testTypes;
 	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("SdkJsLib.testTypes", root(), file("tests"));
 	
 	public SdkJsLib(RootNode rootNode, Node parent, File dir, String name)
@@ -25,14 +25,14 @@ public class SdkJsLib extends AbstractJsLib
 		this(rootNode, parent, dir, null);
 	}
 	
-	public static NodeMap<SdkJsLib> createSdkNonBladeRunnerLibNodeSet(Node node)
+	public static NodeList<SdkJsLib> createSdkNonBladeRunnerLibNodeSet(Node node)
 	{
-		return new NodeMap<>(node, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
+		return new NodeList<>(node, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
 	}
 	
-	public static NodeMap<SdkJsLib> createSdkLibNodeSet(Node node)
+	public static NodeList<SdkJsLib> createSdkLibNodeSet(Node node)
 	{
-		return new NodeMap<>(node, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
+		return new NodeList<>(node, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
 	}
 	
 	@Override
@@ -45,13 +45,13 @@ public class SdkJsLib extends AbstractJsLib
 	public List<TypedTestPack> testTypes()
 	{
 		return testTypesList.value(() -> {
-			return new ArrayList<TypedTestPack>( children(testTypes) );
+			return new ArrayList<TypedTestPack>( testTypes.list() );
 		});
 	}
 	
 	@Override
 	public TypedTestPack testType(String testTypeName)
 	{
-		return child(testTypes, testTypeName);
+		return testTypes.item(testTypeName);
 	}
 }

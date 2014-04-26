@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 
 public class BRSdkTypedTestPack extends TypedTestPack
 {
-	private final NodeMap<BRSdkTestPack> technologyTestPacks;
+	private final NodeList<BRSdkTestPack> technologyTestPacks;
 	
 	public BRSdkTypedTestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -18,18 +18,18 @@ public class BRSdkTypedTestPack extends TypedTestPack
 		technologyTestPacks = BRSdkTestPack.createBrSdkTestPackNodeSet(this);
 	}
 	
-	public static NodeMap<BRSdkTypedTestPack> createSdkTestPackNodeSet(Node node)
+	public static NodeList<BRSdkTypedTestPack> createSdkTestPackNodeSet(Node node)
 	{
-		return new NodeMap<>(node, BRSdkTypedTestPack.class, "tests", "^test-");
+		return new NodeList<>(node, BRSdkTypedTestPack.class, "tests", "^test-");
 	}
 	
 	public List<TestPack> testTechs()
 	{
-		return new ArrayList<TestPack>( children(technologyTestPacks) );
+		return new ArrayList<TestPack>( technologyTestPacks.list() );
 	}
 
 	public TestPack testTech(String technologyName)
 	{
-		return child(technologyTestPacks, technologyName);
+		return technologyTestPacks.item(technologyName);
 	}
 }
