@@ -25,17 +25,9 @@ public class NodeItem<N extends Node>
 		nodeItemLocators.add(new DirectoryNodeLocator(subDirPath));
 	}
 	
-	public List<N> items()
+	public boolean itemExists()
 	{
-		File itemDir = getNodeDir(node.dir());
-		List<N> itemNodes = new ArrayList<>();
-		
-		if(itemDir.exists())
-		{
-			itemNodes.add(item());
-		}
-		
-		return itemNodes;
+		return getNodeDir(node.dir()).exists();
 	}
 	
 	public N item()

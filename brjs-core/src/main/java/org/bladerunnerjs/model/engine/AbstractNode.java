@@ -216,7 +216,11 @@ public abstract class AbstractNode implements Node
 				{
 					NodeItem<Node> nodeItem = (NodeItem<Node>) field.get(this);
 					
-					discoverAllChildren(nodeItem.items());
+					if(nodeItem.itemExists()) {
+						List<Node> nodeItems = new ArrayList<>();
+						nodeItems.add(nodeItem.item());
+						discoverAllChildren(nodeItems);
+					}
 				}
 			}
 		}
