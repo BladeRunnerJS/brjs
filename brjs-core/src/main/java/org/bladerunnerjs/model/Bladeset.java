@@ -17,7 +17,7 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public final class Bladeset extends AbstractComponent implements NamedNode
 {
-	private final NodeList<Blade> blades;
+	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
 	private File[] scopeFiles;
 	
@@ -27,14 +27,8 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		blades = Blade.createNodeSet(this);
 		
 		registerInitializedNode();
-	}
-	
-	public static NodeList<Bladeset> createNodeSet(Node node)
-	{
-		return new NodeList<>(node, Bladeset.class, null, "-bladeset$");
 	}
 	
 	@Override

@@ -16,14 +16,13 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class TypedTestPack extends SourceResources implements NamedNode
 {
-	private final NodeList<TestPack> technologyTestPacks;
+	private final NodeList<TestPack> technologyTestPacks = new NodeList<>(this, TestPack.class, "", null);
 	private String name;
 	
 	public TypedTestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		technologyTestPacks = TestPack.createNodeSet(this);
 		
 		// TODO: we should never call registerInitializedNode() from a non-final class
 		registerInitializedNode();

@@ -10,28 +10,17 @@ import org.bladerunnerjs.model.engine.RootNode;
 
 public class AppJsLib extends AbstractJsLib
 {
-	private final NodeList<TypedTestPack> testTypes;
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
 	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("AppJsLib.testTypes", root(), file("tests"));
 	
 	public AppJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir, name);
-		testTypes = TypedTestPack.createNodeSet(this);
 	}
 	
 	public AppJsLib(RootNode rootNode, Node parent, File dir)
 	{
 		this(rootNode, parent, dir, null);
-	}
-	
-	public static NodeList<AppJsLib> createAppNonBladeRunnerLibNodeSet(Node node)
-	{
-		return new NodeList<>(node, AppJsLib.class, "thirdparty-libraries", null);
-	}
-	
-	public static NodeList<AppJsLib> createAppNodeSet(Node node)
-	{
-		return new NodeList<>(node, AppJsLib.class, "libs", null);
 	}
 	
 	@Override

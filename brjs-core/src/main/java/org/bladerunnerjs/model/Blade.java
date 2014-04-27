@@ -11,7 +11,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
@@ -45,11 +44,6 @@ public final class Blade extends AbstractComponent implements NamedNode
 		scopeAssetContainers.addAll(app().jsLibs());
 		
 		return scopeAssetContainers;
-	}
-	
-	public static NodeList<Blade> createNodeSet(Node node)
-	{
-		return new NodeList<>(node, Blade.class, "blades", null);
 	}
 	
 	@Override

@@ -19,14 +19,12 @@ import org.bladerunnerjs.utility.TestRunner;
 public final class Workbench extends AbstractBrowsableNode implements TestableNode, ThemeableNode
 {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
-	private final NodeList<TypedTestPack> testTypes;
-	private final NodeList<Theme> themes;
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
+	private final NodeList<Theme> themes = Theme.createNodeSet(this);
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
-		testTypes = TypedTestPack.createNodeSet(this);
-		themes = Theme.createNodeSet(this);
 		
 		registerInitializedNode();
 	}

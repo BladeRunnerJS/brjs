@@ -15,7 +15,6 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -38,11 +37,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), root().conf().file("bladerunner.conf"));
 		// TODO: we should never call registerInitializedNode() from a non-final class
 		registerInitializedNode();
-	}
-	
-	public static NodeList<TestPack> createNodeSet(Node node)
-	{
-		return new NodeList<>(node, TestPack.class, "", null);
 	}
 	
 	@Override

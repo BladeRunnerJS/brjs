@@ -12,13 +12,11 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public abstract class AbstractComponent extends AbstractAssetContainer implements TestableNode, ThemeableNode
 {
-	private final NodeList<Theme> themes;
-	private final NodeList<TypedTestPack> testTypes;
+	private final NodeList<Theme> themes = Theme.createNodeSet(this);
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
 	
 	public AbstractComponent(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
-		themes = Theme.createNodeSet(this);
-		testTypes = TypedTestPack.createNodeSet(this);
 	}
 	
 	@Override

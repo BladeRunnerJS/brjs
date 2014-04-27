@@ -32,10 +32,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeList<AppJsLib> nonBladeRunnerLibs;
-	private final NodeList<Bladeset> bladesets;
-	private final NodeList<Aspect> aspects;
-	private final NodeList<AppJsLib> jsLibs;
+	private final NodeList<AppJsLib> nonBladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "thirdparty-libraries", null);
+	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$");
+	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
+	private final NodeList<AppJsLib> jsLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
 	
 	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>("BRJS.assetContainers", root(), dir(), root().libsDir());
 	private final MemoizedValue<List<AssetContainer>> nonAspectAssetContainers = new MemoizedValue<>("BRJS.nonAspectAssetContainers", root(), dir(), root().libsDir());
@@ -53,23 +53,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		nonBladeRunnerLibs = AppJsLib.createAppNonBladeRunnerLibNodeSet(this);
-		bladesets = Bladeset.createNodeSet(this);
-		aspects = Aspect.createNodeSet(this);
-		jsLibs = AppJsLib.createAppNodeSet(this);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 		
 		registerInitializedNode();
-	}
-	
-	public static NodeList<App> createAppNodeSet(Node node)
-	{
-		return new NodeList<>(node, App.class, "apps", null);
-	}
-	
-	public static NodeList<App> createSystemAppNodeSet(Node node)
-	{
-		return new NodeList<>(node, App.class, "sdk/system-applications", null);
 	}
 	
 	@Override

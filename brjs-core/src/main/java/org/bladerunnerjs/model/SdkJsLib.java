@@ -11,28 +11,17 @@ import org.bladerunnerjs.model.engine.RootNode;
 
 public class SdkJsLib extends AbstractJsLib
 {
-	private final NodeList<BRSdkTypedTestPack> testTypes;
+	private final NodeList<BRSdkTypedTestPack> testTypes = new NodeList<>(this, BRSdkTypedTestPack.class, "tests", "^test-");
 	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("SdkJsLib.testTypes", root(), file("tests"));
 	
 	public SdkJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
-		testTypes = BRSdkTypedTestPack.createSdkTestPackNodeSet(this);
 	}
 	
 	public SdkJsLib(RootNode rootNode, Node parent, File dir)
 	{
 		this(rootNode, parent, dir, null);
-	}
-	
-	public static NodeList<SdkJsLib> createSdkNonBladeRunnerLibNodeSet(Node node)
-	{
-		return new NodeList<>(node, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
-	}
-	
-	public static NodeList<SdkJsLib> createSdkLibNodeSet(Node node)
-	{
-		return new NodeList<>(node, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
 	}
 	
 	@Override

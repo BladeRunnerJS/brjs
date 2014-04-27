@@ -50,6 +50,20 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CLOSE_METHOD_NOT_INVOKED = "the BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 	}
 	
+	private final NodeList<App> apps = new NodeList<>(this, App.class, "apps", null);
+	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
+	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
+	private final NodeList<SdkJsLib> sdkNonBladeRunnerLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
+	private final NodeItem<DirNode> jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
+	private final NodeList<NamedDirNode> templates = new NodeList<>(this, NamedDirNode.class, "sdk/templates", "-template$");
+	private final NodeItem<DirNode> appJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/application");
+	private final NodeItem<DirNode> configuration = new NodeItem<>(this, DirNode.class, "conf");
+	private final NodeItem<DirNode> systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");
+	private final NodeItem<DirNode> testJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/testRunner");
+	private final NodeItem<DirNode> userJars = new NodeItem<>(this, DirNode.class, "conf/java");
+	private final NodeItem<DirNode> logs = new NodeItem<>(this, DirNode.class, "sdk/log");
+	private final NodeItem<DirNode> apiDocs = new NodeItem<>(this, DirNode.class, "sdk/docs/jsdoc");
+	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
 	private WorkingDirNode workingDir;
 	private final Logger logger;
@@ -64,21 +78,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private final File libsDir = file("sdk/libs/javascript");
 	private boolean closed = false;
 	
-	private final NodeList<App> apps;
-	private final NodeList<App> systemApps;
-	private final NodeList<SdkJsLib> sdkLibs;
-	private final NodeList<SdkJsLib> sdkNonBladeRunnerLibs;
-	private final NodeItem<DirNode> jsPatches;
-	private final NodeList<NamedDirNode> templates;
-	private final NodeItem<DirNode> appJars;
-	private final NodeItem<DirNode> configuration;
-	private final NodeItem<DirNode> systemJars;
-	private final NodeItem<DirNode> testJars;
-	private final NodeItem<DirNode> userJars;
-	private final NodeItem<DirNode> logs;
-	private final NodeItem<DirNode> apiDocs;
-	private final NodeItem<DirNode> testResults;
-	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
@@ -89,20 +88,6 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		this.fileModificationService = fileModificationService;
-		apps = App.createAppNodeSet(this);
-		systemApps = App.createSystemAppNodeSet(this);
-		sdkLibs = SdkJsLib.createSdkLibNodeSet(this);
-		sdkNonBladeRunnerLibs = SdkJsLib.createSdkNonBladeRunnerLibNodeSet(this);
-		jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
-		templates = new NodeList<>(this, NamedDirNode.class, "sdk/templates", "-template$");
-		appJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/application");
-		configuration = new NodeItem<>(this, DirNode.class, "conf");
-		systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");
-		testJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/testRunner");
-		userJars = new NodeItem<>(this, DirNode.class, "conf/java");
-		logs = new NodeItem<>(this, DirNode.class, "sdk/log");
-		apiDocs = new NodeItem<>(this, DirNode.class, "sdk/docs/jsdoc");
-		testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 		
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		

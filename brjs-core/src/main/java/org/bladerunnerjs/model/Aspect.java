@@ -21,8 +21,8 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode, ThemeableNode
 {
-	private final NodeList<TypedTestPack> testTypes;
-	private final NodeList<Theme> themes;
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
+	private final NodeList<Theme> themes = Theme.createNodeSet(this);
 	private String name;
 	private File[] scopeFiles;
 	
@@ -35,15 +35,8 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		testTypes = TypedTestPack.createNodeSet(this);
-		themes = Theme.createNodeSet(this);
 		
 		registerInitializedNode();
-	}
-	
-	public static NodeList<Aspect> createNodeSet(Node node)
-	{
-		return new NodeList<>(node, Aspect.class, null, "-aspect$");
 	}
 	
 	@Override
