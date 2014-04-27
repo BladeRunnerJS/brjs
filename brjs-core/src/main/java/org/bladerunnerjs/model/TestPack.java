@@ -27,14 +27,13 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	private final NodeItem<DirNode> testSource = new NodeItem<>(this, DirNode.class, "src-test");
 	private AliasesFile aliasesFile;
 	private String name;
-	private final MemoizedValue<Set<SourceModule>> sourceModulesList;
+	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), root().conf().file("bladerunner.conf"));
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
 		
-		sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), root().conf().file("bladerunner.conf"));
 		// TODO: we should never call registerInitializedNode() from a non-final class
 		registerInitializedNode();
 	}

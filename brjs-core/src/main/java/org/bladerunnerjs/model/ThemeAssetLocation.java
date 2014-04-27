@@ -10,12 +10,11 @@ import org.bladerunnerjs.model.engine.RootNode;
 
 public class ThemeAssetLocation extends DeepAssetLocation {
 	private final BRJS brjs;
-	private final MemoizedValue<List<String>> themesList;
+	private final MemoizedValue<List<String>> themesList = new MemoizedValue<>("ThemeAssetLocation.themes", root(), dir());
 	
 	public ThemeAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 		brjs = (BRJS) rootNode;
-		themesList = new MemoizedValue<>("ThemeAssetLocation.themes", root(), dir());
 	}
 	
 	public String getThemeName() {
