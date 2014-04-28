@@ -121,7 +121,7 @@ public class TestRunnerController
 				}
 			}
 		}
-		if (!success) {  return -1;  }
+		if (!success) {  return 1;  }
 		return 0;
 	}
 

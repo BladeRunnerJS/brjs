@@ -55,7 +55,7 @@ public interface CommandPlugin extends Plugin
 	 * 
 	 * @param args The list of arguments provided by the user.
 	 * 
-	 * @return The exit code. 0 on success, non 0 otherwise. Typically commands will return -1 on failure unless
+	 * @return The exit code. 0 on success, non 0 otherwise. Typically commands will return 1 on failure unless
 	 * they have multiple exit paths. The exit code is not a replacement for exceptions, exceptions should still
 	 * be thrown if arguments are invalid or an unexpected exception occurs during the execution of the command.
 	 * 
