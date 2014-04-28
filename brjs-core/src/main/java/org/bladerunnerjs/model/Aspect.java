@@ -28,8 +28,6 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	
 	private final MemoizedValue<List<LinkedAsset>> seedFileList = new MemoizedValue<>("Aspect.seedFiles", root(), dir(), root().conf().file("bladerunner.conf"));
 	private final MemoizedValue<List<AssetContainer>> assetContainerList = new MemoizedValue<>("Aspect.assetContainer", this);
-	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("Aspect.testTypes", root(), file("tests"));
-	private final MemoizedValue<List<Theme>> themesList = new MemoizedValue<>("Aspect.themes", root(), file("themes"));
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -121,9 +119,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return testTypesList.value(() -> {
-			return testTypes.list();
-		});
+		return testTypes.list();
 	}
 	
 	@Override
@@ -135,9 +131,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	@Override
 	public List<Theme> themes()
 	{
-		return themesList.value(() -> {
-			return themes.list();
-		});
+		return themes.list();
 	}
 	
 	@Override

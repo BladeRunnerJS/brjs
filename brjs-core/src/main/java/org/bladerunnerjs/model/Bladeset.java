@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -21,8 +20,6 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	private String name;
 	private File[] scopeFiles;
 	
-	private final MemoizedValue<List<Blade>> bladeList = new MemoizedValue<>("Bladeset.blades", root(), file("blades"));
-
 	public Bladeset(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
@@ -100,9 +97,7 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 
 	public List<Blade> blades()
 	{
-		return bladeList.value(() -> {
-			return blades.list();
-		});
+		return blades.list();
 	}
 	
 	public Blade blade(String bladeName)
