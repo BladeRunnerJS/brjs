@@ -63,7 +63,7 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString(Parameters.APP_NAME);
 		String bladesetName = parsedArgs.getString(Parameters.BLADESET_NAME);
 		String bladeName = parsedArgs.getString(Parameters.BLADE_NAME);
@@ -88,5 +88,7 @@ public class CreateBladeCommand extends ArgsParsingCommandPlugin
 		
 		out.println(Messages.BLADE_CREATE_SUCCESS_CONSOLE_MSG, bladeName);
 		out.println(Messages.BLADE_PATH_CONSOLE_MSG, blade.dir().getPath());
+		
+		return 0;
 	}
 }

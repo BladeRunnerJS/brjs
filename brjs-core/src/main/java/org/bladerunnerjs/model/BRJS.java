@@ -338,14 +338,14 @@ public class BRJS extends AbstractBRJSRootNode
 		return pluginAccessor;
 	}
 	
-	public void runCommand(String... args) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
+	public int runCommand(String... args) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
 	{
-		CommandRunner.run(commandList, args);
+		return CommandRunner.run(commandList, args);
 	}
 	
-	public void runUserCommand(LogLevelAccessor logLevelAccessor, String... args) throws CommandOperationException
+	public int runUserCommand(LogLevelAccessor logLevelAccessor, String... args) throws CommandOperationException
 	{
-		UserCommandRunner.run(this, commandList, logLevelAccessor, args);
+		return UserCommandRunner.run(this, commandList, logLevelAccessor, args);
 	}
 	
 	public ApplicationServer applicationServer() throws ConfigException

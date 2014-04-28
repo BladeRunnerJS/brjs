@@ -70,7 +70,7 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 	}
 
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException
 	{
 		try
 		{	
@@ -99,6 +99,8 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 		{
 			throw new CommandOperationException("Error creating application server.", ex);
 		}
+		
+		return 0;
 	}
 	
 	private ApplicationServer getApplicationServer(JSAPResult parsedArgs) throws NumberFormatException, ConfigException

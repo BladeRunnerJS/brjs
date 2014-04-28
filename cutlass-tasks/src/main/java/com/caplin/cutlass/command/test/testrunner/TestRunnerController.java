@@ -61,7 +61,7 @@ public class TestRunnerController
 		}
 	}
 	
-	public void run(String[] args, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
+	public int run(String[] args, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
 	{
 		File configFile = null;
 		try {
@@ -121,10 +121,8 @@ public class TestRunnerController
 				}
 			}
 		}
-		if (!success)
-		{
-			throw new CommandOperationException("Test failure or error while running tests.");
-		}
+		if (!success) {  return -1;  }
+		return 0;
 	}
 
 	private TestType getTestTypeEnum(String testType) 

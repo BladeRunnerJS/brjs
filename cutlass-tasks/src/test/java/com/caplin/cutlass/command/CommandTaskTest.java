@@ -74,9 +74,10 @@ public class CommandTaskTest
 		}
 		
 		@Override
-		public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
+		public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 		{
 			out.println("DummyCommandTask.doCommand");
+			return 0;
 		}
 	}
 

@@ -30,26 +30,21 @@ import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.TestServerCommand;
 import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
 
-// TODO: move all classes in brjs-runner into 'org.bladerunnerjs.runner'?
 public class CommandRunner {
-	private static final int SUCCESS_EXIT_CODE = 0;
-	private static final int ERR_EXIT_CODE = 1;
 
 	public static void main(String[] args) {
-		int exitCode = SUCCESS_EXIT_CODE;
+		int exitCode = -1;
 		try 
 		{
-			new CommandRunner().run(args);
+			exitCode = new CommandRunner().run(args);
 		}
 		catch (CommandArgumentsException e) 
 		{
 			System.err.println(e.getMessage());
-			exitCode = ERR_EXIT_CODE;
 		}
 		catch (Exception ex) 
 		{
 			System.err.println(formatException(ex));
-			exitCode = ERR_EXIT_CODE;
 		}
 		finally
 		{
@@ -65,7 +60,7 @@ public class CommandRunner {
 		return byteStreamOutputStream.toString().trim();
 	}
 	
-	public void run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
+	public int run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
 		AbstractRootNode.allowInvalidRootDirectories = false;
 		BRJS brjs = null;
 		
@@ -90,7 +85,7 @@ public class CommandRunner {
 			brjs.populate();
 			
 			injectLegacyCommands(brjs);
-			brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getRootLogger()), args);
+			return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getRootLogger()), args);
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);

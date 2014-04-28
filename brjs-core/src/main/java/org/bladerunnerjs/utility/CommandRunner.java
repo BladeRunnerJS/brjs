@@ -10,7 +10,7 @@ import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class CommandRunner
 {
-	public static void run(CommandList commandList, String args[]) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
+	public static int run(CommandList commandList, String args[]) throws NoSuchCommandException, CommandArgumentsException, CommandOperationException
 	{
 		String commandName = extractCommandFromArgs(args);
 		String[] commandArgs = extractCommandArgsFromArgs(args);
@@ -18,7 +18,7 @@ public class CommandRunner
 		
 		if(commandPlugin == null) throw new NoSuchCommandException(commandName);
 		
-		commandPlugin.doCommand(commandArgs);
+		return commandPlugin.doCommand(commandArgs);
 	}
 	
 	public static String extractCommandFromArgs(String[] args)

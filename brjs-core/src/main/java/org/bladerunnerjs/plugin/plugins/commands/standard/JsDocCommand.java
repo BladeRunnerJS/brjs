@@ -69,7 +69,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
 		boolean isVerbose = parsedArgs.getBoolean("verbose-flag");
 		App app = brjs.app(appName);
@@ -87,6 +87,8 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		}
 		
 		out.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
+		
+		return 0;
 	}
 	
 	private List<String> generateCommand(App app, boolean isVerbose, File outputDir) {

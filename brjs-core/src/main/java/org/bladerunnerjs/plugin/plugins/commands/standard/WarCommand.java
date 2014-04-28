@@ -79,12 +79,13 @@ public class WarCommand extends ArgsParsingCommandPlugin
 	}
 
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		App app = brjs.app(parsedArgs.getString("app-name"));
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		exportWar(app, getWarLocation(app, parsedArgs), parsedArgs.getString("minifier"));
+		return 0;
 	}
 	
 	private void exportWar(App origApp, File warFile, String minifierName) throws CommandOperationException {

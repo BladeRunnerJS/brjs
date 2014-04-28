@@ -61,7 +61,7 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 	}
 	
 	@Override
-	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
+	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		CheckUtility checkUtility = new CheckUtility();
 		StringBuilder messageToShowUser = new StringBuilder();
@@ -84,5 +84,6 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 		checkUtility.checkThatWeHaveNothingInPatchesDirectory(messageToShowUser);
 		
 		out.println(messageToShowUser.toString());
+		return 0;
 	}
 }

@@ -56,7 +56,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("target-app-name");
 		String libraryName = parsedArgs.getString("new-library-name");
 		String libraryNamespace = parsedArgs.getString("library-namespace");
@@ -78,5 +78,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		
 		out.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
 		out.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
+		
+		return 0;
 	}
 }

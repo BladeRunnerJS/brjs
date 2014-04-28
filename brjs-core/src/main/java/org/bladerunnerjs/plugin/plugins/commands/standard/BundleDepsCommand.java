@@ -50,7 +50,7 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String bundleDir = parsedArgs.getString("bundle-dir");
 		boolean showAllDependencies = parsedArgs.getBoolean("all");
 		File bundlableDir = brjs.file("sdk/" + bundleDir);
@@ -68,5 +68,6 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
 		}
+		return 0;
 	}
 }
