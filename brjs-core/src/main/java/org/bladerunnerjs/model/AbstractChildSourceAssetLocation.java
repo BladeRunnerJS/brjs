@@ -14,9 +14,8 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 
 //TODO: why was this 'final'?
 public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAssetLocation {
-	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
-	
 	private final MemoizedValue<String> requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), assetContainer.dir(), root().libsDir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
+	private final List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
 	public AbstractChildSourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation parentAssetLocation) {
 		super(rootNode, parent, dir);

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.ServletModelAccessor;
@@ -49,8 +50,13 @@ public class VersionRedirectFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
-		servletContext = filterConfig.getServletContext();
+		try {
+			brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
+			servletContext = filterConfig.getServletContext();
+		}
+		catch (InvalidSdkDirectoryException e) {
+			throw new ServletException(e);
+		}
 	}
 	
 	@Override

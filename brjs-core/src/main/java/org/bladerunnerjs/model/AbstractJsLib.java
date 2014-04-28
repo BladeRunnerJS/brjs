@@ -9,7 +9,6 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -39,16 +38,6 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	{
 		// TODO: can we avoid having to have a null name for a NamedNode that is available as a single item through the model
 		this(rootNode, parent, dir, null);
-	}
-	
-	public static NodeMap<SdkJsLib> createSdkNonBladeRunnerLibNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
-	}
-	
-	public static NodeMap<SdkJsLib> createSdkLibNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
 	}
 	
 	@Override

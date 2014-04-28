@@ -10,7 +10,7 @@ import javax.naming.InvalidNameException;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -21,29 +21,20 @@ import org.bladerunnerjs.utility.TestRunner;
 
 public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode, ThemeableNode
 {
-	private final NodeMap<TypedTestPack> testTypes;
-	private final NodeMap<Theme> themes;
+	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
+	private final NodeList<Theme> themes = Theme.createNodeSet(this);
 	private String name;
 	private File[] scopeFiles;
 	
 	private final MemoizedValue<List<LinkedAsset>> seedFileList = new MemoizedValue<>("Aspect.seedFiles", root(), dir(), root().conf().file("bladerunner.conf"));
 	private final MemoizedValue<List<AssetContainer>> assetContainerList = new MemoizedValue<>("Aspect.assetContainer", this);
-	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("Aspect.testTypes", root(), file("tests"));
-	private final MemoizedValue<List<Theme>> themesList = new MemoizedValue<>("Aspect.themes", root(), file("themes"));
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		testTypes = TypedTestPack.createNodeSet(rootNode);
-		themes = Theme.createNodeSet(rootNode);
 		
 		registerInitializedNode();
-	}
-	
-	public static NodeMap<Aspect> createNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, Aspect.class, null, "-aspect$");
 	}
 	
 	@Override
@@ -128,28 +119,24 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return testTypesList.value(() -> {
-			return children(testTypes);
-		});
+		return testTypes.list();
 	}
 	
 	@Override
 	public TypedTestPack testType(String typedTestPackName)
 	{
-		return child(testTypes, typedTestPackName);
+		return testTypes.item(typedTestPackName);
 	}
 	
 	@Override
 	public List<Theme> themes()
 	{
-		return themesList.value(() -> {
-			return children(themes);
-		});
+		return themes.list();
 	}
 	
 	@Override
 	public Theme theme(String themeName)
 	{
-		return child(themes, themeName);
+		return themes.item(themeName);
 	}
 }

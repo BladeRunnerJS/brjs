@@ -24,7 +24,7 @@ public class BRJSNavigationTest
 	private BRJS brjs;
 	
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
 		brjs = BRJSTestFactory.createBRJS(testBase);
 		nodeTesterFactory = new NodeTesterFactory<>(brjs, BRJS.class);

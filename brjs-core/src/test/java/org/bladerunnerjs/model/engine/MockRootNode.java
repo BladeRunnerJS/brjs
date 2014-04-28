@@ -6,6 +6,7 @@ import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.FileInfo;
+import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeProperties;
@@ -19,7 +20,6 @@ import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInf
 
 public class MockRootNode implements RootNode
 {
-
 	@Override
 	public Node parentNode()
 	{
@@ -214,6 +214,11 @@ public class MockRootNode implements RootNode
 	@Override
 	public <N extends Node> N locateAncestorNodeOfClass(Node node, Class<N> nodeClass)
 	{
+		return null;
+	}
+
+	@Override
+	public IO io() {
 		return null;
 	}
 }

@@ -7,34 +7,25 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 
 public final class Bladeset extends AbstractComponent implements NamedNode
 {
-	private final NodeMap<Blade> blades;
+	private final NodeList<Blade> blades = new NodeList<>(this, Blade.class, "blades", null);
 	private String name;
 	private File[] scopeFiles;
 	
-	private final MemoizedValue<List<Blade>> bladeList = new MemoizedValue<>("Bladeset.blades", root(), file("blades"));
-
 	public Bladeset(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		blades = Blade.createNodeSet(rootNode);
 		
 		registerInitializedNode();
-	}
-	
-	public static NodeMap<Bladeset> createNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, Bladeset.class, null, "-bladeset$");
 	}
 	
 	@Override
@@ -106,13 +97,11 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 
 	public List<Blade> blades()
 	{
-		return bladeList.value(() -> {
-			return children(blades);
-		});
+		return blades.list();
 	}
 	
 	public Blade blade(String bladeName)
 	{
-		return child(blades, bladeName);
+		return blades.item(bladeName);
 	}
 }

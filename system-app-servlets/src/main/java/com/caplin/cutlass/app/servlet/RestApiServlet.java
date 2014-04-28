@@ -40,6 +40,7 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.logging.NullLogConfigurator;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 import com.caplin.cutlass.util.FileUtility;
@@ -102,14 +103,20 @@ public class RestApiServlet extends HttpServlet
 	@Override
 	public void init(final ServletConfig config) throws ServletException
 	{
-		context = config.getServletContext();
-		
-		File contextDir = new File( context.getRealPath("/") );
-		brjs = new BRJS(contextDir, new NullLogConfigurator(), new PessimisticFileModificationService());
-		ServletModelAccessor.initializeModel( brjs );
-		
-		if (apiService == null) { apiService = new RestApiService(brjs); };
-		logger = brjs.logger(LoggerType.SERVLET, this.getClass());
+		try {
+			context = config.getServletContext();
+			
+			File contextDir = new File( context.getRealPath("/") );
+			brjs = new BRJS(contextDir, new NullLogConfigurator(), new PessimisticFileModificationService());
+			
+			ServletModelAccessor.initializeModel( brjs );
+			
+			if (apiService == null) { apiService = new RestApiService(brjs); };
+			logger = brjs.logger(LoggerType.SERVLET, this.getClass());
+		}
+		catch (InvalidSdkDirectoryException e) {
+			throw new ServletException(e);
+		}
 	}
 	
 	@Override

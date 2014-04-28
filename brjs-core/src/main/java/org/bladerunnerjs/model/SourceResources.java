@@ -8,7 +8,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 
 public abstract class SourceResources extends AbstractBRJSNode
 {
-	private final NodeItem<DirNode> i18nResources = new NodeItem<>(DirNode.class, "resources/i18n");
+	private final NodeItem<DirNode> i18nResources = new NodeItem<>(this, DirNode.class, "resources/i18n");
 	
 	public SourceResources(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -16,6 +16,6 @@ public abstract class SourceResources extends AbstractBRJSNode
 	
 	public DirNode i18nResources()
 	{
-		return item(i18nResources);
+		return i18nResources.item();
 	}
 }

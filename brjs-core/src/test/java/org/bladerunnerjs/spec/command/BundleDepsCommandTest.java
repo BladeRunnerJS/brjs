@@ -74,8 +74,8 @@ public class BundleDepsCommandTest extends SpecTest {
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreated()
-			.and(aspect).hasBeenCreated();
+		given(aspect).hasBeenCreated()
+			.and(brjs).hasBeenAuthenticallyCreated();
 		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}

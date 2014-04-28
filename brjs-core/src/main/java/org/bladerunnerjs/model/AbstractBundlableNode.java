@@ -33,15 +33,12 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	private AliasesFile aliasesFile;
 	private Map<String, AssetContainer> assetContainers = new HashMap<>();
 	private LogicalRequestHandler requestHandler;
-	private final MemoizedValue<BundleSet> bundleSet;
-	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList;
+	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
+	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
 	private final Map<String, MemoizedValue<List<AssetContainer>>> potentialAssetContainersSet = new HashMap<>();
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
-		
-		bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
-		aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
 	}
 	
 	protected abstract List<LinkedAsset> getSeedFiles();

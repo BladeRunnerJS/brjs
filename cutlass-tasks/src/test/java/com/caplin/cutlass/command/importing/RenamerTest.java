@@ -28,7 +28,7 @@ public class RenamerTest
 	private File applicationDir;
 
 	@Before
-	public void setup() throws IOException
+	public void setup() throws Exception
 	{
 		appsDir = createTempAppsDir(new File(TEST_BASE, CutlassConfig.APPLICATIONS_DIR));
 		applicationDir = new File(appsDir, "emptytrader");

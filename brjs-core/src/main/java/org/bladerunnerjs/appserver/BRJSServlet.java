@@ -15,6 +15,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -34,7 +35,12 @@ public class BRJSServlet extends HttpServlet
 		super.init(config);
 		
 		servletContext = config.getServletContext();
-		BRJSThreadSafeModelAccessor.initializeModel(servletContext);
+		try {
+			BRJSThreadSafeModelAccessor.initializeModel(servletContext);
+		}
+		catch (InvalidSdkDirectoryException e) {
+			throw new ServletException(e);
+		}
 		
 		try {
 			brjs = BRJSThreadSafeModelAccessor.aquireModel();

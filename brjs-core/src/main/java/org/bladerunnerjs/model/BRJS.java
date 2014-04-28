@@ -19,8 +19,9 @@ import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
@@ -50,22 +51,22 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CLOSE_METHOD_NOT_INVOKED = "the BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 	}
 	
-	private final NodeMap<App> apps = App.createAppNodeSet(this);
-	private final NodeMap<App> systemApps = App.createSystemAppNodeSet(this);
-	private final NodeMap<SdkJsLib> sdkLibs = SdkJsLib.createSdkLibNodeSet(this);
-	private final NodeMap<SdkJsLib> sdkNonBladeRunnerLibs = SdkJsLib.createSdkNonBladeRunnerLibNodeSet(this);
-	private final NodeItem<DirNode> jsPatches = new NodeItem<>(DirNode.class, "js-patches");
-	private final NodeMap<NamedDirNode> templates = new NodeMap<>(this, NamedDirNode.class, "sdk/templates", "-template$");
-	private final NodeItem<DirNode> appJars = new NodeItem<>(DirNode.class, "sdk/libs/java/application");
-	private final NodeItem<DirNode> configuration = new NodeItem<>(DirNode.class, "conf");
-	private final NodeItem<DirNode> systemJars = new NodeItem<>(DirNode.class, "sdk/libs/java/system");
-	private final NodeItem<DirNode> testJars = new NodeItem<>(DirNode.class, "sdk/libs/java/testRunner");
-	private final NodeItem<DirNode> userJars = new NodeItem<>(DirNode.class, "conf/java");
-	private final NodeItem<DirNode> logs = new NodeItem<>(DirNode.class, "sdk/log");
-	private final NodeItem<DirNode> apiDocs = new NodeItem<>(DirNode.class, "sdk/docs/jsdoc");
-	private final NodeItem<DirNode> testResults = new NodeItem<>(DirNode.class, "sdk/test-results");
-	private WorkingDirNode workingDir;
+	private final NodeList<App> apps = new NodeList<>(this, App.class, "apps", null);
+	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
+	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
+	private final NodeList<SdkJsLib> sdkNonBladeRunnerLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
+	private final NodeItem<DirNode> jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
+	private final NodeList<NamedDirNode> templates = new NodeList<>(this, NamedDirNode.class, "sdk/templates", "-template$");
+	private final NodeItem<DirNode> appJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/application");
+	private final NodeItem<DirNode> configuration = new NodeItem<>(this, DirNode.class, "conf");
+	private final NodeItem<DirNode> systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");
+	private final NodeItem<DirNode> testJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/testRunner");
+	private final NodeItem<DirNode> userJars = new NodeItem<>(this, DirNode.class, "conf/java");
+	private final NodeItem<DirNode> logs = new NodeItem<>(this, DirNode.class, "sdk/log");
+	private final NodeItem<DirNode> apiDocs = new NodeItem<>(this, DirNode.class, "sdk/docs/jsdoc");
+	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
+	private WorkingDirNode workingDir;
 	private final Logger logger;
 	private final CommandList commandList;
 	private BladerunnerConf bladerunnerConf;
@@ -74,20 +75,19 @@ public class BRJS extends AbstractBRJSRootNode
 	private final Map<String, FileInfo> fileInfos = new HashMap<>();
 	private final PluginAccessor pluginAccessor;
 	private final FileModificationService fileModificationService;
-	private final BRJSIO io = new BRJSIO();
+	private final IO io = new IO();
 	private final File libsDir = file("sdk/libs/javascript");
 	private boolean closed = false;
 	
-	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
+	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		
-		if(dir != null) {
-			fileModificationService.setRootDir(dir);
-		}
+		fileModificationService.setRootDir(dir);
 		
 		this.fileModificationService = fileModificationService;
+		
 		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
@@ -102,22 +102,22 @@ public class BRJS extends AbstractBRJSRootNode
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 	}
-	
-	public BRJS(File brjsDir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) {
+
+	public BRJS(File brjsDir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException {
 		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(loggerFactory), loggerFactory, consoleWriter);
 	}
 	
-	public BRJS(File brjsDir, FileModificationService fileModificationService) {
+	public BRJS(File brjsDir, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
 		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
 	
-	public BRJS(File brjsDir, LogConfiguration logConfiguration)
+	public BRJS(File brjsDir, LogConfiguration logConfiguration) throws InvalidSdkDirectoryException
 	{
 		// TODO: what was the logConfiguration parameter going to be used for?
 		this(brjsDir, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
 	
-	public BRJS(File brjsDir, LogConfiguration logConfigurator, FileModificationService fileModificationService) {
+	public BRJS(File brjsDir, LogConfiguration logConfigurator, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
 		// TODO: what was the logConfiguration parameter going to be used for?
 		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
@@ -193,28 +193,29 @@ public class BRJS extends AbstractBRJSRootNode
 		this.workingDir = new WorkingDirNode(this, workingDir);
 	}
 	
-	public BRJSIO io() {
+	@Override
+	public IO io() {
 		return io;
 	}
 	
 	public List<App> apps()
 	{
-		return children(apps);
+		return apps.list();
 	}
 	
 	public App app(String appName)
 	{
-		return child(apps, appName);
+		return apps.item(appName);
 	}
 	
 	public List<App> systemApps()
 	{
-		return children(systemApps);
+		return systemApps.list();
 	}
 	
 	public App systemApp(String appName)
 	{
-		return child(systemApps, appName);
+		return systemApps.item(appName);
 	}
 	
 	public File libsDir() {
@@ -223,18 +224,18 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<SdkJsLib> sdkLibs()
 	{
-		return new ArrayList<SdkJsLib>( children(sdkLibs) );
+		return new ArrayList<SdkJsLib>( sdkLibs.list() );
 	}
 	
 	public JsLib sdkLib(String libName)
 	{
-		return child(sdkLibs, libName);
+		return sdkLibs.item(libName);
 	}
 	
 	public List<SdkJsLib> sdkNonBladeRunnerLibs()
 	{
 		List<SdkJsLib> typeCastLibs = new ArrayList<>();
-		for (SdkJsLib jsLib : children(sdkNonBladeRunnerLibs))
+		for (SdkJsLib jsLib : sdkNonBladeRunnerLibs.list())
 		{
 			typeCastLibs.add(jsLib);
 		}
@@ -243,63 +244,63 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public SdkJsLib sdkNonBladeRunnerLib(String libName)
 	{
-		return child(sdkNonBladeRunnerLibs, libName);
+		return sdkNonBladeRunnerLibs.item(libName);
 	}
 	
 	public DirNode jsPatches()
 	{
-		return item(jsPatches);
+		return jsPatches.item();
 	}
 	
 	public List<NamedDirNode> templates()
 	{
-		return children(templates);
+		return templates.list();
 	}
 	
 	public NamedDirNode template(String templateName)
 	{
-		return child(templates, templateName);
+		return templates.item(templateName);
 	}
 	
 	// TODO: delete this method -- the test results should live within a generated directory
 	public DirNode testResults()
 	{
-		return item(testResults);
+		return testResults.item();
 	}
 	
 	public DirNode appJars()
 	{
-		return item(appJars);
+		return appJars.item();
 	}
 	
 	public DirNode conf()
 	{
-		return item(configuration);
+		return configuration.item();
 	}
 	
 	public DirNode systemJars()
 	{
-		return item(systemJars);
+		return systemJars.item();
 	}
 	
 	public DirNode testJars()
 	{
-		return item(testJars);
+		return testJars.item();
 	}
 	
 	public DirNode userJars()
 	{
-		return item(userJars);
+		return userJars.item();
 	}
 	
 	public DirNode logs()
 	{
-		return item(logs);
+		return logs.item();
 	}
 	
 	public DirNode apiDocs()
 	{
-		return item(apiDocs);
+		return apiDocs.item();
 	}
 	
 	public VersionInfo versionInfo()
@@ -364,6 +365,10 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public FileInfo getFileInfo(File file) {
+		if(file == null) {
+			System.out.println("bingo!");
+		}
+		
 		String filePath = file.getPath();
 		
 		if(!fileInfos.containsKey(filePath)) {
