@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.List;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -11,7 +10,6 @@ import org.bladerunnerjs.model.engine.RootNode;
 public class AppJsLib extends AbstractJsLib
 {
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
-	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("AppJsLib.testTypes", root(), file("tests"));
 	
 	public AppJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -26,9 +24,7 @@ public class AppJsLib extends AbstractJsLib
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return testTypesList.value(() -> {
-			return testTypes.list();
-		});
+		return testTypes.list();
 	}
 	
 	@Override
