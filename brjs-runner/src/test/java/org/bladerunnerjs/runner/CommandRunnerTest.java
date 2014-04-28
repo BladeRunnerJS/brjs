@@ -3,9 +3,9 @@ package org.bladerunnerjs.runner;
 import java.io.File;
 import java.io.IOException;
 
+import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.runner.CommandRunner;
 import org.bladerunnerjs.runner.CommandRunner.InvalidDirectoryException;
-import org.bladerunnerjs.runner.CommandRunner.InvalidSdkDirectoryException;
 import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
 
 import com.caplin.cutlass.util.FileUtility;
@@ -33,7 +33,7 @@ public class CommandRunnerTest {
 		commandRunner.run(new String[] {dir("no-such-directory")});
 	}
 	
-	@Test(expected=InvalidSdkDirectoryException.class)
+	@Test(expected=CommandOperationException.class)
 	public void anExceptionIsThrownIfTheSdkArgumentIsNotAValidSdkDirectory() throws Exception {
 		dirFile("not-a-valid-sdk-directory").mkdirs();
 		commandRunner.run(new String[] {dir("not-a-valid-sdk-directory")});

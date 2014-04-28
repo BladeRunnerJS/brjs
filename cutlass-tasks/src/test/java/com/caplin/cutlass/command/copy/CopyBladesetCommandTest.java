@@ -4,7 +4,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +25,7 @@ public class CopyBladesetCommandTest
 	private File tempSdkBaseDir, tempDir, targetBladesetDirectory, targetBladeJsFile, targetFxBladesetDirectory, targetFxBladeJsFile;
 	
 	@Before
-	public void setUp() throws IOException 
+	public void setUp() throws Exception 
 	{		
 		tempDir = FileUtility.createTemporaryDirectory("CopyBladesetCommandTest");
 		tempDir.deleteOnExit();

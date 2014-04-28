@@ -26,7 +26,7 @@ public class MemoizedValueTest {
 	private FileInfo watchFileInfo;
 	
 	@Before
-	public void setUp() throws IOException {
+	public void setUp() throws Exception {
 		tempDir = FileUtility.createTemporaryDirectory(MemoizedValueTest.class.getSimpleName());
 		watchFile = new File(tempDir, "watch-file");
 		sdkDir = new File(tempDir, "sdk");

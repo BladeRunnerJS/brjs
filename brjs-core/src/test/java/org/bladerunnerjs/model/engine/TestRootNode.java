@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.testing.utility.MockLoggerFactory;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
@@ -22,14 +23,14 @@ public final class TestRootNode extends AbstractRootNode
 	NodeItem<TestMultiLocationItemNode> multiLocationItemNode = new NodeItem<>(this, TestMultiLocationItemNode.class, "single-item-primary-location");
 	private final IO io = new IO();
 	
-	public TestRootNode(File dir)
+	public TestRootNode(File dir) throws InvalidSdkDirectoryException
 	{
 		this(dir, new MockLoggerFactory());
 		
 		registerInitializedNode();
 	}
 	
-	public TestRootNode(File dir, LoggerFactory loggerFactory)
+	public TestRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{
 		super(dir, loggerFactory, null);
 		

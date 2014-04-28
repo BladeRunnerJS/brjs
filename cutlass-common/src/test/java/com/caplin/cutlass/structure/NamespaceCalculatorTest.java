@@ -25,7 +25,7 @@ public class NamespaceCalculatorTest
 	private static final String testBase = "src/test/resources/ExampleAppStructure";
 
 	@Before
-	public void setup() {
+	public void setup() throws Exception {
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(testBase)));
 	}
 	

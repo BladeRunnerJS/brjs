@@ -10,21 +10,34 @@ import org.bladerunnerjs.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
 public abstract class AbstractRootNode extends AbstractNode implements RootNode
 {
+	// TODO: remove this flag once we delete all old BladerRunner code
+	public static boolean allowInvalidRootDirectories = true;
+	
 	private Map<String, Node> nodeCache = new HashMap<>();
 	private LoggerFactory loggerFactory;
 	private ConsoleWriter consoleWriter;
 	
-	public AbstractRootNode(File dir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter)
+	public AbstractRootNode(File dir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException
 	{
 		super();
 		
 		File rootDir = locateRootDir(dir);
-		this.dir = (rootDir == null) ? null : new File(getNormalizedPath(rootDir));
+		
+		if(rootDir == null) {
+			if(!allowInvalidRootDirectories) {
+				throw new InvalidSdkDirectoryException("'" + dir.getPath() + "' is not a valid SDK directory");
+			}
+			
+			rootDir = dir;
+		}
+		
+		this.dir = new File(getNormalizedPath(rootDir));
 		this.loggerFactory = loggerFactory;
 		this.consoleWriter = consoleWriter;
 		

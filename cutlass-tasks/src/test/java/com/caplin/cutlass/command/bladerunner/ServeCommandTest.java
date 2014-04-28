@@ -3,8 +3,6 @@ package com.caplin.cutlass.command.bladerunner;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.io.IOException;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,7 +23,7 @@ public class ServeCommandTest extends CommandTaskTest
 	private BRJS brjs;
 
 	@Before
-	public void setup() throws IOException
+	public void setup() throws Exception
 	{
 		mockAppServer = mock(ApplicationServer.class);
 		when(mockAppServer.getPort()).thenReturn(1234);

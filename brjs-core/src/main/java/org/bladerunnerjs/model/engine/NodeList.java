@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bladerunnerjs.memoization.MemoizedValue;
+
 public class NodeList<N extends Node> {
 	private final Node node;
 	private final Class<N> nodeClass;
 	private final Map<String, N> namedNodes = new HashMap<>();
 	private final List<NamedNodeLocator> namedNodeLocators = new ArrayList<>();
+	private MemoizedValue<List<N>> list;
 	
 	public NodeList(Node node, Class<N> nodeClass, String subDirPath, String dirNameFilter)
 	{
@@ -48,13 +51,19 @@ public class NodeList<N extends Node> {
 	}
 	
 	public List<N> list() {
-		List<N> childList = new ArrayList<>();
-		
-		for (String nodeName : getLogicalNodeNames()) {
-			childList.add(item(nodeName));
+		if(list == null) {
+			list = new MemoizedValue<>("NodeList.list", node.root(), node.dir());
 		}
 		
-		return childList;
+		return list.value(() -> {
+			List<N> childList = new ArrayList<>();
+			
+			for (String nodeName : getLogicalNodeNames()) {
+				childList.add(item(nodeName));
+			}
+			
+			return childList;
+		});
 	}
 	
 	private List<String> getLogicalNodeNames()
