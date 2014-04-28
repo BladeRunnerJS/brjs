@@ -17,7 +17,7 @@ public class AspectNavigationTest
 	private BRJS brjs;
 	
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
 		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
 		aspect = brjs.app("a1").aspect("a1");

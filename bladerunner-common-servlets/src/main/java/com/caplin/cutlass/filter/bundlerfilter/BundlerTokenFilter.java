@@ -22,6 +22,7 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 import com.caplin.cutlass.CutlassConfig;
@@ -50,9 +51,14 @@ public class BundlerTokenFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
-		servletContext = filterConfig.getServletContext();
-		logger = brjs.logger(LoggerType.FILTER, BundlerTokenFilter.class);
+		try {
+			brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
+			servletContext = filterConfig.getServletContext();
+			logger = brjs.logger(LoggerType.FILTER, BundlerTokenFilter.class);
+		}
+		catch (InvalidSdkDirectoryException e) {
+			throw new ServletException(e);
+		}
 	}
 	
 	@Override

@@ -7,6 +7,7 @@ import javax.servlet.ServletContext;
 
 import org.bladerunnerjs.logging.NullLogConfigurator;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 /**
  * A utility class so Servlets and Filters can share a single BRJS model instance.
@@ -20,11 +21,11 @@ public class BRJSThreadSafeModelAccessor {
 	protected static BRJS model;
 	private static final ReentrantLock lock = new ReentrantLock();
 	
-	public static synchronized void initializeModel(ServletContext servletContext) {
+	public static synchronized void initializeModel(ServletContext servletContext) throws InvalidSdkDirectoryException {
 		initializeModel( new File(servletContext.getRealPath("/")) );
 	}
 	
-	public static synchronized void initializeModel(File path) {
+	public static synchronized void initializeModel(File path) throws InvalidSdkDirectoryException {
 		if(model == null) {
 			model = new BRJS(path, new NullLogConfigurator());
 		}

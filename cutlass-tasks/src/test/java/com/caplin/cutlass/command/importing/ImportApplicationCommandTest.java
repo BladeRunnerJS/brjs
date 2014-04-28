@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -17,7 +16,6 @@ import org.bladerunnerjs.model.BRJS;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
 
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import com.caplin.cutlass.CutlassConfig;
@@ -32,7 +30,7 @@ public class ImportApplicationCommandTest
 	private BRJS brjs;
 	
 	@Before
-	public void setUp() throws IOException, ConfigException
+	public void setUp() throws Exception
 	{
 		tempDir = FileUtility.createTemporaryDirectory("ImportCommandTest");
 		FileUtility.copyDirectoryContents(TEST_BASE, tempDir);

@@ -13,7 +13,9 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
 import org.bladerunnerjs.logging.LogConfiguration;
+import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -64,6 +66,7 @@ public class CommandRunner {
 	}
 	
 	public void run(String[] args) throws CommandArgumentsException, CommandOperationException, InvalidNameException, ModelUpdateException {
+		AbstractRootNode.allowInvalidRootDirectories = false;
 		BRJS brjs = null;
 		
 		try {
@@ -76,9 +79,13 @@ public class CommandRunner {
 			sdkBaseDir = sdkBaseDir.getCanonicalFile();
 			
 			args = processGlobalCommandFlags(args);
-			brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
 			
-			if (!brjs.dirExists()) throw new InvalidSdkDirectoryException("'" + sdkBaseDir.getPath() + "' is not a valid SDK directory");
+			try {
+				brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
+			}
+			catch(InvalidSdkDirectoryException e) {
+				throw new CommandOperationException(e);
+			}
 			
 			brjs.populate();
 			
@@ -89,6 +96,8 @@ public class CommandRunner {
 			throw new RuntimeException(e);
 		}
 		finally {
+			AbstractRootNode.allowInvalidRootDirectories = true;
+			
 			if(brjs != null) {
 				brjs.close();
 			}
@@ -162,14 +171,6 @@ public class CommandRunner {
 		private static final long serialVersionUID = 1L;
 		
 		public InvalidDirectoryException(String msg) {
-			super(msg);
-		}
-	}
-	
-	class InvalidSdkDirectoryException extends CommandOperationException {
-		private static final long serialVersionUID = 1L;
-		
-		public InvalidSdkDirectoryException(String msg) {
 			super(msg);
 		}
 	}

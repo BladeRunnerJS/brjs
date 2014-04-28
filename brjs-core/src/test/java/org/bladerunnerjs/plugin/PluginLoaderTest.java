@@ -27,7 +27,7 @@ public class PluginLoaderTest
 	private LogMessageStore logStore;
 
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
 		logStore = new LogMessageStore(true);
 		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"), new TestLoggerFactory(logStore));

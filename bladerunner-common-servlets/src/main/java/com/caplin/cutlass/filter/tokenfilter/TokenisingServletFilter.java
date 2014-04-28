@@ -19,6 +19,7 @@ import org.bladerunnerjs.appserver.CharResponseWrapper;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 import com.caplin.cutlass.ServletModelAccessor;
 
@@ -49,11 +50,16 @@ public class TokenisingServletFilter implements Filter
 	}
 
 	@Override
-	public void init(FilterConfig filterConfig)
+	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
-		contextPath = filterConfig.getServletContext().getContextPath();
-		logger = brjs.logger(LoggerType.FILTER, TokenisingServletFilter.class);
+		try {
+			BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
+			contextPath = filterConfig.getServletContext().getContextPath();
+			logger = brjs.logger(LoggerType.FILTER, TokenisingServletFilter.class);
+		}
+		catch (InvalidSdkDirectoryException e) {
+			throw new ServletException(e);
+		}
 	}
 	
 	@Override
