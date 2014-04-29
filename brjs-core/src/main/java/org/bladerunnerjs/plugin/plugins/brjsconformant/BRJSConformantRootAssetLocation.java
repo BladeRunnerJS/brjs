@@ -76,20 +76,6 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	}
 	
 	@Override
-	public String namespace() throws RequirePathException {
-		if (!libManifest.manifestExists()) {
-			return requirePrefix().replace("/", ".");
-		}
-		
-		try {
-			return libManifest.getRequirePrefix().replace("/", ".");
-		}
-		catch (ConfigException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	@Override
 	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
 		throw new RuntimeException("BRJSConformantRootAssetLocation.assertIdentifierCorrectlyNamespaced() should never be invoked");
 	}

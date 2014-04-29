@@ -47,9 +47,8 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 	}
 	
 	@Override
-	public String namespace() throws RequirePathException
-	{
-		return assetContainer.namespace();
+	public String requirePrefix() throws RequirePathException {
+		return assetContainer.requirePrefix();
 	}
 	
 	// TODO: this is the first time that we have a plug-in created asset-location producing more asset-locations dynamically, and there is currently no mechanism to help

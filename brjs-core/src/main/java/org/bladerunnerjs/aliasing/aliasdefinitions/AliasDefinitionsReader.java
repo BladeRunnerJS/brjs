@@ -18,6 +18,7 @@ import org.bladerunnerjs.aliasing.SchemaCreationException;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
 import org.bladerunnerjs.utility.stax.XmlStreamCursor;
@@ -99,9 +100,10 @@ public class AliasDefinitionsReader {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "defaultClass");
 		String aliasInterface = streamReader.getAttributeValue(null, "interface");
+		String containerNamespace = NamespaceUtility.convertToNamespace(assetContainer.requirePrefix());
 		
-		if(!aliasName.startsWith(assetContainer.namespace())) {
-			throw new NamespaceException("Alias '" + aliasName + "' does not begin with required container prefix of '" + assetContainer.namespace() + "'.");
+		if(!aliasName.startsWith(containerNamespace)) {
+			throw new NamespaceException("Alias '" + aliasName + "' does not begin with required container prefix of '" + containerNamespace + "'.");
 		}
 		
 		data.aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
@@ -122,9 +124,10 @@ public class AliasDefinitionsReader {
 	
 	private void processGroup(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException {
 		String groupName = streamReader.getAttributeValue(null, "name");
+		String containerNamespace = NamespaceUtility.convertToNamespace(assetContainer.requirePrefix());
 		
-		if(!groupName.startsWith(assetContainer.namespace())) {
-			throw new NamespaceException("Alias group identifier '" + groupName + "' does not begin with required container prefix of '" + assetContainer.namespace() + "'.");
+		if(!groupName.startsWith(containerNamespace)) {
+			throw new NamespaceException("Alias group identifier '" + groupName + "' does not begin with required container prefix of '" + containerNamespace + "'.");
 		}
 		
 		XmlStreamCursor cursor = new XmlStreamCursor(streamReader);

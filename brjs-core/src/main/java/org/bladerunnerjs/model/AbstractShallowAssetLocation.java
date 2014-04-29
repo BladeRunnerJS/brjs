@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathExceptio
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.JsStyleUtility;
+import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
@@ -31,7 +32,6 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
 	private final MemoizedValue<String> requirePrefix;
-	private final MemoizedValue<String> namespace = new MemoizedValue<>("AssetLocation.namespace", root(), root().dir());
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
 	private final MemoizedValue<List<LinkedAsset>> seedResourcesList = new MemoizedValue<>("AssetLocation.seedResources", root(), root().dir());
 	
@@ -66,16 +66,11 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	@Override
-	public String namespace() throws RequirePathException {
-		return namespace.value(() -> {
-			return requirePrefix().replace("/", ".");
-		});
-	}
-	
-	@Override
 	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
-		if(assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace())) {
-			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace() + ".*' was expected.");
+		String namespace = NamespaceUtility.convertToNamespace(requirePrefix());
+		
+		if(assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace)) {
+			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + ".*' was expected.");
 		}
 	}
 	

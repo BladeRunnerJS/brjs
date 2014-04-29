@@ -41,11 +41,6 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public String namespace() {
-		return requirePrefix().replace("/", ".");
-	}
-	
-	@Override
 	public Set<SourceModule> sourceModules() {
 		return sourceModulesList.value(() -> {
 			return new LinkedHashSet<SourceModule>(sourceModulesMap().values());

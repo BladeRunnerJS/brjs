@@ -49,11 +49,6 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public String namespace() {
-		return sdkJsLib.namespace();
-	}
-	
-	@Override
 	public boolean isNamespaceEnforced() {
 		return sdkJsLib.isNamespaceEnforced();
 	}

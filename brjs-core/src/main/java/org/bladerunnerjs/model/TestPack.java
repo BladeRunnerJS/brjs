@@ -69,11 +69,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public String namespace() {
-		return testScope().namespace();
-	}
-	
-	@Override
 	public boolean isNamespaceEnforced() {
 		return false;
 	}
