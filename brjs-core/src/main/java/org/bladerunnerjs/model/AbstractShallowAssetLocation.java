@@ -57,7 +57,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	@Override
-	public String requirePrefix() throws RequirePathException {
+	public String requirePrefix() {
 		return requirePrefix.value(() -> {
 			String relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir());
 			

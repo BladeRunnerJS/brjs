@@ -11,7 +11,6 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.NamespaceUtility;
@@ -114,13 +113,8 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	
 	@Override
 	public String requirePrefix() {
-		try {
-			RootAssetLocation rootAssetLocation = rootAssetLocation();
-			return (rootAssetLocation != null) ? rootAssetLocation().requirePrefix() : getName();
-		}
-		catch(RequirePathException e) {
-			throw new RuntimeException(e);
-		}
+		RootAssetLocation rootAssetLocation = rootAssetLocation();
+		return (rootAssetLocation != null) ? rootAssetLocation().requirePrefix() : getName();
 	}
 	
 	@Override

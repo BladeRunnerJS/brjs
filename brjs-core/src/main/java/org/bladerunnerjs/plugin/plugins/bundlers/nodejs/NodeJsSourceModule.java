@@ -70,7 +70,7 @@ public class NodeJsSourceModule implements SourceModule {
 			computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), assetLocation.root().conf().file("bladerunner.conf"));
 			assetLocationsList = new MemoizedValue<>("NodeJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 		}
-		catch(RequirePathException | ConfigException e) {
+		catch(ConfigException e) {
 			throw new AssetFileInstantationException(e);
 		}
 	}

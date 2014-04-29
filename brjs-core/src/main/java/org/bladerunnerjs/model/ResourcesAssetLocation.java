@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 
@@ -47,7 +46,7 @@ public class ResourcesAssetLocation extends DeepAssetLocation {
 	}
 	
 	@Override
-	public String requirePrefix() throws RequirePathException {
+	public String requirePrefix() {
 		return assetContainer.requirePrefix();
 	}
 	

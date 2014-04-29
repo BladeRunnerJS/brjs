@@ -61,7 +61,7 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	}
 	
 	@Override
-	public String requirePrefix() throws RequirePathException {
+	public String requirePrefix() {
 		if (!libManifest.manifestExists()) {
 			return ((JsLib) assetContainer()).getName();
 		}

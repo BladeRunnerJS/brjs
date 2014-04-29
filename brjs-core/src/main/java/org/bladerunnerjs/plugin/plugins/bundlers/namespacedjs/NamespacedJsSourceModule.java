@@ -46,22 +46,17 @@ public class NamespacedJsSourceModule implements SourceModule {
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
 	{
-		try {
-			File assetFile = new File(dir, assetName);
-			
-			this.assetLocation = assetLocation;
-			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-			className = requirePath.replaceAll("/", ".");
-			linkedAsset = new FullyQualifiedLinkedAsset();
-			linkedAsset.initialize(assetLocation, dir, assetName);
-			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(), assetFile, patch.getPatchFile());
-			staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(), assetFile, patch.getPatchFile());
-			assetLocationsList = new MemoizedValue<>("NamespacedJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
-		}
-		catch(RequirePathException e) {
-			throw new AssetFileInstantationException(e);
-		}
+		File assetFile = new File(dir, assetName);
+		
+		this.assetLocation = assetLocation;
+		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		className = requirePath.replaceAll("/", ".");
+		linkedAsset = new FullyQualifiedLinkedAsset();
+		linkedAsset.initialize(assetLocation, dir, assetName);
+		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
+		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(), assetFile, patch.getPatchFile());
+		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(), assetFile, patch.getPatchFile());
+		assetLocationsList = new MemoizedValue<>("NamespacedJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 	}
 	
 	@Override
