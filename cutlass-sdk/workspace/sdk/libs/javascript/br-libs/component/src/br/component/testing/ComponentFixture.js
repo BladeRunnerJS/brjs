@@ -2,6 +2,7 @@
 
 	var AliasRegistry = require('br/AliasRegistry');
 	var Errors = require('br/Errors');
+	var Utility = require('br/core/Utility');
 	
 	/**
 	 * Constructs a <code>ComponentFixture</code>.
@@ -211,14 +212,18 @@
 		
 		var sXMLRootMatch = /^\s*<([-A-Za-z0-9_.]+)/;
 		var sType = ((sXml)?sXml.match(sXMLRootMatch)[1]:null);
-
-		var Component = AliasRegistry.getClass( sType );
-		var oComponent = null;
-		if (Component.prototype.createFromXml) {
-			oComponent = (new Component()).createFromXml(sXml);
+		
+		var Component = Utility.locate(sType, window);
+		if(!Component){
+			var Component = AliasRegistry.getClass( sType );
 		}
-		else if (Component.prototype.deserialize) {
-			oComponent = (new Component()).deserialize(sXml);
+		
+		var oComponent = null;
+		if (Component.createFromXml) {
+			oComponent = Component.createFromXml(sXml);
+		}
+		else if (Component.deserialize) {
+			oComponent = Component.deserialize(sXml);
 		}
 		
 		this._setComponent(oComponent);
