@@ -96,7 +96,7 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	}
 	
 	@Override
-	public List<LinkedAsset> seedAssets() {
+	public List<LinkedAsset> linkedAssets() {
 		return emptyLinkedAssetList;
 	}
 	

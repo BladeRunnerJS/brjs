@@ -7,9 +7,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceAssetLocation;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsSourceModule;
 
@@ -25,8 +23,8 @@ public class InvalidAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
-		List<SourceModule> sourceModules = new ArrayList<>();
+	public List<Asset> getAssets(AssetLocation assetLocation) {
+		List<Asset> sourceModules = new ArrayList<>();
 		
 		if(enabled && (assetLocation instanceof SourceAssetLocation)) {
 			try {
@@ -38,15 +36,5 @@ public class InvalidAssetPlugin extends AbstractAssetPlugin {
 		}
 		
 		return sourceModules;
-	}
-	
-	@Override
-	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
-		return new ArrayList<>();
-	}
-
-	@Override
-	public List<Asset> getAssets(AssetLocation assetLocation) {
-		return new ArrayList<>();
 	}
 }

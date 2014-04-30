@@ -96,7 +96,7 @@ public class DependencyInfoFactory {
 	
 	private static void addAssetLocationDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
-		for(LinkedAsset resourceAsset : assetLocation.seedAssets()) {
+		for(LinkedAsset resourceAsset : assetLocation.linkedAssets()) {
 			dependencyInfo.resourceAssets.add(resourceAsset);
 			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(bundlableNode));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
@@ -110,7 +110,7 @@ public class DependencyInfoFactory {
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
 		
 		for(AssetLocation assetLocation : sourceModule.assetLocations()) {
-			for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedAssets()) {
+			for(LinkedAsset assetLocationLinkedAsset : assetLocation.linkedAssets()) {
 				if((assetLocationLinkedAsset.getDependentSourceModules(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
 					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
 				}

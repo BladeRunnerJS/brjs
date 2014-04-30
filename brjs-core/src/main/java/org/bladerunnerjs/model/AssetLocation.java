@@ -18,7 +18,7 @@ public interface AssetLocation extends BRJSNode {
 	AssetContainer assetContainer();
 	List<AssetLocation> dependentAssetLocations();
 	AliasDefinitionsFile aliasDefinitionsFile();
-	List<LinkedAsset> seedAssets();
+	List<LinkedAsset> linkedAssets();
 	List<Asset> bundlableAssets(AssetPlugin assetProducer);
 	List<SourceModule> sourceModules();
 	SourceModule sourceModule(String requirePath) throws RequirePathException;

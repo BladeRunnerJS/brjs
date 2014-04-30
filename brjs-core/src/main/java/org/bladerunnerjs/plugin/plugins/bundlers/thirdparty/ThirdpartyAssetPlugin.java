@@ -7,27 +7,20 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
-	
-	private final List<LinkedAsset> emptyLinkedAssets = new ArrayList<>();
-	private final List<Asset> emptyAssets = new ArrayList<>();
-	
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
-	{
+	public List<Asset> getAssets(AssetLocation assetLocation) {
 		try
 		{
-			List<SourceModule> sourceModules = new ArrayList<SourceModule>();
+			List<Asset> sourceModules = new ArrayList<>();
 			if (assetLocation instanceof ThirdpartyAssetLocation)
 			{
 				NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
@@ -41,15 +34,5 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 		{
 			throw new RuntimeException(ex);
 		}
-	}
-	
-	@Override
-	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
-		return emptyLinkedAssets;
-	}
-	
-	@Override
-	public List<Asset> getAssets(AssetLocation assetLocation) {
-		return emptyAssets;
 	}
 }

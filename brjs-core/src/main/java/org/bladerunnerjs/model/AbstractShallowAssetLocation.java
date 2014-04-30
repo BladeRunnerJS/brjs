@@ -33,9 +33,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	
 	private final MemoizedValue<String> requirePrefix;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
-	private final MemoizedValue<List<LinkedAsset>> seedAssetsList = new MemoizedValue<>("AssetLocation.seedResources", root(), root().dir());
-	private final MemoizedValue<List<Asset>> bundlableAssetsList = new MemoizedValue<>("AssetLocation.bundlableAssets", root(), root().dir());
-	private final MemoizedValue<List<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetLocation.seedAssets", root(), root().dir());
+	private final MemoizedValue<Assets> assetsList = new MemoizedValue<>("AssetLocation.assets", root(), root().dir());
 	
 	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
 	{
@@ -123,39 +121,18 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	@Override
-	public List<LinkedAsset> seedAssets() {
-		return seedAssetsList.value(() -> {
-			List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
-			
-			for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-				seedResources.addAll(assetPlugin.getLinkedAssets(this));
-			}
-			
-			return seedResources;
-		});
+	public List<LinkedAsset> linkedAssets() {
+		return assets().linkedAssets;
 	}
 	
 	@Override
 	public List<Asset> bundlableAssets(AssetPlugin assetPlugin) {
-		return bundlableAssetsList.value(() -> {
-			List<Asset> assets = new ArrayList<>(assetPlugin.getAssets(this));
-			assets.addAll(assetPlugin.getLinkedAssets(this));
-			
-			return assets;
-		});
+		return assets().pluginAssets.get(assetPlugin);
 	}
 	
 	@Override
 	public List<SourceModule> sourceModules() {
-		return sourceModulesList.value(() -> {
-			List<SourceModule> sourceAssets = new ArrayList<>();
-			
-			for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-				sourceAssets.addAll(assetPlugin.getSourceModules(this));
-			}
-			
-			return sourceAssets;
-		});
+		return assets().sourceModules;
 	}
 	
 	@Override
@@ -194,6 +171,33 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		}
 		
 		return assets;
+	}
+	
+	private Assets assets() {
+		return assetsList.value(() -> {
+			Assets assets = new Assets();
+			
+			for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
+				List<Asset> pluginAssets = new ArrayList<>();
+				
+				for(Asset asset : assetPlugin.getAssets(this)) {
+					if(asset instanceof SourceModule) {
+						assets.sourceModules.add((SourceModule) asset);
+					}
+					else if(asset instanceof LinkedAsset) {
+						assets.linkedAssets.add((LinkedAsset) asset);
+						pluginAssets.add(asset);
+					}
+					else {
+						pluginAssets.add(asset);
+					}
+				}
+				
+				assets.pluginAssets.put(assetPlugin, pluginAssets);
+			}
+			
+			return assets;
+		});
 	}
 	
 	protected <A extends Asset> void addMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
@@ -241,5 +245,11 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		}
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
+	}
+	
+	private class Assets {
+		Map<AssetPlugin, List<Asset>> pluginAssets = new HashMap<>();
+		List<LinkedAsset> linkedAssets = new ArrayList<>();
+		List<SourceModule> sourceModules = new ArrayList<>();
 	}
 }

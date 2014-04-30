@@ -122,7 +122,7 @@ public class BundleSetBuilder {
 	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
 		
 		if(assetLocations.add(assetLocation)) {
-			for(LinkedAsset resourceSeedFile : assetLocation.seedAssets()) {
+			for(LinkedAsset resourceSeedFile : assetLocation.linkedAssets()) {
 				addLinkedAsset(resourceSeedFile);
 			}
 			
