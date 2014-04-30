@@ -15,7 +15,6 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
-	private final List<SourceModule> emptyTestSourceModules = new ArrayList<>();
 	private final List<LinkedAsset> emptyLinkedAssets = new ArrayList<>();
 	private final List<Asset> emptyAssets = new ArrayList<>();
 	
@@ -42,11 +41,6 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 		{
 			throw new RuntimeException(ex);
 		}
-	}
-	
-	@Override
-	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
-		return emptyTestSourceModules;
 	}
 	
 	@Override

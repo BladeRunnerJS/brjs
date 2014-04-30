@@ -16,7 +16,6 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 public class XMLAssetPlugin extends AbstractAssetPlugin {
 	private AssetFilter xmlFilesFilter = new XMLAssetFilter();
 	private final List<SourceModule> emptySourceModules = new ArrayList<>();
-	private final List<SourceModule> emptyTestSourceModules = new ArrayList<>();
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
@@ -25,11 +24,6 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		return emptySourceModules;
-	}
-	
-	@Override
-	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
-		return emptyTestSourceModules;
 	}
 	
 	@Override

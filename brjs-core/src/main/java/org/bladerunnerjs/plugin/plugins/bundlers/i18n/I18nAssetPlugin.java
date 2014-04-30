@@ -20,7 +20,6 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 	
 	private AssetFilter i18nPropertiesFileFilter = new RegExAssetFilter(I18nAssetFile.I18N_PROPERTIES_FILE_REGEX);
 	private final List<SourceModule> emptySourceModules = new ArrayList<>();
-	private final List<SourceModule> emptyTestSourceModules = new ArrayList<>();
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -31,12 +30,6 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation)
 	{
 		return emptySourceModules;
-	}
-	
-	@Override
-	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation)
-	{
-		return emptyTestSourceModules;
 	}
 
 	@Override

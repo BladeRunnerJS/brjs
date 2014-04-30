@@ -15,7 +15,6 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class CssAssetPlugin extends AbstractAssetPlugin {
 	private final List<SourceModule> emptySourceModules = new ArrayList<>();
-	private final List<SourceModule> emptyTestSourceModules = new ArrayList<>();
 	private final List<LinkedAsset> emptyLinkedAssets = new ArrayList<>();
 	
 	@Override
@@ -26,11 +25,6 @@ public class CssAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
 		return emptySourceModules;
-	}
-	
-	@Override
-	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
-		return emptyTestSourceModules;
 	}
 	
 	@Override

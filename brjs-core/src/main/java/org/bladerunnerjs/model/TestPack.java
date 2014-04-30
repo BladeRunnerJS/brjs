@@ -54,7 +54,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
 			for(AssetLocation assetLocation : assetLocations()) {
 				if(isTestAssetLocation(assetLocation)) {
-					seedFiles.addAll(assetPlugin.getTestSourceModules(assetLocation));
+					seedFiles.addAll(assetPlugin.getSourceModules(assetLocation));
 				}
 			}
 		}

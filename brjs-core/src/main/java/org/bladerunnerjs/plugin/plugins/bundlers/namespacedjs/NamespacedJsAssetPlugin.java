@@ -37,11 +37,6 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
-		return getSourceModules(assetLocation);
-	}
-	
-	@Override
 	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
         return emptyLinkedAssets;
 	}
