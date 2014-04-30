@@ -82,14 +82,14 @@ public class AliasModelTest extends SpecTest {
 	public void aliasDefinitionsDefinedWithinBladesetsMustBeNamespaced() throws Exception {
 		given(bladesetAliasDefinitionsFile).hasAlias("the-alias", "TheClass");
 		when(aspect).retrievesAlias("the-alias");
-		then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs");
+		then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs.*");
 	}
 	
 	@Test
 	public void aliasDefinitionsDefinedWithinBladesMustBeNamespaced() throws Exception {
 		given(bladeAliasDefinitionsFile).hasAlias("the-alias", "TheClass");
 		when(aspect).retrievesAlias("the-alias");
-		then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs.b1");
+		then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs.b1.*");
 	}
 	
 	@Test
@@ -179,7 +179,7 @@ public class AliasModelTest extends SpecTest {
 			.and(bladeAliasDefinitionsFile).hasScenarioAlias("s1", "the-alias", "Class2")
 			.and(aspectAliasesFile).usesScenario("s1");
 		when(aspect).retrievesAlias("the-alias");
-		then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs.b1");
+		then(exceptions).verifyException(NamespaceException.class, "the-alias", "appns.bs.b1.*");
 	}
 	
 	@Test
@@ -234,7 +234,7 @@ public class AliasModelTest extends SpecTest {
 	public void groupIdentifiersMustBeNamespaced() throws Exception {
 		given(bladeAliasDefinitionsFile).hasGroupAlias("g1", "the-alias", "TheClass");
 		when(aspect).retrievesAlias("the-alias");
-		then(exceptions).verifyException(NamespaceException.class, "g1", "appns.bs.b1");
+		then(exceptions).verifyException(NamespaceException.class, "g1", "appns.bs.b1.*");
 	}
 	
 	@Test
