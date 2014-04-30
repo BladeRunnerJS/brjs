@@ -133,34 +133,6 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		});
 	}
 	
-	
-	@Override
-	public List<LinkedAsset> seedResources(String fileExtension) {
-		List<LinkedAsset> typedSeedResources = new ArrayList<>();
-		
-		for(LinkedAsset seedResource : seedResources()) {
-			if(seedResource.getAssetName().endsWith("." + fileExtension)) {
-				typedSeedResources.add(seedResource);
-			}
-		}
-		
-		return typedSeedResources;
-	}
-	
-	@Override
-	public List<Asset> bundleResources(String fileExtension) {
-		List<Asset> bundleResources = new LinkedList<Asset>();
-		
-		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			for (Asset asset: bundleResources(assetPlugin)){
-				if(asset.getAssetName().endsWith("." + fileExtension)) {
-					bundleResources.add(asset);
-				}
-			}
-		}
-		return bundleResources;
-	}
-	
 	public List<Asset> bundleResources(AssetPlugin assetPlugin) {
 		List<Asset> assets = new ArrayList<>(assetPlugin.getAssets(this));
 		assets.addAll(assetPlugin.getLinkedAssets(this));

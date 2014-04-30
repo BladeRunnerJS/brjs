@@ -38,19 +38,6 @@ public class BundleSet {
 		return resourceLocations;
 	}
 	
-	public List<Asset> getResourceFiles(String fileExtension) {
-		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
-		
-		for(AssetLocation resourceNode : resourceLocations) {
-			resourceFiles.addAll(resourceNode.bundleResources(fileExtension));
-		}
-		
-		List<Asset> result = new ArrayList<Asset>();
-		result.addAll(resourceFiles);
-		
-		return orderAssetsBasedOnAssetContainer(result);
-	}
-	
 	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
 		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
 		
