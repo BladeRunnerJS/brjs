@@ -119,7 +119,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	@Override
 	public AliasDefinitionsFile aliasDefinitionsFile() {		
 		if(aliasDefinitionsFile == null) {
-			aliasDefinitionsFile = new AliasDefinitionsFile(assetContainer, dir(), "aliasDefinitions.xml");
+			aliasDefinitionsFile = new AliasDefinitionsFile(this, dir(), "aliasDefinitions.xml");
 		}
 		
 		return aliasDefinitionsFile;

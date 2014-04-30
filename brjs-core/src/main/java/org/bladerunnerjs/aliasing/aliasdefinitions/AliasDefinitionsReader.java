@@ -15,8 +15,9 @@ import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.aliasing.SchemaConverter;
 import org.bladerunnerjs.aliasing.SchemaCreationException;
-import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
@@ -32,8 +33,9 @@ public class AliasDefinitionsReader {
 	
 	private final AliasDefinitionsData data;
 	private final File file;
-	private final AssetContainer assetContainer;
+	private final AssetLocation assetLocation;
 	private final String defaultFileCharacterEncoding;
+
 	
 	static {
 		XMLValidationSchemaFactory schemaFactory = new RelaxNGSchemaFactory();
@@ -46,12 +48,12 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	public AliasDefinitionsReader(AliasDefinitionsData data, File file, AssetContainer assetContainer) {
+	public AliasDefinitionsReader(AliasDefinitionsData data, File file, AssetLocation assetLocation) {
 		try {
 			this.data = data;
 			this.file = file;
-			this.assetContainer = assetContainer;
-			defaultFileCharacterEncoding = assetContainer.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			this.assetLocation = assetLocation;
+			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -89,20 +91,18 @@ public class AliasDefinitionsReader {
 				
 				throw new ContentFileProcessingException(file, location.getLineNumber(), location.getColumnNumber(), e.getMessage());
 			}
-			catch (IOException | NamespaceException e) {
+			catch (IOException | NamespaceException | RequirePathException e) {
 				throw new ContentFileProcessingException(file, e);
 			}
 		}
 	}
 	
-	private void processAlias(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException {
+	private void processAlias(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException, RequirePathException {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "defaultClass");
 		String aliasInterface = streamReader.getAttributeValue(null, "interface");
 		
-		if(!aliasName.startsWith(assetContainer.namespace())) {
-			throw new NamespaceException("Alias '" + aliasName + "' does not begin with required container prefix of '" + assetContainer.namespace() + "'.");
-		}
+		assetLocation.assertIdentifierCorrectlyNamespaced(aliasName);
 		
 		data.aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
 		
@@ -120,12 +120,10 @@ public class AliasDefinitionsReader {
 		}
 	}
 	
-	private void processGroup(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException {
+	private void processGroup(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException, RequirePathException {
 		String groupName = streamReader.getAttributeValue(null, "name");
 		
-		if(!groupName.startsWith(assetContainer.namespace())) {
-			throw new NamespaceException("Alias group identifier '" + groupName + "' does not begin with required container prefix of '" + assetContainer.namespace() + "'.");
-		}
+		assetLocation.assertIdentifierCorrectlyNamespaced(groupName);
 		
 		XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
 		
