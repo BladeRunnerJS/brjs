@@ -19,6 +19,7 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 
 
 public class BRJSServlet extends HttpServlet
@@ -75,12 +76,8 @@ public class BRJSServlet extends HttpServlet
 			response.setContentType(contentType);
 			BladerunnerUri bladerunnerUri = new BladerunnerUri(brjs, servletContext, request);
 			BundlableNode bundlableNode = app.getBundlableNode(bladerunnerUri);
-			if (bundlableNode == null)
-			{
-				throw new ResourceNotFoundException("Unable to find BundlableNode for URL " + request.getRequestURI());
-			}
 			bundlableNode.handleLogicalRequest(bladerunnerUri.logicalPath, response.getOutputStream());
-		} catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException | ConfigException e) {
+		} catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException | ConfigException | InvalidBundlableNodeException e) {
 			throw new ServletException(e);
 		}
 		finally {
