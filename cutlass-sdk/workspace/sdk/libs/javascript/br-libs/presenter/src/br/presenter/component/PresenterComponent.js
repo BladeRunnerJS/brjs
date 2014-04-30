@@ -133,10 +133,12 @@
 		return this.m_eTemplate;
 	};
 
-	// It is the responsibility of the surrounding system to call serialize and then persist the resultant string. It can then 
-	// call deserialize with that string to recreate an instance of the component. 
+	// It is the responsibility of the containing system to call serialize and then persist the resultant string.
+	// It can then call deserialize with that string to (re)create an instance of the component. 
 	// We write the component class into the serialized form so this component can throw an exception
-	// if an attempt is made to deserialize it with a string that was not created by another class.
+	// if an attempt is made to deserialize it with a string that was not created by this class.
+	// This class identifier should NOT be used by the containing system to map its serialized blobs to component type as 
+	// it is a private concern of this class and liable to change.
 	PresenterComponent.prototype.serialize = function() {
 		var sSerializedState = "";
 		
