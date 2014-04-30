@@ -121,7 +121,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 		
 	@Override
-	public List<LinkedAsset> seedResources() {
+	public List<LinkedAsset> seedAssets() {
 		return seedResourcesList.value(() -> {
 			List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
@@ -133,7 +133,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		});
 	}
 	
-	public List<Asset> bundleResources(AssetPlugin assetPlugin) {
+	public List<Asset> bundlableAssets(AssetPlugin assetPlugin) {
 		List<Asset> assets = new ArrayList<>(assetPlugin.getAssets(this));
 		assets.addAll(assetPlugin.getLinkedAssets(this));
 		

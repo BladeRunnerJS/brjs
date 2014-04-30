@@ -19,8 +19,8 @@ public interface AssetLocation extends BRJSNode {
 	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException;
 	SourceModule sourceModule(String requirePath) throws RequirePathException;
 	AliasDefinitionsFile aliasDefinitionsFile();
-	List<LinkedAsset> seedResources();
-	List<Asset> bundleResources(AssetPlugin assetProducer);
+	List<LinkedAsset> seedAssets();
+	List<Asset> bundlableAssets(AssetPlugin assetProducer);
 	AssetContainer assetContainer();
 	List<AssetLocation> dependentAssetLocations();
 	<A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException;

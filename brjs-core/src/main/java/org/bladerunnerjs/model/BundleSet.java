@@ -42,7 +42,7 @@ public class BundleSet {
 		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
 		
 		for(AssetLocation resourceNode : resourceLocations) {
-			resourceFiles.addAll(resourceNode.bundleResources(assetProducer));
+			resourceFiles.addAll(resourceNode.bundlableAssets(assetProducer));
 		}
 		
 		List<Asset> result = new ArrayList<Asset>();

@@ -95,12 +95,12 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	}
 	
 	@Override
-	public List<LinkedAsset> seedResources() {
+	public List<LinkedAsset> seedAssets() {
 		return emptyLinkedAssetList;
 	}
 	
 	@Override
-	public List<Asset> bundleResources(AssetPlugin assetProducer) {
+	public List<Asset> bundlableAssets(AssetPlugin assetProducer) {
 		return emptyAssetList;
 	}
 	
