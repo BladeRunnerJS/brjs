@@ -15,6 +15,7 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class HTMLAssetPlugin extends AbstractAssetPlugin {
 	private final List<SourceModule> emptySourceModules = new ArrayList<>();
+	private final List<Asset> emptyAssets = new ArrayList<>();
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
@@ -41,8 +42,6 @@ public class HTMLAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public List<Asset> getAssets(AssetLocation assetLocation) {
-		List<Asset> result = new ArrayList<Asset>();
-		result.addAll(this.getLinkedAssets(assetLocation));
-		return result;
+		return emptyAssets;
 	}
 }

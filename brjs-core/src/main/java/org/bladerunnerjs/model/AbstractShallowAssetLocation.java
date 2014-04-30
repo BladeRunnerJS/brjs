@@ -152,8 +152,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		List<Asset> bundleResources = new LinkedList<Asset>();
 		
 		for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-			List<Asset> assets = assetPlugin.getAssets(this);
-			for (Asset asset: assets){
+			for (Asset asset: bundleResources(assetPlugin)){
 				if(asset.getAssetName().endsWith("." + fileExtension)) {
 					bundleResources.add(asset);
 				}
@@ -163,7 +162,9 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	public List<Asset> bundleResources(AssetPlugin assetPlugin) {
-		List<Asset> assets = assetPlugin.getAssets(this);
+		List<Asset> assets = new ArrayList<>(assetPlugin.getAssets(this));
+		assets.addAll(assetPlugin.getLinkedAssets(this));
+		
 		return assets;
 	}
 
