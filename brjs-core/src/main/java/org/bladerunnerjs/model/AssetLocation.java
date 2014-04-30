@@ -20,6 +20,7 @@ public interface AssetLocation extends BRJSNode {
 	AliasDefinitionsFile aliasDefinitionsFile();
 	List<LinkedAsset> seedAssets();
 	List<Asset> bundlableAssets(AssetPlugin assetProducer);
+	List<SourceModule> sourceModules();
 	SourceModule sourceModule(String requirePath) throws RequirePathException;
 	String jsStyle();
 	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException;

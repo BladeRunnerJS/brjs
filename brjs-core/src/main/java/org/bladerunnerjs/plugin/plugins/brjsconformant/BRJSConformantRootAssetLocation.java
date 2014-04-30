@@ -29,6 +29,7 @@ import org.bladerunnerjs.utility.JsStyleUtility;
 public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implements RootAssetLocation {
 	private final List<LinkedAsset> emptyLinkedAssetList = new ArrayList<>();
 	private final List<Asset> emptyAssetList = new ArrayList<>();
+	private final List<SourceModule> emptySourceModulesList = new ArrayList<>();
 	private final List<AssetLocation> emptyAssetLocationList = new ArrayList<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private BRLibManifest libManifest;
@@ -102,6 +103,11 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	@Override
 	public List<Asset> bundlableAssets(AssetPlugin assetProducer) {
 		return emptyAssetList;
+	}
+	
+	@Override
+	public List<SourceModule> sourceModules() {
+		return emptySourceModulesList;
 	}
 	
 	@Override

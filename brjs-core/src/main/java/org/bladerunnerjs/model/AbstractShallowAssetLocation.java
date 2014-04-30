@@ -33,7 +33,9 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	
 	private final MemoizedValue<String> requirePrefix;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
-	private final MemoizedValue<List<LinkedAsset>> seedResourcesList = new MemoizedValue<>("AssetLocation.seedResources", root(), root().dir());
+	private final MemoizedValue<List<LinkedAsset>> seedAssetsList = new MemoizedValue<>("AssetLocation.seedResources", root(), root().dir());
+	private final MemoizedValue<List<Asset>> bundlableAssetsList = new MemoizedValue<>("AssetLocation.bundlableAssets", root(), root().dir());
+	private final MemoizedValue<List<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetLocation.seedAssets", root(), root().dir());
 	
 	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
 	{
@@ -119,10 +121,10 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		
 		return aliasDefinitionsFile;
 	}
-		
+	
 	@Override
 	public List<LinkedAsset> seedAssets() {
-		return seedResourcesList.value(() -> {
+		return seedAssetsList.value(() -> {
 			List<LinkedAsset> seedResources = new LinkedList<LinkedAsset>();
 			
 			for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
@@ -133,13 +135,29 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		});
 	}
 	
+	@Override
 	public List<Asset> bundlableAssets(AssetPlugin assetPlugin) {
-		List<Asset> assets = new ArrayList<>(assetPlugin.getAssets(this));
-		assets.addAll(assetPlugin.getLinkedAssets(this));
-		
-		return assets;
+		return bundlableAssetsList.value(() -> {
+			List<Asset> assets = new ArrayList<>(assetPlugin.getAssets(this));
+			assets.addAll(assetPlugin.getLinkedAssets(this));
+			
+			return assets;
+		});
 	}
-
+	
+	@Override
+	public List<SourceModule> sourceModules() {
+		return sourceModulesList.value(() -> {
+			List<SourceModule> sourceAssets = new ArrayList<>();
+			
+			for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
+				sourceAssets.addAll(assetPlugin.getSourceModules(this));
+			}
+			
+			return sourceAssets;
+		});
+	}
+	
 	@Override
 	public AssetContainer assetContainer()
 	{
