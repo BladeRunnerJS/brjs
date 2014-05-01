@@ -165,40 +165,11 @@ public abstract class AbstractAssetLocation extends InstantiatedBRJSNode impleme
 		// do nothing
 	}
 	
-	@Override
-	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
-		if(!new File(dir, assetName).getParentFile().equals(dir())) {
-			// TODO: this needs to be tested
-			throw new AssetFileInstantationException("'" + assetName + "' can only point to a logical resource within the directory '" + dir + "'.");
-		}
-		
-		return assetLocationUtility.obtainAsset(assetClass, dir, assetName);
-	}
-	
-	@Override
-	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetListClass, Class<? extends A> assetClass) throws AssetFileInstantationException {
-		List<A> assets = new ArrayList<>();
-		
-		if(dir.isDirectory()) {
-			addMatchingAssets(dir, assetFilter, assetClass, assets);
-		}
-		
-		return assets;
-	}
-	
 	private Assets assets() {
 		return (!dirInfo.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
 	}
 	
 	protected abstract List<File> getCandidateFiles();
-	
-	protected <A extends Asset> void addMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
-		for(File file : root().getFileInfo(dir).files()) {
-			if(assetFilter.accept(file.getName())) {
-				assets.add(obtainAsset(assetClass, file.getParentFile(), file.getName()));
-			}
-		}
-	}
 	
 	private String canonicaliseRequirePath(String requirePrefix, String requirePath) throws RequirePathException
 	{

@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
@@ -24,8 +23,4 @@ public interface AssetLocation extends BRJSNode {
 	SourceModule sourceModule(String requirePath) throws RequirePathException;
 	String jsStyle();
 	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException;
-	
-	// TODO: remove these methods
-	<A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException;
-	<A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException;
 }

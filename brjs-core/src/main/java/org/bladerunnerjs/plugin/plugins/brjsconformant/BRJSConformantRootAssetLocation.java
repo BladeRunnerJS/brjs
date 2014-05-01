@@ -10,8 +10,6 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetFilter;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.InstantiatedBRJSNode;
 import org.bladerunnerjs.model.JsLib;
@@ -118,16 +116,6 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	@Override
 	public List<AssetLocation> dependentAssetLocations() {
 		return emptyAssetLocationList ;
-	}
-	
-	@Override
-	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
-		throw new RuntimeException("BRJSConformantRootAssetLocation.obtainAsset() should never be invoked");
-	}
-	
-	@Override
-	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException {
-		return new ArrayList<A>();
 	}
 
 	@Override

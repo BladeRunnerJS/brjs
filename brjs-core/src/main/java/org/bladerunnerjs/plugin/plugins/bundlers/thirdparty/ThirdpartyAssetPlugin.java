@@ -23,7 +23,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		try {
 			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
-			ThirdpartySourceModule sourceModule = assetLocation.obtainAsset(ThirdpartySourceModule.class, assetLocation.dir(), "");
+			ThirdpartySourceModule sourceModule = new ThirdpartySourceModule(assetLocation, assetLocation.dir(), "");
 			sourceModule.initManifest(manifest);
 			
 			return sourceModule;
