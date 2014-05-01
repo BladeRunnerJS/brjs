@@ -56,28 +56,4 @@ public class DeepAssetLocation extends AbstractShallowAssetLocation {
 		FileInfo dirInfo = root().getFileInfo(dir());
 		return(dirInfo.exists()) ? __getAssets(assetPlugin, this, dirInfo.nestedFiles(), cachedAssets) : new ArrayList<>();
 	}
-	
-	// TODO: the final solution will ideally be able to use the File itself as they key of cachedAssets?
-	public static List<Asset> __getAssets(AssetPlugin assetPlugin, AssetLocation assetLocation, List<File> assetFiles, Map<String, Asset> cachedAssets) {
-		try {
-			List<Asset> assets = new ArrayList<>();
-			
-			for(File assetFile : assetFiles) {
-				if(assetPlugin.canHandleAsset(assetFile, assetLocation)) {
-					String assetFilePath = assetFile.getAbsolutePath();
-					
-					if(!cachedAssets.containsKey(assetFilePath)) {
-						cachedAssets.put(assetFilePath, assetPlugin.createAsset(assetFile, assetLocation));
-					}
-					
-					assets.add(cachedAssets.get(assetFilePath));
-				}
-			}
-			
-			return assets;
-		}
-		catch(AssetFileInstantationException e) {
-			throw new RuntimeException(e);
-		}
-	}
 }
