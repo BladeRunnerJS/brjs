@@ -27,7 +27,7 @@ public class DeepAssetLocation extends AbstractShallowAssetLocation {
 	
 	@Override
 	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
-		return assetLocator.obtainAsset(assetClass, dir, assetName);
+		return assetLocationUtility.obtainAsset(assetClass, dir, assetName);
 	}
 	
 	@Override
@@ -55,5 +55,10 @@ public class DeepAssetLocation extends AbstractShallowAssetLocation {
 	public List<Asset> _getAssets(AssetPlugin assetPlugin) {
 		FileInfo dirInfo = root().getFileInfo(dir());
 		return(dirInfo.exists()) ? __getAssets(assetPlugin, this, dirInfo.nestedFiles(), cachedAssets) : new ArrayList<>();
+	}
+
+	@Override
+	protected List<File> getCandidateFiles() {
+		return dirInfo.nestedFiles();
 	}
 }

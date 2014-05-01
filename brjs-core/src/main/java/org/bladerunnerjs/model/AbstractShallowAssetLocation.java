@@ -20,20 +20,28 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.utility.AssetLocator;
+import org.bladerunnerjs.plugin.utility.Assets;
 import org.bladerunnerjs.utility.JsStyleUtility;
 import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
-public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
+public abstract class AbstractShallowAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
+	protected final AssetLocator assetLocator;
+	protected final FileInfo dirInfo;
+	protected final Assets emptyAssets;
+	
+	
+	
+	
 	protected final AssetContainer assetContainer;
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private final Map<String, SourceModule> sourceModules = new HashMap<>();
-	protected final AssetLocationUtility assetLocator;
+	protected final AssetLocationUtility assetLocationUtility;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	
 	private final MemoizedValue<String> requirePrefix;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
-	private final MemoizedValue<Assets> assetsList = new MemoizedValue<>("AssetLocation.assets", root(), root().dir());
 	
 	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
 	{
@@ -44,8 +52,13 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
+		
+		dirInfo = root().getFileInfo(dir);
+		assetLocator = new AssetLocator(this);
+		emptyAssets = new Assets(root());
+		
 		this.assetContainer = (AssetContainer) parent;
-		assetLocator = new AssetLocationUtility(this);
+		assetLocationUtility = new AssetLocationUtility(this);
 		requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), dir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
 	}
 	
@@ -159,7 +172,7 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 			throw new AssetFileInstantationException("'" + assetName + "' can only point to a logical resource within the directory '" + dir + "'.");
 		}
 		
-		return assetLocator.obtainAsset(assetClass, dir, assetName);
+		return assetLocationUtility.obtainAsset(assetClass, dir, assetName);
 	}
 	
 	@Override
@@ -174,31 +187,10 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 	}
 	
 	private Assets assets() {
-		return assetsList.value(() -> {
-			Assets assets = new Assets();
-			
-			for(AssetPlugin assetPlugin : root().plugins().assetProducers()) {
-				List<Asset> pluginAssets = new ArrayList<>();
-				
-				for(Asset asset : assetPlugin.getAssets(this)) {
-					if(asset instanceof SourceModule) {
-						assets.sourceModules.add((SourceModule) asset);
-					}
-					else if(asset instanceof LinkedAsset) {
-						assets.linkedAssets.add((LinkedAsset) asset);
-						pluginAssets.add(asset);
-					}
-					else {
-						pluginAssets.add(asset);
-					}
-				}
-				
-				assets.pluginAssets.put(assetPlugin, pluginAssets);
-			}
-			
-			return assets;
-		});
+		return (!dirInfo.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
 	}
+	
+	protected abstract List<File> getCandidateFiles();
 	
 	protected <A extends Asset> void addMatchingAssets(File dir, AssetFilter assetFilter, Class<? extends A> assetClass, List<A> assets) throws AssetFileInstantationException {
 		for(File file : root().getFileInfo(dir).files()) {
@@ -245,12 +237,6 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		}
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
-	}
-	
-	private class Assets {
-		Map<AssetPlugin, List<Asset>> pluginAssets = new HashMap<>();
-		List<LinkedAsset> linkedAssets = new ArrayList<>();
-		List<SourceModule> sourceModules = new ArrayList<>();
 	}
 	
 	

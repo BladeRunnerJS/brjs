@@ -1,9 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -18,28 +15,8 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	}
 	
 	@Override
-	public List<Asset> getAssets(AssetLocation assetLocation) {
-		try
-		{
-			List<Asset> sourceModules = new ArrayList<>();
-			if (assetLocation instanceof ThirdpartyAssetLocation)
-			{
-				NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
-				ThirdpartySourceModule sourceModule = assetLocation.obtainAsset(ThirdpartySourceModule.class, assetLocation.dir(), "");
-				sourceModule.initManifest(manifest);
-				sourceModules.add( sourceModule );
-			}
-			return sourceModules;
-		}
-		catch (ConfigException | AssetFileInstantationException ex)
-		{
-			throw new RuntimeException(ex);
-		}
-	}
-	
-	@Override
 	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
-		return (assetLocation instanceof ThirdpartyAssetLocation);
+		return ((assetLocation instanceof ThirdpartyAssetLocation) && assetFile.getName().equals("library.manifest"));
 	}
 	
 	@Override

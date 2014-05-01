@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.List;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -23,5 +24,9 @@ public class TestAssetLocation extends AbstractSourceAssetLocation
 	{
 		return new ChildTestAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
 	}
-
+	
+	@Override
+	protected List<File> getCandidateFiles() {
+		return dirInfo.files();
+	}
 }

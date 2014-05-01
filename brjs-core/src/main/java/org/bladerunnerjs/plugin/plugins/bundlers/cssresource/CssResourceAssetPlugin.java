@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.cssresource;
 
 import java.io.File;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.model.Asset;
@@ -17,11 +16,6 @@ public class CssResourceAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 		// do nothing
-	}
-	
-	@Override
-	public List<Asset> getAssets(AssetLocation assetLocation) {
-		return assetLocation._getAssets(this);
 	}
 	
 	@Override

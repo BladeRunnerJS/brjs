@@ -32,6 +32,18 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 		}
 	}
 	
+	protected List<File> getCandidateFiles() {
+		try {
+			List<File> assetFiles = new ArrayList<>(manifest.getCssFiles());
+			assetFiles.add(file("library.manifest"));
+			
+			return assetFiles;
+		}
+		catch(ConfigException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	@Override
 	public String jsStyle() {
 		return ThirdpartyAssetLocation.class.getSimpleName();
@@ -53,7 +65,7 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 			throw new AssetFileInstantationException("asset name '" + assetName + "' was not empty.");
 		}
 		else {
-			asset = assetLocator.obtainAsset(assetClass, dir, assetName);
+			asset = assetLocationUtility.obtainAsset(assetClass, dir, assetName);
 		}
 		
 		return asset;
@@ -66,7 +78,7 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 		try {
 			for(File cssAssetFile : manifest.getCssFiles()) {
 				if(assetFilter.accept(cssAssetFile.getName())) {
-					assets.add(assetLocator.obtainAsset(assetClass, cssAssetFile.getParentFile(), cssAssetFile.getName()));
+					assets.add(assetLocationUtility.obtainAsset(assetClass, cssAssetFile.getParentFile(), cssAssetFile.getName()));
 				}
 			}
 		}

@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.File;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.model.Asset;
@@ -18,12 +17,6 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-	}
-	
-	@Override
-	public List<Asset> getAssets(AssetLocation assetLocation)
-	{
-		return assetLocation._getAssets(this);
 	}
 	
 	@Override

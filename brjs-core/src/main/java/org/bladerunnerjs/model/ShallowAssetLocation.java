@@ -1,19 +1,13 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.List;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 
 public final class ShallowAssetLocation extends AbstractShallowAssetLocation {
-	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation) {
-		super(rootNode, parent, dir, assetLocation);
-		
-		// TODO: understand why removing this line doesn't break any tests
-		registerInitializedNode();
-	}
-	
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 		
@@ -21,4 +15,8 @@ public final class ShallowAssetLocation extends AbstractShallowAssetLocation {
 		registerInitializedNode();
 	}
 	
+	@Override
+	protected List<File> getCandidateFiles() {
+		return dirInfo.files();
+	}
 }

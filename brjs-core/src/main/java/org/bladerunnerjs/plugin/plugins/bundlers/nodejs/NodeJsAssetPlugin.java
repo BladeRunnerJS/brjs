@@ -1,8 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
 
 import java.io.File;
-import java.util.List;
-
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -12,11 +10,6 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
-	}
-	
-	@Override
-	public List<Asset> getAssets(AssetLocation assetLocation) {
-		return assetLocation._getAssets(this);
 	}
 	
 	@Override
