@@ -94,7 +94,6 @@ public class WarCommand extends ArgsParsingCommandPlugin
 			File warApp = FileUtility.createTemporaryDirectory(origApp.getName() + "-war");
 			
 			try {
-//				warApp.create();
 				
 				FileUtility.copyDirectoryIfExists(origApp.file("WEB-INF"), new File(warApp, "WEB-INF"));
 				new File(warApp, "WEB-INF/jetty-env.xml").delete();
@@ -107,7 +106,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 				
 				FileUtil fileUtil = new FileUtil(defaultFileCharacterEncoding);
 				for(Aspect origAspect : origApp.aspects()) {
-					File warAspect = new File(warApp, origAspect.getName());
+					File warAspect = new File(warApp, origAspect.dir().getName());
 					
 					for(String indexFile : indexFiles) {
 						if(origAspect.file(indexFile).exists()) {
