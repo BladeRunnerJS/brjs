@@ -27,30 +27,22 @@ import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public abstract class AbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
-	protected final AssetLocator assetLocator;
-	protected final FileInfo dirInfo;
-	protected final Assets emptyAssets;
-	
-	
-	
-	
-	protected final AssetContainer assetContainer;
-	private AliasDefinitionsFile aliasDefinitionsFile;
-	private final Map<String, SourceModule> sourceModules = new HashMap<>();
-	protected final AssetLocationUtility assetLocationUtility;
-	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
-	
 	private final MemoizedValue<String> requirePrefix;
+	protected final AssetContainer assetContainer;
+	private final AssetLocator assetLocator;
+	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
+	private final Map<String, SourceModule> sourceModules = new HashMap<>();
+	private AliasDefinitionsFile aliasDefinitionsFile;
+	protected final FileInfo dirInfo;
+	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
 	
-	public AbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
-	{
+	public AbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
 		this(rootNode, parent, dir);
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
-	public AbstractAssetLocation(RootNode rootNode, Node parent, File dir)
-	{
+	public AbstractAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 		
 		dirInfo = root().getFileInfo(dir);
@@ -58,16 +50,10 @@ public abstract class AbstractAssetLocation extends InstantiatedBRJSNode impleme
 		emptyAssets = new Assets(root());
 		
 		this.assetContainer = (AssetContainer) parent;
-		assetLocationUtility = new AssetLocationUtility(this);
 		requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), dir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
 	}
 	
-	@Override
-	public String jsStyle() {
-		return jsStyle.value(() -> {
-			return JsStyleUtility.getJsStyle(dir());
-		});
-	}
+	protected abstract List<File> getCandidateFiles();
 	
 	@Override
 	public String requirePrefix() {
@@ -79,49 +65,13 @@ public abstract class AbstractAssetLocation extends InstantiatedBRJSNode impleme
 	}
 	
 	@Override
-	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
-		String namespace = NamespaceUtility.convertToNamespace(requirePrefix());
-		
-		if(assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace)) {
-			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + ".*' was expected.");
-		}
+	public AssetContainer assetContainer() {
+		return assetContainer;
 	}
 	
 	@Override
-	public SourceModule sourceModule(String requirePath) throws RequirePathException
-	{
-		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
-		
-		if (sourceModules.containsKey(requirePath))
-		{
-			return sourceModules.get(requirePath);
-		}
-		
-		SourceModule sourceModule = findSourceModuleWithRequirePath(assetContainer().app().getAllAssetContainers(), canonicalRequirePath);
-		
-		if (sourceModule != null)
-		{
-			sourceModules.put(requirePath, sourceModule);
-			return sourceModule;
-		}
-	
-		throw new InvalidRequirePathException("Unable to find SourceModule for require path '"+requirePath+"'. It either does not exist or it is outside of the scope for this request.");
-	}
-
-	private SourceModule findSourceModuleWithRequirePath(List<AssetContainer> assetContainers, String requirePath)
-	{
-		for (AssetContainer assetContainer : assetContainers)
-		{
-			for (SourceModule sourceModule : assetContainer.sourceModules())
-			{
-				if (sourceModule.getRequirePath().equals(requirePath))
-				{
-					sourceModules.put(requirePath, sourceModule);
-					return sourceModule;
-				}
-			}
-		}
-		return null;
+	public List<AssetLocation> dependentAssetLocations() {
+		return dependentAssetLocations;
 	}
 	
 	@Override
@@ -149,15 +99,38 @@ public abstract class AbstractAssetLocation extends InstantiatedBRJSNode impleme
 	}
 	
 	@Override
-	public AssetContainer assetContainer()
-	{
-		return assetContainer;
+	public SourceModule sourceModule(String requirePath) throws RequirePathException {
+		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
+		
+		if(sourceModules.containsKey(requirePath)) {
+			return sourceModules.get(requirePath);
+		}
+		
+		SourceModule sourceModule = findSourceModuleWithRequirePath(assetContainer().app().getAllAssetContainers(), canonicalRequirePath);
+		
+		if(sourceModule != null) {
+			sourceModules.put(requirePath, sourceModule);
+			return sourceModule;
+		}
+		
+		throw new InvalidRequirePathException("Unable to find SourceModule for require path '" + requirePath
+			+ "'. It either does not exist or it is outside of the scope for this request.");
 	}
-
+	
 	@Override
-	public List<AssetLocation> dependentAssetLocations()
-	{
-		return dependentAssetLocations;
+	public String jsStyle() {
+		return jsStyle.value(() -> {
+			return JsStyleUtility.getJsStyle(dir());
+		});
+	}
+	
+	@Override
+	public void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException {
+		String namespace = NamespaceUtility.convertToNamespace(requirePrefix());
+		
+		if(assetContainer.isNamespaceEnforced() && !identifier.startsWith(namespace)) {
+			throw new NamespaceException( "The identifier '" + identifier + "' is not correctly namespaced.\nNamespace '" + namespace + ".*' was expected.");
+		}
 	}
 	
 	@Override
@@ -165,31 +138,44 @@ public abstract class AbstractAssetLocation extends InstantiatedBRJSNode impleme
 		// do nothing
 	}
 	
+	private SourceModule findSourceModuleWithRequirePath(List<AssetContainer> assetContainers, String requirePath)
+	{
+		for (AssetContainer assetContainer : assetContainers)
+		{
+			for (SourceModule sourceModule : assetContainer.sourceModules())
+			{
+				if (sourceModule.getRequirePath().equals(requirePath))
+				{
+					sourceModules.put(requirePath, sourceModule);
+					return sourceModule;
+				}
+			}
+		}
+		return null;
+	}
+	
 	private Assets assets() {
 		return (!dirInfo.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
 	}
-	
-	protected abstract List<File> getCandidateFiles();
 	
 	private String canonicaliseRequirePath(String requirePrefix, String requirePath) throws RequirePathException
 	{
 		List<String> requirePrefixParts = new LinkedList<String>( Arrays.asList(requirePrefix.split("/")) );
 		List<String> requirePathParts = new LinkedList<String>( Arrays.asList(requirePath.split("/")) );
 		
-		if (!requirePath.contains("../") && !requirePath.contains("./"))
-		{
+		if(!requirePath.contains("../") && !requirePath.contains("./")) {
 			return requirePath;
 		}
 		
 		Iterator<String> requirePathPartsIterator = requirePathParts.iterator();
-		while(requirePathPartsIterator.hasNext())
-		{
+		while(requirePathPartsIterator.hasNext()) {
 			String pathPart = requirePathPartsIterator.next();
-			switch (pathPart)
-			{
+			
+			switch (pathPart) {
 				case ".":
 					requirePathPartsIterator.remove();
 					break;
+				
 				case "..":
 					requirePathPartsIterator.remove();
 					if (requirePrefixParts.size() > 0)
@@ -202,37 +188,12 @@ public abstract class AbstractAssetLocation extends InstantiatedBRJSNode impleme
 						throw new UnresolvableRelativeRequirePathException(msg);
 					}
 					break;
+				
 				default:
 					break;
 			}
 		}
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
-	}
-	
-	
-	
-	// TODO: the final solution will ideally be able to use the File itself as they key of cachedAssets?
-	public static List<Asset> __getAssets(AssetPlugin assetPlugin, AssetLocation assetLocation, List<File> assetFiles, Map<String, Asset> cachedAssets) {
-		try {
-			List<Asset> assets = new ArrayList<>();
-			
-			for(File assetFile : assetFiles) {
-				if(assetPlugin.canHandleAsset(assetFile, assetLocation)) {
-					String assetFilePath = assetFile.getAbsolutePath();
-					
-					if(!cachedAssets.containsKey(assetFilePath)) {
-						cachedAssets.put(assetFilePath, assetPlugin.createAsset(assetFile, assetLocation));
-					}
-					
-					assets.add(cachedAssets.get(assetFilePath));
-				}
-			}
-			
-			return assets;
-		}
-		catch(AssetFileInstantationException e) {
-			throw new RuntimeException(e);
-		}
 	}
 }
