@@ -26,7 +26,7 @@ import org.bladerunnerjs.utility.JsStyleUtility;
 import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
-public abstract class AbstractShallowAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
+public abstract class AbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
 	protected final AssetLocator assetLocator;
 	protected final FileInfo dirInfo;
 	protected final Assets emptyAssets;
@@ -43,13 +43,13 @@ public abstract class AbstractShallowAssetLocation extends InstantiatedBRJSNode 
 	private final MemoizedValue<String> requirePrefix;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
 	
-	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
+	public AbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
 	{
 		this(rootNode, parent, dir);
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
-	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir)
+	public AbstractAssetLocation(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
 		

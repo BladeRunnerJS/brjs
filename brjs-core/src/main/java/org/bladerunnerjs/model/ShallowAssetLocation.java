@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 
-public final class ShallowAssetLocation extends AbstractShallowAssetLocation {
+public final class ShallowAssetLocation extends AbstractAssetLocation {
 	public ShallowAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 		

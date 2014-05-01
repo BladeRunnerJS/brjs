@@ -10,7 +10,7 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
-public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLocation {
+public abstract class AbstractSourceAssetLocation extends AbstractAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
 	
 	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>("AssetLocation.childAssetLocations", root(), dir());

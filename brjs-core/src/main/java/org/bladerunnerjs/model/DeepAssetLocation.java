@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
-public class DeepAssetLocation extends AbstractShallowAssetLocation {
+public class DeepAssetLocation extends AbstractAssetLocation {
 	public DeepAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation) {
 		super(rootNode, parent, dir, assetLocation);
 		

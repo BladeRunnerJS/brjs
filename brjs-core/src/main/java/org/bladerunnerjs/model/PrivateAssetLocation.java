@@ -6,7 +6,7 @@ import java.util.List;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
-public final class PrivateAssetLocation extends AbstractShallowAssetLocation {
+public final class PrivateAssetLocation extends AbstractAssetLocation {
 	public PrivateAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 		
