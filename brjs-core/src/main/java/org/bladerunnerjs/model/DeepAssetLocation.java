@@ -2,10 +2,13 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class DeepAssetLocation extends AbstractShallowAssetLocation {
 	public DeepAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation) {
@@ -43,6 +46,38 @@ public class DeepAssetLocation extends AbstractShallowAssetLocation {
 		
 		for(File childDir : root().getFileInfo(dir).dirs()) {
 			addAllMatchingAssets(childDir, assetFilter, assetClass, assets);
+		}
+	}
+	
+	
+	private Map<String, Asset> cachedAssets = new HashMap<>();
+	@Override
+	public List<Asset> _getAssets(AssetPlugin assetPlugin) {
+		FileInfo dirInfo = root().getFileInfo(dir());
+		return(dirInfo.exists()) ? __getAssets(assetPlugin, this, dirInfo.nestedFiles(), cachedAssets) : new ArrayList<>();
+	}
+	
+	// TODO: the final solution will ideally be able to use the File itself as they key of cachedAssets?
+	public static List<Asset> __getAssets(AssetPlugin assetPlugin, AssetLocation assetLocation, List<File> assetFiles, Map<String, Asset> cachedAssets) {
+		try {
+			List<Asset> assets = new ArrayList<>();
+			
+			for(File assetFile : assetFiles) {
+				if(assetPlugin.canHandleAsset(assetFile, assetLocation)) {
+					String assetFilePath = assetFile.getAbsolutePath();
+					
+					if(!cachedAssets.containsKey(assetFilePath)) {
+						cachedAssets.put(assetFilePath, assetPlugin.createAsset(assetFile, assetLocation));
+					}
+					
+					assets.add(cachedAssets.get(assetFilePath));
+				}
+			}
+			
+			return assets;
+		}
+		catch(AssetFileInstantationException e) {
+			throw new RuntimeException(e);
 		}
 	}
 }

@@ -252,4 +252,12 @@ public class AbstractShallowAssetLocation extends InstantiatedBRJSNode implement
 		List<LinkedAsset> linkedAssets = new ArrayList<>();
 		List<SourceModule> sourceModules = new ArrayList<>();
 	}
+	
+	
+	private Map<String, Asset> cachedAssets = new HashMap<>();
+	@Override
+	public List<Asset> _getAssets(AssetPlugin assetPlugin) {
+		FileInfo dirInfo = root().getFileInfo(dir());
+		return(dirInfo.exists()) ? DeepAssetLocation.__getAssets(assetPlugin, this, dirInfo.files(), cachedAssets) : new ArrayList<>();
+	}
 }

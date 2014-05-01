@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.plugin.bundler.thirdparty;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +37,15 @@ public class InvalidLocationJsAssetPlugin extends AbstractAssetPlugin {
 		}
 		
 		return sourceModules;
+	}
+	
+	@Override
+	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
+		return (enabled && (assetLocation instanceof ThirdpartyAssetLocation));
+	}
+	
+	@Override
+	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+		return new NodeJsSourceModule(assetLocation, assetLocation.file("invalid-location"), "");
 	}
 }

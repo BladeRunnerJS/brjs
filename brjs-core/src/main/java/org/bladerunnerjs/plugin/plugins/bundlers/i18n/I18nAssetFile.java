@@ -35,6 +35,13 @@ public class I18nAssetFile implements Asset
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 
+	public I18nAssetFile() {
+	}
+	
+	public I18nAssetFile(AssetLocation assetLocation, File dir, String name) throws AssetFileInstantationException {
+		initialize(assetLocation, dir, name);
+	}
+
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
 	{

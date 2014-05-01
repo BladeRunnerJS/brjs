@@ -56,6 +56,13 @@ public class NodeJsSourceModule implements SourceModule {
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
+	public NodeJsSourceModule() {
+	}
+	
+	public NodeJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+		initialize(assetLocation, dir, assetName);
+	}
+
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
 	{

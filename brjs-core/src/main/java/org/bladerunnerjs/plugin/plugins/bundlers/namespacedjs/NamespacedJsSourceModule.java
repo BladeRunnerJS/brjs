@@ -43,6 +43,13 @@ public class NamespacedJsSourceModule implements SourceModule {
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	private final Map<BundlableNode, SourceModuleResolver> staticSourceModuleResolvers = new HashMap<>();
 	
+	public NamespacedJsSourceModule() {
+	}
+	
+	public NamespacedJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+		initialize(assetLocation, dir, assetName);
+	}
+	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
 	{
