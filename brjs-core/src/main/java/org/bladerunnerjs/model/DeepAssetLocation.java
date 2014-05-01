@@ -2,13 +2,10 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class DeepAssetLocation extends AbstractAssetLocation {
 	public DeepAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation assetLocation) {
@@ -47,14 +44,6 @@ public class DeepAssetLocation extends AbstractAssetLocation {
 		for(File childDir : root().getFileInfo(dir).dirs()) {
 			addAllMatchingAssets(childDir, assetFilter, assetClass, assets);
 		}
-	}
-	
-	
-	private Map<String, Asset> cachedAssets = new HashMap<>();
-	@Override
-	public List<Asset> _getAssets(AssetPlugin assetPlugin) {
-		FileInfo dirInfo = root().getFileInfo(dir());
-		return(dirInfo.exists()) ? __getAssets(assetPlugin, this, dirInfo.nestedFiles(), cachedAssets) : new ArrayList<>();
 	}
 
 	@Override

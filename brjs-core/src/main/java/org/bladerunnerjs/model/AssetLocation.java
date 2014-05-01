@@ -28,5 +28,4 @@ public interface AssetLocation extends BRJSNode {
 	// TODO: remove these methods
 	<A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException;
 	<A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException;
-	List<Asset> _getAssets(AssetPlugin assetPlugin);
 }

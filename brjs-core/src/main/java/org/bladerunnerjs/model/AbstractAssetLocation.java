@@ -240,12 +240,6 @@ public abstract class AbstractAssetLocation extends InstantiatedBRJSNode impleme
 	}
 	
 	
-	private Map<String, Asset> cachedAssets = new HashMap<>();
-	@Override
-	public List<Asset> _getAssets(AssetPlugin assetPlugin) {
-		FileInfo dirInfo = root().getFileInfo(dir());
-		return(dirInfo.exists()) ? __getAssets(assetPlugin, this, dirInfo.files(), cachedAssets) : new ArrayList<>();
-	}
 	
 	// TODO: the final solution will ideally be able to use the File itself as they key of cachedAssets?
 	public static List<Asset> __getAssets(AssetPlugin assetPlugin, AssetLocation assetLocation, List<File> assetFiles, Map<String, Asset> cachedAssets) {

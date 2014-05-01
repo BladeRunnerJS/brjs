@@ -2,21 +2,17 @@ package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetFilter;
 import org.bladerunnerjs.model.DeepAssetLocation;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class ThirdpartyAssetLocation extends DeepAssetLocation {
 	private final NonBladerunnerJsLibManifest manifest;
@@ -87,17 +83,5 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 		}
 		
 		return assets;
-	}
-	
-	private Map<String, Asset> cachedAssets = new HashMap<>();
-	@Override
-	public List<Asset> _getAssets(AssetPlugin assetPlugin) {
-		try {
-			FileInfo dirInfo = root().getFileInfo(dir());
-			return(dirInfo.exists()) ? __getAssets(assetPlugin, this, manifest.getCssFiles(), cachedAssets) : new ArrayList<>();
-		}
-		catch (ConfigException e) {
-			throw new RuntimeException(e);
-		}
 	}
 }

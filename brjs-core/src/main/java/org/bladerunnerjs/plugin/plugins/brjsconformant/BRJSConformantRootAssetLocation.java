@@ -134,10 +134,4 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	public void setNamespace(String namespace) throws ConfigException {
 		libManifest.setRequirePrefix(namespace.replace('.', '/'));
 	}
-
-	@Override
-	public List<Asset> _getAssets(AssetPlugin assetPlugin) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
