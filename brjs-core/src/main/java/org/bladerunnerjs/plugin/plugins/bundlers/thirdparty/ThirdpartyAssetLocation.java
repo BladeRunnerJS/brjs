@@ -4,14 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.DeepAssetLocation;
+import org.bladerunnerjs.model.AbstractAssetLocation;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 
-public class ThirdpartyAssetLocation extends DeepAssetLocation {
+public final class ThirdpartyAssetLocation extends AbstractAssetLocation {
 	private final NonBladerunnerJsLibManifest manifest;
 	
 	public ThirdpartyAssetLocation(RootNode rootNode, Node parent, File dir) {
@@ -23,6 +23,8 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
 		}
+		
+		registerInitializedNode();
 	}
 	
 	protected List<File> getCandidateFiles() {
@@ -38,12 +40,12 @@ public class ThirdpartyAssetLocation extends DeepAssetLocation {
 	}
 	
 	@Override
-	public String jsStyle() {
-		return ThirdpartyAssetLocation.class.getSimpleName();
+	public String requirePrefix() {
+		return ((JsLib) assetContainer()).getName();
 	}
 	
 	@Override
-	public String requirePrefix() {
-		return ((JsLib) assetContainer()).getName();
+	public String jsStyle() {
+		return ThirdpartyAssetLocation.class.getSimpleName();
 	}
 }

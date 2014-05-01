@@ -27,30 +27,26 @@ import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public abstract class AbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
-	private final MemoizedValue<String> requirePrefix;
 	protected final AssetContainer assetContainer;
+	protected final FileInfo dirInfo;
+	
+	private final MemoizedValue<String> requirePrefix;
 	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	private final Map<String, SourceModule> sourceModules = new HashMap<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
-	protected final FileInfo dirInfo;
 	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
 	
 	public AbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
-		this(rootNode, parent, dir);
-		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
-	}
-	
-	public AbstractAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 		
 		dirInfo = root().getFileInfo(dir);
 		assetLocator = new AssetLocator(this);
 		emptyAssets = new Assets(root());
-		
 		this.assetContainer = (AssetContainer) parent;
 		requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), dir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
+		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
 	}
 	
 	protected abstract List<File> getCandidateFiles();

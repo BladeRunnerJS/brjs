@@ -10,23 +10,15 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
-public abstract class AbstractSourceAssetLocation extends AbstractAssetLocation {
+public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLocation {
 	private final Map<File, AssetLocation> assetLocations = new HashMap<>();
-	
 	private final MemoizedValue<List<AssetLocation>> childAssetLocationList = new MemoizedValue<>("AssetLocation.childAssetLocations", root(), dir());
 	
 	public AbstractSourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
 		super(rootNode, parent, dir, dependentAssetLocations);
 	}
 	
-	public AbstractSourceAssetLocation(RootNode rootNode, Node parent, File dir) {
-		super(rootNode, parent, dir);
-	}
-	
-	@Override
-	public String requirePrefix() {
-		return assetContainer.requirePrefix();
-	}
+	protected abstract AssetLocation createNewAssetLocationForChildDir(File dir, AssetLocation parentAssetLocation);
 	
 	public List<AssetLocation> getChildAssetLocations() {
 		return childAssetLocationList.value(() -> {
@@ -34,6 +26,11 @@ public abstract class AbstractSourceAssetLocation extends AbstractAssetLocation 
 			addChildAssetLocations(assetLocations, dir());
 			return assetLocations;
 		});
+	}
+	
+	@Override
+	public String requirePrefix() {
+		return assetContainer.requirePrefix();
 	}
 	
 	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)
@@ -46,14 +43,14 @@ public abstract class AbstractSourceAssetLocation extends AbstractAssetLocation 
 			{
 				if (childDir != dir())
 				{
-					assetLocations.add(createAssetLocationForChildDir(childDir));
+					assetLocations.add(getAssetLocationForChildDir(childDir));
 					addChildAssetLocations(assetLocations, childDir);
 				}
 			}
 		}
 	}
 	
-	private AssetLocation createAssetLocationForChildDir(File dir) {
+	private AssetLocation getAssetLocationForChildDir(File dir) {
 		AssetLocation assetLocation = assetLocations.get(dir);
 		
 		if (assetLocation == null) {
@@ -64,10 +61,4 @@ public abstract class AbstractSourceAssetLocation extends AbstractAssetLocation 
 		
 		return assetLocation;
 	}
-	
-	protected AssetLocation createNewAssetLocationForChildDir(File dir, AssetLocation parentAssetLocation)
-	{
-		return new ChildSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
-	}
-	
 }

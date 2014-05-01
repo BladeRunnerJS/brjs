@@ -151,7 +151,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	private boolean isTestAssetLocation(AssetLocation assetLocation)
 	{
-		return assetLocation instanceof TestAssetLocation || assetLocation instanceof ChildTestAssetLocation;
+		return assetLocation instanceof TestSourceAssetLocation || assetLocation instanceof ChildTestSourceAssetLocation;
 	}
 	
 }

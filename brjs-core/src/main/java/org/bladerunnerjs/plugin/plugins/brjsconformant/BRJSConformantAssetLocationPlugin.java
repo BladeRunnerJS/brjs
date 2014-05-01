@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
-import org.bladerunnerjs.model.ThemeAssetLocation;
+import org.bladerunnerjs.model.ThemesAssetLocation;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.WorkbenchResourcesAssetLocation;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
@@ -26,7 +26,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 			ResourcesAssetLocation resourceAssetLocation = (ResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
 			if(resourceAssetLocation != null) {
-				for(ThemeAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
+				for(ThemesAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
 					String themeName = themeAssetLocation.getThemeName();
 					
 					if(!themeName.equals("common")) {
