@@ -4,14 +4,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.model.AbstractAssetLocation;
+import org.bladerunnerjs.model.XAbstractAssetLocation;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 
-public final class ThirdpartyAssetLocation extends AbstractAssetLocation {
+public final class ThirdpartyAssetLocation extends XAbstractAssetLocation {
 	private final NonBladerunnerJsLibManifest manifest;
 	
 	public ThirdpartyAssetLocation(RootNode rootNode, Node parent, File dir) {
