@@ -87,10 +87,11 @@ public class TestRunnerController
 			
 			try
 			{				
+				boolean testServerOnly = mode == RunMode.RUN_SERVER;
 				boolean generateReports = (mode == RunMode.RUN_TESTS) && config.getBoolean(REPORT_SWITCH);
 				boolean noBrowser = (mode == RunMode.RUN_SERVER) && config.getBoolean(NO_BROWSER_SWITCH);
 				
-				testRunner = new TestRunner(configFile, resultDir, Arrays.asList(config.getStringArray("browsers")), noBrowser, generateReports);
+				testRunner = new TestRunner(configFile, resultDir, Arrays.asList(config.getStringArray("browsers")), testServerOnly, noBrowser, generateReports);
 			}
 			catch (Exception ex)
 			{
