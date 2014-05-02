@@ -59,6 +59,19 @@ public class WarCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void exportingAnAppWithMultipleLocales() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: app1\nlocales: en_EN, de_DE")
+			.and(aspect).hasClass("Class1")
+			.and(aspect).indexPageHasContent("default aspect")
+			.and(mobileAspect).hasClass("Class1")
+			.and(mobileAspect).indexPageHasContent("mobile aspect");
+		when(brjs).runCommand("war", "app1");
+		then(brjs).hasFile("app1.war")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
 	public void specifyingAWarLocationWhenExportingAnAppCausesItToBeCreatedAtTheGivenLocation() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("war", "app1", "myapp.war");
