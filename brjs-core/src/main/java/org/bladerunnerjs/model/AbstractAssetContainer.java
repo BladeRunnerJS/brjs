@@ -2,7 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,9 +20,6 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private final MemoizedValue<Map<String, SourceModule>> sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
 	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", this);
 	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
-	
-	private AssetLocationPlugin previousAssetLocationPlugin;
-	private Map<String, AssetLocation> assetLocationCache;
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -94,20 +91,24 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	private Map<String, AssetLocation> assetLocationsMap() {
 		return assetLocationsMap.value(() -> {
+			Set<String> processedAssetLocations = new HashSet<>();
 			Map<String, AssetLocation> assetLocationsMap = new LinkedHashMap<>();
 			
 			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
-				if(assetLocationPlugin.canHandleAssetContainer(this)) {
-					if(assetLocationPlugin != previousAssetLocationPlugin) {
-						previousAssetLocationPlugin = assetLocationPlugin;
-						assetLocationCache = new HashMap<>();
+				List<File> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
+				
+				if(assetLocationDirectories.size() > 0) {
+					for(File dir : assetLocationDirectories) {
+						if(processedAssetLocations.add(dir.getAbsolutePath())) {
+							AssetLocation assetLocation = assetLocationPlugin.createAssetLocation(this, dir);
+							String locationPath = normalizePath(RelativePathUtility.get(dir(), assetLocation.dir()));
+							assetLocationsMap.put(locationPath, assetLocation);
+						}
 					}
 					
-					for(AssetLocation assetLocation : assetLocationPlugin.getAssetLocations(this, assetLocationCache)) {
-						String locationPath = normalizePath(RelativePathUtility.get(dir(), assetLocation.dir()));
-						assetLocationsMap.put(locationPath, assetLocation);
+					if(!assetLocationPlugin.allowFurtherProcessing()) {
+						break;
 					}
-					break;
 				}
 			}
 			

@@ -43,4 +43,9 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 		
 		return assetLocations;
 	}
+	
+	@Override
+	public boolean allowFurtherProcessing() {
+		return false;
+	}
 }

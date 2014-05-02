@@ -96,5 +96,9 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
     		
 		return assetLocations;
 	}
-
+	
+	@Override
+	public boolean allowFurtherProcessing() {
+		return false;
+	}
 }
