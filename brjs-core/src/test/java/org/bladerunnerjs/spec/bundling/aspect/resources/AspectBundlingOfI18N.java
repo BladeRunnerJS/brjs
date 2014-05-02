@@ -42,6 +42,26 @@ public class AspectBundlingOfI18N extends SpecTest {
 		then(response).containsText("\"appns.token\":\"aspect token\"");
 	}
 
+	@Test
+	public void appCanHaveMultipleLocales() throws Exception {
+		
+		StringBuffer enResponse = new StringBuffer();
+		StringBuffer deResponse = new StringBuffer();
+		
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: app1\nlocales: en_EN, de_DE")
+			.and(aspect).resourceFileContains("i18n/en/en.properties", "app1.token = english")
+			.and(aspect).resourceFileContains("i18n/de/de.properties", "app1.token = german")
+			.and(aspect).hasClass("Class1")
+			.and(aspect).indexPageHasContent("default aspect");
+		when(app).requestReceived("/default-aspect/i18n/en.js", enResponse)
+			.and(app).requestReceived("/default-aspect/i18n/de.js", deResponse);
+		then(enResponse).containsText("app1.token\":\"english")
+			.and(enResponse).doesNotContainText("german")
+			.and(deResponse).containsText("app1.token\":\"german")
+			.and(deResponse).doesNotContainText("english");
+	}
+	
 //	// Bladeset
 	@Test
 	public void bladesetI18NFilesAreBundledWhenBladesetSrcAreReferenced() throws Exception {
