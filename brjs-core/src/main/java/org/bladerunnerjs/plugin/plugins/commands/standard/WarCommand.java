@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
@@ -28,7 +26,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
