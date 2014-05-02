@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
@@ -14,28 +13,14 @@ import org.bladerunnerjs.plugin.AssetPlugin;
  *
  */
 public interface AssetLocation extends BRJSNode {
-	String jsStyle();
-	String requirePrefix() throws RequirePathException;
-	String namespace() throws RequirePathException;
-	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException;
-	SourceModule sourceModule(String requirePath) throws RequirePathException;
-	AliasDefinitionsFile aliasDefinitionsFile();
-	List<LinkedAsset> seedResources();
-	List<LinkedAsset> seedResources(String fileExtension);
-	List<Asset> bundleResources(String fileExtension);
-	List<Asset> bundleResources(AssetPlugin assetProducer);
+	String requirePrefix();
 	AssetContainer assetContainer();
 	List<AssetLocation> dependentAssetLocations();
-	<A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException;
-	
-	/**
-	 * Returns a list of assets matching 'assetFilter'. 
-	 * 
-	 * @param assetFilter The filter applied to each asset
-	 * @param assetClass The interface of the asset to return.
-	 * @param instantiateAssetClass The class to instantiate for each matched asset.
-	 * @return The list of assets.
-	 * @throws AssetFileInstantationException
-	 */
-	<A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException;
+	AliasDefinitionsFile aliasDefinitionsFile();
+	List<LinkedAsset> linkedAssets();
+	List<Asset> bundlableAssets(AssetPlugin assetProducer);
+	List<SourceModule> sourceModules();
+	SourceModule sourceModule(String requirePath) throws RequirePathException;
+	String jsStyle();
+	void assertIdentifierCorrectlyNamespaced(String identifier) throws NamespaceException, RequirePathException;
 }

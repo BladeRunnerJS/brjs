@@ -1,54 +1,25 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.html;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.io.File;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
-import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.SuffixAssetFilter;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class HTMLAssetPlugin extends AbstractAssetPlugin {
-	private final List<SourceModule> emptySourceModules = new ArrayList<>();
-	private final List<SourceModule> emptyTestSourceModules = new ArrayList<>();
-	
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
-		return emptySourceModules;
+	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
+		return assetFile.getName().endsWith(".html");
 	}
 	
 	@Override
-	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
-		return emptyTestSourceModules;
-	}
-	
-	@Override
-	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
-		List<LinkedAsset> assets;
-		
-		try {
-			assets = assetLocation.obtainMatchingAssets(new SuffixAssetFilter("html"), LinkedAsset.class, FullyQualifiedLinkedAsset.class);
-		}
-		catch (AssetFileInstantationException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return assets;
-	}
-	
-	@Override
-	public List<Asset> getAssets(AssetLocation assetLocation) {
-		List<Asset> result = new ArrayList<Asset>();
-		result.addAll(this.getLinkedAssets(assetLocation));
-		return result;
+	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+		return new FullyQualifiedLinkedAsset(assetLocation, assetFile.getParentFile(), assetFile.getName());
 	}
 }

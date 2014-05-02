@@ -10,7 +10,6 @@ import java.util.Set;
 public interface AssetContainer extends BRJSNode {
 	App app();
 	String requirePrefix();
-	String namespace();
 	boolean isNamespaceEnforced();
 	Set<SourceModule> sourceModules();
 	SourceModule sourceModule(String requirePath);

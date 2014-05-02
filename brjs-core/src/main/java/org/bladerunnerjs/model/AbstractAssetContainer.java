@@ -13,7 +13,6 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
@@ -38,11 +37,6 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		}
 		
 		return (App) node;
-	}
-	
-	@Override
-	public String namespace() {
-		return requirePrefix().replace("/", ".");
 	}
 	
 	@Override
@@ -83,17 +77,14 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		return assetLocationPaths;
 	}
 	
-	
 	private Map<String, SourceModule> sourceModulesMap() {
 		return sourceModulesMap.value(() -> {
 			Map<String, SourceModule> sourceModulesMap = new LinkedHashMap<>();
 			
-			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
-				for (AssetLocation assetLocation : assetLocations())
-				{
-					for(SourceModule sourceModule : assetPlugin.getSourceModules(assetLocation)) {
-						sourceModulesMap.put(sourceModule.getRequirePath(), sourceModule);
-					}
+			for (AssetLocation assetLocation : assetLocations())
+			{
+				for(SourceModule sourceModule : assetLocation.sourceModules()) {
+					sourceModulesMap.put(sourceModule.getRequirePath(), sourceModule);
 				}
 			}
 			

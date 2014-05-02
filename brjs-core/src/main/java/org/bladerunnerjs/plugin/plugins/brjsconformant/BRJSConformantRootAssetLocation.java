@@ -10,8 +10,6 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
-import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetFilter;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.InstantiatedBRJSNode;
 import org.bladerunnerjs.model.JsLib;
@@ -29,6 +27,7 @@ import org.bladerunnerjs.utility.JsStyleUtility;
 public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implements RootAssetLocation {
 	private final List<LinkedAsset> emptyLinkedAssetList = new ArrayList<>();
 	private final List<Asset> emptyAssetList = new ArrayList<>();
+	private final List<SourceModule> emptySourceModulesList = new ArrayList<>();
 	private final List<AssetLocation> emptyAssetLocationList = new ArrayList<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private BRLibManifest libManifest;
@@ -61,7 +60,7 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	}
 	
 	@Override
-	public String requirePrefix() throws RequirePathException {
+	public String requirePrefix() {
 		if (!libManifest.manifestExists()) {
 			return ((JsLib) assetContainer()).getName();
 		}
@@ -73,20 +72,6 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 			throw new RuntimeException(e);
 		}
 		
-	}
-	
-	@Override
-	public String namespace() throws RequirePathException {
-		if (!libManifest.manifestExists()) {
-			return requirePrefix().replace("/", ".");
-		}
-		
-		try {
-			return libManifest.getRequirePrefix().replace("/", ".");
-		}
-		catch (ConfigException e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 	@Override
@@ -109,23 +94,18 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	}
 	
 	@Override
-	public List<LinkedAsset> seedResources() {
+	public List<LinkedAsset> linkedAssets() {
 		return emptyLinkedAssetList;
 	}
 	
 	@Override
-	public List<LinkedAsset> seedResources(String fileExtension) {
-		return emptyLinkedAssetList;
-	}
-	
-	@Override
-	public List<Asset> bundleResources(String fileExtension) {
+	public List<Asset> bundlableAssets(AssetPlugin assetProducer) {
 		return emptyAssetList;
 	}
 	
 	@Override
-	public List<Asset> bundleResources(AssetPlugin assetProducer) {
-		return emptyAssetList;
+	public List<SourceModule> sourceModules() {
+		return emptySourceModulesList;
 	}
 	
 	@Override
@@ -136,16 +116,6 @@ public class BRJSConformantRootAssetLocation extends InstantiatedBRJSNode implem
 	@Override
 	public List<AssetLocation> dependentAssetLocations() {
 		return emptyAssetLocationList ;
-	}
-	
-	@Override
-	public <A extends Asset> A obtainAsset(Class<? extends A> assetClass, File dir, String assetName) throws AssetFileInstantationException {
-		throw new RuntimeException("BRJSConformantRootAssetLocation.obtainAsset() should never be invoked");
-	}
-	
-	@Override
-	public <A extends Asset> List<A> obtainMatchingAssets(AssetFilter assetFilter, Class<A> assetClass, Class<? extends A> instantiateAssetClass) throws AssetFileInstantationException {
-		return new ArrayList<A>();
 	}
 
 	@Override

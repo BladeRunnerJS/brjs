@@ -365,10 +365,6 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public FileInfo getFileInfo(File file) {
-		if(file == null) {
-			System.out.println("bingo!");
-		}
-		
 		String filePath = file.getPath();
 		
 		if(!fileInfos.containsKey(filePath)) {

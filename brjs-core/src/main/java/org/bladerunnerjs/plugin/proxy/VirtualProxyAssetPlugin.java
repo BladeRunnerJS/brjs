@@ -1,11 +1,9 @@
 package org.bladerunnerjs.plugin.proxy;
 
-import java.util.List;
-
+import java.io.File;
 import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
-import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements AssetPlugin {
@@ -17,26 +15,14 @@ public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements Asset
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
+	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
 		initializePlugin();
-		return assetPlugin.getSourceModules(assetLocation);
+		return assetPlugin.canHandleAsset(assetFile, assetLocation);
 	}
 	
 	@Override
-	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
+	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		initializePlugin();
-		return assetPlugin.getTestSourceModules(assetLocation);
-	}
-	
-	@Override
-	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
-		initializePlugin();
-		return assetPlugin.getLinkedAssets(assetLocation);
-	}
-	
-	@Override
-	public List<Asset> getAssets(AssetLocation assetLocation) {
-		initializePlugin();
-		return assetPlugin.getAssets(assetLocation);
+		return assetPlugin.createAsset(assetFile, assetLocation);
 	}
 }
