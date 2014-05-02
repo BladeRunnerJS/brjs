@@ -5,6 +5,7 @@ ComponentFixtureTest = TestCase("ComponentFixtureTest");
 
 ComponentFixtureTest.prototype.setUp = function()
 {
+	var Mock4JS = require('mock4js');
 	Mock4JS.addMockSupport(window);
 	Mock4JS.clearMocksToVerify();
 	

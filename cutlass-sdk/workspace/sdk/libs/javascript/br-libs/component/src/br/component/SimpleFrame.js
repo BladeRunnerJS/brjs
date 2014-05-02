@@ -1,16 +1,21 @@
-br.component.SimpleFrame = function(component, width, height) {
+var br = require('br/Core');
+var Frame = require('br/component/Frame');
+
+function SimpleFrame(component, width, height) {
 	this.width = width;
 	this.height = height;
 	this.frameElement = document.createElement("div");
 	this.frameElement.className = "component-frame simple";
 	component.setDisplayFrame(this);
-};
-br.Core.extend(br.component.SimpleFrame, br.component.Frame);
+}
+br.extend(SimpleFrame, Frame);
 
-br.component.SimpleFrame.prototype.setContent = function(contentElement) {
+SimpleFrame.prototype.setContent = function(contentElement) {
 	this.frameElement.appendChild(contentElement);
 };
 
-br.component.SimpleFrame.prototype.getElement = function() {
+SimpleFrame.prototype.getElement = function() {
 	return this.frameElement;
 };
+
+module.exports = SimpleFrame;
