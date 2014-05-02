@@ -25,6 +25,7 @@ dependencies {
 	system project(path: ':brjs-logger')
 	system project(":brjs-logger-binding")
 	system dependency('selenium-java')
+	system dependency('jetty-jsp')
 
 	application project(path: ':bladerunner-common-servlets')
 	application project(path: ':bladerunner-prod-servlets')

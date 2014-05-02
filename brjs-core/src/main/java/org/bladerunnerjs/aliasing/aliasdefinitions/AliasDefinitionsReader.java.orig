@@ -19,6 +19,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.XmlStreamReaderFactory;
 import org.bladerunnerjs.utility.stax.XmlStreamCursor;
@@ -101,8 +102,15 @@ public class AliasDefinitionsReader {
 		String aliasName = streamReader.getAttributeValue(null, "name");
 		String aliasClass = streamReader.getAttributeValue(null, "defaultClass");
 		String aliasInterface = streamReader.getAttributeValue(null, "interface");
+		String containerNamespace = NamespaceUtility.convertToNamespace(assetContainer.requirePrefix());
 		
+<<<<<<< HEAD
+		if(!aliasName.startsWith(containerNamespace)) {
+			throw new NamespaceException("Alias '" + aliasName + "' does not begin with required container prefix of '" + containerNamespace + "'.");
+		}
+=======
 		assetLocation.assertIdentifierCorrectlyNamespaced(aliasName);
+>>>>>>> develop
 		
 		data.aliasDefinitions.add(new AliasDefinition(aliasName, aliasClass, aliasInterface));
 		
@@ -122,8 +130,15 @@ public class AliasDefinitionsReader {
 	
 	private void processGroup(XMLStreamReader2 streamReader) throws XMLStreamException, NamespaceException, RequirePathException {
 		String groupName = streamReader.getAttributeValue(null, "name");
+		String containerNamespace = NamespaceUtility.convertToNamespace(assetContainer.requirePrefix());
 		
+<<<<<<< HEAD
+		if(!groupName.startsWith(containerNamespace)) {
+			throw new NamespaceException("Alias group identifier '" + groupName + "' does not begin with required container prefix of '" + containerNamespace + "'.");
+		}
+=======
 		assetLocation.assertIdentifierCorrectlyNamespaced(groupName);
+>>>>>>> develop
 		
 		XmlStreamCursor cursor = new XmlStreamCursor(streamReader);
 		
