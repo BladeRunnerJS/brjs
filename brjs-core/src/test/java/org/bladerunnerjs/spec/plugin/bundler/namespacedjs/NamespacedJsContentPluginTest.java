@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class NamespacedJsContentPluginTest extends SpecTest {
@@ -171,7 +172,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function() {\n};");
 		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
-		then(requestResponse).textEquals("appns.Class1 = function() {\n};\ndefine('appns/Class1', function(require, exports, module) { module.exports = appns.Class1; });");
+		then(requestResponse).textEquals("define('appns/Class1', function(require, exports, module) {\nappns.Class1 = function() {\n};\nmodule.exports = appns.Class1;\n});\n");
 	}
 	
 	@Test
@@ -217,15 +218,6 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsTextOnce("appns.nodejs.Class = require('appns/nodejs/Class');");
-	}
-	
-	@Test
-	public void automaticRequiresAreAddedOnlyOnceEvenIfTheClassIsReferredToMultipleTimes() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-			.and(aspect).hasClasses("appns.namespaced.Class", "appns/nodejs/Class")
-			.and(aspect).classFileHasContent("appns.namespaced.Class", "appns/nodejs/Class, appns/nodejs/Class");
-		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/namespaced/Class.js", requestResponse);
-		then(requestResponse).containsTextOnce("define('appns/namespaced/Class'");
 	}
 	
 	@Test
@@ -304,7 +296,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void weGlobalizeNonNamespaceClassesBeforeTheClassThatNeedsThemAndGlobalizeExtraClassesAtTheEnd() throws Exception {
+	public void namespacedJsClassesAreWrappedInANodeJSDefineBlock() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
 			.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")
 			.and(aspect).hasClasses("appns.namespacedjs.Class1", "appns/nodejs/Class1", "appns/nodejs/Class2")
@@ -313,11 +305,24 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).classRequires("appns/nodejs/Class1", "appns.nodejs.Class2");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-				"mergePackageBlock(window, {\"appns\":{\"namespacedjs\":{},\"nodejs\":{}}});",
-				"appns.nodejs.Class1 = require('appns/nodejs/Class1');",
+				"define('appns/namespacedjs/Class1', function(require, exports, module) {",
 				"appns.namespacedjs.Class1 = function()",
-				"define('appns/namespacedjs/Class1', function(require, exports, module) { module.exports = appns.namespacedjs.Class1;",
-				"appns.nodejs.Class2 = require('appns/nodejs/Class2');");
+				"module.exports = appns.namespacedjs.Class1;" 
+				);
+	}
+	
+	@Test @Ignore
+	public void staticDependenciesAreRequiredAtTheTopOfTheModuleDefinition() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
+			.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")
+			.and(aspect).hasClasses("appns.namespacedjs.Class1", "appns.namespacedjs.Class2")
+			.and(aspect).classStaticallyDependsOn("appns.namespacedjs.Class1", "appns.namespacedjs.Class2")
+			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"define('appns/namespacedjs/Class1', function(require, exports, module) { requireAll({'appns.namespacedjs.Class2'}); ",
+				"appns.namespacedjs.Class1 = function()",
+				"module.exports = appns.namespacedjs.Class1;");
 	}
 	
 	@Test

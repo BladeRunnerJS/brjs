@@ -100,6 +100,10 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return classDependsOn(sourceClass, sourceFile, referencedClasses);
 	}
 	
+	public BuilderChainer classStaticallyDependsOn(String dependentClass, String referencedClass) throws Exception {
+		return classExtends(dependentClass, referencedClass);
+	}
+	
 	public BuilderChainer classExtends(String dependentClass, String referencedClass) throws Exception {
 		File dependentSourceFile = getSourceFile(dependentClass);
 		

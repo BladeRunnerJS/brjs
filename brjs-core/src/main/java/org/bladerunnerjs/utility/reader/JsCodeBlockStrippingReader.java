@@ -16,11 +16,17 @@ public class JsCodeBlockStrippingReader extends Reader
 	private final char[] sourceBuffer = new char[4096];
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
-	private int depthCount = 0;
+	private int depthCount;
 	
-	public JsCodeBlockStrippingReader(Reader sourceReader) {
+	public JsCodeBlockStrippingReader(Reader sourceReader)
+	{
+		this(sourceReader, 0);
+	}
+	
+	public JsCodeBlockStrippingReader(Reader sourceReader, int startDepth) {
 		super();
 		this.sourceReader = sourceReader;
+		this.depthCount = startDepth;
 	}
 	
 	@Override

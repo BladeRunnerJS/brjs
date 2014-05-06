@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsSourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.reader.JsCommentAndCodeBlockStrippingReaderFactory;
@@ -29,7 +30,6 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 import com.Ostermiller.util.ConcatReader;
 
 public class NamespacedJsSourceModule implements SourceModule {
-	private static final String DEFINE_BLOCK = "\ndefine('%s', function(require, exports, module) { module.exports = %s; });";
 	
 	private LinkedAsset linkedAsset;
 	private AssetLocation assetLocation;
@@ -62,7 +62,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 		linkedAsset.initialize(assetLocation, dir, assetName);
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(), assetFile, patch.getPatchFile());
-		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(), assetFile, patch.getPatchFile());
+		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(-1), assetFile, patch.getPatchFile());
 		assetLocationsList = new MemoizedValue<>("NamespacedJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 	}
 	
@@ -90,8 +90,15 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public Reader getReader() throws IOException {
-		String formattedDefineBlock = String.format(DEFINE_BLOCK, requirePath, className);
-		Reader[] readers = new Reader[] { linkedAsset.getReader(), patch.getReader(), new StringReader(formattedDefineBlock) };
+		Reader[] readers = new Reader[] { 
+				new StringReader( String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath()) ), 
+				new StringReader( calculateStaticDependenciesRequireDefinition() ), 
+				linkedAsset.getReader(), 
+				patch.getReader(),
+				new StringReader( "\n" ),
+				new StringReader( "module.exports = " + getClassname() + ";" ),
+				new StringReader(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 
+		};
 		return new ConcatReader( readers );
 	}
 	
@@ -125,6 +132,10 @@ public class NamespacedJsSourceModule implements SourceModule {
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+	}
+	
+	public String calculateStaticDependenciesRequireDefinition() {
+		return "";
 	}
 	
 	@Override
