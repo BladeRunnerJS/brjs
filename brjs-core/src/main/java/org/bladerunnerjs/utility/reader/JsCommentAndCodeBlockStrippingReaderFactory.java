@@ -1,21 +1,24 @@
 package org.bladerunnerjs.utility.reader;
 
+import java.io.IOException;
 import java.io.Reader;
 
-public class JsCommentAndCodeBlockStrippingReaderFactory implements ReaderFactory {
-	
-	private int codeBlockStrippingReaderStartDepth;
+import org.bladerunnerjs.model.AssetContentAlteringSourceModule;
 
-	public JsCommentAndCodeBlockStrippingReaderFactory(int codeBlockStrippingReaderStartDepth)
+public class JsCommentAndCodeBlockStrippingReaderFactory implements AssetReaderFactory {
+	
+	private AssetContentAlteringSourceModule sourceModule;
+
+	public JsCommentAndCodeBlockStrippingReaderFactory(AssetContentAlteringSourceModule sourceModule)
 	{
-		this.codeBlockStrippingReaderStartDepth = codeBlockStrippingReaderStartDepth;
+		this.sourceModule = sourceModule;
 	}
 	
 	@Override
-	public Reader createReader(Reader reader) {
-		Reader commentStrippingReader = new JsCommentStrippingReader(reader, false);
+	public Reader createReader() throws IOException {
+		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.getBaseReader(), false);
 		Reader commentStrippingAndStringStrippingReader = new JsStringStrippingReader(commentStrippingReader);
-		Reader commentStrippingAndStringStrippingAndCodeBlockStrippingReader = new JsCodeBlockStrippingReader(commentStrippingAndStringStrippingReader, codeBlockStrippingReaderStartDepth);
+		Reader commentStrippingAndStringStrippingAndCodeBlockStrippingReader = new JsCodeBlockStrippingReader(commentStrippingAndStringStrippingReader);
 		
 		return commentStrippingAndStringStrippingAndCodeBlockStrippingReader;
 	}

@@ -1,10 +1,21 @@
 package org.bladerunnerjs.utility.reader;
 
+import java.io.IOException;
 import java.io.Reader;
 
-public class JsCommentStrippingReaderFactory implements ReaderFactory {
+import org.bladerunnerjs.model.Asset;
+
+public class JsCommentStrippingReaderFactory implements AssetReaderFactory {
+	
+	private Asset asset;
+
+	public JsCommentStrippingReaderFactory(Asset asset)
+	{
+		this.asset = asset;
+	}
+	
 	@Override
-	public Reader createReader(Reader reader) {
-		return new JsCommentStrippingReader(reader, false);
+	public Reader createReader() throws IOException {
+		return new JsCommentStrippingReader(asset.getReader(), false);
 	}
 }

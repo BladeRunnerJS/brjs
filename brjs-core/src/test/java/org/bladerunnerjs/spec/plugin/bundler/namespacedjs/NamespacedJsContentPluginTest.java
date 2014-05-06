@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class NamespacedJsContentPluginTest extends SpecTest {
@@ -311,7 +310,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 				);
 	}
 	
-	@Test @Ignore
+	@Test
 	public void staticDependenciesAreRequiredAtTheTopOfTheModuleDefinition() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
 			.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")

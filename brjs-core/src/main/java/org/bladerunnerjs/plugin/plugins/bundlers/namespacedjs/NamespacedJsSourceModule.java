@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AssetContentAlteringSourceModule;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
@@ -29,7 +30,10 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NamespacedJsSourceModule implements SourceModule {
+public class NamespacedJsSourceModule implements AssetContentAlteringSourceModule {
+	
+	public static final String STATIC_DEPENDENCIES_BLOCK_START = "requireAll({";
+	public static final String STATIC_DEPENDENCIES_BLOCK_END = "});";
 	
 	private LinkedAsset linkedAsset;
 	private AssetLocation assetLocation;
@@ -61,8 +65,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 		linkedAsset = new FullyQualifiedLinkedAsset();
 		linkedAsset.initialize(assetLocation, dir, assetName);
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(), assetFile, patch.getPatchFile());
-		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(-1), assetFile, patch.getPatchFile());
+		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
 		assetLocationsList = new MemoizedValue<>("NamespacedJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 	}
 	
@@ -89,12 +93,31 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
+	public Reader getBaseReader() throws IOException
+	{
+		Reader[] readers = new Reader[] { 
+				linkedAsset.getReader(), 
+				patch.getReader()
+		};
+		return new ConcatReader( readers );
+	}
+	
+	@Override
 	public Reader getReader() throws IOException {
+		String staticDependenciesRequireDefinition;
+		try
+		{
+			staticDependenciesRequireDefinition = calculateStaticDependenciesRequireDefinition();
+		}
+		catch (ModelOperationException e)
+		{
+			throw new IOException("Unable to create the SourceModule reader", e);
+		}
+		
 		Reader[] readers = new Reader[] { 
 				new StringReader( String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath()) ), 
-				new StringReader( calculateStaticDependenciesRequireDefinition() ), 
-				linkedAsset.getReader(), 
-				patch.getReader(),
+				new StringReader( staticDependenciesRequireDefinition ), 
+				getBaseReader(),
 				new StringReader( "\n" ),
 				new StringReader( "module.exports = " + getClassname() + ";" ),
 				new StringReader(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 
@@ -134,8 +157,20 @@ public class NamespacedJsSourceModule implements SourceModule {
 		}
 	}
 	
-	public String calculateStaticDependenciesRequireDefinition() {
-		return "";
+	public String calculateStaticDependenciesRequireDefinition() throws ModelOperationException {
+//		List<String> staticDependencyRequirePaths = staticDependencyCalculator.getRequirePaths();
+//		if (staticDependencyRequirePaths.isEmpty()) {
+//			return "";
+//		}
+		
+		StringBuilder staticDependenciesRequireDefinition = new StringBuilder( STATIC_DEPENDENCIES_BLOCK_START );
+//		for (String staticDependencyRequirePath : staticDependencyRequirePaths) {
+//			staticDependenciesRequireDefinition.append( staticDependencyRequirePath+"," );
+//		}
+//		staticDependenciesRequireDefinition.setLength( staticDependenciesRequireDefinition.length() - 1 ); // remove the final ',' we added
+//		staticDependenciesRequireDefinition.append( STATIC_DEPENDENCIES_BLOCK_END );
+		
+		return "";//staticDependenciesRequireDefinition.toString();
 	}
 	
 	@Override
@@ -166,4 +201,5 @@ public class NamespacedJsSourceModule implements SourceModule {
 			return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 		});
 	}
+	
 }
