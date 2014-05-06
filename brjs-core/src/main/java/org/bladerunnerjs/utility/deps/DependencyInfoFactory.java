@@ -189,6 +189,7 @@ public class DependencyInfoFactory {
 		try {
 			for(String aliasName : linkedAsset.getAliasNames()) {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				// TODO remove when we get rid of the 'SERVICE!' hack
 				if (alias == null)
 				{
 					throw new AliasException("Alias '" + aliasName + "' could not be found as a defined alias inside:\n '" + bundlableNode.dir().getPath() + "'");
