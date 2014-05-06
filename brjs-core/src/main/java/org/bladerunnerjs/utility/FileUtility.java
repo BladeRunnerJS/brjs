@@ -161,4 +161,31 @@ public class FileUtility {
 		}
 		zipFile.close();
 	}
+	
+	/** 
+	 * Deletes directories from deepest to shallowest to prevent file locking issues caused by the Watch Service on Windows 
+	 * (see https://stackoverflow.com/questions/6255463/java7-watchservice-access-denied-error-trying-to-delete-recursively-watched-ne) 
+	 */ 
+	public static void deleteDirectory(File dir) throws IOException
+	{
+		if (dir.isFile())
+		{
+			throw new IOException("Expected as dir as an argument, got a file");
+		}
+		
+		File[] files = dir.listFiles();
+		if (files == null)
+		{
+			return;
+		}
+		
+		for (File child : files)
+		{
+			if (child.isDirectory())
+			{
+				deleteDirectory(child);
+			}
+			dir.delete();
+		}
+	}
 }
