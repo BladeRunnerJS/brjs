@@ -93,7 +93,7 @@ public class BRJSServletFilter implements Filter
 			if(requestPath.endsWith("/index.html") || requestPath.endsWith("/index.jsp")) {
 				filterIndexPage(request, response, chain);
 			}
-			else if(contentPluginPrefixMatcher.matches()) {
+			else if (contentPluginPrefixMatcher.matches() && !requestPath.endsWith(".jsp")) {
 				request.getRequestDispatcher("/brjs" + requestPath).forward(request, response);
 			}
 			else {
