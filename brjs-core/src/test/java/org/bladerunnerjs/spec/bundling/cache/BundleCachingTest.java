@@ -56,8 +56,7 @@ public class BundleCachingTest extends SpecTest
 				"thirdpartyLib content", 
 				"mergePackageBlock(window, {\"appns\":{}});",
 				"Class1 = function()",
-				"module.exports = Class1",
-				"define('appns/Class1', function(require, exports, module)");
+				"module.exports = Class1");
 	}
 	
 	@Test
