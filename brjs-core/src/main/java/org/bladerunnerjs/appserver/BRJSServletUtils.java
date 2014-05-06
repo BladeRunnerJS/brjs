@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.utility.ContentPathParser;
 
 public class BRJSServletUtils
@@ -68,19 +69,11 @@ public class BRJSServletUtils
 			BundlableNode bundlableNode = getBundableNodeForRequest(brjs, requestUri, resp);
 			contentPlugin.writeContent(contentPath, bundlableNode.getBundleSet(), resp.getOutputStream());
 		}
-		catch (MalformedRequestException ex)
+		catch (MalformedRequestException | InvalidBundlableNodeException ex)
 		{
 			sendErrorResponse(resp, 404, ex);
 		}
-		catch (ContentProcessingException ex)
-		{
-			sendErrorResponse(resp, 500, ex);
-		}
-		catch (IOException ex)
-		{
-			sendErrorResponse(resp, 500, ex);
-		}
-		catch (ModelOperationException ex)
+		catch (ContentProcessingException | IOException | ModelOperationException ex)
 		{
 			sendErrorResponse(resp, 500, ex);
 		}
@@ -108,7 +101,7 @@ public class BRJSServletUtils
 		return app;
 	}
 	
-	public BundlableNode getBundableNodeForRequest(BRJS brjs, BladerunnerUri requestUri, HttpServletResponse resp) throws ServletException, MalformedRequestException
+	public BundlableNode getBundableNodeForRequest(BRJS brjs, BladerunnerUri requestUri, HttpServletResponse resp) throws ServletException, MalformedRequestException, InvalidBundlableNodeException
 	{
 		App app = getAppForRequest(brjs, requestUri, resp);
 		File baseDir = app.file(requestUri.scopePath);
