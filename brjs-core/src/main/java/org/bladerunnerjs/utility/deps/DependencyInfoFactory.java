@@ -189,6 +189,10 @@ public class DependencyInfoFactory {
 		try {
 			for(String aliasName : linkedAsset.getAliasNames()) {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				if (alias == null)
+				{
+					throw new AliasException("Alias '" + aliasName + "' could not be found as a defined alias inside:\n '" + bundlableNode.dir().getPath() + "'");
+				}
 				AliasAsset aliasAsset = dependencies.aliasAssets.get(alias.getName());
 				dependencyAdder.add(dependencies, linkedAsset, aliasAsset);
 			}
