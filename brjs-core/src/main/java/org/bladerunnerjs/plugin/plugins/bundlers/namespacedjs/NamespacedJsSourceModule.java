@@ -32,8 +32,8 @@ import com.Ostermiller.util.ConcatReader;
 
 public class NamespacedJsSourceModule implements ContentAlteringSourceModule {
 	
-	public static final String STATIC_DEPENDENCIES_BLOCK_START = "requireAll({";
-	public static final String STATIC_DEPENDENCIES_BLOCK_END = "});";
+	public static final String STATIC_DEPENDENCIES_BLOCK_START = "requireAll([";
+	public static final String STATIC_DEPENDENCIES_BLOCK_END = "]);";
 	
 	private LinkedAsset linkedAsset;
 	private AssetLocation assetLocation;
