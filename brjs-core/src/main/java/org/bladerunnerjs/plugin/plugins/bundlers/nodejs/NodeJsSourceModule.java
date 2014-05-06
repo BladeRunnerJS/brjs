@@ -23,6 +23,7 @@ import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.ContentAlteringSourceModule;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -35,7 +36,7 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NodeJsSourceModule implements SourceModule {
+public class NodeJsSourceModule implements ContentAlteringSourceModule {
 
 	public static final String NODEJS_DEFINE_BLOCK_HEADER = "define('%s', function(require, exports, module) {\n";
 	public static final String NODEJS_DEFINE_BLOCK_FOOTER = "\n});\n";
@@ -103,12 +104,19 @@ public class NodeJsSourceModule implements SourceModule {
 		return getComputedValue().aliases;
 	}
 
+	@Override 
+	public Reader getBaseReader() throws IOException {
+		return new ConcatReader(new Reader[] {
+				new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding)),
+				patch.getReader()
+		});
+	};
+	
 	@Override
 	public Reader getReader() throws IOException {
 		return new ConcatReader(new Reader[] {
 			new StringReader( String.format(NODEJS_DEFINE_BLOCK_HEADER, requirePath) ),
-			new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding)),
-			patch.getReader(),
+			getBaseReader(),
 			new StringReader( NODEJS_DEFINE_BLOCK_FOOTER )
 		});
 	}

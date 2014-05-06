@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.AssetContentAlteringSourceModule;
+import org.bladerunnerjs.model.ContentAlteringSourceModule;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
@@ -30,7 +30,7 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NamespacedJsSourceModule implements AssetContentAlteringSourceModule {
+public class NamespacedJsSourceModule implements ContentAlteringSourceModule {
 	
 	public static final String STATIC_DEPENDENCIES_BLOCK_START = "requireAll({";
 	public static final String STATIC_DEPENDENCIES_BLOCK_END = "});";

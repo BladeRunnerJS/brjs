@@ -3,13 +3,13 @@ package org.bladerunnerjs.utility.reader;
 import java.io.IOException;
 import java.io.Reader;
 
-import org.bladerunnerjs.model.AssetContentAlteringSourceModule;
+import org.bladerunnerjs.model.ContentAlteringSourceModule;
 
 public class JsCommentAndCodeBlockStrippingReaderFactory implements AssetReaderFactory {
 	
-	private AssetContentAlteringSourceModule sourceModule;
+	private ContentAlteringSourceModule sourceModule;
 
-	public JsCommentAndCodeBlockStrippingReaderFactory(AssetContentAlteringSourceModule sourceModule)
+	public JsCommentAndCodeBlockStrippingReaderFactory(ContentAlteringSourceModule sourceModule)
 	{
 		this.sourceModule = sourceModule;
 	}
