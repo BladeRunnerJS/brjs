@@ -27,11 +27,13 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.PluginLocator;
+import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
 import org.bladerunnerjs.utility.PluginLocatorLogger;
+import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
@@ -167,7 +169,7 @@ public class BRJS extends AbstractBRJSRootNode
 		fileModificationService.close();
 	}
 	
-	public BundlableNode locateFirstBundlableAncestorNode(File file)
+	public BundlableNode locateFirstBundlableAncestorNode(File file) throws InvalidBundlableNodeException
 	{
 		Node node = locateFirstAncestorNode(file);
 		BundlableNode bundlableNode = null;
@@ -181,6 +183,8 @@ public class BRJS extends AbstractBRJSRootNode
 			
 			node = node.parentNode();
 		}
+		
+		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(dir(), file) );
 		
 		return bundlableNode;
 	}
@@ -365,10 +369,6 @@ public class BRJS extends AbstractBRJSRootNode
 	}
 	
 	public FileInfo getFileInfo(File file) {
-		if(file == null) {
-			System.out.println("bingo!");
-		}
-		
 		String filePath = file.getPath();
 		
 		if(!fileInfos.containsKey(filePath)) {

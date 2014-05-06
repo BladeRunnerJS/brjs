@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ThemeAssetLocation;
+import org.bladerunnerjs.model.ThemesAssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -140,8 +140,8 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	private String getThemeName(AssetLocation cssAssetLocation) {
 		String themeName;
 		
-		if(cssAssetLocation instanceof ThemeAssetLocation) {
-			themeName = ((ThemeAssetLocation) cssAssetLocation).getThemeName();
+		if(cssAssetLocation instanceof ThemesAssetLocation) {
+			themeName = ((ThemesAssetLocation) cssAssetLocation).getThemeName();
 		}
 		else {
 			themeName = "common";

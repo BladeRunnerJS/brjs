@@ -66,7 +66,7 @@ public class SectionRedirectFilterTest
 			httpclient.getConnectionManager().shutdown();
 		}
 		
-		FileUtility.deleteDirAndContents(tempDir);
+		tempDir.deleteOnExit();
 	}
 
 	@Test

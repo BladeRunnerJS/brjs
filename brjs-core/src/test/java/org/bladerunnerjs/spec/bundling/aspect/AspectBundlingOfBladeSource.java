@@ -174,18 +174,18 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
-	// TODO this test should fail, blades can't have dependencies on other blades
-	@Ignore
 	@Test
 	public void bladesReferencedByOtherBladesDoNotGetBundled() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(blade).hasNamespacedJsPackageStyle()
-			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(blade).classFileHasContent("appns.bs.b1.Class1", "should not get bundled")
+			.and(bladeWithSubstringOfAnotherBlade).hasNamespacedJsPackageStyle()
+			.and(bladeWithSubstringOfAnotherBlade).hasClass("appns.bs.b1b.Class1")
 			.and(bladeWithSubstringOfAnotherBlade).classDependsOn("appns.bs.b1b.Class1", "appns.bs.b1.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1b.Class1");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsClasses("appns.bs.b1b.Class1")
-			.and(response).doesNotContainClasses("appns.bs.b1.Class1");
+			.and(response).doesNotContainText("should not get bundled");
 	}
 	
 	@Test

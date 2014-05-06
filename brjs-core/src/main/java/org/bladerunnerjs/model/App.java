@@ -20,8 +20,8 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.utility.NameValidator;
 
 
@@ -261,14 +261,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 	}
 	
-	public BundlableNode getBundlableNode(BladerunnerUri bladerunnerUri) throws ResourceNotFoundException
+	public BundlableNode getBundlableNode(BladerunnerUri bladerunnerUri) throws InvalidBundlableNodeException
 	{
 		File baseDir = new File(dir(), bladerunnerUri.scopePath);
 		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
-		
-		if(bundlableNode == null) {
-			throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
-		}
 		
 		return bundlableNode;
 	}

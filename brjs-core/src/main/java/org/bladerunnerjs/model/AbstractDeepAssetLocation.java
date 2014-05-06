@@ -6,13 +6,13 @@ import java.util.List;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
-public abstract class AbstractShallowAssetLocation extends XAbstractAssetLocation {
-	public AbstractShallowAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
+public abstract class AbstractDeepAssetLocation extends XAbstractAssetLocation {
+	public AbstractDeepAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
 		super(rootNode, parent, dir, dependentAssetLocations);
 	}
 	
 	@Override
 	protected List<File> getCandidateFiles() {
-		return dirInfo.files();
+		return dirInfo.nestedFiles();
 	}
 }

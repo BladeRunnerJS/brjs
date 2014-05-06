@@ -56,6 +56,13 @@ public class NodeJsSourceModule implements SourceModule {
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
+	public NodeJsSourceModule() {
+	}
+	
+	public NodeJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+		initialize(assetLocation, dir, assetName);
+	}
+
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
 	{
@@ -70,7 +77,7 @@ public class NodeJsSourceModule implements SourceModule {
 			computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), assetLocation.root().conf().file("bladerunner.conf"));
 			assetLocationsList = new MemoizedValue<>("NodeJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 		}
-		catch(RequirePathException | ConfigException e) {
+		catch(ConfigException e) {
 			throw new AssetFileInstantationException(e);
 		}
 	}

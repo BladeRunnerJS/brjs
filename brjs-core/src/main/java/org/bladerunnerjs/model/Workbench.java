@@ -12,7 +12,7 @@ import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.utility.IndexPageSeedFileLocator;
+import org.bladerunnerjs.plugin.utility.SeedLocator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
@@ -21,10 +21,12 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
 	private final NodeList<Theme> themes = Theme.createNodeSet(this);
+	private final SeedLocator seedLocator;
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
+		seedLocator = new SeedLocator(root());
 		
 		registerInitializedNode();
 	}
@@ -46,10 +48,10 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	{
 		return (Blade) parentNode();
 	}
-		
+	
 	@Override
 	public List<LinkedAsset> getSeedFiles() {
-		return IndexPageSeedFileLocator.getSeedFiles(this);
+		return seedLocator.seedAssets(this);
 	}
 	
 	@Override

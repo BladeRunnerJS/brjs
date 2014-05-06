@@ -28,6 +28,13 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private TrieBasedDependenciesCalculator dependencyCalculator;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
+	public FullyQualifiedLinkedAsset() {
+	}
+	
+	public FullyQualifiedLinkedAsset(AssetLocation assetLocation, File dir, String name) {
+		initialize(assetLocation, dir, name);
+	}
+	
 	public void initialize(AssetLocation assetLocation, File dir, String assetName)
 	{
 		try {

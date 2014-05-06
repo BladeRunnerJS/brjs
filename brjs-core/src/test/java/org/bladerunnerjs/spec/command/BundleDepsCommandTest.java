@@ -67,7 +67,7 @@ public class BundleDepsCommandTest extends SpecTest {
 	public void exceptionIsThrownIfABundlableNodeCantBeLocated() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("bundle-deps", "../apps/app");
-		then(exceptions).verifyException(InvalidBundlableNodeException.class, "../apps/app")
+		then(exceptions).verifyException(InvalidBundlableNodeException.class, "apps/app")
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	

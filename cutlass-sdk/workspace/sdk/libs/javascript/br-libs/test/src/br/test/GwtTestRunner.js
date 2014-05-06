@@ -19,6 +19,10 @@ br.test.GwtTestRunner = function(sFixtureFactoryClass) {
 				"(" + sFixtureFactoryClass + "): " + e.message);
 	}
 
+	if (typeof fFixtureFactoryClass === 'undefined') {
+		throw new br.Errors.CustomError("InvalidFactoryError", "Fixture factory class '" + sFixtureFactoryClass + "' does not exist.");
+	}
+
 	try {
 		this.m_oFixtureFactory = new fFixtureFactoryClass();
 	} catch(e) {

@@ -69,7 +69,7 @@ public class ConfFactory {
 			}
 		}
 		catch(YamlReaderException e) {
-			throw new ConfigException("Parse error while reading '" + confFile.getPath() + "':\n" + e.getMessage());
+			throw new ConfigException("Parse error while reading\n '" + confFile.getPath() + "':\n" + e.getMessage());
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);

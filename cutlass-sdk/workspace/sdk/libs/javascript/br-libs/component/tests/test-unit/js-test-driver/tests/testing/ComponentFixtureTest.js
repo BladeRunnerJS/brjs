@@ -5,6 +5,7 @@ ComponentFixtureTest = TestCase("ComponentFixtureTest");
 
 ComponentFixtureTest.prototype.setUp = function()
 {
+	var Mock4JS = require('mock4js');
 	Mock4JS.addMockSupport(window);
 	Mock4JS.clearMocksToVerify();
 	
@@ -137,7 +138,6 @@ ComponentFixtureTest.prototype.test_componentOpenedIsSetOnTheModelFixture = func
 
 //	this.m_oMockModelFixture.expects(once()).setComponent(new br.component.TestSerializableComponent());
 	this.m_oMockModelFixture.expects(once()).setComponent(ANYTHING);
-debugger;
 	oComponentFixture.doGiven("opened", true);
 };
 
@@ -151,7 +151,6 @@ ComponentFixtureTest.prototype.test_componentOpenedIsSetOnTheViewFixture = funct
 //	this.m_oMockViewFixture.expects(once()).setViewElement(this.m_eElement);
 //	this.m_oMockViewFixture.expects(once()).setComponent(new br.component.TestSerializableComponent());
 	this.m_oMockViewFixture.expects(once()).setComponent(ANYTHING);
-debugger;	
 	oComponentFixture.doGiven("opened", true);
 };
 

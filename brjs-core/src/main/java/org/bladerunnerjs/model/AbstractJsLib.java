@@ -11,9 +11,9 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.TestRunner;
 
 public abstract class AbstractJsLib extends AbstractAssetContainer implements JsLib
@@ -58,7 +58,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
-		transformations.put("libns", namespace());
+		transformations.put("libns", NamespaceUtility.convertToNamespace(requirePrefix()));
 	}
 	
 	@Override
@@ -113,24 +113,8 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	
 	@Override
 	public String requirePrefix() {
-		try {
-			RootAssetLocation rootAssetLocation = rootAssetLocation();
-			return (rootAssetLocation != null) ? rootAssetLocation().requirePrefix() : getName();
-		}
-		catch(RequirePathException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	@Override
-	public String namespace() {
-		try {
-			RootAssetLocation rootAssetLocation = rootAssetLocation();
-			return (rootAssetLocation != null) ? rootAssetLocation().namespace() : requirePrefix().replace("/", ".");
-		}
-		catch(RequirePathException e) {
-			throw new RuntimeException(e);
-		}
+		RootAssetLocation rootAssetLocation = rootAssetLocation();
+		return (rootAssetLocation != null) ? rootAssetLocation().requirePrefix() : getName();
 	}
 	
 	@Override

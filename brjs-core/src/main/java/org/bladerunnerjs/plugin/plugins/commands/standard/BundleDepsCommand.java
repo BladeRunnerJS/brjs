@@ -58,15 +58,16 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 		
 		if(!bundlableDir.exists()) throw new DirectoryDoesNotExistException(relativePath, this);
 		
-		BundlableNode bundlableNode = brjs.locateFirstBundlableAncestorNode(bundlableDir);
-		
-		if(bundlableNode == null) throw new InvalidBundlableNodeException(relativePath, this);
 		
 		try {
+			BundlableNode bundlableNode = brjs.locateFirstBundlableAncestorNode(bundlableDir);
 			out.println(DependencyGraphReportBuilder.createReport(bundlableNode, showAllDependencies));
 		}
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
+		}
+		catch (InvalidBundlableNodeException e) {
+			throw new CommandArgumentsException(e, this);
 		}
 		return 0;
 	}

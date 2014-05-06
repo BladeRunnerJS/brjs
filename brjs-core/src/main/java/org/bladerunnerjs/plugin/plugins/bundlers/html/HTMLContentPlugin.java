@@ -29,6 +29,7 @@ import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+import org.bladerunnerjs.utility.NamespaceUtility;
 
 
 public class HTMLContentPlugin extends AbstractContentPlugin
@@ -134,7 +135,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		if(identifier == null)
 		{
 			String idMessage = (htmlAsset.assetLocation().assetContainer().isNamespaceEnforced()) ?
-				"a namespaced ID of '" + htmlAsset.assetLocation().namespace() + ".*'" : "an ID";
+				"a namespaced ID of '" + NamespaceUtility.convertToNamespace(htmlAsset.assetLocation().requirePrefix()) + ".*'" : "an ID";
 			
 			throw new NamespaceException( "HTML template found without an identifier: '" +
 					startTag.toString() + "'.  Root element should have " + idMessage + ".");

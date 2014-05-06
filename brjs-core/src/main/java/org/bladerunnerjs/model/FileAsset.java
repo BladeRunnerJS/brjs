@@ -14,6 +14,13 @@ public class FileAsset implements Asset {
 	private String defaultFileCharacterEncoding;
 	private String assetPath;
 	
+	public FileAsset() {
+	}
+	
+	public FileAsset(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+		initialize(assetLocation, dir, assetName);
+	}
+	
 	@Override
 	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
 		try {

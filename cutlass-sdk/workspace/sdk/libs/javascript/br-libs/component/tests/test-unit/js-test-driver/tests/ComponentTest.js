@@ -1,29 +1,33 @@
-br.Core.thirdparty('jsunitextensions');
-br.Core.thirdparty('mock4js');
+(function() {
+	var Component = require('br/component/Component');
 
-ComponentTest = TestCase("ComponentTest");
+	br.Core.thirdparty('jsunitextensions');
+	br.Core.thirdparty('mock4js');
 
-ComponentTest.prototype.createSetDisplayFrameComponent = function()
-{
-	var fSetDisplayFrameComponent = function()
+	ComponentTest = TestCase("ComponentTest");
+
+	ComponentTest.prototype.createSetDisplayFrameComponent = function()
 	{
-		this.hasBeenInvoked = false;
-	};
-	br.Core.extend(fSetDisplayFrameComponent, br.component.Component);
+		var fSetDisplayFrameComponent = function()
+		{
+			this.hasBeenInvoked = false;
+		};
+		br.Core.extend(fSetDisplayFrameComponent, Component);
 
-	fSetDisplayFrameComponent.prototype.setDisplayFrame = function(oContainer)
+		fSetDisplayFrameComponent.prototype.setDisplayFrame = function(oContainer)
+		{
+			this.hasBeenInvoked = true;
+		};
+		
+		return new fSetDisplayFrameComponent();
+	};
+
+	ComponentTest.prototype.test_invokingSetDisplayFrameOnASetFrameComponentWorks = function()
 	{
-		this.hasBeenInvoked = true;
+		var oSetDisplayFrameComponent = this.createSetDisplayFrameComponent();
+		assertFalse(oSetDisplayFrameComponent.hasBeenInvoked);
+
+		oSetDisplayFrameComponent.setDisplayFrame();
+		assertTrue(oSetDisplayFrameComponent.hasBeenInvoked);
 	};
-	
-	return new fSetDisplayFrameComponent();
-};
-
-ComponentTest.prototype.test_invokingSetDisplayFrameOnASetFrameComponentWorks = function()
-{
-	var oSetDisplayFrameComponent = this.createSetDisplayFrameComponent();
-	assertFalse(oSetDisplayFrameComponent.hasBeenInvoked);
-
-	oSetDisplayFrameComponent.setDisplayFrame();
-	assertTrue(oSetDisplayFrameComponent.hasBeenInvoked);
-};
+}());
