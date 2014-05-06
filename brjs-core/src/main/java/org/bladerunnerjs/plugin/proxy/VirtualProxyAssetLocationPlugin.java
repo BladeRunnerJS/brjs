@@ -29,9 +29,9 @@ public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implemen
 	}
 	
 	@Override
-	public AssetLocation createAssetLocation(AssetContainer assetContainer, File dir) {
+	public AssetLocation createAssetLocation(AssetContainer assetContainer, File dir, Map<String, AssetLocation> assetLocationsMap) {
 		initializePlugin();
-		return assetLocationPlugin.createAssetLocation(assetContainer, dir);
+		return assetLocationPlugin.createAssetLocation(assetContainer, dir, assetLocationsMap);
 	}
 	
 	@Override

@@ -35,7 +35,7 @@ public abstract class AbstractAssetLocationPlugin extends AbstractPlugin impleme
 		return new ArrayList<>();
 	}
 	
-	public AssetLocation createAssetLocation(AssetContainer assetContainer, File dir) {
+	public AssetLocation createAssetLocation(AssetContainer assetContainer, File dir, Map<String, AssetLocation> assetLocationsMap) {
 		Map<String, AssetLocation> assetLocationCache = getCache(assetContainer);
 		
 		for(AssetLocation assetLocation : getAssetLocations(assetContainer, assetLocationCache)) {

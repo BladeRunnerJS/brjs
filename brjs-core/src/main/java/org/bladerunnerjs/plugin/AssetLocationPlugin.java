@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.AssetLocation;
 public interface AssetLocationPlugin extends OrderedPlugin {
 	List<File> getAssetLocationDirectories(AssetContainer assetContainer);
 	List<File> getSeedAssetLocationDirectories(AssetContainer assetContainer);
-	AssetLocation createAssetLocation(AssetContainer assetContainer, File dir);
+	AssetLocation createAssetLocation(AssetContainer assetContainer, File dir, Map<String, AssetLocation> assetLocationsMap);
 	boolean allowFurtherProcessing();
 	
 	/**

@@ -2,7 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,6 +20,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	private final MemoizedValue<Map<String, SourceModule>> sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
 	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", this);
 	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
+	private final Map<String, AssetLocation> cachedAssetLocations = new HashMap<>();
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -91,18 +92,21 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	private Map<String, AssetLocation> assetLocationsMap() {
 		return assetLocationsMap.value(() -> {
-			Set<String> processedAssetLocations = new HashSet<>();
-			Map<String, AssetLocation> assetLocationsMap = new LinkedHashMap<>();
+			Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
 			
 			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
 				List<File> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
 				
 				if(assetLocationDirectories.size() > 0) {
 					for(File dir : assetLocationDirectories) {
-						if(processedAssetLocations.add(dir.getAbsolutePath())) {
-							AssetLocation assetLocation = assetLocationPlugin.createAssetLocation(this, dir);
-							String locationPath = normalizePath(RelativePathUtility.get(dir(), assetLocation.dir()));
-							assetLocationsMap.put(locationPath, assetLocation);
+						String locationPath = normalizePath(RelativePathUtility.get(dir(), dir));
+						
+						if(!assetLocations.containsKey(locationPath)) {
+							if(!cachedAssetLocations.containsKey(locationPath)) {
+								cachedAssetLocations.put(locationPath, assetLocationPlugin.createAssetLocation(this, dir, cachedAssetLocations));
+							}
+							
+							assetLocations.put(locationPath, cachedAssetLocations.get(locationPath));
 						}
 					}
 					
@@ -112,10 +116,11 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 				}
 			}
 			
-			return assetLocationsMap;
+			return assetLocations;
 		});
 	}
 	
+	// TODO: do we still need this?
 	private String normalizePath(String path) {
 		return path.replaceAll("/$", "");
 	}
