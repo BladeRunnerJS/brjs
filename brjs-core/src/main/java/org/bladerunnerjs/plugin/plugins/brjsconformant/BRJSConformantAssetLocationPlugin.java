@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bladerunnerjs.model.AbstractResourcesAssetLocation;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
@@ -23,7 +24,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		Set<String> themeNames = new HashSet<>();
 		
 		for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
-			ResourcesAssetLocation resourceAssetLocation = (ResourcesAssetLocation) assetContainer.assetLocation("resources");
+			AbstractResourcesAssetLocation resourceAssetLocation = (AbstractResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
 			if(resourceAssetLocation != null) {
 				for(ThemesAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
