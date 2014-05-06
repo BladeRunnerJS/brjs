@@ -10,12 +10,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.utility.FileUtility;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
@@ -29,7 +29,7 @@ public class JsTestDriverBundleCreator
 			throws FileNotFoundException, YamlException, IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException
 	{
 		File bundlesDir = new File(jsTestDriverConf.getParentFile(), BUNDLES_DIR_NAME);
-		FileUtils.deleteDirectory(bundlesDir);
+		FileUtility.deleteDirectory(bundlesDir);
 		bundlesDir.mkdir();
 		
 		Map<String, Object> configMap = getMapFromYamlConfig(jsTestDriverConf);
