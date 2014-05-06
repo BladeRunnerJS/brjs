@@ -4,6 +4,8 @@ ControlPluginTest = TestCase("ControlPluginTest");
 
 ControlPluginTest.prototype.setUp = function() 
 {
+	br.presenter.component.PresenterComponent._initializePlugins();
+
 	Mock4JS.addMockSupport(window);
 	Mock4JS.clearMocksToVerify();
 	

@@ -15,9 +15,9 @@ br.component.TestSerializableComponent.prototype.serialize = function()
 	// do nothing
 };
 
-br.component.TestSerializableComponent.prototype.deserialize = function(serializedForm)
+br.component.TestSerializableComponent.deserialize = function(serializedForm)
 {
-	return this;
+	return new br.component.TestSerializableComponent();
 };
 
 
