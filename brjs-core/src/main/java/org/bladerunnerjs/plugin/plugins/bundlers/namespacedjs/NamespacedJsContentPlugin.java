@@ -134,7 +134,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
-					writer.write(getGlobalizedNonNamespacedDependenciesContent(bundleSet.getBundlableNode(), jsModule, new ArrayList<SourceModule>()));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
@@ -150,7 +149,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 					{
 						if (sourceModule instanceof NamespacedJsSourceModule)
 						{
-							contentBuffer.write(getGlobalizedNonNamespacedDependenciesContent(bundleSet.getBundlableNode(), sourceModule, processedGlobalizedSourceModules));
 							contentBuffer.write("// " + sourceModule.getRequirePath() + "\n");
 							IOUtils.copy(sourceModule.getReader(), contentBuffer);
 							contentBuffer.write("\n\n");
