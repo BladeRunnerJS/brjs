@@ -319,7 +319,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
-				"define('appns/namespacedjs/Class1', function(require, exports, module) { requireAll({'appns.namespacedjs.Class2'}); ",
+				"define('appns/namespacedjs/Class1', function(require, exports, module) { requireAll({'appns/namespacedjs/Class2'});",
 				"appns.namespacedjs.Class1 = function()",
 				"module.exports = appns.namespacedjs.Class1;");
 	}

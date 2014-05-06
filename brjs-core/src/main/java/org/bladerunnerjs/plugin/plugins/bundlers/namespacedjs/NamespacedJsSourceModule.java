@@ -108,15 +108,17 @@ public class NamespacedJsSourceModule implements ContentAlteringSourceModule {
 		try
 		{
 			staticDependenciesRequireDefinition = calculateStaticDependenciesRequireDefinition();
+			staticDependenciesRequireDefinition = (staticDependenciesRequireDefinition.isEmpty()) ? "" : " "+staticDependenciesRequireDefinition;
 		}
 		catch (ModelOperationException e)
 		{
 			throw new IOException("Unable to create the SourceModule reader", e);
 		}
 		
+		String defineBlockHeader = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
+		
 		Reader[] readers = new Reader[] { 
-				new StringReader( String.format(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getRequirePath()) ), 
-				new StringReader( staticDependenciesRequireDefinition ), 
+				new StringReader( String.format(defineBlockHeader, getRequirePath()) ), 
 				getBaseReader(),
 				new StringReader( "\n" ),
 				new StringReader( "module.exports = " + getClassname() + ";" ),
@@ -158,19 +160,19 @@ public class NamespacedJsSourceModule implements ContentAlteringSourceModule {
 	}
 	
 	public String calculateStaticDependenciesRequireDefinition() throws ModelOperationException {
-//		List<String> staticDependencyRequirePaths = staticDependencyCalculator.getRequirePaths();
-//		if (staticDependencyRequirePaths.isEmpty()) {
-//			return "";
-//		}
+		List<String> staticDependencyRequirePaths = staticDependencyCalculator.getRequirePaths();
+		if (staticDependencyRequirePaths.isEmpty()) {
+			return "";
+		}
 		
 		StringBuilder staticDependenciesRequireDefinition = new StringBuilder( STATIC_DEPENDENCIES_BLOCK_START );
-//		for (String staticDependencyRequirePath : staticDependencyRequirePaths) {
-//			staticDependenciesRequireDefinition.append( staticDependencyRequirePath+"," );
-//		}
-//		staticDependenciesRequireDefinition.setLength( staticDependenciesRequireDefinition.length() - 1 ); // remove the final ',' we added
-//		staticDependenciesRequireDefinition.append( STATIC_DEPENDENCIES_BLOCK_END );
+		for (String staticDependencyRequirePath : staticDependencyRequirePaths) {
+			staticDependenciesRequireDefinition.append( "'"+staticDependencyRequirePath+"'," );
+		}
+		staticDependenciesRequireDefinition.setLength( +staticDependenciesRequireDefinition.length() - 1 ); // remove the final ',' we added
+		staticDependenciesRequireDefinition.append( STATIC_DEPENDENCIES_BLOCK_END );
 		
-		return "";//staticDependenciesRequireDefinition.toString();
+		return staticDependenciesRequireDefinition.toString()+"\n";
 	}
 	
 	@Override
