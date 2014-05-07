@@ -189,7 +189,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 
 def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
-		description = "Run ${testType} for ${taskTestDir} using ${browser}"
+		description = "Run ${taskTestType} for ${taskTestDir} using ${browser}"
 		dependsOn = [assemble, copyBrowsers]
 		inputs.dir file("workspace/apps/")
     	inputs.dir file("workspace/sdk/")
@@ -202,11 +202,22 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 }
 
 
-createTestTask "testJsUTsIE", "libs/javascript", "UTs", "ie"
-createTestTask "testJsATsIE", "libs/javascript", "ATs", "ie"
-task testJsIE, dependsOn: [testJsUTsIE, testJsATsIE]
-createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
-createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
+def brLibsPathRelativeToSdk = "libs/javascript/br-libs"
+def brlibsPath = "workspace/sdk/${brLibsPathRelativeToSdk}"
+
+createTestTask "testJsChrome", brLibsPathRelativeToSdk, "ALL", "chrome"
+createTestTask "testJsFirefox", brLibsPathRelativeToSdk, "ALL", "firefox"
+
+/* run each test on it's own in IE due to unreliability in CI */
+task testJsIE, {}
+file(brlibsPath).listFiles().each { libDir ->
+	if (libDir.isDirectory()) {
+		def libDirName = libDir.name
+		def taskName = "testJs${ libDirName.capitalize() }AllIE"
+		createTestTask taskName, "${brLibsPathRelativeToSdk}/${libDirName}", "ALL", "ie"
+		testJsIE.dependsOn taskName
+	}
+}
 
 createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
 createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
