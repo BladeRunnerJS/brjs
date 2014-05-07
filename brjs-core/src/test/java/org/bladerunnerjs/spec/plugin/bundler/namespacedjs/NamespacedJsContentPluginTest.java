@@ -175,16 +175,6 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void caplinStyleClassesThatReferToRequireEncapsulatedClassesWillHaveRequiresAutomaticallyAdded() throws Exception {
-		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
-			.and(aspect).hasClasses("appns.namespaced.Class", "appns/nodejs/Class")
-			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.nodejs.Class");
-		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/namespaced/Class.js", requestResponse);
-		then(requestResponse).containsText("appns.namespaced.Class = function() {\n};")
-			.and(requestResponse).containsTextOnce("appns.nodejs.Class = require('appns/nodejs/Class');");
-	}
-	
-	@Test
 	public void requiresAreAlsoAutomaticallyAddedWithinTheBundledResponse() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClasses("appns.namespaced.Class", "appns/nodejs/Class")
@@ -205,7 +195,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(thirdpartyLib).containsFile("lib.js");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.namespaced.Class")
-			.and(requestResponse).doesNotContainText("require('");
+			.and(requestResponse).doesNotContainText("require('lib1')");
 	}
 	
 	@Test

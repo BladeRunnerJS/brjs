@@ -28,10 +28,6 @@
 	var globaliseRequirePath = function(requirePath, namespacePath) {
 		var namespacePathContext = getContextForNamespacePath(namespacePath);
 		var namespaceKeyName = namespacePath.split(".").pop();
-		if (namespacePath == caplinx.dashboard.app.DashboardApp)
-		{
-			debugger;
-		}
 		namespacePathContext[namespaceKeyName] = require(requirePath);
 	}
 
@@ -55,7 +51,6 @@
 		for (var i = 0; i < namespacePathParts.length; i++) {
 			var namespacePathPart = namespacePathParts[i];
 			currentContext = currentContext[namespacePathPart];
-			currentContext.test = "1234";
 		}
 		return currentContext;
 	}

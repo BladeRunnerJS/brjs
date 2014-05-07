@@ -137,7 +137,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public boolean isEncapsulatedModule() {
-		return false;
+		return true;
 	}
 	
 	@Override
