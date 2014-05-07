@@ -28,19 +28,27 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	}
 	
 	@Override
-	public boolean canHandleAssetContainer(AssetContainer assetContainer) {
-		return ((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists()));
+	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
+		List<String> assetLocationDirectories = new ArrayList<>();
+		
+		if((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists())) {
+			assetLocationDirectories.add("");
+		}
+		
+		return assetLocationDirectories;
+	}
+	
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		return new ArrayList<>();
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache) {
-		if(!assetLocationCache.containsKey("root")) {
-			assetLocationCache.put("root", new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
-		}
-		
-		List<AssetLocation> assetLocations = new ArrayList<>();
-		assetLocations.add(assetLocationCache.get("root"));
-		
-		return assetLocations;
+	public AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap) {
+		return new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, assetContainer.file(dirPath));
+	}
+	
+	@Override
+	public boolean allowFurtherProcessing() {
+		return false;
 	}
 }

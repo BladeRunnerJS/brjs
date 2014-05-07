@@ -4,8 +4,8 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -24,7 +24,7 @@ public class BundleDepsCommandTest extends SpecTest {
 	AliasDefinitionsFile bladeAliasDefinitionsFile;
 	Blade blade;
 	TestPack bladeTestPack;
-	DirNode bladeTests;
+	AssetLocation bladeTests;
 	
 	@Before
 	public void initTestObjects() throws Exception

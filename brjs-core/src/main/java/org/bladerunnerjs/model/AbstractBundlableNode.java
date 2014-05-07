@@ -44,7 +44,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	protected abstract List<LinkedAsset> getSeedFiles();
 	
 	@Override
-	public List<LinkedAsset> seedFiles() {
+	public List<LinkedAsset> seedAssets() {
 		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
 		seedFiles.addAll(getSeedFiles());

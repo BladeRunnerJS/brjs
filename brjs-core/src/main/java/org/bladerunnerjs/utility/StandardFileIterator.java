@@ -75,10 +75,36 @@ public class StandardFileIterator implements FileIterator {
 	}
 	
 	@Override
+	public List<File> nestedFilesAndDirs() {
+		List<File> nestedFilesAndDirs = new ArrayList<>();
+		populateNestedFilesAndDirs(this, nestedFilesAndDirs, brjs);
+		return nestedFilesAndDirs;
+	}
+	
+	@Override
 	public List<File> nestedFiles() {
 		List<File> nestedFiles = new ArrayList<>();
-		populateNestedFiles(this, nestedFiles, brjs);
+		
+		for(File file : nestedFilesAndDirs()) {
+			if(!file.isDirectory()) {
+				nestedFiles.add(file);
+			}
+		}
+		
 		return nestedFiles;
+	}
+	
+	@Override
+	public List<File> nestedDirs() {
+		List<File> nestedDirs = new ArrayList<>();
+		
+		for(File file : nestedFilesAndDirs()) {
+			if(file.isDirectory()) {
+				nestedDirs.add(file);
+			}
+		}
+		
+		return nestedDirs;
 	}
 	
 	private void updateIfChangeDetected() {
@@ -90,11 +116,11 @@ public class StandardFileIterator implements FileIterator {
 		}
 	}
 	
-	private static void populateNestedFiles(FileIterator fileIterator, List<File> nestedFiles, RootNode rootNode) {
-		nestedFiles.addAll(fileIterator.files());
+	private static void populateNestedFilesAndDirs(FileIterator fileIterator, List<File> nestedFilesAndDirs, RootNode rootNode) {
+		nestedFilesAndDirs.addAll(fileIterator.filesAndDirs());
 		
 		for(File dir : fileIterator.dirs()) {
-			populateNestedFiles(rootNode.getFileInfo(dir), nestedFiles, rootNode);
+			populateNestedFilesAndDirs(rootNode.getFileInfo(dir), nestedFilesAndDirs, rootNode);
 		}
 	}
 }

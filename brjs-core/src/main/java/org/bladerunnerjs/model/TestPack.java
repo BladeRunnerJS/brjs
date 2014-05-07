@@ -14,7 +14,6 @@ import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
@@ -22,8 +21,6 @@ import org.bladerunnerjs.utility.NameValidator;
 
 public class TestPack extends AbstractBundlableNode implements NamedNode
 {
-	private final NodeItem<DirNode> tests = new NodeItem<>(this, DirNode.class, "tests");
-	private final NodeItem<DirNode> testSource = new NodeItem<>(this, DirNode.class, "src-test");
 	private AliasesFile aliasesFile;
 	private String name;
 	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), root().conf().file("bladerunner.conf"));
@@ -138,16 +135,15 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		return aliasesFile;
 	}
 	
-	public DirNode testSource()
+	public AssetLocation testSource()
 	{
-		return testSource.item();
+		return assetLocation("src-test");
 	}
 	
-	public DirNode tests()
+	public AssetLocation tests()
 	{
-		return tests.item();
+		return assetLocation("tests");
 	}
-	
 	
 	private boolean isTestAssetLocation(AssetLocation assetLocation)
 	{
