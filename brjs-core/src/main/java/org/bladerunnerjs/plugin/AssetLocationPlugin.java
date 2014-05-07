@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +15,8 @@ import org.bladerunnerjs.model.AssetLocation;
  * are found, and can control how assets are bundled by controlling the relationship between source modules and asset-locations.</p>
  */
 public interface AssetLocationPlugin extends OrderedPlugin {
-	List<File> getAssetLocationDirectories(AssetContainer assetContainer);
-	List<File> getSeedAssetLocationDirectories(AssetContainer assetContainer);
-	AssetLocation createAssetLocation(AssetContainer assetContainer, File dir, Map<String, AssetLocation> assetLocationsMap);
+	List<String> getAssetLocationDirectories(AssetContainer assetContainer);
+	List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer);
+	AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap);
 	boolean allowFurtherProcessing();
 }

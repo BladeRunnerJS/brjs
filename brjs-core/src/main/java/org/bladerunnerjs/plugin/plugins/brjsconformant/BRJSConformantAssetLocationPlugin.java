@@ -66,62 +66,72 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		return new ArrayList<>();
 	}
 	
-	public List<File> getAssetLocationDirectories(AssetContainer assetContainer) {
-		List<File> assetLocationDirectories = new ArrayList<>();
+	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
+		List<String> assetLocationDirectories = new ArrayList<>();
+		
+		assetLocationDirectories.add("");
+		assetLocationDirectories.add("resources");
+		assetLocationDirectories.add("src");
+		assetLocationDirectories.add("src-test");
+		
 		File sourceDir = assetContainer.file("src");
-		File sourceTestDir = assetContainer.file("src-test");
-		
-		assetLocationDirectories.add(assetContainer.dir());
-		assetLocationDirectories.add(assetContainer.file("resources"));
-		assetLocationDirectories.add(sourceDir);
-		assetLocationDirectories.add(sourceTestDir);
-		
 		if(sourceDir.exists()) {
-			assetLocationDirectories.addAll(brjs.getFileInfo(sourceDir).nestedDirs());
+			for(File dir : brjs.getFileInfo(sourceDir).nestedDirs()) {
+				assetLocationDirectories.add(RelativePathUtility.get(assetContainer.dir(), dir));
+			}
 		}
 		
+		File sourceTestDir = assetContainer.file("src-test");
 		if(sourceTestDir.exists()) {
-			assetLocationDirectories.addAll(brjs.getFileInfo(sourceTestDir).nestedDirs());
+			for(File dir : brjs.getFileInfo(sourceTestDir).nestedDirs()) {
+				assetLocationDirectories.add(RelativePathUtility.get(assetContainer.dir(), dir));
+			}
 		}
 		
 		return assetLocationDirectories;
 	}
 	
-	public List<File> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
 		return new ArrayList<>();
 	}
 	
-	public AssetLocation createAssetLocation(AssetContainer assetContainer, File dir, Map<String, AssetLocation> assetLocationsMap) {
+	public AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap) {
 		AssetLocation assetLocation;
-		String dirPath = dir.getPath();
+		File dir = assetContainer.file(dirPath);
 		
-		if(dirPath.equals(assetContainer.dir().getPath())) {
-			assetLocation = new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, dir);
-		}
-		else if(dirPath.equals(assetContainer.file("resources").getPath())) {
-			if (assetContainer instanceof Workbench) {
-				assetLocation = new WorkbenchResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
-			}
-			else {
-				assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
-			}
-		}
-		else if(dirPath.equals(assetContainer.file("src").getPath())) {
-			assetLocation = new SourceAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("resources"));
-		}
-		else if(dirPath.equals(assetContainer.file("src-test").getPath())) {
-			assetLocation = new TestSourceAssetLocation(assetContainer.root(), assetContainer, dir);
-		}
-		else {
-			String parentLocationPath = normalizePath(RelativePathUtility.get(assetContainer.dir(), dir.getParentFile()));
-			AssetLocation parentAssetLocation = assetLocationsMap.get(parentLocationPath);
+		switch(dirPath) {
+			case "":
+				assetLocation = new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, dir);
+				break;
 			
-			if((parentAssetLocation instanceof ChildSourceAssetLocation) || (parentAssetLocation instanceof SourceAssetLocation)) {
-				assetLocation = new ChildSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
-			}
-			else {
-				assetLocation = new ChildTestSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
-			}
+			case "resources":
+				if (assetContainer instanceof Workbench) {
+					assetLocation = new WorkbenchResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
+				}
+				else {
+					assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
+				}
+				break;
+			
+			case "src":
+				assetLocation = new SourceAssetLocation(assetContainer.root(), assetContainer, dir, assetLocationsMap.get("resources"));
+				break;
+			
+			case "src-test":
+				assetLocation = new TestSourceAssetLocation(assetContainer.root(), assetContainer, dir);
+				break;
+			
+			default:
+				String parentLocationPath = RelativePathUtility.get(assetContainer.dir(), dir.getParentFile());
+				AssetLocation parentAssetLocation = assetLocationsMap.get(parentLocationPath);
+				
+				if((parentAssetLocation instanceof ChildSourceAssetLocation) || (parentAssetLocation instanceof SourceAssetLocation)) {
+					assetLocation = new ChildSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
+				}
+				else {
+					assetLocation = new ChildTestSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
+				}
+				break;
 		}
 		
 		return assetLocation;
@@ -130,10 +140,5 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	@Override
 	public boolean allowFurtherProcessing() {
 		return false;
-	}
-	
-	// TODO: do we still need this?
-	protected String normalizePath(String path) {
-		return path.replaceAll("/$", "");
 	}
 }

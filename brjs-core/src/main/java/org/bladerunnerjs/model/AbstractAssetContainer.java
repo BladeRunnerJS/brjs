@@ -13,7 +13,6 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.utility.RelativePathUtility;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", this);
@@ -95,15 +94,13 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
 			
 			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
-				List<File> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
+				List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
 				
 				if(assetLocationDirectories.size() > 0) {
-					for(File dir : assetLocationDirectories) {
-						String locationPath = normalizePath(RelativePathUtility.get(dir(), dir));
-						
+					for(String locationPath : assetLocationDirectories) {
 						if(!assetLocations.containsKey(locationPath)) {
 							if(!cachedAssetLocations.containsKey(locationPath)) {
-								cachedAssetLocations.put(locationPath, assetLocationPlugin.createAssetLocation(this, dir, cachedAssetLocations));
+								cachedAssetLocations.put(locationPath, assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations));
 							}
 							
 							assetLocations.put(locationPath, cachedAssetLocations.get(locationPath));
@@ -118,10 +115,5 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			
 			return assetLocations;
 		});
-	}
-	
-	// TODO: do we still need this?
-	private String normalizePath(String path) {
-		return path.replaceAll("/$", "");
 	}
 }
