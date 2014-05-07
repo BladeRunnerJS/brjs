@@ -15,20 +15,30 @@ import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestSourceAssetLocation;
 import org.bladerunnerjs.model.TestPack;
+import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
-public class BRJSConformantTestPackAssetLocationPlugin extends BRJSConformantAssetLocationPlugin {
+public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	private BRJS brjs;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		super.setBRJS(brjs);
 		this.brjs = brjs;
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return new ArrayList<>();
 	}
 	
 	@Override
 	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
 		return Arrays.asList(BRJSConformantAssetLocationPlugin.class.getCanonicalName());
+	}
+	
+	@Override
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		return new ArrayList<>();
 	}
 	
 	@Override
@@ -90,5 +100,10 @@ public class BRJSConformantTestPackAssetLocationPlugin extends BRJSConformantAss
 		}
 		
 		return assetLocation;
+	}
+	
+	@Override
+	public boolean allowFurtherProcessing() {
+		return false;
 	}
 }
