@@ -63,7 +63,7 @@ Dependencies.putAll([
 	'httpmime'					:	'org.apache.httpcomponents:httpmime:4.2.5',
 	'fluent-hc'					:	'org.apache.httpcomponents:fluent-hc:4.2.5',
 
-	'selenium-java'				:	'org.seleniumhq.selenium:selenium-java:2.24.1',
+	'selenium-java'				:	'org.seleniumhq.selenium:selenium-java:2.41.0',
 
 	'log4j'						:	'log4j:log4j:1.2.17',
 
