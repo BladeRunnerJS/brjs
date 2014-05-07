@@ -16,7 +16,6 @@ import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class Java7FileModificationServiceTest {
@@ -45,7 +44,7 @@ public class Java7FileModificationServiceTest {
 	 *       watched-file
 	 *       unwatched-file
 	 */
-	@Test @Ignore
+	@Test
 	public void java7FileModificationServiceTest() throws Exception {
 		// create directory structure
 		mkfile("root-dir/active-dir/active-file");
