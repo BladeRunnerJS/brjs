@@ -211,7 +211,7 @@ createTestTask "testJsFirefox", brLibsPathRelativeToSdk, "ALL", "firefox"
 /* run each test on it's own in IE due to unreliability in CI */
 task testJsIE, {}
 file(brlibsPath).listFiles().each { libDir ->
-	if (libDir.isDirectory()) {
+	if (libDir.isDirectory() && file("${libDir.absolutePath}/tests").isDirectory()) {
 		def libDirName = libDir.name
 		def taskName = "testJs${ libDirName.capitalize() }AllIE"
 		createTestTask taskName, "${brLibsPathRelativeToSdk}/${libDirName}", "ALL", "ie"
