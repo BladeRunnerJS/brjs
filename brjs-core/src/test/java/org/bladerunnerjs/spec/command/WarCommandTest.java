@@ -119,9 +119,15 @@ public class WarCommandTest extends SpecTest {
 	@Ignore
 	@Test
 	public void minifyingCausesTheWarToBeSmaller() throws Exception {
-		given(aspect).hasClass("appns.Class1")
-			.and(aspect).indexPageRefersTo("appns.Class1");
+		given(app).hasBeenCreated()
+		.and(aspect).classFileHasContent("appns/Class1", "var reallyLongStringThatWillBeMinifiedToAFarSmallerSize = 'foo';")
+			.and(aspect).indexPageHasContent(
+					"<head><@js.bundle prod-minifier='combined'@/></head>\n" +
+					"require('appns/Class1');");
 		when(brjs).runCommand("war", "app1", "unminified.war")
+			.and(aspect).indexPageHasContent(
+					"<head><@js.bundle prod-minifier='closure-simple'@/></head>\n" +
+					"require('appns/Class1');")
 			.and(brjs).runCommand("war", "app1", "-m", "closure-whitespace", "minified.war");
 		then(brjs).firstFileIsLarger("unminified.war", "minified.war");
 	}
