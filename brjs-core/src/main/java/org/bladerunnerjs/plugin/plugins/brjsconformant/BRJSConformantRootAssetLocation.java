@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.RootAssetLocation;
-import org.bladerunnerjs.model.XAbstractAssetLocation;
+import org.bladerunnerjs.model.TheAbstractAssetLocation;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 
-public class BRJSConformantRootAssetLocation extends XAbstractAssetLocation implements RootAssetLocation {
+public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation implements RootAssetLocation {
 	private BRLibManifest libManifest;
 	
 	public BRJSConformantRootAssetLocation(RootNode rootNode, Node parent, File dir) {
