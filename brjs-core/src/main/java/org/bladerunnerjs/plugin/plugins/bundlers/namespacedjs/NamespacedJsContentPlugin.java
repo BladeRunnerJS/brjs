@@ -265,18 +265,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	{
 		if (packageStructure.size() > 0)
 		{
-			writer.write(
-				"// package definition block\n" +
-				"function mergePackageBlock(context, packageBlock) {\n" +
-				"	for(packageName in packageBlock) {\n" +
-				"		if(!context[packageName]) {\n" +
-				"			context[packageName] = packageBlock[packageName];\n" +
-				"		}\n" +
-				"		else {\n" +
-				"			mergePackageBlock(context[packageName], packageBlock[packageName]);\n" +
-				"		}\n" +
-				"	}\n" +
-				"}\n");
+			writer.write("// package definition block\n");
 			writer.write("mergePackageBlock(window, ");
 			JSONObject.writeJSONString(packageStructure, writer);
 			writer.write(");\n");
