@@ -36,9 +36,6 @@ public class BRJSConformantTestPackAssetLocationPlugin extends BRJSConformantAss
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
 		if(assetContainer instanceof TestPack) {
-			((TestPack) assetContainer).tests(); // TODO: get rid of the need for this hack -- tests() should use the plug-in created nodes
-			((TestPack) assetContainer).testSource(); // TODO: get rid of the need for this hack -- testSource() should use the plug-in created nodes
-			
 			assetLocationDirectories.add("resources");
 			assetLocationDirectories.add("src-test");
 			assetLocationDirectories.add("tests");
