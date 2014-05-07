@@ -124,45 +124,6 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	}
 	
 	@Override
-	public boolean canHandleAssetContainer(AssetContainer assetContainer) {
-		return true;
-	}
-	
-	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache)  
-	{
-		List<AssetLocation> assetLocations = new ArrayList<AssetLocation>();
-		
-		if (!assetLocationCache.containsKey("root")) {
-			assetLocationCache.put("root", new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
-			
-			AssetLocation resourcesAssetLocation;
-			if (assetContainer instanceof Workbench)
-			{
-				resourcesAssetLocation = new WorkbenchResourcesAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources"));
-			}
-			else
-			{
-				resourcesAssetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("resources"));				
-			}
-			assetLocationCache.put( "resources",  resourcesAssetLocation);
-			assetLocationCache.put( "src", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src"), assetLocationCache.get("resources")) );
-			assetLocationCache.put( "src-test", new SourceAssetLocation(assetContainer.root(), assetContainer, assetContainer.file("src-test")) );
-		}
-		
-		assetLocations.add(assetLocationCache.get("root"));
-		assetLocations.add(assetLocationCache.get("resources"));
-		SourceAssetLocation srcAssetLocation = (SourceAssetLocation) assetLocationCache.get("src");
-		assetLocations.add(srcAssetLocation);
-		assetLocations.addAll(srcAssetLocation.getChildAssetLocations());
-		SourceAssetLocation srcTestAssetLocation = (SourceAssetLocation) assetLocationCache.get("src-test");
-		assetLocations.add(srcTestAssetLocation);
-		assetLocations.addAll( srcTestAssetLocation.getChildAssetLocations() ) ;
-    	
-		return assetLocations;
-	}
-	
-	@Override
 	public boolean allowFurtherProcessing() {
 		return false;
 	}

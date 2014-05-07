@@ -1,5 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,20 +29,19 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	}
 	
 	@Override
-	public boolean canHandleAssetContainer(AssetContainer assetContainer) {
-		return ((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists()));
+	public List<File> getAssetLocationDirectories(AssetContainer assetContainer) {
+		List<File> assetLocationDirectories = new ArrayList<>();
+		
+		if((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists())) {
+			assetLocationDirectories.add(assetContainer.dir());
+		}
+		
+		return assetLocationDirectories;
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache) {
-		if(!assetLocationCache.containsKey("root")) {
-			assetLocationCache.put("root", new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, assetContainer.dir()));
-		}
-		
-		List<AssetLocation> assetLocations = new ArrayList<>();
-		assetLocations.add(assetLocationCache.get("root"));
-		
-		return assetLocations;
+	public AssetLocation createAssetLocation(AssetContainer assetContainer, File dir, Map<String, AssetLocation> assetLocationsMap) {
+		return new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, dir);
 	}
 	
 	@Override

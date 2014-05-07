@@ -20,19 +20,4 @@ public interface AssetLocationPlugin extends OrderedPlugin {
 	List<File> getSeedAssetLocationDirectories(AssetContainer assetContainer);
 	AssetLocation createAssetLocation(AssetContainer assetContainer, File dir, Map<String, AssetLocation> assetLocationsMap);
 	boolean allowFurtherProcessing();
-	
-	/**
-	 * Returns <code>true</code> if this plug-in is able to generate asset locations for the given asset-container.
-	 * 
-	 * @param assetContainer The asset-container that asset-locations will need to be generated for.
-	 */
-	boolean canHandleAssetContainer(AssetContainer assetContainer);
-	
-	/**
-	 * Return a list of asset locations for the given asset-container.
-	 * 
-	 * @param assetContainer The asset-container to provide asset-locations for.
-	 * @param assetLocationCache A map of potentially re-usable asset-locations previously created by this plug-in.
-	 */
-	List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache);
 }
