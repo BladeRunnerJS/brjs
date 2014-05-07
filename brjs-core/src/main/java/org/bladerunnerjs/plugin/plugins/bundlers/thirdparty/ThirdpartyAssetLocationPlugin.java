@@ -39,6 +39,10 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 		return assetLocationDirectories;
 	}
 	
+	public List<File> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		return new ArrayList<>();
+	}
+	
 	@Override
 	public AssetLocation createAssetLocation(AssetContainer assetContainer, File dir, Map<String, AssetLocation> assetLocationsMap) {
 		return new ThirdpartyAssetLocation(assetContainer.root(), assetContainer, dir);

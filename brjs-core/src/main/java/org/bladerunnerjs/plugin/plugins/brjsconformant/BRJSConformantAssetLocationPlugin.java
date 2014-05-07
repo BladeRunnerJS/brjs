@@ -87,6 +87,10 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		return assetLocationDirectories;
 	}
 	
+	public List<File> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		return new ArrayList<>();
+	}
+	
 	public AssetLocation createAssetLocation(AssetContainer assetContainer, File dir, Map<String, AssetLocation> assetLocationsMap) {
 		AssetLocation assetLocation;
 		String dirPath = dir.getPath();
