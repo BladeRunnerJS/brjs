@@ -27,7 +27,7 @@ public class BundleSetCreator {
 		Logger logger = bundlableNode.root().logger(LoggerType.BUNDLER, BundleSetCreator.class);
 		
 		BundleSetBuilder bundleSetBuilder = new BundleSetBuilder(bundlableNode);
-		List<LinkedAsset> seedFiles = bundlableNode.seedFiles();
+		List<LinkedAsset> seedFiles = bundlableNode.seedAssets();
 		
 		String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 		if(seedFiles.isEmpty()) {

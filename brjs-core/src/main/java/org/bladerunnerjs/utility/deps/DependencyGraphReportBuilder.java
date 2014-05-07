@@ -34,21 +34,21 @@ public class DependencyGraphReportBuilder {
 		fixIncompleteAliases(bundlableNode);
 		
 		return "Bundle '" + RelativePathUtility.get(bundlableNode.root().dir(), bundlableNode.dir()) + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(bundlableNode.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(bundlableNode), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(bundlableNode.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(bundlableNode), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(Aspect aspect, boolean showAllDependencies) throws ModelOperationException {
 		fixIncompleteAliases(aspect);
 		
 		return "Aspect '" + aspect.getName() + "' dependencies found:\n" +
-			new DependencyGraphReportBuilder(aspect.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(aspect), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(aspect.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(aspect), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(Workbench workbench, boolean showAllDependencies) throws ModelOperationException {
 		fixIncompleteAliases(workbench);
 		
 		return "Workbench dependencies found:\n" +
-			new DependencyGraphReportBuilder(workbench.seedFiles(), DependencyInfoFactory.buildForwardDependencyMap(workbench), showAllDependencies).createReport();
+			new DependencyGraphReportBuilder(workbench.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(workbench), showAllDependencies).createReport();
 	}
 	
 	public static String createReport(BrowsableNode browsableNode, String requirePath, boolean showAllDependencies) throws ModelOperationException {

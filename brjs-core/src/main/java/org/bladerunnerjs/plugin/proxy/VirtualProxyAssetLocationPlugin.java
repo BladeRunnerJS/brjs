@@ -16,6 +16,24 @@ public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implemen
 	}
 	
 	@Override
+	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
+		initializePlugin();
+		return assetLocationPlugin.getAssetLocationDirectories(assetContainer);
+	}
+	
+	@Override
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		initializePlugin();
+		return assetLocationPlugin.getSeedAssetLocationDirectories(assetContainer);
+	}
+	
+	@Override
+	public AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap) {
+		initializePlugin();
+		return assetLocationPlugin.createAssetLocation(assetContainer, dirPath, assetLocationsMap);
+	}
+	
+	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
 		return assetLocationPlugin.getPluginsThatMustAppearBeforeThisPlugin();
 	}
@@ -26,14 +44,8 @@ public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implemen
 	}
 	
 	@Override
-	public boolean canHandleAssetContainer(AssetContainer assetContainer) {
+	public boolean allowFurtherProcessing() {
 		initializePlugin();
-		return assetLocationPlugin.canHandleAssetContainer(assetContainer);
-	}
-	
-	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache) {
-		initializePlugin();
-		return assetLocationPlugin.getAssetLocations(assetContainer, assetLocationCache);
+		return assetLocationPlugin.allowFurtherProcessing();
 	}
 }
