@@ -50,7 +50,7 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	}
 	
 	@Override
-	public List<LinkedAsset> getSeedFiles() {
+	public List<LinkedAsset> modelSeedAssets() {
 		return seedLocator.seedAssets(this);
 	}
 	

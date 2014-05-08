@@ -42,21 +42,22 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		super(rootNode, parent, dir);
 	}
 	
-	protected abstract List<LinkedAsset> getSeedFiles();
+	protected abstract List<LinkedAsset> modelSeedAssets();
 	
 	@Override
 	public List<LinkedAsset> seedAssets() {
 		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
-		seedFiles.addAll(getSeedFiles());
+		seedFiles.addAll(modelSeedAssets());
 		
 		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
 			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
-				for(String seedAssetLocation : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
-					AssetLocation resourcesAssetLocation = assetLocation(seedAssetLocation);
+				for(String seedAssetLocationName : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
+					AssetLocation seedAssetLocation = assetLocation(seedAssetLocationName);
 					
-					if (resourcesAssetLocation != null) {
-						seedFiles.addAll(resourcesAssetLocation.linkedAssets());
+					if (seedAssetLocation != null) {
+						seedFiles.addAll(seedAssetLocation.linkedAssets());
+						seedFiles.addAll(seedAssetLocation.sourceModules());
 					}
 				}
 				

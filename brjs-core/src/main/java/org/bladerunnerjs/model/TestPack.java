@@ -43,17 +43,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<LinkedAsset> getSeedFiles() 
+	public List<LinkedAsset> modelSeedAssets() 
 	{
-		List<LinkedAsset> seedFiles = new ArrayList<>();
-		
-		for(AssetLocation assetLocation : assetLocations()) {
-			if(isTestAssetLocation(assetLocation)) {
-				seedFiles.addAll(assetLocation.sourceModules());
-			}
-		}
-		
-		return seedFiles;
+		return new ArrayList<>();
 	}
 	
 	@Override

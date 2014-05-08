@@ -48,7 +48,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	}
 	
 	@Override
-	public List<LinkedAsset> getSeedFiles() {
+	public List<LinkedAsset> modelSeedAssets() {
 		return seedLocator.seedAssets(this);
 	}
 	
