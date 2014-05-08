@@ -45,7 +45,18 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	@Override
 	public List<LinkedAsset> modelSeedAssets() 
 	{
-		return new ArrayList<>();
+		// TODO: add extra coverage so this can be fixed without causing only js breakage
+//		return new ArrayList<>();
+		
+		List<LinkedAsset> seedFiles = new ArrayList<>();
+		
+		for(AssetLocation assetLocation : assetLocations()) {
+			if(isTestAssetLocation(assetLocation)) {
+				seedFiles.addAll(assetLocation.sourceModules());
+			}
+		}
+		
+		return seedFiles;
 	}
 	
 	@Override

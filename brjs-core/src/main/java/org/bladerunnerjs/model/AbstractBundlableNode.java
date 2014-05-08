@@ -73,7 +73,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		
 		for(AssetLocation seedAssetLocation : seedAssetLocations()) {
 			seedFiles.addAll(seedAssetLocation.linkedAssets());
-			seedFiles.addAll(seedAssetLocation.sourceModules());
+//			seedFiles.addAll(seedAssetLocation.sourceModules()); // TODO: add extra coverage so this can be fixed without causing only js breakage
 		}
 		
 		return seedFiles;
