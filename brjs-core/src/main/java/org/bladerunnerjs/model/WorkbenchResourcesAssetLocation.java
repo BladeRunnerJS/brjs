@@ -23,6 +23,7 @@ public final class WorkbenchResourcesAssetLocation extends AbstractResourcesAsse
 	{
 		return assetLocationsList.value(() -> {
 			List<AssetLocation> assetLocations = super.dependentAssetLocations();
+			// BM: seed files
 			AssetLocation dependentAspectResources = dependentAspect.assetLocation("resources");
 			if (dependentAspectResources != null)
 			{

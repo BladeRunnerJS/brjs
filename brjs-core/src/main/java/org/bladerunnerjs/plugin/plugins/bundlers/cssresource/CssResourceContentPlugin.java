@@ -132,6 +132,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// BM: seed files
 			resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(ASPECT_RESOURCES_REQUEST))
@@ -266,6 +267,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			return contentPaths;
 		}
 		
+		// BM: seed files
 		File resourcesDir = assetContainer.assetLocation("resources").dir();
 		contentPaths.addAll(  calculateContentPathsForThemesAndResources((ThemeableNode)assetContainer, themeRequestName, resourcesDir, resourcesRequestName, requestArgs) );		
 		

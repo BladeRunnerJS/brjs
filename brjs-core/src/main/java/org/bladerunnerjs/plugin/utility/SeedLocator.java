@@ -29,6 +29,7 @@ public class SeedLocator {
 				String indexFilePath = indexFile.getAbsolutePath();
 				
 				if(!cachedAssets.containsKey(indexFilePath)) {
+					// BM: seed files
 					cachedAssets.put(indexFilePath, new FullyQualifiedLinkedAsset(viewableBundlableNode.assetLocation("resources"), indexFile.getParentFile(), indexFile.getName()));
 				}
 				

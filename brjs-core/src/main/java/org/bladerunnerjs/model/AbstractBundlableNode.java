@@ -25,6 +25,7 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.utility.LogicalRequestHandler;
 
 import com.google.common.base.Joiner;
@@ -49,10 +50,20 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		
 		seedFiles.addAll(getSeedFiles());
 		
-		AssetLocation resourcesAssetLocation = assetLocation("resources");
-		if (resourcesAssetLocation != null)
-		{
-			seedFiles.addAll(assetLocation("resources").linkedAssets());			
+		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
+				for(String seedAssetLocation : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
+					AssetLocation resourcesAssetLocation = assetLocation(seedAssetLocation);
+					
+					if (resourcesAssetLocation != null) {
+						seedFiles.addAll(resourcesAssetLocation.linkedAssets());
+					}
+				}
+				
+				if(!assetLocationPlugin.allowFurtherProcessing()) {
+					break;
+				}
+			}
 		}
 		
 		return seedFiles;
