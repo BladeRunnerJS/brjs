@@ -92,7 +92,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public SourceModule getSourceModule(String requirePath) throws RequirePathException {
 		SourceModule sourceModule = null;
 		
-		for(AssetContainer assetContainer : getPotentialAssetContainers(requirePath)) {
+		for(AssetContainer assetContainer : assetContainers()) {//getPotentialAssetContainers(requirePath)) {
 			SourceModule locationSourceModule = assetContainer.sourceModule(requirePath);
 			
 			if(locationSourceModule != null) {
