@@ -45,10 +45,8 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	protected abstract List<LinkedAsset> modelSeedAssets();
 	
 	@Override
-	public List<LinkedAsset> seedAssets() {
-		List<LinkedAsset> seedFiles = new ArrayList<>();
-		
-		seedFiles.addAll(modelSeedAssets());
+	public List<AssetLocation> seedAssetLocations() {
+		List<AssetLocation> seedAssetLocations = new ArrayList<>();
 		
 		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
 			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
@@ -56,8 +54,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 					AssetLocation seedAssetLocation = assetLocation(seedAssetLocationName);
 					
 					if (seedAssetLocation != null) {
-						seedFiles.addAll(seedAssetLocation.linkedAssets());
-						seedFiles.addAll(seedAssetLocation.sourceModules());
+						seedAssetLocations.add(seedAssetLocation);
 					}
 				}
 				
@@ -65,6 +62,18 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 					break;
 				}
 			}
+		}
+		
+		return seedAssetLocations;
+	}
+	
+	@Override
+	public List<LinkedAsset> seedAssets() {
+		List<LinkedAsset> seedFiles = new ArrayList<>(modelSeedAssets());
+		
+		for(AssetLocation seedAssetLocation : seedAssetLocations()) {
+			seedFiles.addAll(seedAssetLocation.linkedAssets());
+			seedFiles.addAll(seedAssetLocation.sourceModules());
 		}
 		
 		return seedFiles;
