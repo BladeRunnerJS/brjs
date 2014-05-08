@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.plugin.utility.SeedLocator;
+import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
@@ -25,7 +25,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	private final NodeList<Theme> themes = Theme.createNodeSet(this);
 	private String name;
 	private File[] scopeFiles;
-	private final SeedLocator seedLocator;
+	private final IndexPageSeedLocator seedLocator;
 	
 	private final MemoizedValue<List<AssetContainer>> assetContainerList = new MemoizedValue<>("Aspect.assetContainer", this);
 	
@@ -33,7 +33,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		seedLocator = new SeedLocator(root());
+		seedLocator = new IndexPageSeedLocator(root());
 		
 		registerInitializedNode();
 	}
