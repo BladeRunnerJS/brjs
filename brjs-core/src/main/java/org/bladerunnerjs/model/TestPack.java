@@ -43,17 +43,9 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<LinkedAsset> getSeedFiles() 
+	public List<LinkedAsset> modelSeedAssets() 
 	{
-		List<LinkedAsset> seedFiles = new ArrayList<>();
-		
-		for(AssetLocation assetLocation : assetLocations()) {
-			if(isTestAssetLocation(assetLocation)) {
-				seedFiles.addAll(assetLocation.sourceModules());
-			}
-		}
-		
-		return seedFiles;
+		return new ArrayList<>();
 	}
 	
 	@Override
@@ -83,6 +75,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 			
 			for (AssetLocation assetLocation : assetLocations())
 			{
+				// TODO: we need an abstract way of determining which source modules are tests source modules that isn't plug-in specific
 				if ( !isTestAssetLocation(assetLocation) )
 				{
 					sourceModules.addAll(assetLocation.sourceModules());

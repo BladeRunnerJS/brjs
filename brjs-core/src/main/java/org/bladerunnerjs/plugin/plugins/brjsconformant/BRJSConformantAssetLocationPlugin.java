@@ -24,9 +24,13 @@ import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlugin {
-	
+	private final List<String> seedAssetLocationDirectories = new ArrayList<>();
 	private BRJS brjs;
-
+	
+	{
+		seedAssetLocationDirectories.add("resources");
+	}
+	
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		
@@ -67,6 +71,12 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		return new ArrayList<>();
 	}
 	
+	@Override
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		return seedAssetLocationDirectories;
+	}
+	
+	@Override
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
@@ -92,10 +102,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		return assetLocationDirectories;
 	}
 	
-	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
-		return new ArrayList<>();
-	}
-	
+	@Override
 	public AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap) {
 		AssetLocation assetLocation;
 		File dir = assetContainer.file(dirPath);

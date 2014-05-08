@@ -38,7 +38,19 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 	
 	@Override
 	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
-		return new ArrayList<>();
+		List<String> seedAssetLocationDirectories = new ArrayList<>();
+		
+		seedAssetLocationDirectories.add("resources");
+		seedAssetLocationDirectories.add("tests");
+		
+		File testsDir = assetContainer.file("tests");
+		if(testsDir.exists()) {
+			for(File dir : brjs.getFileInfo(testsDir).nestedDirs()) {
+				seedAssetLocationDirectories.add(RelativePathUtility.get(assetContainer.dir(), dir));
+			}
+		}
+		
+		return seedAssetLocationDirectories;
 	}
 	
 	@Override
