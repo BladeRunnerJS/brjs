@@ -12,18 +12,15 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 
 public class SourceModuleResolver {
 	private final BundlableNode bundlableNode;
 	private final AssetLocation assetLocation;
-	private final String sourceRequirePath;
 	private final MemoizedValue<List<SourceModule>> sourceModules;
 	
 	public SourceModuleResolver(BundlableNode bundlableNode, AssetLocation assetLocation, String sourceRequirePath, File... watchItems) {
 		this.bundlableNode = bundlableNode;
 		this.assetLocation = assetLocation;
-		this.sourceRequirePath = sourceRequirePath;
 		
 		sourceModules = new MemoizedValue<>("SourceModuleResolver.sourceModules", bundlableNode.root(), watchItems);
 	}
@@ -32,15 +29,10 @@ public class SourceModuleResolver {
 		return sourceModules.value(() -> {
 			Set<SourceModule> dependentSourceModules = new LinkedHashSet<>();
 			
-			for(String requirePath : requirePaths) {
-				SourceModule sourceModule = assetLocation.sourceModule(requirePath);
-				
-				if(sourceModule == null) {
-					throw new UnresolvableRequirePathException(requirePath, sourceRequirePath);
-				}
-				
-				SourceModule bundlableSourceModule = bundlableNode.getSourceModule(sourceModule.getRequirePath());
-				dependentSourceModules.add(bundlableSourceModule);
+			for(String requirePath : requirePaths) {				
+				String canonicalRequirePath = assetLocation.canonicaliseRequirePath(requirePath);
+				SourceModule sourceModule = bundlableNode.getSourceModule(canonicalRequirePath);
+				dependentSourceModules.add(sourceModule);
 			}
 			
 			return new ArrayList<SourceModule>( dependentSourceModules );

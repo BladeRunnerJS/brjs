@@ -22,7 +22,6 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	private final MemoizedValue<String> requirePrefix;
 	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
-	private final Map<String, SourceModule> sourceModules = new HashMap<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
@@ -84,25 +83,6 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	}
 	
 	@Override
-	public SourceModule sourceModule(String requirePath) throws RequirePathException {
-		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
-		
-		if(sourceModules.containsKey(requirePath)) {
-			return sourceModules.get(requirePath);
-		}
-		
-		SourceModule sourceModule = findSourceModuleWithRequirePath(assetContainer().app().getAllAssetContainers(), canonicalRequirePath);
-		
-		if(sourceModule != null) {
-			sourceModules.put(requirePath, sourceModule);
-			return sourceModule;
-		}
-		
-		throw new InvalidRequirePathException("Unable to find SourceModule for require path '" + requirePath
-			+ "'. It either does not exist or it is outside of the scope for this request.");
-	}
-	
-	@Override
 	public String jsStyle() {
 		return jsStyle.value(() -> {
 			return JsStyleUtility.getJsStyle(dir());
@@ -123,28 +103,15 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		// do nothing
 	}
 	
-	private SourceModule findSourceModuleWithRequirePath(List<AssetContainer> assetContainers, String requirePath)
-	{
-		for (AssetContainer assetContainer : assetContainers)
-		{
-			for (SourceModule sourceModule : assetContainer.sourceModules())
-			{
-				if (sourceModule.getRequirePath().equals(requirePath))
-				{
-					sourceModules.put(requirePath, sourceModule);
-					return sourceModule;
-				}
-			}
-		}
-		return null;
-	}
-	
 	private Assets assets() {
 		return (!dirInfo.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
 	}
 	
-	private String canonicaliseRequirePath(String requirePrefix, String requirePath) throws RequirePathException
+	@Override
+	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
 	{
+		String requirePrefix = requirePrefix();
+		
 		List<String> requirePrefixParts = new LinkedList<String>( Arrays.asList(requirePrefix.split("/")) );
 		List<String> requirePathParts = new LinkedList<String>( Arrays.asList(requirePath.split("/")) );
 		
