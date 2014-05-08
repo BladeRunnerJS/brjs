@@ -69,7 +69,9 @@ public class ConfFactory {
 			}
 		}
 		catch(YamlReaderException e) {
-			throw new ConfigException("Parse error while reading\n '" + confFile.getPath() + "':\n" + e.getMessage());
+			throw new ConfigException("Parse error while reading\n '" + confFile.getPath() + "':\n\n" + 
+										e.getMessage() + "\n\n" +
+										"Please check to see that your properties have a space after the colon ':' as this is a common issue encounterd with YAML files.");
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);
