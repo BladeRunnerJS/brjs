@@ -132,7 +132,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
-			// BM: seed files
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(ASPECT_RESOURCES_REQUEST))
@@ -145,6 +145,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = ((ResourcesAssetLocation) bladeset.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(BLADESET_RESOURCES_REQUEST))
@@ -158,6 +159,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = ((ResourcesAssetLocation) blade.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(BLADE_RESOURCES_REQUEST))
@@ -175,6 +177,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			Workbench workbench = blade.workbench();
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = workbench.assetLocation("resources").file(resourcePath);
 		}
 		else if (contentPath.formName.equals(LIB_REQUEST))
@@ -267,7 +270,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			return contentPaths;
 		}
 		
-		// BM: seed files
+		// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 		File resourcesDir = assetContainer.assetLocation("resources").dir();
 		contentPaths.addAll(  calculateContentPathsForThemesAndResources((ThemeableNode)assetContainer, themeRequestName, resourcesDir, resourcesRequestName, requestArgs) );		
 		
