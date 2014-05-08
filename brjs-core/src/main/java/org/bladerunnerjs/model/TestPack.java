@@ -75,6 +75,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 			
 			for (AssetLocation assetLocation : assetLocations())
 			{
+				// TODO: we need an abstract way of determining which source modules are tests source modules that isn't plug-in specific
 				if ( !isTestAssetLocation(assetLocation) )
 				{
 					sourceModules.addAll(assetLocation.sourceModules());
