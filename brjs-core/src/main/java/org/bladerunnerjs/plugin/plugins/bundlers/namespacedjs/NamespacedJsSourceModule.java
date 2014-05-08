@@ -12,6 +12,7 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
+import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -29,7 +30,7 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NamespacedJsSourceModule implements SourceModule {
+public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	public static final String STATIC_DEPENDENCIES_BLOCK_START = "requireAll([";
 	public static final String STATIC_DEPENDENCIES_BLOCK_END = "]);";
@@ -91,13 +92,12 @@ public class NamespacedJsSourceModule implements SourceModule {
 		return dependencyCalculator.getAliases();
 	}
 	
-	public Reader getBaseReader() throws IOException
-	{
-		Reader[] readers = new Reader[] { 
+	@Override
+	public Reader getUnalteredContentReader() throws IOException {
+		return new ConcatReader( new Reader[] {
 				linkedAsset.getReader(), 
 				patch.getReader()
-		};
-		return new ConcatReader( readers );
+		});
 	}
 	
 	@Override
@@ -117,7 +117,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 		
 		Reader[] readers = new Reader[] { 
 				new StringReader( String.format(defineBlockHeader, getRequirePath()) ), 
-				getBaseReader(),
+				getUnalteredContentReader(),
 				new StringReader( "\n" ),
 				new StringReader( "module.exports = " + getClassname() + ";" ),
 				new StringReader(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 

@@ -3,8 +3,8 @@ package org.bladerunnerjs.utility.reader;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsSourceModule;
 
 public class JsCommentAndCodeBlockStrippingReaderFactory implements AssetReaderFactory {
 	
@@ -18,9 +18,9 @@ public class JsCommentAndCodeBlockStrippingReaderFactory implements AssetReaderF
 	@Override
 	public Reader createReader() throws IOException {
 		Reader reader;
-		if (sourceModule instanceof NamespacedJsSourceModule)
+		if (sourceModule instanceof AugmentedContentSourceModule)
 		{
-			reader = ((NamespacedJsSourceModule) sourceModule).getBaseReader();
+			reader = ((AugmentedContentSourceModule) sourceModule).getUnalteredContentReader();
 		}
 		else
 		{
