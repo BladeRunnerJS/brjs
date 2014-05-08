@@ -50,8 +50,8 @@ br.presenter.testing.PresenterComponentFixture = function(sTemplateId, sPresenta
 	}
 	
 	var sPresenterComponentXML = 
-		'<br.presenter-component templateId="' + sTemplateId + '" presentationModel="' + sPresentationModel + '"></br.presenter-component>';
-	
+		'<br.presenter.component.PresenterComponent templateId="' + sTemplateId + '" presentationModel="' + sPresentationModel + '"></br.presenter.component.PresenterComponent>';
+
 	//call super constructor
 	br.component.testing.ComponentFixture.call(this, sPresenterComponentXML, 
 			new br.presenter.testing.PresentationModelFixture());

@@ -87,7 +87,7 @@ PresenterComponentTest.prototype.test_getSerializedStateReturnsCorrectXMLString 
 {
 	var oPresenterComponent = new br.presenter.component.PresenterComponent("presenter-template", "PresenterComponentTest.MockPresentationModel");
 	var sSerializedState = oPresenterComponent.serialize();
-	var sExpectedSerializedForm = '<br.presenter-component templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel">some serialization</br.presenter-component>';
+	var sExpectedSerializedForm = '<br.presenter.component.PresenterComponent templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel">some serialization</br.presenter.component.PresenterComponent>';
 	assertEquals(sExpectedSerializedForm, sSerializedState);
 };
 
@@ -98,13 +98,9 @@ PresenterComponentTest.prototype.test_presentationModelReceivesCorrectDataToDese
 	oMockpresentationModel.stubs().getClassName().will(returnValue("PresenterComponentTest.MockPresentationModel"));
 	
 	var oPresenterComponent = new br.presenter.component.PresenterComponent("presenter-template", oMockpresentationModel.proxy());
-	var sSerializedForm1 = '<presenter templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel"/>';
-	var sSerializedForm2 = '<presenter templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel"></presenter>';
-	var sSerializedForm3 = '<presenter templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel">some serialization</presenter>';
-
-	var sSerializedForm4 = '<br.presenter-component templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel"/>';
-	var sSerializedForm5 = '<br.presenter-component templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel"></br.presenter-component>';
-	var sSerializedForm6 = '<br.presenter-component templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel">some serialization</br.presenter-component>';
+	var sSerializedForm1 = '<br.presenter.component.PresenterComponent templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel"/>';
+	var sSerializedForm2 = '<br.presenter.component.PresenterComponent templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel"></br.presenter.component.PresenterComponent>';
+	var sSerializedForm3 = '<br.presenter.component.PresenterComponent templateId="presenter-template" presentationModel="PresenterComponentTest.MockPresentationModel">some serialization</br.presenter.component.PresenterComponent>';
 
 	oMockpresentationModel.expects(once()).deserialize("");
 	oPresenterComponent.deserialize(sSerializedForm1);
@@ -115,14 +111,7 @@ PresenterComponentTest.prototype.test_presentationModelReceivesCorrectDataToDese
 	oMockpresentationModel.expects(once()).deserialize("some serialization");
 	oPresenterComponent.deserialize(sSerializedForm3);
 
-	oMockpresentationModel.expects(once()).deserialize("");
-	oPresenterComponent.deserialize(sSerializedForm4);
-	
-	oMockpresentationModel.expects(once()).deserialize("");
-	oPresenterComponent.deserialize(sSerializedForm5);
-	
-	oMockpresentationModel.expects(once()).deserialize("some serialization");
-	oPresenterComponent.deserialize(sSerializedForm6);
+
 };
 
 PresenterComponentTest.prototype.test_presentationModelCanSerializeAndDeserializeTheSameState = function()

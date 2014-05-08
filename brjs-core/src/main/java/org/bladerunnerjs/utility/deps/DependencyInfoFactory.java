@@ -87,7 +87,7 @@ public class DependencyInfoFactory {
 	private static void addSeedDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode, DependencyInfo dependencyInfo) throws ModelOperationException {
 		addOutboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode);
 		
-		for(LinkedAsset seedAsset : bundlableNode.seedFiles()) {
+		for(LinkedAsset seedAsset : bundlableNode.seedAssets()) {
 			dependencyInfo.seedAssets.add(seedAsset);
 			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(bundlableNode));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, seedAsset);

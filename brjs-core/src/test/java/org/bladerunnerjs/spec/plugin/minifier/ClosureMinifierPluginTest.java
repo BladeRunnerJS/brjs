@@ -37,7 +37,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 				"hello('New user');\n"+
 				"\n";
 		minifyWhitespaceContent = "function hello(name){alert(\"Hello, \"+name)}hello(\"New user\")";
-		minifySimpleContent		= "function(){alert(\"Hello, New user\")";
+		minifySimpleContent		= "function(a,b,c){alert(\"Hello, New user\")";
 		minifyAdvancedContent	= "alert(\"Hello, New user\")";
 	}
 	
