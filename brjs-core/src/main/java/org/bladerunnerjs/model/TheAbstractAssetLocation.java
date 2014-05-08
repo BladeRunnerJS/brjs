@@ -1,30 +1,18 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.aliasing.NamespaceException;
-import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.exception.InvalidRequirePathException;
-import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.UnresolvableRelativeRequirePathException;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.apache.commons.lang3.*;
+import org.bladerunnerjs.aliasing.*;
+import org.bladerunnerjs.aliasing.aliasdefinitions.*;
+import org.bladerunnerjs.memoization.*;
+import org.bladerunnerjs.model.engine.*;
+import org.bladerunnerjs.model.exception.*;
+import org.bladerunnerjs.model.exception.modelupdate.*;
 import org.bladerunnerjs.plugin.AssetPlugin;
-import org.bladerunnerjs.plugin.utility.AssetLocator;
-import org.bladerunnerjs.plugin.utility.Assets;
-import org.bladerunnerjs.utility.JsStyleUtility;
-import org.bladerunnerjs.utility.NamespaceUtility;
-import org.bladerunnerjs.utility.RelativePathUtility;
+import org.bladerunnerjs.plugin.utility.*;
+import org.bladerunnerjs.utility.*;
 
 // TODO Java 8 (1.8.0-b123) compiler throws errors when this class is named 'AbstractAssetLocation'
 public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
