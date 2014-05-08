@@ -25,6 +25,7 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.utility.LogicalRequestHandler;
 
 import com.google.common.base.Joiner;
@@ -41,18 +42,38 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		super(rootNode, parent, dir);
 	}
 	
-	protected abstract List<LinkedAsset> getSeedFiles();
+	protected abstract List<LinkedAsset> modelSeedAssets();
+	
+	@Override
+	public List<AssetLocation> seedAssetLocations() {
+		List<AssetLocation> seedAssetLocations = new ArrayList<>();
+		
+		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
+				for(String seedAssetLocationName : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
+					AssetLocation seedAssetLocation = assetLocation(seedAssetLocationName);
+					
+					if (seedAssetLocation != null) {
+						seedAssetLocations.add(seedAssetLocation);
+					}
+				}
+				
+				if(!assetLocationPlugin.allowFurtherProcessing()) {
+					break;
+				}
+			}
+		}
+		
+		return seedAssetLocations;
+	}
 	
 	@Override
 	public List<LinkedAsset> seedAssets() {
-		List<LinkedAsset> seedFiles = new ArrayList<>();
+		List<LinkedAsset> seedFiles = new ArrayList<>(modelSeedAssets());
 		
-		seedFiles.addAll(getSeedFiles());
-		
-		AssetLocation resourcesAssetLocation = assetLocation("resources");
-		if (resourcesAssetLocation != null)
-		{
-			seedFiles.addAll(assetLocation("resources").linkedAssets());			
+		for(AssetLocation seedAssetLocation : seedAssetLocations()) {
+			seedFiles.addAll(seedAssetLocation.linkedAssets());
+			seedFiles.addAll(seedAssetLocation.sourceModules());
 		}
 		
 		return seedFiles;

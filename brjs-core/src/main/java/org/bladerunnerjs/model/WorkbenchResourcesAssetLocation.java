@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
@@ -22,13 +23,8 @@ public final class WorkbenchResourcesAssetLocation extends AbstractResourcesAsse
 	public List<AssetLocation> dependentAssetLocations()
 	{
 		return assetLocationsList.value(() -> {
-			List<AssetLocation> assetLocations = super.dependentAssetLocations();
-			AssetLocation dependentAspectResources = dependentAspect.assetLocation("resources");
-			if (dependentAspectResources != null)
-			{
-				assetLocations.add( dependentAspectResources );
-				assetLocations.addAll( dependentAspectResources.dependentAssetLocations() );			
-			}
+			List<AssetLocation> assetLocations = new ArrayList<>(super.dependentAssetLocations());
+			assetLocations.addAll(dependentAspect.seedAssetLocations());
 			
 			return assetLocations;
 		});

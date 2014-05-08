@@ -12,11 +12,11 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 
-public class SeedLocator {
+public class IndexPageSeedLocator {
 	private final Map<String, LinkedAsset> cachedAssets = new HashMap<>();
 	private final MemoizedValue<List<LinkedAsset>> seedAssetsList;
 	
-	public SeedLocator(BRJS brjs) {
+	public IndexPageSeedLocator(BRJS brjs) {
 		seedAssetsList = new MemoizedValue<>("AssetLocation.seedAssets", brjs, brjs.dir());
 	}
 	
