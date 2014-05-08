@@ -86,7 +86,7 @@ public class NodeJsSourceModule implements SourceModule {
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		if(!sourceModuleResolvers.containsKey(bundlableNode)) {
 			App app = assetLocation.assetContainer().app();
-			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, assetPath, false, app.dir(), app.root().libsDir()));
+			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, assetPath, app.dir(), app.root().libsDir()));
 		}
 		SourceModuleResolver sourceModuleResolver = sourceModuleResolvers.get(bundlableNode);
 		

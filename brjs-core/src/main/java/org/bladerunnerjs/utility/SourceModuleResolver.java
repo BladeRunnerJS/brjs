@@ -18,14 +18,12 @@ public class SourceModuleResolver {
 	private final BundlableNode bundlableNode;
 	private final AssetLocation assetLocation;
 	private final String sourceRequirePath;
-	private final boolean ignoreUnavailableSourceModules;
 	private final MemoizedValue<List<SourceModule>> sourceModules;
 	
-	public SourceModuleResolver(BundlableNode bundlableNode, AssetLocation assetLocation, String sourceRequirePath, boolean ignoreUnavailableSourceModules, File... watchItems) {
+	public SourceModuleResolver(BundlableNode bundlableNode, AssetLocation assetLocation, String sourceRequirePath, File... watchItems) {
 		this.bundlableNode = bundlableNode;
 		this.assetLocation = assetLocation;
 		this.sourceRequirePath = sourceRequirePath;
-		this.ignoreUnavailableSourceModules = ignoreUnavailableSourceModules;
 		
 		sourceModules = new MemoizedValue<>("SourceModuleResolver.sourceModules", bundlableNode.root(), watchItems);
 	}
@@ -41,16 +39,8 @@ public class SourceModuleResolver {
 					throw new UnresolvableRequirePathException(requirePath, sourceRequirePath);
 				}
 				
-				try {
-					SourceModule bundlableSourceModule = bundlableNode.getSourceModule(sourceModule.getRequirePath());
-					
-					dependentSourceModules.add(bundlableSourceModule);
-				}
-				catch(RequirePathException e) {
-					if(!ignoreUnavailableSourceModules) {
-						throw e;
-					}
-				}
+				SourceModule bundlableSourceModule = bundlableNode.getSourceModule(sourceModule.getRequirePath());
+				dependentSourceModules.add(bundlableSourceModule);
 			}
 			
 			return new ArrayList<SourceModule>( dependentSourceModules );

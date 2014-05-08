@@ -58,7 +58,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
 		if(!sourceModuleResolvers.containsKey(bundlableNode)) {
-			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, assetPath, true, app.dir(), app.root().libsDir(), app.root().conf().file("bladerunner.conf")));
+			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, assetPath, app.dir(), app.root().libsDir(), app.root().conf().file("bladerunner.conf")));
 		}
 		SourceModuleResolver sourceModuleResolver = sourceModuleResolvers.get(bundlableNode);
 		
