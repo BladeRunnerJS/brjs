@@ -27,10 +27,6 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 		return Arrays.asList(BRJSConformantAssetLocationPlugin.class.getCanonicalName());
 	}
 	
-	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
-		return new ArrayList<>();
-	}
-	
 	@Override
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
@@ -40,6 +36,10 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 		}
 		
 		return assetLocationDirectories;
+	}
+	
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		return new ArrayList<>();
 	}
 	
 	@Override

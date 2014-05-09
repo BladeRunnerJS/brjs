@@ -37,23 +37,6 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 	}
 	
 	@Override
-	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
-		List<String> seedAssetLocationDirectories = new ArrayList<>();
-		
-		seedAssetLocationDirectories.add("resources");
-		seedAssetLocationDirectories.add("tests");
-		
-		File testsDir = assetContainer.file("tests");
-		if(testsDir.exists()) {
-			for(File dir : brjs.getFileInfo(testsDir).nestedDirs()) {
-				seedAssetLocationDirectories.add(RelativePathUtility.get(assetContainer.dir(), dir));
-			}
-		}
-		
-		return seedAssetLocationDirectories;
-	}
-	
-	@Override
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
@@ -78,6 +61,23 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 		}
 		
 		return assetLocationDirectories;
+	}
+	
+	@Override
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		List<String> seedAssetLocationDirectories = new ArrayList<>();
+		
+		seedAssetLocationDirectories.add("resources");
+		seedAssetLocationDirectories.add("tests");
+		
+		File testsDir = assetContainer.file("tests");
+		if(testsDir.exists()) {
+			for(File dir : brjs.getFileInfo(testsDir).nestedDirs()) {
+				seedAssetLocationDirectories.add(RelativePathUtility.get(assetContainer.dir(), dir));
+			}
+		}
+		
+		return seedAssetLocationDirectories;
 	}
 	
 	@Override

@@ -72,11 +72,6 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	}
 	
 	@Override
-	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
-		return seedAssetLocationDirectories;
-	}
-	
-	@Override
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
@@ -100,6 +95,11 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		}
 		
 		return assetLocationDirectories;
+	}
+	
+	@Override
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		return seedAssetLocationDirectories;
 	}
 	
 	@Override
