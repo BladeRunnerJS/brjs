@@ -38,13 +38,7 @@ public class I18nAssetFile implements Asset
 	public I18nAssetFile() {
 	}
 	
-	public I18nAssetFile(AssetLocation assetLocation, File dir, String name) throws AssetFileInstantationException {
-		initialize(assetLocation, dir, name);
-	}
-
-	@Override
-	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
-	{
+	public I18nAssetFile(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = new File(dir, assetName);
@@ -55,7 +49,7 @@ public class I18nAssetFile implements Asset
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	@Override
 	public Reader getReader() throws IOException
 	{

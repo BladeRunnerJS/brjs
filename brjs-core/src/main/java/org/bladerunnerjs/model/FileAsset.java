@@ -18,11 +18,6 @@ public class FileAsset implements Asset {
 	}
 	
 	public FileAsset(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
-		initialize(assetLocation, dir, assetName);
-	}
-	
-	@Override
-	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
 		try {
 			this.file = new File(dir, assetName);
 			this.assetLocation = assetLocation;

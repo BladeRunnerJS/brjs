@@ -37,12 +37,6 @@ public class ThirdpartySourceModule implements SourceModule
 	private String defaultFileCharacterEncoding;
 	
 	public ThirdpartySourceModule(AssetLocation assetLocation, File dir, String assetName) {
-		initialize(assetLocation, dir, assetName);
-	}
-	
-	@Override
-	public void initialize(AssetLocation assetLocation, File dir, String assetName)
-	{
 		try {
 			this.assetLocation = assetLocation;
 			this.dir = dir;
