@@ -4,30 +4,19 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
-import org.bladerunnerjs.model.SourceModule;
 
 public class JsCommentAndCodeBlockStrippingReaderFactory implements AssetReaderFactory {
 	
-	private SourceModule sourceModule;
+	private AugmentedContentSourceModule sourceModule;
 
-	public JsCommentAndCodeBlockStrippingReaderFactory(SourceModule sourceModule)
+	public JsCommentAndCodeBlockStrippingReaderFactory(AugmentedContentSourceModule sourceModule)
 	{
 		this.sourceModule = sourceModule;
 	}
 	
 	@Override
 	public Reader createReader() throws IOException {
-		Reader reader;
-		if (sourceModule instanceof AugmentedContentSourceModule)
-		{
-			reader = ((AugmentedContentSourceModule) sourceModule).getUnalteredContentReader();
-		}
-		else
-		{
-			reader = sourceModule.getReader();
-		}
-		
-		Reader commentStrippingReader = new JsCommentStrippingReader(reader, false);
+		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.getUnalteredContentReader(), false);
 		Reader commentStrippingAndStringStrippingReader = new JsStringStrippingReader(commentStrippingReader);
 		Reader commentStrippingAndStringStrippingAndCodeBlockStrippingReader = new JsCodeBlockStrippingReader(commentStrippingAndStringStrippingReader);
 		
