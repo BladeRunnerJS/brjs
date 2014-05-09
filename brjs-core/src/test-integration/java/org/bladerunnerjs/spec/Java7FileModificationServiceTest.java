@@ -16,7 +16,6 @@ import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class Java7FileModificationServiceTest {
@@ -45,7 +44,7 @@ public class Java7FileModificationServiceTest {
 	 *       watched-file
 	 *       unwatched-file
 	 */
-	@Test @Ignore
+	@Test
 	public void java7FileModificationServiceTest() throws Exception {
 		// create directory structure
 		mkfile("root-dir/active-dir/active-file");
@@ -53,6 +52,7 @@ public class Java7FileModificationServiceTest {
 		mkfile("root-dir/inactive-dir/inactive-file");
 		mkfile("root-dir/outgoing-dir/watched-file");
 		mkfile("root-dir/outgoing-dir/unwatched-file");
+		mkfile("root-dir/control-file");
 		
 		// initialize watching service
 		fileModificationService.setRootDir(tempDir);
@@ -68,6 +68,7 @@ public class Java7FileModificationServiceTest {
 		watch("root-dir/incoming-dir/watched-file");
 		watch("root-dir/outgoing-dir");
 		watch("root-dir/outgoing-dir/watched-file");
+		watch("root-dir/control-file");
 		
 		// verify change is reported on first invocation
 		assertChanged("root-dir");
@@ -80,17 +81,20 @@ public class Java7FileModificationServiceTest {
 		assertChanged("root-dir/incoming-dir/watched-file");
 		assertChanged("root-dir/outgoing-dir");
 		assertChanged("root-dir/outgoing-dir/watched-file");
+		assertChanged("root-dir/control-file");
 		
 		// perform change
 		touch("root-dir/active-dir/active-file");
 		mkfile("root-dir/incoming-dir/watched-file");
 		mkfile("root-dir/incoming-dir/unwatched-file");
 		delete("root-dir/outgoing-dir");
+		touch("root-dir/control-file");
 		
 		// wait for change
-		waitForChange("root-dir");
+		waitForChange("root-dir/control-file");
 		
 		// verify change
+		assertChanged("root-dir");
 		assertChanged("root-dir/active-dir");
 		assertChanged("root-dir/active-dir/active-file");
 		assertUnchanged("root-dir/active-dir/inactive-file");
