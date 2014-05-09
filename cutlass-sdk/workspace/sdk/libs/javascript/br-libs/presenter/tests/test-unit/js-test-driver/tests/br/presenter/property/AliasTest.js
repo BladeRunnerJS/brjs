@@ -32,7 +32,7 @@ AliasTest.prototype.test_cannotConstructAnAliasWithANonProperty = function()
 {
 	assertException("Non-property throws exception", function(){
 		var oAlias = new br.presenter.property.Alias("test");
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 AliasTest.prototype.test_changesInValueOfAliasedPropertyAreReflectedByTheAlias = function()

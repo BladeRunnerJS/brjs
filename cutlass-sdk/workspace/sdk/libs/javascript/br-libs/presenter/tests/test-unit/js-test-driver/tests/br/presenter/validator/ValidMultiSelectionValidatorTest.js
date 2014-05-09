@@ -15,13 +15,13 @@ ValidMultiSelectionValidatorTest.prototype.test_cannotConstructValidMultiSelecti
 {
 	assertException("1a", function(){
 		new br.presenter.validator.ValidMultiSelectionValidator();
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 	assertException("1b", function(){
 		new br.presenter.validator.ValidMultiSelectionValidator("a");
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 	assertException("1c", function(){
 		new br.presenter.validator.ValidMultiSelectionValidator(["a", "b"]);
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 ValidMultiSelectionValidatorTest.prototype.test_arraysOfKnownOptionValuesValidateSuccessfully = function()

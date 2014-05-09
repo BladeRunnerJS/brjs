@@ -72,7 +72,7 @@ br.presenter.property.EditableProperty.prototype.addParser = function(oParser, m
 {
 	if(!br.Core.fulfills(oParser, br.presenter.parser.Parser))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "oParser was not an instance of Parser");
+		throw new br.Errors.InvalidParametersError("oParser was not an instance of Parser");
 	}
 
 	this.m_pParsers.push({parser:oParser, config:mConfig});
@@ -100,7 +100,7 @@ br.presenter.property.EditableProperty.prototype.addValidator = function(oValida
 {
 	if(!br.Core.fulfills(oValidator, br.presenter.validator.Validator))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "oValidator was not an instance of Validator");
+		throw new br.Errors.InvalidParametersError("oValidator was not an instance of Validator");
 	}
 
 	this.m_pValidators.push({validator:oValidator, config:mConfig});

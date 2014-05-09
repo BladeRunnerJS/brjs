@@ -8,7 +8,7 @@ br.presenter.validator.ValidMultiSelectionValidator = function(oOptions)
 {
 	if (!oOptions || !(oOptions instanceof br.presenter.node.OptionsNodeList))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "You must provide an instance of OptionsNodeList");
+		throw new br.Errors.InvalidParametersError("You must provide an instance of OptionsNodeList");
 	}
 	this.m_oOptions = oOptions;
 	this.m_bAllowInvalidSelections = false;

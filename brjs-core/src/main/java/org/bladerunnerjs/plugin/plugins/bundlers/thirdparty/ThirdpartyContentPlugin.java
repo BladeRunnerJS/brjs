@@ -61,16 +61,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser()
 	{
 		return contentPathParser;

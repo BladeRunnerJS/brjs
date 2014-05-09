@@ -29,6 +29,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 
 import com.google.common.base.Joiner;
@@ -44,23 +45,28 @@ public class BRJSServletFilter implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		servletContext = filterConfig.getServletContext();
-		BRJSThreadSafeModelAccessor.initializeModel(servletContext);
-		
 		try {
-			brjs = BRJSThreadSafeModelAccessor.aquireModel();
-			List<String> pluginRequestPrefixes = new ArrayList<>();
+			servletContext = filterConfig.getServletContext();
+			BRJSThreadSafeModelAccessor.initializeModel(servletContext);
 			
-			app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath(".")), App.class);
-			
-			for(ContentPlugin  contentPlugin : brjs.plugins().contentProviders()) {
-				pluginRequestPrefixes.add(contentPlugin.getRequestPrefix());
+			try {
+				brjs = BRJSThreadSafeModelAccessor.aquireModel();
+				List<String> pluginRequestPrefixes = new ArrayList<>();
+				
+				app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath(".")), App.class);
+				
+				for(ContentPlugin  contentPlugin : brjs.plugins().contentProviders()) {
+					pluginRequestPrefixes.add(contentPlugin.getRequestPrefix());
+				}
+				
+				contentPluginPrefixPattern = Pattern.compile("^.*/([a-zA-Z0-9_-]+-aspect|workbench)/" + "(" + Joiner.on("|").join(pluginRequestPrefixes) + ")(/.*)?$");
 			}
-			
-			contentPluginPrefixPattern = Pattern.compile("^.*/([a-zA-Z0-9_-]+-aspect|workbench)/" + "(" + Joiner.on("|").join(pluginRequestPrefixes) + ")(/.*)?$");
+			finally {
+				BRJSThreadSafeModelAccessor.releaseModel();
+			}
 		}
-		finally {
-			BRJSThreadSafeModelAccessor.releaseModel();
+		catch (InvalidSdkDirectoryException e) {
+			throw new ServletException(e);
 		}
 	}
 	
@@ -77,8 +83,7 @@ public class BRJSServletFilter implements Filter
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		String servletPath = request.getServletPath();
 		
-		// TODO: get rid of the `servletPath.endsWith(".bundle")` guard once we drop support for the old bundlers
-		if(servletPath.equals("/brjs") || servletPath.endsWith(".bundle")) {
+		if ( servletPath.equals("/brjs") ) {
 			chain.doFilter(request, response);
 		}
 		else {
@@ -88,7 +93,7 @@ public class BRJSServletFilter implements Filter
 			if(requestPath.endsWith("/index.html") || requestPath.endsWith("/index.jsp")) {
 				filterIndexPage(request, response, chain);
 			}
-			else if(contentPluginPrefixMatcher.matches()) {
+			else if (contentPluginPrefixMatcher.matches() && !requestPath.endsWith(".jsp")) {
 				request.getRequestDispatcher("/brjs" + requestPath).forward(request, response);
 			}
 			else {

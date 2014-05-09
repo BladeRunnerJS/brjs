@@ -1,61 +1,28 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.io.File;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
-import org.bladerunnerjs.model.AssetFilter;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
-import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class XMLAssetPlugin extends AbstractAssetPlugin {
-	private AssetFilter xmlFilesFilter = new XMLAssetFilter();
-	private final List<SourceModule> emptySourceModules = new ArrayList<>();
-	private final List<SourceModule> emptyTestSourceModules = new ArrayList<>();
-	
 	@Override
 	public void setBRJS(BRJS brjs) {
+		// do nothing
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation) {
-		return emptySourceModules;
+	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
+		String assetName = assetFile.getName();
+		// TODO: should the aliases xml filtering be moved into the model once getAssets() has been deleted?
+		return (assetName.endsWith(".xml") && !assetName.equals("aliases.xml")  && !assetName.equals("aliasDefinitions.xml"));
 	}
 	
 	@Override
-	public List<SourceModule> getTestSourceModules(AssetLocation assetLocation) {
-		return emptyTestSourceModules;
-	}
-	
-	@Override
-	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation) {
-		List<LinkedAsset> assets;
-		try {
-			assets = assetLocation.obtainMatchingAssets(xmlFilesFilter, LinkedAsset.class, FullyQualifiedLinkedAsset.class);
-		}
-		catch (AssetFileInstantationException e) {
-			throw new RuntimeException(e);
-		}
-		
-		return assets;
-	}
-	
-	@Override
-	public List<Asset> getAssets(AssetLocation assetLocation) {
-		List<Asset> result = new ArrayList<Asset>();
-		result.addAll(this.getLinkedAssets(assetLocation));
-		return result;
-	}
-	
-	private class XMLAssetFilter implements AssetFilter {
-		@Override
-		public boolean accept(String assetName) {
-			return (assetName.endsWith(".xml") && !assetName.equals("aliases.xml")  && !assetName.equals("aliasDefinitions.xml"));
-		}
+	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
+		return new FullyQualifiedLinkedAsset(assetLocation, assetFile.getParentFile(), assetFile.getName());
 	}
 }

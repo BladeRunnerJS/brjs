@@ -17,10 +17,10 @@ import com.caplin.cutlass.ServletModelAccessor;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 import com.caplin.cutlass.filter.bundlerfilter.contenttype.BundlerContentTypeFilter;
 import com.caplin.cutlass.filter.sectionfilter.SectionRedirectFilter;
-import com.caplin.cutlass.filter.thirdpartyfilter.ThirdPartyResourceFilter;
 import com.caplin.cutlass.filter.tokenfilter.TokenisingServletFilter;
 import com.caplin.cutlass.filter.versionfilter.VersionRedirectFilter;
 
@@ -31,7 +31,6 @@ public class BladerunnerFilters implements Filter
 	
 	public BladerunnerFilters() throws ServletException
 	{
-		filters.add(new ThirdPartyResourceFilter());
 		filters.add(new VersionRedirectFilter());
 		filters.add(new SectionRedirectFilter());
 		filters.add(new TokenisingServletFilter());
@@ -41,12 +40,17 @@ public class BladerunnerFilters implements Filter
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException
 	{
-		BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
-		logger = brjs.logger(LoggerType.FILTER, SectionRedirectFilter.class);
-		
-		for (Filter filter : filters)
-		{
-			filter.init(filterConfig);
+		try {
+			BRJS brjs = ServletModelAccessor.initializeAndGetModel(filterConfig.getServletContext());
+			logger = brjs.logger(LoggerType.FILTER, SectionRedirectFilter.class);
+			
+			for (Filter filter : filters)
+			{
+				filter.init(filterConfig);
+			}
+		}
+		catch (InvalidSdkDirectoryException e) {
+			throw new ServletException(e);
 		}
 	}
 	

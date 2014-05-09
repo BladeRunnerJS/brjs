@@ -15,13 +15,13 @@ import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.utility.NameValidator;
 
 
@@ -32,16 +32,13 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeMap<StandardJsLib> nonBladeRunnerLibs;
-	private final NodeMap<Bladeset> bladesets;
-	private final NodeMap<Aspect> aspects;
-	private final NodeMap<StandardJsLib> jsLibs;
+	private final NodeList<AppJsLib> nonBladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "thirdparty-libraries", null);
+	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$");
+	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
+	private final NodeList<AppJsLib> jsLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
 	
 	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>("BRJS.assetContainers", root(), dir(), root().libsDir());
 	private final MemoizedValue<List<AssetContainer>> nonAspectAssetContainers = new MemoizedValue<>("BRJS.nonAspectAssetContainers", root(), dir(), root().libsDir());
-	private final MemoizedValue<List<Bladeset>> bladesetList = new MemoizedValue<>("BRJS.bladesets", root(), dir());
-	private final MemoizedValue<List<Aspect>> aspectList = new MemoizedValue<>("BRJS.aspects", root(), dir());
-	private final MemoizedValue<List<JsLib>> jsLibsList = new MemoizedValue<>("BRJS.jsLibs", root(), dir(), root().libsDir());
 	private final MemoizedValue<List<JsLib>> nonBladeRunnerLibsList = new MemoizedValue<>("BRJS.nonBladeRunnerLibs", root(), dir(), root().libsDir());
 	
 	private String name;
@@ -53,23 +50,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		nonBladeRunnerLibs = StandardJsLib.createAppNonBladeRunnerLibNodeSet(rootNode);
-		bladesets = Bladeset.createNodeSet(rootNode);
-		aspects = Aspect.createNodeSet(rootNode);
-		jsLibs = BRLib.createAppNodeSet(rootNode);
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 		
 		registerInitializedNode();
-	}
-	
-	public static NodeMap<App> createAppNodeSet(BRJS brjs)
-	{
-		return new NodeMap<>(brjs, App.class, "apps", null);
-	}
-	
-	public static NodeMap<App> createSystemAppNodeSet(BRJS brjs)
-	{
-		return new NodeMap<>(brjs, App.class, "sdk/system-applications", null);
 	}
 	
 	@Override
@@ -183,42 +166,36 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<Bladeset> bladesets()
 	{
-		return bladesetList.value(() -> {
-			return children(bladesets);
-		});
+		return bladesets.list();
 	}
 	
 	public Bladeset bladeset(String bladesetName)
 	{
-		return child(bladesets, bladesetName);
+		return bladesets.item(bladesetName);
 	}
 
 	public List<Aspect> aspects()
 	{
-		return aspectList.value(() -> {
-			return children(aspects);
-		});
+		return aspects.list();
 	}
 	
 	public Aspect aspect(String aspectName)
 	{
-		return child(aspects, aspectName);
+		return aspects.item(aspectName);
 	}
 	
 	public List<JsLib> jsLibs()
 	{
-		return jsLibsList.value(() -> {
-			List<JsLib> appJsLibs = new ArrayList<JsLib>();
-			appJsLibs.addAll( children(jsLibs) );
-			
-			for (JsLib lib : root().sdkLibs())
-			{
-				appJsLibs.add( new JsLibAppWrapper(this, lib) );
-			}
-			appJsLibs.addAll( nonBladeRunnerLibs() );
-			
-			return appJsLibs;
-		});
+		List<JsLib> appJsLibs = new ArrayList<JsLib>();
+		appJsLibs.addAll( jsLibs.list() );
+		
+		for (SdkJsLib lib : root().sdkLibs())
+		{
+			appJsLibs.add( new AppSdkJsLib(this, lib) );
+		}
+		appJsLibs.addAll( nonBladeRunnerLibs() );
+		
+		return appJsLibs;
 	}
 	
 	public JsLib jsLib(String jsLibName)
@@ -231,7 +208,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 			}
 		}
 		
-		return child(jsLibs, jsLibName);
+		return jsLibs.item(jsLibName);
 	}
 	
 	@Override
@@ -284,14 +261,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 	}
 	
-	public BundlableNode getBundlableNode(BladerunnerUri bladerunnerUri) throws ResourceNotFoundException
+	public BundlableNode getBundlableNode(BladerunnerUri bladerunnerUri) throws InvalidBundlableNodeException
 	{
 		File baseDir = new File(dir(), bladerunnerUri.scopePath);
 		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
-		
-		if(bundlableNode == null) {
-			throw new ResourceNotFoundException("No bundlable resource could be found above the directory '" + baseDir.getPath() + "'");
-		}
 		
 		return bundlableNode;
 	}
@@ -301,11 +274,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return nonBladeRunnerLibsList.value(() -> {
 			Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
 			
-			for (JsLib lib : root().sdkNonBladeRunnerLibs())
+			for (SdkJsLib lib : root().sdkNonBladeRunnerLibs())
 			{
-				libs.put(lib.getName(), new JsLibAppWrapper(this, lib) );			
+				libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
 			}
-			for (JsLib lib : children(nonBladeRunnerLibs))
+			for (JsLib lib : nonBladeRunnerLibs.list())
 			{
 				libs.put(lib.getName(), lib );			
 			}
@@ -316,12 +289,12 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public JsLib nonBladeRunnerLib(String libName)
 	{
-		JsLib appLib = child(nonBladeRunnerLibs, libName);
-		JsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
+		JsLib appLib = nonBladeRunnerLibs.item(libName);
+		SdkJsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())
 		{
-			return new JsLibAppWrapper(this, sdkLib);
+			return new AppSdkJsLib(this, sdkLib);
 		}
 		return appLib;
 	}

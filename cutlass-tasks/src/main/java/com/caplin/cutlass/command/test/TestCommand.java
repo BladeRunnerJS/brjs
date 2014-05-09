@@ -46,11 +46,11 @@ public class TestCommand extends AbstractPlugin implements LegacyCommandPlugin
 	}
 	
 	@Override
-	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
+	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		if (validArgs(args))
 		{
-			testRunner.run(args, this);
+			return testRunner.run(args, this);
 		}
 		else 
 		{

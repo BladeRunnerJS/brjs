@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<bundle>
-	<resource name="unitTest">
-		<unitTest>
-			<alternateMergeElem alternateId="id1"/>
-		</unitTest>
-	</resource>
-</bundle>

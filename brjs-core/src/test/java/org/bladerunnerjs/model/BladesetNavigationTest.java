@@ -18,7 +18,7 @@ public class BladesetNavigationTest
 	private Bladeset bladeset;
 	
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
 		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
 		bladeset = brjs.app("a1").bladeset("bs1");

@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-import javax.naming.InvalidNameException;
-
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
@@ -28,7 +26,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.RequestHandlingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
@@ -79,40 +76,39 @@ public class WarCommand extends ArgsParsingCommandPlugin
 	}
 
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		App app = brjs.app(parsedArgs.getString("app-name"));
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		exportWar(app, getWarLocation(app, parsedArgs), parsedArgs.getString("minifier"));
+		return 0;
 	}
 	
 	private void exportWar(App origApp, File warFile, String minifierName) throws CommandOperationException {
 		try {
 			List<ContentPlugin> contentPlugins = brjs.plugins().contentProviders();
-			App warApp = brjs.app(origApp.getName() + "-war");
+			File warApp = FileUtility.createTemporaryDirectory(origApp.getName() + "-war");
 			
 			try {
-				warApp.create();
 				
-				FileUtility.copyDirectoryIfExists(origApp.file("WEB-INF"), warApp.file("WEB-INF"));
-				warApp.file("WEB-INF/jetty-env.xml").delete();
-				warApp.file("WEB-INF/lib/bladerunner-dev-servlets.jar").delete();
+				FileUtility.copyDirectoryIfExists(origApp.file("WEB-INF"), new File(warApp, "WEB-INF"));
+				new File(warApp, "WEB-INF/jetty-env.xml").delete();
 				
-				if (warApp.file("WEB-INF/web.xml").exists()) {
-					WebXmlCompiler.compile(warApp.file("WEB-INF/web.xml"));
+				if (new File(warApp, "WEB-INF/web.xml").exists()) {
+					WebXmlCompiler.compile(new File(warApp, "WEB-INF/web.xml"));
 				}
 				
-				FileUtility.copyFileIfExists(origApp.file("app.conf"), warApp.file("app.conf"));
+				FileUtility.copyFileIfExists(origApp.file("app.conf"), new File(warApp, "app.conf"));
 				
 				FileUtil fileUtil = new FileUtil(defaultFileCharacterEncoding);
 				for(Aspect origAspect : origApp.aspects()) {
-					Aspect warAspect = warApp.aspect(origAspect.getName());
+					File warAspect = new File(warApp, origAspect.dir().getName());
 					
 					for(String indexFile : indexFiles) {
 						if(origAspect.file(indexFile).exists()) {
-							FileUtils.copyFile(origAspect.file(indexFile), warAspect.file(indexFile));
-							try(Writer writer = new OutputStreamWriter(new FileOutputStream(warAspect.file(indexFile)), brjs.bladerunnerConf().getDefaultFileCharacterEncoding())) {
+							FileUtils.copyFile(origAspect.file(indexFile), new File(warAspect, indexFile));
+							try(Writer writer = new OutputStreamWriter(new FileOutputStream(new File(warAspect, indexFile)), brjs.bladerunnerConf().getDefaultFileCharacterEncoding())) {
 								// TODO: stop only supporting the English locale within wars
 								origAspect.filterIndexPage(fileUtil.readFileToString(origAspect.file(indexFile)), "en", writer, RequestMode.Prod);
 							}
@@ -122,7 +118,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 					createAspectBundles(origAspect, warAspect, contentPlugins, origApp.appConf().getLocales().split(","));
 				}
 				
-				FileUtility.zipFolder(warApp.dir(), warFile, true);
+				FileUtility.zipFolder(warApp, warFile, true);
 			}
 			catch (ConfigException | ModelOperationException e) {
 				throw new RuntimeException(e);
@@ -134,12 +130,12 @@ public class WarCommand extends ArgsParsingCommandPlugin
 			out.println("Successfully created war file");
 			out.println(" " + warFile.getAbsolutePath());
 		}
-		catch(InvalidNameException | ModelUpdateException | IOException | ParseException e) {
+		catch(IOException | ParseException e) {
 			throw new CommandOperationException(e);
 		}
 	}
 	
-	private void createAspectBundles(Aspect origAspect, Aspect warAspect, List<ContentPlugin> contentPlugins, String[] locales) throws CommandOperationException {
+	private void createAspectBundles(Aspect origAspect, File warAspect, List<ContentPlugin> contentPlugins, String[] locales) throws CommandOperationException {
 		try {
 			BundleSet bundleSet = origAspect.getBundleSet();
 			
@@ -148,7 +144,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 					BladerunnerUri requestPath = new BladerunnerUri(brjs, origAspect.app().dir(), contentPath);
 					ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(requestPath);
 					
-					try(OutputStream outputStream = createBundleSpecificOutputStream(contentPath, warAspect.file(contentPath))) {
+					try(OutputStream outputStream = createBundleSpecificOutputStream(contentPath, new File(warAspect, contentPath))) {
 						contentPlugin.writeContent(parsedContentPath, bundleSet, outputStream);
 					}
 				}

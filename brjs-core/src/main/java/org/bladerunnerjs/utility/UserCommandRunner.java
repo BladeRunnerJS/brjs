@@ -14,7 +14,8 @@ import org.bladerunnerjs.plugin.plugins.commands.core.VersionCommand;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class UserCommandRunner {
-	public static void run(BRJS brjs, CommandList commandList, LogLevelAccessor logLevelAccessor, String args[]) throws CommandOperationException {
+	
+	public static int run(BRJS brjs, CommandList commandList, LogLevelAccessor logLevelAccessor, String args[]) throws CommandOperationException {
 		ConsoleWriter out = brjs.getConsoleWriter();
 		
 		if (!CommandRunner.extractCommandFromArgs(args).equals(new VersionCommand().getCommandName())) {
@@ -22,13 +23,13 @@ public class UserCommandRunner {
 			out.println("");
 		}
 		
-		doRunCommand(brjs, args, out);
+		return doRunCommand(brjs, args, out);
 	}
 
-	private static void doRunCommand(BRJS brjs, String[] args, ConsoleWriter out) throws CommandOperationException
+	private static int doRunCommand(BRJS brjs, String[] args, ConsoleWriter out) throws CommandOperationException
 	{
 		try {
-			brjs.runCommand(args);
+			return brjs.runCommand(args);
 		}
 		catch (NoSuchCommandException e) {
 			if (e.getCommandName().length() > 0)
@@ -37,7 +38,7 @@ public class UserCommandRunner {
 				out.println("--------");
 				out.println("");
 			}
-			doRunCommand(brjs, new String[] {new HelpCommand().getCommandName() }, out);
+			return doRunCommand(brjs, new String[] {new HelpCommand().getCommandName() }, out);
 		}
 		catch (CommandArgumentsException e) {
 			out.println("Problem:");
@@ -64,5 +65,6 @@ public class UserCommandRunner {
 			
 			throw e;
 		}
+		return -1;
 	}
 }

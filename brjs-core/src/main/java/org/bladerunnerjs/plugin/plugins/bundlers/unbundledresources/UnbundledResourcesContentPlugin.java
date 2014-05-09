@@ -57,16 +57,6 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser()
 	{
 		return contentPathParser;
@@ -125,14 +115,11 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		
 		try
 		{
-			for (File file : brjs.getFileIterator(unbundledResourcesDir).nestedFiles())
+			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFiles())
 			{
-				if (file.isFile())
-				{
-        			String relativePath = RelativePathUtility.get(unbundledResourcesDir, file);
-        			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);
-        			requestPaths.add(calculatedPath);
-				}
+    			String relativePath = RelativePathUtility.get(unbundledResourcesDir, file);
+    			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);
+    			requestPaths.add(calculatedPath);
 			}
 		}
 		catch (MalformedTokenException e)

@@ -37,7 +37,7 @@ public class JsCodeBlockStrippingReaderTest
 				"{ more content }"),
 			lines(
 				"some content",
-				"")
+				"{}")
 		);
 	}
 	
@@ -50,7 +50,7 @@ public class JsCodeBlockStrippingReaderTest
 				"{ abc { more content } }"),
 			lines(
 				"some content",
-				"")
+				"{}")
 		);
 	}
 	
@@ -61,7 +61,7 @@ public class JsCodeBlockStrippingReaderTest
 			lines(
 				"{ code block } some content"),
 			lines(
-				" some content")
+				"{} some content")
 		);
 	}
 	
@@ -72,7 +72,7 @@ public class JsCodeBlockStrippingReaderTest
 			lines(
 				"{ code block } some content"),
 			lines(
-				" some content")
+				"{} some content")
 		);
 	}
 	
@@ -87,7 +87,7 @@ public class JsCodeBlockStrippingReaderTest
 				"code block",
 				"}"),
 			lines(
-				"")
+				"{}")
 		);
 	}
 	
@@ -103,7 +103,7 @@ public class JsCodeBlockStrippingReaderTest
 				"}",
 				"some content"),
 			lines(
-				"",
+				"{}",
 				"some content")
 		);
 	}
@@ -121,7 +121,7 @@ public class JsCodeBlockStrippingReaderTest
 				"}"),
 			lines(
 				"some content",
-				"")
+				"{}")
 		);
 	}
 	
@@ -134,9 +134,9 @@ public class JsCodeBlockStrippingReaderTest
 					"some code...",
 					"})()"),
 				lines(
-					"",
+					"(function() {",
 					"some code...",
-					")()")
+					"})()")
 			);
 	}
 	
@@ -149,9 +149,9 @@ public class JsCodeBlockStrippingReaderTest
 					"some code...",
 					"})()"),
 				lines(
-					";",
+					";(function() {",
 					"some code...",
-					")()")
+					"})()")
 			);
 	}
 	
@@ -167,9 +167,9 @@ public class JsCodeBlockStrippingReaderTest
 					"}",
 					")()"),
 				lines(
-					"",
+					"(function() {",
 					"some code...",
-					"function() ",
+					"function() {}",
 					")()")
 			);
 	}
@@ -185,9 +185,9 @@ public class JsCodeBlockStrippingReaderTest
 					"})()"),
 				lines(
 					"some code...",
-					"",
+					"(function() {",
 					"some more code...",
-					")()")
+					"})()")
 			);
 	}
 	
@@ -205,9 +205,9 @@ public class JsCodeBlockStrippingReaderTest
 				")()"),
 			lines(
 				"some code...",
-				"",
+				"(function() {",
 				"some more code...",
-				"function() ",
+				"function() {}",
 				")()")
 		);
 	}
@@ -225,13 +225,13 @@ public class JsCodeBlockStrippingReaderTest
 					"yet more code...",
 					"})()"),
 				lines(
-					"",
+					"(function(arg1, arg2) {",
 					"some code...",
-					")()",
+					"})()",
 					"some more code...",
-					"",
+					"(function(arg1,arg3) {",
 					"yet more code...",
-					")()")
+					"})()")
 			);
 	}
 	
@@ -244,9 +244,9 @@ public class JsCodeBlockStrippingReaderTest
 					"some code...",
 					"}"),
 				lines(
-					"",
+					"new function() {",
 					"some code...",
-					"")
+					"}")
 			);
 	}
 	
@@ -261,10 +261,10 @@ public class JsCodeBlockStrippingReaderTest
 					"})()",
 					")()"),
 				lines(
-					"",
-					"",
+					"(function() {",
+					"(function() {",
 					"some code...",
-					")()",
+					"})()",
 					")()")
 			);
 	}

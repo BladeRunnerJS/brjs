@@ -61,7 +61,7 @@ public class TestRunnerController
 		}
 	}
 	
-	public void run(String[] args, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
+	public int run(String[] args, CommandPlugin testCommand) throws CommandArgumentsException, CommandOperationException
 	{
 		File configFile = null;
 		try {
@@ -87,10 +87,11 @@ public class TestRunnerController
 			
 			try
 			{				
+				boolean testServerOnly = mode == RunMode.RUN_SERVER;
 				boolean generateReports = (mode == RunMode.RUN_TESTS) && config.getBoolean(REPORT_SWITCH);
 				boolean noBrowser = (mode == RunMode.RUN_SERVER) && config.getBoolean(NO_BROWSER_SWITCH);
 				
-				testRunner = new TestRunner(configFile, resultDir, Arrays.asList(config.getStringArray("browsers")), noBrowser, generateReports);
+				testRunner = new TestRunner(configFile, resultDir, Arrays.asList(config.getStringArray("browsers")), testServerOnly, noBrowser, generateReports);
 			}
 			catch (Exception ex)
 			{
@@ -121,10 +122,8 @@ public class TestRunnerController
 				}
 			}
 		}
-		if (!success)
-		{
-			throw new CommandOperationException("Test failure or error while running tests.");
-		}
+		if (!success) {  return 1;  }
+		return 0;
 	}
 
 	private TestType getTestTypeEnum(String testType) 

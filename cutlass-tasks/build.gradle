@@ -3,7 +3,8 @@ apply plugin: 'java'
 apply plugin: com.caplin.gradle.plugins.CompileOnly
 
 dependencies {
-	compile project(":bundlers");
+	compile project(":brjs-core")
+	compile project(":cutlass-common")
 	compile dependency('commons-lang3')
 	compile dependency('jsap')
 	compile dependency('junit')

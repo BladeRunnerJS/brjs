@@ -58,7 +58,7 @@ PropertyTest.prototype.test_weThrowAnExceptionIfTheProvidedFormatterIsNotAnInsta
 	
 	assertException("1a", function(){
 		oProperty.addFormatter({});
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 PropertyTest.prototype.test_getFormattedValueProvidesADefaultAtributeMapIfNotProvided = function()
@@ -100,7 +100,7 @@ PropertyTest.prototype.test_weThrowAnExceptionIfTheProvidedListenerIsNotAnInstan
 	
 	assertException("1a", function(){
 		oProperty.addListener({});
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 PropertyTest.prototype.test_weCanSuccesfullyAddAndRemoveAListener = function()
@@ -226,7 +226,7 @@ PropertyTest.prototype.test_specifyingANonExistentChangeListenerMethodCausesAnEx
 	
 	assertException("1a", function(){
 		oProperty.addChangeListener(oListenerMock.proxy(), "noSuchMethod");
-	}, br.Errors.LEGACY);
+	}, 'TypeError');
 };
 
 PropertyTest.prototype.test_weCanRequestForTheListenerToInvokeCallbackImmediatelyForChangeOnlyListener = function()
@@ -267,7 +267,7 @@ PropertyTest.prototype.test_instantiatingPropertyWithArrayOfPresentationNodesThr
 
 	assertException("1a", function() {
 		var oBadProperty = new br.presenter.property.WritableProperty([oPresNodeField, oPresNode]);
-	}, br.Errors.LEGACY);
+	}, br.Errors.INVALID_PARAMETERS);
 };
 
 PropertyTest.prototype.test_onlyOnPropertyUpdatedIsInvokedWhenTheValueIsUpdatedButNotChanged = function()

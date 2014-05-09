@@ -7,7 +7,7 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
+import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.utility.NameValidator;
@@ -25,9 +25,9 @@ public final class Theme extends AbstractBRJSNode implements NamedNode
 		registerInitializedNode();
 	}
 	
-	public static NodeMap<Theme> createNodeSet(RootNode rootNode)
+	public static NodeList<Theme> createNodeSet(Node node)
 	{
-		return new NodeMap<>(rootNode, Theme.class, "themes", null);
+		return new NodeList<>(node, Theme.class, "themes", null);
 	}
 	
 	@Override

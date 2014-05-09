@@ -4,8 +4,8 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -24,7 +24,7 @@ public class BundleDepsCommandTest extends SpecTest {
 	AliasDefinitionsFile bladeAliasDefinitionsFile;
 	Blade blade;
 	TestPack bladeTestPack;
-	DirNode bladeTests;
+	AssetLocation bladeTests;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -67,15 +67,15 @@ public class BundleDepsCommandTest extends SpecTest {
 	public void exceptionIsThrownIfABundlableNodeCantBeLocated() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("bundle-deps", "../apps/app");
-		then(exceptions).verifyException(InvalidBundlableNodeException.class, "../apps/app")
+		then(exceptions).verifyException(InvalidBundlableNodeException.class, "apps/app")
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
-		given(brjs).hasBeenAuthenticallyCreated()
-			.and(aspect).hasBeenCreated();
+		given(aspect).hasBeenCreated()
+			.and(brjs).hasBeenAuthenticallyCreated();
 		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}

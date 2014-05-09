@@ -20,7 +20,11 @@ public class StringVerifier {
 	private VerifierChainer verifierChainer;
 	
 	public StringVerifier(SpecTest specTest, StringBuffer stringBuffer) {
-		this.string = stringBuffer.toString();
+		this(specTest, stringBuffer.toString());
+	}
+	
+	public StringVerifier(SpecTest specTest, String string) {
+		this.string = string;
 		this.verifierChainer = new VerifierChainer(specTest);
 	}
 	
@@ -194,4 +198,11 @@ public class StringVerifier {
 		textEquals((String) o);
 		return true;
 	}
+	
+	@Override /* override this to prevent compiler warnings */
+	public int hashCode()
+	{
+		return string.hashCode();
+	}
+	
 }

@@ -87,7 +87,7 @@ public class DependencyInfoFactory {
 	private static void addSeedDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode, DependencyInfo dependencyInfo) throws ModelOperationException {
 		addOutboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode);
 		
-		for(LinkedAsset seedAsset : bundlableNode.seedFiles()) {
+		for(LinkedAsset seedAsset : bundlableNode.seedAssets()) {
 			dependencyInfo.seedAssets.add(seedAsset);
 			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(bundlableNode));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, seedAsset);
@@ -96,7 +96,7 @@ public class DependencyInfoFactory {
 	
 	private static void addAssetLocationDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
-		for(LinkedAsset resourceAsset : assetLocation.seedResources()) {
+		for(LinkedAsset resourceAsset : assetLocation.linkedAssets()) {
 			dependencyInfo.resourceAssets.add(resourceAsset);
 			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(bundlableNode));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
@@ -110,7 +110,7 @@ public class DependencyInfoFactory {
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
 		
 		for(AssetLocation assetLocation : sourceModule.assetLocations()) {
-			for(LinkedAsset assetLocationLinkedAsset : assetLocation.seedResources()) {
+			for(LinkedAsset assetLocationLinkedAsset : assetLocation.linkedAssets()) {
 				if((assetLocationLinkedAsset.getDependentSourceModules(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
 					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
 				}
@@ -189,6 +189,11 @@ public class DependencyInfoFactory {
 		try {
 			for(String aliasName : linkedAsset.getAliasNames()) {
 				AliasDefinition alias = bundlableNode.getAlias(aliasName);
+				// TODO remove when we get rid of the 'SERVICE!' hack
+				if (alias == null)
+				{
+					throw new AliasException("Alias '" + aliasName + "' could not be found as a defined alias inside:\n '" + bundlableNode.dir().getPath() + "'");
+				}
 				AliasAsset aliasAsset = dependencies.aliasAssets.get(alias.getName());
 				dependencyAdder.add(dependencies, linkedAsset, aliasAsset);
 			}

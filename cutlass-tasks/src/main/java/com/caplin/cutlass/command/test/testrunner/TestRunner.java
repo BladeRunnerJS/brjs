@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
@@ -81,16 +82,30 @@ public class TestRunner {
 	
 	
 	public TestRunner(File configFile, File resultDir, List<String> browserNames) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
-		this(configFile, resultDir, browserNames, false, false);
+		this(configFile, resultDir, browserNames, false, false, false);
 	}
 	
-	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean noBrowserFlag, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
+	public TestRunner(File configFile, File resultDir, List<String> browserNames, boolean testServerOnly, boolean noBrowserFlag, boolean generateReports) throws FileNotFoundException, YamlException, IOException, NoBrowsersDefinedException {
 		verbose = determineIfVerbose();
 		config = TestRunnerConfiguration.getConfiguration(configFile, browserNames);
 		
 		this.jsTestDriverJar = config.getJsTestDriverJarFile();
 		this.portNumber = config.getPortNumber();
-		this.browsers = getBrowsers(noBrowserFlag);
+		try {
+			this.browsers = getBrowsers(noBrowserFlag);
+		}
+		catch (NoBrowsersDefinedException e)
+		{
+			if (testServerOnly)
+			{
+				noBrowserFlag = true;
+				logger.info("No browsers configured, you must manually launch your browser. To use a browser for testing, visit the URL http://localhost:%d/capture", portNumber);
+			}
+			else
+			{
+				throw e;				
+			}
+		}
 //		this.resultDir = resultDir;
 		this.noBrowserFlag = noBrowserFlag;
 		this.generateReports = generateReports;
@@ -352,7 +367,7 @@ public class TestRunner {
 			{
 				testResultsDir.mkdirs();
 			}
-			BundleStubCreator.createRequiredStubs(configFile);
+			JsTestDriverBundleCreator.createRequiredBundles(brjs, configFile);
 			String javaOpts = getJavaOpts();
 			javaOpts += (!javaOpts.equals("")) ? "$$" : "";
 
@@ -390,7 +405,7 @@ public class TestRunner {
 			logger.info("Tests Passed.");
 		}
 		catch(Exception e) {
-			logger.info("Unexpected Exception:", e);
+			logger.info("Unexpected Exception:\n%s", ExceptionUtils.getStackTrace(e));
 			return false;
 		}
 		

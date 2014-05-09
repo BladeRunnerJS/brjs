@@ -16,7 +16,7 @@ public class TypedTestPackNavigationTest
 	private NodeTesterFactory<TypedTestPack> nodeTesterFactory;
 	
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
 		typedTestPack = brjs.app("a1").bladeset("bs1").testType("type1");
 		nodeTesterFactory = new NodeTesterFactory<>(typedTestPack, TypedTestPack.class);

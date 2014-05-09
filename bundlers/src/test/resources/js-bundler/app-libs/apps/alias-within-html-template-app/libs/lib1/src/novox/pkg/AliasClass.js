@@ -1,3 +1,0 @@
-novox.pkg.AliasClass = function()
-{
-};

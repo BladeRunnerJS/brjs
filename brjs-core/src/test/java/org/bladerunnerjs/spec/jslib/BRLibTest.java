@@ -43,8 +43,8 @@ public class BRLibTest extends SpecTest {
 	@Test
 	public void sdkLibrariesMustHaveARequirePrefixWithCorrectFormat() throws Exception {
 		given(aspect).hasClass("appns/AspectClass")
-			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo.bar")
 			.and(sdkLib).hasClass("foo/bar/SdkClass")
+			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo.bar")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
@@ -62,6 +62,28 @@ public class BRLibTest extends SpecTest {
 			.and(aspect).classRequires("appns/AspectClass", "foo.Bar");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("foo.Bar");
+	}
+	
+	@Test
+	public void sdkLibrariesCanOptionallyDisableJsNamespaceEnforcement() throws Exception {
+		given(aspect).indexPageRefersTo("br.SdkClass", "anotherRootPkg.SdkClass")
+			.and(sdkLib).containsFile("no-namespace-enforcement")
+			.and(sdkLib).hasClass("br/SdkClass")
+			.and(sdkLib).hasClass("anotherRootPkg/SdkClass");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsNodeJsClasses("br.SdkClass")
+			.and(response).containsNodeJsClasses("anotherRootPkg.SdkClass");
+	}
+	
+	@Test
+	public void sdkLibrariesCanOptionallyDisableI18nNamespaceEnforcement() throws Exception {
+		given(aspect).indexPageRefersTo("br.SdkClass")
+    		.and(sdkLib).containsFile("no-namespace-enforcement")
+    		.and(sdkLib).hasClass("br/SdkClass")
+    		.and(sdkLib).containsFileWithContents("resources/en_GB.properties", "br.property=property value\n" + "anotherRootPkg.property=another value");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(response).containsText("\"br.property\":\"property value\"")
+			.and(response).containsText("\"anotherRootPkg.property\":\"another value\"");
 	}
 	
 }

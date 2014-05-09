@@ -55,7 +55,7 @@ public class CreateAspectCommand extends ArgsParsingCommandPlugin
 	}
 
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("target-app-name");
 		String aspectName = parsedArgs.getString("new-aspect-name");
 		
@@ -77,5 +77,7 @@ public class CreateAspectCommand extends ArgsParsingCommandPlugin
 		
 		out.println(Messages.ASPECT_CREATE_SUCCESS_CONSOLE_MSG, aspectName);
 		out.println(Messages.ASPECT_PATH_CONSOLE_MSG, aspect.dir().getPath());
+		
+		return 0;
 	}
 }

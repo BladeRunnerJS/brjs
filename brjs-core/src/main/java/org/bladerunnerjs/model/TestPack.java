@@ -14,35 +14,24 @@ import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeItem;
-import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.utility.NameValidator;
 
 
 public class TestPack extends AbstractBundlableNode implements NamedNode
 {
-	private final NodeItem<DirNode> tests = new NodeItem<>(DirNode.class, "tests");
-	private final NodeItem<DirNode> testSource = new NodeItem<>(DirNode.class, "src-test");
 	private AliasesFile aliasesFile;
 	private String name;
-	private final MemoizedValue<Set<SourceModule>> sourceModulesList;
+	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), root().conf().file("bladerunner.conf"));
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
 		
-		sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir());
 		// TODO: we should never call registerInitializedNode() from a non-final class
 		registerInitializedNode();
-	}
-	
-	public static NodeMap<TestPack> createNodeSet(RootNode rootNode)
-	{
-		return new NodeMap<>(rootNode, TestPack.class, "", null);
 	}
 	
 	@Override
@@ -54,15 +43,16 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<LinkedAsset> getSeedFiles() 
+	public List<LinkedAsset> modelSeedAssets() 
 	{
+		// TODO: add extra coverage so this can be fixed without causing only js breakage
+//		return new ArrayList<>();
+		
 		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
-		for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
-			for(AssetLocation assetLocation : assetLocations()) {
-				if(isTestAssetLocation(assetLocation)) {
-					seedFiles.addAll(assetPlugin.getTestSourceModules(assetLocation));
-				}
+		for(AssetLocation assetLocation : assetLocations()) {
+			if(isTestAssetLocation(assetLocation)) {
+				seedFiles.addAll(assetLocation.sourceModules());
 			}
 		}
 		
@@ -73,11 +63,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	public String requirePrefix()
 	{
 		return "";
-	}
-	
-	@Override
-	public String namespace() {
-		return testScope().namespace();
 	}
 	
 	@Override
@@ -99,13 +84,12 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		return sourceModulesList.value(() -> {
 			Set<SourceModule> sourceModules = new LinkedHashSet<SourceModule>();
 			
-			for(AssetPlugin assetPlugin : (root()).plugins().assetProducers()) {
-				for (AssetLocation assetLocation : assetLocations())
+			for (AssetLocation assetLocation : assetLocations())
+			{
+				// TODO: we need an abstract way of determining which source modules are tests source modules that isn't plug-in specific
+				if ( !isTestAssetLocation(assetLocation) )
 				{
-					if ( !isTestAssetLocation(assetLocation) )
-					{
-						sourceModules.addAll(assetPlugin.getSourceModules(assetLocation));
-					}
+					sourceModules.addAll(assetLocation.sourceModules());
 				}
 			}
 			
@@ -155,20 +139,19 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		return aliasesFile;
 	}
 	
-	public DirNode testSource()
+	public AssetLocation testSource()
 	{
-		return item(testSource);
+		return assetLocation("src-test");
 	}
 	
-	public DirNode tests()
+	public AssetLocation tests()
 	{
-		return item(tests);
+		return assetLocation("tests");
 	}
-	
 	
 	private boolean isTestAssetLocation(AssetLocation assetLocation)
 	{
-		return assetLocation instanceof TestAssetLocation || assetLocation instanceof ChildTestAssetLocation;
+		return assetLocation instanceof TestSourceAssetLocation || assetLocation instanceof ChildTestSourceAssetLocation;
 	}
 	
 }

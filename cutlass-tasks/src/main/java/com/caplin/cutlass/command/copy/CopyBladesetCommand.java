@@ -63,7 +63,7 @@ public class CopyBladesetCommand extends AbstractCommandPlugin implements Legacy
 	}
 	
 	@Override
-	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
+	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		//<source-app-name> <source-bladeset-name> <target-app-name> [<target-bladeset-name>]
 		assertValidArgs(args);
@@ -113,7 +113,8 @@ public class CopyBladesetCommand extends AbstractCommandPlugin implements Legacy
 		catch (IOException e)
 		{
 			throw new CommandOperationException(e);
-		}			
+		}
+		return 0;
 	}
 	
 	private void assertValidArgs(String[] args) throws CommandArgumentsException

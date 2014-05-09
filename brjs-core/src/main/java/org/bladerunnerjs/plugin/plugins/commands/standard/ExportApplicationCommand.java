@@ -67,7 +67,7 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException 
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException 
 	{
 		String appName = parsedArgs.getString("app-name");
 		String disclaimer = "/*\n* " + parsedArgs.getString("disclaimer") + "\n*/\n\n";
@@ -98,6 +98,8 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 
 		logger.info("Successfully exported application '" + appName + "'");
 		logger.info(" " + destinationZipLocation.getAbsolutePath());
+		
+		return 0;
 	}
 
 	

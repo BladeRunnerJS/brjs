@@ -20,7 +20,7 @@ public class AppNavigationTest
 
 	
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
 		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
 		app = brjs.app("a1");

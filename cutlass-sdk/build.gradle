@@ -25,15 +25,11 @@ dependencies {
 	system project(path: ':brjs-logger')
 	system project(":brjs-logger-binding")
 	system dependency('selenium-java')
+	system dependency('jetty-jsp')
 
-	application project(path: ':bladerunner-dev-servlets')
 	application project(path: ':bladerunner-common-servlets')
 	application project(path: ':bladerunner-prod-servlets')
-	application dependency('h2')
 	application dependency('javassist')
-	application (dependency('jsp-2.1-glassfish')) {
-		exclude module: 'ant'
-	}
 
 	javadocs project(path: ':brjs-core', configuration:'javadocs')
 
@@ -45,8 +41,6 @@ dependencies {
 	testRunner dependency('validation-api')
 	testRunner dependency('bval-jsr303')
 	testRunner dependency('sjsxp')
-	// Note: don't try to add support for transitive dependencies here as it will just fail
-	testRunner project(path: ':js-test-driver-bundler-plugin', transitive : false)
 
 	testRunner project(path: ':brjs-logger')
 	testRunner project(path: ':brjs-logger-binding')
@@ -167,7 +161,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 	from (configurations.testRunner)
 	{
 		into "sdk/libs/java/testRunner"
-		rename 'js-test-driver-bundler-plugin-.*', 'js-test-driver-bundler-plugin.jar'
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
 
@@ -196,7 +189,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 
 def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
-		description = "Run ${testType} for ${taskTestDir} using ${browser}"
+		description = "Run ${taskTestType} for ${taskTestDir} using ${browser}"
 		dependsOn = [assemble, copyBrowsers]
 		inputs.dir file("workspace/apps/")
     	inputs.dir file("workspace/sdk/")
@@ -209,9 +202,22 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 }
 
 
-createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
-createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
-createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
+def brLibsPathRelativeToSdk = "libs/javascript/br-libs"
+def brlibsPath = "workspace/sdk/${brLibsPathRelativeToSdk}"
+
+createTestTask "testJsChrome", brLibsPathRelativeToSdk, "ALL", "chrome"
+createTestTask "testJsFirefox", brLibsPathRelativeToSdk, "ALL", "firefox"
+
+/* run each test on it's own in IE due to unreliability in CI */
+task testJsIE, {}
+file(brlibsPath).listFiles().each { libDir ->
+	if (libDir.isDirectory() && file("${libDir.absolutePath}/tests").isDirectory()) {
+		def libDirName = libDir.name
+		def taskName = "testJs${ libDirName.capitalize() }AllIE"
+		createTestTask taskName, "${brLibsPathRelativeToSdk}/${libDirName}", "ALL", "ie"
+		testJsIE.dependsOn taskName
+	}
+}
 
 createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
 createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
@@ -300,7 +306,6 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/brjs.cmd",
 		"*/sdk/version.txt",
 		"*/sdk/libs/java/testRunner/*",
-		"*/sdk/libs/java/testRunner/js-test-driver-bundler-plugin.jar", /* make sure this isnt versioned */
 		"*/sdk/libs/java/system/*",
 		"*/sdk/libs/java/application/**",
 		"*/sdk/libs/javascript/br-libs/*/src/**",
@@ -378,10 +383,12 @@ class DistZipPathLogger extends BuildAdapter {
 		this.archivePath = archivePath
 	}
 	void buildFinished(BuildResult result) {
-		println ""
-		println "----"
-		println "BladeRunnerJS ${buildVersion} built and zipped to ${archivePath}"
-		println "----"
-		println ""
+		if (!result.failure) {
+    		println ""
+    		println "----"
+    		println "BladeRunnerJS ${buildVersion} built and zipped to ${archivePath}"
+    		println "----"
+    		println ""
+		}
 	}
 }

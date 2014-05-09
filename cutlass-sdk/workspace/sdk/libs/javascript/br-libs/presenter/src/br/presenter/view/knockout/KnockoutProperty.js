@@ -17,7 +17,7 @@ br.presenter.view.knockout.KnockoutProperty.prototype.getValueForKnockout = func
 {
 	if (arguments.length > 0)
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "getValueForKnockout cannot write as this is not an EditableProperty");
+		throw new br.Errors.InvalidParametersError("getValueForKnockout cannot write as this is not an EditableProperty");
 	}
 	
 	presenter_ko.dependencyDetection.registerDependency(this); // The caller only needs to be notified of changes if they did a "read" operation

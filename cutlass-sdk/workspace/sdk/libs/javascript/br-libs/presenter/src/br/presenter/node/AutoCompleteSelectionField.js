@@ -13,7 +13,7 @@ br.presenter.node.AutoCompleteSelectionField = function(oProperty, oAutoComplete
 {
 	if (!br.Core.fulfills(oAutoCompleteProvider, br.presenter.node.AutoCompleteProvider))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "oAutoCompleteProvider must implement br.presenter.node.AutoCompleteProvider");
+		throw new br.Errors.InvalidParametersError("oAutoCompleteProvider must implement br.presenter.node.AutoCompleteProvider");
 	}
 	br.presenter.node.SelectionField.call(this, [], oProperty);
 	this.m_oAutoCompleteProvider = oAutoCompleteProvider;

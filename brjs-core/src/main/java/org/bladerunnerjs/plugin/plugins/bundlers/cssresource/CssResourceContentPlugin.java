@@ -18,6 +18,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
@@ -83,16 +84,6 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser() {
 		return contentPathParser;
 	}
@@ -131,6 +122,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(ASPECT_RESOURCES_REQUEST))
@@ -143,6 +135,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = ((ResourcesAssetLocation) bladeset.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(BLADESET_RESOURCES_REQUEST))
@@ -156,6 +149,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = ((ResourcesAssetLocation) blade.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(BLADE_RESOURCES_REQUEST))
@@ -173,6 +167,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			Workbench workbench = blade.workbench();
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = workbench.assetLocation("resources").file(resourcePath);
 		}
 		else if (contentPath.formName.equals(LIB_REQUEST))
@@ -265,6 +260,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			return contentPaths;
 		}
 		
+		// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 		File resourcesDir = assetContainer.assetLocation("resources").dir();
 		contentPaths.addAll(  calculateContentPathsForThemesAndResources((ThemeableNode)assetContainer, themeRequestName, resourcesDir, resourcesRequestName, requestArgs) );		
 		
@@ -278,11 +274,13 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		for (Theme theme : themeableNode.themes())
 		{
     		File themeDir = theme.dir();
-    		if (themeDir.isDirectory())
+    		FileInfo themeDirInfo = brjs.getFileInfo(themeDir);
+    		
+    		if (themeDirInfo.isDirectory())
     		{
-        		for (File file : brjs.getFileIterator(themeDir).nestedFiles())
+        		for (File file : themeDirInfo.nestedFiles())
         		{
-        			if (file.isFile() && !file.getName().endsWith(".css"))
+        			if (!file.getName().endsWith(".css"))
         			{
         				String assetPath = RelativePathUtility.get(themeDir, file);
         				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { theme.getName(), assetPath } );
@@ -295,7 +293,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		if (resourcesDir.isDirectory())
 		{
-			for (File file : brjs.getFileIterator(resourcesDir).nestedFiles())
+			for (File file : brjs.getFileInfo(resourcesDir).nestedFiles())
 			{
 				if (file.isFile() && !file.getName().endsWith(".css"))
 				{

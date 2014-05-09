@@ -55,7 +55,7 @@ public class CreateApplicationCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("new-app-name");
 		String requirePrefix = parsedArgs.getString("require-prefix");
 		App app = brjs.app(appName);
@@ -79,5 +79,6 @@ public class CreateApplicationCommand extends ArgsParsingCommandPlugin
 		catch(ModelUpdateException | TemplateInstallationException e) {
 			throw new CommandOperationException("Cannot create application '" + app.dir().getPath() + "'", e);
 		}
+		return 0;
 	}
 }

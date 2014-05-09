@@ -22,7 +22,7 @@ public class IntegrationTestFinderTest
 	private IntegrationTestFinder testFinder;
 	
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
 		BRJS brjs = BRJSTestFactory.createBRJS(new File(TEST_ROOT));
 		BRJSAccessor.initialize(brjs);

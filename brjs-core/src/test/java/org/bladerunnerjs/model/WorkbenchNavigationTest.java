@@ -17,7 +17,7 @@ public class WorkbenchNavigationTest
 	private Workbench workbench;
 	
 	@Before
-	public void setup()
+	public void setup() throws Exception
 	{
 		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
 		workbench = brjs.app("a1").bladeset("bs1").blade("b1").workbench();

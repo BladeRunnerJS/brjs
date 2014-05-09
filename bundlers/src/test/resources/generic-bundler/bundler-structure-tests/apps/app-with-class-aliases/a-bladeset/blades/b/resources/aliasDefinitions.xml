@@ -1,3 +1,0 @@
-<aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
-	<alias name="novox.a.b.the-alias" interface="novox.a.b.MyInterface" defaultClass="novox.a.b.MyClass"/>
-</aliasDefinitions>

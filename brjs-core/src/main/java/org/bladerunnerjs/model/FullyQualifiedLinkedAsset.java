@@ -28,6 +28,13 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private TrieBasedDependenciesCalculator dependencyCalculator;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
+	public FullyQualifiedLinkedAsset() {
+	}
+	
+	public FullyQualifiedLinkedAsset(AssetLocation assetLocation, File dir, String name) {
+		initialize(assetLocation, dir, name);
+	}
+	
 	public void initialize(AssetLocation assetLocation, File dir, String assetName)
 	{
 		try {
@@ -36,7 +43,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 			this.assetFile = new File(dir, assetName);
 			assetPath = RelativePathUtility.get(app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(), assetFile);
+			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

@@ -2,9 +2,7 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +13,7 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
@@ -43,6 +42,7 @@ public abstract class AbstractNode implements Node
 	protected RootNode rootNode;
 	private Node parent;
 	protected File dir;
+	private FileInfo dirInfo;
 	private File[] scopeFiles;
 	
 	public AbstractNode(RootNode rootNode, Node parent, File dir) {
@@ -83,7 +83,11 @@ public abstract class AbstractNode implements Node
 	@Override
 	public boolean dirExists()
 	{
-		return (dir == null) ? false : dir.exists();
+		if((dirInfo == null) && (dir != null)) {
+			dirInfo = rootNode.getFileInfo(dir);
+		}
+		
+		return (dirInfo == null) ? false : dirInfo.exists();
 	}
 	
 	@Override
@@ -112,7 +116,7 @@ public abstract class AbstractNode implements Node
 				notifyObservers(new NodeCreatedEvent(), this);
 				logger.debug(Messages.NODE_CREATED_LOG_MSG, getClass().getSimpleName(), dir().getPath());
 				
-				rootNode.getFileIterator(dir().getParentFile()).refresh();
+				rootNode.getFileInfo(dir().getParentFile()).resetLastModified();
 			}
 			catch(IOException e) {
 				throw new ModelUpdateException(e);
@@ -202,13 +206,21 @@ public abstract class AbstractNode implements Node
 		{
 			for(Field field : getAllFields(getClass()))
 			{
-				if(field.getType() == NodeMap.class)
+				if(field.getType() == NodeList.class)
 				{
-					discoverAllChildren(children((NodeMap<Node>) field.get(this)));
+					NodeList<Node> nodeList = (NodeList<Node>) field.get(this);
+					
+					discoverAllChildren(nodeList.list());
 				}
 				else if(field.getType() == NodeItem.class)
 				{
-					discoverAllChildren(items((NodeItem<Node>) field.get(this)));
+					NodeItem<Node> nodeItem = (NodeItem<Node>) field.get(this);
+					
+					if(nodeItem.itemExists()) {
+						List<Node> nodeItems = new ArrayList<>();
+						nodeItems.add(nodeItem.item());
+						discoverAllChildren(nodeItems);
+					}
 				}
 			}
 		}
@@ -235,70 +247,6 @@ public abstract class AbstractNode implements Node
 		catch(NodeAlreadyRegisteredException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	protected <N extends Node> List<N> children(NodeMap<N> children)
-	{
-		List<N> childList = new ArrayList<>();
-		List<String> locatorNames = children.getLocatorNames(dir);
-		
-		for(String locatorName : locatorNames)
-		{
-			childList.add(child(children, locatorName));
-		}
-		
-		return childList;
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected <N extends Node> N child(NodeMap<N> children, String childName)
-	{
-		if(!children.nodes.containsKey(childName))
-		{
-			File childPath = children.getDir(dir, childName);
-			N child = (N) rootNode.getRegisteredNode(childPath);
-			
-			if(child == null)
-			{
-				child = (N) NodeCreator.createNode(rootNode, this, childPath, childName, children.nodeClass);
-			}
-			
-			children.nodes.put(childName, child);
-		}
-		
-		return children.nodes.get(childName);
-	}
-	
-	protected <N extends Node> List<N> items(NodeItem<N> nodeItem)
-	{
-		File itemDir = nodeItem.getItemDir(dir);
-		List<N> itemNodes = new ArrayList<>();
-		
-		if(itemDir.exists())
-		{
-			itemNodes.add(item(nodeItem));
-		}
-		
-		return itemNodes;
-	}
-	
-	protected <N extends Node> N item(NodeItem<N> nodeItem)
-	{
-		if(nodeItem.item == null)
-		{
-			try
-			{
-				Constructor<N> classConstructor = nodeItem.nodeClass.getConstructor(RootNode.class, Node.class, File.class);
-				nodeItem.item = classConstructor.newInstance(rootNode, this, nodeItem.getItemDir(dir));
-			}
-			catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
-				NoSuchMethodException | SecurityException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-		
-		return nodeItem.item;
 	}
 	
 	protected String getNormalizedPath(File dir) {

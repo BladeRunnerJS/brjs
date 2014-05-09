@@ -27,11 +27,11 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	
 	public String getLocales() throws ConfigException {
 		reloadConfIfChanged();
-		return conf.locales;
+		return conf.locales.replace(" ", "");
 	}
 	
 	public void setLocales(String locales) throws ConfigException {
-		conf.locales = locales;
+		conf.locales = locales.replace(" ", "");
 		verifyAndAutoWrite();
 	}
 }

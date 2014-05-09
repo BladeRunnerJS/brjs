@@ -49,7 +49,7 @@ public class VersionCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		try (InputStream asciiArtInputStream = getClass().getClassLoader().getResourceAsStream( ASCII_ART_RESOURCE_PATH )) {
 			StringWriter asciiArtWriter = new StringWriter();
 			IOUtils.copy(asciiArtInputStream, asciiArtWriter, "UTF-8");
@@ -62,5 +62,7 @@ public class VersionCommand extends ArgsParsingCommandPlugin
 		catch(IOException e) {
 			throw new CommandOperationException("error reading ascii art resource file", e);
 		}
+		
+		return 0;
 	}
 }

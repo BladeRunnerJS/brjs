@@ -6,6 +6,8 @@ import java.net.InetAddress;
 import java.security.Permission;
 import java.util.Map;
 
+import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
+
 public class BRJSSecurityManager extends SecurityManager {
 	private final Map<FileAccessLimitScope, File[]> activeScopes;
 	private boolean allowUnscopedFileAccess = false;
@@ -15,7 +17,9 @@ public class BRJSSecurityManager extends SecurityManager {
 	}
 	
 	private void assertWithinScope(File file) throws BRJSMemoizationFileAccessException {
-		if(!allowUnscopedFileAccess) {
+		String threadName = Thread.currentThread().getName();
+		
+		if((!threadName.equals(Java7FileModificationService.THREAD_IDENTIFIER)) && !allowUnscopedFileAccess) {
 			try {
 				allowUnscopedFileAccess = true;
 				forceAssertWithinScope(file);
@@ -29,7 +33,8 @@ public class BRJSSecurityManager extends SecurityManager {
 	private void forceAssertWithinScope(File file) {
 		// TODO: we need a strategy to deal with '.js-style' file so that all FileInfo objects for directories and '.js' files beneath a modified '.js-style' have their last-modified updated
 		if(file.isFile() && !file.getName().equals(".js-style") && !file.getName().endsWith(".class") && !file.getName().endsWith(".jar")) {
-			for(File[] scopeFiles : activeScopes.values()) {
+			for(FileAccessLimitScope limitScope : activeScopes.keySet()) {
+				File[] scopeFiles = activeScopes.get(limitScope);
 				boolean withinScope = false;
 				
 				for(File scopeFile : scopeFiles) {
@@ -40,7 +45,7 @@ public class BRJSSecurityManager extends SecurityManager {
 				}
 				
 				if(!withinScope) {
-					throw new BRJSMemoizationFileAccessException(file, scopeFiles);
+					throw new BRJSMemoizationFileAccessException(file, scopeFiles, limitScope.getScopeIdentifier());
 				}
 			}
 		}

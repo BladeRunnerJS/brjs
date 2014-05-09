@@ -30,7 +30,7 @@ public class CutlassDirectoryLocatorTest
 	private File tempDir;
 	
 	@Before
-	public void setUp()
+	public void setUp() throws Exception
 	{
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(testBase)));
 	}

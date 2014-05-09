@@ -54,8 +54,7 @@ br.presenter.PresentationModel.prototype.getComponentFrame = function()
  */
 br.presenter.PresentationModel.prototype.getClassName = function()
 {
-	throw new br.Errors.CustomError(br.Errors.UNIMPLEMENTED_ABSTRACT_METHOD,
-			"br.presenter.PresentationModel.getClassName() has not been implemented.");
+	throw new br.Errors.UnimplementedAbstractMethodError("br.presenter.PresentationModel.getClassName() has not been implemented.");
 };
 
 /**
@@ -80,7 +79,7 @@ br.presenter.PresentationModel.prototype._$setPath = function(oPresenterComponen
 			}
 			else
 			{
-				throw new br.Errors.CustomError(br.Errors.LEGACY, "'" + sCurrentPath + "' and '" + sChildToBeSet + "' are both references to the same instance in PresentationModel.");
+				throw new br.Errors.IllegalStateError("'" + sCurrentPath + "' and '" + sChildToBeSet + "' are both references to the same instance in PresentationModel.");
 			}
 		}
 	}

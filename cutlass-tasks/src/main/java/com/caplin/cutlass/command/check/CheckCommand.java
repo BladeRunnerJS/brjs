@@ -14,7 +14,7 @@ import com.caplin.cutlass.command.LegacyCommandPlugin;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.SdkJsLib;
 
 import com.caplin.cutlass.BRJSAccessor;
 
@@ -61,7 +61,7 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 	}
 	
 	@Override
-	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
+	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		CheckUtility checkUtility = new CheckUtility();
 		StringBuilder messageToShowUser = new StringBuilder();
@@ -73,7 +73,7 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 		messageToShowUser.append("-- Application Details --\n");
 		
 		List<File> sdkLibsApplicationJars = Arrays.asList(BRJSAccessor.root.appJars().dir().listFiles(CAPLIN_JAR_FILE_NAME_FILTER));
-		List<JsLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkNonBladeRunnerLibs();
+		List<SdkJsLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkNonBladeRunnerLibs();
 		
 		for(App application : BRJSAccessor.root.apps())
 		{
@@ -84,5 +84,6 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 		checkUtility.checkThatWeHaveNothingInPatchesDirectory(messageToShowUser);
 		
 		out.println(messageToShowUser.toString());
+		return 0;
 	}
 }

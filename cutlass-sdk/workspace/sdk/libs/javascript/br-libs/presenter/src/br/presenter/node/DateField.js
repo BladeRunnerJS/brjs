@@ -41,7 +41,7 @@ br.presenter.node.DateField = function(vDate, vStartDate, vEndDate)
 	var oEnd = vEndDate.getDateValue();
 	if (oStart && oEnd && (oEnd < oStart))
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "Start date was later than the end date");
+		throw new br.Errors.InvalidParametersError("Start date was later than the end date");
 	}
 
 	/**

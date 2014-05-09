@@ -65,7 +65,7 @@ br.presenter.node.MappedNodeList.prototype._doMapping = function(mPresentationNo
 {
 	if(mPresentationNodes instanceof Array)
 	{
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "Cannot use an array to update values in a MappedNodeList, use a map.");
+		throw new br.Errors.InvalidParametersError("Cannot use an array to update values in a MappedNodeList, use a map.");
 	}
 	this._cleanUpMappings();
 	var pResult = [];

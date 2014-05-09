@@ -197,14 +197,14 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype._bindClickEven
 	{
 		br.util.ElementUtility.addClassName(oSelf.m_eElement, "choiceASelected");
 		br.util.ElementUtility.removeClassName(oSelf.m_eElement, "choiceBSelected");
-		oSelf.m_oPresentationNode.value.setValue(oSelf.m_oPresentationNode.options.getOptions()[0].label.getValue());
+		oSelf.m_oPresentationNode.value.setValue(oSelf.m_oPresentationNode.options.getOptions()[0].value.getValue());
 	};
 	
 	this.m_fSecondClick = function()
 	{
 		br.util.ElementUtility.addClassName(oSelf.m_eElement, "choiceBSelected");
 		br.util.ElementUtility.removeClassName(oSelf.m_eElement, "choiceASelected");
-		oSelf.m_oPresentationNode.value.setValue(oSelf.m_oPresentationNode.options.getOptions()[1].label.getValue());
+		oSelf.m_oPresentationNode.value.setValue(oSelf.m_oPresentationNode.options.getOptions()[1].value.getValue());
 	};
 
 	// TODO: find out why tests fail when these events are added without the final "true" parameter (direct attachment), which attaches the events as .onclick attributes

@@ -8,21 +8,20 @@ import javax.naming.InvalidNameException;
 import org.bladerunnerjs.model.engine.AbstractNode;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
-import org.bladerunnerjs.model.engine.NodeMap;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.NameValidator;
 
 
 public final class TestChildNode extends AbstractNode implements NamedNode
 {
-	NodeMap<TestGrandChildNode> grandChildNodes;
+	NodeList<TestGrandChildNode> grandChildNodes;
 	private String name;
 	
 	public TestChildNode(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		grandChildNodes = new NodeMap<>(rootNode, TestGrandChildNode.class, "grandchild", null);
+		grandChildNodes = new NodeList<>(this, TestGrandChildNode.class, "grandchild", null);
 		
 		registerInitializedNode();
 	}
@@ -47,11 +46,11 @@ public final class TestChildNode extends AbstractNode implements NamedNode
 	
 	public List<TestGrandChildNode> grandChildNodes()
 	{
-		return children(grandChildNodes);
+		return grandChildNodes.list();
 	}
 	
 	public TestGrandChildNode grandChildNode(String appName)
 	{
-		return child(grandChildNodes, appName);
+		return grandChildNodes.item(appName);
 	}
 }

@@ -13,7 +13,7 @@
 br.presenter.node.Field = function(vValue)
 {
 	if((vValue instanceof br.presenter.property.Property) && !(vValue instanceof br.presenter.property.EditableProperty)){
-		throw new br.Errors.CustomError(br.Errors.LEGACY, "Field constructor: can't pass non-editable property as parameter");
+		throw new br.Errors.InvalidParametersError("Field constructor: can't pass non-editable property as parameter");
 	}
 	
 	if(!(vValue instanceof br.presenter.property.EditableProperty)) {

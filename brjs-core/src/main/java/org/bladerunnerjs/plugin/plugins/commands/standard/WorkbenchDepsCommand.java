@@ -53,7 +53,7 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
 		String bladesetName = parsedArgs.getString("bladeset-name");
 		String bladeName = parsedArgs.getString("blade-name");
@@ -75,5 +75,6 @@ public class WorkbenchDepsCommand extends ArgsParsingCommandPlugin
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
 		}
+		return 0;
 	}
 }

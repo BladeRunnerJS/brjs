@@ -53,7 +53,7 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
 		String aspectName = parsedArgs.getString("aspect-name");
 		String requirePathOrAlias = parsedArgs.getString("require-path");
@@ -82,5 +82,7 @@ public class DepInsightCommand extends ArgsParsingCommandPlugin
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
 		}
+		
+		return 0;
 	}
 }
