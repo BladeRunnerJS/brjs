@@ -58,8 +58,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 		this.assetLocation = assetLocation;
 		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		className = requirePath.replaceAll("/", ".");
-		linkedAsset = new FullyQualifiedLinkedAsset();
-		linkedAsset.initialize(assetLocation, dir, assetName);
+		linkedAsset = new FullyQualifiedLinkedAsset(assetLocation, dir, assetName);
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(), assetFile, patch.getPatchFile());
 		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(), assetFile, patch.getPatchFile());
