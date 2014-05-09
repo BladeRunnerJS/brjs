@@ -16,6 +16,16 @@ public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implemen
 	}
 	
 	@Override
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return assetLocationPlugin.getPluginsThatMustAppearBeforeThisPlugin();
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return assetLocationPlugin.getPluginsThatMustAppearAfterThisPlugin();
+	}
+	
+	@Override
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		initializePlugin();
 		return assetLocationPlugin.getAssetLocationDirectories(assetContainer);
@@ -31,16 +41,6 @@ public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implemen
 	public AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap) {
 		initializePlugin();
 		return assetLocationPlugin.createAssetLocation(assetContainer, dirPath, assetLocationsMap);
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return assetLocationPlugin.getPluginsThatMustAppearBeforeThisPlugin();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return assetLocationPlugin.getPluginsThatMustAppearAfterThisPlugin();
 	}
 	
 	@Override
