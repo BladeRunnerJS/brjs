@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.SourceModule;
 /**
  * Asset plug-ins allow new implementations of {@link SourceModule}, {@link LinkedAsset} &amp; {@link Asset} to be supported within the model.
  */
-public interface AssetPlugin extends Plugin {
+public interface AssetPlugin extends OrderedPlugin {
 	boolean canHandleAsset(File assetFile, AssetLocation assetLocation);
 	Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException;
 }

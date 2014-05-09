@@ -2,8 +2,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.compositejs;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
@@ -31,16 +29,6 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public String getTagName() {
 		return "js.bundle";
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
 	}
 	
 	@Override

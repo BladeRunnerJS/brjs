@@ -27,30 +27,8 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
 		return Arrays.asList(BRJSConformantAssetLocationPlugin.class.getCanonicalName());
-	}
-	
-	@Override
-	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
-		List<String> seedAssetLocationDirectories = new ArrayList<>();
-		
-		seedAssetLocationDirectories.add("resources");
-		seedAssetLocationDirectories.add("tests");
-		
-		File testsDir = assetContainer.file("tests");
-		if(testsDir.exists()) {
-			for(File dir : brjs.getFileInfo(testsDir).nestedDirs()) {
-				seedAssetLocationDirectories.add(RelativePathUtility.get(assetContainer.dir(), dir));
-			}
-		}
-		
-		return seedAssetLocationDirectories;
 	}
 	
 	@Override
@@ -78,6 +56,23 @@ public class BRJSConformantTestPackAssetLocationPlugin extends AbstractAssetLoca
 		}
 		
 		return assetLocationDirectories;
+	}
+	
+	@Override
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		List<String> seedAssetLocationDirectories = new ArrayList<>();
+		
+		seedAssetLocationDirectories.add("resources");
+		seedAssetLocationDirectories.add("tests");
+		
+		File testsDir = assetContainer.file("tests");
+		if(testsDir.exists()) {
+			for(File dir : brjs.getFileInfo(testsDir).nestedDirs()) {
+				seedAssetLocationDirectories.add(RelativePathUtility.get(assetContainer.dir(), dir));
+			}
+		}
+		
+		return seedAssetLocationDirectories;
 	}
 	
 	@Override
