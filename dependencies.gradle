@@ -100,7 +100,7 @@ Dependencies.putAll([
 	'cobertura'					:	'net.sourceforge.cobertura:cobertura:1.9.4.1',
 	'JsTestDriver'				:	'com.google:JsTestDriver:1.3.3d-brjs2',
 	'ecj'						:	'org.eclipse.jdt.core.compiler:ecj:3.7.2',
-	'closure-compiler'			:	'com.google.javascript:closure-compiler:v20140407',
+	'closure-compiler'			:	'com.google.javascript:closure-compiler:v20130823',
 	'jericho-html'				:	'net.htmlparser.jericho:jericho-html:3.2',
 	'wagon-http'				:	'org.apache.maven.wagon:wagon-http:2.2',
 
