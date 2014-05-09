@@ -59,9 +59,9 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 				// The classes are both made available globally
 				"mergePackageBlock(window, {\"sdkNamespaceLib\":{},\"sdkNodeJsLib\":{}});",
 				// The namespaced style sdk class is assigned to the require of the nodeJsLib class  
-				"sdkNodeJsLib.Class1 = require('sdkNodeJsLib/Class1');",
+				"requireAll(['sdkNodeJsLib/Class1']);",
 				"sdkNamespaceLib.ProxyClass = sdkNodeJsLib.Class1;",
-				"define('sdkNamespaceLib/ProxyClass', function(require, exports, module) { module.exports = sdkNamespaceLib.ProxyClass; });");
+				"sdkNodeJsLib.Class1 = require('sdkNodeJsLib/Class1');");
 	}
 	
 	@Test
@@ -77,10 +77,8 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 				"mergePackageBlock(window, {\"otherSdkNamespaceLib\":{},\"sdkNamespaceLib\":{}});",
 				// The class being proxied (the depended-on class) should be added first
 				"otherSdkNamespaceLib.Class1 = function() { var x = 'original function'; };",
-				"define('otherSdkNamespaceLib/Class1', function(require, exports, module) { module.exports = otherSdkNamespaceLib.Class1; });",
 				// The library class doing the proxying should be added next
-				"sdkNamespaceLib.ProxyClass = otherSdkNamespaceLib.Class1;",
-				"define('sdkNamespaceLib/ProxyClass', function(require, exports, module) { module.exports = sdkNamespaceLib.ProxyClass; });");
+				"sdkNamespaceLib.ProxyClass = otherSdkNamespaceLib.Class1;");
 	}
 	
 	

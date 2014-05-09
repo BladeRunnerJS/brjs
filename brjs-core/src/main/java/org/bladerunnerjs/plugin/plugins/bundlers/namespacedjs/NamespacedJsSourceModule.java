@@ -12,6 +12,7 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
+import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -21,6 +22,7 @@ import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsSourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.reader.JsCommentAndCodeBlockStrippingReaderFactory;
@@ -28,8 +30,10 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NamespacedJsSourceModule implements SourceModule {
-	private static final String DEFINE_BLOCK = "\ndefine('%s', function(require, exports, module) { module.exports = %s; });";
+public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
+	
+	public static final String STATIC_DEPENDENCIES_BLOCK_START = "requireAll([";
+	public static final String STATIC_DEPENDENCIES_BLOCK_END = "]);";
 	
 	private LinkedAsset linkedAsset;
 	private AssetLocation assetLocation;
@@ -61,8 +65,8 @@ public class NamespacedJsSourceModule implements SourceModule {
 		linkedAsset = new FullyQualifiedLinkedAsset();
 		linkedAsset.initialize(assetLocation, dir, assetName);
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(), assetFile, patch.getPatchFile());
-		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(), assetFile, patch.getPatchFile());
+		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
 		assetLocationsList = new MemoizedValue<>("NamespacedJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 	}
 	
@@ -89,9 +93,35 @@ public class NamespacedJsSourceModule implements SourceModule {
 	}
 	
 	@Override
+	public Reader getUnalteredContentReader() throws IOException {
+		return new ConcatReader( new Reader[] {
+				linkedAsset.getReader(), 
+				patch.getReader()
+		});
+	}
+	
+	@Override
 	public Reader getReader() throws IOException {
-		String formattedDefineBlock = String.format(DEFINE_BLOCK, requirePath, className);
-		Reader[] readers = new Reader[] { linkedAsset.getReader(), patch.getReader(), new StringReader(formattedDefineBlock) };
+		String staticDependenciesRequireDefinition;
+		try
+		{
+			staticDependenciesRequireDefinition = calculateStaticDependenciesRequireDefinition();
+			staticDependenciesRequireDefinition = (staticDependenciesRequireDefinition.isEmpty()) ? "" : " "+staticDependenciesRequireDefinition;
+		}
+		catch (ModelOperationException e)
+		{
+			throw new IOException("Unable to create the SourceModule reader", e);
+		}
+		
+		String defineBlockHeader = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
+		
+		Reader[] readers = new Reader[] { 
+				new StringReader( String.format(defineBlockHeader, getRequirePath()) ), 
+				getUnalteredContentReader(),
+				new StringReader( "\n" ),
+				new StringReader( "module.exports = " + getClassname() + ";" ),
+				new StringReader(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 
+		};
 		return new ConcatReader( readers );
 	}
 	
@@ -107,7 +137,7 @@ public class NamespacedJsSourceModule implements SourceModule {
 	
 	@Override
 	public boolean isEncapsulatedModule() {
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -125,6 +155,22 @@ public class NamespacedJsSourceModule implements SourceModule {
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+	}
+	
+	public String calculateStaticDependenciesRequireDefinition() throws ModelOperationException {
+		List<String> staticDependencyRequirePaths = staticDependencyCalculator.getRequirePaths();
+		if (staticDependencyRequirePaths.isEmpty()) {
+			return "";
+		}
+		
+		StringBuilder staticDependenciesRequireDefinition = new StringBuilder( STATIC_DEPENDENCIES_BLOCK_START );
+		for (String staticDependencyRequirePath : staticDependencyRequirePaths) {
+			staticDependenciesRequireDefinition.append( "'"+staticDependencyRequirePath+"'," );
+		}
+		staticDependenciesRequireDefinition.setLength( +staticDependenciesRequireDefinition.length() - 1 ); // remove the final ',' we added
+		staticDependenciesRequireDefinition.append( STATIC_DEPENDENCIES_BLOCK_END );
+		
+		return staticDependenciesRequireDefinition.toString()+"\n";
 	}
 	
 	@Override
@@ -155,4 +201,5 @@ public class NamespacedJsSourceModule implements SourceModule {
 			return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 		});
 	}
+	
 }

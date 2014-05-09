@@ -81,9 +81,8 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 		then(requestResponse).containsOrderedTextFragments(
 				"// br-bootstrap", 
 				"// appLib", 
-				"define('appns/node/Class'",
-				"appns.namespaced.Class =", 
-				"define('appns/namespaced/Class'," ); 
+				"define('appns/node/Class'", 
+				"appns.namespaced.Class ="); 
 	}
 	
 	@Test
