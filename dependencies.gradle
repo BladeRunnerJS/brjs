@@ -14,6 +14,12 @@ ext {
 	}
 }
 
+configurations.all {
+	resolutionStrategy {
+		force 'xerces:xercesImpl:2.9.1'
+	}
+}
+
 /*
  * when adding a new dependency use the artifactId as the map key
  * e.g. 'org.eclipse.jetty.aggregate:jetty-all-server:8.1.0.v20120127' becomes
