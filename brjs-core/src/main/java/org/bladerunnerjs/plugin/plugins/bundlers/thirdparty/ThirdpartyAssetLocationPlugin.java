@@ -18,11 +18,6 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
 		return Arrays.asList(BRJSConformantAssetLocationPlugin.class.getCanonicalName());
 	}
