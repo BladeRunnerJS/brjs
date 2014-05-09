@@ -57,16 +57,7 @@ public class NodeJsSourceModule implements AugmentedContentSourceModule {
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
-	public NodeJsSourceModule() {
-	}
-	
 	public NodeJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
-		initialize(assetLocation, dir, assetName);
-	}
-
-	@Override
-	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
-	{
 		try {
 			this.assetLocation = assetLocation;
 			assetFile = new File(dir, assetName);
