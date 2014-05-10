@@ -31,6 +31,7 @@ import com.caplin.cutlass.util.FileUtility;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+@SuppressWarnings("deprecation")
 public class RestApiServletTest
 {
 	
