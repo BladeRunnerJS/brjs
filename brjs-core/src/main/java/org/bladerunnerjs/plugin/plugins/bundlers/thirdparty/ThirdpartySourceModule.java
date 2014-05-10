@@ -30,17 +30,15 @@ public class ThirdpartySourceModule implements SourceModule
 {
 
 	private AssetLocation assetLocation;
-	private File dir;
 	private NonBladerunnerJsLibManifest manifest;
 	private String assetPath;
 	private SourceModulePatch patch;
 	private String defaultFileCharacterEncoding;
 	
-	public ThirdpartySourceModule(AssetLocation assetLocation, File dir, String assetName) {
+	public ThirdpartySourceModule(AssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
-			this.dir = dir;
-			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), dir);
+			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetLocation.dir());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 		}
@@ -118,7 +116,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public File dir()
 	{
-		return dir;
+		return assetLocation.dir();
 	}
 	
 	@Override
@@ -173,7 +171,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public String getRequirePath()
 	{
-		return dir.getName();
+		return assetLocation.dir().getName();
 	}
 	
 	@Override
