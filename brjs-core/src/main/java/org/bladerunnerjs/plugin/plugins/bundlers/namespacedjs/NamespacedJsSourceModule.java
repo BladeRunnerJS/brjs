@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
+import org.bladerunnerjs.model.LinkedFileAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
@@ -22,7 +22,7 @@ import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsSourceModule;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.reader.JsCommentAndCodeBlockStrippingReaderFactory;
@@ -47,13 +47,11 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	private final Map<BundlableNode, SourceModuleResolver> staticSourceModuleResolvers = new HashMap<>();
 	
-	public NamespacedJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
-		File assetFile = new File(dir, assetName);
-		
+	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		className = requirePath.replaceAll("/", ".");
-		linkedAsset = new FullyQualifiedLinkedAsset(assetLocation, dir, assetName);
+		linkedAsset = new LinkedFileAsset(assetFile, assetLocation);
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
 		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
@@ -103,14 +101,14 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 			throw new IOException("Unable to create the SourceModule reader", e);
 		}
 		
-		String defineBlockHeader = NodeJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
+		String defineBlockHeader = CommonJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
 		
 		Reader[] readers = new Reader[] { 
 				new StringReader( String.format(defineBlockHeader, getRequirePath()) ), 
 				getUnalteredContentReader(),
 				new StringReader( "\n" ),
 				new StringReader( "module.exports = " + getClassname() + ";" ),
-				new StringReader(NodeJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 
+				new StringReader(CommonJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 
 		};
 		return new ConcatReader( readers );
 	}
