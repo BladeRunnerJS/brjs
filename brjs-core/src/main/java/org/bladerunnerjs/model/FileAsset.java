@@ -14,9 +14,6 @@ public class FileAsset implements Asset {
 	private String defaultFileCharacterEncoding;
 	private String assetPath;
 	
-	public FileAsset() {
-	}
-	
 	public FileAsset(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
 		try {
 			this.file = assetFile;

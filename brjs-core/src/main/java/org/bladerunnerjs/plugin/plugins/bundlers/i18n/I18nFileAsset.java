@@ -34,9 +34,6 @@ public class I18nFileAsset implements Asset
 	private File assetFile;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
-
-	public I18nFileAsset() {
-	}
 	
 	public I18nFileAsset(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
 		try {
