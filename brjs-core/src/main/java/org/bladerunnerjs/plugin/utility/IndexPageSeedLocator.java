@@ -29,7 +29,7 @@ public class IndexPageSeedLocator {
 				String indexFilePath = indexFile.getAbsolutePath();
 				
 				if(!cachedAssets.containsKey(indexFilePath)) {
-					cachedAssets.put(indexFilePath, new LinkedFileAsset(viewableBundlableNode.assetLocation("resources"), indexFile.getParentFile(), indexFile.getName()));
+					cachedAssets.put(indexFilePath, new LinkedFileAsset(viewableBundlableNode.assetLocation("resources"), indexFile));
 				}
 				
 				seedFiles.add(cachedAssets.get(indexFilePath));

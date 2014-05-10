@@ -38,10 +38,10 @@ public class I18nFileAsset implements Asset
 	public I18nFileAsset() {
 	}
 	
-	public I18nFileAsset(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+	public I18nFileAsset(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
-			this.assetFile = new File(dir, assetName);
+			this.assetFile = assetFile;
 			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}

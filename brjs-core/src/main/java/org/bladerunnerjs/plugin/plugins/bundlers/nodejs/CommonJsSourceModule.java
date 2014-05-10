@@ -57,10 +57,10 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
-	public CommonJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+	public CommonJsSourceModule(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
-			assetFile = new File(dir, assetName);
+			this.assetFile = assetFile;
 			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");

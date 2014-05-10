@@ -17,9 +17,9 @@ public class FileAsset implements Asset {
 	public FileAsset() {
 	}
 	
-	public FileAsset(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+	public FileAsset(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
 		try {
-			this.file = new File(dir, assetName);
+			this.file = assetFile;
 			this.assetLocation = assetLocation;
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), file);

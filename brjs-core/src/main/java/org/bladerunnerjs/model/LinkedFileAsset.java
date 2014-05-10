@@ -28,11 +28,11 @@ public class LinkedFileAsset implements LinkedAsset {
 	private TrieBasedDependenciesCalculator dependencyCalculator;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
-	public LinkedFileAsset(AssetLocation assetLocation, File dir, String assetName) {
+	public LinkedFileAsset(AssetLocation assetLocation, File assetFile) {
 		try {
 			this.assetLocation = assetLocation;
 			app = assetLocation.assetContainer().app();
-			this.assetFile = new File(dir, assetName);
+			this.assetFile = assetFile;
 			assetPath = RelativePathUtility.get(app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile);

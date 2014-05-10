@@ -26,6 +26,6 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new I18nFileAsset(assetLocation, assetFile.getParentFile(), assetFile.getName());
+		return new I18nFileAsset(assetLocation, assetFile);
 	}
 }

@@ -25,6 +25,6 @@ public class CssResourceAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new FileAsset(assetLocation, assetFile.getParentFile(), assetFile.getName());
+		return new FileAsset(assetLocation, assetFile);
 	}
 }

@@ -47,13 +47,11 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	private final Map<BundlableNode, SourceModuleResolver> staticSourceModuleResolvers = new HashMap<>();
 	
-	public NamespacedJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
-		File assetFile = new File(dir, assetName);
-		
+	public NamespacedJsSourceModule(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		className = requirePath.replaceAll("/", ".");
-		linkedAsset = new LinkedFileAsset(assetLocation, dir, assetName);
+		linkedAsset = new LinkedFileAsset(assetLocation, assetFile);
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
 		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
