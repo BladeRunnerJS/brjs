@@ -28,7 +28,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	private TrieBasedDependenciesCalculator dependencyCalculator;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
-	public LinkedFileAsset(AssetLocation assetLocation, File assetFile) {
+	public LinkedFileAsset(File assetFile, AssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
 			app = assetLocation.assetContainer().app();

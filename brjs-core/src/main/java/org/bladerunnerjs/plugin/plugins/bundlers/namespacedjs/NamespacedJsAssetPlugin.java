@@ -20,6 +20,6 @@ public class NamespacedJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new NamespacedJsSourceModule(assetLocation, assetFile);
+		return new NamespacedJsSourceModule(assetFile, assetLocation);
 	}
 }

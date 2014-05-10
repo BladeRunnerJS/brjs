@@ -23,6 +23,6 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new LinkedFileAsset(assetLocation, assetFile);
+		return new LinkedFileAsset(assetFile, assetLocation);
 	}
 }

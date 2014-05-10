@@ -19,6 +19,6 @@ public class NodeJsAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new CommonJsSourceModule(assetLocation, assetFile);
+		return new CommonJsSourceModule(assetFile, assetLocation);
 	}
 }

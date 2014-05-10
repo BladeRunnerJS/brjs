@@ -57,7 +57,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
-	public CommonJsSourceModule(AssetLocation assetLocation, File assetFile) throws AssetFileInstantationException {
+	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = assetFile;
