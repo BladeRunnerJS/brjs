@@ -19,7 +19,7 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
  * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
  *
  */
-public class FullyQualifiedLinkedAsset implements LinkedAsset {
+public class LinkedFileAsset implements LinkedAsset {
 	private App app;
 	private File assetFile;
 	private AssetLocation assetLocation;
@@ -28,7 +28,7 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private TrieBasedDependenciesCalculator dependencyCalculator;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
-	public FullyQualifiedLinkedAsset(AssetLocation assetLocation, File dir, String assetName) {
+	public LinkedFileAsset(AssetLocation assetLocation, File dir, String assetName) {
 		try {
 			this.assetLocation = assetLocation;
 			app = assetLocation.assetContainer().app();

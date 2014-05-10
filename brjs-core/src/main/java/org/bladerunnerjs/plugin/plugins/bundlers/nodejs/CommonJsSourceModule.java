@@ -36,7 +36,7 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NodeJsSourceModule implements AugmentedContentSourceModule {
+public class CommonJsSourceModule implements AugmentedContentSourceModule {
 
 	public static final String NODEJS_DEFINE_BLOCK_HEADER = "define('%s', function(require, exports, module) {\n";
 	public static final String NODEJS_DEFINE_BLOCK_FOOTER = "\n});\n";
@@ -57,7 +57,7 @@ public class NodeJsSourceModule implements AugmentedContentSourceModule {
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
-	public NodeJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+	public CommonJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
 			assetFile = new File(dir, assetName);

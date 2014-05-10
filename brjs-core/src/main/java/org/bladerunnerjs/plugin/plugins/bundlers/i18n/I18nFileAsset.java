@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
-public class I18nAssetFile implements Asset
+public class I18nFileAsset implements Asset
 {
 	
 	class Messages {
@@ -35,10 +35,10 @@ public class I18nAssetFile implements Asset
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 
-	public I18nAssetFile() {
+	public I18nFileAsset() {
 	}
 	
-	public I18nAssetFile(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
+	public I18nFileAsset(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = new File(dir, assetName);

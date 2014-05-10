@@ -9,7 +9,7 @@ import java.util.Map;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
+import org.bladerunnerjs.model.LinkedFileAsset;
 import org.bladerunnerjs.model.LinkedAsset;
 
 public class IndexPageSeedLocator {
@@ -29,7 +29,7 @@ public class IndexPageSeedLocator {
 				String indexFilePath = indexFile.getAbsolutePath();
 				
 				if(!cachedAssets.containsKey(indexFilePath)) {
-					cachedAssets.put(indexFilePath, new FullyQualifiedLinkedAsset(viewableBundlableNode.assetLocation("resources"), indexFile.getParentFile(), indexFile.getName()));
+					cachedAssets.put(indexFilePath, new LinkedFileAsset(viewableBundlableNode.assetLocation("resources"), indexFile.getParentFile(), indexFile.getName()));
 				}
 				
 				seedFiles.add(cachedAssets.get(indexFilePath));
