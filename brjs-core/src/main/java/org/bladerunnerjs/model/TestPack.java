@@ -46,7 +46,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	public List<LinkedAsset> modelSeedAssets() 
 	{
 		// TODO: add extra coverage so this can be fixed without causing only js breakage
-//		return new ArrayList<>();
+//		return Collections.emptyList();
 		
 		List<LinkedAsset> seedFiles = new ArrayList<>();
 		

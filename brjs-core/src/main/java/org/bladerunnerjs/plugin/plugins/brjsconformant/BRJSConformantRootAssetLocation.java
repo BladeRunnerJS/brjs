@@ -1,7 +1,7 @@
 package org.bladerunnerjs.plugin.plugins.brjsconformant;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.JsLib;
@@ -29,7 +29,7 @@ public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation im
 	
 	@Override
 	protected List<File> getCandidateFiles() {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
 	@Override
