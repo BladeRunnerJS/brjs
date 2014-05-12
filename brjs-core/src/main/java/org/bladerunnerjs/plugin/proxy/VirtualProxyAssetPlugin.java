@@ -1,6 +1,8 @@
 package org.bladerunnerjs.plugin.proxy;
 
 import java.io.File;
+import java.util.List;
+
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -12,6 +14,14 @@ public class VirtualProxyAssetPlugin extends VirtualProxyPlugin implements Asset
 	public VirtualProxyAssetPlugin(AssetPlugin assetPlugin) {
 		super(assetPlugin);
 		this.assetPlugin = assetPlugin;
+	}
+	
+	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
+		return assetPlugin.getPluginsThatMustAppearBeforeThisPlugin();
+	}
+	
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return assetPlugin.getPluginsThatMustAppearAfterThisPlugin();
 	}
 	
 	@Override

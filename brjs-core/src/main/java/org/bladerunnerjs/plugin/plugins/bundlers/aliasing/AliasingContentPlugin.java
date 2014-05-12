@@ -53,11 +53,6 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser() {
 		return contentPathParser;
 	}

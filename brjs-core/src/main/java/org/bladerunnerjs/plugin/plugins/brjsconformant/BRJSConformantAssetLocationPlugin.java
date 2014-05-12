@@ -62,25 +62,10 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
-		return seedAssetLocationDirectories;
-	}
-	
-	@Override
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
-		assetLocationDirectories.add("");
+		assetLocationDirectories.add(".");
 		assetLocationDirectories.add("resources");
 		assetLocationDirectories.add("src");
 		assetLocationDirectories.add("src-test");
@@ -103,12 +88,17 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	}
 	
 	@Override
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
+		return seedAssetLocationDirectories;
+	}
+	
+	@Override
 	public AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap) {
 		AssetLocation assetLocation;
 		File dir = assetContainer.file(dirPath);
 		
 		switch(dirPath) {
-			case "":
+			case ".":
 				assetLocation = new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, dir);
 				break;
 			

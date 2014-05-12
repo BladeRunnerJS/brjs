@@ -19,7 +19,7 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
  * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
  *
  */
-public class FullyQualifiedLinkedAsset implements LinkedAsset {
+public class LinkedFileAsset implements LinkedAsset {
 	private App app;
 	private File assetFile;
 	private AssetLocation assetLocation;
@@ -28,22 +28,14 @@ public class FullyQualifiedLinkedAsset implements LinkedAsset {
 	private TrieBasedDependenciesCalculator dependencyCalculator;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
-	public FullyQualifiedLinkedAsset() {
-	}
-	
-	public FullyQualifiedLinkedAsset(AssetLocation assetLocation, File dir, String name) {
-		initialize(assetLocation, dir, name);
-	}
-	
-	public void initialize(AssetLocation assetLocation, File dir, String assetName)
-	{
+	public LinkedFileAsset(File assetFile, AssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
 			app = assetLocation.assetContainer().app();
-			this.assetFile = new File(dir, assetName);
+			this.assetFile = assetFile;
 			assetPath = RelativePathUtility.get(app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(), assetFile);
+			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

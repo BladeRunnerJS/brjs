@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.FullyQualifiedLinkedAsset;
+import org.bladerunnerjs.model.LinkedFileAsset;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class XMLAssetPlugin extends AbstractAssetPlugin {
@@ -23,6 +23,6 @@ public class XMLAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new FullyQualifiedLinkedAsset(assetLocation, assetFile.getParentFile(), assetFile.getName());
+		return new LinkedFileAsset(assetFile, assetLocation);
 	}
 }

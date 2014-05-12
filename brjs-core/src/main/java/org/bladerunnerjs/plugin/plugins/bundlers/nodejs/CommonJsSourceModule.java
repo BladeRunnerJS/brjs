@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
+import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
@@ -35,7 +37,7 @@ import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 import com.Ostermiller.util.ConcatReader;
 
-public class NodeJsSourceModule implements SourceModule {
+public class CommonJsSourceModule implements AugmentedContentSourceModule {
 
 	public static final String NODEJS_DEFINE_BLOCK_HEADER = "define('%s', function(require, exports, module) {\n";
 	public static final String NODEJS_DEFINE_BLOCK_FOOTER = "\n});\n";
@@ -56,19 +58,10 @@ public class NodeJsSourceModule implements SourceModule {
 	private MemoizedValue<List<AssetLocation>> assetLocationsList;
 	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
-	public NodeJsSourceModule() {
-	}
-	
-	public NodeJsSourceModule(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
-		initialize(assetLocation, dir, assetName);
-	}
-
-	@Override
-	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException
-	{
+	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		try {
 			this.assetLocation = assetLocation;
-			assetFile = new File(dir, assetName);
+			this.assetFile = assetFile;
 			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 			className = requirePath.replaceAll("/", ".");
@@ -102,13 +95,20 @@ public class NodeJsSourceModule implements SourceModule {
 	public List<String> getAliasNames() throws ModelOperationException {
 		return getComputedValue().aliases;
 	}
-
+	
+	@Override
+	public Reader getUnalteredContentReader() throws IOException {
+		return new ConcatReader( new Reader[] {
+				new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding)),
+				patch.getReader(),
+		});
+	}
+	
 	@Override
 	public Reader getReader() throws IOException {
 		return new ConcatReader(new Reader[] {
 			new StringReader( String.format(NODEJS_DEFINE_BLOCK_HEADER, requirePath) ),
-			new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding)),
-			patch.getReader(),
+			getUnalteredContentReader(),
 			new StringReader( NODEJS_DEFINE_BLOCK_FOOTER )
 		});
 	}
@@ -130,7 +130,7 @@ public class NodeJsSourceModule implements SourceModule {
 	
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
 	@Override

@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +42,6 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
 		return Arrays.asList(ThirdpartyTagHandlerPlugin.class.getCanonicalName());
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
 	}
 	
 	@Override

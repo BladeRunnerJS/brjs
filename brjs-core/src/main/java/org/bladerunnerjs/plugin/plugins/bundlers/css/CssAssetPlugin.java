@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.File;
+
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
@@ -21,6 +22,6 @@ public class CssAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new FileAsset(assetLocation, assetFile.getParentFile(), assetFile.getName());
+		return new FileAsset(assetFile, assetLocation);
 	}
 }
