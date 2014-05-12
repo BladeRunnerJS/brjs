@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRLibConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -65,9 +64,9 @@ public class BRLibTest extends SpecTest {
 		then(response).containsNodeJsClasses("foo.Bar");
 	}
 	
-	@Test @Ignore //TODO: fix me
+	@Test
 	public void sdkLibrariesCanOptionallyDisableJsNamespaceEnforcement() throws Exception {
-		given(aspect).indexPageRefersTo("br.SdkClass", "anotherRootPkg.SdkClass")
+		given(aspect).indexPageRefersTo("br.SdkClass", "anotherRootPkg.AnotherSdkClass")
 			.and(sdkLib).containsFile("no-namespace-enforcement")
 			.and(sdkLib).hasClass("br/SdkClass")
 			.and(sdkLib).hasClass("anotherRootPkg/AnotherSdkClass");
