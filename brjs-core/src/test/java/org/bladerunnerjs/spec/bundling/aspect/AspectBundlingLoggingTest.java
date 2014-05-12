@@ -1,6 +1,6 @@
 package org.bladerunnerjs.spec.bundling.aspect;
 
-import static org.bladerunnerjs.utility.LogicalRequestHandler.Messages.*;
+import static org.bladerunnerjs.utility.ContentRequestHandler.Messages.*;
 import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
 
 import org.bladerunnerjs.model.App;
