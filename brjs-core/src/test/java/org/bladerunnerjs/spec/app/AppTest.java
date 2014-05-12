@@ -153,7 +153,7 @@ public class AppTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(appLib).hasBeenCreated()
 			.and(sdkLib).hasBeenCreated();
-		given(app).hasLibs(appLib, sdkLib);
+		given(app).hasLibs(sdkLib, appLib);
 		then(app).libsReturnCorrectApp();
 	}
 	
@@ -164,7 +164,7 @@ public class AppTest extends SpecTest {
 			.and(sdkLib).hasBeenCreated()
 			.and(globalNonBladeRunnerLib).hasBeenCreated()
 			.and(appNonBladeRunnerLib).hasBeenCreated();
-		given(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
+		given(app).hasLibs(sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib, appLib);
 		then(app).libsReturnCorrectApp();
 	}
 	
@@ -173,7 +173,7 @@ public class AppTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(appLib).hasBeenCreated()
 			.and(sdkLib).hasBeenCreated();
-		then(app).hasLibs(appLib, sdkLib);
+		then(app).hasLibs(sdkLib, appLib);
 	}
 	
 	@Test
@@ -183,7 +183,7 @@ public class AppTest extends SpecTest {
     		.and(sdkLib).hasBeenCreated()
     		.and(globalNonBladeRunnerLib).hasBeenCreated()
     		.and(appNonBladeRunnerLib).hasBeenCreated();
-		then(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
+		then(app).hasLibs(sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib, appLib);
 	}
 	
 	@Test
@@ -193,7 +193,7 @@ public class AppTest extends SpecTest {
     		.and(sdkLib).hasBeenCreated()
     		.and(globalOverriddenNonBRLib).hasBeenCreated()
     		.and(appOverriddenNonBRLib).hasBeenCreated();
-		then(app).hasLibs(appLib, sdkLib, appOverriddenNonBRLib);
+		then(app).hasLibs(sdkLib, appOverriddenNonBRLib, appLib);
 	}
 	
 	@Test

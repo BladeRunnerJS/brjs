@@ -49,8 +49,8 @@ public class AppNavigationTest
 	public void jsLibs()
 	{
 		nodeTesterFactory.createSetTester(JsLib.class, "jsLibs", "jsLib")
-			.addChild("l1", "libs/l1")
 			.addChild("br", "../../sdk/libs/javascript/br-libs/br")
+			.addChild("l1", "libs/l1")
 			.addChild("brlib2", "../../sdk/libs/javascript/br-libs/brlib2")
 			.addChild("thirdparty-l1", "../../sdk/libs/javascript/thirdparty/thirdparty-l1")
 			.addChild("thirdparty-l2", "../../sdk/libs/javascript/thirdparty/thirdparty-l2")

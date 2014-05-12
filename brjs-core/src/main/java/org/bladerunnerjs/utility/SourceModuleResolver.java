@@ -27,15 +27,15 @@ public class SourceModuleResolver {
 	
 	public List<SourceModule> getSourceModules(Collection<String> requirePaths) throws RequirePathException {
 		return sourceModules.value(() -> {
-			Set<SourceModule> dependentSourceModules = new LinkedHashSet<>();
+			Set<SourceModule> sourceModules = new LinkedHashSet<>();
 			
 			for(String requirePath : requirePaths) {				
 				String canonicalRequirePath = assetLocation.canonicaliseRequirePath(requirePath);
 				SourceModule sourceModule = bundlableNode.getSourceModule(canonicalRequirePath);
-				dependentSourceModules.add(sourceModule);
+				sourceModules.add(sourceModule);
 			}
 			
-			return new ArrayList<SourceModule>( dependentSourceModules );
+			return new ArrayList<SourceModule>( sourceModules );
 		});
 	}
 }

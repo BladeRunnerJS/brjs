@@ -5,7 +5,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AspectBundlingOfMixedSources extends SpecTest {
@@ -117,9 +116,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		then(response).containsDefinedClasses("sdkNodeJsLib/Class1", "userLib/Class1");
 	}
 	
-	// TODO - this test does not bundle EITHER jquery libs if both have the same require path, comment either lib out to see results
 	// User thirdparty lib in 'libs' dir overriding an sdk thirdparty library
-	@Ignore
 	@Test
 	public void userThirdpartyLibraryIsLoadedInsteadOfSdkThirdpartyLibrary() throws Exception {
 		given(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
@@ -127,21 +124,6 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(userJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: null")
 			.and(userJquery).containsFileWithContents("jquery.js", "USER jquery-content")
 			.and(aspect).indexPageHasContent("require('jquery');");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsText("USER jquery-content")
-			.and(response).doesNotContainText("SDK jquery-content");
-	}
-	
-	// TODO - can be moved to caching tests once we have it working, it's convenient to have it in this Test Class for now
-	@Ignore
-	@Test
-	public void userThirdpartyLibraryIsLoadedInsteadOfSdkThirdpartyLibraryOnSecondRequest() throws Exception {
-		given(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
-			.and(sdkJquery).containsFileWithContents("jquery.js", "SDK jquery-content")
-			.and(userJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: null")
-			.and(userJquery).containsFileWithContents("jquery.js", "USER jquery-content")
-			.and(aspect).indexPageHasContent("require('jquery');")
-			.and(app).hasReceivedRequst("/default-aspect/js/dev/en_GB/combined/bundle.js");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
 		then(response).containsText("USER jquery-content")
 			.and(response).doesNotContainText("SDK jquery-content");
