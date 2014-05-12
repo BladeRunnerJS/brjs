@@ -65,7 +65,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
-		assetLocationDirectories.add("");
+		assetLocationDirectories.add(".");
 		assetLocationDirectories.add("resources");
 		assetLocationDirectories.add("src");
 		assetLocationDirectories.add("src-test");
@@ -98,7 +98,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		File dir = assetContainer.file(dirPath);
 		
 		switch(dirPath) {
-			case "":
+			case ".":
 				assetLocation = new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, dir);
 				break;
 			
