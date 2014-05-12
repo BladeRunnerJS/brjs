@@ -22,7 +22,7 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 
 
-public class BRJSServlet extends HttpServlet
+public class BRJSDevServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1964608537461568895L;
 	

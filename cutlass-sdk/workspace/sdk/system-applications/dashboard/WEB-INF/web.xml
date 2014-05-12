@@ -30,21 +30,21 @@
 	</mime-mapping>
 	
 	<servlet>
-		<servlet-name>BRJSServlet</servlet-name>
-		<servlet-class>org.bladerunnerjs.appserver.BRJSServlet</servlet-class>
+		<servlet-name>BRJSDevServlet</servlet-name>
+		<servlet-class>org.bladerunnerjs.appserver.BRJSDevServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>BRJSServlet</servlet-name>
+		<servlet-name>BRJSDevServlet</servlet-name>
 		<url-pattern>/brjs/*</url-pattern>
 	</servlet-mapping>
 
 	<filter>
-		<filter-name>BRJSFilter</filter-name> 
-		<filter-class>org.bladerunnerjs.appserver.BRJSServletFilter</filter-class>
+		<filter-name>BRJSDevServletFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.appserver.BRJSDevServletFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>BRJSFilter</filter-name> 
+		<filter-name>BRJSDevServletFilter</filter-name> 
 		<url-pattern>/*</url-pattern> 
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>

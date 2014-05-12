@@ -35,7 +35,7 @@ import org.bladerunnerjs.plugin.ContentPlugin;
 import com.google.common.base.Joiner;
 
 
-public class BRJSServletFilter implements Filter
+public class BRJSDevServletFilter implements Filter
 {	
 	private ServletContext servletContext;
 	private Pattern contentPluginPrefixPattern;
