@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 
 
-public class ContentRequestHandler {
+public class BundlableNodeRequestHandler {
 	// TODO: these messages need to be covered off in a spec test (a single test would be perfect)
 	public class Messages {
 		public static final String REQUEST_HANDLED_MSG = "Handling logical request '%s' for app '%s'.";
@@ -27,7 +27,7 @@ public class ContentRequestHandler {
 	private final Logger logger;
 	private BundlableNode bundlableNode;
 	
-	public ContentRequestHandler(BundlableNode bundlableNode)
+	public BundlableNodeRequestHandler(BundlableNode bundlableNode)
 	{
 		this.bundlableNode = bundlableNode;
 		this.app = bundlableNode.app();

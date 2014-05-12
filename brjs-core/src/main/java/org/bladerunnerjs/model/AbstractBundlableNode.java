@@ -26,14 +26,14 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.utility.ContentRequestHandler;
+import org.bladerunnerjs.utility.BundlableNodeRequestHandler;
 
 import com.google.common.base.Joiner;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private AliasesFile aliasesFile;
 	private Map<String, AssetContainer> assetContainers = new HashMap<>();
-	private ContentRequestHandler requestHandler;
+	private BundlableNodeRequestHandler requestHandler;
 	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
 	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
 	private final Map<String, MemoizedValue<List<AssetContainer>>> potentialAssetContainersSet = new HashMap<>();
@@ -170,7 +170,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		if (requestHandler == null)
 		{
-			requestHandler = new ContentRequestHandler(this);
+			requestHandler = new BundlableNodeRequestHandler(this);
 		}
 		requestHandler.handle( logicalRequestPath, os);
 	}

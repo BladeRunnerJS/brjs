@@ -57,16 +57,16 @@ public class ContentPathParser
 	
 	public boolean canParseRequest(BladerunnerUri request)
 	{
+		return canParseRequest(request.logicalPath);
+	}
+	
+	public boolean canParseRequest(String requestPath) {
 		try
 		{
-			parse(request);
+			parse(requestPath);
 			return true;
 		}
-		catch (MalformedRequestException e)
-		{
-			return false;
-		}
-		catch (IndexOutOfBoundsException e)
+		catch (MalformedRequestException | IndexOutOfBoundsException e)
 		{
 			return false;
 		}

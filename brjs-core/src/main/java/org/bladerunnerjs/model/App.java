@@ -2,6 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,9 +21,14 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
+import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
+import org.bladerunnerjs.utility.PageAccessor;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -45,12 +51,14 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private AppConf appConf;
 	private final Logger logger;
 	private File[] scopeFiles;
+	private final AppRequestHandler appRequestHandler;
 	
 	public App(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
+		appRequestHandler = new AppRequestHandler(this);
 		
 		registerInitializedNode();
 	}
@@ -305,5 +313,13 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public File thirdpartyLibsDir() {
 		return file("thirdparty-libraries");
+	}
+	
+	public boolean canHandleLogicalRequest(String requestPath) {
+		return appRequestHandler.canHandleLogicalRequest(requestPath);
+	}
+	
+	public void handleLogicalRequest(String requestPath, OutputStream os, PageAccessor pageAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		appRequestHandler.handleLogicalRequest(requestPath, os, pageAccessor);
 	}
 }
