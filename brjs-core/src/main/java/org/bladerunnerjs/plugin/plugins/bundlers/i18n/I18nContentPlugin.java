@@ -172,7 +172,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			for (String key : propertiesMap.keySet())
 			{
 				String value = propertiesMap.get(key);
-				output.append(QUOTE+key+QUOTE+":"+QUOTE+value+QUOTE+","+NEWLINE);
+				output.append(QUOTE+key+QUOTE+":"+QUOTE+value.replace(QUOTE, "\\" +QUOTE)+QUOTE+","+NEWLINE);
 			}
 			if (propertiesMap.size() > 0)
 			{
