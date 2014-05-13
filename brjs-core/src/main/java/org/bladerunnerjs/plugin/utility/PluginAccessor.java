@@ -34,7 +34,7 @@ public class PluginAccessor {
 		tagHandlers = sort(pluginLocator.getTagHandlerPlugins());
 		minifiers = pluginLocator.getMinifierPlugins();
 		modelObservers = pluginLocator.getModelObserverPlugins();
-		assetProducers = pluginLocator.getAssetPlugins();
+		assetProducers = sort(pluginLocator.getAssetPlugins());
 		assetLocationProducers = sort(pluginLocator.getAssetLocationPlugins());
 	}
 	
