@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -187,7 +186,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<JsLib> jsLibs()
 	{
-		Map<String,JsLib> appJsLibs = new HashMap<>();
+		Map<String,JsLib> appJsLibs = new LinkedHashMap<>();
 		
 		for (SdkJsLib lib : root().sdkLibs()) {
 			appJsLibs.put(lib.getName(), new AppSdkJsLib(this, lib));
