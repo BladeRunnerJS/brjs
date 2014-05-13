@@ -76,7 +76,7 @@ public class BRJSStartupTest extends SpecTest {
 		
 	}
 	
-	@Ignore //TODO: this doesnt verify the error log if model observers fail during node discovery
+	//TODO: this doesnt verify the error log if model observers fail during node discovery
 	@Test
 	public void modelObserverExceptionsAreLoggedAsWarningsDuringNodeDiscovery() {
 		given(logging).enabled()
