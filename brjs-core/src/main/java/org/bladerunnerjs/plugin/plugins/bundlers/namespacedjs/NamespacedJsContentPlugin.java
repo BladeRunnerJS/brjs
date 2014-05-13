@@ -8,6 +8,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +23,14 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.json.simple.JSONObject;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 
 public class NamespacedJsContentPlugin extends AbstractContentPlugin
@@ -264,13 +269,54 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	}
 
 	private String getGlobalizedClassesContent(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
-	{
+	{		
 		StringBuffer output = new StringBuffer();
-		for (SourceModule sourceModule : bundleSet.getSourceModules())
-		{
-			output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
+		
+		List<SourceModule> allSourceModules = bundleSet.getSourceModules();
+
+		List<Predicate<SourceModule>> sourceModuleOrderingFilters = new LinkedList<>();
+		sourceModuleOrderingFilters.add( new IsNamespacedJsSourceModulePredicate() );
+		sourceModuleOrderingFilters.add( new IsCommonJsSourceModulePredicate() );
+		sourceModuleOrderingFilters.add( new IsNonCommonJSAndNonNamespacedJsSourceModulePredicate() );
+		
+		for (Predicate<SourceModule> sourceModuleFilter : sourceModuleOrderingFilters) {
+			for ( SourceModule sourceModule : Collections2.filter(allSourceModules,sourceModuleFilter) )
+			{
+				output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
+			}
 		}
+		
 		return output.toString();
+	}
+	
+	
+	
+	private class IsNamespacedJsSourceModulePredicate implements Predicate<SourceModule> {
+		@Override
+		public boolean apply(SourceModule input)
+		{
+			return input.getClass() == NamespacedJsSourceModule.class;
+		}
+	}
+	
+	private class IsCommonJsSourceModulePredicate implements Predicate<SourceModule> {
+		@Override
+		public boolean apply(SourceModule input)
+		{
+			return input.getClass() == CommonJsSourceModule.class;
+		}
+	}
+
+	private class IsNonCommonJSAndNonNamespacedJsSourceModulePredicate implements Predicate<SourceModule> {
+		
+		IsNamespacedJsSourceModulePredicate isNamespacedJsSourceModulePredicate = new IsNamespacedJsSourceModulePredicate();
+		IsCommonJsSourceModulePredicate isCommonJsSourceModulePredicate = new IsCommonJsSourceModulePredicate();
+		
+		@Override
+		public boolean apply(SourceModule input)
+		{
+			return isNamespacedJsSourceModulePredicate.apply(input) && isCommonJsSourceModulePredicate.apply(input);
+		}
 	}
 
 }

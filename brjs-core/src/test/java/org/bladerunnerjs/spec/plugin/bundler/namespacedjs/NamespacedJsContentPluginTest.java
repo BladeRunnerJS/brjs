@@ -177,6 +177,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	@Test
 	public void requiresAreAlsoAutomaticallyAddedWithinTheBundledResponse() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
+			.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")
 			.and(aspect).hasClasses("appns.namespaced.Class", "appns/nodejs/Class")
 			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
 			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.nodejs.Class");
@@ -208,6 +209,21 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsTextOnce("appns.nodejs.Class = require('appns/nodejs/Class');");
 	}
+	
+	@Test
+	public void requiresAreAddedForNamespacedJsClassesBeforeCommonJsClasses() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
+			.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")
+			.and(aspect).hasClasses("appns.namespaced.Class", "appns/nodejs/Class")
+			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
+			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.nodejs.Class");
+		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"appns.namespaced.Class = function() {\n};",
+				"appns.namespaced.Class = require('appns/namespaced/Class');",
+				"appns.nodejs.Class = require('appns/nodejs/Class');");
+	}
+	
 	
 	@Test
 	public void packageDefinitionsInBundleContainAutomaticRequirePackages() throws Exception {
