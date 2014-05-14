@@ -1,34 +1,30 @@
 <web-app>
-      <servlet>
-          <servlet-name>RestAPIServlet</servlet-name> 
-          <servlet-class>com.caplin.cutlass.app.servlet.RestApiServlet</servlet-class> 
-          <load-on-startup>1</load-on-startup> 
-      </servlet>
-      <servlet-mapping>
-          <servlet-name>RestAPIServlet</servlet-name> 
-          <url-pattern>/servlet/app-manager/*</url-pattern> 
-      </servlet-mapping>
-
-	<filter>
-          <filter-name>BladerunnerFilters</filter-name> 
-          <filter-class>com.caplin.cutlass.filter.BladerunnerFilters</filter-class> 
-      </filter>
-      <filter-mapping>
-          <filter-name>BladerunnerFilters</filter-name> 
-          <url-pattern>/*</url-pattern> 
-          <dispatcher>REQUEST</dispatcher>
-          <dispatcher>FORWARD</dispatcher>
-      </filter-mapping>
-	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 	
-	<mime-mapping>
-		<extension>woff</extension>
-		<mime-type>application/x-font-woff</mime-type>
-	</mime-mapping>
+	<servlet>
+		<servlet-name>RestAPIServlet</servlet-name>
+		<servlet-class>com.caplin.cutlass.app.servlet.RestApiServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RestAPIServlet</servlet-name>
+		<url-pattern>/servlet/app-manager/*</url-pattern>
+	</servlet-mapping>
 	
+	<filter>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.appserver.BRJSServletFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<url-pattern>/*</url-pattern> 
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+	
+	<!-- start-env: dev -->
 	<servlet>
 		<servlet-name>BRJSDevServlet</servlet-name>
 		<servlet-class>org.bladerunnerjs.appserver.BRJSDevServlet</servlet-class>
@@ -49,5 +45,27 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
+	<!-- end-env -->
 	
+	<!-- mime mappings -->
+	<mime-mapping>
+		<extension>js</extension>
+		<mime-type>application/javascript;charset=UTF-8</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>css</extension>
+		<mime-type>text/css;charset=UTF-8</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>html</extension>
+		<mime-type>text/html;charset=UTF-8</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>xml</extension>
+		<mime-type>text/xml;charset=UTF-8</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>woff</extension>
+		<mime-type>application/x-font-woff</mime-type>
+	</mime-mapping>
 </web-app>

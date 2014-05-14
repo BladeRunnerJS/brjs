@@ -62,7 +62,7 @@ public class BRJSServletFilterTest extends SpecTest
 		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "some html content")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "some html content");
+		then(appServer).requestForUrlReturns("/app/en/", "some html content");
 	}
 	
 	@Test
@@ -71,7 +71,7 @@ public class BRJSServletFilterTest extends SpecTest
 		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "dev replacement");
+		then(appServer).requestForUrlReturns("/app/en/", "dev replacement");
 	}
 	
 	@Test
@@ -81,8 +81,7 @@ public class BRJSServletFilterTest extends SpecTest
 			.and(app).hasSupportedLocales("ab_CD")
 			.and(aspect).containsFileWithContents("index.html", "<@localeToken @/>")
 			.and(appServer).started();
-		when(webappTester).makesRequestWithLocale("ab_CD");
-		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "- ab_CD");
+		then(appServer).requestForUrlReturns("/app/ab_CD/", "- ab_CD");
 	}
 	
 	//TODO: test for bundle set usage

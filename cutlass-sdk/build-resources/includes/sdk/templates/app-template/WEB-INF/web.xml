@@ -36,30 +36,15 @@
 	end-env -->
 	
 	<filter>
-		<filter-name>bladerunner-filters</filter-name>
-		<filter-class>com.caplin.cutlass.filter.BladerunnerFilters</filter-class>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.appserver.BRJSServletFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>bladerunner-filters</filter-name>
-		<url-pattern>/*</url-pattern>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<url-pattern>/*</url-pattern> 
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
-	
-	<!-- start-env: prod
-	<filter>
-		<filter-name>bladerunner-prod-filters</filter-name>
-		<filter-class>com.caplin.cutlass.filter.BladerunnerProdFilters
-		</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>bladerunner-prod-filters</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-	</filter-mapping>
-	end-env -->
-	
 	
 	<!-- start-env: dev -->
 	<servlet>
@@ -101,5 +86,4 @@
 		<extension>xml</extension>
 		<mime-type>text/xml;charset=UTF-8</mime-type>
 	</mime-mapping>
-	
 </web-app>

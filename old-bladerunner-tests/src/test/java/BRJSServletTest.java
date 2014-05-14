@@ -57,12 +57,12 @@ public class BRJSServletTest extends SpecTest
 	}
 	
 	@Test
-	public void brjsServletDoesntHandleAspectIndexFile() throws Exception
+	public void brjsServletCanServeIndexHtml() throws Exception
 	{
 		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/default-aspect/index.html", "aspect index.html");
+		then(appServer).requestForUrlReturns("/app/en/", "aspect index.html");
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ public class BRJSServletTest extends SpecTest
 	{
 		given(app).hasBeenPopulated()
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
+		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test
@@ -79,7 +79,7 @@ public class BRJSServletTest extends SpecTest
 		given(app).hasBeenPopulated()
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/servlet/hello");
-		then(appServer).requestForUrlReturns("/app/default-aspect/mock-content-plugin/some/other/path/", MockContentPlugin.class.getCanonicalName())
+		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/some/other/path/", MockContentPlugin.class.getCanonicalName())
 			.and(appServer).requestForUrlReturns("/app/servlet/hello", "Hello World!");
 	}
 	
@@ -111,7 +111,7 @@ public class BRJSServletTest extends SpecTest
 			.and(blade).classDependsOn("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
-		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
+		when(appServer).requestIsMadeFor("/app/v/123/js/prod/en_GB/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class");
 	}
 	
