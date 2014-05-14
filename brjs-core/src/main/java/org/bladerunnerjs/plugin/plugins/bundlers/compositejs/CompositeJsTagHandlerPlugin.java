@@ -2,13 +2,14 @@ package org.bladerunnerjs.plugin.plugins.bundlers.compositejs;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
@@ -20,7 +21,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		this.brjs = brjs;
 		compositeJsBundlerPlugin = brjs.plugins().contentProvider("js");
 	}
-
+	
 	@Override
 	public String getGroupName() {
 		return null;
@@ -47,23 +48,26 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
 			
 			if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
-				for(TagHandlerPlugin tagHandlerPlugin : brjs.plugins().tagHandlers("text/javascript")) {
-					if(isDev) {
-						tagHandlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
-					}
-					else {
-						tagHandlerPlugin.writeProdTagContent(tagAttributes, bundleSet, locale, writer);
+				for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
+					List<String> contentPaths = (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet, locale) : contentPlugin.getValidProdContentPaths(bundleSet, locale);
+					
+					for(String contentPath : contentPaths) {
+						writeScriptTag(writer, contentPath);
 					}
 				}
 			}
 			else {
 				String bundleRequestForm = (isDev) ? "dev-bundle-request" : "prod-bundle-request";
 				
-				writer.write("<script type='text/javascript' src='" + compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, locale, minifierSetting) + "'></script>\n");
+				writeScriptTag(writer, compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, locale, minifierSetting));
 			}
 		}
-		catch(MalformedTokenException e) {
+		catch(MalformedTokenException | ContentProcessingException e) {
 			throw new IOException(e);
 		}
+	}
+	
+	private void writeScriptTag(Writer writer, String contentPath) throws IOException {
+		writer.write("<script type='text/javascript' src='" + contentPath + "'></script>\n");
 	}
 }

@@ -86,7 +86,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void i18nBundleIsIncluded() throws Exception {
+	public void i18nBundleIsNotIncluded() throws Exception {
 		given(aspect).hasNodeJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns/node/Class")
@@ -100,7 +100,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 					"require('appLib');\n"+
 					"require('appns.node.Class');\n" );
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", requestResponse);
-		then(requestResponse).containsText("window._brjsI18nProperties = [{");
+		then(requestResponse).doesNotContainText("window._brjsI18nProperties = [{");
 	}
 	
 }
