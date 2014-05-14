@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -26,12 +27,13 @@ public class BRJSServletTest extends SpecTest
 	ServerSocket socket;
 	Servlet helloWorldServlet;
 	StringBuffer response = new StringBuffer();
-
+	
 	@Before
 	public void initTestObjects() throws Exception {
-		
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsMinifiers()
+			.and(brjs).automaticallyFindsAssetLocationProducers()
+			.and(brjs).automaticallyFindsAssetProducers()
+			.and(brjs).hasTagPlugins( new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true) )
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usedForServletModel()
@@ -56,6 +58,12 @@ public class BRJSServletTest extends SpecTest
 		if (socket  != null && socket.isBound()) { socket.close(); }
 	}
 	
+	@Ignore
+	@Test
+	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecified() {
+		// TODO
+	}
+	
 	@Test
 	public void brjsServletCanServeIndexHtml() throws Exception
 	{
@@ -65,12 +73,53 @@ public class BRJSServletTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/en/", "aspect index.html");
 	}
 	
+	@Ignore
+	@Test
+	public void brjsServletCanServeIndexJsp() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.jsp", "<% \"aspect \" + \"index.jsp\" %")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en/", "aspect index.jsp");
+	}
+	
+	@Test
+	public void tagsWithinIndexPagesAreProcessed() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en/", "dev replacement");
+	}
+	
+	@Test
+	public void localesCanBeUsedInTagHandlers() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(app).hasSupportedLocales("ab_CD")
+			.and(aspect).containsFileWithContents("index.html", "<@localeToken @/>")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/ab_CD/", "- ab_CD");
+	}
+	
+	@Ignore
+	@Test
+	public void brjsServletCanServeWorkbenchPage() {
+		// TODO
+	}
+	
 	@Test
 	public void contentPluginsCanHandleRequests() throws Exception
 	{
 		given(app).hasBeenPopulated()
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
+	}
+	
+	@Ignore
+	@Test
+	public void contentPluginsCanHandleRequestsWithinWorkbenches() {
+		// TODO
 	}
 	
 	@Test
@@ -100,19 +149,4 @@ public class BRJSServletTest extends SpecTest
 			.and(appServer).appHasServlet(app, helloWorldServlet, "*.mock");
 		then(appServer).requestForUrlReturns("/app/hello.mock", "Hello World!");
 	}
-	
-	@Test
-	public void brjsServletHandsOffToBundlersAndMinifiers() throws Exception
-	{
-		given(app).hasBeenPopulated()
-			.and(blade).hasNamespacedJsPackageStyle()
-			.and(blade).hasClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
-			.and(aspect).indexPageRefersTo("appns.bs.b1.cjs.Class")
-			.and(blade).classDependsOn("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
-			.and(appServer).started()
-			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
-		when(appServer).requestIsMadeFor("/app/v/123/js/prod/en_GB/closure-whitespace/bundle.js", response);
-		then(response).containsMinifiedClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class");
-	}
-	
 }
