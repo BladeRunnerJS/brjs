@@ -63,8 +63,8 @@ public class IntegrationWarCommandTest extends SpecTest {
 			.and(brjs).commandHasBeenRun("war", "app1")
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
-		when(warServer).receivesRequestFor("/app/js/prod/combined/bundle.js", warResponse)
-			.and(app).requestReceived("/default-aspect/js/prod/en/combined/bundle.js", brjsResponse);
+		when(warServer).receivesRequestFor("/app/default-aspect/js/prod/combined/bundle.js", warResponse)
+			.and(app).requestReceived("/default-aspect/js/prod/combined/bundle.js", brjsResponse);
 		then(warResponse).textEquals(brjsResponse);
 	}
 
