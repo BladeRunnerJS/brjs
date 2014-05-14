@@ -23,11 +23,6 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public String getGroupName() {
-		return null;
-	}
-	
-	@Override
 	public String getTagName() {
 		return "js.bundle";
 	}

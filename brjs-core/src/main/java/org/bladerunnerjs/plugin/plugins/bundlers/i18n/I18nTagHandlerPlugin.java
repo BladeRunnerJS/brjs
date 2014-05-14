@@ -29,12 +29,6 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		return "i18n.bundle";
 	}
-
-	@Override
-	public String getGroupName()
-	{
-		return "text/javascript";
-	}
 	
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException

@@ -22,11 +22,6 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 	}
 	
 	@Override
-	public String getGroupName() {
-		return tagHandlerPlugin.getGroupName();
-	}
-	
-	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
 		return tagHandlerPlugin.getPluginsThatMustAppearBeforeThisPlugin();
 	}

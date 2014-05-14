@@ -104,18 +104,6 @@ public class PluginAccessor {
 		return tagHandlers;
 	}
 	
-	public List<TagHandlerPlugin> tagHandlers(String groupName) {
-		List<TagHandlerPlugin> tagHandlerPlugins = new LinkedList<>();
-		
-		for (TagHandlerPlugin tagHandlerPlugin : tagHandlers()) {
-			if (groupName.equals(tagHandlerPlugin.getGroupName())) {
-				tagHandlerPlugins.add(tagHandlerPlugin);
-			}
-		}
-		
-		return tagHandlerPlugins;
-	}
-	
 	public List<MinifierPlugin> minifiers() {
 		return minifiers;
 	}

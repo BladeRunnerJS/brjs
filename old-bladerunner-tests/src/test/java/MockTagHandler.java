@@ -46,11 +46,6 @@ public class MockTagHandler extends AbstractTagHandlerPlugin implements TagHandl
 	}
 	
 	@Override
-	public String getGroupName() {
-		return null;
-	}
-	
-	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
 		return new ArrayList<>();
 	}
