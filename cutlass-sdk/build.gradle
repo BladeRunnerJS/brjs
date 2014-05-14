@@ -288,6 +288,32 @@ task createSdkJsDocs, dependsOn: createJsDocTmpApp, {
 }
 
 
+/*
+
+TODO: add task to publish JS and Java docs
+
+Steps:
+- create the docs (done)
+- clone the docs repo (brjs-api-docs?)
+- copy over docs
+ - suggested folder structure:
+    /v0.x
+      /js
+	 	 /java
+    /v0.y
+			/js
+			/java
+- git push - using same API key used to create the release
+
+Thoughts:
+- can we do this all via the github API?
+- can we use the API key?
+- we might need a note about the automated deployment and how to raise an issue
+
+*/
+
+
+
 ext.explodedSdkDir = "${project.buildDir}/exploded"
 
 task distZip, type:Zip, dependsOn: [assemble], {
