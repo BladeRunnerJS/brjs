@@ -1,6 +1,7 @@
 var Errors = require('br/Errors');
 
 /**
+ * @name br.services.HtmlResourceService
  * @constructor
  * @class
  * @interface

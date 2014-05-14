@@ -4,15 +4,16 @@ var Errors = require('br/Errors');
 var Component = require( 'br/component/Component' );
 
 var ServiceRegistry = require('br/ServiceRegistry');
-  
+
 /**
  * Constructs a new instance of <code>KnockoutComponent</code>.
- * 
+ *
+ * @name br.knockout.KnockoutComponent
  * @constructor
  * @param {String} sTemplateId The id of a template to render the presentation model with.
  * @param {Object} oViewModel A Knockout View Model object instance.
  * @implements br/component/Component
- * 
+ *
  * @class
  */
 function KnockoutComponent(sTemplateId, vPresentationModel) {
@@ -40,16 +41,16 @@ KnockoutComponent.prototype.setDisplayFrame = function(frame) {
 
   frame.setContent(this.getElement());
 };
-  
+
 KnockoutComponent.prototype.getElement = function() {
   if (!this.m_bViewBound) {
     this.m_bViewBound = true;
     ko.applyBindings(this.m_oPresentationModel, this.m_eTemplate);
   }
-  
+
   return this.m_eTemplate;
 };
-  
+
 /**
  * @private
  * @param {String} sTemplateId
