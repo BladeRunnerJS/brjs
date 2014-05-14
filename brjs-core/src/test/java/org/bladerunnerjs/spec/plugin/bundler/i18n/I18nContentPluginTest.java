@@ -43,7 +43,7 @@ public class I18nContentPluginTest extends SpecTest
 			.and(aspect).hasBeenCreated()
 			.and(aspect).containsEmptyFile("index.html");
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
-		then(response).textEquals("window._brjsI18nProperties = [{\n}];");
+		then(response).textEquals("window._brjsI18nProperties = [{}];");
 	}
 	
 	@Test
@@ -56,7 +56,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.property\":\"property value\"\n"+
+						"  \"appns.property\": \"property value\"\n"+
 				"}];");
 	}
 	
@@ -71,7 +71,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.property\":\"property value\"\n"+
+						"  \"appns.property\": \"property value\"\n"+
 				"}];");
 	}
 	
@@ -85,7 +85,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.property\":\"property value\"\n"+
+						"  \"appns.property\": \"property value\"\n"+
 				"}];");
 	}
 	
@@ -100,7 +100,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.property\":\"property value\"\n"+
+						"  \"appns.property\": \"property value\"\n"+
 				"}];");
 	}
 	
@@ -115,8 +115,8 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.another.property\":\"another value\",\n"+
-						"\"appns.some.property\":\"property value\"\n"+
+						"  \"appns.another.property\": \"another value\",\n"+
+						"  \"appns.some.property\": \"property value\"\n"+
 				"}];");
 	}
 
@@ -131,7 +131,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.property\":\"another value\"\n"+
+						"  \"appns.property\": \"another value\"\n"+
 				"}];");
 	}
 	
@@ -145,7 +145,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.property\":\"property value\"\n"+
+						"  \"appns.property\": \"property value\"\n"+
 				"}];");
 	}
 	
@@ -159,7 +159,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.property\":\"property value\"\n"+
+						"  \"appns.property\": \"property value\"\n"+
 				"}];");
 	}
 	
@@ -174,7 +174,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.property\":\"property value\"\n"+
+						"  \"appns.property\": \"property value\"\n"+
 				"}];");
 	}
 	
@@ -190,7 +190,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.bs.b1.property\":\"aspect value\"\n"+
+						"  \"appns.bs.b1.property\": \"aspect value\"\n"+
 				"}];");
 	}
 	
@@ -205,7 +205,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.bs.b1.property\":\"workbench value\"\n"+
+						"  \"appns.bs.b1.property\": \"workbench value\"\n"+
 				"}];");
 	}
 	
@@ -238,9 +238,9 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.p1\":\"v1\",\n"+
-						"\"appns.p2\":\"v2\",\n"+
-						"\"appns.p3\":\"v3\"\n"+
+						"  \"appns.p1\": \"v1\",\n"+
+						"  \"appns.p2\": \"v2\",\n"+
+						"  \"appns.p3\": \"v3\"\n"+
 				"}];");
 	}
 	
@@ -254,7 +254,21 @@ public class I18nContentPluginTest extends SpecTest
 		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"\"appns.p1\":\"v\\n1\"\n"+
+						"  \"appns.p1\": \"v\\\\n1\"\n"+
+				"}];");
+	}
+	
+	@Test
+	public void quotesWithinPropertiessAreProperlyEscaped() throws Exception 
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsEmptyFile("index.html")
+			.and(aspect).containsFileWithContents("resources/en.properties", "appns.p1=\"quoted\"");
+		when(app).requestReceived("/default-aspect/i18n/en_GB.js", response);
+		then(response).textEquals(	
+				"window._brjsI18nProperties = [{\n"+
+						"  \"appns.p1\": \"\\\"quoted\\\"\"\n"+
 				"}];");
 	}
 }

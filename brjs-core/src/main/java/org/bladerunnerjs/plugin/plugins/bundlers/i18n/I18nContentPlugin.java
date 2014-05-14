@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +27,10 @@ import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+import org.json.simple.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 public class I18nContentPlugin extends AbstractContentPlugin
@@ -168,17 +173,13 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 			StringBuilder output = new StringBuilder();
 			
-			output.append("window._brjsI18nProperties = [{"+NEWLINE);
-			for (String key : propertiesMap.keySet())
-			{
-				String value = propertiesMap.get(key);
-				output.append(QUOTE+key+QUOTE+":"+QUOTE+value+QUOTE+","+NEWLINE);
-			}
-			if (propertiesMap.size() > 0)
-			{
-				output.deleteCharAt( output.length() - 2 ); /* delete the last comma */			
-			}
-			output.append("}];");
+			
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			
+			StringWriter jsonMap = new StringWriter();
+			JSONObject.writeJSONString(propertiesMap, jsonMap);
+
+			output.append("window._brjsI18nProperties = [" + gson.toJson(propertiesMap) + "];");
 			
 			writer.write(output.toString());
 			writer.flush();
@@ -193,7 +194,6 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		List<I18nFileAsset> languageOnlyAssets = new ArrayList<I18nFileAsset>();
 		List<I18nFileAsset> languageAndLocationAssets = new ArrayList<I18nFileAsset>();
 		
-//		List<Asset> propertyAssets = bundleSet.getResourceFiles("properties");
 		List<Asset> propertyAssets = bundleSet.getResourceFiles(i18nAssetPlugin);
 		
 		for (Asset asset : propertyAssets)
