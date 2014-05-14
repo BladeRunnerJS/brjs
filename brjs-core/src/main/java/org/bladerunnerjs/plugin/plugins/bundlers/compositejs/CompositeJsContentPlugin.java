@@ -30,10 +30,9 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("js/dev/<locale>/<minifier-setting>/bundle.js").as("dev-bundle-request")
-				.and("js/prod/<locale>/<minifier-setting>/bundle.js").as("prod-bundle-request")
-			.where("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
-				.and("minifier-setting").hasForm(ContentPathParserBuilder.NAME_TOKEN);
+			.accepts("js/dev/<minifier-setting>/bundle.js").as("dev-bundle-request")
+				.and("js/prod/<minifier-setting>/bundle.js").as("prod-bundle-request")
+			.where("minifier-setting").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		
 		contentPathParser = contentPathParserBuilder.build();
 	}
@@ -97,9 +96,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		try {
 			for(MinifierPlugin minifier : brjs.plugins().minifiers()) {
 				for(String minifierSettingName : minifier.getSettingNames()) {
-					for(String locale : locales) {
-						requestPaths.add(contentPathParser.createRequest(requestFormName, locale, minifierSettingName));
-					}
+					requestPaths.add(contentPathParser.createRequest(requestFormName, minifierSettingName));
 				}
 			}
 		}
@@ -117,10 +114,8 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			String charsetName = brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			
 			for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
-				String locale = contentPath.properties.get("locale");
-				
-				List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? contentPlugin.getValidDevContentPaths(bundleSet, locale) :
-					contentPlugin.getValidProdContentPaths(bundleSet, locale);
+				List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? contentPlugin.getValidDevContentPaths(bundleSet, (String[]) null) :
+					contentPlugin.getValidProdContentPaths(bundleSet, (String[]) null);
 				ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
 				
 				for(String requestPath : requestPaths) {

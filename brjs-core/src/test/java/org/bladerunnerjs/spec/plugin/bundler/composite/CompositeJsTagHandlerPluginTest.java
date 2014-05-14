@@ -54,7 +54,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("js/prod/en_GB/combined/bundle.js");
+		then(pageResponse).containsRequests("js/prod/combined/bundle.js");
 	}
 	
 	@Test
@@ -68,7 +68,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void devMinifierAttributeCanAllowJsFilesToBeCombinedEvenInDev() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("js/dev/en_GB/combined/bundle.js");
+		then(pageResponse).containsRequests("js/dev/combined/bundle.js");
 	}
 	
 	@Test

@@ -63,7 +63,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		if(!sourceModuleResolvers.containsKey(bundlableNode)) {
 			App app = assetLocation.assetContainer().app();
 			
-			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, requirePath, true, app.dir(), app.root().libsDir()));
+			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, requirePath, app.dir(), app.root().libsDir()));
 		}
 		SourceModuleResolver sourceModuleResolver = sourceModuleResolvers.get(bundlableNode);
 		
@@ -133,7 +133,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		if(!staticSourceModuleResolvers.containsKey(bundlableNode)) {
 			App app = assetLocation.assetContainer().app();
 			
-			staticSourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, requirePath, true, app.dir(), app.root().libsDir()));
+			staticSourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, requirePath, app.dir(), app.root().libsDir()));
 		}
 		SourceModuleResolver staticSourceModuleResolver = staticSourceModuleResolvers.get(bundlableNode);
 		

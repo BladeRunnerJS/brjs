@@ -1,29 +1,25 @@
-# local excludes
-/.gradle
-/.settings
-/.classpath
-/.project
-/.idea
-/gradle-app.setting
-/gradle/
-/bin/
-/build/
-/out/
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# nested project excludes
-/*/*.gradle
-/*/.gradle
-/*/.settings
-/*/.classpath
-/*/.project
-/*/.idea
-/*/bin/
-/*/build/
-/*/test-results/
-
-# recursive excludes
+# system/IDE specific files
+.idea
 *.iml
-js.bundle
+.classpath
+.project
+
+
+.gradle
+.settings
+bin
+build
+out
+test-results
 **/WEB-INF/lib/brjs-*.jar
-**/bundles/*.bundle
-**/bundles/**/*.bundle
+**/bundles/*
+**/bundles/**/*
