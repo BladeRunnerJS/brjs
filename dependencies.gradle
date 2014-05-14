@@ -40,7 +40,6 @@ Dependencies.putAll([
 	'servlet-api'				:	'javax.servlet:servlet-api:2.5',	/* do not update - this is the version Tomcat 6.0.x uses */
 	'guava'						:	'com.google.guava:guava:14.0.1',
 	'gson'						:	'com.google.code.gson:gson:2.2.2',
-	'json-simple'				:	'com.googlecode.json-simple:json-simple:1.1.1',
 	'hibernate-core'			:	'org.hibernate:hibernate-core:3.6.10.Final',
 	'hibernate-validator'		:	'org.hibernate:hibernate-validator:5.0.1.Final',
 	'hibernate-c3p0'			:	'org.hibernate:hibernate-c3p0:3.6.10.Final',

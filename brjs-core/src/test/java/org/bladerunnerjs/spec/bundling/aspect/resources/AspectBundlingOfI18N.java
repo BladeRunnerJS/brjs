@@ -39,7 +39,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 			.and(aspect).containsFileWithContents("resources/i18n/en/en.properties", "appns.token=aspect token")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
-		then(response).containsText("\"appns.token\":\"aspect token\"");
+		then(response).containsText("\"appns.token\": \"aspect token\"");
 	}
 
 	@Test
@@ -56,9 +56,9 @@ public class AspectBundlingOfI18N extends SpecTest {
 			.and(aspect).indexPageHasContent("default aspect");
 		when(app).requestReceived("/default-aspect/i18n/en.js", enResponse)
 			.and(app).requestReceived("/default-aspect/i18n/de.js", deResponse);
-		then(enResponse).containsText("app1.token\":\"english")
+		then(enResponse).containsText("app1.token\": \"english")
 			.and(enResponse).doesNotContainText("german")
-			.and(deResponse).containsText("app1.token\":\"german")
+			.and(deResponse).containsText("app1.token\": \"german")
 			.and(deResponse).doesNotContainText("english");
 	}
 	
@@ -69,7 +69,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 			.and(bladeset).containsFileWithContents("resources/i18n/en/en.properties", "appns.bs.token=bladeset token")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
-		then(response).containsText("\"appns.bs.token\":\"bladeset token\"");
+		then(response).containsText("\"appns.bs.token\": \"bladeset token\"");
 	}
 	
 	// Blade
@@ -79,7 +79,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 			.and(blade).containsFileWithContents("resources/i18n/en/en.properties", "appns.bs.b1.token=blade token")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
-		then(response).containsText("\"appns.bs.b1.token\":\"blade token\"");
+		then(response).containsText("\"appns.bs.b1.token\": \"blade token\"");
 	}
 	
 	// SDK BRJS Lib
@@ -91,7 +91,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 			.and(sdkLib).hasClass("br.workbench.ui.Workbench")
 			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
-		then(response).containsText("\"br.sdktoken\":\"library token\"");
+		then(response).containsText("\"br.sdktoken\": \"library token\"");
 	}
 	
 	// User library (specific to an app)
@@ -103,7 +103,7 @@ public class AspectBundlingOfI18N extends SpecTest {
 			.and(userLib).hasClass("userLib.Class1")
 			.and(aspect).indexPageRefersTo("userLib.Class1");
 		when(app).requestReceived("/default-aspect/i18n/en.js", response);
-		then(response).containsText("\"userLib.token\":\"userLib token\"");
+		then(response).containsText("\"userLib.token\": \"userLib token\"");
 			
 	}
 	

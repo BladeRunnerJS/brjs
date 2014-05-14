@@ -97,7 +97,7 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
     	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_GB.js" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
     				"bundles/i18n/en_GB.js",
-    				"\"appns.prop\":\"some prop\"" );
+    				"\"appns.prop\": \"some prop\"" );
 	}
 	
 	// Legacy bundle path tests
@@ -158,7 +158,7 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
     	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/i18n.bundle" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
     				"bundles/i18n/i18n.bundle",
-    				"\"appns.prop\":\"some prop\"" );
+    				"\"appns.prop\": \"some prop\"" );
 	}
 	
 	@Test
@@ -170,7 +170,7 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
     	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_i18n.bundle" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
     				"bundles/i18n/en_i18n.bundle",
-    				"\"appns.prop\":\"some prop\"" );
+    				"\"appns.prop\": \"some prop\"" );
 	}
 	
 	@Test
@@ -182,7 +182,7 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 		whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_GB_i18n.bundle" );
 		thenJstdTests(aspectTestPack).testBundleContainsText(
 				"bundles/i18n/en_GB_i18n.bundle",
-				"\"appns.prop\":\"some prop\"" );
+				"\"appns.prop\": \"some prop\"" );
 	}
 	
 	@Test

@@ -27,10 +27,11 @@ import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-import org.json.simple.JSONObject;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 public class NamespacedJsContentPlugin extends AbstractContentPlugin
@@ -250,9 +251,11 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	{
 		if (packageStructure.size() > 0)
 		{
+			Gson gson = new GsonBuilder().create();
+			
 			writer.write("// package definition block\n");
 			writer.write("mergePackageBlock(window, ");
-			JSONObject.writeJSONString(packageStructure, writer);
+			writer.write( gson.toJson(packageStructure) );
 			writer.write(");\n");
 			writer.flush();
 		}
