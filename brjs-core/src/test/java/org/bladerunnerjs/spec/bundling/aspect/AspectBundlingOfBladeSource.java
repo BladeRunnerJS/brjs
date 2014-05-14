@@ -216,7 +216,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/App.js", "\"appns.bs.b1.Class1\"")
 			.and(aspect).indexPageRefersTo("appns.App");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
 	}
 	
@@ -226,7 +226,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(aspect).hasNamespacedJsPackageStyle()			
 			.and(aspect).containsFileWithContents("src/appns/App.js", "'appns.bs.b1.Class1'")
 			.and(aspect).indexPageRefersTo("appns.App");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
 	}
 	
@@ -236,7 +236,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/App.js", "\"\\\"appns.bs.b1.Class1\\\"\"")
 			.and(aspect).indexPageRefersTo("appns.App");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
 	}
 	
@@ -246,7 +246,7 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/App.js", "'\\'appns.bs.b1.Class1\\'")
 			.and(aspect).indexPageRefersTo("appns.App");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
 	}
 	
