@@ -13,7 +13,6 @@ import org.bladerunnerjs.testing.utility.ExceptionThrowingEventObserver;
 import org.bladerunnerjs.testing.utility.MockCommandPlugin;
 import org.bladerunnerjs.testing.utility.MockModelObserverPlugin;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -76,7 +75,7 @@ public class BRJSStartupTest extends SpecTest {
 		
 	}
 	
-	@Ignore //TODO: this doesnt verify the error log if model observers fail during node discovery
+	//TODO: this doesnt verify the error log if model observers fail during node discovery
 	@Test
 	public void modelObserverExceptionsAreLoggedAsWarningsDuringNodeDiscovery() {
 		given(logging).enabled()

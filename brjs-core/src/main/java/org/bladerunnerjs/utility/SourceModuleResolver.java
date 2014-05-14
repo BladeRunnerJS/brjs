@@ -12,48 +12,30 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 
 public class SourceModuleResolver {
 	private final BundlableNode bundlableNode;
 	private final AssetLocation assetLocation;
-	private final String sourceRequirePath;
-	private final boolean ignoreUnavailableSourceModules;
 	private final MemoizedValue<List<SourceModule>> sourceModules;
 	
-	public SourceModuleResolver(BundlableNode bundlableNode, AssetLocation assetLocation, String sourceRequirePath, boolean ignoreUnavailableSourceModules, File... watchItems) {
+	public SourceModuleResolver(BundlableNode bundlableNode, AssetLocation assetLocation, String sourceRequirePath, File... watchItems) {
 		this.bundlableNode = bundlableNode;
 		this.assetLocation = assetLocation;
-		this.sourceRequirePath = sourceRequirePath;
-		this.ignoreUnavailableSourceModules = ignoreUnavailableSourceModules;
 		
 		sourceModules = new MemoizedValue<>("SourceModuleResolver.sourceModules", bundlableNode.root(), watchItems);
 	}
 	
 	public List<SourceModule> getSourceModules(Collection<String> requirePaths) throws RequirePathException {
 		return sourceModules.value(() -> {
-			Set<SourceModule> dependentSourceModules = new LinkedHashSet<>();
+			Set<SourceModule> sourceModules = new LinkedHashSet<>();
 			
-			for(String requirePath : requirePaths) {
-				SourceModule sourceModule = assetLocation.sourceModule(requirePath);
-				
-				if(sourceModule == null) {
-					throw new UnresolvableRequirePathException(requirePath, sourceRequirePath);
-				}
-				
-				try {
-					SourceModule bundlableSourceModule = bundlableNode.getSourceModule(sourceModule.getRequirePath());
-					
-					dependentSourceModules.add(bundlableSourceModule);
-				}
-				catch(RequirePathException e) {
-					if(!ignoreUnavailableSourceModules) {
-						throw e;
-					}
-				}
+			for(String requirePath : requirePaths) {				
+				String canonicalRequirePath = assetLocation.canonicaliseRequirePath(requirePath);
+				SourceModule sourceModule = bundlableNode.getSourceModule(canonicalRequirePath);
+				sourceModules.add(sourceModule);
 			}
 			
-			return new ArrayList<SourceModule>( dependentSourceModules );
+			return new ArrayList<SourceModule>( sourceModules );
 		});
 	}
 }

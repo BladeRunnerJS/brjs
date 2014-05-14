@@ -114,7 +114,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	@Override
 	public String requirePrefix() {
 		RootAssetLocation rootAssetLocation = rootAssetLocation();
-		return (rootAssetLocation != null) ? rootAssetLocation().requirePrefix() : getName();
+		return (rootAssetLocation != null) ? rootAssetLocation.requirePrefix() : getName();
 	}
 	
 	@Override

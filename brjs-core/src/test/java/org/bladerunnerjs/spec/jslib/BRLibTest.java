@@ -66,13 +66,12 @@ public class BRLibTest extends SpecTest {
 	
 	@Test
 	public void sdkLibrariesCanOptionallyDisableJsNamespaceEnforcement() throws Exception {
-		given(aspect).indexPageRefersTo("br.SdkClass", "anotherRootPkg.SdkClass")
+		given(aspect).indexPageRefersTo("br.SdkClass", "anotherRootPkg.AnotherSdkClass")
 			.and(sdkLib).containsFile("no-namespace-enforcement")
 			.and(sdkLib).hasClass("br/SdkClass")
-			.and(sdkLib).hasClass("anotherRootPkg/SdkClass");
+			.and(sdkLib).hasClass("anotherRootPkg/AnotherSdkClass");
 		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("br.SdkClass")
-			.and(response).containsNodeJsClasses("anotherRootPkg.SdkClass");
+		then(response).containsNodeJsClasses("br.SdkClass", "anotherRootPkg.AnotherSdkClass");
 	}
 	
 	@Test

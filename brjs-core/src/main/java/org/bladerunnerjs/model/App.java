@@ -186,16 +186,19 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<JsLib> jsLibs()
 	{
-		List<JsLib> appJsLibs = new ArrayList<JsLib>();
-		appJsLibs.addAll( jsLibs.list() );
+		Map<String,JsLib> appJsLibs = new LinkedHashMap<>();
 		
-		for (SdkJsLib lib : root().sdkLibs())
-		{
-			appJsLibs.add( new AppSdkJsLib(this, lib) );
+		for (SdkJsLib lib : root().sdkLibs()) {
+			appJsLibs.put(lib.getName(), new AppSdkJsLib(this, lib));
 		}
-		appJsLibs.addAll( nonBladeRunnerLibs() );
+		for (JsLib lib : nonBladeRunnerLibs()) {
+			appJsLibs.put(lib.getName(), lib);
+		}
+		for (JsLib lib : jsLibs.list()) {
+			appJsLibs.put(lib.getName(), lib);
+		}
 		
-		return appJsLibs;
+		return new ArrayList<>( appJsLibs.values() );
 	}
 	
 	public JsLib jsLib(String jsLibName)

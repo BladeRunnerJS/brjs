@@ -15,9 +15,11 @@ public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAs
 		super(rootNode, parent, dir, dependentAssetLocations);
 	}
 	
-	@Override
+	@Override 
 	public String requirePrefix() {
 		return requirePrefix.value(() -> {
+			//TODO; parent assetLocation and assetContainer to calculate the requirePrefix
+			assetContainer.requirePrefix(); // call requirePrefix() on the assetContainer so it can perform validation on it's require prefix
 			// take the relative path from the asset container and then strip off the first dir - do it this way so it isn't tied to specific subdir of asset container (e.g. the src dir)
 			String locationRequirePrefix = RelativePathUtility.get(assetContainer.dir(), dir()).replaceAll("/$", "");
 			locationRequirePrefix = StringUtils.substringAfter(locationRequirePrefix, "/");
