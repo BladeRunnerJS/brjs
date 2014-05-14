@@ -52,6 +52,7 @@ public class TrieFactory {
 							
 							if (sourceModule.getClassname() != null) {
 								addToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule));
+								addQuotedKeyToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule));
 							}
 						}
 						
@@ -86,7 +87,9 @@ public class TrieFactory {
 	
 	private void addQuotedKeyToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException {
 		addToTrie(trie, "'" + key + "'", value);
+		addToTrie(trie, "\\'" + key + "\\'", value);
 		addToTrie(trie, "\"" + key + "\"", value);
+		addToTrie(trie, "\\\"" + key + "\\\"", value);
 		addToTrie(trie, "<" + key + ">", value);
 		addToTrie(trie, "<" + key + "/", value);
 		addToTrie(trie, "<" + key + " ", value);

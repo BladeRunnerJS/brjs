@@ -209,4 +209,45 @@ public class AspectBundlingOfBladeSource extends SpecTest {
 		then(response).containsText("appns.bs.b1.BladeClass =")
 			.and(response).doesNotContainText("appns.AspectClass =");
 	}
+	
+	@Test
+	public void weBundleABladeClassIfItIsContainedInDoubleQuotes() throws Exception {
+		given(blade).hasClass("appns/bs/b1/Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).containsFileWithContents("src/appns/App.js", "\"appns.bs.b1.Class1\"")
+			.and(aspect).indexPageRefersTo("appns.App");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
+	}
+	
+	@Test
+	public void weBundleABladeClassIfItIsContainedInSingleQuotes() throws Exception {
+		given(blade).hasClass("appns/bs/b1/Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()			
+			.and(aspect).containsFileWithContents("src/appns/App.js", "'appns.bs.b1.Class1'")
+			.and(aspect).indexPageRefersTo("appns.App");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
+	}
+	
+	@Test
+	public void weBundleABladeClassIfItIsContainedInEscapedDoubleQuotes() throws Exception {
+		given(blade).hasClass("appns/bs/b1/Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).containsFileWithContents("src/appns/App.js", "\"\\\"appns.bs.b1.Class1\\\"\"")
+			.and(aspect).indexPageRefersTo("appns.App");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
+	}
+	
+	@Test
+	public void weBundleABladeClassIfItIsContainedInEscapedSingleQuotes() throws Exception {
+		given(blade).hasClass("appns/bs/b1/Class1")
+			.and(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).containsFileWithContents("src/appns/App.js", "'\\'appns.bs.b1.Class1\\'")
+			.and(aspect).indexPageRefersTo("appns.App");
+		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
+	}
+	
 }
