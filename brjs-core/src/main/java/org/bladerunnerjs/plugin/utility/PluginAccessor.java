@@ -31,7 +31,7 @@ public class PluginAccessor {
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
 		contentProviders = sort(pluginLocator.getContentPlugins());
-		tagHandlers = sort(pluginLocator.getTagHandlerPlugins());
+		tagHandlers = pluginLocator.getTagHandlerPlugins();
 		minifiers = pluginLocator.getMinifierPlugins();
 		modelObservers = pluginLocator.getModelObserverPlugins();
 		assetProducers = sort(pluginLocator.getAssetPlugins());

@@ -26,7 +26,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
  *   <li>{@link #getTagName}</li>
  * </ul>
  */
-public interface TagHandlerPlugin extends OrderedPlugin {
+public interface TagHandlerPlugin extends Plugin {
 	/**
 	 * Returns the name of the tag this tag-handler provides.
 	 * 
