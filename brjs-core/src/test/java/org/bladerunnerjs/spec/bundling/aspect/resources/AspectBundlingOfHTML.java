@@ -37,7 +37,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void aspectClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.Class1");
 	}
 
@@ -46,7 +46,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void bladesetClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.Class1");
 	}
 	
@@ -55,7 +55,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void bladeClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
 	}
 	

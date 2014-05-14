@@ -44,7 +44,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			
 			if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
 				for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
-					List<String> contentPaths = (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet, locale) : contentPlugin.getValidProdContentPaths(bundleSet, locale);
+					List<String> contentPaths = (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet, (String[]) null) : contentPlugin.getValidProdContentPaths(bundleSet, (String[]) null);
 					
 					for(String contentPath : contentPaths) {
 						writeScriptTag(writer, contentPath);
@@ -54,7 +54,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			else {
 				String bundleRequestForm = (isDev) ? "dev-bundle-request" : "prod-bundle-request";
 				
-				writeScriptTag(writer, compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, locale, minifierSetting));
+				writeScriptTag(writer, compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting));
 			}
 		}
 		catch(MalformedTokenException | ContentProcessingException e) {
