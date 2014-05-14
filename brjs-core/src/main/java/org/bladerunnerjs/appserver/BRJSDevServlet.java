@@ -70,7 +70,7 @@ public class BRJSDevServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath() + request.getServletPath(), "");
+		String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath() + request.getServletPath() + "/", "");
 		
 		try {
 			BRJSThreadSafeModelAccessor.aquireModel();

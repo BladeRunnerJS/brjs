@@ -52,10 +52,10 @@ public class BRJSDevServletFilter implements Filter {
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		String servletPath = request.getServletPath();
-		String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath(), "");
+		String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath() + "/", "");
 		
 		if(!servletPath.equals("/brjs") && app.canHandleLogicalRequest(requestPath)) {
-			request.getRequestDispatcher("/brjs" + requestPath).forward(request, response);
+			request.getRequestDispatcher("/brjs/" + requestPath).forward(request, response);
 		}
 		else {
 			chain.doFilter(request, response);

@@ -77,7 +77,7 @@ public class AppRequestHandler {
 	private String getAspectName(String requestPath, Map<String, String> contentPathProperties) throws MalformedRequestException {
 		String aspectName = contentPathProperties.get("aspect");
 		
-		if(aspectName.equals("/default")) {
+		if(aspectName.equals("default/")) {
 			throw new MalformedRequestException(requestPath, "The '/default' prefix should be omitted for the default aspect.");
 		}
 		else if(aspectName.isEmpty()) {
@@ -103,13 +103,13 @@ public class AppRequestHandler {
 	private ContentPathParser getContentPathParser() {
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("<aspect>/").as("locale-forwarding-request")
-				.and("<aspect>/<locale>/").as("index-page-request")
-				.and("<aspect>/v/<version>/<content-path>").as("bundle-request")
-				.and("<aspect>/workbench/<bladeset>/<blade>/").as("workbench-locale-forwarding-request")
-				.and("<aspect>/workbench/<bladeset>/<blade>/<locale>/").as("workbench-index-page-request")
-				.and("<aspect>/workbench/<bladeset>/<blade>/v/<version>/<content-path>").as("workbench-bundle-request")
-			.where("aspect").hasForm("(/(" + getAspectNames() + "))?")
+			.accepts("<aspect>").as("locale-forwarding-request")
+				.and("<aspect><locale>/").as("index-page-request")
+				.and("<aspect>v/<version>/<content-path>").as("bundle-request")
+				.and("<aspect>workbench/<bladeset>/<blade>/").as("workbench-locale-forwarding-request")
+				.and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as("workbench-index-page-request")
+				.and("<aspect>workbench/<bladeset>/<blade>/v/<version>/<content-path>").as("workbench-bundle-request")
+			.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
 				.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 				.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 				.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
