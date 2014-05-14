@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.proxy;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BundleSet;
@@ -19,21 +18,6 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 	@Override
 	public String getTagName() {
 		return tagHandlerPlugin.getTagName();
-	}
-	
-	@Override
-	public String getGroupName() {
-		return tagHandlerPlugin.getGroupName();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return tagHandlerPlugin.getPluginsThatMustAppearBeforeThisPlugin();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return tagHandlerPlugin.getPluginsThatMustAppearAfterThisPlugin();
 	}
 	
 	@Override

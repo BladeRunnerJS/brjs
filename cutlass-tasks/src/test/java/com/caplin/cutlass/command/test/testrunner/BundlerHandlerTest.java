@@ -46,9 +46,9 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 	{
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
 			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/en_GB/combined/bundle.js" );
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/combined/bundle.js" );
 		thenJstdTests(aspectTestPack).testBundleContainsText(
-					"bundles/js/dev/en_GB/combined/bundle.js",
+					"bundles/js/dev/combined/bundle.js",
 					"// some SDK src code" );
 	}
 	
@@ -190,12 +190,12 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 	{
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code\nvar a = function(){}")
 			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/en_GB/closure-whitespace/bundle.js" );
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/closure-whitespace/bundle.js" );
 		thenJstdTests(aspectTestPack).testBundleContainsText(
-					"bundles/js/dev/en_GB/closure-whitespace/bundle.js",
+					"bundles/js/dev/closure-whitespace/bundle.js",
 					"var a=function(){}" );
 		thenJstdTests(aspectTestPack).testBundleDoesNotContainText(
-				"bundles/js/dev/en_GB/closure-whitespace/bundle.js",
+				"bundles/js/dev/closure-whitespace/bundle.js",
 				"// some SDK src code" );
 	}
 	

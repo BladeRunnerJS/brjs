@@ -3,8 +3,6 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.BRJS;
@@ -43,21 +41,6 @@ public class MockTagHandler extends AbstractTagHandlerPlugin implements TagHandl
 	public String getTagName()
 	{
 		return name;
-	}
-	
-	@Override
-	public String getGroupName() {
-		return null;
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
 	}
 	
 	@Override

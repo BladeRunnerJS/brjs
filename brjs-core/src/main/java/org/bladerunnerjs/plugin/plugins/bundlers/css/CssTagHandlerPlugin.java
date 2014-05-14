@@ -26,11 +26,6 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public String getGroupName() {
-		return "text/css";
-	}
-	
-	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
 		writeTagContent(writer, bundleSet, tagAttributes.get("theme"), locale);
 	}
