@@ -11,7 +11,6 @@ dependencies {
 	compile dependency('yamlbeans')
 	compile dependency('xom')
 	compile dependency('gson')
-	compile dependency('json-simple')
 	compile dependency('guava')
 	
 	compileOnly dependency('selenium-java')
