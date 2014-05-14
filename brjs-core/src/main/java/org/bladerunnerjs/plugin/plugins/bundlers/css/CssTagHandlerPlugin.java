@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -27,26 +28,30 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		writeTagContent(writer, bundleSet, tagAttributes.get("theme"), locale);
+		writeTagContent(true, writer, bundleSet, tagAttributes.get("theme"), locale);
 	}
 	
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		writeTagContent(writer, bundleSet, tagAttributes.get("theme"), locale);
+		writeTagContent(false, writer, bundleSet, tagAttributes.get("theme"), locale);
 	}
 	
-	private void writeTagContent(Writer writer, BundleSet bundleSet, String theme, String locale) throws IOException {
+	private void writeTagContent(boolean isDev, Writer writer, BundleSet bundleSet, String theme, String locale) throws IOException {
 		try {
+			App app = bundleSet.getBundlableNode().app();
+			
 			for(String nextTheme : BRJSConformantAssetLocationPlugin.getBundlableNodeThemes(bundleSet.getBundlableNode())) {
 				for(String contentPath : cssContentPlugin.getThemeStyleSheetContentPaths(nextTheme, locale)) {
+					String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath);
+					
 					if(nextTheme.equals("common")) {
-						writer.write("<link rel='stylesheet' href='" + contentPath + "'/>\n");
+						writer.write("<link rel='stylesheet' href='" + requestPath + "'/>\n");
 					}
 					else if(nextTheme.equals(theme)) {
-						writer.write("<link rel='stylesheet' title='" + theme + "' href='" + contentPath + "'/>\n");
+						writer.write("<link rel='stylesheet' title='" + theme + "' href='" + requestPath + "'/>\n");
 					}
 					else {
-						writer.write("<link rel='alternate stylesheet' title='" + nextTheme + "' href='" + contentPath + "'/>\n");
+						writer.write("<link rel='alternate stylesheet' title='" + nextTheme + "' href='" + requestPath + "'/>\n");
 					}
 				}
 			}

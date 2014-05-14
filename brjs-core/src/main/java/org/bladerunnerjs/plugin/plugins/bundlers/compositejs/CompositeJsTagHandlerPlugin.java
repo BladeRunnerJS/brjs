@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -47,14 +48,14 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 					List<String> contentPaths = (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet, (String[]) null) : contentPlugin.getValidProdContentPaths(bundleSet, (String[]) null);
 					
 					for(String contentPath : contentPaths) {
-						writeScriptTag(writer, contentPath);
+						writeScriptTag(isDev, bundleSet.getBundlableNode().app(), writer, contentPath);
 					}
 				}
 			}
 			else {
 				String bundleRequestForm = (isDev) ? "dev-bundle-request" : "prod-bundle-request";
 				
-				writeScriptTag(writer, compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting));
+				writeScriptTag(isDev, bundleSet.getBundlableNode().app(), writer, compositeJsBundlerPlugin.getContentPathParser().createRequest(bundleRequestForm, minifierSetting));
 			}
 		}
 		catch(MalformedTokenException | ContentProcessingException e) {
@@ -62,7 +63,8 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 	
-	private void writeScriptTag(Writer writer, String contentPath) throws IOException {
-		writer.write("<script type='text/javascript' src='" + contentPath + "'></script>\n");
+	private void writeScriptTag(boolean isDev, App app, Writer writer, String contentPath) throws IOException, MalformedTokenException {
+		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath);
+		writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 	}
 }

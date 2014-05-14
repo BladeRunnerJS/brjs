@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
@@ -324,5 +326,13 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public void handleLogicalRequest(String requestPath, OutputStream os, PageAccessor pageAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		appRequestHandler.handleLogicalRequest(requestPath, os, pageAccessor);
+	}
+	
+	public String createDevBundleRequest(String contentPath) throws MalformedTokenException {
+		return appRequestHandler.createRequest("bundle-request", "", "dev", contentPath);
+	}
+	
+	public String createProdBundleRequest(String contentPath) throws MalformedTokenException {
+		return appRequestHandler.createRequest("bundle-request", "", String.valueOf(new Date().getTime()), contentPath);
 	}
 }

@@ -23,8 +23,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		given(aspect).indexPageHasContent("<@css.bundle@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
-			"<link rel='stylesheet' href='css/common/bundle.css'/>",
-			"<link rel='stylesheet' href='css/common_en/bundle.css'/>");
+			"<link rel='stylesheet' href='/v/dev/css/common/bundle.css'/>",
+			"<link rel='stylesheet' href='/v/dev/css/common_en/bundle.css'/>");
 	}
 	
 	@Test
@@ -32,8 +32,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		given(aspect).indexPageHasContent("<@css.bundle@/>");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-			"<link rel='stylesheet' href='css/common/bundle.css'/>",
-			"<link rel='stylesheet' href='css/common_en/bundle.css'/>",
-			"<link rel='stylesheet' href='css/common_en_GB/bundle.css'/>");
+			"<link rel='stylesheet' href='/v/dev/css/common/bundle.css'/>",
+			"<link rel='stylesheet' href='/v/dev/css/common_en/bundle.css'/>",
+			"<link rel='stylesheet' href='/v/dev/css/common_en_GB/bundle.css'/>");
 	}
 }

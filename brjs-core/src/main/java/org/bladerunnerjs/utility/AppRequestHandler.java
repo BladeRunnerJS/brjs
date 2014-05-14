@@ -15,6 +15,7 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 import com.google.common.base.Joiner;
@@ -58,6 +59,10 @@ public class AppRequestHandler {
 				app.bladeset(pathProperties.get("bladset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os);
 				break;
 		}
+	}
+	
+	public String createRequest(String requestFormName, String... args) throws MalformedTokenException {
+		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
 	private void writeIndexPage(BrowsableNode browsableNode, String locale, PageAccessor pageAccessor, OutputStream os) throws ContentProcessingException {
@@ -108,7 +113,7 @@ public class AppRequestHandler {
 				.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 				.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 				.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-				.and("version").hasForm("[0-9]+")
+				.and("version").hasForm("(dev|[0-9]+)")
 				.and("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
 				.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 		
