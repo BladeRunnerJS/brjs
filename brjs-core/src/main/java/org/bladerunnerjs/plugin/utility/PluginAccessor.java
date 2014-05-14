@@ -31,7 +31,7 @@ public class PluginAccessor {
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
 		contentProviders = sort(pluginLocator.getContentPlugins());
-		tagHandlers = sort(pluginLocator.getTagHandlerPlugins());
+		tagHandlers = pluginLocator.getTagHandlerPlugins();
 		minifiers = pluginLocator.getMinifierPlugins();
 		modelObservers = pluginLocator.getModelObserverPlugins();
 		assetProducers = sort(pluginLocator.getAssetPlugins());
@@ -102,18 +102,6 @@ public class PluginAccessor {
 	
 	public List<TagHandlerPlugin> tagHandlers() {
 		return tagHandlers;
-	}
-	
-	public List<TagHandlerPlugin> tagHandlers(String groupName) {
-		List<TagHandlerPlugin> tagHandlerPlugins = new LinkedList<>();
-		
-		for (TagHandlerPlugin tagHandlerPlugin : tagHandlers()) {
-			if (groupName.equals(tagHandlerPlugin.getGroupName())) {
-				tagHandlerPlugins.add(tagHandlerPlugin);
-			}
-		}
-		
-		return tagHandlerPlugins;
 	}
 	
 	public List<MinifierPlugin> minifiers() {
