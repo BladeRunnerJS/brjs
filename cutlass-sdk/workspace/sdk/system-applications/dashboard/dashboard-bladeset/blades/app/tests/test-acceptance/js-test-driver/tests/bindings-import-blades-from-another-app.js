@@ -2,7 +2,7 @@ br.test.GwtTestRunner.initialize();
 
 describe("Import Blades Dialog", function() 
 {
-	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");
+	fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
 	
 	it("newBladesetName field is correctly bound", function() {
 		given("test.continuesFrom = 'story #7::displays the bladesets and blades for the selected application in the dialog'");

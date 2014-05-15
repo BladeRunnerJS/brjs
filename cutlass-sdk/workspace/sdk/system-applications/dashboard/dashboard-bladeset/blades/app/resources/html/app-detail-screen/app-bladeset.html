@@ -1,10 +1,10 @@
-<div id="caplinx.dashboard.app.app-bladeset">
+<div id="brjs.dashboard.app.app-bladeset">
 	<li class="bladeset" data-bind="attr:{'class': bladeSetClasses}">
 		<div class='bladeset-title' data-bind='event:{ mouseover:onBladesetMouseOver, mouseout:onBladesetMouseOut}'>
 			<span class="bladeset-title-text" data-bind="text:bladesetName"></span>
-			<div class="bladeset-menu" data-bind="template:{name:'caplinx.dashboard.app.bladeset-menu'}"></div>
+			<div class="bladeset-menu" data-bind="template:{name:'brjs.dashboard.app.bladeset-menu'}"></div>
 		</div>
-		<ul class="blades" data-bind="template:{name:'caplinx.dashboard.app.app-blade', foreach:blades}">
+		<ul class="blades" data-bind="template:{name:'brjs.dashboard.app.app-blade', foreach:blades}">
 			<div class="bladePlaceHolder"> There are no Blades in this Bladeset </div>
 		</ul>
 	</li>

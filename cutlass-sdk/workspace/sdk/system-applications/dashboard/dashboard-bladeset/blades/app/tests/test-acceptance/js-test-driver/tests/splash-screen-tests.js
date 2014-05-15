@@ -2,7 +2,7 @@ br.test.GwtTestRunner.initialize();
 
 describe("splash screen tests", function() 
 {
-	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");
+	fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
 	
 	it("splash screen displayed by default", function() {
 		given("dash.loaded = true");

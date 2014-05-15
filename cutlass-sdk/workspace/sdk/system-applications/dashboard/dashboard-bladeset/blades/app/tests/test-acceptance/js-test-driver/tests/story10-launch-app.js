@@ -3,7 +3,7 @@ br.test.GwtTestRunner.initialize();
 // Story 10 - LAUNCH APP
 describe("story #10", function() 
 {
-	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");
+	fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
 	
 	
 	it("can display single app details with no bladesets", function() {
