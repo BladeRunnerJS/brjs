@@ -7,13 +7,12 @@ import java.util.Set;
  * Represents a location that can contain assets (src or resources) such as an Aspect, Blade or Workbench.
  *
  */
-public interface AssetContainer extends BRJSNode {
+public interface AssetContainer extends BRJSNode, ScopedNode {
 	App app();
 	String requirePrefix();
 	boolean isNamespaceEnforced();
 	Set<SourceModule> sourceModules();
 	SourceModule sourceModule(String requirePath);
-	List<AssetContainer> scopeAssetContainers();
 	AssetLocation assetLocation(String locationPath);
 	List<AssetLocation> assetLocations();
 	RootAssetLocation rootAssetLocation();

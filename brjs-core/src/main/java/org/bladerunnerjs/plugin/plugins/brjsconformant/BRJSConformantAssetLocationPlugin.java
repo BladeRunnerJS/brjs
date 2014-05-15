@@ -34,7 +34,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		
-		for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
+		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
 			AbstractResourcesAssetLocation resourceAssetLocation = (AbstractResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
 			if(resourceAssetLocation != null) {

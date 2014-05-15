@@ -86,7 +86,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public SourceModule getSourceModule(String requirePath) throws RequirePathException {
 		SourceModule sourceModule = null;
 		
-		for(AssetContainer assetContainer : assetContainers()) {//getPotentialAssetContainers(requirePath)) {
+		for(AssetContainer assetContainer : scopeAssetContainers()) {
 			SourceModule locationSourceModule = assetContainer.sourceModule(requirePath);
 			
 			if(locationSourceModule != null) {
@@ -146,7 +146,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		return aliasDefinitionFilesList.value(() -> {
 			List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
 			
-			for(AssetContainer assetContainer : assetContainers()) {
+			for(AssetContainer assetContainer : scopeAssetContainers()) {
 				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 					AliasDefinitionsFile aliasDefinitionsFile = assetLocation.aliasDefinitionsFile();
 					
@@ -167,11 +167,6 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 			requestHandler = new LogicalRequestHandler(this);
 		}
 		requestHandler.handle( logicalRequestPath, os);
-	}
-	
-	@Override
-	public List<AssetContainer> scopeAssetContainers() {
-		return assetContainers();
 	}
 	
 }

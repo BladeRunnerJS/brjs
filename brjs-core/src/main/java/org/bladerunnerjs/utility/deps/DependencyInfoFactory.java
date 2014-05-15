@@ -71,7 +71,7 @@ public class DependencyInfoFactory {
 		
 		addSeedDependencies(dependencyAdder, bundlableNode, dependencyInfo);
 		
-		for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
+		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
 			for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 				addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
 			}

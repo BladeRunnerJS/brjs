@@ -18,16 +18,12 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 
-public interface BundlableNode extends Node, AssetContainer {
+public interface BundlableNode extends Node, AssetContainer, ScopedNode {
 	AliasesFile aliasesFile();
 	SourceModule getSourceModule(String requirePath) throws RequirePathException;
 	List<AssetLocation> seedAssetLocations();
 	List<LinkedAsset> seedAssets();
 	
-	/**
-	 * Returns all AssetContainers that contain resources that can potentially be bundled for this BundleableNode
-	 */
-	List<AssetContainer> assetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;
 	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException;
 	List<AliasDefinitionsFile> aliasDefinitionFiles();

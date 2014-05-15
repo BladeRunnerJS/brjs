@@ -71,7 +71,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<AssetContainer> assetContainers()
+	public List<AssetContainer> scopeAssetContainers()
 	{
 		List<AssetContainer> assetContainers = new ArrayList<>(testScope().scopeAssetContainers());
 		assetContainers.add(this);
