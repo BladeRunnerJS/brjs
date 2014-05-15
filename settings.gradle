@@ -1,6 +1,4 @@
-include "bladerunner-common-servlets",
-		"bladerunner-prod-servlets",
-		"cutlass-tasks",
+include "cutlass-tasks",
 		"cutlass-common",
 		"cutlass-sdk",
 		"system-app-servlets",
@@ -8,5 +6,4 @@ include "bladerunner-common-servlets",
 		"brjs-servlet",
         "brjs-logger",
         "brjs-logger-binding",
-        "brjs-runner",
-		"old-bladerunner-tests"
+        "brjs-runner"

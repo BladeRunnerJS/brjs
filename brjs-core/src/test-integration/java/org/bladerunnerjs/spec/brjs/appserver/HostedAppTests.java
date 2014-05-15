@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -78,5 +79,20 @@ public class HostedAppTests extends SpecTest
 		
 		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
 			.and(appServer).requestForUrlContains(jsBundleUrlPath, "appns/bs/b1/Class");
+	}
+	
+	@Test @Ignore
+	public void requestToRootUrlRedirectsToDashboard() {
+		// TODO
+	}
+	
+	@Test @Ignore
+	public void bladeRunnerJSDoesntBreakAuthentication() {
+		// TODO
+	}
+	
+	@Test @Ignore
+	public void contentTypeAndCharacterEncodingAreCorrectlySet() {
+		// TODO
 	}
 }
