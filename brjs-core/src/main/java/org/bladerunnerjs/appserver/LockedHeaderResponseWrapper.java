@@ -6,11 +6,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-public class IgnoreHeadersResponseWrapper extends HttpServletResponseWrapper
+public class LockedHeaderResponseWrapper extends HttpServletResponseWrapper
 {
 	private List<String> ignoredHeaders = new ArrayList<String>();
 	
-	public IgnoreHeadersResponseWrapper(HttpServletResponse response, List<String> ignoredHeaders)
+	public LockedHeaderResponseWrapper(HttpServletResponse response, List<String> ignoredHeaders)
 	{
 		super(response);
 		for (String header : ignoredHeaders)
