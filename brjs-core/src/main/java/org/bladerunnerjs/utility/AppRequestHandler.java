@@ -56,7 +56,7 @@ public class AppRequestHandler {
 				break;
 			
 			case "workbench-bundle-request":
-				app.bladeset(pathProperties.get("bladset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os);
+				app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os);
 				break;
 		}
 	}

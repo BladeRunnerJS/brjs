@@ -1,3 +1,4 @@
+package org.bladerunnerjs.spec.brjs.appserver;
 
 
 import org.bladerunnerjs.appserver.ApplicationServer;
@@ -42,8 +43,8 @@ public class HostedAppTests extends SpecTest
 	@After
 	public void stopServer() throws Exception
 	{
-		given(brjs.applicationServer(appServerPort)).stopped()
-			.and(brjs.applicationServer(appServerPort)).requestTimesOutFor("/");
+		given(appServer).stopped()
+			.and(appServer).requestTimesOutFor("/");
 	}
 	
 	@Test
