@@ -23,6 +23,12 @@ public class HostedAppTests extends SpecTest
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(brjs).usesProductionTemplates();
 		
+		// TODO: find out why we need to sleep at least as long as the FileModificationService (it polls every 100ms) or only
+		// the first test in the test in the suite reliably works -- it's something to do with the flurry of directory activity
+		// caused by copying the production templates in the line above, that must happen prior to the server being started
+		// at the end of this method
+		Thread.sleep(125);
+		
 		// generate the app structure
 		App app = brjs.app("app");
 		Aspect aspect = app.aspect("default");
