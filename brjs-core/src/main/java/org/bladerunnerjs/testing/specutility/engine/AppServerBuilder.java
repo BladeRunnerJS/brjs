@@ -34,7 +34,6 @@ public class AppServerBuilder
 	public BuilderChainer stopped() throws Exception
 	{
 		appServer.stop();
-		appServer.join();
 		
 		return builderChainer;
 	}
