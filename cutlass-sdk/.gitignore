@@ -4,11 +4,16 @@
 # Note: DO NOT try to use a wildcard to ignore all of workspace. You can't unignore files whose parent directory is ignored.
 # see http://git-scm.com/docs/gitignore for info
 
-workspace/apps
 workspace/LICENSE
 workspace/README.txt
-workspace/conf/
-workspace/licenses/
+workspace/apps
+workspace/conf
+workspace/generated
+workspace/js-patches
+workspace/licenses
+workspace/generated
+workspace/test-results
+
 workspace/sdk/*
 !workspace/sdk/libs/javascript
 !workspace/sdk/system-applications
