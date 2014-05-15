@@ -1,21 +1,21 @@
-<div id="brjs.dashboard.app.root">
+<div id="caplinx.dashboard.app.root">
 	<div data-bind="attr:{'class':currentSection}">
 
 		<!-- TODO: convert back to nav -->
-		<div id="topnav" data-bind="template:{name:'brjs.dashboard.app.nav'}"></div>
+		<div id="topnav" data-bind="template:{name:'caplinx.dashboard.app.nav'}"></div>
 
-		<div class="subnav" data-bind="visible:crumbtrail.visible, template:{data:crumbtrail, name:'brjs.dashboard.app.crumbtrail'}"></div>
+		<div class="subnav" data-bind="visible:crumbtrail.visible, template:{data:crumbtrail, name:'caplinx.dashboard.app.crumbtrail'}"></div>
 
 		<div class="loadingIndicator" data-bind="text:loadingText, visible:isLoading"></div>
 
 		<div id="screen">
-			<div id="appsScreen" data-bind="visible:appsScreen.visible, template:{data:appsScreen, name:'brjs.dashboard.app.apps-screen'}"></div>
+			<div id="appsScreen" data-bind="visible:appsScreen.visible, template:{data:appsScreen, name:'caplinx.dashboard.app.apps-screen'}"></div>
 
-			<div id="appDetailScreen" data-bind="visible:appDetailScreen.visible, template:{data:appDetailScreen, name:'brjs.dashboard.app.app-detail-screen'}"></div>
+			<div id="appDetailScreen" data-bind="visible:appDetailScreen.visible, template:{data:appDetailScreen, name:'caplinx.dashboard.app.app-detail-screen'}"></div>
 
-			<div id="workbenchScreen" data-bind="visible:workbenchScreen.visible, template:{data:workbenchScreen, name:'brjs.dashboard.app.workbench-screen'}"></div>
+			<div id="workbenchScreen" data-bind="visible:workbenchScreen.visible, template:{data:workbenchScreen, name:'caplinx.dashboard.app.workbench-screen'}"></div>
 
-			<div id="releaseNoteScreen" data-bind="visible:releaseNoteScreen.visible, template:{data:releaseNoteScreen, name:'brjs.dashboard.app.release-note-screen'}"></div>
+			<div id="releaseNoteScreen" data-bind="visible:releaseNoteScreen.visible, template:{data:releaseNoteScreen, name:'caplinx.dashboard.app.release-note-screen'}"></div>
 		</div>
 
 		<div id="modalDialogWrapper">
@@ -23,8 +23,8 @@
 		</div>
 
 		<div class="footer-wrap">
-			<div class="footer-left" data-bind="template:{name:'brjs.dashboard.app.footer-left'}"></div>
-			<div class="footer-right" data-bind="template:{name:'brjs.dashboard.app.footer-right'}"></div>
+			<div class="footer-left" data-bind="template:{name:'caplinx.dashboard.app.footer-left'}"></div>
+			<div class="footer-right" data-bind="template:{name:'caplinx.dashboard.app.footer-right'}"></div>
 		</div>
 	</div>
 </div>

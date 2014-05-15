@@ -13,16 +13,16 @@
 			var oDashboardService;
 			
 			jQuery(document).ready(function() {
-				brjs.dashboard.app.DashboardApp.initializeLibrary();
+				caplinx.dashboard.app.DashboardApp.initializeLibrary();
 				
-				oDashboardService = new brjs.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub();
+				oDashboardService = new caplinx.dashboard.app.service.dashboard.WorkbenchDashboardProviderStub();
 				var sRootUrl = window.location.href.replace(/dashboard\/dashboard-bladeset.*$/, "");
-				var oPageUrlService = new brjs.dashboard.app.service.url.PageUrlProviderStub(sRootUrl);
-				var oWindowOpenerService = new brjs.dashboard.app.service.window.WindowOpenerProvider();
-				var oDummyLocalStorage = new brjs.dashboard.app.service.dashboard.DummyLocalStorage();
-				var oDummyBrowserDetector = new brjs.dashboard.app.service.browserdetector.BrowserDetector();
+				var oPageUrlService = new caplinx.dashboard.app.service.url.PageUrlProviderStub(sRootUrl);
+				var oWindowOpenerService = new caplinx.dashboard.app.service.window.WindowOpenerProvider();
+				var oDummyLocalStorage = new caplinx.dashboard.app.service.dashboard.DummyLocalStorage();
+				var oDummyBrowserDetector = new caplinx.dashboard.app.service.browserdetector.BrowserDetector();
 				
-				oApp = new brjs.dashboard.app.DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, oDummyLocalStorage, oDummyBrowserDetector);
+				oApp = new caplinx.dashboard.app.DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, oDummyLocalStorage, oDummyBrowserDetector);
 			});
 			
 			function onControlPanelClicked()

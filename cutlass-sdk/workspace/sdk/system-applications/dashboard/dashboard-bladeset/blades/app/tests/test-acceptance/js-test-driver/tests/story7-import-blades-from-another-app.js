@@ -3,7 +3,7 @@ br.test.GwtTestRunner.initialize();
 // Story 7 - IMPORT BLADES FROM ANOTHER APP
 describe("story #7", function() 
 {
-	fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
+	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");
 	
 	it("displays the import blades dialog", function() {
 		given("test.continuesFrom = 'story #4::enables the Import Blades From App button when there are multiple applications'");
