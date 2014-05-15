@@ -14,63 +14,89 @@ var i18n = require('br/I18n');
  * @implements br.services.HtmlResourceService
  */
 function BRHtmlResourceService(url) {
-	/** @private */
-	this.url = url || "bundle.html";
+    /** @private */
+    this.url = url || "bundle.html";
 
-	/** @private */
-	this.templates = {};
+    /** @private */
+    this.templates = {};
 
-	/** @private */
-	this.element = document.createElement("div");
-	this.element.style.display = "none";
+    /** @private */
+    this.element = document.createElement("div");
+    this.element.style.display = "none";
 
-	this._loadHtml();
+    this._loadHtml();
 }
 
 /**
  * Access an HTML template by name.
  *
- * @param {String} sTemplateId The identifier of the root element of the template you wish to retrieve.
+ * @param {String} templateId The identifier of the template that is required. Note that templates should be contained
+ * within a template tag (preferably).
  *
- * @type String
- * @returns The template HTML as a string.
+ * @returns {HTMLElement}
  */
 BRHtmlResourceService.prototype.getHTMLTemplate = function(templateId) {
-	if (this.templates[templateId]) {
-		return this.templates[templateId];
-	}
-	return document.getElementById(templateId);
+    var template = null;
+    if(this.templates[templateId]) {
+        template = this.templates[templateId]
+    }
+    else {
+        template = getTemplate(document.getElementById(templateId));
+        this.templates[templateId] = template;
+    }
+
+    return template.cloneNode(true);
 };
 
 /**
  * @private
  */
 BRHtmlResourceService.prototype._loadHtml = function() {
-	document.body.appendChild(this.element);
+    document.body.appendChild(this.element);
 
-	var rawHtml = File.readFileSync(this.url);
-	var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
-	this.element.innerHTML = sanitizeHtml(translatedHtml);
+    var rawHtml = File.readFileSync(this.url);
+    var translatedHtml = i18n.getTranslator().translate(rawHtml, "html");
+    this.element.innerHTML = sanitizeHtml(translatedHtml);
 
-	for (var i = 0, max = this.element.children.length; i < max; i++) {
-		this.templates[this.element.children[i].id] = this.element.children[i].cloneNode(true);
-	}
-	
-	document.body.removeChild(this.element);
+    for (var i = 0, max = this.element.children.length; i < max; i++) {
+        if(this.element.children[i].id === "global-nav") debugger;
+        this.templates[this.element.children[i].id] = getTemplate(this.element.children[i]);
+    }
+    
+    document.body.removeChild(this.element);
 };
+
+/**
+ * Gets the template by removing the template tag if needed.
+ */
+function getTemplate(template) {
+    if(template != null && template.tagName.toLowerCase() === "template") {
+        // Template being a non fully supported tag yet, check if we can use content, else use a dummy div to get the
+        // inner content.
+        if(template.content) {
+            template = template.content;
+        }
+        else {
+            var tempDiv = document.createElement("div");
+            tempDiv.innerHTML = template.innerHTML;
+            template = tempDiv.children[0];
+        }
+    }
+    return template;
+}
 
 function sanitizeHtml(html) {
-	// IE and old Firefox's don't allow assigning text with script tag in it to innerHTML.
-	if (html.match(/<script(.*)type=\"text\/html\"/)) {
-		function replacer(str, p1) {
-			return '<div' + p1;
-		};
-		// TODO: Log the fact there is a script tag in the template and that it should be replaced with a div.
-		html = html.replace(/<script(.*)type=\"text\/html\"/g, replacer).replace(/<\/script>/g, '</div>');
-	}
-	
-	return html;
-};
+    // IE and old Firefox's don't allow assigning text with script tag in it to innerHTML.
+    if (html.match(/<script(.*)type=\"text\/html\"/)) {
+        function replacer(str, p1) {
+            return '<div' + p1;
+        }
+        // TODO: Log the fact there is a script tag in the template and that it should be replaced with a div.
+        html = html.replace(/<script(.*)type=\"text\/html\"/g, replacer).replace(/<\/script>/g, '</div>');
+    }
+
+    return html;
+}
 
 
 br.implement(BRHtmlResourceService, HtmlResourceService);
