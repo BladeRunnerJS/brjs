@@ -35,6 +35,7 @@ configurations {
 dependencies {
 	retrolambdaConfig dependency('retrolambda')
 	
+	compile project(":brjs-servlet")
 	compile project(":brjs-logger")
 	compile dependency('commons-io')
 	compile dependency('commons-lang3')

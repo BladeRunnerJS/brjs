@@ -18,7 +18,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-// TODO: move this class to it's own Java 6, dependency free project
 public class BRJSServletFilter implements Filter {
 	private static final String CONTENT_TYPE = "Content-Type";
 	private static final String E_TAG = "ETag";
