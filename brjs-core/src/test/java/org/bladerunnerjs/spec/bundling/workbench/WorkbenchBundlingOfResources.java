@@ -17,6 +17,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	private Aspect aspect;
 	private Bladeset bladeset;
 	private Blade blade;
+	private Blade blade2;
 	private Theme standardAspectTheme, standardBladesetTheme, standardBladeTheme;
 	private StringBuffer response = new StringBuffer();
 	private Workbench workbench;
@@ -35,6 +36,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 			bladeset = app.bladeset("bs");
 			standardBladesetTheme = bladeset.theme("standard");
 			blade = bladeset.blade("b1");
+			blade2 = bladeset.blade("b2");
 			standardBladeTheme = blade.theme("standard");
 			workbench = blade.workbench();
 			workbenchTemplate = brjs.template("workbench");
@@ -67,4 +69,20 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 													"BLADE theme content",
 													"ASPECT theme content");
 	}
+	
+	
+	@Test
+	public void assetsFromAnotherBladeArentLoadedIfTheAspectResourcesDependsOnThem() throws Exception
+	{
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).containsFileWithContents("resources/someFile.xml", "appns.bs.b2.Class1")
+			.and(blade2).hasClass("appns/bs/b2/Class1")
+			.and(blade).hasClass("appns/bs/b1/Class1")
+			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");	
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/bundle.xml", response);
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	
+	
 }
