@@ -59,6 +59,16 @@ public class ServedAppTest extends SpecTest
 		// TODO
 	}
 	
+	@Ignore
+	@Test
+	public void jspSupportIsEnabled() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.jsp", "Hello world!")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/default-aspect/index.jsp", "Hello world!");
+	}
+	
 	@Test
 	public void indexPageCanBeAccessed() throws Exception
 	{
@@ -73,7 +83,7 @@ public class ServedAppTest extends SpecTest
 	public void jspIndexPageCanBeAccessed() throws Exception
 	{
 		given(app).hasBeenPopulated()
-			.and(aspect).containsFileWithContents("index.jsp", "<% \"aspect \" + \"index.jsp\" %")
+			.and(aspect).containsFileWithContents("index.jsp", "<%= \"aspect \" + \"index.jsp\" %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/en/", "aspect index.jsp");
 	}
