@@ -1,4 +1,5 @@
 package org.bladerunnerjs.spec.command;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand;
@@ -17,6 +18,7 @@ public class IntegrationWarCommandTest extends SpecTest {
 	private StringBuffer warResponse = new StringBuffer();
 	private StringBuffer brjsResponse = new StringBuffer();
 	private Aspect aspect;
+	private Aspect loginAspect;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -28,16 +30,17 @@ public class IntegrationWarCommandTest extends SpecTest {
 			.and(brjs).usesProductionTemplates();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			loginAspect = app.aspect("login");
 	}
 	
-	@Test
+	@Test @Ignore
 	public void exportedWarCanBeDeployedOnAnAppServer() throws Exception {
 		given(app).hasBeenPopulated()
 			.and(brjs).commandHasBeenRun("war", "app1")
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
 		when(warServer).receivesRequestFor("/app", pageResponse)
-			.and(warServer).receivesRequestFor("/app/js/prod/combined/bundle.js", bundleResponse);
+			.and(warServer).receivesRequestFor("/app/v/dev/js/prod/combined/bundle.js", bundleResponse);
 		then(pageResponse).containsText("Successfully loaded the application")
 			.and(pageResponse).containsText("js/prod/combined/bundle.js")
 			.and(bundleResponse).isNotEmpty();
@@ -55,28 +58,41 @@ public class IntegrationWarCommandTest extends SpecTest {
 		then(warResponse).textEquals(brjsResponse);
 	}
 	
-	@Ignore //TODO: this command will only pass when we get rid of the filters
-	@Test
+	@Test @Ignore
 	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(app).hasBeenPopulated()
 			.and(brjs).commandHasBeenRun("war", "app1")
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
-		when(warServer).receivesRequestFor("/app/js/prod/combined/bundle.js", warResponse)
-			.and(app).requestReceived("/default-aspect/js/prod/en/combined/bundle.js", brjsResponse);
+		when(warServer).receivesRequestFor("/app/v/dev/js/prod/combined/bundle.js", warResponse)
+			.and(app).requestReceived("/default-aspect/js/prod/combined/bundle.js", brjsResponse);
 		then(warResponse).textEquals(brjsResponse);
 	}
-
-	@Ignore //TODO: this command will only pass when we get rid of the filters
-	@Test
+	
+	@Test @Ignore
 	public void exportedWarCssBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("resources/style.css", "body { color: red; }")
 			.and(brjs).commandHasBeenRun("war", "app1")
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
-		when(warServer).receivesRequestFor("/app/css/common/bundle.css", warResponse)
+		when(warServer).receivesRequestFor("/app/v/dev/css/common/bundle.css", warResponse)
 			.and(app).requestReceived("/default-aspect/css/common/bundle.css", brjsResponse);
 		then(warResponse).textEquals(brjsResponse);
 	}
+	
+	@Test @Ignore
+	public void warCommandDoesntExportFilesFromAnotherAspect() throws Exception {
+		given(app).hasBeenPopulated()
+			.and(loginAspect).hasBeenCreated()
+			.and(loginAspect).containsFolder("resources") //TODO: remove the need for every aspect to have a 'resources' folder
+			.and(aspect).containsFolder("resources") //TODO: remove the need for every aspect to have a 'resources' folder
+			.and(loginAspect).containsFileWithContents("themes/noir/images/file.gif", "** SOME GIF STUFF... **")
+			.and(brjs).commandHasBeenRun("war", "app1")
+			.and(warServer).hasWar("app1.war", "app")
+			.and(warServer).hasStarted();
+		when(warServer).receivesRequestFor("/app/login/v/dev/cssresource/aspect_login/theme_noir/images/file.gif", warResponse);
+		then(warResponse).textEquals("** SOME GIF STUFF... **");
+	}
+	
 }

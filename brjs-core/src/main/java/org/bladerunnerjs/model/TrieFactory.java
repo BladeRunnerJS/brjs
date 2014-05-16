@@ -51,7 +51,8 @@ public class TrieFactory {
 							addQuotedKeyToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
 							
 							if (sourceModule.getClassname() != null) {
-								addToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule));
+								trie.add(sourceModule.getClassname(), new SourceModuleReference(sourceModule));
+								addQuotedKeyToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule));
 							}
 						}
 						
@@ -63,7 +64,7 @@ public class TrieFactory {
 							}
 						}
 					}
-					catch (EmptyTrieKeyException | ContentFileProcessingException ex) {
+					catch (EmptyTrieKeyException | ContentFileProcessingException | TrieKeyAlreadyExistsException ex) {
 						throw new ModelOperationException(ex);
 					}
 				}
@@ -73,25 +74,16 @@ public class TrieFactory {
 		});
 	}
 	
-	private void addToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException
-	{
-		try
-		{
-			trie.add(key, value);
-		}
-		catch (TrieKeyAlreadyExistsException ex)
-		{
-		}
-	}
-	
-	private void addQuotedKeyToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException {
-		addToTrie(trie, "'" + key + "'", value);
-		addToTrie(trie, "\"" + key + "\"", value);
-		addToTrie(trie, "<" + key + ">", value);
-		addToTrie(trie, "<" + key + "/", value);
-		addToTrie(trie, "<" + key + " ", value);
-		addToTrie(trie, "<" + key + "\t", value);
-		addToTrie(trie, "<" + key + "\r", value);
-		addToTrie(trie, "<" + key + "\n", value);
+	private void addQuotedKeyToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException {
+		trie.add("'" + key + "'", value);
+		trie.add("\\'" + key + "\\'", value);
+		trie.add("\"" + key + "\"", value);
+		trie.add("\\\"" + key + "\\\"", value);
+		trie.add("<" + key + ">", value);
+		trie.add("<" + key + "/", value);
+		trie.add("<" + key + " ", value);
+		trie.add("<" + key + "\t", value);
+		trie.add("<" + key + "\r", value);
+		trie.add("<" + key + "\n", value);
 	}
 }

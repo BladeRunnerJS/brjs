@@ -3,7 +3,7 @@ br.test.GwtTestRunner.initialize();
 // Story 2 - CREATE NEW APP
 describe("story #2", function() 
 {
-	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");
+	fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
 	
 	
 	it("displays the new-app dialog when the create-app button is invoked", function() {
@@ -48,10 +48,10 @@ describe("story #2", function()
 	
 	it("disables the 'create' button if the app namespace is a reserved name", function() {
 		given("test.continuesFrom = 'enables the create app button when all fields have been entered with valid values'");
-		when("dash.model.dialog.viewNode.current.appNamespace.value => 'caplinx'");
+		when("dash.model.dialog.viewNode.current.appNamespace.value => 'brjs'");
 		then("dash.model.dialog.viewNode.current.appNamespace.hasError = true");
 			and("dash.model.dialog.viewNode.current.createAppButton.enabled = false");
-			and("dash.model.dialog.viewNode.current.appNamespace.failureMessage = '\'caplinx\' is a reserved namespace.'");		
+			and("dash.model.dialog.viewNode.current.appNamespace.failureMessage = '\'brjs\' is a reserved namespace.'");		
 	});
 	
 	it("re-disables the create app button when valid appName turns into invalid field value", function() {

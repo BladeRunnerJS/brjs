@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJS;
@@ -92,7 +91,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		try
 		{
-			return getValidContentPaths(bundleSet.getBundlableNode().app(), locales);
+			return getValidContentPaths(bundleSet, locales);
 		}
 		catch (MalformedTokenException ex)
 		{
@@ -104,7 +103,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		try
 		{
-			return getValidContentPaths(bundleSet.getBundlableNode().app(), locales);
+			return getValidContentPaths(bundleSet, locales);
 		}
 		catch (MalformedTokenException ex)
 		{
@@ -204,10 +203,10 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private List<String> getValidContentPaths(App app, String... locales) throws MalformedTokenException {
+	private List<String> getValidContentPaths(BundleSet bundleSet, String... locales) throws MalformedTokenException {
 		List<String> contentPaths = new ArrayList<>();
 		
-		for(AssetContainer assetContainer : app.getAllAssetContainers())
+		for(AssetContainer assetContainer : bundleSet.getBundlableNode().assetContainers())
 		{
 			contentPaths.addAll( getValidContentPaths(assetContainer) );
 		}

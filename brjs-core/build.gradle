@@ -42,7 +42,6 @@ dependencies {
 	compile dependency('guava')
 	compile dependency('slf4j-api')
 	compile dependency('gson')
-	compile dependency('json-simple')
 	compile dependency('yamlbeans')
 	compile dependency('validation-api')
 	compile dependency('bval-jsr303')

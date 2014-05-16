@@ -2,7 +2,7 @@ br.test.GwtTestRunner.initialize();
 
 describe("browser warning dialog", function() 
 {
-	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");
+	fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
 	
 	it("displays the dialog for ie6", function() {
 		given("browser.name = 'ie'");

@@ -20,6 +20,6 @@ bin
 build
 out
 test-results
-**/WEB-INF/lib/brjs-*.jar
+brjs-*.jar
 **/bundles/*
 **/bundles/**/*
