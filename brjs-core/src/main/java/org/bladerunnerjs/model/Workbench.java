@@ -73,8 +73,6 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	public List<AssetContainer> scopeAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
-		assetContainers.add( app().aspect("default") );
-		
 		assetContainers.add( this );
 		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
 		assetContainers.add( root().locateAncestorNodeOfClass(this, Bladeset.class) );

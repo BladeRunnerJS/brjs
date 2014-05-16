@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class WorkbenchBundlingOfResources extends SpecTest {
@@ -27,7 +26,6 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated();
 		
 			app = brjs.app("app1");
@@ -69,7 +67,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	}
 	
 	
-	@Test @Ignore
+	@Test
 	public void assetsFromAnotherBladeArentLoadedIfTheAspectResourcesDependsOnThem() throws Exception
 	{
 		given(aspect).hasNamespacedJsPackageStyle()
@@ -77,7 +75,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 			.and(blade2).hasClass("appns/bs/b2/Class1")
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");	
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/bundle.xml", response);
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/combined/bundle.js", response);		
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
