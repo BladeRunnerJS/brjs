@@ -1,6 +1,7 @@
 var Ext = require( 'extjs' );
 var br = require( 'br/Core' );
 var WorkbenchComponent = require( 'br/workbench/ui/WorkbenchComponent' );
+var TreeSearcher = require( 'br/presenter/workbench/ui/TreeSearcher' );
 var ko = require( 'ko' );
 
 /**
@@ -14,11 +15,16 @@ function KnockoutModelTree( knockoutViewModel ) {
   {
     throw "KnockoutModelTree expects a View Model";
   }
+  this._rootNode = null;
+  this._tree = null;
+
   this._viewModel = knockoutViewModel;
-  var oTree = this._buildTree( this._viewModel );
+  this._buildTree( this._viewModel );
   
   this.m_eElement = document.createElement("div");
-  oTree.render(this.m_eElement);
+  this._tree.render(this.m_eElement);
+
+  this._treeSearcher = new TreeSearcher(this._rootNode);
 }
 br.implement( KnockoutModelTree, WorkbenchComponent );
 
@@ -29,19 +35,23 @@ KnockoutModelTree.prototype.getElement = function() {
   return this.m_eElement;
 };
 
+KnockoutModelTree.prototype.search = function(sValue)
+{
+  this._treeSearcher.search(sValue);
+};
+
 /**
  * Builds a tree for the given view model.
  *
  * @private
  */
 KnockoutModelTree.prototype._buildTree = function( viewModel ) {
-  var oTree = new Ext.tree.TreePanel({});
-  this.m_oRootNode = new Ext.tree.TreeNode( { text : "Knockout View Model", expanded: true } );
+  this._tree = new Ext.tree.TreePanel({});
+  this._rootNode = new Ext.tree.TreeNode( { text : "Knockout View Model", expanded: true } );
   
-  this._buildNodes(this.m_oRootNode, viewModel, true);
+  this._buildNodes(this._rootNode, viewModel, true);
 
-  oTree.setRootNode(this.m_oRootNode);
-  return oTree;
+  this._tree.setRootNode(this._rootNode);
 };
 
 function isPrivateVariable( key ) {
