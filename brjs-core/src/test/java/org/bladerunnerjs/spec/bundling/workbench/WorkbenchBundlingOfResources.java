@@ -48,8 +48,6 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	}
 	 
 	// C S S
-	// TODO this test seems to be serving up the CSS in the wrong order
-	@Ignore
 	@Test
 	public void workbenchesLoadCssFromTheAspectLevel() throws Exception
 	{
@@ -71,7 +69,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	}
 	
 	
-	@Test
+	@Test @Ignore
 	public void assetsFromAnotherBladeArentLoadedIfTheAspectResourcesDependsOnThem() throws Exception
 	{
 		given(aspect).hasNamespacedJsPackageStyle()

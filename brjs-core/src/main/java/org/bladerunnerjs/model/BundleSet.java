@@ -48,31 +48,31 @@ public class BundleSet {
 		List<Asset> result = new ArrayList<Asset>();
 		result.addAll(resourceFiles);
 		
-		return orderAssetsBasedOnAssetContainer(result);
+		return orderAssets(bundlableNode, result);
 	}
 	
-	private <A extends Asset> List<A> orderAssetsBasedOnAssetContainer(List<A> assets)
+	private <A extends Asset> List<A> orderAssets(BundlableNode bundlableNode, List<A> assets)
 	{
 		List<A> assetsNotOrderedByContainer = new ArrayList<A>(assets);
 		List<A> orderedAssets = new LinkedList<A>();
 		
-		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Blade.class) );
-		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Bladeset.class) );
-		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Aspect.class) );
-		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Workbench.class) );
+		for (AssetContainer assetContainer : bundlableNode.scopeAssetContainers())
+		{
+			orderedAssets.addAll( 0, getAssetsInContainer(assetsNotOrderedByContainer, assetContainer) );
+		}
 		
 		orderedAssets.addAll(0, assetsNotOrderedByContainer);
 		
 		return orderedAssets;
 	}
 	
-	private <A extends Asset> List<A> getAssetsInContainer(List<A> assets, Class<? extends AssetContainer> assetContainerType)
+	private <A extends Asset> List<A> getAssetsInContainer(List<A> assets, AssetContainer assetContainer)
 	{
 		List<A> assetsInContainer = new ArrayList<A>();
 		
 		for (A asset : assets)
 		{
-			if (asset.assetLocation().assetContainer().getClass() == assetContainerType)
+			if (asset.assetLocation().assetContainer() == assetContainer)
 			{
 				assetsInContainer.add(asset);
 			}
