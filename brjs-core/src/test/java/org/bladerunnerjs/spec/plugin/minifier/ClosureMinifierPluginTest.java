@@ -37,7 +37,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 				"hello('New user');\n"+
 				"\n";
 		minifyWhitespaceContent = "function hello(name){alert(\"Hello, \"+name)}hello(\"New user\")";
-		minifySimpleContent		= "function(){alert(\"Hello, New user\")";
+		minifySimpleContent		= "function(a,b,c){alert(\"Hello, New user\")";
 		minifyAdvancedContent	= "alert(\"Hello, New user\")";
 	}
 	
@@ -47,7 +47,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classFileHasContent("appns.Class1", unminifiedContent);
-		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsText(minifyWhitespaceContent);
 	}
 	
@@ -57,7 +57,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classFileHasContent("appns.Class1", unminifiedContent);
-		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-simple/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/prod/closure-simple/bundle.js", response);
 		then(response).containsText(minifySimpleContent);
 	}
 	
@@ -67,7 +67,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).classFileHasContent("appns.Class1", unminifiedContent);
-		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-advanced/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/prod/closure-advanced/bundle.js", response);
 		then(response).containsText(minifyAdvancedContent);
 	}
 	
@@ -78,7 +78,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.b1.Class2");
-		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2");
 	}
 	
@@ -90,7 +90,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 			.and(aspect).hasClasses("appns.cjs.Class", "appns/node/NodeClass")
 			.and(aspect).indexPageRefersTo("appns.cjs.Class")
 			.and(aspect).classDependsOn("appns.cjs.Class",  "appns.node.NodeClass");
-		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.cjs.Class", "NodeClass"); //TODO: have better NodeJS minified class handling
 	}
 	
@@ -100,7 +100,7 @@ public class ClosureMinifierPluginTest extends SpecTest
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/cjs")
 			.and(aspect).hasClasses("appns.cjs.Class", "appns/node/Class")
 			.and(aspect).indexPageRefersTo("appns.cjs.Class");
-		when(app).requestReceived("/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.cjs.Class")
 			.and(response).containsText("mergePackageBlock(window,{\"appns\":{\"cjs\":{}}});");
 	}

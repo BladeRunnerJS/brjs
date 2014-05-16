@@ -3,15 +3,12 @@ package com.caplin.cutlass.command.create;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.ConfigException;
-
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 
@@ -34,7 +31,7 @@ public class CreateApplicationCommandTest
 	private File newApplicationToBeCreatedDirectory;
 	
 	@Before
-	public void setup() throws IOException, ConfigException
+	public void setup() throws Exception
 	{
 		File tempDirRoot = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
 		FileUtils.copyDirectory(testResourcesSdkDir, tempDirRoot);

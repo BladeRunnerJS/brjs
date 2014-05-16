@@ -133,6 +133,12 @@
 		return this.m_eTemplate;
 	};
 
+	// It is the responsibility of the containing system to call serialize and then persist the resultant string.
+	// It can then call deserialize with that string to (re)create an instance of the component. 
+	// We write the component class into the serialized form so this component can throw an exception
+	// if an attempt is made to deserialize it with a string that was not created by this class.
+	// This class identifier should NOT be used by the containing system to map its serialized blobs to component type as 
+	// it is a private concern of this class and liable to change.
 	PresenterComponent.prototype.serialize = function() {
 		var sSerializedState = "";
 		
@@ -144,9 +150,9 @@
 			sSerializedState = this.m_oPresentationModel.serialize();
 		}
 		
-		var sSerializedString = '<br.presenter-component templateId="' + this.m_sTemplateId + '" presentationModel="' + this.m_sPresentationModel + '">'
+		var sSerializedString = '<br.presenter.component.PresenterComponent templateId="' + this.m_sTemplateId + '" presentationModel="' + this.m_sPresentationModel + '">'
 								+ sSerializedState + 
-								'</br.presenter-component>';
+								'</br.presenter.component.PresenterComponent>';
 		
 		return sSerializedString;
 	};
@@ -160,25 +166,21 @@
 	PresenterComponent.prototype.deserialize = function(sPresenterData) {
 		if (br.Core.fulfills(this.m_oPresentationModel, br.presenter.SerializablePresentationModel)) {
 			var vOffsetPresenterOpeningTag = sPresenterData.indexOf('>');
-			var vOffsetPresenterClosingTag = sPresenterData.indexOf('</presenter>');
-
-			if (vOffsetPresenterClosingTag === -1) {
-				vOffsetPresenterClosingTag = sPresenterData.indexOf('</br.presenter-component>');
-			}
+			var vOffsetPresenterClosingTag = sPresenterData.indexOf('</br.presenter.component.PresenterComponent>');
 
 			//If it doesn't have a closing presenter tag means it has no serialized data
 			var sPresenterTagData = (vOffsetPresenterClosingTag !== -1) ? sPresenterData.substring(vOffsetPresenterOpeningTag+1, vOffsetPresenterClosingTag) : "";
-			
 			this.m_oPresentationModel.deserialize(sPresenterTagData);
 		}
 	};
 
-	PresenterComponent.deserialize = function(sXml) {
+	PresenterComponent.deserialize = function(sXml) 
+	{
 		var oPresenterNode = br.util.XmlParser.parse( sXml );
 		var sPresenterNodeName = oPresenterNode.nodeName;
 		
-		if( sPresenterNodeName !== 'presenter' && sPresenterNodeName !== "br.presenter-component" ) {
-			var sErrorMsg = "Nodename for Presenter Configuration XML must be either 'presenter' or 'br.presenter-component', but was:" + sPresenterNodeName;
+		if(sPresenterNodeName !== "br.presenter.component.PresenterComponent" ) {
+			var sErrorMsg = "Nodename for Presenter Configuration XML must be 'br.presenter.component.PresenterComponent', but was:" + sPresenterNodeName;
 			
 			throw new Errors.InvalidParametersError(sErrorMsg);
 		}

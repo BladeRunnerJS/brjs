@@ -10,7 +10,7 @@ import org.junit.Test;
 public class AspectBundlingOfMixedSources extends SpecTest {
 	private App app;
 	private Aspect aspect, otherAspect;
-	private JsLib sdkNamespaceLib, otherSdkNamespaceLib, sdkNodeJsLib, userLib, otherUserLib, jquery;
+	private JsLib sdkNamespaceLib, otherSdkNamespaceLib, sdkNodeJsLib, userLib, otherUserLib, sdkJquery, userJquery;
 	private StringBuffer response = new StringBuffer();
 
 	
@@ -31,13 +31,14 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		sdkNamespaceLib = brjs.sdkLib("sdkNamespaceLib");
 		otherSdkNamespaceLib = brjs.sdkLib("otherSdkNamespaceLib");
 		sdkNodeJsLib = brjs.sdkLib("sdkNodeJsLib");
-		jquery = brjs.sdkNonBladeRunnerLib("jquery");
+		sdkJquery = brjs.sdkNonBladeRunnerLib("jquery");
+		userJquery = app.jsLib("jquery");
 
 		given(sdkNamespaceLib).hasNamespacedJsPackageStyle()
 			.and(otherSdkNamespaceLib).hasNamespacedJsPackageStyle()
 			.and(sdkNodeJsLib).hasNodeJsPackageStyle()
 			.and(userLib).hasNodeJsPackageStyle()
-			.and(otherUserLib).hasNodeJsPackageStyle();
+			.and(otherUserLib).hasNodeJsPackageStyle();			
 	}
 	
 	// Namespace and NodeJS styles together
@@ -47,7 +48,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		given(sdkNodeJsLib).classFileHasContent("sdkNodeJsLib.Class1", "function empty() {};")
 			.and(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.ProxyClass", "sdkNamespaceLib.ProxyClass = sdkNodeJsLib.Class1;")
 			.and(aspect).indexPageHasContent("require('sdkNamespaceLib/ProxyClass')");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				
 				// The sdkNodeJsLib is defined
@@ -57,9 +58,9 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 				// The classes are both made available globally
 				"mergePackageBlock(window, {\"sdkNamespaceLib\":{},\"sdkNodeJsLib\":{}});",
 				// The namespaced style sdk class is assigned to the require of the nodeJsLib class  
-				"sdkNodeJsLib.Class1 = require('sdkNodeJsLib/Class1');",
+				"requireAll(['sdkNodeJsLib/Class1']);",
 				"sdkNamespaceLib.ProxyClass = sdkNodeJsLib.Class1;",
-				"define('sdkNamespaceLib/ProxyClass', function(require, exports, module) { module.exports = sdkNamespaceLib.ProxyClass; });");
+				"sdkNodeJsLib.Class1 = require('sdkNodeJsLib/Class1');");
 	}
 	
 	@Test
@@ -69,16 +70,14 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.ProxyClass",
 				"sdkNamespaceLib.ProxyClass = otherSdkNamespaceLib.Class1; function neverCalledButForcesLoadOrder() {caplin.extend(sdkNamespaceLib.ProxyClass, otherSdkNamespaceLib.Class1);}")
 			.and(aspect).indexPageHasContent("require('sdkNamespaceLib/ProxyClass')");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				// globalise the libraries first
 				"mergePackageBlock(window, {\"otherSdkNamespaceLib\":{},\"sdkNamespaceLib\":{}});",
 				// The class being proxied (the depended-on class) should be added first
 				"otherSdkNamespaceLib.Class1 = function() { var x = 'original function'; };",
-				"define('otherSdkNamespaceLib/Class1', function(require, exports, module) { module.exports = otherSdkNamespaceLib.Class1; });",
 				// The library class doing the proxying should be added next
-				"sdkNamespaceLib.ProxyClass = otherSdkNamespaceLib.Class1;",
-				"define('sdkNamespaceLib/ProxyClass', function(require, exports, module) { module.exports = sdkNamespaceLib.ProxyClass; });");
+				"sdkNamespaceLib.ProxyClass = otherSdkNamespaceLib.Class1;");
 	}
 	
 	
@@ -92,7 +91,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).classRequires("appns/Class1", "userLib.Class1")
 			.and(otherAspect).indexPageRefersTo("otherUserLib.Class1", "sdkNamespaceLib.Class1");
-		when(app).requestReceived("/other-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/other-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("otherUserLib.Class1")
 			.and(response).doesNotContainText("userLib");
 	}
@@ -100,11 +99,11 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 	// user libraries depending on other libraries
 	@Test
 	public void userLibraryCanDependOnSdkThirdpartyLibrary() throws Exception {
-		given(jquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
-			.and(jquery).containsFileWithContents("jquery.js", "jquery-content")
+		given(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
+			.and(sdkJquery).containsFileWithContents("jquery.js", "jquery-content")
 			.and(userLib).classFileHasContent("userLib.Class1", "require('jquery');")
 			.and(aspect).indexPageHasContent("require('userLib.Class1');");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("jquery", "userLib/Class1");
 	}
 	
@@ -113,7 +112,33 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		given(sdkNodeJsLib).classFileHasContent("sdkNodeJsLib.Class1", "function empty() {};")
 			.and(userLib).classFileHasContent("userLib.Class1", "require('sdkNodeJsLib/Class1');")
 			.and(aspect).indexPageHasContent("require('userLib.Class1');");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("sdkNodeJsLib/Class1", "userLib/Class1");
+	}
+	
+	// User thirdparty lib in 'libs' dir overriding an sdk thirdparty library
+	@Test
+	public void userThirdpartyLibraryIsLoadedInsteadOfSdkThirdpartyLibrary() throws Exception {
+		given(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
+			.and(sdkJquery).containsFileWithContents("jquery.js", "SDK jquery-content")
+			.and(userJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: null")
+			.and(userJquery).containsFileWithContents("jquery.js", "USER jquery-content")
+			.and(aspect).indexPageHasContent("require('jquery');");
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		then(response).containsText("USER jquery-content")
+			.and(response).doesNotContainText("SDK jquery-content");
+	}
+	
+	// Legacy thirdparty-library overriding an sdk thirdparty library
+	@Test
+	public void userLegacyAppThirdpartyLibraryIsLoadedInsteadOfSdkThirdpartyLibrary() throws Exception {
+		given(app).containsFileWithContents("thirdparty-libraries/jquery/library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
+			.and(app).containsFileWithContents("thirdparty-libraries/jquery/jquery.js", "LEGACY thirdparty jquery-content")
+			.and(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
+			.and(sdkJquery).containsFileWithContents("jquery.js", "SDK jquery-content")
+			.and(aspect).indexPageHasContent("require('jquery');");
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		then(response).containsText("LEGACY thirdparty jquery-content")
+			.and(response).doesNotContainText("SDK jquery-content");
 	}
 }

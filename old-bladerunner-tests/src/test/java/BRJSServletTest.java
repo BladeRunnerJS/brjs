@@ -111,7 +111,7 @@ public class BRJSServletTest extends SpecTest
 			.and(blade).classDependsOn("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class")
 			.and(appServer).started()
 			.and(appServer).appHasServlet(app, helloWorldServlet, "/hello");
-		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/en_GB/closure-whitespace/bundle.js", response);
+		when(appServer).requestIsMadeFor("/app/default-aspect/js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.bs.b1.cjs.Class", "appns.bs.b1.node.Class");
 	}
 	

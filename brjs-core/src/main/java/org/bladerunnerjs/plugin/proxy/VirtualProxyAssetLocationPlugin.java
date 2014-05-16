@@ -26,14 +26,26 @@ public class VirtualProxyAssetLocationPlugin extends VirtualProxyPlugin implemen
 	}
 	
 	@Override
-	public boolean canHandleAssetContainer(AssetContainer assetContainer) {
+	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		initializePlugin();
-		return assetLocationPlugin.canHandleAssetContainer(assetContainer);
+		return assetLocationPlugin.getAssetLocationDirectories(assetContainer);
 	}
 	
 	@Override
-	public List<AssetLocation> getAssetLocations(AssetContainer assetContainer, Map<String, AssetLocation> assetLocationCache) {
+	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
 		initializePlugin();
-		return assetLocationPlugin.getAssetLocations(assetContainer, assetLocationCache);
+		return assetLocationPlugin.getSeedAssetLocationDirectories(assetContainer);
+	}
+	
+	@Override
+	public AssetLocation createAssetLocation(AssetContainer assetContainer, String dirPath, Map<String, AssetLocation> assetLocationsMap) {
+		initializePlugin();
+		return assetLocationPlugin.createAssetLocation(assetContainer, dirPath, assetLocationsMap);
+	}
+	
+	@Override
+	public boolean allowFurtherProcessing() {
+		initializePlugin();
+		return assetLocationPlugin.allowFurtherProcessing();
 	}
 }

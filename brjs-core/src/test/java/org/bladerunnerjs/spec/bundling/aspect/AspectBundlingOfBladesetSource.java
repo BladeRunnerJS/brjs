@@ -3,7 +3,7 @@ package org.bladerunnerjs.spec.bundling.aspect;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.exception.InvalidRequirePathException;
+import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	public void weBundleABladesetClassIfItIsReferredToInTheIndexPage() throws Exception {
 		given(bladeset).hasClass("appns/bs/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.Class1");
 	}
 	
@@ -44,7 +44,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsClasses("appns.bs.Class1", "appns.bs.Class2");
 	}
 	
@@ -53,7 +53,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
 			.and(bladeset).classRequires("appns/bs/Class1", "appns.bs.Class2");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.Class1", "appns.bs.Class2");
 	}
 	
@@ -63,7 +63,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 			.and(bladeset).hasClasses("appns.bs.Class1", "appns.bs.Class2")
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.Class2")
 			.and(aspect).indexPageRefersTo("appns.bs.Class2");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsClasses("appns.bs.Class2")
 			.and(response).doesNotContainClasses("appns.bs.Class1");
 	}
@@ -73,8 +73,8 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 		given(bladeset).hasClass("appns/bs/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
 			.and(bladeset).classRequires("appns/bs/Class1", "appns.NonExistentClass");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
-		then(exceptions).verifyException(InvalidRequirePathException.class, "appns/NonExistentClass")
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		then(exceptions).verifyException(UnresolvableRequirePathException.class, "appns/NonExistentClass")
 			.whereTopLevelExceptionIs(ContentProcessingException.class);
 	}
 	
@@ -84,7 +84,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 			.and(bladeset).hasClass("appns.bs.Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
 			.and(bladeset).classDependsOn("appns.bs.Class1", "appns.bs.NonExistentClass");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 }

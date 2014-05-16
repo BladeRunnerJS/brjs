@@ -55,7 +55,7 @@ public class CreateBladesetCommand extends ArgsParsingCommandPlugin
 	}
 
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("target-app-name");
 		String bladesetName = parsedArgs.getString("new-bladeset-name");
 		
@@ -77,5 +77,7 @@ public class CreateBladesetCommand extends ArgsParsingCommandPlugin
 		
 		out.println(Messages.BLADESET_CREATE_SUCCESS_CONSOLE_MSG, bladesetName);
 		out.println(Messages.BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
+		
+		return 0;
 	}
 }

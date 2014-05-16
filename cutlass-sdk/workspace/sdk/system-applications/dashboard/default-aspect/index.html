@@ -25,15 +25,15 @@
 					return false;
 				}
 				
-				caplinx.dashboard.app.DashboardApp.initializeLibrary();
+				brjs.dashboard.app.DashboardApp.initializeLibrary();
 				
-				var oDashboardService = new caplinx.dashboard.app.service.dashboard.DashboardProvider(
-					new caplinx.dashboard.app.service.request.XHRFactory(), "servlet/app-manager");
-				var oPageUrlService = new caplinx.dashboard.app.service.url.PageUrlProvider();
-				var oWindowOpenerService = new caplinx.dashboard.app.service.window.WindowOpenerProvider();
-				var oBrowserDetector = new caplinx.dashboard.app.service.browserdetector.BrowserDetector();
+				var oDashboardService = new brjs.dashboard.app.service.dashboard.DashboardProvider(
+					new brjs.dashboard.app.service.request.XHRFactory(), "servlet/app-manager");
+				var oPageUrlService = new brjs.dashboard.app.service.url.PageUrlProvider();
+				var oWindowOpenerService = new brjs.dashboard.app.service.window.WindowOpenerProvider();
+				var oBrowserDetector = new brjs.dashboard.app.service.browserdetector.BrowserDetector();
 				
-				oApp = new caplinx.dashboard.app.DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, localStorage, oBrowserDetector);
+				oApp = new brjs.dashboard.app.DashboardApp(oDashboardService, oPageUrlService, oWindowOpenerService, document.body, localStorage, oBrowserDetector);
 			});
 		</script>
 	</head>

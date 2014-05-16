@@ -14,10 +14,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.testing.BRJSTestFactory;
-
 import com.caplin.cutlass.util.FileUtility;
 
 
@@ -34,21 +34,21 @@ public class RestApiServiceTest
 	/* get apps tests */
 	
 	@Test
-	public void testGettingApps_NoApps()
+	public void testGettingApps_NoApps() throws Exception
 	{
 		setupService(new File(NO_APPS_PATH));
 		assertEquals( "[]", service.getApps() );
 	}
 	
 	@Test
-	public void testGettingApps_SingleApp()
+	public void testGettingApps_SingleApp() throws Exception
 	{
 		setupService(new File(ONE_APP_PATH));
 		assertEquals( "[\"app1\"]", service.getApps() );
 	}
 	
 	@Test
-	public void testGettingApps_MultipleApps()
+	public void testGettingApps_MultipleApps() throws Exception
 	{
 		setupService(new File(THREE_APPS_PATH));
 		assertEquals( "[\"app1\", \"app2\", \"app3\"]", service.getApps() );
@@ -346,7 +346,7 @@ public class RestApiServiceTest
 		assertTrue(indexFile.exists());
 	}
 	
-	private void setupService(File sdkRoot)
+	private void setupService(File sdkRoot) throws InvalidSdkDirectoryException
 	{
 		BRJS brjs = BRJSTestFactory.createBRJS(sdkRoot);
 		BRJSAccessor.initialize(brjs);

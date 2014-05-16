@@ -35,7 +35,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		given(sdkLib).hasNodeJsPackageStyle()
 			.and(sdkLib).hasClass("br/SdkClass")
 			.and(aspect).indexPageHasContent("require('br/SdkClass');");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("br/SdkClass");
 	}
 	
@@ -44,7 +44,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 		given(sdkLib).hasNamespacedJsPackageStyle()
 			.and(sdkLib).hasClass("br.SdkClass")
 			.and(aspect).indexPageHasContent("require('br/SdkClass');");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("br/SdkClass");
 	}
 	
@@ -56,7 +56,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classDependsOn("appns.AspectClass", "br.SdkClass");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("br.SdkClass");
 	}
 	
@@ -66,7 +66,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			.and(sdkLib).hasClass("br/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "br.SdkClass");
-		when(app).requestReceived("/default-aspect/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("br.SdkClass");
 	}
 	
@@ -74,7 +74,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 	public void weCanGenerateABundleForJsLibTestPacks() throws Exception {
 		given(sdkLib).hasClass("br/SdkClass")
 			.and(sdkLibTestPack).testRequires("test.js", "br/SdkClass");
-		when(sdkLibTestPack).requestReceived("js/dev/en_GB/combined/bundle.js", response);
+		when(sdkLibTestPack).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("define('br/SdkClass'");
 	}
 	

@@ -24,10 +24,9 @@ import org.bladerunnerjs.utility.ContentPathParser;
  * 
  * <ul>
  *   <li>{@link #getTagName}</li>
- *   <li>{@link #getGroupName}</li>
  * </ul>
  */
-public interface TagHandlerPlugin extends OrderedPlugin {
+public interface TagHandlerPlugin extends Plugin {
 	/**
 	 * Returns the name of the tag this tag-handler provides.
 	 * 
@@ -36,17 +35,6 @@ public interface TagHandlerPlugin extends OrderedPlugin {
 	 * invoked.</p>
 	 */
 	String getTagName();
-	
-	/**
-	 * Returns the group name of tag-handler plug-in, which allow composite content plug-ins that compose a number of related plug-ins.
-	 * 
-	 * <p><b>Note:</b> Developers should not rely on any class initialization performed within {@link Plugin#setBRJS Plugin.setBRJS()} as this
-	 * method is an <i>identifier-method</i> which may be invoked before {@link Plugin#setBRJS Plugin.setBRJS()} has itself been
-	 * invoked.</p>
-	 * 
-	 * @return the group name if one exists, or <code>null</code> otherwise.
-	 */
-	String getGroupName();
 	
 	/**
 	 * Writes out the generated content for the given tag, optimized for development.

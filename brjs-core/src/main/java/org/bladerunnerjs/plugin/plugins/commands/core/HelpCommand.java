@@ -45,13 +45,14 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		if(parsedArgs.contains("command")) {
 			getHelpForSpecificCommand(parsedArgs.getString("command"));
 		}
 		else {
 			getHelpCommandResponse();
 		}
+		return 0;
 	}
 
 	private void getHelpCommandResponse()

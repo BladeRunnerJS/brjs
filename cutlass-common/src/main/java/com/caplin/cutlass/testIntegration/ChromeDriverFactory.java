@@ -15,7 +15,6 @@ public class ChromeDriverFactory implements DriverFactory
 		return browserName.startsWith("chrome");
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public WebDriver createDriver(File browserPath, Map<String, String> driverOptions)
 	{

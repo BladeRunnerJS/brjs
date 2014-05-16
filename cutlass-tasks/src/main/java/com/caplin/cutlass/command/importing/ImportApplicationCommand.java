@@ -61,7 +61,7 @@ public class ImportApplicationCommand extends AbstractCommandPlugin implements L
 	}
 	
 	@Override
-	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
+	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		assertValidArgs(args);
 		
@@ -110,6 +110,7 @@ public class ImportApplicationCommand extends AbstractCommandPlugin implements L
 		{
 			throw new CommandOperationException("Failed to import application from zip '" + applicationZip + "'.", e);
 		}
+		return 0;
 	}
 
 	private void assertValidArgs(String[] args) throws CommandArgumentsException

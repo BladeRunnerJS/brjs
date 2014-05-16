@@ -50,7 +50,7 @@ public class ApplicationDepsCommand extends ArgsParsingCommandPlugin
 	}
 	
 	@Override
-	protected void doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
 		String aspectName = parsedArgs.getString("aspect-name");
 		boolean showAllDependencies = parsedArgs.getBoolean("all");
@@ -67,5 +67,6 @@ public class ApplicationDepsCommand extends ArgsParsingCommandPlugin
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);
 		}
+		return 0;
 	}
 }

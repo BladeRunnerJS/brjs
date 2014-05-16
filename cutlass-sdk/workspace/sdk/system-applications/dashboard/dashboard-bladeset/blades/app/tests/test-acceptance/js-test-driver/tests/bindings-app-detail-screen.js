@@ -1,7 +1,7 @@
 br.test.GwtTestRunner.initialize();
 
 describe("App Detail Screen", function() {
-	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");
+	fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
 	
 	/*TODO: remove the need for the spaces in the then blocks */
 	it("has correctly bound controls", function() {

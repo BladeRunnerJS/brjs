@@ -8,7 +8,6 @@
 		<scenario name="dev" class="br.services.JSTDXmlResourceService" />
 	</alias>
 
-	<alias name="br.presenter-component" defaultClass="br.presenter.PresenterComponentFactory" />
 	<alias name="br.date-picker" defaultClass="br.presenter.control.datefield.JQueryDatePickerControl" />
 	<alias name="br.toggle-switch" defaultClass="br.presenter.control.selectionfield.ToggleSwitchControl" />
 	<alias name="br.combo-box" defaultClass="br.presenter.control.selectionfield.ExtJsComboBoxControl" />

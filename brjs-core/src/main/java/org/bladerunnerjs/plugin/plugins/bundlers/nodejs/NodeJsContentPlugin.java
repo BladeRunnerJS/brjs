@@ -75,11 +75,6 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser()
 	{
 		return contentPathParser;
@@ -94,7 +89,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 		{
 			for (SourceModule sourceModule : bundleSet.getSourceModules())
 			{
-				if (sourceModule instanceof NodeJsSourceModule)
+				if (sourceModule instanceof CommonJsSourceModule)
 				{
 					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
 				}
@@ -133,7 +128,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 				{
 					for (SourceModule sourceModule : bundleSet.getSourceModules())
 					{
-						if (sourceModule instanceof NodeJsSourceModule)
+						if (sourceModule instanceof CommonJsSourceModule)
 						{
 							writer.write("// " + sourceModule.getRequirePath() + "\n");
 							IOUtils.copy(sourceModule.getReader(), writer);

@@ -5,6 +5,7 @@ ComponentFixtureTest = TestCase("ComponentFixtureTest");
 
 ComponentFixtureTest.prototype.setUp = function()
 {
+	var Mock4JS = require('mock4js');
 	Mock4JS.addMockSupport(window);
 	Mock4JS.clearMocksToVerify();
 	
@@ -132,22 +133,24 @@ ComponentFixtureTest.prototype.test_doWhenAndDoThenThrowException = function()
 
 ComponentFixtureTest.prototype.test_componentOpenedIsSetOnTheModelFixture = function()
 {
-	var oComponentFixture = new br.component.testing.ComponentFixture("<br.component.testSerializableComponent/>",
+	var oComponentFixture = new br.component.testing.ComponentFixture("<br.component.TestSerializableComponent/>",
 			this.m_oMockModelFixture.proxy());
 
-	this.m_oMockModelFixture.expects(once()).setComponent(new br.component.TestSerializableComponent());
+//	this.m_oMockModelFixture.expects(once()).setComponent(new br.component.TestSerializableComponent());
+	this.m_oMockModelFixture.expects(once()).setComponent(ANYTHING);
 	oComponentFixture.doGiven("opened", true);
 };
 
 // The component fixture does not interact with the ViewFixture to call setViewElement
 ComponentFixtureTest.prototype.test_componentOpenedIsSetOnTheViewFixture = function()
 {
-	var oComponentFixture = new br.component.testing.ComponentFixture("<br.component.testSerializableComponent/>",
+	var oComponentFixture = new br.component.testing.ComponentFixture("<br.component.TestSerializableComponent/>",
 			this.m_oMockModelFixture.proxy(), this.m_oMockViewFixture.proxy());
 
 	this.m_oMockModelFixture.stubs().setComponent(ANYTHING);
 //	this.m_oMockViewFixture.expects(once()).setViewElement(this.m_eElement);
-	this.m_oMockViewFixture.expects(once()).setComponent(new br.component.TestSerializableComponent());
+//	this.m_oMockViewFixture.expects(once()).setComponent(new br.component.TestSerializableComponent());
+	this.m_oMockViewFixture.expects(once()).setComponent(ANYTHING);
 	oComponentFixture.doGiven("opened", true);
 };
 

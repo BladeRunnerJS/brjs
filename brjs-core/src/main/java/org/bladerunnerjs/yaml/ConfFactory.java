@@ -19,15 +19,15 @@ public class ConfFactory {
 		
 		if(confFile.exists()) {
 			conf = readConf(confFile, confClass, defaultFileCharacterEncoding);
-			conf.setNode(node);
-			conf.setConfFile(confFile);
-			conf.verify();
 		}
 		else {
 			conf = newConf(confClass);
-			conf.setNode(node);
-			conf.setConfFile(confFile);
+			
 		}
+		
+		conf.setNode(node);
+		conf.setConfFile(confFile);
+		conf.verify();
 		
 		return conf;
 	}
@@ -55,11 +55,12 @@ public class ConfFactory {
 			
 			try(Reader fileReader = new UnicodeReader(confFile, defaultFileCharacterEncoding)) {
 				if(!fileReader.ready()) {
-					throw new ConfigException("'" + confFile.getPath() + "' is empty, either add some configuration or delete it to use the default configuration.");
+					return newConf(confClass);
 				}
 				
 				reader = new YamlReader(fileReader);
 				conf = reader.read(confClass);
+				conf.initialize();
 			}
 			finally {
 				if(reader != null) {
@@ -68,7 +69,9 @@ public class ConfFactory {
 			}
 		}
 		catch(YamlReaderException e) {
-			throw new ConfigException("Parse error while reading '" + confFile.getPath() + "':\n" + e.getMessage());
+			throw new ConfigException("Parse error while reading\n '" + confFile.getPath() + "':\n\n" + 
+										e.getMessage() + "\n\n" +
+										"Please check to see that your properties have a space after the colon ':' as this is a common issue encounterd with YAML files.");
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);

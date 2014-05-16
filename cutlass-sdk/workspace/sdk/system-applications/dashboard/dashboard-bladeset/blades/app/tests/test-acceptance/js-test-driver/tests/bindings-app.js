@@ -1,7 +1,7 @@
 br.test.GwtTestRunner.initialize();
 
 describe("Dashboard App", function() {
-	fixtures("caplinx.dashboard.app.testing.DashboardFixtureFactory");
+	fixtures("brjs.dashboard.app.testing.DashboardFixtureFactory");
 	
 	it("displays the screens that are visible", function() {
 		given("dash.loaded = true");

@@ -94,7 +94,7 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		
 		if(linkedAssets.add(linkedAsset)) {
-			List<SourceModule> moduleDependencies = linkedAsset.getDependentSourceModules(bundlableNode);
+			List<SourceModule> moduleDependencies = new ArrayList<>(linkedAsset.getDependentSourceModules(bundlableNode));
 			
 			if (linkedAsset instanceof SourceModule)
 			{
@@ -122,7 +122,7 @@ public class BundleSetBuilder {
 	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
 		
 		if(assetLocations.add(assetLocation)) {
-			for(LinkedAsset resourceSeedFile : assetLocation.seedResources()) {
+			for(LinkedAsset resourceSeedFile : assetLocation.linkedAssets()) {
 				addLinkedAsset(resourceSeedFile);
 			}
 			

@@ -149,7 +149,6 @@
 	AliasRegistryTest["test Returns the correct class when an existing alias is requested"] = function()
 	{
 		var fClass = aliasRegistry.getClass("some.alias1");
-		debugger;
 		assertEquals("The class retireved is incorrect", pkg.a.AliasClass1, fClass);
 	};
 

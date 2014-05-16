@@ -60,7 +60,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: thirdpartyLib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
 			.and(workbench).indexPageRequires("thirdparty-lib1");
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }")
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
@@ -73,7 +73,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.Class1");
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/combined/bundle.js", response);
 		then(response).containsText("appns.Class1")
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
@@ -85,7 +85,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
 			.and(bootstrapLib).containsFileWithContents("sub/dir/bootstrap.js", "// this is bootstrap");
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/combined/bundle.js", response);
 		then(response).containsText("// br-bootstrap");
 		then(response).containsText("// this is bootstrap"); 
 	}
@@ -100,7 +100,7 @@ public class WorkbenchBundlingTest extends SpecTest {
     		.and(bootstrapLib).hasBeenCreated()
     		.and(bootstrapLib).containsFileWithContents("library.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
     		.and(bootstrapLib).containsFileWithContents("sub/dir/bootstrap.js", "// this is bootstrap");
-    	when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+    	when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/combined/bundle.js", response);
     	then(response).containsOrderedTextFragments("// br-bootstrap",
     			"// appLib" );
 	}
@@ -153,18 +153,17 @@ public class WorkbenchBundlingTest extends SpecTest {
 	}
 	
 	// ----------------------------------- H T M L  -------------------------------------
-	@Ignore // This test should pass to prove that 
 	@Test
 	public void workbenchCanBundleSdkLibHtmlResources() throws Exception {
 		given(brjsLib).hasBeenCreated()
 			.and(brjsLib).hasNamespacedJsPackageStyle()
-			.and(brjsLib).containsFileWithContents("resources/html/view.html", "<div id='tree-view'></div>")
+			.and(brjsLib).containsFileWithContents("resources/html/view.html", "<div id='br.tree-view'></div>")
 			.and(brjsLib).hasClass("br.workbench.ui.Workbench")
 			.and(workbench).containsFileWithContents("resources/workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
 			.and(workbench).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/bundle.html", response);
-		then(response).containsOrderedTextFragments("<div id='appns.bs.b1.workbench-view'></div>",
-													"<div id='tree-view'></div>");
+		then(response).containsOrderedTextFragments("<div id='br.tree-view'></div>",
+													"<div id='appns.bs.b1.workbench-view'></div>");
 	}
 	
 	@Test
@@ -173,7 +172,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbench).hasClass("appns.WorkbenchClass")
 			.and(blade).classDependsOn("appns.bs.b1.BladeClass", "appns.WorkbenchClass")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.BladeClass");
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/en_GB/combined/bundle.js", response);
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/combined/bundle.js", response);
 		then(response).containsText("appns.bs.b1.BladeClass =")
 			.and(response).doesNotContainText("appns.WorkbenchClass =");
 	}

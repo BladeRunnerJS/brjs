@@ -8,26 +8,30 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-import org.json.simple.JSONObject;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 public class NamespacedJsContentPlugin extends AbstractContentPlugin
@@ -83,11 +87,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser()
 	{
 		return contentPathParser;
@@ -134,7 +133,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
-					writer.write(getGlobalizedNonNamespacedDependenciesContent(bundleSet.getBundlableNode(), jsModule, new ArrayList<SourceModule>()));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}
@@ -143,24 +141,24 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
 					StringWriter contentBuffer = new StringWriter();
-					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
 
 					// do this first and buffer the content so we know which modules have been globally namespaced
 					for (SourceModule sourceModule : bundleSet.getSourceModules())
 					{
 						if (sourceModule instanceof NamespacedJsSourceModule)
 						{
-							contentBuffer.write(getGlobalizedNonNamespacedDependenciesContent(bundleSet.getBundlableNode(), sourceModule, processedGlobalizedSourceModules));
 							contentBuffer.write("// " + sourceModule.getRequirePath() + "\n");
 							IOUtils.copy(sourceModule.getReader(), contentBuffer);
 							contentBuffer.write("\n\n");
+							contentBuffer.flush();
 						}
 					}
 
 					// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
-					String globalizedClasses = getExtraGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
-
+					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
+					String globalizedClasses = getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
 					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
+					
 					writePackageStructure(packageStructure, writer);
 					writer.write("\n");
 
@@ -174,11 +172,11 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			{
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
-					List<SourceModule> processedGlobalizedSourceModules = calculateGlobalizedClasses(bundleSet);
-
-					// call globalizeExtraClasses so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
-					getExtraGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
+					// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
+					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
+					getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
 					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules, writer);
+					
 					writePackageStructure(packageStructure, writer);
 				}
 			}
@@ -186,8 +184,9 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			{
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
-					List<SourceModule> processedGlobalizedSourceModules = calculateGlobalizedClasses(bundleSet);
-					writer.write(getExtraGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules));
+					// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
+					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
+					writer.write(getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules));
 				}
 			}
 			else
@@ -195,23 +194,10 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
-		catch (ModelOperationException | ConfigException | IOException | RequirePathException e)
+		catch (ConfigException | IOException | RequirePathException e)
 		{
 			throw new ContentProcessingException(e);
 		}
-	}
-
-	private List<SourceModule> calculateGlobalizedClasses(BundleSet bundleSet) throws ModelOperationException, RequirePathException
-	{
-		List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
-		for (SourceModule sourceModule : bundleSet.getSourceModules())
-		{
-			if (sourceModule instanceof NamespacedJsSourceModule)
-			{
-				getGlobalizedNonNamespacedDependenciesContent(bundleSet.getBundlableNode(), sourceModule, processedGlobalizedSourceModules);
-			}
-		}
-		return processedGlobalizedSourceModules;
 	}
 
 	private Map<String, Map<String, ?>> createPackageStructureForCaplinJsClasses(BundleSet bundleSet, List<SourceModule> globalizedModules, Writer writer)
@@ -265,35 +251,14 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	{
 		if (packageStructure.size() > 0)
 		{
-			writer.write(
-				"// package definition block\n" +
-				"function mergePackageBlock(context, packageBlock) {\n" +
-				"	for(packageName in packageBlock) {\n" +
-				"		if(!context[packageName]) {\n" +
-				"			context[packageName] = packageBlock[packageName];\n" +
-				"		}\n" +
-				"		else {\n" +
-				"			mergePackageBlock(context[packageName], packageBlock[packageName]);\n" +
-				"		}\n" +
-				"	}\n" +
-				"}\n");
+			Gson gson = new GsonBuilder().create();
+			
+			writer.write("// package definition block\n");
 			writer.write("mergePackageBlock(window, ");
-			JSONObject.writeJSONString(packageStructure, writer);
+			writer.write( gson.toJson(packageStructure) );
 			writer.write(");\n");
 			writer.flush();
 		}
-	}
-
-	private String getGlobalizedNonNamespacedDependenciesContent(BundlableNode bundlableNode, SourceModule sourceModule, List<SourceModule> globalizedModules) throws ModelOperationException, RequirePathException
-	{
-		StringBuffer stringBuffer = new StringBuffer();
-
-		for (SourceModule dependentSourceModule : sourceModule.getDependentSourceModules(bundlableNode))
-		{
-			stringBuffer.append( getGlobalizedNonNamespaceSourceModuleContent(dependentSourceModule, globalizedModules) );
-		}
-
-		return stringBuffer.toString();
 	}
 
 	private String getGlobalizedNonNamespaceSourceModuleContent(SourceModule dependentSourceModule, List<SourceModule> globalizedModules)
@@ -306,14 +271,55 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		return "";
 	}
 
-	private String getExtraGlobalizedClassesContent(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
-	{
+	private String getGlobalizedClassesContent(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
+	{		
 		StringBuffer output = new StringBuffer();
-		for (SourceModule sourceModule : bundleSet.getSourceModules())
-		{
-			output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
+		
+		List<SourceModule> allSourceModules = bundleSet.getSourceModules();
+
+		List<Predicate<SourceModule>> sourceModuleOrderingFilters = new LinkedList<>();
+		sourceModuleOrderingFilters.add( new IsNamespacedJsSourceModulePredicate() );
+		sourceModuleOrderingFilters.add( new IsCommonJsSourceModulePredicate() );
+		sourceModuleOrderingFilters.add( new IsNonCommonJSAndNonNamespacedJsSourceModulePredicate() );
+		
+		for (Predicate<SourceModule> sourceModuleFilter : sourceModuleOrderingFilters) {
+			for ( SourceModule sourceModule : Collections2.filter(allSourceModules,sourceModuleFilter) )
+			{
+				output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
+			}
 		}
+		
 		return output.toString();
+	}
+	
+	
+	
+	private class IsNamespacedJsSourceModulePredicate implements Predicate<SourceModule> {
+		@Override
+		public boolean apply(SourceModule input)
+		{
+			return input.getClass() == NamespacedJsSourceModule.class;
+		}
+	}
+	
+	private class IsCommonJsSourceModulePredicate implements Predicate<SourceModule> {
+		@Override
+		public boolean apply(SourceModule input)
+		{
+			return input.getClass() == CommonJsSourceModule.class;
+		}
+	}
+
+	private class IsNonCommonJSAndNonNamespacedJsSourceModulePredicate implements Predicate<SourceModule> {
+		
+		IsNamespacedJsSourceModulePredicate isNamespacedJsSourceModulePredicate = new IsNamespacedJsSourceModulePredicate();
+		IsCommonJsSourceModulePredicate isCommonJsSourceModulePredicate = new IsCommonJsSourceModulePredicate();
+		
+		@Override
+		public boolean apply(SourceModule input)
+		{
+			return isNamespacedJsSourceModulePredicate.apply(input) && isCommonJsSourceModulePredicate.apply(input);
+		}
 	}
 
 }

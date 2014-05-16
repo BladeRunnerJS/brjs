@@ -21,7 +21,8 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 public interface BundlableNode extends Node, AssetContainer {
 	AliasesFile aliasesFile();
 	SourceModule getSourceModule(String requirePath) throws RequirePathException;
-	List<LinkedAsset> seedFiles();
+	List<AssetLocation> seedAssetLocations();
+	List<LinkedAsset> seedAssets();
 	
 	/**
 	 * Returns all AssetContainers that contain resources that can potentially be bundled for this BundleableNode

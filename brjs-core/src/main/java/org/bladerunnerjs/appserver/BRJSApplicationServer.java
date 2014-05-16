@@ -27,6 +27,7 @@ public class BRJSApplicationServer implements ApplicationServer
 	{
 		System.setProperty("java.naming.factory.url.pkgs", "org.eclipse.jetty.jndi");
 		System.setProperty("java.naming.factory.initial", "org.eclipse.jetty.jndi.InitialContextFactory");
+		System.setProperty("org.apache.jasper.compiler.disablejsr199","true");
 	}
 	
 	public class Messages {

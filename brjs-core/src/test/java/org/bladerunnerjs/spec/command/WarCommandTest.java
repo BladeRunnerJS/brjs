@@ -59,6 +59,19 @@ public class WarCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void exportingAnAppWithMultipleLocales() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("app.conf", "requirePrefix: app1\nlocales: en_EN, de_DE")
+			.and(aspect).hasClass("Class1")
+			.and(aspect).indexPageHasContent("default aspect")
+			.and(mobileAspect).hasClass("Class1")
+			.and(mobileAspect).indexPageHasContent("mobile aspect");
+		when(brjs).runCommand("war", "app1");
+		then(brjs).hasFile("app1.war")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
 	public void specifyingAWarLocationWhenExportingAnAppCausesItToBeCreatedAtTheGivenLocation() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("war", "app1", "myapp.war");
@@ -106,9 +119,15 @@ public class WarCommandTest extends SpecTest {
 	@Ignore
 	@Test
 	public void minifyingCausesTheWarToBeSmaller() throws Exception {
-		given(aspect).hasClass("appns.Class1")
-			.and(aspect).indexPageRefersTo("appns.Class1");
+		given(app).hasBeenCreated()
+		.and(aspect).classFileHasContent("appns/Class1", "var reallyLongStringThatWillBeMinifiedToAFarSmallerSize = 'foo';")
+			.and(aspect).indexPageHasContent(
+					"<head><@js.bundle prod-minifier='combined'@/></head>\n" +
+					"require('appns/Class1');");
 		when(brjs).runCommand("war", "app1", "unminified.war")
+			.and(aspect).indexPageHasContent(
+					"<head><@js.bundle prod-minifier='closure-simple'@/></head>\n" +
+					"require('appns/Class1');")
 			.and(brjs).runCommand("war", "app1", "-m", "closure-whitespace", "minified.war");
 		then(brjs).firstFileIsLarger("unminified.war", "minified.war");
 	}

@@ -20,7 +20,11 @@ public class StringVerifier {
 	private VerifierChainer verifierChainer;
 	
 	public StringVerifier(SpecTest specTest, StringBuffer stringBuffer) {
-		this.string = stringBuffer.toString();
+		this(specTest, stringBuffer.toString());
+	}
+	
+	public StringVerifier(SpecTest specTest, String string) {
+		this.string = string;
 		this.verifierChainer = new VerifierChainer(specTest);
 	}
 	
@@ -58,11 +62,16 @@ public class StringVerifier {
 	}
 	
 	public VerifierChainer containsNodeJsClasses(String... classes) {
+		List<String> processedNodeClassNames = new ArrayList<String>();
 		for(String className : classes) {
 			className = className.replaceAll("\\.", "/");
-			className = StringUtils.substringAfterLast(className, "/");
-			containsText(className + " = function() {\n");
-			containsText("exports = " + className);
+			String nodeClassName = StringUtils.substringAfterLast(className, "/");
+			if (processedNodeClassNames.contains(nodeClassName)) {
+				throw new RuntimeException("NodeJS classes must not have the same suffix names as it leads to false positives. e.g. some.Name and another.Name should be some.Name and some.otherName");
+			}
+			containsText(nodeClassName + " = function() {\n");
+			containsText("exports = " + nodeClassName);
+			processedNodeClassNames.add(nodeClassName);
 		}
 		
 		return verifierChainer;

@@ -3,8 +3,6 @@ package org.bladerunnerjs.model;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.IOException;
-
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.After;
@@ -17,7 +15,7 @@ public class BRJSUnitTest
 	private BRJS brjs;
 	
 	@Before
-	public void setup() throws IOException
+	public void setup() throws Exception
 	{
 		File rootDir = FileUtility.createTemporaryDirectory( this.getClass().getCanonicalName() );
 		new File(rootDir, "sdk").mkdir();

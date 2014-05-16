@@ -11,19 +11,19 @@ import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.Trie;
-import org.bladerunnerjs.utility.reader.ReaderFactory;
+import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 
 public class TrieBasedDependenciesCalculator
 {
 	private App app;
 	private AssetLocation assetLocation;
 	private Asset asset;
-	private final ReaderFactory readerFactory;
+	private final AssetReaderFactory readerFactory;
 	private final TrieFactory trieFactory;
 	
 	private MemoizedValue<ComputedValue> computedValue;
 	
-	public TrieBasedDependenciesCalculator(Asset asset, ReaderFactory readerFactory, File... readerFiles)
+	public TrieBasedDependenciesCalculator(Asset asset, AssetReaderFactory readerFactory, File... readerFiles)
 	{
 		this.asset = asset;
 		this.readerFactory = readerFactory;
@@ -53,7 +53,7 @@ public class TrieBasedDependenciesCalculator
 			public Object get() throws ModelOperationException {
 				ComputedValue computedValue = new ComputedValue();
 				
-				try(Reader reader = readerFactory.createReader(asset.getReader())) {
+				try(Reader reader = readerFactory.createReader()) {
 					Trie<Object> trie = trieFactory.createTrie();
 					
 					for(Object match : trie.getMatches(reader)) {

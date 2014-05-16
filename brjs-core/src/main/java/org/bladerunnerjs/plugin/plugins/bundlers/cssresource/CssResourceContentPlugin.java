@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJS;
@@ -84,16 +83,6 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
 	public ContentPathParser getContentPathParser() {
 		return contentPathParser;
 	}
@@ -102,7 +91,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		try
 		{
-			return getValidContentPaths(bundleSet.getBundlableNode().app(), locales);
+			return getValidContentPaths(bundleSet, locales);
 		}
 		catch (MalformedTokenException ex)
 		{
@@ -114,7 +103,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
 		try
 		{
-			return getValidContentPaths(bundleSet.getBundlableNode().app(), locales);
+			return getValidContentPaths(bundleSet, locales);
 		}
 		catch (MalformedTokenException ex)
 		{
@@ -132,6 +121,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(ASPECT_RESOURCES_REQUEST))
@@ -144,6 +134,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = ((ResourcesAssetLocation) bladeset.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(BLADESET_RESOURCES_REQUEST))
@@ -157,6 +148,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = ((ResourcesAssetLocation) blade.assetLocation("resources")).theme(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(BLADE_RESOURCES_REQUEST))
@@ -174,6 +166,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			Workbench workbench = blade.workbench();
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
+			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 			resourceFile = workbench.assetLocation("resources").file(resourcePath);
 		}
 		else if (contentPath.formName.equals(LIB_REQUEST))
@@ -210,10 +203,10 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private List<String> getValidContentPaths(App app, String... locales) throws MalformedTokenException {
+	private List<String> getValidContentPaths(BundleSet bundleSet, String... locales) throws MalformedTokenException {
 		List<String> contentPaths = new ArrayList<>();
 		
-		for(AssetContainer assetContainer : app.getAllAssetContainers())
+		for(AssetContainer assetContainer : bundleSet.getBundlableNode().assetContainers())
 		{
 			contentPaths.addAll( getValidContentPaths(assetContainer) );
 		}
@@ -266,6 +259,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			return contentPaths;
 		}
 		
+		// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 		File resourcesDir = assetContainer.assetLocation("resources").dir();
 		contentPaths.addAll(  calculateContentPathsForThemesAndResources((ThemeableNode)assetContainer, themeRequestName, resourcesDir, resourcesRequestName, requestArgs) );		
 		

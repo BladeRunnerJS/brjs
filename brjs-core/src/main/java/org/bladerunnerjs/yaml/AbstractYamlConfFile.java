@@ -75,4 +75,16 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 		fileUtil.write(confFile, getRenderedConfig());
 	}
 	
+	
+	public <T extends Object> T getDefault(T currentValue, T defaultValue)
+	{
+		boolean useDefaultValue = currentValue == null || currentValue.equals(0);
+		
+		if (useDefaultValue)
+		{
+			return defaultValue;
+		}
+		return currentValue;
+	}
+	
 }

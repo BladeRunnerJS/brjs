@@ -69,9 +69,10 @@ public class MockCommandPlugin extends AbstractCommandPlugin implements CommandP
 	}
 	
 	@Override
-	public void doCommand(String... args) throws CommandArgumentsException, CommandOperationException
+	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 	{
 		brjs.getConsoleWriter().println( String.format( "command '%s' did command with args: (%s)", name, Arrays.toString(args) ) );
+		return 0;
 	}
 
 }

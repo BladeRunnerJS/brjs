@@ -29,7 +29,7 @@ public class SourceModuleTest extends SpecTest {
 		given(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/pkg/Class3")
 			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml", "themes/theme1/style.css");
 		then(aspect).hasSourceModules("appns/Class1", "appns/Class2", "appns/pkg/Class3")
-			.and(aspect).hasAssetLocations("resources", "src", "src/appns", "src/appns/pkg", "src-test")
+			.and(aspect).hasAssetLocations(".", "resources", "src", "src-test", "src/appns", "src/appns/pkg")
 			.and(aspect).sourceModuleHasAssetLocation("appns/Class1", "src/appns")
 			.and(aspect).sourceModuleHasAssetLocation("appns/pkg/Class3", "src/appns/pkg")
 			.and(aspect).assetLocationHasDependencies("resources", "themes/theme1")
@@ -43,7 +43,7 @@ public class SourceModuleTest extends SpecTest {
 		given(brjsLib).hasClasses("brjslib/Class1", "brjslib/Class2", "brjslib/pkg/Class3")
 			.and(brjsLib).containsFiles("resources/config1.xml", "resources/dir/config2.xml", "themes/theme1/style.css");
 		then(brjsLib).hasSourceModules("brjslib/Class1", "brjslib/Class2", "brjslib/pkg/Class3")
-			.and(brjsLib).hasAssetLocations("resources", "src", "src/brjslib", "src/brjslib/pkg", "src-test")
+			.and(brjsLib).hasAssetLocations(".", "resources", "src", "src-test", "src/brjslib", "src/brjslib/pkg")
 			.and(brjsLib).assetLocationHasDependencies("resources", "themes/theme1")
 			.and(brjsLib).assetLocationHasDependencies("src", "resources")
 			.and(brjsLib).assetLocationHasDependencies("src/brjslib", "src")
@@ -55,8 +55,8 @@ public class SourceModuleTest extends SpecTest {
 		given(brjsThirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js, file2.js\n"+"exports: lib")
 			.and(brjsThirdpartyLib).containsFiles("file1.js", "file2.js");
 		then(brjsThirdpartyLib).hasSourceModules("thirdparty-lib")
-			.and(brjsThirdpartyLib).hasAssetLocations("")
-			.and(brjsThirdpartyLib).assetLocationHasNoDependencies("");
+			.and(brjsThirdpartyLib).hasAssetLocations(".")
+			.and(brjsThirdpartyLib).assetLocationHasNoDependencies(".");
 	}
 	
 	@Ignore

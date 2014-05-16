@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -32,7 +31,7 @@ public class CreateBladeCommandTest
 	private File fxBladesetBladesDirectory;
 	
 	@Before
-	public void setup() throws IOException
+	public void setup() throws Exception
 	{
 		File tempDirRoot = FileUtility.createTemporaryDirectory(this.getClass().getSimpleName());
 
