@@ -28,7 +28,6 @@ dependencies {
 	system dependency('jetty-jsp')
 
 	application project(path: ':brjs-servlet')
-	application dependency('javassist')
 
 	javadocs project(path: ':brjs-core', configuration:'javadocs')
 
