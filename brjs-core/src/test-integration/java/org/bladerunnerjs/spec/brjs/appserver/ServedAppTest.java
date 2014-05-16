@@ -26,6 +26,7 @@ public class ServedAppTest extends SpecTest
 	DirNode appJars;
 	ServerSocket socket;
 	StringBuffer response = new StringBuffer();
+	DirNode sdkLibsDir;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -46,6 +47,7 @@ public class ServedAppTest extends SpecTest
 			workbench = blade.workbench();
 			appJars = brjs.appJars();
 			appJars.create();
+			sdkLibsDir = brjs.sdkLibsDir();
 	}
 	
 	@After
@@ -59,8 +61,9 @@ public class ServedAppTest extends SpecTest
 	@Test
 	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecified() throws Exception {
 		given(app).hasBeenPopulated()
+			.and(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "locale forwarding page")
 			.and(appServer).started();
-		then(appServer).requestForUrlContains("/app/", "locale switching page");
+		then(appServer).requestForUrlReturns("/app/", "locale forwarding page");
 	}
 	
 	@Test

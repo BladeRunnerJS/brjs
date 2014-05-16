@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public abstract class AbstractChildSourceAssetLocation extends AbstractShallowAssetLocation {
-	private final MemoizedValue<String> requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), assetContainer.dir(), root().libsDir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
+	private final MemoizedValue<String> requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), assetContainer.dir(), root().sdkLibsDir().dir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
 	
 	public AbstractChildSourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
 		super(rootNode, parent, dir, dependentAssetLocations);

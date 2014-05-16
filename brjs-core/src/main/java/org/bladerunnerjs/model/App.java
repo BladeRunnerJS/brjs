@@ -45,9 +45,9 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
 	private final NodeList<AppJsLib> jsLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
 	
-	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>("BRJS.assetContainers", root(), dir(), root().libsDir());
-	private final MemoizedValue<List<AssetContainer>> nonAspectAssetContainers = new MemoizedValue<>("BRJS.nonAspectAssetContainers", root(), dir(), root().libsDir());
-	private final MemoizedValue<List<JsLib>> nonBladeRunnerLibsList = new MemoizedValue<>("BRJS.nonBladeRunnerLibs", root(), dir(), root().libsDir());
+	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>("BRJS.assetContainers", root(), dir(), root().sdkLibsDir().dir());
+	private final MemoizedValue<List<AssetContainer>> nonAspectAssetContainers = new MemoizedValue<>("BRJS.nonAspectAssetContainers", root(), dir(), root().sdkLibsDir().dir());
+	private final MemoizedValue<List<JsLib>> nonBladeRunnerLibsList = new MemoizedValue<>("BRJS.nonBladeRunnerLibs", root(), dir(), root().sdkLibsDir().dir());
 	
 	private String name;
 	private AppConf appConf;
@@ -68,7 +68,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	@Override
 	public File[] scopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {dir(), root().libsDir(), root().conf().file("bladerunner.conf")};
+			scopeFiles = new File[] {dir(), root().sdkLibsDir().dir(), root().conf().file("bladerunner.conf")};
 		}
 		
 		return scopeFiles;

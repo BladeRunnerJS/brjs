@@ -1,13 +1,16 @@
 package org.bladerunnerjs.utility;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
@@ -91,8 +94,9 @@ public class AppRequestHandler {
 	}
 	
 	private void writeLocaleForwardingPage(OutputStream os) throws ContentProcessingException {
-		try(Writer writer = new OutputStreamWriter(os, app.root().bladerunnerConf().getBrowserCharacterEncoding())) {
-			writer.write("<script>alert('locale switching page');</script>");
+		try(Writer writer = new OutputStreamWriter(os, app.root().bladerunnerConf().getBrowserCharacterEncoding());
+			Reader reader = new FileReader(app.root().sdkLibsDir().file("locale-forwarder.js"))) {
+			IOUtils.copy(reader, writer);
 		}
 		catch (IOException | ConfigException e) {
 			throw new ContentProcessingException(e);
