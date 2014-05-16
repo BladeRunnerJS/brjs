@@ -48,7 +48,7 @@ public class AppRequestHandler {
 				break;
 			
 			case "workbench-index-page-request":
-				writeIndexPage(app.bladeset(pathProperties.get("bladset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), pageAccessor, os);
+				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), pageAccessor, os);
 				break;
 			
 			case "bundle-request":

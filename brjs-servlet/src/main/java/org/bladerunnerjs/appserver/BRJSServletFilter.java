@@ -5,7 +5,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,15 @@ public class BRJSServletFilter implements Filter {
 	private static final Pattern TEXT_REQUEST_PATTERN = Pattern.compile(".*\\.(js|html|xml|css)$");
 	private static final List<String> LOCKED_HEADERS = Arrays.asList(LAST_MODIFIED, CACHE_CONTROL, EXPIRES, E_TAG);
 	
+	private static final Map<String, String> contentTypes = new HashMap<String, String>();
+	
+	static {
+		contentTypes.put("js", "application/javascript");
+		contentTypes.put("html", "text/html");
+		contentTypes.put("xml", "text/xml");
+		contentTypes.put("css", "text/css");
+	}
+	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		// do nothing
@@ -56,15 +67,14 @@ public class BRJSServletFilter implements Filter {
 		// do nothing
 	}
 	
-	private void setContentTypeHeaders(HttpServletRequest request, HttpServletResponse response) {
+	private void setContentTypeHeaders(HttpServletRequest request, LockedHeaderResponseWrapper response) {
 		String requestPath = request.getRequestURI();
 		
 		if(TEXT_REQUEST_PATTERN.matcher(requestPath).matches()) {
-			response.setCharacterEncoding("UTF-8");
+			String fileSuffix = requestPath.substring(requestPath.lastIndexOf('.') + 1);
 			
-			if(requestPath.endsWith(".js")) {
-				response.setHeader(CONTENT_TYPE, "application/javascript");
-			}
+			response.setHeader(CONTENT_TYPE, contentTypes.get(fileSuffix));
+			response.setCharacterEncoding("UTF-8");
 		}
 	}
 	

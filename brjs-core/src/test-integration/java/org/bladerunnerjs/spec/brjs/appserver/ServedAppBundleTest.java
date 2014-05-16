@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -49,15 +48,6 @@ public class ServedAppBundleTest extends SpecTest
 	}
 	
 	@Test
-	public void jsBundleHasCorrectContentType() throws Exception
-	{
-		String jsBundleUrlPath = "/app/v/dev/js/dev/combined/bundle.js";
-		
-		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
-			.and(appServer).contentTypeForRequestIs(jsBundleUrlPath, "application/javascript");
-	}
-	
-	@Test
 	public void weCanMakeARequestForAspectBundles() throws Exception
 	{
 		String jsBundleUrlPath = "/app/v/dev/js/dev/combined/bundle.js";
@@ -75,8 +65,21 @@ public class ServedAppBundleTest extends SpecTest
 			.and(appServer).requestForUrlContains(jsBundleUrlPath, "appns/bs/b1/Class");
 	}
 	
-	@Test @Ignore
-	public void contentTypeAndCharacterEncodingAreCorrectlySet() {
-		// TODO
+	@Test
+	public void javascriptContentTypeAndCharacterEncodingAreCorrectlySet() throws Exception {
+		String jsBundleUrlPath = "/app/v/dev/js/dev/combined/bundle.js";
+		
+		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
+			.and(appServer).contentTypeForRequestIs(jsBundleUrlPath, "application/javascript")
+			.and(appServer).characterEncodingForRequestIs(jsBundleUrlPath, "UTF-8");
+	}
+	
+	@Test
+	public void htmlContentTypeAndCharacterEncodingAreCorrectlySet() throws Exception {
+		String htmlBundleUrlPath = "/app/v/dev/bundle.html";
+		
+		then(appServer).requestCanBeMadeFor(htmlBundleUrlPath)
+			.and(appServer).contentTypeForRequestIs(htmlBundleUrlPath, "text/html")
+			.and(appServer).characterEncodingForRequestIs(htmlBundleUrlPath, "UTF-8");
 	}
 }

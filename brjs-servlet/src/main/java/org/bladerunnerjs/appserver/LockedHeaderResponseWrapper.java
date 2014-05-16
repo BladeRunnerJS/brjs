@@ -19,6 +19,11 @@ public class LockedHeaderResponseWrapper extends HttpServletResponseWrapper
 		}
 	}
 	
+	public void forceSetHeader(String name, String value)
+	{
+		super.setHeader(name, value);
+	}
+	
 	@Override
 	public void setDateHeader(String name, long date)
 	{
@@ -62,11 +67,6 @@ public class LockedHeaderResponseWrapper extends HttpServletResponseWrapper
 		{
 			super.addIntHeader(name, value);
 		}
-	}
-	
-	public void forceSetHeader(String name, String value)
-	{
-		super.setHeader(name, value);
 	}
 	
 	@Override

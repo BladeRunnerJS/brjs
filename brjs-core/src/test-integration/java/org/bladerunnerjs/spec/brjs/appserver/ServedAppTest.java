@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +22,7 @@ public class ServedAppTest extends SpecTest
 	App app;
 	Aspect aspect;
 	Blade blade;
+	Workbench workbench;
 	DirNode appJars;
 	ServerSocket socket;
 	StringBuffer response = new StringBuffer();
@@ -41,6 +43,7 @@ public class ServedAppTest extends SpecTest
 			app = brjs.app("app");
 			aspect = app.aspect("default");
 			blade = app.bladeset("bs").blade("b1");
+			workbench = blade.workbench();
 			appJars = brjs.appJars();
 			appJars.create();
 	}
@@ -53,10 +56,11 @@ public class ServedAppTest extends SpecTest
 		if (socket  != null && socket.isBound()) { socket.close(); }
 	}
 	
-	@Ignore
 	@Test
-	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecified() {
-		// TODO
+	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecified() throws Exception {
+		given(app).hasBeenPopulated()
+			.and(appServer).started();
+		then(appServer).requestForUrlContains("/app/", "locale switching page");
 	}
 	
 	@Test
@@ -105,10 +109,12 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/ab_CD/", "- ab_CD");
 	}
 	
-	@Ignore
 	@Test
-	public void workbenchPageCanBeAccessed() {
-		// TODO
+	public void workbenchPageCanBeAccessed() throws Exception {
+		given(app).hasBeenPopulated()
+			.and(workbench).containsFileWithContents("index.html", "workbench index.html")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/workbench/bs/b1/en/", "workbench index.html");
 	}
 	
 	@Test
@@ -119,10 +125,11 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
 	
-	@Ignore
 	@Test
-	public void contentPluginsCanHandleRequestsWithinWorkbenches() {
-		// TODO
+	public void contentPluginsCanHandleRequestsWithinWorkbenches() throws Exception {
+		given(app).hasBeenPopulated()
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/workbench/bs/b1/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test @Ignore
