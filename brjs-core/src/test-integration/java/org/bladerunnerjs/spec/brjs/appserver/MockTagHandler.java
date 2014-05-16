@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.servlet;
+package org.bladerunnerjs.spec.brjs.appserver;
 // TODO: this copy of MockTagHandler doesn't need to be copied back when the tests are moved back to 'brjs-core'
 
 import java.io.IOException;

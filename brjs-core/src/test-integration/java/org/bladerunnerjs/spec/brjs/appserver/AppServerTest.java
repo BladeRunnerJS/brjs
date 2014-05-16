@@ -6,6 +6,8 @@ import static org.bladerunnerjs.appserver.ApplicationServerUtils.Messages.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import javax.servlet.Servlet;
+
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.model.App;
@@ -19,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class BRJSApplicationServerTest extends SpecTest
+public class AppServerTest extends SpecTest
 {
 	BRJS secondBrjsProcess;
 	
@@ -30,11 +32,13 @@ public class BRJSApplicationServerTest extends SpecTest
 	App app2;
 	DirNode appJars;
 	ServerSocket socket;
+	Servlet helloWorldServlet;
 
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasModelObservers(new AppDeploymentObserverPlugin());
-		given(brjs).hasBeenCreated()
+		given(brjs).hasModelObservers(new AppDeploymentObserverPlugin())
+			.and(brjs).hasContentPlugins(new MockContentPlugin())
+			.and(brjs).hasBeenCreated()
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
 			appServer = brjs.applicationServer(appServerPort);
@@ -46,6 +50,7 @@ public class BRJSApplicationServerTest extends SpecTest
 			appJars.create();
 		
 		secondBrjsProcess = createNonTestModel();
+		helloWorldServlet = new HelloWorldServlet();
 	}
 	
 	@After
@@ -86,7 +91,6 @@ public class BRJSApplicationServerTest extends SpecTest
 		then(appServer).requestCanBeMadeFor("/app1")
 			.and(appServer).requestCanBeMadeFor("/app2");
 	}
-	
 	
 	@Test
 	public void newAppsAreAutomaticallyHosted() throws Exception
@@ -164,8 +168,23 @@ public class BRJSApplicationServerTest extends SpecTest
 		then(appServer).requestCannotBeMadeFor("/some-invalid-url");
 	}
 	
+	@Test
+	public void otherServletsCanBeAddedWithRootMapping() throws Exception
+	{
+		given(app1).hasBeenPopulated()
+			.and(appServer).started()
+			.and(appServer).appHasServlet(app1, helloWorldServlet, "/servlet/hello/*");
+		then(appServer).requestForUrlReturns("/app1/servlet/hello", "Hello World!");
+	}
 	
-	/* tests using other commands with the app server started */
+	@Test
+	public void otherServletsCanBeAddedWithExtensionMapping() throws Exception
+	{
+		given(app1).hasBeenPopulated()
+			.and(appServer).started()
+			.and(appServer).appHasServlet(app1, helloWorldServlet, "*.mock");
+		then(appServer).requestForUrlReturns("/app1/hello.mock", "Hello World!");
+	}
 	
 	@Test
 	public void newAppsAreAutomaticallyHostedWhenRunningCreateAppCommandFromADifferentModelInstance() throws Exception
@@ -186,5 +205,4 @@ public class BRJSApplicationServerTest extends SpecTest
 			.and(brjs.applicationServer(appServerPort)).started();
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
 	}
-	
 }

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.servlet;
+package org.bladerunnerjs.spec.brjs.appserver;
 
 
 import java.io.IOException;

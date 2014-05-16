@@ -1,9 +1,7 @@
-package org.bladerunnerjs.spec.servlet;
+package org.bladerunnerjs.spec.brjs.appserver;
 
 
 import java.net.ServerSocket;
-
-import javax.servlet.Servlet;
 
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
@@ -17,16 +15,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
-public class BRJSServletTest extends SpecTest
+public class ServedAppTest extends SpecTest
 {
-
 	ApplicationServer appServer;
 	App app;
 	Aspect aspect;
 	Blade blade;
 	DirNode appJars;
 	ServerSocket socket;
-	Servlet helloWorldServlet;
 	StringBuffer response = new StringBuffer();
 	
 	@Before
@@ -47,9 +43,7 @@ public class BRJSServletTest extends SpecTest
 			blade = app.bladeset("bs").blade("b1");
 			appJars = brjs.appJars();
 			appJars.create();
-			helloWorldServlet = new HelloWorldServlet();
 	}
-	
 	
 	@After
 	public void stopServer() throws Exception
@@ -66,7 +60,7 @@ public class BRJSServletTest extends SpecTest
 	}
 	
 	@Test
-	public void brjsServletCanServeIndexHtml() throws Exception
+	public void indexPageCanBeAccessed() throws Exception
 	{
 		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
@@ -76,7 +70,7 @@ public class BRJSServletTest extends SpecTest
 	
 	@Ignore
 	@Test
-	public void brjsServletCanServeIndexJsp() throws Exception
+	public void jspIndexPageCanBeAccessed() throws Exception
 	{
 		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.jsp", "<% \"aspect \" + \"index.jsp\" %")
@@ -105,7 +99,7 @@ public class BRJSServletTest extends SpecTest
 	
 	@Ignore
 	@Test
-	public void brjsServletCanServeWorkbenchPage() {
+	public void workbenchPageCanBeAccessed() {
 		// TODO
 	}
 	
@@ -123,31 +117,18 @@ public class BRJSServletTest extends SpecTest
 		// TODO
 	}
 	
+	@Test @Ignore
+	public void bladeRunnerJSDoesntBreakAuthentication() {
+		// TODO
+	}
+	
 	@Test
 	public void longUrlsDontGetHandedToOtherServlets() throws Exception
 	{
 		given(app).hasBeenPopulated()
 			.and(appServer).started()
-			.and(appServer).appHasServlet(app, helloWorldServlet, "/servlet/hello");
+			.and(appServer).appHasServlet(app, new HelloWorldServlet(), "/servlet/hello");
 		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/some/other/path/", MockContentPlugin.class.getCanonicalName())
 			.and(appServer).requestForUrlReturns("/app/servlet/hello", "Hello World!");
-	}
-	
-	@Test
-	public void brjsServletAllowsOtherServletsToBeAdded() throws Exception
-	{
-		given(app).hasBeenPopulated()
-			.and(appServer).started()
-			.and(appServer).appHasServlet(app, helloWorldServlet, "/servlet/hello/*");
-		then(appServer).requestForUrlReturns("/app/servlet/hello", "Hello World!");
-	}
-	
-	@Test
-	public void brjsServletAllowsOtherServletsToBeAddedWithExtensionMapping() throws Exception
-	{
-		given(app).hasBeenPopulated()
-			.and(appServer).started()
-			.and(appServer).appHasServlet(app, helloWorldServlet, "*.mock");
-		then(appServer).requestForUrlReturns("/app/hello.mock", "Hello World!");
 	}
 }

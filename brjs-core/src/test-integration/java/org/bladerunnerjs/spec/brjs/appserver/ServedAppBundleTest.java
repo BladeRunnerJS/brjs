@@ -14,21 +14,15 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
-public class HostedAppTests extends SpecTest
+public class ServedAppBundleTest extends SpecTest
 {
-	
 	private ApplicationServer appServer;
-
+	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasBeenAuthenticallyCreated()
+		given(brjs).automaticallyFindsBundlers()
+			.and(brjs).hasBeenCreated()
 			.and(brjs).usesProductionTemplates();
-		
-		// TODO: find out why we need to sleep at least as long as the FileModificationService (it polls every 100ms) or only
-		// the first test in the test in the suite reliably works -- it's something to do with the flurry of directory activity
-		// caused by copying the production templates in the line above, that must happen prior to the server being started
-		// at the end of this method
-		Thread.sleep(125);
 		
 		// generate the app structure
 		App app = brjs.app("app");
@@ -79,16 +73,6 @@ public class HostedAppTests extends SpecTest
 		
 		then(appServer).requestCanBeMadeFor(jsBundleUrlPath)
 			.and(appServer).requestForUrlContains(jsBundleUrlPath, "appns/bs/b1/Class");
-	}
-	
-	@Test @Ignore
-	public void requestToRootUrlRedirectsToDashboard() {
-		// TODO
-	}
-	
-	@Test @Ignore
-	public void bladeRunnerJSDoesntBreakAuthentication() {
-		// TODO
 	}
 	
 	@Test @Ignore
