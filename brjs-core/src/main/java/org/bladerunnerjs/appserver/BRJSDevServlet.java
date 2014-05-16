@@ -4,12 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -96,14 +93,14 @@ public class BRJSDevServlet extends HttpServlet {
 		@Override
 		public void serveIndexPage(BrowsableNode browsableNode, String locale) throws IOException {
 			try {
-				RequestDispatcher requestDispatcher = servletContext.getRequestDispatcher("/" + RelativePathUtility.get(app.dir(), browsableNode.file("index.html")));
-				CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-				requestDispatcher.include(request, responseWrapper);
-				
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				
 				try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
-					browsableNode.filterIndexPage(getIndexPage(responseWrapper), locale, writer, RequestMode.Dev);
+					File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
+					String requestPath = "/" + RelativePathUtility.get(app.dir(), indexPage);
+					
+					browsableNode.filterIndexPage(getRequestPath(requestPath), locale, writer, RequestMode.Dev);
 				}
 				
 				byte[] byteArray = byteArrayOutputStream.toByteArray();
@@ -118,14 +115,11 @@ public class BRJSDevServlet extends HttpServlet {
 			}
 		}
 		
-		private String getIndexPage(CharResponseWrapper responseWrapper) throws IOException, UnsupportedEncodingException {
-			StringWriter bufferedResponseStringWriter = new StringWriter();
+		private String getRequestPath(String requestPath) throws IOException, UnsupportedEncodingException, ServletException {
+			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
+			servletContext.getRequestDispatcher(requestPath).include(request, responseWrapper);
 			
-			try(Reader reader = responseWrapper.getReader()) {
-				IOUtils.copy(reader, bufferedResponseStringWriter);
-			}
-			
-			return bufferedResponseStringWriter.toString();
+			return IOUtils.toString(responseWrapper.getReader());
 		}
 	}
 }
