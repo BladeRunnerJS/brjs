@@ -59,7 +59,6 @@ public class ServedAppTest extends SpecTest
 		// TODO
 	}
 	
-	@Ignore
 	@Test
 	public void jspSupportIsEnabled() throws Exception
 	{
@@ -78,7 +77,6 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/en/", "aspect index.html");
 	}
 	
-	@Ignore
 	@Test
 	public void jspIndexPageCanBeAccessed() throws Exception
 	{

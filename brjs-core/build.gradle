@@ -75,6 +75,7 @@ dependencies {
 	testCompile dependency('hamcrest-all')
 	
 	testRuntime project(path: ':brjs-logger-binding')
+	testRuntime dependency('jetty-jsp')
 }
 
 javadoc {
