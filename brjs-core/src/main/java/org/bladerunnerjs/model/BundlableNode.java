@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 
-public interface BundlableNode extends Node, AssetContainer, ScopedNode {
+public interface BundlableNode extends Node, AssetContainer {
 	AliasesFile aliasesFile();
 	SourceModule getSourceModule(String requirePath) throws RequirePathException;
 	List<AssetLocation> seedAssetLocations();
