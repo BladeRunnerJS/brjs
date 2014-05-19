@@ -1,1 +1,0 @@
-alert('locale forwarding page');
