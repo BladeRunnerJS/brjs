@@ -93,7 +93,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	}
 	
 	@Override
-	public List<AssetContainer> assetContainers() {
+	public List<AssetContainer> scopeAssetContainers() {
 		return assetContainerList.value(() -> {
 			List<AssetContainer> assetContainers = new ArrayList<>();
 			

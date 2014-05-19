@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -48,37 +47,7 @@ public class BundleSet {
 		List<Asset> result = new ArrayList<Asset>();
 		result.addAll(resourceFiles);
 		
-		return orderAssetsBasedOnAssetContainer(result);
-	}
-	
-	private <A extends Asset> List<A> orderAssetsBasedOnAssetContainer(List<A> assets)
-	{
-		List<A> assetsNotOrderedByContainer = new ArrayList<A>(assets);
-		List<A> orderedAssets = new LinkedList<A>();
-		
-		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Blade.class) );
-		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Bladeset.class) );
-		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Aspect.class) );
-		orderedAssets.addAll( getAssetsInContainer(assetsNotOrderedByContainer, Workbench.class) );
-		
-		orderedAssets.addAll(0, assetsNotOrderedByContainer);
-		
-		return orderedAssets;
-	}
-	
-	private <A extends Asset> List<A> getAssetsInContainer(List<A> assets, Class<? extends AssetContainer> assetContainerType)
-	{
-		List<A> assetsInContainer = new ArrayList<A>();
-		
-		for (A asset : assets)
-		{
-			if (asset.assetLocation().assetContainer().getClass() == assetContainerType)
-			{
-				assetsInContainer.add(asset);
-			}
-		}
-		assets.removeAll(assetsInContainer);
-		return assetsInContainer;
+		return result;
 	}
 	
 }

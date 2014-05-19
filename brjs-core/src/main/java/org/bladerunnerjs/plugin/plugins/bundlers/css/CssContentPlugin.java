@@ -88,7 +88,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		String pattern = getFilePattern(locale, null);
 		
 		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-//			List<Asset> cssAssets = bundleSet.getResourceFiles("css");
 			List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
 			for(Asset cssAsset : cssAssets) {
 				String assetThemeName = getThemeName(cssAsset.assetLocation());

@@ -12,6 +12,7 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.BundleSetCreator;
@@ -19,6 +20,7 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -47,9 +49,16 @@ public class BundleSetBuilder {
 		List<AliasDefinition> activeAliasList = new ArrayList<>();
 		List<AssetLocation> resourceLocationList = new ArrayList<>();
 		
+		if (bundlableNode instanceof Workbench) {
+			addUncopedAssetLocation( bundlableNode.app().aspect("default").rootAssetLocation() );
+			addUncopedAssetLocation( bundlableNode.app().aspect("default").assetLocation("resources") );
+		}
+		
 		try {
 			activeAliasList.addAll(activeAliases);
 			resourceLocationList.addAll(assetLocations);
+			orderAssetLocations(bundlableNode, resourceLocationList);
+			
 			
 			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases)) {
 				addSourceModule(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
@@ -131,6 +140,15 @@ public class BundleSetBuilder {
 			}
 		}
 	}
+	
+	private void addUncopedAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
+		if (assetLocation == null) { return; }
+		if (assetLocations.add(assetLocation)) {			
+			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
+				addAssetLocation(dependentAssetLocation);
+			}
+		}
+	}
 
 	private List<AliasDefinition> getAliases(List<String> aliasNames) throws ModelOperationException {
 		List<AliasDefinition> aliases = new ArrayList<>();
@@ -202,6 +220,24 @@ public class BundleSetBuilder {
 			}
 		}
 		sourceModules.add(sourceModule);
+	}
+	
+	
+	private void orderAssetLocations(BundlableNode bundlableNode, List<AssetLocation> unorderedAssetLocations)
+	{
+		for (AssetContainer assetContainer : bundlableNode.scopeAssetContainers())
+		{
+			List<AssetLocation> assetLocationsForThisContainer = new ArrayList<>();
+			for (AssetLocation assetLocation : unorderedAssetLocations)
+			{
+				if (assetLocation.assetContainer() == assetContainer)
+				{
+					assetLocationsForThisContainer.add(assetLocation);
+				}
+			}
+			unorderedAssetLocations.removeAll(assetLocationsForThisContainer);
+			unorderedAssetLocations.addAll(0, assetLocationsForThisContainer);
+		}
 	}
 	
 }

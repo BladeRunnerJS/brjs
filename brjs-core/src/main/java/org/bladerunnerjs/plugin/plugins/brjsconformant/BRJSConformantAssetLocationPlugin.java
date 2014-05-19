@@ -18,8 +18,6 @@ import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestSourceAssetLocation;
 import org.bladerunnerjs.model.ThemesAssetLocation;
-import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.model.WorkbenchResourcesAssetLocation;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -34,7 +32,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		
-		for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
+		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
 			AbstractResourcesAssetLocation resourceAssetLocation = (AbstractResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
 			if(resourceAssetLocation != null) {
@@ -103,12 +101,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 				break;
 			
 			case "resources":
-				if (assetContainer instanceof Workbench) {
-					assetLocation = new WorkbenchResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
-				}
-				else {
-					assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
-				}
+				assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
 				break;
 			
 			case "src":
