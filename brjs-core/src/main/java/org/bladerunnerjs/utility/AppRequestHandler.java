@@ -96,7 +96,12 @@ public class AppRequestHandler {
 	private void writeLocaleForwardingPage(OutputStream os) throws ContentProcessingException {
 		try(Writer writer = new OutputStreamWriter(os, app.root().bladerunnerConf().getBrowserCharacterEncoding());
 			Reader reader = new FileReader(app.root().sdkLibsDir().file("locale-forwarder.js"))) {
+			writer.write("<head>\n");
+			writer.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
+			writer.write("<script type='text/javascript'>\n");
 			IOUtils.copy(reader, writer);
+			writer.write("\n</script>\n");
+			writer.write("</head>");
 		}
 		catch (IOException | ConfigException e) {
 			throw new ContentProcessingException(e);

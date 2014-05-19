@@ -63,7 +63,8 @@ public class ServedAppTest extends SpecTest
 		given(app).hasBeenPopulated()
 			.and(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "locale forwarding page")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/", "locale forwarding page");
+		then(appServer).requestForUrlContains("/app/", "locale forwarding page")
+			.and(appServer).requestForUrlContains("/app/", "<noscript><meta http-equiv='refresh' content='0; url=en/'></noscript>");
 	}
 	
 	@Test

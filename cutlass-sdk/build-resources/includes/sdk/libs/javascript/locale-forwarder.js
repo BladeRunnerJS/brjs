@@ -1,1 +1,1 @@
-<script>alert('locale forwarding page');</script>
+alert('locale forwarding page');
