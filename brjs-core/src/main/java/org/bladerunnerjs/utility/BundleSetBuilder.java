@@ -50,8 +50,9 @@ public class BundleSetBuilder {
 		List<AssetLocation> resourceLocationList = new ArrayList<>();
 		
 		if (bundlableNode instanceof Workbench) {
-			addUncopedAssetLocation( bundlableNode.app().aspect("default").rootAssetLocation() );
-			addUncopedAssetLocation( bundlableNode.app().aspect("default").assetLocation("resources") );
+			for ( AssetLocation assetLocation : bundlableNode.app().aspect("default").seedAssetLocations() ) {
+				addUncopedAssetLocation( assetLocation );				
+			}
 		}
 		
 		try {
