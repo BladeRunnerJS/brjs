@@ -62,9 +62,9 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");	
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", response);
-		then(response).containsOrderedTextFragments("ASPECT theme content",
-													"BLADESET theme content",
-													"BLADE theme content");
+		then(response).containsOrderedTextFragments("BLADESET theme content",
+													"BLADE theme content",
+													"ASPECT theme content");
 	}
 	
 	

@@ -174,8 +174,8 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbench).containsFileWithContents("resources/workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
 			.and(workbench).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/bundle.html", response);
-		then(response).containsOrderedTextFragments("<div id='br.tree-view'></div>",
-													"<div id='appns.bs.b1.workbench-view'></div>");
+		then(response).containsOrderedTextFragments("<div id='appns.bs.b1.workbench-view'></div>",
+													"<div id='br.tree-view'></div>");
 	}
 	
 	@Test

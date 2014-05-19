@@ -2,7 +2,6 @@ package org.bladerunnerjs.model;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -48,37 +47,7 @@ public class BundleSet {
 		List<Asset> result = new ArrayList<Asset>();
 		result.addAll(resourceFiles);
 		
-		return orderAssets(bundlableNode, result);
-	}
-	
-	private <A extends Asset> List<A> orderAssets(BundlableNode bundlableNode, List<A> assets)
-	{
-		List<A> assetsNotOrderedByContainer = new ArrayList<A>(assets);
-		List<A> orderedAssets = new LinkedList<A>();
-		
-		for (AssetContainer assetContainer : bundlableNode.scopeAssetContainers())
-		{
-			orderedAssets.addAll( 0, getAssetsInContainer(assetsNotOrderedByContainer, assetContainer) );
-		}
-		
-		orderedAssets.addAll(0, assetsNotOrderedByContainer);
-		
-		return orderedAssets;
-	}
-	
-	private <A extends Asset> List<A> getAssetsInContainer(List<A> assets, AssetContainer assetContainer)
-	{
-		List<A> assetsInContainer = new ArrayList<A>();
-		
-		for (A asset : assets)
-		{
-			if (asset.assetLocation().assetContainer() == assetContainer)
-			{
-				assetsInContainer.add(asset);
-			}
-		}
-		assets.removeAll(assetsInContainer);
-		return assetsInContainer;
+		return result;
 	}
 	
 }
