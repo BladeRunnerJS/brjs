@@ -58,7 +58,7 @@ public class TagPluginUtility {
 		writer.flush();
 	}
 
-	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String tagContent) throws IOException, DocumentException
+	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String tagContent) throws IOException, DocumentException, NoTagHandlerFoundException
 	{
 		String xmlContent = StringUtils.replaceOnce(tagContent, TAG_START, XML_TAG_START);
 		xmlContent = StringUtils.replaceOnce(xmlContent, TAG_END, XML_TAG_END);
@@ -76,15 +76,7 @@ public class TagPluginUtility {
 		}
 		Element root = document.getRootElement();
 		
-		try
-		{
-			return handleTagXml(tagHandlerPlugins, bundleSet, requestMode, locale, root);
-		}
-		catch (NoTagHandlerFoundException e)
-		{
-			//TODO: stop catching this exception when all tag handers have been moved to new style plugins
-			return tagContent;
-		}
+		return handleTagXml(tagHandlerPlugins, bundleSet, requestMode, locale, root);
 	}
 
 	private static String handleTagXml(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, Element element) throws NoTagHandlerFoundException, IOException
