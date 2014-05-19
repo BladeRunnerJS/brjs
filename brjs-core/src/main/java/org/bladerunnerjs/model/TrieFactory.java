@@ -51,7 +51,7 @@ public class TrieFactory {
 							addQuotedKeyToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
 							
 							if (sourceModule.getClassname() != null) {
-								trie.add(sourceModule.getClassname(), new SourceModuleReference(sourceModule));
+								addToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule));
 								addQuotedKeyToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule));
 							}
 						}
@@ -64,7 +64,7 @@ public class TrieFactory {
 							}
 						}
 					}
-					catch (EmptyTrieKeyException | ContentFileProcessingException | TrieKeyAlreadyExistsException ex) {
+					catch (EmptyTrieKeyException | ContentFileProcessingException ex) {
 						throw new ModelOperationException(ex);
 					}
 				}
@@ -74,16 +74,30 @@ public class TrieFactory {
 		});
 	}
 	
-	private void addQuotedKeyToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException {
-		trie.add("'" + key + "'", value);
-		trie.add("\\'" + key + "\\'", value);
-		trie.add("\"" + key + "\"", value);
-		trie.add("\\\"" + key + "\\\"", value);
-		trie.add("<" + key + ">", value);
-		trie.add("<" + key + "/", value);
-		trie.add("<" + key + " ", value);
-		trie.add("<" + key + "\t", value);
-		trie.add("<" + key + "\r", value);
-		trie.add("<" + key + "\n", value);
+	private void addToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException {
+		if (!trie.containsKey(key)) {
+			try
+			{
+				trie.add(key, value);
+			}
+			catch (TrieKeyAlreadyExistsException e)
+			{
+				// wrap this in a RuntimeException since its unexpected, let the other exceptions bubble up
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
+	private void addQuotedKeyToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException {
+		addToTrie(trie, "'" + key + "'", value);
+		addToTrie(trie, "\\'" + key + "\\'", value);
+		addToTrie(trie, "\"" + key + "\"", value);
+		addToTrie(trie, "\\\"" + key + "\\\"", value);
+		addToTrie(trie, "<" + key + ">", value);
+		addToTrie(trie, "<" + key + "/", value);
+		addToTrie(trie, "<" + key + " ", value);
+		addToTrie(trie, "<" + key + "\t", value);
+		addToTrie(trie, "<" + key + "\r", value);
+		addToTrie(trie, "<" + key + "\n", value);
 	}
 }
