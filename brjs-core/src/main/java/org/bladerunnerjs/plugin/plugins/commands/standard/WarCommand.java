@@ -115,7 +115,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 						}
 					}
 					
-					createAspectBundles(origAspect, warAspect, contentPlugins, origApp.appConf().getLocales().split(","));
+					createAspectBundles(origAspect, warAspect, contentPlugins, origApp.appConf().getLocales());
 				}
 				
 				FileUtility.zipFolder(warApp, warFile, true);
