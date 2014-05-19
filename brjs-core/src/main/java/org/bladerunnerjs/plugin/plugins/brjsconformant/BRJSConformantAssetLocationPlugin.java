@@ -32,6 +32,14 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		
+		List<String> bundlableNodeThemes = new ArrayList<>();
+		AssetLocation bundlableNodeResources = bundlableNode.assetLocation("resources");
+		if (bundlableNodeResources != null) {
+			for ( ThemesAssetLocation theme : ((AbstractResourcesAssetLocation) bundlableNodeResources).themes() ) {
+				bundlableNodeThemes.add(theme.getThemeName());
+			}
+		}
+		
 		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
 			AbstractResourcesAssetLocation resourceAssetLocation = (AbstractResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
@@ -39,7 +47,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 				for(ThemesAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
 					String themeName = themeAssetLocation.getThemeName();
 					
-					if(!themeName.equals("common")) {
+					if (!themeName.equals("common") && bundlableNodeThemes.contains(themeName) ) {
 						themeNames.add(themeName);
 					}
 					
