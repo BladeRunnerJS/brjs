@@ -3,6 +3,7 @@
 /**
  * The <code>ServiceRegistry</code> is a static class and does not need to be constructed.
  *
+ * @name br.ServiceRegistry
  * @class
  * The <code>ServiceRegistry</code> is used to allow a given application access to application
  * services.

@@ -4,6 +4,7 @@ var br = require('br/Core');
 var BRXmlResourceService = require('./BRXmlResourceService');
 
 /**
+ * @name br.services.JSTDXmlResourceService
  * @constructor
  * @class
  * This class provides access to XML documents loaded via the XML bundler for testing purposes.

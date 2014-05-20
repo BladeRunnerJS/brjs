@@ -261,6 +261,59 @@ exampleAppsTestJsFirefox.dependsOn extractExampleApps
 
 task exampleAppsTestJs, dependsOn: [exampleAppsTestJsChrome, exampleAppsTestJsFirefox], {}
 
+ext.jsDocTmpAppName = "jsdoc-tmp"
+task cleanJsDocTmpApp, {
+	outputs.upToDateWhen { false }
+	doFirst {
+		delete file("workspace/apps/${jsDocTmpAppName}")
+	}
+}
+
+task createJsDocTmpApp, dependsOn: cleanJsDocTmpApp, {
+	doFirst {
+		exec {
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["create-app", jsDocTmpAppName]
+			workingDir file("workspace/sdk")
+		}
+	}
+}
+
+task createSdkJsDocs, dependsOn: createJsDocTmpApp, {
+	doFirst {
+		exec {
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["jsdoc", jsDocTmpAppName]
+			workingDir file("workspace/sdk")
+		}
+	}
+}
+
+
+/*
+
+TODO: add task to publish JS and Java docs
+
+Steps:
+- create the docs (done)
+- clone the docs repo (brjs-api-docs?)
+- copy over docs
+ - suggested folder structure:
+    /v0.x
+      /js
+	 	 /java
+    /v0.y
+			/js
+			/java
+- git push - using same API key used to create the release
+
+Thoughts:
+- can we do this all via the github API?
+- can we use the API key?
+- we might need a note about the automated deployment and how to raise an issue
+
+*/
+
+
+
 ext.explodedSdkDir = "${project.buildDir}/exploded"
 
 task distZip, type:Zip, dependsOn: [assemble], {
@@ -369,7 +422,7 @@ task cleanWorkspaceFiles {
 }
 
 clean {
-	dependsOn cleanWorkspaceFiles
+	dependsOn = [cleanWorkspaceFiles, cleanJsDocTmpApp]
 }
 
 

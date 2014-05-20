@@ -5,12 +5,13 @@ var br = require('br/Core');
 
 /**
  * Constructs a new <code>Errors</code> of the provided type.
- * 
+ *
  * @param {String} type The error type to be thrown.
  * @param {String} message A human-readable description of the error.
  * @param {String} fileName (Optional) The name of the file containing the code that caused the error.
  * @param {int} lineNumber (Optional) The line number of the code that caused the error.
- * 
+ *
+ * @name br.Errors
  * @class
  * <code>br/Errors</code> extends the built in <code>Errors</code> and allows the
  * error type to be specified in the constructor. The <code>name</code>
@@ -101,7 +102,7 @@ function getCustomErrorConstructor(type) {
 
 for (var key in exports) {
 	if (typeof exports[key] === 'string') {
-		var className = exports[key]; 
+		var className = exports[key];
 		exports[className] = getCustomErrorConstructor(className);
 	}
 }
@@ -121,7 +122,7 @@ exports.TypeError = TypeError;
 
 function normaliseStack(stackString) {
 	var stack;
-	
+
 	if(stackString) {
 		stack = stackString.split("\n");
 		for (var i = stack.length - 1; i >= 0; --i) {

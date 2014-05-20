@@ -18,6 +18,7 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
  * @see Translator#getMessage
  * @constructor
  *
+ * @name br.i18n.Translator
  * @class
  * The class within the <code>caplin.i18n</code> package that is responsible
  * for translating localization tokens in the form of
