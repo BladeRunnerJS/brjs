@@ -70,7 +70,11 @@ public class BRJSServletFilter implements Filter {
 	private void setContentTypeHeaders(HttpServletRequest request, LockedHeaderResponseWrapper response) {
 		String requestPath = request.getRequestURI();
 		
-		if(TEXT_REQUEST_PATTERN.matcher(requestPath).matches()) {
+		if(requestPath.endsWith("/")) {
+			response.setHeader(CONTENT_TYPE, "text/html");
+			response.setCharacterEncoding("UTF-8");
+		}
+		else if(TEXT_REQUEST_PATTERN.matcher(requestPath).matches()) {
 			String fileSuffix = requestPath.substring(requestPath.lastIndexOf('.') + 1);
 			
 			response.setHeader(CONTENT_TYPE, contentTypes.get(fileSuffix));

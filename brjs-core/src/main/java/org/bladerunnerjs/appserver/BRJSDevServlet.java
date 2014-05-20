@@ -3,6 +3,7 @@ package org.bladerunnerjs.appserver;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -91,27 +92,21 @@ public class BRJSDevServlet extends HttpServlet {
 		}
 		
 		@Override
-		public void serveIndexPage(BrowsableNode browsableNode, String locale) throws IOException {
+		public void serveIndexPage(BrowsableNode browsableNode, String locale, OutputStream os) throws IOException {
 			try {
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				
-				try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
-				{
+				try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 					File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 					String requestPath = "/" + RelativePathUtility.get(app.dir(), indexPage);
 					
 					browsableNode.filterIndexPage(getRequestPath(requestPath), locale, writer, RequestMode.Dev);
 				}
 				
-				byte[] byteArray = byteArrayOutputStream.toByteArray();
-				response.setContentType("text/html");
-				response.setCharacterEncoding(brjs.bladerunnerConf().getBrowserCharacterEncoding());
-				response.setContentLength(byteArray.length);
-				response.getOutputStream().write(byteArray);
+				os.write(byteArrayOutputStream.toByteArray());
 			}
-			catch (Exception ex)
-			{
-				response.sendError(500, ex.toString());
+			catch (Exception ex) {
+				throw new IOException(ex);
 			}
 		}
 		

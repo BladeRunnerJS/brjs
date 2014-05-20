@@ -80,7 +80,7 @@ public class AppRequestHandler {
 	
 	public void writeIndexPage(BrowsableNode browsableNode, String locale, PageAccessor pageAccessor, OutputStream os) throws ContentProcessingException {
 		try {
-			pageAccessor.serveIndexPage(browsableNode, locale);
+			pageAccessor.serveIndexPage(browsableNode, locale, os);
 		}
 		catch (IOException e) {
 			throw new ContentProcessingException(e);
