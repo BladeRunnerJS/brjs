@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
@@ -26,9 +27,11 @@ import com.google.common.base.Joiner;
 
 public class AppRequestHandler {
 	private final App app;
+	private final MemoizedValue<ContentPathParser> contentPathParser;
 	
 	public AppRequestHandler(App app) {
 		this.app = app;
+		contentPathParser = new MemoizedValue<>("AppRequestHandler.contentPathParser", app.root(), app.dir());
 	}
 	
 	public boolean canHandleLogicalRequest(String requestPath) {
@@ -110,25 +113,26 @@ public class AppRequestHandler {
 		}
 	}
 	
-	// TODO: convert to only re-generate if the aspect names have changed
 	private ContentPathParser getContentPathParser() {
-		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-		contentPathParserBuilder
-			.accepts("<aspect>").as("locale-forwarding-request")
-				.and("<aspect><locale>/").as("index-page-request")
-				.and("<aspect>v/<version>/<content-path>").as("bundle-request")
-				.and("<aspect>workbench/<bladeset>/<blade>/").as("workbench-locale-forwarding-request")
-				.and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as("workbench-index-page-request")
-				.and("<aspect>workbench/<bladeset>/<blade>/v/<version>/<content-path>").as("workbench-bundle-request")
-			.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
-				.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-				.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-				.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-				.and("version").hasForm("(dev|[0-9]+)")
-				.and("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
-				.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
-		
-		return contentPathParserBuilder.build();
+		return contentPathParser.value(() -> {
+			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+			contentPathParserBuilder
+				.accepts("<aspect>").as("locale-forwarding-request")
+					.and("<aspect><locale>/").as("index-page-request")
+					.and("<aspect>v/<version>/<content-path>").as("bundle-request")
+					.and("<aspect>workbench/<bladeset>/<blade>/").as("workbench-locale-forwarding-request")
+					.and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as("workbench-index-page-request")
+					.and("<aspect>workbench/<bladeset>/<blade>/v/<version>/<content-path>").as("workbench-bundle-request")
+				.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
+					.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+					.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+					.and("version").hasForm("(dev|[0-9]+)")
+					.and("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
+					.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			
+			return contentPathParserBuilder.build();
+		});
 	}
 	
 	private String getAspectNames() {
