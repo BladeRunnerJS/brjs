@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 
-public class JsCodeBlockStrippingReaderTest
+public class JsCodeBlockStrippingDependenciesReaderTest
 {
 
 	@Test
@@ -276,7 +276,7 @@ public class JsCodeBlockStrippingReaderTest
 	
 	private void stripCodeBlocksAndAssertEquals(String input, String expectedOutput) throws IOException
 	{
-		try(Reader reader = new JsCodeBlockStrippingReader(new StringReader(input));
+		try(Reader reader = new JsCodeBlockStrippingDependenciesReader(new StringReader(input));
 			    StringWriter stringWriter = new StringWriter())
 			{
 				IOUtils.copy(reader, stringWriter);

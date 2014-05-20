@@ -7,7 +7,15 @@ import java.io.Reader;
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
  * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
  */
-public class XmlCommentStrippingReader extends Reader
+
+/**
+ * Strips the contents of XML comments when reading.
+ * 
+ * NOTE: This should only be used when determining dependencies of a class. 
+ * 		It doesn't handle the removal of the start of the comment and will result in invalid XML.
+ *
+ */
+public class XmlCommentStrippingDependenciesReader extends Reader
 {
 	public static final String COMMENT_START = "<!--";
 	public static final String COMMENT_END = "-->";	
@@ -26,7 +34,7 @@ public class XmlCommentStrippingReader extends Reader
 	private int lastCharPos = 0;
 	private CommentStripperState state;
 	
-	public XmlCommentStrippingReader(Reader sourceReader)
+	public XmlCommentStrippingDependenciesReader(Reader sourceReader)
 	{
 		super();
 		this.sourceReader = sourceReader;

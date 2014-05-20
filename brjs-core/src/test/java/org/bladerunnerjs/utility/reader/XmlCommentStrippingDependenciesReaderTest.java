@@ -11,7 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-public class XmlCommentStrippingReaderTest
+public class XmlCommentStrippingDependenciesReaderTest
 {
 
 	@Test
@@ -188,7 +188,7 @@ public class XmlCommentStrippingReaderTest
 	
 	private String stripComments(String input) throws IOException
 	{
-		try(Reader reader = new XmlCommentStrippingReader(new StringReader(input)); StringWriter stringWriter = new StringWriter())
+		try(Reader reader = new XmlCommentStrippingDependenciesReader(new StringReader(input)); StringWriter stringWriter = new StringWriter())
 		{
 			IOUtils.copy(reader, stringWriter);
 			return stringWriter.toString();
