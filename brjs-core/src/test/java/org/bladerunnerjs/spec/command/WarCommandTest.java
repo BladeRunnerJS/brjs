@@ -2,6 +2,7 @@ package org.bladerunnerjs.spec.command;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
@@ -14,6 +15,7 @@ import org.junit.Test;
 public class WarCommandTest extends SpecTest {
 	private App app;
 	private Aspect aspect, mobileAspect;
+	private Theme defaultAspectStandardTheme, mobileAspectStandardTheme;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -24,7 +26,9 @@ public class WarCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			defaultAspectStandardTheme = aspect.theme("standard");
 			mobileAspect = app.aspect("mobile");
+			mobileAspectStandardTheme = mobileAspect.theme("standard");
 	}
 	
 	@Test
@@ -113,6 +117,22 @@ public class WarCommandTest extends SpecTest {
 			.and(brjs).containsFolder("target-dir");
 		when(brjs).runCommand("war", "app1", brjs.workingDir().file("target-dir").getAbsolutePath());
 		then(brjs).hasFile("target-dir/app1.war");
+	}
+	
+	@Test
+	public void createWarWhenOtherAspectDoesNotContainSameThemesAsDefaultAspect() throws Exception {
+		given(app).hasBeenCreated()
+			.and(aspect).classFileHasContent("appns/Class1", "//class1 content")
+			.and(defaultAspectStandardTheme).containsFileWithContents("style.css", ".body { \n background: url('image.png'); \n }")
+			.and(defaultAspectStandardTheme).containsFile("image.png")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/> \n require('appns/Class1');")
+			.and(mobileAspect).classFileHasContent("appns/Mobile", "//mobile aspect content")
+			.and(mobileAspectStandardTheme).containsFileWithContents("style.css", "mobile theme styling")
+			.and(mobileAspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/> \n require('appns/Mobile');");
+		when(brjs).runCommand("war", "app1", brjs.workingDir().file("myapp").getAbsolutePath());
+		then(brjs).hasFile("myapp.war")
+			.and(exceptions).verifyNoOutstandingExceptions();
+			
 	}
 	
 	// TODO: this currently doesn't work because we are creating one bundler for every minification level available, whether we need it or not
