@@ -40,15 +40,13 @@ function getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales) {
 	return firstMatchingLocale;
 }
 
-function getActiveLocale() {
-	var userPreferredLocale = getCookie("BRJS.LOCALE");
+function getActiveLocale(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
 	var activeLocale;
 	
 	if(appSupportedLocales[userPreferredLocale]) {
 		activeLocale = userPreferredLocale;
 	}
 	else {
-		var userAcceptedLocales = getUserAcceptedLocales();
 		var firstMatchingLocale = getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales);
 		
 		if(firstMatchingLocale) {
@@ -65,4 +63,6 @@ function getActiveLocale() {
 	return activeLocale;
 }
 
-window.location = window.location + getActiveLocale() + "/";
+function forwardToLocalePage() {
+	window.location = window.location + getActiveLocale(getCookie("BRJS.LOCALE"), getUserAcceptedLocales(), $appSupportedLocales) + "/";
+}

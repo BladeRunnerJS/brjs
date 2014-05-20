@@ -99,10 +99,11 @@ public class AppRequestHandler {
 			writer.write("<head>\n");
 			writer.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			writer.write("<script type='text/javascript'>\n");
-			writer.write("var appSupportedLocales = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n");
+			writer.write("var $appSupportedLocales = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n");
 			IOUtils.copy(reader, writer);
 			writer.write("\n</script>\n");
-			writer.write("</head>");
+			writer.write("</head>\n");
+			writer.write("<body onload='forwardToLocalePage()'></body>\n");
 		}
 		catch (IOException | ConfigException e) {
 			throw new ContentProcessingException(e);
