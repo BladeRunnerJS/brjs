@@ -1,5 +1,6 @@
 package org.bladerunnerjs.utility;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,7 +17,9 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -80,9 +83,16 @@ public class AppRequestHandler {
 	
 	public void writeIndexPage(BrowsableNode browsableNode, String locale, PageAccessor pageAccessor, OutputStream os) throws ContentProcessingException {
 		try {
-			pageAccessor.serveIndexPage(browsableNode, locale, os);
+			String indexPage = pageAccessor.getIndexPage(browsableNode, locale, os);
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			
+			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding())) {
+				browsableNode.filterIndexPage(indexPage, locale, writer, RequestMode.Dev);
+			}
+			
+			os.write(byteArrayOutputStream.toByteArray());
 		}
-		catch (IOException e) {
+		catch (IOException | ConfigException | ModelOperationException e) {
 			throw new ContentProcessingException(e);
 		}
 	}

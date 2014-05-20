@@ -6,5 +6,5 @@ import java.io.OutputStream;
 import org.bladerunnerjs.model.BrowsableNode;
 
 public interface PageAccessor {
-	void serveIndexPage(BrowsableNode browsableNode, String locale, OutputStream os) throws IOException;
+	String getIndexPage(BrowsableNode browsableNode, String locale, OutputStream os) throws IOException;
 }

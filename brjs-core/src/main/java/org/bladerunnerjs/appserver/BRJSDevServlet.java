@@ -1,12 +1,9 @@
 package org.bladerunnerjs.appserver;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -19,7 +16,6 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BrowsableNode;
-import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -92,20 +88,13 @@ public class BRJSDevServlet extends HttpServlet {
 		}
 		
 		@Override
-		public void serveIndexPage(BrowsableNode browsableNode, String locale, OutputStream os) throws IOException {
+		public String getIndexPage(BrowsableNode browsableNode, String locale, OutputStream os) throws IOException {
 			try {
-				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				
-				try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-					File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
-					String requestPath = "/" + RelativePathUtility.get(app.dir(), indexPage);
-					
-					browsableNode.filterIndexPage(getRequestPath(requestPath), locale, writer, RequestMode.Dev);
-				}
-				
-				os.write(byteArrayOutputStream.toByteArray());
+				File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
+				String requestPath = "/" + RelativePathUtility.get(app.dir(), indexPage);
+				return getRequestPath(requestPath);
 			}
-			catch (Exception ex) {
+			catch (ServletException ex) {
 				throw new IOException(ex);
 			}
 		}

@@ -348,14 +348,14 @@ public class App extends AbstractBRJSNode implements NamedNode
 			
 			for(Aspect aspect : aspects()) {
 				BundleSet bundleSet = aspect.getBundleSet();
-				File localeForwardingFile = new File(exportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST));
+				File localeForwardingFile = new File(exportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST) + "index.html");
 				
 				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
 					appRequestHandler.writeLocaleForwardingPage(os);
 				}
 				
 				for(String locale : locales) {
-					File localeIndexPageFile = new File(exportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, locale));
+					File localeIndexPageFile = new File(exportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, locale) + "index.html");
 					
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
 						// TODO: change AppRequestHandler.writeIndexPage() so it can be used outside of a servlet context
