@@ -61,11 +61,11 @@ public class AppRequestHandler {
 				break;
 			
 			case INDEX_PAGE_REQUEST:
-				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), "dev", pageAccessor, os, RequestMode.Dev);
 				break;
 			
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), "dev", pageAccessor, os, RequestMode.Dev);
 				break;
 			
 			case BUNDLE_REQUEST:
@@ -82,14 +82,14 @@ public class AppRequestHandler {
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public void writeIndexPage(BrowsableNode browsableNode, String locale, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
+	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
 		try {
 			File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 			String indexPageContent = pageAccessor.getIndexPage(indexPage);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
 			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding())) {
-				browsableNode.filterIndexPage(indexPageContent, locale, writer, requestMode);
+				browsableNode.filterIndexPage(indexPageContent, locale, version, writer, requestMode);
 			}
 			
 			os.write(byteArrayOutputStream.toByteArray());

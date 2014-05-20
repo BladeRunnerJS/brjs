@@ -178,7 +178,7 @@ public class TagPluginUtilityTest
 	private void filterAndAssert(String input, String expectedOutput, BundleSet bundleSet, RequestMode opMode, String locale) throws Exception
 	{
 		StringWriter writer = new StringWriter();
-		TagPluginUtility.filterContent(input, bundleSet, writer, opMode, locale);
+		TagPluginUtility.filterContent(input, bundleSet, writer, opMode, locale, "dev");
 		assertEquals(expectedOutput, writer.toString());
 	}
 	

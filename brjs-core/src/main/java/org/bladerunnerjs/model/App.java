@@ -36,6 +36,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeEx
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.PageAccessor;
+import org.bladerunnerjs.utility.SimplePageAccessor;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -337,36 +338,45 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return "../" + appRequestHandler.createRequest("bundle-request", "", "dev", contentPath);
 	}
 	
-	public String createProdBundleRequest(String contentPath) throws MalformedTokenException {
-		return "../" + appRequestHandler.createRequest("bundle-request", "", String.valueOf(new Date().getTime()), contentPath);
+	public String createProdBundleRequest(String contentPath, String version) throws MalformedTokenException {
+		return "../" + appRequestHandler.createRequest("bundle-request", "", version, contentPath);
 	}
 	
-	public void exportApp(File exportDir) throws ModelOperationException {
+	public void build(File targetDir) throws ModelOperationException {
+		if(!targetDir.isDirectory()) {
+			throw new ModelOperationException("'" + targetDir.getPath() + "' is not a directory.");
+		}
+		
 		try {
 			String[] locales = appConf().getLocales();
 			String version = String.valueOf(new Date().getTime());
+			PageAccessor pageAcessor = new SimplePageAccessor();
 			
 			for(Aspect aspect : aspects()) {
 				BundleSet bundleSet = aspect.getBundleSet();
-				File localeForwardingFile = new File(exportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST) + "index.html");
+				String aspectPrefix = (aspect.getName().equals("default")) ? "" : aspect.getName() + "/";
+				File localeForwardingFile = new File(targetDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
 				
+				localeForwardingFile.getParentFile().mkdirs();
 				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
 					appRequestHandler.writeLocaleForwardingPage(os);
 				}
 				
 				for(String locale : locales) {
 					String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
-					File localeIndexPageFile = new File(exportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, locale) + indexPageName);
+					File localeIndexPageFile = new File(targetDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale) + indexPageName);
 					
+					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						appRequestHandler.writeIndexPage(aspect, locale, null, os, RequestMode.Prod);
+						appRequestHandler.writeIndexPage(aspect, locale, version, pageAcessor, os, RequestMode.Prod);
 					}
 				}
 				
 				for(ContentPlugin contentPlugin : root().plugins().contentProviders()) {
 					for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-						File bundleFile = new File(exportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, version, contentPath));
+						File bundleFile = new File(targetDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
 						
+						bundleFile.getParentFile().mkdirs();
 						try(OutputStream os = new FileOutputStream(bundleFile)) {
 							contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os);
 						}

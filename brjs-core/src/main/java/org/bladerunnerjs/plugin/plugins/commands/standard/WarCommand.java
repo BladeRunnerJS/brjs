@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
@@ -110,7 +111,7 @@ public class WarCommand extends ArgsParsingCommandPlugin
 							FileUtils.copyFile(origAspect.file(indexFile), new File(warAspect, indexFile));
 							try(Writer writer = new OutputStreamWriter(new FileOutputStream(new File(warAspect, indexFile)), brjs.bladerunnerConf().getDefaultFileCharacterEncoding())) {
 								// TODO: stop only supporting the English locale within wars
-								origAspect.filterIndexPage(fileUtil.readFileToString(origAspect.file(indexFile)), "en", writer, RequestMode.Prod);
+								origAspect.filterIndexPage(fileUtil.readFileToString(origAspect.file(indexFile)), "en", String.valueOf(new Date().getTime()), writer, RequestMode.Prod);
 							}
 						}
 					}

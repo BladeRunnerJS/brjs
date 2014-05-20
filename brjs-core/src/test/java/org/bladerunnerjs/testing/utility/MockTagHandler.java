@@ -50,7 +50,7 @@ public class MockTagHandler extends AbstractTagHandlerPlugin implements TagHandl
 	}
 
 	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
 	{
 		writeOutContentAndTagAttributes(writer, prodContent, tagAttributes, locale);
 	}

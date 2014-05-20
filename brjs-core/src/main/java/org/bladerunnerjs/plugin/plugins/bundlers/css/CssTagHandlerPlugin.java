@@ -28,21 +28,21 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	@Override
 	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		writeTagContent(true, writer, bundleSet, tagAttributes.get("theme"), locale);
+		writeTagContent(true, writer, bundleSet, tagAttributes.get("theme"), locale, "dev");
 	}
 	
 	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		writeTagContent(false, writer, bundleSet, tagAttributes.get("theme"), locale);
+	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException {
+		writeTagContent(false, writer, bundleSet, tagAttributes.get("theme"), locale, version);
 	}
 	
-	private void writeTagContent(boolean isDev, Writer writer, BundleSet bundleSet, String theme, String locale) throws IOException {
+	private void writeTagContent(boolean isDev, Writer writer, BundleSet bundleSet, String theme, String locale, String version) throws IOException {
 		try {
 			App app = bundleSet.getBundlableNode().app();
 			
 			for(String nextTheme : BRJSConformantAssetLocationPlugin.getBundlableNodeThemes(bundleSet.getBundlableNode())) {
 				for(String contentPath : cssContentPlugin.getThemeStyleSheetContentPaths(nextTheme, locale)) {
-					String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath);
+					String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
 					
 					if(nextTheme.equals("common")) {
 						writer.write("<link rel='stylesheet' href='" + requestPath + "'/>\n");

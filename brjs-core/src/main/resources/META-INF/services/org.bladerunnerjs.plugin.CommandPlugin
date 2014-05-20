@@ -3,6 +3,7 @@ org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.CreateAspectCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand
+org.bladerunnerjs.plugin.plugins.commands.standard.BuildCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.ExportApplicationCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand
 org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand
