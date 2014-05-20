@@ -5,7 +5,10 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+/*
+ * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
+ * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
+ */
 public class JsCodeBlockStrippingReader extends Reader
 {
 	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "^.*([\\(\\!\\~\\-\\+]|(new\\s+))function\\s*\\([^)]*\\)\\s*\\{$";
