@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.UnicodeReader;
-import org.bladerunnerjs.utility.reader.factory.JsCommentStrippingReaderFactory;
+import org.bladerunnerjs.utility.reader.factory.JsAndXmlCommentStrippingReaderFactory;
 
 /**
  * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
@@ -35,7 +35,7 @@ public class LinkedFileAsset implements LinkedAsset {
 			this.assetFile = assetFile;
 			assetPath = RelativePathUtility.get(app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile);
+			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsAndXmlCommentStrippingReaderFactory(this), assetFile);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
