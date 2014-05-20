@@ -355,11 +355,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 				}
 				
 				for(String locale : locales) {
-					File localeIndexPageFile = new File(exportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, locale) + "index.html");
+					String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
+					File localeIndexPageFile = new File(exportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, locale) + indexPageName);
 					
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						// TODO: change AppRequestHandler.writeIndexPage() so it can be used outside of a servlet context
-						appRequestHandler.writeIndexPage(aspect, locale, null, os);
+						appRequestHandler.writeIndexPage(aspect, locale, null, os, RequestMode.Prod);
 					}
 				}
 				

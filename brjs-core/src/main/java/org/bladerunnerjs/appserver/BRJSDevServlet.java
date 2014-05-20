@@ -2,7 +2,6 @@ package org.bladerunnerjs.appserver;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.ServletConfig;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -88,9 +86,8 @@ public class BRJSDevServlet extends HttpServlet {
 		}
 		
 		@Override
-		public String getIndexPage(BrowsableNode browsableNode, String locale, OutputStream os) throws IOException {
+		public String getIndexPage(File indexPage) throws IOException {
 			try {
-				File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 				String requestPath = "/" + RelativePathUtility.get(app.dir(), indexPage);
 				return getRequestPath(requestPath);
 			}
