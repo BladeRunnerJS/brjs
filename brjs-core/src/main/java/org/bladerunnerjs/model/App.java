@@ -1,6 +1,9 @@
 package org.bladerunnerjs.model;
 
+import static org.bladerunnerjs.utility.AppRequestHandler.*;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -21,12 +24,14 @@ import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.events.AppDeployedEvent;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
@@ -334,5 +339,43 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public String createProdBundleRequest(String contentPath) throws MalformedTokenException {
 		return "../" + appRequestHandler.createRequest("bundle-request", "", String.valueOf(new Date().getTime()), contentPath);
+	}
+	
+	public void exportApp(File exportDir) throws ModelOperationException {
+		try {
+			String[] locales = appConf().getLocales();
+			String version = String.valueOf(new Date().getTime());
+			
+			for(Aspect aspect : aspects()) {
+				BundleSet bundleSet = aspect.getBundleSet();
+				File localeForwardingFile = new File(exportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST));
+				
+				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
+					appRequestHandler.writeLocaleForwardingPage(os);
+				}
+				
+				for(String locale : locales) {
+					File localeIndexPageFile = new File(exportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, locale));
+					
+					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
+						// TODO: change AppRequestHandler.writeIndexPage() so it can be used outside of a servlet context
+						appRequestHandler.writeIndexPage(aspect, locale, null, os);
+					}
+				}
+				
+				for(ContentPlugin contentPlugin : root().plugins().contentProviders()) {
+					for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
+						File bundleFile = new File(exportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, version, contentPath));
+						
+						try(OutputStream os = new FileOutputStream(bundleFile)) {
+							contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os);
+						}
+					}
+				}
+			}
+		}
+		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException e) {
+			throw new ModelOperationException(e);
+		}
 	}
 }

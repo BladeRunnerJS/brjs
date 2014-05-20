@@ -26,6 +26,13 @@ import com.google.common.base.Joiner;
 
 
 public class AppRequestHandler {
+	public static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
+	public static final String INDEX_PAGE_REQUEST = "index-page-request";
+	public static final String BUNDLE_REQUEST = "bundle-request";
+	public static final String WORKBENCH_LOCALE_FORWARDING_REQUEST = "workbench-locale-forwarding-request";
+	public static final String WORKBENCH_INDEX_PAGE_REQUEST = "workbench-index-page-request";
+	public static final String WORKBENCH_BUNDLE_REQUEST = "workbench-bundle-request";
+	
 	private final App app;
 	private final MemoizedValue<ContentPathParser> contentPathParser;
 	
@@ -44,24 +51,24 @@ public class AppRequestHandler {
 		String aspectName = getAspectName(requestPath, pathProperties);
 		
 		switch(parsedContentPath.formName) {
-			case "locale-forwarding-request":
-			case "workbench-locale-forwarding-request":
+			case LOCALE_FORWARDING_REQUEST:
+			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
 				writeLocaleForwardingPage(os);
 				break;
 			
-			case "index-page-request":
+			case INDEX_PAGE_REQUEST:
 				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), pageAccessor, os);
 				break;
 			
-			case "workbench-index-page-request":
+			case WORKBENCH_INDEX_PAGE_REQUEST:
 				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), pageAccessor, os);
 				break;
 			
-			case "bundle-request":
+			case BUNDLE_REQUEST:
 				app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), os);
 				break;
 			
-			case "workbench-bundle-request":
+			case WORKBENCH_BUNDLE_REQUEST:
 				app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os);
 				break;
 		}
@@ -71,7 +78,7 @@ public class AppRequestHandler {
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	private void writeIndexPage(BrowsableNode browsableNode, String locale, PageAccessor pageAccessor, OutputStream os) throws ContentProcessingException {
+	public void writeIndexPage(BrowsableNode browsableNode, String locale, PageAccessor pageAccessor, OutputStream os) throws ContentProcessingException {
 		try {
 			pageAccessor.serveIndexPage(browsableNode, locale);
 		}
@@ -96,7 +103,7 @@ public class AppRequestHandler {
 		return aspectName;
 	}
 	
-	private void writeLocaleForwardingPage(OutputStream os) throws ContentProcessingException {
+	public void writeLocaleForwardingPage(OutputStream os) throws ContentProcessingException {
 		try(Writer writer = new OutputStreamWriter(os, app.root().bladerunnerConf().getBrowserCharacterEncoding());
 				Reader reader = new FileReader(app.root().sdkLibsDir().file("locale-forwarder.js"))) {
 			writer.write("<head>\n");
@@ -117,12 +124,12 @@ public class AppRequestHandler {
 		return contentPathParser.value(() -> {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
-				.accepts("<aspect>").as("locale-forwarding-request")
-					.and("<aspect><locale>/").as("index-page-request")
-					.and("<aspect>v/<version>/<content-path>").as("bundle-request")
-					.and("<aspect>workbench/<bladeset>/<blade>/").as("workbench-locale-forwarding-request")
-					.and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as("workbench-index-page-request")
-					.and("<aspect>workbench/<bladeset>/<blade>/v/<version>/<content-path>").as("workbench-bundle-request")
+				.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
+					.and("<aspect><locale>/").as(INDEX_PAGE_REQUEST)
+					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
+					.and("<aspect>workbench/<bladeset>/<blade>/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
+					.and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
+					.and("<aspect>workbench/<bladeset>/<blade>/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
 				.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
 					.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
