@@ -77,9 +77,19 @@ function getTemplate(template) {
             template = template.content;
         }
         else {
-            var tempDiv = document.createElement("div");
-            tempDiv.innerHTML = template.innerHTML;
-            template = tempDiv.children[0];
+			// First clone the contents of the template to avoid modifying the original as we will be reparenting.
+			var docFrag = document.createDocumentFragment(),
+				tempClone = template.cloneNode(true),
+				children = tempClone.childNodes,
+				childCount = children.length,
+				child = null;
+			
+			for(var i = 0; i < childCount; i++) {
+				child = children[i];
+				docFrag.appendChild(child);
+			}
+			
+			template = docFrag;
         }
     }
     return template;
