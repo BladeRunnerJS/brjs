@@ -4,6 +4,7 @@ var br = require('br/Core');
 var BRHtmlResourceService = require('./BRHtmlResourceService');
 
 /**
+ * @name br.services.JSTDHtmlResourceService
  * @constructor
  * @class
  * This class provides access to HTML templates loaded via the HTML bundler for testing purposes.

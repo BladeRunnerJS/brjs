@@ -18,8 +18,6 @@ import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestSourceAssetLocation;
 import org.bladerunnerjs.model.ThemesAssetLocation;
-import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.model.WorkbenchResourcesAssetLocation;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -34,14 +32,22 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		
-		for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
+		List<String> bundlableNodeThemes = new ArrayList<>();
+		AssetLocation bundlableNodeResources = bundlableNode.assetLocation("resources");
+		if (bundlableNodeResources != null) {
+			for ( ThemesAssetLocation theme : ((AbstractResourcesAssetLocation) bundlableNodeResources).themes() ) {
+				bundlableNodeThemes.add(theme.getThemeName());
+			}
+		}
+		
+		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
 			AbstractResourcesAssetLocation resourceAssetLocation = (AbstractResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
 			if(resourceAssetLocation != null) {
 				for(ThemesAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
 					String themeName = themeAssetLocation.getThemeName();
 					
-					if(!themeName.equals("common")) {
+					if (!themeName.equals("common") && bundlableNodeThemes.contains(themeName) ) {
 						themeNames.add(themeName);
 					}
 					
@@ -103,12 +109,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 				break;
 			
 			case "resources":
-				if (assetContainer instanceof Workbench) {
-					assetLocation = new WorkbenchResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
-				}
-				else {
-					assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
-				}
+				assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
 				break;
 			
 			case "src":

@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -24,6 +25,8 @@ public class AliasBundlingTest extends SpecTest {
 	private AliasesFile aspectAliasesFile;
 	private AliasDefinitionsFile brLibAliasDefinitionsFile, bladeAliasDefinitionsFile;
 	private StringBuffer response = new StringBuffer();
+	private Workbench workbench;
+	private AliasesFile worbenchAliasesFile;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -38,6 +41,8 @@ public class AliasBundlingTest extends SpecTest {
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			bladeAliasDefinitionsFile = blade.assetLocation("src").aliasDefinitionsFile();
+			workbench = blade.workbench();
+			worbenchAliasesFile = workbench.aliasesFile();
 			brLib = app.jsLib("br");
 			brLibAliasDefinitionsFile = brLib.assetLocation("resources").aliasDefinitionsFile();
 			otherBrLib = brjs.sdkLib("otherBrLib");
@@ -90,6 +95,7 @@ public class AliasBundlingTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsText("br.Class2");
 	}
+	
 	@Test
 	public void serviceClassesReferencedByANodeJSSourceModuleAreIncludedInTheBundle() throws Exception {
 		given(brLib).hasClasses("br/Class1", "br/Class2")
@@ -100,6 +106,7 @@ public class AliasBundlingTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
 		then(response).containsText("br.Class2");
 	}
+	
 	@Test // test exception isnt thrown for services - services can be defined and configure at run time, which differs from aliases
 	public void anExceptionIsntThrownIfAServiceClassesReferencedByANodeJSSourceModuleDoesntExist() throws Exception {
 		given(brLib).hasClasses("br/Class1", "br/Class2")
@@ -261,4 +268,18 @@ public class AliasBundlingTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/aliasing/bundle.js", response);
 		then(exceptions).verifyException(UnresolvableRequirePathException.class, "NonExistentInterface");
 	}
+	
+	@Test
+	public void aliasesDefinedInMultipleLocationsDontCauseATryException() throws Exception {
+		given(brLib).hasClasses("br/Class1")
+			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class1")
+			.and(aspect).hasClass("appns/Class1")
+			.and(aspectAliasesFile).hasAlias("br.alias", "appns.Class1")
+			.and(aspect).indexPageRefersTo("aliasRegistry.getAlias('br.alias')")
+			.and(blade).hasClass("appns/bs/b1/Class1")
+			.and(worbenchAliasesFile).hasAlias("br.alias", "appns/bs/b1/Class1");
+		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
 }

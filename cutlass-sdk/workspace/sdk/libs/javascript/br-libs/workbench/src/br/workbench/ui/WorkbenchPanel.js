@@ -1,31 +1,32 @@
 var jQuery = require( 'jquery' );
 
 /**
+ * @name br.workbench.ui.WorkbenchPanel
  * @class
  * A <code>WorkbenchPanel</code> is the main container for displaying components
  * within a workbench. Workbench panels can be added to a {@link WorkbenchPanel},
  * either to the left or right side of the screen.
- * 
+ *
  * @param String sOrientation Either "left" or "right"
  * @param int nWidth The width of the WorkbenchPanel in Pixels
  * @param boolean bXResizable If True, the panel will be resizable.
- * 
+ *
  * @constructor
  */
-function WorkbenchPanelPanel(sOrientation, nWidth, bXResizable) {
+function WorkbenchPanel(sOrientation, nWidth, bXResizable) {
 	bXResizable = (bXResizable || true);
 	this.m_sOrientation = sOrientation;
 	this.m_nWidth = nWidth;
 	this.m_eElement = jQuery('<div class="workbench-panel"></div>');
-	
+
 	this.m_eComponentContainer = document.createElement('ul');
-	this.m_eComponentContainer.id = 'workbench-panel-' + WorkbenchPanelPanel.ID++;
-	
+	this.m_eComponentContainer.id = 'workbench-panel-' + WorkbenchPanel.ID++;
+
 	jQuery(this.m_eComponentContainer).sortable({
 		placeholder: "sortable-placeholder",
 		handle: '.header'
 	});
-	
+
 	this.m_eElement.append(this.m_eComponentContainer);
 
 	jQuery('body').append(this.m_eElement);
@@ -42,56 +43,56 @@ function WorkbenchPanelPanel(sOrientation, nWidth, bXResizable) {
 /**
  * @private
  */
-WorkbenchPanelPanel.ID = 0;
+WorkbenchPanel.ID = 0;
 
 /**
- * Returns the id of the element that represents the container which components 
+ * Returns the id of the element that represents the container which components
  * will be added to within this <code>WorkbenchPanel</code>
- * 
+ *
  * @type String
  * @returns the container id
  */
-WorkbenchPanelPanel.prototype.getComponentContainerId = function() {
+WorkbenchPanel.prototype.getComponentContainerId = function() {
 	return this.m_eComponentContainer.id;
 };
 
 /**
- * Adds a {@link cpalin.workbench.ui.WorkbenchComponent} to this panel. 
- * 
+ * Adds a {@link cpalin.workbench.ui.WorkbenchComponent} to this panel.
+ *
  * @param {WorkbenchPanelComponent} oWorkbenchComponent The component to add.
  * @param {String} sTitle The title to display for the component.
  * @param {boolean} bCollapsed if True, the initial state of the component will be collapsed.
  */
-WorkbenchPanelPanel.prototype.add = function(oWorkbenchComponent, sTitle, bCollapsed) {
+WorkbenchPanel.prototype.add = function(oWorkbenchComponent, sTitle, bCollapsed) {
 	var ePanelElement = this.getElement()[0];
 	var eWrapper = document.createElement("li");
 	eWrapper.className = 'workbench-component';
 	var eHeader = document.createElement('div');
 	eHeader.innerHTML = '<div class="arrow"></div><div class="title">' + sTitle + '</div>';
 	eHeader.className = 'header';
-	
+
 	eWrapper.appendChild(eHeader);
 	var eContainer = document.createElement('div');
 	eContainer.className = 'container';
 	eContainer.appendChild(oWorkbenchComponent.getElement());
 	eWrapper.appendChild(eContainer);
-	
+
 	var ojQueryHeader = jQuery(eHeader);
-	
+
 	if (bCollapsed)
 	{
 		ojQueryHeader.next().hide();
 		jQuery(eWrapper).addClass('collapsed');
 	}
-	
+
 	ojQueryHeader.click(function() {
 		ojQueryHeader.next().slideToggle();
 		jQuery(eWrapper).toggleClass('collapsed');
 		return false;
 	});
-	
+
 	this.m_eComponentContainer.appendChild(eWrapper);
-	
+
 	if (oWorkbenchComponent.render)
 	{
 		oWorkbenchComponent.render(this.m_eComponentContainer);
@@ -101,11 +102,11 @@ WorkbenchPanelPanel.prototype.add = function(oWorkbenchComponent, sTitle, bColla
 
 /**
  * Sets the width of this panel.
- * 
+ *
  * @param {int} nWidth The width of the WorkbenchPanel in Pixels
  *
  */
-WorkbenchPanelPanel.prototype.setWidth = function(nWidth)
+WorkbenchPanel.prototype.setWidth = function(nWidth)
 {
 	this.m_nWidth = nWidth;
 
@@ -127,11 +128,11 @@ WorkbenchPanelPanel.prototype.setWidth = function(nWidth)
 
 /**
  * Returns the outer width of this workbench panel.
- * 
+ *
  * @type int
  * @returns The total width of the WorkbenchPanel including padding and borders in pixels
  */
-WorkbenchPanelPanel.prototype.getOuterWidth = function()
+WorkbenchPanel.prototype.getOuterWidth = function()
 {
 	var pWidthAspects = [
 		'padding-left',
@@ -156,22 +157,22 @@ WorkbenchPanelPanel.prototype.getOuterWidth = function()
 
 /**
  * Returns the width of this panel.
- * 
+ *
  * @type int
  * @returns nWidth The inner width of the WorkbenchPanel in pixels
  */
-WorkbenchPanelPanel.prototype.getWidth = function()
+WorkbenchPanel.prototype.getWidth = function()
 {
 	return this.m_nWidth;
 };
 
 /**
  * Returns the offset height of this panel
- * 
+ *
  * @returns The total height of the WorkbenchPanel including padding and borders in pixels.
  * @type int
  */
-WorkbenchPanelPanel.prototype.getHeightOffset = function()
+WorkbenchPanel.prototype.getHeightOffset = function()
 {
 	var pHeightAspects = [
 		'padding-top',
@@ -193,7 +194,7 @@ WorkbenchPanelPanel.prototype.getHeightOffset = function()
 	return nTotalHeight;
 };
 
-WorkbenchPanelPanel.prototype.getElement = function()
+WorkbenchPanel.prototype.getElement = function()
 {
 	return this.m_eElement;
 };
@@ -201,7 +202,7 @@ WorkbenchPanelPanel.prototype.getElement = function()
 /**
  * @private
  */
-WorkbenchPanelPanel.prototype._bindYResize = function()
+WorkbenchPanel.prototype._bindYResize = function()
 {
 	var self = this;
 	var fResize = function() {
@@ -214,7 +215,7 @@ WorkbenchPanelPanel.prototype._bindYResize = function()
 /**
  * @private
  */
-WorkbenchPanelPanel.prototype._bindXResize = function()
+WorkbenchPanel.prototype._bindXResize = function()
 {
 	var self = this;
 	this.m_eDragHandle = jQuery('<div class="drag-handle"></div>');
@@ -262,5 +263,4 @@ WorkbenchPanelPanel.prototype._bindXResize = function()
 	});
 };
 
-module.exports = WorkbenchPanelPanel;
-
+module.exports = WorkbenchPanel;

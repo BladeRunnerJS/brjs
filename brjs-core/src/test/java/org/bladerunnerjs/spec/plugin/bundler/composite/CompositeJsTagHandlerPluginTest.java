@@ -147,7 +147,6 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 				"<script type='text/javascript' src='../v/dev/thirdparty/thirdpartyLib/bundle.js'></script>", 
 				"<script type='text/javascript' src='../v/dev/namespaced-js/package-definitions.js'></script>",
 				"<script type='text/javascript' src='../v/dev/namespaced-js/module/appns/bs/b1/Class1.js'></script>",
-				"<script type='text/javascript' src='../v/dev/namespaced-js/module/appns/Class1.js'></script>",
 				"<script type='text/javascript' src='../v/dev/aliasing/bundle.js'></script>",
 				"appns.bs.b1.Class1",
 				"appns.Class1");

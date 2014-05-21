@@ -66,7 +66,19 @@ public class WorkbenchBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void workbenchBundlesAspectJSClassFilesWhenReferenced() throws Exception {
+	public void workbenchBundlesBladeJSClassFilesWhenReferenced() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClasses("appns.Class1")
+			.and(blade).hasNamespacedJsPackageStyle()
+			.and(blade).hasClass("appns.bs.b1.Class1")
+			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/combined/bundle.js", response);
+		then(response).containsText("appns.bs.b1.Class1")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void workbenchBundlesDontIncludeAspectJS() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1")
 			.and(blade).hasNamespacedJsPackageStyle()
@@ -74,7 +86,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1")
 			.and(workbench).indexPageRefersTo("appns.Class1");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/combined/bundle.js", response);
-		then(response).containsText("appns.Class1")
+		then(response).doesNotContainClasses("appns.Class1")
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -162,8 +174,8 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbench).containsFileWithContents("resources/workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
 			.and(workbench).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/bundle.html", response);
-		then(response).containsOrderedTextFragments("<div id='br.tree-view'></div>",
-													"<div id='appns.bs.b1.workbench-view'></div>");
+		then(response).containsOrderedTextFragments("<div id='appns.bs.b1.workbench-view'></div>",
+													"<div id='br.tree-view'></div>");
 	}
 	
 	@Test

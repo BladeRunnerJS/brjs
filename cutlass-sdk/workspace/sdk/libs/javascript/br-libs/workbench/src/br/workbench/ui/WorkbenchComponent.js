@@ -1,6 +1,7 @@
 var Errors = require( 'br/Errors' );
 
 /**
+ * @name br.workbench.ui.WorkbenchComponent
  * @class
  * @interface
  * <p>Represents a generic component that can be added to a {@link br.workbench.ui.WorkbenchPanel}</p>

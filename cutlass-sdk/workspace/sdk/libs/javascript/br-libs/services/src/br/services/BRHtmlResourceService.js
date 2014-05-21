@@ -4,6 +4,7 @@ var HtmlResourceService = require('br/services/HtmlResourceService');
 var i18n = require('br/I18n');
 
 /**
+ * @name br.services.BRHtmlResourceService
  * @constructor
  * @class
  * This class provides access to HTML templates loaded via the HTML bundler.
@@ -55,7 +56,7 @@ BRHtmlResourceService.prototype._loadHtml = function() {
 	for (var i = 0, max = this.element.children.length; i < max; i++) {
 		this.templates[this.element.children[i].id] = this.element.children[i].cloneNode(true);
 	}
-	
+
 	document.body.removeChild(this.element);
 };
 
@@ -68,7 +69,7 @@ function sanitizeHtml(html) {
 		// TODO: Log the fact there is a script tag in the template and that it should be replaced with a div.
 		html = html.replace(/<script(.*)type=\"text\/html\"/g, replacer).replace(/<\/script>/g, '</div>');
 	}
-	
+
 	return html;
 };
 

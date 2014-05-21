@@ -2,6 +2,7 @@ package org.bladerunnerjs.spec.plugin.bundler.css;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,12 +11,16 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer response = new StringBuffer();
+	private Aspect loginAspect;
+	private Blade blade;
 	
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsBundlers().and(brjs).automaticallyFindsMinifiers().and(brjs).hasBeenCreated();
 		app = brjs.app("app1");
 		aspect = app.aspect("default");
+		blade = app.bladeset("bs").blade("b1");
+		loginAspect = app.aspect("login");
 	}
 	
 	@Test
@@ -36,4 +41,21 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
 			"<link rel='stylesheet' href='../v/dev/css/common_en_GB/bundle.css'/>");
 	}
+	
+	@Test
+	public void onlyThemesForTheGivenAspectAreIncludedInGeneratedTags() throws Exception {
+		given(loginAspect.theme("login")).hasBeenCreated()
+			.and(aspect.theme("aspect1")).hasBeenCreated()
+			.and(aspect.theme("aspect2")).hasBeenCreated()
+			.and(loginAspect).indexPageHasContent("<@css.bundle@/>\n" + "appns.bs.b1.Class1()")
+			.and(blade).hasClass("appns/bs/b1/Class1")
+			.and(blade.theme("aspect1")).hasBeenCreated();
+		when(loginAspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsOrderedTextFragments(
+			"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
+			"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
+			"<link rel='stylesheet' href='../v/dev/css/common_en_GB/bundle.css'/>")
+			.and(response).doesNotContainText("href='css/aspect");
+	}
+	
 }

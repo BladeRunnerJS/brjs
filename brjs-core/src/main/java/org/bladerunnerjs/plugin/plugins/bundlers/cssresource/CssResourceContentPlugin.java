@@ -206,7 +206,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	private List<String> getValidContentPaths(BundleSet bundleSet, String... locales) throws MalformedTokenException {
 		List<String> contentPaths = new ArrayList<>();
 		
-		for(AssetContainer assetContainer : bundleSet.getBundlableNode().assetContainers())
+		for(AssetContainer assetContainer : bundleSet.getBundlableNode().scopeAssetContainers())
 		{
 			contentPaths.addAll( getValidContentPaths(assetContainer) );
 		}

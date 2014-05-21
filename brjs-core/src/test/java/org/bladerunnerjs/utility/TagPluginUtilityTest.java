@@ -165,7 +165,6 @@ public class TagPluginUtilityTest
 		filterAndAssert( "<@tag ~=* @/>", "<@tag ~=* @/>", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
-	@Ignore //TODO: add this test back in once old tag handlers have been moved across to new style plugins
 	@Test
 	public void exceptionIsThrownIfTagHandlerCantBeFound() throws Exception
 	{		

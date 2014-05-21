@@ -248,15 +248,17 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void jsPatchesAreIncludedAfterTheSourceModule() throws Exception {
+	public void jsPatchesAreIncludedAfterTheSourceModuleAndInsideTheDefine() throws Exception {
 		given(sdkJsLib).hasNamespacedJsPackageStyle("src")
 			.and(sdkJsLib).hasClasses("sdkLib.Class")
 			.and(aspect).indexPageRefersTo("new sdkLib.Class()")
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}");
 		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
+				"define('sdkLib/Class'",
 				"sdkLib.Class = function()",
-				"sdkLib.Class.patch = function() {}"
+				"sdkLib.Class.patch = function() {}",
+				"module.exports = sdkLib.Class;"
 		);
 	}
 	
