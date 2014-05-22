@@ -1,7 +1,9 @@
 package org.bladerunnerjs.testing.specutility;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.lang3.mutable.MutableLong;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -30,7 +32,24 @@ public class AppBuilder extends NodeBuilder<App> {
 		
 		return builderChainer;
 	}
-
+	
+	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
+		app.build(targetDir);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenBuilt(File targetDir, MutableLong versionNumber) throws Exception {
+		hasBeenBuilt(targetDir);
+		
+		for(File dir : new File(targetDir, "v").listFiles()) {
+			versionNumber.setValue(Long.valueOf(dir.getName()));
+			break;
+		}
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer hasBeenDeployed() throws TemplateInstallationException
 	{
 		app.deploy();
