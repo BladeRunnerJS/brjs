@@ -67,6 +67,13 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 													"ASPECT theme content");
 	}
 	
+	@Test
+	public void workbenchesAlwaysLoadsCommonCssFromTheAspectLevel() throws Exception
+	{
+		given(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", response);
+		then(response).containsText("ASPECT theme content");
+	}
 	
 	@Test
 	public void assetsFromAnotherBladeArentLoadedIfTheAspectResourcesDependsOnThem() throws Exception
