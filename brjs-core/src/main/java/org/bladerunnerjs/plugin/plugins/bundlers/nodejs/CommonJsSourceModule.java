@@ -22,6 +22,7 @@ import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
@@ -57,7 +58,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		relativeRequirePath = RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		requirePath = assetLocation.requirePrefix() + "/" + relativeRequirePath; //TODO: calculate this every time, currently we get a  BRJSMemoizationFileAccessException if we do that
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-		computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), assetLocation.root().conf().file("bladerunner.conf"));
+		computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
 	}
 	
 	@Override

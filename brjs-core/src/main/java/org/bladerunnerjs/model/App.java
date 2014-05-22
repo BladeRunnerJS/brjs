@@ -58,7 +58,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	@Override
 	public File[] scopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {dir(), root().libsDir(), root().conf().file("bladerunner.conf")};
+			scopeFiles = new File[] {dir(), root().libsDir(), BladerunnerConf.getConfigFilePath(root())};
 		}
 		
 		return scopeFiles;

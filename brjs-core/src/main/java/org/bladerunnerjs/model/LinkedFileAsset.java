@@ -87,6 +87,6 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	private SourceModuleResolver getSourceModuleResolver(BundlableNode bundlableNode) {
 		App app = assetLocation.assetContainer().app();
-		return new SourceModuleResolver(bundlableNode, assetLocation, assetPath, app.dir(), app.root().libsDir(), app.root().conf().file("bladerunner.conf"));
+		return new SourceModuleResolver(bundlableNode, assetLocation, assetPath, app.dir(), app.root().libsDir(), BladerunnerConf.getConfigFilePath(app.root()));
 	}
 }

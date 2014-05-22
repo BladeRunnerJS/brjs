@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -24,7 +24,7 @@ public class PluginProperties implements NodeProperties
 	private final Node node;
 	private final String pluginName;
 
-	private Map<String, Object> transientProperties = new HashMap<String, Object>();
+	private Map<String, Object> transientProperties = new TreeMap<String, Object>();
 	
 	public PluginProperties(Node node, String pluginName)
 	{

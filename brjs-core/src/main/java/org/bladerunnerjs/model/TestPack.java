@@ -23,7 +23,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 {
 	private AliasesFile aliasesFile;
 	private String name;
-	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), root().conf().file("bladerunner.conf"));
+	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), BladerunnerConf.getConfigFilePath(root()));
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{

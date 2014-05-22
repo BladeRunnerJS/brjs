@@ -16,12 +16,13 @@ import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 public class MemoizedValue<T extends Object> {
 	private final List<FileModifiedChecker> watchList = new ArrayList<>();
 	private final File[] watchItems;
-	private final String valueRecomputedLogMessage;
 	private boolean exceptionThrownOnLastCompute;
 	private final RootNode rootNode;
 	private T value;
 	private final Logger logger;
 	private final String valueIdentifier;
+	
+	private static final String RECOMPUTING_LOG_MSG = "Recomputing '%s'.";
 	
 	public MemoizedValue(String valueIdentifier, Node node) {
 		this(valueIdentifier, node.root(), node.scopeFiles());
@@ -32,7 +33,6 @@ public class MemoizedValue<T extends Object> {
 		this.rootNode = rootNode;
 		this.watchItems = watchItems;
 		logger = rootNode.logger(LoggerType.UTIL, getClass());
-		valueRecomputedLogMessage = "Recomputing '" + valueIdentifier + "'.";
 		
 		if(watchItems.length == 0) {
 			throw new IllegalStateException("At least one directory or file must be provided within the watch list.");
@@ -46,7 +46,7 @@ public class MemoizedValue<T extends Object> {
 	@SuppressWarnings("unchecked")
 	public <E extends Exception> T value(Getter<E> getter) throws E {
 		if(valueNeedsToBeRecomputed()) {
-			logger.debug(valueRecomputedLogMessage);
+			logger.debug( RECOMPUTING_LOG_MSG, valueIdentifier );
 			
 			try(FileAccessLimitScope scope = rootNode.io().limitAccessToWithin(valueIdentifier, watchItems)) {
 				scope.preventCompilerWarning();
