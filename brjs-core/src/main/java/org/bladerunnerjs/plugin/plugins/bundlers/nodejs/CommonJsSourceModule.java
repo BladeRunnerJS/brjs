@@ -47,7 +47,6 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	private File assetFile;
 	private AssetLocation assetLocation;
 	private String requirePath;
-	private String className;
 	private String assetPath;
 
 	private String defaultFileCharacterEncoding;
@@ -64,7 +63,6 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 			this.assetFile = assetFile;
 			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-			className = requirePath.replaceAll("/", ".");
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 			computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), assetLocation.root().conf().file("bladerunner.conf"));
@@ -116,11 +114,6 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public String getRequirePath() {
 		return requirePath;
-	}
-	
-	@Override
-	public String getClassname() {
-		return className;
 	}
 	
 	@Override

@@ -50,9 +50,10 @@ public class TrieFactory {
 						for(SourceModule sourceModule : assetContainer.sourceModules()) {
 							addQuotedKeyToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
 							
-							if (sourceModule.getClassname() != null) {
-								addToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule));
-								addQuotedKeyToTrie(trie, sourceModule.getClassname(), new SourceModuleReference(sourceModule));
+							String moduleClassname = sourceModule.getRequirePath().replaceAll("/", ".");
+							if (moduleClassname != null) {
+								addToTrie(trie, moduleClassname, new SourceModuleReference(sourceModule));
+								addQuotedKeyToTrie(trie, moduleClassname, new SourceModuleReference(sourceModule));
 							}
 						}
 						

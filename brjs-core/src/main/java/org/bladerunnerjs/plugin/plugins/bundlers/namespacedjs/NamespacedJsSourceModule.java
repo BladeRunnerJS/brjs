@@ -38,7 +38,6 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private LinkedAsset linkedAsset;
 	private AssetLocation assetLocation;
 	private String requirePath;
-	private String className;
 	private SourceModulePatch patch;
 	private TrieBasedDependenciesCalculator dependencyCalculator;
 	private TrieBasedDependenciesCalculator staticDependencyCalculator;
@@ -50,7 +49,6 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-		className = requirePath.replaceAll("/", ".");
 		linkedAsset = new LinkedFileAsset(assetFile, assetLocation);
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
@@ -107,7 +105,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 				new StringReader( String.format(defineBlockHeader, getRequirePath()) ), 
 				getUnalteredContentReader(),
 				new StringReader( "\n" ),
-				new StringReader( "module.exports = " + getClassname() + ";" ),
+				new StringReader( "module.exports = " + getRequirePath().replaceAll("/", ".") + ";" ),
 				new StringReader(CommonJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 
 		};
 		return new ConcatReader( readers );
@@ -116,11 +114,6 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public String getRequirePath() {
 		return requirePath;
-	}
-	
-	@Override
-	public String getClassname() {
-		return className;
 	}
 	
 	@Override

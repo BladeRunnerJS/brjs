@@ -175,11 +175,6 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 	
 	@Override
-	public String getClassname() {
-		return null;
-	}
-	
-	@Override
 	public boolean isEncapsulatedModule() {
 		return false;
 	}
