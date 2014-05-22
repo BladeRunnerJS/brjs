@@ -10,8 +10,12 @@ import java.util.List;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.utility.Trie;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
+import org.bladerunnerjs.utility.trie.AliasReference;
+import org.bladerunnerjs.utility.trie.AssetReference;
+import org.bladerunnerjs.utility.trie.SourceModuleReference;
+import org.bladerunnerjs.utility.trie.Trie;
+import org.bladerunnerjs.utility.trie.TrieFactory;
 
 public class TrieBasedDependenciesCalculator
 {
@@ -54,7 +58,7 @@ public class TrieBasedDependenciesCalculator
 				ComputedValue computedValue = new ComputedValue();
 				
 				try(Reader reader = readerFactory.createReader()) {
-					Trie<Object> trie = trieFactory.createTrie();
+					Trie<AssetReference> trie = trieFactory.createTrie();
 					
 					for(Object match : trie.getMatches(reader)) {
 						if (match instanceof SourceModuleReference) {
@@ -66,7 +70,7 @@ public class TrieBasedDependenciesCalculator
 						}
 						else if (match instanceof AliasReference){
 							AliasReference aliasReference = (AliasReference) match;
-							String alias = aliasReference.getAlias();
+							String alias = aliasReference.getName();
 							if (alias.length() > 0)
 							{
 								computedValue.aliases.add(alias);							

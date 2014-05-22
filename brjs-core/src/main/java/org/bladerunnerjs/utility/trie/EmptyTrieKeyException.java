@@ -1,4 +1,4 @@
-package org.bladerunnerjs.utility;
+package org.bladerunnerjs.utility.trie;
 
 
 public class EmptyTrieKeyException extends Exception

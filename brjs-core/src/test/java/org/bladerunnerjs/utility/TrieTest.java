@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import java.io.StringReader;
 import java.util.List;
 
-import org.bladerunnerjs.utility.EmptyTrieKeyException;
-import org.bladerunnerjs.utility.Trie;
-import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
+import org.bladerunnerjs.utility.trie.EmptyTrieKeyException;
+import org.bladerunnerjs.utility.trie.Trie;
+import org.bladerunnerjs.utility.trie.TrieKeyAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;

@@ -1,17 +1,19 @@
-package org.bladerunnerjs.model;
+package org.bladerunnerjs.utility.trie;
 
+import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.utility.EmptyTrieKeyException;
-import org.bladerunnerjs.utility.Trie;
-import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
 
 public class TrieFactory {
-	private final MemoizedValue<Trie<Object>> trie;
+	private final MemoizedValue<Trie<AssetReference>> trie;
 	private final AssetContainer assetContainer;
 	
 	public static TrieFactory getFactoryForAssetContainer(AssetContainer assetContainer) {
@@ -29,11 +31,11 @@ public class TrieFactory {
 		trie = new MemoizedValue<>("TrieFactory.trie", assetContainer);
 	}
 	
-	public Trie<Object> createTrie() throws ModelOperationException {
+	public Trie<AssetReference> createTrie() throws ModelOperationException {
 		return trie.value(new Getter<ModelOperationException>() {
 			@Override
 			public Object get() throws RuntimeException, ModelOperationException {
-				Trie<Object> trie = new Trie<Object>();
+				Trie<AssetReference> trie = new Trie<AssetReference>();
 				
 				for (AssetContainer assetContainer : assetContainer.scopeAssetContainers()) {
 					try {
@@ -42,7 +44,7 @@ public class TrieFactory {
 							
 							for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
 								if(!trie.containsKey(aliasOverride.getName())) {
-									addQuotedKeyToTrie(trie, aliasOverride.getName(), new AliasReference(aliasOverride.getName()));
+									addQuotedKeyToTrie(trie, aliasOverride.getName(), new AliasOverrideReference(aliasOverride));
 								}
 							}
 						}
@@ -58,9 +60,10 @@ public class TrieFactory {
 						}
 						
 						for(AssetLocation assetLocation : assetContainer.assetLocations()) {
-							for(String aliasName : assetLocation.aliasDefinitionsFile().aliasNames()) {
+							for(AliasDefinition aliasDefintion : assetLocation.aliasDefinitionsFile().aliases()) {
+								String aliasName = aliasDefintion.getName();
 								if(!trie.containsKey("'" + aliasName + "'")) {
-									addQuotedKeyToTrie(trie, aliasName, new AliasReference(aliasName));
+									addQuotedKeyToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion));
 								}
 							}
 						}
@@ -75,7 +78,7 @@ public class TrieFactory {
 		});
 	}
 	
-	private void addToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException {
+	private void addToTrie(Trie<AssetReference> trie, String key, AssetReference value) throws EmptyTrieKeyException {
 		if (!trie.containsKey(key)) {
 			try
 			{
@@ -89,7 +92,7 @@ public class TrieFactory {
 		}
 	}
 	
-	private void addQuotedKeyToTrie(Trie<Object> trie, String key, Object value) throws EmptyTrieKeyException {
+	private void addQuotedKeyToTrie(Trie<AssetReference> trie, String key, AssetReference value) throws EmptyTrieKeyException {
 		addToTrie(trie, "'" + key + "'", value);
 		addToTrie(trie, "\\'" + key + "\\'", value);
 		addToTrie(trie, "\"" + key + "\"", value);

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.utility;
+package org.bladerunnerjs.utility.trie;
 
 import java.util.HashMap;
 import java.util.Map;
