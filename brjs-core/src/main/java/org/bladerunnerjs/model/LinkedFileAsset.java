@@ -3,9 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -25,8 +23,6 @@ public class LinkedFileAsset implements LinkedAsset {
 	private AssetLocation assetLocation;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
-	private TrieBasedDependenciesCalculator dependencyCalculator;
-	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
 	
 	public LinkedFileAsset(File assetFile, AssetLocation assetLocation) {
 		try {
@@ -35,7 +31,6 @@ public class LinkedFileAsset implements LinkedAsset {
 			this.assetFile = assetFile;
 			assetPath = RelativePathUtility.get(app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -49,13 +44,10 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		if(!sourceModuleResolvers.containsKey(bundlableNode)) {
-			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, assetPath, app.dir(), app.root().libsDir(), app.root().conf().file("bladerunner.conf")));
-		}
-		SourceModuleResolver sourceModuleResolver = sourceModuleResolvers.get(bundlableNode);
+		SourceModuleResolver sourceModuleResolver = getSourceModuleResolver(bundlableNode);
 		
 		try {
-			return sourceModuleResolver.getSourceModules(dependencyCalculator.getRequirePaths());
+			return sourceModuleResolver.getSourceModules(getDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -64,7 +56,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return dependencyCalculator.getAliases();
+		return getDependencyCalculator().getAliases();
 	}
 	
 	@Override
@@ -87,5 +79,14 @@ public class LinkedFileAsset implements LinkedAsset {
 	public AssetLocation assetLocation()
 	{
 		return assetLocation;
+	}
+	
+	private TrieBasedDependenciesCalculator getDependencyCalculator() {
+		return new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile);
+	}
+	
+	private SourceModuleResolver getSourceModuleResolver(BundlableNode bundlableNode) {
+		App app = assetLocation.assetContainer().app();
+		return new SourceModuleResolver(bundlableNode, assetLocation, assetPath, app.dir(), app.root().libsDir(), app.root().conf().file("bladerunner.conf"));
 	}
 }
