@@ -1,7 +1,7 @@
 package org.bladerunnerjs.utility.trie;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 public class TrieNode<T>
@@ -9,7 +9,7 @@ public class TrieNode<T>
 
 	private static final char ROOT_NODE_CHAR = '\u0000';
 	
-	private Map<Character, TrieNode<T>> children = new HashMap<Character, TrieNode<T>>();
+	private Map<Character, TrieNode<T>> children = new TreeMap<Character, TrieNode<T>>();
 	private T value;
 	private final char nodeChar;
 	
