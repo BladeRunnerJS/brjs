@@ -30,7 +30,7 @@ public abstract class AbstractSourceAssetLocation extends AbstractShallowAssetLo
 	
 	@Override
 	public String requirePrefix() {
-		return assetContainer.requirePrefix();
+		return assetContainer().requirePrefix();
 	}
 	
 	private void addChildAssetLocations(List<AssetLocation> assetLocations, File findInDir)

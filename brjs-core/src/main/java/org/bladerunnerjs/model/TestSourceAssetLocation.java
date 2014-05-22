@@ -16,6 +16,6 @@ public final class TestSourceAssetLocation extends AbstractSourceAssetLocation
 	
 	protected AssetLocation createNewAssetLocationForChildDir(File dir, AssetLocation parentAssetLocation)
 	{
-		return new ChildTestSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
+		return new ChildTestSourceAssetLocation(assetContainer().root(), assetContainer(), dir, parentAssetLocation);
 	}
 }

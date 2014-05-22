@@ -34,13 +34,13 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	private AssetLocation assetLocation;
 	private File assetFile;
-	private String requirePathSuffix;
+	private String relativeRequirePath;
 	private SourceModulePatch patch;
 	
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
-		requirePathSuffix = RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		relativeRequirePath = RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 	}
 	
@@ -96,7 +96,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public String getRequirePath() {
-		return assetLocation.requirePrefix() + "/" + requirePathSuffix;
+		return assetLocation.requirePrefix() + "/" + relativeRequirePath;
 	}
 	
 	@Override

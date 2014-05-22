@@ -12,7 +12,6 @@ public abstract class AbstractResourcesAssetLocation extends AbstractDeepAssetLo
 	private final File themesDir;
 	private final FileInfo themesDirInfo;
 	private final MemoizedValue<Map<String, ThemesAssetLocation>> themesMap;
-	private final MemoizedValue<List<AssetLocation>> assetLocationsList;
 	private Map<String, ThemesAssetLocation> themeAssetLocations = null;
 	
 	public AbstractResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file) {
@@ -21,20 +20,17 @@ public abstract class AbstractResourcesAssetLocation extends AbstractDeepAssetLo
 		themesDir = assetContainer.file("themes");
 		themesDirInfo = root().getFileInfo(themesDir);
 		themesMap = new MemoizedValue<>("ResourcesAssetLocation.themes", root(), themesDir);
-		assetLocationsList = new MemoizedValue<>("ResourcesAssetLocation.assetLocations", root(), themesDir);
 	}
 	
 	@Override
 	public String requirePrefix() {
-		return assetContainer.requirePrefix();
+		return assetContainer().requirePrefix();
 	}
 	
 	@Override
 	public List<AssetLocation> dependentAssetLocations()
 	{
-		return assetLocationsList.value(() -> {
-			return new ArrayList<>(themes());
-		});
+		return new ArrayList<>(themes());
 	}
 	
 	public List<ThemesAssetLocation> themes() {
@@ -54,7 +50,7 @@ public abstract class AbstractResourcesAssetLocation extends AbstractDeepAssetLo
 				for(File themeDir : themesDirInfo.dirs()) {
 					String themeName = themeDir.getName();
 					ThemesAssetLocation themeAssetLocation = ((previousThemeAssetLocations != null) && previousThemeAssetLocations.containsKey(themeName)) ?
-						previousThemeAssetLocations.get(themeName) : new ThemesAssetLocation(root(), assetContainer, new File(themesDir, themeName));
+						previousThemeAssetLocations.get(themeName) : new ThemesAssetLocation(root(), assetContainer(), new File(themesDir, themeName));
 					themeAssetLocations.put(themeName, themeAssetLocation);
 				}
 			}

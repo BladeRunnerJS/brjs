@@ -48,14 +48,14 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	private SourceModulePatch patch;
 	
 	private MemoizedValue<ComputedValue> computedValue;
-	private String requirePathSuffix;
+	private String relativeRequirePath;
 	private String requirePath;
 	
 	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
-		requirePathSuffix = RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-		requirePath = assetLocation.requirePrefix() + "/" + requirePathSuffix; //TODO: calculate this every time, currently we get a  BRJSMemoizationFileAccessException if we do that
+		relativeRequirePath = RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		requirePath = assetLocation.requirePrefix() + "/" + relativeRequirePath; //TODO: calculate this every time, currently we get a  BRJSMemoizationFileAccessException if we do that
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
 		computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), assetLocation.root().conf().file("bladerunner.conf"));
 	}

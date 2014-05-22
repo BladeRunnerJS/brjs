@@ -16,15 +16,15 @@ import org.bladerunnerjs.utility.*;
 
 // TODO Java 8 (1.8.0-b123) compiler throws errors when this class is named 'AbstractAssetLocation'
 public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
-	protected final AssetContainer assetContainer;
-	protected final FileInfo dirInfo;
+	private final AssetContainer assetContainer;
+	private final FileInfo dirInfo;
 	
-	private final MemoizedValue<String> requirePrefix;
 	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
+	private String relativeRequirePath;
 	
 	public TheAbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
 		super(rootNode, parent, dir);
@@ -33,19 +33,15 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		assetLocator = new AssetLocator(this);
 		emptyAssets = new Assets(root());
 		this.assetContainer = (AssetContainer) parent;
-		requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), dir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
+		relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir());
 	}
 	
 	protected abstract List<File> getCandidateFiles();
 	
 	@Override
 	public String requirePrefix() {
-		return requirePrefix.value(() -> {
-			String relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir());
-			
-			return assetContainer.requirePrefix() + "/" + relativeRequirePath;
-		});
+		return assetContainer.requirePrefix() + "/" + relativeRequirePath;
 	}
 	
 	@Override
@@ -148,4 +144,9 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
 	}
+	
+	protected FileInfo getDirInfo() {
+		return dirInfo;
+	}
+	
 }
