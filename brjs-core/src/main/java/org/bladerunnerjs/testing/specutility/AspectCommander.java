@@ -9,16 +9,16 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.testing.specutility.engine.BundlableNodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
-import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.NoTagHandlerFoundException;
 import org.bladerunnerjs.utility.TagPluginUtility;
 import org.dom4j.DocumentException;
 
 
-public class AspectCommander extends NodeCommander<Aspect> {
+public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	private final Aspect aspect;
 	private AspectBuilder aspectBuilder;
 	
