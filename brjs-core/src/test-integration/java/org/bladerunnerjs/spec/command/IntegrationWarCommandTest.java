@@ -31,8 +31,7 @@ public class IntegrationWarCommandTest extends SpecTest {
 		given(brjs).hasCommands(new BuildAppCommand())
 			.and(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
-			.and(brjs).hasBeenCreated()
-			.and(brjs).usesProductionTemplates(); // TODO: see if we can get rid of this and stop using hasBeenPopulated()
+			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			loginAspect = app.aspect("login");
@@ -54,56 +53,53 @@ public class IntegrationWarCommandTest extends SpecTest {
 			.and(bundleResponse).isNotEmpty();
 	}
 	
-	@Ignore
 	@Test
 	public void exportedWarIndexPageIsTheSameAsBrjsHosted() throws Exception {
+		given(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(aspect).containsFileWithContents("index.html", "Hello World!")
+			.and(app).hasBeenBuiltAsWar(brjs.dir())
+			.and(warServer).hasWar("app1.war", "app")
+			.and(warServer).hasStarted();
+		when(warServer).receivesRequestFor("/app/en", warResponse)
+			.and(app).requestReceived("en/", brjsResponse);
+		then(warResponse).textEquals(brjsResponse);
+	}
+	
+	@Test
+	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(app).hasBeenBuiltAsWar(brjs.dir(), versionNumber)
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
-		when(warServer).receivesRequestFor("/app/en", pageResponse)
-			.and(app).requestReceived("/en/", brjsResponse);
+		when(warServer).receivesRequestFor("/app/v/" + versionNumber + "/js/prod/combined/bundle.js", warResponse)
+			.and(app).requestReceived("v/" + versionNumber + "/js/prod/combined/bundle.js", brjsResponse);
 		then(warResponse).textEquals(brjsResponse);
 	}
 	
-	@Ignore
-	@Test
-	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
-		given(app).hasBeenPopulated()
-			.and(brjs).commandHasBeenRun("war", "app1")
-			.and(warServer).hasWar("app1.war", "app")
-			.and(warServer).hasStarted();
-		when(warServer).receivesRequestFor("/app/v/dev/js/prod/combined/bundle.js", warResponse)
-			.and(app).requestReceived("v/dev/js/prod/combined/bundle.js", brjsResponse);
-		then(warResponse).textEquals(brjsResponse);
-	}
-	
-	@Ignore
 	@Test
 	public void exportedWarCssBundleIsTheSameAsBrjsHosted() throws Exception {
-		given(app).hasBeenPopulated()
-			.and(aspect).containsFileWithContents("resources/style.css", "body { color: red; }")
-			.and(brjs).commandHasBeenRun("war", "app1")
+		given(aspect).containsFileWithContents("resources/style.css", "body { color: red; }")
+			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(aspect).containsFileWithContents("index.html", "Hello World!")
+			.and(app).hasBeenBuiltAsWar(brjs.dir(), versionNumber)
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
-		when(warServer).receivesRequestFor("/app/v/dev/css/common/bundle.css", warResponse)
-			.and(app).requestReceived("v/dev/css/common/bundle.css", brjsResponse);
+		when(warServer).receivesRequestFor("/app/v/" + versionNumber + "/css/common/bundle.css", warResponse)
+			.and(app).requestReceived("v/" + versionNumber + "/css/common/bundle.css", brjsResponse);
 		then(warResponse).textEquals(brjsResponse);
 	}
 	
 	@Ignore
 	@Test
 	public void warCommandDoesntExportFilesFromAnotherAspect() throws Exception {
-		given(app).hasBeenPopulated()
-			.and(loginAspect).hasBeenCreated()
-			.and(loginAspect).containsFolder("resources") //TODO: remove the need for every aspect to have a 'resources' folder
-			.and(aspect).containsFolder("resources") //TODO: remove the need for every aspect to have a 'resources' folder
+		given(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(loginAspect).containsFileWithContents("index.html", "Hello World!")
 			.and(loginAspect).containsFileWithContents("themes/noir/images/file.gif", "** SOME GIF STUFF... **")
-			.and(brjs).commandHasBeenRun("war", "app1")
+			.and(app).hasBeenBuiltAsWar(brjs.dir(), versionNumber)
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
-		when(warServer).receivesRequestFor("/app/login/v/dev/cssresource/aspect_login/theme_noir/images/file.gif", warResponse);
+		when(warServer).receivesRequestFor("/app/login/v/" + versionNumber + "/cssresource/aspect_login/theme_noir/images/file.gif", warResponse);
 		then(warResponse).textEquals("** SOME GIF STUFF... **");
 	}
 	
