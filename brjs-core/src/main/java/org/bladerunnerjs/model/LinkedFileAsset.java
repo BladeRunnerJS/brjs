@@ -23,6 +23,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	private AssetLocation assetLocation;
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
+	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	
 	public LinkedFileAsset(File assetFile, AssetLocation assetLocation) {
 		try {
@@ -82,11 +83,14 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 	
 	private TrieBasedDependenciesCalculator getDependencyCalculator() {
-		return new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile);
+		if (trieBasedDependenciesCalculator == null) {
+			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile);
+		}
+		return trieBasedDependenciesCalculator;
 	}
 	
 	private SourceModuleResolver getSourceModuleResolver(BundlableNode bundlableNode) {
 		App app = assetLocation.assetContainer().app();
-		return new SourceModuleResolver(bundlableNode, assetLocation, assetPath, app.dir(), app.root().libsDir(), BladerunnerConf.getConfigFilePath(app.root()));
+		return new SourceModuleResolver(bundlableNode, assetLocation, app.dir(), app.root().libsDir(), BladerunnerConf.getConfigFilePath(app.root()));
 	}
 }

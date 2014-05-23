@@ -18,7 +18,7 @@ public class SourceModuleResolver {
 	private final AssetLocation assetLocation;
 	private final MemoizedValue<List<SourceModule>> sourceModules;
 	
-	public SourceModuleResolver(BundlableNode bundlableNode, AssetLocation assetLocation, String sourceRequirePath, File... watchItems) {
+	public SourceModuleResolver(BundlableNode bundlableNode, AssetLocation assetLocation, File... watchItems) {
 		this.bundlableNode = bundlableNode;
 		this.assetLocation = assetLocation;
 		

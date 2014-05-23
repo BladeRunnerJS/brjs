@@ -193,6 +193,6 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	private SourceModuleResolver getSourceModuleResolver(BundlableNode bundlableNode) {
 		App app = assetLocation.assetContainer().app();
-		return new SourceModuleResolver(bundlableNode, assetLocation, getRequirePath(), app.dir(), app.root().libsDir());
+		return new SourceModuleResolver(bundlableNode, assetLocation, app.dir(), app.root().libsDir());
 	}
 }

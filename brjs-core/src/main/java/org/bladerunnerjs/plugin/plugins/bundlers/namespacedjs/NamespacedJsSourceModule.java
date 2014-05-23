@@ -36,6 +36,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	private File assetFile;
 	private String relativeRequirePath;
 	private SourceModulePatch patch;
+	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedStaticDependenciesCalculator;
 	
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
@@ -165,15 +167,21 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	private TrieBasedDependenciesCalculator getDependencyCalculator() {
-		return new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+		if (trieBasedDependenciesCalculator == null) {
+			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+		}
+		return trieBasedDependenciesCalculator;
 	}
 	
 	private TrieBasedDependenciesCalculator getStaticDependencyCalculator() {
-		return new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+		if (trieBasedStaticDependenciesCalculator == null) {
+			trieBasedStaticDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+		}
+		return trieBasedStaticDependenciesCalculator;
 	}
 	
 	private SourceModuleResolver getSourceModuleResolver(BundlableNode bundlableNode) {
 		App app = assetLocation.assetContainer().app();
-		return new SourceModuleResolver(bundlableNode, assetLocation, getRequirePath(), app.dir(), app.root().libsDir());
+		return new SourceModuleResolver(bundlableNode, assetLocation, app.dir(), app.root().libsDir());
 	}
 }
