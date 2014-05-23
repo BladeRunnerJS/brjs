@@ -32,7 +32,6 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.ContentPlugin;
-import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.NameValidator;
@@ -279,14 +278,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		} catch (ConfigException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	public BundlableNode getBundlableNode(BladerunnerUri bladerunnerUri) throws InvalidBundlableNodeException
-	{
-		File baseDir = new File(dir(), bladerunnerUri.scopePath);
-		BundlableNode bundlableNode = root().locateFirstBundlableAncestorNode(baseDir);
-		
-		return bundlableNode;
 	}
 	
 	public List<JsLib> nonBladeRunnerLibs()

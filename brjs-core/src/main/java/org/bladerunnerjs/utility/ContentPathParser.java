@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -55,11 +54,6 @@ public class ContentPathParser
 		return requestForm;
 	}
 	
-	public boolean canParseRequest(BladerunnerUri request)
-	{
-		return canParseRequest(request.logicalPath);
-	}
-	
 	public boolean canParseRequest(String requestPath) {
 		try
 		{
@@ -70,11 +64,6 @@ public class ContentPathParser
 		{
 			return false;
 		}
-	}
-	
-	public ParsedContentPath parse(BladerunnerUri request) throws MalformedRequestException
-	{
-		return parse(request.logicalPath);
 	}
 	
 	public ParsedContentPath parse(String request) throws MalformedRequestException
