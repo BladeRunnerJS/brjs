@@ -72,6 +72,15 @@ public class BuildAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void appCanBeExportedAsAWar() throws Exception {
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(brjs).doesNotHaveDir("sdk/app")
+			.and(brjs).hasFile("sdk/app.war")
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/app").getCanonicalPath());
+	}
+	
+	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
 	{
 		given(brjs).hasBeenAuthenticallyCreated()

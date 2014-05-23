@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -13,6 +14,7 @@ import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsException
 import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.FileUtility;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -37,7 +39,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
 		argsParser.registerParameter(new UnflaggedOption(Parameters.TARGET_DIR).setDefault(".").setHelp("the directory within which the exported app will be built"));
-		argsParser.registerParameter(new Switch("force-war").setShortFlag('w').setLongFlag("force-war").setDefault("false").setHelp("build a war even if there is no 'WEB-INF' directory."));
+		argsParser.registerParameter(new Switch("war").setShortFlag('w').setLongFlag("war").setDefault("false").setHelp("whether the exported files should be placed into a war zip."));
 	}
 	
 	@Override
@@ -60,6 +62,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString(Parameters.APP_NAME);
 		String targetDirPath = parsedArgs.getString(Parameters.TARGET_DIR);
+		boolean warExport = parsedArgs.getBoolean("war");
 		
 		App app = brjs.app(appName);
 		File targetDir = brjs.file("sdk/" + targetDirPath);
@@ -72,6 +75,13 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		try {
 			appExportDir.mkdir();
 			app.build(appExportDir);
+			
+			if(warExport) {
+				File warFile = new File(targetDir, appName + ".war");
+				FileUtility.zipFolder(appExportDir, warFile, true);
+				FileUtils.deleteDirectory(appExportDir);
+			}
+			
 			out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());
 		}
 		catch (ModelOperationException | IOException e) {
