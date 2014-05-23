@@ -3,40 +3,50 @@ package org.bladerunnerjs.utility.trie;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
+import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
+import org.bladerunnerjs.utility.trie.node.BasicRootTrieNode;
+import org.bladerunnerjs.utility.trie.node.OptimisedTrieLeafNode;
+import org.bladerunnerjs.utility.trie.node.OptimisedTrieRootNode;
+import org.bladerunnerjs.utility.trie.node.OptimisedTrieTrunkLeafNode;
+import org.bladerunnerjs.utility.trie.node.OptimisedTrieTrunkNode;
+import org.bladerunnerjs.utility.trie.node.TrieNode;
 
 public class Trie<T>
 {
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"\\\"\'\\'".toCharArray();
 	
-	private RootTrieNode root = new RootTrieNode();
+	private TrieNode<T> root = new BasicRootTrieNode<>();
 	private int readAheadLimit = 1;
+	private boolean trieOptimized = false;
 	
-	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException {
+	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException, TrieLockedException {
+		if (trieOptimized) {
+			throw new TrieLockedException();
+		}
+		
 		if (key.length() < 1)
 		{
 			throw new EmptyTrieKeyException();
 		}
 		
-		TrieNode node = root;
-		TrieNode previousNode = null;
+		TrieNode<T> node = root;
 		for( char character : key.toCharArray() )
 		{
-			previousNode = node;
 			node = node.getOrCreateNextNode( character );
 		}
 		
-		if (node instanceof LeafTrieNode)
+		if (node.getValue() != null)
 		{
 			throw new TrieKeyAlreadyExistsException(key);
 		}
 		
-		LeafTrieNode<T> leafNode = new LeafTrieNode<>( (AbstractTrieNode)node, value);
-		previousNode.replaceChildNode(node, leafNode);
-		
+		node.setValue(value);
 		readAheadLimit = Math.max(readAheadLimit, key.length() + 1);
 	}
 	
@@ -46,15 +56,13 @@ public class Trie<T>
 	
 	public T get(String key)
 	{
-		TrieNode node = getNode(key);
+		TrieNode<T> node = getNode(key);
 		
-		if (node == null || !(node instanceof LeafTrieNode)) {
+		if (node == null) {
 			return null;
 		}
 		
-		@SuppressWarnings("unchecked")
-		T value = (T) ((LeafTrieNode<?>) node).getValue();
-		return value;
+		return node.getValue();
 	}
 	
 	public List<T> getMatches(Reader reader) throws IOException
@@ -78,8 +86,60 @@ public class Trie<T>
 	}
 	
 	
-	private TrieNode getNode(String key) {
-		TrieNode node = root;
+	public void optimize() {
+		if (isOptimized()) {
+			return;
+		}
+		trieOptimized = true;
+		root = createOptimisedTrieNode(root);
+		System.gc();
+	}
+	
+	public boolean isOptimized() {
+		return trieOptimized;
+	}
+	
+	
+	
+	
+	private TrieNode<T> createOptimisedTrieNode(TrieNode<T> trieNode) {
+		char trieNodeChar = trieNode.getChar();
+		T trieNodeValue = trieNode.getValue();
+		
+		TrieNode<T>[] trieNodeChildren = getOrderedTrieNodeChildren(trieNode);
+		
+		if (trieNodeChildren.length > 0) {
+			
+			@SuppressWarnings("unchecked")
+			TrieNode<T>[] optimisedTrieNodeChildren = new TrieNode[trieNodeChildren.length];
+			
+			for (int childNum = 0; childNum < trieNodeChildren.length; childNum++) {
+				optimisedTrieNodeChildren[childNum] = createOptimisedTrieNode( trieNodeChildren[childNum] );
+			}
+			
+			if (trieNode == root) {
+				return new OptimisedTrieRootNode<>(optimisedTrieNodeChildren);
+			} else if (trieNodeValue != null) {
+				return new OptimisedTrieTrunkLeafNode<T>(trieNodeChar, trieNodeValue, optimisedTrieNodeChildren);
+			} else {
+				return new OptimisedTrieTrunkNode<>(trieNodeChar, optimisedTrieNodeChildren);
+			}
+		} else {
+			return new OptimisedTrieLeafNode<T>(trieNodeChar, trieNodeValue);
+		}
+	}
+	
+	private TrieNode<T>[] getOrderedTrieNodeChildren(TrieNode<T> node) {
+		TrieNode<T>[] nodeChildren = node.getChildren();
+		Arrays.sort(nodeChildren);
+		return nodeChildren;
+	}
+	
+	
+	
+	
+	private TrieNode<T> getNode(String key) {
+		TrieNode<T> node = root;
 		
 		for( char character : key.toCharArray() )
 		{
@@ -101,15 +161,14 @@ public class Trie<T>
 			reader.mark(readAheadLimit);
 		}
 		
-		TrieNode nextNode = matcher.next(nextChar);
+		TrieNode<T> nextNode = matcher.next(nextChar);
 		
 		if (nextNode == null)
 		{
-			if (matcher.previousNode instanceof LeafTrieNode && (isDelimiter(prevChar) || isDelimiter(nextChar)))
+			T previousValue = matcher.previousNode.getValue();
+			if (previousValue != null && (isDelimiter(prevChar) || isDelimiter(nextChar)))
 			{
-				@SuppressWarnings("unchecked")
-				LeafTrieNode<T> leafNode = (LeafTrieNode<T>) matcher.previousNode;
-				matches.add( leafNode.getValue() );
+				matches.add( previousValue );
 				reader.mark(readAheadLimit);
 			}
 			matcher.reset();
@@ -123,8 +182,8 @@ public class Trie<T>
 	}
 	
 	private class TrieMatcher {
-		TrieNode currentNode;
-		TrieNode previousNode;
+		TrieNode<T> currentNode;
+		TrieNode<T> previousNode;
 		boolean atRootOfTrie;
 		
 		TrieMatcher()
@@ -132,7 +191,7 @@ public class Trie<T>
 			reset();
 		}
 		
-		TrieNode next(char nextChar)
+		TrieNode<T> next(char nextChar)
 		{
 			previousNode = currentNode;
 			currentNode = currentNode.getNextNode(nextChar);

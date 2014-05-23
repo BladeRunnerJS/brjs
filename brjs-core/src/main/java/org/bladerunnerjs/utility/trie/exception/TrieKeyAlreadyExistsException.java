@@ -1,4 +1,4 @@
-package org.bladerunnerjs.utility.trie;
+package org.bladerunnerjs.utility.trie.exception;
 
 
 public class TrieKeyAlreadyExistsException extends Exception

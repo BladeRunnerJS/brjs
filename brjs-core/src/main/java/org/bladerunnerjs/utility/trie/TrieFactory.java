@@ -11,6 +11,8 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
+import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
 
 public class TrieFactory {
 	private final MemoizedValue<Trie<AssetReference>> trie;
@@ -68,6 +70,7 @@ public class TrieFactory {
 					}
 				}
 				
+				trie.optimize();
 				return trie;
 			}
 		});
@@ -79,7 +82,7 @@ public class TrieFactory {
 			{
 				trie.add(key, value);
 			}
-			catch (TrieKeyAlreadyExistsException e)
+			catch (TrieKeyAlreadyExistsException | TrieLockedException e)
 			{
 				// wrap this in a RuntimeException since its unexpected, let the other exceptions bubble up
 				throw new RuntimeException(e);
