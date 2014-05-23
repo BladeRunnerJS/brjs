@@ -61,7 +61,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.Class1", "appns.Class1")
 			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");	
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", response);
+		when(app).requestReceived("workbench/bs/b1/v/dev/css/standard/bundle.css", response);
 		then(response).containsOrderedTextFragments("BLADESET theme content",
 													"BLADE theme content",
 													"ASPECT theme content");
@@ -71,7 +71,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	public void workbenchesAlwaysLoadsCommonCssFromTheAspectLevel() throws Exception
 	{
 		given(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content");
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", response);
+		when(app).requestReceived("workbench/bs/b1/v/dev/css/standard/bundle.css", response);
 		then(response).containsText("ASPECT theme content");
 	}
 	
@@ -83,7 +83,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 			.and(blade2).hasClass("appns/bs/b2/Class1")
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");	
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/js/dev/combined/bundle.js", response);		
+		when(app).requestReceived("workbench/bs/b1/v/dev/js/dev/combined/bundle.js", response);		
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	

@@ -47,7 +47,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js\n"+"exports: lib")
 			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
-		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", response);
+		when(app).requestReceived("v/dev/thirdparty/bundle.js", response);
 		then(response).containsText("// br-bootstrap");
 		then(response).containsText("// this is bootstrap"); 
 	}
@@ -59,7 +59,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js\n"+"exports: lib")
 			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				"// br-bootstrap",
 				"// this is bootstrap",
@@ -73,7 +73,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
 			.and(bootstrapLib).containsFileWithContents("sub/dir/bootstrap.js", "// this is bootstrap");
-		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", response);
+		when(app).requestReceived("v/dev/thirdparty/bundle.js", response);
 		then(response).containsText("// br-bootstrap");
 		then(response).containsText("// this is bootstrap"); 
 	}
@@ -87,7 +87,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(secondBootstrapLib).hasBeenCreated()
 			.and(secondBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib")
 			.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				"// secondBootstrapLib",
 				"// br-bootstrap",
@@ -106,7 +106,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		.and(thirdBootstrapLib).hasBeenCreated()
 		.and(thirdBootstrapLib).containsFileWithContents("library.manifest", "js: someFile.js\n"+"exports: lib")
 		.and(thirdBootstrapLib).containsFileWithContents("someFile.js", "// this is thirdBootstrapLib");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				"// thirdBootstrapLib",
 				"// secondBootstrapLib",
@@ -125,7 +125,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib")
     		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				"// secondBootstrapLib",
 				"// br-bootstrap",
@@ -139,7 +139,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(bootstrapLib).hasBeenCreated()
 			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: bootstrap.js\n"+"exports: lib")
 			.and(bootstrapLib).containsFileWithContents("bootstrap.js", "// this is bootstrap");
-		when(app).requestReceived("/default-aspect/thirdparty/bundle.js", response);
+		when(app).requestReceived("v/dev/thirdparty/bundle.js", response);
 		then(response).isEmpty();
 	}
 	
@@ -154,7 +154,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(secondBootstrapLib).containsFileWithContents("someFile.js", "// this is secondBootstrapLib")
     		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				"// secondBootstrapLib",
 				"// br-bootstrap",
@@ -170,7 +170,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
 			.and(aspect).indexPageRequires(thirdpartyLib);
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
 	}
 	
@@ -182,7 +182,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).classRequiresThirdpartyLib("appns.Class1", thirdpartyLib)
 			.and(aspect).indexPageRefersTo("appns.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
 	}
 	
@@ -194,7 +194,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
 			.and(bladeset).classRequiresThirdpartyLib("appns.bs.Class1", thirdpartyLib)
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
 	}
 	
@@ -206,7 +206,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(blade).classRequiresThirdpartyLib("appns.bs.b1.Class1", thirdpartyLib)
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsText("window.lib = { }");
 	}
 	
@@ -219,7 +219,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "depends: thirdparty-lib2\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.legacy = { }")
 			.and(aspect).indexPageRequires(thirdpartyLib);
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsText("window.legacy = { }")
 			.and(response).containsText("window.legacy2 = { }");
 	}
@@ -231,7 +231,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(thirdpartyLib);
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(exceptions).verifyException(ConfigException.class, "thirdparty-lib1", "blabla");
 	}
 	
@@ -244,7 +244,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib2).containsFileWithContents("src.js", "window.legacy2 = { }")
 			.and(aspect).indexPageRequires(thirdpartyLib2);
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsText("window.legacy2 = { }")
 			.and(response).doesNotContainText("window.legacy = { }");
 	}
@@ -259,7 +259,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(thirdpartyLib2).containsFileWithContents("library.manifest", "exports: lib")
 			.and(thirdpartyLib2).containsFileWithContents("src.js", "window.legacy2 = { }")
 			.and(aspect).indexPageRequires(thirdpartyLib);
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsText("window.legacy = { }")
 			.and(response).doesNotContainText("window.legacy2 = { }");
 	}
@@ -270,7 +270,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: thirdpartyLib")
     		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
     		.and(aspect).indexPageRequires(thirdpartyLib);
-    	when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+    	when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
     	then(response).containsOrderedTextFragments("define('thirdparty-lib1', function(require, exports, module) {\n",
     						"module.exports = thirdpartyLib",
     					"});");
@@ -285,7 +285,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(thirdpartyLib).containsFileWithContents("package.json", "// some packagey stuff")
     		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
     		.and(aspect).indexPageRequires(thirdpartyLib);
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
 		then(response).containsText("define('thirdparty-lib1', function(require, exports, module) {\n");
 	}
 }
