@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -12,7 +11,6 @@ import org.bladerunnerjs.model.engine.RootNode;
 public class SdkJsLib extends AbstractJsLib
 {
 	private final NodeList<BRSdkTypedTestPack> testTypes = new NodeList<>(this, BRSdkTypedTestPack.class, "tests", "^test-");
-	private final MemoizedValue<List<TypedTestPack>> testTypesList = new MemoizedValue<>("SdkJsLib.testTypes", root(), file("tests"));
 	
 	public SdkJsLib(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -33,9 +31,7 @@ public class SdkJsLib extends AbstractJsLib
 	@Override
 	public List<TypedTestPack> testTypes()
 	{
-		return testTypesList.value(() -> {
-			return new ArrayList<TypedTestPack>( testTypes.list() );
-		});
+		return new ArrayList<TypedTestPack>( testTypes.list() );
 	}
 	
 	@Override

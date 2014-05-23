@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -25,17 +24,15 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	private final NodeList<Theme> themes = Theme.createNodeSet(this);
 	private String name;
 	private File[] scopeFiles;
-	private final IndexPageSeedLocator seedLocator;
-	
-	private final MemoizedValue<List<AssetContainer>> assetContainerList = new MemoizedValue<>("Aspect.assetContainer", this);
+	private IndexPageSeedLocator indexPageSeedLocator;
 	
 	public Aspect(RootNode rootNode, Node parent, File dir, String name)
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		seedLocator = new IndexPageSeedLocator(root());
 		
 		registerInitializedNode();
+		indexPageSeedLocator = new IndexPageSeedLocator(root());
 	}
 	
 	@Override
@@ -49,7 +46,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	
 	@Override
 	public List<LinkedAsset> modelSeedAssets() {
-		return seedLocator.seedAssets(this);
+		return indexPageSeedLocator.seedAssets(this);
 	}
 	
 	@Override
@@ -94,14 +91,12 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	
 	@Override
 	public List<AssetContainer> scopeAssetContainers() {
-		return assetContainerList.value(() -> {
-			List<AssetContainer> assetContainers = new ArrayList<>();
-			
-			assetContainers.add(this);
-			assetContainers.addAll(parent().getNonAspectAssetContainers());
-			
-			return assetContainers;
-		});
+		List<AssetContainer> assetContainers = new ArrayList<>();
+		
+		assetContainers.add(this);
+		assetContainers.addAll(parent().getNonAspectAssetContainers());
+		
+		return assetContainers;
 	}
 	
 	public App parent()

@@ -24,7 +24,7 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	private final WatchKey watchKey;
 	private final WatchingFileModificationInfo parentModificationInfo;
 	private long lastModified = (new Date()).getTime();
-	private final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+	private static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 	private final String relativeDirPath;
 	private Set<WatchingFileModificationInfo> children = new LinkedHashSet<>();
 	private Logger logger;

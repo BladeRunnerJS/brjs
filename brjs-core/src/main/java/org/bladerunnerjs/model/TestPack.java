@@ -11,7 +11,6 @@ import java.util.Set;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -23,7 +22,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 {
 	private AliasesFile aliasesFile;
 	private String name;
-	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), BladerunnerConf.getConfigFilePath(root()));
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -81,20 +79,18 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public Set<SourceModule> sourceModules() {
-		return sourceModulesList.value(() -> {
-			Set<SourceModule> sourceModules = new LinkedHashSet<SourceModule>();
-			
-			for (AssetLocation assetLocation : assetLocations())
+		Set<SourceModule> sourceModules = new LinkedHashSet<SourceModule>();
+		
+		for (AssetLocation assetLocation : assetLocations())
+		{
+			// TODO: we need an abstract way of determining which source modules are tests source modules that isn't plug-in specific
+			if ( !isTestAssetLocation(assetLocation) )
 			{
-				// TODO: we need an abstract way of determining which source modules are tests source modules that isn't plug-in specific
-				if ( !isTestAssetLocation(assetLocation) )
-				{
-					sourceModules.addAll(assetLocation.sourceModules());
-				}
+				sourceModules.addAll(assetLocation.sourceModules());
 			}
-			
-			return sourceModules;
-		});
+		}
+		
+		return sourceModules;
 	}
 	
 	@Override

@@ -29,7 +29,6 @@ import org.bladerunnerjs.utility.LogicalRequestHandler;
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private AliasesFile aliasesFile;
 	private LogicalRequestHandler requestHandler;
-	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
 	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
@@ -136,9 +135,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public BundleSet getBundleSet() throws ModelOperationException {
-		return bundleSet.value(() -> {
-			return BundleSetCreator.createBundleSet(this);
-		});
+		return BundleSetCreator.createBundleSet(this);
 	}
 	
 	@Override

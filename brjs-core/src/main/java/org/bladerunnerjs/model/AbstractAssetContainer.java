@@ -15,9 +15,7 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", this);
 	private final MemoizedValue<Map<String, SourceModule>> sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
-	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", this);
 	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
 	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
 	
@@ -38,9 +36,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public Set<SourceModule> sourceModules() {
-		return sourceModulesList.value(() -> {
-			return new LinkedHashSet<SourceModule>(sourceModulesMap().values());
-		});
+		return new LinkedHashSet<SourceModule>(sourceModulesMap().values());
 	}
 	
 	@Override
@@ -55,9 +51,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		return assetLocationsList.value(() -> {
-			return new ArrayList<>(assetLocationsMap().values());
-		});
+		return new ArrayList<>(assetLocationsMap().values());
 	}
 	
 	@Override
