@@ -43,28 +43,23 @@ public class TrieFactory {
 							BundlableNode bundlableNode = (BundlableNode) assetContainer;
 							
 							for(AliasOverride aliasOverride : bundlableNode.aliasesFile().aliasOverrides()) {
-								if(!trie.containsKey(aliasOverride.getName())) {
-									addQuotedKeyToTrie(trie, aliasOverride.getName(), new AliasOverrideReference(aliasOverride));
-								}
+								addToTrie(trie, aliasOverride.getName(), new AliasOverrideReference(aliasOverride));
 							}
 						}
 						
 						for(SourceModule sourceModule : assetContainer.sourceModules()) {
-							addQuotedKeyToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
+							addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
 							
 							String moduleClassname = sourceModule.getRequirePath().replaceAll("/", ".");
 							if (moduleClassname != null) {
 								addToTrie(trie, moduleClassname, new SourceModuleReference(sourceModule));
-								addQuotedKeyToTrie(trie, moduleClassname, new SourceModuleReference(sourceModule));
 							}
 						}
 						
 						for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 							for(AliasDefinition aliasDefintion : assetLocation.aliasDefinitionsFile().aliases()) {
 								String aliasName = aliasDefintion.getName();
-								if(!trie.containsKey("'" + aliasName + "'")) {
-									addQuotedKeyToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion));
-								}
+								addToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion));
 							}
 						}
 					}
@@ -90,18 +85,5 @@ public class TrieFactory {
 				throw new RuntimeException(e);
 			}
 		}
-	}
-	
-	private void addQuotedKeyToTrie(Trie<AssetReference> trie, String key, AssetReference value) throws EmptyTrieKeyException {
-		addToTrie(trie, "'" + key + "'", value);
-		addToTrie(trie, "\\'" + key + "\\'", value);
-		addToTrie(trie, "\"" + key + "\"", value);
-		addToTrie(trie, "\\\"" + key + "\\\"", value);
-		addToTrie(trie, "<" + key + ">", value);
-		addToTrie(trie, "<" + key + "/", value);
-		addToTrie(trie, "<" + key + " ", value);
-		addToTrie(trie, "<" + key + "\t", value);
-		addToTrie(trie, "<" + key + "\r", value);
-		addToTrie(trie, "<" + key + "\n", value);
 	}
 }

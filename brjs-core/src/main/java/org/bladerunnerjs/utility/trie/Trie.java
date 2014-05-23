@@ -10,7 +10,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 public class Trie<T>
 {
-	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"".toCharArray();
+	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"\\\"\'\\'".toCharArray();
+	
 	private RootTrieNode root = new RootTrieNode();
 	private int readAheadLimit = 1;
 	
@@ -33,7 +34,7 @@ public class Trie<T>
 			throw new TrieKeyAlreadyExistsException(key);
 		}
 		
-		TrieNode leafNode = new LeafTrieNode<>( (AbstractTrieNode)node, value);
+		LeafTrieNode<T> leafNode = new LeafTrieNode<>( (AbstractTrieNode)node, value);
 		previousNode.replaceChildNode(node, leafNode);
 		
 		readAheadLimit = Math.max(readAheadLimit, key.length() + 1);
@@ -45,19 +46,9 @@ public class Trie<T>
 	
 	public T get(String key)
 	{
-		TrieNode node = root;
+		TrieNode node = getNode(key);
 		
-		for( char character : key.toCharArray() )
-		{
-			node = node.getNextNode( character );
-			
-			if (node == null)
-			{
-				return null;
-			}
-		}
-		
-		if (!(node instanceof LeafTrieNode)) {
+		if (node == null || !(node instanceof LeafTrieNode)) {
 			return null;
 		}
 		
@@ -84,6 +75,23 @@ public class Trie<T>
 		processChar(matches, '\n', (char) prevChar, matcher, reader);
 		
 		return matches;	
+	}
+	
+	
+	private TrieNode getNode(String key) {
+		TrieNode node = root;
+		
+		for( char character : key.toCharArray() )
+		{
+			node = node.getNextNode( character );
+			
+			if (node == null)
+			{
+				return null;
+			}
+		}
+		
+		return node;
 	}
 	
 	private void processChar(List<T> matches, char nextChar, char prevChar, TrieMatcher matcher, Reader reader) throws IOException
