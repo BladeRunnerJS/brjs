@@ -11,7 +11,8 @@ import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.base.AbstractMinifierPlugin;
 
 public class ConcatentatingMinifierPlugin extends AbstractMinifierPlugin implements MinifierPlugin {
-	private static final List<String> settingNames = new ArrayList<>();
+	private List<String> settingNames = new ArrayList<>();
+	
 	{
 		settingNames.add("combined");
 	}

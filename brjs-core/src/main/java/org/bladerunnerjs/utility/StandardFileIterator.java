@@ -18,9 +18,8 @@ import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
 import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 
 public class StandardFileIterator implements FileIterator {
-	private static final IOFileFilter FILE_FILTER = FileFilterUtils.and(FileFileFilter.FILE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
-	private static final IOFileFilter DIR_FILTER = FileFilterUtils.and(DirectoryFileFilter.DIRECTORY, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
-	
+	private final IOFileFilter fileFilter = FileFilterUtils.and(FileFileFilter.FILE, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
+	private final IOFileFilter dirFilter = FileFilterUtils.and(DirectoryFileFilter.DIRECTORY, FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
 	private final FileModifiedChecker fileModificationChecker;
 	private final File dir;
 	private final RootNode brjs;
@@ -58,7 +57,7 @@ public class StandardFileIterator implements FileIterator {
 		updateIfChangeDetected();
 		
 		if(files == null) {
-			files = filesAndDirs(FILE_FILTER);
+			files = filesAndDirs(fileFilter);
 		}
 		
 		return files;
@@ -69,7 +68,7 @@ public class StandardFileIterator implements FileIterator {
 		updateIfChangeDetected();
 		
 		if(dirs == null) {
-			dirs = filesAndDirs(DIR_FILTER);
+			dirs = filesAndDirs(dirFilter);
 		}
 		
 		return dirs;

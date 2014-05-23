@@ -7,8 +7,8 @@ public class MinifierSetting
 	private String devSetting;
 	private String prodSetting;
 	
-	private static final String DEV_MINIFIER_ATTRIBUTE = "dev-minifier";
-	private static final String PROD_MINIFIER_ATTRIBUTE = "prod-minifier";
+	private final String DEV_MINIFIER_ATTRIBUTE = "dev-minifier";
+	private final String PROD_MINIFIER_ATTRIBUTE = "prod-minifier";
 	
 	// Minifier Types
 	public static final String SEPARATE_JS_FILES = "none";

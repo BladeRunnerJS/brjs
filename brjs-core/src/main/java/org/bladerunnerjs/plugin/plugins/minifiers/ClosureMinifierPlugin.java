@@ -38,11 +38,12 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	
 	private Logger logger;
 	
-	private static final List<String> SETTING_NAMES = new ArrayList<>();
+	private List<String> settingNames = new ArrayList<>();
+	
 	{
-		SETTING_NAMES.add(CLOSURE_WHITESPACE);
-		SETTING_NAMES.add(CLOSURE_SIMPLE);
-		SETTING_NAMES.add(CLOSURE_ADVANCED);
+		settingNames.add(CLOSURE_WHITESPACE);
+		settingNames.add(CLOSURE_SIMPLE);
+		settingNames.add(CLOSURE_ADVANCED);
 	}
 	
 	@Override
@@ -53,7 +54,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	
 	@Override
 	public List<String> getSettingNames() {
-		return SETTING_NAMES;
+		return settingNames;
 	}
 	
 	/* using ClosureCompiler API in Java taken from http://blog.bolinfest.com/2009/11/calling-closure-compiler-from-java.html 

@@ -284,7 +284,7 @@ public class PeekableXmlStreamReader implements XMLStreamReader
 	
 	private class CachedXmlStreamReader implements XMLStreamReader
 	{
-		private static final String UNIMPLEMENTED_METHOD_MESSAGE = "This method has not been implemented yet";
+		private final String UNIMPLEMENTED_METHOD_MESSAGE = "This method has not been implemented yet";
 		private String localName;
 		private boolean hasNext;
 		private boolean hasName;
