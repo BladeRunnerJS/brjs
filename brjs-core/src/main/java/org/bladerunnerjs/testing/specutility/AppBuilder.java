@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.zip.ZipFile;
 
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.bladerunnerjs.model.App;
@@ -14,6 +15,7 @@ import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.FileUtility;
 
 
 public class AppBuilder extends NodeBuilder<App> {
@@ -39,10 +41,32 @@ public class AppBuilder extends NodeBuilder<App> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer hasBeenBuiltAsWar(File targetDir) throws Exception {
+		app.build(targetDir, true);
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer hasBeenBuilt(File targetDir, MutableLong versionNumber) throws Exception {
 		hasBeenBuilt(targetDir);
 		
 		for(File dir : new File(targetDir, app.getName() + "/v").listFiles()) {
+			versionNumber.setValue(Long.valueOf(dir.getName()));
+			break;
+		}
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenBuiltAsWar(File targetDir, MutableLong versionNumber) throws Exception {
+		hasBeenBuiltAsWar(targetDir);
+		
+		File warFile = new File(targetDir, app.getName() + ".war");
+		File tempDir = FileUtility.createTemporaryDirectory(AppBuilder.class.getSimpleName());
+		FileUtility.unzip(new ZipFile(warFile), tempDir);
+		
+		// TODO: we need unzip before we can figure out what the version number is
+		for(File dir : new File(tempDir, "v").listFiles()) {
 			versionNumber.setValue(Long.valueOf(dir.getName()));
 			break;
 		}

@@ -1,8 +1,10 @@
 package org.bladerunnerjs.spec.command;
 
+import org.apache.commons.lang3.mutable.MutableLong;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand;
+import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.server.Server;
@@ -13,52 +15,60 @@ import org.junit.Test;
 public class IntegrationWarCommandTest extends SpecTest {
 	private App app;
 	private Server warServer = new Server(ServerUtility.getTestPort());
+	private StringBuffer forwarderPageResponse = new StringBuffer();
 	private StringBuffer pageResponse = new StringBuffer();
 	private StringBuffer bundleResponse = new StringBuffer();
 	private StringBuffer warResponse = new StringBuffer();
 	private StringBuffer brjsResponse = new StringBuffer();
 	private Aspect aspect;
 	private Aspect loginAspect;
+	private MutableLong versionNumber = new MutableLong();
+	private DirNode sdkLibsDir;
 	
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new WarCommand())
+		given(brjs).hasCommands(new BuildAppCommand())
 			.and(brjs).automaticallyFindsBundlers()
 			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated()
-			.and(brjs).usesProductionTemplates();
+			.and(brjs).usesProductionTemplates(); // TODO: see if we can get rid of this and stop using hasBeenPopulated()
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			loginAspect = app.aspect("login");
+			sdkLibsDir = brjs.sdkLibsDir();
 	}
 	
-	@Test @Ignore
+	@Test
 	public void exportedWarCanBeDeployedOnAnAppServer() throws Exception {
-		given(app).hasBeenPopulated()
-			.and(brjs).commandHasBeenRun("war", "app1")
+		given(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "Locale Forwarder")
+			.and(aspect).containsFileWithContents("index.html", "Hello World!")
+			.and(app).hasBeenBuiltAsWar(brjs.dir(), versionNumber)
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
-		when(warServer).receivesRequestFor("/app", pageResponse)
-			.and(warServer).receivesRequestFor("/app/v/dev/js/prod/combined/bundle.js", bundleResponse);
-		then(pageResponse).containsText("Successfully loaded the application")
-			.and(pageResponse).containsText("js/prod/combined/bundle.js")
+		when(warServer).receivesRequestFor("/app", forwarderPageResponse)
+			.and(warServer).receivesRequestFor("/app/en", pageResponse)
+			.and(warServer).receivesRequestFor("/app/v/" + versionNumber + "/bundle.html", bundleResponse);
+		then(forwarderPageResponse).containsText("Locale Forwarder")
+			.and(pageResponse).containsText("Hello World!")
 			.and(bundleResponse).isNotEmpty();
 	}
 	
-	@Ignore //TODO: this command will only pass when we get rid of the filters
+	@Ignore
 	@Test
 	public void exportedWarIndexPageIsTheSameAsBrjsHosted() throws Exception {
-		given(app).hasBeenPopulated()
-			.and(brjs).commandHasBeenRun("war", "app1")
+		given(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(aspect).containsFileWithContents("index.html", "Hello World!")
+			.and(app).hasBeenBuiltAsWar(brjs.dir(), versionNumber)
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
-		when(warServer).receivesRequestFor("/app", warResponse)
-			.and(app).requestReceived("/", brjsResponse);
+		when(warServer).receivesRequestFor("/app/en", pageResponse)
+			.and(app).requestReceived("/en/", brjsResponse);
 		then(warResponse).textEquals(brjsResponse);
 	}
 	
-	@Test @Ignore
+	@Ignore
+	@Test
 	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(app).hasBeenPopulated()
 			.and(brjs).commandHasBeenRun("war", "app1")
@@ -69,7 +79,8 @@ public class IntegrationWarCommandTest extends SpecTest {
 		then(warResponse).textEquals(brjsResponse);
 	}
 	
-	@Test @Ignore
+	@Ignore
+	@Test
 	public void exportedWarCssBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("resources/style.css", "body { color: red; }")
@@ -81,7 +92,8 @@ public class IntegrationWarCommandTest extends SpecTest {
 		then(warResponse).textEquals(brjsResponse);
 	}
 	
-	@Test @Ignore
+	@Ignore
+	@Test
 	public void warCommandDoesntExportFilesFromAnotherAspect() throws Exception {
 		given(app).hasBeenPopulated()
 			.and(loginAspect).hasBeenCreated()
