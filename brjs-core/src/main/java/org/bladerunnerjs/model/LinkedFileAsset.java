@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 
@@ -44,11 +43,9 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		SourceModuleResolver sourceModuleResolver = getSourceModuleResolver(bundlableNode);
-		
+	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			return sourceModuleResolver.getSourceModules(getDependencyCalculator().getRequirePaths());
+			return bundlableNode.getSourceModules(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -89,8 +86,4 @@ public class LinkedFileAsset implements LinkedAsset {
 		return trieBasedDependenciesCalculator;
 	}
 	
-	private SourceModuleResolver getSourceModuleResolver(BundlableNode bundlableNode) {
-		App app = assetLocation.assetContainer().app();
-		return new SourceModuleResolver(bundlableNode, assetLocation, app.dir(), app.root().libsDir(), BladerunnerConf.getConfigFilePath(app.root()));
-	}
 }

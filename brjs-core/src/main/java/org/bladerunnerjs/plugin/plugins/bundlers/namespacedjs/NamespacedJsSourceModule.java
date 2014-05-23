@@ -6,7 +6,6 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
@@ -21,7 +20,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.reader.JsCommentAndCodeBlockStrippingReaderFactory;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 
@@ -47,11 +45,9 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
- 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		SourceModuleResolver sourceModuleResolver = getSourceModuleResolver(bundlableNode);
-		
+ 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			return sourceModuleResolver.getSourceModules(getDependencyCalculator().getRequirePaths());
+			return bundlableNode.getSourceModules(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -108,10 +104,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		SourceModuleResolver staticSourceModuleResolver = getSourceModuleResolver(bundlableNode);
-		
 		try {
-			return staticSourceModuleResolver.getSourceModules(getStaticDependencyCalculator().getRequirePaths());
+			return bundlableNode.getSourceModules(assetLocation, getStaticDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -180,8 +174,5 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return trieBasedStaticDependenciesCalculator;
 	}
 	
-	private SourceModuleResolver getSourceModuleResolver(BundlableNode bundlableNode) {
-		App app = assetLocation.assetContainer().app();
-		return new SourceModuleResolver(bundlableNode, assetLocation, app.dir(), app.root().libsDir());
-	}
+	
 }

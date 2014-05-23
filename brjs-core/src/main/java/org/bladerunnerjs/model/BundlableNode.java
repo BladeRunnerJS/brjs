@@ -29,4 +29,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	List<AliasDefinitionsFile> aliasDefinitionFiles();
 	
 	void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
+	List<SourceModule> getSourceModules(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
 }

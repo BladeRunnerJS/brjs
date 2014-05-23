@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -30,7 +29,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
@@ -63,10 +61,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		SourceModuleResolver sourceModuleResolver = getSourceModuleResolver(bundlableNode);
-		
 		try {
-			return sourceModuleResolver.getSourceModules(requirePaths());
+			return bundlableNode.getSourceModules(assetLocation, requirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -133,8 +129,8 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		return RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 	}
 	
-	private Set<String> requirePaths() throws ModelOperationException {
-		return getComputedValue().requirePaths;
+	private List<String> requirePaths() throws ModelOperationException {
+		return new ArrayList<>( getComputedValue().requirePaths );
 	}
 
 	@Override
@@ -190,9 +186,4 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		public List<String> aliases = new ArrayList<>();
 	}
 	
-	
-	private SourceModuleResolver getSourceModuleResolver(BundlableNode bundlableNode) {
-		App app = assetLocation.assetContainer().app();
-		return new SourceModuleResolver(bundlableNode, assetLocation, app.dir(), app.root().libsDir());
-	}
 }
