@@ -18,8 +18,14 @@ public class DirectoryVerifier {
 		verifierChainer = new VerifierChainer(specTest);
 	}
 	
+	public VerifierChainer containsDir(String filePath) {
+		assertTrue(new File(dir, filePath).isDirectory());
+		
+		return verifierChainer;
+	}
+	
 	public VerifierChainer containsFile(String filePath) {
-		assertTrue(new File(dir, filePath).exists());
+		assertTrue(new File(dir, filePath).isFile());
 		
 		return verifierChainer;
 	}

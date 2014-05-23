@@ -352,6 +352,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 			String version = String.valueOf(new Date().getTime());
 			PageAccessor pageAcessor = new SimplePageAccessor();
 			
+			if(file("WEB-INF").exists()) {
+				FileUtils.copyDirectory(file("WEB-INF"), new File(targetDir, "WEB-INF"));
+			}
+			
 			for(Aspect aspect : aspects()) {
 				BundleSet bundleSet = aspect.getBundleSet();
 				String aspectPrefix = (aspect.getName().equals("default")) ? "" : aspect.getName() + "/";

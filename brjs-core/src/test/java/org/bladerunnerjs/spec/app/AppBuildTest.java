@@ -94,5 +94,14 @@ public class AppBuildTest extends SpecTest {
 			.and(targetDir).containsFile("v/" + versionNumber + "/i18n/en.js");
 	}
 	
+	@Test
+	public void theWebInfDirectoryIsCopiedIfThereIsOne() throws Exception {
+		given(defaultAspect).containsFile("index.html")
+			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(app).hasDir("WEB-INF/lib")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsDir("WEB-INF/lib");
+	}
+	
 	// TODO: add tests that show we only emit bundles for content-plugins which don't depend on a tag, or otherwise if the tag has been used in any of the aspect index pages
 }
