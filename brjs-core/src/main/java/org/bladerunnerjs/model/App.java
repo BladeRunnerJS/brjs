@@ -34,6 +34,7 @@ import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.utility.AppRequestHandler;
+import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.PageAccessor;
 import org.bladerunnerjs.utility.SimplePageAccessor;
@@ -343,9 +344,16 @@ public class App extends AbstractBRJSNode implements NamedNode
 	}
 	
 	public void build(File targetDir) throws ModelOperationException {
-		if(!targetDir.isDirectory()) {
-			throw new ModelOperationException("'" + targetDir.getPath() + "' is not a directory.");
-		}
+		build(targetDir, false);
+	}
+	
+	public void build(File targetDir, boolean warExport) throws ModelOperationException {
+		File appExportDir = new File(targetDir, getName());
+		
+		if(!targetDir.isDirectory()) throw new ModelOperationException("'" + targetDir.getPath() + "' is not a directory.");
+		if(appExportDir.exists()) throw new ModelOperationException("'" + appExportDir.getPath() + "' already exists.");
+		
+		appExportDir.mkdir();
 		
 		try {
 			String[] locales = appConf().getLocales();
@@ -353,13 +361,13 @@ public class App extends AbstractBRJSNode implements NamedNode
 			PageAccessor pageAcessor = new SimplePageAccessor();
 			
 			if(file("WEB-INF").exists()) {
-				FileUtils.copyDirectory(file("WEB-INF"), new File(targetDir, "WEB-INF"));
+				FileUtils.copyDirectory(file("WEB-INF"), new File(appExportDir, "WEB-INF"));
 			}
 			
 			for(Aspect aspect : aspects()) {
 				BundleSet bundleSet = aspect.getBundleSet();
 				String aspectPrefix = (aspect.getName().equals("default")) ? "" : aspect.getName() + "/";
-				File localeForwardingFile = new File(targetDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
+				File localeForwardingFile = new File(appExportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
 				
 				localeForwardingFile.getParentFile().mkdirs();
 				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
@@ -368,7 +376,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 				
 				for(String locale : locales) {
 					String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
-					File localeIndexPageFile = new File(targetDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale) + indexPageName);
+					File localeIndexPageFile = new File(appExportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale) + indexPageName);
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
@@ -378,7 +386,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 				
 				for(ContentPlugin contentPlugin : root().plugins().contentProviders()) {
 					for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-						File bundleFile = new File(targetDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
+						File bundleFile = new File(appExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
 						
 						bundleFile.getParentFile().mkdirs();
 						try(OutputStream os = new FileOutputStream(bundleFile)) {
@@ -386,6 +394,12 @@ public class App extends AbstractBRJSNode implements NamedNode
 						}
 					}
 				}
+			}
+			
+			if(warExport) {
+				File warFile = new File(targetDir, getName() + ".war");
+				FileUtility.zipFolder(appExportDir, warFile, true);
+				FileUtils.deleteDirectory(appExportDir);
 			}
 		}
 		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException e) {

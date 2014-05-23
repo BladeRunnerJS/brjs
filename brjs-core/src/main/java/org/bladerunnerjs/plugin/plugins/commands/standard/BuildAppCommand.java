@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -14,7 +13,6 @@ import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsException
 import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.FileUtility;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -73,14 +71,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		if(appExportDir.exists()) throw new DirectoryAlreadyExistsException(appExportDir.getPath(), this);
 		
 		try {
-			appExportDir.mkdir();
-			app.build(appExportDir);
-			
-			if(warExport) {
-				File warFile = new File(targetDir, appName + ".war");
-				FileUtility.zipFolder(appExportDir, warFile, true);
-				FileUtils.deleteDirectory(appExportDir);
-			}
+			app.build(targetDir, warExport);
 			
 			out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());
 		}

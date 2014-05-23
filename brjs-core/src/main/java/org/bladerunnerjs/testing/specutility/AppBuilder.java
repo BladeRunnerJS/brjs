@@ -42,7 +42,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	public BuilderChainer hasBeenBuilt(File targetDir, MutableLong versionNumber) throws Exception {
 		hasBeenBuilt(targetDir);
 		
-		for(File dir : new File(targetDir, "v").listFiles()) {
+		for(File dir : new File(targetDir, app.getName() + "/v").listFiles()) {
 			versionNumber.setValue(Long.valueOf(dir.getName()));
 			break;
 		}

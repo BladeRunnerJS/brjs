@@ -35,7 +35,7 @@ public class AppBuildTest extends SpecTest {
 		given(defaultAspect).containsFile("index.html")
 			.and(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "Locale Forwarder")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("index.html", "Locale Forwarder");
+		then(targetDir).containsFileWithContents("app1/index.html", "Locale Forwarder");
 	}
 	
 	@Test
@@ -43,7 +43,7 @@ public class AppBuildTest extends SpecTest {
 		given(defaultAspect).containsFile("index.html")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFile("en/index.html");
+		then(targetDir).containsFile("app1/en/index.html");
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ public class AppBuildTest extends SpecTest {
 		given(defaultAspect).containsFileWithContents("index.html", "<@js.bundle@/>")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "/js/prod/combined/bundle.js");
+		then(targetDir).containsFileWithContents("app1/en/index.html", "/js/prod/combined/bundle.js");
 	}
 	
 	@Test
@@ -60,8 +60,8 @@ public class AppBuildTest extends SpecTest {
 			.and(defaultAspect).containsFileWithContents("index.html", "<@i18n.bundle@/>")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.html", "/i18n/en.js")
-			.and(targetDir).containsFileWithContents("de/index.html", "/i18n/de.js");
+		then(targetDir).containsFileWithContents("app1/en/index.html", "/i18n/en.js")
+			.and(targetDir).containsFileWithContents("app1/de/index.html", "/i18n/de.js");
 	}
 	
 	@Test
@@ -69,8 +69,8 @@ public class AppBuildTest extends SpecTest {
 		given(defaultAspect).containsFileWithContents("index.jsp", "<%= 1 + 2 %>\n<@js.bundle@/>")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("en/index.jsp", "<%= 1 + 2 %>")
-			.and(targetDir).containsFileWithContents("en/index.jsp", "/js/prod/combined/bundle.js");
+		then(targetDir).containsFileWithContents("app1/en/index.jsp", "<%= 1 + 2 %>")
+			.and(targetDir).containsFileWithContents("app1/en/index.jsp", "/js/prod/combined/bundle.js");
 	}
 	
 	@Test
@@ -79,10 +79,10 @@ public class AppBuildTest extends SpecTest {
 			.and(nonDefaultAspect).containsFileWithContents("index.html", "<@i18n.bundle@/>")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsFileWithContents("index.html", "locale-forwarder.js")
-			.and(targetDir).containsFileWithContents("en/index.html", "/js/prod/combined/bundle.js")
-			.and(targetDir).containsFileWithContents("aspect2/index.html", "locale-forwarder.js")
-			.and(targetDir).containsFileWithContents("aspect2/en/index.html", "/i18n/en.js");
+		then(targetDir).containsFileWithContents("app1/index.html", "locale-forwarder.js")
+			.and(targetDir).containsFileWithContents("app1/en/index.html", "/js/prod/combined/bundle.js")
+			.and(targetDir).containsFileWithContents("app1/aspect2/index.html", "locale-forwarder.js")
+			.and(targetDir).containsFileWithContents("app1/aspect2/en/index.html", "/i18n/en.js");
 	}
 	
 	@Test
@@ -90,8 +90,8 @@ public class AppBuildTest extends SpecTest {
 		given(defaultAspect).containsFile("index.html")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir, versionNumber);
-		then(targetDir).containsFile("v/" + versionNumber + "/bundle.html")
-			.and(targetDir).containsFile("v/" + versionNumber + "/i18n/en.js");
+		then(targetDir).containsFile("app1/v/" + versionNumber + "/bundle.html")
+			.and(targetDir).containsFile("app1/v/" + versionNumber + "/i18n/en.js");
 	}
 	
 	@Test
@@ -100,7 +100,7 @@ public class AppBuildTest extends SpecTest {
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasDir("WEB-INF/lib")
 			.and(app).hasBeenBuilt(targetDir);
-		then(targetDir).containsDir("WEB-INF/lib");
+		then(targetDir).containsDir("app1/WEB-INF/lib");
 	}
 	
 	// TODO: add tests that show we only emit bundles for content-plugins which don't depend on a tag, or otherwise if the tag has been used in any of the aspect index pages
