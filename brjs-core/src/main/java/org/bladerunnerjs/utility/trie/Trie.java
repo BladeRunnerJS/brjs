@@ -19,11 +19,15 @@ import org.bladerunnerjs.utility.trie.node.TrieNode;
 
 public class Trie<T>
 {
+	private static final int CHILD_SIZE_OPTIMIZATION_THRESHOLD = 5;
+
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"\\\"\'\\'".toCharArray();
 	
 	private TrieNode<T> root = new BasicRootTrieNode<>();
 	private int readAheadLimit = 1;
 	private boolean trieOptimized = false;
+	
+	private int largestChildList = 0;
 	
 	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException, TrieLockedException {
 		if (trieOptimized) {
@@ -39,6 +43,8 @@ public class Trie<T>
 		for( char character : key.toCharArray() )
 		{
 			node = node.getOrCreateNextNode( character );
+			int nodeSize = node.size();
+			largestChildList = (nodeSize > largestChildList) ? largestChildList : nodeSize;
 		}
 		
 		if (node.getValue() != null)
@@ -94,13 +100,15 @@ public class Trie<T>
 		root = createOptimisedTrieNode(root);
 		System.gc();
 	}
-	
+
 	public boolean isOptimized() {
 		return trieOptimized;
 	}
 	
-	
-	
+	public boolean needsOptimizing()
+	{
+		return largestChildList > CHILD_SIZE_OPTIMIZATION_THRESHOLD;
+	}
 	
 	private TrieNode<T> createOptimisedTrieNode(TrieNode<T> trieNode) {
 		char trieNodeChar = trieNode.getChar();

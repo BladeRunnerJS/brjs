@@ -8,4 +8,5 @@ public interface TrieNode<T> extends Comparable<TrieNode<T>>
 	T getValue();
 	void setValue(T value);
 	TrieNode<T>[] getChildren();
+	int size();
 }

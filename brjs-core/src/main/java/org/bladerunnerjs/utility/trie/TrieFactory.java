@@ -70,7 +70,9 @@ public class TrieFactory {
 					}
 				}
 				
-				trie.optimize();
+				if (trie.needsOptimizing()) {
+					trie.optimize();
+				}
 				return trie;
 			}
 		});
