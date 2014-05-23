@@ -11,7 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 public class Trie<T>
 {
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"".toCharArray();
-	private TrieNode<T> root = new TrieNode<T>();
+	private RootTrieNode root = new RootTrieNode();
 	private int readAheadLimit = 1;
 	
 	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException {
@@ -20,17 +20,22 @@ public class Trie<T>
 			throw new EmptyTrieKeyException();
 		}
 		
-		TrieNode<T> node = root;
+		TrieNode node = root;
+		TrieNode previousNode = null;
 		for( char character : key.toCharArray() )
 		{
+			previousNode = node;
 			node = node.getOrCreateNextNode( character );
 		}
 		
-		if (node.getValue() != null)
+		if (node instanceof LeafTrieNode)
 		{
 			throw new TrieKeyAlreadyExistsException(key);
 		}
-		node.setValue(value);
+		
+		TrieNode leafNode = new LeafTrieNode<>( (AbstractTrieNode)node, value);
+		previousNode.replaceChildNode(node, leafNode);
+		
 		readAheadLimit = Math.max(readAheadLimit, key.length() + 1);
 	}
 	
@@ -40,7 +45,7 @@ public class Trie<T>
 	
 	public T get(String key)
 	{
-		TrieNode<T> node = root;
+		TrieNode node = root;
 		
 		for( char character : key.toCharArray() )
 		{
@@ -52,7 +57,13 @@ public class Trie<T>
 			}
 		}
 		
-		return node.getValue();
+		if (!(node instanceof LeafTrieNode)) {
+			return null;
+		}
+		
+		@SuppressWarnings("unchecked")
+		T value = (T) ((LeafTrieNode<?>) node).getValue();
+		return value;
 	}
 	
 	public List<T> getMatches(Reader reader) throws IOException
@@ -82,14 +93,15 @@ public class Trie<T>
 			reader.mark(readAheadLimit);
 		}
 		
-		TrieNode<T> nextNode = matcher.next(nextChar);
+		TrieNode nextNode = matcher.next(nextChar);
 		
 		if (nextNode == null)
 		{
-			T trieValue = matcher.previousNode.getValue();
-			if (trieValue != null && (isDelimiter(prevChar) || isDelimiter(nextChar)))
+			if (matcher.previousNode instanceof LeafTrieNode && (isDelimiter(prevChar) || isDelimiter(nextChar)))
 			{
-				matches.add(trieValue);
+				@SuppressWarnings("unchecked")
+				LeafTrieNode<T> leafNode = (LeafTrieNode<T>) matcher.previousNode;
+				matches.add( leafNode.getValue() );
 				reader.mark(readAheadLimit);
 			}
 			matcher.reset();
@@ -103,8 +115,8 @@ public class Trie<T>
 	}
 	
 	private class TrieMatcher {
-		TrieNode<T> currentNode;
-		TrieNode<T> previousNode;
+		TrieNode currentNode;
+		TrieNode previousNode;
 		boolean atRootOfTrie;
 		
 		TrieMatcher()
@@ -112,7 +124,7 @@ public class Trie<T>
 			reset();
 		}
 		
-		TrieNode<T> next(char nextChar)
+		TrieNode next(char nextChar)
 		{
 			previousNode = currentNode;
 			currentNode = currentNode.getNextNode(nextChar);
