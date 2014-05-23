@@ -35,7 +35,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 		given(sdkJsLib).hasClasses("sdkLib/Class", "sdkLib/AnotherClass")
     		.and(aspect).indexPageRequires("sdkLib/Class")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/AnotherClass.js", "sdkLib.AnotherClass.patch = function() {}");
-    	when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+    	when(aspect).requestReceived("js/dev/combined/bundle.js", response);
     	then(response).doesNotContainText("sdkLib.AnotherClass.patch = function() {}")
     		.and(response).containsText("define('sdkLib/Class'");
 	}
@@ -47,7 +47,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 			.and(sdkJsLib).hasClasses("sdkLib/Class", "sdkLib/AnotherClass")
     		.and(aspect).indexPageRequires("sdkLib/Class")
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}");
-    	when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+    	when(aspect).requestReceived("js/dev/combined/bundle.js", response);
     	then(response).containsText("sdkLib.Class.patch = ")
     		.and(logging).debugMessageReceived(SourceModulePatch.PATCH_APPLIED_MESSAGE, "sdkLib/Class", "js-patches/sdkLib/Class.js");
 	}
@@ -59,7 +59,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}")
 			.and(app).hasReceivedRequst("v/dev/js/dev/combined/bundle.js");
 		when(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.newPatchMethod = function() {}")
-    		.and(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+    		.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
     	then(response).containsText("sdkLib.Class.newPatchMethod = ");
 	}
 	
@@ -70,7 +70,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
     		.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "sdkLib.Class1.patch = function() {}")
 			.and(app).hasReceivedRequst("v/dev/js/dev/combined/bundle.js");
 		when(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "require('sdkLib/Class2')")
-    		.and(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+    		.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
     	then(response).containsNodeJsClasses("sdkLib.Class2");
 	}
 	

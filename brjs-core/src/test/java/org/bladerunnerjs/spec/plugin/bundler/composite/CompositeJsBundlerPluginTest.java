@@ -40,7 +40,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: src.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFile("src.js")
 			.and(aspect).indexPageRefersTo("'thirdparty-lib', appns.namespaced.NamespacedClass, appns.node.NodeClass");
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", requestResponse);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"// thirdparty-lib", 
 				"module.exports = NodeClass",
@@ -55,7 +55,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("\"the-alias\"")
 			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: lib")
 			.and(brbootstrap).containsFile("bootstrap.js");
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", requestResponse);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 			"// br-bootstrap",
 			"define('appns/Class1'",
@@ -77,7 +77,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 					"appns.namespaced.Class\n"+
 					"require('appLib');\n"+
 					"require('appns.node.Class');\n" );
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", requestResponse);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"// br-bootstrap", 
 				"// appLib", 
@@ -99,7 +99,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 					"appns.namespaced.Class\n"+
 					"require('appLib');\n"+
 					"require('appns.node.Class');\n" );
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", requestResponse);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).doesNotContainText("window._brjsI18nProperties = [{");
 	}
 	

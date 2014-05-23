@@ -48,7 +48,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		given(sdkNodeJsLib).classFileHasContent("sdkNodeJsLib.Class1", "function empty() {};")
 			.and(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.ProxyClass", "sdkNamespaceLib.ProxyClass = sdkNodeJsLib.Class1;")
 			.and(aspect).indexPageHasContent("require('sdkNamespaceLib/ProxyClass')");
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				
 				// The sdkNodeJsLib is defined
@@ -70,7 +70,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.ProxyClass",
 				"sdkNamespaceLib.ProxyClass = otherSdkNamespaceLib.Class1; function neverCalledButForcesLoadOrder() {caplin.extend(sdkNamespaceLib.ProxyClass, otherSdkNamespaceLib.Class1);}")
 			.and(aspect).indexPageHasContent("require('sdkNamespaceLib/ProxyClass')");
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments(
 				// globalise the libraries first
 				"mergePackageBlock(window, {\"otherSdkNamespaceLib\":{},\"sdkNamespaceLib\":{}});",
@@ -103,7 +103,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(sdkJquery).containsFileWithContents("jquery.js", "jquery-content")
 			.and(userLib).classFileHasContent("userLib.Class1", "require('jquery');")
 			.and(aspect).indexPageHasContent("require('userLib.Class1');");
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("jquery", "userLib/Class1");
 	}
 	
@@ -112,7 +112,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		given(sdkNodeJsLib).classFileHasContent("sdkNodeJsLib.Class1", "function empty() {};")
 			.and(userLib).classFileHasContent("userLib.Class1", "require('sdkNodeJsLib/Class1');")
 			.and(aspect).indexPageHasContent("require('userLib.Class1');");
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsDefinedClasses("sdkNodeJsLib/Class1", "userLib/Class1");
 	}
 	
@@ -124,7 +124,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(userJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: null")
 			.and(userJquery).containsFileWithContents("jquery.js", "USER jquery-content")
 			.and(aspect).indexPageHasContent("require('jquery');");
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("USER jquery-content")
 			.and(response).doesNotContainText("SDK jquery-content");
 	}
@@ -137,7 +137,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
 			.and(sdkJquery).containsFileWithContents("jquery.js", "SDK jquery-content")
 			.and(aspect).indexPageHasContent("require('jquery');");
-		when(app).requestReceived("v/dev/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("LEGACY thirdparty jquery-content")
 			.and(response).doesNotContainText("SDK jquery-content");
 	}

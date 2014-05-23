@@ -28,7 +28,7 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 			public void call() throws Exception {
         		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
         		bundlableNode.handleLogicalRequest(requestPath, responseOutput);
-        		response.append(responseOutput.toString(specTest.getActiveCharacterEncoding()));
+        		response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
 			}
 		});
 		
