@@ -20,7 +20,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
 
-public class BuildCommand extends ArgsParsingCommandPlugin {
+public class BuildAppCommand extends ArgsParsingCommandPlugin {
 	public class Messages {
 		public static final String APP_BUILT_CONSOLE_MSG = "Exported app '%s' to '%s'";
 	}
@@ -48,7 +48,7 @@ public class BuildCommand extends ArgsParsingCommandPlugin {
 	
 	@Override
 	public String getCommandName() {
-		return "build";
+		return "build-app";
 	}
 	
 	@Override
@@ -62,7 +62,7 @@ public class BuildCommand extends ArgsParsingCommandPlugin {
 		String targetDirPath = parsedArgs.getString(Parameters.TARGET_DIR);
 		
 		App app = brjs.app(appName);
-		File targetDir = new File(targetDirPath);
+		File targetDir = brjs.file("sdk/" + targetDirPath);
 		File appExportDir = new File(targetDir, appName);
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
