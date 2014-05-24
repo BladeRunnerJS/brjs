@@ -271,4 +271,16 @@ public class CssContentPluginTest extends SpecTest {
 
 	}
 	
+	@Test
+	public void languageSpecifcFilesHaveToHaveToBePrefixedWithA_ToBeBundled() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).indexPageRefersTo("appns.Class1")
+    		.and(aspect).containsFileWithContents("themes/standard/screen.css", "screen.css")
+    		.and(aspect).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
+    	when(app).requestReceived("/default-aspect/css/standard_en/bundle.css", requestResponse);
+    	then(requestResponse).containsText("style_en.css")
+    		.and(requestResponse).doesNotContainText("screen.css");
+
+	}
+	
 }
