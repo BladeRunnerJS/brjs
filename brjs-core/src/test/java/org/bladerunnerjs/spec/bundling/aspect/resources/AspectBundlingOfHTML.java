@@ -7,6 +7,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class AspectBundlingOfHTML extends SpecTest {
@@ -93,4 +94,21 @@ public class AspectBundlingOfHTML extends SpecTest {
 				"<!-- aspect.html -->",
 				"<div id='appns.aspect-view'></div>" );
 	}
+	
+	@Test
+	public void bladesetResourcesAreLoadedEvenIfTheBladesetHasNoSource() throws Exception {
+		given(bladeset).containsFileWithContents("resources/file.xml", "<some-xml/>")
+			.and(blade).hasClass("appns/bs/b1/Class1")
+    		.and(aspect).indexPageRequires("appns/bs/b1/Class1");
+    	when(app).requestReceived("/default-aspect/bundle.xml", response);
+    	then(response).containsText("<some-xml/>");
+	}
+	
+	@Test @Ignore
+	public void bladeResourcesAreLoadedEvenIfTheBladesetHasNoSource() throws Exception {
+		given(blade).containsFileWithContents("resources/file.xml", "<some-xml/>");
+    	when(app).requestReceived("/default-aspect/bundle.xml", response);
+    	then(response).containsText("<some-xml/>");
+	}
+	
 }

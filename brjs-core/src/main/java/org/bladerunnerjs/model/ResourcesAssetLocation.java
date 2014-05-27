@@ -1,10 +1,63 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-public final class ResourcesAssetLocation extends AbstractResourcesAssetLocation {
+import org.bladerunnerjs.memoization.MemoizedValue;
+
+public class ResourcesAssetLocation extends AbstractDeepAssetLocation {
+	
+	private final File themesDir;
+	private final FileInfo themesDirInfo;
+	private final MemoizedValue<Map<String, ThemesAssetLocation>> themesMap;
+	private Map<String, ThemesAssetLocation> themeAssetLocations = null;
+	
 	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file) {
 		super(root, assetContainer, file);
-		registerInitializedNode();
+		
+		themesDir = assetContainer.file("themes");
+		themesDirInfo = root().getFileInfo(themesDir);
+		themesMap = new MemoizedValue<>("ResourcesAssetLocation.themes", root(), themesDir);
 	}
+	
+	@Override
+	public String requirePrefix() {
+		return assetContainer().requirePrefix();
+	}
+	
+	@Override
+	public List<AssetLocation> dependentAssetLocations()
+	{
+		return new ArrayList<>(themes());
+	}
+	
+	public List<ThemesAssetLocation> themes() {
+		return new ArrayList<>(themesMap().values());
+	}
+	
+	public ThemesAssetLocation theme(String themeName) {
+		return themesMap().get(themeName);
+	}
+	
+	private Map<String, ThemesAssetLocation> themesMap() {
+		return themesMap.value(() -> {
+			Map<String, ThemesAssetLocation> previousThemeAssetLocations = themeAssetLocations;
+			themeAssetLocations = new LinkedHashMap<>();
+			
+			if(themesDirInfo.exists()) {
+				for(File themeDir : themesDirInfo.dirs()) {
+					String themeName = themeDir.getName();
+					ThemesAssetLocation themeAssetLocation = ((previousThemeAssetLocations != null) && previousThemeAssetLocations.containsKey(themeName)) ?
+						previousThemeAssetLocations.get(themeName) : new ThemesAssetLocation(root(), assetContainer(), new File(themesDir, themeName));
+					themeAssetLocations.put(themeName, themeAssetLocation);
+				}
+			}
+			
+			return themeAssetLocations;
+		});
+	}
+	
 }
