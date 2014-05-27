@@ -109,7 +109,7 @@ public class AppRequestHandler {
 			aspectName = "default";
 		}
 		else {
-			aspectName = aspectName.substring(1);
+			aspectName = aspectName.substring(0, aspectName.length() - 1);
 		}
 		
 		return aspectName;
