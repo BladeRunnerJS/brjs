@@ -2,8 +2,8 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.console.PrintStreamConsoleWriter;
@@ -19,7 +19,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	// TODO: remove this flag once we delete all old BladerRunner code
 	public static boolean allowInvalidRootDirectories = true;
 	
-	private Map<String, Node> nodeCache = new HashMap<>();
+	private Map<String, Node> nodeCache = new TreeMap<>();
 	private LoggerFactory loggerFactory;
 	private ConsoleWriter consoleWriter;
 	

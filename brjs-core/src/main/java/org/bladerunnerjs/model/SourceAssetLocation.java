@@ -12,6 +12,6 @@ public final class SourceAssetLocation extends AbstractSourceAssetLocation {
 	}
 	
 	protected AssetLocation createNewAssetLocationForChildDir(File dir, AssetLocation parentAssetLocation) {
-		return new ChildSourceAssetLocation(assetContainer.root(), assetContainer, dir, parentAssetLocation);
+		return new ChildSourceAssetLocation(assetContainer().root(), assetContainer(), dir, parentAssetLocation);
 	}
 }

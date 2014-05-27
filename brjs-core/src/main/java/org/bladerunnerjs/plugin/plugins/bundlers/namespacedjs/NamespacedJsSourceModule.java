@@ -4,12 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
@@ -24,7 +20,6 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.reader.JsCommentAndCodeBlockStrippingReaderFactory;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
 
@@ -35,40 +30,24 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	public static final String STATIC_DEPENDENCIES_BLOCK_START = "requireAll([";
 	public static final String STATIC_DEPENDENCIES_BLOCK_END = "]);";
 	
-	private LinkedAsset linkedAsset;
 	private AssetLocation assetLocation;
+	private File assetFile;
 	private String requirePath;
-	private String className;
 	private SourceModulePatch patch;
-	private TrieBasedDependenciesCalculator dependencyCalculator;
-	private TrieBasedDependenciesCalculator staticDependencyCalculator;
-	
-	private MemoizedValue<List<AssetLocation>> assetLocationsList;
-	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
-	private final Map<BundlableNode, SourceModuleResolver> staticSourceModuleResolvers = new HashMap<>();
+	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
+	private TrieBasedDependenciesCalculator trieBasedStaticDependenciesCalculator;
 	
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
+		this.assetFile = assetFile;
 		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-		className = requirePath.replaceAll("/", ".");
-		linkedAsset = new LinkedFileAsset(assetFile, assetLocation);
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-		dependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
-		staticDependencyCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
-		assetLocationsList = new MemoizedValue<>("NamespacedJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
 	}
 	
 	@Override
- 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		if(!sourceModuleResolvers.containsKey(bundlableNode)) {
-			App app = assetLocation.assetContainer().app();
-			
-			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, requirePath, app.dir(), app.root().libsDir()));
-		}
-		SourceModuleResolver sourceModuleResolver = sourceModuleResolvers.get(bundlableNode);
-		
+ 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			return sourceModuleResolver.getSourceModules(dependencyCalculator.getRequirePaths());
+			return bundlableNode.getSourceModules(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -77,13 +56,13 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
-		return dependencyCalculator.getAliases();
+		return getDependencyCalculator().getAliases();
 	}
 	
 	@Override
 	public Reader getUnalteredContentReader() throws IOException {
 		return new ConcatReader( new Reader[] {
-				linkedAsset.getReader(), 
+				getLinkedAsset().getReader(), 
 				patch.getReader()
 		});
 	}
@@ -107,7 +86,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 				new StringReader( String.format(defineBlockHeader, getRequirePath()) ), 
 				getUnalteredContentReader(),
 				new StringReader( "\n" ),
-				new StringReader( "module.exports = " + getClassname() + ";" ),
+				new StringReader( "module.exports = " + getRequirePath().replaceAll("/", ".") + ";" ),
 				new StringReader(CommonJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 
 		};
 		return new ConcatReader( readers );
@@ -119,26 +98,14 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public String getClassname() {
-		return className;
-	}
-	
-	@Override
 	public boolean isEncapsulatedModule() {
 		return true;
 	}
 	
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		if(!staticSourceModuleResolvers.containsKey(bundlableNode)) {
-			App app = assetLocation.assetContainer().app();
-			
-			staticSourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, requirePath, app.dir(), app.root().libsDir()));
-		}
-		SourceModuleResolver staticSourceModuleResolver = staticSourceModuleResolvers.get(bundlableNode);
-		
 		try {
-			return staticSourceModuleResolver.getSourceModules(staticDependencyCalculator.getRequirePaths());
+			return bundlableNode.getSourceModules(assetLocation, getStaticDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -146,7 +113,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	public String calculateStaticDependenciesRequireDefinition() throws ModelOperationException {
-		List<String> staticDependencyRequirePaths = staticDependencyCalculator.getRequirePaths();
+		List<String> staticDependencyRequirePaths = getStaticDependencyCalculator().getRequirePaths();
 		if (staticDependencyRequirePaths.isEmpty()) {
 			return "";
 		}
@@ -164,17 +131,17 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public File dir()
 	{
-		return linkedAsset.dir();
+		return getLinkedAsset().dir();
 	}
 	
 	@Override
 	public String getAssetName() {
-		return linkedAsset.getAssetName();
+		return getLinkedAsset().getAssetName();
 	}
 	
 	@Override
 	public String getAssetPath() {
-		return linkedAsset.getAssetPath();
+		return getLinkedAsset().getAssetPath();
 	}
 	
 	@Override
@@ -185,9 +152,27 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		return assetLocationsList.value(() -> {
-			return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
-		});
+		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 	}
+	
+	
+	private LinkedAsset getLinkedAsset() {
+		return new LinkedFileAsset(assetFile, assetLocation);
+	}
+	
+	private TrieBasedDependenciesCalculator getDependencyCalculator() {
+		if (trieBasedDependenciesCalculator == null) {
+			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+		}
+		return trieBasedDependenciesCalculator;
+	}
+	
+	private TrieBasedDependenciesCalculator getStaticDependencyCalculator() {
+		if (trieBasedStaticDependenciesCalculator == null) {
+			trieBasedStaticDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentAndCodeBlockStrippingReaderFactory(this), assetFile, patch.getPatchFile());
+		}
+		return trieBasedStaticDependenciesCalculator;
+	}
+	
 	
 }

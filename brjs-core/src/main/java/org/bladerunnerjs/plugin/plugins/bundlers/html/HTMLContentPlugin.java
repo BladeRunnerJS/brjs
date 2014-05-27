@@ -6,7 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +35,7 @@ import org.bladerunnerjs.utility.NamespaceUtility;
 public class HTMLContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
-	private Map<String, Asset> identifiers = new HashMap<String, Asset>();
+	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 	private List<String> requestPaths = new ArrayList<>();
 	
 	private BRJS brjs;
@@ -92,7 +92,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
 	{
-		identifiers = new HashMap<String, Asset>();
+		identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
 		
 		// TODO: try removing the @SuppressWarnings once we upgrade past Eclipse Kepler, as the need for this appears to be a bug

@@ -13,6 +13,6 @@ public abstract class AbstractShallowAssetLocation extends TheAbstractAssetLocat
 	
 	@Override
 	protected List<File> getCandidateFiles() {
-		return dirInfo.files();
+		return getDirInfo().files();
 	}
 }
