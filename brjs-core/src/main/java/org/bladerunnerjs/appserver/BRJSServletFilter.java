@@ -102,7 +102,7 @@ public class BRJSServletFilter implements Filter
 		}
 	}
 	
-	private void filterIndexPage(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException {
+	private void filterIndexPage(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 		try
 		{
 			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
@@ -128,7 +128,7 @@ public class BRJSServletFilter implements Filter
 		}
 		catch (Exception ex)
 		{
-			response.sendError(500, ex.toString());
+			throw new ServletException(ex);
 		}
 	}
 	

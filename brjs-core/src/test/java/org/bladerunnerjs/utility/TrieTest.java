@@ -5,9 +5,10 @@ import static org.junit.Assert.*;
 import java.io.StringReader;
 import java.util.List;
 
-import org.bladerunnerjs.utility.EmptyTrieKeyException;
-import org.bladerunnerjs.utility.Trie;
-import org.bladerunnerjs.utility.TrieKeyAlreadyExistsException;
+import org.bladerunnerjs.utility.trie.Trie;
+import org.bladerunnerjs.utility.trie.TrieLockedException;
+import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
+import org.bladerunnerjs.utility.trie.exception.TrieKeyAlreadyExistsException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -211,6 +212,35 @@ public class TrieTest
 		assertEquals(2, foundObjects.size());
 		assertEquals(test_object_1, foundObjects.get(0));
 		assertEquals(test_object_2, foundObjects.get(1));
+	}
+	
+	@Test
+	public void optimistingTheTrieDoesntBreakTheBehaviour() throws Exception {
+		trie.add("o.1", test_object_1);
+		trie.add("o/2", test_object_2);
+		trie.add("o*3", test_object_3);
+		trie.add("o 4", test_object_4);
+		
+		 trie.optimize();
+		
+		assertEquals(test_object_1, trie.get("o.1"));
+		
+		StringReader reader = new StringReader("o.1 o/2 o*3 o 4");
+		
+		List<TestObject> foundObjects = trie.getMatches(reader);
+		assertEquals(4, foundObjects.size());
+		assertEquals(test_object_1, foundObjects.get(0));
+		assertEquals(test_object_2, foundObjects.get(1));
+		assertEquals(test_object_3, foundObjects.get(2));
+		assertEquals(test_object_4, foundObjects.get(3));
+	}
+	
+	@Test
+	public void optimisedTrieCantAcceptMoreKeys() throws Exception {	
+		 exception.expect(TrieLockedException.class);
+		 exception.expectMessage("The Trie has been optimised and can't accept any more values.");
+		 trie.optimize();
+		 trie.add("o.1", test_object_1);
 	}
 	
 	/* TestObject so the Trie is using Objects to ensure the same object instance is returned, but with a toString() that returns a name to help debugging */

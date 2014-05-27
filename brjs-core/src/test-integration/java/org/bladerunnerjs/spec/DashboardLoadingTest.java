@@ -39,6 +39,8 @@ public class DashboardLoadingTest extends SpecTest
 	@Test
 	public void dashboardTest() throws Exception
 	{
+		given(exceptions).arentCaught();
+		
 		String requestPath = "/default-aspect/js/dev/combined/bundle.js";
 		StringBuffer response = new StringBuffer();
 		long startTime, endTime;

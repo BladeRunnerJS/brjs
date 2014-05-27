@@ -12,19 +12,21 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 
 public class InputSource {
+	
+	private static final Pattern SOURCE_MAPPING_URL_PATTERN = Pattern.compile("\n//# sourceMappingURL=(.*)$");
+	
 	private final String requestName;
 	private final String source;
 	private String sourceMappingUrl;
 	private final String filteredSource;
 	private final ContentPlugin contentPlugin;
 	private BundleSet bundleSet;
-	private Pattern sourceMappingUrlPattern = Pattern.compile("\n//# sourceMappingURL=(.*)$");
 	
 	public InputSource(String requestName, String source, ContentPlugin contentPlugin, BundleSet bundleSet) {
 		this.requestName = requestName;
 		this.source = source;
 		this.sourceMappingUrl = getSourceMappingUrl(source);
-		this.filteredSource = source.replaceFirst(sourceMappingUrlPattern.pattern(), "");
+		this.filteredSource = source.replaceFirst(SOURCE_MAPPING_URL_PATTERN.pattern(), "");
 		this.contentPlugin = contentPlugin;
 		this.bundleSet = bundleSet;
 	}
@@ -58,7 +60,7 @@ public class InputSource {
 	}
 	
 	private String getSourceMappingUrl(String source) {
-		Matcher matcher = sourceMappingUrlPattern.matcher(source);
+		Matcher matcher = SOURCE_MAPPING_URL_PATTERN.matcher(source);
 		String sourceMappingUrl = null;
 		
 		if(matcher.find()) {

@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
 
@@ -37,7 +37,10 @@ public abstract class AbstractNode implements Node
 	}
 	
 	private ObserverList observers = new ObserverList();
-	private Map<String, NodeProperties> propertiesMap = new HashMap<String,NodeProperties>();
+	private Map<String, NodeProperties> propertiesMap = new TreeMap<String,NodeProperties>();
+	private Map<String, File> filesMap = new TreeMap<String,File>();
+	
+	
 	
 	protected RootNode rootNode;
 	private Node parent;
@@ -93,7 +96,13 @@ public abstract class AbstractNode implements Node
 	@Override
 	public File file(String filePath)
 	{
-		return new File(dir, filePath);
+		File cachedFile = filesMap.get(filePath);
+		if (cachedFile == null)
+		{
+			cachedFile = new File(dir, filePath);
+			filesMap.put(filePath, cachedFile);
+		}
+		return cachedFile;
 	}
 	
 	@Override

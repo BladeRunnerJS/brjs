@@ -8,10 +8,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,11 +17,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
+import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
@@ -31,7 +29,6 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.SourceModuleResolver;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
@@ -46,45 +43,24 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	private File assetFile;
 	private AssetLocation assetLocation;
-	private String requirePath;
-	private String className;
-	private String assetPath;
-
-	private String defaultFileCharacterEncoding;
-
+	
 	private SourceModulePatch patch;
 	
 	private MemoizedValue<ComputedValue> computedValue;
-	private MemoizedValue<List<AssetLocation>> assetLocationsList;
-	private final Map<BundlableNode, SourceModuleResolver> sourceModuleResolvers = new HashMap<>();
+	private String requirePath;
 	
 	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		try {
-			this.assetLocation = assetLocation;
-			this.assetFile = assetFile;
-			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
-			requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-			className = requirePath.replaceAll("/", ".");
-			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-			computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), assetLocation.root().conf().file("bladerunner.conf"));
-			assetLocationsList = new MemoizedValue<>("NodeJsSourceModule.assetLocations", assetLocation.root(), assetLocation.assetContainer().dir());
-		}
-		catch(ConfigException e) {
-			throw new AssetFileInstantationException(e);
-		}
+		this.assetLocation = assetLocation;
+		this.assetFile = assetFile;
+		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
+		computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
 	}
 	
 	@Override
 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
-		if(!sourceModuleResolvers.containsKey(bundlableNode)) {
-			App app = assetLocation.assetContainer().app();
-			sourceModuleResolvers.put(bundlableNode, new SourceModuleResolver(bundlableNode, assetLocation, assetPath, app.dir(), app.root().libsDir()));
-		}
-		SourceModuleResolver sourceModuleResolver = sourceModuleResolvers.get(bundlableNode);
-		
 		try {
-			return sourceModuleResolver.getSourceModules(requirePaths());
+			return bundlableNode.getSourceModules(assetLocation, requirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -98,16 +74,24 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public Reader getUnalteredContentReader() throws IOException {
-		return new ConcatReader( new Reader[] {
-				new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding)),
-				patch.getReader(),
-		});
+		try
+		{
+			String defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+			return new ConcatReader( new Reader[] {
+					new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding)),
+					patch.getReader(),
+			});
+		}
+		catch (ConfigException ex)
+		{
+			throw new RuntimeException(ex);
+		}
 	}
 	
 	@Override
 	public Reader getReader() throws IOException {
 		return new ConcatReader(new Reader[] {
-			new StringReader( String.format(NODEJS_DEFINE_BLOCK_HEADER, requirePath) ),
+			new StringReader( String.format(NODEJS_DEFINE_BLOCK_HEADER, getRequirePath()) ),
 			getUnalteredContentReader(),
 			new StringReader( NODEJS_DEFINE_BLOCK_FOOTER )
 		});
@@ -116,11 +100,6 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public String getRequirePath() {
 		return requirePath;
-	}
-	
-	@Override
-	public String getClassname() {
-		return className;
 	}
 	
 	@Override
@@ -145,11 +124,11 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public String getAssetPath() {
-		return assetPath;
+		return RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
 	}
 	
-	private Set<String> requirePaths() throws ModelOperationException {
-		return getComputedValue().requirePaths;
+	private List<String> requirePaths() throws ModelOperationException {
+		return new ArrayList<>( getComputedValue().requirePaths );
 	}
 
 	@Override
@@ -160,9 +139,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		return assetLocationsList.value(() -> {
-			return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
-		});
+		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 	}
 	
 	private ComputedValue getComputedValue() throws ModelOperationException {
@@ -206,4 +183,5 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		public Set<String> requirePaths = new HashSet<>();
 		public List<String> aliases = new ArrayList<>();
 	}
+	
 }

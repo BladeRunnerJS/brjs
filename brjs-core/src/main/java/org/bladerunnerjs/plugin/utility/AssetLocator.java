@@ -1,7 +1,7 @@
 package org.bladerunnerjs.plugin.utility;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.plugin.AssetPlugin;
 
 public class AssetLocator {
-	private final Map<String, Asset> cachedAssets = new HashMap<>();
+	private final Map<String, Asset> cachedAssets = new TreeMap<>();
 	private final AssetLocation assetLocation;
 	private final MemoizedValue<Assets> assetsList;
 	
