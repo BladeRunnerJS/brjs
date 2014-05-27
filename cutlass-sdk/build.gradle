@@ -434,10 +434,12 @@ task cleanWorkspaceFiles {
     			include(name: '**/WEB-INF/lib/brjs-*.jar')
     		}
     	}
-    	ant.delete(includeemptydirs: 'true') {
-    		fileset(dir: 'workspace/apps') {
-    			include(name: '**/WEB-INF/lib/brjs-*.jar')
-    		}
+    	if (file('workspace/apps').exists()) {
+        	ant.delete(includeemptydirs: 'true') {
+        		fileset(dir: 'workspace/apps') {
+        			include(name: '**/WEB-INF/lib/brjs-*.jar')
+        		}
+        	}
     	}
 	}
 }
