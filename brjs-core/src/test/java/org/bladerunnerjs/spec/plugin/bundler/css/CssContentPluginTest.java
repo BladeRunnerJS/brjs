@@ -2,6 +2,7 @@ package org.bladerunnerjs.spec.plugin.bundler.css;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Workbench;
@@ -16,6 +17,7 @@ public class CssContentPluginTest extends SpecTest {
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer requestResponse = new StringBuffer();
 	private Workbench workbench;
+	private Blade blade;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -25,7 +27,8 @@ public class CssContentPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 			nonConformantLib = app.jsLib("non-conformant-lib");
 			bladerunnerConf = brjs.bladerunnerConf();
-			workbench = app.bladeset("bs").blade("b1").workbench();
+			blade = app.bladeset("bs").blade("b1");
+			workbench = blade.workbench();
 	}
 	
 	@Test
@@ -272,7 +275,7 @@ public class CssContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void languageSpecifcFilesHaveToHaveToBePrefixedWithA_ToBeBundled() throws Exception {
+	public void aspectLanguageSpecifcFilesHaveToHaveToBePrefixedWithA_ToBeBundled() throws Exception {
 		given(aspect).hasClass("appns/Class1")
     		.and(aspect).indexPageRefersTo("appns.Class1")
     		.and(aspect).containsFileWithContents("themes/standard/screen.css", "screen.css")
@@ -280,7 +283,17 @@ public class CssContentPluginTest extends SpecTest {
     	when(app).requestReceived("/default-aspect/css/standard_en/bundle.css", requestResponse);
     	then(requestResponse).containsText("style_en.css")
     		.and(requestResponse).doesNotContainText("screen.css");
-
+	}
+	
+	@Test
+	public void bladeLanguageSpecifcFilesHaveToHaveToBePrefixedWithA_ToBeBundled() throws Exception {
+		given(blade).hasClass("appns/bs/b1/Class1")
+    		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+    		.and(blade).containsFileWithContents("themes/standard/screen.css", "screen.css")
+    		.and(blade).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
+    	when(app).requestReceived("/default-aspect/css/standard_en/bundle.css", requestResponse);
+    	then(requestResponse).containsText("style_en.css")
+    		.and(requestResponse).doesNotContainText("screen.css");
 	}
 	
 }
