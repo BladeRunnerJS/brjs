@@ -60,11 +60,6 @@ brjs.dashboard.app.DashboardApp.prototype._onPageUrlUpdated = function(sPageUrl)
 	{
 		// Do nothing because this is a genuine internal anchor
 	}
-	// else if(sPageUrl.match(/^#apps\/.*workbench$/))
-	// {
-	// 	var pParts = sPageUrl.match(/^#apps\/(.*)workbench$/)[1].split("/");
-	// 	this.m_oPresentationModel.workbenchScreen.displayWorkbench(pParts[0], pParts[1], pParts[2]);
-	// }
 	else if(sPageUrl.match(/^#apps\/.*/))
 	{
 		if(!this.m_bAppsLoaded)

@@ -24,11 +24,6 @@ brjs.dashboard.app.model.workbench.WorkbenchScreen.prototype.displayWorkbench = 
 	this.visible.setValue(true);
 };
 
-brjs.dashboard.app.model.workbench.WorkbenchScreen.prototype.popoutWorkbench = function()
-{
-	this.m_oPresentationModel.getWindowOpenerService().openWindow(this.workbenchUrl.getValue());
-};
-
 brjs.dashboard.app.model.workbench.WorkbenchScreen.prototype._setIframeSize = function()
 {
 	var nIframeHeight = ( $(window).height() - 150 ) + "px";
