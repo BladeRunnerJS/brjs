@@ -304,7 +304,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(bladeset).containsFileWithContents("resources/style.css", "BLADESET STYLE")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("BLADESET STYLE");
 	}
 	
