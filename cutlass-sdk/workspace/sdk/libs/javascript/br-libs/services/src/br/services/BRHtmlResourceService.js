@@ -83,13 +83,10 @@ function getTemplate(template) {
 			// First clone the contents of the template to avoid modifying the original as we will be reparenting.
 			var docFrag = document.createDocumentFragment(),
 				tempClone = template.cloneNode(true),
-				children = tempClone.childNodes,
-				childCount = children.length,
-				child = null;
-
-			for (var i = 0; i < childCount; i++) {
-				child = children[i];
-				docFrag.appendChild(child);
+				children = tempClone.childNodes;
+			
+			while(children.length > 0) {
+				docFrag.appendChild(children[0]);
 			}
 
 			template = docFrag;
