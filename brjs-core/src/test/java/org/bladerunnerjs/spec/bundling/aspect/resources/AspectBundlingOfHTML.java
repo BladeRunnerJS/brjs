@@ -93,4 +93,14 @@ public class AspectBundlingOfHTML extends SpecTest {
 				"<!-- aspect.html -->",
 				"<div id='appns.aspect-view'></div>" );
 	}
+	
+	@Test
+	public void bladesetResourcesAreLoadedEvenIfTheBladesetHasNoSource() throws Exception {
+		given(bladeset).containsFileWithContents("resources/file.xml", "<some-xml/>")
+			.and(blade).hasClass("appns/bs/b1/Class1")
+    		.and(aspect).indexPageRequires("appns/bs/b1/Class1");
+    	when(app).requestReceived("/default-aspect/bundle.xml", response);
+    	then(response).containsText("<some-xml/>");
+	}
+	
 }
