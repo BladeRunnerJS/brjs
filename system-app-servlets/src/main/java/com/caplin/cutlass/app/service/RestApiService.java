@@ -137,9 +137,14 @@ public class RestApiService
 		{
 			destinationWar.delete();
 		}
-		
 		File targetDir = destinationWar.getParentFile();
-		brjs.app(appName).build(targetDir, true);
+		
+		App app = brjs.app(appName);
+		if (!app.dirExists()) {
+			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
+		}
+		
+		app.build(targetDir, true);
 		
 		File tempWar = new File(targetDir, appName + ".war");
 		FileUtils.moveFile(tempWar, destinationWar);
