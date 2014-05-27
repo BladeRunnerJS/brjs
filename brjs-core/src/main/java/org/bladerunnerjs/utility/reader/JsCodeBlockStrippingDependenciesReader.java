@@ -5,8 +5,19 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/*
+ * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
+ * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
+ */
 
-public class JsCodeBlockStrippingReader extends Reader
+/**
+ * Strips the contents of function blocks when reading.
+ * 
+ * NOTE: This should only be used when determining the dependencies of a class. 
+ * 		It doesn't handle the removal of the start of the function block and will result in invalid JS.
+ *
+ */
+public class JsCodeBlockStrippingDependenciesReader extends Reader
 {
 	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "^.*([\\(\\!\\~\\-\\+]|(new\\s+))function\\s*\\([^)]*\\)\\s*\\{$";
 	private static final Pattern SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN = Pattern.compile(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX, Pattern.DOTALL);
@@ -18,7 +29,7 @@ public class JsCodeBlockStrippingReader extends Reader
 	private int lastCharPos = 0;
 	private int depthCount = 0;
 	
-	public JsCodeBlockStrippingReader(Reader sourceReader) {
+	public JsCodeBlockStrippingDependenciesReader(Reader sourceReader) {
 		super();
 		this.sourceReader = sourceReader;
 	}

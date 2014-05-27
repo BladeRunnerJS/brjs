@@ -2,18 +2,18 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 
 public class NodeList<N extends Node> {
 	private final Node node;
 	private final Class<N> nodeClass;
-	private final Map<String, N> namedNodes = new HashMap<>();
+	private final Map<String, N> namedNodes = new TreeMap<>();
 	private final List<NamedNodeLocator> namedNodeLocators = new ArrayList<>();
 	private MemoizedValue<List<N>> list;
 	

@@ -3,7 +3,9 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -168,5 +170,19 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		}
 		requestHandler.handle( logicalRequestPath, os);
 	}
+	
+	@Override
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
+		Set<SourceModule> sourceModules = new LinkedHashSet<>();
+		
+		for(String requirePath : requirePaths) {				
+			String canonicalRequirePath = assetLocation.canonicaliseRequirePath(requirePath);
+			SourceModule sourceModule = getSourceModule(canonicalRequirePath);
+			sourceModules.add(sourceModule);
+		}
+		
+		return new ArrayList<SourceModule>( sourceModules );
+	}
+	
 	
 }

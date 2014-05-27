@@ -171,10 +171,10 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		String pattern = "";
 		if (locale != null) {
 			// .*_en_GB.css
-			pattern = ".*" + locale;
+			pattern = ".*_" + locale;
 		} else if (browser != null) {
 			// .*_ie7.css
-			pattern = ".*" + browser;
+			pattern = ".*_" + browser;
 		} else {
 			// If we are looking for a CSS file without the locale or browser,
 			// then

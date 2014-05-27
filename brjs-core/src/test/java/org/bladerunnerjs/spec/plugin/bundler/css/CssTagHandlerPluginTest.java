@@ -7,7 +7,6 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class CssTagHandlerPluginTest extends SpecTest {
@@ -76,11 +75,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
 			"<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>");
 	}
-
-	@Ignore //standard bundle is currently not being pulled in
+	
 	@Test
-	public void themesFromAspectReferencedInCssTagsForWorbenchesAreIncludedInGeneratedTags() throws Exception {
-		given(aspect.theme("standard")).hasBeenCreated()
+	public void bladeThemesAreUsedInAWorkbenchEvenIfTheAspectDoesNotHaveThatTheme() throws Exception {
+		given(blade.theme("standard")).hasBeenCreated()
 			.and(workbench).indexPageHasContent("<@css.bundle theme=\"standard\"@/>\n");
 		when(workbench).pageLoaded(response, "en");
 		then(response).containsOrderedTextFragments(

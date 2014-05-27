@@ -2,8 +2,10 @@ package org.bladerunnerjs.spec.plugin.bundler.css;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +16,8 @@ public class CssContentPluginTest extends SpecTest {
 	private JsLib nonConformantLib;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer requestResponse = new StringBuffer();
+	private Workbench workbench;
+	private Blade blade;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -23,6 +27,8 @@ public class CssContentPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 			nonConformantLib = app.jsLib("non-conformant-lib");
 			bladerunnerConf = brjs.bladerunnerConf();
+			blade = app.bladeset("bs").blade("b1");
+			workbench = blade.workbench();
 	}
 	
 	@Test
@@ -257,4 +263,37 @@ public class CssContentPluginTest extends SpecTest {
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
+	
+	@Test
+	public void themesFromAspectReferencedInCssTagsForWorbenchesAreIncludedInBundle() throws Exception {
+		given(aspect.theme("standard")).hasBeenCreated()
+			.and(aspect.theme("standard")).containsFileWithContents("file.css", "ASPECT CSS")
+			.and(workbench).hasBeenCreated();
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", requestResponse);
+		then(requestResponse).containsText("ASPECT CSS");
+
+	}
+	
+	@Test
+	public void aspectLanguageSpecifcFilesHaveToHaveToBePrefixedWithA_ToBeBundled() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).indexPageRefersTo("appns.Class1")
+    		.and(aspect).containsFileWithContents("themes/standard/screen.css", "screen.css")
+    		.and(aspect).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
+    	when(app).requestReceived("/default-aspect/css/standard_en/bundle.css", requestResponse);
+    	then(requestResponse).containsText("style_en.css")
+    		.and(requestResponse).doesNotContainText("screen.css");
+	}
+	
+	@Test
+	public void bladeLanguageSpecifcFilesHaveToHaveToBePrefixedWithA_ToBeBundled() throws Exception {
+		given(blade).hasClass("appns/bs/b1/Class1")
+    		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+    		.and(blade).containsFileWithContents("themes/standard/screen.css", "screen.css")
+    		.and(blade).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
+    	when(app).requestReceived("/default-aspect/css/standard_en/bundle.css", requestResponse);
+    	then(requestResponse).containsText("style_en.css")
+    		.and(requestResponse).doesNotContainText("screen.css");
+	}
+	
 }

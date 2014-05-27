@@ -1,11 +1,14 @@
 package org.bladerunnerjs.model;
 
+import java.io.File;
+
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.yaml.YamlBladerunnerConf;
 
 public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
+	
 	public BladerunnerConf(BRJS brjs) throws ConfigException {
-		super(brjs, YamlBladerunnerConf.class, brjs.file("conf/bladerunner.conf"));
+		super(brjs, YamlBladerunnerConf.class, getConfigFilePath(brjs));
 	}
 	
 	public int getJettyPort() throws ConfigException {
@@ -49,4 +52,9 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 		reloadConfIfChanged();
 		return conf.LOGIN_MODULE_NAME;
 	}
+	
+	public static File getConfigFilePath(BRJS brjs) {
+		return brjs.conf().file("bladerunner.conf");
+	}
+	
 }

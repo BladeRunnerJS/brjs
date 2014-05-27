@@ -27,8 +27,7 @@ public class I18nFileAsset implements Asset
 	
 	public static final String I18N_REGEX = "([a-z]{2})(_([A-Z]{2}))?";
 	public static final String I18N_PROPERTIES_FILE_REGEX = I18N_REGEX+"\\.properties";
-	
-	private Pattern i18nPropertiesPattern = Pattern.compile(I18N_PROPERTIES_FILE_REGEX);
+	public static final Pattern I18N_PROPERTIES_FILE_REGEX_PATTERN = Pattern.compile(I18N_PROPERTIES_FILE_REGEX);
 	
 	private AssetLocation assetLocation;
 	private File assetFile;
@@ -106,7 +105,7 @@ public class I18nFileAsset implements Asset
 	
 	private String getMatchedValueFromPropertiesPattern(int groupNum)
 	{
-		Matcher m = i18nPropertiesPattern.matcher( getAssetName() );
+		Matcher m = I18N_PROPERTIES_FILE_REGEX_PATTERN.matcher( getAssetName() );
 		if (m.matches() && m.groupCount() >= groupNum)
 		{
 			return (m.group(groupNum) != null) ? m.group(groupNum) : "";

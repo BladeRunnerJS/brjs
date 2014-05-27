@@ -3,7 +3,10 @@ package org.bladerunnerjs.utility.reader;
 import java.io.IOException;
 import java.io.Reader;
 
-
+/*
+ * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
+ * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
+ */
 public class JsStringStrippingReader extends Reader
 {
 	private enum StringStripperState

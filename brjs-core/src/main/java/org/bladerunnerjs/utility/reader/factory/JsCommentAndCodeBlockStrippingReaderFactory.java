@@ -1,9 +1,13 @@
-package org.bladerunnerjs.utility.reader;
+package org.bladerunnerjs.utility.reader.factory;
 
 import java.io.IOException;
 import java.io.Reader;
 
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
+import org.bladerunnerjs.utility.reader.AssetReaderFactory;
+import org.bladerunnerjs.utility.reader.JsCodeBlockStrippingDependenciesReader;
+import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
+import org.bladerunnerjs.utility.reader.JsStringStrippingReader;
 
 public class JsCommentAndCodeBlockStrippingReaderFactory implements AssetReaderFactory {
 	
@@ -18,7 +22,7 @@ public class JsCommentAndCodeBlockStrippingReaderFactory implements AssetReaderF
 	public Reader createReader() throws IOException {
 		Reader commentStrippingReader = new JsCommentStrippingReader(sourceModule.getUnalteredContentReader(), false);
 		Reader commentStrippingAndStringStrippingReader = new JsStringStrippingReader(commentStrippingReader);
-		Reader commentStrippingAndStringStrippingAndCodeBlockStrippingReader = new JsCodeBlockStrippingReader(commentStrippingAndStringStrippingReader);
+		Reader commentStrippingAndStringStrippingAndCodeBlockStrippingReader = new JsCodeBlockStrippingDependenciesReader(commentStrippingAndStringStrippingReader);
 		
 		return commentStrippingAndStringStrippingAndCodeBlockStrippingReader;
 	}

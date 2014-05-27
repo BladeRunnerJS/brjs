@@ -17,7 +17,6 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
-import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -51,10 +50,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
 	private final NodeList<AppJsLib> jsLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
 	
-	private final MemoizedValue<List<AssetContainer>> assetContainers = new MemoizedValue<>("BRJS.assetContainers", root(), dir(), root().sdkLibsDir().dir());
-	private final MemoizedValue<List<AssetContainer>> nonAspectAssetContainers = new MemoizedValue<>("BRJS.nonAspectAssetContainers", root(), dir(), root().sdkLibsDir().dir());
-	private final MemoizedValue<List<JsLib>> nonBladeRunnerLibsList = new MemoizedValue<>("BRJS.nonBladeRunnerLibs", root(), dir(), root().sdkLibsDir().dir());
-	
 	private String name;
 	private AppConf appConf;
 	private final Logger logger;
@@ -74,7 +69,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	@Override
 	public File[] scopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {dir(), root().sdkLibsDir().dir(), root().conf().file("bladerunner.conf")};
+			scopeFiles = new File[] {dir(), root().sdkLibsDir(), BladerunnerConf.getConfigFilePath(root())};
 		}
 		
 		return scopeFiles;
@@ -85,44 +80,40 @@ public class App extends AbstractBRJSNode implements NamedNode
 	 * This is different to BundleableNode.getAssetContainers which returns only the valid AssetContainers for a given BundleableNode.
 	 */
 	public List<AssetContainer> getAllAssetContainers() {
-		return assetContainers.value(() -> {
-			List<AssetContainer> assetContainersList = new ArrayList<>();
-			
-			for(Aspect aspect : aspects()) {
-				assetContainersList.add(aspect);
-				addAllTestPacks(assetContainersList, aspect.testTypes());
-			}
-			
-			assetContainersList.addAll(getNonAspectAssetContainers());
-			
-			return assetContainersList;
-		});
+		List<AssetContainer> assetContainersList = new ArrayList<>();
+		
+		for(Aspect aspect : aspects()) {
+			assetContainersList.add(aspect);
+			addAllTestPacks(assetContainersList, aspect.testTypes());
+		}
+		
+		assetContainersList.addAll(getNonAspectAssetContainers());
+		
+		return assetContainersList;
 	}
 	
 	public List<AssetContainer> getNonAspectAssetContainers() {
-		return nonAspectAssetContainers.value(() -> {
-			List<AssetContainer> assetContainers = new ArrayList<>();
+		List<AssetContainer> assetContainers = new ArrayList<>();
+		
+		for(Bladeset bladeset : bladesets()) {
+			assetContainers.add(bladeset);
+			addAllTestPacks(assetContainers, bladeset.testTypes());
 			
-			for(Bladeset bladeset : bladesets()) {
-				assetContainers.add(bladeset);
-				addAllTestPacks(assetContainers, bladeset.testTypes());
-				
-				for(Blade blade : bladeset.blades()) {
-					assetContainers.add(blade);
-					addAllTestPacks(assetContainers, blade.testTypes());
-					assetContainers.add(blade.workbench());
-					addAllTestPacks(assetContainers, blade.workbench().testTypes());				
-				}
+			for(Blade blade : bladeset.blades()) {
+				assetContainers.add(blade);
+				addAllTestPacks(assetContainers, blade.testTypes());
+				assetContainers.add(blade.workbench());
+				addAllTestPacks(assetContainers, blade.workbench().testTypes());				
 			}
-			
-			for (JsLib jsLib : jsLibs())
-			{
-				assetContainers.add( jsLib );
-				addAllTestPacks(assetContainers, jsLib.testTypes());			
-			}
-			
-			return assetContainers;
-		});
+		}
+		
+		for (JsLib jsLib : jsLibs())
+		{
+			assetContainers.add( jsLib );
+			addAllTestPacks(assetContainers, jsLib.testTypes());			
+		}
+		
+		return assetContainers;
 	}
 	
 	private void addAllTestPacks(List<AssetContainer> assetContainers, List<TypedTestPack> typedTestPacks)
@@ -282,20 +273,18 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<JsLib> nonBladeRunnerLibs()
 	{
-		return nonBladeRunnerLibsList.value(() -> {
-			Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
-			
-			for (SdkJsLib lib : root().sdkNonBladeRunnerLibs())
-			{
-				libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
-			}
-			for (JsLib lib : nonBladeRunnerLibs.list())
-			{
-				libs.put(lib.getName(), lib );			
-			}
-			
-			return new ArrayList<JsLib>( libs.values() );
-		});
+		Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
+		
+		for (SdkJsLib lib : root().sdkNonBladeRunnerLibs())
+		{
+			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
+		}
+		for (JsLib lib : nonBladeRunnerLibs.list())
+		{
+			libs.put(lib.getName(), lib );			
+		}
+		
+		return new ArrayList<JsLib>( libs.values() );
 	}
 	
 	public JsLib nonBladeRunnerLib(String libName)

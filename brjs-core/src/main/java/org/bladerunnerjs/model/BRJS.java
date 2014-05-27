@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +76,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
-	private final Map<String, FileInfo> fileInfos = new HashMap<>();
+	private final Map<String, FileInfo> fileInfos = new TreeMap<>();
 	private final PluginAccessor pluginAccessor;
 	private final FileModificationService fileModificationService;
 	private final IO io = new IO();

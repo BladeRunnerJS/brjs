@@ -156,6 +156,20 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 			}
 		}
 	}
+	file("workspace/apps").listFiles().each {
+		if (it.isDirectory()) {
+			into ("apps/${it.name}/WEB-INF/lib") {
+				from configurations.systemApp
+				rename { String fileName ->
+					if ( !fileName.startsWith("brjs-") )
+					{
+						fileName = "brjs-"+fileName
+					}
+				}
+				exclude '*xom-*.jar'
+			}
+		}
+	}
 	from (configurations.testRunner)
 	{
 		into "sdk/libs/java/testRunner"
@@ -172,6 +186,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		delete file("workspace/sdk/libs/java")
 		delete file("workspace/sdk/docs")
 		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
 		//TODO: find a better way to do this so we dont copy files and then immediately delete them
@@ -403,6 +418,7 @@ task cleanWorkspaceFiles {
 			fileset(dir: 'workspace') {
 				include(name: '**/*')
 				exclude(name: 'sdk/system-applications/**/*')
+				exclude(name: 'apps/**/*')
 				exclude(name: 'sdk/libs/javascript/**/*')
 			}
 		}
@@ -413,6 +429,11 @@ task cleanWorkspaceFiles {
 		}
     	ant.delete(includeemptydirs: 'true') {
     		fileset(dir: 'workspace/sdk/system-applications') {
+    			include(name: '**/WEB-INF/lib/brjs-*.jar')
+    		}
+    	}
+    	ant.delete(includeemptydirs: 'true') {
+    		fileset(dir: 'workspace/apps') {
     			include(name: '**/WEB-INF/lib/brjs-*.jar')
     		}
     	}

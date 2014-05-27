@@ -208,7 +208,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		{
 			if (sourceModule instanceof NamespacedJsSourceModule)
 			{
-				List<String> packageList = Arrays.asList(sourceModule.getClassname().split("\\."));
+				List<String> packageList = Arrays.asList(sourceModule.getRequirePath().split("/"));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}
@@ -266,7 +266,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		if (dependentSourceModule.isEncapsulatedModule() && !globalizedModules.contains(dependentSourceModule))
 		{
 			globalizedModules.add(dependentSourceModule);
-			return dependentSourceModule.getClassname() + " = require('" + dependentSourceModule.getRequirePath() + "');\n";
+			String sourceModuleClassName = dependentSourceModule.getRequirePath().replaceAll("/", ".");
+			return sourceModuleClassName + " = require('" + dependentSourceModule.getRequirePath() + "');\n";
 		}
 		return "";
 	}

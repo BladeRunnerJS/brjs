@@ -1,9 +1,11 @@
-package org.bladerunnerjs.utility.reader;
+package org.bladerunnerjs.utility.reader.factory;
 
 import java.io.IOException;
 import java.io.Reader;
 
 import org.bladerunnerjs.model.Asset;
+import org.bladerunnerjs.utility.reader.AssetReaderFactory;
+import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
 
 public class JsCommentStrippingReaderFactory implements AssetReaderFactory {
 	
