@@ -1,7 +1,7 @@
 brjs.dashboard.app.model.workbench.WorkbenchScreen = function(oPresentationModel)
 {
 	this.m_oPresentationModel = oPresentationModel;
-	
+
 	this.visible = new br.presenter.property.WritableProperty(false);
 	this.workbenchUrl = new br.presenter.property.WritableProperty();
 	this.iFrameHeight = new br.presenter.property.WritableProperty( "200px" );
@@ -24,10 +24,6 @@ brjs.dashboard.app.model.workbench.WorkbenchScreen.prototype.displayWorkbench = 
 	this.visible.setValue(true);
 };
 
-brjs.dashboard.app.model.workbench.WorkbenchScreen.prototype.popoutWorkbench = function()
-{
-	this.m_oPresentationModel.getWindowOpenerService().openWindow(this.workbenchUrl.getValue());
-};
 brjs.dashboard.app.model.workbench.WorkbenchScreen.prototype._setIframeSize = function()
 {
 	var nIframeHeight = ( $(window).height() - 150 ) + "px";
