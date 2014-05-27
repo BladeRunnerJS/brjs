@@ -24,7 +24,7 @@ public class AppServeTest extends SpecTest {
 			alternateAspect = app.aspect("alternate");
 	}
 	
-	// TODO: we should create a full suite of logical app handling tests here, then pair down ServedAppTest and ServedAppBundleTest to only contain tests that need to go through a proper app server
+	// TODO: we should create a full suite of logical app handling tests here, then pare down ServedAppTest and ServedAppBundleTest to only contain tests that need to go through a proper app server
 	
 	@Test
 	public void defaultAspectBundlesCanBeRequested() throws Exception {

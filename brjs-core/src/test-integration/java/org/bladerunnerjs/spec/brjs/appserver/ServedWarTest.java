@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.command;
+package org.bladerunnerjs.spec.brjs.appserver;
 
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.bladerunnerjs.model.App;
@@ -12,7 +12,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class IntegrationWarCommandTest extends SpecTest {
+public class ServedWarTest extends SpecTest {
 	private App app;
 	private Server warServer = new Server(ServerUtility.getTestPort());
 	private StringBuffer forwarderPageResponse = new StringBuffer();
