@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
-import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
+import org.bladerunnerjs.utility.reader.factory.JsAndXmlCommentStrippingReaderFactory;
 
 /**
  * A linked asset file that refers to another AssetFile using a fully qualified name such as 'my.package.myClass'
@@ -81,7 +81,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	
 	private TrieBasedDependenciesCalculator getDependencyCalculator() {
 		if (trieBasedDependenciesCalculator == null) {
-			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsCommentStrippingReaderFactory(this), assetFile);
+			trieBasedDependenciesCalculator = new TrieBasedDependenciesCalculator(this, new JsAndXmlCommentStrippingReaderFactory(this), assetFile);
 		}
 		return trieBasedDependenciesCalculator;
 	}

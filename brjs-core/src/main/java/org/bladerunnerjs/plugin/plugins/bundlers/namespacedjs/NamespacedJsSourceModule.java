@@ -20,8 +20,8 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.utility.reader.JsCommentAndCodeBlockStrippingReaderFactory;
-import org.bladerunnerjs.utility.reader.JsCommentStrippingReaderFactory;
+import org.bladerunnerjs.utility.reader.factory.JsCommentAndCodeBlockStrippingReaderFactory;
+import org.bladerunnerjs.utility.reader.factory.JsCommentStrippingReaderFactory;
 
 import com.Ostermiller.util.ConcatReader;
 
