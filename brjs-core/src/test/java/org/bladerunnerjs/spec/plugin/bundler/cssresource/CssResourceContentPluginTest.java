@@ -269,7 +269,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(workbench).hasBeenCreated()
 			.and(sdkJsLib).containsFileWithContents("resources/dir1/dir2/someFile.txt", "someFile.txt contents");
-		when(app).requestReceived("workbench/bs/b1/v/dev/cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
+		when(workbench).requestReceived("cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}
 	

@@ -202,7 +202,7 @@ public class I18nContentPluginTest extends SpecTest
 		.and(blade).hasClass("appns/bs/b1/Class")
 		.and(blade).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=blade value")
 		.and(workbench).containsFileWithContents("resources/en.properties", "appns.bs.b1.property=workbench value");
-		when(app).requestReceived("workbench/bs/b1/v/dev/i18n/en_GB.js", response);
+		when(workbench).requestReceived("i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
 						"  \"appns.bs.b1.property\": \"workbench value\"\n"+

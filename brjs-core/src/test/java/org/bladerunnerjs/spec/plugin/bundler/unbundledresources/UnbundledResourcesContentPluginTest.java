@@ -50,7 +50,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		given(sysapp).hasBeenCreated()
 			.and(sysappAspect).hasBeenCreated()
 			.and(sysappAspect).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
-		when(sysapp).requestReceived("v/dev/unbundled-resources/someFile.txt", response);
+		when(sysappAspect).requestReceived("unbundled-resources/someFile.txt", response);
 		then(response).textEquals("some file contents");
 	}
 	
