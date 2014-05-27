@@ -77,8 +77,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void themesFromAspectReferencedInCssTagsForWorbenchesAreIncludedInGeneratedTags() throws Exception {
-		given(aspect.theme("standard")).hasBeenCreated()
+	public void bladeThemesAreUsedInAWorkbenchEvenIfTheAspectDoesNotHaveThatTheme() throws Exception {
+		given(blade.theme("standard")).hasBeenCreated()
 			.and(workbench).indexPageHasContent("<@css.bundle theme=\"standard\"@/>\n");
 		when(workbench).pageLoaded(response, "en");
 		then(response).containsOrderedTextFragments(

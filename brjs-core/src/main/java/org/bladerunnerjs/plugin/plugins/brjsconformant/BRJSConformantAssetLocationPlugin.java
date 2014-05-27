@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.model.AbstractResourcesAssetLocation;
-import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ChildSourceAssetLocation;
 import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
@@ -37,9 +37,9 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		List<AssetContainer> scopeAssetContainers = bundlableNode.scopeAssetContainers();
 		AssetLocation themedNodeResources;
 		if (bundlableNode instanceof Workbench) {
-			Aspect defaultAspect = bundlableNode.app().aspect("default");
-			themedNodeResources = defaultAspect.assetLocation("resources");
-			scopeAssetContainers.add(defaultAspect);
+			Blade blade = bundlableNode.root().locateAncestorNodeOfClass(bundlableNode, Blade.class);
+			themedNodeResources = blade.assetLocation("resources");
+			scopeAssetContainers.add(blade);
 		} else {
 			themedNodeResources = bundlableNode.assetLocation("resources");
 		}
