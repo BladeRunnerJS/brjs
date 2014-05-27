@@ -5,8 +5,8 @@ var i18n = require('br/I18n');
 
 /**
  * @name br.services.BRHtmlResourceService
- * @constructor
  * @class
+ * @constructor
  * This class provides access to HTML templates loaded via the HTML bundler.
  * This is the default HtmlResourceService in BladeRunnerJS
  *
@@ -46,7 +46,10 @@ BRHtmlResourceService.prototype.getHTMLTemplate = function (templateId) {
 		this.templates[templateId] = template;
 	}
 
-	return template.cloneNode(true);
+    if (template != null) {
+        return template.cloneNode(true);
+    }
+    return null;
 };
 
 /**
