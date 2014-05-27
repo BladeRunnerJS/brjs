@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -18,6 +19,7 @@ public class CssContentPluginTest extends SpecTest {
 	private StringBuffer requestResponse = new StringBuffer();
 	private Workbench workbench;
 	private Blade blade;
+	private Bladeset bladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -27,7 +29,8 @@ public class CssContentPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 			nonConformantLib = app.jsLib("non-conformant-lib");
 			bladerunnerConf = brjs.bladerunnerConf();
-			blade = app.bladeset("bs").blade("b1");
+			bladeset = app.bladeset("bs");
+			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
 	}
 	
@@ -295,5 +298,15 @@ public class CssContentPluginTest extends SpecTest {
     	then(requestResponse).containsText("style_en.css")
     		.and(requestResponse).doesNotContainText("screen.css");
 	}
+	
+	@Test
+	public void bladesetCssIsBundledEvenWhenThereIsNoJS() throws Exception {
+		given(blade).hasClass("appns/bs/b1/Class1")
+			.and(bladeset).containsFileWithContents("resources/style.css", "BLADESET STYLE")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
+		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("BLADESET STYLE");
+	}
+	
 	
 }

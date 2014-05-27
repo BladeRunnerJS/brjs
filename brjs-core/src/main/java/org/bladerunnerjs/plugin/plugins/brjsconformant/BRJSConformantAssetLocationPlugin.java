@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.model.AbstractResourcesAssetLocation;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.BladeResourcesAssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ChildSourceAssetLocation;
 import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
@@ -46,13 +46,13 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		
 		List<String> validThemeNames = new ArrayList<>();
 		if (themedNodeResources != null) {
-			for ( ThemesAssetLocation theme : ((AbstractResourcesAssetLocation) themedNodeResources).themes() ) {
+			for ( ThemesAssetLocation theme : ((ResourcesAssetLocation) themedNodeResources).themes() ) {
 				validThemeNames.add(theme.getThemeName());
 			}
 		}
 		
 		for(AssetContainer assetContainer : scopeAssetContainers) {
-			AbstractResourcesAssetLocation resourceAssetLocation = (AbstractResourcesAssetLocation) assetContainer.assetLocation("resources");
+			ResourcesAssetLocation resourceAssetLocation = (ResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
 			if(resourceAssetLocation != null) {
 				for(ThemesAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
@@ -120,7 +120,11 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 				break;
 			
 			case "resources":
-				assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
+				if (assetContainer instanceof Blade) {
+					assetLocation = new BladeResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
+				} else {
+					assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
+				}
 				break;
 			
 			case "src":
