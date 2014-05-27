@@ -1,13 +1,22 @@
 # These ignores work such that they exclude files (not direcotries) using *, allowing only explicit includes to override this rule
 # See http://stackoverflow.com/questions/1248570/git-ignore-everything-except-subdirectory for details
 
-workspace/*
-!workspace/sdk
+# Note: DO NOT try to use a wildcard to ignore all of workspace. You can't unignore files whose parent directory is ignored.
+# see http://git-scm.com/docs/gitignore for info
+
+workspace/LICENSE
+workspace/README.txt
+workspace/apps
+workspace/conf
+workspace/generated
+workspace/js-patches
+workspace/licenses
+workspace/generated
+workspace/test-results
+
 workspace/sdk/*
-!workspace/sdk/libs
-workspace/sdk/libs/java/*
+!workspace/sdk/libs/javascript
 !workspace/sdk/system-applications
-workspace/sdk/system-applications/*
 
 # TODO: delete these lines when no longer needed -- these lines are needed to work around 2 separate bugs in the Java git implementation (EGit) provided with Eclipse Kepler
 #   1. Egit doesn't currently support recursive wildcards (**) as used in the main brjs .gitignore

@@ -148,7 +148,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
 		}
 		
-		fileUtil.write(sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');", true);
+		fileUtil.write( sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');" + getClassBody(sourceClass) );
 		
 		return builderChainer;
 	}

@@ -27,13 +27,13 @@ public class AppConfTest extends SpecTest {
 	
 	
 	// TODO: add a test that shows the object updates if the conf file is modified
-	@Ignore
 	@Test
 	public void appConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(app).appConf().write();
-		then(app).fileHasContents("app.conf", "requirePrefix: app1\nlocales: en");
+		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: appns");
 	}
+	
 	@Ignore
 	@Test
 	public void exceptionThrownWhenSettingInvalidAppNameAsDefaultNamespace() throws Exception {
@@ -72,7 +72,7 @@ public class AppConfTest extends SpecTest {
 	public void readingAnAppConfFileWithMissingLocaleWillUseADefault() throws Exception {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "requirePrefix: appns");
-		then(app.appConf().getLocales()).textEquals("en");
+		then(app.appConf().getDefaultLocale()).textEquals("en");
 	}
 
 	@Test

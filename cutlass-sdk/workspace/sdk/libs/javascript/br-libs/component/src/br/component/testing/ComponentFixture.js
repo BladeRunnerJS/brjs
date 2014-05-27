@@ -9,21 +9,22 @@ var Utility = require('br/core/Utility');
 
 /**
  * Constructs a <code>ComponentFixture</code>.
- * 
+ *
+ * @name br.component.testing.ComponentFixture
  * @class
  * @constructor
- * 
+ *
  * @param {String} sXml the component XML required to create the component. Required.
- * @param {br.component.testing.ComponentModelFixture} oModelFixture the presentation model fixture. Required. 
+ * @param {br.component.testing.ComponentModelFixture} oModelFixture the presentation model fixture. Required.
  * @param {br.test.ViewFixture} oViewFixture the view fixture. Optional.
  *
- * The <code>ComponentFixture</code> serves to create components using the ComponentFactory when these are 
- * required in the system under test. 
- * 
- * <p>In addition to creating and opening the component, the ComponentFixture defines several sub-fixtures 
- * to be added to the test runner, enabling the testing and manipulation of the view and presentation model 
+ * The <code>ComponentFixture</code> serves to create components using the ComponentFactory when these are
+ * required in the system under test.
+ *
+ * <p>In addition to creating and opening the component, the ComponentFixture defines several sub-fixtures
+ * to be added to the test runner, enabling the testing and manipulation of the view and presentation model
  * of the component.</p>
- * 
+ *
  * @implements br.test.Fixture
  */
 function ComponentFixture(sXml, oModelFixture, oViewFixture) {
@@ -33,12 +34,12 @@ function ComponentFixture(sXml, oModelFixture, oViewFixture) {
 				"and with a valid presentation model fixture which is an instance of " +
 				"br.component.testing.ComponentModelFixture.");
 	}
-	
+
 	/**
 	 * @private
 	 */
 	this.m_sXml = sXml;
-	
+
 	/**
 	 * @private
 	 */
@@ -47,19 +48,19 @@ function ComponentFixture(sXml, oModelFixture, oViewFixture) {
 	 * @private
 	 */
 	this.m_oViewFixture = oViewFixture || new ViewFixture();
-	
+
 	// TODO: find out why we need this as setUp() should be called before the test starts anyway
 	this.setUp();
-	
+
 	this.m_fOnOpenCallback = null;
 };
 
 br.implement(ComponentFixture, Fixture);
 
 /**
- * Upon set-up of the ComponentFixture, the ComponentFactory is configured not to create an ErrorComponent. If 
+ * Upon set-up of the ComponentFixture, the ComponentFactory is configured not to create an ErrorComponent. If
  * no component can be created with the given XML configuration, an exception will be thrown instead.
- * 
+ *
  * @see br.test.Fixture#setUp
  */
 ComponentFixture.prototype.setUp = function() {
@@ -76,7 +77,7 @@ ComponentFixture.prototype.setUp = function() {
 /**
  * Upon tear-down of the ComponentFixture, the component created is closed and the ComponentFactory is re-configured
  * to its original settings.
- * 
+ *
  * @see br.test.Fixture#tearDown
  */
 ComponentFixture.prototype.tearDown = function() {
@@ -101,10 +102,10 @@ ComponentFixture.prototype.addViewFixtureHandlers = function(viewHandlersMap) {
 
 /**
  * ComponentFixture handles the 'opened' property.
- * 
+ *
  * @param {String} sProperty name of the property
  * @see br.test.Fixture#canHandleProperty
- * 
+ *
  * @type boolean
  */
 ComponentFixture.prototype.canHandleProperty = function(sProperty) {
@@ -112,12 +113,12 @@ ComponentFixture.prototype.canHandleProperty = function(sProperty) {
 };
 
 /**
- * This method creates and opens the component created, and sets it on the presentation model and 
+ * This method creates and opens the component created, and sets it on the presentation model and
  * view sub-fixtures so that tests may manipulate model properties and the view elements.
- * 
+ *
  * @param {String} sProperty name of the property
  * @param {String} vValue value of the property
- * 
+ *
  * @see br.test.Fixture#doGiven
  */
 ComponentFixture.prototype.doGiven = function(sProperty, vValue) {
@@ -131,10 +132,10 @@ ComponentFixture.prototype.doGiven = function(sProperty, vValue) {
 
 /**
  * doWhen is not supported on the ComponentFixture.
- * 
+ *
  * @param {String} sProperty name of the property
  * @param {String} vValue value of the property
- * 
+ *
  * @see br.test.Fixture#doWhen
  */
 ComponentFixture.prototype.doWhen = function(sProperty, vValue) {
@@ -143,10 +144,10 @@ ComponentFixture.prototype.doWhen = function(sProperty, vValue) {
 
 /**
  * doThen is not supported on the ComponentFixture.
- * 
+ *
  * @param {String} sProperty name of the property
  * @param {String} vValue value of the property
- * 
+ *
  * @see br.test.Fixture#doThen
  */
 ComponentFixture.prototype.doThen = function(sProperty, vValue) {
@@ -176,9 +177,9 @@ ComponentFixture.prototype.canHandleExactMatch = function() {
 };
 
 /**
- * This method can be called to set a single function on the fixture which will be executed whenever the 
+ * This method can be called to set a single function on the fixture which will be executed whenever the
  * component is created and opened.
- * 
+ *
  * @param {function} fCallback the function to execute on opening the component
  */
 ComponentFixture.prototype.onOpen = function(fCallback) {
@@ -187,7 +188,7 @@ ComponentFixture.prototype.onOpen = function(fCallback) {
 
 /**
  * Tear down this fixture and and recreate the component with the passed in xml string.
- * 
+ *
  * @param {String} sXml the xml string for the component.
  */
 ComponentFixture.prototype.tearDownOldComponentAndRecreateWithNewXML = function(sXml) {
@@ -211,15 +212,15 @@ ComponentFixture.prototype.getComponent = function() {
  * @private
  */
 ComponentFixture.prototype._createComponent = function(sXml) {
-	
+
 	var sXMLRootMatch = /^\s*<([-A-Za-z0-9_.]+)/;
 	var sType = ((sXml)?sXml.match(sXMLRootMatch)[1]:null);
-	
+
 	var Component = Utility.locate(sType, window);
 	if(!Component){
 		var Component = AliasRegistry.getClass( sType );
 	}
-	
+
 	var oComponent = null;
 	if (Component.createFromXml) {
 		oComponent = Component.createFromXml(sXml);
@@ -227,13 +228,13 @@ ComponentFixture.prototype._createComponent = function(sXml) {
 	else if (Component.deserialize) {
 		oComponent = Component.deserialize(sXml);
 	}
-	
+
 	this._setComponent(oComponent);
 
 	if (this.m_fOnOpenCallback !== null) {
 		this.m_fOnOpenCallback(oComponent);
 	}
-	
+
 	oComponent.setDisplayFrame(this.m_oComponentFrame);
 };
 
@@ -252,13 +253,13 @@ ComponentFixture.prototype._setElement = function(eElement) {
 	var eComponentContainer = document.createElement('div');
 	eComponentContainer.style.width = nComponentWidth + "px"; //We need a container for the component due to failing scrolling tests in
 	eComponentContainer.style.height = nComponentHeight + "px"; //grid CTs, the last row was being hidden by the horizontal scroll bar.
-	
+
 	eComponentContainer.appendChild(eElement);
 
 	this.m_oViewFixture.setViewElement(eElement);
-	
+
 	document.body.appendChild(eComponentContainer);
-	
+
 	this.m_oComponentFrame.width = nComponentWidth;
 	this.m_oComponentFrame.height = nComponentHeight;
 	this.m_oComponentFrame.state = Frame.NORMAL;
@@ -266,7 +267,7 @@ ComponentFixture.prototype._setElement = function(eElement) {
 
 	this.m_oComponentFrame.isContentVisible = true;
 	this.m_oComponentFrame.trigger('show');
-	
+
 	this.m_oComponentFrame.isFocussed = true;
 	this.m_oComponentFrame.trigger('focus');
 };

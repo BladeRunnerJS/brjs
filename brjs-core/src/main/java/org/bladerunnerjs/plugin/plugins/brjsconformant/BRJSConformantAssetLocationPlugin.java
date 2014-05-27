@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bladerunnerjs.model.AbstractResourcesAssetLocation;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.Blade;
+import org.bladerunnerjs.model.BladeResourcesAssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ChildSourceAssetLocation;
 import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
@@ -19,7 +20,6 @@ import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestSourceAssetLocation;
 import org.bladerunnerjs.model.ThemesAssetLocation;
 import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.model.WorkbenchResourcesAssetLocation;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -34,14 +34,31 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		
-		for(AssetContainer assetContainer : bundlableNode.assetContainers()) {
-			AbstractResourcesAssetLocation resourceAssetLocation = (AbstractResourcesAssetLocation) assetContainer.assetLocation("resources");
+		List<AssetContainer> scopeAssetContainers = bundlableNode.scopeAssetContainers();
+		AssetLocation themedNodeResources;
+		if (bundlableNode instanceof Workbench) {
+			Blade blade = bundlableNode.root().locateAncestorNodeOfClass(bundlableNode, Blade.class);
+			themedNodeResources = blade.assetLocation("resources");
+			scopeAssetContainers.add(blade);
+		} else {
+			themedNodeResources = bundlableNode.assetLocation("resources");
+		}
+		
+		List<String> validThemeNames = new ArrayList<>();
+		if (themedNodeResources != null) {
+			for ( ThemesAssetLocation theme : ((ResourcesAssetLocation) themedNodeResources).themes() ) {
+				validThemeNames.add(theme.getThemeName());
+			}
+		}
+		
+		for(AssetContainer assetContainer : scopeAssetContainers) {
+			ResourcesAssetLocation resourceAssetLocation = (ResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
 			if(resourceAssetLocation != null) {
 				for(ThemesAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
 					String themeName = themeAssetLocation.getThemeName();
 					
-					if(!themeName.equals("common")) {
+					if (!themeName.equals("common") && validThemeNames.contains(themeName) ) {
 						themeNames.add(themeName);
 					}
 					
@@ -65,7 +82,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
-		assetLocationDirectories.add("");
+		assetLocationDirectories.add(".");
 		assetLocationDirectories.add("resources");
 		assetLocationDirectories.add("src");
 		assetLocationDirectories.add("src-test");
@@ -98,15 +115,14 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		File dir = assetContainer.file(dirPath);
 		
 		switch(dirPath) {
-			case "":
+			case ".":
 				assetLocation = new BRJSConformantRootAssetLocation(assetContainer.root(), assetContainer, dir);
 				break;
 			
 			case "resources":
-				if (assetContainer instanceof Workbench) {
-					assetLocation = new WorkbenchResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
-				}
-				else {
+				if (assetContainer instanceof Blade) {
+					assetLocation = new BladeResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
+				} else {
 					assetLocation = new ResourcesAssetLocation(assetContainer.root(), assetContainer, dir);
 				}
 				break;

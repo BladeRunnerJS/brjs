@@ -47,6 +47,10 @@ public class AssetContainerVerifier {
 			String expectedAssetLocation = expectedAssetLocations[i++];
 			String actualDependentAssetLocationPath = RelativePathUtility.get(assetContainer.dir(), actualAssetLocation.dir());
 			
+			if(actualDependentAssetLocationPath.equals("")) {
+				actualDependentAssetLocationPath = ".";
+			}
+			
 			assertEquals("Asset location " + i + " differs from what's expected.", expectedAssetLocation, actualDependentAssetLocationPath);
 		}
 	}

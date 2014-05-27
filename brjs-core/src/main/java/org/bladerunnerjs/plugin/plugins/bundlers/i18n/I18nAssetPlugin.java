@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.File;
-import java.util.regex.Pattern;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
@@ -12,7 +11,6 @@ import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class I18nAssetPlugin extends AbstractAssetPlugin
 {
-	private Pattern i18nPropertiesFile = Pattern.compile(I18nAssetFile.I18N_PROPERTIES_FILE_REGEX);
 	
 	@Override
 	public void setBRJS(BRJS brjs)
@@ -21,11 +19,11 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 	
 	@Override
 	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
-		return i18nPropertiesFile.matcher(assetFile.getName()).matches();
+		return I18nFileAsset.I18N_PROPERTIES_FILE_REGEX_PATTERN.matcher(assetFile.getName()).matches();
 	}
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		return new I18nAssetFile(assetLocation, assetFile.getParentFile(), assetFile.getName());
+		return new I18nFileAsset(assetFile, assetLocation);
 	}
 }

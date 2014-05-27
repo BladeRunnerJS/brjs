@@ -6,7 +6,6 @@ import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
-import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
@@ -18,11 +17,6 @@ public class AliasAsset implements LinkedAsset {
 	
 	public AliasAsset(AliasDefinition alias) {
 		this.alias = alias;
-	}
-	
-	@Override
-	public void initialize(AssetLocation assetLocation, File dir, String assetName) throws AssetFileInstantationException {
-		// do nothing
 	}
 	
 	@Override

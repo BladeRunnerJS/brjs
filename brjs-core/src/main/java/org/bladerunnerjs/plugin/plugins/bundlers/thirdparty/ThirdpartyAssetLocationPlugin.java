@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,14 +28,14 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
 		if((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists())) {
-			assetLocationDirectories.add("");
+			assetLocationDirectories.add(".");
 		}
 		
 		return assetLocationDirectories;
 	}
 	
 	public List<String> getSeedAssetLocationDirectories(AssetContainer assetContainer) {
-		return new ArrayList<>();
+		return Collections.emptyList();
 	}
 	
 	@Override

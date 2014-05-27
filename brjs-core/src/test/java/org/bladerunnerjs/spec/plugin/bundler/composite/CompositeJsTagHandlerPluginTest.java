@@ -45,7 +45,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/appns/Class1.js", "namespaced-js/package-definitions.js", "namespaced-js/globalize-extra-classes.js", "aliasing/bundle.js");
+		then(pageResponse).containsRequests("../v/dev/node-js/module/appns/Class1.js", "../v/dev/namespaced-js/package-definitions.js", "../v/dev/namespaced-js/globalize-extra-classes.js", "../v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -54,21 +54,21 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInProd(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("js/prod/en_GB/combined/bundle.js");
+		then(pageResponse).containsText("/js/prod/combined/bundle.js");
 	}
 	
 	@Test
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("namespaced-js/package-definitions.js", "namespaced-js/globalize-extra-classes.js", "aliasing/bundle.js");
+		then(pageResponse).containsRequests("../v/dev/namespaced-js/package-definitions.js", "../v/dev/namespaced-js/globalize-extra-classes.js", "../v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
 	public void devMinifierAttributeCanAllowJsFilesToBeCombinedEvenInDev() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle dev-minifier='combined'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("js/dev/en_GB/combined/bundle.js");
+		then(pageResponse).containsRequests("../v/dev/js/dev/combined/bundle.js");
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("node-js/module/appns/Class1.js", "namespaced-js/package-definitions.js", "namespaced-js/globalize-extra-classes.js", "aliasing/bundle.js");
+		then(pageResponse).containsRequests("../v/dev/node-js/module/appns/Class1.js", "../v/dev/namespaced-js/package-definitions.js", "../v/dev/namespaced-js/globalize-extra-classes.js", "../v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -130,6 +130,8 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	// Workbench
 	@Test
 	public void seperateScriptTagsAreGeneratedInTheCorrectOrderForWorkbenches() throws Exception {
+		given(exceptions).arentCaught();
+		
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1")
 			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js \n"+"exports: thirdpartylib")
@@ -142,11 +144,10 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 					"appns.Class1\n");
 		when(workbench).pageLoaded(pageResponse, "en_GB");
 		then(pageResponse).containsOrderedTextFragments(
-				"<script type='text/javascript' src='thirdparty/thirdpartyLib/bundle.js'></script>", 
-				"<script type='text/javascript' src='namespaced-js/package-definitions.js'></script>",
-				"<script type='text/javascript' src='namespaced-js/module/appns/bs/b1/Class1.js'></script>",
-				"<script type='text/javascript' src='namespaced-js/module/appns/Class1.js'></script>",
-				"<script type='text/javascript' src='aliasing/bundle.js'></script>",
+				"<script type='text/javascript' src='../v/dev/thirdparty/thirdpartyLib/bundle.js'></script>", 
+				"<script type='text/javascript' src='../v/dev/namespaced-js/package-definitions.js'></script>",
+				"<script type='text/javascript' src='../v/dev/namespaced-js/module/appns/bs/b1/Class1.js'></script>",
+				"<script type='text/javascript' src='../v/dev/aliasing/bundle.js'></script>",
 				"appns.bs.b1.Class1",
 				"appns.Class1");
 	}

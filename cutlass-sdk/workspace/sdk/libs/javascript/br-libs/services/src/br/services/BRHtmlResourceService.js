@@ -4,8 +4,9 @@ var HtmlResourceService = require('br/services/HtmlResourceService');
 var i18n = require('br/I18n');
 
 /**
- * @constructor
+ * @name br.services.BRHtmlResourceService
  * @class
+ * @constructor
  * This class provides access to HTML templates loaded via the HTML bundler.
  * This is the default HtmlResourceService in BladeRunnerJS
  *
@@ -15,7 +16,7 @@ var i18n = require('br/I18n');
  */
 function BRHtmlResourceService(url) {
 	/** @private */
-	this.url = url || "bundle.html";
+	this.url = url || "../v/" + new Date().getTime() + "/bundle.html";
 
 	/** @private */
 	this.templates = {};
@@ -45,7 +46,10 @@ BRHtmlResourceService.prototype.getHTMLTemplate = function (templateId) {
 		this.templates[templateId] = template;
 	}
 
-	return template.cloneNode(true);
+    if (template != null) {
+        return template.cloneNode(true);
+    }
+    return null;
 };
 
 /**
@@ -79,13 +83,10 @@ function getTemplate(template) {
 			// First clone the contents of the template to avoid modifying the original as we will be reparenting.
 			var docFrag = document.createDocumentFragment(),
 				tempClone = template.cloneNode(true),
-				children = tempClone.childNodes,
-				childCount = children.length,
-				child = null;
-
-			for (var i = 0; i < childCount; i++) {
-				child = children[i];
-				docFrag.appendChild(child);
+				children = tempClone.childNodes;
+			
+			while(children.length > 0) {
+				docFrag.appendChild(children[0]);
 			}
 
 			template = docFrag;

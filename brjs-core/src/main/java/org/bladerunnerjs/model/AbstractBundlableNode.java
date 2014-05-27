@@ -3,9 +3,9 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -26,17 +26,13 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.utility.LogicalRequestHandler;
-
-import com.google.common.base.Joiner;
+import org.bladerunnerjs.utility.BundlableNodeRequestHandler;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private AliasesFile aliasesFile;
-	private Map<String, AssetContainer> assetContainers = new HashMap<>();
-	private LogicalRequestHandler requestHandler;
+	private BundlableNodeRequestHandler requestHandler;
 	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
 	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
-	private final Map<String, MemoizedValue<List<AssetContainer>>> potentialAssetContainersSet = new HashMap<>();
 	
 	public AbstractBundlableNode(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -92,7 +88,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public SourceModule getSourceModule(String requirePath) throws RequirePathException {
 		SourceModule sourceModule = null;
 		
-		for(AssetContainer assetContainer : getPotentialAssetContainers(requirePath)) {
+		for(AssetContainer assetContainer : scopeAssetContainers()) {
 			SourceModule locationSourceModule = assetContainer.sourceModule(requirePath);
 			
 			if(locationSourceModule != null) {
@@ -152,7 +148,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 		return aliasDefinitionFilesList.value(() -> {
 			List<AliasDefinitionsFile> aliasDefinitionFiles = new ArrayList<>();
 			
-			for(AssetContainer assetContainer : assetContainers()) {
+			for(AssetContainer assetContainer : scopeAssetContainers()) {
 				for(AssetLocation assetLocation : assetContainer.assetLocations()) {
 					AliasDefinitionsFile aliasDefinitionsFile = assetLocation.aliasDefinitionsFile();
 					
@@ -170,81 +166,23 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		if (requestHandler == null)
 		{
-			requestHandler = new LogicalRequestHandler(this);
+			requestHandler = new BundlableNodeRequestHandler(this);
 		}
 		requestHandler.handle( logicalRequestPath, os);
 	}
 	
 	@Override
-	public List<AssetContainer> scopeAssetContainers() {
-		return assetContainers();
-	}
-	
-	private List<AssetContainer> getPotentialAssetContainers(String requirePath) {
-		if(!potentialAssetContainersSet.containsKey(requirePath)) {
-			potentialAssetContainersSet.put(requirePath, new MemoizedValue<>("BundlableNode.potentialAssetContainersList#", root(), root().dir()));
+	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
+		Set<SourceModule> sourceModules = new LinkedHashSet<>();
+		
+		for(String requirePath : requirePaths) {				
+			String canonicalRequirePath = assetLocation.canonicaliseRequirePath(requirePath);
+			SourceModule sourceModule = getSourceModule(canonicalRequirePath);
+			sourceModules.add(sourceModule);
 		}
 		
-		MemoizedValue<List<AssetContainer>> potentialAssetContainersList = potentialAssetContainersSet.get(requirePath);
-		
-		return potentialAssetContainersList.value(() -> {
-			List<AssetContainer> potentialAssetContainers = new ArrayList<>();
-			int requirePrefixSize = 0;
-			AssetContainer prevAssetContainer, nextAssetContainer = null;
-			boolean assetContainersMayStillExist = true;
-			
-			do {
-				String requirePrefix = getRequirePrefix(requirePath, ++requirePrefixSize);
-				
-				if(requirePrefix == null) {
-					assetContainersMayStillExist = false;
-				}
-				else {
-					prevAssetContainer = nextAssetContainer;
-					nextAssetContainer = assetContainers .get(requirePrefix);
-					
-					if(nextAssetContainer != null) {
-						potentialAssetContainers.add(nextAssetContainer);
-					}
-					else if(moreAssetContainersMayExistOnDisk(requirePrefixSize, prevAssetContainer)) {
-						addMissingAssetContainers(requirePath, potentialAssetContainers);
-					}
-					else {
-						assetContainersMayStillExist = false;
-					}
-				}
-			} while(assetContainersMayStillExist);
-			
-			return potentialAssetContainers;
-		});
+		return new ArrayList<SourceModule>( sourceModules );
 	}
 	
-	private String getRequirePrefix(String requirePath, int i) {
-		String[] pathSegments = requirePath.split("/", 1);
-		
-		return (pathSegments.length != i) ? null : Joiner.on("/").join(pathSegments);
-	}
 	
-	private boolean moreAssetContainersMayExistOnDisk(int requirePrefixSize, AssetContainer prevAssetContainer) {
-		boolean moreAssetContainersMayExistOnDisk = true;
-		
-		if(requirePrefixSize == 3) {
-			moreAssetContainersMayExistOnDisk = false;
-		}
-		else if((requirePrefixSize == 2) && !(prevAssetContainer instanceof Aspect)) {
-			moreAssetContainersMayExistOnDisk = false;
-		}
-		
-		return moreAssetContainersMayExistOnDisk;
-	}
-	
-	private void addMissingAssetContainers(String requirePath, List<AssetContainer> potentialAssetContainers) {
-		for(AssetContainer assetContainer : assetContainers()) {
-			assetContainers.put(assetContainer.requirePrefix(), assetContainer);
-			
-			if(requirePath.startsWith(assetContainer.requirePrefix()) && !potentialAssetContainers.contains(assetContainer)) {
-				potentialAssetContainers.add(assetContainer);
-			}
-		}
-	}
 }

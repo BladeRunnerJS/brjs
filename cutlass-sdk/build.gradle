@@ -27,9 +27,7 @@ dependencies {
 	system dependency('selenium-java')
 	system dependency('jetty-jsp')
 
-	application project(path: ':bladerunner-common-servlets')
-	application project(path: ':bladerunner-prod-servlets')
-	application dependency('javassist')
+	application project(path: ':brjs-servlet')
 
 	javadocs project(path: ':brjs-core', configuration:'javadocs')
 
@@ -158,6 +156,20 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 			}
 		}
 	}
+	file("workspace/apps").listFiles().each {
+		if (it.isDirectory()) {
+			into ("apps/${it.name}/WEB-INF/lib") {
+				from configurations.systemApp
+				rename { String fileName ->
+					if ( !fileName.startsWith("brjs-") )
+					{
+						fileName = "brjs-"+fileName
+					}
+				}
+				exclude '*xom-*.jar'
+			}
+		}
+	}
 	from (configurations.testRunner)
 	{
 		into "sdk/libs/java/testRunner"
@@ -174,6 +186,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		delete file("workspace/sdk/libs/java")
 		delete file("workspace/sdk/docs")
 		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 	}
 	doLast {
 		//TODO: find a better way to do this so we dont copy files and then immediately delete them
@@ -260,6 +273,59 @@ createTestTask "exampleAppsTestJsFirefox", "../apps/", "ALL", "firefox"
 exampleAppsTestJsFirefox.dependsOn extractExampleApps
 
 task exampleAppsTestJs, dependsOn: [exampleAppsTestJsChrome, exampleAppsTestJsFirefox], {}
+
+ext.jsDocTmpAppName = "jsdoc-tmp"
+task cleanJsDocTmpApp, {
+	outputs.upToDateWhen { false }
+	doFirst {
+		delete file("workspace/apps/${jsDocTmpAppName}")
+	}
+}
+
+task createJsDocTmpApp, dependsOn: cleanJsDocTmpApp, {
+	doFirst {
+		exec {
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["create-app", jsDocTmpAppName]
+			workingDir file("workspace/sdk")
+		}
+	}
+}
+
+task createSdkJsDocs, dependsOn: createJsDocTmpApp, {
+	doFirst {
+		exec {
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["jsdoc", jsDocTmpAppName]
+			workingDir file("workspace/sdk")
+		}
+	}
+}
+
+
+/*
+
+TODO: add task to publish JS and Java docs
+
+Steps:
+- create the docs (done)
+- clone the docs repo (brjs-api-docs?)
+- copy over docs
+ - suggested folder structure:
+    /v0.x
+      /js
+	 	 /java
+    /v0.y
+			/js
+			/java
+- git push - using same API key used to create the release
+
+Thoughts:
+- can we do this all via the github API?
+- can we use the API key?
+- we might need a note about the automated deployment and how to raise an issue
+
+*/
+
+
 
 ext.explodedSdkDir = "${project.buildDir}/exploded"
 
@@ -352,6 +418,7 @@ task cleanWorkspaceFiles {
 			fileset(dir: 'workspace') {
 				include(name: '**/*')
 				exclude(name: 'sdk/system-applications/**/*')
+				exclude(name: 'apps/**/*')
 				exclude(name: 'sdk/libs/javascript/**/*')
 			}
 		}
@@ -365,11 +432,18 @@ task cleanWorkspaceFiles {
     			include(name: '**/WEB-INF/lib/brjs-*.jar')
     		}
     	}
+    	if (file('workspace/apps').exists()) {
+        	ant.delete(includeemptydirs: 'true') {
+        		fileset(dir: 'workspace/apps') {
+        			include(name: '**/WEB-INF/lib/brjs-*.jar')
+        		}
+        	}
+    	}
 	}
 }
 
 clean {
-	dependsOn cleanWorkspaceFiles
+	dependsOn = [cleanWorkspaceFiles, cleanJsDocTmpApp]
 }
 
 

@@ -24,13 +24,10 @@ public interface BundlableNode extends Node, AssetContainer {
 	List<AssetLocation> seedAssetLocations();
 	List<LinkedAsset> seedAssets();
 	
-	/**
-	 * Returns all AssetContainers that contain resources that can potentially be bundled for this BundleableNode
-	 */
-	List<AssetContainer> assetContainers();
 	BundleSet getBundleSet() throws ModelOperationException;
 	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException;
 	List<AliasDefinitionsFile> aliasDefinitionFiles();
 	
 	void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
+	List<SourceModule> getSourceModules(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
 }

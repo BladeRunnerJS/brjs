@@ -28,7 +28,7 @@ public class LocaleHelper
 			throw new ConfigException("No locales have been defined for the app '"+app.getName()+"', an empty locale will be used.");
 		}
 		
-		String[] supportedLocales = appConf.getLocales().split(",");
+		String[] supportedLocales = appConf.getLocales();
 		supportedLocales = StringUtils.stripAll(supportedLocales);
 		
 		String cookieLocale = getLocaleFromCookie(request, Arrays.asList(supportedLocales));

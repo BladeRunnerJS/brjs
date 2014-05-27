@@ -30,7 +30,7 @@ public class TagPluginUtility {
 	private static final String XML_TAG_END = "/>";
 	private static final Pattern tagPattern = Pattern.compile(TAG_START+"([A-Za-z][A-Za-z0-9._-]+)([ ]+[^\\s=]+=[^\\s=]+)*[ ]*"+TAG_END);
 	
-	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale) throws IOException, NoTagHandlerFoundException, DocumentException
+	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale, String version) throws IOException, NoTagHandlerFoundException, DocumentException
 	{
 		BRJS brjs = bundleSet.getBundlableNode().root();
 		List<TagHandlerPlugin> tagHandlerPlugins = brjs.plugins().tagHandlers();
@@ -40,7 +40,7 @@ public class TagPluginUtility {
 		
 		while (matcher.find())
 		{
-			String replacement = handleTag(tagHandlerPlugins, bundleSet, requestMode, locale, matcher.group(0));
+			String replacement = handleTag(tagHandlerPlugins, bundleSet, requestMode, locale, version, matcher.group(0));
 			if (replacement != null)
 			{
 				matcher.appendReplacement(result, replacement);
@@ -58,7 +58,7 @@ public class TagPluginUtility {
 		writer.flush();
 	}
 
-	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String tagContent) throws IOException, DocumentException
+	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String version, String tagContent) throws IOException, DocumentException, NoTagHandlerFoundException
 	{
 		String xmlContent = StringUtils.replaceOnce(tagContent, TAG_START, XML_TAG_START);
 		xmlContent = StringUtils.replaceOnce(xmlContent, TAG_END, XML_TAG_END);
@@ -76,18 +76,10 @@ public class TagPluginUtility {
 		}
 		Element root = document.getRootElement();
 		
-		try
-		{
-			return handleTagXml(tagHandlerPlugins, bundleSet, requestMode, locale, root);
-		}
-		catch (NoTagHandlerFoundException e)
-		{
-			//TODO: stop catching this exception when all tag handers have been moved to new style plugins
-			return tagContent;
-		}
+		return handleTagXml(tagHandlerPlugins, bundleSet, requestMode, locale, version, root);
 	}
 
-	private static String handleTagXml(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, Element element) throws NoTagHandlerFoundException, IOException
+	private static String handleTagXml(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String version, Element element) throws NoTagHandlerFoundException, IOException
 	{
 		StringWriter writer = new StringWriter();
 		
@@ -96,12 +88,12 @@ public class TagPluginUtility {
 		
 		Map<String,String> attributes = getTagAttributes(element);
 		
-		writeTagContent(bundleSet, requestMode, locale, writer, tagHandler, attributes);
+		writeTagContent(bundleSet, requestMode, locale, version, writer, tagHandler, attributes);
 		
 		return writer.toString();
 	}
 
-	public static void writeTagContent(BundleSet bundleSet, RequestMode requestMode, String locale, StringWriter writer, TagHandlerPlugin tagHandler, Map<String, String> attributes) throws IOException
+	private static void writeTagContent(BundleSet bundleSet, RequestMode requestMode, String locale, String version, StringWriter writer, TagHandlerPlugin tagHandler, Map<String, String> attributes) throws IOException
 	{
 		if (requestMode == RequestMode.Dev)
 		{
@@ -109,7 +101,7 @@ public class TagPluginUtility {
 		}
 		else if (requestMode == RequestMode.Prod)
 		{
-			tagHandler.writeProdTagContent(attributes, bundleSet, locale, writer);		
+			tagHandler.writeProdTagContent(attributes, bundleSet, locale, writer, version);
 		}
 		else
 		{

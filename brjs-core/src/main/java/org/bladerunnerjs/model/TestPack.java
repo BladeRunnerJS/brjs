@@ -11,7 +11,6 @@ import java.util.Set;
 import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
-import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -23,7 +22,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 {
 	private AliasesFile aliasesFile;
 	private String name;
-	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("TestPack.sourceModules", root(), dir(), root().conf().file("bladerunner.conf"));
 	
 	public TestPack(RootNode rootNode, Node parent, File dir, String name)
 	{
@@ -46,7 +44,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	public List<LinkedAsset> modelSeedAssets() 
 	{
 		// TODO: add extra coverage so this can be fixed without causing only js breakage
-//		return new ArrayList<>();
+//		return Collections.emptyList();
 		
 		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
@@ -71,7 +69,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	}
 	
 	@Override
-	public List<AssetContainer> assetContainers()
+	public List<AssetContainer> scopeAssetContainers()
 	{
 		List<AssetContainer> assetContainers = new ArrayList<>(testScope().scopeAssetContainers());
 		assetContainers.add(this);
@@ -81,20 +79,18 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	
 	@Override
 	public Set<SourceModule> sourceModules() {
-		return sourceModulesList.value(() -> {
-			Set<SourceModule> sourceModules = new LinkedHashSet<SourceModule>();
-			
-			for (AssetLocation assetLocation : assetLocations())
+		Set<SourceModule> sourceModules = new LinkedHashSet<SourceModule>();
+		
+		for (AssetLocation assetLocation : assetLocations())
+		{
+			// TODO: we need an abstract way of determining which source modules are tests source modules that isn't plug-in specific
+			if ( !isTestAssetLocation(assetLocation) )
 			{
-				// TODO: we need an abstract way of determining which source modules are tests source modules that isn't plug-in specific
-				if ( !isTestAssetLocation(assetLocation) )
-				{
-					sourceModules.addAll(assetLocation.sourceModules());
-				}
+				sourceModules.addAll(assetLocation.sourceModules());
 			}
-			
-			return sourceModules;
-		});
+		}
+		
+		return sourceModules;
 	}
 	
 	@Override

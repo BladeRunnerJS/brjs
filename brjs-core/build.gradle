@@ -35,13 +35,13 @@ configurations {
 dependencies {
 	retrolambdaConfig dependency('retrolambda')
 	
+	compile project(":brjs-servlet")
 	compile project(":brjs-logger")
 	compile dependency('commons-io')
 	compile dependency('commons-lang3')
 	compile dependency('guava')
 	compile dependency('slf4j-api')
 	compile dependency('gson')
-	compile dependency('json-simple')
 	compile dependency('yamlbeans')
 	compile dependency('validation-api')
 	compile dependency('bval-jsr303')
@@ -71,10 +71,12 @@ dependencies {
 	
 	testCompile dependency('junit')
 	testCompile dependency('mockito-core')
+	testCompile dependency('fluent-hc')
 	testCompile dependency('httpclient')
 	testCompile dependency('hamcrest-all')
 	
 	testRuntime project(path: ':brjs-logger-binding')
+	testRuntime dependency('jetty-jsp')
 }
 
 javadoc {

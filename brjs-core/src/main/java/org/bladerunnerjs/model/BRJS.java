@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +56,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	private final NodeList<App> apps = new NodeList<>(this, App.class, "apps", null);
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
+	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
 	private final NodeList<SdkJsLib> sdkNonBladeRunnerLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
@@ -74,11 +76,10 @@ public class BRJS extends AbstractBRJSRootNode
 	private BladerunnerConf bladerunnerConf;
 	private TestRunnerConf testRunnerConf;
 	private final Map<Integer, ApplicationServer> appServers = new HashMap<Integer, ApplicationServer>();
-	private final Map<String, FileInfo> fileInfos = new HashMap<>();
+	private final Map<String, FileInfo> fileInfos = new TreeMap<>();
 	private final PluginAccessor pluginAccessor;
 	private final FileModificationService fileModificationService;
 	private final IO io = new IO();
-	private final File libsDir = file("sdk/libs/javascript");
 	private boolean closed = false;
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException
@@ -222,8 +223,9 @@ public class BRJS extends AbstractBRJSRootNode
 		return systemApps.item(appName);
 	}
 	
-	public File libsDir() {
-		return libsDir;
+	public DirNode sdkLibsDir()
+	{
+		return sdkLibsDir.item();
 	}
 	
 	public List<SdkJsLib> sdkLibs()

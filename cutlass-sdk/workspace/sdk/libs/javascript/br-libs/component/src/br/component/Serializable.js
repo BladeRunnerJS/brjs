@@ -1,20 +1,21 @@
 var Errors = require('br/Errors');
 
 /**
+ * @name br.component.Serializable
  * @beta
  * @class
  * The <code>Serializable</code> interface is implemented by classes that provide a mechanism
  * to serialize their state and recreate instances from a serialized form.
- * 
+ *
  * <p>The only restriction on the serialized form is that it is a string.  A class may change
  * its serialized form, however if it does so and wishes to maintain backwards compatibility
  * with current serialized forms, it will need the deserialize method to cope with multiple
  * different versions of serialized form.  For this reason, it's good practice to put the
  * serialization version at the beginning of the serialized form.
- * 
+ *
  * <p>It is not the responsibility of a Serializable class to include its classname in its
- * serialized form. 
- * 
+ * serialized form.
+ *
  * @constructor
  * @interface
  */
