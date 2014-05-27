@@ -85,7 +85,7 @@ public class AspectBundlingOfXML extends SpecTest {
 	public void classesInXmlCommentsAreNotBundled() throws Exception {
 		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "<!-- appns.Class1 -->");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainClasses("appns.Class1");
 	}
 	

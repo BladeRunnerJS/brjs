@@ -116,7 +116,7 @@ public final class AppSdkJsLib implements JsLib {
 	@Override
 	public File[] scopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {app().libsDir(), app().thirdpartyLibsDir(), root().sdkLibsDir(), root().file("js-patches"), BladerunnerConf.getConfigFilePath(root())};
+			scopeFiles = new File[] {app().libsDir(), app().thirdpartyLibsDir(), root().sdkLibsDir().dir(), root().file("js-patches"), BladerunnerConf.getConfigFilePath(root())};
 		}
 		
 		return scopeFiles;

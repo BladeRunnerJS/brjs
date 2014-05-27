@@ -82,9 +82,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(workbench).indexPageHasContent("<@css.bundle theme=\"standard\"@/>\n");
 		when(workbench).pageLoaded(response, "en");
 		then(response).containsOrderedTextFragments(
-				"<link rel='stylesheet' href='css/common/bundle.css'/>",
-				"<link rel='stylesheet' href='css/common_en/bundle.css'/>",
-				"<link rel='stylesheet' title='standard' href='css/standard/bundle.css'/>");
+				"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
+				"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
+				"<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>");
 
 	}
 

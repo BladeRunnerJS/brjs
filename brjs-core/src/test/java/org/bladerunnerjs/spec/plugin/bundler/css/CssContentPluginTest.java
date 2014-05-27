@@ -269,7 +269,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect.theme("standard")).hasBeenCreated()
 			.and(aspect.theme("standard")).containsFileWithContents("file.css", "ASPECT CSS")
 			.and(workbench).hasBeenCreated();
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", requestResponse);
+		when(workbench).requestReceived("css/standard/bundle.css", requestResponse);
 		then(requestResponse).containsText("ASPECT CSS");
 
 	}
@@ -280,7 +280,7 @@ public class CssContentPluginTest extends SpecTest {
     		.and(aspect).indexPageRefersTo("appns.Class1")
     		.and(aspect).containsFileWithContents("themes/standard/screen.css", "screen.css")
     		.and(aspect).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
-    	when(app).requestReceived("/default-aspect/css/standard_en/bundle.css", requestResponse);
+    	when(aspect).requestReceived("css/standard_en/bundle.css", requestResponse);
     	then(requestResponse).containsText("style_en.css")
     		.and(requestResponse).doesNotContainText("screen.css");
 	}
@@ -291,7 +291,7 @@ public class CssContentPluginTest extends SpecTest {
     		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
     		.and(blade).containsFileWithContents("themes/standard/screen.css", "screen.css")
     		.and(blade).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
-    	when(app).requestReceived("/default-aspect/css/standard_en/bundle.css", requestResponse);
+    	when(aspect).requestReceived("css/standard_en/bundle.css", requestResponse);
     	then(requestResponse).containsText("style_en.css")
     		.and(requestResponse).doesNotContainText("screen.css");
 	}
