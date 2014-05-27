@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +15,7 @@ public class CssContentPluginTest extends SpecTest {
 	private JsLib nonConformantLib;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer requestResponse = new StringBuffer();
+	private Workbench workbench;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -23,6 +25,7 @@ public class CssContentPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 			nonConformantLib = app.jsLib("non-conformant-lib");
 			bladerunnerConf = brjs.bladerunnerConf();
+			workbench = app.bladeset("bs").blade("b1").workbench();
 	}
 	
 	@Test
@@ -257,4 +260,27 @@ public class CssContentPluginTest extends SpecTest {
 		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
+	
+	@Test
+	public void themesFromAspectReferencedInCssTagsForWorbenchesAreIncludedInBundle() throws Exception {
+		given(aspect.theme("standard")).hasBeenCreated()
+			.and(aspect.theme("standard")).containsFileWithContents("file.css", "ASPECT CSS")
+			.and(workbench).hasBeenCreated();
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/css/standard/bundle.css", requestResponse);
+		then(requestResponse).containsText("ASPECT CSS");
+
+	}
+	
+	@Test
+	public void languageSpecifcFilesHaveToHaveToBePrefixedWithA_ToBeBundled() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).indexPageRefersTo("appns.Class1")
+    		.and(aspect).containsFileWithContents("themes/standard/screen.css", "screen.css")
+    		.and(aspect).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
+    	when(app).requestReceived("/default-aspect/css/standard_en/bundle.css", requestResponse);
+    	then(requestResponse).containsText("style_en.css")
+    		.and(requestResponse).doesNotContainText("screen.css");
+
+	}
+	
 }

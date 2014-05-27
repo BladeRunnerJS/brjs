@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bladerunnerjs.model.AbstractResourcesAssetLocation;
+import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
@@ -18,6 +19,7 @@ import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
 import org.bladerunnerjs.model.TestSourceAssetLocation;
 import org.bladerunnerjs.model.ThemesAssetLocation;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -32,22 +34,31 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		
-		List<String> bundlableNodeThemes = new ArrayList<>();
-		AssetLocation bundlableNodeResources = bundlableNode.assetLocation("resources");
-		if (bundlableNodeResources != null) {
-			for ( ThemesAssetLocation theme : ((AbstractResourcesAssetLocation) bundlableNodeResources).themes() ) {
-				bundlableNodeThemes.add(theme.getThemeName());
+		List<AssetContainer> scopeAssetContainers = bundlableNode.scopeAssetContainers();
+		AssetLocation themedNodeResources;
+		if (bundlableNode instanceof Workbench) {
+			Aspect defaultAspect = bundlableNode.app().aspect("default");
+			themedNodeResources = defaultAspect.assetLocation("resources");
+			scopeAssetContainers.add(defaultAspect);
+		} else {
+			themedNodeResources = bundlableNode.assetLocation("resources");
+		}
+		
+		List<String> validThemeNames = new ArrayList<>();
+		if (themedNodeResources != null) {
+			for ( ThemesAssetLocation theme : ((AbstractResourcesAssetLocation) themedNodeResources).themes() ) {
+				validThemeNames.add(theme.getThemeName());
 			}
 		}
 		
-		for(AssetContainer assetContainer : bundlableNode.scopeAssetContainers()) {
+		for(AssetContainer assetContainer : scopeAssetContainers) {
 			AbstractResourcesAssetLocation resourceAssetLocation = (AbstractResourcesAssetLocation) assetContainer.assetLocation("resources");
 			
 			if(resourceAssetLocation != null) {
 				for(ThemesAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
 					String themeName = themeAssetLocation.getThemeName();
 					
-					if (!themeName.equals("common") && bundlableNodeThemes.contains(themeName) ) {
+					if (!themeName.equals("common") && validThemeNames.contains(themeName) ) {
 						themeNames.add(themeName);
 					}
 					
