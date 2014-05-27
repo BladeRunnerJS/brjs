@@ -1,5 +1,6 @@
 package org.bladerunnerjs.testing.specutility;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipFile;
@@ -16,6 +17,7 @@ import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.SimplePageAccessor;
 
 
 public class AppBuilder extends NodeBuilder<App> {
@@ -94,12 +96,12 @@ public class AppBuilder extends NodeBuilder<App> {
 		
 		return builderChainer;
 	}
-
-	public BuilderChainer hasReceivedRequst(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException 
+	
+	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException 
 	{
-		AppCommander appCommander = new AppCommander(this.specTest, this.app);
-		appCommander.requestReceived(requestPath, new StringBuffer());
-			
+		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
+		app.handleLogicalRequest(requestPath, responseOutput, new SimplePageAccessor());
+		
 		return builderChainer;	
 	}
 }
