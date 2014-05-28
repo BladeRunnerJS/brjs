@@ -368,7 +368,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	@Test
 	public void nodeJsTestsInRootTestsDirInAnSdkLibWithNestedRequirePrefixDoNotHaveTheirPathsGlobalizedPaths() throws Exception {
 		given(sdkJsLib).hasNodeJsPackageStyle()
-			.and(sdkJsLib).containsFileWithContents("br.manifest", "requirePrefix: sdkLib/subPkg")
+			.and(sdkJsLib).containsFileWithContents("br-lib.conf", "requirePrefix: sdkLib/subPkg")
     		.and(sdkJsLib).hasClasses("sdkLib/subPkg/Class1")
     		.and(sdkJsLibTests).hasTestClass("sdkLib/subPkg/TestClass1")
     		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.subPkg.Class1(); new sdkLib.subPkg.TestClass1();");
