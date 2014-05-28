@@ -55,6 +55,13 @@ public class BRJSNavigationTest
 	}
 	
 	@Test
+	public void sdkLibsDir()
+	{
+		nodeTesterFactory.createItemTester(DirNode.class, "sdkLibsDir", "sdk/libs/javascript")
+			.assertModelIsOK();
+	}
+	
+	@Test
 	public void sdkLib()
 	{
 		nodeTesterFactory.createSetTester(JsLib.class, "sdkLibs", "sdkLib")

@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -13,6 +12,7 @@ import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.ValueCommand;
+import org.bladerunnerjs.utility.SimplePageAccessor;
 
 
 public class AppCommander extends NodeCommander<App> {
@@ -67,9 +67,8 @@ public class AppCommander extends NodeCommander<App> {
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				BladerunnerUri bladerunnerUri = new BladerunnerUri(app.root(), app.dir(), "/" + app.getName(), requestPath, null);
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				app.getBundlableNode(bladerunnerUri).handleLogicalRequest(bladerunnerUri.logicalPath, responseOutput);
+				app.handleLogicalRequest(requestPath, responseOutput, new SimplePageAccessor());
 				response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
 			}
 		});

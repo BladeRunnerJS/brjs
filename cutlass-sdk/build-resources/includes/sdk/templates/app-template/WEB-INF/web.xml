@@ -36,48 +36,33 @@
 	end-env -->
 	
 	<filter>
-		<filter-name>bladerunner-filters</filter-name>
-		<filter-class>com.caplin.cutlass.filter.BladerunnerFilters</filter-class>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.appserver.BRJSServletFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>bladerunner-filters</filter-name>
-		<url-pattern>/*</url-pattern>
+		<filter-name>BRJSServletFilter</filter-name> 
+		<url-pattern>/*</url-pattern> 
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
-	
-	<!-- start-env: prod
-	<filter>
-		<filter-name>bladerunner-prod-filters</filter-name>
-		<filter-class>com.caplin.cutlass.filter.BladerunnerProdFilters
-		</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>bladerunner-prod-filters</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>FORWARD</dispatcher>
-	</filter-mapping>
-	end-env -->
-	
 	
 	<!-- start-env: dev -->
 	<servlet>
-		<servlet-name>BRJSServlet</servlet-name>
-		<servlet-class>org.bladerunnerjs.appserver.BRJSServlet</servlet-class>
+		<servlet-name>BRJSDevServlet</servlet-name>
+		<servlet-class>org.bladerunnerjs.appserver.BRJSDevServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>BRJSServlet</servlet-name>
+		<servlet-name>BRJSDevServlet</servlet-name>
 		<url-pattern>/brjs/*</url-pattern>
 	</servlet-mapping>
 
 	<filter>
-		<filter-name>BRJSFilter</filter-name> 
-		<filter-class>org.bladerunnerjs.appserver.BRJSServletFilter</filter-class>
+		<filter-name>BRJSDevServletFilter</filter-name> 
+		<filter-class>org.bladerunnerjs.appserver.BRJSDevServletFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>BRJSFilter</filter-name> 
+		<filter-name>BRJSDevServletFilter</filter-name> 
 		<url-pattern>/*</url-pattern> 
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
@@ -86,20 +71,7 @@
 	
 	<!-- mime mappings -->
 	<mime-mapping>
-		<extension>js</extension>
-		<mime-type>application/javascript;charset=UTF-8</mime-type>
+		<extension>woff</extension>
+		<mime-type>application/x-font-woff</mime-type>
 	</mime-mapping>
-	<mime-mapping>
-		<extension>css</extension>
-		<mime-type>text/css;charset=UTF-8</mime-type>
-	</mime-mapping>
-	<mime-mapping>
-		<extension>html</extension>
-		<mime-type>text/html;charset=UTF-8</mime-type>
-	</mime-mapping>
-	<mime-mapping>
-		<extension>xml</extension>
-		<mime-type>text/xml;charset=UTF-8</mime-type>
-	</mime-mapping>
-	
 </web-app>

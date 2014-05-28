@@ -72,7 +72,7 @@ public class AppConfTest extends SpecTest {
 	public void readingAnAppConfFileWithMissingLocaleWillUseADefault() throws Exception {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "requirePrefix: appns");
-		then(app.appConf().getLocales()).textEquals("en");
+		then(app.appConf().getDefaultLocale()).textEquals("en");
 	}
 
 	@Test

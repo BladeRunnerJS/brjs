@@ -27,9 +27,7 @@ dependencies {
 	system dependency('selenium-java')
 	system dependency('jetty-jsp')
 
-	application project(path: ':bladerunner-common-servlets')
-	application project(path: ':bladerunner-prod-servlets')
-	application dependency('javassist')
+	application project(path: ':brjs-servlet')
 
 	javadocs project(path: ':brjs-core', configuration:'javadocs')
 

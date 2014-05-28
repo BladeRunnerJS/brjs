@@ -9,6 +9,7 @@ Thumbs.db
 
 # system/IDE specific files
 .idea
+.clover
 *.iml
 .classpath
 .project

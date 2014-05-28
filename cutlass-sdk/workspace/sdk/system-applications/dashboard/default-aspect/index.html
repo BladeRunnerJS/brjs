@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<base href="@APP.VERSION@"/>
 		<title>BladeRunnerJS Dashboard</title>
 		<link rel="shortcut icon" href="favicon.ico">
 		
 		<@css.bundle theme="standard"@/>
-		<link type="text/css" rel="stylesheet" media="screen" href="unbundled-resources/standard-theme/typography.css" />
+		<link type="text/css" rel="stylesheet" media="screen" href="../v/dev/unbundled-resources/standard-theme/typography.css" />
 
 		<@js.bundle dev-minifier="combined"@/>
-		<script type="text/javascript" src="unbundled-resources/browserCheck.js"></script>
-		<script type="text/javascript" src="unbundled-resources/releaseNoteUtils.js"></script>
+		<script type="text/javascript" src="../v/dev/unbundled-resources/browserCheck.js"></script>
+		<script type="text/javascript" src="../v/dev/unbundled-resources/releaseNoteUtils.js"></script>
 		
 		<script type="text/javascript">
 			br.Core.thirdparty("jquery");
@@ -28,7 +27,7 @@
 				brjs.dashboard.app.DashboardApp.initializeLibrary();
 				
 				var oDashboardService = new brjs.dashboard.app.service.dashboard.DashboardProvider(
-					new brjs.dashboard.app.service.request.XHRFactory(), "servlet/app-manager");
+					new brjs.dashboard.app.service.request.XHRFactory(), "../servlet/app-manager");
 				var oPageUrlService = new brjs.dashboard.app.service.url.PageUrlProvider();
 				var oWindowOpenerService = new brjs.dashboard.app.service.window.WindowOpenerProvider();
 				var oBrowserDetector = new brjs.dashboard.app.service.browserdetector.BrowserDetector();

@@ -74,11 +74,16 @@ public class AppServerVerifier
 		return verifierChainer;		
 	}
 	
-	
+	public VerifierChainer characterEncodingForRequestIs(String urlPath, String characterEncoding) throws ClientProtocolException, IOException
+	{
+		String url = getUrl(urlPath);
+		specTest.webappTester.whenRequestMadeTo(url,false).characterEncodingIs(characterEncoding);
+		
+		return verifierChainer;		
+	}
 	
 	private String getUrl(String urlPath)
 	{
 		return String.format("%s:%s%s", SpecTest.HTTP_REQUEST_PREFIX, specTest.appServerPort, urlPath);
 	}
-
 }

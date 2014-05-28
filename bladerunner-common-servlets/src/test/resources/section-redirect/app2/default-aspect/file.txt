@@ -1,1 +1,0 @@
-/app2/default-aspect/file.txt

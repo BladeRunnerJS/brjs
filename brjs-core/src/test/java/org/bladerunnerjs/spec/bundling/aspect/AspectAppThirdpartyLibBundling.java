@@ -37,7 +37,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			.and(appThirdparty2).containsFileWithContents("library.manifest", "js: src2.js\n"+"exports: lib")
 			.and(appThirdparty2).containsFile("src2.js")
 			.and(aspect).indexPageRequires(appThirdparty);
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments("// app-thirdparty2", "// app-thirdparty");
 	}
 
@@ -46,7 +46,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 		given(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js, src2.js\n"+"exports: appThirdparty")
 			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
 			.and(aspect).indexPageRequires(appThirdparty);
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments("src1.js", "src2.js")
 			.and(response).doesNotContainText("src3.js");
 	}
@@ -56,7 +56,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 		given(appThirdparty).containsFileWithContents("library.manifest", "js: src2.js, src1.js\n"+"exports: appThirdparty")
 			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
 			.and(aspect).indexPageRequires(appThirdparty);
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments("src2.js", "src1.js")
 			.and(response).doesNotContainText("src3.js");
 	}
@@ -68,7 +68,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).classDependsOnThirdpartyLib("appns.Class1", appThirdparty)
 			.and(aspect).indexPageRefersTo("appns.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("src.js");
 	}
 	
@@ -78,7 +78,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			.and(appThirdparty).containsFile("src.js")
 			.and(aspect).classRequires("appns/Class1", "app-thirdparty")
 			.and(aspect).indexPageRefersTo("appns.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("src.js");
 	}
 }

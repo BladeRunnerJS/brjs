@@ -6,6 +6,7 @@ import org.bladerunnerjs.yaml.YamlAppConf;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.esotericsoftware.yamlbeans.YamlException;
+import com.google.common.base.Joiner;
 
 import java.io.*;
 
@@ -40,7 +41,7 @@ public class AppConf
 		{
 			appConf = app.appConf();
 		}
-		return new AppConf(appConf.getRequirePrefix(), appConf.getLocales());
+		return new AppConf(appConf.getRequirePrefix(), Joiner.on(",").join(appConf.getLocales()));
 	}
 	
 	public static void writeConf(File applicationDirectory, AppConf appConf) throws IOException, ConfigException
