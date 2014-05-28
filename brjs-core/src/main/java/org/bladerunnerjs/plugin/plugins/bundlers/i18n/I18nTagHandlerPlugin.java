@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -35,7 +36,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	{
 		try
 		{
-			writeTagContent(tagAttributes, bundleSet, locale, writer);
+			writeTagContent(true, tagAttributes, bundleSet, locale, writer, "dev");
 		}
 		catch (Exception ex)
 		{
@@ -44,11 +45,11 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	}
 
 	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
 	{
 		try
 		{
-			writeTagContent(tagAttributes, bundleSet, locale, writer);
+			writeTagContent(false, tagAttributes, bundleSet, locale, writer, version);
 		}
 		catch (Exception ex)
 		{
@@ -56,15 +57,19 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 		}
 	}
 
-	private void writeTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws ConfigException, IOException, MalformedTokenException
+	private void writeTagContent(boolean isDev, Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws ConfigException, IOException, MalformedTokenException
 	{
-		String requestUrl = "";
+		String contentPath = "";
 		if (locale.contains("_")) {
-			requestUrl = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, StringUtils.substringBefore(locale, "_"), StringUtils.substringAfter(locale, "_"));			
-		} else {
-			requestUrl = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
+			contentPath = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_AND_LOCATION_BUNDLE, StringUtils.substringBefore(locale, "_"), StringUtils.substringAfter(locale, "_"));			
 		}
-		writer.write("<script type=\"text/javascript\" src=\""+requestUrl+"\"></script>\n");
+		else {
+			contentPath = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
+		}
+		App app = bundleSet.getBundlableNode().app();
+		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
+		
+		writer.write("<script type=\"text/javascript\" src=\"" + requestPath + "\"></script>\n");
 	}
 
 }

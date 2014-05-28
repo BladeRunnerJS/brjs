@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
@@ -58,10 +57,6 @@ public class PluginAccessor {
 	
 	public List<CommandPlugin> commands() {
 		return commandList.getPluginCommands();
-	}
-	
-	public ContentPlugin contentProvider(BladerunnerUri requestUri) {
-		return contentProviderForLogicalPath(requestUri.logicalPath);
 	}
 	
 	public ContentPlugin contentProviderForLogicalPath(String logicalRequestpath)

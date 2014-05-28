@@ -1,6 +1,6 @@
 package org.bladerunnerjs.spec.bundling.aspect;
 
-import static org.bladerunnerjs.utility.LogicalRequestHandler.Messages.*;
+import static org.bladerunnerjs.utility.BundlableNodeRequestHandler.Messages.*;
 import static org.bladerunnerjs.model.BundleSetCreator.Messages.*;
 
 import org.bladerunnerjs.model.App;
@@ -44,7 +44,7 @@ public class AspectBundlingLoggingTest extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.bs.b1.Class1")
 			.and(blade).classRequires("appns/bs/b1/Class1", "appns.bs.b1.Class2")
 			.and(sdkLib).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/combined/bundle.js", "app1")
 			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, "Aspect", "default", "js/dev/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsContentPlugin", "js/dev/combined/bundle.js")
@@ -63,7 +63,7 @@ public class AspectBundlingLoggingTest extends SpecTest {
 			.and(blade).classRequires("appns/Class1", "appns.Class2")
 			.and(aspect).hasBeenCreated()
 			.and(sdkLib).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(logging).debugMessageReceived(REQUEST_HANDLED_MSG, "js/dev/combined/bundle.js", "app1")
 			.and(logging).debugMessageReceived(CONTEXT_IDENTIFIED_MSG, unquoted("Aspect"), "default", "js/dev/combined/bundle.js")
 			.and(logging).debugMessageReceived(BUNDLER_IDENTIFIED_MSG, "CompositeJsContentPlugin", "js/dev/combined/bundle.js")

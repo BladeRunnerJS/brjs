@@ -33,7 +33,7 @@ public class NodeJsLibTest extends SpecTest {
 			.and(sdkLib).containsFile("package.json")
 			.and(sdkLib).containsFileWithContents("library.manifest", "exports: thisLib")
 			.and(aspect).indexPageRequires("lib");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments("define('lib', function(require, exports, module) {",
 				"module.exports = function() { };\n",
 				"});\n");
@@ -46,7 +46,7 @@ public class NodeJsLibTest extends SpecTest {
 			.and(sdkLib).containsFile(".no-define")
 			.and(sdkLib).containsFileWithContents("library.manifest", "exports: thisLib")
 			.and(aspect).indexPageRequires("lib");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainText("define('lib', function(require, exports, module) {");
 	}
 	
@@ -56,7 +56,7 @@ public class NodeJsLibTest extends SpecTest {
 			.and(sdkLib).containsFile("package.json")
 			.and(sdkLib).containsFileWithContents("library.manifest", "exports: thisLib")
 			.and(aspect).indexPageRequires("lib");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("thisLib = require('lib');");
 	}
 	
@@ -68,7 +68,7 @@ public class NodeJsLibTest extends SpecTest {
 			.and(sdkLib).containsFile("package.json")
 			.and(sdkLib).containsFileWithContents("library.manifest", "exports: \"{}\"")
 			.and(aspect).indexPageRequires("lib");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsLines(
 				"// lib",
 				"define('lib', function(require, exports, module) {",				
@@ -81,7 +81,7 @@ public class NodeJsLibTest extends SpecTest {
 		.and(sdkLib).containsFile("package.json")
 		.and(sdkLib).containsFileWithContents("library.manifest", "exports: \"  {  }  \"")
 		.and(aspect).indexPageRequires("lib");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainText("= require('lib');");
 	}
 	// ---------------------------------------- //

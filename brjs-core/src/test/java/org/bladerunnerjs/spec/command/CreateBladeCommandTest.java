@@ -52,7 +52,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfTheAppDoesntExist() throws Exception {
 		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(app.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, "app", unquoted(app.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -60,7 +60,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheBladesetDoesntExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(bladeset.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeDoesNotExistException.class, "bladeset", unquoted(bladeset.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -68,7 +68,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheBladeAlreadyExists() throws Exception {
 		given(blade).hasBeenCreated();
 		when(brjs).runCommand("create-blade", "app", "bladeset", "blade");
-		then(exceptions).verifyException(NodeAlreadyExistsException.class, unquoted(blade.getClass().getSimpleName()))
+		then(exceptions).verifyException(NodeAlreadyExistsException.class, "blade", unquoted(blade.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
