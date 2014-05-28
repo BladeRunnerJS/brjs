@@ -87,7 +87,7 @@ public class BundleCachingTest extends SpecTest
 	
 	@Test
 	public void weDetectWhenResourceSubDirectoriesHaveNewResourcesAddedToBundle() throws Exception {
-		given(aspect).resourceFileContains("html/view.html", "<div id='appns.view'>TESTCONTENT</div>")
+		given(aspect).containsResourceFileWithContent("html/view.html", "<div id='appns.view'>TESTCONTENT</div>")
 			.and(aspect).hasReceivedRequest("bundle.html");
 		when(aspect).resourceFileContains("html/subdir/extradir/view.html", "<div id='appns.foo'>NEWCONTENT</div>")
 			.and(aspect).requestReceived("bundle.html", response);

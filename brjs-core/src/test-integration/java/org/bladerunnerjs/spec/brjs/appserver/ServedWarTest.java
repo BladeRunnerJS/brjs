@@ -42,6 +42,7 @@ public class ServedWarTest extends SpecTest {
 	public void exportedWarCanBeDeployedOnAnAppServer() throws Exception {
 		given(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "Locale Forwarder")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
+			.and(aspect).containsResourceFileWithContent("template.html", "<div id='template-id'>content</div>")
 			.and(app).hasBeenBuiltAsWar(brjs.dir(), versionNumber)
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();

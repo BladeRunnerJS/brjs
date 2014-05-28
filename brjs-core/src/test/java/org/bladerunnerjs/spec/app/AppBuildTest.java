@@ -88,6 +88,7 @@ public class AppBuildTest extends SpecTest {
 	@Test
 	public void aSingleSetOfBundlesAreCreated() throws Exception {
 		given(defaultAspect).containsFile("index.html")
+			.and(defaultAspect).containsResourceFileWithContent("template.html", "<div id='template-id'>content</div>")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir, versionNumber);
 		then(targetDir).containsFile("app1/v/" + versionNumber + "/bundle.html")
