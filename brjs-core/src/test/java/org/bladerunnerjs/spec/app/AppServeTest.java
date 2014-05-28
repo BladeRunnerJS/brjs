@@ -77,7 +77,7 @@ public class AppServeTest extends SpecTest {
 		given(defaultAspect).indexPageRequires("appns/SomeClass")
 			.and(defaultAspect).hasClass("appns/SomeClass")
 			.and(defaultAspect).containsFileWithContents("src/appns/template.html", "<div id='template-id'>template file</div>");
-		when(app).requestReceived("v/dev/bundle.html", response);
+		when(app).requestReceived("v/dev/html/bundle.html", response);
 		then(response).containsText("template file");
 	}
 	
@@ -86,7 +86,7 @@ public class AppServeTest extends SpecTest {
 		given(alternateAspect).indexPageRequires("appns/SomeClass")
 			.and(alternateAspect).hasClass("appns/SomeClass")
 			.and(alternateAspect).containsFileWithContents("src/appns/template.html", "<div id='template-id'>template file</div>");
-		when(app).requestReceived("alternate/v/dev/bundle.html", response);
+		when(app).requestReceived("alternate/v/dev/html/bundle.html", response);
 		then(response).containsText("template file");
 	}
 	
@@ -95,7 +95,7 @@ public class AppServeTest extends SpecTest {
 		given(workbench).indexPageRequires("appns/SomeClass")
 			.and(workbench).hasClass("appns/SomeClass")
 			.and(workbench).containsFileWithContents("src/appns/template.html", "<div id='template-id'>workbench template file</div>");
-		when(app).requestReceived("workbench/bs/b1/v/dev/bundle.html", response);
+		when(app).requestReceived("workbench/bs/b1/v/dev/html/bundle.html", response);
 		then(response).containsText("workbench template file");
 	}
 }

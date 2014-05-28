@@ -39,26 +39,26 @@ public class XMLContentPluginTest extends SpecTest{
 	
 	@Test
 	public void ifThereAreNoXmlFilesThenNoRequestsWillBeGenerated() throws Exception {
-		then(aspect).prodAndDevRequestsForContentPluginsAre("bundle.xml");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("xml");
 	}
 	
 	@Test
 	public void ifThereAreXmlFilesButNoBundleConfigThenNoRequestsWillBeGenerated() throws Exception {
 		given(aspect).containsResourceFile("config.xml");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("bundle.xml");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("xml");
 	}
 	
 	@Test
 	public void ifThereIsABundleConfigButNoXmlFilesThenNoRequestsWillBeGenerated() throws Exception {
 		given(brjsConf).containsFile("bundleConfig.xml");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("bundle.xml");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("xml");
 	}
 	
 	@Test
 	public void ifThereIsBothABundleConfigAndXmlFilesThenRequestsWillBeGenerated() throws Exception {
 		given(brjsConf).containsFile("bundleConfig.xml")
 			.and(aspect).containsResourceFile("config.xml");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("bundle.xml", "bundle.xml");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("xml", "xml/bundle.xml");
 	}
 	
 	@Test
@@ -66,7 +66,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String config = getSimpleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
 		and(aspect).containsResourceFileWithContent("gridDefinitions.xml", xml(getFullGridDefinition()));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsText(xml(getFullGridDefinition()));
 	}
 	
@@ -77,7 +77,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String config = getSimpleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
 		and(aspect).containsResourceFileWithContent("xml/gridDefinitions.xml", xml(getFullGridDefinition()));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsText(xml(getFullGridDefinition()));
 	}
 	
@@ -89,7 +89,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(blade).containsResourceFileWithContent("xml/gridDefinitions.xml", xml(getProviderMapping("xxxxx.Provider"), true))
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class");
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(exceptions).verifyException(NamespaceException.class, "xxxxx.Provider", "appns.bs.b1.*" );
 	}
 	
@@ -98,7 +98,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String config = getSimpleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config).
 		and(aspect).containsResourceFileWithContent("xml/gridDefinitions.xml", xml(getProviderMapping("xxxxx.Provider"), true));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -108,7 +108,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).containsResourceFileWithContent("xml/gridDefinitions1.xml", xml("", true))
 			.and(aspect).containsResourceFileWithContent("xml/gridDefinitions2.xml", xml("", true));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsTextOnce(xml(""));
 	}
 	
@@ -118,7 +118,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).containsResourceFileWithContent("xml/gridDefinitions1.xml", xml( getProviderMapping("appns.DatProvider1"), true))
 			.and(aspect).containsResourceFileWithContent("xml/gridDefinitions2.xml", xml( getProviderMapping("appns.DatProvider1"), true));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsTextOnce(xml( getProviderMapping("appns.DatProvider1")));
 	}
 	
@@ -130,7 +130,7 @@ public class XMLContentPluginTest extends SpecTest{
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).containsResourceFileWithContent("xml/gridDefinitions1.xml", xml( getProviderMapping("appns.DatProvider1"), true))
 			.and(aspect).containsResourceFileWithContent("xml/gridDefinitions2.xml", xml( getDataProviderMapping2ForMerge(), true));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsTextOnce(getDataProviderMapping1and2ForMerge());
 	}
 	
@@ -141,7 +141,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String config = getSimpleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).containsResourceFileWithContent("xml/gridDefinitions3.xml", xml(badXml , true));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(exceptions).verifyException(XMLStreamException2.class);
 	}
 //	
@@ -152,7 +152,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String config = getSimpleConfig();
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).containsResourceFileWithContent("xml/gridDefinitions3.xml", xml(badXml , true));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(exceptions).verifyException(ContentProcessingException.class, "wibble");
 	}
 	
@@ -163,7 +163,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
 		    .and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config);
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
 	
@@ -178,7 +178,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).classExtends("appns.Class1", "appns.bs.b1.Class1")
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).indexPageRefersTo("appns.Class1");
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
 	
@@ -193,7 +193,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(brjs).hasConfigurationFileWithContent("bundleConfig.xml", config)
 			.and(aspect).containsFileWithContents("index.html", "appns.bs.b1.Class1");
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
 	
@@ -210,14 +210,14 @@ public class XMLContentPluginTest extends SpecTest{
 			
 			.and(aspect).containsResourceFileWithContent("html/aspect-view.html", "<div id='appns.stuff'>appns.bs.b1.Class1</div>")
 			.and(aspect).containsFileWithContents("index.html", "appns.AppClass");
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
 
 	@Test
 	public void arbritaryXMLIsUnchangedWhenNoBundlerConfig() throws Exception {
 		given(aspect).containsResourceFileWithContent("gridDefinitions.xml", xml(getArbitraryXml()));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsText(getArbitraryXml());
 	}
 	

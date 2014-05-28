@@ -33,7 +33,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	{
 		try {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("bundle.xml").as("bundle-request");
+			contentPathParserBuilder.accepts("xml/bundle.xml").as("bundle-request");
 			contentPathParser = contentPathParserBuilder.build();
 			requestPaths.add(contentPathParser.createRequest("bundle-request"));
 		}
@@ -51,7 +51,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 
 	@Override
 	public String getRequestPrefix() {
-		return "bundle.xml";
+		return "xml";
 	}
 	
 	@Override

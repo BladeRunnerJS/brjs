@@ -34,7 +34,16 @@ public class I18nContentPluginTest extends SpecTest
 			workbench = blade.workbench();
 	}
 	
-	
+//	@Test
+//	public void ifThereAreNoI18nFilesThenNoRequestsWillBeGenerated() throws Exception {
+//		then(aspect).prodAndDevRequestsForContentPluginsAre("bundle.html");
+//	}
+//	
+//	@Test
+//	public void ifThereAreI18nFilesThenASingleRequestWillBeGenerated() throws Exception {
+//		given(aspect).containsResourceFile("template.html");
+//		then(aspect).prodAndDevRequestsForContentPluginsAre("bundle.html", "bundle.html");
+//	}
 	
 	@Test
 	public void requestForI18nWithoutAnyAssetsReturnsEmptyResponse() throws Exception 

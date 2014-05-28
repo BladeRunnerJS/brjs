@@ -48,7 +48,7 @@ public class ServedWarTest extends SpecTest {
 			.and(warServer).hasStarted();
 		when(warServer).receivesRequestFor("/app", forwarderPageResponse)
 			.and(warServer).receivesRequestFor("/app/en", pageResponse)
-			.and(warServer).receivesRequestFor("/app/v/" + versionNumber + "/bundle.html", bundleResponse);
+			.and(warServer).receivesRequestFor("/app/v/" + versionNumber + "/html/bundle.html", bundleResponse);
 		then(forwarderPageResponse).containsText("Locale Forwarder")
 			.and(pageResponse).containsText("Hello World!")
 			.and(bundleResponse).isNotEmpty();

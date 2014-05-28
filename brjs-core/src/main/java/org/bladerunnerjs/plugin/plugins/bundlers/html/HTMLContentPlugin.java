@@ -45,7 +45,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	{
 		try {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("bundle.html").as("bundle-request");
+			contentPathParserBuilder.accepts("html/bundle.html").as("bundle-request");
 			contentPathParser = contentPathParserBuilder.build();
 			requestPaths.add(contentPathParser.createRequest("bundle-request"));
 		}
@@ -63,7 +63,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	
 	@Override
 	public String getRequestPrefix() {
-		return "bundle.html";
+		return "html";
 	}
 
 	@Override

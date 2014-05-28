@@ -91,7 +91,7 @@ public class AppBuildTest extends SpecTest {
 			.and(defaultAspect).containsResourceFileWithContent("template.html", "<div id='template-id'>content</div>")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir, versionNumber);
-		then(targetDir).containsFile("app1/v/" + versionNumber + "/bundle.html")
+		then(targetDir).containsFile("app1/v/" + versionNumber + "/html/bundle.html")
 			.and(targetDir).containsFile("app1/v/" + versionNumber + "/i18n/en.js");
 	}
 	
