@@ -89,10 +89,10 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		
 		switch ( createLibraryType ) {
 			case br:
-				library = app.jsLib(libraryName);
+				library = app.appBladeRunnerLib(libraryName);
 				break;
 			case thirdparty:
-				library = app.nonBladeRunnerLib(libraryName);
+				library = app.appNonBladeRunnerLib(libraryName);
 				break;
 		}
 		

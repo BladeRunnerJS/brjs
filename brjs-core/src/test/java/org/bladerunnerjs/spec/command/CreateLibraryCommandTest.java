@@ -105,23 +105,21 @@ public class CreateLibraryCommandTest extends SpecTest {
 		then(exceptions).verifyFormattedException( CommandArgumentsException.class, INVALID_LIB_TYPE_MESSAGE, "INVALID", unquoted("br, thirdparty") );
 	}
 	
-//	@Test
-//	public void brLibrariesCanBeCreatedInTheAppEvenIfTheyAreAlreadyInTheSdk() throws Exception {
-//		given(app).hasBeenCreated()
-//			.and(brjs.sdkLib("lib")).hasBeenCreated();
-//		when(brjs).runCommand("create-library", "app", "lib");
-//		then(app.jsLib("lib")).dirExists()
-//			.and(app).hasDir("lib");
-//	}
-//	
-//	@Test
-//	public void thirdpartyLibrariesCanBeCreatedInTheAppEvenIfTheyAreAlreadyInTheSdk() throws Exception {
-//		given(app).hasBeenCreated()
-//			.and(brjs.sdkNonBladeRunnerLib("lib")).hasBeenCreated();
-//		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
-//		then(app.jsLib("lib")).dirExists()
-//			.and(app).hasDir("lib");
-//	}
+	@Test
+	public void brLibrariesCanBeCreatedInTheAppEvenIfTheyAreAlreadyInTheSdk() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs.sdkLib("lib")).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib");
+		then(app.appBladeRunnerLib("lib")).dirExists();
+	}
+	
+	@Test
+	public void thirdpartyLibrariesCanBeCreatedInTheAppEvenIfTheyAreAlreadyInTheSdk() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs.sdkNonBladeRunnerLib("lib")).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
+		then(app.appNonBladeRunnerLib("lib")).dirExists();
+	}
 	
 	@Test
 	public void commandIsAutomaticallyLoaded() throws Exception
