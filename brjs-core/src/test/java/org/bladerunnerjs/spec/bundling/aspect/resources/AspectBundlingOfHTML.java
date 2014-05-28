@@ -38,7 +38,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void aspectClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.Class1");
 	}
 
@@ -47,7 +47,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void bladesetClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.Class1");
 	}
 	
@@ -56,7 +56,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void bladeClassesReferredToInAspectHTMlFilesAreBundled() throws Exception {
 		given(blade).hasClasses("appns/bs/b1/Class1", "appns/bs/b1/Class2")
 			.and(aspect).resourceFileRefersTo("html/view.html", "appns.bs.b1.Class1");
-		when(app).requestReceived("/default-aspect/js/dev/combined/bundle.js", response);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsNodeJsClasses("appns.bs.b1.Class1");
 	}
 	
@@ -69,7 +69,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 			.and(sdkLib).hasClass("br.workbench.ui.Workbench")
 			.and(aspect).containsFileWithContents("resources/aspect.html", "<div id='appns.aspect-view'></div>")
 			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
-		when(app).requestReceived("/default-aspect/bundle.html", response);
+		when(aspect).requestReceived("bundle.html", response);
 		then(response).containsOrderedTextFragments(
 				"<!-- aspect.html -->",
 				"<div id='appns.aspect-view'></div>",
@@ -87,7 +87,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 			.and(userLib).hasClass("userLib.Class1")
 			.and(aspect).containsFileWithContents("resources/aspect.html", "<div id='appns.aspect-view'></div>")
 			.and(aspect).indexPageRefersTo("userLib.Class1");
-		when(app).requestReceived("/default-aspect/bundle.html", response);
+		when(aspect).requestReceived("bundle.html", response);
 		then(response).containsOrderedTextFragments(
 				"<!-- userLib.html -->",
 				"<div id='userLib.my-view'></div>",
@@ -100,7 +100,7 @@ public class AspectBundlingOfHTML extends SpecTest {
 		given(bladeset).containsFileWithContents("resources/file.xml", "<some-xml/>")
 			.and(blade).hasClass("appns/bs/b1/Class1")
     		.and(aspect).indexPageRequires("appns/bs/b1/Class1");
-    	when(app).requestReceived("/default-aspect/bundle.xml", response);
+    	when(aspect).requestReceived("bundle.xml", response);
     	then(response).containsText("<some-xml/>");
 	}
 	

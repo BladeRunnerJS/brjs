@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -42,6 +43,7 @@ public class RestApiServletEndToEndTests
 		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
 		ServletModelAccessor.destroy();
 		brjs = ServletModelAccessor.initializeAndGetModel( sdkRoot );
+		FileUtils.write(brjs.sdkLibsDir().file("locale-forwarder.js"), "");
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
 		server.start();
@@ -182,6 +184,7 @@ public class RestApiServletEndToEndTests
 		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "POST", URL_BASE+"/apps/"+app, jsonBody);
 		assertEquals(200, response.getStatusLine().getStatusCode());
 		assertTrue( brjs.app(app).dirExists() );
+		FileUtils.write(brjs.app(app).aspect("default").file("index.html"), "");
 		if (releaseConnection)
 		{
 			RestApiServletTestUtils.getResponseTextFromResponse(response);

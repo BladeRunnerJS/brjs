@@ -1,7 +1,11 @@
 package org.bladerunnerjs.testing.specutility;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.zip.ZipFile;
 
+import org.apache.commons.lang3.mutable.MutableLong;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -12,6 +16,8 @@ import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.SimplePageAccessor;
 
 
 public class AppBuilder extends NodeBuilder<App> {
@@ -30,7 +36,46 @@ public class AppBuilder extends NodeBuilder<App> {
 		
 		return builderChainer;
 	}
-
+	
+	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
+		app.build(targetDir);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenBuiltAsWar(File targetDir) throws Exception {
+		app.build(targetDir, true);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenBuilt(File targetDir, MutableLong versionNumber) throws Exception {
+		hasBeenBuilt(targetDir);
+		
+		for(File dir : new File(targetDir, app.getName() + "/v").listFiles()) {
+			versionNumber.setValue(Long.valueOf(dir.getName()));
+			break;
+		}
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenBuiltAsWar(File targetDir, MutableLong versionNumber) throws Exception {
+		hasBeenBuiltAsWar(targetDir);
+		
+		File warFile = new File(targetDir, app.getName() + ".war");
+		File tempDir = FileUtility.createTemporaryDirectory(AppBuilder.class.getSimpleName());
+		FileUtility.unzip(new ZipFile(warFile), tempDir);
+		
+		// TODO: we need unzip before we can figure out what the version number is
+		for(File dir : new File(tempDir, "v").listFiles()) {
+			versionNumber.setValue(Long.valueOf(dir.getName()));
+			break;
+		}
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer hasBeenDeployed() throws TemplateInstallationException
 	{
 		app.deploy();
@@ -51,12 +96,12 @@ public class AppBuilder extends NodeBuilder<App> {
 		
 		return builderChainer;
 	}
-
-	public BuilderChainer hasReceivedRequst(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException 
+	
+	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException 
 	{
-		AppCommander appCommander = new AppCommander(this.specTest, this.app);
-		appCommander.requestReceived(requestPath, new StringBuffer());
-			
+		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
+		app.handleLogicalRequest(requestPath, responseOutput, new SimplePageAccessor());
+		
 		return builderChainer;	
 	}
 }

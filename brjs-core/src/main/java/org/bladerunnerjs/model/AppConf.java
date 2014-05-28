@@ -25,13 +25,17 @@ public class AppConf extends ConfFile<YamlAppConf> {
 		verifyAndAutoWrite();
 	}
 	
-	public String getLocales() throws ConfigException {
+	public String[] getLocales() throws ConfigException {
 		reloadConfIfChanged();
-		return conf.locales.replace(" ", "");
+		return conf.locales.split("\\s*,\\s*");
 	}
 	
 	public void setLocales(String locales) throws ConfigException {
-		conf.locales = locales.replace(" ", "");
+		conf.locales = locales;
 		verifyAndAutoWrite();
+	}
+	
+	public String getDefaultLocale() throws ConfigException {
+		return getLocales()[0];
 	}
 }
