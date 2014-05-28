@@ -48,7 +48,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private final NodeList<AppJsLib> nonBladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "thirdparty-libraries", null);
 	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$");
 	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
-	private final NodeList<AppJsLib> jsLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
+	private final NodeList<AppJsLib> bladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
 	
 	private String name;
 	private AppConf appConf;
@@ -195,13 +195,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		Map<String,JsLib> appJsLibs = new LinkedHashMap<>();
 		
-		for (SdkJsLib lib : root().sdkLibs()) {
-			appJsLibs.put(lib.getName(), new AppSdkJsLib(this, lib));
-		}
 		for (JsLib lib : nonBladeRunnerLibs()) {
 			appJsLibs.put(lib.getName(), lib);
 		}
-		for (JsLib lib : jsLibs.list()) {
+		for (JsLib lib : bladeRunnerLibs()) {
 			appJsLibs.put(lib.getName(), lib);
 		}
 		
@@ -218,7 +215,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 			}
 		}
 		
-		return jsLibs.item(jsLibName);
+		return bladeRunnerLibs.item(jsLibName);
 	}
 	
 	@Override
@@ -291,6 +288,34 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		JsLib appLib = nonBladeRunnerLibs.item(libName);
 		SdkJsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
+		
+		if (!appLib.dirExists() && sdkLib.dirExists())
+		{
+			return new AppSdkJsLib(this, sdkLib);
+		}
+		return appLib;
+	}
+	
+	public List<JsLib> bladeRunnerLibs()
+	{
+		Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
+		
+		for (SdkJsLib lib : root().sdkLibs())
+		{
+			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
+		}
+		for (JsLib lib : bladeRunnerLibs.list())
+		{
+			libs.put(lib.getName(), lib );			
+		}
+		
+		return new ArrayList<JsLib>( libs.values() );
+	}
+	
+	public JsLib bladeRunnerLib(String libName)
+	{
+		JsLib appLib = bladeRunnerLibs.item(libName);
+		SdkJsLib sdkLib = root().sdkLib(libName);
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())
 		{
