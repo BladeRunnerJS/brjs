@@ -5,26 +5,25 @@ brjs.dashboard.app.model.DashboardPresentationModel = function(oDashboardService
 	this.m_oWindowOpenerService = oWindowOpenerService;
 	this.m_oLocalStorage = oLocalStorage;
 	this.m_oBrowserDetector = oBrowserDetector;
-	
+
 	this.currentSection = new br.presenter.property.WritableProperty( "" );
 	this.isLoading = new br.presenter.property.WritableProperty();
 	this.m_oDashboardService.setIsLoadingProperty(this.isLoading);
 	this.loadingText = new br.presenter.property.WritableProperty();
 	this.m_oDashboardService.setLoadingTextProperty(this.loadingText);
-	
+
 	this.isSDKSectionSelected = new br.presenter.property.WritableProperty();
 	this.isSupportSectionSelected = new br.presenter.property.WritableProperty();
-	
+
 	this.crumbtrail = new brjs.dashboard.app.model.crumbtrail.CrumbTrail(this);
-	
+
 	this.appsScreen = new brjs.dashboard.app.model.apps.AppsScreen(this);
 	this.appDetailScreen = new brjs.dashboard.app.model.app.AppDetailScreen(this);
-	this.workbenchScreen = new brjs.dashboard.app.model.workbench.WorkbenchScreen(this);
 	this.releaseNoteScreen = new brjs.dashboard.app.model.release.ReleaseNoteScreen(this);
-	
+
 	this.sdkVersion = new br.presenter.property.WritableProperty();
 	this.setSdkVersion();
-	
+
 	this.dialog = new brjs.dashboard.app.model.dialog.Dialog(this);
 	this.dialog.initialize();
 };
@@ -60,7 +59,7 @@ brjs.dashboard.app.model.DashboardPresentationModel.prototype.setCurrentSection 
 	this.currentSection.setValue( sSection );
 	this.isSDKSectionSelected.setValue(false);
 	this.isSupportSectionSelected.setValue(false);
-	
+
 	switch(sSection)
 	{
 		case "sdk":
@@ -77,7 +76,6 @@ brjs.dashboard.app.model.DashboardPresentationModel.prototype.hideAllScreens = f
 {
 	this.appsScreen.visible.setValue(false);
 	this.appDetailScreen.visible.setValue(false);
-	this.workbenchScreen.visible.setValue(false);
 	this.releaseNoteScreen.visible.setValue(false);
 };
 
