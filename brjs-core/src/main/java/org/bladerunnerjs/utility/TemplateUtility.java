@@ -23,7 +23,10 @@ public class TemplateUtility
 	}
 	
 	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
+		File tempDir = null; 
 		try {
+			tempDir = FileUtility.createTemporaryDirectory(TemplateUtility.class.getCanonicalName()+"_"+templateName);
+			
 			if(node.dirExists() && !(node instanceof BRJS)) {
 				List<File> dirContents = node.root().getFileInfo(node.dir()).filesAndDirs();
 				
@@ -36,15 +39,23 @@ public class TemplateUtility
 			
 			if(templateDir.exists()) {
 				IOFileFilter fileFilter = FileFilterUtils.and(new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
-				FileUtils.copyDirectory(templateDir, node.dir(), fileFilter);
+				FileUtils.copyDirectory(templateDir, tempDir, fileFilter);
 			}
 			
 			if(!transformations.isEmpty()) {
-				transformDir(node.dir(), transformations);
+				transformDir(tempDir, transformations);
 			}
+			
+			
+			FileUtils.copyDirectory(tempDir, node.dir());
 		}
 		catch(IOException e) {
 			throw new TemplateInstallationException(e);
+		}
+		finally {
+			if (tempDir != null) {
+				FileUtils.deleteQuietly(tempDir);
+			}
 		}
 	}
 	
