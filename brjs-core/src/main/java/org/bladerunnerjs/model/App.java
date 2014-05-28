@@ -215,7 +215,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 			}
 		}
 		
-		return bladeRunnerLibs.item(jsLibName);
+		return bladeRunnerLib(jsLibName);
 	}
 	
 	@Override
@@ -286,7 +286,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public JsLib nonBladeRunnerLib(String libName)
 	{
-		JsLib appLib = nonBladeRunnerLibs.item(libName);
+		JsLib appLib = appNonBladeRunnerLib(libName);
 		SdkJsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())
@@ -294,6 +294,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 			return new AppSdkJsLib(this, sdkLib);
 		}
 		return appLib;
+	}
+	
+	public JsLib appNonBladeRunnerLib(String libName)
+	{
+		return nonBladeRunnerLibs.item(libName);
 	}
 	
 	public List<JsLib> bladeRunnerLibs()
@@ -314,7 +319,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public JsLib bladeRunnerLib(String libName)
 	{
-		JsLib appLib = bladeRunnerLibs.item(libName);
+		JsLib appLib = appBladeRunnerLib(libName);
 		SdkJsLib sdkLib = root().sdkLib(libName);
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())
@@ -322,6 +327,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 			return new AppSdkJsLib(this, sdkLib);
 		}
 		return appLib;
+	}
+	
+	public JsLib appBladeRunnerLib(String libName)
+	{
+		return bladeRunnerLibs.item(libName);
 	}
 	
 	public File libsDir() {
