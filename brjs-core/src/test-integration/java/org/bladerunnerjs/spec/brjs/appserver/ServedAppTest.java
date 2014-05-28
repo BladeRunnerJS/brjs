@@ -30,10 +30,7 @@ public class ServedAppTest extends SpecTest
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsMinifiers()
-			.and(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
-			.and(brjs).hasTagPlugins( new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true) )
+		given(brjs).automaticallyFindsAssetLocationProducers()
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usedForServletModel()
@@ -56,15 +53,6 @@ public class ServedAppTest extends SpecTest
 		given(brjs.applicationServer(appServerPort)).stopped()
 			.and(brjs.applicationServer(appServerPort)).requestTimesOutFor("/");
 		if (socket  != null && socket.isBound()) { socket.close(); }
-	}
-	
-	@Test
-	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecified() throws Exception {
-		given(app).hasBeenPopulated()
-			.and(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "locale forwarding page")
-			.and(appServer).started();
-		then(appServer).requestForUrlContains("/app/", "locale forwarding page")
-			.and(appServer).requestForUrlContains("/app/", "<noscript><meta http-equiv='refresh' content='0; url=en/'></noscript>");
 	}
 	
 	@Test
@@ -95,45 +83,11 @@ public class ServedAppTest extends SpecTest
 	}
 	
 	@Test
-	public void tagsWithinIndexPagesAreProcessed() throws Exception
-	{
-		given(app).hasBeenPopulated()
-			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
-			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/en/", "dev replacement");
-	}
-	
-	@Test
-	public void localesCanBeUsedInTagHandlers() throws Exception
-	{
-		given(app).hasBeenPopulated()
-			.and(app).hasSupportedLocales("ab_CD")
-			.and(aspect).containsFileWithContents("index.html", "<@localeToken @/>")
-			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/ab_CD/", "- ab_CD");
-	}
-	
-	@Test
-	public void workbenchPageCanBeAccessed() throws Exception {
-		given(app).hasBeenPopulated()
-			.and(workbench).containsFileWithContents("index.html", "workbench index.html")
-			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/workbench/bs/b1/en/", "workbench index.html");
-	}
-	
-	@Test
 	public void contentPluginsCanHandleRequests() throws Exception
 	{
 		given(app).hasBeenPopulated()
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
-	}
-	
-	@Test
-	public void contentPluginsCanHandleRequestsWithinWorkbenches() throws Exception {
-		given(app).hasBeenPopulated()
-			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/workbench/bs/b1/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
 	
 	@Test @Ignore
