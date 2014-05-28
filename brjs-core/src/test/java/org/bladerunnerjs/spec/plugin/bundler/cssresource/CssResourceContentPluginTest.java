@@ -251,6 +251,29 @@ public class CssResourceContentPluginTest extends SpecTest {
 		);
 	}
 	
+	@Test
+	public void assetsInAnAspectThemeInheritedByABladeWorkbenchCanBeRequested() throws Exception
+	{
+		given(app).hasBeenCreated()
+    		.and(bladeset).hasBeenCreated()
+    		.and(blade).hasBeenCreated()
+    		.and(aspect).containsFileWithContents("themes/common/someFile.txt", "someFile.txt contents");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/cssresource/aspect_default/theme_common/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+//	/wibble/bs-bladeset/blades/bladey/workbench/cssresource/aspect_default/theme_common/Steam_Train_model.jpg
+	
+	public void assetsInAspectResourcesInheritedByABladeWorkbenchCanBeRequested() throws Exception
+	{
+		given(app).hasBeenCreated()
+    		.and(bladeset).hasBeenCreated()
+    		.and(blade).hasBeenCreated()
+    		.and(aspect).containsFileWithContents("resources/someFile.txt", "someFile.txt contents");
+		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/cssresource/aspect_default/resources/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	
 	/* LIBRARY LEVEL ASSETS */
 	
 	@Test
