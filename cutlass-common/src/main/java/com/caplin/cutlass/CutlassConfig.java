@@ -36,7 +36,7 @@ public class CutlassConfig
 	public static final String RELATIVE_SRC_TEST_DIR = "src-test";
 	public static final List<String> POSSIBLE_SRC_DIR_NAMES = Arrays.asList(RELATIVE_SRC_DIR,RELATIVE_SRC_TEST_DIR);
 	
-	public static final String LIBRARY_MANIFEST_FILENAME = "library.manifest";
+	public static final String LIBRARY_MANIFEST_FILENAME = "thirdparty-lib.manifest";
 	
 	public static final String APP_CONF_FILENAME = "app.conf";
 	

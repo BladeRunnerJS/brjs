@@ -99,7 +99,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 	// user libraries depending on other libraries
 	@Test
 	public void userLibraryCanDependOnSdkThirdpartyLibrary() throws Exception {
-		given(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
+		given(sdkJquery).containsFileWithContents("thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: jquery")
 			.and(sdkJquery).containsFileWithContents("jquery.js", "jquery-content")
 			.and(userLib).classFileHasContent("userLib.Class1", "require('jquery');")
 			.and(aspect).indexPageHasContent("require('userLib.Class1');");
@@ -119,9 +119,9 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 	// User thirdparty lib in 'libs' dir overriding an sdk thirdparty library
 	@Test
 	public void userThirdpartyLibraryIsLoadedInsteadOfSdkThirdpartyLibrary() throws Exception {
-		given(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
+		given(sdkJquery).containsFileWithContents("thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: jquery")
 			.and(sdkJquery).containsFileWithContents("jquery.js", "SDK jquery-content")
-			.and(userJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: null")
+			.and(userJquery).containsFileWithContents("thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: null")
 			.and(userJquery).containsFileWithContents("jquery.js", "USER jquery-content")
 			.and(aspect).indexPageHasContent("require('jquery');");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
@@ -132,9 +132,9 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 	// Legacy thirdparty-library overriding an sdk thirdparty library
 	@Test
 	public void userLegacyAppThirdpartyLibraryIsLoadedInsteadOfSdkThirdpartyLibrary() throws Exception {
-		given(app).containsFileWithContents("thirdparty-libraries/jquery/library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
+		given(app).containsFileWithContents("thirdparty-libraries/jquery/thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: jquery")
 			.and(app).containsFileWithContents("thirdparty-libraries/jquery/jquery.js", "LEGACY thirdparty jquery-content")
-			.and(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
+			.and(sdkJquery).containsFileWithContents("thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: jquery")
 			.and(sdkJquery).containsFileWithContents("jquery.js", "SDK jquery-content")
 			.and(aspect).indexPageHasContent("require('jquery');");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);

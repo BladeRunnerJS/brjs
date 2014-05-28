@@ -27,7 +27,7 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
-		if((assetContainer instanceof JsLib) && (assetContainer.file("library.manifest").exists())) {
+		if((assetContainer instanceof JsLib) && (assetContainer.file("thirdparty-lib.manifest").exists())) {
 			assetLocationDirectories.add(".");
 		}
 		

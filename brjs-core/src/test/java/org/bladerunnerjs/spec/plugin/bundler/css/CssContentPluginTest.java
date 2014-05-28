@@ -65,7 +65,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void cssFilesInNonConformantLibrariesAppearInTheCommonTheme() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: style1.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
@@ -77,7 +77,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void cssFilesInNonConformantLibrariesAppearAreAllBundledInCommonThemeWhenYouDontSpecifyCssManifestConfig() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "js: foo.js\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "js: foo.js\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("foo.js")
 			.and(nonConformantLib).containsFileWithContents("style1.css", "style-1")
 			.and(nonConformantLib).containsFileWithContents("style2.css", "style-2");
@@ -89,7 +89,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void cssFilesInNonConformantLibrariesDontAppearInAnyOtherThemes() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: style.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style.css");
 		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("style.css");
@@ -135,7 +135,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void allNonNestedCssFilesInNonConformantLibrariesAppearIfLeftUnspecified() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "js: script.js\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "js: script.js\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("script.js")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
@@ -149,7 +149,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void allCssFilesInNonConformantLibrariesAppearIfAildcardIsExplicitlySpecified() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: \"*.css\"\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"*.css\"\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
@@ -162,7 +162,7 @@ public class CssContentPluginTest extends SpecTest {
 	public void allCssFilesInNonConformantLibrariesAppearIfADeepWildcardIsExplicitlySpecified() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: \"**/*.css\"\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"**/*.css\"\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
