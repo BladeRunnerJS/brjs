@@ -12,11 +12,7 @@ brjs.dashboard.app.model.app.BladePresentationNode = function(sBladeName, oParen
 		var appName = this.m_oPresentationModel.appDetailScreen.appName.getValue();
 		var bladesetName = this.m_oParentBladeset.bladesetName.getValue();
 		var bladeName = this.bladeName.getValue();
-
-		var sWorkbenchScreenUrl = this.m_oPresentationModel.workbenchScreen.getWorkbenchScreenUrl(
-			appName, bladesetName, bladeName);
-		var sWorkbenchPopoutUrl = this.m_oPresentationModel.getPageUrlService().getRootUrl() +
-			appName + "/" + bladesetName + "-bladeset/blades/" + bladeName + "/workbench";
+		var sWorkbenchPopoutUrl = "/" + appName + "/workbench/" + bladesetName + "/" + bladeName + "/";
 		this.workbenchUrl.setValue(sWorkbenchPopoutUrl);
 	}
 };

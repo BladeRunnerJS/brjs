@@ -63,7 +63,7 @@ brjs.dashboard.app.model.apps.AppsScreen.prototype._updateAppsScreen = function(
 	for(var i = 0, l = pApps.length; i < l; ++i)
 	{
 		var sAppName = pApps[i];
-		var sAppInfoUrl = "../#apps/" + sAppName;
+		var sAppInfoUrl = "#apps/" + sAppName;
 		var sAppImageUrl = "url('" + this.m_oPresentationModel.getDashboardService().getAppImageUrl(sAppName) + "')";
 		
 		pPresentationNodes.push(new brjs.dashboard.app.model.apps.AppSummaryPresentationNode(sAppName, sAppInfoUrl, sAppImageUrl));

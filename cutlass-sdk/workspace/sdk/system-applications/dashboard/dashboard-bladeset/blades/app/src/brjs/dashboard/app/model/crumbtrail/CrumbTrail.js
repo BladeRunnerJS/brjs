@@ -19,7 +19,7 @@ brjs.dashboard.app.model.crumbtrail.CrumbTrail.prototype._onPageUrlUpdated = fun
 		var sApp = pParts[0];
 		var sBladeset = pParts[1];
 		var sBlade = pParts[2];
-		var sAppUrl = "../#apps/" + sApp;
+		var sAppUrl = "#apps/" + sApp;
 		pCrumbTrail.push(new brjs.dashboard.app.model.crumbtrail.LinkBreadCrumb(sApp, sAppUrl));
 		pCrumbTrail.push(new brjs.dashboard.app.model.crumbtrail.LinkBreadCrumb(sBladeset, sAppUrl));
 		pCrumbTrail.push(new brjs.dashboard.app.model.crumbtrail.LinkBreadCrumb(sBlade, sAppUrl));
