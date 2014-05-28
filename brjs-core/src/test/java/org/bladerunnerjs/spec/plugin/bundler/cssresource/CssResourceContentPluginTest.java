@@ -53,6 +53,17 @@ public class CssResourceContentPluginTest extends SpecTest {
 		then(response).textEquals("someFile.txt contents");
 	}
 	
+	@Ignore /* possible new test workbenches not receiving aspect resources*/
+	@Test
+	public void assetsInADefaultAspectThemeCanBeRequestedFromWorkbench() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(app).requestReceived("/workbench/cssresource/aspect_default/theme_myTheme/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
 	@Test @Ignore
 	public void assetsInADefaultAspectResourcesCanBeRequested() throws Exception
 	{
@@ -199,7 +210,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	
 	/* WORKBENCH LEVEL ASSETS */
 	
-	@Test @Ignore
+	@Test
 	public void assetsInABladeWorkbenchThemeCanBeRequested() throws Exception
 	{
 		given(app).hasBeenCreated()
