@@ -6,7 +6,7 @@ apply plugin: 'maven'
 configurations {
 	system
 	application
-	systemApp {
+	systemAppServlets {
 		exclude module: 'jetty-all-server'
 		extendsFrom application
 	}
@@ -33,7 +33,7 @@ dependencies {
 
 	srcJars project(path: ':brjs-core', configuration:'srcJar')
 
-	systemApp (project(path: ':system-app-servlets'))
+	systemAppServlets (project(path: ':system-app-servlets'))
 
 	testRunner dependency('JsTestDriver')
 	testRunner dependency('validation-api')
@@ -76,7 +76,7 @@ task copyBrowsers(type: Sync) {
 		}
 }
 
-task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemApp, configurations.testRunner, configurations.javadocs, configurations.srcJars], {
+task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemAppServlets, configurations.testRunner, configurations.javadocs, configurations.srcJars], {
 	def includesDir = "build-resources/includes"
 
 	destinationDir file("${projectDir.path}/workspace")
@@ -140,33 +140,30 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
     			fileName = "brjs-"+fileName
     		}
 		}
-		exclude '*xom-*.jar'
 	}
 	file("workspace/sdk/system-applications").listFiles().each {
 		if (it.isDirectory()) {
 			into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
-				from configurations.systemApp
+				from configurations.systemAppServlets
 				rename { String fileName ->
 					if ( !fileName.startsWith("brjs-") )
 					{
 						fileName = "brjs-"+fileName
 					}
 				}
-				exclude '*xom-*.jar'
 			}
 		}
 	}
 	file("workspace/apps").listFiles().each {
 		if (it.isDirectory()) {
 			into ("apps/${it.name}/WEB-INF/lib") {
-				from configurations.systemApp
+				from configurations.systemAppServlets
 				rename { String fileName ->
 					if ( !fileName.startsWith("brjs-") )
 					{
 						fileName = "brjs-"+fileName
 					}
 				}
-				exclude '*xom-*.jar'
 			}
 		}
 	}
@@ -187,10 +184,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		delete file("workspace/sdk/docs")
 		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
 		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
-	}
-	doLast {
-		//TODO: find a better way to do this so we dont copy files and then immediately delete them
-		fileTree(dir:"workspace/sdk/system-applications/dashboard-services/WEB-INF/lib", include:"brjs-*", exclude:"*system-app-servlets*").each { delete it }
 	}
 	doLast {
 		ant {
