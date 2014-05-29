@@ -72,6 +72,15 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void referencesAreNotProcessedIfCommentedOutWithWithHTMLStyleComments() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.TheClass")
+			.and(aspect).indexPageHasContent("<!-- appns.TheClass -->");
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
 	public void referencesAreNotProcessedIfCommentedOutWithSlashStar() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.TheClass")
