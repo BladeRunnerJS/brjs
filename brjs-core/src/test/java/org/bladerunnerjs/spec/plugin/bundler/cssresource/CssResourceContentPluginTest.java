@@ -251,6 +251,9 @@ public class CssResourceContentPluginTest extends SpecTest {
 		);
 	}
 	
+	//TODO: not sure about the request URL - that is what is sent from the browser but other tests only
+	// seem to use a part of the URL. I guess this way is prone to brittleness
+	// But surely we want to test the actual URLs sent from the browser ????
 	@Test
 	public void assetsInAnAspectThemeInheritedByABladeWorkbenchCanBeRequested() throws Exception
 	{
@@ -258,21 +261,9 @@ public class CssResourceContentPluginTest extends SpecTest {
     		.and(bladeset).hasBeenCreated()
     		.and(blade).hasBeenCreated()
     		.and(aspect).containsFileWithContents("themes/common/someFile.txt", "someFile.txt contents");
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/cssresource/aspect_default/theme_common/someFile.txt", response);
+		when(app).requestReceived("workbench/bs1/b1/v/dev/cssresource/aspect_default/theme_common/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}
-//	/wibble/bs-bladeset/blades/bladey/workbench/cssresource/aspect_default/theme_common/Steam_Train_model.jpg
-	
-	public void assetsInAspectResourcesInheritedByABladeWorkbenchCanBeRequested() throws Exception
-	{
-		given(app).hasBeenCreated()
-    		.and(bladeset).hasBeenCreated()
-    		.and(blade).hasBeenCreated()
-    		.and(aspect).containsFileWithContents("resources/someFile.txt", "someFile.txt contents");
-		when(app).requestReceived("/bs-bladeset/blades/b1/workbench/cssresource/aspect_default/resources/someFile.txt", response);
-		then(response).textEquals("someFile.txt contents");
-	}
-	
 	
 	/* LIBRARY LEVEL ASSETS */
 	
