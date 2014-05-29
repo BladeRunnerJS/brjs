@@ -5,7 +5,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
+import org.bladerunnerjs.model.ThirdpartyLibManifest;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
@@ -16,13 +16,13 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
-		return ((assetLocation instanceof ThirdpartyAssetLocation) && assetFile.getName().equals("library.manifest"));
+		return ((assetLocation instanceof ThirdpartyAssetLocation) && assetFile.getName().equals("thirdparty-lib.manifest"));
 	}
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		try {
-			NonBladerunnerJsLibManifest manifest = new NonBladerunnerJsLibManifest(assetLocation);
+			ThirdpartyLibManifest manifest = new ThirdpartyLibManifest(assetLocation);
 			ThirdpartySourceModule sourceModule = new ThirdpartySourceModule(assetLocation);
 			sourceModule.initManifest(manifest);
 			

@@ -4,7 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRLibConf;
+import org.bladerunnerjs.plugin.plugins.brjsconformant.BRLibYamlConf;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class BRLibTest extends SpecTest {
 	@Test
 	public void sdkLibrariesCanHaveARequirePrefixThatsDifferentToTheirName() throws Exception {
 		given(aspect).hasClass("appns/AspectClass")
-			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo/bar")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: foo/bar")
 			.and(sdkLib).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
@@ -44,19 +44,19 @@ public class BRLibTest extends SpecTest {
 	public void sdkLibrariesMustHaveARequirePrefixWithCorrectFormat() throws Exception {
 		given(aspect).hasClass("appns/AspectClass")
 			.and(sdkLib).hasClass("foo/bar/SdkClass")
-			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo.bar")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: foo.bar")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(exceptions).verifyException(ConfigException.class, "foo.bar", "sdk/libs/javascript/br-libs/br/br.manifest", BRLibConf.REQUIRE_PREFIX_REGEX);
+		then(exceptions).verifyException(ConfigException.class, "foo.bar", "sdk/libs/javascript/br-libs/br/br-lib.conf", BRLibYamlConf.REQUIRE_PREFIX_REGEX);
 	}
 	
 	@Test
 	public void aLibraryCanHaveTheSameRequirePrefixAsAClassInADifferentLibraryIfItHasADifferentCase() throws Exception {
 		given(aspect).hasClass("appns/AspectClass")
-			.and(sdkLib).containsFileWithContents("br.manifest", "requirePrefix: foo")
+			.and(sdkLib).containsFileWithContents("br-lib.conf", "requirePrefix: foo")
 			.and(sdkLib).hasClass("foo/Bar")
-			.and(sdkLib2).containsFileWithContents("br.manifest", "requirePrefix: foo/bar")
+			.and(sdkLib2).containsFileWithContents("br-lib.conf", "requirePrefix: foo/bar")
 			.and(sdkLib2).hasClass("foo/bar/SdkClass")
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.Bar");

@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
-import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -35,15 +34,15 @@ public class CreateLibraryCommandTest extends SpecTest {
 	
 	@Test
 	public void exceptionIsThrownIfThereAreTooFewArguments() throws Exception {
-		when(brjs).runCommand("create-library", "a", "b");
-		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'library-namespace' is required"))
+		when(brjs).runCommand("create-library", "a");
+		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Parameter 'new-library-name' is required"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
 	@Test
 	public void exceptionIsThrownIfThereAreTooManyArguments() throws Exception {
-		when(brjs).runCommand("create-library", "a", "b", "c", "d");
-		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: d"))
+		when(brjs).runCommand("create-library", "a", "b", "c");
+		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: c"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
@@ -51,31 +50,15 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheLibraryNameIsNotAValidDirectoryName() throws Exception {
 		given(app).hasBeenCreated()
 			.and(logging).enabled();
-		when(brjs).runCommand("create-library", "app", "lib#$@/", "libx");
+		when(brjs).runCommand("create-library", "app", "lib#$@/");
 		then(logging).errorMessageReceived(NODE_CREATION_FAILED_LOG_MSG, AppJsLib.class.getSimpleName(), badLib.dir().getPath())
 			.and(exceptions).verifyException(InvalidDirectoryNameException.class, "lib#$@/", badLib.dir().getPath())
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
 	@Test
-	public void exceptionIsThrownIfTheLibraryNamespaceIsNotAValidPackageName() throws Exception {
-		given(app).hasBeenCreated();
-		when(brjs).runCommand("create-library", "app", "lib", "lib-x");
-		then(exceptions).verifyException(InvalidRootPackageNameException.class, "lib-x", lib.dir().getPath())
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
-	}
-	
-	@Test
-	public void exceptionIsThrownIfTheLibraryNamespaceIsNotAValidRootPackageName() throws Exception {
-		given(app).hasBeenCreated();
-		when(brjs).runCommand("create-library", "app", "lib", "caplin");
-		then(exceptions).verifyException(InvalidRootPackageNameException.class, "caplin", lib.dir().getPath())
-			.whereTopLevelExceptionIs(CommandArgumentsException.class);
-	}
-	
-	@Test
 	public void exceptionIsThrownIfTheAppDoesntExist() throws Exception {
-		when(brjs).runCommand("create-library", "app", "lib", "libx");
+		when(brjs).runCommand("create-library", "app", "lib");
 		then(exceptions).verifyException(NodeDoesNotExistException.class, unquoted(app.getClass().getSimpleName()))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
@@ -84,17 +67,58 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void exceptionIsThrownIfTheLibAlreadyExists() throws Exception {
 		given(app).hasBeenCreated()
 			.and(lib).hasBeenCreated();
-		when(brjs).runCommand("create-library", "app", "lib", "libx");
+		when(brjs).runCommand("create-library", "app", "lib");
 		then(exceptions).verifyException(NodeAlreadyExistsException.class, unquoted(lib.getClass().getSimpleName()));
 	}
 	
 	@Test
 	public void libIsCreatedWhenAllArgumentsAreValid() throws Exception {
 		given(app).hasBeenCreated();
-		when(brjs).runCommand("create-library", "app", "lib", "libx");
+		when(brjs).runCommand("create-library", "app", "lib");
 		then(lib).dirExists()
 			.and(output).containsLine( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
 			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, lib.dir() );
+	}
+	
+	@Test
+	public void thirdpartyLibCanBeCreatedUsingASwitch() throws Exception {
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
+		then( app.nonBladeRunnerLib("lib") ).dirExists()
+			.and(output).containsLine( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
+			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, app.nonBladeRunnerLib("lib").dir() );
+	}
+	
+	@Test
+	public void thirdpartyLibCanBeCreatedUsingALonghandSwitch() throws Exception {
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib", "--type", "thirdparty");
+		then( app.nonBladeRunnerLib("lib") ).dirExists()
+			.and(output).containsLine( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
+			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, app.nonBladeRunnerLib("lib").dir() );
+	}
+	
+	@Test
+	public void anExceptionIsThrownIfTheLibraryTypeIsInvalid() throws Exception {
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib", "-t", "INVALID");
+		then(exceptions).verifyFormattedException( CommandArgumentsException.class, INVALID_LIB_TYPE_MESSAGE, "INVALID", unquoted("br, thirdparty") );
+	}
+	
+	@Test
+	public void brLibrariesCanBeCreatedInTheAppEvenIfTheyAreAlreadyInTheSdk() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs.sdkLib("lib")).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib");
+		then(app.appBladeRunnerLib("lib")).dirExists();
+	}
+	
+	@Test
+	public void thirdpartyLibrariesCanBeCreatedInTheAppEvenIfTheyAreAlreadyInTheSdk() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs.sdkNonBladeRunnerLib("lib")).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
+		then(app.appNonBladeRunnerLib("lib")).dirExists();
 	}
 	
 	@Test
@@ -102,7 +126,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 	{
 		given(brjs).hasBeenAuthenticallyCreated()
 			.and(app).hasBeenCreated();
-		when(brjs).runCommand("create-library", "app", "lib", "libx");
+		when(brjs).runCommand("create-library", "app", "lib");
 		then(exceptions).verifyNoOutstandingExceptions();
 	}
 }

@@ -8,9 +8,9 @@ import java.util.List;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
-public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibManifest>
+public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 {
-	private static final String LIBRARY_MANIFEST_FILENAME = "library.manifest";
+	private static final String LIBRARY_MANIFEST_FILENAME = "thirdparty-lib.manifest";
 	
 	public static final String commaWithOptionalSpacesSeparator = "[\\s]*,[\\s]*";
 	
@@ -18,8 +18,8 @@ public class NonBladerunnerJsLibManifest extends ConfFile<YamlNonBladerunnerLibM
 	private final File assetLocationDir;
 	private final AssetLocation assetLocation;
 	
-	public NonBladerunnerJsLibManifest(AssetLocation assetLocation) throws ConfigException {
-		super(assetLocation, YamlNonBladerunnerLibManifest.class, assetLocation.file(LIBRARY_MANIFEST_FILENAME));
+	public ThirdpartyLibManifest(AssetLocation assetLocation) throws ConfigException {
+		super(assetLocation, ThirdpartyLibYamlManifest.class, assetLocation.file(LIBRARY_MANIFEST_FILENAME));
 		fileInfo = assetLocation.root().getFileInfo(assetLocation.dir());
 		assetLocationDir = assetLocation.dir();
 		this.assetLocation = assetLocation;

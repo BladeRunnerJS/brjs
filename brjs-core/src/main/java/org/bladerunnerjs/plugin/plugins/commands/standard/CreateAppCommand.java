@@ -19,7 +19,7 @@ import com.martiansoftware.jsap.JSAPResult;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 
-public class CreateApplicationCommand extends ArgsParsingCommandPlugin
+public class CreateAppCommand extends ArgsParsingCommandPlugin
 {
 	public class Messages {
 		public static final String APP_CREATED_CONSOLE_MSG = "Successfully created new app '%s'";
