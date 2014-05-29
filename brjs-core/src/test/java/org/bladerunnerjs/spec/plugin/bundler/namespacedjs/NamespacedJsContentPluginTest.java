@@ -192,7 +192,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.namespaced.Class")
 			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
 			.and(aspect).classDependsOnThirdpartyLib("appns.namespaced.Class", thirdpartyLib)
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: lib.js\n"+"exports: thirdpartlib")
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: lib.js\n"+"exports: thirdpartlib")
 			.and(thirdpartyLib).containsFile("lib.js");
 		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.namespaced.Class")
@@ -368,7 +368,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	@Test
 	public void nodeJsTestsInRootTestsDirInAnSdkLibWithNestedRequirePrefixDoNotHaveTheirPathsGlobalizedPaths() throws Exception {
 		given(sdkJsLib).hasNodeJsPackageStyle()
-			.and(sdkJsLib).containsFileWithContents("br.manifest", "requirePrefix: sdkLib/subPkg")
+			.and(sdkJsLib).containsFileWithContents("br-lib.conf", "requirePrefix: sdkLib/subPkg")
     		.and(sdkJsLib).hasClasses("sdkLib/subPkg/Class1")
     		.and(sdkJsLibTests).hasTestClass("sdkLib/subPkg/TestClass1")
     		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.subPkg.Class1(); new sdkLib.subPkg.TestClass1();");

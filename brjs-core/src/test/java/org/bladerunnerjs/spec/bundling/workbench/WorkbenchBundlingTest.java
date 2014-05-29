@@ -57,7 +57,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	@Test
 	public void workbenchPageCanBundleAnSdkJsLibraryClass() throws Exception {
 		given(thirdpartyLib).hasBeenCreated()
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "exports: thirdpartyLib")
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thirdpartyLib")
 			.and(thirdpartyLib).containsFileWithContents("src.js", "window.lib = { }")
 			.and(workbench).indexPageRequires("thirdparty-lib1");
 		when(workbench).requestReceived("js/dev/combined/bundle.js", response);
@@ -95,7 +95,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 		given(workbench).hasClass("appns/Class1")
 			.and(workbench).indexPageRefersTo("appns.Class1")
 			.and(bootstrapLib).hasBeenCreated()
-			.and(bootstrapLib).containsFileWithContents("library.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
+			.and(bootstrapLib).containsFileWithContents("thirdparty-lib.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
 			.and(bootstrapLib).containsFileWithContents("sub/dir/bootstrap.js", "// this is bootstrap");
 		when(workbench).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("// br-bootstrap");
@@ -107,10 +107,10 @@ public class WorkbenchBundlingTest extends SpecTest {
 		given(workbench).hasClass("appns/Class1")
     		.and(workbench).indexPageRequires("appLib")
     		.and(appLib).hasBeenCreated()
-    		.and(appLib).containsFileWithContents("library.manifest", "js: lib.js\n"+"exports: lib")
+    		.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "js: lib.js\n"+"exports: lib")
     		.and(appLib).containsFileWithContents("lib.js", "// this is appLib")
     		.and(bootstrapLib).hasBeenCreated()
-    		.and(bootstrapLib).containsFileWithContents("library.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
+    		.and(bootstrapLib).containsFileWithContents("thirdparty-lib.manifest", "js: sub/dir/bootstrap.js\n"+"exports: lib")
     		.and(bootstrapLib).containsFileWithContents("sub/dir/bootstrap.js", "// this is bootstrap");
     	when(workbench).requestReceived("js/dev/combined/bundle.js", response);
     	then(response).containsOrderedTextFragments("// br-bootstrap",

@@ -8,10 +8,10 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 
 
-public class BRLibConf extends AbstractYamlConfFile {	
+public class BRLibYamlConf extends AbstractYamlConfFile {	
 	
 	public class Messages {
-		public static final String INVALID_REQUIRE_PREFIX_EXCEPTION = "Require prefix '%s' in BR manifest at '%s' isn't valid. It must be in the format '%s'";
+		public static final String INVALID_REQUIRE_PREFIX_EXCEPTION = "Require prefix '%s' in BR conf at '%s' isn't valid. It must be in the format '%s'";
 	}
 	
 	public static final String REQUIRE_PREFIX_REGEX = "[a-zA-Z0-9]+((/[a-zA-Z0-9]+)+)?";

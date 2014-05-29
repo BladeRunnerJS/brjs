@@ -21,7 +21,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
@@ -182,7 +182,7 @@ public class RestApiService
 	
 	public void createApp(String appName, String requirePrefix) throws Exception
 	{
-		CreateApplicationCommand cmd = new CreateApplicationCommand();
+		CreateAppCommand cmd = new CreateAppCommand();
 		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appName, requirePrefix };		
 		doCommand( cmd, args );

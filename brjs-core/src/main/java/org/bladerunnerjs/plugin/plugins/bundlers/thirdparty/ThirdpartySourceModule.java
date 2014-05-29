@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.NonBladerunnerJsLibManifest;
+import org.bladerunnerjs.model.ThirdpartyLibManifest;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -30,7 +30,7 @@ public class ThirdpartySourceModule implements SourceModule
 {
 
 	private AssetLocation assetLocation;
-	private NonBladerunnerJsLibManifest manifest;
+	private ThirdpartyLibManifest manifest;
 	private String assetPath;
 	private SourceModulePatch patch;
 	private String defaultFileCharacterEncoding;
@@ -129,7 +129,7 @@ public class ThirdpartySourceModule implements SourceModule
 		return assetPath;
 	}
 	
-	public void initManifest(NonBladerunnerJsLibManifest manifest)
+	public void initManifest(ThirdpartyLibManifest manifest)
 	{
 		if (this.manifest == null)
 		{
