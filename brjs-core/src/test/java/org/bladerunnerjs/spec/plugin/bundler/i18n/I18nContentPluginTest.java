@@ -2,6 +2,7 @@ package org.bladerunnerjs.spec.plugin.bundler.i18n;
 
 import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
@@ -15,6 +16,7 @@ public class I18nContentPluginTest extends SpecTest
 {
 
 	private App app;
+	private AppConf appConf;
 	private Aspect aspect;
 	private StringBuffer response = new StringBuffer();
 	private Bladeset bladeset;
@@ -28,22 +30,23 @@ public class I18nContentPluginTest extends SpecTest
 			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
+			appConf = app.appConf();
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
 	}
 	
-//	@Test
-//	public void ifThereAreNoI18nFilesThenNoRequestsWillBeGenerated() throws Exception {
-//		then(aspect).prodAndDevRequestsForContentPluginsAre("bundle.html");
-//	}
-//	
-//	@Test
-//	public void ifThereAreI18nFilesThenASingleRequestWillBeGenerated() throws Exception {
-//		given(aspect).containsResourceFile("template.html");
-//		then(aspect).prodAndDevRequestsForContentPluginsAre("bundle.html", "bundle.html");
-//	}
+	@Test
+	public void theRequestsGeneratedIsTiedToTheLocalesTheAppSupports() throws Exception {
+		then(aspect).prodAndDevRequestsForContentPluginsAre("i18n", "i18n/en.js");
+	}
+	
+	@Test
+	public void fullLocaleRequestsWillAlsoBeGeneratedIfTheAppConfIsConfiguredForThis() throws Exception {
+		given(appConf).supportsLocales("en", "en_GB");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("i18n", "i18n/en.js", "i18n/en_GB.js");
+	}
 	
 	@Test
 	public void requestForI18nWithoutAnyAssetsReturnsEmptyResponse() throws Exception 
