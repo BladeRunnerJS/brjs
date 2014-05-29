@@ -110,7 +110,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).classRequires("appns/Class1", "./Class2")
-			.and(aspect).containsFileWithContents("resources/config.xml", "'appns/Class1'");
+			.and(aspect).containsResourceFileWithContents("config.xml", "'appns/Class1'");
 		when(brjs).runCommand("app-deps", "app");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",
@@ -127,7 +127,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 		given(aspect).indexPageRequires("appns/Class1")
 			.and(aspect).hasClasses("appns/Class1", "appns/Class2")
 			.and(aspect).classRequires("appns/Class1", "./Class2")
-			.and(aspect).containsFileWithContents("resources/config.xml", "'appns/Class1'");
+			.and(aspect).containsResourceFileWithContents("config.xml", "'appns/Class1'");
 		when(brjs).runCommand("app-deps", "app", "--all");
 		then(output).containsText(
 			"Aspect 'default' dependencies found:",

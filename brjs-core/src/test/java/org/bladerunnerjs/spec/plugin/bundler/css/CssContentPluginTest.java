@@ -136,16 +136,16 @@ public class CssContentPluginTest extends SpecTest {
 	public void cssFilesInResourcesAppearInTheCommonTheme() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFile("resources/style.css");
+			.and(aspect).containsResourceFile("style.css");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("resources/style.css");
+		then(requestResponse).containsText("style.css");
 	}
 	
 	@Test
 	public void cssFilesInResourcesAppearDontAppearInAnyOtherThemes() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFile("resources/style.css");
+			.and(aspect).containsResourceFile("style.css");
 		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("resources/style.css");
 	}
@@ -154,9 +154,9 @@ public class CssContentPluginTest extends SpecTest {
 	public void cssFilesDeepWithinResourcesAppearInTheTheme() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFile("resources/dir1/dir2/style.css");
+			.and(aspect).containsResourceFile("dir1/dir2/style.css");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("resources/dir1/dir2/style.css");
+		then(requestResponse).containsText("dir1/dir2/style.css");
 	}
 	
 	@Test
@@ -338,7 +338,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and().activeEncodingIs("UTF-8")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFileWithContents("resources/style.css", "/* $£€ */");
+			.and(aspect).containsResourceFileWithContents("style.css", "/* $£€ */");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
@@ -349,7 +349,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and().activeEncodingIs("ISO-8859-1")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFileWithContents("resources/style.css", "/* $£ */");
+			.and(aspect).containsResourceFileWithContents("style.css", "/* $£ */");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£");
 	}
@@ -400,7 +400,7 @@ public class CssContentPluginTest extends SpecTest {
 	@Test
 	public void bladesetCssIsBundledEvenWhenThereIsNoJS() throws Exception {
 		given(blade).hasClass("appns/bs/b1/Class1")
-			.and(bladeset).containsFileWithContents("resources/style.css", "BLADESET STYLE")
+			.and(bladeset).containsResourceFileWithContents("style.css", "BLADESET STYLE")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("BLADESET STYLE");

@@ -144,7 +144,7 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 
 	public CommanderChainer resourceFileContains(String resourceFileName, String contents) throws Exception 
 	{
-		aspectBuilder.containsResourceFileWithContent(resourceFileName, contents);
+		aspectBuilder.containsResourceFileWithContents(resourceFileName, contents);
 		return commanderChainer;
 	}
 }

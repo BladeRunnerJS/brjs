@@ -42,7 +42,7 @@ public class ServedWarTest extends SpecTest {
 	public void exportedWarCanBeDeployedOnAnAppServer() throws Exception {
 		given(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "Locale Forwarder")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
-			.and(aspect).containsResourceFileWithContent("template.html", "<div id='template-id'>content</div>")
+			.and(aspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(app).hasBeenBuiltAsWar(brjs.dir(), versionNumber)
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();
@@ -80,7 +80,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void exportedWarCssBundleIsTheSameAsBrjsHosted() throws Exception {
-		given(aspect).containsFileWithContents("resources/style.css", "body { color: red; }")
+		given(aspect).containsResourceFileWithContents("style.css", "body { color: red; }")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(app).hasBeenBuiltAsWar(brjs.dir(), versionNumber)

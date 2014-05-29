@@ -169,9 +169,9 @@ public class WorkbenchBundlingTest extends SpecTest {
 	public void workbenchCanBundleSdkLibHtmlResources() throws Exception {
 		given(brjsLib).hasBeenCreated()
 			.and(brjsLib).hasNamespacedJsPackageStyle()
-			.and(brjsLib).containsFileWithContents("resources/html/view.html", "<div id='br.tree-view'></div>")
+			.and(brjsLib).containsResourceFileWithContents("html/view.html", "<div id='br.tree-view'></div>")
 			.and(brjsLib).hasClass("br.workbench.ui.Workbench")
-			.and(workbench).containsFileWithContents("resources/workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
+			.and(workbench).containsResourceFileWithContents("workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
 			.and(workbench).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(workbench).requestReceived("html/bundle.html", response);
 		then(response).containsOrderedTextFragments("<div id='appns.bs.b1.workbench-view'></div>",
