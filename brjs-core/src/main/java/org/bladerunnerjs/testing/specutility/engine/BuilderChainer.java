@@ -4,6 +4,7 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
@@ -46,6 +47,7 @@ public class BuilderChainer {
 	public BRJSBuilder and(BRJS brjs) { return new BRJSBuilder(specTest, brjs); }
 	public BladerunnerConfBuilder and(BladerunnerConf bladerunnerConf) { return new BladerunnerConfBuilder(specTest, bladerunnerConf); }
 	public AppBuilder and(App app) { return new AppBuilder(specTest, app); }
+	public AppConfBuilder and(AppConf appConf) { return new AppConfBuilder(specTest, appConf); }
 	public AspectBuilder and(Aspect aspect) { return new AspectBuilder(specTest, aspect); }
 	public AssetContainerBuilder<Bladeset> and(Bladeset bladeset) { return new BladesetBuilder(specTest, bladeset); }
 	public AssetContainerBuilder<Blade> and(Blade blade) { return new BladeBuilder(specTest, blade); }

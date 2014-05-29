@@ -2,14 +2,16 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
 public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
@@ -39,24 +41,24 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private void writeTagContent(boolean isDev, Writer writer, BundleSet bundleSet, String theme, String locale, String version) throws IOException {
 		try {
 			App app = bundleSet.getBundlableNode().app();
+			List<String> contentPaths = (isDev) ? cssContentPlugin.getValidDevContentPaths(bundleSet, locale) : cssContentPlugin.getValidProdContentPaths(bundleSet, locale);
 			
-			for(String nextTheme : BRJSConformantAssetLocationPlugin.getBundlableNodeThemes(bundleSet.getBundlableNode())) {
-				for(String contentPath : cssContentPlugin.getThemeStyleSheetContentPaths(nextTheme, locale)) {
-					String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
-					
-					if(nextTheme.equals("common")) {
-						writer.write("<link rel='stylesheet' href='" + requestPath + "'/>\n");
-					}
-					else if(nextTheme.equals(theme)) {
-						writer.write("<link rel='stylesheet' title='" + theme + "' href='" + requestPath + "'/>\n");
-					}
-					else {
-						writer.write("<link rel='alternate stylesheet' title='" + nextTheme + "' href='" + requestPath + "'/>\n");
-					}
+			for(String contentPath : contentPaths) {
+				String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
+				String contentPathTheme = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("theme");
+				
+				if(contentPathTheme.equals("common")) {
+					writer.write("<link rel='stylesheet' href='" + requestPath + "'/>\n");
+				}
+				else if(contentPathTheme.equals(theme)) {
+					writer.write("<link rel='stylesheet' title='" + theme + "' href='" + requestPath + "'/>\n");
+				}
+				else {
+					writer.write("<link rel='alternate stylesheet' title='" + contentPathTheme + "' href='" + requestPath + "'/>\n");
 				}
 			}
 		}
-		catch(MalformedTokenException e) {
+		catch(MalformedTokenException | ContentProcessingException | MalformedRequestException e) {
 			throw new IOException(e);
 		}
 	}

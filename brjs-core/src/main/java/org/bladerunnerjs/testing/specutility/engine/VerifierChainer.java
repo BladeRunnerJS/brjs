@@ -46,6 +46,7 @@ public class VerifierChainer {
 	public NamedNodeVerifier and(NamedNode namedDirNode) { return new NamedNodeVerifier(specTest, namedDirNode); }
 	public BRJSVerifier and(BRJS brjs) { return new BRJSVerifier(specTest, brjs); }
 	public AppVerifier and(App app) { return new AppVerifier(specTest, app); }
+	public AppConfVerifier then(AppConf appConf) { return new AppConfVerifier(specTest, appConf); }
 	public AspectVerifier and(Aspect aspect) { return new AspectVerifier(specTest, aspect); }
 	public BladeVerifier and(Blade blade) { return new BladeVerifier(specTest, blade); }
 	public BladesetVerifier and(Bladeset bladeset) { return new BladesetVerifier(specTest, bladeset); }

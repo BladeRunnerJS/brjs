@@ -31,6 +31,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		seedAssetLocationDirectories.add("resources");
 	}
 	
+	// TODO: find proper homes for the stow-away code in this method
 	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
 		Set<String> themeNames = new HashSet<>();
 		

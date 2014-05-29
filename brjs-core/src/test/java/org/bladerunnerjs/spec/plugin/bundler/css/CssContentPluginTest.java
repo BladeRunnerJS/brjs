@@ -1,11 +1,13 @@
 package org.bladerunnerjs.spec.plugin.bundler.css;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -13,7 +15,11 @@ import org.junit.Test;
 
 public class CssContentPluginTest extends SpecTest {
 	private App app;
+	private AppConf appConf;
 	private Aspect aspect;
+	private Theme commonTheme;
+	private Theme mainTheme;
+	private Theme bladeMainTheme;
 	private JsLib nonConformantLib;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer requestResponse = new StringBuffer();
@@ -26,12 +32,104 @@ public class CssContentPluginTest extends SpecTest {
 		given(brjs).automaticallyFindsBundlers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
+			appConf = app.appConf();
 			aspect = app.aspect("default");
+			commonTheme = aspect.theme("common");
+			mainTheme = aspect.theme("main");
 			nonConformantLib = app.jsLib("non-conformant-lib");
 			bladerunnerConf = brjs.bladerunnerConf();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
+			bladeMainTheme = blade.theme("main");
 			workbench = blade.workbench();
+	}
+	
+	@Test
+	public void ifThereAreNoCssFilesThenNoRequestsWillBeGenerated() throws Exception {
+		given(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css");
+	}
+	
+	@Test
+	public void ifThereAreCssFilesThenRequestsWillBeGenerated() throws Exception {
+		given(commonTheme).containsFile("style.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css");
+	}
+	
+	@Test
+	public void resourceCssFilesAreTreatedAsPartOfTheCommonTheme() throws Exception {
+		given(aspect).containsResourceFile("style.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css");
+	}
+	
+	@Test
+	public void ifThereAreLanguageSpecificCssFilesThenLanguageSpecificRequestsWillBeGenerated() throws Exception {
+		given(commonTheme).containsFile("style_en.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common_en/bundle.css");
+	}
+	
+	@Test
+	public void ifThereAreLocaleSpecificCssFilesThenLocaleSpecificRequestsWillBeGenerated() throws Exception {
+		given(appConf).supportsLocales("en", "en_GB")
+			.and(commonTheme).containsFile("style_en_GB.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common_en_GB/bundle.css");
+	}
+	
+	@Test
+	public void ifThereIsAMixOfLocalesCssFilesThenCorrespondingRequestsWillBeGenerated() throws Exception {
+		given(appConf).supportsLocales("en", "en_GB")
+			.and(commonTheme).containsFile("style.css")
+			.and(commonTheme).containsFile("style_en_GB.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css", "css/common_en_GB/bundle.css");
+	}
+	
+	@Test
+	public void ifAllLocalesCssFilesExistThenAllRequestsWillBeGenerated() throws Exception {
+		given(appConf).supportsLocales("en", "en_GB")
+			.and(commonTheme).containsFile("style.css")
+			.and(commonTheme).containsFile("style_en.css")
+			.and(commonTheme).containsFile("style_en_GB.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css", "css/common_en/bundle.css", "css/common_en_GB/bundle.css");
+	}
+	
+	@Test
+	public void thereBeingCssFilesForLocalesThatArentSupportDoesNotAffectTheGeneratedRequests() throws Exception {
+		given(commonTheme).containsFile("style.css")
+			.and(commonTheme).containsFile("style_en_GB.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css");
+	}
+	
+	@Test
+	public void requestsForAllTheThemesDefinedWithinTheAspectAreGenerated() throws Exception {
+		given(commonTheme).containsFile("style.css")
+			.and(mainTheme).containsFile("style_en.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css", "css/main_en/bundle.css");
+	}
+	
+	@Test
+	public void thereBeingBladeThemesThatArentDefinedInTheAspectDoesNotAffectTheGeneratedRequests() throws Exception {
+		given(commonTheme).containsFile("style.css")
+			.and(bladeMainTheme).containsFile("style.css")
+			.and(aspect).indexPageRequires("appns/bs/b1/Class")
+			.and(blade).hasClass("appns/bs/b1/Class");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css");
+	}
+	
+	@Test
+	public void bladeThemesAreHoweverTakenIntoConsiderationIfTheyIdentifyAdditionalLocaleVariants() throws Exception {
+		given(mainTheme).containsFile("style.css")
+			.and(bladeMainTheme).containsFile("style_en.css")
+			.and(aspect).indexPageRequires("appns/bs/b1/Class")
+			.and(blade).hasClass("appns/bs/b1/Class");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/main_en/bundle.css", "css/main/bundle.css");
 	}
 	
 	@Test

@@ -57,6 +57,14 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return builderChainer;
 	}
 	
+	public BuilderChainer containsResourceFiles(String... resourceFilePaths) throws Exception {
+		for(String resourceFilePath : resourceFilePaths) {
+			containsResourceFile(resourceFilePath);
+		}
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer containsResourceFileWithContent(String resourceFileName, String contents) throws Exception 
 	{
 		fileUtil.write(node.assetLocation("resources").file(resourceFileName), contents);
