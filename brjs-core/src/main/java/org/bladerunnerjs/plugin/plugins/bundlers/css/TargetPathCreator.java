@@ -31,9 +31,6 @@ public class TargetPathCreator
 	
 	public String getRelativeBundleRequestForImage(File imageFile) throws ContentProcessingException
 	{
-		if(!imageFile.exists()){
-			System.out.println("Cant find file: " + imageFile.getAbsolutePath());
-		}
 		return "../../" + getBundleRequestForImage(imageFile);
 	}
 	
