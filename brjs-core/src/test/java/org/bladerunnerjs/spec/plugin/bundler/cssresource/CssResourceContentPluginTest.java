@@ -210,7 +210,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	
 	/* WORKBENCH LEVEL ASSETS */
 	
-	@Test
+	@Test @Ignore
 	public void assetsInABladeWorkbenchThemeCanBeRequested() throws Exception
 	{
 		given(app).hasBeenCreated()
