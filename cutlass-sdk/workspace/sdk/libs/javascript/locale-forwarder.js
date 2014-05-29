@@ -63,6 +63,14 @@ function getActiveLocale(userPreferredLocale, userAcceptedLocales, appSupportedL
 	return activeLocale;
 }
 
+function getLocalizedPageUrl(pageUrl, locale) {
+	var parts = pageUrl.split("#");
+	var url = parts[0];
+	var anchor = parts[1]
+	
+	return url + locale + "/" + ((anchor) ? "#" + anchor : "");
+}
+
 function forwardToLocalePage() {
-	window.location = window.location + getActiveLocale(getCookie("BRJS.LOCALE"), getUserAcceptedLocales(), $appSupportedLocales) + "/";
+	window.location = getLocalizedPageUrl(window.location.href, getActiveLocale(getCookie("BRJS.LOCALE"), getUserAcceptedLocales(), $appSupportedLocales));
 }
