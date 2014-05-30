@@ -24,21 +24,21 @@ public class BundlableNodeVerifier<T extends BundlableNode> extends NodeVerifier
 		List<String> actualDevRequests = contentPlugin.getValidDevContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		List<String> actualProdRequests = contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		
-		assertEquals(Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualDevRequests));
-		assertEquals(Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualProdRequests));
+		assertEquals("dev requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualDevRequests));
+		assertEquals("prod requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualProdRequests));
 	}
 	
 	public void devRequestsForContentPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
 		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentProvider(contentPluginPrefix);
-		List<String> actualRequests = contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
+		List<String> actualRequests = contentPlugin.getValidDevContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		
-		assertEquals(Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
+		assertEquals("dev requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
 	}
 	
 	public void prodRequestsForContentPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
 		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentProvider(contentPluginPrefix);
 		List<String> actualRequests = contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		
-		assertEquals(Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
+		assertEquals("prod requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
 	}
 }

@@ -44,6 +44,28 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void ifThereAreNoJsFilesThenNoRequestsWillBeGenerated() throws Exception {
+		given(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("namespaced-js");
+	}
+	
+	@Test
+	public void ifThereAreJsFilesThenMultipleRequestsWillBeGeneratedInDev() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).indexPageRefersTo("appns.Class")
+			.and(aspect).hasClass("appns.Class");
+		then(aspect).devRequestsForContentPluginsAre("namespaced-js", "namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class.js", "namespaced-js/globalize-extra-classes.js");
+	}
+	
+	@Test
+	public void ifThereAreJsFilesThenASingleBundleRequestWillBeGeneratedInProd() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).indexPageRefersTo("appns.Class")
+			.and(aspect).hasClass("appns.Class");
+		then(aspect).prodRequestsForContentPluginsAre("namespaced-js", "namespaced-js/bundle.js");
+	}
+	
+	@Test
 	public void theBundleIsEmptyIfWeDontReferToAnyOfTheClasses() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")

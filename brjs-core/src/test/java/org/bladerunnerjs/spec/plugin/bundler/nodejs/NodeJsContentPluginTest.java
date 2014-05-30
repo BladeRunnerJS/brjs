@@ -7,7 +7,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NodeJsBundlerPluginTest extends SpecTest {
+public class NodeJsContentPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
@@ -22,6 +22,26 @@ public class NodeJsBundlerPluginTest extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			sdkJsLib = brjs.sdkLib("sdkLib");
+	}
+	
+	@Test
+	public void ifThereAreNoJsFilesThenNoRequestsWillBeGenerated() throws Exception {
+		given(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("node-js");
+	}
+	
+	@Test
+	public void ifThereAreJsFilesThenMultipleRequestsWillBeGeneratedInDev() throws Exception {
+		given(aspect).indexPageRequires("appns/Class")
+			.and(aspect).hasClass("appns/Class");
+		then(aspect).devRequestsForContentPluginsAre("node-js", "node-js/module/appns/Class.js");
+	}
+	
+	@Test
+	public void ifThereAreJsFilesThenASingleBundleRequestWillBeGeneratedInProd() throws Exception {
+		given(aspect).indexPageRequires("appns/Class")
+			.and(aspect).hasClass("appns/Class");
+		then(aspect).prodRequestsForContentPluginsAre("node-js", "node-js/bundle.js");
 	}
 	
 	@Test

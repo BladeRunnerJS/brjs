@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
+import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -96,22 +98,24 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		List<String> requestPaths = new ArrayList<>();
-
-		try
-		{
-			requestPaths.add(contentPathParser.createRequest(PACKAGE_DEFINITIONS_REQUEST));
-			for (SourceModule sourceModule : bundleSet.getSourceModules())
+		
+		if(InstanceFinder.containsInstance(bundleSet.getSourceModules(), NamespacedJsSourceModule.class)) {
+			try
 			{
-				if (sourceModule instanceof NamespacedJsSourceModule)
+				requestPaths.add(contentPathParser.createRequest(PACKAGE_DEFINITIONS_REQUEST));
+				for (SourceModule sourceModule : bundleSet.getSourceModules())
 				{
-					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
+					if (sourceModule instanceof NamespacedJsSourceModule)
+					{
+						requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
+					}
 				}
+				requestPaths.add(contentPathParser.createRequest(GLOBALIZE_EXTRA_CLASSES_REQUEST));
 			}
-			requestPaths.add(contentPathParser.createRequest(GLOBALIZE_EXTRA_CLASSES_REQUEST));
-		}
-		catch (MalformedTokenException e)
-		{
-			throw new ContentProcessingException(e);
+			catch (MalformedTokenException e)
+			{
+				throw new ContentProcessingException(e);
+			}
 		}
 
 		return requestPaths;
@@ -120,7 +124,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return prodRequestPaths;
+		return (InstanceFinder.containsInstance(bundleSet.getSourceModules(), NamespacedJsSourceModule.class)) ? prodRequestPaths : Collections.emptyList();
 	}
 
 	@Override
