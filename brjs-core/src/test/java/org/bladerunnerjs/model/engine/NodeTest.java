@@ -194,10 +194,15 @@ public class NodeTest
 		TestRootNode rootNode = new TestRootNode(rootDir);
 		
 		// add node to cache
-		new TestNode(rootNode, null, childDir);
+		TestNode child = new TestNode(rootNode, null, childDir);
+		rootNode.registerNode(child);
 		
-		assertEquals(childDir.getCanonicalPath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestNode.class).dir().getPath());
-		assertEquals(childDir.getCanonicalPath(), rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestNode.class).dir().getPath());
+		TestNode locateAncestorNodeOfClass1 = rootNode.locateAncestorNodeOfClass(grandchildDir, TestNode.class);
+		assertEquals(childDir.getCanonicalPath(), locateAncestorNodeOfClass1.dir().getPath());
+		
+		TestNode locateAncestorNodeOfClass2 = rootNode.locateAncestorNodeOfClass(greatGrandchildDir, TestNode.class);
+		assertEquals(childDir.getCanonicalPath(), locateAncestorNodeOfClass2.dir().getPath());
+
 	}
 	
 	@Test
@@ -219,6 +224,7 @@ public class NodeTest
 	public void locateAncestorNodeOfClassShouldSucceedTheImmediateAncestorIsARootNode() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		File childDir = new File(rootNode.dir(), "child-1");
 		
 		assertTrue(childDir.exists());
@@ -229,16 +235,19 @@ public class NodeTest
 	public void locateAncestorNodeOfClassShouldSucceedIfOneOfTheAncestorsIsARootNode() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		File grandchildDir = new File(TEST_DIR, "root/child-1/grandchild/1");
 		
 		assertTrue(grandchildDir.exists());
-		assertEquals(grandchildDir.getAbsolutePath(), rootNode.locateAncestorNodeOfClass(grandchildDir, TestGrandChildNode.class).dir().getPath());
+		TestGrandChildNode locatedGrandChild = rootNode.locateAncestorNodeOfClass(grandchildDir, TestGrandChildNode.class);
+		assertEquals(grandchildDir.getAbsolutePath(), locatedGrandChild.dir().getPath());
 	}
 	
 	@Test
 	public void locateAncestorNodeOfClassShouldSucceedIfOneOfTheDistantAncestorsIsARootNode() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		File greatGrandchildDir = new File(TEST_DIR, "root/child-1/grandchild/1/2-greatgrandchild");
 		
 		assertTrue(greatGrandchildDir.exists());
@@ -258,7 +267,7 @@ public class NodeTest
 	public void locateFirstAncestorNodeShouldWorkIfGivenTheNodesActualDir() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
-		
+		rootNode.registerNode(rootNode);
 		assertEquals(rootNode.dir().getPath(), rootNode.locateFirstAncestorNode(rootNode.dir()).dir().getPath());
 	}
 	
@@ -266,6 +275,7 @@ public class NodeTest
 	public void locateFirstAncestorNodeShouldWorkIfGivenAChildDir() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		
 		assertEquals(rootNode.dir().getPath(), rootNode.locateFirstAncestorNode(rootNode.file("child")).dir().getPath());
 	}
@@ -274,6 +284,7 @@ public class NodeTest
 	public void locateFirstAncestorNodeShouldWorkIfGivenAGrandChildDir() throws Exception
 	{
 		TestRootNode rootNode = new TestRootNode(new File(TEST_DIR, "root"));
+		rootNode.registerNode(rootNode);
 		
 		assertEquals(rootNode.dir().getPath(), rootNode.locateFirstAncestorNode(rootNode.file("child")).dir().getPath());
 	}
@@ -453,6 +464,7 @@ public class NodeTest
 		File itemDir = new File(rootDir, "single-item");
 		itemDir.mkdirs();
 		TestRootNode rootNode = new TestRootNode(rootDir);
+		rootNode.registerNode(rootNode);
 		
 		Node itemNode = rootNode.locateAncestorNodeOfClass(itemDir, TestItemNode.class);
 		
@@ -495,6 +507,7 @@ public class NodeTest
 		
 		itemDir.mkdirs();
 		TestRootNode rootNode = new TestRootNode(rootDir);
+		rootNode.registerNode(rootNode);
 		
 		Node singleItemNode = rootNode.locateAncestorNodeOfClass(itemDir, TestItemNode.class);
 		assertEquals(itemDir.getCanonicalPath(), singleItemNode.dir().getPath());
@@ -576,6 +589,7 @@ public class NodeTest
 		primaryItemDir.mkdirs();
 		
 		TestRootNode rootNode = new TestRootNode(rootDir);
+		rootNode.registerNode(rootNode);
 		Node itemNode = rootNode.locateAncestorNodeOfClass(primaryItemDir, TestMultiLocationItemNode.class);
 		
 		assertEquals(primaryItemDir.getCanonicalPath(), itemNode.dir().getPath());
@@ -590,6 +604,7 @@ public class NodeTest
 		secondaryItemDir.mkdirs();
 		
 		TestRootNode rootNode = new TestRootNode(rootDir);
+		rootNode.registerNode(rootNode);
 		Node itemNode = rootNode.locateAncestorNodeOfClass(secondaryItemDir, TestMultiLocationItemNode.class);
 		
 		assertEquals(secondaryItemDir.getCanonicalPath(), itemNode.dir().getPath());

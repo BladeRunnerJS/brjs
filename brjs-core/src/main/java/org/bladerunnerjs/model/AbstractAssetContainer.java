@@ -2,16 +2,17 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.TreeMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
@@ -84,30 +85,41 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	private Map<String, AssetLocation> assetLocationsMap() {
-		return assetLocationsMap.value(() -> {
-			Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
-			
-			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
-				List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
+			return assetLocationsMap.value(() -> {
+				Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
 				
-				if(assetLocationDirectories.size() > 0) {
-					for(String locationPath : assetLocationDirectories) {
-						if(!assetLocations.containsKey(locationPath)) {
-							if(!cachedAssetLocations.containsKey(locationPath)) {
-								cachedAssetLocations.put(locationPath, assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations));
-							}
-							
-							assetLocations.put(locationPath, cachedAssetLocations.get(locationPath));
+				for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+					List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
+					
+					if(assetLocationDirectories.size() > 0) {
+						for(String locationPath : assetLocationDirectories) {
+							createAssetLocation(locationPath, assetLocations, assetLocationPlugin);
+						}
+						
+						if(!assetLocationPlugin.allowFurtherProcessing()) {
+							break;
 						}
 					}
-					
-					if(!assetLocationPlugin.allowFurtherProcessing()) {
-						break;
-					}
 				}
+				
+				return assetLocations;
+			});
+	}
+	
+	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, AssetLocationPlugin assetLocationPlugin ){
+		
+		if(!assetLocations.containsKey(locationPath)) {
+			if(!cachedAssetLocations.containsKey(locationPath)) {
+				AssetLocation assetLocation = assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations);
+				try {
+					rootNode.registerNode(assetLocation, true);
+				} catch (NodeAlreadyRegisteredException e) {
+					throw new RuntimeException(e);
+				}
+				cachedAssetLocations.put(locationPath, assetLocation);
 			}
 			
-			return assetLocations;
-		});
+			assetLocations.put(locationPath, cachedAssetLocations.get(locationPath));
+		}
 	}
 }

@@ -29,9 +29,6 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 		super(rootNode, parent, dir);
 		this.name = name;
 		this.parent = parent;
-		
-		// TODO: we should never call registerInitializedNode() from a non-final class
-		registerInitializedNode();
 	}
 	
 	public AbstractJsLib(RootNode rootNode, Node parent, File dir)

@@ -229,15 +229,15 @@ public class CssContentPluginTest extends SpecTest {
 	public void referringToAParentImageCausesAParentCssResourceRequestToBeCreated() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../img.png');}");
+			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/img.png');}");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img.png\");}");
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/wibble/img.png\");}");
 	}
 	
 	@Test
 	public void weCanUseUTF8() throws Exception {
 		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
-			.and().activeEncodingIs("UTF-8")
+			.and().activeEncodingIs("qUTF-8")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("resources/style.css", "/* $£€ */");

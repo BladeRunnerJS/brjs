@@ -42,7 +42,7 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		this.consoleWriter = consoleWriter;
 		
 		// TODO: we should never call registerInitializedNode() from a non-final class
-		registerInitializedNode();
+//		registerInitializedNode();
 	}
 	
 	@Override
@@ -71,7 +71,17 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	@Override
 	public void registerNode(Node node) throws NodeAlreadyRegisteredException
 	{
+		this.registerNode(node, false);
+	}
+	
+	
+	
+	public void registerNode(Node node, boolean makeUnique) throws NodeAlreadyRegisteredException
+	{
 		String normalizedPath = node.dir().getPath();
+		if(makeUnique){
+			normalizedPath += "/.";
+		}
 		
 		if(nodeCache.containsKey(normalizedPath)) {
 			throw new NodeAlreadyRegisteredException("A node has already been registered for path '" + normalizedPath + "'");

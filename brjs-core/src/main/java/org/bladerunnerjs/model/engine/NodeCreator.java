@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
+
 public class NodeCreator
 {
 	@SuppressWarnings("unchecked")
@@ -49,8 +51,9 @@ public class NodeCreator
 			{
 				throw new RuntimeException("No valid Node constructor found for '" + nodeClass.getName() + "'");
 			}
+			rootNode.registerNode(node);
 		}
-		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NodeAlreadyRegisteredException e)
 		{
 			throw new RuntimeException(e);
 		}

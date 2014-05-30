@@ -27,8 +27,6 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	{
 		super(rootNode, parent, dir);
 		seedLocator = new IndexPageSeedLocator(root());
-		
-		registerInitializedNode();
 	}
 	
 	@Override

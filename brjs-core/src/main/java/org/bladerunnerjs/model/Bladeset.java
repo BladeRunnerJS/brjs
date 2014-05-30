@@ -24,8 +24,6 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		
-		registerInitializedNode();
 	}
 	
 	@Override

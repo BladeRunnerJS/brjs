@@ -31,7 +31,6 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 		super(rootNode, parent, dir);
 		this.name = name;
 		
-		registerInitializedNode();
 		indexPageSeedLocator = new IndexPageSeedLocator(root());
 	}
 	

@@ -2,9 +2,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.File;
 
-import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.model.exception.request.ContentProcessingException;
-import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
@@ -12,8 +9,13 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.ThemesAssetLocation;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.plugins.bundlers.cssresource.CssResourceContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.RelativePathUtility;
@@ -59,7 +61,15 @@ public class TargetPathCreator
 	
 	private String getTargetPath(File imageFile) throws ContentProcessingException
 	{
-		AssetLocation assetLocation = (AssetLocation) brjs.locateFirstAncestorNode(imageFile);
+		Node firstAncestorNode = brjs.locateFirstAncestorNode(imageFile);
+		if(firstAncestorNode instanceof Theme){
+			Theme theme = (Theme)firstAncestorNode;
+			Node parentNode = theme.parentNode();
+			System.out.println("oops");
+			
+		}
+		
+		AssetLocation assetLocation = (AssetLocation)firstAncestorNode;
 		AssetContainer assetContainer = assetLocation.assetContainer();
 		String targetPath = null;
 		

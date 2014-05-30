@@ -13,7 +13,6 @@ public final class ThemesAssetLocation extends AbstractDeepAssetLocation {
 	
 	public ThemesAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
-		registerInitializedNode();
 	}
 	
 	public String getThemeName() {

@@ -29,8 +29,6 @@ public final class Blade extends AbstractComponent implements NamedNode
 		bladeAssetContainers = new ArrayList<>();
 		bladeAssetContainers.add(this);
 		bladeAssetContainers.add((Bladeset) parent);
-		
-		registerInitializedNode();
 	}
 	
 	@Override
