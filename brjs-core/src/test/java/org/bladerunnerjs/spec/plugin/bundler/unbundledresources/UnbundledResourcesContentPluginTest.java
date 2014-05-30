@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.plugin.bundler.unbundledresources;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private Aspect appAspect;
 	private App sysapp;
 	private Aspect sysappAspect;
+	private File unbundledResources;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -28,11 +30,26 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			appAspect = app.aspect("default");
+			unbundledResources = appAspect.file("unbundled-resources");
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
 			
 		unbundledResourcesPlugin = brjs.plugins().contentProvider("unbundled-resources");
 		requestsList = new ArrayList<String>();
+	}
+	
+	@Test
+	public void ifThereAreNoFilesInUnbundledResourcesThenNoRequestsWillBeGenerated() throws Exception {
+		given(appAspect).indexPageHasContent("index page");
+		then(appAspect).prodAndDevRequestsForContentPluginsAre("unbundled-resources");
+	}
+	
+	@Test
+	public void ifThereAreFilesInUnbundledResourcesThenRequestsWillBeGenerated() throws Exception {
+		given(appAspect).indexPageHasContent("index page")
+			.and(unbundledResources).containsFile("some-file")
+			.and(unbundledResources).containsFile("some-dir/some-file");
+		then(appAspect).prodAndDevRequestsForContentPluginsAre("unbundled-resources", "unbundled-resources/some-file", "unbundled-resources/some-dir/some-file");
 	}
 	
 	@Test

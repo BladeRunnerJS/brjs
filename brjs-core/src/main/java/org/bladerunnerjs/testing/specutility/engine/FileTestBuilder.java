@@ -16,6 +16,12 @@ public class FileTestBuilder extends SpecTestBuilder {
 		fileUtil = new FileUtil(specTest.getActiveCharacterEncoding());
 	}
 	
+	public BuilderChainer containsFile(String filePath) throws Exception {
+		fileUtil.write(new File(file, filePath), filePath);
+		
+		return builderChainer;
+	}
+	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		fileUtil.write(new File(file, filePath), fileContents);
 		
