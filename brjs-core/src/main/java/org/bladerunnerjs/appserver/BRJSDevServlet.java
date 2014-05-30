@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -24,6 +25,8 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class BRJSDevServlet extends HttpServlet {
 	private static final long serialVersionUID = 1964608537461568895L;
+
+	private static final String CONTENT_TYPE = "Content-Type";
 	
 	private App app;
 	private ServletContext servletContext;
@@ -63,6 +66,14 @@ public class BRJSDevServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String requestPath = request.getRequestURI().replaceFirst("^" + request.getContextPath() + request.getServletPath() + "/", "");
+		
+		if (!requestPath.endsWith("/")) {
+			String fileName = StringUtils.substringAfterLast(requestPath, "/");
+			String mimeType = servletContext.getMimeType(fileName);
+			if (mimeType != null) {
+				response.setHeader(CONTENT_TYPE, mimeType);
+			}
+		}
 		
 		try {
 			BRJSThreadSafeModelAccessor.aquireModel();
