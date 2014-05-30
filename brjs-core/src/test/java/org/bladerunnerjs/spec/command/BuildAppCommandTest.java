@@ -72,6 +72,15 @@ public class BuildAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void appCanBeExportedToASpecifiedAbsoluteDirectory() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).hasDir("sdk/target");
+		when(brjs).runCommand("build-app", "app", brjs.file("sdk/target").getAbsolutePath());
+		then(brjs).hasDir("sdk/target/app")
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
+	}
+	
+	@Test
 	public void appCanBeExportedAsAWar() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("build-app", "app", "-w");

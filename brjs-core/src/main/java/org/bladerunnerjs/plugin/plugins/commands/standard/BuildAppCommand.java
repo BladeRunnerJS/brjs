@@ -70,7 +70,11 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 			targetDir = brjs.storageDir("exported-apps");
 			targetDir.mkdirs();
 		} else {
-			targetDir = brjs.file("sdk/" + targetDirPath);
+			if (targetDirPath.startsWith("/")) {
+				targetDir = new File(targetDirPath);
+			} else {
+				targetDir = brjs.file("sdk/" + targetDirPath);
+			}
 		}
 		File appExportDir = new File(targetDir, appName);
 		
