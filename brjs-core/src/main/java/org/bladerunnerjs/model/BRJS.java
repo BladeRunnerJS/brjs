@@ -233,7 +233,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return new ArrayList<SdkJsLib>( sdkLibs.list() );
 	}
 	
-	public JsLib sdkLib(String libName)
+	public SdkJsLib sdkLib(String libName)
 	{
 		return sdkLibs.item(libName);
 	}

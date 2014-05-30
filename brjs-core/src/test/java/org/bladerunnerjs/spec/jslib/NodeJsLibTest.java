@@ -14,7 +14,7 @@ public class NodeJsLibTest extends SpecTest {
 	private JsLib sdkLib;
 	private StringBuffer response = new StringBuffer();
 	
-	//TODO: once we have a proper NodeJS library plugin remove the library.manifest creation from these tests
+	//TODO: once we have a proper NodeJS library plugin remove the thirdparty-lib.manifest creation from these tests
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -31,7 +31,7 @@ public class NodeJsLibTest extends SpecTest {
 	public void librariesWithPackageJsonAreWrappedInADefineBlock() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
 			.and(sdkLib).containsFile("package.json")
-			.and(sdkLib).containsFileWithContents("library.manifest", "exports: thisLib")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
 			.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragments("define('lib', function(require, exports, module) {",
@@ -44,7 +44,7 @@ public class NodeJsLibTest extends SpecTest {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
 			.and(sdkLib).containsFile("package.json")
 			.and(sdkLib).containsFile(".no-define")
-			.and(sdkLib).containsFileWithContents("library.manifest", "exports: thisLib")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
 			.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainText("define('lib', function(require, exports, module) {");
@@ -54,7 +54,7 @@ public class NodeJsLibTest extends SpecTest {
 	public void librariesWithPackageJsonAreGlobalisedUsingExportsConfig() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
 			.and(sdkLib).containsFile("package.json")
-			.and(sdkLib).containsFileWithContents("library.manifest", "exports: thisLib")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: thisLib")
 			.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("thisLib = require('lib');");
@@ -66,7 +66,7 @@ public class NodeJsLibTest extends SpecTest {
 	public void librariesWithEmptyObjectExportsDontCreateInvalidJS() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
 			.and(sdkLib).containsFile("package.json")
-			.and(sdkLib).containsFileWithContents("library.manifest", "exports: \"{}\"")
+			.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: \"{}\"")
 			.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsLines(
@@ -79,7 +79,7 @@ public class NodeJsLibTest extends SpecTest {
 	public void librariesWithEmptyObjectAndWhiteSpaceExportsDontCreateInvalidJS() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")
 		.and(sdkLib).containsFile("package.json")
-		.and(sdkLib).containsFileWithContents("library.manifest", "exports: \"  {  }  \"")
+		.and(sdkLib).containsFileWithContents("thirdparty-lib.manifest", "exports: \"  {  }  \"")
 		.and(aspect).indexPageRequires("lib");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainText("= require('lib');");

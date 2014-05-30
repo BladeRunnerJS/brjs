@@ -4,14 +4,14 @@ import org.bladerunnerjs.model.ConfFile;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
 
-public class BRLibManifest extends ConfFile<BRLibConf> {
+public class BRLibManifest extends ConfFile<BRLibYamlConf> {
 	
-	private static final String BR_MANIFEST_FILENAME = "br.manifest";
+	private static final String BR_MANIFEST_FILENAME = "br-lib.conf";
 
 	private JsLib lib;
 	
 	public BRLibManifest(JsLib lib) throws ConfigException {
-		super(lib, BRLibConf.class, lib.file(BR_MANIFEST_FILENAME));
+		super(lib, BRLibYamlConf.class, lib.file(BR_MANIFEST_FILENAME));
 		this.lib = lib;
 	}
 	

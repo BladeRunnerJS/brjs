@@ -103,7 +103,7 @@ public class BladeTestPackBundlingTest extends SpecTest
 	@Test
 	public void weCanBundleAppThirdpartyLibrariesInATs() throws Exception {
 		given(appThirdparty).hasNamespacedJsPackageStyle()
-			.and(appThirdparty).containsFileWithContents("library.manifest", "js: src1.js, src2.js\n"+"exports: browserModules")
+			.and(appThirdparty).containsFileWithContents("thirdparty-lib.manifest", "js: src1.js, src2.js\n"+"exports: browserModules")
 			.and(appThirdparty).containsFiles("src1.js", "src2.js", "src3.js")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
@@ -119,9 +119,9 @@ public class BladeTestPackBundlingTest extends SpecTest
 	public void weCanBundleSdkJsLibIncludingSdkThirdpartyBootstrapInATs() throws Exception {
 		given(sdkJsLib).hasNamespacedJsPackageStyle()
 			.and(sdkJsLib).classFileHasContent("br.namespaced.Class1", "sdk class1 contents")
-			.and(browserModules).containsFileWithContents("library.manifest", "js: file.js\n"+"exports: browserModules")
+			.and(browserModules).containsFileWithContents("thirdparty-lib.manifest", "js: file.js\n"+"exports: browserModules")
 			.and(browserModules).containsFileWithContents("file.js", "browser-modules-content")
-			.and(bootsrapThirdparty).containsFileWithContents("library.manifest", "depends: browser-modules\n"+"exports: bootsrapThirdparty")
+			.and(bootsrapThirdparty).containsFileWithContents("thirdparty-lib.manifest", "depends: browser-modules\n"+"exports: bootsrapThirdparty")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClasses("appns.bs.b1.Class1", "appns.bs.b1.Class2")
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "br.namespaced.Class1", "appns.bs.b1.Class2")

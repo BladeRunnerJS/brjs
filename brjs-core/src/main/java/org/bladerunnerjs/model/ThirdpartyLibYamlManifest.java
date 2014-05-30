@@ -8,7 +8,7 @@ import org.bladerunnerjs.utility.ConfigValidationChecker;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 
 
-public class YamlNonBladerunnerLibManifest extends AbstractYamlConfFile
+public class ThirdpartyLibYamlManifest extends AbstractYamlConfFile
 {
 	
 	public String depends;

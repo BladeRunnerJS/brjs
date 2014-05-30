@@ -1,7 +1,7 @@
 package org.bladerunnerjs.spec.command;
 
 import static org.bladerunnerjs.model.App.Messages.*;
-import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand.Messages.*;
+import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand.Messages.*;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.DirNode;
@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.model.exception.name.UnableToAutomaticallyGenerateAppRequirePrefixException;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class CreateAppCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new CreateApplicationCommand())
+		given(brjs).hasCommands(new CreateAppCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			badApp = brjs.app("app#$@/");
