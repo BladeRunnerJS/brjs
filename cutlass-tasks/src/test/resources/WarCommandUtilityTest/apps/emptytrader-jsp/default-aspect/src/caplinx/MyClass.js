@@ -1,3 +1,0 @@
-caplinx.MyClass = function()
-{
-};
