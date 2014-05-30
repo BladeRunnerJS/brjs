@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -36,6 +37,7 @@ import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.PageAccessor;
 import org.bladerunnerjs.utility.SimplePageAccessor;
+import org.bladerunnerjs.utility.WebXmlCompiler;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -375,8 +377,14 @@ public class App extends AbstractBRJSNode implements NamedNode
 			String version = String.valueOf(new Date().getTime());
 			PageAccessor pageAcessor = new SimplePageAccessor();
 			
-			if(file("WEB-INF").exists()) {
-				FileUtils.copyDirectory(file("WEB-INF"), new File(appExportDir, "WEB-INF"));
+			File appWebInf = file("WEB-INF");
+			if(appWebInf.exists()) {
+				File exportedWebInf = new File(appExportDir, "WEB-INF");
+				FileUtils.copyDirectory(appWebInf, exportedWebInf);
+				File exportedWebXml = new File(exportedWebInf, "web.xml");
+				if (exportedWebXml.isFile()) {
+					WebXmlCompiler.compile(exportedWebXml);					
+				}
 			}
 			
 			for(Aspect aspect : aspects()) {
@@ -417,7 +425,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 				FileUtils.deleteDirectory(appExportDir);
 			}
 		}
-		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException e) {
+		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException | ParseException e) {
 			throw new ModelOperationException(e);
 		}
 	}
