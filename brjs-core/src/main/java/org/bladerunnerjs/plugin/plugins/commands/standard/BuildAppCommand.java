@@ -21,6 +21,7 @@ import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 public class BuildAppCommand extends ArgsParsingCommandPlugin {
+
 	public class Messages {
 		public static final String APP_BUILT_CONSOLE_MSG = "Exported app '%s' to '%s'";
 	}
@@ -36,7 +37,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
 		argsParser.registerParameter(new UnflaggedOption(Parameters.APP_NAME).setRequired(true).setHelp("the application within which the new blade will be created"));
-		argsParser.registerParameter(new UnflaggedOption(Parameters.TARGET_DIR).setDefault(".").setHelp("the directory within which the exported app will be built"));
+		argsParser.registerParameter(new UnflaggedOption(Parameters.TARGET_DIR).setHelp("the directory within which the exported app will be built"));
 		argsParser.registerParameter(new Switch("war").setShortFlag('w').setLongFlag("war").setDefault("false").setHelp("whether the exported files should be placed into a war zip."));
 	}
 	
@@ -58,12 +59,19 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 	
 	@Override
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
+		
 		String appName = parsedArgs.getString(Parameters.APP_NAME);
 		String targetDirPath = parsedArgs.getString(Parameters.TARGET_DIR);
 		boolean warExport = parsedArgs.getBoolean("war");
 		
 		App app = brjs.app(appName);
-		File targetDir = brjs.file("sdk/" + targetDirPath);
+		File targetDir;
+		if (targetDirPath == null) {
+			targetDir = brjs.storageDir("exported-apps");
+			targetDir.mkdirs();
+		} else {
+			targetDir = brjs.file("sdk/" + targetDirPath);
+		}
 		File appExportDir = new File(targetDir, appName);
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
