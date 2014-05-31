@@ -8,56 +8,52 @@ import java.util.Map;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 
-public class ResourcesAssetLocation extends AbstractDeepAssetLocation {
+public class ResourcesAssetLocation extends AbstractDeepAssetLocation implements ThemedAssetLocation{
 	
-	private final File themesDir;
-	private final FileInfo themesDirInfo;
-	private final MemoizedValue<Map<String, ThemesAssetLocation>> themesMap;
-	private Map<String, ThemesAssetLocation> themeAssetLocations = null;
+	private String themeName = "";
 	
 	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file) {
+		this(root, assetContainer, file, "common");
+	}
+	
+	public ResourcesAssetLocation(BRJS root, AssetContainer assetContainer, File file, String themeName) {
 		super(root, assetContainer, file);
-		
-		themesDir = assetContainer.file("themes");
-		themesDirInfo = root().getFileInfo(themesDir);
-		themesMap = new MemoizedValue<>("ResourcesAssetLocation.themes", root(), themesDir);
+		this.themeName = themeName;
 	}
 	
 	@Override
 	public String requirePrefix() {
 		return assetContainer().requirePrefix();
 	}
+
+	@Override
+	public String getThemeName() {
+		return themeName;
+	}
 	
 	@Override
 	public List<AssetLocation> dependentAssetLocations()
 	{
-		return new ArrayList<>(themes());
+		List<AssetLocation> result =  null;
+		if(this.getThemeName().equals("common")){
+			result = populateThemeResources();
+		}else{
+			result = new ArrayList<AssetLocation>();
+		}
+		return result;
 	}
-	
-	public List<ThemesAssetLocation> themes() {
-		return new ArrayList<>(themesMap().values());
-	}
-	
-	public ThemesAssetLocation theme(String themeName) {
-		return themesMap().get(themeName);
-	}
-	
-	private Map<String, ThemesAssetLocation> themesMap() {
-		return themesMap.value(() -> {
-			Map<String, ThemesAssetLocation> previousThemeAssetLocations = themeAssetLocations;
-			themeAssetLocations = new LinkedHashMap<>();
-			
-			if(themesDirInfo.exists()) {
-				for(File themeDir : themesDirInfo.dirs()) {
-					String themeName = themeDir.getName();
-					ThemesAssetLocation themeAssetLocation = ((previousThemeAssetLocations != null) && previousThemeAssetLocations.containsKey(themeName)) ?
-						previousThemeAssetLocations.get(themeName) : new ThemesAssetLocation(root(), assetContainer(), new File(themesDir, themeName));
-					themeAssetLocations.put(themeName, themeAssetLocation);
+
+	private List<AssetLocation>  populateThemeResources() {
+		List<AssetLocation> result = new ArrayList<AssetLocation>();
+		List<AssetLocation> assetLocations = this.assetContainer().assetLocations();
+		for(AssetLocation location: assetLocations){
+			if(location instanceof ThemedAssetLocation){
+				if( !((ThemedAssetLocation)location).getThemeName().equals("common")){
+					result.add(location);
 				}
 			}
-			
-			return themeAssetLocations;
-		});
+		}
+		return result;
 	}
 	
 }

@@ -148,10 +148,12 @@ public class CssResourceContentPluginTest extends SpecTest {
 	@Test
 	public void assetsInABladeThemeCanBeRequested() throws Exception
 	{
+		//JT:TODO how did this work, the CssResourceBundler depends on a BundleSet - but the test doesn't supply a seed file??
 		given(app).hasBeenCreated()
 			.and(bladeset).hasBeenCreated()
 			.and(blade).hasBeenCreated()
-			.and(blade).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
+			.and(blade).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents")
+			.and(blade).containsFileWithContents("resources/someOtherFile.txt", "someOtherFile.txt contents");
 		when(aspect).requestReceived("cssresource/bladeset_bs/blade_b1/theme_myTheme/dir1/dir2/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}

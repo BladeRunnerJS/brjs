@@ -30,14 +30,6 @@ public class AspectNavigationTest
 		brjs.close();
 	}
 
-	@Test
-	public void themes()
-	{
-		nodeTesterFactory.createSetTester(Theme.class, "themes", "theme")
-			.addChild("t1", "themes/t1")
-			.addChild("t2", "themes/t2")
-			.assertModelIsOK();
-	}
 	
 	@Test
 	public void testTypes()

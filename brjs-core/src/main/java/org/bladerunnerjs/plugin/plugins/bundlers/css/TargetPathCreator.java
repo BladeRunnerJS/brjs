@@ -10,7 +10,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.Theme;
-import org.bladerunnerjs.model.ThemesAssetLocation;
+import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -75,20 +75,20 @@ public class TargetPathCreator
 		
 		try {
 			if(assetContainer instanceof Aspect) {
-				ThemesAssetLocation theme = (ThemesAssetLocation) assetLocation;
+				ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
 				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				
 				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.ASPECT_THEME_REQUEST, ((Aspect) assetContainer).getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Bladeset) {
-				ThemesAssetLocation theme = (ThemesAssetLocation) assetLocation;
+				ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
 				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				Bladeset bladeset = (Bladeset) assetContainer;
 				
 				targetPath = cssResourceContentPathParser.createRequest(CssResourceContentPlugin.BLADESET_THEME_REQUEST, bladeset.getName(), theme.dir().getName(), resourcePath);
 			}
 			else if(assetContainer instanceof Blade) {
-				ThemesAssetLocation theme = (ThemesAssetLocation) assetLocation;
+				ThemedAssetLocation theme = (ThemedAssetLocation) assetLocation;
 				String resourcePath = RelativePathUtility.get(theme.dir(), imageFile);
 				Blade blade = (Blade) assetContainer;
 				Bladeset bladeset = blade.parent();

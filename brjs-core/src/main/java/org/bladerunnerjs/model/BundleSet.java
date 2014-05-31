@@ -21,6 +21,43 @@ public class BundleSet {
 		this.resourceLocations = resources;
 	}
 	
+	
+	public List<String> getThemes(){
+		List<String> result = new ArrayList<String>();
+		for(AssetLocation location: resourceLocations){
+			if(location instanceof ThemedAssetLocation){
+				result.add(((ThemedAssetLocation)location).getThemeName());
+			}
+		}
+		return result;
+	}
+	
+	public ThemedAssetLocation getThemedResourceLocation(String themeName){
+		
+		ThemedAssetLocation result = null;
+		for(AssetLocation location: resourceLocations){
+			if(location instanceof ThemedAssetLocation){
+				String locationThemeName = ((ThemedAssetLocation)location).getThemeName();
+				if(locationThemeName.equals(themeName)){
+					result = ((ThemedAssetLocation)location);
+				}
+			}
+		}
+		return result;
+	}
+	
+	
+	public List<String> getFile(String themeName, String resourcePath){
+		List<String> result = new ArrayList<String>();
+		for(AssetLocation location: resourceLocations){
+			if(location instanceof ThemedAssetLocation){
+				result.add(((ThemedAssetLocation)location).getThemeName());
+			}
+		}
+		return result;
+	}
+	
+	
 	public BundlableNode getBundlableNode() {
 		return bundlableNode;
 	}
@@ -38,7 +75,7 @@ public class BundleSet {
 	}
 	
 	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
-		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
+ 		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
 		
 		for(AssetLocation resourceNode : resourceLocations) {
 			resourceFiles.addAll(resourceNode.bundlableAssets(assetProducer));

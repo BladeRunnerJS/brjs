@@ -31,15 +31,11 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 		
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			standardAspectTheme = aspect.theme("standard");
 			bladeset = app.bladeset("bs");
-			standardBladesetTheme = bladeset.theme("standard");
 			blade = bladeset.blade("b1");
 			blade2 = bladeset.blade("b2");
-			standardBladeTheme = blade.theme("standard");
 			workbench = blade.workbench();
 			workbenchTemplate = brjs.template("workbench");
-			
 			// workbench setup
 			given(workbenchTemplate).containsFileWithContents("index.html", "<@css.bundle theme='standard'@/>")
 				.and(workbenchTemplate).containsFolder("resources")
@@ -52,14 +48,14 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	{
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.Class1")
-			.and(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content")
+			.and(aspect).containsFileWithContents("/themes/standard/style.css", "ASPECT theme content")
 			.and(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClass("appns.bs.Class1")
-			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
+			.and(bladeset).containsFileWithContents("/themes/standard/style.css", "BLADESET theme content")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
 			.and(blade).classDependsOn("appns.bs.b1.Class1", "appns.bs.Class1", "appns.Class1")
-			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
+			.and(blade).containsFileWithContents("themes/standard/style.css", "BLADE theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");	
 		when(workbench).requestReceived("css/standard/bundle.css", response);
 		then(response).containsOrderedTextFragments("BLADESET theme content",
@@ -70,7 +66,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	@Test
 	public void workbenchesAlwaysLoadsCommonCssFromTheAspectLevel() throws Exception
 	{
-		given(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content");
+		given(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content");
 		when(workbench).requestReceived("css/standard/bundle.css", response);
 		then(response).containsText("ASPECT theme content");
 	}

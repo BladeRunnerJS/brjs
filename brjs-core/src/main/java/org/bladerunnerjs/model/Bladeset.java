@@ -74,7 +74,6 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	{
 		super.populate();
 		testType("unit").testTech("js-test-driver").populate();
-		theme("standard").populate();
 	}
 	
 	@Override

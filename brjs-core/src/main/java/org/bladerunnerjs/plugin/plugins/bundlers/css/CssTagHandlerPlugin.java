@@ -40,7 +40,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		try {
 			App app = bundleSet.getBundlableNode().app();
 			
-			for(String nextTheme : BRJSConformantAssetLocationPlugin.getBundlableNodeThemes(bundleSet.getBundlableNode())) {
+			for(String nextTheme : bundleSet.getThemes()) {
 				for(String contentPath : cssContentPlugin.getThemeStyleSheetContentPaths(nextTheme, locale)) {
 					String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
 					

@@ -17,13 +17,10 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ResourcesAssetLocation;
-import org.bladerunnerjs.model.Theme;
+import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.Workbench;
-import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
@@ -122,7 +119,8 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
 			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
-			resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
+			//resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
+			resourceFile = bundleSet.getThemedResourceLocation(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(ASPECT_RESOURCES_REQUEST))
 		{
@@ -135,7 +133,8 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
 			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
-			resourceFile = ((ResourcesAssetLocation) bladeset.assetLocation("resources")).theme(theme).file(resourcePath);
+			//resourceFile = ((ResourcesAssetLocation) bladeset.assetLocation("resources")).theme(theme).file(resourcePath);
+			resourceFile = bundleSet.getThemedResourceLocation(theme).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(BLADESET_RESOURCES_REQUEST))
 		{
@@ -148,8 +147,10 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 			String theme = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
 			
-			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
-			resourceFile = ((ResourcesAssetLocation) blade.assetLocation("resources")).theme(theme).file(resourcePath);
+			 ThemedAssetLocation location = bundleSet.getThemedResourceLocation(theme);
+			 resourceFile = location.file(resourcePath);
+			 System.out.println(resourceFile);
+			
 		}
 		else if (contentPath.formName.equals(BLADE_RESOURCES_REQUEST))
 		{
@@ -261,34 +262,34 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
 		File resourcesDir = assetContainer.assetLocation("resources").dir();
-		contentPaths.addAll(  calculateContentPathsForThemesAndResources((ThemeableNode)assetContainer, themeRequestName, resourcesDir, resourcesRequestName, requestArgs) );		
+		contentPaths.addAll(  calculateContentPathsForThemesAndResources(assetContainer, themeRequestName, resourcesDir, resourcesRequestName, requestArgs) );		
 		
 		return contentPaths;
 	}
 	
-	private List<String> calculateContentPathsForThemesAndResources(ThemeableNode themeableNode, String themeRequestName, File resourcesDir, String resourcesRequestName, String... requestArgs) throws MalformedTokenException
+	private List<String> calculateContentPathsForThemesAndResources(AssetContainer themeableNode, String themeRequestName, File resourcesDir, String resourcesRequestName, String... requestArgs) throws MalformedTokenException
 	{
 		List<String> contentPaths = new ArrayList<>();
 		
-		for (Theme theme : themeableNode.themes())
-		{
-    		File themeDir = theme.dir();
-    		FileInfo themeDirInfo = brjs.getFileInfo(themeDir);
-    		
-    		if (themeDirInfo.isDirectory())
-    		{
-        		for (File file : themeDirInfo.nestedFiles())
-        		{
-        			if (!file.getName().endsWith(".css"))
-        			{
-        				String assetPath = RelativePathUtility.get(themeDir, file);
-        				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { theme.getName(), assetPath } );
-        				
-        				contentPaths.add( contentPathParser.createRequest(themeRequestName, createRequestArgs) );
-        			}
-        		}
-    		}
-		}
+//		for (Theme theme : themeableNode.themes())
+//		{
+//    		File themeDir = theme.dir();
+//    		FileInfo themeDirInfo = brjs.getFileInfo(themeDir);
+//    		
+//    		if (themeDirInfo.isDirectory())
+//    		{
+//        		for (File file : themeDirInfo.nestedFiles())
+//        		{
+//        			if (!file.getName().endsWith(".css"))
+//        			{
+//        				String assetPath = RelativePathUtility.get(themeDir, file);
+//        				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { theme.getName(), assetPath } );
+//        				
+//        				contentPaths.add( contentPathParser.createRequest(themeRequestName, createRequestArgs) );
+//        			}
+//        		}
+//    		}
+//		}
 		
 		if (resourcesDir.isDirectory())
 		{
