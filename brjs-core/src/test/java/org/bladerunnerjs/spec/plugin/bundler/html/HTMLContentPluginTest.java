@@ -105,7 +105,6 @@ public class HTMLContentPluginTest extends SpecTest
 		then(response).containsText("TESTCONTENT");
 	}
 	
-	// TODO this test should pass
 	@Test
 	public void bladeHTMlFilesAreBundledIfTheBladeIsReferredToByAnAspectHTMLResourceFile() throws Exception {
 		given(blade).hasClass("appns/bs/b1/Class1")

@@ -53,7 +53,17 @@ public class CssResourceContentPluginTest extends SpecTest {
 		then(response).textEquals("someFile.txt contents");
 	}
 	
-	@Test 
+	@Test
+	public void assetsInADefaultAspectThemeCanBeRequestedFromWorkbench() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(aspect).hasBeenCreated()
+			.and(aspect).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
+		when(app).requestReceived("/workbench/cssresource/aspect_default/theme_myTheme/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
 	public void assetsInADefaultAspectResourcesCanBeRequested() throws Exception
 	{
 		given(app).hasBeenCreated()
@@ -249,6 +259,20 @@ public class CssResourceContentPluginTest extends SpecTest {
 				"cssresource/bladeset_bs/blade_b1/workbench/resources/dir1/dir2/someFile.txt",
 				"cssresource/bladeset_bs/blade_b1/workbench/theme_myTheme/dir1/dir2/someFile.txt"
 		);
+	}
+	
+	//TODO: not sure about the request URL - that is what is sent from the browser but other tests only
+	// seem to use a part of the URL. I guess this way is prone to brittleness
+	// But surely we want to test the actual URLs sent from the browser ????
+	@Test
+	public void assetsInAnAspectThemeInheritedByABladeWorkbenchCanBeRequested() throws Exception
+	{
+		given(app).hasBeenCreated()
+    		.and(bladeset).hasBeenCreated()
+    		.and(blade).hasBeenCreated()
+    		.and(aspect).containsFileWithContents("themes/common/someFile.txt", "someFile.txt contents");
+		when(app).requestReceived("workbench/bs1/b1/v/dev/cssresource/aspect_default/theme_common/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
 	}
 	
 	/* LIBRARY LEVEL ASSETS */

@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.sql.Timestamp;
 import java.text.ParseException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -87,13 +86,7 @@ public class WebXmlCompiler {
 					i--;
 				}
 				else {
-					if (node.getNodeName().equals("env-entry-value") && (node.getFirstChild() != null)
-						&& node.getFirstChild().getNodeValue().equals("%@APP.VERSION@%")) {
-						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-						node.getFirstChild().setNodeValue("v_" + timestamp.getTime());
-					} else if (node.hasChildNodes()) {
-						processWebXmlNode(node.getChildNodes(), withinDevBlock);
-					}
+					processWebXmlNode(node.getChildNodes(), withinDevBlock);
 				}
 			}
 			else if (node.getNodeType() == Node.TEXT_NODE) {

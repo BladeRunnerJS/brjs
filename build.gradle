@@ -84,21 +84,14 @@ subprojects { p ->
 	version = buildVersion
 	group = 'org.bladerunnerjs'
 		
+	if (p.hasProperty("sourceCompatibility")) {
+		sourceCompatibility = '1.8'
+		targetCompatibility = '1.8'
+	}
+	
 	afterEvaluate { project ->
 		
 		if (project.plugins.hasPlugin(JavaPlugin)) {
-			if(project.name == 'brjs-core') {
-				sourceCompatibility = '1.8'
-				targetCompatibility = '1.8'
-			}
-			else if(project.name == 'brjs-servlet') {
-				sourceCompatibility = '1.6'
-				targetCompatibility = '1.6'
-			}
-			else {
-				sourceCompatibility = '1.7'
-				targetCompatibility = '1.7'
-			}
 			
 			project.tasks.withType(Test) { testTask ->
 				test {

@@ -1,1 +1,0 @@
-var wibble = new caplin.package2.Pack2Class();
