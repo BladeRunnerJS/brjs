@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -134,8 +135,14 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		if (contentPath.formName.equals(ASPECT_THEME_REQUEST))
 		{
-			ThemedAssetLocation location = getThemedResourceLocation(bundlableNode, theme);
-			resourceFile = location.file(resourcePath);
+			String aspectName = contentPath.properties.get("aspect");
+			Aspect Aspect =  bundlableNode.app().aspect(aspectName);
+			List<ResourcesAssetLocation> resourceAssetLocations = getResourceAssetLocations(Aspect);
+			for(ResourcesAssetLocation location : resourceAssetLocations){
+				if(location.getThemeName().equals(theme)){
+					resourceFile = location.file(resourcePath);
+				}
+			}
 		}
 		else if (contentPath.formName.equals(ASPECT_RESOURCES_REQUEST))
 		{
@@ -277,65 +284,41 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		return contentPaths;
 	}
 	
+	private List<ResourcesAssetLocation> getResourceAssetLocations(AssetContainer container){
+		
+		List<ResourcesAssetLocation> result = new ArrayList<ResourcesAssetLocation>();
+		for (AssetLocation location: container.assetLocations()){
+			if(location instanceof ResourcesAssetLocation){
+				ResourcesAssetLocation resourcesLocation = (ResourcesAssetLocation)location;
+				result.add(resourcesLocation);
+			}
+		}
+		return result;
+	}
+	
 	private List<String> calculateContentPathsForThemesAndResources(AssetContainer container, String themeRequestName, File resourcesDir, String resourcesRequestName, String... requestArgs) throws MalformedTokenException
 	{
 		List<String> contentPaths = new ArrayList<>();
-		for (AssetLocation location: container.assetLocations()){
-			if(location instanceof ThemedAssetLocation){
-				ThemedAssetLocation themedLocation = (ThemedAssetLocation)location;
-				File assetLocationDir = location.dir();
-				FileInfo assetLocationDirInfo = brjs.getFileInfo(assetLocationDir);
-				if (assetLocationDirInfo.isDirectory()){
-					for (File file : assetLocationDirInfo.nestedFiles()){	
-						if (!file.getName().endsWith(".css")){
-							if(assetLocationDir.getName().endsWith("resources")){
-								String assetPath = RelativePathUtility.get(resourcesDir, file);
-			    				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
-								contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
-							}else{
-								String assetPath = RelativePathUtility.get(assetLocationDir, file);
-								String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { themedLocation.getThemeName(), assetPath } );
-								String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
-								contentPaths.add(request );
-							}
+		for (ResourcesAssetLocation location: getResourceAssetLocations(container)){
+			File assetLocationDir = location.dir();
+			FileInfo assetLocationDirInfo = brjs.getFileInfo(assetLocationDir);
+			if (assetLocationDirInfo.isDirectory()){
+				for (File file : assetLocationDirInfo.nestedFiles()){	
+					if (!file.getName().endsWith(".css")){
+						if(assetLocationDir.getName().endsWith("resources")){
+							String assetPath = RelativePathUtility.get(resourcesDir, file);
+			    			String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
+							contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
+						}else{
+							String assetPath = RelativePathUtility.get(assetLocationDir, file);
+							String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { location.getThemeName(), assetPath } );
+							String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
+							contentPaths.add(request );
 						}
 					}
 				}
 			}
 		}
-//		for (Theme theme : themeableNode.themes())
-//		{
-//    		File themeDir = theme.dir();
-//    		FileInfo themeDirInfo = brjs.getFileInfo(themeDir);
-//    		
-//    		if (themeDirInfo.isDirectory())
-//    		{
-//        		for (File file : themeDirInfo.nestedFiles())
-//        		{
-//        			if (!file.getName().endsWith(".css"))
-//        			{
-//        				String assetPath = RelativePathUtility.get(themeDir, file);
-//        				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { theme.getName(), assetPath } );
-//        				
-//        				contentPaths.add( contentPathParser.createRequest(themeRequestName, createRequestArgs) );
-//        			}
-//        		}
-//    		}
-//		}
-		
-//		if (resourcesDir.isDirectory())
-//		{
-//			for (File file : brjs.getFileInfo(resourcesDir).nestedFiles())
-//			{
-//				if (file.isFile() && !file.getName().endsWith(".css"))
-//				{
-//					String assetPath = RelativePathUtility.get(resourcesDir, file);
-//    				String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
-//    				
-//					contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
-//				}
-//			}
-//		}
 		
 		return contentPaths;
 	}
