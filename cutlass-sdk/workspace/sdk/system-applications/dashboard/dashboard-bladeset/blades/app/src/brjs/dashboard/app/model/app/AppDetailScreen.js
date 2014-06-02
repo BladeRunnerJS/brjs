@@ -2,17 +2,17 @@ brjs.dashboard.app.model.app.AppDetailScreen = function(oPresentationModel)
 {
 	this.m_oPresentationModel = oPresentationModel;
 	this.m_fOnServiceError = this._onServiceError.bind(this);
-	
+
 	this.visible = new br.presenter.property.WritableProperty(false);
 	this.appName = new br.presenter.property.WritableProperty();
 	this.bladesets = new br.presenter.node.NodeList([], brjs.dashboard.app.model.app.BladesetPresentationNode);
-	
+
 	this.newBladesetButton = new brjs.dashboard.app.model.form.Button("New Bladeset", this, "newBladeset");
 	this.importBladesFromAppButton = new brjs.dashboard.app.model.form.Button("Import Blades from App", this, "importBladesFromApp");
 	this.launchJsDocButton = new brjs.dashboard.app.model.form.Button("Show JsDoc", this, "showJsDocs");
 	this.launchAppButton = new brjs.dashboard.app.model.form.Button("Launch App", this, "launchApp");
 	this.exportWarButton = new brjs.dashboard.app.model.form.Button("Export WAR", this, "exportWar");
-	
+
 	oPresentationModel.appsScreen.apps.addListener(new brjs.dashboard.app.model.ConditionalChangeListener(
 		this, "_updateImportBladesFromAppButton", this.visible, true), true);
 };
@@ -27,7 +27,7 @@ brjs.dashboard.app.model.app.AppDetailScreen.prototype.displayApp = function(sAp
 brjs.dashboard.app.model.app.AppDetailScreen.prototype.getBladeset = function(sBladeset)
 {
 	var pNodes = this.bladesets.nodes("*", {bladesetName:sBladeset}).getNodesArray();
-	
+
 	return (pNodes.length == 1) ? pNodes[0] : null;
 };
 
@@ -49,14 +49,13 @@ brjs.dashboard.app.model.app.AppDetailScreen.prototype.showJsDocs = function()
 brjs.dashboard.app.model.app.AppDetailScreen.prototype.launchApp = function()
 {
 	var sAppUrl = this.appName.getValue();
-	this.m_oPresentationModel.getWindowOpenerService().openWindow(
-		this.m_oPresentationModel.getPageUrlService().getRootUrl() + sAppUrl);
+	this.m_oPresentationModel.getWindowOpenerService().openWindow("/"+sAppUrl);
 };
 
 brjs.dashboard.app.model.app.AppDetailScreen.prototype.exportWar = function()
 {
 	var sWarUrl = this.m_oPresentationModel.getDashboardService().getWarUrl(this.appName.getValue());
-	
+
 	window.location = sWarUrl;
 };
 
@@ -79,7 +78,7 @@ brjs.dashboard.app.model.app.AppDetailScreen.prototype._updateImportBladesFromAp
 brjs.dashboard.app.model.app.AppDetailScreen.prototype._refreshAppScreen = function(sApp, mBladesets)
 {
 	this.appName.setValue(sApp);
-	
+
 	var pBladesetPresentationModels = [];
 	for(var sBladesetName in mBladesets)
 	{
@@ -88,9 +87,9 @@ brjs.dashboard.app.model.app.AppDetailScreen.prototype._refreshAppScreen = funct
 			pBlades, this.m_oPresentationModel);
 		pBladesetPresentationModels.push(oBladesetPresentationModel);
 	}
-	
+
 	this.bladesets.updateList(pBladesetPresentationModels);
-	
+
 	this.m_oPresentationModel.hideAllScreens();
 	this.visible.setValue(true);
 };
