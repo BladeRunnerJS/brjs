@@ -56,7 +56,7 @@ var assertTemplateContentsMatch = (function(){
 		
 		tempDiv.innerHTML = "";
 		tempDiv.appendChild(templateDocFrag);
-		assertEquals(tempDiv.innerHTML.toLowerCase(), expected);
+		assertEquals(expected, tempDiv.innerHTML.toLowerCase());
 	}
 })();
 
