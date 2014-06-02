@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.File;
+import java.util.List;
 
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetContainer;
@@ -52,7 +53,6 @@ public class TargetPathCreator
 			// TODO: understand how we can ever end up in here
 			CssImageReferenceException cssImageReferenceException = new CssImageReferenceException(ex);
 			cssImageReferenceException.setReferencedResourcePath(imageFile.getAbsolutePath());
-			
 			throw cssImageReferenceException;
 		}
 		
@@ -61,16 +61,16 @@ public class TargetPathCreator
 	
 	private String getTargetPath(File imageFile) throws ContentProcessingException
 	{
+
 		Node firstAncestorNode = brjs.locateFirstAncestorNode(imageFile);
-		if(firstAncestorNode instanceof Theme){
-			Theme theme = (Theme)firstAncestorNode;
-			Node parentNode = theme.parentNode();
-			System.out.println("oops");
-			
+		AssetLocation assetLocation  = null;
+		AssetContainer assetContainer = null;
+		if(firstAncestorNode instanceof AssetLocation){
+			 assetLocation = (AssetLocation)firstAncestorNode;
+			 assetContainer = assetLocation.assetContainer();
+		}else{
+			assetContainer = (AssetContainer)firstAncestorNode;
 		}
-		
-		AssetLocation assetLocation = (AssetLocation)firstAncestorNode;
-		AssetContainer assetContainer = assetLocation.assetContainer();
 		String targetPath = null;
 		
 		try {

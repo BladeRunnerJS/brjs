@@ -27,49 +27,6 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 		seedAssetLocationDirectories.add("resources");
 	}
 	
-//JT:TODO
-//	public static List<String> getBundlableNodeThemes(BundlableNode bundlableNode) {
-//		Set<String> themeNames = new HashSet<>();
-//		
-//		List<AssetContainer> scopeAssetContainers = bundlableNode.scopeAssetContainers();
-//		AssetLocation themedNodeResources;
-//		if (bundlableNode instanceof Workbench) {
-//			Blade blade = bundlableNode.root().locateAncestorNodeOfClass(bundlableNode, Blade.class);
-//			themedNodeResources = blade.assetLocation("resources");
-//			scopeAssetContainers.add(blade);
-//		} else {
-//			themedNodeResources = bundlableNode.assetLocation("resources");
-//		}
-//		
-//		List<String> validThemeNames = new ArrayList<>();
-//		if (themedNodeResources != null) {
-//			for ( ThemesAssetLocation theme : ((ResourcesAssetLocation) themedNodeResources).themes() ) {
-//				validThemeNames.add(theme.getThemeName());
-//			}
-//		}
-//		
-//		for(AssetContainer assetContainer : scopeAssetContainers) {
-//			ResourcesAssetLocation resourceAssetLocation = (ResourcesAssetLocation) assetContainer.assetLocation("resources");
-//			
-//			if(resourceAssetLocation != null) {
-//				for(ThemesAssetLocation themeAssetLocation : resourceAssetLocation.themes()) {
-//					String themeName = themeAssetLocation.getThemeName();
-//					
-//					if (!themeName.equals("common") && validThemeNames.contains(themeName) ) {
-//						themeNames.add(themeName);
-//					}
-//					
-//				}
-//			}
-//		}
-//		
-//		List<String> themeNamesList = new ArrayList<>();
-//		themeNamesList.add("common");
-//		themeNamesList.addAll(themeNames);
-//		
-//		return themeNamesList;
-//	}
-	
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;

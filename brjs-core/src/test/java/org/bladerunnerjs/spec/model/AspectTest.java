@@ -51,13 +51,6 @@ public class AspectTest extends SpecTest {
 		.and(aspect).fileHasContents("index.jsp", "'<html>app1</html>'");
 	}
 	
-	@Test
-	public void populatingAnAspectCausesRootObserversToBeNotified() throws Exception {
-		given(observer).observing(brjs);
-		when(aspect).populate();
-		then(observer).notified(NodeReadyEvent.class, aspect);
-//JT:TODO	.and(observer).notified(NodeReadyEvent.class, aspect.theme("standard"));
-	}
 	
 	@Test
 	public void invalidAspectNameSpaceThrowsException() throws Exception {

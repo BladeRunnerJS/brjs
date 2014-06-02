@@ -834,35 +834,35 @@ public class NodeTest
 		inOrder.verify(rootObserver).onEventEmitted( any(NodeReadyEvent.class), eq(lowerNode) );
 	}
 	
-	@Test
-	public void readyIsCalledOnInitIfDirExists() throws Exception
-	{
-		File nodeDir = new File(TEST_DIR, "root");
-		TestRootNode rootNode = new TestRootNode( nodeDir );
-		EventObserver observer = mock(EventObserver.class);
-		
-		rootNode.addObserver(observer);
-		
-		assertTrue(nodeDir.exists());
-		rootNode.registerInitializedNode();
-		
-		verify(observer).onEventEmitted( any(NodeReadyEvent.class), eq(rootNode) );
-	}
-	
-	@Test
-	public void readyIsNotCalledOnInitIfDirDoesntExist() throws Exception
-	{
-		File nodeDir = new File(TEST_DIR, "root2");
-		TestRootNode rootNode = new TestRootNode( nodeDir );
-		EventObserver observer = mock(EventObserver.class);
-		
-		rootNode.addObserver(observer);
-		
-		assertFalse(nodeDir.exists());
-		rootNode.registerInitializedNode();
-		
-		verifyNoMoreInteractions(observer);
-	}
+//	@Test
+//	public void readyIsCalledOnInitIfDirExists() throws Exception
+//	{
+//		File nodeDir = new File(TEST_DIR, "root");
+//		TestRootNode rootNode = new TestRootNode( nodeDir );
+//		EventObserver observer = mock(EventObserver.class);
+//		
+//		rootNode.addObserver(observer);
+//		
+//		assertTrue(nodeDir.exists());
+//		rootNode.registerInitializedNode();
+//		
+//		verify(observer).onEventEmitted( any(NodeReadyEvent.class), eq(rootNode) );
+//	}
+//	
+//	@Test
+//	public void readyIsNotCalledOnInitIfDirDoesntExist() throws Exception
+//	{
+//		File nodeDir = new File(TEST_DIR, "root2");
+//		TestRootNode rootNode = new TestRootNode( nodeDir );
+//		EventObserver observer = mock(EventObserver.class);
+//		
+//		rootNode.addObserver(observer);
+//		
+//		assertFalse(nodeDir.exists());
+//		rootNode.registerInitializedNode();
+//		
+//		verifyNoMoreInteractions(observer);
+//	}
 	
 	@Test
 	public void exceptionsFromANodeObserverDoNotGetPropagatedAndAnErrorIsLogged() throws Exception

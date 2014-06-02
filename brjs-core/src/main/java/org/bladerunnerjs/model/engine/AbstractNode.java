@@ -242,21 +242,6 @@ public abstract class AbstractNode implements Node
 		}
 	}
 	
-	protected void registerInitializedNode()
-	{
-		try {
-			if(dir != null) {
-				rootNode.registerNode(this);
-				
-				if (dir.exists()) {
-					ready();
-				}
-			}
-		}
-		catch(NodeAlreadyRegisteredException e) {
-			throw new RuntimeException(e);
-		}
-	}
 	
 	protected String getNormalizedPath(File dir) {
 		String normalizedPath;

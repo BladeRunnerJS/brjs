@@ -35,7 +35,7 @@ public class ResourcesAssetLocation extends AbstractDeepAssetLocation implements
 	public List<AssetLocation> dependentAssetLocations()
 	{
 		List<AssetLocation> result =  null;
-		if(this.getThemeName().equals("common")){
+		if(dir().getName().endsWith("resources")){
 			result = populateThemeResources();
 		}else{
 			result = new ArrayList<AssetLocation>();
@@ -48,7 +48,7 @@ public class ResourcesAssetLocation extends AbstractDeepAssetLocation implements
 		List<AssetLocation> assetLocations = this.assetContainer().assetLocations();
 		for(AssetLocation location: assetLocations){
 			if(location instanceof ThemedAssetLocation){
-				if( !((ThemedAssetLocation)location).getThemeName().equals("common")){
+				if(!location.dir().getName().endsWith("resources")){
 					result.add(location);
 				}
 			}

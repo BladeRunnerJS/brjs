@@ -84,13 +84,8 @@ public class NamedNodeTest extends SpecTest {
 				return brjs.app("app1").aspect("aspect1").testType("type1").testTech(nodeName);
 			}
 		};
-//JT:TODO
-//		NamedNodeFactory themeFactory = new NamedNodeFactory() {
-//			@Override
-//			public NamedNode createNamedNode(BRJS brjs, String nodeName) {
-//				return brjs.app("app1").aspect("aspect1").theme(nodeName);
-//			}
-//		};
+
+		
 		NamedNodeFactory typedTestPackFactory = new NamedNodeFactory() {
 			@Override
 			public NamedNode createNamedNode(BRJS brjs, String nodeName) {

@@ -14,6 +14,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
+import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantRootAssetLocation;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private final MemoizedValue<Map<String, SourceModule>> sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
@@ -111,10 +112,17 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		if(!assetLocations.containsKey(locationPath)) {
 			if(!cachedAssetLocations.containsKey(locationPath)) {
 				AssetLocation assetLocation = assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations);
+				
+//TODO: have a proper solution to know when duplicate node names are valid				
 				try {
-					rootNode.registerNode(assetLocation, true);
+					rootNode.registerNode(assetLocation, false);
 				} catch (NodeAlreadyRegisteredException e) {
-					throw new RuntimeException(e);
+					try {
+						rootNode.registerNode(assetLocation, true);
+					} catch (NodeAlreadyRegisteredException e1) {
+						throw new RuntimeException(e);
+					}
+					
 				}
 				cachedAssetLocations.put(locationPath, assetLocation);
 			}
