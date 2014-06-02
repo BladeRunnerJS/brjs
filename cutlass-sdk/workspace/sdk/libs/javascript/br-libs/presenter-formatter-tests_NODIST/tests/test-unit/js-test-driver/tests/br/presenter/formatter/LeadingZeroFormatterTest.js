@@ -1,4 +1,7 @@
 LeadingZeroFormatterTest = TestCase("LeadingZeroFormatterTest");
+
+require('br/presenter/formatter/LeadingZeroFormatter');
+
 LeadingZeroFormatterTest.prototype.setUp = function() {
 	this.oFormatter = new br.presenter.formatter.LeadingZeroFormatter();
 	this.mAttributesSize0 = {length:0};

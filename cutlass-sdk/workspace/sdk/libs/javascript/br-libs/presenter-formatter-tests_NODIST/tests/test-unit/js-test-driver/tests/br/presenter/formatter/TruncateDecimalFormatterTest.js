@@ -1,4 +1,7 @@
 TruncateDecimalFormatterTest = TestCase("TruncateDecimalFormatterTest");
+
+require('br/presenter/formatter/TruncateDecimalFormatter');
+
 TruncateDecimalFormatterTest.prototype.setUp = function() {
 	this.oFormatter = new br.presenter.formatter.TruncateDecimalFormatter();
 };

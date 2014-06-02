@@ -1,4 +1,7 @@
 UpperCaseFormatterTest = TestCase("UpperCaseFormatterTest");
+
+require('br/presenter/formatter/UpperCaseFormatter');
+
 UpperCaseFormatterTest.prototype.setUp = function() {
 	this.oFormatter = new br.presenter.formatter.UpperCaseFormatter();
 };

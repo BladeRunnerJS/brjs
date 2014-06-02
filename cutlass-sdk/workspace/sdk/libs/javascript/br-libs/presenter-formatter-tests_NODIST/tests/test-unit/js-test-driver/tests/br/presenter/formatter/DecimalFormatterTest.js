@@ -1,4 +1,7 @@
 DecimalFormatterTest = TestCase("DecimalFormatterTest");
+
+require('br/presenter/formatter/DecimalFormatter');
+
 DecimalFormatterTest.prototype.setUp = function() {
 	 this.oFormatter = new br.presenter.formatter.DecimalFormatter();
 };

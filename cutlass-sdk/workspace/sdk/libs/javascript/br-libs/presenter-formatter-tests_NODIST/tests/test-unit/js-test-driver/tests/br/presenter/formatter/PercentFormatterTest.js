@@ -1,4 +1,7 @@
 PercentFormatterTest = TestCase("PercentFormatterTest");
+
+require('br/presenter/formatter/PercentFormatter');
+
 PercentFormatterTest.prototype.setUp = function() {
 	this.oFormatter = new br.presenter.formatter.PercentFormatter();
 };

@@ -1,4 +1,7 @@
 RoundingFormatterTest = TestCase("RoundingFormatterTest");
+
+require('br/presenter/formatter/RoundingFormatter');
+
 RoundingFormatterTest.prototype.setUp = function() {
 	this.oFormatter = new br.presenter.formatter.RoundingFormatter();
 	this.mDefaultAttributes = {};
