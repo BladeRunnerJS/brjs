@@ -38,9 +38,9 @@ brjs.dashboard.app.testing.WindowOpenFixture.prototype.doWhen = function(sProper
 brjs.dashboard.app.testing.WindowOpenFixture.prototype.doThen = function(sPropertyName, vValue)
 {
 	assertTrue("no window.open function calls were triggered", this.m_oWindowOpenerService.getOpenerRequests().length >= 1);
-	
+
 	sRequest = this.m_oWindowOpenerService.getOpenerRequests().shift();
-	assertEquals("window.open was invoked with the wrong url", sRequest, vValue);
+	assertEquals("window.open was invoked with the wrong url", vValue, sRequest);
 };
 
 brjs.dashboard.app.testing.WindowOpenFixture.prototype.addSubFixtures = function(oFixtureRegistry)
