@@ -1,4 +1,7 @@
 NullValueFormatterTest = TestCase("NullValueFormatterTest");
+
+require('br/presenter/formatter/NullValueFormatter');
+
 NullValueFormatterTest.prototype.setUp = function()
 {
 	this.oFormatter = new br.presenter.formatter.NullValueFormatter();

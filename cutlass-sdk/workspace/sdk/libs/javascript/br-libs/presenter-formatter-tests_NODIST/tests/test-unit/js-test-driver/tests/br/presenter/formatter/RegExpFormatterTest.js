@@ -1,4 +1,7 @@
 RegExpFormatterTest = TestCase("RegExpFormatterTest");
+
+require('br/presenter/formatter/RegExpFormatter');
+
 RegExpFormatterTest.prototype.setUp = function() {
 	this.oFormatter = new br.presenter.formatter.RegExpFormatter();
 };

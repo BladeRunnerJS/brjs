@@ -1,4 +1,7 @@
 KeyValueFormatterTest = TestCase("KeyValueFormatterTest");
+
+require('br/presenter/formatter/KeyValueFormatter');
+
 KeyValueFormatterTest.prototype.setUp = function()
 {
 	this.oFormatter = new br.presenter.formatter.KeyValueFormatter();

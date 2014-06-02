@@ -1,4 +1,7 @@
 TrimFormatterTest = TestCase("TrimFormatterTest");
+
+require('br/presenter/formatter/TrimFormatter');
+
 TrimFormatterTest.prototype.setUp = function() {
 	this.oFormatter = new br.presenter.formatter.TrimFormatter();
 };

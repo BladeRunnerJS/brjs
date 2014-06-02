@@ -1,4 +1,7 @@
 SignificantFiguresFormatterTest = TestCase("SignificantFiguresFormatterTest");
+
+require('br/presenter/formatter/SignificantFiguresFormatter');
+
 SignificantFiguresFormatterTest.prototype.setUp = function() {
 	 this.oFormatter = new br.presenter.formatter.SignificantFiguresFormatter();
 };

@@ -1,4 +1,7 @@
 LowerCaseFormatterTest = TestCase("LowerCaseFormatterTest");
+
+require('br/presenter/formatter/LowerCaseFormatter');
+
 LowerCaseFormatterTest.prototype.setUp = function() {
 	this.oFormatter = new br.presenter.formatter.LowerCaseFormatter();
 };

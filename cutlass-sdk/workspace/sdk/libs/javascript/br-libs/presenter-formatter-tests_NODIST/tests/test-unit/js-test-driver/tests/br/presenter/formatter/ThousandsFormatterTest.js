@@ -1,5 +1,7 @@
 ThousandsFormatterTest = TestCase("ThousandsFormatterTest");
 
+require('br/presenter/formatter/ThousandsFormatter');
+
 ThousandsFormatterTest.prototype.setUp = function()
 {
 	this.oFormatter = new br.presenter.formatter.ThousandsFormatter();

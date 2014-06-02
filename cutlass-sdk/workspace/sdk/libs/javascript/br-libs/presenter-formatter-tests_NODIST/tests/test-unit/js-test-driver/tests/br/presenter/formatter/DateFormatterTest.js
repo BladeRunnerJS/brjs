@@ -1,11 +1,13 @@
-br.Core.thirdparty("jsunitextensions");
+require('jsunitextensions');
 
 DateFormatterTest = TestCase("DateFormatterTest");
+
+require('br/presenter/formatter/DateFormatter');
 
 DateFormatterTest.prototype.setUp = function() {
 	
 	this.m_oDate = Date;
-	
+
 	this.oFormatter = new br.presenter.formatter.DateFormatter();
 	this.oDate = new Date(2010, 10, 12, 13, 14, 15, 16);
 	this.oDateAtMidnight = new Date(2010, 10, 12);
