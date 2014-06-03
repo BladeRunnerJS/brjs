@@ -41,6 +41,15 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		this.loggerFactory = loggerFactory;
 		this.consoleWriter = consoleWriter;
 		
+		try
+		{
+			registerNode(this);
+		}
+		catch (NodeAlreadyRegisteredException e)
+		{
+			throw new RuntimeException(e);
+		}
+		
 	}
 	
 	@Override
