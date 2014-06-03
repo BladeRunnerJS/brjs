@@ -54,16 +54,6 @@ public class CssResourceContentPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void assetsInADefaultAspectThemeCanBeRequestedFromWorkbench() throws Exception
-	{
-		given(app).hasBeenCreated()
-			.and(aspect).hasBeenCreated()
-			.and(aspect).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
-		when(app).requestReceived("/workbench/cssresource/aspect_default/theme_myTheme/dir1/dir2/someFile.txt", response);
-		then(response).textEquals("someFile.txt contents");
-	}
-	
-	@Test
 	public void assetsInADefaultAspectResourcesCanBeRequested() throws Exception
 	{
 		given(app).hasBeenCreated()
