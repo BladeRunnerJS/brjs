@@ -26,8 +26,6 @@ public final class TestRootNode extends AbstractRootNode
 	public TestRootNode(File dir) throws InvalidSdkDirectoryException
 	{
 		this(dir, new MockLoggerFactory());
-		
-//		registerInitializedNode();
 	}
 	
 	public TestRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
@@ -37,8 +35,6 @@ public final class TestRootNode extends AbstractRootNode
 		multiLocationChildNodes.addAlternateLocation("set-secondary-location", "^child-");
 		multiLocationChildNodes.addAdditionalNamedLocation("X", "set-single-item-location");
 		multiLocationItemNode.addLegacyLocation("single-item-secondary-location");
-		
-//		registerInitializedNode();
 	}
 	
 	@Override
