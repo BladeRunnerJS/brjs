@@ -72,6 +72,24 @@ public abstract class NodeVerifier<N extends Node> {
 		
 	}
 	
+	public VerifierChainer fileContentsDoesNotContain(String fileName, String fileContents) throws Exception {
+		assertTrue("The file '" + fileName + "' did not exist at: " + node.file(fileName).getAbsoluteFile(), node.file(fileName).exists());
+		String actualContents = fileUtil.readFileToString(node.file(fileName));
+		assertFalse("Expected file not to contain " + fileContents + " but it did. Content was:\n"+actualContents, actualContents.contains(fileContents) );
+		
+		return verifierChainer;
+		
+	}
+	
+	public VerifierChainer fileContentsContains(String fileName, String fileContents) throws Exception {
+		assertTrue("The file '" + fileName + "' did not exist at: " + node.file(fileName).getAbsoluteFile(), node.file(fileName).exists());
+		String actualContents = fileUtil.readFileToString(node.file(fileName));
+		assertTrue("Expected file to contain " + fileContents + " but didnt. Content was:\n"+actualContents, actualContents.contains(fileContents) );
+		
+		return verifierChainer;
+		
+	}
+	
 	public VerifierChainer firstFileIsLarger(String filePath1, String filePath2) {
 		File file1 = node.file(filePath1);
 		File file2 = node.file(filePath2);

@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.File;
 
+import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -59,8 +60,15 @@ public class TargetPathCreator
 	
 	private String getTargetPath(File imageFile) throws ContentProcessingException
 	{
-		AssetLocation assetLocation = (AssetLocation) brjs.locateFirstAncestorNode(imageFile);
-		AssetContainer assetContainer = assetLocation.assetContainer();
+		AssetContainer assetContainer = null;
+		AssetLocation assetLocation = null;
+		Node node = brjs.locateFirstAncestorNode(imageFile);
+		if(node instanceof AssetContainer){
+			assetContainer = (AssetContainer)node;
+		}else{
+			assetLocation = (AssetLocation)node;
+			assetContainer = assetLocation.assetContainer();
+		}
 		String targetPath = null;
 		
 		try {

@@ -12,6 +12,9 @@ buildscript {
 	}
 }
 
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
 retrolambda {
 	javaVersion JavaVersion.VERSION_1_7
 }

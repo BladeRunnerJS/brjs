@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -36,6 +37,7 @@ import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.PageAccessor;
 import org.bladerunnerjs.utility.SimplePageAccessor;
+import org.bladerunnerjs.utility.WebXmlCompiler;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -48,7 +50,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	private final NodeList<AppJsLib> nonBladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "thirdparty-libraries", null);
 	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$");
 	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
-	private final NodeList<AppJsLib> jsLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
+	private final NodeList<AppJsLib> bladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
 	
 	private String name;
 	private AppConf appConf;
@@ -195,13 +197,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		Map<String,JsLib> appJsLibs = new LinkedHashMap<>();
 		
-		for (SdkJsLib lib : root().sdkLibs()) {
-			appJsLibs.put(lib.getName(), new AppSdkJsLib(this, lib));
-		}
 		for (JsLib lib : nonBladeRunnerLibs()) {
 			appJsLibs.put(lib.getName(), lib);
 		}
-		for (JsLib lib : jsLibs.list()) {
+		for (JsLib lib : bladeRunnerLibs()) {
 			appJsLibs.put(lib.getName(), lib);
 		}
 		
@@ -218,7 +217,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 			}
 		}
 		
-		return jsLibs.item(jsLibName);
+		return bladeRunnerLib(jsLibName);
 	}
 	
 	@Override
@@ -289,7 +288,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public JsLib nonBladeRunnerLib(String libName)
 	{
-		JsLib appLib = nonBladeRunnerLibs.item(libName);
+		JsLib appLib = appNonBladeRunnerLib(libName);
 		SdkJsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
 		
 		if (!appLib.dirExists() && sdkLib.dirExists())
@@ -297,6 +296,44 @@ public class App extends AbstractBRJSNode implements NamedNode
 			return new AppSdkJsLib(this, sdkLib);
 		}
 		return appLib;
+	}
+	
+	public JsLib appNonBladeRunnerLib(String libName)
+	{
+		return nonBladeRunnerLibs.item(libName);
+	}
+	
+	public List<JsLib> bladeRunnerLibs()
+	{
+		Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
+		
+		for (SdkJsLib lib : root().sdkLibs())
+		{
+			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
+		}
+		for (JsLib lib : bladeRunnerLibs.list())
+		{
+			libs.put(lib.getName(), lib );			
+		}
+		
+		return new ArrayList<JsLib>( libs.values() );
+	}
+	
+	public JsLib bladeRunnerLib(String libName)
+	{
+		JsLib appLib = appBladeRunnerLib(libName);
+		SdkJsLib sdkLib = root().sdkLib(libName);
+		
+		if (!appLib.dirExists() && sdkLib.dirExists())
+		{
+			return new AppSdkJsLib(this, sdkLib);
+		}
+		return appLib;
+	}
+	
+	public JsLib appBladeRunnerLib(String libName)
+	{
+		return bladeRunnerLibs.item(libName);
 	}
 	
 	public File libsDir() {
@@ -340,8 +377,14 @@ public class App extends AbstractBRJSNode implements NamedNode
 			String version = String.valueOf(new Date().getTime());
 			PageAccessor pageAcessor = new SimplePageAccessor();
 			
-			if(file("WEB-INF").exists()) {
-				FileUtils.copyDirectory(file("WEB-INF"), new File(appExportDir, "WEB-INF"));
+			File appWebInf = file("WEB-INF");
+			if(appWebInf.exists()) {
+				File exportedWebInf = new File(appExportDir, "WEB-INF");
+				FileUtils.copyDirectory(appWebInf, exportedWebInf);
+				File exportedWebXml = new File(exportedWebInf, "web.xml");
+				if (exportedWebXml.isFile()) {
+					WebXmlCompiler.compile(exportedWebXml);					
+				}
 			}
 			
 			for(Aspect aspect : aspects()) {
@@ -382,7 +425,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 				FileUtils.deleteDirectory(appExportDir);
 			}
 		}
-		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException e) {
+		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException | ParseException e) {
 			throw new ModelOperationException(e);
 		}
 	}

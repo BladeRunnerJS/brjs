@@ -5,11 +5,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -21,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class BRJSServletFilter implements Filter {
-	private static final String CONTENT_TYPE = "Content-Type";
 	private static final String E_TAG = "ETag";
 	private static final String EXPIRES = "Expires";
 	private static final String CACHE_CONTROL = "Cache-Control";
@@ -33,17 +29,7 @@ public class BRJSServletFilter implements Filter {
 	private static final String CACHE_CONTROL_ALLOW_CACHE = "max-age=" + MAX_AGE + ", public, must-revalidate";
 	private static final String CACHE_CONTROL_NO_CACHE = "no-cache, must-revalidate";
 	
-	private static final Pattern TEXT_REQUEST_PATTERN = Pattern.compile(".*\\.(js|html|xml|css)$");
 	private static final List<String> LOCKED_HEADERS = Arrays.asList(LAST_MODIFIED, CACHE_CONTROL, EXPIRES, E_TAG);
-	
-	private static final Map<String, String> contentTypes = new HashMap<String, String>();
-	
-	static {
-		contentTypes.put("js", "application/javascript");
-		contentTypes.put("html", "text/html");
-		contentTypes.put("xml", "text/xml");
-		contentTypes.put("css", "text/css");
-	}
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -56,7 +42,7 @@ public class BRJSServletFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		LockedHeaderResponseWrapper responseWrapper = new LockedHeaderResponseWrapper(response, LOCKED_HEADERS);
 		
-		setContentTypeHeaders(request, responseWrapper);
+		response.setCharacterEncoding("UTF-8");
 		setCachingHeaders(request, responseWrapper);
 		
 		chain.doFilter(request, responseWrapper);
@@ -65,21 +51,6 @@ public class BRJSServletFilter implements Filter {
 	@Override
 	public void destroy() {
 		// do nothing
-	}
-	
-	private void setContentTypeHeaders(HttpServletRequest request, LockedHeaderResponseWrapper response) {
-		String requestPath = request.getRequestURI();
-		
-		if(requestPath.endsWith("/")) {
-			response.setHeader(CONTENT_TYPE, "text/html");
-			response.setCharacterEncoding("UTF-8");
-		}
-		else if(TEXT_REQUEST_PATTERN.matcher(requestPath).matches()) {
-			String fileSuffix = requestPath.substring(requestPath.lastIndexOf('.') + 1);
-			
-			response.setHeader(CONTENT_TYPE, contentTypes.get(fileSuffix));
-			response.setCharacterEncoding("UTF-8");
-		}
 	}
 	
 	private void setCachingHeaders(HttpServletRequest request, LockedHeaderResponseWrapper responseWrapper) {

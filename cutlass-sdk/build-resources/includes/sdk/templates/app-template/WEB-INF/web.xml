@@ -25,15 +25,21 @@
 	</security-constraint>
 	-->
 	
-	<!-- This APP.VERSION entry will be enabled and defined after exporting to WAR. During development APP.VERSION 
-		 is automatically generated to avoid caching. Must be in the format v_1234 -->
-	<!-- start-env: prod
-	<env-entry>
-		<env-entry-name>APP.VERSION</env-entry-name>
-		<env-entry-type>java.lang.String</env-entry-type>
-		<env-entry-value>%@APP.VERSION@%</env-entry-value>
-	</env-entry>
-	end-env -->
+	<!-- mime mappings -->
+	<mime-mapping>
+		<extension>woff</extension>
+		<mime-type>application/x-font-woff</mime-type>
+	</mime-mapping>
+	
+	
+	
+	
+	
+	<!-- 
+		The following are filters needed by BRJS to operate properly.
+		BRJSDevServlet and BRJSDevServletFilter will be removed when apps are built for production.
+		BRJSServletFilter sets character encoding and infinite caching headers for static resources.
+	-->
 	
 	<filter>
 		<filter-name>BRJSServletFilter</filter-name> 
@@ -69,9 +75,5 @@
 	</filter-mapping>
 	<!-- end-env -->
 	
-	<!-- mime mappings -->
-	<mime-mapping>
-		<extension>woff</extension>
-		<mime-type>application/x-font-woff</mime-type>
-	</mime-mapping>
+	
 </web-app>

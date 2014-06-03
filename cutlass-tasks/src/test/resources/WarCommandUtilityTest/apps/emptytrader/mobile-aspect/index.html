@@ -1,1 +1,0 @@
-var jsObj = new js.ABladeClass()

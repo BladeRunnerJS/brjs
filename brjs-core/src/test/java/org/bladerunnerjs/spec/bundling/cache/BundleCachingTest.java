@@ -62,7 +62,7 @@ public class BundleCachingTest extends SpecTest
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(app).hasReceivedRequest("/default-aspect/js/dev/combined/bundle.js");
 		when(thirdpartyLib).populate()
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js\n"+"exports: lib")
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file1.js\n"+"exports: lib")
 			.and(thirdpartyLib).containsFileWithContents("file1.js", "thirdpartyLib content")
 			.and(aspect).classDependsOnThirdpartyLib("appns.Class1", thirdpartyLib)
 			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
@@ -111,9 +111,9 @@ public class BundleCachingTest extends SpecTest
 	
 	@Test
 	public void userThirdpartyLibraryIsLoadedInsteadOfSdkThirdpartyLibraryOnSecondRequest() throws Exception {
-		given(sdkJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: jquery")
+		given(sdkJquery).containsFileWithContents("thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: jquery")
 			.and(sdkJquery).containsFileWithContents("jquery.js", "SDK jquery-content")
-			.and(userJquery).containsFileWithContents("library.manifest", "js: jquery.js" + "\n" + "exports: null")
+			.and(userJquery).containsFileWithContents("thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: null")
 			.and(userJquery).containsFileWithContents("jquery.js", "USER jquery-content")
 			.and(aspect).indexPageHasContent("require('jquery');")
 			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");

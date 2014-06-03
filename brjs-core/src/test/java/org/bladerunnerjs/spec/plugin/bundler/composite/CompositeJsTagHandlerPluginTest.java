@@ -86,9 +86,9 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 		.and(aspect).hasClass("appns/node/Class")
 		.and(aspect).hasClass("appns.namespaced.Class")
-		.and(brbootstrap).containsFileWithContents("library.manifest", "exports: brbootstrap")
+		.and(brbootstrap).containsFileWithContents("thirdparty-lib.manifest", "exports: brbootstrap")
 		.and(brbootstrap).containsFile("bootstrap.js")
-		.and(appLib).containsFileWithContents("library.manifest", "exports: applib")
+		.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "exports: applib")
 		.and(brbootstrap).containsFile("appLib.js")
 		.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 				"appns.namespaced.Class\n"+
@@ -110,9 +110,9 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
-			.and(brbootstrap).containsFileWithContents("library.manifest", "exports: brbootstrap")
+			.and(brbootstrap).containsFileWithContents("thirdparty-lib.manifest", "exports: brbootstrap")
 			.and(brbootstrap).containsFile("bootstrap.js")
-			.and(appLib).containsFileWithContents("library.manifest", "exports: applib")
+			.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "exports: applib")
 			.and(brbootstrap).containsFile("appLib.js")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>\n"+
 					"appns.namespaced.Class\n"+
@@ -134,7 +134,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 		
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1")
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: file1.js \n"+"exports: thirdpartylib")
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: file1.js \n"+"exports: thirdpartylib")
 			.and(thirdpartyLib).containsFile("file1.js")
 			.and(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")

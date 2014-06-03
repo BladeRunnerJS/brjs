@@ -118,11 +118,13 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		if (contentPath.formName.equals(ASPECT_THEME_REQUEST))
 		{
-			String theme = contentPath.properties.get("theme");
+			String themeName = contentPath.properties.get("theme");
 			String resourcePath = contentPath.properties.get("resourcePath");
+			String aspectName = contentPath.properties.get("aspect");
 			
 			// TODO: move themes off the ResourcesAssetLocation, since otherwise we are tied to the BRJS conformant asset-location plug-in
-			resourceFile = ((ResourcesAssetLocation) bundlableNode.assetLocation("resources")).theme(theme).file(resourcePath);
+			ResourcesAssetLocation location =  (ResourcesAssetLocation)bundlableNode.app().aspect(aspectName).assetLocation("resources");
+			resourceFile  = location.theme(themeName).file(resourcePath);
 		}
 		else if (contentPath.formName.equals(ASPECT_RESOURCES_REQUEST))
 		{

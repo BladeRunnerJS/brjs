@@ -327,7 +327,7 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	from "workspace/"
 	into "BladeRunnerJS/"
 	include "licenses/**", "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
-	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**"
+	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**", "**/*_NODIST/*"
 }
 build.dependsOn distZip
 distZip.mustRunAfter test
@@ -398,7 +398,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	   "*/sdk/libs/javascript/caplin/test/**",
 	   "*/sdk/run*",
 	   "**/node_modules/**",
-	   "*/apps/*/*"
+	   "*/apps/*/*",
+	   "**/*_NODIST/**"
 	]
 }
 check.dependsOn checkSdkStructure
