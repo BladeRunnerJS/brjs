@@ -12,14 +12,14 @@ import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 
 public class BRJSConformantRootAssetLocation extends TheAbstractAssetLocation implements RootAssetLocation {
-	private BRLibManifest libManifest;
+	private BRLibConf libManifest;
 	
 	public BRJSConformantRootAssetLocation(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
 		
 		if(assetContainer() instanceof JsLib) {
 			try {
-				libManifest = new BRLibManifest((JsLib) assetContainer());
+				libManifest = new BRLibConf((JsLib) assetContainer());
 			}
 			catch (ConfigException e) {
 				throw new RuntimeException(e);
