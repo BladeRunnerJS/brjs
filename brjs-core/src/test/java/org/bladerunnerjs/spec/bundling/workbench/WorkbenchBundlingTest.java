@@ -6,7 +6,6 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -16,7 +15,6 @@ import org.junit.Test;
 public class WorkbenchBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private Theme standardAspectTheme, standardBladesetTheme, standardBladeTheme;
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;

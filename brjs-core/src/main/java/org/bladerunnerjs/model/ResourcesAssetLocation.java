@@ -2,11 +2,7 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import org.bladerunnerjs.memoization.MemoizedValue;
 
 public class ResourcesAssetLocation extends AbstractDeepAssetLocation implements ThemedAssetLocation{
 	

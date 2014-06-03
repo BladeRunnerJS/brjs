@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 
 import org.bladerunnerjs.model.Blade;
-import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
