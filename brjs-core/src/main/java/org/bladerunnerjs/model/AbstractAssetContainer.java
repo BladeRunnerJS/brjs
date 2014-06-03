@@ -14,7 +14,6 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantRootAssetLocation;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
 	private final MemoizedValue<Map<String, SourceModule>> sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);

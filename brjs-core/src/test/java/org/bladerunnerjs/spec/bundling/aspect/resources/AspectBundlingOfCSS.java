@@ -2,10 +2,8 @@ package org.bladerunnerjs.spec.bundling.aspect.resources;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,10 +14,6 @@ public class AspectBundlingOfCSS extends SpecTest {
 	private Bladeset bladeset;
 	private Blade blade;
 	private StringBuffer response = new StringBuffer();
-
-//	private AssetLocation aspectStandardThemeAssetLocation;
-//	private AssetLocation bladeStandardThemeAssetLocation;
-//	private AssetLocation bladesetStandardThemeAssetLocation;
 	
 	@Before
 	public void initTestObjects() throws Exception
