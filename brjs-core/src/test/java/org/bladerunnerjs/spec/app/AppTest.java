@@ -62,7 +62,6 @@ public class AppTest extends SpecTest {
 		when(app).populate();
 		then(observer).notified(NodeReadyEvent.class, app)
 			.and(observer).notified(NodeReadyEvent.class, aspect);
-//			.and(observer).notified(NodeReadyEvent.class, aspect.theme("standard"));
 	}
 	
 	@Test

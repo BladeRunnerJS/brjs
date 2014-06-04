@@ -73,7 +73,6 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		super.populate();
-//		theme("standard").populate();
 	}
 	
 	@Override

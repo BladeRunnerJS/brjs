@@ -24,11 +24,8 @@ public class AspectBundlingOfCSS extends SpecTest {
 		
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-//			aspectStandardThemeAssetLocation = aspect.assetLocation("themes/standard");
 			bladeset = app.bladeset("bs");
-//			standardBladesetTheme = bladeset.theme("standard");
 			blade = bladeset.blade("b1");
-//			standardBladeTheme = blade.theme("standard");
 	}
 		
 	// Aspect
