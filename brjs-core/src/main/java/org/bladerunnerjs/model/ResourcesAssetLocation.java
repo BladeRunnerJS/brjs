@@ -32,14 +32,14 @@ public class ResourcesAssetLocation extends AbstractDeepAssetLocation implements
 	{
 		List<AssetLocation> result =  null;
 		if(dir().getName().endsWith("resources")){
-			result = populateThemeResources();
+			result = getThemeResources();
 		}else{
 			result = new ArrayList<AssetLocation>();
 		}
 		return result;
 	}
 
-	private List<AssetLocation>  populateThemeResources() {
+	private List<AssetLocation>  getThemeResources() {
 		List<AssetLocation> result = new ArrayList<AssetLocation>();
 		List<AssetLocation> assetLocations = this.assetContainer().assetLocations();
 		for(AssetLocation location: assetLocations){
