@@ -11,17 +11,15 @@ import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode, ThemeableNode
+public final class Aspect extends AbstractBrowsableNode implements TestableNode, NamedNode
 {
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
-	private final NodeList<Theme> themes = Theme.createNodeSet(this);
 	private String name;
 	private File[] scopeFiles;
 	private IndexPageSeedLocator indexPageSeedLocator;
@@ -31,7 +29,6 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 		super(rootNode, parent, dir);
 		this.name = name;
 		
-		registerInitializedNode();
 		indexPageSeedLocator = new IndexPageSeedLocator(root());
 	}
 	
@@ -76,7 +73,6 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	public void populate() throws InvalidNameException, ModelUpdateException
 	{
 		super.populate();
-		theme("standard").populate();
 	}
 	
 	@Override
@@ -122,15 +118,5 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 		return testTypes.item(typedTestPackName);
 	}
 	
-	@Override
-	public List<Theme> themes()
-	{
-		return themes.list();
-	}
 	
-	@Override
-	public Theme theme(String themeName)
-	{
-		return themes.item(themeName);
-	}
 }

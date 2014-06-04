@@ -150,4 +150,5 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/some/other/path/", MockContentPlugin.class.getCanonicalName())
 			.and(appServer).requestForUrlReturns("/app/servlet/hello", "Hello World!");
 	}
+	
 }

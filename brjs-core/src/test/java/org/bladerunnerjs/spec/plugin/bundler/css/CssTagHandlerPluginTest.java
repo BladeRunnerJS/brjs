@@ -51,12 +51,12 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void onlyThemesForTheGivenAspectAreIncludedInGeneratedTags() throws Exception {
-		given(loginAspect.theme("login")).hasBeenCreated()
-			.and(aspect.theme("aspect1")).hasBeenCreated()
-			.and(aspect.theme("aspect2")).hasBeenCreated()
+		given(loginAspect).containsFile("themes/login/wibble.css")
+			.and(loginAspect).containsFile("themes/aspect1/wibble.css")
+			.and(loginAspect).containsFile("themes/aspect2/wibble.css")
 			.and(loginAspect).indexPageHasContent("<@css.bundle@/>\n" + "appns.bs.b1.Class1()")
 			.and(blade).hasClass("appns/bs/b1/Class1")
-			.and(blade.theme("aspect1")).hasBeenCreated();
+			.and(blade).containsFile("themes/aspect/wibble.css");
 		when(loginAspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
 			"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
@@ -67,7 +67,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void themesReferencedInCssTagsAreIncludedInGeneratedTags() throws Exception {
-		given(aspect.theme("standard")).hasBeenCreated()
+		given(aspect).containsFile("themes/standard/wibble.css")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
@@ -78,7 +78,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void bladeThemesAreUsedInAWorkbenchEvenIfTheAspectDoesNotHaveThatTheme() throws Exception {
-		given(blade.theme("standard")).hasBeenCreated()
+		given(aspect).containsFile("themes/standard/wibble.css")
 			.and(workbench).indexPageHasContent("<@css.bundle theme=\"standard\"@/>\n");
 		when(workbench).pageLoaded(response, "en");
 		then(response).containsOrderedTextFragments(

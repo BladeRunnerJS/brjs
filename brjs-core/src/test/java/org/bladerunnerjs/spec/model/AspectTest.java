@@ -4,7 +4,6 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.AbstractNode;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -51,13 +50,6 @@ public class AspectTest extends SpecTest {
 		.and(aspect).fileHasContents("index.jsp", "'<html>app1</html>'");
 	}
 	
-	@Test
-	public void populatingAnAspectCausesRootObserversToBeNotified() throws Exception {
-		given(observer).observing(brjs);
-		when(aspect).populate();
-		then(observer).notified(NodeReadyEvent.class, aspect)
-			.and(observer).notified(NodeReadyEvent.class, aspect.theme("standard"));
-	}
 	
 	@Test
 	public void invalidAspectNameSpaceThrowsException() throws Exception {
