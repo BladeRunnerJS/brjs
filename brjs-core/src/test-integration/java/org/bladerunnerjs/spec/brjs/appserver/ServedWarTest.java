@@ -69,7 +69,8 @@ public class ServedWarTest extends SpecTest {
 	@Test
 	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(sdkLibsDir).containsFile("locale-forwarder.js")
-			.and(aspect).containsFileWithContents("index.html", "Hello World!")
+			.and(aspect).indexPageRequires("appns/Class")
+			.and(aspect).hasClass("appns/Class")
 			.and(app).hasBeenBuiltAsWar(brjs.dir(), versionNumber)
 			.and(warServer).hasWar("app1.war", "app")
 			.and(warServer).hasStarted();

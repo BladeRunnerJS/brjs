@@ -91,7 +91,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		then(response).containsOrderedTextFragments(
 				"// secondBootstrapLib",
 				"// br-bootstrap",
-				"appns.Class1" ); 
+				"appns/Class1" ); 
 	}
 	
 	@Test
@@ -111,7 +111,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 				"// thirdBootstrapLib",
 				"// secondBootstrapLib",
 				"// br-bootstrap",
-				"appns.Class1" ); 
+				"appns/Class1" ); 
 	}
 	
 	@Test
@@ -130,7 +130,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 				"// secondBootstrapLib",
 				"// br-bootstrap",
 				"// thirdparty-lib1",
-				"appns.Class1" ); 
+				"appns/Class1" ); 
 	}
 	
 	@Test
@@ -159,7 +159,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 				"// secondBootstrapLib",
 				"// br-bootstrap",
 				"// thirdparty-lib1",
-				"appns.Class1" ); 
+				"appns/Class1" ); 
 	}
 	
 	// Bootstrap tests end --
