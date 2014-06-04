@@ -103,15 +103,7 @@ public class StringVerifier {
 	
 	public VerifierChainer containsRequests(String... expectedRequests) {
 		List<String> actualRequests = getRequestPaths(string);
-		int i = 0;
-		
-		assertEquals("'" + string + "' does not contain exactly " + expectedRequests.length + " request(s)", expectedRequests.length, actualRequests.size());
-		
-		for(String expectedRequest : expectedRequests) {
-			String actualRequest = actualRequests.get(i++);
-			
-			assertEquals(expectedRequest, actualRequest);
-		}
+		assertEquals(Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
 		
 		return verifierChainer;
 	}
