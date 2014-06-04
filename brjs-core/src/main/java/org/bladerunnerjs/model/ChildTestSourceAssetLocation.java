@@ -11,6 +11,5 @@ public final class ChildTestSourceAssetLocation extends AbstractChildSourceAsset
 	public ChildTestSourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation parentAssetLocation)
 	{
 		super(rootNode, parent, dir, parentAssetLocation);
-		registerInitializedNode();
 	}
 }

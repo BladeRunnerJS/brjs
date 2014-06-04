@@ -22,8 +22,6 @@ public final class TestGrandChildNode extends AbstractNode implements NamedNode
 		super(rootNode, parent, dir);
 		this.name = name;
 		greatGrandChildNodes = new NodeList<>(this, TestGreatGrandChildNode.class, null, "-greatgrandchild$");
-		
-		registerInitializedNode();
 	}
 	
 	@Override

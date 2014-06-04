@@ -12,6 +12,5 @@ public final class TestNode extends AbstractNode
 	{
 		super(rootNode, parent, dir);
 		
-		registerInitializedNode();
 	}
 }

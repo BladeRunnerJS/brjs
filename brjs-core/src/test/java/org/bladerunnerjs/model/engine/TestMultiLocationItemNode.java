@@ -11,7 +11,5 @@ public final class TestMultiLocationItemNode extends AbstractNode
 	public TestMultiLocationItemNode(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
-		
-		registerInitializedNode();
 	}
 }
