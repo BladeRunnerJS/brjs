@@ -95,8 +95,8 @@ public class BundlerHandler
 			throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundler file: " + bundleFile.getAbsolutePath());
 		}
 		
-		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream);
-	}	
+		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter());
+	}
 	
 	private static OutputStream createBundleOutputStream(File bundlerFile) throws IOException
 	{

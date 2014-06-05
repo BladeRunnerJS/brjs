@@ -6,7 +6,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 
 
-public final class ChildTestSourceAssetLocation extends AbstractChildSourceAssetLocation
+public final class ChildTestSourceAssetLocation extends AbstractChildSourceAssetLocation implements TestAssetLocation
 {
 	public ChildTestSourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation parentAssetLocation)
 	{

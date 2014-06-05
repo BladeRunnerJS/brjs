@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -50,11 +51,13 @@ public class TrieFactory {
 						}
 						
 						for(SourceModule sourceModule : assetContainer.sourceModules()) {
-							addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
-							
-							String moduleClassname = sourceModule.getRequirePath().replaceAll("/", ".");
-							if (moduleClassname != null) {
-								addToTrie(trie, moduleClassname, new SourceModuleReference(sourceModule));
+							if(!(sourceModule.assetLocation() instanceof TestAssetLocation)) {
+								addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
+								
+								String moduleClassname = sourceModule.getRequirePath().replaceAll("/", ".");
+								if (moduleClassname != null) {
+									addToTrie(trie, moduleClassname, new SourceModuleReference(sourceModule));
+								}
 							}
 						}
 						
