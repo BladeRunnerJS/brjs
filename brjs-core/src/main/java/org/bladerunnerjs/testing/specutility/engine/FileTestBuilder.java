@@ -1,6 +1,7 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bladerunnerjs.utility.FileUtil;
 
@@ -24,6 +25,14 @@ public class FileTestBuilder extends SpecTestBuilder {
 	
 	public BuilderChainer containsFileWithContents(String filePath, String fileContents) throws Exception {
 		fileUtil.write(new File(file, filePath), fileContents);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer containsFiles(String... filePaths) throws IOException {
+		for(String filePath : filePaths) {
+			fileUtil.write(new File(file, filePath), filePath);
+		}
 		
 		return builderChainer;
 	}

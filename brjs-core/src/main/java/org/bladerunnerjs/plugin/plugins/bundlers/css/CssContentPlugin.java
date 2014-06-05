@@ -141,7 +141,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			
 			for(Asset cssAsset : bundleSet.getResourceFiles(cssAssetPlugin)) {
 				AssetLocation cssAssetLocation = cssAsset.assetLocation();
-				String themeName = (cssAssetLocation instanceof ThemesAssetLocation) ? ((ThemesAssetLocation) cssAssetLocation).getThemeName() : "common";
+				String themeName = (cssAssetLocation instanceof ThemedAssetLocation) ? ((ThemedAssetLocation) cssAssetLocation).getThemeName() : "common";
 				
 				if(supportedThemes.contains(themeName)) {
 					String assetLocale = getAssetLocale(cssAsset.getAssetName());

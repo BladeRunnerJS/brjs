@@ -1,11 +1,12 @@
 package org.bladerunnerjs.spec.plugin.bundler.css;
 
+import java.io.File;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
-import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -17,8 +18,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	private Aspect aspect;
 	private StringBuffer response = new StringBuffer();
 	private Aspect loginAspect;
-	private Theme commonTheme;
-	private Theme standardTheme;
+	private File commonTheme;
+	private File standardTheme;
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;
@@ -29,8 +30,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		app = brjs.app("app1");
 		appConf = app.appConf();
 		aspect = app.aspect("default");
-		commonTheme = aspect.theme("common");
-		standardTheme = aspect.theme("standard");
+		commonTheme = aspect.file("themes/common");
+		standardTheme = aspect.file("themes/standard");
 		blade = app.bladeset("bs").blade("b1");
 		loginAspect = app.aspect("login");
 		bladeset = app.bladeset("bs");
