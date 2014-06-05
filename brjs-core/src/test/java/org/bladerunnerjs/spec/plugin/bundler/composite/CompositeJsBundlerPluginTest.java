@@ -78,7 +78,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 					"require('appLib');\n"+
 					"require('appns.node.Class');\n" );
 		when(aspect).requestReceived("js/dev/combined/bundle.js", requestResponse);
-		then(requestResponse).containsOrderedTextFragments(
+		then(requestResponse).containsOrderedTextFragmentsAnyNumberOfTimes(
 				"// br-bootstrap", 
 				"// appLib", 
 				"define('appns/node/Class'", 
