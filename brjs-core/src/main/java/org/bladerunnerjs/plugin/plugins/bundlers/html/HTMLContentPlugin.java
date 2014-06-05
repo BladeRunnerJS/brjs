@@ -68,7 +68,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 
 	@Override
 	public String getGroupName() {
-		return "text/html";
+		return null;
 	}
 	
 	@Override

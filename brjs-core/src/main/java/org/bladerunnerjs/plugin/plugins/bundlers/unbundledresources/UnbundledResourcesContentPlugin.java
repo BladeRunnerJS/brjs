@@ -53,7 +53,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	@Override
 	public String getGroupName()
 	{
-		return "";
+		return null;
 	}
 	
 	@Override

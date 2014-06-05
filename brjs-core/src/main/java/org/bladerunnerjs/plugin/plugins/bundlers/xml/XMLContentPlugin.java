@@ -56,7 +56,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	
 	@Override
 	public String getGroupName() {
-		return "application/xml";
+		return null;
 	}
 	
 	@Override

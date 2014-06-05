@@ -61,7 +61,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public String getGroupName() {
-		return "text/css";
+		return null;
 	}
 	
 	@Override

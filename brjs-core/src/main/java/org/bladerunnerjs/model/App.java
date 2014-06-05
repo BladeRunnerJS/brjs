@@ -408,12 +408,14 @@ public class App extends AbstractBRJSNode implements NamedNode
 				}
 				
 				for(ContentPlugin contentPlugin : root().plugins().contentProviders()) {
-					for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-						File bundleFile = new File(appExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
-						
-						bundleFile.getParentFile().mkdirs();
-						try(OutputStream os = new FileOutputStream(bundleFile)) {
-							contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os);
+					if(contentPlugin.getGroupName() == null) {
+						for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
+							File bundleFile = new File(appExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
+							
+							bundleFile.getParentFile().mkdirs();
+							try(OutputStream os = new FileOutputStream(bundleFile)) {
+								contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os);
+							}
 						}
 					}
 				}
