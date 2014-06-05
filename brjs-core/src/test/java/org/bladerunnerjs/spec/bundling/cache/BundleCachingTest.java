@@ -34,10 +34,10 @@ public class BundleCachingTest extends SpecTest
 			bladeset = app.bladeset("widget");
 			blade = bladeset.blade("time");
 			
-			thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdpartyLib");
+			thirdpartyLib = brjs.sdkLib("thirdpartyLib");
 			
-			sdkJquery = brjs.sdkNonBladeRunnerLib("jquery");
-			userJquery = app.jsLib("jquery");
+			sdkJquery = brjs.sdkLib("jquery");
+			userJquery = app.appJsLib("jquery");
 	}
 	
 	// Cache tests should be irrespective of JS style (namespace/node)

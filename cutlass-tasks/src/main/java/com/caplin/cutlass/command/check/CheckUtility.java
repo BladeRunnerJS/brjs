@@ -209,12 +209,12 @@ public class CheckUtility
 			messageToShowUser.append("There are no thirdparty libraries present in the SDK.");
 		}
 		
-		File appThirdpartyDir = new AppPath(application.dir()).thirdpartyLibsPath().getDir();
+		File appThirdpartyDir = new AppPath(application.dir()).userLibsPath().getDir();
 		List<File> overridenThirdpartyLibraries = getOverridenThirdpartyLibraries(appThirdpartyDir, sdkThirdpartyLibraries);
 		
 		if(overridenThirdpartyLibraries.size() > 0)
 		{
-			messageToShowUser.append("The following thirdparty-libraries also exist inside the SDK:\n");
+			messageToShowUser.append("The following libs also exist inside the SDK:\n");
 
 			for(File overridenLib : overridenThirdpartyLibraries)
 			{

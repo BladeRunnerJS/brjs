@@ -37,7 +37,7 @@ public class CutlassDirectoryLocator
 			case APP:
 				return ScopeLevel.APP_SCOPE;
 			case THIRDPARTY_LIB:
-				return ScopeLevel.THIRDPARTY_LIBRARY_SCOPE;
+				return ScopeLevel.LIB_SCOPE;
 			case ASPECT:
 				return ScopeLevel.ASPECT_SCOPE;
 			case BLADESET:
@@ -59,8 +59,6 @@ public class CutlassDirectoryLocator
 
 		switch (requestScope)
 		{
-			case THIRDPARTY_LIBRARY_SCOPE:
-				return getThirdpartyLibrary(fullRequestPath).getParentFile();
 			case APP_SCOPE:
 				return getParentApp(fullRequestPath);
 			case ASPECT_SCOPE:

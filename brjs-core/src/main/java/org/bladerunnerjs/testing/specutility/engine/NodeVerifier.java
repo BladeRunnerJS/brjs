@@ -41,19 +41,19 @@ public abstract class NodeVerifier<N extends Node> {
 	}
 	
 	public VerifierChainer hasDir(String dirName) {
-		assertTrue("The directory '" + dirName + "' does not exist at: "  + node.file(dirName).getAbsolutePath(), node.file(dirName).exists());
+		assertTrue("The directory '" + dirName + "' does not exist at: "  + node.file(dirName).getAbsolutePath(), node.file(dirName).isDirectory());
 		
 		return verifierChainer;
 	}
 	
 	public VerifierChainer doesNotHaveDir(String dirName) {
-		assertFalse("The directory '" + dirName + "' exist, but shouldn't", node.file(dirName).exists());
+		assertFalse("The directory '" + dirName + "' exists, but shouldn't", node.file(dirName).exists());
 		
 		return verifierChainer;
 	}
 	
 	public VerifierChainer hasFile(String fileName) {
-		assertTrue("The file '" + fileName + "' does not exist at: " + node.file(fileName).getAbsoluteFile(), node.file(fileName).exists());
+		assertTrue("The file '" + fileName + "' does not exist at: " + node.file(fileName).getAbsoluteFile(), node.file(fileName).isFile());
 		
 		return verifierChainer;
 	}

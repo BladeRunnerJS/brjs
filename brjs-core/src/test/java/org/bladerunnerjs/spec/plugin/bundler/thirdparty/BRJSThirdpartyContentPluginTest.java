@@ -28,8 +28,8 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			thirdpartyLib = app.nonBladeRunnerLib("thirdparty-lib");
-			thirdpartyLib2 = app.nonBladeRunnerLib("thirdparty-lib2");
+			thirdpartyLib = app.jsLib("thirdparty-lib");
+			thirdpartyLib2 = app.jsLib("thirdparty-lib2");
 			bladerunnerConf = brjs.bladerunnerConf();
 	}	
 	
@@ -128,8 +128,8 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	@Test
 	public void testLibraryResourceForLibraryPresentBothInAppAndSdkIsBundledFromApp() throws Exception
 	{
-		JsLib appLib = app.nonBladeRunnerLib("lib1");
-		JsLib sdkLib = brjs.sdkNonBladeRunnerLib("lib1");
+		JsLib appLib = app.jsLib("lib1");
+		JsLib sdkLib = brjs.sdkLib("lib1");
 		
 		given(appLib).hasBeenCreated()
 			.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "js: app-lib.js")
@@ -144,7 +144,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	@Test
 	public void testLibraryResourceRequestCanNotHaveAQueryString() throws Exception
 	{
-		JsLib appLib = app.nonBladeRunnerLib("myLib");
+		JsLib appLib = app.jsLib("myLib");
 		
 		given(appLib).hasBeenCreated()
 			.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "js: myFile.js")
@@ -210,7 +210,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 			.and(thirdpartyLib).hasBeenCreated()
 			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: doesnt-exist.js\n"+"exports: lib");
 		when(aspect).requestReceived("thirdparty/thirdparty-lib/bundle.js", pageResponse);
-		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "apps/app1/thirdparty-libraries/thirdparty-lib/thirdparty-lib.manifest");
+		then(exceptions).verifyException(ConfigException.class, "doesnt-exist.js", "apps/app1/libs/thirdparty-lib/thirdparty-lib.manifest");
 	}
 	
 	@Test

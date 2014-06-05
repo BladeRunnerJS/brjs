@@ -62,7 +62,7 @@ public class AppVerifier extends NodeVerifier<App> {
 
 	public void libWithNameIs(String libName, JsLib appOverriddenNonBRLib)
 	{
-		JsLib appJsLib = app.nonBladeRunnerLib(libName);
+		JsLib appJsLib = app.jsLib(libName);
 		appJsLib = (appJsLib instanceof AppSdkJsLib) ? ((AppSdkJsLib) appJsLib).getWrappedJsLib() : appJsLib;
 		assertSame(appJsLib, appOverriddenNonBRLib);
 	}

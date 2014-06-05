@@ -29,14 +29,14 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			appLib = app.nonBladeRunnerLib("appLib");
+			appLib = app.jsLib("appLib");
 			bladeset = app.bladeset("bs");
 			bladeset.blade("b1");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			workbench = blade.workbench();
-			brbootstrap = brjs.sdkNonBladeRunnerLib("br-bootstrap");
-			thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdpartyLib");
+			brbootstrap = brjs.sdkLib("br-bootstrap");
+			thirdpartyLib = brjs.sdkLib("thirdpartyLib");
 	}
 	
 	@Test

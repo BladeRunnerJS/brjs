@@ -208,7 +208,7 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 }
 
 
-def brLibsPathRelativeToSdk = "libs/javascript/br-libs"
+def brLibsPathRelativeToSdk = "libs/javascript"
 def brlibsPath = "workspace/sdk/${brLibsPathRelativeToSdk}"
 
 createTestTask "testJsChrome", brLibsPathRelativeToSdk, "ALL", "chrome"
@@ -217,7 +217,7 @@ createTestTask "testJsFirefox", brLibsPathRelativeToSdk, "ALL", "firefox"
 /* run each test on it's own in IE due to unreliability in CI */
 task testJsIE, {}
 file(brlibsPath).listFiles().each { libDir ->
-	if (libDir.isDirectory() && file("${libDir.absolutePath}/tests").isDirectory()) {
+	if (libDir.isDirectory() && fileTree(dir:"${libDir.absolutePath}/tests").getFiles().size() > 0) {
 		def libDirName = libDir.name
 		def taskName = "testJs${ libDirName.capitalize() }AllIE"
 		createTestTask taskName, "${brLibsPathRelativeToSdk}/${libDirName}", "ALL", "ie"
@@ -367,9 +367,8 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/libs/java/testRunner/*",
 		"*/sdk/libs/java/system/*",
 		"*/sdk/libs/java/application/**",
-		"*/sdk/libs/javascript/br-libs/*/src/**",
-		"*/sdk/libs/javascript/br-libs/*/resources/**",
-		"*/sdk/libs/javascript/thirdparty/*/*",
+		"*/sdk/libs/javascript/*/src/**",
+		"*/sdk/libs/javascript/*/resources/**",
 		"*/sdk/system-applications/*/*",
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
 		"*/sdk/templates/*/*",

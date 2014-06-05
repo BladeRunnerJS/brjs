@@ -48,7 +48,7 @@ public class BRLibTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(exceptions).verifyException(ConfigException.class, "foo.bar", "sdk/libs/javascript/br-libs/br/br-lib.conf", BRLibYamlConf.REQUIRE_PREFIX_REGEX);
+		then(exceptions).verifyException(ConfigException.class, "foo.bar", "sdk/libs/javascript/br/br-lib.conf", BRLibYamlConf.REQUIRE_PREFIX_REGEX);
 	}
 	
 	@Test
