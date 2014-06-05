@@ -107,9 +107,7 @@ public class BundleSetBuilder {
 		if(linkedAssets.add(linkedAsset)) {
 			List<SourceModule> moduleDependencies = new ArrayList<>(linkedAsset.getDependentSourceModules(bundlableNode));
 			
-			if (linkedAsset instanceof SourceModule)
-			{
-				moduleDependencies.add((SourceModule) linkedAsset);
+			if (linkedAsset instanceof SourceModule) {
 				moduleDependencies.addAll( ((SourceModule) linkedAsset).getOrderDependentSourceModules(bundlableNode) );
 			}
 			
@@ -120,6 +118,10 @@ public class BundleSetBuilder {
 			}
 			else {
 				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), sourceFilePaths(moduleDependencies));
+			}
+			
+			if (linkedAsset instanceof SourceModule) {
+				addSourceModule((SourceModule) linkedAsset);
 			}
 			
 			for(SourceModule sourceModule : moduleDependencies) {
