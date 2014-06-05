@@ -33,7 +33,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
  * 
  * <ul>
  *   <li>{@link #getRequestPrefix}</li>
- *   <li>{@link #getGroupName}</li>
+ *   <li>{@link #getCompositeGroupName}</li>
  * </ul>
  */
 public interface ContentPlugin extends OrderedPlugin {
