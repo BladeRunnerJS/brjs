@@ -4,6 +4,7 @@ import static org.bladerunnerjs.model.engine.AbstractNode.Messages.*;
 import static org.bladerunnerjs.plugin.plugins.commands.standard.CreateLibraryCommand.Messages.*;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.AppJsLib;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
@@ -19,15 +20,22 @@ import org.junit.Test;
 
 public class CreateLibraryCommandTest extends SpecTest {
 	App app;
+	Aspect aspect;
 	JsLib lib;
 	JsLib badLib;
+	
+	StringBuffer response = new StringBuffer();
 	
 	@Before
 	public void initTestObjects() throws Exception
 	{
 		given(brjs).hasCommands(new CreateLibraryCommand())
-			.and(brjs).hasBeenCreated();
+			.and(brjs).automaticallyFindsBundlers()
+			.and(brjs).automaticallyFindsMinifiers()
+			.and(brjs).hasBeenCreated()
+			.and(brjs).usesProductionTemplates();
 			app = brjs.app("app");
+			aspect = app.aspect("default");
 			lib = app.jsLib("lib");
 			badLib = app.jsLib("lib#$@/");
 	}
@@ -81,6 +89,28 @@ public class CreateLibraryCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void theCorrectStructureIsCreatedWhenABRLibIsCreated() throws Exception {
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib");
+		then(lib).dirExists()
+			.and(lib).hasDir("src/lib")
+			.and(lib).hasDir("resources/lib")
+			.and(lib).hasDir("tests/test-unit/js-test-driver/")
+			.and(lib.dir()).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
+			.and(lib).doesNotHaveFile("thirdparty-lib.manifest");
+	}
+	
+	@Test
+	public void brLibCreatedUsingTheCommandCanBeUsedInTheBundle() throws Exception {
+		given(app).hasBeenCreated()
+			.and(aspect).indexPageHasContent("require('lib/someClass');");
+		when(brjs).runCommand("create-library", "app", "lib")
+			.and(lib).containsFileWithContents("src/lib/someClass.js", "lib class")
+			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsText("lib class");
+	}
+	
+	@Test
 	public void thirdpartyLibCanBeCreatedUsingASwitch() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
@@ -96,6 +126,28 @@ public class CreateLibraryCommandTest extends SpecTest {
 		then( app.jsLib("lib") ).dirExists()
 			.and(output).containsLine( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
 			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, app.jsLib("lib").dir() );
+	}
+	
+	@Test
+	public void theCorrectStructureIsCreatedWhenAThirdpartyLibIsCreated() throws Exception {
+		given(app).hasBeenCreated();
+		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
+		then(lib).dirExists()
+			.and(lib).doesNotHaveDir("src/lib")
+			.and(lib).doesNotHaveDir("resources/lib")
+			.and(lib).doesNotHaveDir("tests/test-unit/js-test-driver/")
+			.and(lib.dir()).containsFileWithContents("thirdparty-lib.manifest", "css: \n"+"depends: \n"+"exports: '{}'\n"+"js: ")
+			.and(lib).doesNotHaveFile("br-lib.conf");
+	}
+	
+	@Test
+	public void thirdpartyLibCreatedUsingTheCommandCanBeUsedInTheBundle() throws Exception {
+		given(app).hasBeenCreated()
+			.and(aspect).indexPageHasContent("require('lib');");
+		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty")
+			.and(lib).containsFileWithContents("someClass.js", "lib class")
+			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsText("lib class");
 	}
 	
 	@Test

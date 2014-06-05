@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.ThirdpartyLibManifest;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 
@@ -27,7 +28,7 @@ public class ThirdpartyAssetLocationPlugin extends AbstractAssetLocationPlugin {
 	public List<String> getAssetLocationDirectories(AssetContainer assetContainer) {
 		List<String> assetLocationDirectories = new ArrayList<>();
 		
-		if((assetContainer instanceof JsLib) && (assetContainer.file("thirdparty-lib.manifest").exists())) {
+		if((assetContainer instanceof JsLib) && (assetContainer.file( ThirdpartyLibManifest.LIBRARY_MANIFEST_FILENAME ).exists())) {
 			assetLocationDirectories.add(".");
 		}
 		

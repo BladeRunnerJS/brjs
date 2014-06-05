@@ -98,8 +98,6 @@ public class NamedNodeTest extends SpecTest {
 			{"Aspect", aspectFactory},
 			{"Blade", bladeFactory},
 			{"Bladeset", bladesetFactory},
-			{"JsLib", jsLibFactory},
-//			{"JsNonBladeRunnerLib", jsNonBladeRunnerLibFactory},
 			{"TechnologyTestPack", technologyTestPackFactory},
 			{"TypedTestPack", typedTestPackFactory}
 		});

@@ -6,12 +6,12 @@ import org.bladerunnerjs.model.exception.ConfigException;
 
 public class BRLibConf extends ConfFile<BRLibYamlConf> {
 	
-	private static final String BR_MANIFEST_FILENAME = "br-lib.conf";
+	public static final String BR_CONF_FILENAME = "br-lib.conf";
 
 	private JsLib lib;
 	
 	public BRLibConf(JsLib lib) throws ConfigException {
-		super(lib, BRLibYamlConf.class, lib.file(BR_MANIFEST_FILENAME));
+		super(lib, BRLibYamlConf.class, lib.file(BR_CONF_FILENAME));
 		this.lib = lib;
 	}
 	
@@ -27,7 +27,7 @@ public class BRLibConf extends ConfFile<BRLibYamlConf> {
 	
 	public boolean manifestExists()
 	{
-		return lib.file(BR_MANIFEST_FILENAME).isFile();
+		return lib.file(BR_CONF_FILENAME).isFile();
 	}
 	
 }

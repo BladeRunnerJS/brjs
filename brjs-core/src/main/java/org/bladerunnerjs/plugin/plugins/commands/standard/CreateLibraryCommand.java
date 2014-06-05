@@ -1,5 +1,8 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
+import java.io.File;
+import java.io.IOException;
+
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -7,6 +10,8 @@ import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.ThirdpartyLibManifest;
+import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeAlreadyExistsException;
@@ -73,9 +78,9 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		String libraryName = parsedArgs.getString(NEW_LIBRARY_NAME);
 		String libraryType = parsedArgs.getString(LIBRARY_TYPE);
 		
-//		SupportedLibraryType createLibraryType;
+		SupportedLibraryType createLibraryType;
         try {
-//          createLibraryType = SupportedLibraryType.valueOf(libraryType);
+          createLibraryType = SupportedLibraryType.valueOf(libraryType);
         	SupportedLibraryType.valueOf(libraryType);
         } catch (IllegalArgumentException ex) {
            String exceptionMsg = String.format(Messages.INVALID_LIB_TYPE_MESSAGE, libraryType, StringUtils.join(SupportedLibraryType.values(), ", ") );
@@ -86,8 +91,16 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		JsLib library = app.appJsLib(libraryName);
-		
 		if (library.dirExists()) throw new NodeAlreadyExistsException(library, this);
+		
+		switch ( createLibraryType ) {
+			case br:
+				break;
+			case thirdparty:
+				createThirdpartyManifest(library);
+				break;
+		}
+		
 		try {
 			library.populate();
 		}
@@ -102,5 +115,22 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		out.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
 		
 		return 0;
+	}
+
+	private void createThirdpartyManifest(JsLib library) throws CommandOperationException
+	{
+		ThirdpartyLibManifest manifest;
+		try
+		{
+			File manifestFile = library.file(ThirdpartyLibManifest.LIBRARY_MANIFEST_FILENAME); //TODO: it should be easier to create the manifest
+			manifestFile.getParentFile().mkdirs();
+			manifestFile.createNewFile();
+			manifest = new ThirdpartyLibManifest( library.assetLocation(".") );
+			manifest.write();
+		}
+		catch (ConfigException | IOException e)
+		{
+			throw new CommandOperationException("Cannot create library manifest for '" + library.dir().getPath() + "'", e);
+		}
 	}
 }
