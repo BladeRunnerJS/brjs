@@ -55,7 +55,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public String getGroupName() {
+	public String getCompositeGroupName() {
 		return null;
 	}
 	

@@ -48,7 +48,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 
 	@Override
-	public String getGroupName() {
+	public String getCompositeGroupName() {
 		return null;
 	}
 	

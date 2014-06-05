@@ -23,8 +23,8 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public String getGroupName() {
-		return contentPlugin.getGroupName();
+	public String getCompositeGroupName() {
+		return contentPlugin.getCompositeGroupName();
 	}
 	
 	@Override

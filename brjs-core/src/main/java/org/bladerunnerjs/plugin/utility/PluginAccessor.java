@@ -87,7 +87,7 @@ public class PluginAccessor {
 		List<ContentPlugin> contentProviders = new LinkedList<>();
 		
 		for (ContentPlugin contentPlugin : contentProviders()) {
-			if (groupName.equals(contentPlugin.getGroupName())) {
+			if (groupName.equals(contentPlugin.getCompositeGroupName())) {
 				contentProviders.add(contentPlugin);
 			}
 		}

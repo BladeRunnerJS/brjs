@@ -66,7 +66,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getGroupName()
+	public String getCompositeGroupName()
 	{
 		return "text/javascript";
 	}

@@ -55,7 +55,7 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * 
 	 * @return the group name if one exists, or <code>null</code> otherwise.
 	 */
-	String getGroupName();
+	String getCompositeGroupName();
 	
 	/**
 	 * Returns the content-path parser that will be used to parse all requests for this plug-in.

@@ -38,7 +38,7 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public String getGroupName() {
+	public String getCompositeGroupName() {
 		return "text/javascript";
 	}
 	

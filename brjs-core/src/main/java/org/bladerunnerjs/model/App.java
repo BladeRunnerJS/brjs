@@ -408,7 +408,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 				}
 				
 				for(ContentPlugin contentPlugin : root().plugins().contentProviders()) {
-					if(contentPlugin.getGroupName() == null) {
+					if(contentPlugin.getCompositeGroupName() == null) {
 						for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
 							File bundleFile = new File(appExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
 							

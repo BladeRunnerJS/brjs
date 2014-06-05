@@ -78,7 +78,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public String getGroupName() {
+	public String getCompositeGroupName() {
 		return null;
 	}
 	
