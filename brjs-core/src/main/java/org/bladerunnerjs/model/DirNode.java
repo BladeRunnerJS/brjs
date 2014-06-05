@@ -13,8 +13,6 @@ public final class DirNode extends AbstractBRJSNode
 	public DirNode(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
-		
-		registerInitializedNode();
 	}
 	
 	@Override

@@ -66,21 +66,24 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		
 		App app = brjs.app(appName);
 		File targetDir;
-		if (targetDirPath == null) {
+		if (targetDirPath == null) 
+		{
 			targetDir = brjs.storageDir("exported-apps");
 			targetDir.mkdirs();
-		} else {
-			if (targetDirPath.startsWith("/")) {
-				targetDir = new File(targetDirPath);
-			} else {
+		} 
+		else {
+			targetDir = new File(targetDirPath);
+			if (!targetDir.isDirectory()) 
+			{
 				targetDir = brjs.file("sdk/" + targetDirPath);
 			}
 		}
+		
 		File appExportDir = new File(targetDir, appName);
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
-		if(!targetDir.exists()) throw new DirectoryDoesNotExistException(targetDirPath, this);
-		if(appExportDir.exists()) throw new DirectoryAlreadyExistsException(appExportDir.getPath(), this);
+		if(!targetDir.isDirectory()) throw new DirectoryDoesNotExistException(targetDirPath, this);
+		if(appExportDir.isDirectory()) throw new DirectoryAlreadyExistsException(appExportDir.getPath(), this);
 		
 		try {
 			app.build(targetDir, warExport);

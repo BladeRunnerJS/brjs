@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.TypedTestPack;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
@@ -30,14 +29,6 @@ public class AspectNavigationTest
 		brjs.close();
 	}
 
-	@Test
-	public void themes()
-	{
-		nodeTesterFactory.createSetTester(Theme.class, "themes", "theme")
-			.addChild("t1", "themes/t1")
-			.addChild("t2", "themes/t2")
-			.assertModelIsOK();
-	}
 	
 	@Test
 	public void testTypes()

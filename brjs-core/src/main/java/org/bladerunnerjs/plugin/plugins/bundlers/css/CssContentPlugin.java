@@ -12,13 +12,12 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.ThemesAssetLocation;
+import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -129,10 +128,9 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	private String getThemeName(AssetLocation cssAssetLocation) {
 		String themeName;
 		
-		if(cssAssetLocation instanceof ThemesAssetLocation) {
-			themeName = ((ThemesAssetLocation) cssAssetLocation).getThemeName();
-		}
-		else {
+		if(cssAssetLocation instanceof ThemedAssetLocation) {
+			themeName = ((ThemedAssetLocation) cssAssetLocation).getThemeName();
+		}else {
 			themeName = "common";
 		}
 		
@@ -154,7 +152,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		List<String> contentPaths = new ArrayList<>();
 		
 		try {
-			for (String theme : BRJSConformantAssetLocationPlugin.getBundlableNodeThemes(bundleSet.getBundlableNode())) {
+			for (String theme : bundleSet.getThemes()) {
 				for(String contentPath : getThemeStyleSheetContentPaths(theme, locales)) {
 					contentPaths.add(contentPath);
 				}

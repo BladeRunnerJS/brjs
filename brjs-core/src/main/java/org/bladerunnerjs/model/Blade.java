@@ -29,8 +29,6 @@ public final class Blade extends AbstractComponent implements NamedNode
 		bladeAssetContainers = new ArrayList<>();
 		bladeAssetContainers.add(this);
 		bladeAssetContainers.add((Bladeset) parent);
-		
-		registerInitializedNode();
 	}
 	
 	@Override
@@ -77,7 +75,6 @@ public final class Blade extends AbstractComponent implements NamedNode
 	{
 		super.populate();
 		testType("unit").testTech("js-test-driver").populate();
-		theme("standard").populate();
 		workbench().populate();
 	}
 	

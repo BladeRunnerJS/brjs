@@ -20,8 +20,6 @@ public final class NamedDirNode extends AbstractBRJSNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		
-		registerInitializedNode();
 	}
 	
 	@Override

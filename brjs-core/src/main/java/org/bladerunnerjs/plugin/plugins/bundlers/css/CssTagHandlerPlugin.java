@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
 public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
@@ -40,7 +39,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		try {
 			App app = bundleSet.getBundlableNode().app();
 			
-			for(String nextTheme : BRJSConformantAssetLocationPlugin.getBundlableNodeThemes(bundleSet.getBundlableNode())) {
+			for(String nextTheme : bundleSet.getThemes()) {
 				for(String contentPath : cssContentPlugin.getThemeStyleSheetContentPaths(nextTheme, locale)) {
 					String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
 					

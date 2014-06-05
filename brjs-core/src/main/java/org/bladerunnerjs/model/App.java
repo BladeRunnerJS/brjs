@@ -63,8 +63,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		this.name = name;
 		logger = rootNode.logger(LoggerType.CORE, Node.class);
 		appRequestHandler = new AppRequestHandler(this);
-		
-		registerInitializedNode();
 	}
 	
 	@Override

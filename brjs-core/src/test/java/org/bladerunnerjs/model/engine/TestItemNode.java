@@ -11,7 +11,5 @@ public final class TestItemNode extends AbstractNode
 	public TestItemNode(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
-		
-		registerInitializedNode();
 	}
 }
