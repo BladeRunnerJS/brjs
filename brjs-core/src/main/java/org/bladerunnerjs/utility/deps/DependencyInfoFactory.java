@@ -9,6 +9,7 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
@@ -89,7 +90,8 @@ public class DependencyInfoFactory {
 		
 		for(LinkedAsset seedAsset : bundlableNode.seedAssets()) {
 			dependencyInfo.seedAssets.add(seedAsset);
-			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(bundlableNode));
+			List<? extends Asset>  assets = seedAsset.getDependentAssets(bundlableNode);
+			addDependencies(dependencyAdder, dependencyInfo, seedAsset, (List<SourceModule>)assets);
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, seedAsset);
 		}
 	}
@@ -98,7 +100,8 @@ public class DependencyInfoFactory {
 		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
 		for(LinkedAsset resourceAsset : assetLocation.linkedAssets()) {
 			dependencyInfo.resourceAssets.add(resourceAsset);
-			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(bundlableNode));
+			List<? extends Asset>  assets = resourceAsset.getDependentAssets(bundlableNode);
+			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, (List<SourceModule>)assets);
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
 		}
 	}
@@ -106,12 +109,13 @@ public class DependencyInfoFactory {
 	private static void addSourceModuleDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, SourceModule sourceModule) throws ModelOperationException {
 		addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(bundlableNode));
-		addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(bundlableNode));
+		List<? extends Asset>  assets = sourceModule.getDependentAssets(bundlableNode);
+		addDependencies(dependencyAdder, dependencyInfo, sourceModule, (List<SourceModule>)assets);
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
 		
 		for(AssetLocation assetLocation : sourceModule.assetLocations()) {
 			for(LinkedAsset assetLocationLinkedAsset : assetLocation.linkedAssets()) {
-				if((assetLocationLinkedAsset.getDependentSourceModules(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
+				if((assetLocationLinkedAsset.getDependentAssets(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
 					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
 				}
 				

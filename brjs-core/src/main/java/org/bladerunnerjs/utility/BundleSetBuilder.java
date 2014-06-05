@@ -12,6 +12,7 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
@@ -105,7 +106,7 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		
 		if(linkedAssets.add(linkedAsset)) {
-			List<SourceModule> moduleDependencies = new ArrayList<>(linkedAsset.getDependentSourceModules(bundlableNode));
+			List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
 			
 			if (linkedAsset instanceof SourceModule) {
 				moduleDependencies.addAll( ((SourceModule) linkedAsset).getOrderDependentSourceModules(bundlableNode) );
@@ -117,15 +118,18 @@ public class BundleSetBuilder {
 				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
 			}
 			else {
-				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), sourceFilePaths(moduleDependencies));
+				
+				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), assetFilePaths(moduleDependencies));
 			}
 			
 			if (linkedAsset instanceof SourceModule) {
 				addSourceModule((SourceModule) linkedAsset);
 			}
 			
-			for(SourceModule sourceModule : moduleDependencies) {
-				addSourceModule(sourceModule);
+			for(Asset asset : moduleDependencies) {
+				if(asset instanceof SourceModule){
+					addSourceModule((SourceModule)asset);
+				}
 			}
 			
 			addAssetLocation(linkedAsset.assetLocation());
@@ -194,10 +198,10 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private String sourceFilePaths(List<SourceModule> sourceModules) {
+	private String assetFilePaths(List<Asset> assets) {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
-		for(SourceModule sourceModule : sourceModules) {
+		for(Asset sourceModule : assets) {
 			sourceFilePaths.add(sourceModule.getAssetPath());
 		}
 		
@@ -218,10 +222,12 @@ public class BundleSetBuilder {
 		}
 		processedModules.add(sourceModule);
 		
-		for (SourceModule dependency : sourceModule.getDependentSourceModules(bundlableNode))
+		for (Asset asset : sourceModule.getDependentAssets(bundlableNode))
 		{
-			if (!sourceModules.contains(dependency)) {
-				addAllSourceModuleDependencies(dependency, sourceModules, processedModules);
+			if (!sourceModules.contains(asset)) {
+				if(asset instanceof SourceModule){
+					addAllSourceModuleDependencies((SourceModule)asset, sourceModules, processedModules);
+				}
 			}
 		}
 		sourceModules.add(sourceModule);

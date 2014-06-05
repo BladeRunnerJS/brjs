@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -58,9 +59,10 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			return bundlableNode.getSourceModules(assetLocation, requirePaths());
+			 List<? extends Asset> sourceModules = bundlableNode.getSourceModules(assetLocation, requirePaths());
+			return (List<Asset>)sourceModules;
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);

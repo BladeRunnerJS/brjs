@@ -6,10 +6,10 @@ import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 
 public class AliasAsset implements LinkedAsset {
@@ -45,7 +45,7 @@ public class AliasAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		return null;
 	}
 	

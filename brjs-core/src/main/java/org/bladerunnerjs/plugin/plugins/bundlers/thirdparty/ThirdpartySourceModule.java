@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
@@ -138,9 +139,9 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
+	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		Set<SourceModule> dependentLibs = new LinkedHashSet<SourceModule>();
+		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
 		
 		try 
 		{
@@ -159,7 +160,7 @@ public class ThirdpartySourceModule implements SourceModule
 			throw new ModelOperationException( ex );
 		}
 		
-		return new ArrayList<SourceModule>( dependentLibs );
+		return new ArrayList<Asset>( dependentLibs );
 	}
 
 	@Override
@@ -182,6 +183,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return getDependentSourceModules(bundlableNode);
+		 List<? extends Asset> dependentAssets = getDependentAssets(bundlableNode);
+		 return (List<SourceModule>)dependentAssets;
 	}
 }

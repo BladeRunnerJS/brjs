@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.List;
 
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
@@ -45,9 +46,10 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
- 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {		
+ 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			return bundlableNode.getSourceModules(assetLocation, getDependencyCalculator().getRequirePaths());
+			 List<? extends Asset> sourceModules = bundlableNode.getSourceModules(assetLocation, getDependencyCalculator().getRequirePaths());
+			return (List<Asset>)sourceModules;
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
