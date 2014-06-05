@@ -24,6 +24,7 @@ import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.NodePathGenerator;
 import org.bladerunnerjs.utility.ObserverList;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public abstract class AbstractNode implements Node
@@ -306,5 +307,11 @@ public abstract class AbstractNode implements Node
 		ObserverList observers = node.getObservers();
 		if (observers != null) { observers.eventEmitted(event, notifyForNode); }
 		notifyObservers(event, notifyForNode, node.parentNode());
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName()+", dir: " + RelativePathUtility.get(root().dir(), dir());
 	}
 }
