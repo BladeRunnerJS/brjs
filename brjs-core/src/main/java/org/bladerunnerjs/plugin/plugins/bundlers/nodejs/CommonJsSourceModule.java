@@ -70,6 +70,12 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
+	public List<String> getProvidedRequirePaths() {
+		return new ArrayList<String>();
+	}
+	
+	
+	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
 		return getComputedValue().aliases;
 	}

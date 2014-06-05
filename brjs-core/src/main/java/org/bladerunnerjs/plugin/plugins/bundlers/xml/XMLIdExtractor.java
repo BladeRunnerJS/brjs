@@ -5,6 +5,11 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Simple utility that extracts a list of id's from XML without the overhead of a full XML parser.
+ * @author jamest
+ *
+ */
 public class XMLIdExtractor  {
 
 	private static final int OUTSIDE = 1;
@@ -35,6 +40,8 @@ public class XMLIdExtractor  {
 		return result;
 	}
 
+	
+	//TODO throw an exception if we get a line break inside an id ?
 	private void processNextChar(char nextChar, List<String> result) {
 		
 		switch(state)

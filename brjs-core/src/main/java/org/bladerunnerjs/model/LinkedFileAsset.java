@@ -3,6 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -64,6 +65,8 @@ public class LinkedFileAsset implements LinkedAsset {
 		return assetFile.getParentFile();
 	}
 	
+	
+	
 	@Override
 	public String getAssetName() {
 		return assetFile.getName();
@@ -86,5 +89,11 @@ public class LinkedFileAsset implements LinkedAsset {
 		}
 		return trieBasedDependenciesCalculator;
 	}
+
+	@Override
+	public List<String> getProvidedRequirePaths() {
+		return new ArrayList<String>();
+	}
+	
 	
 }

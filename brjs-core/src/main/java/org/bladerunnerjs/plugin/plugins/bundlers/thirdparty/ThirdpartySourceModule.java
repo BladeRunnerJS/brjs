@@ -186,4 +186,10 @@ public class ThirdpartySourceModule implements SourceModule
 		 List<? extends Asset> dependentAssets = getDependentAssets(bundlableNode);
 		 return (List<SourceModule>)dependentAssets;
 	}
+	
+	@Override
+	public List<String> getProvidedRequirePaths() {
+		return new ArrayList<String>();
+	}
+	
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
@@ -176,5 +177,9 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return trieBasedStaticDependenciesCalculator;
 	}
 	
+	@Override
+	public List<String> getProvidedRequirePaths() {
+		return new ArrayList<String>();
+	}
 	
 }

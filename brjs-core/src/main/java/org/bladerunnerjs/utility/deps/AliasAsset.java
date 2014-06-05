@@ -3,6 +3,7 @@ package org.bladerunnerjs.utility.deps;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -53,4 +54,10 @@ public class AliasAsset implements LinkedAsset {
 	public List<String> getAliasNames() throws ModelOperationException {
 		return null;
 	}
+	
+	@Override
+	public List<String> getProvidedRequirePaths() {
+		return new ArrayList<String>();
+	}
+	
 }
