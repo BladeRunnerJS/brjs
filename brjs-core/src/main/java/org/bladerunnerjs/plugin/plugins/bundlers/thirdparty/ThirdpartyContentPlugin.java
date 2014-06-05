@@ -87,7 +87,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 			else if(contentPath.formName.equals("file-request")) {
 				String libName = contentPath.properties.get("module");
 				App app = bundleSet.getBundlableNode().app();
-				JsLib lib = app.nonBladeRunnerLib(libName);
+				JsLib lib = app.jsLib(libName);
 				if (!lib.dirExists())
 				{
 					throw new ContentProcessingException("Library '" + lib.getName() + "' doesn't exist.");

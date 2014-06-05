@@ -37,7 +37,7 @@ public class BundleCachingTest extends SpecTest
 			thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdpartyLib");
 			
 			sdkJquery = brjs.sdkNonBladeRunnerLib("jquery");
-			userJquery = app.jsLib("jquery");
+			userJquery = app.appJsLib("jquery");
 	}
 	
 	// Cache tests should be irrespective of JS style (namespace/node)

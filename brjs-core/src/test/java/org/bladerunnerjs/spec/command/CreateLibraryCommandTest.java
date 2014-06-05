@@ -84,18 +84,18 @@ public class CreateLibraryCommandTest extends SpecTest {
 	public void thirdpartyLibCanBeCreatedUsingASwitch() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
-		then( app.nonBladeRunnerLib("lib") ).dirExists()
+		then( app.jsLib("lib") ).dirExists()
 			.and(output).containsLine( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
-			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, app.nonBladeRunnerLib("lib").dir() );
+			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, app.appJsLib("lib").dir() );
 	}
 	
 	@Test
 	public void thirdpartyLibCanBeCreatedUsingALonghandSwitch() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib", "--type", "thirdparty");
-		then( app.nonBladeRunnerLib("lib") ).dirExists()
+		then( app.jsLib("lib") ).dirExists()
 			.and(output).containsLine( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
-			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, app.nonBladeRunnerLib("lib").dir() );
+			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, app.jsLib("lib").dir() );
 	}
 	
 	@Test
@@ -110,7 +110,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(brjs.sdkLib("lib")).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib");
-		then(app.appBladeRunnerLib("lib")).dirExists();
+		then(app.appJsLib("lib")).dirExists();
 	}
 	
 	@Test
@@ -118,7 +118,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(brjs.sdkNonBladeRunnerLib("lib")).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
-		then(app.appNonBladeRunnerLib("lib")).dirExists();
+		then(app.appJsLib("lib")).dirExists();
 	}
 	
 	@Test

@@ -73,28 +73,19 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 		String libraryName = parsedArgs.getString(NEW_LIBRARY_NAME);
 		String libraryType = parsedArgs.getString(LIBRARY_TYPE);
 		
+//		SupportedLibraryType createLibraryType;
+        try {
+//          createLibraryType = SupportedLibraryType.valueOf(libraryType);
+        	SupportedLibraryType.valueOf(libraryType);
+        } catch (IllegalArgumentException ex) {
+           String exceptionMsg = String.format(Messages.INVALID_LIB_TYPE_MESSAGE, libraryType, StringUtils.join(SupportedLibraryType.values(), ", ") );
+           throw new CommandArgumentsException(exceptionMsg, this);
+        }
+		
 		App app = brjs.app(appName);
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
-		JsLib library = null;
-		
-		SupportedLibraryType createLibraryType;
-		try {
-			createLibraryType = SupportedLibraryType.valueOf(libraryType);
-		} catch (IllegalArgumentException ex) {
-			String exceptionMsg = String.format(Messages.INVALID_LIB_TYPE_MESSAGE, libraryType, StringUtils.join(SupportedLibraryType.values(), ", ") );
-			throw new CommandArgumentsException(exceptionMsg, this);
-		}
-		
-		
-		switch ( createLibraryType ) {
-			case br:
-				library = app.appBladeRunnerLib(libraryName);
-				break;
-			case thirdparty:
-				library = app.appNonBladeRunnerLib(libraryName);
-				break;
-		}
+		JsLib library = app.appJsLib(libraryName);
 		
 		if (library.dirExists()) throw new NodeAlreadyExistsException(library, this);
 		try {

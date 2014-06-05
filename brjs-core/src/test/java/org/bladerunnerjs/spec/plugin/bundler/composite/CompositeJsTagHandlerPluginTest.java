@@ -29,7 +29,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			appLib = app.nonBladeRunnerLib("appLib");
+			appLib = app.jsLib("appLib");
 			bladeset = app.bladeset("bs");
 			bladeset.blade("b1");
 			bladeset = app.bladeset("bs");

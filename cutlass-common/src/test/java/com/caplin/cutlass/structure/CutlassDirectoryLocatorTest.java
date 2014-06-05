@@ -63,9 +63,9 @@ public class CutlassDirectoryLocatorTest
 		assertEquals( ScopeLevel.WORKBENCH_SCOPE, getScope(new File(testBase + "/apps/app1/a-bladeset/blades/blade1/workbench")));
 		assertEquals( ScopeLevel.WORKBENCH_SCOPE, getScope(new File(testBase + "/apps/app1/a-bladeset/blades/blade1/workbench/workbench.css")));
 		assertEquals( ScopeLevel.WORKBENCH_SCOPE, getScope(new File(testBase + "/apps/app1/a-bladeset/blades/blade1/workbench/tests/some-test-dir")));
-		assertEquals( ScopeLevel.THIRDPARTY_LIBRARY_SCOPE, getScope(new File(testBase + "/apps/app1/thirdparty-libraries")));
-		assertEquals( ScopeLevel.THIRDPARTY_LIBRARY_SCOPE, getScope(new File(testBase + "/apps/app1/thirdparty-libraries/jquery")));
-		assertEquals( ScopeLevel.THIRDPARTY_LIBRARY_SCOPE, getScope(new File(testBase + "/apps/app1/thirdparty-libraries/jquery/jQuery.js")));
+		assertEquals( ScopeLevel.LIB_SCOPE, getScope(new File(testBase + "/apps/app1/libs")));
+		assertEquals( ScopeLevel.LIB_SCOPE, getScope(new File(testBase + "/apps/app1/libs/jquery")));
+		assertEquals( ScopeLevel.LIB_SCOPE, getScope(new File(testBase + "/apps/app1/libs/jquery/jQuery.js")));
 		assertEquals( ScopeLevel.SDK_SCOPE, getScope(new File(testBase + "/sdk/")));
 		assertEquals( ScopeLevel.SDK_SCOPE, getScope(new File(testBase + "/sdk/a-dir")));
 		assertEquals( ScopeLevel.SDK_SCOPE, getScope(new File(testBase + "/sdk/a-dir/empty.txt")));
@@ -83,9 +83,9 @@ public class CutlassDirectoryLocatorTest
 		assertEquals( ScopeLevel.WORKBENCH_SCOPE, getScope(new File(testBase + "/sdk/system-applications/dashboard/a-bladeset/blades/blade1/workbench")));
 		assertEquals( ScopeLevel.WORKBENCH_SCOPE, getScope(new File(testBase + "/sdk/system-applications/dashboard/a-bladeset/blades/blade1/workbench/workbench.css")));
 		assertEquals( ScopeLevel.WORKBENCH_SCOPE, getScope(new File(testBase + "/sdk/system-applications/dashboard/a-bladeset/blades/blade1/workbench/tests/some-test-dir")));
-		assertEquals( ScopeLevel.THIRDPARTY_LIBRARY_SCOPE, getScope(new File(testBase + "/sdk/system-applications/dashboard/thirdparty-libraries")));
-		assertEquals( ScopeLevel.THIRDPARTY_LIBRARY_SCOPE, getScope(new File(testBase + "/sdk/system-applications/dashboard/thirdparty-libraries/extjs")));
-		assertEquals( ScopeLevel.THIRDPARTY_LIBRARY_SCOPE, getScope(new File(testBase + "/sdk/system-applications/dashboard/thirdparty-libraries/extjs/extjs.js")));
+		assertEquals( ScopeLevel.LIB_SCOPE, getScope(new File(testBase + "/sdk/system-applications/dashboard/libs")));
+		assertEquals( ScopeLevel.LIB_SCOPE, getScope(new File(testBase + "/sdk/system-applications/dashboard/libs/extjs")));
+		assertEquals( ScopeLevel.LIB_SCOPE, getScope(new File(testBase + "/sdk/system-applications/dashboard/libs/extjs/extjs.js")));
 		assertEquals( ScopeLevel.SDK_SCOPE, getScope(new File(testBase + "/sdk/a-dir/non-existant.file")));
 
 		assertEquals( ScopeLevel.UNKNOWN_SCOPE, getScope(new File("src/test/resources/")));

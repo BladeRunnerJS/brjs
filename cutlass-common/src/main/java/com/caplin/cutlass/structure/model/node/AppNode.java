@@ -28,7 +28,7 @@ public class AppNode extends Node
 		super(parentNode, path);
 		
 		AppPath appPath = new AppPath(path);
-		thirdpartyLibDir = appPath.thirdpartyLibsPath().getDir();
+		thirdpartyLibDir = appPath.userLibsPath().getDir();
 		userLibDir = appPath.userLibsPath().getDir();
 	}
 	

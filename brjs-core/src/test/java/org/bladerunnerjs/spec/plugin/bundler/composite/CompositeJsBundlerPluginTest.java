@@ -30,7 +30,7 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			aspectAliasesFile = aspect.aliasesFile();
 			brLib = app.jsLib("br");
 			brbootstrap = brjs.sdkNonBladeRunnerLib("br-bootstrap");
-			appLib = app.nonBladeRunnerLib("appLib");
+			appLib = app.jsLib("appLib");
 	}
 	
 	@Test

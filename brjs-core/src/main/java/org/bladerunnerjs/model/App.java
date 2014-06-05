@@ -47,7 +47,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		public static final String APP_DEPLOYMENT_FAILED_LOG_MSG = "App '%s' at '%s' could not be sucesfully deployed";
 	}
 	
-	private final NodeList<AppJsLib> nonBladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "thirdparty-libraries", null);
 	private final NodeList<Bladeset> bladesets = new NodeList<>(this, Bladeset.class, null, "-bladeset$");
 	private final NodeList<Aspect> aspects = new NodeList<>(this, Aspect.class, null, "-aspect$");
 	private final NodeList<AppJsLib> bladeRunnerLibs = new NodeList<>(this, AppJsLib.class, "libs", null);
@@ -195,29 +194,50 @@ public class App extends AbstractBRJSNode implements NamedNode
 	
 	public List<JsLib> jsLibs()
 	{
-		Map<String,JsLib> appJsLibs = new LinkedHashMap<>();
+		Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
 		
-		for (JsLib lib : nonBladeRunnerLibs()) {
-			appJsLibs.put(lib.getName(), lib);
+		for (SdkJsLib lib : root().sdkLibs())
+		{
+			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
 		}
-		for (JsLib lib : bladeRunnerLibs()) {
-			appJsLibs.put(lib.getName(), lib);
+		for (SdkJsLib lib : root().sdkNonBladeRunnerLibs())
+		{
+			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
+		}
+		for (JsLib lib : bladeRunnerLibs.list())
+		{
+			libs.put(lib.getName(), lib );			
 		}
 		
-		return new ArrayList<>( appJsLibs.values() );
+		return new ArrayList<JsLib>( libs.values() );
 	}
 	
 	public JsLib jsLib(String jsLibName)
 	{
-		for (JsLib lib : jsLibs()) 
+		JsLib appLib = appJsLib(jsLibName);
+		SdkJsLib sdkLib = root().sdkLib(jsLibName);
+		SdkJsLib sdkNonBrLib = root().sdkNonBladeRunnerLib(jsLibName);
+		
+		if (!appLib.dirExists())
 		{
-			if (lib.getName().equals(jsLibName))
-			{
-				return lib;
+			if (sdkLib.dirExists()) {
+				return new AppSdkJsLib(this, sdkLib);
+			}
+			if (sdkNonBrLib.dirExists()) {
+				return new AppSdkJsLib(this, sdkNonBrLib);
 			}
 		}
-		
-		return bladeRunnerLib(jsLibName);
+		return appLib;
+	}
+	
+	public List<AppJsLib> appJsLibs()
+	{
+		return bladeRunnerLibs.list();
+	}
+	
+	public AppJsLib appJsLib(String jsLibName)
+	{
+		return bladeRunnerLibs.item(jsLibName);
 	}
 	
 	@Override
@@ -270,78 +290,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 		}
 	}
 	
-	public List<JsLib> nonBladeRunnerLibs()
-	{
-		Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
-		
-		for (SdkJsLib lib : root().sdkNonBladeRunnerLibs())
-		{
-			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
-		}
-		for (JsLib lib : nonBladeRunnerLibs.list())
-		{
-			libs.put(lib.getName(), lib );			
-		}
-		
-		return new ArrayList<JsLib>( libs.values() );
-	}
-	
-	public JsLib nonBladeRunnerLib(String libName)
-	{
-		JsLib appLib = appNonBladeRunnerLib(libName);
-		SdkJsLib sdkLib = root().sdkNonBladeRunnerLib(libName);
-		
-		if (!appLib.dirExists() && sdkLib.dirExists())
-		{
-			return new AppSdkJsLib(this, sdkLib);
-		}
-		return appLib;
-	}
-	
-	public JsLib appNonBladeRunnerLib(String libName)
-	{
-		return nonBladeRunnerLibs.item(libName);
-	}
-	
-	public List<JsLib> bladeRunnerLibs()
-	{
-		Map<String, JsLib> libs = new LinkedHashMap<String,JsLib>();
-		
-		for (SdkJsLib lib : root().sdkLibs())
-		{
-			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
-		}
-		for (JsLib lib : bladeRunnerLibs.list())
-		{
-			libs.put(lib.getName(), lib );			
-		}
-		
-		return new ArrayList<JsLib>( libs.values() );
-	}
-	
-	public JsLib bladeRunnerLib(String libName)
-	{
-		JsLib appLib = appBladeRunnerLib(libName);
-		SdkJsLib sdkLib = root().sdkLib(libName);
-		
-		if (!appLib.dirExists() && sdkLib.dirExists())
-		{
-			return new AppSdkJsLib(this, sdkLib);
-		}
-		return appLib;
-	}
-	
-	public JsLib appBladeRunnerLib(String libName)
-	{
-		return bladeRunnerLibs.item(libName);
-	}
-	
 	public File libsDir() {
 		return file("libs");
-	}
-	
-	public File thirdpartyLibsDir() {
-		return file("thirdparty-libraries");
 	}
 	
 	public boolean canHandleLogicalRequest(String requestPath) {

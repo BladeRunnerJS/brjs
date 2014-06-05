@@ -40,9 +40,9 @@ public class AppTest extends SpecTest {
 			appJars = brjs.appJars();
 			aspect = app.aspect("default");
 			globalNonBladeRunnerLib = brjs.sdkNonBladeRunnerLib("legacy-thirdparty");
-			appNonBladeRunnerLib = app.nonBladeRunnerLib("app-legacy-thirdparty");
+			appNonBladeRunnerLib = app.appJsLib("app-legacy-thirdparty");
 			globalOverriddenNonBRLib = brjs.sdkNonBladeRunnerLib("overridden-lib");
-			appOverriddenNonBRLib = app.nonBladeRunnerLib("overridden-lib");
+			appOverriddenNonBRLib = app.appJsLib("overridden-lib");
 	}
 	
 	// TODO: does this add anything over the baselining test?
@@ -163,7 +163,7 @@ public class AppTest extends SpecTest {
 			.and(sdkLib).hasBeenCreated()
 			.and(globalNonBladeRunnerLib).hasBeenCreated()
 			.and(appNonBladeRunnerLib).hasBeenCreated();
-		given(app).hasLibs(globalNonBladeRunnerLib, appNonBladeRunnerLib, sdkLib, appLib);
+		given(app).hasLibs(sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib, appLib);
 		then(app).libsReturnCorrectApp();
 	}
 	
@@ -182,7 +182,7 @@ public class AppTest extends SpecTest {
     		.and(sdkLib).hasBeenCreated()
     		.and(globalNonBladeRunnerLib).hasBeenCreated()
     		.and(appNonBladeRunnerLib).hasBeenCreated();
-		then(app).hasLibs(globalNonBladeRunnerLib, appNonBladeRunnerLib, sdkLib, appLib);
+		then(app).hasLibs(sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib, appLib);
 	}
 	
 	@Test
@@ -192,7 +192,7 @@ public class AppTest extends SpecTest {
     		.and(sdkLib).hasBeenCreated()
     		.and(globalOverriddenNonBRLib).hasBeenCreated()
     		.and(appOverriddenNonBRLib).hasBeenCreated();
-		then(app).hasLibs(appOverriddenNonBRLib, sdkLib, appLib);
+		then(app).hasLibs(sdkLib, appOverriddenNonBRLib, appLib);
 	}
 	
 	@Test
