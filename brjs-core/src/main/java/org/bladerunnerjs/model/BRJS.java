@@ -57,8 +57,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeList<App> apps = new NodeList<>(this, App.class, "apps", null);
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
 	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
-	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript/br-libs", null);
-	private final NodeList<SdkJsLib> sdkNonBladeRunnerLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript/thirdparty", null);
+	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript", null);
 	private final NodeItem<DirNode> jsPatches = new NodeItem<>(this, DirNode.class, "js-patches");
 	private final NodeList<NamedDirNode> templates = new NodeList<>(this, NamedDirNode.class, "sdk/templates", "-template$");
 	private final NodeItem<DirNode> appJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/application");
@@ -236,21 +235,6 @@ public class BRJS extends AbstractBRJSRootNode
 	public SdkJsLib sdkLib(String libName)
 	{
 		return sdkLibs.item(libName);
-	}
-	
-	public List<SdkJsLib> sdkNonBladeRunnerLibs()
-	{
-		List<SdkJsLib> typeCastLibs = new ArrayList<>();
-		for (SdkJsLib jsLib : sdkNonBladeRunnerLibs.list())
-		{
-			typeCastLibs.add(jsLib);
-		}
-		return typeCastLibs;
-	}
-	
-	public SdkJsLib sdkNonBladeRunnerLib(String libName)
-	{
-		return sdkNonBladeRunnerLibs.item(libName);
 	}
 	
 	public DirNode jsPatches()

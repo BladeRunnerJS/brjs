@@ -17,7 +17,7 @@ import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsException;
+import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsModelException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
 import org.bladerunnerjs.plugin.Event;
@@ -116,7 +116,7 @@ public abstract class AbstractNode implements Node
 		Logger logger = rootNode.logger(LoggerType.CORE, Node.class);
 		
 		try {
-			if(dirExists()) throw new DirectoryAlreadyExistsException(this);
+			if(dirExists()) throw new DirectoryAlreadyExistsModelException(this);
 			if(this instanceof NamedNode) ((NamedNode) this).assertValidName();
 			
 			try {

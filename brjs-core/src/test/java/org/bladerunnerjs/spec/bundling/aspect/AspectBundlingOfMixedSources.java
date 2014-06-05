@@ -31,8 +31,8 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		sdkNamespaceLib = brjs.sdkLib("sdkNamespaceLib");
 		otherSdkNamespaceLib = brjs.sdkLib("otherSdkNamespaceLib");
 		sdkNodeJsLib = brjs.sdkLib("sdkNodeJsLib");
-		sdkJquery = brjs.sdkNonBladeRunnerLib("jquery");
-		userJquery = app.jsLib("jquery");
+		sdkJquery = brjs.sdkLib("jquery");
+		userJquery = app.appJsLib("jquery");
 
 		given(sdkNamespaceLib).hasNamespacedJsPackageStyle()
 			.and(otherSdkNamespaceLib).hasNamespacedJsPackageStyle()
@@ -129,16 +129,4 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(response).doesNotContainText("SDK jquery-content");
 	}
 	
-	// Legacy thirdparty-library overriding an sdk thirdparty library
-	@Test
-	public void userLegacyAppThirdpartyLibraryIsLoadedInsteadOfSdkThirdpartyLibrary() throws Exception {
-		given(app).containsFileWithContents("thirdparty-libraries/jquery/thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: jquery")
-			.and(app).containsFileWithContents("thirdparty-libraries/jquery/jquery.js", "LEGACY thirdparty jquery-content")
-			.and(sdkJquery).containsFileWithContents("thirdparty-lib.manifest", "js: jquery.js" + "\n" + "exports: jquery")
-			.and(sdkJquery).containsFileWithContents("jquery.js", "SDK jquery-content")
-			.and(aspect).indexPageHasContent("require('jquery');");
-		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsText("LEGACY thirdparty jquery-content")
-			.and(response).doesNotContainText("SDK jquery-content");
-	}
 }

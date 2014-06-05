@@ -19,13 +19,9 @@ public class BRLibYamlConf extends AbstractYamlConfFile {
 	@NotNull
 	public String requirePrefix;
 	
-	@NotNull
-	public Boolean enforcedNamespaces;
-	
 	@Override
 	public void initialize() {
 		requirePrefix = getDefault(requirePrefix, "");
-		enforcedNamespaces = getDefault(enforcedNamespaces, true);
 	}
 	
 	@Override

@@ -30,11 +30,6 @@ public class AppPath extends AbstractPath
 		return new AspectPath(new File(path, aspectName + "-aspect"));
 	}
 	
-	public ThirdpartyLibsPath thirdpartyLibsPath()
-	{
-		return new ThirdpartyLibsPath(new File(path, "thirdparty-libraries"));
-	}
-	
 	public UserLibsPath userLibsPath()
 	{
 		return new UserLibsPath(new File(path, "libs"));

@@ -8,7 +8,7 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistException;
+import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.deps.DependencyGraphReportBuilder;
 
@@ -56,7 +56,7 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 		File bundlableDir = brjs.file("sdk/" + bundleDir);
 		String relativePath = brjs.file("sdk").toPath().relativize(bundlableDir.toPath()).toString().replace("\\", "/");
 		
-		if(!bundlableDir.exists()) throw new DirectoryDoesNotExistException(relativePath, this);
+		if(!bundlableDir.exists()) throw new DirectoryDoesNotExistCommandException(relativePath, this);
 		
 		
 		try {

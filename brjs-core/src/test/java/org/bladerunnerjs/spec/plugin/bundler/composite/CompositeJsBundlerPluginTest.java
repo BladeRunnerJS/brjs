@@ -29,8 +29,8 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			thirdpartyLib = app.jsLib("thirdparty-lib");
 			aspectAliasesFile = aspect.aliasesFile();
 			brLib = app.jsLib("br");
-			brbootstrap = brjs.sdkNonBladeRunnerLib("br-bootstrap");
-			appLib = app.nonBladeRunnerLib("appLib");
+			brbootstrap = brjs.sdkLib("br-bootstrap");
+			appLib = app.jsLib("appLib");
 	}
 	
 	@Test

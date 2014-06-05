@@ -24,7 +24,7 @@ public class NodeJsLibTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
-			sdkLib = brjs.sdkNonBladeRunnerLib("lib");
+			sdkLib = brjs.sdkLib("lib");
 	}
 	
 	@Test

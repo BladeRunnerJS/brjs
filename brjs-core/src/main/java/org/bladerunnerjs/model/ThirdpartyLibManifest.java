@@ -10,7 +10,7 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 {
-	private static final String LIBRARY_MANIFEST_FILENAME = "thirdparty-lib.manifest";
+	public static final String LIBRARY_MANIFEST_FILENAME = "thirdparty-lib.manifest";
 	
 	public static final String commaWithOptionalSpacesSeparator = "[\\s]*,[\\s]*";
 	

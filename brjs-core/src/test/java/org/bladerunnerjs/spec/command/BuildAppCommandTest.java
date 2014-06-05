@@ -7,7 +7,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistException;
+import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -50,7 +50,7 @@ public class BuildAppCommandTest extends SpecTest {
 	public void exceptionIsThrownIfAnInvalidTargetDirIsProvided() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("build-app", "app", "target");
-		then(exceptions).verifyException(DirectoryDoesNotExistException.class, "target")
+		then(exceptions).verifyException(DirectoryDoesNotExistCommandException.class, "target")
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	

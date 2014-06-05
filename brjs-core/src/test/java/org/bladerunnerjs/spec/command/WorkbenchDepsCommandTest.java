@@ -169,7 +169,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 				"    +--- 'bladeset-bladeset/blades/blade/workbench/index.html' (seed file)",
 				"    |    \\--- 'bladeset-bladeset/blades/blade/src/appns/bladeset/blade/Class1.js'",
 				"    |    |    \\--- 'alias!br.alias' (alias dep.)",
-				"    |    |    |    \\--- '../../libs/javascript/br-libs/br/src/br/Class2.js'" );
+				"    |    |    |    \\--- '../../libs/javascript/br/src/br/Class2.js'" );
 	}
 	
 	

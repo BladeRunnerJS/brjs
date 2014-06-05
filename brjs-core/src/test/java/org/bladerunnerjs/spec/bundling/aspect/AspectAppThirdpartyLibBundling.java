@@ -26,8 +26,8 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			
-			appThirdparty = app.nonBladeRunnerLib("app-thirdparty");
-			appThirdparty2 = app.nonBladeRunnerLib("app-thirdparty2");
+			appThirdparty = app.jsLib("app-thirdparty");
+			appThirdparty2 = app.jsLib("app-thirdparty2");
 	}
 	
 	@Test
