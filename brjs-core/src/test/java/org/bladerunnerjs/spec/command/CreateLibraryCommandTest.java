@@ -116,7 +116,7 @@ public class CreateLibraryCommandTest extends SpecTest {
 	@Test
 	public void thirdpartyLibrariesCanBeCreatedInTheAppEvenIfTheyAreAlreadyInTheSdk() throws Exception {
 		given(app).hasBeenCreated()
-			.and(brjs.sdkNonBladeRunnerLib("lib")).hasBeenCreated();
+			.and(brjs.sdkLib("lib")).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
 		then(app.appJsLib("lib")).dirExists();
 	}

@@ -31,7 +31,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		sdkNamespaceLib = brjs.sdkLib("sdkNamespaceLib");
 		otherSdkNamespaceLib = brjs.sdkLib("otherSdkNamespaceLib");
 		sdkNodeJsLib = brjs.sdkLib("sdkNodeJsLib");
-		sdkJquery = brjs.sdkNonBladeRunnerLib("jquery");
+		sdkJquery = brjs.sdkLib("jquery");
 		userJquery = app.appJsLib("jquery");
 
 		given(sdkNamespaceLib).hasNamespacedJsPackageStyle()

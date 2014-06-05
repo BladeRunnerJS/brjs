@@ -198,10 +198,6 @@ public class App extends AbstractBRJSNode implements NamedNode
 		{
 			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
 		}
-		for (SdkJsLib lib : root().sdkNonBladeRunnerLibs())
-		{
-			libs.put(lib.getName(), new AppSdkJsLib(this, lib) );			
-		}
 		for (JsLib lib : bladeRunnerLibs.list())
 		{
 			libs.put(lib.getName(), lib );			
@@ -214,15 +210,11 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		JsLib appLib = appJsLib(jsLibName);
 		SdkJsLib sdkLib = root().sdkLib(jsLibName);
-		SdkJsLib sdkNonBrLib = root().sdkNonBladeRunnerLib(jsLibName);
 		
 		if (!appLib.dirExists())
 		{
 			if (sdkLib.dirExists()) {
 				return new AppSdkJsLib(this, sdkLib);
-			}
-			if (sdkNonBrLib.dirExists()) {
-				return new AppSdkJsLib(this, sdkNonBrLib);
 			}
 		}
 		return appLib;

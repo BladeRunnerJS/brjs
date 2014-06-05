@@ -129,7 +129,7 @@ public class BRJSThirdpartyContentPluginTest extends SpecTest {
 	public void testLibraryResourceForLibraryPresentBothInAppAndSdkIsBundledFromApp() throws Exception
 	{
 		JsLib appLib = app.jsLib("lib1");
-		JsLib sdkLib = brjs.sdkNonBladeRunnerLib("lib1");
+		JsLib sdkLib = brjs.sdkLib("lib1");
 		
 		given(appLib).hasBeenCreated()
 			.and(appLib).containsFileWithContents("thirdparty-lib.manifest", "js: app-lib.js")

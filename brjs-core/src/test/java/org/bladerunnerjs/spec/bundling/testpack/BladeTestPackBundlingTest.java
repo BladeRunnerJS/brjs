@@ -31,8 +31,8 @@ public class BladeTestPackBundlingTest extends SpecTest
 			bladeUTs = blade.testType("unit").testTech("TEST_TECH");
 			bladeATs = blade.testType("acceptance").testTech("TEST_TECH");
 			
-			bootsrapThirdparty = brjs.sdkNonBladeRunnerLib("br-bootstrap");
-			browserModules = brjs.sdkNonBladeRunnerLib("browser-modules");
+			bootsrapThirdparty = brjs.sdkLib("br-bootstrap");
+			browserModules = brjs.sdkLib("browser-modules");
 			appThirdparty = app.jsLib("appThirdparty");
 			sdkJsLib = brjs.sdkLib("br");
 	}

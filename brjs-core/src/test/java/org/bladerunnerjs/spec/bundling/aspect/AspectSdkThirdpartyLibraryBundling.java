@@ -32,11 +32,11 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			aspect = app.aspect("default");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
-			thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdparty-lib1");
-			thirdpartyLib2 = brjs.sdkNonBladeRunnerLib("thirdparty-lib2");
-			bootstrapLib = brjs.sdkNonBladeRunnerLib("br-bootstrap");
-			secondBootstrapLib = brjs.sdkNonBladeRunnerLib("secondBootstrapLib");
-			thirdBootstrapLib = brjs.sdkNonBladeRunnerLib("thirdBootstrapLib");
+			thirdpartyLib = brjs.sdkLib("thirdparty-lib1");
+			thirdpartyLib2 = brjs.sdkLib("thirdparty-lib2");
+			bootstrapLib = brjs.sdkLib("br-bootstrap");
+			secondBootstrapLib = brjs.sdkLib("secondBootstrapLib");
+			thirdBootstrapLib = brjs.sdkLib("thirdBootstrapLib");
 	}
 	
 	// Bootstrap tests --
