@@ -136,6 +136,17 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/workbench/bs/b1/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName());
 	}
 	
+	@Test
+	public void webInfFolderDoesntHaveToBePresentToEnableBrjsFeatures() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "<@tagToken @/>")
+			.and(appServer).started();
+		when(app).fileDeleted("WEB-INF");
+		then(appServer).requestForUrlReturns("/app/v/123/mock-content-plugin/", MockContentPlugin.class.getCanonicalName())
+			.and(appServer).requestForUrlReturns("/app/en/", "dev replacement");
+	}
+	
 	@Test @Ignore
 	public void bladeRunnerJSDoesntBreakAuthentication() {
 		// TODO
