@@ -20,6 +20,11 @@ public class FilteredBundleSet implements BundleSet {
 	}
 	
 	@Override
+	public List<String> getThemes(){
+		return bundleSet.getThemes();
+	}
+	
+	@Override
 	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
 		return bundleSet.getResourceFiles(assetProducer);
 	}

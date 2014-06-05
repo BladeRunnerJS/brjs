@@ -19,8 +19,6 @@ public final class TestGreatGrandChildNode extends AbstractNode implements Named
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		
-		registerInitializedNode();
 	}
 	
 	@Override

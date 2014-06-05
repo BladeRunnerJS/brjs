@@ -26,8 +26,6 @@ public final class TestRootNode extends AbstractRootNode
 	public TestRootNode(File dir) throws InvalidSdkDirectoryException
 	{
 		this(dir, new MockLoggerFactory());
-		
-		registerInitializedNode();
 	}
 	
 	public TestRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
@@ -37,8 +35,6 @@ public final class TestRootNode extends AbstractRootNode
 		multiLocationChildNodes.addAlternateLocation("set-secondary-location", "^child-");
 		multiLocationChildNodes.addAdditionalNamedLocation("X", "set-single-item-location");
 		multiLocationItemNode.addLegacyLocation("single-item-secondary-location");
-		
-		registerInitializedNode();
 	}
 	
 	@Override
@@ -47,9 +43,13 @@ public final class TestRootNode extends AbstractRootNode
 			super.registerNode(node);
 		}
 		catch(NodeAlreadyRegisteredException e) {
+			if (node.dir().exists()) {
+				node.ready();
+			}
 			// do nothing -- the node engine test code was designed at a time when we didn't fail fast if you registered multiple nodes for the same directory path
 			// additionally, these tests are now of less importance now that the domain model is more thoroughly tested
 		}
+		
 	};
 	
 	@Override

@@ -21,22 +21,38 @@ public class StandardBundleSet implements BundleSet {
 		this.resourceLocations = resources;
 	}
 	
+	@Override
 	public BundlableNode getBundlableNode() {
 		return bundlableNode;
 	}
 	
+	@Override
+	public List<String> getThemes(){
+		List<String> result = new ArrayList<String>();
+		for(AssetLocation location: resourceLocations){
+			if(location instanceof ThemedAssetLocation){
+				result.add(((ThemedAssetLocation)location).getThemeName());
+			}
+		}
+		return result;
+	}
+	
+	@Override
 	public List<SourceModule> getSourceModules() {
 		return sourceModules;
 	}
 	
+	@Override
 	public List<AliasDefinition> getActiveAliases() {
 		return activeAliases;
 	}
 	
+	@Override
 	public List<AssetLocation> getResourceNodes() {
 		return resourceLocations;
 	}
 	
+	@Override
 	public List<Asset> getResourceFiles(AssetPlugin assetProducer) {
 		Set<Asset> resourceFiles = new LinkedHashSet<Asset>();
 		

@@ -23,8 +23,6 @@ public final class ThirdpartyAssetLocation extends TheAbstractAssetLocation {
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
 		}
-		
-		registerInitializedNode();
 	}
 	
 	protected List<File> getCandidateFiles() {

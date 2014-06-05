@@ -25,7 +25,6 @@ public class TypedTestPack extends SourceResources implements NamedNode
 		this.name = name;
 		
 		// TODO: we should never call registerInitializedNode() from a non-final class
-		registerInitializedNode();
 	}
 	
 	public static NodeList<TypedTestPack> createNodeSet(Node node)

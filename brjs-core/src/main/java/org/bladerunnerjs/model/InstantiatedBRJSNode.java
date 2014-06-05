@@ -12,9 +12,4 @@ public abstract class InstantiatedBRJSNode extends AbstractBRJSNode {
 		super(rootNode, parent, dir);
 	}
 	
-	@Override
-	protected void registerInitializedNode() {
-		rootNode.clearRegisteredNode(this);
-		super.registerInitializedNode();
-	}
 }

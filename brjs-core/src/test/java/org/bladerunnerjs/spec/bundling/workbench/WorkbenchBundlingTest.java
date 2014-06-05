@@ -6,7 +6,6 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.Theme;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -16,7 +15,6 @@ import org.junit.Test;
 public class WorkbenchBundlingTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private Theme standardAspectTheme, standardBladesetTheme, standardBladeTheme;
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;
@@ -34,17 +32,13 @@ public class WorkbenchBundlingTest extends SpecTest {
 
 		app = brjs.app("app1");
 		aspect = app.aspect("default");
-		standardAspectTheme = aspect.theme("standard");
 		bladeset = app.bladeset("bs");
-		standardBladesetTheme = bladeset.theme("standard");
 		blade = bladeset.blade("b1");
-		standardBladeTheme = blade.theme("standard");
 		workbench = blade.workbench();
 		workbenchTemplate = brjs.template("workbench");
 		brjsLib = brjs.sdkLib("br");
 		thirdpartyLib = brjs.sdkNonBladeRunnerLib("thirdparty-lib1");
 		appLib = app.jsLib("appLib");
-		
 		bootstrapLib = brjs.sdkNonBladeRunnerLib("br-bootstrap");
 		
 		response = new StringBuffer();
@@ -121,7 +115,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	// ----------------------------------- C S S  -------------------------------------
  	@Test
  	public void aspectCssFilesAreBundledInTheWorkbench() throws Exception {
-		given(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content")
+		given(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
 			.and(aspect).hasClass("appns/Class1")
     		.and(workbench).indexPageRefersTo("appns.Class1");
  		when(workbench).requestReceived("css/standard/bundle.css", response);
@@ -130,7 +124,7 @@ public class WorkbenchBundlingTest extends SpecTest {
 	
  	@Test
  	public void aspectCssFilesAreBundledInTheWorkbenchEvenIfAspectSrcIsntUsed() throws Exception {
- 		given(standardAspectTheme).containsFileWithContents("style.css", "ASPECT theme content")
+ 		given(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
         	.and(workbench).hasClass("appns/workbench/Class1")
         	.and(workbench).indexPageRefersTo("appns.workbench.Class1");
  		when(workbench).requestReceived("css/standard/bundle.css", response);
@@ -141,7 +135,7 @@ public class WorkbenchBundlingTest extends SpecTest {
  	public void bladesetCssFilesAreBundledWhenReferencedInTheWorkbench() throws Exception {
 		given(bladeset).hasNamespacedJsPackageStyle()
 			.and(bladeset).hasClass("appns.bs.Class1")
-			.and(standardBladesetTheme).containsFileWithContents("style.css", "BLADESET theme content")
+			.and(bladeset).containsFileWithContents("themes/standard/style.css", "BLADESET theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.Class1");
 		when(workbench).requestReceived("css/standard/bundle.css", response);
  		then(response).containsText("BLADESET theme content");
@@ -151,7 +145,7 @@ public class WorkbenchBundlingTest extends SpecTest {
  	public void bladeCssFilesAreBundledWhenReferencedInTheWorkbench() throws Exception {
 		given(blade).hasNamespacedJsPackageStyle()
 			.and(blade).hasClass("appns.bs.b1.Class1")
-			.and(standardBladeTheme).containsFileWithContents("style.css", "BLADE theme content")
+			.and(blade).containsFileWithContents("themes/standard/style.css", "BLADE theme content")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");
 		when(workbench).requestReceived("css/standard/bundle.css", response);
  		then(response).containsText("BLADE theme content");

@@ -11,7 +11,6 @@ public final class TestSourceAssetLocation extends AbstractSourceAssetLocation i
 	public TestSourceAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations)
 	{
 		super(rootNode, parent, dir, dependentAssetLocations);
-		registerInitializedNode();
 	}
 	
 	protected AssetLocation createNewAssetLocationForChildDir(File dir, AssetLocation parentAssetLocation)

@@ -327,11 +327,11 @@ public class CssContentPluginTest extends SpecTest {
 	public void referringToAParentImageCausesAParentCssResourceRequestToBeCreated() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../img.png');}");
+			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/img.png');}");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img.png\");}");
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/wibble/img.png\");}");
 	}
-	
+
 	@Test
 	public void weCanUseUTF8() throws Exception {
 		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
@@ -367,12 +367,10 @@ public class CssContentPluginTest extends SpecTest {
 	
 	@Test
 	public void themesFromAspectReferencedInCssTagsForWorbenchesAreIncludedInBundle() throws Exception {
-		given(aspect.theme("standard")).hasBeenCreated()
-			.and(aspect.theme("standard")).containsFileWithContents("file.css", "ASPECT CSS")
+		given(aspect).containsFileWithContents("themes/standard/file.css", "ASPECT CSS")
 			.and(workbench).hasBeenCreated();
 		when(workbench).requestReceived("css/standard/bundle.css", requestResponse);
 		then(requestResponse).containsText("ASPECT CSS");
-
 	}
 	
 	@Test

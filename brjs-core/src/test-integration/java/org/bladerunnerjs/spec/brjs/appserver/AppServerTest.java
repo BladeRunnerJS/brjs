@@ -206,4 +206,16 @@ public class AppServerTest extends SpecTest
 			.and(brjs.applicationServer(appServerPort)).started();
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
 	}
+	
+	@Test
+	public void newAppsAreHostedViaADifferentModelOnAppserverAfterServerRestart() throws Exception
+	{
+		given(brjs).hasBeenAuthenticallyCreated()
+			.and(brjs.applicationServer(appServerPort)).started();
+		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
+			.and(brjs.applicationServer(appServerPort)).stopped()
+			.and(brjs).hasBeenAuthenticallyCreated()
+			.and(brjs.applicationServer(appServerPort)).started();
+		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
+	}
 }

@@ -7,6 +7,7 @@ import org.bladerunnerjs.plugin.AssetPlugin;
 
 public interface BundleSet {
 	public BundlableNode getBundlableNode();
+	public List<String> getThemes();
 	public List<SourceModule> getSourceModules();
 	public List<AliasDefinition> getActiveAliases();
 	public List<AssetLocation> getResourceNodes();
