@@ -11,7 +11,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsException;
+import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.TemplateUtility;
@@ -40,7 +40,7 @@ public class TemplateUtilityTest
 		brjs.close();
 	}
 	
-	@Test(expected=DirectoryAlreadyExistsException.class)
+	@Test(expected=TemplateDirectoryAlreadyExistsException.class)
 	public void installingATemplateToAPreExistingDirectoryCausesAnException() throws Exception
 	{
 		TemplateUtility.installTemplate(brjs.app("pre-existing-app"), "app", new HashMap<String, String>());

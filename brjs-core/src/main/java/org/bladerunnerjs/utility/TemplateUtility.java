@@ -12,7 +12,7 @@ import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsException;
+import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 
 
@@ -31,7 +31,7 @@ public class TemplateUtility
 				List<File> dirContents = node.root().getFileInfo(node.dir()).filesAndDirs();
 				
 				if((dirContents.size() != 0) && !allowNonEmptyDirectories) {
-					throw new DirectoryAlreadyExistsException(node);
+					throw new TemplateDirectoryAlreadyExistsException(node);
 				}
 			}
 			

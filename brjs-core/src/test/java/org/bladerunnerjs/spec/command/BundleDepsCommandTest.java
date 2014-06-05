@@ -9,7 +9,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
-import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistException;
+import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BundleDepsCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -59,7 +59,7 @@ public class BundleDepsCommandTest extends SpecTest {
 	@Test
 	public void exceptionIsThrownIfTheDirectoryDoesntExist() throws Exception {
 		when(brjs).runCommand("bundle-deps", "../apps/app/default-aspect");
-		then(exceptions).verifyException(DirectoryDoesNotExistException.class, unquoted("/apps/app/default-aspect'"))
+		then(exceptions).verifyException(DirectoryDoesNotExistCommandException.class, unquoted("/apps/app/default-aspect'"))
 			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	

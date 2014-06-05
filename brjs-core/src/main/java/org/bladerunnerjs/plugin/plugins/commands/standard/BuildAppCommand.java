@@ -9,8 +9,8 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
-import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsException;
-import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistException;
+import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandException;
+import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 
@@ -82,8 +82,8 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		File appExportDir = new File(targetDir, appName);
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
-		if(!targetDir.isDirectory()) throw new DirectoryDoesNotExistException(targetDirPath, this);
-		if(appExportDir.isDirectory()) throw new DirectoryAlreadyExistsException(appExportDir.getPath(), this);
+		if(!targetDir.isDirectory()) throw new DirectoryDoesNotExistCommandException(targetDirPath, this);
+		if(appExportDir.isDirectory()) throw new DirectoryAlreadyExistsCommandException(appExportDir.getPath(), this);
 		
 		try {
 			app.build(targetDir, warExport);
