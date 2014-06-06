@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +27,7 @@ public class AssetContainerVerifier {
 	public void hasSourceModules(String... expectedSourceModules) throws Exception {
 		
 		Set<LinkedAsset> assets = assetContainer.linkedAssets();
-		Set<SourceModule> actualSourceModules = new HashSet<SourceModule>();
+		Set<SourceModule> actualSourceModules = new LinkedHashSet<SourceModule>();
 		for(LinkedAsset asset : assets){
 			if(asset instanceof SourceModule){
 				actualSourceModules.add((SourceModule)asset);
