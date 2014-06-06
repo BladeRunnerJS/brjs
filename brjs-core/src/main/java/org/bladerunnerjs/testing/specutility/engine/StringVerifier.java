@@ -167,6 +167,21 @@ public class StringVerifier {
 	}
 
 	public VerifierChainer containsOrderedTextFragments(String... textFragments) {
+		
+		containsOrderedTextFragmentsAnyNumberOfTimes(textFragments);
+		
+		for (String fragment : textFragments) {
+			if (StringUtils.countMatches(string, fragment) != 1) {
+				String failMessage = "Expected " + fragment + " to be present only once. "+
+						"If fragments can be present multiple times use 'containsOrderedTextFragmentsAnyNumberOfTimes' instaed";
+				assertEquals(failMessage, fragment, string);
+			}
+		}
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer containsOrderedTextFragmentsAnyNumberOfTimes(String... textFragments) {
 		if(textFragments.length == 0) {
 			throw new RuntimeException("containsOrderedTextFragments() invoked without arguments.");
 		}

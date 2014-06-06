@@ -92,7 +92,7 @@ public class ApplicationServerUtils
 			webappContext.setDescriptor(webXml.getAbsolutePath());
 		}
 		else {
-			webappContext.setDescriptor(ClassLoader.getSystemResource("org/bladerunnerjs/model/appserver/non-j2ee-app-web.xml").getFile());
+			webappContext.setDescriptor( ClassLoader.getSystemResource("org/bladerunnerjs/model/appserver/non-j2ee-app-web.xml").getFile() );
 		}
 		
 		webappContext.setResourceBase(app.dir().getPath());

@@ -108,5 +108,21 @@ public class CssTagHandlerPluginTest extends SpecTest {
 				"<link rel='stylesheet' title='standard' href='../v/dev/css/standard_en/bundle.css'/>");
 
 	}
+	
+	@Test
+	public void themesDefinedMultipleTimesOnlyHaveASingleReuqest() throws Exception {
+		given(aspect).containsFile("themes/standard/wibble.css")
+			.and(bladeset).containsFile("themes/standard/wibble.css")
+			.and(bladeset).hasClass("appns/bs/Class")
+			.and(blade).containsFile("themes/standard/wibble.css")
+			.and(blade).hasClass("appns/bs/b1/Class")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/> appns.bs.Class  appns.bs.b1.Class ");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsTextOnce("<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>")
+			.and(response).containsTextOnce("<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>")
+			.and(response).containsTextOnce("<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>");
+			
+			
+	}
 
 }

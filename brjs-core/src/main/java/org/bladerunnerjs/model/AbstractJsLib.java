@@ -130,12 +130,6 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	}
 	
 	@Override
-	public String toString()
-	{
-		return super.toString()+" - "+getName();
-	}
-	
-	@Override
 	public String getTemplateName()
 	{
 		return "jslib";

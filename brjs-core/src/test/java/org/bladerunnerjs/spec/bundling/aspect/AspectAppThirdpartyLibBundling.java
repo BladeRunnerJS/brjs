@@ -38,7 +38,7 @@ public class AspectAppThirdpartyLibBundling extends SpecTest {
 			.and(appThirdparty2).containsFile("src2.js")
 			.and(aspect).indexPageRequires(appThirdparty);
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsOrderedTextFragments("// app-thirdparty2", "// app-thirdparty");
+		then(response).containsOrderedTextFragments("// app-thirdparty2", "// app-thirdparty\n");
 	}
 
 	@Test

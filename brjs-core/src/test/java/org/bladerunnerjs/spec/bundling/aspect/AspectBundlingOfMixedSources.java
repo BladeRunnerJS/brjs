@@ -49,7 +49,7 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 			.and(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.ProxyClass", "sdkNamespaceLib.ProxyClass = sdkNodeJsLib.Class1;")
 			.and(aspect).indexPageHasContent("require('sdkNamespaceLib/ProxyClass')");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsOrderedTextFragments(
+		then(response).containsOrderedTextFragmentsAnyNumberOfTimes(
 				
 				// The sdkNodeJsLib is defined
 				"define('sdkNodeJsLib/Class1', function(require, exports, module) {",
