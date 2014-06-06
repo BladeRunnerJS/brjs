@@ -20,6 +20,7 @@ import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.BundleSetCreator.Messages;
+import org.bladerunnerjs.model.StandardBundleSet;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -85,7 +86,7 @@ public class BundleSetBuilder {
 		
 		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules, orderDependentSourceModuleDependencies).getOrderedSourceModules();
 		
-		return new BundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
+		return new StandardBundleSet(bundlableNode, orderedSourceModules, activeAliasList, resourceLocationList);
 	}
 
 	public void addSeedFiles(List<LinkedAsset> seedFiles) throws ModelOperationException {
@@ -106,8 +107,7 @@ public class BundleSetBuilder {
 		if(linkedAssets.add(linkedAsset)) {
 			List<SourceModule> moduleDependencies = new ArrayList<>(linkedAsset.getDependentSourceModules(bundlableNode));
 			
-			if (linkedAsset instanceof SourceModule)
-			{
+			if (linkedAsset instanceof SourceModule) {
 				moduleDependencies.addAll( ((SourceModule) linkedAsset).getOrderDependentSourceModules(bundlableNode) );
 			}
 			
@@ -118,6 +118,10 @@ public class BundleSetBuilder {
 			}
 			else {
 				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), sourceFilePaths(moduleDependencies));
+			}
+			
+			if (linkedAsset instanceof SourceModule) {
+				addSourceModule((SourceModule) linkedAsset);
 			}
 			
 			for(SourceModule sourceModule : moduleDependencies) {

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.SourceModule;
+import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
@@ -33,8 +34,10 @@ public class TestPackVerifier extends AssetContainerVerifier
 		List<SourceModule> sourceModules = testPack.getBundleSet().getSourceModules();
 		
 		for (SourceModule sourceModule : sourceModules)
-		{ 
-			bundleSetFiles.add( new File(sourceModule.dir(), sourceModule.getAssetName()) );
+		{
+			if(!(sourceModule.assetLocation() instanceof TestAssetLocation)) {
+				bundleSetFiles.add( new File(sourceModule.dir(), sourceModule.getAssetName()) );
+			}
 		}
 		
 		for (File expectedFile : expectedFiles)

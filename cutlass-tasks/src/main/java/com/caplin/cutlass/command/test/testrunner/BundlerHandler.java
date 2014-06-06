@@ -29,8 +29,8 @@ public class BundlerHandler
 		legacyBundlerHandlerPaths.put("css.bundle", "css/common/bundle.css");
 		legacyBundlerHandlerPaths.put("i18n.bundle", "i18n/en_GB.js");
 		legacyBundlerHandlerPaths.put("(.*)_i18n.bundle", "i18n/$1.js"); // .* is a bad regex for a locale but since this is simply for legacy support we can get away with it
-		legacyBundlerHandlerPaths.put("xml.bundle", "bundle.xml");
-		legacyBundlerHandlerPaths.put("html.bundle", "bundle.html");
+		legacyBundlerHandlerPaths.put("xml.bundle", "xml/bundle.xml");
+		legacyBundlerHandlerPaths.put("html.bundle", "html/bundle.html");
 		
 		// logical/utility paths
 		logicalBundlerHandlerPaths.put("bundle.js", "js/dev/combined/bundle.js");
@@ -95,8 +95,8 @@ public class BundlerHandler
 			throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundler file: " + bundleFile.getAbsolutePath());
 		}
 		
-		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream);
-	}	
+		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter());
+	}
 	
 	private static OutputStream createBundleOutputStream(File bundlerFile) throws IOException
 	{

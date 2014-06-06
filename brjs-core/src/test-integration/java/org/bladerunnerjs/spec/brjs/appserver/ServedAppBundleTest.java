@@ -76,7 +76,7 @@ public class ServedAppBundleTest extends SpecTest
 	
 	@Test
 	public void htmlContentTypeAndCharacterEncodingAreCorrectlySet() throws Exception {
-		String htmlBundleUrlPath = "/app/v/dev/bundle.html";
+		String htmlBundleUrlPath = "/app/v/dev/html/bundle.html";
 		
 		then(appServer).requestCanBeMadeFor(htmlBundleUrlPath)
 			.and(appServer).contentTypeForRequestIs(htmlBundleUrlPath, "text/html")

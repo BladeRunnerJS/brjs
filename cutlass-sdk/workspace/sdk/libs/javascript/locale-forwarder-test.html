@@ -48,6 +48,14 @@
 					user:['de_DE', 'de'],
 					app:['en', 'de']})).toBe("de");
 			});
+			
+			it("appends the locale to the end end of simple page urls", function() {
+				expect(getLocalizedPageUrl("http://acme.com/app/", "en_GB")).toBe("http://acme.com/app/en_GB/");
+			});
+			
+			it("prepends the locale before any internal page anchor", function() {
+				expect(getLocalizedPageUrl("http://acme.com/app/#anchor", "en_GB")).toBe("http://acme.com/app/en_GB/#anchor");
+			});
 		});
 	</script>
 	<script type="text/javascript">

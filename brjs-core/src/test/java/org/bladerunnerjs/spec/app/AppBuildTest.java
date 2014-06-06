@@ -22,6 +22,7 @@ public class AppBuildTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsBundlers()
+			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			sdkLibsDir = brjs.sdkLibsDir();
@@ -88,9 +89,10 @@ public class AppBuildTest extends SpecTest {
 	@Test
 	public void aSingleSetOfBundlesAreCreated() throws Exception {
 		given(defaultAspect).containsFile("index.html")
+			.and(defaultAspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir, versionNumber);
-		then(targetDir).containsFile("app1/v/" + versionNumber + "/bundle.html")
+		then(targetDir).containsFile("app1/v/" + versionNumber + "/html/bundle.html")
 			.and(targetDir).containsFile("app1/v/" + versionNumber + "/i18n/en.js");
 	}
 	
@@ -103,5 +105,13 @@ public class AppBuildTest extends SpecTest {
 		then(targetDir).containsDir("app1/WEB-INF/lib");
 	}
 	
-	// TODO: add tests that show we only emit bundles for content-plugins which don't depend on a tag, or otherwise if the tag has been used in any of the aspect index pages
+	@Test
+	public void bundlesAvailableAsPartOfACompositeArentSerialized() throws Exception {
+		given(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(defaultAspect).indexPageRequires("appns/Class")
+			.and(defaultAspect).hasClass("appns/Class")
+			.and(app).hasBeenBuilt(targetDir, versionNumber);
+		then(targetDir).containsFile("app1/v/" + versionNumber + "/js/prod/combined/bundle.js")
+			.and(targetDir).doesNotContainFile("app1/v/" + versionNumber + "/node-js/bundle.js");
+	}
 }

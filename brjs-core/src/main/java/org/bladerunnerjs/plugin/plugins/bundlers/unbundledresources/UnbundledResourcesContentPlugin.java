@@ -51,9 +51,9 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getGroupName()
+	public String getCompositeGroupName()
 	{
-		return "";
+		return null;
 	}
 	
 	@Override

@@ -127,7 +127,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 		given(workbench).indexPageRequires("appns/bladeset/blade/Class1")
 			.and(blade).hasClasses("appns/bladeset/blade/Class1", "appns/bladeset/blade/Class2")
 			.and(blade).classRequires("appns/bladeset/blade/Class1", "./Class2")
-			.and(workbench).containsFileWithContents("resources/config.xml", "'appns/bladeset/blade/Class1'"); // TODO: if we make this an aspect resource it doesn't work suggesting a bug -- make me feel even more strongly there should be a method which provides all asset locations, including transitive deps.
+			.and(workbench).containsResourceFileWithContents("config.xml", "'appns/bladeset/blade/Class1'"); // TODO: if we make this an aspect resource it doesn't work suggesting a bug -- make me feel even more strongly there should be a method which provides all asset locations, including transitive deps.
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade");
 		then(output).containsText(
 			"Workbench dependencies found:",
@@ -144,7 +144,7 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 		given(workbench).indexPageRequires("appns/bladeset/blade/Class1")
 			.and(blade).hasClasses("appns/bladeset/blade/Class1", "appns/bladeset/blade/Class2")
 			.and(blade).classRequires("appns/bladeset/blade/Class1", "./Class2")
-			.and(workbench).containsFileWithContents("resources/config.xml", "'appns/bladeset/blade/Class1'");
+			.and(workbench).containsResourceFileWithContents("config.xml", "'appns/bladeset/blade/Class1'");
 		when(brjs).runCommand("workbench-deps", "app", "bladeset", "blade", "--all");
 		then(output).containsText(
 			"Workbench dependencies found:",

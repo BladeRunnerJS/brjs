@@ -15,7 +15,6 @@ import org.bladerunnerjs.model.ChildTestSourceAssetLocation;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.ResourcesAssetLocation;
 import org.bladerunnerjs.model.SourceAssetLocation;
-import org.bladerunnerjs.model.TestSourceAssetLocation;
 import org.bladerunnerjs.plugin.base.AbstractAssetLocationPlugin;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -100,7 +99,7 @@ public class BRJSConformantAssetLocationPlugin extends AbstractAssetLocationPlug
 				break;
 			
 			case "src-test":
-				assetLocation = new TestSourceAssetLocation(assetContainer.root(), assetContainer, dir);
+				assetLocation = new SourceAssetLocation(assetContainer.root(), assetContainer, dir);
 				break;
 			
 			default:

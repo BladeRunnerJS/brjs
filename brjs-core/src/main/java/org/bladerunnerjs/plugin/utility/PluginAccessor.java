@@ -61,7 +61,7 @@ public class PluginAccessor {
 	
 	public ContentPlugin contentProviderForLogicalPath(String logicalRequestpath)
 	{
-		String requestPrefix = (logicalRequestpath.indexOf('/') == -1) ? logicalRequestpath : logicalRequestpath.substring(0, logicalRequestpath.indexOf('/'));
+		String requestPrefix = logicalRequestpath.substring(0, logicalRequestpath.indexOf('/'));
 		
 		return contentProvider(requestPrefix);
 	}
@@ -87,7 +87,7 @@ public class PluginAccessor {
 		List<ContentPlugin> contentProviders = new LinkedList<>();
 		
 		for (ContentPlugin contentPlugin : contentProviders()) {
-			if (groupName.equals(contentPlugin.getGroupName())) {
+			if (groupName.equals(contentPlugin.getCompositeGroupName())) {
 				contentProviders.add(contentPlugin);
 			}
 		}

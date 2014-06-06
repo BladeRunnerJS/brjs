@@ -56,7 +56,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public String getGroupName() {
+	public String getCompositeGroupName() {
 		return "text/javascript";
 	}
 	

@@ -80,7 +80,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class2")
 			.and(aspect).indexPageHasAliasReferences("br.alias");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsText("br.Class2");
+		then(response).containsText("br/Class2");
 	}
 	
 	// TODO: refactor/remove these tests once we have a more thought-through support for alias and service dependency analysis
@@ -93,7 +93,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspect).classFileHasContent("Class1", "aliasRegistry.getAlias('br.alias')")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsText("br.Class2");
+		then(response).containsText("br/Class2");
 	}
 	
 	@Test
@@ -104,7 +104,7 @@ public class AliasBundlingTest extends SpecTest {
 			.and(aspect).classFileHasContent("Class1", "serviceRegistry.getService('br.service')")
 			.and(aspect).indexPageRefersTo("appns.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsText("br.Class2");
+		then(response).containsText("br/Class2");
 	}
 	
 	@Test // test exception isnt thrown for services - services can be defined and configure at run time, which differs from aliases

@@ -39,6 +39,7 @@ public class AppServerTest extends SpecTest
 		given(brjs).hasModelObservers(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
+			.and(brjs.sdkLibsDir()).containsFile("locale-forwarder.js")
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
 			appServer = brjs.applicationServer(appServerPort);
@@ -213,7 +214,7 @@ public class AppServerTest extends SpecTest
 			.and(brjs.applicationServer(appServerPort)).started();
 		when(secondBrjsProcess).runCommand("create-app", "app1", "blah")
 			.and(brjs.applicationServer(appServerPort)).stopped()
-			.and(brjs).hasBeenAuthenticallyCreated()
+			.and(brjs).hasBeenAuthenticallyReCreated()
 			.and(brjs.applicationServer(appServerPort)).started();
 		then(appServer).requestCanEventuallyBeMadeFor("/app1/");
 	}

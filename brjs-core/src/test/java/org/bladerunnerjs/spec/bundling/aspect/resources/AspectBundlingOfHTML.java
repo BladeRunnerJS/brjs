@@ -65,11 +65,11 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void aspectCanBundleSdkLibHTMLResources() throws Exception {
 		given(sdkLib).hasBeenCreated()
 			.and(sdkLib).hasNamespacedJsPackageStyle()
-			.and(sdkLib).containsFileWithContents("resources/html/workbench.html", "<div id='br.workbench-view'></div>")
+			.and(sdkLib).containsResourceFileWithContents("html/workbench.html", "<div id='br.workbench-view'></div>")
 			.and(sdkLib).hasClass("br.workbench.ui.Workbench")
-			.and(aspect).containsFileWithContents("resources/aspect.html", "<div id='appns.aspect-view'></div>")
+			.and(aspect).containsResourceFileWithContents("aspect.html", "<div id='appns.aspect-view'></div>")
 			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
-		when(aspect).requestReceived("bundle.html", response);
+		when(aspect).requestReceived("html/bundle.html", response);
 		then(response).containsOrderedTextFragments(
 				"<!-- aspect.html -->",
 				"<div id='appns.aspect-view'></div>",
@@ -83,11 +83,11 @@ public class AspectBundlingOfHTML extends SpecTest {
 	public void aspectCanBundleUserLibHTMLRresources() throws Exception {
 		given(userLib).hasBeenCreated()
 			.and(userLib).hasNamespacedJsPackageStyle()
-			.and(userLib).containsFileWithContents("resources/html/userLib.html", "<div id='userLib.my-view'></div>")
+			.and(userLib).containsResourceFileWithContents("html/userLib.html", "<div id='userLib.my-view'></div>")
 			.and(userLib).hasClass("userLib.Class1")
-			.and(aspect).containsFileWithContents("resources/aspect.html", "<div id='appns.aspect-view'></div>")
+			.and(aspect).containsResourceFileWithContents("aspect.html", "<div id='appns.aspect-view'></div>")
 			.and(aspect).indexPageRefersTo("userLib.Class1");
-		when(aspect).requestReceived("bundle.html", response);
+		when(aspect).requestReceived("html/bundle.html", response);
 		then(response).containsOrderedTextFragments(
 				"<!-- userLib.html -->",
 				"<div id='userLib.my-view'></div>",
@@ -97,16 +97,16 @@ public class AspectBundlingOfHTML extends SpecTest {
 	
 	@Test
 	public void bladesetResourcesAreLoadedEvenIfTheBladesetHasNoSource() throws Exception {
-		given(bladeset).containsFileWithContents("resources/file.xml", "<some-xml/>")
+		given(bladeset).containsResourceFileWithContents("file.xml", "<some-xml/>")
 			.and(blade).hasClass("appns/bs/b1/Class1")
     		.and(aspect).indexPageRequires("appns/bs/b1/Class1");
-    	when(aspect).requestReceived("bundle.xml", response);
+    	when(aspect).requestReceived("xml/bundle.xml", response);
     	then(response).containsText("<some-xml/>");
 	}
 	
 	@Test @Ignore
 	public void bladeResourcesAreLoadedEvenIfTheBladesetHasNoSource() throws Exception {
-		given(blade).containsFileWithContents("resources/file.xml", "<some-xml/>");
+		given(blade).containsResourceFileWithContents("file.xml", "<some-xml/>");
     	when(app).requestReceived("/default-aspect/bundle.xml", response);
     	then(response).containsText("<some-xml/>");
 	}

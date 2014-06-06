@@ -3,10 +3,8 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
@@ -46,7 +44,7 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		List<LinkedAsset> seedFiles = new ArrayList<>();
 		
 		for(AssetLocation assetLocation : assetLocations()) {
-			if(isTestAssetLocation(assetLocation)) {
+			if(assetLocation instanceof TestAssetLocation) {
 				seedFiles.addAll(assetLocation.sourceModules());
 			}
 		}
@@ -72,22 +70,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 		assetContainers.add(this);
 		
 		return assetContainers;
-	}
-	
-	@Override
-	public Set<SourceModule> sourceModules() {
-		Set<SourceModule> sourceModules = new LinkedHashSet<SourceModule>();
-		
-		for (AssetLocation assetLocation : assetLocations())
-		{
-			// TODO: we need an abstract way of determining which source modules are tests source modules that isn't plug-in specific
-			if ( !isTestAssetLocation(assetLocation) )
-			{
-				sourceModules.addAll(assetLocation.sourceModules());
-			}
-		}
-		
-		return sourceModules;
 	}
 	
 	@Override
@@ -140,11 +122,6 @@ public class TestPack extends AbstractBundlableNode implements NamedNode
 	public AssetLocation tests()
 	{
 		return assetLocation("tests");
-	}
-	
-	private boolean isTestAssetLocation(AssetLocation assetLocation)
-	{
-		return assetLocation instanceof TestSourceAssetLocation || assetLocation instanceof ChildTestSourceAssetLocation;
 	}
 	
 }

@@ -37,6 +37,15 @@ public class TestPackBundlingTest extends SpecTest
 	}
 	
 	@Test
+	public void srcTestCanLiveAtTechnologyLevel() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasTestClass("appns.Class1")
+			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1");
+		then(aspectUTs).bundledFilesEquals(
+				aspect.assetLocation("src-test").file("appns/Class1.js"));
+	}
+	
+	@Test
 	public void srcTestCanLiveAtTestsAndTechnologyLevel() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspectUTs).hasClass("aspectUT.Class1")

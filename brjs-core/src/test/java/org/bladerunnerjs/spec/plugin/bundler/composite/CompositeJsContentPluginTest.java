@@ -8,7 +8,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CompositeJsBundlerPluginTest extends SpecTest {
+public class CompositeJsContentPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
@@ -31,6 +31,26 @@ public class CompositeJsBundlerPluginTest extends SpecTest {
 			brLib = app.jsLib("br");
 			brbootstrap = brjs.sdkLib("br-bootstrap");
 			appLib = app.jsLib("appLib");
+	}
+	
+	@Test
+	public void ifThereAreNoJsFilesThenNoRequestsWillBeGenerated() throws Exception {
+		given(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("js");
+	}
+	
+	@Test
+	public void ifThereAreJsFilesThenRequestsWillBeGeneratedInDev() throws Exception {
+		given(aspect).indexPageRequires("appns/Class")
+			.and(aspect).hasClass("appns/Class");
+		then(aspect).devRequestsForContentPluginsAre("js", "js/dev/combined/bundle.js", "js/dev/closure-whitespace/bundle.js", "js/dev/closure-simple/bundle.js", "js/dev/closure-advanced/bundle.js");
+	}
+	
+	@Test
+	public void ifThereAreJsFilesThenRequestsWillBeGeneratedInProd() throws Exception {
+		given(aspect).indexPageRequires("appns/Class")
+			.and(aspect).hasClass("appns/Class");
+		then(aspect).prodRequestsForContentPluginsAre("js", "js/prod/combined/bundle.js", "js/prod/closure-whitespace/bundle.js", "js/prod/closure-simple/bundle.js", "js/prod/closure-advanced/bundle.js");
 	}
 	
 	@Test

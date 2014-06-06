@@ -1,6 +1,9 @@
 package org.bladerunnerjs.spec.plugin.bundler.css;
 
+import java.io.File;
+
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
@@ -11,9 +14,12 @@ import org.junit.Test;
 
 public class CssTagHandlerPluginTest extends SpecTest {
 	private App app;
+	private AppConf appConf;
 	private Aspect aspect;
 	private StringBuffer response = new StringBuffer();
 	private Aspect loginAspect;
+	private File commonTheme;
+	private File standardTheme;
 	private Bladeset bladeset;
 	private Blade blade;
 	private Workbench workbench;
@@ -22,7 +28,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsBundlers().and(brjs).automaticallyFindsMinifiers().and(brjs).hasBeenCreated();
 		app = brjs.app("app1");
+		appConf = app.appConf();
 		aspect = app.aspect("default");
+		commonTheme = aspect.file("themes/common");
+		standardTheme = aspect.file("themes/standard");
 		blade = app.bladeset("bs").blade("b1");
 		loginAspect = app.aspect("login");
 		bladeset = app.bladeset("bs");
@@ -32,7 +41,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void languageBasedTokenTagIsConvertedToSeriesOfStylesheetIncludes() throws Exception {
-		given(aspect).indexPageHasContent("<@css.bundle@/>");
+		given(aspect).indexPageHasContent("<@css.bundle@/>")
+			.and(aspect).containsResourceFiles("style.css", "style_en.css", "style_en_GB.css")
+			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
 			"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
@@ -41,7 +52,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void localeBasedTokenTagIsConvertedToSeriesOfStylesheetIncludes() throws Exception {
-		given(aspect).indexPageHasContent("<@css.bundle@/>");
+		given(aspect).indexPageHasContent("<@css.bundle@/>")
+			.and(aspect).containsResourceFiles("style.css", "style_en.css", "style_en_GB.css")
+			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
 			"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
@@ -55,6 +68,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(loginAspect).containsFile("themes/aspect1/wibble.css")
 			.and(loginAspect).containsFile("themes/aspect2/wibble.css")
 			.and(loginAspect).indexPageHasContent("<@css.bundle@/>\n" + "appns.bs.b1.Class1()")
+			.and(loginAspect).containsResourceFiles("style.css", "style_en.css", "style_en_GB.css")
+			.and(appConf).supportsLocales("en", "en_GB")
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(blade).containsFile("themes/aspect/wibble.css");
 		when(loginAspect).indexPageLoadedInDev(response, "en_GB");
@@ -68,23 +83,29 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	@Test
 	public void themesReferencedInCssTagsAreIncludedInGeneratedTags() throws Exception {
 		given(aspect).containsFile("themes/standard/wibble.css")
-			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/>");
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/>")
+			.and(commonTheme).containsFiles("style.css", "style_en.css")
+			.and(standardTheme).containsFiles("style.css", "style_en.css");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
 			"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
 			"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
-			"<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>");
+			"<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>",
+			"<link rel='stylesheet' title='standard' href='../v/dev/css/standard_en/bundle.css'/>");
 	}
 	
 	@Test
 	public void bladeThemesAreUsedInAWorkbenchEvenIfTheAspectDoesNotHaveThatTheme() throws Exception {
 		given(aspect).containsFile("themes/standard/wibble.css")
-			.and(workbench).indexPageHasContent("<@css.bundle theme=\"standard\"@/>\n");
+			.and(workbench).indexPageHasContent("<@css.bundle theme=\"standard\"@/>\n")
+			.and(commonTheme).containsFiles("style.css", "style_en.css")
+			.and(standardTheme).containsFiles("style.css", "style_en.css");
 		when(workbench).pageLoaded(response, "en");
 		then(response).containsOrderedTextFragments(
 				"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
 				"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
-				"<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>");
+				"<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>",
+				"<link rel='stylesheet' title='standard' href='../v/dev/css/standard_en/bundle.css'/>");
 
 	}
 	
@@ -97,11 +118,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/> appns.bs.Class  appns.bs.b1.Class ");
 		when(aspect).indexPageLoadedInDev(response, "en");
-		then(response).containsTextOnce("<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>")
-			.and(response).containsTextOnce("<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>")
-			.and(response).containsTextOnce("<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>");
-			
-			
+		then(response).containsTextOnce("<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>");		
 	}
 
 }

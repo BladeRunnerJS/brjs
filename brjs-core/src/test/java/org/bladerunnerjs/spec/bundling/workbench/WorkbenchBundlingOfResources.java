@@ -73,7 +73,7 @@ public class WorkbenchBundlingOfResources extends SpecTest {
 	public void assetsFromAnotherBladeArentLoadedIfTheAspectResourcesDependsOnThem() throws Exception
 	{
 		given(aspect).hasNamespacedJsPackageStyle()
-			.and(aspect).containsFileWithContents("resources/someFile.xml", "appns.bs.b2.Class1")
+			.and(aspect).containsResourceFileWithContents("someFile.xml", "appns.bs.b2.Class1")
 			.and(blade2).hasClass("appns/bs/b2/Class1")
 			.and(blade).hasClass("appns/bs/b1/Class1")
 			.and(workbench).indexPageRefersTo("appns.bs.b1.Class1");	

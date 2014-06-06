@@ -49,7 +49,7 @@ public class MockContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getGroupName() {
+	public String getCompositeGroupName() {
 		return "some/mime";
 	}
 	

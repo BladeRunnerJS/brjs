@@ -16,7 +16,7 @@ br.Core.inherit(brjs.dashboard.app.service.url.PageUrlProvider, brjs.dashboard.a
 
 brjs.dashboard.app.service.url.PageUrlProvider.prototype.getRootUrl = function()
 {
-	return window.location.href.replace(/dashboard\/#apps.*$/, "");
+	return window.location.href.replace(/dashboard\/[a-z]{2}(_[A-Z]{2})?\/#apps.*$/, "");
 };
 
 brjs.dashboard.app.service.url.PageUrlProvider.prototype.getPageUrl = function()

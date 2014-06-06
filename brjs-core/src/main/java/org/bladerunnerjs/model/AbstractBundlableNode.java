@@ -26,11 +26,10 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
-import org.bladerunnerjs.utility.BundlableNodeRequestHandler;
+import org.bladerunnerjs.utility.BundleSetRequestHandler;
 
 public abstract class AbstractBundlableNode extends AbstractAssetContainer implements BundlableNode {
 	private AliasesFile aliasesFile;
-	private BundlableNodeRequestHandler requestHandler;
 	private final MemoizedValue<BundleSet> bundleSet = new MemoizedValue<>("BundlableNode.bundleSet", root(), root().dir());
 	private final MemoizedValue<List<AliasDefinitionsFile>> aliasDefinitionFilesList = new MemoizedValue<>("BundlableNode.aliasDefinitionFilesList", root(), root().dir());
 	
@@ -164,11 +163,22 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	
 	@Override
 	public void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		if (requestHandler == null)
-		{
-			requestHandler = new BundlableNodeRequestHandler(this);
+		try {
+			BundleSetRequestHandler.handle(this.getBundleSet(), logicalRequestPath, os);
 		}
-		requestHandler.handle( logicalRequestPath, os);
+		catch (ModelOperationException e) {
+			throw new ContentProcessingException(e);
+		}
+	}
+	
+	@Override
+	public void handleLogicalRequest(String logicalRequestPath, OutputStream os, BundleSetFilter bundleSetFilter) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		try {
+			BundleSetRequestHandler.handle(new FilteredBundleSet(this.getBundleSet(), bundleSetFilter), logicalRequestPath, os);
+		}
+		catch (ModelOperationException e) {
+			throw new ContentProcessingException(e);
+		}
 	}
 	
 	@Override

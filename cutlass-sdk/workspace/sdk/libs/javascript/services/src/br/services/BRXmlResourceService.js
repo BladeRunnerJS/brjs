@@ -18,7 +18,7 @@ var i18n = require('br/I18n');
  */
 function BRXmlResourceService(sUrl) {
 	/** @private */
-	this.url = sUrl || "../v/" + new Date().getTime() + "/bundle.xml";
+	this.url = sUrl || "../v/" + new Date().getTime() + "/xml/bundle.xml";
 
 	/** @private */
 	this.element = XmlParser.parse("<div></div>");

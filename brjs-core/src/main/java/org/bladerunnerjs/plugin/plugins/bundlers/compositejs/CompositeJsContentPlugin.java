@@ -48,7 +48,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 
 	@Override
-	public String getGroupName() {
+	public String getCompositeGroupName() {
 		return null;
 	}
 	
@@ -59,12 +59,12 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
-		return generateRequiredRequestPaths("dev-bundle-request", locales);
+		return generateRequiredRequestPaths(bundleSet, "dev-bundle-request", locales);
 	}
 	
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
-		return generateRequiredRequestPaths("prod-bundle-request", locales);
+		return generateRequiredRequestPaths(bundleSet, "prod-bundle-request", locales);
 	}
 	
 	@Override
@@ -89,19 +89,21 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private List<String> generateRequiredRequestPaths(String requestFormName, String[] locales) throws ContentProcessingException {
+	private List<String> generateRequiredRequestPaths(BundleSet bundleSet, String requestFormName, String[] locales) throws ContentProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
-		// TODO: we need to be able to determine which minifier is actually in use so we don't need to create lots of redundant bundles
-		try {
-			for(MinifierPlugin minifier : brjs.plugins().minifiers()) {
-				for(String minifierSettingName : minifier.getSettingNames()) {
-					requestPaths.add(contentPathParser.createRequest(requestFormName, minifierSettingName));
+		if(bundleSet.getSourceModules().size() > 0) {
+			// TODO: we need to be able to determine which minifier is actually in use so we don't need to create lots of redundant bundles
+			try {
+				for(MinifierPlugin minifier : brjs.plugins().minifiers()) {
+					for(String minifierSettingName : minifier.getSettingNames()) {
+						requestPaths.add(contentPathParser.createRequest(requestFormName, minifierSettingName));
+					}
 				}
 			}
-		}
-		catch(MalformedTokenException e) {
-			throw new ContentProcessingException(e);
+			catch(MalformedTokenException e) {
+				throw new ContentProcessingException(e);
+			}
 		}
 		
 		return requestPaths;

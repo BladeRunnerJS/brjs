@@ -228,6 +228,14 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		
 		return builderChainer;
 	}
+	
+	public BuilderChainer hasBeenAuthenticallyReCreated() throws Exception
+	{
+		if (brjs != null) {
+			brjs.close();
+		}
+		return hasBeenAuthenticallyCreated();
+	}
 
 	public BuilderChainer usedForServletModel()
 	{

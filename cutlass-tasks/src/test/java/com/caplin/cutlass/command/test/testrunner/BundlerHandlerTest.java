@@ -58,9 +58,9 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
 			.and(aspect).containsFileWithContents("resources/file.xml", "<some xml>")
     		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/bundle.xml" );
+    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/xml/bundle.xml" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/bundle.xml",
+    				"bundles/xml/bundle.xml",
     				"<some xml>" );
 	}
 	
@@ -70,9 +70,9 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
 			.and(aspect).containsFileWithContents("resources/file.html", "<div id='appns.view'>TESTCONTENT</div>")
     		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/bundle.html" );
+    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/html/bundle.html" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/bundle.html",
+    				"bundles/html/bundle.html",
     				"<div id='appns.view'>TESTCONTENT</div>" );
 	}
 
