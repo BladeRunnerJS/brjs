@@ -152,7 +152,7 @@ public class ThirdpartySourceModule implements SourceModule
 				{
 					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
 				}
-				dependentLibs.addAll(dependentLib.sourceModules());
+				dependentLibs.addAll(dependentLib.linkedAssets());
 			}
 		}
 		catch (ConfigException ex)

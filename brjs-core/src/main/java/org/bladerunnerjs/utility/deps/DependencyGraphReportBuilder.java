@@ -55,7 +55,7 @@ public class DependencyGraphReportBuilder {
 		try {
 			fixIncompleteAliases(browsableNode);
 			
-			SourceModule sourceModule = browsableNode.getSourceModule(requirePath);
+			SourceModule sourceModule =  (SourceModule)browsableNode.getLinkedAsset(requirePath);
 			List<LinkedAsset> linkedAssets = new ArrayList<>();
 			linkedAssets.add(sourceModule);
 			
@@ -89,7 +89,7 @@ public class DependencyGraphReportBuilder {
 			fixIncompleteAliases(browsableNode);
 			
 			AliasDefinition alias = browsableNode.getAlias(aliasName);
-			SourceModule sourceModule = browsableNode.getSourceModule(alias.getRequirePath());
+			SourceModule sourceModule =  (SourceModule)browsableNode.getLinkedAsset(alias.getRequirePath());
 			linkedAssets.add(sourceModule);
 			
 			return "Alias '" + aliasName + "' dependencies found:\n" +

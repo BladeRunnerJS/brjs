@@ -77,8 +77,10 @@ public class DependencyInfoFactory {
 				addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
 			}
 			
-			for(SourceModule sourceModule : assetContainer.sourceModules()) {
-				addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, sourceModule);
+			for(LinkedAsset asset : assetContainer.linkedAssets()) {
+				if(asset instanceof SourceModule){
+					addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, (SourceModule)asset);
+				}
 			}
 		}
 		
@@ -186,7 +188,7 @@ public class DependencyInfoFactory {
 	private static void addOutboundAliasDependency(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, AliasDefinition alias) throws RequirePathException {
 		AliasAsset aliasAsset = new AliasAsset(alias);
 		dependencies.aliasAssets.put(alias.getName(), aliasAsset);
-		dependencyAdder.add(dependencies, aliasAsset, bundlableNode.getSourceModule(alias.getRequirePath()));
+		dependencyAdder.add(dependencies, aliasAsset, bundlableNode.getLinkedAsset(alias.getRequirePath()));
 	}
 	
 	private static void addInboundAliasDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {

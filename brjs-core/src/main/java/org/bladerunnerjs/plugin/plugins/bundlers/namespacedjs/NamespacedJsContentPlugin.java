@@ -136,7 +136,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			{
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
+					SourceModule jsModule =  (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 					IOUtils.copy(jsModule.getReader(), writer);
 				}
 			}

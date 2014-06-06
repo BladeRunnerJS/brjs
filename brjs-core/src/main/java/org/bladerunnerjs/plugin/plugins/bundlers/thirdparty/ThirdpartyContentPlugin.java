@@ -108,7 +108,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 			else if(contentPath.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) 
 				{
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
+					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 					writer.write("// " + jsModule.getRequirePath() + "\n");
 					IOUtils.copy(jsModule.getReader(), writer);
 					writer.write("\n\n");

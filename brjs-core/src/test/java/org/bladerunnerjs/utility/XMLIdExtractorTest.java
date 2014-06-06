@@ -62,4 +62,13 @@ public class XMLIdExtractorTest
 		return xmlIds;
 	}
 	
+	@Test
+	public void testNoSpaceBeforeId()
+	{
+		String input = "<xxx gridid='testSingleQuotedID'></xxx>";
+		List<String> actual = getResults(input);
+		List<String> expected = Arrays.asList();
+		assertEquals(actual, expected);
+	}
+	
 }

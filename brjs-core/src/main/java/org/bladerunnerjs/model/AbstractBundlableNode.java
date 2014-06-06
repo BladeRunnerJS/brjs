@@ -84,29 +84,34 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public SourceModule getSourceModule(String requirePath) throws RequirePathException {
-		SourceModule sourceModule = null;
-		
-		for(AssetContainer assetContainer : scopeAssetContainers()) {
-			SourceModule locationSourceModule = assetContainer.sourceModule(requirePath);
-			
-			if(locationSourceModule != null) {
-				if(sourceModule == null) {
-					sourceModule = locationSourceModule;
-				}
-				else {
-					throw new AmbiguousRequirePathException("'" + sourceModule.getAssetPath() + "' and '" +
-						locationSourceModule.getAssetPath() + "' source files both available via require path '" +
-						sourceModule.getRequirePath() + "'.");
-				}
-			}
+	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
+		LinkedAsset asset = null;
+		if(requirePath.endsWith("grid.xml")){
+			System.out.println(requirePath);
 		}
 		
-		if(sourceModule == null) {
+		for(AssetContainer assetContainer : scopeAssetContainers()) {
+			LinkedAsset locationAsset = assetContainer.linkedAsset(requirePath);
+			
+			if(locationAsset != null) {
+				if(asset == null) {
+					asset = locationAsset;
+				}
+				else {
+					throw new AmbiguousRequirePathException("'" + asset.getAssetPath() + "' and '" +
+						locationAsset.getAssetPath() + "' source files both available via require path '" +
+						requirePath + "'.");
+				}
+			}
+			
+		}
+		
+		
+		if(asset == null) {
 			throw new UnresolvableRequirePathException(requirePath);
 		}
 		
-		return sourceModule;
+		return asset   ;
 	}
 	
 	@Override
@@ -182,16 +187,15 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<SourceModule> getSourceModules(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
-		Set<SourceModule> sourceModules = new LinkedHashSet<>();
+	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
+		List<LinkedAsset> assets = new ArrayList<LinkedAsset>();
 		
 		for(String requirePath : requirePaths) {				
 			String canonicalRequirePath = assetLocation.canonicaliseRequirePath(requirePath);
-			SourceModule sourceModule = getSourceModule(canonicalRequirePath);
-			sourceModules.add(sourceModule);
+			assets.add(getLinkedAsset(canonicalRequirePath));
 		}
 		
-		return new ArrayList<SourceModule>( sourceModules );
+		return assets;
 	}
 	
 	

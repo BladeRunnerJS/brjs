@@ -54,8 +54,9 @@ public class TrieFactory {
 							}
 						}
 						
-						for(SourceModule sourceModule : assetContainer.sourceModules()) {
-							if(!(sourceModule.assetLocation() instanceof TestAssetLocation)) {
+						for(LinkedAsset asset : assetContainer.linkedAssets()) {
+							if(asset instanceof SourceModule){
+								SourceModule sourceModule = (SourceModule)asset;
 								addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
 								
 								String moduleClassname = sourceModule.getRequirePath().replaceAll("/", ".");
@@ -78,6 +79,7 @@ public class TrieFactory {
 									List<String> requirePaths = linkedAsset.getProvidedRequirePaths();
 									for(String path : requirePaths){
 										addToTrie(trie, path, new LinkedFileAssetReference(asset));
+										//System.out.println("Adding to Trie: " + path + ":" + asset.getAssetPath());
 									}
 								}
 							}

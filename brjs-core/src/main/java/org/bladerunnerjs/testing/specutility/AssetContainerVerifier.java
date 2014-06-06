@@ -1,15 +1,17 @@
 package org.bladerunnerjs.testing.specutility;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
+import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -23,8 +25,14 @@ public class AssetContainerVerifier {
 	}
 	
 	public void hasSourceModules(String... expectedSourceModules) throws Exception {
-		Set<SourceModule> actualSourceModules = assetContainer.sourceModules();
 		
+		Set<LinkedAsset> assets = assetContainer.linkedAssets();
+		Set<SourceModule> actualSourceModules = new HashSet<SourceModule>();
+		for(LinkedAsset asset : assets){
+			if(asset instanceof SourceModule){
+				actualSourceModules.add((SourceModule)asset);
+			}
+		}
 		assertEquals("Source modules [" + renderSourceModules(actualSourceModules) + "] was expected to contain " + expectedSourceModules.length + " item(s).", expectedSourceModules.length, actualSourceModules.size());
 		
 		int i = 0;

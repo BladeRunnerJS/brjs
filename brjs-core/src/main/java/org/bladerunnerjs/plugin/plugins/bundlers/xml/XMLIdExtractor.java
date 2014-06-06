@@ -15,8 +15,10 @@ public class XMLIdExtractor  {
 	private static final int OUTSIDE = 1;
 	private static final int GOT_AN_I = 2;
 	private static final int GOT_AN_ID = 3;
-	private static final int GOT_AN_ID_DOUBLEQUOTE = 4;
-	private static final int GOT_AN_ID_SINGLEQUOTE = 5;
+	private static final int GOT_AN_ID_EQUALS = 4;
+	private static final int GOT_AN_ID_DOUBLEQUOTE = 5;
+	private static final int GOT_AN_ID_SINGLEQUOTE = 6;
+	private static final int GOT_A_SPACE = 7;
 	
 	private int state = OUTSIDE;
 	private StringBuffer buffer = new StringBuffer();
@@ -47,14 +49,37 @@ public class XMLIdExtractor  {
 		switch(state)
 		{
 			case OUTSIDE:
-				if(nextChar == 'I' || nextChar == 'i' ) {state = GOT_AN_I;}
+				if(nextChar == ' ' ) {state = GOT_A_SPACE;}
+				break;
+			case GOT_A_SPACE:
+				if(nextChar == 'I' || nextChar == 'i' ) {
+					state = GOT_AN_I;
+				}else{
+					state = OUTSIDE;
+				}
 				break;
 			case GOT_AN_I:
-				if(nextChar == 'D' || nextChar == 'd') {state = GOT_AN_ID;}
+				if(nextChar == 'D' || nextChar == 'd') {
+					state = GOT_AN_ID;}
+				else{
+					state = OUTSIDE;
+				}
 				break;
 			case GOT_AN_ID:
-				if(nextChar == '\'') {state = GOT_AN_ID_SINGLEQUOTE;}
-				if(nextChar == '"') {state = GOT_AN_ID_DOUBLEQUOTE;}
+				if(nextChar == '=' ) {
+					state = GOT_AN_ID_EQUALS;}
+				else{
+					state = OUTSIDE;
+				}
+				break;
+			case GOT_AN_ID_EQUALS:
+				if(nextChar == '\'') {
+					state = GOT_AN_ID_SINGLEQUOTE;
+				} else if(nextChar == '"') {
+					state = GOT_AN_ID_DOUBLEQUOTE;
+				} else {
+					state = OUTSIDE;
+				}
 				break;
 			case GOT_AN_ID_SINGLEQUOTE:
 				if(nextChar == '\'' ) {

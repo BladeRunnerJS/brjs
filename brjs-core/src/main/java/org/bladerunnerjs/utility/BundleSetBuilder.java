@@ -64,7 +64,7 @@ public class BundleSetBuilder {
 			
 			
 			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases)) {
-				addSourceModule(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
+				addSourceModule((SourceModule)bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
 			}
 		}
 		catch(RequirePathException e) {
@@ -76,7 +76,7 @@ public class BundleSetBuilder {
 		try {
 			if (!sourceModules.isEmpty())
 			{
-				bootstrapSourceModule = bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME);
+				bootstrapSourceModule = (SourceModule)bundlableNode.getLinkedAsset(BOOTSTRAP_LIB_NAME);
 				addSourceModule( bootstrapSourceModule );
 				addAllSourceModuleDependencies(bootstrapSourceModule, bootstrappingSourceModules);
 			}
@@ -106,6 +106,7 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		
 		if(linkedAssets.add(linkedAsset)) {
+			System.out.println(linkedAsset.getAssetPath());
 			List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
 			
 			if (linkedAsset instanceof SourceModule) {
@@ -129,6 +130,8 @@ public class BundleSetBuilder {
 			for(Asset asset : moduleDependencies) {
 				if(asset instanceof SourceModule){
 					addSourceModule((SourceModule)asset);
+				}else{
+					addAssetLocation(asset.assetLocation());
 				}
 			}
 			
@@ -169,11 +172,12 @@ public class BundleSetBuilder {
 				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
 				if (alias != null)
 				{
-					SourceModule sourceModule = bundlableNode.getSourceModule(alias.getRequirePath());
+					SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
 					addSourceModule(sourceModule);
 					
 					if(alias.getInterfaceName() != null) {
-						addOrderDependentSourceModuleDependency(sourceModule, bundlableNode.getSourceModule(alias.getInterfaceRequirePath()));
+						LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
+						addOrderDependentSourceModuleDependency(sourceModule, (SourceModule)linkedAsset);
 					}
 					
 					aliases.add(alias);
