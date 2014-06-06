@@ -1,8 +1,10 @@
 package org.bladerunnerjs.testing.specutility;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -14,6 +16,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.ValueCommand;
 import org.bladerunnerjs.utility.SimplePageAccessor;
 
+import static org.junit.Assert.*;
 
 public class AppCommander extends NodeCommander<App> {
 	private final App app;
@@ -80,7 +83,9 @@ public class AppCommander extends NodeCommander<App> {
 	{
 		call(new Command() {
 			public void call() throws Exception {
-				app.file(filePath).delete();
+				File deleteFile = app.file(filePath);
+				FileUtils.forceDelete( deleteFile );
+				assertFalse( "failed to delete " + deleteFile.getAbsolutePath(), deleteFile.exists() );
 			}
 		});
 		

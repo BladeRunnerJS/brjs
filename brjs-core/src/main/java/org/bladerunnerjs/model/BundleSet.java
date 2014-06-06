@@ -23,13 +23,13 @@ public class BundleSet {
 	
 	
 	public List<String> getThemes(){
-		List<String> result = new ArrayList<String>();
+		Set<String> result = new LinkedHashSet<String>();
 		for(AssetLocation location: resourceLocations){
 			if(location instanceof ThemedAssetLocation){
 				result.add(((ThemedAssetLocation)location).getThemeName());
 			}
 		}
-		return result;
+		return new ArrayList<>( result );
 	}
 	
 	public BundlableNode getBundlableNode() {

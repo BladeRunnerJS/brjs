@@ -17,7 +17,6 @@ import org.eclipse.jetty.security.authentication.FormAuthenticator;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import static org.bladerunnerjs.appserver.ApplicationServerUtils.Messages.*;
@@ -93,7 +92,7 @@ public class ApplicationServerUtils
 			webappContext.setDescriptor(webXml.getAbsolutePath());
 		}
 		else {
-			webappContext.setDescriptor(getSystemResourcePath("org/bladerunnerjs/model/appserver/non-j2ee-app-web.xml"));
+			webappContext.setDescriptor( ClassLoader.getSystemResource("org/bladerunnerjs/model/appserver/non-j2ee-app-web.xml").getFile() );
 		}
 		
 		webappContext.setResourceBase(app.dir().getPath());
@@ -115,15 +114,6 @@ public class ApplicationServerUtils
 			formAuthenticator.setAlwaysSaveUri(true);
 		}
 		return webappContext;
-	}
-	
-	private static String getSystemResourcePath(String systemResource) {
-		try {
-			return Resource.newSystemResource(systemResource).getFile().getAbsolutePath();
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 	static File getDeployFileForApp(App app)

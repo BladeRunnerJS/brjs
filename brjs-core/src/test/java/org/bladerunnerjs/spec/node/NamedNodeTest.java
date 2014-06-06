@@ -72,12 +72,6 @@ public class NamedNodeTest extends SpecTest {
 				return brjs.app("app1").bladeset(nodeName);
 			}
 		};
-		NamedNodeFactory jsLibFactory = new NamedNodeFactory() {
-			@Override
-			public NamedNode createNamedNode(BRJS brjs, String nodeName) {
-				return brjs.app("app1").jsLib(nodeName);
-			}
-		};
 		NamedNodeFactory technologyTestPackFactory = new NamedNodeFactory() {
 			@Override
 			public NamedNode createNamedNode(BRJS brjs, String nodeName) {
