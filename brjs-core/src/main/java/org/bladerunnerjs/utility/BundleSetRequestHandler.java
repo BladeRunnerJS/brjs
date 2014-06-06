@@ -42,6 +42,6 @@ public class BundleSetRequestHandler {
 		logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), logicalRequestpath);
 		
 		ParsedContentPath contentPath = contentProvider.getContentPathParser().parse(logicalRequestpath);
-		contentProvider.writeContent(contentPath, bundleSet, os);
+		contentProvider.writeContent(contentPath, bundleSet, os, "_APP.VERSION_");
 	}
 }

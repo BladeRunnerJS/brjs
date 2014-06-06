@@ -47,7 +47,7 @@ public class InputSource {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ParsedContentPath contentPath = contentPlugin.getContentPathParser().parse(sourceMappingUrl);
 				
-				contentPlugin.writeContent(contentPath, bundleSet, bos);
+				contentPlugin.writeContent(contentPath, bundleSet, bos, "_APP.VERSION_");
 				
 				sourceMap = bos.toString(bundleSet.getBundlableNode().root().bladerunnerConf().getBrowserCharacterEncoding());
 			}

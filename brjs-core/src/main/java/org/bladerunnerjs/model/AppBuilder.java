@@ -75,7 +75,7 @@ public class AppBuilder {
 							
 							bundleFile.getParentFile().mkdirs();
 							try(OutputStream os = new FileOutputStream(bundleFile)) {
-								contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os);
+								contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os, version);
 							}
 						}
 					}
