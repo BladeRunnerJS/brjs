@@ -28,11 +28,7 @@ public class AppVersionJsContentPluginTest extends SpecTest {
 	public void appVersionContentIsIncluded() throws Exception {
 		given(brjs).hasDevVersion("dev");
 		when(aspect).requestReceived("app-version/version.js", requestResponse);
-		then(requestResponse).containsOrderedTextFragments(
-				"try {\n",
-				"  var ServiceRegistry = require( 'br/ServiceRegistry' );\n",
-				"  ServiceRegistry.getService('br.app-version.service').setVersion('dev');\n",
-				"} catch(e) {" );
+		then(requestResponse).containsTextOnce( "window.$BRJS_APP_VERSION = 'dev';" );
 	}
 	
 	@Test
@@ -46,7 +42,7 @@ public class AppVersionJsContentPluginTest extends SpecTest {
 		when(aspect).requestReceived("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"// br-bootstrap",
-				"ServiceRegistry.getService('br.app-version.service').setVersion('dev');",
+				"window.$BRJS_APP_VERSION = 'dev';",
 				"appns/Class" );
 	}
 	

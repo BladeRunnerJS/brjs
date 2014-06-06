@@ -18,7 +18,7 @@ var i18n = require('br/I18n');
  */
 function BRXmlResourceService(sUrl) {
 	var ServiceRegistry = require("br/ServiceRegistry");
-	var appVersion = ServiceRegistry.getService('br.app-version.service').getVersion();
+	var appVersion = ServiceRegistry.getService('br.app-version-service').getVersion();
 	/** @private */
 	this.url = sUrl || "../v/" + appVersion + "/xml/bundle.xml";
 

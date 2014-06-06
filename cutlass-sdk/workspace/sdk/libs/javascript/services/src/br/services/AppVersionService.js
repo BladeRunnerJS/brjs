@@ -16,11 +16,4 @@ AppVersionService.prototype.getVersion = function()	{
 	throw new Errors.UnimplementedInterfaceError("AppVersionService.getVersion() has not been implemented.");
 };
 
-/**
-* Set the version for the App
-*/
-AppVersionService.prototype.setVersion = function(version)	{
-	throw new Errors.UnimplementedInterfaceError("AppVersionService.setVersion() has not been implemented.");
-};
-
 module.exports = AppVersionService;

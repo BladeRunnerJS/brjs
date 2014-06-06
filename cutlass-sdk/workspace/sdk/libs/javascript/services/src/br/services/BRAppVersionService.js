@@ -1,7 +1,6 @@
 "use strict";
 
 var br = require('br/Core');
-var Errors = require('br/Errors');
 var AppVersionService = require('br/services/AppVersionService');
 
 /**
@@ -12,23 +11,10 @@ var AppVersionService = require('br/services/AppVersionService');
  * @implements br.services.AppVersionService
  */
 function BRAppVersionService() {
-	this.version = "";
-	this.versionSet = false;
 };
 
 BRAppVersionService.prototype.getVersion = function()	{
-	if (!this.versionSet) {
-		throw new Errors.IllegalStateError("AppVersion has not been set.");
-	}
-	return this.version;
-}
-
-BRAppVersionService.prototype.setVersion = function(version)	{
-	if (this.versionSet) {
-		throw new Errors.IllegalStateError("AppVersion has already been set.");
-	}
-	this.version = version;
-	this.versionSet = true;
+	return window.$BRJS_APP_VERSION;
 }
 
 br.implement(BRAppVersionService, AppVersionService);

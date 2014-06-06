@@ -58,12 +58,7 @@ public class AppVersionJsContentPlugin extends AbstractContentPlugin
 		{
 			try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 			{
-				writer.write( "try {\n" );
-				writer.write( "  var ServiceRegistry = require( 'br/ServiceRegistry' );\n" );
-				writer.write( "  ServiceRegistry.getService('br.app-version.service').setVersion('"+version+"');\n" );
-				writer.write( "} catch(e) {\n" );
-				writer.write( "  // either something wasnt defined or the app-version service wasn't used, we can safely ignore the exception\n" );
-				writer.write( "}\n" );
+				writer.write( "window.$BRJS_APP_VERSION = '"+version+"';" );
 			}
 			catch (ConfigException | IOException ex)
 			{
