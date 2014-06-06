@@ -37,7 +37,8 @@ public class ServedAppTest extends SpecTest
 			.and(brjs).usedForServletModel()
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications")
-			.and(brjs).usesProductionTemplates();
+			.and(brjs).usesProductionTemplates()
+			.and(brjs).hasDevVersion("123");
 			appServer = brjs.applicationServer(appServerPort);
 			app = brjs.app("app");
 			aspect = app.aspect("default");
