@@ -86,10 +86,6 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	@Override
 	public LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException {
 		LinkedAsset asset = null;
-		if(requirePath.endsWith("grid.xml")){
-			System.out.println(requirePath);
-		}
-		
 		for(AssetContainer assetContainer : scopeAssetContainers()) {
 			LinkedAsset locationAsset = assetContainer.linkedAsset(requirePath);
 			

@@ -79,7 +79,6 @@ public class TrieFactory {
 									List<String> requirePaths = linkedAsset.getProvidedRequirePaths();
 									for(String path : requirePaths){
 										addToTrie(trie, path, new LinkedFileAssetReference(asset));
-										//System.out.println("Adding to Trie: " + path + ":" + asset.getAssetPath());
 									}
 								}
 							}
