@@ -35,7 +35,7 @@ public class AppBuilder {
 		
 		try {
 			String[] locales = app.appConf().getLocales();
-			String version = String.valueOf( app.root().getAppVersionGenerator().getProdVersion() );
+			String version = app.root().getAppVersionGenerator().getProdVersion();
 			PageAccessor pageAcessor = new SimplePageAccessor();
 			
 			File appWebInf = app.file("WEB-INF");

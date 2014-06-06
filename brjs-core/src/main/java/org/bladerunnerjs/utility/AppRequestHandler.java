@@ -54,6 +54,8 @@ public class AppRequestHandler {
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
 		
+		String devVersion = app.root().getAppVersionGenerator().getDevVersion();
+		
 		switch(parsedContentPath.formName) {
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
@@ -61,11 +63,11 @@ public class AppRequestHandler {
 				break;
 			
 			case INDEX_PAGE_REQUEST:
-				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), "dev", pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
 				break;
 			
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), "dev", pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
 				break;
 			
 			case BUNDLE_REQUEST:
