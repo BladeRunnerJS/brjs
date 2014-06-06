@@ -71,11 +71,11 @@ public class AppRequestHandler {
 				break;
 			
 			case BUNDLE_REQUEST:
-				app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), os);
+				app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
 				break;
 			
 			case WORKBENCH_BUNDLE_REQUEST:
-				app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os);
+				app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
 				break;
 		}
 	}
@@ -148,7 +148,7 @@ public class AppRequestHandler {
 					.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-					.and("version").hasForm("(dev|[0-9]+)")
+					.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
 					.and("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
 					.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 			

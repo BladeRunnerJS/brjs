@@ -39,7 +39,7 @@ public class InputSource {
 		return filteredSource;
 	}
 	
-	public String getSourceMap() throws MalformedRequestException, ContentProcessingException {
+	public String getSourceMap(String version) throws MalformedRequestException, ContentProcessingException {
 		String sourceMap = null;
 		
 		try {
@@ -47,7 +47,7 @@ public class InputSource {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ParsedContentPath contentPath = contentPlugin.getContentPathParser().parse(sourceMappingUrl);
 				
-				contentPlugin.writeContent(contentPath, bundleSet, bos, "_APP.VERSION_");
+				contentPlugin.writeContent(contentPath, bundleSet, bos, version);
 				
 				sourceMap = bos.toString(bundleSet.getBundlableNode().root().bladerunnerConf().getBrowserCharacterEncoding());
 			}

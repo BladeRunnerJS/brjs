@@ -43,7 +43,7 @@ public class BundlerHandler
 	}
 
 	
-	public void createBundleFile(File bundleFile, String bundlePath) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException
+	public void createBundleFile(File bundleFile, String bundlePath, String version) throws IOException, MalformedRequestException, ResourceNotFoundException, ContentProcessingException
 	{
 		if (bundlePath.contains("\\"))
 		{
@@ -51,7 +51,7 @@ public class BundlerHandler
 		}
 		OutputStream outputStream = createBundleOutputStream(bundleFile);
 		String modelRequestPath = getModelRequestPath(bundlePath);
-		handleBundleRequest(bundleFile, modelRequestPath, outputStream);
+		handleBundleRequest(bundleFile, modelRequestPath, outputStream, version);
 	}
 
 	private String getModelRequestPath(String bundlerPath)
@@ -87,7 +87,7 @@ public class BundlerHandler
 		return null;
 	}
 
-	private void handleBundleRequest(File bundleFile, String brjsRequestPath, OutputStream outputStream) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
+	private void handleBundleRequest(File bundleFile, String brjsRequestPath, OutputStream outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
 	{
 		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
 		if (bundlableNode == null)
@@ -95,7 +95,7 @@ public class BundlerHandler
 			throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundler file: " + bundleFile.getAbsolutePath());
 		}
 		
-		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter());
+		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter(), version);
 	}
 	
 	private static OutputStream createBundleOutputStream(File bundlerFile) throws IOException

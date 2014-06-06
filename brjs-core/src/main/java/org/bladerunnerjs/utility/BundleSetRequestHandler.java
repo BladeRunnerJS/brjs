@@ -23,7 +23,7 @@ public class BundleSetRequestHandler {
 		public static final String BUNDLER_IDENTIFIED_MSG = "Bundler '%s' identified as handler for request '%s'.";
 	}
 	
-	public static void handle(BundleSet bundleSet, String logicalRequestpath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public static void handle(BundleSet bundleSet, String logicalRequestpath, OutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		App app = bundlableNode.app();
 		Logger logger = app.root().logger(LoggerType.BUNDLER, BundleSetRequestHandler.class);
@@ -42,6 +42,6 @@ public class BundleSetRequestHandler {
 		logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), logicalRequestpath);
 		
 		ParsedContentPath contentPath = contentProvider.getContentPathParser().parse(logicalRequestpath);
-		contentProvider.writeContent(contentPath, bundleSet, os, "_APP.VERSION_");
+		contentProvider.writeContent(contentPath, bundleSet, os, version);
 	}
 }

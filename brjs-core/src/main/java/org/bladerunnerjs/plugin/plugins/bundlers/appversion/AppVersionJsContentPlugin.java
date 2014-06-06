@@ -14,6 +14,8 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -27,14 +29,14 @@ public class AppVersionJsContentPlugin extends AbstractContentPlugin
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-		contentPathParserBuilder.accepts("app-version.js").as(APP_VERSION_REQUEST);
+		contentPathParserBuilder.accepts("app-version/version.js").as(APP_VERSION_REQUEST);
 		contentPathParser = contentPathParserBuilder.build();
 	}
 	
 	@Override
 	public String getRequestPrefix()
 	{
-		return "";
+		return "app-version";
 	}
 
 	@Override
@@ -56,7 +58,12 @@ public class AppVersionJsContentPlugin extends AbstractContentPlugin
 		{
 			try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 			{
-			
+				writer.write( "try {\n" );
+				writer.write( "  var ServiceRegistry = require( 'br/ServiceRegistry' );\n" );
+				writer.write( "  ServiceRegistry.getService('br.app-version.service').setVersion('"+version+"');\n" );
+				writer.write( "} catch(e) {\n" );
+				writer.write( "  // either something wasnt defined or the app-version service wasn't used, we can safely ignore the exception\n" );
+				writer.write( "}\n" );
 			}
 			catch (ConfigException | IOException ex)
 			{
@@ -72,7 +79,7 @@ public class AppVersionJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return getValidDevContentPaths(bundleSet, locales);
+		return getValidProdContentPaths(bundleSet, locales);
 	}
 
 	@Override
@@ -92,6 +99,14 @@ public class AppVersionJsContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
+	}
+	
+	@Override
+	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
+		return Arrays.asList(
+				NodeJsContentPlugin.class.getCanonicalName(),
+				CompositeJsContentPlugin.class.getCanonicalName()
+		);
 	}
 
 }

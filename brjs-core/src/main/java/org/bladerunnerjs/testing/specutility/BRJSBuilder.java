@@ -285,4 +285,18 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		
 		return builderChainer;
 	}
+
+	public BuilderChainer hasProdVersion(String version)
+	{
+		specTest.appVersionGenerator.setProdVersion(version);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasDevVersion(String version)
+	{
+		specTest.appVersionGenerator.setDevVersion(version);
+		
+		return builderChainer;
+	}
 }

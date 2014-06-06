@@ -49,17 +49,6 @@ public class AppBuilder extends NodeBuilder<App> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasBeenBuilt(File targetDir, MutableLong versionNumber) throws Exception {
-		hasBeenBuilt(targetDir);
-		
-		for(File dir : new File(targetDir, app.getName() + "/v").listFiles()) {
-			versionNumber.setValue(Long.valueOf(dir.getName()));
-			break;
-		}
-		
-		return builderChainer;
-	}
-	
 	public BuilderChainer hasBeenBuiltAsWar(File targetDir, MutableLong versionNumber) throws Exception {
 		hasBeenBuiltAsWar(targetDir);
 		

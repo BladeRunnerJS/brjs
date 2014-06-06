@@ -2,7 +2,6 @@ package org.bladerunnerjs.spec.app;
 
 import java.io.File;
 
-import org.apache.commons.lang3.mutable.MutableLong;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
@@ -17,7 +16,6 @@ public class AppBuildTest extends SpecTest {
 	private Aspect defaultAspect;
 	private Aspect nonDefaultAspect;
 	private File targetDir;
-	private MutableLong versionNumber = new MutableLong();
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -91,9 +89,10 @@ public class AppBuildTest extends SpecTest {
 		given(defaultAspect).containsFile("index.html")
 			.and(defaultAspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js")
-			.and(app).hasBeenBuilt(targetDir, versionNumber);
-		then(targetDir).containsFile("app1/v/" + versionNumber + "/html/bundle.html")
-			.and(targetDir).containsFile("app1/v/" + versionNumber + "/i18n/en.js");
+			.and(brjs).hasProdVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFile("app1/v/1234/html/bundle.html")
+			.and(targetDir).containsFile("app1/v/1234/i18n/en.js");
 	}
 	
 	@Test
@@ -110,8 +109,9 @@ public class AppBuildTest extends SpecTest {
 		given(sdkLibsDir).containsFile("locale-forwarder.js")
 			.and(defaultAspect).indexPageRequires("appns/Class")
 			.and(defaultAspect).hasClass("appns/Class")
-			.and(app).hasBeenBuilt(targetDir, versionNumber);
-		then(targetDir).containsFile("app1/v/" + versionNumber + "/js/prod/combined/bundle.js")
-			.and(targetDir).doesNotContainFile("app1/v/" + versionNumber + "/node-js/bundle.js");
+			.and(brjs).hasProdVersion("1234")
+			.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFile("app1/v/1234/js/prod/combined/bundle.js")
+			.and(targetDir).doesNotContainFile("app1/v/1234/node-js/bundle.js");
 	}
 }

@@ -16,4 +16,10 @@ public class TimestampAppVersionGenerator implements AppVersionGenerator
 	{
 		return "dev";
 	}
+	
+	@Override
+	public String getVersionPattern()
+	{
+		return "(dev|[0-9]+)";
+	}
 }
