@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.ParseException;
-import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -36,7 +35,7 @@ public class AppBuilder {
 		
 		try {
 			String[] locales = app.appConf().getLocales();
-			String version = String.valueOf(new Date().getTime());
+			String version = String.valueOf( app.root().getAppVersionGenerator().getProdVersion() );
 			PageAccessor pageAcessor = new SimplePageAccessor();
 			
 			File appWebInf = app.file("WEB-INF");

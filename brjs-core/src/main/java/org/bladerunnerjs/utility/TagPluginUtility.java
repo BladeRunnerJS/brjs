@@ -97,7 +97,7 @@ public class TagPluginUtility {
 	{
 		if (requestMode == RequestMode.Dev)
 		{
-			tagHandler.writeDevTagContent(attributes, bundleSet, locale, writer);
+			tagHandler.writeDevTagContent(attributes, bundleSet, locale, writer, version);
 		}
 		else if (requestMode == RequestMode.Prod)
 		{

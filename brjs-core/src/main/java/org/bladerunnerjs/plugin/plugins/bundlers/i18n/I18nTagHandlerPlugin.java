@@ -32,11 +32,11 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
 	{
 		try
 		{
-			writeTagContent(true, tagAttributes, bundleSet, locale, writer, "dev");
+			writeTagContent(true, tagAttributes, bundleSet, locale, writer, version);
 		}
 		catch (Exception ex)
 		{

@@ -80,6 +80,7 @@ public class BRJS extends AbstractBRJSRootNode
 	private final FileModificationService fileModificationService;
 	private final IO io = new IO();
 	private boolean closed = false;
+	private AppVersionGenerator appVersionGenerator = new TimestampAppVersionGenerator();
 	
 	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException
 	{
@@ -363,5 +364,10 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		return fileInfos.get(filePath);
+	}
+
+	public AppVersionGenerator getAppVersionGenerator()
+	{
+		return appVersionGenerator;
 	}
 }
