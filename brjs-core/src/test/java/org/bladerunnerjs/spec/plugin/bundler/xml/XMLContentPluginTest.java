@@ -231,7 +231,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String id = "appns.bs1.b1.gridname";
 		given(aspect).containsResourceFileWithContents("application.xml", xml(getReferencingXML(id)))
 			.and(blade).containsResourceFileWithContents("wibble.xml", xml(getReferencedXML(id)));
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsText(getReferencingXML(id))
 			.and(response).containsText(getReferencedXML(id));
 	}
@@ -244,7 +244,7 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(bladeset).containsResourceFileWithContents("wibble.xml", xml(getReferencedXML(id)))
 			.and(bladeset).hasClass("appns/bs/Class")
 			.and(aspect).indexPageRefersTo("appns.bs1.Class");
-		when(aspect).requestReceived("bundle.xml", response);
+		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsText(getReferencingXML(id))
 			.and(response).containsText(getReferencedXML(id));
 	}
@@ -255,7 +255,7 @@ public class XMLContentPluginTest extends SpecTest{
 		String id = "appns.bs1.b1.gridname";
 		given(workbench).containsResourceFileWithContents("application.xml", xml(getReferencingXML(id)))
 			.and(blade).containsResourceFileWithContents("wibble.xml", xml(getReferencedXML(id)));
-		when(workbench).requestReceived("bundle.xml", response);
+		when(workbench).requestReceived("xml/bundle.xml", response);
 		then(response).containsText(getReferencingXML(id))
 			.and(response).containsText(getReferencedXML(id));
 	}
