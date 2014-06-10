@@ -66,7 +66,9 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	private void pageLoaded(StringBuffer pageResponse, String locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException, RequirePathException {
 		StringWriter writer = new StringWriter();	
 		
-		TagPluginUtility.filterContent(fileUtil.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale, aspect.root().getAppVersionGenerator().getDevVersion());
+		String version = (opMode == RequestMode.Dev) ? aspect.root().getAppVersionGenerator().getDevVersion() : aspect.root().getAppVersionGenerator().getProdVersion();
+		
+		TagPluginUtility.filterContent(fileUtil.readFileToString(aspect.file("index.html")), aspect.getBundleSet(), writer, opMode, locale, version);
 		
 		pageResponse.append(writer.toString());
 	}
