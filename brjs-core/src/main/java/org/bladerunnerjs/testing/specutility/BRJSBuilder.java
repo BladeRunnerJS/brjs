@@ -206,6 +206,18 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer automaticallyFindsAllPlugins() {
+		automaticallyFindsContentPlugins();
+		automaticallyFindsTagHandlers();
+		automaticallyFindsAssetProducers();
+		automaticallyFindsAssetLocationProducers();
+		automaticallyFindsCommands();
+		automaticallyFindsModelObservers();
+		
+		return builderChainer;
+	}
+	
+	
 	@Override
 	public BuilderChainer hasBeenCreated() throws Exception
 	{

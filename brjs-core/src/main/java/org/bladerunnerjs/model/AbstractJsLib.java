@@ -55,6 +55,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
+		transformations.put("lib", getName());
 		transformations.put("libns", NamespaceUtility.convertToNamespace(requirePrefix()));
 	}
 	

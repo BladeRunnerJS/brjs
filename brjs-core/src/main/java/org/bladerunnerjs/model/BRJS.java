@@ -364,4 +364,10 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		return fileInfos.get(filePath);
 	}
+	
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName()+", dir: " + dir().getPath();
+	}
 }

@@ -3,12 +3,19 @@ package org.bladerunnerjs.testing.specutility.engine;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 import org.bladerunnerjs.utility.FileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public abstract class NodeVerifier<N extends Node> {
@@ -126,4 +133,44 @@ public abstract class NodeVerifier<N extends Node> {
 		
 		return verifierChainer;
 	}
+	
+	public VerifierChainer hasFilesAndDirs(List<String> files, List<String> dirs) {
+		for (String filePath : files) {
+			hasFile(filePath);
+		}
+		for (String dirPath : dirs) {
+			hasDir(dirPath);
+		}
+		
+		Collection<File> recursivelyFoundFiles = FileUtils.listFilesAndDirs(node.dir(), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+		recursivelyFoundFiles.remove(node.dir());
+		
+		List<String> fileAndDirPaths = new ArrayList<String>();
+		fileAndDirPaths.addAll(dirs);
+		fileAndDirPaths.addAll(files);
+		
+		for (File foundFile : recursivelyFoundFiles) {
+			String relativePath = RelativePathUtility.get(node.dir(), foundFile);
+			if (foundFile.isFile()) {
+				assertFoundFileIsExpected(relativePath, fileAndDirPaths);
+			} else if (foundFile.isDirectory()) {
+				assertFoundFileIsExpected(relativePath, dirs);				
+			}
+		}
+		
+		return verifierChainer;
+	}
+
+	private void assertFoundFileIsExpected(String relativePath, List<String> expectedPaths)
+	{
+		for (String expectedPath : expectedPaths) {
+			if (relativePath.startsWith(expectedPath)) {
+				return;
+			}
+		}
+		fail("found path '" + relativePath + "' that wasn't expected. Expected paths were '" + StringUtils.join(expectedPaths, "") + "'.");
+	}
+	
+	
+	
 }
