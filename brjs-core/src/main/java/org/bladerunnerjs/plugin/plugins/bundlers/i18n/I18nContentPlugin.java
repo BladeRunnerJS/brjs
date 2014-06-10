@@ -170,7 +170,13 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			StringBuilder output = new StringBuilder();
 			
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			output.append("window._brjsI18nProperties = [" + gson.toJson(propertiesMap) + "];");
+			String jsonProperties = gson.toJson(propertiesMap);
+			/* Replace doubly escaped newlines - GSON does the right thing and escapes newlines twice 
+			 * since otherwise when they are decoded from JSON they become literal newlines. 
+			 * Since thats actually what we want we undo the double escaping here. 
+			 */
+			jsonProperties = jsonProperties.replace("\\\\n", "\\n").replace("\\\\r", "\\r");
+			output.append("window._brjsI18nProperties = [" + jsonProperties + "];");
 			
 			writer.write(output.toString());
 			writer.flush();

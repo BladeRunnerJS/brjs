@@ -266,7 +266,7 @@ public class I18nContentPluginTest extends SpecTest
 		when(aspect).requestReceived("i18n/en_GB.js", response);
 		then(response).textEquals(	
 				"window._brjsI18nProperties = [{\n"+
-						"  \"appns.p1\": \"v\\\\n1\"\n"+
+						"  \"appns.p1\": \"v\\n1\"\n"+
 				"}];");
 	}
 	
