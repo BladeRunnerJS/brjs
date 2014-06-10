@@ -373,4 +373,10 @@ public class BRJS extends AbstractBRJSRootNode
 	{
 		return appVersionGenerator;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName()+", dir: " + dir().getPath();
+	}
 }
