@@ -80,8 +80,10 @@ public class BRJS extends AbstractBRJSRootNode
 	private final FileModificationService fileModificationService;
 	private final IO io = new IO();
 	private boolean closed = false;
+	private AppVersionGenerator appVersionGenerator;
 	
-	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException
+	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
+			LoggerFactory loggerFactory, ConsoleWriter consoleWriter, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
@@ -103,14 +105,16 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
+		
+		this.appVersionGenerator = appVersionGenerator;
 	}
 
 	public BRJS(File brjsDir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException {
-		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(loggerFactory), loggerFactory, consoleWriter);
+		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(loggerFactory), loggerFactory, consoleWriter, new TimestampAppVersionGenerator());
 	}
 	
 	public BRJS(File brjsDir, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
-		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
 	}
 	
 	public BRJS(File brjsDir, LogConfiguration logConfiguration) throws InvalidSdkDirectoryException
@@ -121,7 +125,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public BRJS(File brjsDir, LogConfiguration logConfigurator, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
 		// TODO: what was the logConfiguration parameter going to be used for?
-		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
 	}
 	
 	@Override
@@ -363,6 +367,11 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		return fileInfos.get(filePath);
+	}
+
+	public AppVersionGenerator getAppVersionGenerator()
+	{
+		return appVersionGenerator;
 	}
 	
 	@Override

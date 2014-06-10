@@ -15,8 +15,10 @@ var i18n = require('br/I18n');
  * @implements br.services.HtmlResourceService
  */
 function BRHtmlResourceService(url) {
+	var ServiceRegistry = require("br/ServiceRegistry");
+	var appVersion = ServiceRegistry.getService('br.app-version-service').getVersion();
 	/** @private */
-	this.url = url || "../v/" + new Date().getTime() + "/html/bundle.html";
+	this.url = url || "../v/" + appVersion + "/html/bundle.html";
 
 	/** @private */
 	this.templates = {};
@@ -84,7 +86,7 @@ function getTemplate(template) {
 			var docFrag = document.createDocumentFragment(),
 				tempClone = template.cloneNode(true),
 				children = tempClone.childNodes;
-			
+
 			while(children.length > 0) {
 				docFrag.appendChild(children[0]);
 			}

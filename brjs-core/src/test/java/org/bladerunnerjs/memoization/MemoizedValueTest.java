@@ -10,6 +10,7 @@ import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.testing.specutility.engine.ConsoleMessageStore;
 import org.bladerunnerjs.testing.specutility.engine.ConsoleStoreWriter;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
+import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
@@ -32,7 +33,7 @@ public class MemoizedValueTest {
 		sdkDir = new File(tempDir, "sdk");
 		
 		sdkDir.mkdir();
-		brjs = new BRJS(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new ConsoleStoreWriter(new ConsoleMessageStore()));
+		brjs = new BRJS(sdkDir, new MockPluginLocator(), new OptimisticFileModificationService(), new TestLoggerFactory(new LogMessageStore()), new ConsoleStoreWriter(new ConsoleMessageStore()), new MockAppVersionGenerator());
 		watchFileInfo = brjs.getFileInfo(watchFile);
 	}
 	

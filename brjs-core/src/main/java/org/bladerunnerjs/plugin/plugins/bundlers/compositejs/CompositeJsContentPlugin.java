@@ -68,14 +68,14 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException {
 		if(contentPath.formName.equals("dev-bundle-request") || contentPath.formName.equals("prod-bundle-request")) {
 			try {
 				String minifierSetting = contentPath.properties.get("minifier-setting");
 				MinifierPlugin minifierPlugin = brjs.plugins().minifier(minifierSetting);
 				
 				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet);
+					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, version);
 					minifierPlugin.minify(minifierSetting, inputSources, writer);
 				}
 			}
@@ -109,7 +109,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		return requestPaths;
 	}
 	
-	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet) throws ContentProcessingException {
+	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet, String version) throws ContentProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {
@@ -124,7 +124,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 					ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					
-					contentPlugin.writeContent(parsedContentPath, bundleSet, baos);
+					contentPlugin.writeContent(parsedContentPath, bundleSet, baos, version);
 					inputSources.add(new InputSource(requestPath, baos.toString(charsetName), contentPlugin, bundleSet));
 				}
 			}

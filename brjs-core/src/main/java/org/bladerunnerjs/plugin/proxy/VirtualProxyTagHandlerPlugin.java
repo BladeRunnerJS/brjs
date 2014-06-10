@@ -21,9 +21,9 @@ public class VirtualProxyTagHandlerPlugin extends VirtualProxyPlugin implements 
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException {
 		initializePlugin();
-		tagHandlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer);
+		tagHandlerPlugin.writeDevTagContent(tagAttributes, bundleSet, locale, writer, version);
 	}
 	
 	@Override

@@ -29,8 +29,8 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		writeTagContent(true, writer, bundleSet, tagAttributes.get("theme"), locale, "dev");
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException {
+		writeTagContent(true, writer, bundleSet, tagAttributes.get("theme"), locale, version);
 	}
 	
 	@Override

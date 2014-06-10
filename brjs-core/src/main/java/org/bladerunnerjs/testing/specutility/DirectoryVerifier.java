@@ -25,7 +25,8 @@ public class DirectoryVerifier {
 	}
 	
 	public VerifierChainer containsFile(String filePath) {
-		assertTrue(new File(dir, filePath).isFile());
+		File file = new File(dir, filePath);
+		assertTrue("expected " + file.getPath() + " to exist, but it didnt", file.isFile());
 		
 		return verifierChainer;
 	}

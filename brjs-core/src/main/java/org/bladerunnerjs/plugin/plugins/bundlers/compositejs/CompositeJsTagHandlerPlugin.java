@@ -29,8 +29,8 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		writeTagContent(tagAttributes, true, bundleSet, locale, writer, "dev");
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException {
+		writeTagContent(tagAttributes, true, bundleSet, locale, writer, version);
 	}
 	
 	@Override
