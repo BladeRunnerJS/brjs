@@ -67,16 +67,12 @@ public class PluginAccessor {
 	}
 	
 	public ContentPlugin contentProvider(String requestPrefix) {
-		ContentPlugin contentProvider = null;
-		
-		for (ContentPlugin nextContentPlugin : contentProviders()) {
-			if(nextContentPlugin.getRequestPrefix().equals(requestPrefix)) {
-				contentProvider = nextContentPlugin;
-				break;
+		for (ContentPlugin contentPlugin : contentProviders()) {
+			if(contentPlugin.getRequestPrefix().equals(requestPrefix)) {
+				return contentPlugin;
 			}
 		}
-		
-		return contentProvider;
+		return null;
 	}
 	
 	public List<ContentPlugin> contentProviders() {
@@ -97,6 +93,15 @@ public class PluginAccessor {
 	
 	public List<TagHandlerPlugin> tagHandlers() {
 		return tagHandlers;
+	}
+	
+	public TagHandlerPlugin tagHandler(String tagName) {
+		for (TagHandlerPlugin tagHandler : tagHandlers()) {
+			if(tagHandler.getTagName().equals(tagName)) {
+				return tagHandler;
+			}
+		}
+		return null;
 	}
 	
 	public List<MinifierPlugin> minifiers() {

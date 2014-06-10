@@ -3,8 +3,10 @@ package org.bladerunnerjs.plugin.plugins.bundlers.appversion;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
@@ -13,6 +15,7 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
@@ -20,12 +23,13 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class AppVersionJsContentPlugin extends AbstractContentPlugin
+public class BundlePathJsContentPlugin extends AbstractContentPlugin
 {
 
 	private static final String APP_VERSION_REQUEST = "app-version-request";
 	private ContentPathParser contentPathParser;
 	private BRJS brjs;
+	private TagHandlerPlugin bundlePathTagHandler;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -58,7 +62,9 @@ public class AppVersionJsContentPlugin extends AbstractContentPlugin
 		{
 			try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 			{
-				writer.write( "window.$BRJS_APP_VERSION = '"+version+"';" );
+				StringWriter bundlePathWriter = new StringWriter();
+				bundlePathTagHandler.writeDevTagContent(new HashMap<>(), bundleSet, "", bundlePathWriter, version);
+				writer.write( "window.$BRJS_BUNDLE_PATH = '"+bundlePathWriter.toString()+"';" );
 			}
 			catch (ConfigException | IOException ex)
 			{
@@ -94,6 +100,7 @@ public class AppVersionJsContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
+		this.bundlePathTagHandler = brjs.plugins().tagHandler("bundle.path");
 	}
 	
 	@Override

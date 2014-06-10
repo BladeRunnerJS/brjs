@@ -7,7 +7,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class AppVersionJsContentPluginTest extends SpecTest {
+public class BundlePathJsContentPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
@@ -28,7 +28,7 @@ public class AppVersionJsContentPluginTest extends SpecTest {
 	public void appVersionContentIsIncluded() throws Exception {
 		given(brjs).hasDevVersion("dev");
 		when(aspect).requestReceived("app-version/version.js", requestResponse);
-		then(requestResponse).containsTextOnce( "window.$BRJS_APP_VERSION = 'dev';" );
+		then(requestResponse).containsTextOnce( "window.$BRJS_BUNDLE_PATH = '../v/dev';" );
 	}
 	
 	@Test
@@ -42,7 +42,7 @@ public class AppVersionJsContentPluginTest extends SpecTest {
 		when(aspect).requestReceived("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"// br-bootstrap",
-				"window.$BRJS_APP_VERSION = 'dev';",
+				"window.$BRJS_BUNDLE_PATH = '../v/dev';",
 				"appns/Class" );
 	}
 	
