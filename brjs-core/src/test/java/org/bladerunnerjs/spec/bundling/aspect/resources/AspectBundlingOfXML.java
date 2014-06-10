@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.bundling.aspect.resources;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Bladeset;
@@ -100,4 +101,25 @@ public class AspectBundlingOfXML extends SpecTest {
 	}
 
 	
+	@Test
+	public void longFilesDontPreventCalculatingDependencies() throws Exception {
+		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
+			.and(aspect).containsResourceFileWithContents("xml/config.xml", zeroPad(4090)+"\n appns.bs.Class1\n"+zeroPad(4090)+"\n appns.bs.Class2");
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsNodeJsClasses("appns.bs.Class1", "appns.bs.Class2");
+	}
+	
+	@Test
+	public void commentsInLongFilesDontPreventCalculatingSubsequentDependencies() throws Exception {
+		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
+			.and(aspect).containsResourceFileWithContents("xml/config.xml", zeroPad(4090)+"\n appns.bs.Class1 <!-- some comment -->\n"+zeroPad(4090)+"\n appns.bs.Class2 ");
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsNodeJsClasses("appns.bs.Class1", "appns.bs.Class2");
+	}
+	
+	
+	
+	private String zeroPad(int size) {
+		return StringUtils.leftPad("", size, '0');
+	}
 }

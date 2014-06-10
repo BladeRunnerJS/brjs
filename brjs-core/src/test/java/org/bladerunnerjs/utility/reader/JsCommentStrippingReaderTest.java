@@ -264,11 +264,11 @@ public class JsCommentStrippingReaderTest
 	{
 		stripCommentsAndAssertEquals( 
 			lines(
-				pad(4090),
+				zeroPad(4090),
 				"line1",
 				"line2" ), 
 			lines(
-				pad(4090),
+				zeroPad(4090),
 				"line1",
 				"line2" ) 
 		);
@@ -279,18 +279,20 @@ public class JsCommentStrippingReaderTest
 	{
 		stripCommentsAndAssertEquals( 
 			lines(
-				pad(4090),
+				zeroPad(4090),
 				"// comment",
 				"line 2"), 
 			lines(
-				pad(4090),
+				zeroPad(4090),
 				"",
 				"line 2") 
 		);
 	}
 	
-	private String pad(int size) {
-		return StringUtils.leftPad("", size, ' ');
+	
+	
+	private String zeroPad(int size) {
+		return StringUtils.leftPad("", size, '0')+"\n";
 	}
 
 	private String lines(String... input)

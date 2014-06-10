@@ -269,6 +269,47 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 			);
 	}
 	
+	@Test
+	public void largeSourceWithCodeBlocksAreStripped() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				zeroPad(4090),
+				"some content",
+				"{ more content }"),
+			lines(
+				zeroPad(4090),
+				"some content",
+				"{}")
+		);
+	}
+	
+	@Test
+	public void largeSourceWithCodeWithSelfExecutingFunctionsAreNotStripped() throws Exception {
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					zeroPad(4090),
+					"(function() {",
+					"(function() {",
+					"some code...",
+					"})()",
+					")()"),
+				lines(
+					zeroPad(4090),
+					"(function() {",
+					"(function() {",
+					"some code...",
+					"})()",
+					")()")
+			);
+	}
+	
+	
+	
+	private String zeroPad(int size) {
+		return StringUtils.leftPad("", size, '0')+"\n";
+	}
+	
 	private String lines(String... input)
 	{
 		return StringUtils.join(input, "\n");
