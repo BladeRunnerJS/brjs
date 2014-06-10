@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -69,6 +70,10 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		if (targetDirPath == null) 
 		{
 			targetDir = brjs.storageDir("exported-apps");
+			File appExportDir = new File(targetDir, appName);
+			if (appExportDir.exists()) {
+				FileUtils.deleteQuietly(appExportDir);
+			}
 			targetDir.mkdirs();
 		} 
 		else {
