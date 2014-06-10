@@ -25,7 +25,7 @@ public class TagPluginUtility {
 
 	private static final String NEW_LINE = String.format("%n");
 	private static final String TAG_START = "<@";
-	private static final String TAG_END = "@/>";
+	private static final String TAG_END = "@[ ]*/[ ]*>";
 	private static final String XML_TAG_START = "<";
 	private static final String XML_TAG_END = "/>";
 	private static final Pattern tagPattern = Pattern.compile(TAG_START+"([A-Za-z][A-Za-z0-9._-]+)([ ]+[^\\s=]+=[^\\s=]+)*[ ]*"+TAG_END);
@@ -61,7 +61,7 @@ public class TagPluginUtility {
 	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String version, String tagContent) throws IOException, DocumentException, NoTagHandlerFoundException
 	{
 		String xmlContent = StringUtils.replaceOnce(tagContent, TAG_START, XML_TAG_START);
-		xmlContent = StringUtils.replaceOnce(xmlContent, TAG_END, XML_TAG_END);
+		xmlContent = xmlContent.replaceFirst(TAG_END, XML_TAG_END);
 		
 		StringReader xmlContentReader = new StringReader(xmlContent);
 		

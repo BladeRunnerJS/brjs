@@ -137,11 +137,19 @@ public class TagPluginUtilityTest
 	}
 	
 	@Test
-	public void tagsMustMatchExactly() throws Exception
+	public void tagStartMustMatchExactly() throws Exception
 	{
 		filterAndAssert( "this is a < @tag@/>", "this is a < @tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
 		filterAndAssert( "this is a <@ tag@/>", "this is a <@ tag@/>", aspect.getBundleSet(), RequestMode.Dev, "");
-		filterAndAssert( "this is a <@tag@ >", "this is a <@tag@ >", aspect.getBundleSet(), RequestMode.Dev, "");
+	}
+	
+	@Test
+	public void extraWhitespaceCanPrefixTheClosingBrackets() throws Exception
+	{
+		filterAndAssert( "this is a <@tag@ />", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag@/ >", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag@ / >", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
+		filterAndAssert( "this is a <@tag @ / >", "this is a replaced tag!", aspect.getBundleSet(), RequestMode.Dev, "");
 	}
 	
 	@Test
