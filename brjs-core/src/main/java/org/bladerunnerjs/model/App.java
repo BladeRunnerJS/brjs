@@ -284,8 +284,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		appRequestHandler.handleLogicalRequest(requestPath, os, pageAccessor);
 	}
 	
-	public String createDevBundleRequest(String contentPath) throws MalformedTokenException {
-		String version = root().getAppVersionGenerator().getDevVersion();
+	public String createDevBundleRequest(String contentPath, String version) throws MalformedTokenException {
 		return "../" + appRequestHandler.createRequest("bundle-request", "", version, contentPath);
 	}
 	

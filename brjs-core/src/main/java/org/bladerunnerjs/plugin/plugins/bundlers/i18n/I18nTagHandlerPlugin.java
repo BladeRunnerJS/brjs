@@ -67,7 +67,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 			contentPath = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
 		}
 		App app = bundleSet.getBundlableNode().app();
-		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
+		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
 		
 		writer.write("<script type=\"text/javascript\" src=\"" + requestPath + "\"></script>\n");
 	}

@@ -44,7 +44,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			List<String> contentPaths = (isDev) ? cssContentPlugin.getValidDevContentPaths(bundleSet, locale) : cssContentPlugin.getValidProdContentPaths(bundleSet, locale);
 			
 			for(String contentPath : contentPaths) {
-				String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
+				String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
 				String contentPathTheme = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("theme");
 				
 				if(contentPathTheme.equals("common")) {

@@ -65,7 +65,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	private void writeScriptTag(boolean isDev, App app, Writer writer, String contentPath, String version) throws IOException, MalformedTokenException {
-		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
+		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
 		writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 	}
 }
