@@ -1,5 +1,6 @@
 package org.bladerunnerjs.utility.deps;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -92,18 +93,28 @@ public class DependencyInfoFactory {
 		
 		for(LinkedAsset seedAsset : bundlableNode.seedAssets()) {
 			dependencyInfo.seedAssets.add(seedAsset);
-			List<? extends Asset>  assets = seedAsset.getDependentAssets(bundlableNode);
-			addDependencies(dependencyAdder, dependencyInfo, seedAsset, (List<SourceModule>)assets);
+			List<Asset>  assets = seedAsset.getDependentAssets(bundlableNode);
+			addDependencies(dependencyAdder, dependencyInfo, seedAsset, extractSourceModules(assets));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, seedAsset);
 		}
+	}
+	
+	private static List<SourceModule> extractSourceModules(List<Asset> assets){
+		List<SourceModule> results = new ArrayList<SourceModule>();
+		for(Asset asset : assets){
+			if(asset instanceof SourceModule){
+				results.add((SourceModule)asset);
+			}
+		}
+		return results;
 	}
 	
 	private static void addAssetLocationDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
 		for(LinkedAsset resourceAsset : assetLocation.linkedAssets()) {
 			dependencyInfo.resourceAssets.add(resourceAsset);
-			List<? extends Asset>  assets = resourceAsset.getDependentAssets(bundlableNode);
-			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, (List<SourceModule>)assets);
+			List<Asset>  assets = resourceAsset.getDependentAssets(bundlableNode);
+			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, extractSourceModules(assets));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
 		}
 	}
@@ -111,8 +122,8 @@ public class DependencyInfoFactory {
 	private static void addSourceModuleDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, SourceModule sourceModule) throws ModelOperationException {
 		addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(bundlableNode));
-		List<? extends Asset>  assets = sourceModule.getDependentAssets(bundlableNode);
-		addDependencies(dependencyAdder, dependencyInfo, sourceModule, (List<SourceModule>)assets);
+		List<Asset>  assets = sourceModule.getDependentAssets(bundlableNode);
+		addDependencies(dependencyAdder, dependencyInfo, sourceModule, extractSourceModules(assets));
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
 		
 		for(AssetLocation assetLocation : sourceModule.assetLocations()) {

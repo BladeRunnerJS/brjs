@@ -49,8 +49,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
  	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			 List<? extends Asset> sourceModules = bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
-			return (List<Asset>)sourceModules;
+			return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -111,10 +110,10 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		List<SourceModule> result = new ArrayList<SourceModule>();
 		try {
 			
-			 List<LinkedAsset> linkedAssets = bundlableNode.getLinkedAssets(assetLocation, getStaticDependencyCalculator().getRequirePaths());
-			 for(LinkedAsset linkedAsset : linkedAssets){
-				 if(linkedAsset instanceof SourceModule)
-					 result.add((SourceModule)linkedAsset);
+			 List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, getStaticDependencyCalculator().getRequirePaths());
+			 for(Asset asset : assets){
+				 if(asset instanceof SourceModule)
+					 result.add((SourceModule)asset);
 			 }
 		}
 		catch (RequirePathException e) {

@@ -183,8 +183,8 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
-		List<LinkedAsset> assets = new ArrayList<LinkedAsset>();
+	public List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException {
+		List<Asset> assets = new ArrayList<Asset>();
 		
 		for(String requirePath : requirePaths) {				
 			String canonicalRequirePath = assetLocation.canonicaliseRequirePath(requirePath);

@@ -183,8 +183,13 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		 List<? extends Asset> dependentAssets = getDependentAssets(bundlableNode);
-		 return (List<SourceModule>)dependentAssets;
+		List<SourceModule> result = new ArrayList<SourceModule>();
+		for(Asset dependentAsset : getDependentAssets(bundlableNode)){
+			if(dependentAsset instanceof SourceModule){
+				result.add((SourceModule)dependentAsset);
+			}
+		}
+		return result;
 	}
 	
 	@Override

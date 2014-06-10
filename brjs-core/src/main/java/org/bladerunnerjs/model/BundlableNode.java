@@ -30,5 +30,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	
 	void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 	void handleLogicalRequest(String logicalRequestPath, OutputStream os, BundleSetFilter bundleSetFilter) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
-	List<LinkedAsset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
+	List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
 }

@@ -46,8 +46,7 @@ public class LinkedFileAsset implements LinkedAsset {
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			 List<? extends Asset> sourceModules = bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
-			 return (List<Asset>)sourceModules;
+			 return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);

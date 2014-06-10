@@ -61,8 +61,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			 List<? extends Asset> sourceModules = bundlableNode.getLinkedAssets(assetLocation, requirePaths());
-			return (List<Asset>)sourceModules;
+			return bundlableNode.getLinkedAssets(assetLocation, requirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
