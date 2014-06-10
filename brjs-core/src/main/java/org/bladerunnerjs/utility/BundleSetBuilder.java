@@ -204,8 +204,8 @@ public class BundleSetBuilder {
 	private String assetFilePaths(List<Asset> assets) {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
-		for(Asset sourceModule : assets) {
-			sourceFilePaths.add(sourceModule.getAssetPath());
+		for(Asset asset : assets) {
+			sourceFilePaths.add(asset.getAssetPath());
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
