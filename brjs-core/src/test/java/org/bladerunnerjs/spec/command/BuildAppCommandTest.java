@@ -7,6 +7,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
+import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandException;
 import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
@@ -20,6 +21,7 @@ public class BuildAppCommandTest extends SpecTest {
 	Bladeset bladeset;
 	Blade blade;
 	Blade badBlade;
+	private App otherApp;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -27,6 +29,7 @@ public class BuildAppCommandTest extends SpecTest {
 		given(brjs).hasCommands(new BuildAppCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
+			otherApp = brjs.app("other-app");
 			bladeset = app.bladeset("bladeset");
 			blade = bladeset.blade("blade");
 			badBlade = bladeset.blade("!$%$^");
@@ -63,12 +66,43 @@ public class BuildAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void appOverwritesExistingBuiltAppIfBuildingToTheDefaultLocation() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).commandHasBeenRun("build-app", "app");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).hasDir("generated/exported-apps/app")
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/exported-apps/app").getCanonicalPath())
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void overwrittenAppsInDefaultLocationDontNukeOtherBuiltApps() throws Exception {
+		given(app).hasBeenCreated()
+			.and(otherApp).hasBeenCreated()
+			.and(brjs).commandHasBeenRun("build-app", "other-app")
+			.and(brjs).commandHasBeenRun("build-app", "app");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).hasDir("generated/exported-apps/other-app")
+			.and(brjs).hasDir("generated/exported-apps/app");
+	}
+	
+	@Test
 	public void appCanBeExportedToASpecifiedDirectory() throws Exception {
 		given(app).hasBeenCreated()
 			.and(brjs).hasDir("sdk/target");
 		when(brjs).runCommand("build-app", "app", "target");
 		then(brjs).hasDir("sdk/target/app")
 			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("sdk/target/app").getCanonicalPath());
+	}
+	
+	@Test
+	public void appDoesntOverwriteExistingBuiltAppIfBuildingToACustomLocation() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).hasDir("sdk/target")
+			.and(brjs).commandHasBeenRun("build-app", "app", "target");
+		when(brjs).runCommand("build-app", "app", "target");
+		then(exceptions).verifyException(DirectoryAlreadyExistsCommandException.class, brjs.file("sdk/target/app").getCanonicalPath())
+			.whereTopLevelExceptionIs(CommandArgumentsException.class);
 	}
 	
 	@Test

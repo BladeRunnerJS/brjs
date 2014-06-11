@@ -8,7 +8,6 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.ServerUtility;
 import org.eclipse.jetty.server.Server;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServedWarTest extends SpecTest {
@@ -94,7 +93,6 @@ public class ServedWarTest extends SpecTest {
 		then(warResponse).textEquals(brjsResponse);
 	}
 	
-	@Ignore
 	@Test
 	public void warCommandDoesntExportFilesFromAnotherAspect() throws Exception {
 		given(sdkLibsDir).containsFile("locale-forwarder.js")

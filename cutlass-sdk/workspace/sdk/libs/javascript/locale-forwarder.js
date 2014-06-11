@@ -1,6 +1,6 @@
 function getUserAcceptedLocales() {
 	var userAcceptedLocales;
-	
+
 	if(navigator.languages) {
 		userAcceptedLocales = navigator.languages;
 	}
@@ -10,7 +10,7 @@ function getUserAcceptedLocales() {
 	else {
 		userAcceptedLocales = [navigator.userLanguage];
 	}
-	
+
 	return userAcceptedLocales;
 }
 
@@ -27,28 +27,28 @@ function getCookie(name) {
 
 function getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales) {
 	var firstMatchingLocale;
-	
+
 	for(var i = 0, l = userAcceptedLocales.length; i < l; ++i) {
 		var userAcceptedLocale = userAcceptedLocales[i];
-		
+
 		if(appSupportedLocales[userAcceptedLocale]) {
 			firstMatchingLocale = userAcceptedLocale;
 			break;
 		}
 	}
-	
+
 	return firstMatchingLocale;
 }
 
 function getActiveLocale(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
 	var activeLocale;
-	
+
 	if(appSupportedLocales[userPreferredLocale]) {
 		activeLocale = userPreferredLocale;
 	}
 	else {
 		var firstMatchingLocale = getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales);
-		
+
 		if(firstMatchingLocale) {
 			activeLocale = firstMatchingLocale;
 		}
@@ -59,16 +59,23 @@ function getActiveLocale(userPreferredLocale, userAcceptedLocales, appSupportedL
 			}
 		}
 	}
-	
+
 	return activeLocale;
 }
 
 function getLocalizedPageUrl(pageUrl, locale) {
-	var parts = pageUrl.split("#");
-	var url = parts[0];
-	var anchor = parts[1]
-	
-	return url + locale + "/" + ((anchor) ? "#" + anchor : "");
+	var urlParser = document.createElement('a');
+	urlParser.href = pageUrl;
+
+	var protocol = urlParser.protocol;
+	var host = urlParser.host;
+	var url = urlParser.pathname;
+		url = (url.charAt(0) != "/") ? "/"+url : url; /* some IE versions don't prefix pathname with / */
+		url = ( !(/\/$/.test(url)) ) ? url+"/" : url; /* make sure the URL has a trailing / */
+	var anchor = urlParser.hash;
+	var queryString = urlParser.search;
+
+	return protocol+"//"+host+url+locale+"/"+queryString+anchor;
 }
 
 function forwardToLocalePage() {
