@@ -14,6 +14,7 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 
 
 public class BuildAppCommandTest extends SpecTest {
@@ -122,6 +123,18 @@ public class BuildAppCommandTest extends SpecTest {
 			.and(brjs).hasFile("generated/built-apps/app.war")
 			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
 	}
+	
+	//Failing test
+	@Ignore
+	@Test
+	public void appWithThemedDefaultAspectCanBeExportedAsAWar() throws Exception {
+		given(app).hasBeenCreated()
+			.and(app).containsFileWithContents("default-aspect/themes/standard/style.css", "ASPECT theme content");
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(brjs).doesNotHaveDir("sdk/app")
+			.and(brjs).hasFile("generated/exported-apps/app.war")
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/exported-apps/app").getCanonicalPath());
+	}	
 	
 	@Test
 	public void webXmlDevEnvironmentIsFiltered_StaticExport() throws Exception {
