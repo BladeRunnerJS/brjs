@@ -1,10 +1,11 @@
 language: java
 jdk:
 - oraclejdk7
+git:
+ depth: 200
 before_install:
 - export JAVA7_HOME=/usr/lib/jvm/java-7-oracle
 - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
-- git fetch --tags
 install:
 - TERM=dumb ./gradlew compileJava
 script:
