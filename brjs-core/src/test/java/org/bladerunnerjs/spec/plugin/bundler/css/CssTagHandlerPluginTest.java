@@ -65,26 +65,21 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	}
 	
 	@Test
-	public void onlyThemesForTheGivenAspectAreIncludedInGeneratedTags() throws Exception {
-		given(loginAspect).containsFile("themes/login/wibble.css")
-			.and(loginAspect).containsFile("themes/aspect1/wibble.css")
-			.and(loginAspect).containsFile("themes/aspect2/wibble.css")
-			.and(loginAspect).indexPageHasContent("<@css.bundle@/>\n" + "appns.bs.b1.Class1()")
-			.and(loginAspect).containsResourceFiles("style.css", "style_en.css", "style_en_GB.css")
-			.and(appConf).supportsLocales("en", "en_GB")
+	public void themesForUsedBladesCanBeLoadedEvenIfTheyArenThemesForTheAspect() throws Exception {
+		given(aspect).containsFile("themes/aspect1/style.css")
+			.and(aspect).containsFile("themes/aspect2/style.css")
+			.and(loginAspect).indexPageHasContent("<@css.bundle theme=\"blade-theme\"@/>\n" + "appns.bs.b1.Class1()")
 			.and(blade).hasClass("appns/bs/b1/Class1")
-			.and(blade).containsFile("themes/aspect/wibble.css");
+			.and(blade).containsFile("themes/blade-theme/style.css");
 		when(loginAspect).indexPageLoadedInDev(response, "en_GB");
-		then(response).containsOrderedTextFragments(
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>",
-			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en_GB/bundle.css\"/>")
-			.and(response).doesNotContainText("href=\"css/aspect");
+		then(response).containsText(
+			"<link rel=\"stylesheet\" title=\"blade-theme\" href=\"../v/dev/css/blade-theme/bundle.css\"/>");
 	}
+	
 	
 	@Test
 	public void themesReferencedInCssTagsAreIncludedInGeneratedTags() throws Exception {
-		given(aspect).containsFile("themes/standard/wibble.css")
+		given(aspect).containsFile("themes/standard/style.css")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/>")
 			.and(commonTheme).containsFiles("style.css", "style_en.css")
 			.and(standardTheme).containsFiles("style.css", "style_en.css");
@@ -98,7 +93,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void bladeThemesAreUsedInAWorkbenchEvenIfTheAspectDoesNotHaveThatTheme() throws Exception {
-		given(aspect).containsFile("themes/standard/wibble.css")
+		given(aspect).containsFile("themes/standard/style.css")
 			.and(workbench).indexPageHasContent("<@css.bundle theme=\"standard\"@/>\n")
 			.and(commonTheme).containsFiles("style.css", "style_en.css")
 			.and(standardTheme).containsFiles("style.css", "style_en.css");
@@ -113,10 +108,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void themesDefinedMultipleTimesOnlyHaveASingleReuqest() throws Exception {
-		given(aspect).containsFile("themes/standard/wibble.css")
-			.and(bladeset).containsFile("themes/standard/wibble.css")
+		given(aspect).containsFile("themes/standard/style.css")
+			.and(bladeset).containsFile("themes/standard/style.css")
 			.and(bladeset).hasClass("appns/bs/Class")
-			.and(blade).containsFile("themes/standard/wibble.css")
+			.and(blade).containsFile("themes/standard/style.css")
 			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/> appns.bs.Class  appns.bs.b1.Class ");
 		when(aspect).indexPageLoadedInDev(response, "en");
@@ -125,9 +120,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Test
 	public void requestsAreOnlyMadeForTheNamedTheme() throws Exception {
-		given(aspect).containsFile("themes/standard/wibble.css")
-			.and(aspect).containsFile("themes/theme1/wibble.css")
-			.and(aspect).containsFile("themes/theme2/wibble.css")
+		given(aspect).containsFile("themes/standard/style.css")
+			.and(aspect).containsFile("themes/theme1/style.css")
+			.and(aspect).containsFile("themes/theme2/style.css")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsText("<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard/bundle.css\"/>")

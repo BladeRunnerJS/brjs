@@ -136,31 +136,28 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		Set<String> contentPaths = new LinkedHashSet<>();
 		
 		try {
-			Set<String> supportedThemes = new HashSet<>(bundleSet.getThemes());
 			Set<String> supportedLocales = new HashSet<>(Arrays.asList(bundleSet.getBundlableNode().app().appConf().getLocales()));
 			
 			for(Asset cssAsset : bundleSet.getResourceFiles(cssAssetPlugin)) {
 				AssetLocation cssAssetLocation = cssAsset.assetLocation();
 				String themeName = (cssAssetLocation instanceof ThemedAssetLocation) ? ((ThemedAssetLocation) cssAssetLocation).getThemeName() : "common";
 				
-				if(supportedThemes.contains(themeName)) {
-					String assetLocale = getAssetLocale(cssAsset.getAssetName());
-					
-					if(assetLocale == null) {
-						contentPaths.add(contentPathParser.createRequest("simple-request", themeName));
-					}
-					else {
-						if(supportedLocales.contains(assetLocale)) {
-							if(!assetLocale.contains("_")) {
-								contentPaths.add(contentPathParser.createRequest("language-request", themeName, assetLocale));
-							}
-							else {
-								String[] parts = assetLocale.split("_");
-								String language = parts[0];
-								String country = parts[1];
-								
-								contentPaths.add(contentPathParser.createRequest("locale-request", themeName, language, country));
-							}
+				String assetLocale = getAssetLocale(cssAsset.getAssetName());
+				
+				if(assetLocale == null) {
+					contentPaths.add(contentPathParser.createRequest("simple-request", themeName));
+				}
+				else {
+					if(supportedLocales.contains(assetLocale)) {
+						if(!assetLocale.contains("_")) {
+							contentPaths.add(contentPathParser.createRequest("language-request", themeName, assetLocale));
+						}
+						else {
+							String[] parts = assetLocale.split("_");
+							String language = parts[0];
+							String country = parts[1];
+							
+							contentPaths.add(contentPathParser.createRequest("locale-request", themeName, language, country));
 						}
 					}
 				}
