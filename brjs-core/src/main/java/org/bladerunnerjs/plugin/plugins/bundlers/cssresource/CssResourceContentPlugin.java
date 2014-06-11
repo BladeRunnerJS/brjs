@@ -136,8 +136,8 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		if (contentPath.formName.equals(ASPECT_THEME_REQUEST))
 		{
 			String aspectName = contentPath.properties.get("aspect");
-			Aspect Aspect =  bundlableNode.app().aspect(aspectName);
-			List<ResourcesAssetLocation> resourceAssetLocations = getResourceAssetLocations(Aspect);
+			Aspect aspect =  bundlableNode.app().aspect(aspectName);
+			List<ResourcesAssetLocation> resourceAssetLocations = getResourceAssetLocations(aspect);
 			for(ResourcesAssetLocation location : resourceAssetLocations){
 				if(location.getThemeName().equals(theme)){
 					resourceFile = location.file(resourcePath);
@@ -146,8 +146,9 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		}
 		else if (contentPath.formName.equals(ASPECT_RESOURCES_REQUEST))
 		{
-			ThemedAssetLocation location = getThemedResourceLocation(bundlableNode, "common");
-			resourceFile = location.file(resourcePath);
+			String aspectName = contentPath.properties.get("aspect");
+			Aspect aspect =  bundlableNode.app().aspect(aspectName);
+			resourceFile = aspect.assetLocation("resources").file(resourcePath);
 		}
 		else if (contentPath.formName.equals(BLADESET_THEME_REQUEST))
 		{

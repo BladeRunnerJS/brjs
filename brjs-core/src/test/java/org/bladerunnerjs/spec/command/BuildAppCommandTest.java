@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.command;
 import static org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand.Messages.*;
 
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
@@ -14,11 +15,11 @@ import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 
 
 public class BuildAppCommandTest extends SpecTest {
 	App app;
+	Aspect aspect;
 	Bladeset bladeset;
 	Blade blade;
 	Blade badBlade;
@@ -27,9 +28,11 @@ public class BuildAppCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new BuildAppCommand())
+		given(brjs).automaticallyFindsCommands()
+			.and(brjs).automaticallyFindsBundlers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
+			aspect = app.aspect("default");
 			otherApp = brjs.app("other-app");
 			bladeset = app.bladeset("bladeset");
 			blade = bladeset.blade("blade");
@@ -124,16 +127,17 @@ public class BuildAppCommandTest extends SpecTest {
 			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
 	}
 	
-	//Failing test
-	@Ignore
 	@Test
 	public void appWithThemedDefaultAspectCanBeExportedAsAWar() throws Exception {
-		given(app).hasBeenCreated()
-			.and(app).containsFileWithContents("default-aspect/themes/standard/style.css", "ASPECT theme content");
+		given(brjs).usesProductionTemplates()
+			.and(brjs.appJars()).containsFile("some-jar.jar")
+			.and(brjs).commandHasBeenRun("create-app", "app")
+			.and(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
+			.and(brjs.sdkLibsDir()).containsFileWithContents("locale-forwarder.js", "Locale Forwarder");
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
-			.and(brjs).hasFile("generated/exported-apps/app.war")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/exported-apps/app").getCanonicalPath());
+			.and(brjs).hasFile("generated/built-apps/app.war")
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
 	}	
 	
 	@Test
