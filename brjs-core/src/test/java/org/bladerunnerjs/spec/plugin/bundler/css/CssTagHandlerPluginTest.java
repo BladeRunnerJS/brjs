@@ -1,6 +1,7 @@
 package org.bladerunnerjs.spec.plugin.bundler.css;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.AppConf;
@@ -8,6 +9,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.plugin.plugins.bundlers.css.CssTagHandlerPlugin;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,8 +48,8 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
-			"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
-			"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>");
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>");
 	}
 	
 	@Test
@@ -57,9 +59,9 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(appConf).supportsLocales("en", "en_GB");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-			"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
-			"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
-			"<link rel='stylesheet' href='../v/dev/css/common_en_GB/bundle.css'/>");
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en_GB/bundle.css\"/>");
 	}
 	
 	@Test
@@ -74,10 +76,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(blade).containsFile("themes/aspect/wibble.css");
 		when(loginAspect).indexPageLoadedInDev(response, "en_GB");
 		then(response).containsOrderedTextFragments(
-			"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
-			"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
-			"<link rel='stylesheet' href='../v/dev/css/common_en_GB/bundle.css'/>")
-			.and(response).doesNotContainText("href='css/aspect");
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en_GB/bundle.css\"/>")
+			.and(response).doesNotContainText("href=\"css/aspect");
 	}
 	
 	@Test
@@ -88,10 +90,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(standardTheme).containsFiles("style.css", "style_en.css");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(response).containsOrderedTextFragments(
-			"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
-			"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
-			"<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>",
-			"<link rel='stylesheet' title='standard' href='../v/dev/css/standard_en/bundle.css'/>");
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>",
+			"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard/bundle.css\"/>",
+			"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard_en/bundle.css\"/>");
 	}
 	
 	@Test
@@ -102,10 +104,10 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(standardTheme).containsFiles("style.css", "style_en.css");
 		when(workbench).pageLoaded(response, "en");
 		then(response).containsOrderedTextFragments(
-				"<link rel='stylesheet' href='../v/dev/css/common/bundle.css'/>",
-				"<link rel='stylesheet' href='../v/dev/css/common_en/bundle.css'/>",
-				"<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>",
-				"<link rel='stylesheet' title='standard' href='../v/dev/css/standard_en/bundle.css'/>");
+				"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
+				"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>",
+				"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard/bundle.css\"/>",
+				"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard_en/bundle.css\"/>");
 
 	}
 	
@@ -118,7 +120,105 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(blade).hasClass("appns/bs/b1/Class")
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/> appns.bs.Class  appns.bs.b1.Class ");
 		when(aspect).indexPageLoadedInDev(response, "en");
-		then(response).containsTextOnce("<link rel='stylesheet' title='standard' href='../v/dev/css/standard/bundle.css'/>");		
+		then(response).containsTextOnce("<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard/bundle.css\"/>");		
+	}
+	
+	@Test
+	public void requestsAreOnlyMadeForTheNamedTheme() throws Exception {
+		given(aspect).containsFile("themes/standard/wibble.css")
+			.and(aspect).containsFile("themes/theme1/wibble.css")
+			.and(aspect).containsFile("themes/theme2/wibble.css")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsText("<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard/bundle.css\"/>")
+			.and(response).doesNotContainText("../v/dev/css/theme1/bundle.css")	
+			.and(response).doesNotContainText("../v/dev/css/theme2/bundle.css");	
+	}
+	
+	@Test
+	public void requestsAreMadeForTheNamedThemeAndCommonIfItExists() throws Exception {
+		given(aspect).containsFile("themes/common/style.css")
+			.and(aspect).containsFile("themes/standard/style.css")
+			.and(aspect).containsFile("themes/theme1/style.css")
+			.and(aspect).containsFile("themes/theme2/style.css")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsOrderedTextFragments(
+			"<link rel=\"stylesheet\" href=\"../v/dev/css/common/bundle.css\"/>",
+			"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard/bundle.css\"/>")
+			.and(response).doesNotContainText("../v/dev/css/theme1/bundle.css")	
+			.and(response).doesNotContainText("../v/dev/css/theme2/bundle.css");
+	}
+	
+	@Test
+	public void bothThemeAndAlternateThemeCanBeUsed() throws Exception {
+		given(aspect).containsFile("themes/standard/style.css")
+    		.and(aspect).containsFile("themes/theme1/style.css")
+    		.and(aspect).containsFile("themes/theme2/style.css")
+    		.and(aspect).indexPageHasContent("<@css.bundle theme=\"standard\" alternateTheme=\"theme1,theme2\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsOrderedTextFragments(
+				"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard/bundle.css\"/>",	
+				"<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"../v/dev/css/theme1/bundle.css\"/>",	
+				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"../v/dev/css/theme2/bundle.css\"/>");	
+	}
+	
+	@Test
+	public void requestsAreOnlyMadeForTheAlternateNamedTheme() throws Exception {
+		given(aspect).containsFile("themes/standard/style.css")
+			.and(aspect).containsFile("themes/theme1/style.css")
+			.and(aspect).containsFile("themes/theme2/style.css")
+			.and(aspect).containsFile("themes/theme3/style.css")
+			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme1\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsText("<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"../v/dev/css/theme1/bundle.css\"/>")
+			.and(response).doesNotContainText("../v/dev/css/standard/bundle.css")	
+			.and(response).doesNotContainText("../v/dev/css/theme2/bundle.css");	
+	}
+	
+	@Test
+	public void requestsForAlternateThemeDontIncludeCommon() throws Exception {
+		given(aspect).containsFile("themes/common/style.css")
+			.and(aspect).containsFile("themes/standard/style.css")
+			.and(aspect).containsFile("themes/theme1/style.css")
+			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme1\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsText("<link rel=\"alternate stylesheet\" title=\"theme1\" href=\"../v/dev/css/theme1/bundle.css\"/>")
+			.and(response).doesNotContainText("../v/dev/css/common/bundle.css");	
 	}
 
+	@Test
+	public void themeAndAlternateThemeAttributesCanBeUsedAtTheSameTime() throws Exception {
+		given(aspect).containsFile("themes/theme1/style.css")
+			.and(aspect).containsFile("themes/theme2/style.css")
+			.and(aspect).containsFile("themes/theme3/style.css")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme1\" alternateTheme=\"theme2\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsOrderedTextFragments(
+				"<link rel=\"stylesheet\" title=\"theme1\" href=\"../v/dev/css/theme1/bundle.css\"/>",
+				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"../v/dev/css/theme2/bundle.css\"/>");	
+	}
+	
+	@Test
+	public void alternateThemeCanBeACommaSeperatedList() throws Exception {
+		given(aspect).containsFile("themes/theme1/style.css")
+			.and(aspect).containsFile("themes/theme2/style.css")
+			.and(aspect).containsFile("themes/theme3/style.css")
+			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme2,theme3\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsOrderedTextFragments(
+				"<link rel=\"alternate stylesheet\" title=\"theme2\" href=\"../v/dev/css/theme2/bundle.css\"/>",	
+				"<link rel=\"alternate stylesheet\" title=\"theme3\" href=\"../v/dev/css/theme3/bundle.css\"/>");	
+	}
+	
+	@Test
+	public void themeCannotBeACommaSeperatedList() throws Exception {
+		given(aspect).containsFile("themes/theme1/style.css")
+			.and(aspect).containsFile("themes/theme2/style.css")
+			.and(aspect).containsFile("themes/theme3/style.css")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme2,theme3\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.INVALID_THEME_EXCEPTION, "theme2,theme3");	
+	}
+	
 }
