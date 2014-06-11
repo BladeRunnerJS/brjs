@@ -61,8 +61,8 @@ public class BuildAppCommandTest extends SpecTest {
 	public void appIsExportedToGeneratedExportedAppsDirByDefault() throws Exception {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("build-app", "app");
-		then(brjs).hasDir("generated/exported-apps/app")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/exported-apps/app").getCanonicalPath());
+		then(brjs).hasDir("generated/built-apps/app")
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
 	}
 	
 	@Test
@@ -70,8 +70,8 @@ public class BuildAppCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(brjs).commandHasBeenRun("build-app", "app");
 		when(brjs).runCommand("build-app", "app");
-		then(brjs).hasDir("generated/exported-apps/app")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/exported-apps/app").getCanonicalPath())
+		then(brjs).hasDir("generated/built-apps/app")
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath())
 			.and(exceptions).verifyNoOutstandingExceptions();
 	}
 	
@@ -82,8 +82,8 @@ public class BuildAppCommandTest extends SpecTest {
 			.and(brjs).commandHasBeenRun("build-app", "other-app")
 			.and(brjs).commandHasBeenRun("build-app", "app");
 		when(brjs).runCommand("build-app", "app");
-		then(brjs).hasDir("generated/exported-apps/other-app")
-			.and(brjs).hasDir("generated/exported-apps/app");
+		then(brjs).hasDir("generated/built-apps/other-app")
+			.and(brjs).hasDir("generated/built-apps/app");
 	}
 	
 	@Test
@@ -119,8 +119,8 @@ public class BuildAppCommandTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
-			.and(brjs).hasFile("generated/exported-apps/app.war")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/exported-apps/app").getCanonicalPath());
+			.and(brjs).hasFile("generated/built-apps/app.war")
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
 	}
 	
 	@Test
@@ -128,9 +128,9 @@ public class BuildAppCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml><!-- start-env: dev --><dev-config /><!-- end-env --></web-xml>");
 		when(brjs).runCommand("build-app", "app");
-		then(brjs).fileContentsDoesNotContain("generated/exported-apps/app/WEB-INF/web.xml", "dev-config")
-    		.and(brjs).fileContentsDoesNotContain("generated/exported-apps/app/WEB-INF/web.xml", "start-env")
-    		.and(brjs).fileContentsDoesNotContain("generated/exported-apps/app/WEB-INF/web.xml", "end-env");
+		then(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "dev-config")
+    		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "start-env")
+    		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "end-env");
 	}
 	
 	@Test
@@ -138,10 +138,10 @@ public class BuildAppCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml><!-- start-env: dev --><dev-config /><!-- end-env --></web-xml>");
 		when(brjs).runCommand("build-app", "app", "-w")
-			.and(brjs).zipFileIsExtractedTo("generated/exported-apps/app.war", "generated/exported-apps/app.war.exploded");
-		then(brjs).fileContentsDoesNotContain("generated/exported-apps/app.war.exploded/WEB-INF/web.xml", "dev-config")
-    		.and(brjs).fileContentsDoesNotContain("generated/exported-apps/app.war.exploded/WEB-INF/web.xml", "start-env")
-    		.and(brjs).fileContentsDoesNotContain("generated/exported-apps/app.war.exploded/WEB-INF/web.xml", "end-env");
+			.and(brjs).zipFileIsExtractedTo("generated/built-apps/app.war", "generated/built-apps/app.war.exploded");
+		then(brjs).fileContentsDoesNotContain("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "dev-config")
+    		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "start-env")
+    		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "end-env");
 	}
 	
 	@Test
@@ -149,9 +149,9 @@ public class BuildAppCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml><!-- start-env: prod\n"+"<prod-config />\n"+"end-env --></web-xml>");
 		when(brjs).runCommand("build-app", "app");
-		then(brjs).fileContentsContains("generated/exported-apps/app/WEB-INF/web.xml", "<prod-config")
-    		.and(brjs).fileContentsDoesNotContain("generated/exported-apps/app/WEB-INF/web.xml", "start-env")
-    		.and(brjs).fileContentsDoesNotContain("generated/exported-apps/app/WEB-INF/web.xml", "end-env");
+		then(brjs).fileContentsContains("generated/built-apps/app/WEB-INF/web.xml", "<prod-config")
+    		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "start-env")
+    		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app/WEB-INF/web.xml", "end-env");
 	}
 	
 	@Test
@@ -159,10 +159,10 @@ public class BuildAppCommandTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("WEB-INF/web.xml", "<web-xml><!-- start-env: prod\n"+"<prod-config />\n"+"end-env --></web-xml>");
     	when(brjs).runCommand("build-app", "app", "-w")
-    		.and(brjs).zipFileIsExtractedTo("generated/exported-apps/app.war", "generated/exported-apps/app.war.exploded");
-    	then(brjs).fileContentsContains("generated/exported-apps/app.war.exploded/WEB-INF/web.xml", "<prod-config")
-    		.and(brjs).fileContentsDoesNotContain("generated/exported-apps/app.war.exploded/WEB-INF/web.xml", "start-env")
-    		.and(brjs).fileContentsDoesNotContain("generated/exported-apps/app.war.exploded/WEB-INF/web.xml", "end-env");
+    		.and(brjs).zipFileIsExtractedTo("generated/built-apps/app.war", "generated/built-apps/app.war.exploded");
+    	then(brjs).fileContentsContains("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "<prod-config")
+    		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "start-env")
+    		.and(brjs).fileContentsDoesNotContain("generated/built-apps/app.war.exploded/WEB-INF/web.xml", "end-env");
 	}
 	
 	@Test
