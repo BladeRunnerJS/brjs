@@ -24,7 +24,7 @@ import com.martiansoftware.jsap.UnflaggedOption;
 public class BuildAppCommand extends ArgsParsingCommandPlugin {
 
 	public class Messages {
-		public static final String APP_BUILT_CONSOLE_MSG = "Exported app '%s' to '%s'";
+		public static final String APP_BUILT_CONSOLE_MSG = "Built app '%s' available at '%s'";
 	}
 	
 	private BRJS brjs;
@@ -69,7 +69,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		File targetDir;
 		if (targetDirPath == null) 
 		{
-			targetDir = brjs.storageDir("exported-apps");
+			targetDir = brjs.storageDir("built-apps");
 			File appExportDir = new File(targetDir, appName);
 			if (appExportDir.exists()) {
 				FileUtils.deleteQuietly(appExportDir);
