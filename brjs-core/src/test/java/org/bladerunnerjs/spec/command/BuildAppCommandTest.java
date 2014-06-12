@@ -79,6 +79,36 @@ public class BuildAppCommandTest extends SpecTest {
 	}
 	
 	@Test
+	public void appOverwritesExistingWarIfBuildingToTheDefaultLocation() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).commandHasBeenRun("build-app", "app", "-w");
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(brjs).hasFile("generated/built-apps/app.war")
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath())
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void buildingAWarShouldNotDeleteAPreviousBuildStaticApp() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).commandHasBeenRun("build-app", "app");
+		when(brjs).runCommand("build-app", "app", "-w");
+		then(brjs).hasDir("generated/built-apps/app")
+			.and(brjs).hasFile("generated/built-apps/app.war")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
+	public void buildingAStaticAppShouldNotDeleteAPreviouslyBuiltWar() throws Exception {
+		given(app).hasBeenCreated()
+			.and(brjs).commandHasBeenRun("build-app", "app", "-w");
+		when(brjs).runCommand("build-app", "app");
+		then(brjs).hasDir("generated/built-apps/app")
+			.and(brjs).hasFile("generated/built-apps/app.war")
+			.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	@Test
 	public void overwrittenAppsInDefaultLocationDontNukeOtherBuiltApps() throws Exception {
 		given(app).hasBeenCreated()
 			.and(otherApp).hasBeenCreated()
@@ -123,7 +153,7 @@ public class BuildAppCommandTest extends SpecTest {
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath());
 	}
 	
 	@Test
@@ -136,7 +166,7 @@ public class BuildAppCommandTest extends SpecTest {
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")
-			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app").getCanonicalPath());
+			.and(output).containsLine(APP_BUILT_CONSOLE_MSG, "app", brjs.file("generated/built-apps/app.war").getCanonicalPath());
 	}	
 	
 	@Test

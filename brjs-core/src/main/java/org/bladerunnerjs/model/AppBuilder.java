@@ -26,12 +26,17 @@ import org.bladerunnerjs.utility.WebXmlCompiler;
 public class AppBuilder {
 	public static void build(App app, File targetDir, boolean warExport) throws ModelOperationException {
 		AppRequestHandler appRequestHandler = new AppRequestHandler(app);
+		
+		File temporaryExportDir = getTemporaryExportDir(app);
 		File appExportDir = new File(targetDir, app.getName());
+		File warExportFile = new File(targetDir, app.getName()+".war");
 		
 		if(!targetDir.isDirectory()) throw new ModelOperationException("'" + targetDir.getPath() + "' is not a directory.");
-		if(appExportDir.exists()) throw new ModelOperationException("'" + appExportDir.getPath() + "' already exists.");
-		
-		appExportDir.mkdir();
+		if (warExport) {
+			if(warExportFile.exists()) throw new ModelOperationException("'" + warExportFile.getPath() + "' already exists.");
+		} else {
+			if(appExportDir.exists()) throw new ModelOperationException("'" + appExportDir.getPath() + "' already exists.");
+		}
 		
 		try {
 			String[] locales = app.appConf().getLocales();
@@ -40,7 +45,7 @@ public class AppBuilder {
 			
 			File appWebInf = app.file("WEB-INF");
 			if(appWebInf.exists()) {
-				File exportedWebInf = new File(appExportDir, "WEB-INF");
+				File exportedWebInf = new File(temporaryExportDir, "WEB-INF");
 				FileUtils.copyDirectory(appWebInf, exportedWebInf);
 				File exportedWebXml = new File(exportedWebInf, "web.xml");
 				if (exportedWebXml.isFile()) {
@@ -51,7 +56,7 @@ public class AppBuilder {
 			for(Aspect aspect : app.aspects()) {
 				BundleSet bundleSet = aspect.getBundleSet();
 				String aspectPrefix = (aspect.getName().equals("default")) ? "" : aspect.getName() + "/";
-				File localeForwardingFile = new File(appExportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
+				File localeForwardingFile = new File(temporaryExportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
 				
 				localeForwardingFile.getParentFile().mkdirs();
 				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
@@ -60,7 +65,7 @@ public class AppBuilder {
 				
 				for(String locale : locales) {
 					String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
-					File localeIndexPageFile = new File(appExportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale) + indexPageName);
+					File localeIndexPageFile = new File(temporaryExportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale) + indexPageName);
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
@@ -71,7 +76,7 @@ public class AppBuilder {
 				for(ContentPlugin contentPlugin : app.root().plugins().contentProviders()) {
 					if(contentPlugin.getCompositeGroupName() == null) {
 						for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-							File bundleFile = new File(appExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
+							File bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
 							
 							bundleFile.getParentFile().mkdirs();
 							try(OutputStream os = new FileOutputStream(bundleFile)) {
@@ -83,13 +88,27 @@ public class AppBuilder {
 			}
 			
 			if(warExport) {
-				File warFile = new File(targetDir, app.getName() + ".war");
-				FileUtility.zipFolder(appExportDir, warFile, true);
-				FileUtils.deleteDirectory(appExportDir);
+				FileUtility.zipFolder(temporaryExportDir, warExportFile, true);
+			} else {
+				FileUtility.copyDirectoryIfExists(temporaryExportDir, appExportDir);
 			}
+			FileUtils.deleteQuietly(temporaryExportDir);
+			
 		}
 		catch(ConfigException | ContentProcessingException | MalformedRequestException | MalformedTokenException | IOException | ParseException e) {
 			throw new ModelOperationException(e);
+		}
+	}
+
+	private static File getTemporaryExportDir(App app) throws ModelOperationException
+	{
+		try
+		{
+			return FileUtility.createTemporaryDirectory(app.getName()+"_build");
+		}
+		catch (IOException ex)
+		{
+			throw new ModelOperationException(ex);
 		}
 	}
 }
