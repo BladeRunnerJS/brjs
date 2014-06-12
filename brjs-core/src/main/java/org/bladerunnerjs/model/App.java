@@ -14,6 +14,8 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.app.build.AppBuilder;
+import org.bladerunnerjs.model.app.build.WarAppBuilder;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -293,10 +295,10 @@ public class App extends AbstractBRJSNode implements NamedNode
 	}
 	
 	public void build(File targetDir) throws ModelOperationException {
-		build(targetDir, false);
+		new AppBuilder().build(this, targetDir);
 	}
 	
-	public void build(File targetDir, boolean warExport) throws ModelOperationException {
-		AppBuilder.build(this, targetDir, warExport);
+	public void buildWar(File targetDir) throws ModelOperationException {
+		new WarAppBuilder().build(this, targetDir);
 	}
 }
