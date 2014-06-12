@@ -40,7 +40,7 @@ function getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales) {
 	return firstMatchingLocale;
 }
 
-function getActiveLocale(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
+exports.getActiveLocale = function(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
 	var activeLocale;
 
 	if(appSupportedLocales[userPreferredLocale]) {
@@ -63,7 +63,7 @@ function getActiveLocale(userPreferredLocale, userAcceptedLocales, appSupportedL
 	return activeLocale;
 }
 
-function getLocalizedPageUrl(pageUrl, locale) {
+exports.getLocalizedPageUrl = function(pageUrl, locale) {
 	var urlParser = document.createElement('a');
 	urlParser.href = pageUrl;
 
@@ -78,6 +78,6 @@ function getLocalizedPageUrl(pageUrl, locale) {
 	return protocol+"//"+host+url+locale+"/"+queryString+anchor;
 }
 
-function forwardToLocalePage() {
+exports.forwardToLocalePage = function() {
 	window.location = getLocalizedPageUrl(window.location.href, getActiveLocale(getCookie("BRJS.LOCALE"), getUserAcceptedLocales(), $appSupportedLocales));
 }
