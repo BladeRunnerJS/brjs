@@ -129,7 +129,7 @@ public class TemplateTests extends SpecTest
 				Arrays.asList("br-lib.conf", "src/lib/Lib.js", "tests/test-unit/js-test-driver/jsTestDriver.conf", "tests/test-unit/js-test-driver/resources/aliases.xml", 
 							"tests/test-unit/js-test-driver/tests/LibTest.js"),
 				Arrays.asList("src", "tests", "tests/test-unit/js-test-driver/")
-		);
+		).and(lib).fileContentsContains("src/lib/Lib.js", "Lib = ");
 	}
 	
 	@Test
