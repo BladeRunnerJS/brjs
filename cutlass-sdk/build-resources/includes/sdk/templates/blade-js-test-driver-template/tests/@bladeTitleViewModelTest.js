@@ -4,5 +4,5 @@ var @bladeTitleViewModel = require( '@appns/@bladeset/@blade/@bladeTitleViewMode
 
 @bladeTitleViewModelTest.prototype.testSomething = function() {
   var model = new @bladeTitleViewModel();
-  assertEquals( 'Hello World!', model.message() );
+  assertEquals( 'Welcome to your new Blade.', model.welcomeMessage() );
 };
