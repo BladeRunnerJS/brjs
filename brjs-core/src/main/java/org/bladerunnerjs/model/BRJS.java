@@ -54,7 +54,7 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CLOSE_METHOD_NOT_INVOKED = "the BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 	}
 	
-	private final NodeList<App> apps = new NodeList<>(this, App.class, "apps", null);
+	private final NodeList<App> userApps = new NodeList<>(this, App.class, "apps", null);
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
 	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript", null);
@@ -208,12 +208,28 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> apps()
 	{
-		return apps.list();
+		List<App> appsList = new ArrayList<>(userApps.list());
+		appsList.addAll(systemApps.list());
+		
+		return appsList;
 	}
 	
 	public App app(String appName)
 	{
-		return apps.item(appName);
+		App userApp = userApps.item(appName);
+		App systemApp = systemApps.item(appName);
+		
+		return(systemApp.dirExists()) ? systemApp : userApp;
+	}
+	
+	public List<App> userApps()
+	{
+		return userApps.list();
+	}
+	
+	public App userApp(String appName)
+	{
+		return userApps.item(appName);
 	}
 	
 	public List<App> systemApps()
