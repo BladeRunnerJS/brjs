@@ -92,7 +92,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			locale = languageCode;
 		}
 		
-		String pattern = getFilePattern(locale, null);
+		String pattern = getFilePattern(locale);
 		
 		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 			List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
@@ -191,13 +191,10 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		return locale;
 	}
 
-	private String getFilePattern(String locale, String browser) {
+	private String getFilePattern(String locale) {
 		if (locale != null) {
 			// .*_en_GB.css
-			return ".*_"+locale+"\\.css";
-		} else if (browser != null) {
-			// .*_ie8.css
-			return ".*_"+browser+"\\.css";
+			return ".*_("+locale+")\\.css";
 		} else {
 			/* a funky bit of regex magic so we can support filenames 
 			 * with an _ that dont have the format of a locale (e.g. style_sheet.css)
