@@ -12,7 +12,6 @@ import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.LinkedFileAsset;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.TestAssetLocation;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
