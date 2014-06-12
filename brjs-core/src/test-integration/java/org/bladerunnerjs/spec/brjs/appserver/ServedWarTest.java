@@ -34,7 +34,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void exportedWarCanBeDeployedOnAnAppServer() throws Exception {
-		given(brjs).localeForwarderHasContents("locale-forwarder.js")
+		given(brjs).localeForwarderHasContents("Locale Forwarder")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(aspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).hasProdVersion("1234")
