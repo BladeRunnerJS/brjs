@@ -1,4 +1,12 @@
 <div id="@appns.@bladeset.@blade.view-template">
-	<div class="hello-world-message" data-bind="text:message"></div>
-	<button class="button" data-bind="click:buttonClicked">Log me</button>
+	<div class="@bladeset-@blade-blade">
+		<h1 class="hello-world-message" data-bind="text:message"></h1>
+		<p>
+			HTML hello.world property:@{@appns.@bladeset.@blade.hello.world}
+		</p>
+		<p>
+			JS hello.world property: <span data-bind="text:helloWorldI18n"></span>
+		</p>
+		<button class="button" data-bind="click:buttonClicked">Say Hello!</button>
+	</div>
 </div>

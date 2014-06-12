@@ -2,15 +2,16 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		
+
 		<title>My Application</title>
-		
+
 		<@css.bundle theme="standard"@/>
-		
+
 	</head>
 	<body>
 		<p>Successfully loaded the application</p>
 
+		<@i18n.bundle @/>
     	<!-- dev-minifier can be set to "combined" for all JS content to be bundled with a single request -->
 		<@js.bundle dev-minifier="none" prod-minifier="combined"@/>
 		<script>
