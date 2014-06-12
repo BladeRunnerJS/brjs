@@ -76,6 +76,15 @@ public class ServedAppTest extends SpecTest
 	}
 	
 	@Test
+	public void requestsForInvalidModelPathsThatDoExistOnDiskReturn404() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
+			.and(appServer).started();
+		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
+	}
+	
+	@Test
 	public void jspIndexPageCanBeAccessed() throws Exception
 	{
 		given(app).hasBeenPopulated()
