@@ -11,7 +11,6 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandException;
 import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
-import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
