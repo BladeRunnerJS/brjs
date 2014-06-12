@@ -147,6 +147,19 @@ PropertyTest.prototype.test_onPropertyChangedIsNeverInvokedWhenTheValueIsUpdated
 	oProperty.setValue("initial value"); // setting to the same value as before
 };
 
+PropertyTest.prototype.test_onPropertyChangedIsNotInvokedWhenTheValuesAreNaN = function()
+{
+	var oPropertyListenerMock = mock(br.presenter.property.PropertyListener);
+	oPropertyListenerMock.stubs().onPropertyUpdated();
+
+	// no listeners have been added yet, so won't be informed about 'initial value'
+	var oProperty = new br.presenter.property.WritableProperty().setValue(NaN);
+
+	oProperty.addListener(oPropertyListenerMock.proxy());
+	oPropertyListenerMock.expects(never()).onPropertyChanged();
+	oProperty.setValue(NaN); // setting to NaN again
+};
+
 PropertyTest.prototype.test_onPropertyChangedIsInvokedForAllListenersWhenTheValueChanges = function()
 {
 	var oPropertyListenerMock1 = mock(br.presenter.property.PropertyListener);

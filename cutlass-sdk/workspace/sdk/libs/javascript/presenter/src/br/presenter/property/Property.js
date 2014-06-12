@@ -75,15 +75,21 @@ br.presenter.property.Property.prototype.getValue = function()
 br.presenter.property.Property.prototype._$setInternalValue = function(vValue)
 {
 	var vOldValue = this.m_vValue;
+	var bBothValuesAreNaN = false;
 	this.m_vValue = vValue;
+
+	if (typeof vOldValue === 'number' && isNaN(vOldValue) && typeof this.m_vValue === 'number' && isNaN(this.m_vValue)) {
+		bBothValuesAreNaN = true;
+	}
 
 	this.updateView(this.getFormattedValue());
 
 	this.m_oObservable.notifyObservers("onPropertyUpdated");
-	if (vOldValue !== this.m_vValue)
+	if (vOldValue !== this.m_vValue && bBothValuesAreNaN === false)
 	{
 		this.m_oObservable.notifyObservers("onPropertyChanged");
 	}
+
 	return this;
 };
 
