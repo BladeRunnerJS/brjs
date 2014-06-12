@@ -32,6 +32,8 @@ import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 public class JsDocCommand extends ArgsParsingCommandPlugin {
+	public static final String APP_STORAGE_DIR_NAME = "jsdoc";
+
 	public class Messages {
 		public static final String API_DOCS_GENERATED_MSG = "API docs correctly generated in '%s'";
 	}
@@ -54,7 +56,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	
 	@Override
 	public String getCommandName() {
-		return "jsdoc";
+		return APP_STORAGE_DIR_NAME;
 	}
 	
 	@Override
@@ -76,7 +78,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
-		File outputDir = app.storageDir("jsdoc-toolkit");
+		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
 		CommandRunner.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
 		
 		try {
