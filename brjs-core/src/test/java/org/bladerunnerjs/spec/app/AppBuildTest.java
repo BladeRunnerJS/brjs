@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.Before;
@@ -12,7 +11,6 @@ import org.junit.Test;
 
 public class AppBuildTest extends SpecTest {
 	private App app;
-	private DirNode sdkLibsDir;
 	private Aspect defaultAspect;
 	private Aspect nonDefaultAspect;
 	private File targetDir;
@@ -23,7 +21,6 @@ public class AppBuildTest extends SpecTest {
 			.and(brjs).automaticallyFindsMinifiers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
-			sdkLibsDir = brjs.sdkLibsDir();
 			defaultAspect = app.aspect("default");
 			nonDefaultAspect = app.aspect("aspect2");
 			targetDir = FileUtility.createTemporaryDirectory(AppBuildTest.class.getSimpleName());
@@ -32,7 +29,7 @@ public class AppBuildTest extends SpecTest {
 	@Test
 	public void builtAppHasLocaleForwardingPage() throws Exception {
 		given(defaultAspect).containsFile("index.html")
-			.and(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "Locale Forwarder")
+			.and(brjs).localeForwarderHasContents("Locale Forwarder")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("app1/index.html", "Locale Forwarder");
 	}
@@ -40,7 +37,7 @@ public class AppBuildTest extends SpecTest {
 	@Test
 	public void builtAppHasAspectIndexPage() throws Exception {
 		given(defaultAspect).containsFile("index.html")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFile("app1/en/index.html");
 	}
@@ -48,7 +45,7 @@ public class AppBuildTest extends SpecTest {
 	@Test
 	public void indexPageHasLogicalTagsReplaced() throws Exception {
 		given(defaultAspect).containsFileWithContents("index.html", "<@js.bundle@/>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("app1/en/index.html", "/js/prod/combined/bundle.js");
 	}
@@ -57,7 +54,7 @@ public class AppBuildTest extends SpecTest {
 	public void builtAppHasLocalizedIndexPagePerLocale() throws Exception {
 		given(app).containsFileWithContents("app.conf", "requirePrefix: app\nlocales: en, de")
 			.and(defaultAspect).containsFileWithContents("index.html", "<@i18n.bundle@/>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("app1/en/index.html", "/i18n/en.js")
 			.and(targetDir).containsFileWithContents("app1/de/index.html", "/i18n/de.js");
@@ -66,7 +63,7 @@ public class AppBuildTest extends SpecTest {
 	@Test
 	public void jspIndexPagesAreUnprocessedAndKeepTheJspSuffix() throws Exception {
 		given(defaultAspect).containsFileWithContents("index.jsp", "<%= 1 + 2 %>\n<@js.bundle@/>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("app1/en/index.jsp", "<%= 1 + 2 %>")
 			.and(targetDir).containsFileWithContents("app1/en/index.jsp", "/js/prod/combined/bundle.js");
@@ -76,7 +73,7 @@ public class AppBuildTest extends SpecTest {
 	public void nonDefaultAspectsHaveTheSameIndexPagesButWithinANamedDirectory() throws Exception {
 		given(defaultAspect).containsFileWithContents("index.html", "<@js.bundle@/>")
 			.and(nonDefaultAspect).containsFileWithContents("index.html", "<@i18n.bundle@/>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("app1/index.html", "locale-forwarder.js")
 			.and(targetDir).containsFileWithContents("app1/en/index.html", "/js/prod/combined/bundle.js")
@@ -88,7 +85,7 @@ public class AppBuildTest extends SpecTest {
 	public void aSingleSetOfBundlesAreCreated() throws Exception {
 		given(defaultAspect).containsFile("index.html")
 			.and(defaultAspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFile("app1/v/1234/html/bundle.html")
@@ -98,7 +95,7 @@ public class AppBuildTest extends SpecTest {
 	@Test
 	public void theWebInfDirectoryIsCopiedIfThereIsOne() throws Exception {
 		given(defaultAspect).containsFile("index.html")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasDir("WEB-INF/lib")
 			.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsDir("app1/WEB-INF/lib");
@@ -106,7 +103,7 @@ public class AppBuildTest extends SpecTest {
 	
 	@Test
 	public void bundlesAvailableAsPartOfACompositeArentSerialized() throws Exception {
-		given(sdkLibsDir).containsFile("locale-forwarder.js")
+		given(brjs).localeForwarderHasContents("")
 			.and(defaultAspect).indexPageRequires("appns/Class")
 			.and(defaultAspect).hasClass("appns/Class")
 			.and(brjs).hasProdVersion("1234")

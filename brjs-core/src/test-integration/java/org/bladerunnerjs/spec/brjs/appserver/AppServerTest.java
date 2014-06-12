@@ -39,7 +39,7 @@ public class AppServerTest extends SpecTest
 		given(brjs).hasModelObservers(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
-			.and(brjs.sdkLibsDir()).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");
 			appServer = brjs.applicationServer(appServerPort);
