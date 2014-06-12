@@ -37,12 +37,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public Set<LinkedAsset> linkedAssets() {
-		return new LinkedHashSet<LinkedAsset>(sourceModulesMap().values());
+		return new LinkedHashSet<LinkedAsset>(linkedAssetsMap().values());
 	}
 	
 	@Override
 	public LinkedAsset linkedAsset(String requirePath) {
-		return sourceModulesMap().get(requirePath);
+		return linkedAssetsMap().get(requirePath);
 	}
 	
 	@Override
@@ -69,14 +69,14 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		return assetLocationPaths;
 	}
 	
-	private Map<String, LinkedAsset> sourceModulesMap() {
+	private Map<String, LinkedAsset> linkedAssetsMap() {
 		return linkedAssetMap.value(() -> {
 			Map<String, LinkedAsset> sourceModulesMap = new LinkedHashMap<>();
 			
 			for (AssetLocation assetLocation : assetLocations())
 			{
 				for(SourceModule sourceModule : assetLocation.sourceModules()) {
-					sourceModulesMap.put(sourceModule.getRequirePath(), sourceModule);
+					sourceModulesMap.put(sourceModule.getPrimaryRequirePath(), sourceModule);
 				}
 				for(LinkedAsset asset : assetLocation.linkedAssets()) {
 					sourceModulesMap.put(asset.getAssetPath(), asset);

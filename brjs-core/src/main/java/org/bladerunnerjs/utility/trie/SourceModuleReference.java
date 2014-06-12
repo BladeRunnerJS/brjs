@@ -15,6 +15,6 @@ public class SourceModuleReference implements AssetReference {
 	}
 	
 	public String getRequirePath() {
-		return sourceModule.getRequirePath();
+		return sourceModule.getPrimaryRequirePath();
 	}
 }

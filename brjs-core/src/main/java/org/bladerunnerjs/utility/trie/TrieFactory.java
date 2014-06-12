@@ -10,7 +10,6 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.LinkedFileAsset;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.engine.NodeProperties;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -54,13 +53,17 @@ public class TrieFactory {
 						}
 						
 						for(LinkedAsset asset : assetContainer.linkedAssets()) {
-							if(asset instanceof SourceModule){
-								SourceModule sourceModule = (SourceModule)asset;
-								addToTrie(trie, sourceModule.getRequirePath(), new SourceModuleReference(sourceModule));
-								
-								String moduleClassname = sourceModule.getRequirePath().replaceAll("/", ".");
-								if (moduleClassname != null) {
-									addToTrie(trie, moduleClassname, new SourceModuleReference(sourceModule));
+							List<String> requirePaths = asset.getRequirePaths();
+							
+							for(String requirePath : requirePaths) {
+								if(asset instanceof SourceModule) {
+									SourceModule sourceModule = (SourceModule) asset;
+									
+									addToTrie(trie, requirePath, new SourceModuleReference(sourceModule));
+									addToTrie(trie, requirePath.replaceAll("/", "."), new SourceModuleReference(sourceModule));
+								}
+								else {
+									addToTrie(trie, requirePath, new LinkedAssetReference(asset));
 								}
 							}
 						}
@@ -70,19 +73,6 @@ public class TrieFactory {
 								String aliasName = aliasDefintion.getName();
 								addToTrie(trie, aliasName, new AliasDefinitionReference(aliasDefintion));
 							}
-							
-							List<LinkedAsset> linkedAssets = assetLocation.linkedAssets();
-							for(LinkedAsset linkedAsset: linkedAssets ){
-								if(linkedAsset instanceof LinkedFileAsset){
-									LinkedFileAsset asset = (LinkedFileAsset)linkedAsset;
-									List<String> requirePaths = linkedAsset.getProvidedRequirePaths();
-									for(String path : requirePaths){
-										addToTrie(trie, path, new LinkedFileAssetReference(asset));
-									}
-								}
-							}
-							
-							
 						}
 					}
 					catch (EmptyTrieKeyException | ContentFileProcessingException ex) {

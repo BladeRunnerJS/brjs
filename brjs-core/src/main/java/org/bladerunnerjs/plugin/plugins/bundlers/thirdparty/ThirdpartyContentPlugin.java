@@ -77,7 +77,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
 						if(sourceFile instanceof ThirdpartySourceModule)
 						{
-							writer.write("// " + sourceFile.getRequirePath() + "\n");
+							writer.write("// " + sourceFile.getPrimaryRequirePath() + "\n");
 							IOUtils.copy(sourceFile.getReader(), writer);
 							writer.write("\n\n");
 						}
@@ -109,7 +109,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) 
 				{
 					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-					writer.write("// " + jsModule.getRequirePath() + "\n");
+					writer.write("// " + jsModule.getPrimaryRequirePath() + "\n");
 					IOUtils.copy(jsModule.getReader(), writer);
 					writer.write("\n\n");
 				}
@@ -131,7 +131,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		try {
 			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 				if(sourceModule instanceof ThirdpartySourceModule) {
-					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
+					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
 				}
 			}
 		}

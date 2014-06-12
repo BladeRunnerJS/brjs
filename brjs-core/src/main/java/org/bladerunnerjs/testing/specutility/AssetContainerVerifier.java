@@ -40,7 +40,7 @@ public class AssetContainerVerifier {
 			String expectedSourceModule = expectedSourceModules[i++];
 			StringWriter sourceModuleContents = new StringWriter();
 			
-			assertEquals("Source module " + i + " differs from what's expected.", expectedSourceModule, actualSourceModule.getRequirePath());
+			assertEquals("Source module " + i + " differs from what's expected.", expectedSourceModule, actualSourceModule.getPrimaryRequirePath());
 			IOUtils.copy(actualSourceModule.getReader(), sourceModuleContents);
 		}
 	}
@@ -93,7 +93,7 @@ public class AssetContainerVerifier {
 		List<String> sourceModulePaths = new ArrayList<>();
 		
 		for(SourceModule sourceModule : sourceModules) {
-			sourceModulePaths.add(sourceModule.getRequirePath());
+			sourceModulePaths.add(sourceModule.getPrimaryRequirePath());
 		}
 		
 		return Joiner.on(", ").join(sourceModulePaths);

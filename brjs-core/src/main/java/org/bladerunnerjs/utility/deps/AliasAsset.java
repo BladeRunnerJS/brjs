@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.exception.ModelOperationException;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 
 public class AliasAsset implements LinkedAsset {
 	private final AliasDefinition alias;
@@ -56,8 +57,12 @@ public class AliasAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public List<String> getProvidedRequirePaths() {
+	public List<String> getRequirePaths() {
 		return new ArrayList<String>();
 	}
 	
+	@Override
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+	}
 }

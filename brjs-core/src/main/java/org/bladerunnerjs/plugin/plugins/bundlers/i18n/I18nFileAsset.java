@@ -3,7 +3,9 @@ package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -15,6 +17,7 @@ import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
@@ -74,6 +77,17 @@ public class I18nFileAsset implements Asset
 	public String getAssetPath()
 	{
 		return assetPath;
+	}
+	
+	@Override
+	public List<String> getRequirePaths() {
+		// TODO: we should return the complete list of i18n tokens
+		return Collections.emptyList();
+	}
+	
+	@Override
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 	
 	public String getLocaleLanguage()

@@ -93,7 +93,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 			{
 				if (sourceModule instanceof CommonJsSourceModule)
 				{
-					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
+					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getPrimaryRequirePath()));
 				}
 			}
 		}
@@ -132,7 +132,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 					{
 						if (sourceModule instanceof CommonJsSourceModule)
 						{
-							writer.write("// " + sourceModule.getRequirePath() + "\n");
+							writer.write("// " + sourceModule.getPrimaryRequirePath() + "\n");
 							IOUtils.copy(sourceModule.getReader(), writer);
 							writer.write("\n\n");
 						}

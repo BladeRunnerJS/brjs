@@ -59,7 +59,7 @@ public class DependencyGraphReportBuilder {
 			List<LinkedAsset> linkedAssets = new ArrayList<>();
 			linkedAssets.add(sourceModule);
 			
-			return "Source module '" + sourceModule.getRequirePath() + "' dependencies found:\n" +
+			return "Source module '" + sourceModule.getPrimaryRequirePath() + "' dependencies found:\n" +
 			new DependencyGraphReportBuilder(linkedAssets, DependencyInfoFactory.buildReverseDependencyMap(browsableNode, sourceModule), showAllDependencies).createReport();
 		}
 		catch(RequirePathException e) {
@@ -73,7 +73,7 @@ public class DependencyGraphReportBuilder {
 		fixIncompleteAliases(browsableNode);
 		
 		for(SourceModule sourceModule : browsableNode.getBundleSet().getSourceModules()) {
-			if(sourceModule.getRequirePath().startsWith(requirePathPrefix)) {
+			if(sourceModule.getPrimaryRequirePath().startsWith(requirePathPrefix)) {
 				linkedAssets.add(sourceModule);
 			}
 		}

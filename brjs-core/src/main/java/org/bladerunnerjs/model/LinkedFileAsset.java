@@ -9,6 +9,7 @@ import java.util.List;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.reader.factory.JsAndXmlCommentStrippingReaderFactory;
@@ -90,9 +91,12 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 
 	@Override
-	public List<String> getProvidedRequirePaths() {
+	public List<String> getRequirePaths() {
 		return new ArrayList<String>();
 	}
 	
-	
+	@Override
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+	}
 }

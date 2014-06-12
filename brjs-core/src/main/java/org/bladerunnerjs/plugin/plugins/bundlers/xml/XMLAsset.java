@@ -17,7 +17,7 @@ public class XMLAsset extends LinkedFileAsset {
 	}
 	
 	@Override
-	public List<String> getProvidedRequirePaths() {
+	public List<String> getRequirePaths() {
 		
 		List<String> result = new ArrayList<String>();
 		

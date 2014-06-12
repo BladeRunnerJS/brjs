@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.reader.factory.JsCommentAndCodeBlockStrippingReaderFactory;
 import org.bladerunnerjs.utility.reader.factory.JsCommentStrippingReaderFactory;
@@ -34,7 +35,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	private AssetLocation assetLocation;
 	private File assetFile;
-	private String requirePath;
+	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	private TrieBasedDependenciesCalculator trieBasedStaticDependenciesCalculator;
@@ -42,8 +43,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
-		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
+		requirePaths.add(assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", ""));
+		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 	}
 	
 	@Override
@@ -85,18 +86,18 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		String defineBlockHeader = CommonJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
 		
 		Reader[] readers = new Reader[] { 
-				new StringReader( String.format(defineBlockHeader, getRequirePath()) ), 
+				new StringReader( String.format(defineBlockHeader, getPrimaryRequirePath()) ), 
 				getUnalteredContentReader(),
 				new StringReader( "\n" ),
-				new StringReader( "module.exports = " + getRequirePath().replaceAll("/", ".") + ";" ),
+				new StringReader( "module.exports = " + getPrimaryRequirePath().replaceAll("/", ".") + ";" ),
 				new StringReader(CommonJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 
 		};
 		return new ConcatReader( readers );
 	}
 	
 	@Override
-	public String getRequirePath() {
-		return requirePath;
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 	
 	@Override
@@ -185,8 +186,8 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	@Override
-	public List<String> getProvidedRequirePaths() {
-		return new ArrayList<String>();
+	public List<String> getRequirePaths() {
+		return requirePaths;
 	}
 	
 }

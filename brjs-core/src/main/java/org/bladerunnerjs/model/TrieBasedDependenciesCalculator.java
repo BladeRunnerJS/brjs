@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 import org.bladerunnerjs.utility.trie.AliasReference;
 import org.bladerunnerjs.utility.trie.AssetReference;
-import org.bladerunnerjs.utility.trie.LinkedFileAssetReference;
+import org.bladerunnerjs.utility.trie.LinkedAssetReference;
 import org.bladerunnerjs.utility.trie.SourceModuleReference;
 import org.bladerunnerjs.utility.trie.Trie;
 import org.bladerunnerjs.utility.trie.TrieFactory;
@@ -75,8 +75,8 @@ public class TrieBasedDependenciesCalculator
 							{
 								computedValue.aliases.add(alias);							
 							}
-						}else if (match instanceof LinkedFileAssetReference){
-							LinkedFileAssetReference reference = (LinkedFileAssetReference)match;
+						}else if (match instanceof LinkedAssetReference){
+							LinkedAssetReference reference = (LinkedAssetReference)match;
 							if(!asset.getAssetPath().equals(reference.getAssetPath())) {
 								computedValue.requirePaths.add(reference.getRequirePath());
 							}

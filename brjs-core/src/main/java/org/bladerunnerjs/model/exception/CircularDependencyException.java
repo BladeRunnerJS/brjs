@@ -27,7 +27,7 @@ public class CircularDependencyException extends ModelOperationException {
 		List<String> requirePaths = new ArrayList<>();
 		
 		for (SourceModule sourceModule : sourceModules) {
-			requirePaths.add("'" + sourceModule.getRequirePath() + "'");
+			requirePaths.add("'" + sourceModule.getPrimaryRequirePath() + "'");
 		}
 		
 		return requirePaths;
