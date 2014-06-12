@@ -37,7 +37,6 @@ dependencies {
 
 	testRunner dependency('JsTestDriver')
 	testRunner dependency('validation-api')
-	testRunner dependency('bval-jsr303')
 	testRunner dependency('sjsxp')
 
 	testRunner project(path: ':brjs-logger')
