@@ -21,6 +21,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	private static String COMMON_THEME_NAME = "common";
 	private static String THEME_ATTRIBUTE = "theme";
 	private static String ALT_THEME_ATTRIBUTE = "alternateTheme";
+	public static String UNKNOWN_THEME_EXCEPTION = "The theme '%s' is not a valid theme that is available in the aspect, bladeset or blades.";
 	public static String INVALID_THEME_EXCEPTION = String.format("The attribute '%s' should only contain a single theme and cannot contain spaces.", THEME_ATTRIBUTE);
 	
 	@Override
@@ -92,20 +93,30 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	private void writeTagsForMainTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version) throws IOException, MalformedTokenException, MalformedRequestException {
+		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
 			if (getThemeFromContentPath(contentPath).equals(themeName)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
 				writer.write( String.format("<link rel=\"stylesheet\" title=\"%s\" href=\"%s\"/>\n", themeName, requestPath) );
+				foundTheme = true;
 			}
+		}
+		if (!foundTheme) {
+			throw new IOException( String.format(UNKNOWN_THEME_EXCEPTION, themeName) );
 		}
 	}
 	
 	private void writeTagsForAlternateTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version) throws IOException, MalformedTokenException, MalformedRequestException {
+		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
 			if (getThemeFromContentPath(contentPath).equals(themeName)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
 				writer.write( String.format("<link rel=\"alternate stylesheet\" title=\"%s\" href=\"%s\"/>\n", themeName, requestPath) );
+				foundTheme = true;
 			}
+		}
+		if (!foundTheme) {
+			throw new IOException( String.format(UNKNOWN_THEME_EXCEPTION, themeName) );
 		}
 	}
 	

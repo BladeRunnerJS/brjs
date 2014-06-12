@@ -216,4 +216,26 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.INVALID_THEME_EXCEPTION, "theme2,theme3");	
 	}
 	
+	@Test
+	public void exceptionIsThrownIfTheThemeIsNotAnAvailableTheme() throws Exception {
+		given(aspect).indexPageHasContent("<@css.bundle theme=\"theme\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme");	
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTheAlternateThemeIsNotAnAvailableTheme() throws Exception {
+		given(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme");	
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTheSecondAlternateThemeIsNotAnAvailableTheme() throws Exception {
+		given(aspect).containsFile("themes/theme1/style.css")
+			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme1,theme2\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme2");	
+	}
+	
 }
