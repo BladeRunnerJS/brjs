@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -48,6 +49,7 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
 		transformations.put("bladeset", getName());
+		transformations.put("bladesetTitle", WordUtils.capitalize(getName()) );
 	}
 	
 	@Override
