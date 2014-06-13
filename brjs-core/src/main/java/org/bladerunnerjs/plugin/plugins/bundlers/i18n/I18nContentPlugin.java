@@ -27,6 +27,9 @@ import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyContentPlu
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 
 public class I18nContentPlugin extends AbstractContentPlugin
 {
@@ -34,8 +37,6 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	public static final String LANGUAGE_AND_LOCATION_BUNDLE = "language-and-location-bundle";
 	private static final String LANGUAGE_PROPERTY_NAME = "language";
 	private static final String LOCATION_PROPERTY_NAME = "location";
-	private static final String NEWLINE = "\n";
-	private static final String QUOTE = "\"";
 	private AssetPlugin i18nAssetPlugin = null;
 	
 	private ContentPathParser contentPathParser;
@@ -72,19 +73,14 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getGroupName()
+	public String getCompositeGroupName()
 	{
-		return "text/javascript";
+		return null;
 	}
 	
 	@Override
 	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
 		return Arrays.asList(ThirdpartyContentPlugin.class.getCanonicalName());
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
 	}
 	
 	@Override
@@ -94,7 +90,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
 		if (contentPath.formName.equals(LANGUAGE_BUNDLE)) 
 		{
@@ -146,13 +142,13 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		
 		for (Asset asset : getI18nAssetFiles(bundleSet))
 		{
-			addI18nProperties(propertiesMap, language, location, (I18nAssetFile) asset);
+			addI18nProperties(propertiesMap, language, location, (I18nFileAsset) asset);
 		}
 
 		writePropertiesMapToOutput(propertiesMap, os);
 	}
 
-	private void addI18nProperties(Map<String,String> propertiesMap, String language, String location, I18nAssetFile i18nFile) throws ContentProcessingException
+	private void addI18nProperties(Map<String,String> propertiesMap, String language, String location, I18nFileAsset i18nFile) throws ContentProcessingException
 	{
 		if ( i18nFile.getLocaleLanguage().equals(language) && 
 				(i18nFile.getLocaleLocation().equals("") || i18nFile.getLocaleLocation().equals(location)) )
@@ -173,17 +169,14 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 			StringBuilder output = new StringBuilder();
 			
-			output.append("window._brjsI18nProperties = [{"+NEWLINE);
-			for (String key : propertiesMap.keySet())
-			{
-				String value = propertiesMap.get(key);
-				output.append(QUOTE+key+QUOTE+":"+QUOTE+value+QUOTE+","+NEWLINE);
-			}
-			if (propertiesMap.size() > 0)
-			{
-				output.deleteCharAt( output.length() - 2 ); /* delete the last comma */			
-			}
-			output.append("}];");
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			String jsonProperties = gson.toJson(propertiesMap);
+			/* Replace doubly escaped newlines - GSON does the right thing and escapes newlines twice 
+			 * since otherwise when they are decoded from JSON they become literal newlines. 
+			 * Since thats actually what we want we undo the double escaping here. 
+			 */
+			jsonProperties = jsonProperties.replace("\\\\n", "\\n").replace("\\\\r", "\\r");
+			output.append("window._brjsI18nProperties = [" + jsonProperties + "];");
 			
 			writer.write(output.toString());
 			writer.flush();
@@ -193,19 +186,18 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		}
 	}
 	
-	private List<I18nAssetFile> getI18nAssetFiles(BundleSet bundleSet)
+	private List<I18nFileAsset> getI18nAssetFiles(BundleSet bundleSet)
 	{
-		List<I18nAssetFile> languageOnlyAssets = new ArrayList<I18nAssetFile>();
-		List<I18nAssetFile> languageAndLocationAssets = new ArrayList<I18nAssetFile>();
+		List<I18nFileAsset> languageOnlyAssets = new ArrayList<I18nFileAsset>();
+		List<I18nFileAsset> languageAndLocationAssets = new ArrayList<I18nFileAsset>();
 		
-//		List<Asset> propertyAssets = bundleSet.getResourceFiles("properties");
 		List<Asset> propertyAssets = bundleSet.getResourceFiles(i18nAssetPlugin);
 		
 		for (Asset asset : propertyAssets)
 		{
-			if (asset instanceof I18nAssetFile)
+			if (asset instanceof I18nFileAsset)
 			{
-				I18nAssetFile i18nAsset = (I18nAssetFile) asset;
+				I18nFileAsset i18nAsset = (I18nFileAsset) asset;
 				if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
 				{
 					languageAndLocationAssets.add(i18nAsset);
@@ -217,7 +209,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			}
 		}
 		
-		List<I18nAssetFile> orderedI18nAssets = new LinkedList<I18nAssetFile>();
+		List<I18nFileAsset> orderedI18nAssets = new LinkedList<I18nFileAsset>();
 		orderedI18nAssets.addAll(languageOnlyAssets);
 		orderedI18nAssets.addAll(languageAndLocationAssets);
 		

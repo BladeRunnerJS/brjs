@@ -14,7 +14,7 @@ import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
 import org.bladerunnerjs.logging.LogConfiguration;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
-import org.bladerunnerjs.model.exception.ConfigException;
+//import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -25,7 +25,7 @@ import org.slf4j.impl.StaticLoggerBinder;
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.command.check.CheckCommand;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
-import com.caplin.cutlass.command.importing.ImportApplicationCommand;
+//import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.TestServerCommand;
 import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
@@ -136,18 +136,18 @@ public class CommandRunner {
 	}
 	
 	private void injectLegacyCommands(BRJS brjs) {
-		try {
+//		try {
 			CommandList commandList = brjs.plugins().commandList();
 			commandList.addCommand(new CheckCommand());
 			commandList.addCommand(new CopyBladesetCommand( brjs.root().dir() ));
-			commandList.addCommand(new ImportApplicationCommand( brjs ));
+//			commandList.addCommand(new ImportApplicationCommand( brjs ));
 			commandList.addCommand(new TestCommand());
 			commandList.addCommand(new TestServerCommand());
 			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
+//		}
+//		catch(ConfigException e) {
+//			throw new RuntimeException(e);
+//		}
 	}
 	
 	private RootConsoleLogger getRootLogger() {

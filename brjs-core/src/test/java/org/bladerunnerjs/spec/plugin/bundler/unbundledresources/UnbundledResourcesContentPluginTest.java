@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.plugin.bundler.unbundledresources;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private Aspect appAspect;
 	private App sysapp;
 	private Aspect sysappAspect;
+	private File unbundledResources;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -28,11 +30,26 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			appAspect = app.aspect("default");
+			unbundledResources = appAspect.file("unbundled-resources");
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
 			
-		unbundledResourcesPlugin = brjs.plugins().contentProviderForLogicalPath("unbundled-resources");
+		unbundledResourcesPlugin = brjs.plugins().contentProvider("unbundled-resources");
 		requestsList = new ArrayList<String>();
+	}
+	
+	@Test
+	public void ifThereAreNoFilesInUnbundledResourcesThenNoRequestsWillBeGenerated() throws Exception {
+		given(appAspect).indexPageHasContent("index page");
+		then(appAspect).prodAndDevRequestsForContentPluginsAre("unbundled-resources");
+	}
+	
+	@Test
+	public void ifThereAreFilesInUnbundledResourcesThenRequestsWillBeGenerated() throws Exception {
+		given(appAspect).indexPageHasContent("index page")
+			.and(unbundledResources).containsFile("some-file")
+			.and(unbundledResources).containsFile("some-dir/some-file");
+		then(appAspect).prodAndDevRequestsForContentPluginsAre("unbundled-resources", "unbundled-resources/some-file", "unbundled-resources/some-dir/some-file");
 	}
 	
 	@Test
@@ -40,7 +57,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
 			.and(appAspect).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
-		when(app).requestReceived("/default-aspect/unbundled-resources/someFile.txt", response);
+		when(appAspect).requestReceived("unbundled-resources/someFile.txt", response);
 		then(response).textEquals("some file contents");
 	}
 	
@@ -50,7 +67,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		given(sysapp).hasBeenCreated()
 			.and(sysappAspect).hasBeenCreated()
 			.and(sysappAspect).containsFileWithContents("unbundled-resources/someFile.txt", "some file contents");
-		when(sysapp).requestReceived("/default-aspect/unbundled-resources/someFile.txt", response);
+		when(sysappAspect).requestReceived("unbundled-resources/someFile.txt", response);
 		then(response).textEquals("some file contents");
 	}
 	
@@ -59,7 +76,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	{
 		given(app).hasBeenCreated()
 			.and(appAspect).containsFileWithContents("unbundled-resources/a/dir/someFile.txt", "some file contents");
-		when(app).requestReceived("/default-aspect/unbundled-resources/a/dir/someFile.txt", response);
+		when(appAspect).requestReceived("unbundled-resources/a/dir/someFile.txt", response);
 		then(response).textEquals("some file contents");
 	}
 	
@@ -67,7 +84,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	public void exceptionIsThrownIfTheFileDoesntExists() throws Exception
 	{
 		given(app).hasBeenCreated();
-		when(app).requestReceived("/default-aspect/unbundled-resources/someFile.txt", response);
+		when(appAspect).requestReceived("unbundled-resources/someFile.txt", response);
 		then(exceptions).verifyException(ContentProcessingException.class, "app1/default-aspect/unbundled-resources/someFile.txt");
 	}
 	

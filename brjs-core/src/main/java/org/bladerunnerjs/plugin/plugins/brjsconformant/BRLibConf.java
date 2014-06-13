@@ -1,49 +1,33 @@
 package org.bladerunnerjs.plugin.plugins.brjsconformant;
 
-import javax.validation.constraints.NotNull;
-
+import org.bladerunnerjs.model.ConfFile;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.utility.ConfigValidationChecker;
-import org.bladerunnerjs.utility.RelativePathUtility;
-import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 
+public class BRLibConf extends ConfFile<BRLibYamlConf> {
+	
+	public static final String BR_CONF_FILENAME = "br-lib.conf";
 
-public class BRLibConf extends AbstractYamlConfFile {	
+	private JsLib lib;
 	
-	public class Messages {
-		public static final String INVALID_REQUIRE_PREFIX_EXCEPTION = "Require prefix '%s' in BR manifest at '%s' isn't valid. It must be in the format '%s'";
+	public BRLibConf(JsLib lib) throws ConfigException {
+		super(lib, BRLibYamlConf.class, lib.file(BR_CONF_FILENAME));
+		this.lib = lib;
 	}
 	
-	public static final String REQUIRE_PREFIX_REGEX = "[a-zA-Z0-9]+((/[a-zA-Z0-9]+)+)?";
-	
-	@NotNull
-	public String requirePrefix;
-	
-	@NotNull
-	public Boolean enforcedNamespaces;
-	
-	@Override
-	public void initialize() {
-		requirePrefix = getDefault(requirePrefix, "");
-		enforcedNamespaces = getDefault(enforcedNamespaces, true);
+	public String getRequirePrefix() throws ConfigException {
+		reloadConfIfChanged();
+		return conf.requirePrefix;
 	}
 	
-	@Override
-	public void verify() throws ConfigException {
-		ConfigValidationChecker.validate(this);
-		verifyRequirePrefix(requirePrefix);
+	public void setRequirePrefix(String requirePrefix) throws ConfigException {
+		conf.requirePrefix = requirePrefix;
+		verifyAndAutoWrite();
 	}
 	
-	private void verifyRequirePrefix(String requirePrefix) throws ConfigException {
-		if (requirePrefix.equals(""))
-		{
-			return;
-		}
-		
-		if (!requirePrefix.matches(REQUIRE_PREFIX_REGEX))
-		{
-			String manifestPath = RelativePathUtility.get(this.node.root().dir(), getUnderlyingFile());
-			throw new ConfigException( String.format(Messages.INVALID_REQUIRE_PREFIX_EXCEPTION, requirePrefix, manifestPath, REQUIRE_PREFIX_REGEX) );
-		}
+	public boolean manifestExists()
+	{
+		return lib.file(BR_CONF_FILENAME).isFile();
 	}
+	
 }

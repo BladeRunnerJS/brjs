@@ -2,24 +2,23 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final MemoizedValue<Set<SourceModule>> sourceModulesList = new MemoizedValue<>("AssetContainer.sourceModules", this);
 	private final MemoizedValue<Map<String, SourceModule>> sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
-	private final MemoizedValue<List<AssetLocation>> assetLocationsList = new MemoizedValue<>("AssetContainer.assetLocations", this);
 	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
-	private final Map<String, AssetLocation> cachedAssetLocations = new HashMap<>();
+	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
 	
 	public AbstractAssetContainer(RootNode rootNode, Node parent, File dir) {
 		super(rootNode, parent, dir);
@@ -38,9 +37,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public Set<SourceModule> sourceModules() {
-		return sourceModulesList.value(() -> {
-			return new LinkedHashSet<SourceModule>(sourceModulesMap().values());
-		});
+		return new LinkedHashSet<SourceModule>(sourceModulesMap().values());
 	}
 	
 	@Override
@@ -55,14 +52,12 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	@Override
 	public List<AssetLocation> assetLocations() {
-		return assetLocationsList.value(() -> {
-			return new ArrayList<>(assetLocationsMap().values());
-		});
+		return new ArrayList<>(assetLocationsMap().values());
 	}
 	
 	@Override
 	public RootAssetLocation rootAssetLocation() {
-		AssetLocation assetLocation = assetLocation("");
+		AssetLocation assetLocation = assetLocation(".");
 		return ((assetLocation != null) && (assetLocation instanceof RootAssetLocation)) ? (RootAssetLocation) assetLocation : null;
 	}
 	
@@ -90,30 +85,48 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	private Map<String, AssetLocation> assetLocationsMap() {
-		return assetLocationsMap.value(() -> {
-			Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
-			
-			for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
-				List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
+			return assetLocationsMap.value(() -> {
+				Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
 				
-				if(assetLocationDirectories.size() > 0) {
-					for(String locationPath : assetLocationDirectories) {
-						if(!assetLocations.containsKey(locationPath)) {
-							if(!cachedAssetLocations.containsKey(locationPath)) {
-								cachedAssetLocations.put(locationPath, assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations));
-							}
-							
-							assetLocations.put(locationPath, cachedAssetLocations.get(locationPath));
+				for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+					List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
+					
+					if(assetLocationDirectories.size() > 0) {
+						for(String locationPath : assetLocationDirectories) {
+							createAssetLocation(locationPath, assetLocations, assetLocationPlugin);
+						}
+						
+						if(!assetLocationPlugin.allowFurtherProcessing()) {
+							break;
 						}
 					}
-					
-					if(!assetLocationPlugin.allowFurtherProcessing()) {
-						break;
-					}
 				}
+				
+				return assetLocations;
+			});
+	}
+	
+	private void createAssetLocation(String locationPath, Map<String, AssetLocation> assetLocations, AssetLocationPlugin assetLocationPlugin ){
+		
+		if(!assetLocations.containsKey(locationPath)) {
+			if(!cachedAssetLocations.containsKey(locationPath)) {
+				AssetLocation assetLocation = assetLocationPlugin.createAssetLocation(this, locationPath, cachedAssetLocations);
+				
+//TODO: have a proper solution to know when duplicate node names are valid				
+				try {
+					rootNode.registerNode(assetLocation, false);
+				} catch (NodeAlreadyRegisteredException e) {
+					try {
+						rootNode.registerNode(assetLocation, true);
+					} catch (NodeAlreadyRegisteredException e1) {
+						throw new RuntimeException(e);
+					}
+					
+				}
+				cachedAssetLocations.put(locationPath, assetLocation);
 			}
 			
-			return assetLocations;
-		});
+			assetLocations.put(locationPath, cachedAssetLocations.get(locationPath));
+		}
 	}
 }

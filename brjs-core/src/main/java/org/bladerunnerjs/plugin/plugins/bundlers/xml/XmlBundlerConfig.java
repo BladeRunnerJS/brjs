@@ -31,7 +31,7 @@ public class XmlBundlerConfig {
 	}
 	
 	
-	public boolean isbundleConigAvailable(){
+	public boolean isbundleConfigAvailable(){
 		File file = brjs.conf().file(CONFIG_FILE_NAME);
 		return file.exists();
 	}

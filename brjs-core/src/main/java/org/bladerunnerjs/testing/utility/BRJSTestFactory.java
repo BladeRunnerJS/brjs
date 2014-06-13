@@ -12,11 +12,11 @@ import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationSer
 public class BRJSTestFactory {
 	
 	public static BRJS createBRJS(File brjsDir, PluginLocator pluginLocator, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException {
-		return new BRJS(brjsDir, pluginLocator, new PessimisticFileModificationService(), loggerFactory, new StubConsoleWriter());
+		return new BRJS(brjsDir, pluginLocator, new PessimisticFileModificationService(), loggerFactory, new StubConsoleWriter(), new MockAppVersionGenerator());
 	}
 	
 	public static BRJS createBRJS(File brjsDir, PluginLocator pluginLocator) throws InvalidSdkDirectoryException {
-		return new BRJS(brjsDir, pluginLocator, new PessimisticFileModificationService(), new SLF4JLoggerFactory(), new StubConsoleWriter());
+		return new BRJS(brjsDir, pluginLocator, new PessimisticFileModificationService(), new SLF4JLoggerFactory(), new StubConsoleWriter(), new MockAppVersionGenerator());
 	}
 
 	public static BRJS createBRJS(File brjsDir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException {

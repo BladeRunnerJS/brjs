@@ -12,7 +12,7 @@ import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BRJSNode;
-import org.bladerunnerjs.model.exception.template.DirectoryAlreadyExistsException;
+import org.bladerunnerjs.model.exception.template.TemplateDirectoryAlreadyExistsException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 
 
@@ -23,12 +23,15 @@ public class TemplateUtility
 	}
 	
 	public static void installTemplate(BRJSNode node, String templateName, Map<String, String> transformations, boolean allowNonEmptyDirectories) throws TemplateInstallationException {
+		File tempDir = null; 
 		try {
+			tempDir = FileUtility.createTemporaryDirectory(TemplateUtility.class.getCanonicalName()+"_"+templateName);
+			
 			if(node.dirExists() && !(node instanceof BRJS)) {
 				List<File> dirContents = node.root().getFileInfo(node.dir()).filesAndDirs();
 				
 				if((dirContents.size() != 0) && !allowNonEmptyDirectories) {
-					throw new DirectoryAlreadyExistsException(node);
+					throw new TemplateDirectoryAlreadyExistsException(node);
 				}
 			}
 			
@@ -36,15 +39,23 @@ public class TemplateUtility
 			
 			if(templateDir.exists()) {
 				IOFileFilter fileFilter = FileFilterUtils.and(new FileDoesntAlreadyExistFileFilter(templateDir, node.dir()), FileFilterUtils.notFileFilter(new PrefixFileFilter(".")));
-				FileUtils.copyDirectory(templateDir, node.dir(), fileFilter);
+				FileUtils.copyDirectory(templateDir, tempDir, fileFilter);
 			}
 			
 			if(!transformations.isEmpty()) {
-				transformDir(node.dir(), transformations);
+				transformDir(tempDir, transformations);
 			}
+			
+			
+			FileUtils.copyDirectory(tempDir, node.dir());
 		}
 		catch(IOException e) {
 			throw new TemplateInstallationException(e);
+		}
+		finally {
+			if (tempDir != null) {
+				FileUtils.deleteQuietly(tempDir);
+			}
 		}
 	}
 	

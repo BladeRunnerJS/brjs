@@ -157,9 +157,8 @@ public class RestApiServiceTest
 	{
 		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(ONE_APP_PATH));
 		setupService(temporarySdk);
-		File warFile = FileUtility.createTemporaryFile("app1-war", ".war");
-		warFile.delete();
-		assertFalse( warFile.exists() );
+		File targetDir = FileUtility.createTemporaryDirectory("app1-war");
+		File warFile = new File(targetDir.getParentFile(), "app1-war.war");
 		service.exportWar("app1", warFile);
 		assertTrue( warFile.exists() );
 	}
@@ -336,7 +335,7 @@ public class RestApiServiceTest
 		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
 		App app1 = BRJSAccessor.root.app("app1");
-		File indexFile = new File(app1.storageDir("jsdoc-toolkit"), "output/index.html");
+		File indexFile = new File(app1.storageDir("jsdoc"), "output/index.html");
 		
 		assertFalse(indexFile.exists());
 		

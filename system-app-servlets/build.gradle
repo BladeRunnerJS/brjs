@@ -3,12 +3,10 @@ apply plugin: 'java'
 apply plugin: com.caplin.gradle.plugins.CompileOnly
 
 dependencies {
-	compile project(":cutlass-common")
-	compile project(":cutlass-tasks")
-	compile dependency('commons-lang3')
 	compile dependency('commons-fileupload')
-	compile dependency('gson')
 	
+	compileOnly project(":cutlass-common")
+	compileOnly project(":cutlass-tasks")
 	compileOnly dependency('servlet-api')
 	
 	testCompile dependency('junit')
@@ -17,5 +15,7 @@ dependencies {
 	testCompile dependency('httpmime')
 	testCompile dependency('jetty-all-server')
 	
+	testRuntime project(":cutlass-common")
+	testRuntime project(":cutlass-tasks")
 	testRuntime project(path: ':brjs-logger-binding')
 }

@@ -6,12 +6,11 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.testing.specutility.engine.NodeVerifier;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 
 
-public class AspectVerifier extends NodeVerifier<Aspect> {
+public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 	private Aspect aspect;
 	private AssetContainerVerifier assetContainerVerifier;
 	

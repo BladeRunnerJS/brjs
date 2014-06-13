@@ -23,8 +23,8 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public String getGroupName() {
-		return contentPlugin.getGroupName();
+	public String getCompositeGroupName() {
+		return contentPlugin.getCompositeGroupName();
 	}
 	
 	@Override
@@ -44,9 +44,9 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException {
 		initializePlugin();
-		contentPlugin.writeContent(contentPath, bundleSet, os);
+		contentPlugin.writeContent(contentPath, bundleSet, os, version);
 	}
 
 	@Override

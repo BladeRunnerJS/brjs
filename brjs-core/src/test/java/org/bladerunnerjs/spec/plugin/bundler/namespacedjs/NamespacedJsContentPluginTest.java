@@ -44,11 +44,33 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void ifThereAreNoJsFilesThenNoRequestsWillBeGenerated() throws Exception {
+		given(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("namespaced-js");
+	}
+	
+	@Test
+	public void ifThereAreJsFilesThenMultipleRequestsWillBeGeneratedInDev() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).indexPageRefersTo("appns.Class")
+			.and(aspect).hasClass("appns.Class");
+		then(aspect).devRequestsForContentPluginsAre("namespaced-js", "namespaced-js/package-definitions.js", "namespaced-js/module/appns/Class.js", "namespaced-js/globalize-extra-classes.js");
+	}
+	
+	@Test
+	public void ifThereAreJsFilesThenASingleBundleRequestWillBeGeneratedInProd() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).indexPageRefersTo("appns.Class")
+			.and(aspect).hasClass("appns.Class");
+		then(aspect).prodRequestsForContentPluginsAre("namespaced-js", "namespaced-js/bundle.js");
+	}
+	
+	@Test
 	public void theBundleIsEmptyIfWeDontReferToAnyOfTheClasses() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classDependsOn("appns.Class1", "appns.Class2");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).isEmpty();
 	}
 	
@@ -58,7 +80,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classDependsOn("appns.Class1", "appns.Class2")
 			.and(aspect).indexPageRefersTo("appns.Class1");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.Class1", "appns.Class2");
 	}
 	
@@ -67,7 +89,16 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.TheClass")
 			.and(aspect).indexPageHasContent("// appns.TheClass");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).isEmpty();
+	}
+	
+	@Test
+	public void referencesAreNotProcessedIfCommentedOutWithWithHTMLStyleComments() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle()
+			.and(aspect).hasClass("appns.TheClass")
+			.and(aspect).indexPageHasContent("<!-- appns.TheClass -->");
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).isEmpty();
 	}
 	
@@ -76,7 +107,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.TheClass")
 			.and(aspect).indexPageHasContent("/* appns.TheClass */");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).isEmpty();
 	}
 	
@@ -85,7 +116,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClass("appns.TheClass")
 			.and(aspect).indexPageHasContent("/** appns.TheClass */");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).isEmpty();
 	}
 	
@@ -97,7 +128,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).classFileHasContent("appns.Class1",
 				"appns.Class1 = function() {};\n" +
 				"// br.Core.extend(appns.Class1, appns.Class2);");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.Class1")
 			.and(requestResponse).doesNotContainClasses("appns.Class2");
 	}
@@ -110,7 +141,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).classFileHasContent("appns.Class1",
 				"appns.Class1 = function() {};\n" +
 				"/* br.Core.extend(appns.Class1, appns.Class2); */");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.Class1")
 			.and(requestResponse).doesNotContainClasses("appns.Class2");
 	}
@@ -123,7 +154,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).classFileHasContent("appns.Class1",
 				"appns.Class1 = function() {};\n" +
 				"/** br.Core.extend(appns.Class1, appns.Class2); */");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.Class1")
 			.and(requestResponse).doesNotContainClasses("appns.Class2");
 	}
@@ -133,7 +164,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1");
-		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{}});");
 	}
 	
@@ -143,7 +174,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).classDependsOn("appns.Class1", "appns.Class2");
-		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{}});");
 	}
 	
@@ -152,7 +183,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.Class1", "appns.Class2")
 			.and(aspect).classDependsOn("appns.Class1", "appns.Class2");
-		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).isEmpty();
 	}
 	
@@ -162,7 +193,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.Class1", "appns.pkg.Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).classDependsOn("appns.Class1", "appns.pkg.Class2");
-		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"pkg\":{}}});");
 	}
 	
@@ -170,19 +201,32 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	public void eachClassShouldBeReturnedLargelyUnchanged() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "appns.Class1 = function() {\n};");
-		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/module/appns/Class1.js", requestResponse);
 		then(requestResponse).textEquals("define('appns/Class1', function(require, exports, module) {\nappns.Class1 = function() {\n};\nmodule.exports = appns.Class1;\n});\n");
 	}
 	
 	@Test
 	public void requiresAreAlsoAutomaticallyAddedWithinTheBundledResponse() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
+			.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")
 			.and(aspect).hasClasses("appns.namespaced.Class", "appns/nodejs/Class")
 			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
 			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.nodejs.Class");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsText("appns.namespaced.Class = function() {\n};")
 			.and(requestResponse).containsText("appns.nodejs.Class = require('appns/nodejs/Class');");
+	}
+	
+	@Test
+	public void autoGlobalisationReplacesInvalidCharacters() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
+			.and(aspect).hasNodeJsPackageStyle("src/appns/node-js")
+			.and(aspect).hasClasses("appns.namespaced.Class", "appns/node-js/Class")
+			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
+			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.node-js.Class");
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsText("appns.namespaced.Class = function() {\n};")
+			.and(requestResponse).containsText("appns.node_js.Class = require('appns/node-js/Class');");
 	}
 	
 	@Test
@@ -191,9 +235,9 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.namespaced.Class")
 			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
 			.and(aspect).classDependsOnThirdpartyLib("appns.namespaced.Class", thirdpartyLib)
-			.and(thirdpartyLib).containsFileWithContents("library.manifest", "js: lib.js\n"+"exports: thirdpartlib")
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "js: lib.js\n"+"exports: thirdpartlib")
 			.and(thirdpartyLib).containsFile("lib.js");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("appns.namespaced.Class")
 			.and(requestResponse).doesNotContainText("require('lib1')");
 	}
@@ -205,9 +249,24 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("new appns.namespaced.Class(); new appns.namespaced.AnotherClass();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsTextOnce("appns.nodejs.Class = require('appns/nodejs/Class');");
 	}
+	
+	@Test
+	public void requiresAreAddedForNamespacedJsClassesBeforeCommonJsClasses() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
+			.and(aspect).hasNodeJsPackageStyle("src/appns/nodejs")
+			.and(aspect).hasClasses("appns.namespaced.Class", "appns/nodejs/Class")
+			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
+			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.nodejs.Class");
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsOrderedTextFragments(
+				"appns.namespaced.Class = function() {\n};",
+				"appns.namespaced.Class = require('appns/namespaced/Class');",
+				"appns.nodejs.Class = require('appns/nodejs/Class');");
+	}
+	
 	
 	@Test
 	public void packageDefinitionsInBundleContainAutomaticRequirePackages() throws Exception {
@@ -216,7 +275,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("new appns.namespaced.Class(); new appns.namespaced.AnotherClass();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"namespaced\":{},\"nodejs\":{}}});");
 	}
 	
@@ -227,20 +286,22 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("new appns.namespaced.Class(); new appns.namespaced.AnotherClass();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/Class.js", "new appns.nodejs.Class();")
 			.and(aspect).containsFileWithContents("src/appns/namespaced/AnotherClass.js", "new appns.nodejs.Class();");
-		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsTextOnce("mergePackageBlock(window, {\"appns\":{\"namespaced\":{},\"nodejs\":{}}});");
 	}
 	
 	@Test
-	public void jsPatchesAreIncludedAfterTheSourceModule() throws Exception {
+	public void jsPatchesAreIncludedAfterTheSourceModuleAndInsideTheDefine() throws Exception {
 		given(sdkJsLib).hasNamespacedJsPackageStyle("src")
 			.and(sdkJsLib).hasClasses("sdkLib.Class")
 			.and(aspect).indexPageRefersTo("new sdkLib.Class()")
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class.js", "sdkLib.Class.patch = function() {}");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
+				"define('sdkLib/Class'",
 				"sdkLib.Class = function()",
-				"sdkLib.Class.patch = function() {}"
+				"sdkLib.Class.patch = function() {}",
+				"module.exports = sdkLib.Class;"
 		);
 	}
 	
@@ -250,7 +311,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(sdkJsLib).hasClasses("sdkLib.Class1", "sdkLib.Class2")
 			.and(aspect).indexPageRefersTo("new sdkLib.Class1()")
 			.and(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "new sdkLib.Class2()");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsClasses("sdkLib.Class2");
 	}
 	
@@ -260,7 +321,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and().activeEncodingIs("UTF-8")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£€");
-		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/module/appns/Class1.js", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
 	
@@ -270,7 +331,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and().activeEncodingIs("ISO-8859-1")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£");
-		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/module/appns/Class1.js", requestResponse);
 		then(requestResponse).containsText("$£");
 	}
 	
@@ -280,7 +341,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and().activeEncodingIs("UTF-16")
 			.and(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).containsFileWithContents("src/appns/Class1.js", "// $£€");
-		when(app).requestReceived("/default-aspect/namespaced-js/module/appns/Class1.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/module/appns/Class1.js", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
 	
@@ -292,7 +353,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1")
 			.and(aspect).classDependsOn("appns.namespacedjs.Class1", "appns.nodejs.Class1")
 			.and(aspect).classRequires("appns/nodejs/Class1", "appns.nodejs.Class2");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"define('appns/namespacedjs/Class1', function(require, exports, module) {",
 				"appns.namespacedjs.Class1 = function()",
@@ -307,7 +368,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(aspect).hasClasses("appns.namespacedjs.Class1", "appns.namespacedjs.Class2")
 			.and(aspect).classStaticallyDependsOn("appns.namespacedjs.Class1", "appns.namespacedjs.Class2")
 			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"define('appns/namespacedjs/Class1', function(require, exports, module) { requireAll(['appns/namespacedjs/Class2']);",
 				"appns.namespacedjs.Class1 = function()",
@@ -322,7 +383,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
     		.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1")
     		.and(aspect).classDependsOn("appns.namespacedjs.Class1", "appns.nodejs.Class1")
     		.and(aspect).classRequires("appns/nodejs/Class1", "appns.nodejs.pkg.Class2");
-		when(app).requestReceived("/default-aspect/namespaced-js/package-definitions.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/package-definitions.js", requestResponse);
 		then(requestResponse).containsText("mergePackageBlock(window, {\"appns\":{\"namespacedjs\":{},\"nodejs\":{\"pkg\":{}}}});");
 	}
 	
@@ -333,7 +394,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 			.and(bladeTests).hasTestClass("appns/bs/b1/TestClass1")
 			.and(bladeTests).hasNamespacedJsPackageStyle("tests")
 			.and(bladeTests).testRefersTo("BladeTest.js", "appns.bs.b1.Class1", "appns.bs.b1.TestClass1");
-		when(app).requestReceived("/bs-bladeset/blades/b1/tests/test-test/techy/namespaced-js/bundle.js", requestResponse);
+		when(bladeTests).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsText( "appns.bs.b1.TestClass1 = require('appns/bs/b1/TestClass1');" );
 	}
 	
@@ -350,7 +411,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	@Test
 	public void nodeJsTestsInRootTestsDirInAnSdkLibWithNestedRequirePrefixDoNotHaveTheirPathsGlobalizedPaths() throws Exception {
 		given(sdkJsLib).hasNodeJsPackageStyle()
-			.and(sdkJsLib).containsFileWithContents("br.manifest", "requirePrefix: sdkLib/subPkg")
+			.and(sdkJsLib).containsFileWithContents("br-lib.conf", "requirePrefix: sdkLib/subPkg")
     		.and(sdkJsLib).hasClasses("sdkLib/subPkg/Class1")
     		.and(sdkJsLibTests).hasTestClass("sdkLib/subPkg/TestClass1")
     		.and(sdkJsLibTests).containsFileWithContents("tests/LibTest.js", "new sdkLib.subPkg.Class1(); new sdkLib.subPkg.TestClass1();");
@@ -372,7 +433,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 					"};\n")
 			.and(aspect).classFileHasContent("appns.Class3",
 					"appns.Class3 = function() {};\n");
-    	when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+    	when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
     	then(requestResponse).containsOrderedTextFragments(
     			"appns.Class2 = function()",
     			"appns.Class3 = function()",
@@ -392,7 +453,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 						"appns.Class3();\n")
 						.and(aspect).classFileHasContent("appns.Class3",
 								"appns.Class3 = function() {};\n");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"appns.Class3 = function()",
 				"appns.Class2 = function()",
@@ -411,7 +472,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 				"});")
 		.and(aspect).classFileHasContent("appns.Class2",
 				"appns.Class2 = function() {};");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"appns.Class2 = function()",
 				"appns.Class1 = function()");
@@ -430,7 +491,7 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 				"appns.Class2 = function() {};")
 		.and(aspect).classFileHasContent("appns.Class3",
 				"appns.Class3 = function() {};\n");
-		when(app).requestReceived("/default-aspect/namespaced-js/bundle.js", requestResponse);
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"appns.Class2 = function()",
 				"appns.Class3 = function()",

@@ -13,7 +13,6 @@ import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidRootPackageNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -40,10 +39,10 @@ public class AppTest extends SpecTest {
 			appTemplate = brjs.template("app");
 			appJars = brjs.appJars();
 			aspect = app.aspect("default");
-			globalNonBladeRunnerLib = brjs.sdkNonBladeRunnerLib("legacy-thirdparty");
-			appNonBladeRunnerLib = app.nonBladeRunnerLib("app-legacy-thirdparty");
-			globalOverriddenNonBRLib = brjs.sdkNonBladeRunnerLib("overridden-lib");
-			appOverriddenNonBRLib = app.nonBladeRunnerLib("overridden-lib");
+			globalNonBladeRunnerLib = brjs.sdkLib("legacy-thirdparty");
+			appNonBladeRunnerLib = app.appJsLib("app-legacy-thirdparty");
+			globalOverriddenNonBRLib = brjs.sdkLib("overridden-lib");
+			appOverriddenNonBRLib = app.appJsLib("overridden-lib");
 	}
 	
 	// TODO: does this add anything over the baselining test?
@@ -62,8 +61,7 @@ public class AppTest extends SpecTest {
 		given(observer).observing(brjs);
 		when(app).populate();
 		then(observer).notified(NodeReadyEvent.class, app)
-			.and(observer).notified(NodeReadyEvent.class, aspect)
-			.and(observer).notified(NodeReadyEvent.class, aspect.theme("standard"));
+			.and(observer).notified(NodeReadyEvent.class, aspect);
 	}
 	
 	@Test
@@ -79,13 +77,13 @@ public class AppTest extends SpecTest {
 		when(app).populate();
 		then(app).doesNotHaveFile("app.conf");
 	}
-	@Ignore
+	
 	@Test
 	public void theAppConfCanBeManuallyWrittenOnZeroArgPopulate() throws Exception {
 		given(appTemplate).hasBeenCreated()
 			.and(app).hasBeenPopulated();
 		when(app).appConf().write();
-		then(app).fileHasContents("app.conf", "requirePrefix: app1\nlocales: en");
+		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: appns");
 	}
 	
 	@Test
@@ -153,7 +151,7 @@ public class AppTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(appLib).hasBeenCreated()
 			.and(sdkLib).hasBeenCreated();
-		given(app).hasLibs(appLib, sdkLib);
+		given(app).hasLibs(sdkLib, appLib);
 		then(app).libsReturnCorrectApp();
 	}
 	
@@ -164,7 +162,7 @@ public class AppTest extends SpecTest {
 			.and(sdkLib).hasBeenCreated()
 			.and(globalNonBladeRunnerLib).hasBeenCreated()
 			.and(appNonBladeRunnerLib).hasBeenCreated();
-		given(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
+		given(app).hasLibs(sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib, appLib);
 		then(app).libsReturnCorrectApp();
 	}
 	
@@ -173,7 +171,7 @@ public class AppTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(appLib).hasBeenCreated()
 			.and(sdkLib).hasBeenCreated();
-		then(app).hasLibs(appLib, sdkLib);
+		then(app).hasLibs(sdkLib, appLib);
 	}
 	
 	@Test
@@ -183,7 +181,7 @@ public class AppTest extends SpecTest {
     		.and(sdkLib).hasBeenCreated()
     		.and(globalNonBladeRunnerLib).hasBeenCreated()
     		.and(appNonBladeRunnerLib).hasBeenCreated();
-		then(app).hasLibs(appLib, sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib);
+		then(app).hasLibs(sdkLib, globalNonBladeRunnerLib, appNonBladeRunnerLib, appLib);
 	}
 	
 	@Test
@@ -193,7 +191,7 @@ public class AppTest extends SpecTest {
     		.and(sdkLib).hasBeenCreated()
     		.and(globalOverriddenNonBRLib).hasBeenCreated()
     		.and(appOverriddenNonBRLib).hasBeenCreated();
-		then(app).hasLibs(appLib, sdkLib, appOverriddenNonBRLib);
+		then(app).hasLibs(sdkLib, appOverriddenNonBRLib, appLib);
 	}
 	
 	@Test

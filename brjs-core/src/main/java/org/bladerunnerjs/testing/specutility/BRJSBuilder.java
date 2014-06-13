@@ -206,6 +206,18 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
+	public BuilderChainer automaticallyFindsAllPlugins() {
+		automaticallyFindsContentPlugins();
+		automaticallyFindsTagHandlers();
+		automaticallyFindsAssetProducers();
+		automaticallyFindsAssetLocationProducers();
+		automaticallyFindsCommands();
+		automaticallyFindsModelObservers();
+		
+		return builderChainer;
+	}
+	
+	
 	@Override
 	public BuilderChainer hasBeenCreated() throws Exception
 	{
@@ -227,6 +239,14 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		this.node = brjs;
 		
 		return builderChainer;
+	}
+	
+	public BuilderChainer hasBeenAuthenticallyReCreated() throws Exception
+	{
+		if (brjs != null) {
+			brjs.close();
+		}
+		return hasBeenAuthenticallyCreated();
 	}
 
 	public BuilderChainer usedForServletModel()
@@ -274,6 +294,20 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		verifyBrjsIsSet();
 		File templateDir = new File("../cutlass-sdk/build-resources/includes/sdk/templates");
 		FileUtils.copyDirectory(templateDir, brjs.template("template").dir().getParentFile());
+		
+		return builderChainer;
+	}
+
+	public BuilderChainer hasProdVersion(String version)
+	{
+		specTest.appVersionGenerator.setProdVersion(version);
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer hasDevVersion(String version)
+	{
+		specTest.appVersionGenerator.setDevVersion(version);
 		
 		return builderChainer;
 	}

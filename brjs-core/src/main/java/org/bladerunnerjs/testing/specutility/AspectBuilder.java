@@ -2,12 +2,12 @@ package org.bladerunnerjs.testing.specutility;
 
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.testing.specutility.engine.AssetContainerBuilder;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
+import org.bladerunnerjs.testing.specutility.engine.BundlableNodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 
 
-public class AspectBuilder extends AssetContainerBuilder<Aspect> {
+public class AspectBuilder extends BundlableNodeBuilder<Aspect> {
 	private final Aspect aspect;
 	
 	public AspectBuilder(SpecTest modelTest, Aspect aspect)

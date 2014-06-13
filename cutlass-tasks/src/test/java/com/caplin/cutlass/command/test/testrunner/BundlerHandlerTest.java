@@ -46,9 +46,9 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 	{
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
 			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/en_GB/combined/bundle.js" );
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/combined/bundle.js" );
 		thenJstdTests(aspectTestPack).testBundleContainsText(
-					"bundles/js/dev/en_GB/combined/bundle.js",
+					"bundles/js/dev/combined/bundle.js",
 					"// some SDK src code" );
 	}
 	
@@ -58,9 +58,9 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
 			.and(aspect).containsFileWithContents("resources/file.xml", "<some xml>")
     		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/bundle.xml" );
+    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/xml/bundle.xml" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/bundle.xml",
+    				"bundles/xml/bundle.xml",
     				"<some xml>" );
 	}
 	
@@ -70,9 +70,9 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code")
 			.and(aspect).containsFileWithContents("resources/file.html", "<div id='appns.view'>TESTCONTENT</div>")
     		.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/bundle.html" );
+    	whenJstdTests(aspectTestPack).runWithPaths( "bundles/html/bundle.html" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
-    				"bundles/bundle.html",
+    				"bundles/html/bundle.html",
     				"<div id='appns.view'>TESTCONTENT</div>" );
 	}
 
@@ -97,7 +97,7 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
     	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_GB.js" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
     				"bundles/i18n/en_GB.js",
-    				"\"appns.prop\":\"some prop\"" );
+    				"\"appns.prop\": \"some prop\"" );
 	}
 	
 	// Legacy bundle path tests
@@ -158,7 +158,7 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
     	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/i18n.bundle" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
     				"bundles/i18n/i18n.bundle",
-    				"\"appns.prop\":\"some prop\"" );
+    				"\"appns.prop\": \"some prop\"" );
 	}
 	
 	@Test
@@ -170,7 +170,7 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
     	whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_i18n.bundle" );
     	thenJstdTests(aspectTestPack).testBundleContainsText(
     				"bundles/i18n/en_i18n.bundle",
-    				"\"appns.prop\":\"some prop\"" );
+    				"\"appns.prop\": \"some prop\"" );
 	}
 	
 	@Test
@@ -182,7 +182,7 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 		whenJstdTests(aspectTestPack).runWithPaths( "bundles/i18n/en_GB_i18n.bundle" );
 		thenJstdTests(aspectTestPack).testBundleContainsText(
 				"bundles/i18n/en_GB_i18n.bundle",
-				"\"appns.prop\":\"some prop\"" );
+				"\"appns.prop\": \"some prop\"" );
 	}
 	
 	@Test
@@ -190,12 +190,12 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 	{
 		given(aspect).containsFileWithContents("src/appns/srcFile.js", "// some SDK src code\nvar a = function(){}")
 			.and(aspectTestPack).containsFileWithContents("tests/test1.js", "require('appns/srcFile');");
-		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/en_GB/closure-whitespace/bundle.js" );
+		whenJstdTests(aspectTestPack).runWithPaths( "bundles/js/dev/closure-whitespace/bundle.js" );
 		thenJstdTests(aspectTestPack).testBundleContainsText(
-					"bundles/js/dev/en_GB/closure-whitespace/bundle.js",
+					"bundles/js/dev/closure-whitespace/bundle.js",
 					"var a=function(){}" );
 		thenJstdTests(aspectTestPack).testBundleDoesNotContainText(
-				"bundles/js/dev/en_GB/closure-whitespace/bundle.js",
+				"bundles/js/dev/closure-whitespace/bundle.js",
 				"// some SDK src code" );
 	}
 	

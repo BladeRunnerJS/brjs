@@ -3,11 +3,14 @@ package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,10 +25,16 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
+import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-import org.json.simple.JSONObject;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 public class NamespacedJsContentPlugin extends AbstractContentPlugin
@@ -70,7 +79,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getGroupName()
+	public String getCompositeGroupName()
 	{
 		return "text/javascript";
 	}
@@ -90,22 +99,24 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
 		List<String> requestPaths = new ArrayList<>();
-
-		try
-		{
-			requestPaths.add(contentPathParser.createRequest(PACKAGE_DEFINITIONS_REQUEST));
-			for (SourceModule sourceModule : bundleSet.getSourceModules())
+		
+		if(InstanceFinder.containsInstance(bundleSet.getSourceModules(), NamespacedJsSourceModule.class)) {
+			try
 			{
-				if (sourceModule instanceof NamespacedJsSourceModule)
+				requestPaths.add(contentPathParser.createRequest(PACKAGE_DEFINITIONS_REQUEST));
+				for (SourceModule sourceModule : bundleSet.getSourceModules())
 				{
-					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
+					if (sourceModule instanceof NamespacedJsSourceModule)
+					{
+						requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
+					}
 				}
+				requestPaths.add(contentPathParser.createRequest(GLOBALIZE_EXTRA_CLASSES_REQUEST));
 			}
-			requestPaths.add(contentPathParser.createRequest(GLOBALIZE_EXTRA_CLASSES_REQUEST));
-		}
-		catch (MalformedTokenException e)
-		{
-			throw new ContentProcessingException(e);
+			catch (MalformedTokenException e)
+			{
+				throw new ContentProcessingException(e);
+			}
 		}
 
 		return requestPaths;
@@ -114,11 +125,11 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return prodRequestPaths;
+		return (InstanceFinder.containsInstance(bundleSet.getSourceModules(), NamespacedJsSourceModule.class)) ? prodRequestPaths : Collections.emptyList();
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
 		try
 		{
@@ -127,7 +138,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
-					IOUtils.copy(jsModule.getReader(), writer);
+					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
 				}
 			}
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
@@ -142,7 +153,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 						if (sourceModule instanceof NamespacedJsSourceModule)
 						{
 							contentBuffer.write("// " + sourceModule.getRequirePath() + "\n");
-							IOUtils.copy(sourceModule.getReader(), contentBuffer);
+							try (Reader reader = sourceModule.getReader()) { IOUtils.copy(reader, writer); }
 							contentBuffer.write("\n\n");
 							contentBuffer.flush();
 						}
@@ -202,7 +213,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		{
 			if (sourceModule instanceof NamespacedJsSourceModule)
 			{
-				List<String> packageList = Arrays.asList(sourceModule.getClassname().split("\\."));
+				List<String> packageList = Arrays.asList(sourceModule.getRequirePath().split("/"));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}
@@ -245,9 +256,11 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	{
 		if (packageStructure.size() > 0)
 		{
+			Gson gson = new GsonBuilder().create();
+			
 			writer.write("// package definition block\n");
 			writer.write("mergePackageBlock(window, ");
-			JSONObject.writeJSONString(packageStructure, writer);
+			writer.write( gson.toJson(packageStructure) );
 			writer.write(");\n");
 			writer.flush();
 		}
@@ -258,19 +271,61 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		if (dependentSourceModule.isEncapsulatedModule() && !globalizedModules.contains(dependentSourceModule))
 		{
 			globalizedModules.add(dependentSourceModule);
-			return dependentSourceModule.getClassname() + " = require('" + dependentSourceModule.getRequirePath() + "');\n";
+			String sourceModuleClassName = dependentSourceModule.getRequirePath().replaceAll("/", ".").replace("-", "_");
+			return sourceModuleClassName + " = require('" + dependentSourceModule.getRequirePath() + "');\n";
 		}
 		return "";
 	}
 
 	private String getGlobalizedClassesContent(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
-	{
+	{		
 		StringBuffer output = new StringBuffer();
-		for (SourceModule sourceModule : bundleSet.getSourceModules())
-		{
-			output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
+		
+		List<SourceModule> allSourceModules = bundleSet.getSourceModules();
+
+		List<Predicate<SourceModule>> sourceModuleOrderingFilters = new LinkedList<>();
+		sourceModuleOrderingFilters.add( new IsNamespacedJsSourceModulePredicate() );
+		sourceModuleOrderingFilters.add( new IsCommonJsSourceModulePredicate() );
+		sourceModuleOrderingFilters.add( new IsNonCommonJSAndNonNamespacedJsSourceModulePredicate() );
+		
+		for (Predicate<SourceModule> sourceModuleFilter : sourceModuleOrderingFilters) {
+			for ( SourceModule sourceModule : Collections2.filter(allSourceModules,sourceModuleFilter) )
+			{
+				output.append(getGlobalizedNonNamespaceSourceModuleContent(sourceModule, processedGlobalizedSourceModules));
+			}
 		}
+		
 		return output.toString();
+	}
+	
+	
+	
+	private class IsNamespacedJsSourceModulePredicate implements Predicate<SourceModule> {
+		@Override
+		public boolean apply(SourceModule input)
+		{
+			return input.getClass() == NamespacedJsSourceModule.class;
+		}
+	}
+	
+	private class IsCommonJsSourceModulePredicate implements Predicate<SourceModule> {
+		@Override
+		public boolean apply(SourceModule input)
+		{
+			return input.getClass() == CommonJsSourceModule.class;
+		}
+	}
+
+	private class IsNonCommonJSAndNonNamespacedJsSourceModulePredicate implements Predicate<SourceModule> {
+		
+		IsNamespacedJsSourceModulePredicate isNamespacedJsSourceModulePredicate = new IsNamespacedJsSourceModulePredicate();
+		IsCommonJsSourceModulePredicate isCommonJsSourceModulePredicate = new IsCommonJsSourceModulePredicate();
+		
+		@Override
+		public boolean apply(SourceModule input)
+		{
+			return isNamespacedJsSourceModulePredicate.apply(input) && isCommonJsSourceModulePredicate.apply(input);
+		}
 	}
 
 }

@@ -73,7 +73,7 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 		messageToShowUser.append("-- Application Details --\n");
 		
 		List<File> sdkLibsApplicationJars = Arrays.asList(BRJSAccessor.root.appJars().dir().listFiles(CAPLIN_JAR_FILE_NAME_FILTER));
-		List<SdkJsLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkNonBladeRunnerLibs();
+		List<SdkJsLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkLibs();
 		
 		for(App application : BRJSAccessor.root.apps())
 		{

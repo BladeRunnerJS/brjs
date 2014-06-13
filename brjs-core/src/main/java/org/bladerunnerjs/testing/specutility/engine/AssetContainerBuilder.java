@@ -5,7 +5,6 @@ import java.io.File;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.utility.FileUtil;
@@ -21,13 +20,8 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 	{
 		super(specTest, node);
 		
-		try {
-			this.node = node;
-			fileUtil = new FileUtil(node.root().bladerunnerConf().getDefaultFileCharacterEncoding());
-		}
-		catch(ConfigException e) {
-			throw new RuntimeException(e);
-		}
+		this.node = node;
+		fileUtil = new FileUtil(specTest.getActiveCharacterEncoding());
 	}
 	
 	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {
@@ -51,7 +45,21 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 		return hasNodeJsPackageStyle("");
 	}
 	
-	public BuilderChainer resourceFileContains(String resourceFileName, String contents) throws Exception 
+	public BuilderChainer containsResourceFile(String resourceFilePath) throws Exception {
+		fileUtil.write(node.assetLocation("resources").file(resourceFilePath), resourceFilePath + "\n");
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer containsResourceFiles(String... resourceFilePaths) throws Exception {
+		for(String resourceFilePath : resourceFilePaths) {
+			containsResourceFile(resourceFilePath);
+		}
+		
+		return builderChainer;
+	}
+	
+	public BuilderChainer containsResourceFileWithContents(String resourceFileName, String contents) throws Exception 
 	{
 		fileUtil.write(node.assetLocation("resources").file(resourceFileName), contents);
 		
@@ -148,7 +156,7 @@ public abstract class AssetContainerBuilder<N extends AssetContainer> extends No
 			throw new RuntimeException("classDependsOnThirdpartyLib() can only be used if packageOfStyle() has been set to '" + NamespacedJsContentPlugin.JS_STYLE + "'");
 		}
 		
-		fileUtil.write(sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');", true);
+		fileUtil.write( sourceFile, "br.Core.thirdparty('"+thirdpartyLib.getName()+"');" + getClassBody(sourceClass) );
 		
 		return builderChainer;
 	}

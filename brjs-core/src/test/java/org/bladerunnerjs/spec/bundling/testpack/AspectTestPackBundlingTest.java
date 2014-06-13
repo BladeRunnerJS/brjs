@@ -93,8 +93,8 @@ public class AspectTestPackBundlingTest extends SpecTest
 		given(aspect).hasClass("appns/Class1")
 			.and(aspectUTs).hasNamespacedJsPackageStyle()
 			.and(aspectUTs).testRefersTo("pkg/test.js", "appns.Class1")
-			.and(aspectUTs).containsFileWithContents("resources/en.properties", "appns.prop=val");
+			.and(aspectUTs).containsResourceFileWithContents("en.properties", "appns.prop=val");
 		when(aspectUTs).requestReceived("i18n/en.js", response);
-		then(response).containsText("\"appns.prop\":\"val\"");
+		then(response).containsText("\"appns.prop\": \"val\"");
 	}
 }

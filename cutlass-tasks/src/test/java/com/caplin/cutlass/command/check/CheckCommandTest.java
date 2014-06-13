@@ -94,16 +94,16 @@ public class CheckCommandTest
 		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempDir, new PrintStream(byteStream)));
 		CheckCommand checkCommand = new CheckCommand();
 		
-		assertTrue(new File(tempDir, APPLICATIONS_DIR + "/firstapp/thirdparty-libraries/jQuery").exists());
-		assertTrue(new File(tempDir, APPLICATIONS_DIR + "/firstapp/thirdparty-libraries/Sencha").exists());
-		assertTrue(new File(tempDir, SDK_DIR + "/libs/javascript/thirdparty/jQuery").exists());
-		assertFalse(new File(tempDir, SDK_DIR + "/libs/javascript/thirdparty/Sencha").exists());
+		assertTrue(new File(tempDir, APPLICATIONS_DIR + "/firstapp/libs/jQuery").exists());
+		assertTrue(new File(tempDir, APPLICATIONS_DIR + "/firstapp/libs/Sencha").exists());
+		assertTrue(new File(tempDir, SDK_DIR + "/libs/javascript/jQuery").exists());
+		assertFalse(new File(tempDir, SDK_DIR + "/libs/javascript/Sencha").exists());
 		
 		checkCommand.doCommand( new String[] {""} );
 		
 		String messageString = byteStream.toString();
 		
-		assertTrue(messageString.contains("The following thirdparty-libraries also exist inside the SDK:"));
+		assertTrue(messageString.contains("The following libs also exist inside the SDK:"));
 		assertTrue(messageString.contains("jQuery"));
 		assertFalse(messageString.contains("Sencha"));
 

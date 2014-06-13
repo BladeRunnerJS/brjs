@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.naming.InvalidNameException;
 
@@ -17,14 +17,14 @@ import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
-import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
-import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsException;
+import org.bladerunnerjs.model.exception.modelupdate.DirectoryAlreadyExistsModelException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.model.exception.modelupdate.NoSuchDirectoryException;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
 import org.bladerunnerjs.utility.NodePathGenerator;
 import org.bladerunnerjs.utility.ObserverList;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 
 public abstract class AbstractNode implements Node
@@ -37,7 +37,10 @@ public abstract class AbstractNode implements Node
 	}
 	
 	private ObserverList observers = new ObserverList();
-	private Map<String, NodeProperties> propertiesMap = new HashMap<String,NodeProperties>();
+	private Map<String, NodeProperties> propertiesMap = new TreeMap<String,NodeProperties>();
+	private Map<String, File> filesMap = new TreeMap<String,File>();
+	
+	
 	
 	protected RootNode rootNode;
 	private Node parent;
@@ -93,7 +96,13 @@ public abstract class AbstractNode implements Node
 	@Override
 	public File file(String filePath)
 	{
-		return new File(dir, filePath);
+		File cachedFile = filesMap.get(filePath);
+		if (cachedFile == null)
+		{
+			cachedFile = new File(dir, filePath);
+			filesMap.put(filePath, cachedFile);
+		}
+		return cachedFile;
 	}
 	
 	@Override
@@ -108,7 +117,7 @@ public abstract class AbstractNode implements Node
 		Logger logger = rootNode.logger(LoggerType.CORE, Node.class);
 		
 		try {
-			if(dirExists()) throw new DirectoryAlreadyExistsException(this);
+			if(dirExists()) throw new DirectoryAlreadyExistsModelException(this);
 			if(this instanceof NamedNode) ((NamedNode) this).assertValidName();
 			
 			try {
@@ -233,21 +242,6 @@ public abstract class AbstractNode implements Node
 		}
 	}
 	
-	protected void registerInitializedNode()
-	{
-		try {
-			if(dir != null) {
-				rootNode.registerNode(this);
-				
-				if (dir.exists()) {
-					ready();
-				}
-			}
-		}
-		catch(NodeAlreadyRegisteredException e) {
-			throw new RuntimeException(e);
-		}
-	}
 	
 	protected String getNormalizedPath(File dir) {
 		String normalizedPath;
@@ -313,5 +307,11 @@ public abstract class AbstractNode implements Node
 		ObserverList observers = node.getObservers();
 		if (observers != null) { observers.eventEmitted(event, notifyForNode); }
 		notifyObservers(event, notifyForNode, node.parentNode());
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName()+", dir: " + RelativePathUtility.get(root().dir(), dir());
 	}
 }

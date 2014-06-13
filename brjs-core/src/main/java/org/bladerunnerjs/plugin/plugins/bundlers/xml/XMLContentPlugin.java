@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
@@ -24,15 +25,21 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 public class XMLContentPlugin extends AbstractContentPlugin
 {
-
 	private ContentPathParser contentPathParser;
 	private BRJS brjs = null;
 	private AssetPlugin xmlAssetPlugin;
+	private final List<String> requestPaths = new ArrayList<>();
 	
 	{
-		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-		contentPathParserBuilder.accepts("bundle.xml").as("bundle-request");
-		contentPathParser = contentPathParserBuilder.build();
+		try {
+			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
+			contentPathParserBuilder.accepts("xml/bundle.xml").as("bundle-request");
+			contentPathParser = contentPathParserBuilder.build();
+			requestPaths.add(contentPathParser.createRequest("bundle-request"));
+		}
+		catch(MalformedTokenException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -44,12 +51,12 @@ public class XMLContentPlugin extends AbstractContentPlugin
 
 	@Override
 	public String getRequestPrefix() {
-		return "bundle.xml";
+		return "xml";
 	}
 	
 	@Override
-	public String getGroupName() {
-		return "application/xml";
+	public String getCompositeGroupName() {
+		return null;
 	}
 	
 	@Override
@@ -61,28 +68,17 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		List<String> result = new ArrayList<String>();
-		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
-		if(!config.isbundleConigAvailable()){
-			return result;
-		}
-		
-		try {
-			result.add(contentPathParser.createRequest("bundle-request"));
-		} catch (MalformedTokenException e) {
-			throw new ContentProcessingException(e);
-		}
-		return result;
+		return getValidContentPaths(bundleSet);
 	}
-
+	
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return getValidDevContentPaths(bundleSet, locales);
+		return getValidContentPaths(bundleSet);
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
 		//TODO not parse the config on every execution
 		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
@@ -93,7 +89,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 			String outputEncoding = brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			Writer output = new OutputStreamWriter(os, outputEncoding);
 		
-			if(config.isbundleConigAvailable()){
+			if(config.isbundleConfigAvailable()){
 				bundleWriter.writeBundle(xmlAssets, output);
 			}else{
 				bundleWriter.concatenateBundle(xmlAssets, output);
@@ -105,4 +101,9 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		}	
 	}
 	
+	private List<String> getValidContentPaths(BundleSet bundleSet) throws ContentProcessingException {
+		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
+		
+		return (!config.isbundleConfigAvailable() || bundleSet.getResourceFiles(xmlAssetPlugin).isEmpty()) ? Collections.emptyList() : requestPaths;
+	}
 }

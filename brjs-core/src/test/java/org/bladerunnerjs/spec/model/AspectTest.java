@@ -4,11 +4,9 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.NamedDirNode;
 import org.bladerunnerjs.model.engine.AbstractNode;
-import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.model.exception.name.InvalidDirectoryNameException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AspectTest extends SpecTest {
@@ -38,26 +36,19 @@ public class AspectTest extends SpecTest {
 		when(aspect).create();
 		then(app).hasDir("default-aspect");
 	}
-	@Ignore //waiting for change to default appConf values, app namespace will be set to app name
+	
 	@Test
 	public void aspectIsBaselinedDuringPopulation() throws Exception {
 		given(aspectTemplate).containsFolder("@appns")
-		.and(aspectTemplate).containsFileWithContents("index.jsp", "'<html>@appns</html>'");
-	when(aspect).populate();
-	then(aspect).dirExists()
-		.and(app).hasDir("default-aspect")
-		.and(aspect).hasDir("app1")
-		.and(aspect).doesNotHaveDir("@appns")
-		.and(aspect).fileHasContents("index.jsp", "'<html>app1</html>'");
+			.and(aspectTemplate).containsFileWithContents("index.jsp", "'<html>@appns</html>'");
+    	when(aspect).populate();
+    	then(aspect).dirExists()
+    		.and(app).hasDir("default-aspect")
+    		.and(aspect).hasDir("appns")
+    		.and(aspect).doesNotHaveDir("@appns")
+    		.and(aspect).fileHasContents("index.jsp", "'<html>appns</html>'");
 	}
 	
-	@Test
-	public void populatingAnAspectCausesRootObserversToBeNotified() throws Exception {
-		given(observer).observing(brjs);
-		when(aspect).populate();
-		then(observer).notified(NodeReadyEvent.class, aspect)
-			.and(observer).notified(NodeReadyEvent.class, aspect.theme("standard"));
-	}
 	
 	@Test
 	public void invalidAspectNameSpaceThrowsException() throws Exception {

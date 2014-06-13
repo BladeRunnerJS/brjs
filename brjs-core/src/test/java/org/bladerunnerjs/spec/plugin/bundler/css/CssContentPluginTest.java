@@ -1,45 +1,163 @@
 package org.bladerunnerjs.spec.plugin.bundler.css;
 
+import java.io.File;
+
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AppConf;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.BladerunnerConf;
+import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CssContentPluginTest extends SpecTest {
 	private App app;
+	private AppConf appConf;
 	private Aspect aspect;
+	private File commonTheme;
+	private File mainTheme;
+	private File bladeMainTheme;
 	private JsLib nonConformantLib;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer requestResponse = new StringBuffer();
+	private Workbench workbench;
+	private Blade blade;
+	private Bladeset bladeset;
 	
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsBundlers()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
+			appConf = app.appConf();
 			aspect = app.aspect("default");
+			commonTheme = aspect.file("themes/common");
+			mainTheme = aspect.file("themes/main");
 			nonConformantLib = app.jsLib("non-conformant-lib");
 			bladerunnerConf = brjs.bladerunnerConf();
+			bladeset = app.bladeset("bs");
+			blade = bladeset.blade("b1");
+			bladeMainTheme = blade.file("themes/main");
+			workbench = blade.workbench();
+	}
+	
+	@Test
+	public void ifThereAreNoCssFilesThenNoRequestsWillBeGenerated() throws Exception {
+		given(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css");
+	}
+	
+	@Test
+	public void onlyCssFilesAreValid() throws Exception {
+		given(commonTheme).containsFile("style.style")
+		.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css");
+	}
+	
+	@Test
+	public void ifThereAreCssFilesThenRequestsWillBeGenerated() throws Exception {
+		given(commonTheme).containsFile("style.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css");
+	}
+	
+	@Test
+	public void resourceCssFilesAreTreatedAsPartOfTheCommonTheme() throws Exception {
+		given(aspect).containsResourceFile("style.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css");
+	}
+	
+	@Test
+	public void ifThereAreLanguageSpecificCssFilesThenLanguageSpecificRequestsWillBeGenerated() throws Exception {
+		given(commonTheme).containsFile("style_en.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common_en/bundle.css");
+	}
+	
+	@Test
+	public void ifThereAreLocaleSpecificCssFilesThenLocaleSpecificRequestsWillBeGenerated() throws Exception {
+		given(appConf).supportsLocales("en", "en_GB")
+			.and(commonTheme).containsFile("style_en_GB.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common_en_GB/bundle.css");
+	}
+	
+	@Test
+	public void ifThereIsAMixOfLocalesCssFilesThenCorrespondingRequestsWillBeGenerated() throws Exception {
+		given(appConf).supportsLocales("en", "en_GB")
+			.and(commonTheme).containsFile("style.css")
+			.and(commonTheme).containsFile("style_en_GB.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css", "css/common_en_GB/bundle.css");
+	}
+	
+	@Test
+	public void ifAllLocalesCssFilesExistThenAllRequestsWillBeGenerated() throws Exception {
+		given(appConf).supportsLocales("en", "en_GB")
+			.and(commonTheme).containsFile("style.css")
+			.and(commonTheme).containsFile("style_en.css")
+			.and(commonTheme).containsFile("style_en_GB.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css", "css/common_en/bundle.css", "css/common_en_GB/bundle.css");
+	}
+	
+	@Test
+	public void thereBeingCssFilesForLocalesThatArentSupportDoesNotAffectTheGeneratedRequests() throws Exception {
+		given(commonTheme).containsFile("style.css")
+			.and(commonTheme).containsFile("style_en_GB.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css");
+	}
+	
+	@Test
+	public void requestsForAllTheThemesDefinedWithinTheAspectAreGenerated() throws Exception {
+		given(commonTheme).containsFile("style.css")
+			.and(mainTheme).containsFile("style_en.css")
+			.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css", "css/main_en/bundle.css");
+	}
+	
+	// TODO: this was one of a whole raft of useful tests that was previously deleted by James T. -- will see if he can investigate why this one no longer works
+	@Ignore
+	@Test
+	public void thereBeingBladeThemesThatArentDefinedInTheAspectDoesNotAffectTheGeneratedRequests() throws Exception {
+		given(commonTheme).containsFile("style.css")
+			.and(bladeMainTheme).containsFile("style.css")
+			.and(aspect).indexPageRequires("appns/bs/b1/Class")
+			.and(blade).hasClass("appns/bs/b1/Class");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/common/bundle.css");
+	}
+	
+	@Test
+	public void bladeThemesAreHoweverTakenIntoConsiderationIfTheyIdentifyAdditionalLocaleVariants() throws Exception {
+		given(mainTheme).containsFile("style.css")
+			.and(bladeMainTheme).containsFile("style_en.css")
+			.and(aspect).indexPageRequires("appns/bs/b1/Class")
+			.and(blade).hasClass("appns/bs/b1/Class");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css", "css/main_en/bundle.css", "css/main/bundle.css");
 	}
 	
 	@Test
 	public void cssFilesInResourcesAppearInTheCommonTheme() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFile("resources/style.css");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("resources/style.css");
+			.and(aspect).containsResourceFile("style.css");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("style.css");
 	}
 	
 	@Test
 	public void cssFilesInResourcesAppearDontAppearInAnyOtherThemes() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFile("resources/style.css");
-		when(app).requestReceived("/default-aspect/css/theme1/bundle.css", requestResponse);
+			.and(aspect).containsResourceFile("style.css");
+		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("resources/style.css");
 	}
 	
@@ -47,19 +165,19 @@ public class CssContentPluginTest extends SpecTest {
 	public void cssFilesDeepWithinResourcesAppearInTheTheme() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFile("resources/dir1/dir2/style.css");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("resources/dir1/dir2/style.css");
+			.and(aspect).containsResourceFile("dir1/dir2/style.css");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("dir1/dir2/style.css");
 	}
 	
 	@Test
 	public void cssFilesInNonConformantLibrariesAppearInTheCommonTheme() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: style1.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style1.css")
 			.and(requestResponse).doesNotContainText("style2.css");
 	}
@@ -68,11 +186,11 @@ public class CssContentPluginTest extends SpecTest {
 	public void cssFilesInNonConformantLibrariesAppearAreAllBundledInCommonThemeWhenYouDontSpecifyCssManifestConfig() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "js: foo.js\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "js: foo.js\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("foo.js")
 			.and(nonConformantLib).containsFileWithContents("style1.css", "style-1")
 			.and(nonConformantLib).containsFileWithContents("style2.css", "style-2");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsLines("style-1", "style-2");
 	}
 	
@@ -80,9 +198,9 @@ public class CssContentPluginTest extends SpecTest {
 	public void cssFilesInNonConformantLibrariesDontAppearInAnyOtherThemes() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: style.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style.css");
-		when(app).requestReceived("/default-aspect/css/theme1/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("style.css");
 	}
 	
@@ -91,7 +209,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/common/style.css");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("themes/common/style.css");
 	}
 	
@@ -100,7 +218,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/common/style.css");
-		when(app).requestReceived("/default-aspect/css/theme1/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("themes/common/style.css");
 	}
 	
@@ -109,7 +227,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/theme1/style.css");
-		when(app).requestReceived("/default-aspect/css/theme1/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/theme1/bundle.css", requestResponse);
 		then(requestResponse).containsText("themes/theme1/style.css");
 	}
 	
@@ -118,7 +236,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFile("themes/theme1/style.css");
-		when(app).requestReceived("/default-aspect/css/commmon/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/commmon/bundle.css", requestResponse);
 		then(requestResponse).doesNotContainText("themes/theme1/style.css");
 	}
 	
@@ -126,12 +244,12 @@ public class CssContentPluginTest extends SpecTest {
 	public void allNonNestedCssFilesInNonConformantLibrariesAppearIfLeftUnspecified() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "js: script.js\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "js: script.js\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("script.js")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css")
 			.and(requestResponse).doesNotContainText("dir/style3.css");
 	}
@@ -140,11 +258,11 @@ public class CssContentPluginTest extends SpecTest {
 	public void allCssFilesInNonConformantLibrariesAppearIfAildcardIsExplicitlySpecified() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: \"*.css\"\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"*.css\"\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css")
 			.and(requestResponse).doesNotContainText("dir/style3.css");
 	}
@@ -153,11 +271,11 @@ public class CssContentPluginTest extends SpecTest {
 	public void allCssFilesInNonConformantLibrariesAppearIfADeepWildcardIsExplicitlySpecified() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRequires(nonConformantLib)
-			.and(nonConformantLib).containsFileWithContents("library.manifest", "css: \"**/*.css\"\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: \"**/*.css\"\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css")
 			.and(nonConformantLib).containsFile("style2.css")
 			.and(nonConformantLib).containsFile("dir/style3.css");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsOrderedTextFragments("style1.css", "style2.css", "dir/style3.css");
 	}
 	
@@ -166,7 +284,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style.css")
 			.and(requestResponse).doesNotContainText("style_de.css")
 			.and(requestResponse).doesNotContainText("style_de_DE.css")
@@ -178,7 +296,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
-		when(app).requestReceived("/default-aspect/css/common_de/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common_de/bundle.css", requestResponse);
 		then(requestResponse).containsText("style_de.css")
 			.and(requestResponse).doesNotContainText("style.css")
 			.and(requestResponse).doesNotContainText("style_de_DE.css")
@@ -190,7 +308,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFiles("resources/style.css", "resources/style_de.css", "resources/style_de_DE.css", "resources/style_de_CH.css");
-		when(app).requestReceived("/default-aspect/css/common_de_DE/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common_de_DE/bundle.css", requestResponse);
 		then(requestResponse).containsText("style_de_DE.css")
 			.and(requestResponse).doesNotContainText("style.css")
 			.and(requestResponse).doesNotContainText("style_de.css")
@@ -203,7 +321,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img.png');}");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img.png\");}");
 	}
 	
@@ -212,7 +330,7 @@ public class CssContentPluginTest extends SpecTest {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img/img.png');}");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img/img.png\");}");
 	}
 	
@@ -220,19 +338,19 @@ public class CssContentPluginTest extends SpecTest {
 	public void referringToAParentImageCausesAParentCssResourceRequestToBeCreated() throws Exception {
 		given(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../img.png');}");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img.png\");}");
+			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/img.png');}");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/wibble/img.png\");}");
 	}
-	
+
 	@Test
 	public void weCanUseUTF8() throws Exception {
 		given(bladerunnerConf).defaultFileCharacterEncodingIs("UTF-8")
 			.and().activeEncodingIs("UTF-8")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFileWithContents("resources/style.css", "/* $£€ */");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+			.and(aspect).containsResourceFileWithContents("style.css", "/* $£€ */");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
 	
@@ -242,8 +360,8 @@ public class CssContentPluginTest extends SpecTest {
 			.and().activeEncodingIs("ISO-8859-1")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
-			.and(aspect).containsFileWithContents("resources/style.css", "/* $£ */");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+			.and(aspect).containsResourceFileWithContents("style.css", "/* $£ */");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£");
 	}
 	
@@ -254,7 +372,63 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("resources/style.css", "/* $£€ */");
-		when(app).requestReceived("/default-aspect/css/common/bundle.css", requestResponse);
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("$£€");
 	}
+	
+	@Test
+	public void themesFromAspectReferencedInCssTagsForWorbenchesAreIncludedInBundle() throws Exception {
+		given(aspect).containsFileWithContents("themes/standard/file.css", "ASPECT CSS")
+			.and(workbench).hasBeenCreated();
+		when(workbench).requestReceived("css/standard/bundle.css", requestResponse);
+		then(requestResponse).containsText("ASPECT CSS");
+	}
+	
+	@Test
+	public void aspectLanguageSpecifcFilesHaveToHaveToBePrefixedWithA_ToBeBundled() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).indexPageRefersTo("appns.Class1")
+    		.and(aspect).containsFileWithContents("themes/standard/screen.css", "screen.css")
+    		.and(aspect).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
+    	when(aspect).requestReceived("css/standard_en/bundle.css", requestResponse);
+    	then(requestResponse).containsText("style_en.css")
+    		.and(requestResponse).doesNotContainText("screen.css");
+	}
+	
+	@Test
+	public void bladeLanguageSpecifcFilesHaveToHaveToBePrefixedWithA_ToBeBundled() throws Exception {
+		given(blade).hasClass("appns/bs/b1/Class1")
+    		.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+    		.and(blade).containsFileWithContents("themes/standard/screen.css", "screen.css")
+    		.and(blade).containsFileWithContents("themes/standard/style_en.css", "style_en.css");
+    	when(aspect).requestReceived("css/standard_en/bundle.css", requestResponse);
+    	then(requestResponse).containsText("style_en.css")
+    		.and(requestResponse).doesNotContainText("screen.css");
+	}
+	
+	@Test
+	public void bladesetCssIsBundledEvenWhenThereIsNoJS() throws Exception {
+		given(blade).hasClass("appns/bs/b1/Class1")
+			.and(bladeset).containsResourceFileWithContents("style.css", "BLADESET STYLE")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("BLADESET STYLE");
+	}
+	
+	@Test
+	public void cssFilenamesCanContainAnd_IfTheyDontMatchTheStructureOfALocaleFilename() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).indexPageRefersTo("appns.Class1")
+    		.and(aspect).containsFileWithContents("themes/standard/style_sheet.css", "style_sheet.css")
+			.and(aspect).containsFileWithContents("themes/standard/stylesheet_1.css", "stylesheet_1.css")
+			.and(aspect).containsFileWithContents("themes/standard/stylesheet_ab.css", "stylesheet_ab.css")
+			.and(aspect).containsFileWithContents("themes/standard/stylesheet_ab_cd.css", "stylesheet_ab_cd.css");
+    	when(aspect).requestReceived("css/standard/bundle.css", requestResponse);
+    	then(requestResponse).containsText("style_sheet.css")
+    		.and(requestResponse).containsText("stylesheet_1.css")
+    		.and(requestResponse).doesNotContainText("stylesheet_ab.css")
+    		.and(requestResponse).doesNotContainText("stylesheet_ab_cd.css");
+	}
+	
+	
 }

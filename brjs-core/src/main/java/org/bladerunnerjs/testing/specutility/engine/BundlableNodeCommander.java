@@ -11,24 +11,20 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 public abstract class BundlableNodeCommander<N extends BundlableNode> extends NodeCommander<N>
 {
-	
-	
 	private BundlableNode bundlableNode;
-
-
+	
 	public BundlableNodeCommander(SpecTest specTest, N bundlableNode)
 	{
 		super(specTest, bundlableNode);
 		this.bundlableNode = bundlableNode;
 	}
 	
-	
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
         		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-        		bundlableNode.handleLogicalRequest(requestPath, responseOutput);
-        		response.append(responseOutput.toString(specTest.getActiveCharacterEncoding()));
+        		bundlableNode.handleLogicalRequest(requestPath, responseOutput, bundlableNode.root().getAppVersionGenerator().getDevVersion());
+        		response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
 			}
 		});
 		
@@ -44,5 +40,4 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 		
 		return commanderChainer;
 	}
-		
 }

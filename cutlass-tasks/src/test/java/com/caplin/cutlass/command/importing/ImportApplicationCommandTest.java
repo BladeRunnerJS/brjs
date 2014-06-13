@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import org.bladerunnerjs.model.BRJS;
@@ -50,41 +49,6 @@ public class ImportApplicationCommandTest
 	public void commandThrowsErrorIfIncorrectNumberArgumentsArePassedIn() throws Exception
 	{
 		importApplicationCommand.doCommand(new String[] { "emptytrader.zip" });
-	}
-
-	@Ignore //TODO: this test should be in the CT3 plugin
-	@Test
-	public void importsZippedWebcentricApplicationAndCreatesDatabase() throws Exception
-	{
-//		File appDirectory = new File(applicationsDirectory, "novotrader");
-//		File emptyTraderWEBINFJar = new File(appDirectory, "WEB-INF/lib/testJar.jar");
-//		File generatedWebcentricFolder = new File(sdkBaseDir.getParent(), CutlassConfig.WEBCENTRIC_DB_DIR);
-//		
-//		assertFalse(appDirectory.exists());
-//		assertFalse(emptyTraderWEBINFJar.exists());
-//		assertFalse(generatedWebcentricFolder.exists());
-//
-//		importApplicationCommand.doCommand(new String[] { "emptytrader.zip", "novotrader", "novox" });
-//
-//		assertTrue(appDirectory.exists());
-//		assertTrue(emptyTraderWEBINFJar.exists());
-//		assertTrue(new File(generatedWebcentricFolder, "novotrader").exists());
-	}
-
-	@Ignore //TODO: this test should be in the CT3 plugin - it also doesnt really test anything since the webcentric db dir doesnt live in SDK
-	@Test 
-	public void importsZippedNonWebcentricApplicationAndDoesNotCreateDatabase() throws Exception
-	{
-//		File appDirectory = new File(applicationsDirectory, "bluetrader");
-//		File generatedWebcentricFolder = new File(sdkBaseDir.getParent(), CutlassConfig.WEBCENTRIC_DB_DIR);
-//		
-//		assertFalse(appDirectory.exists());
-//		assertFalse(generatedWebcentricFolder.exists());
-//		
-//		importApplicationCommand.doCommand(new String[] { "plaintrader.zip", "bluetrader", "novox" });
-//
-//		assertTrue(appDirectory.exists());
-//		assertFalse(generatedWebcentricFolder.exists());
 	}
 	
 	@Test

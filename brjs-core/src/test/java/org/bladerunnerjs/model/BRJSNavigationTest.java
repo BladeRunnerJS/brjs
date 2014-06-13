@@ -55,21 +55,21 @@ public class BRJSNavigationTest
 	}
 	
 	@Test
-	public void sdkLib()
+	public void sdkLibsDir()
 	{
-		nodeTesterFactory.createSetTester(JsLib.class, "sdkLibs", "sdkLib")
-    		.addChild("br", "sdk/libs/javascript/br-libs/br")
-    		.addChild("brlib2", "sdk/libs/javascript/br-libs/brlib2")
-    		.assertModelIsOK();
+		nodeTesterFactory.createItemTester(DirNode.class, "sdkLibsDir", "sdk/libs/javascript")
+			.assertModelIsOK();
 	}
 	
 	@Test
-	public void sdkNonBladeRunnerLibs()
+	public void sdkLib()
 	{
-		nodeTesterFactory.createSetTester(JsLib.class, "sdkNonBladeRunnerLibs", "sdkNonBladeRunnerLib")
-			.addChild("thirdparty-l1", "sdk/libs/javascript/thirdparty/thirdparty-l1")
-			.addChild("thirdparty-l2", "sdk/libs/javascript/thirdparty/thirdparty-l2")
-			.assertModelIsOK();
+		nodeTesterFactory.createSetTester(JsLib.class, "sdkLibs", "sdkLib")
+    		.addChild("br", "sdk/libs/javascript/br")
+    		.addChild("brlib2", "sdk/libs/javascript/brlib2")
+    		.addChild("thirdparty-l1", "sdk/libs/javascript/thirdparty-l1")
+			.addChild("thirdparty-l2", "sdk/libs/javascript/thirdparty-l2")
+    		.assertModelIsOK();
 	}
 	
 	@Test

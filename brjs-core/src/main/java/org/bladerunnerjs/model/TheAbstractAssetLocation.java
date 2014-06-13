@@ -16,16 +16,15 @@ import org.bladerunnerjs.utility.*;
 
 // TODO Java 8 (1.8.0-b123) compiler throws errors when this class is named 'AbstractAssetLocation'
 public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode implements AssetLocation {
-	protected final AssetContainer assetContainer;
-	protected final FileInfo dirInfo;
+	private final AssetContainer assetContainer;
+	private final FileInfo dirInfo;
 	
-	private final MemoizedValue<String> requirePrefix;
 	private final AssetLocator assetLocator;
 	private List<AssetLocation> dependentAssetLocations = new ArrayList<>();
-	private final Map<String, SourceModule> sourceModules = new HashMap<>();
 	private AliasDefinitionsFile aliasDefinitionsFile;
 	private final Assets emptyAssets;
 	private final MemoizedValue<String> jsStyle = new MemoizedValue<>("AssetLocation.jsStyle", root(), dir());
+	private String relativeRequirePath;
 	
 	public TheAbstractAssetLocation(RootNode rootNode, Node parent, File dir, AssetLocation... dependentAssetLocations) {
 		super(rootNode, parent, dir);
@@ -34,19 +33,15 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		assetLocator = new AssetLocator(this);
 		emptyAssets = new Assets(root());
 		this.assetContainer = (AssetContainer) parent;
-		requirePrefix = new MemoizedValue<>("AssetLocation.requirePrefix", root(), dir(), assetContainer.app().file("app.conf"), root().conf().file("bladerunner.conf"));
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
+		relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir());
 	}
 	
 	protected abstract List<File> getCandidateFiles();
 	
 	@Override
 	public String requirePrefix() {
-		return requirePrefix.value(() -> {
-			String relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir());
-			
-			return assetContainer.requirePrefix() + "/" + relativeRequirePath;
-		});
+		return assetContainer.requirePrefix() + "/" + relativeRequirePath;
 	}
 	
 	@Override
@@ -84,25 +79,6 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 	}
 	
 	@Override
-	public SourceModule sourceModule(String requirePath) throws RequirePathException {
-		String canonicalRequirePath = canonicaliseRequirePath(requirePrefix(), requirePath);
-		
-		if(sourceModules.containsKey(requirePath)) {
-			return sourceModules.get(requirePath);
-		}
-		
-		SourceModule sourceModule = findSourceModuleWithRequirePath(assetContainer().app().getAllAssetContainers(), canonicalRequirePath);
-		
-		if(sourceModule != null) {
-			sourceModules.put(requirePath, sourceModule);
-			return sourceModule;
-		}
-		
-		throw new InvalidRequirePathException("Unable to find SourceModule for require path '" + requirePath
-			+ "'. It either does not exist or it is outside of the scope for this request.");
-	}
-	
-	@Override
 	public String jsStyle() {
 		return jsStyle.value(() -> {
 			return JsStyleUtility.getJsStyle(dir());
@@ -123,28 +99,15 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		// do nothing
 	}
 	
-	private SourceModule findSourceModuleWithRequirePath(List<AssetContainer> assetContainers, String requirePath)
-	{
-		for (AssetContainer assetContainer : assetContainers)
-		{
-			for (SourceModule sourceModule : assetContainer.sourceModules())
-			{
-				if (sourceModule.getRequirePath().equals(requirePath))
-				{
-					sourceModules.put(requirePath, sourceModule);
-					return sourceModule;
-				}
-			}
-		}
-		return null;
-	}
-	
 	private Assets assets() {
 		return (!dirInfo.exists()) ? emptyAssets : assetLocator.assets(getCandidateFiles());
 	}
 	
-	private String canonicaliseRequirePath(String requirePrefix, String requirePath) throws RequirePathException
+	@Override
+	public String canonicaliseRequirePath(String requirePath) throws RequirePathException
 	{
+		String requirePrefix = requirePrefix();
+		
 		List<String> requirePrefixParts = new LinkedList<String>( Arrays.asList(requirePrefix.split("/")) );
 		List<String> requirePathParts = new LinkedList<String>( Arrays.asList(requirePath.split("/")) );
 		
@@ -181,4 +144,9 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		
 		return StringUtils.join(requirePrefixParts, "/") + "/" + StringUtils.join(requirePathParts, "/");
 	}
+	
+	protected FileInfo getDirInfo() {
+		return dirInfo;
+	}
+	
 }

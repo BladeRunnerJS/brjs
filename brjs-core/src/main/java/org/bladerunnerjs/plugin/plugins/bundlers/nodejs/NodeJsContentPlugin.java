@@ -3,9 +3,11 @@ package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -19,6 +21,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin;
+import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -64,7 +67,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getGroupName()
+	public String getCompositeGroupName()
 	{
 		return "text/javascript";
 	}
@@ -89,7 +92,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 		{
 			for (SourceModule sourceModule : bundleSet.getSourceModules())
 			{
-				if (sourceModule instanceof NodeJsSourceModule)
+				if (sourceModule instanceof CommonJsSourceModule)
 				{
 					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
 				}
@@ -106,11 +109,11 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return prodRequestPaths;
+		return (InstanceFinder.containsInstance(bundleSet.getSourceModules(), CommonJsSourceModule.class)) ? prodRequestPaths : Collections.emptyList();
 	}
-
+	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
 		try
 		{
@@ -119,7 +122,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
-					IOUtils.copy(jsModule.getReader(), writer);
+					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
 				}
 			}
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
@@ -128,10 +131,10 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 				{
 					for (SourceModule sourceModule : bundleSet.getSourceModules())
 					{
-						if (sourceModule instanceof NodeJsSourceModule)
+						if (sourceModule instanceof CommonJsSourceModule)
 						{
 							writer.write("// " + sourceModule.getRequirePath() + "\n");
-							IOUtils.copy(sourceModule.getReader(), writer);
+							try (Reader reader = sourceModule.getReader()) { IOUtils.copy(reader, writer); }
 							writer.write("\n\n");
 						}
 					}

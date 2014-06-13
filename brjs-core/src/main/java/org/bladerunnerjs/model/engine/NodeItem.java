@@ -6,6 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
+
 public class NodeItem<N extends Node>
 {
 	private final Node node;
@@ -38,9 +40,10 @@ public class NodeItem<N extends Node>
 			{
 				Constructor<N> classConstructor = nodeClass.getConstructor(RootNode.class, Node.class, File.class);
 				item = classConstructor.newInstance(node.root(), node, getNodeDir(node.dir()));
+				item.root().registerNode(item);
 			}
 			catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
-				NoSuchMethodException | SecurityException e)
+				NoSuchMethodException | SecurityException | NodeAlreadyRegisteredException e)
 			{
 				throw new RuntimeException(e);
 			}

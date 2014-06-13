@@ -54,7 +54,6 @@ public class BladeTest extends SpecTest {
 		when(blade1).populate();
 		then(observer).notified(NodeReadyEvent.class, blade1)
 			.and(observer).notified(NodeReadyEvent.class, blade1.testType("unit").testTech("js-test-driver"))
-			.and(observer).notified(NodeReadyEvent.class, blade1.theme("standard"))
 			.and(observer).notified(NodeReadyEvent.class, blade1.workbench());
 	}
 	
@@ -86,7 +85,7 @@ public class BladeTest extends SpecTest {
 	public void bladeHasClassNameTranformAddedDuringPopulation() throws Exception {
 		String expectedClassName = WordUtils.capitalize( blade1.getName() );
 		given(bladeTemplate).containsFolder("@blade")
-			.and(bladeTemplate).containsFileWithContents("@class-name.js", "function @class-name(){}");
+			.and(bladeTemplate).containsFileWithContents("@bladeTitle.js", "function @bladeTitle(){}");
 		when(blade1).populate();
 		then(blade1).hasDir(blade1.getName())
 			.and(blade1).fileHasContents(expectedClassName + ".js", "function " + expectedClassName + "(){}");

@@ -62,11 +62,16 @@ public class StringVerifier {
 	}
 	
 	public VerifierChainer containsNodeJsClasses(String... classes) {
+		List<String> processedNodeClassNames = new ArrayList<String>();
 		for(String className : classes) {
 			className = className.replaceAll("\\.", "/");
-			className = StringUtils.substringAfterLast(className, "/");
-			containsText(className + " = function() {\n");
-			containsText("exports = " + className);
+			String nodeClassName = StringUtils.substringAfterLast(className, "/");
+			if (processedNodeClassNames.contains(nodeClassName)) {
+				throw new RuntimeException("NodeJS classes must not have the same suffix names as it leads to false positives. e.g. some.Name and another.Name should be some.Name and some.otherName");
+			}
+			containsText(nodeClassName + " = function() {\n");
+			containsText("exports = " + nodeClassName);
+			processedNodeClassNames.add(nodeClassName);
 		}
 		
 		return verifierChainer;
@@ -98,15 +103,7 @@ public class StringVerifier {
 	
 	public VerifierChainer containsRequests(String... expectedRequests) {
 		List<String> actualRequests = getRequestPaths(string);
-		int i = 0;
-		
-		assertEquals("'" + string + "' does not contain exactly " + expectedRequests.length + " request(s)", expectedRequests.length, actualRequests.size());
-		
-		for(String expectedRequest : expectedRequests) {
-			String actualRequest = actualRequests.get(i++);
-			
-			assertEquals(expectedRequest, actualRequest);
-		}
+		assertEquals(Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
 		
 		return verifierChainer;
 	}
@@ -170,6 +167,21 @@ public class StringVerifier {
 	}
 
 	public VerifierChainer containsOrderedTextFragments(String... textFragments) {
+		
+		containsOrderedTextFragmentsAnyNumberOfTimes(textFragments);
+		
+		for (String fragment : textFragments) {
+			if (StringUtils.countMatches(string, fragment) != 1) {
+				String failMessage = "Expected " + fragment + " to be present only once. "+
+						"If fragments can be present multiple times use 'containsOrderedTextFragmentsAnyNumberOfTimes' instaed";
+				assertEquals(failMessage, fragment, string);
+			}
+		}
+		
+		return verifierChainer;
+	}
+	
+	public VerifierChainer containsOrderedTextFragmentsAnyNumberOfTimes(String... textFragments) {
 		if(textFragments.length == 0) {
 			throw new RuntimeException("containsOrderedTextFragments() invoked without arguments.");
 		}

@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +57,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public String getGroupName() {
+	public String getCompositeGroupName() {
 		return "text/javascript";
 	}
 	
@@ -67,7 +68,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
 		try {
 			if (contentPath.formName.equals("bundle-request"))
@@ -78,7 +79,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 						if(sourceFile instanceof ThirdpartySourceModule)
 						{
 							writer.write("// " + sourceFile.getRequirePath() + "\n");
-							IOUtils.copy(sourceFile.getReader(), writer);
+							try (Reader reader = sourceFile.getReader()) { IOUtils.copy(reader, writer); }
 							writer.write("\n\n");
 						}
 					}
@@ -87,7 +88,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 			else if(contentPath.formName.equals("file-request")) {
 				String libName = contentPath.properties.get("module");
 				App app = bundleSet.getBundlableNode().app();
-				JsLib lib = app.nonBladeRunnerLib(libName);
+				JsLib lib = app.jsLib(libName);
 				if (!lib.dirExists())
 				{
 					throw new ContentProcessingException("Library '" + lib.getName() + "' doesn't exist.");
@@ -110,7 +111,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 				{
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
 					writer.write("// " + jsModule.getRequirePath() + "\n");
-					IOUtils.copy(jsModule.getReader(), writer);
+					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
 					writer.write("\n\n");
 				}
 			}

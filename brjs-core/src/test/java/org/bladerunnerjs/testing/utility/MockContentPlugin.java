@@ -1,7 +1,6 @@
 package org.bladerunnerjs.testing.utility;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,18 +26,8 @@ public class MockContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public String getGroupName() {
+	public String getCompositeGroupName() {
 		return "";
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearBeforeThisPlugin() {
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
-		return new ArrayList<>();
 	}
 	
 	@Override
@@ -49,7 +38,7 @@ public class MockContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
 	}
 

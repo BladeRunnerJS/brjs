@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility;
 
 import static org.junit.Assert.*;
 
+import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class AssetContainerVerifier {
 			StringWriter sourceModuleContents = new StringWriter();
 			
 			assertEquals("Source module " + i + " differs from what's expected.", expectedSourceModule, actualSourceModule.getRequirePath());
-			IOUtils.copy(actualSourceModule.getReader(), sourceModuleContents);
+			try (Reader reader = actualSourceModule.getReader()) { IOUtils.copy(reader, sourceModuleContents); }
 		}
 	}
 	
@@ -46,6 +47,10 @@ public class AssetContainerVerifier {
 		for(AssetLocation actualAssetLocation : actualAssetLocations) {
 			String expectedAssetLocation = expectedAssetLocations[i++];
 			String actualDependentAssetLocationPath = RelativePathUtility.get(assetContainer.dir(), actualAssetLocation.dir());
+			
+			if(actualDependentAssetLocationPath.equals("")) {
+				actualDependentAssetLocationPath = ".";
+			}
 			
 			assertEquals("Asset location " + i + " differs from what's expected.", expectedAssetLocation, actualDependentAssetLocationPath);
 		}

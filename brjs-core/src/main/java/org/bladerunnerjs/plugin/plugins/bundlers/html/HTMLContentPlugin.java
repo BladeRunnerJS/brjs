@@ -6,7 +6,8 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,17 +36,16 @@ import org.bladerunnerjs.utility.NamespaceUtility;
 public class HTMLContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
-	private Map<String, Asset> identifiers = new HashMap<String, Asset>();
-	private List<String> requestPaths = new ArrayList<>();
+	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
+	private final List<String> requestPaths = new ArrayList<>();
 	
 	private BRJS brjs;
 	private AssetPlugin htmlAssetPlugin;
+	
 	{
-		try{
+		try {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("bundle.html").as("bundle-request");
-			contentPathParser = contentPathParserBuilder.build();
-		
+			contentPathParserBuilder.accepts("html/bundle.html").as("bundle-request");
 			contentPathParser = contentPathParserBuilder.build();
 			requestPaths.add(contentPathParser.createRequest("bundle-request"));
 		}
@@ -63,12 +63,12 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	
 	@Override
 	public String getRequestPrefix() {
-		return "bundle.html";
+		return "html";
 	}
 
 	@Override
-	public String getGroupName() {
-		return "text/html";
+	public String getCompositeGroupName() {
+		return null;
 	}
 	
 	@Override
@@ -80,19 +80,19 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return requestPaths;
+		return getValidContentPaths(bundleSet);
 	}
-
+	
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
 	{
-		return requestPaths;
+		return getValidContentPaths(bundleSet);
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
-		identifiers = new HashMap<String, Asset>();
+		identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
 		
 		// TODO: try removing the @SuppressWarnings once we upgrade past Eclipse Kepler, as the need for this appears to be a bug
@@ -115,6 +115,10 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		catch( IOException | ConfigException e) {
 			throw new ContentProcessingException(e);
 		}
+	}
+	
+	private List<String> getValidContentPaths(BundleSet bundleSet) {
+		return (bundleSet.getResourceFiles(htmlAssetPlugin).isEmpty()) ? Collections.emptyList() : requestPaths;
 	}
 	
 	private void validateSourceHtml(Asset htmlAsset) throws IOException, ContentFileProcessingException, NamespaceException, RequirePathException

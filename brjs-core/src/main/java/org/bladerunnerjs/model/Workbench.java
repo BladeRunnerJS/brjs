@@ -10,25 +10,21 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
 import org.bladerunnerjs.model.engine.RootNode;
-import org.bladerunnerjs.model.engine.ThemeableNode;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.utility.IndexPageSeedLocator;
 import org.bladerunnerjs.utility.TestRunner;
 
 
-public final class Workbench extends AbstractBrowsableNode implements TestableNode, ThemeableNode
+public final class Workbench extends AbstractBrowsableNode implements TestableNode
 {
 	private final NodeItem<DirNode> styleResources = new NodeItem<>(this, DirNode.class, "resources/style");
 	private final NodeList<TypedTestPack> testTypes = TypedTestPack.createNodeSet(this);
-	private final NodeList<Theme> themes = Theme.createNodeSet(this);
 	private final IndexPageSeedLocator seedLocator;
 	
 	public Workbench(RootNode rootNode, Node parent, File dir)
 	{
 		super(rootNode, parent, dir);
 		seedLocator = new IndexPageSeedLocator(root());
-		
-		registerInitializedNode();
 	}
 	
 	@Override
@@ -70,10 +66,8 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 	}
 	
 	@Override
-	public List<AssetContainer> assetContainers() {
+	public List<AssetContainer> scopeAssetContainers() {
 		List<AssetContainer> assetContainers = new ArrayList<>();
-		
-		assetContainers.add( app().aspect("default") );
 		
 		assetContainers.add( this );
 		assetContainers.add( root().locateAncestorNodeOfClass(this, Blade.class) );
@@ -104,15 +98,5 @@ public final class Workbench extends AbstractBrowsableNode implements TestableNo
 		return testTypes.item(typedTestPackName);
 	}
 	
-	@Override
-	public List<Theme> themes()
-	{
-		return themes.list();
-	}
 	
-	@Override
-	public Theme theme(String themeName)
-	{
-		return themes.item(themeName);
-	}
 }

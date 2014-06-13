@@ -158,6 +158,13 @@ public class MockRootNode implements RootNode
 	}
 	
 	@Override
+	public void registerNode(Node node, boolean makeUnique)
+	{
+	}
+	
+	
+	
+	@Override
 	public void clearRegisteredNode(Node node)
 	{
 	}

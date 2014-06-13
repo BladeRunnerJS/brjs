@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -24,14 +25,12 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		
-		registerInitializedNode();
 	}
 	
 	@Override
 	public File[] scopeFiles() {
 		if(scopeFiles == null) {
-			scopeFiles = new File[] {dir(), app().libsDir(), app().thirdpartyLibsDir(), root().libsDir(), root().conf().file("bladerunner.conf")};
+			scopeFiles = new File[] {dir(), app().libsDir(), app().libsDir(), root().sdkLibsDir().dir(), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
 		}
 		
 		return scopeFiles;
@@ -50,6 +49,7 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
 		transformations.put("bladeset", getName());
+		transformations.put("bladesetTitle", WordUtils.capitalize(getName()) );
 	}
 	
 	@Override
@@ -76,7 +76,6 @@ public final class Bladeset extends AbstractComponent implements NamedNode
 	{
 		super.populate();
 		testType("unit").testTech("js-test-driver").populate();
-		theme("standard").populate();
 	}
 	
 	@Override

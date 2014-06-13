@@ -21,8 +21,6 @@ public final class Theme extends AbstractBRJSNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		
-		registerInitializedNode();
 	}
 	
 	public static NodeList<Theme> createNodeSet(Node node)

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
@@ -29,9 +30,6 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 		super(rootNode, parent, dir);
 		this.name = name;
 		this.parent = parent;
-		
-		// TODO: we should never call registerInitializedNode() from a non-final class
-		registerInitializedNode();
 	}
 	
 	public AbstractJsLib(RootNode rootNode, Node parent, File dir)
@@ -58,6 +56,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
+		transformations.put("lib", StringUtils.capitalize(getName()));
 		transformations.put("libns", NamespaceUtility.convertToNamespace(requirePrefix()));
 	}
 	
@@ -87,19 +86,26 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	}
 	
 	@Override
+	public void populate() throws InvalidNameException, ModelUpdateException
+	{
+		String libNamespace = getName().toLowerCase();
+		populate( libNamespace );
+	}
+	
+	@Override
 	public void populate(String libNamespace) throws InvalidNameException, ModelUpdateException
 	{
+		if (!dir().exists()) { create(); }
+
 		NameValidator.assertValidRootPackageName(this, libNamespace);
 		
 		try {
-			create();
-			
 			RootAssetLocation rootAssetLocation = rootAssetLocation();
 			if(rootAssetLocation != null) {
-				rootAssetLocation().setNamespace(libNamespace);
+				rootAssetLocation.setNamespace(libNamespace);
+				rootAssetLocation.populate();
 			}
 			
-			BRJSNodeHelper.populate(this, true);
 		}
 		catch (ConfigException e) {
 			if(e.getCause() instanceof InvalidNameException) {
@@ -114,7 +120,7 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	@Override
 	public String requirePrefix() {
 		RootAssetLocation rootAssetLocation = rootAssetLocation();
-		return (rootAssetLocation != null) ? rootAssetLocation().requirePrefix() : getName();
+		return (rootAssetLocation != null) ? rootAssetLocation.requirePrefix() : getName();
 	}
 	
 	@Override
@@ -123,12 +129,6 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 			// secret mechanism for CaplinTrader, to aid with backwards compatibility
 			return (file("no-namespace-enforcement").exists()) ? false : true;
 		});
-	}
-	
-	@Override
-	public String toString()
-	{
-		return super.toString()+" - "+getName();
 	}
 	
 	@Override

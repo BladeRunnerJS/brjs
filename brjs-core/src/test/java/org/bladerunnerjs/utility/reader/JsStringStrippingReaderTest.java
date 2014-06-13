@@ -149,6 +149,25 @@ public class JsStringStrippingReaderTest
 		);
 	}
 	
+	@Test
+	public void largeSourceWithStringsAreStripped() throws IOException
+	{
+		stripStringsAndAssertEquals(
+				lines(
+					zeroPad(4090),
+					"'unclosed string...",
+					"new content"),
+				lines(
+					zeroPad(4090),
+					"new content")
+			);
+	}
+	
+	
+	
+	private String zeroPad(int size) {
+		return StringUtils.leftPad("", size, '0')+"\n";
+	}
 	
 	private String lines(String... input)
 	{

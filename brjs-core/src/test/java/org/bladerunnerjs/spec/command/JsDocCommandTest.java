@@ -23,7 +23,7 @@ public class JsDocCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
 		appLib = app.jsLib("lib");
-		jsdocOutputDir = app.storageDir("jsdoc-toolkit");
+		jsdocOutputDir = app.storageDir("jsdoc");
 	}
 	
 	// TODO: add this test once logging and console output have been merged into one thing, and we can use the same partial

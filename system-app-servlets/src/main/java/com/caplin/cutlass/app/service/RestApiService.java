@@ -21,11 +21,10 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.plugin.CommandPlugin;
-import org.bladerunnerjs.plugin.plugins.commands.standard.CreateApplicationCommand;
+import org.bladerunnerjs.plugin.plugins.commands.standard.CreateAppCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladeCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.CreateBladesetCommand;
 import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
-import org.bladerunnerjs.plugin.plugins.commands.standard.WarCommand;
 
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
@@ -138,10 +137,17 @@ public class RestApiService
 		{
 			destinationWar.delete();
 		}
-		WarCommand cmd = new WarCommand();
-		cmd.setBRJS(brjs);
-		String[] args = new String[]{ appName, destinationWar.getAbsolutePath() };		
-		doCommand( cmd, args );
+		File targetDir = destinationWar.getParentFile();
+		
+		App app = brjs.app(appName);
+		if (!app.dirExists()) {
+			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
+		}
+		
+		app.buildWar(targetDir);
+		
+		File tempWar = new File(targetDir, appName + ".war");
+		FileUtils.moveFile(tempWar, destinationWar);
 	}
 	
 	public void importBladeset(String sourceApp, Map<String,Map<String,List<String>>> bladesets, String targetApp) throws Exception
@@ -176,7 +182,7 @@ public class RestApiService
 	
 	public void createApp(String appName, String requirePrefix) throws Exception
 	{
-		CreateApplicationCommand cmd = new CreateApplicationCommand();
+		CreateAppCommand cmd = new CreateAppCommand();
 		cmd.setBRJS(brjs);
 		String[] args = new String[]{ appName, requirePrefix };		
 		doCommand( cmd, args );

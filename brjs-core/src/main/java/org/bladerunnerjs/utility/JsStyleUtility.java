@@ -17,7 +17,7 @@ public class JsStyleUtility {
 			dir = dir.getParentFile();
 		} while((jsStyle == null) && (dir != null));
 		
-		return (jsStyle != null) ? jsStyle : NodeJsContentPlugin.JS_STYLE;
+		return (jsStyle != null) ? jsStyle.intern() : NodeJsContentPlugin.JS_STYLE;
 	}
 	
 	public static void setJsStyle(File dir, String jsStyle) {

@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.command;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.testing.specutility.engine.ConsoleStoreWriter;
+import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
@@ -14,7 +15,8 @@ public class SpecTest extends org.bladerunnerjs.testing.specutility.engine.SpecT
 	@Override
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return BRJSAccessor.initialize(new BRJS (testSdkDirectory, pluginLocator, new PessimisticFileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output)));
+		BRJS newBrjs = new BRJS (testSdkDirectory, pluginLocator, new PessimisticFileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output), new MockAppVersionGenerator());
+		return BRJSAccessor.initialize(newBrjs);
 	}
 
 }

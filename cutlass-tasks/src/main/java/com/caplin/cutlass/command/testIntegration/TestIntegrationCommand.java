@@ -22,9 +22,6 @@ import com.caplin.cutlass.testIntegration.WebDriverProvider;
 
 public class TestIntegrationCommand extends AbstractPlugin implements LegacyCommandPlugin 
 {
-	// TODO: get rid of the idea of alpha commands now that commands are plugins, and so can easily be kept separate from the product
-	private static final String ALPHA_PREFIX = "alpha-";
-	
 	private static final String URL_FLAG = "--url";
 	private static final String NO_WORKBENCH_FLAG = "--no-workbench";
 	private ConsoleWriter out;
@@ -42,7 +39,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 	@Override
 	public String getCommandName()
 	{
-		return ALPHA_PREFIX + "test-integration";
+		return "test-integration";
 	}
 	
 	@Override

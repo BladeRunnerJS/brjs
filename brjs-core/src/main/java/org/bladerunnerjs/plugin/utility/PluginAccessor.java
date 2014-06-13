@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.BladerunnerUri;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
@@ -31,10 +30,10 @@ public class PluginAccessor {
 	public PluginAccessor(BRJS brjs, PluginLocator pluginLocator) {
 		commandList = new CommandList(brjs, pluginLocator.getCommandPlugins());
 		contentProviders = sort(pluginLocator.getContentPlugins());
-		tagHandlers = sort(pluginLocator.getTagHandlerPlugins());
+		tagHandlers = pluginLocator.getTagHandlerPlugins();
 		minifiers = pluginLocator.getMinifierPlugins();
 		modelObservers = pluginLocator.getModelObserverPlugins();
-		assetProducers = pluginLocator.getAssetPlugins();
+		assetProducers = sort(pluginLocator.getAssetPlugins());
 		assetLocationProducers = sort(pluginLocator.getAssetLocationPlugins());
 	}
 	
@@ -60,28 +59,20 @@ public class PluginAccessor {
 		return commandList.getPluginCommands();
 	}
 	
-	public ContentPlugin contentProvider(BladerunnerUri requestUri) {
-		return contentProviderForLogicalPath(requestUri.logicalPath);
-	}
-	
 	public ContentPlugin contentProviderForLogicalPath(String logicalRequestpath)
 	{
-		String requestPrefix = (logicalRequestpath.indexOf('/') == -1) ? logicalRequestpath : logicalRequestpath.substring(0, logicalRequestpath.indexOf('/'));
+		String requestPrefix = logicalRequestpath.substring(0, logicalRequestpath.indexOf('/'));
 		
 		return contentProvider(requestPrefix);
 	}
 	
 	public ContentPlugin contentProvider(String requestPrefix) {
-		ContentPlugin contentProvider = null;
-		
-		for (ContentPlugin nextContentPlugin : contentProviders()) {
-			if(nextContentPlugin.getRequestPrefix().equals(requestPrefix)) {
-				contentProvider = nextContentPlugin;
-				break;
+		for (ContentPlugin contentPlugin : contentProviders()) {
+			if(contentPlugin.getRequestPrefix().equals(requestPrefix)) {
+				return contentPlugin;
 			}
 		}
-		
-		return contentProvider;
+		return null;
 	}
 	
 	public List<ContentPlugin> contentProviders() {
@@ -92,7 +83,7 @@ public class PluginAccessor {
 		List<ContentPlugin> contentProviders = new LinkedList<>();
 		
 		for (ContentPlugin contentPlugin : contentProviders()) {
-			if (groupName.equals(contentPlugin.getGroupName())) {
+			if (groupName.equals(contentPlugin.getCompositeGroupName())) {
 				contentProviders.add(contentPlugin);
 			}
 		}
@@ -104,16 +95,13 @@ public class PluginAccessor {
 		return tagHandlers;
 	}
 	
-	public List<TagHandlerPlugin> tagHandlers(String groupName) {
-		List<TagHandlerPlugin> tagHandlerPlugins = new LinkedList<>();
-		
-		for (TagHandlerPlugin tagHandlerPlugin : tagHandlers()) {
-			if (groupName.equals(tagHandlerPlugin.getGroupName())) {
-				tagHandlerPlugins.add(tagHandlerPlugin);
+	public TagHandlerPlugin tagHandler(String tagName) {
+		for (TagHandlerPlugin tagHandler : tagHandlers()) {
+			if(tagHandler.getTagName().equals(tagName)) {
+				return tagHandler;
 			}
 		}
-		
-		return tagHandlerPlugins;
+		return null;
 	}
 	
 	public List<MinifierPlugin> minifiers() {
