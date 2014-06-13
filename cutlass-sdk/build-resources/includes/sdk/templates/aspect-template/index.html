@@ -2,15 +2,24 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		
+
 		<title>My Application</title>
-		
-		<@css.bundle theme="standard"@/>
-		
+
+		<@css.bundle theme="black" alternateTheme="red" @/>
+
 	</head>
 	<body>
-		<p>Successfully loaded the application</p>
 
+		<div class="app">
+			<h1 id="hello-world"></h1>
+			<p>Add any new code for your app to src/@appns/App.js</p>
+			<div class="br-logo">
+				<!-- 'unbundled-resources' can be used for any assets you don't want part of the BRJS bundling process. The bundle.path tag plugin should be used to generate a URL that contains the current app version so it will continue to work when the App is built for production. The bundlePath service can be used to do the equivalent via JavaScript. -->
+				<img src="<@bundle.path@/>/unbundled-resources/br-logo.png" />
+			</div>
+		</div>
+
+		<@i18n.bundle @/>
     	<!-- dev-minifier can be set to "combined" for all JS content to be bundled with a single request -->
 		<@js.bundle dev-minifier="none" prod-minifier="combined"@/>
 		<script>

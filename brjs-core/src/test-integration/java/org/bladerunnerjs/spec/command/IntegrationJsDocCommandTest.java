@@ -22,7 +22,7 @@ public class IntegrationJsDocCommandTest extends SpecTest {
 			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
 		appLib = app.jsLib("lib");
-		jsdocOutputDir = app.storageDir("jsdoc-toolkit");
+		jsdocOutputDir = app.storageDir("jsdoc");
 	}
 	
 	@Test 

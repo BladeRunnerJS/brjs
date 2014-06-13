@@ -37,8 +37,7 @@ public class XmlBundleWriter
 		try {
 			writer.write("<bundle>\n");
 			for(Asset asset : xmlAssets){
-				Reader reader = asset.getReader();
-				IOUtils.copy(reader, writer);
+				try (Reader reader = asset.getReader()) { IOUtils.copy(reader, writer); }
 			}
 			writer.write("</bundle>");
 		} catch (IOException e) {

@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,7 +122,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
 					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
-					IOUtils.copy(jsModule.getReader(), writer);
+					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
 				}
 			}
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
@@ -133,7 +134,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 						if (sourceModule instanceof CommonJsSourceModule)
 						{
 							writer.write("// " + sourceModule.getRequirePath() + "\n");
-							IOUtils.copy(sourceModule.getReader(), writer);
+							try (Reader reader = sourceModule.getReader()) { IOUtils.copy(reader, writer); }
 							writer.write("\n\n");
 						}
 					}

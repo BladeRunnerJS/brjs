@@ -1,6 +1,7 @@
-ExampleClassTest = TestCase("ExampleClassTest");
+"use strict";
 
-ExampleClassTest.prototype.testSomething = function()
+@lib = function()
 {
-	assertTrue(true);
 };
+
+module.exports = @lib;

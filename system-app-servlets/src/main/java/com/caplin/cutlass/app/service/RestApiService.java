@@ -144,7 +144,7 @@ public class RestApiService
 			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
 		}
 		
-		app.build(targetDir, true);
+		app.buildWar(targetDir);
 		
 		File tempWar = new File(targetDir, appName + ".war");
 		FileUtils.moveFile(tempWar, destinationWar);

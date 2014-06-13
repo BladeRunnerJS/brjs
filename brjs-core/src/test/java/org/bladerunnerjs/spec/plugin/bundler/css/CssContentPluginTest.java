@@ -53,6 +53,13 @@ public class CssContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void onlyCssFilesAreValid() throws Exception {
+		given(commonTheme).containsFile("style.style")
+		.and(aspect).indexPageHasContent("index page");
+		then(aspect).prodAndDevRequestsForContentPluginsAre("css");
+	}
+	
+	@Test
 	public void ifThereAreCssFilesThenRequestsWillBeGenerated() throws Exception {
 		given(commonTheme).containsFile("style.css")
 			.and(aspect).indexPageHasContent("index page");
@@ -406,6 +413,21 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("BLADESET STYLE");
+	}
+	
+	@Test
+	public void cssFilenamesCanContainAnd_IfTheyDontMatchTheStructureOfALocaleFilename() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+    		.and(aspect).indexPageRefersTo("appns.Class1")
+    		.and(aspect).containsFileWithContents("themes/standard/style_sheet.css", "style_sheet.css")
+			.and(aspect).containsFileWithContents("themes/standard/stylesheet_1.css", "stylesheet_1.css")
+			.and(aspect).containsFileWithContents("themes/standard/stylesheet_ab.css", "stylesheet_ab.css")
+			.and(aspect).containsFileWithContents("themes/standard/stylesheet_ab_cd.css", "stylesheet_ab_cd.css");
+    	when(aspect).requestReceived("css/standard/bundle.css", requestResponse);
+    	then(requestResponse).containsText("style_sheet.css")
+    		.and(requestResponse).containsText("stylesheet_1.css")
+    		.and(requestResponse).doesNotContainText("stylesheet_ab.css")
+    		.and(requestResponse).doesNotContainText("stylesheet_ab_cd.css");
 	}
 	
 	
