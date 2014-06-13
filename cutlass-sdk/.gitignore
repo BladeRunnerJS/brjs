@@ -14,9 +14,13 @@ workspace/licenses
 workspace/generated
 workspace/test-results
 
-workspace/sdk/*
-!workspace/sdk/libs/javascript
-!workspace/sdk/system-applications
+workspace/sdk/brjs
+workspace/sdk/brjs.cmd
+workspace/sdk/docs
+workspace/sdk/libs/java
+workspace/sdk/templates
+workspace/sdk/version.txt
+
 
 # TODO: delete these lines when no longer needed -- these lines are needed to work around 2 separate bugs in the Java git implementation (EGit) provided with Eclipse Kepler
 #   1. Egit doesn't currently support recursive wildcards (**) as used in the main brjs .gitignore

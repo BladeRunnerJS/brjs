@@ -15,10 +15,12 @@ import org.junit.Test;
 public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	private App app;
 	private Aspect aspect;
+	private Aspect otherAspect;
 	private Bladeset bladeset;
 	private Blade blade;
 	private JsLib thirdpartyLib, thirdpartyLib2, bootstrapLib, secondBootstrapLib;
 	private StringBuffer response = new StringBuffer();
+	private StringBuffer otherResponse = new StringBuffer();
 	private JsLib thirdBootstrapLib;
 	
 	@Before
@@ -30,6 +32,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
+			otherAspect = app.aspect("other");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
 			thirdpartyLib = brjs.sdkLib("thirdparty-lib1");
@@ -287,5 +290,17 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
     		.and(aspect).indexPageRequires(thirdpartyLib);
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsText("define('thirdparty-lib1', function(require, exports, module) {\n");
+	}
+	
+	@Test
+	public void weDontBundleLibrariesFromOtherAspects() throws Exception {
+		given(thirdpartyLib).hasBeenCreated()
+    		.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: someLib")
+    		.and(thirdpartyLib).containsFileWithContents("src.js", "window.thirdpartyLib = { }")
+    		.and(aspect).indexPageRequires(thirdpartyLib);
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response)
+			.and(otherAspect).requestReceived("js/dev/combined/bundle.js", otherResponse);
+		then(response).containsText("window.thirdpartyLib = { }")
+			.and(otherResponse).doesNotContainText("window.thirdpartyLib = { }");
 	}
 }

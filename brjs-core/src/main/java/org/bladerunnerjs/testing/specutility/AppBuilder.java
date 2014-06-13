@@ -41,7 +41,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	}
 	
 	public BuilderChainer hasBeenBuiltAsWar(File targetDir) throws Exception {
-		app.build(targetDir, true);
+		app.buildWar(targetDir);
 		
 		return builderChainer;
 	}

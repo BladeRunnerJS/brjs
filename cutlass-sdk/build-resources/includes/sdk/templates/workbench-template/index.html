@@ -2,14 +2,15 @@
 <html>
 	<head>
 		<title>Workbench</title>
-		
-		<@css.bundle theme="standard"@/>
-		
+
+		<@css.bundle theme="black" alternateTheme="red" @/>
+
 	</head>
 	<body>
 
+		<@i18n.bundle @/>
 		<@js.bundle @/>
-		
+
 		<script type="text/javascript">
 			var ServiceRegistry = require( 'br/ServiceRegistry' );
 
@@ -36,10 +37,10 @@
 			addEventHubLogger( workbench );
 
 			// ViewModel that is being created in the workbench
-			var @class-nameViewModel = require( '@appns/@bladeset/@blade/@class-nameViewModel' );
+			var @bladeTitleViewModel = require( '@appns/@bladeset/@blade/@bladeTitleViewModel' );
 			var KnockoutComponent = require( 'br/knockout/KnockoutComponent' );
-			
-			var model = new @class-nameViewModel();
+
+			var model = new @bladeTitleViewModel();
 			var component = new KnockoutComponent( '@appns.@bladeset.@blade.view-template', model );
 
 			addComponent( component, workbench )

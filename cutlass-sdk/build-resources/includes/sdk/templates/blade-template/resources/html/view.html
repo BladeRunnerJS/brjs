@@ -1,4 +1,11 @@
 <div id="@appns.@bladeset.@blade.view-template">
-	<div class="hello-world-message" data-bind="text:message"></div>
-	<button class="button" data-bind="click:buttonClicked">Log me</button>
+	<div class="@bladeset-@blade-blade">
+		<h1 class="hello-world-message">
+			 @{@appns.@bladeset.@blade.hello.world}
+		</h1>
+		<p class="welcome-message" data-bind="text:welcomeMessage"></p>
+		<p>Try using alternative stylesheets to switch the theme.</p>
+		<p data-bind="text:buttonClickMessage"></p>
+		<button class="button" data-bind="click:buttonClicked">Say Hello!</button>
+	</div>
 </div>

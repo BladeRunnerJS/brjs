@@ -73,7 +73,7 @@ public class TemplateTests extends SpecTest
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-bladeset", "app", "bs");
 		then(bladeset).hasFilesAndDirs(
-				Arrays.asList("src/appns/bs/ExampleClass.js", "themes/common/style.css"),
+				Arrays.asList("src/appns/bs/BsClass.js", "themes/common/style.css"),
 				Arrays.asList("resources", "resources/html", "src", "tests", "themes")
 		);
 	}
@@ -129,7 +129,7 @@ public class TemplateTests extends SpecTest
 				Arrays.asList("br-lib.conf", "src/lib/Lib.js", "tests/test-unit/js-test-driver/jsTestDriver.conf", "tests/test-unit/js-test-driver/resources/aliases.xml", 
 							"tests/test-unit/js-test-driver/tests/LibTest.js"),
 				Arrays.asList("src", "tests", "tests/test-unit/js-test-driver/")
-		);
+		).and(lib).fileContentsContains("src/lib/Lib.js", "Lib = ");
 	}
 	
 	@Test

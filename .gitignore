@@ -17,9 +17,9 @@ Thumbs.db
 
 .gradle
 .settings
-bin
-build
-out
+*/bin
+*/build
+*/out
 test-results
 brjs-*.jar
 **/bundles/*

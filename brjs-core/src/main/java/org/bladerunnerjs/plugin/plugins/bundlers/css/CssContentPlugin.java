@@ -92,7 +92,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			locale = languageCode;
 		}
 		
-		String pattern = getFilePattern(locale, null);
+		String pattern = getFilePattern(locale);
 		
 		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 			List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
@@ -136,31 +136,28 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		Set<String> contentPaths = new LinkedHashSet<>();
 		
 		try {
-			Set<String> supportedThemes = new HashSet<>(bundleSet.getThemes());
 			Set<String> supportedLocales = new HashSet<>(Arrays.asList(bundleSet.getBundlableNode().app().appConf().getLocales()));
 			
 			for(Asset cssAsset : bundleSet.getResourceFiles(cssAssetPlugin)) {
 				AssetLocation cssAssetLocation = cssAsset.assetLocation();
 				String themeName = (cssAssetLocation instanceof ThemedAssetLocation) ? ((ThemedAssetLocation) cssAssetLocation).getThemeName() : "common";
 				
-				if(supportedThemes.contains(themeName)) {
-					String assetLocale = getAssetLocale(cssAsset.getAssetName());
-					
-					if(assetLocale == null) {
-						contentPaths.add(contentPathParser.createRequest("simple-request", themeName));
-					}
-					else {
-						if(supportedLocales.contains(assetLocale)) {
-							if(!assetLocale.contains("_")) {
-								contentPaths.add(contentPathParser.createRequest("language-request", themeName, assetLocale));
-							}
-							else {
-								String[] parts = assetLocale.split("_");
-								String language = parts[0];
-								String country = parts[1];
-								
-								contentPaths.add(contentPathParser.createRequest("locale-request", themeName, language, country));
-							}
+				String assetLocale = getAssetLocale(cssAsset.getAssetName());
+				
+				if(assetLocale == null) {
+					contentPaths.add(contentPathParser.createRequest("simple-request", themeName));
+				}
+				else {
+					if(supportedLocales.contains(assetLocale)) {
+						if(!assetLocale.contains("_")) {
+							contentPaths.add(contentPathParser.createRequest("language-request", themeName, assetLocale));
+						}
+						else {
+							String[] parts = assetLocale.split("_");
+							String language = parts[0];
+							String country = parts[1];
+							
+							contentPaths.add(contentPathParser.createRequest("locale-request", themeName, language, country));
 						}
 					}
 				}
@@ -194,21 +191,19 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		return locale;
 	}
 
-	private String getFilePattern(String locale, String browser) {
-		String pattern = "";
+	private String getFilePattern(String locale) {
 		if (locale != null) {
 			// .*_en_GB.css
-			pattern = ".*_" + locale;
-		} else if (browser != null) {
-			// .*_ie7.css
-			pattern = ".*_" + browser;
+			return ".*_("+locale+")\\.css";
 		} else {
-			// If we are looking for a CSS file without the locale or browser,
-			// then
-			// we can assume that it does not have underscores in it.
-			pattern = "[^_]+";
+			/* a funky bit of regex magic so we can support filenames 
+			 * with an _ that dont have the format of a locale (e.g. style_sheet.css)
+			 * 
+			 * (?!.*_[a-z]{2}\\.css$) - negative lookahead that prevents matching .*_en.css files
+			 * (?!.*_[a-z]{2}_[A-Z]{2}\\.css) - another negative lookahead that prevents matching .*_en_GB.css files
+			 * .* match anything else that doesnt fail with the negative lookaheads
+			 */
+			return "(?!.*_[a-zA-Z]{2}\\.css$)(?!.*_[a-zA-Z]{2}_[a-zA-Z]{2}\\.css).*\\.css";
 		}
-		
-		return pattern + "\\.css";
 	}
 }

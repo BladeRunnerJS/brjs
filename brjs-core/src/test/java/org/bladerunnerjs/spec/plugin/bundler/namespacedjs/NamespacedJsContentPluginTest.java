@@ -218,6 +218,18 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	}
 	
 	@Test
+	public void autoGlobalisationReplacesInvalidCharacters() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
+			.and(aspect).hasNodeJsPackageStyle("src/appns/node-js")
+			.and(aspect).hasClasses("appns.namespaced.Class", "appns/node-js/Class")
+			.and(aspect).indexPageRefersTo("appns.namespaced.Class")
+			.and(aspect).classDependsOn("appns.namespaced.Class", "appns.node-js.Class");
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).containsText("appns.namespaced.Class = function() {\n};")
+			.and(requestResponse).containsText("appns.node_js.Class = require('appns/node-js/Class');");
+	}
+	
+	@Test
 	public void requiresAreNotAutomaticallyAddedForThirdpartyLibrariesWhichAreNotEncapsulated() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle()
 			.and(aspect).hasClasses("appns.namespaced.Class")

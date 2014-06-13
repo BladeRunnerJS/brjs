@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
 import org.bladerunnerjs.plugin.Event;
 import org.bladerunnerjs.plugin.EventObserver;
+import org.bladerunnerjs.plugin.plugins.commands.standard.JsDocCommand;
 
 
 public class JsDocNodeObserver implements EventObserver
@@ -46,12 +47,12 @@ public class JsDocNodeObserver implements EventObserver
 			App app = (App) node;
 			
 			try {
-				if(app.storageFile("jsdoc-toolkit", "index.html").exists()) {
+				if(app.storageFile(JsDocCommand.APP_STORAGE_DIR_NAME, "index.html").exists()) {
 					logger.debug(Messages.NOT_CREATING_JSDOC_FOR_ALREADY_POPULATED_APP_LOG_MSG, app.getName());
 				}
 				else {
 					for(String fileName : fileNames) {
-						File outFile = app.storageFile("jsdoc-toolkit", fileName);
+						File outFile = app.storageFile(JsDocCommand.APP_STORAGE_DIR_NAME, fileName);
 						outFile.getParentFile().mkdirs();
 						outFile.createNewFile();
 						

@@ -61,9 +61,9 @@ public class ServedAppTest extends SpecTest
 	public void jspSupportIsEnabled() throws Exception
 	{
 		given(app).hasBeenPopulated()
-			.and(aspect).containsFileWithContents("index.jsp", "Hello world!")
+			.and(aspect).containsFileWithContents("index.jsp", "<%= 1 + 2 %>")
 			.and(appServer).started();
-		then(appServer).requestForUrlReturns("/app/default-aspect/index.jsp", "Hello world!");
+		then(appServer).requestForUrlReturns("/app/en/", "3");
 	}
 	
 	@Test
@@ -73,6 +73,15 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/en/", "aspect index.html");
+	}
+	
+	@Test
+	public void requestsForInvalidModelPathsThatDoExistOnDiskReturn404() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
+			.and(appServer).started();
+		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
 	}
 	
 	@Test
