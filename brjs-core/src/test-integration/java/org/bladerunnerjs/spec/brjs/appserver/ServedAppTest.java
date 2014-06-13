@@ -20,7 +20,9 @@ public class ServedAppTest extends SpecTest
 {
 	ApplicationServer appServer;
 	App app;
+	App systemApp;
 	Aspect aspect;
+	Aspect systemAspect;
 	Blade blade;
 	Workbench workbench;
 	DirNode appJars;
@@ -40,8 +42,10 @@ public class ServedAppTest extends SpecTest
 			.and(brjs).usesProductionTemplates()
 			.and(brjs).hasDevVersion("123");
 			appServer = brjs.applicationServer(appServerPort);
-			app = brjs.app("app");
+			app = brjs.userApp("app");
+			systemApp = brjs.systemApp("app");
 			aspect = app.aspect("default");
+			systemAspect = systemApp.aspect("default");
 			blade = app.bladeset("bs").blade("b1");
 			workbench = blade.workbench();
 			appJars = brjs.appJars();
@@ -145,4 +149,23 @@ public class ServedAppTest extends SpecTest
 			.and(appServer).requestForUrlReturns("/app/servlet/hello", "Hello World!");
 	}
 	
+	@Test
+	public void systemAppsCanBeServed() throws Exception
+	{
+		given(systemApp).hasBeenPopulated()
+			.and(systemAspect).containsFileWithContents("index.html", "System App")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en/", "System App");
+	}
+	
+	@Test
+	public void userAppsTakePriorityOverSystemApps() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(systemApp).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "User App")
+			.and(systemAspect).containsFileWithContents("index.html", "System App")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en/", "User App");
+	}
 }

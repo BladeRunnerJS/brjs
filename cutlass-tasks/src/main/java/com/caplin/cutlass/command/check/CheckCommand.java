@@ -75,7 +75,7 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 		List<File> sdkLibsApplicationJars = Arrays.asList(BRJSAccessor.root.appJars().dir().listFiles(CAPLIN_JAR_FILE_NAME_FILTER));
 		List<SdkJsLib> sdkThirdpartyLibraries = BRJSAccessor.root.sdkLibs();
 		
-		for(App application : BRJSAccessor.root.apps())
+		for(App application : BRJSAccessor.root.userApps())
 		{
 			checkUtility.checkJarDifferencesAndAddMessageListingThem(messageToShowUser, sdkLibsApplicationJars, application.dir());
 			checkUtility.checkForApplicationThirdpartyLibraries(messageToShowUser, sdkThirdpartyLibraries, application);
