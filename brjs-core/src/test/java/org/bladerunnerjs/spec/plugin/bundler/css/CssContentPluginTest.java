@@ -430,5 +430,13 @@ public class CssContentPluginTest extends SpecTest {
     		.and(requestResponse).doesNotContainText("stylesheet_ab_cd.css");
 	}
 	
+	@Test
+	public void rewrittenImageURLsCanHaveAnyExcetion() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1")
+			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/image.with-my-super-cool-extension');}");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/wibble/image.with-my-super-cool-extension\");}");
+	}
 	
 }
