@@ -297,4 +297,14 @@ public class CssResourceContentPluginTest extends SpecTest {
 		then(response).textEquals("someFile.txt contents");
 	}
 	
+	@Test
+	public void assetsCanHaveAEncodedSpaceInTheirPath() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(workbench).hasBeenCreated()
+			.and(sdkJsLib).containsResourceFileWithContents("some dir/another dir/someFile.txt", "someFile.txt contents");
+		when(workbench).requestReceived("cssresource/lib_sdkLib/resources/some%20dir/another%20dir/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
 }
