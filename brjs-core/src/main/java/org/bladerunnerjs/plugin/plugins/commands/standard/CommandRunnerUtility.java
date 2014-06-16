@@ -1,4 +1,4 @@
-package org.bladerunnerjs.testing.utility;
+package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.utility.ProcessLogger;
 
-public class CommandRunner {
+public class CommandRunnerUtility {
 	private static final Runtime runTime = Runtime.getRuntime();
 	
 	public static void runCommand(BRJS brjs, List<String> command) throws CommandOperationException {
