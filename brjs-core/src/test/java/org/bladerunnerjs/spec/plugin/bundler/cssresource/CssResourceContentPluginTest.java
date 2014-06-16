@@ -37,7 +37,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			workbench = blade.workbench();
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			
-		cssResourcePlugin = brjs.plugins().contentProvider("cssresource");
+		cssResourcePlugin = brjs.plugins().contentPlugin("cssresource");
 		requestsList = new ArrayList<String>();
 	}
 	

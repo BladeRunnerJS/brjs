@@ -77,7 +77,7 @@ public abstract class AbstractAppBuilder
 					}
 				}
 				
-				for(ContentPlugin contentPlugin : app.root().plugins().contentProviders()) {
+				for(ContentPlugin contentPlugin : app.root().plugins().contentPlugins()) {
 					if(contentPlugin.getCompositeGroupName() == null) {
 						for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
 							File bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));

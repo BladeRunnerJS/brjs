@@ -100,7 +100,7 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		this.bundlePathTagHandler = brjs.plugins().tagHandler("bundle.path");
+		this.bundlePathTagHandler = brjs.plugins().tagHandlerPlugin("bundle.path");
 	}
 	
 	@Override

@@ -43,7 +43,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public List<AssetLocation> seedAssetLocations() {
 		List<AssetLocation> seedAssetLocations = new ArrayList<>();
 		
-		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
 			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
 				for(String seedAssetLocationName : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
 					AssetLocation seedAssetLocation = assetLocation(seedAssetLocationName);

@@ -20,7 +20,7 @@ public class BundlableNodeVerifier<T extends BundlableNode> extends NodeVerifier
 	}
 	
 	public void prodAndDevRequestsForContentPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
-		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentProvider(contentPluginPrefix);
+		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentPlugin(contentPluginPrefix);
 		List<String> actualDevRequests = contentPlugin.getValidDevContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		List<String> actualProdRequests = contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		
@@ -29,14 +29,14 @@ public class BundlableNodeVerifier<T extends BundlableNode> extends NodeVerifier
 	}
 	
 	public void devRequestsForContentPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
-		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentProvider(contentPluginPrefix);
+		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentPlugin(contentPluginPrefix);
 		List<String> actualRequests = contentPlugin.getValidDevContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		
 		assertEquals("dev requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
 	}
 	
 	public void prodRequestsForContentPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
-		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentProvider(contentPluginPrefix);
+		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentPlugin(contentPluginPrefix);
 		List<String> actualRequests = contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		
 		assertEquals("prod requests didn't match", Joiner.on(", ").join(expectedRequests), Joiner.on(", ").join(actualRequests));
