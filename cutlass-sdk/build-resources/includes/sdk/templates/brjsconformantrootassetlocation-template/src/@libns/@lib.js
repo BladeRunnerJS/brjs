@@ -1,6 +1,6 @@
 "use strict";
 
-@lib = function()
+var @lib = function()
 {
 };
 
