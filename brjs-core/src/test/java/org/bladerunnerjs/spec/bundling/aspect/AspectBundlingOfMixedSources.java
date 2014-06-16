@@ -10,7 +10,7 @@ import org.junit.Test;
 public class AspectBundlingOfMixedSources extends SpecTest {
 	private App app;
 	private Aspect aspect, otherAspect;
-	private JsLib sdkNamespaceLib, otherSdkNamespaceLib, sdkNodeJsLib, userLib, otherUserLib, sdkJquery, userJquery;
+	private JsLib sdkNamespaceLib, otherSdkNamespaceLib, sdkCommonJsLib, userLib, otherUserLib, sdkJquery, userJquery;
 	private StringBuffer response = new StringBuffer();
 
 	
@@ -30,37 +30,37 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 		
 		sdkNamespaceLib = brjs.sdkLib("sdkNamespaceLib");
 		otherSdkNamespaceLib = brjs.sdkLib("otherSdkNamespaceLib");
-		sdkNodeJsLib = brjs.sdkLib("sdkNodeJsLib");
+		sdkCommonJsLib = brjs.sdkLib("sdkCommonJsLib");
 		sdkJquery = brjs.sdkLib("jquery");
 		userJquery = app.appJsLib("jquery");
 
 		given(sdkNamespaceLib).hasNamespacedJsPackageStyle()
 			.and(otherSdkNamespaceLib).hasNamespacedJsPackageStyle()
-			.and(sdkNodeJsLib).hasNodeJsPackageStyle()
-			.and(userLib).hasNodeJsPackageStyle()
-			.and(otherUserLib).hasNodeJsPackageStyle();			
+			.and(sdkCommonJsLib).hasCommonJsPackageStyle()
+			.and(userLib).hasCommonJsPackageStyle()
+			.and(otherUserLib).hasCommonJsPackageStyle();			
 	}
 	
-	// Namespace and NodeJS styles together
+	// Namespace and CommonJs styles together
 	@Test
-	public void testThatNamespaceStyleLibraryCanProxyToNodeJsClassAndGetBundledInAspectIndexPage() throws Exception
+	public void testThatNamespaceStyleLibraryCanProxyToCommonJsClassAndGetBundledInAspectIndexPage() throws Exception
 	{
-		given(sdkNodeJsLib).classFileHasContent("sdkNodeJsLib.Class1", "function empty() {};")
-			.and(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.ProxyClass", "sdkNamespaceLib.ProxyClass = sdkNodeJsLib.Class1;")
+		given(sdkCommonJsLib).classFileHasContent("sdkCommonJsLib.Class1", "function empty() {};")
+			.and(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.ProxyClass", "sdkNamespaceLib.ProxyClass = sdkCommonJsLib.Class1;")
 			.and(aspect).indexPageHasContent("require('sdkNamespaceLib/ProxyClass')");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsOrderedTextFragmentsAnyNumberOfTimes(
 				
-				// The sdkNodeJsLib is defined
-				"define('sdkNodeJsLib/Class1', function(require, exports, module) {",
+				// The sdkCommonJsLib is defined
+				"define('sdkCommonJsLib/Class1', function(require, exports, module) {",
 				"function empty() {};",
 				"});",
 				// The classes are both made available globally
-				"mergePackageBlock(window, {\"sdkNamespaceLib\":{},\"sdkNodeJsLib\":{}});",
-				// The namespaced style sdk class is assigned to the require of the nodeJsLib class  
-				"requireAll(['sdkNodeJsLib/Class1']);",
-				"sdkNamespaceLib.ProxyClass = sdkNodeJsLib.Class1;",
-				"sdkNodeJsLib.Class1 = require('sdkNodeJsLib/Class1');");
+				"mergePackageBlock(window, {\"sdkNamespaceLib\":{},\"sdkCommonJsLib\":{}});",
+				// The namespaced style sdk class is assigned to the require of the CommonJsLib class  
+				"requireAll(['sdkCommonJsLib/Class1']);",
+				"sdkNamespaceLib.ProxyClass = sdkCommonJsLib.Class1;",
+				"sdkCommonJsLib.Class1 = require('sdkCommonJsLib/Class1');");
 	}
 	
 	@Test
@@ -83,16 +83,16 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 	
 	// dependencies across multiple aspects
 	@Test
-	public void canBundleDependenciesForAnotherAspectCorrectlyWithNodeJsLibsAndSdkNamespaceLib() throws Exception {
+	public void canBundleDependenciesForAnotherAspectCorrectlyWithCommonJsLibsAndSdkNamespaceLib() throws Exception {
 		given(sdkNamespaceLib).classFileHasContent("sdkNamespaceLib.Class1", "function empty() {};")
 			.and(userLib).hasClass("userLib/Class1")
 			.and(otherUserLib).hasClass("otherUserLib/Class1")
-			.and(aspect).indexPageRefersTo("appns.Class1", "sdkNodeJsLib.Class1")
+			.and(aspect).indexPageRefersTo("appns.Class1", "sdkCommonJsLib.Class1")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).classRequires("appns/Class1", "userLib.Class1")
 			.and(otherAspect).indexPageRefersTo("otherUserLib.Class1", "sdkNamespaceLib.Class1");
 		when(otherAspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("otherUserLib.Class1")
+		then(response).containsCommonJsClasses("otherUserLib.Class1")
 			.and(response).doesNotContainText("userLib");
 	}
 	
@@ -108,12 +108,12 @@ public class AspectBundlingOfMixedSources extends SpecTest {
 	}
 	
 	@Test
-	public void userLibraryCanDependOnSdkNodeJsLib() throws Exception {
-		given(sdkNodeJsLib).classFileHasContent("sdkNodeJsLib.Class1", "function empty() {};")
-			.and(userLib).classFileHasContent("userLib.Class1", "require('sdkNodeJsLib/Class1');")
+	public void userLibraryCanDependOnSdkCommonJsLib() throws Exception {
+		given(sdkCommonJsLib).classFileHasContent("sdkCommonJsLib.Class1", "function empty() {};")
+			.and(userLib).classFileHasContent("userLib.Class1", "require('sdkCommonJsLib/Class1');")
 			.and(aspect).indexPageHasContent("require('userLib.Class1');");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsDefinedClasses("sdkNodeJsLib/Class1", "userLib/Class1");
+		then(response).containsDefinedClasses("sdkCommonJsLib/Class1", "userLib/Class1");
 	}
 	
 	// User thirdparty lib in 'libs' dir overriding an sdk thirdparty library

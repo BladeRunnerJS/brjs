@@ -17,8 +17,8 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.NodeJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -106,7 +106,7 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getPluginsThatMustAppearAfterThisPlugin() {
 		return Arrays.asList(
-				NodeJsContentPlugin.class.getCanonicalName(),
+				CommonJsContentPlugin.class.getCanonicalName(),
 				CompositeJsContentPlugin.class.getCanonicalName()
 		);
 	}

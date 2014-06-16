@@ -32,7 +32,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 
 	@Test
 	public void aspectBundlesContainsNodeStyleSdkLibsIfTheyAreReferencedInTheIndexPage() throws Exception {
-		given(sdkLib).hasNodeJsPackageStyle()
+		given(sdkLib).hasCommonJsPackageStyle()
 			.and(sdkLib).hasClass("br/SdkClass")
 			.and(aspect).indexPageHasContent("require('br/SdkClass');");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
@@ -57,7 +57,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classDependsOn("appns.AspectClass", "br.SdkClass");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("br.SdkClass");
+		then(response).containsCommonJsClasses("br.SdkClass");
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class AspectSdkJsLibraryBundling extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "br.SdkClass");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("br.SdkClass");
+		then(response).containsCommonJsClasses("br.SdkClass");
 	}
 	
 	@Test

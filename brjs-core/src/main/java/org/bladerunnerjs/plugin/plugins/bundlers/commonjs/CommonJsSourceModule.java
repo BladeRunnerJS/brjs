@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
+package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -36,8 +36,8 @@ import com.Ostermiller.util.ConcatReader;
 
 public class CommonJsSourceModule implements AugmentedContentSourceModule {
 
-	public static final String NODEJS_DEFINE_BLOCK_HEADER = "define('%s', function(require, exports, module) {\n";
-	public static final String NODEJS_DEFINE_BLOCK_FOOTER = "\n});\n";
+	public static final String COMMONJS_DEFINE_BLOCK_HEADER = "define('%s', function(require, exports, module) {\n";
+	public static final String COMMONJS_DEFINE_BLOCK_FOOTER = "\n});\n";
 
 	private static final Pattern matcherPattern = Pattern.compile("(require|br\\.Core\\.alias|caplin\\.alias|getAlias|getService)\\([ ]*[\"']([^)]+)[\"'][ ]*\\)");
 	
@@ -54,7 +54,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		this.assetFile = assetFile;
 		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
-		computedValue = new MemoizedValue<>("NodeJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
+		computedValue = new MemoizedValue<>("CommonJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
 	}
 	
 	@Override
@@ -91,9 +91,9 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		return new ConcatReader(new Reader[] {
-			new StringReader( String.format(NODEJS_DEFINE_BLOCK_HEADER, getRequirePath()) ),
+			new StringReader( String.format(COMMONJS_DEFINE_BLOCK_HEADER, getRequirePath()) ),
 			getUnalteredContentReader(),
-			new StringReader( NODEJS_DEFINE_BLOCK_FOOTER )
+			new StringReader( COMMONJS_DEFINE_BLOCK_FOOTER )
 		});
 	}
 	

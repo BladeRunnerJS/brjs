@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
+package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,7 +26,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class NodeJsContentPlugin extends AbstractContentPlugin
+public class CommonJsContentPlugin extends AbstractContentPlugin
 {
 
 	private static final String SINGLE_MODULE_REQUEST = "single-module-request";

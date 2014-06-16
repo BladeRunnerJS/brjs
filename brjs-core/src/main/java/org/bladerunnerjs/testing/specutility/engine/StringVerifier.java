@@ -61,17 +61,17 @@ public class StringVerifier {
 		return verifierChainer;
 	}
 	
-	public VerifierChainer containsNodeJsClasses(String... classes) {
+	public VerifierChainer containsCommonJsClasses(String... classes) {
 		List<String> processedNodeClassNames = new ArrayList<String>();
 		for(String className : classes) {
 			className = className.replaceAll("\\.", "/");
-			String nodeClassName = StringUtils.substringAfterLast(className, "/");
-			if (processedNodeClassNames.contains(nodeClassName)) {
-				throw new RuntimeException("NodeJS classes must not have the same suffix names as it leads to false positives. e.g. some.Name and another.Name should be some.Name and some.otherName");
+			String commonJsClassName = StringUtils.substringAfterLast(className, "/");
+			if (processedNodeClassNames.contains(commonJsClassName)) {
+				throw new RuntimeException("CommonJS classes must not have the same suffix names as it leads to false positives. e.g. some.Name and another.Name should be some.Name and some.otherName");
 			}
-			containsText(nodeClassName + " = function() {\n");
-			containsText("exports = " + nodeClassName);
-			processedNodeClassNames.add(nodeClassName);
+			containsText(commonJsClassName + " = function() {\n");
+			containsText("exports = " + commonJsClassName);
+			processedNodeClassNames.add(commonJsClassName);
 		}
 		
 		return verifierChainer;
@@ -146,9 +146,9 @@ public class StringVerifier {
 	{
 		for(String className : classes) {
 			doesNotContainText(className + " = function()");
-			String nodeJsClassName = className.replaceAll("\\.", "/");
-			nodeJsClassName = StringUtils.substringAfterLast(nodeJsClassName, "/");
-			doesNotContainText(nodeJsClassName + " = function()");
+			String commonJsClassName = className.replaceAll("\\.", "/");
+			commonJsClassName = StringUtils.substringAfterLast(commonJsClassName, "/");
+			doesNotContainText(commonJsClassName + " = function()");
 		}
 		
 		return verifierChainer;

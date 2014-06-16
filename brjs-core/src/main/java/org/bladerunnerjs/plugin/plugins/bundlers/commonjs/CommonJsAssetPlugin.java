@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
+package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
 import java.io.File;
 import org.bladerunnerjs.model.Asset;
@@ -7,14 +7,14 @@ import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
-public class NodeJsAssetPlugin extends AbstractAssetPlugin {
+public class CommonJsAssetPlugin extends AbstractAssetPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 	}
 	
 	@Override
 	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
-		return (assetLocation.jsStyle().equals(NodeJsContentPlugin.JS_STYLE) && assetFile.getName().endsWith(".js"));
+		return (assetLocation.jsStyle().equals(CommonJsContentPlugin.JS_STYLE) && assetFile.getName().endsWith(".js"));
 	}
 	
 	@Override

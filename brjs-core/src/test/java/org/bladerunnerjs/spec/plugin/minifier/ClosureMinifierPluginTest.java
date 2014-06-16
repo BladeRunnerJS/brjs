@@ -86,19 +86,19 @@ public class ClosureMinifierPluginTest extends SpecTest
 	public void closureMinifierHandlesAMixOfSourceFileTypes() throws Exception
 	{
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/cjs")
-			.and(aspect).hasNodeJsPackageStyle("appns/node")
-			.and(aspect).hasClasses("appns.cjs.Class", "appns/node/NodeClass")
+			.and(aspect).hasCommonJsPackageStyle("appns/cjs")
+			.and(aspect).hasClasses("appns.cjs.Class", "appns.cjs.CommonJsClass")
 			.and(aspect).indexPageRefersTo("appns.cjs.Class")
-			.and(aspect).classDependsOn("appns.cjs.Class",  "appns.node.NodeClass");
+			.and(aspect).classDependsOn("appns.cjs.Class",  "appns.cjs.CommonJsClass");
 		when(aspect).requestReceived("js/prod/closure-whitespace/bundle.js", response);
-		then(response).containsMinifiedClasses("appns.cjs.Class", "NodeClass"); //TODO: have better NodeJS minified class handling
+		then(response).containsMinifiedClasses("appns.cjs.Class", "CommonJsClass"); //TODO: have better CommonJs minified class handling
 	}
 	
 	@Test
 	public void closureMinifierStillAddsPackageDefinitionsBlock() throws Exception
 	{
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/cjs")
-			.and(aspect).hasClasses("appns.cjs.Class", "appns/node/Class")
+			.and(aspect).hasClasses("appns.cjs.Class", "appns.cjs.Class")
 			.and(aspect).indexPageRefersTo("appns.cjs.Class");
 		when(aspect).requestReceived("js/prod/closure-whitespace/bundle.js", response);
 		then(response).containsMinifiedClasses("appns.cjs.Class")

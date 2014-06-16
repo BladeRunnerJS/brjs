@@ -18,7 +18,7 @@ import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
-import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.reader.factory.JsCommentAndCodeBlockStrippingReaderFactory;
 import org.bladerunnerjs.utility.reader.factory.JsCommentStrippingReaderFactory;
@@ -80,14 +80,14 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 			throw new IOException("Unable to create the SourceModule reader", e);
 		}
 		
-		String defineBlockHeader = CommonJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
+		String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
 		
 		Reader[] readers = new Reader[] { 
 				new StringReader( String.format(defineBlockHeader, getRequirePath()) ), 
 				getUnalteredContentReader(),
 				new StringReader( "\n" ),
 				new StringReader( "module.exports = " + getRequirePath().replaceAll("/", ".") + ";" ),
-				new StringReader(CommonJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER), 
+				new StringReader(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER), 
 		};
 		return new ConcatReader( readers );
 	}

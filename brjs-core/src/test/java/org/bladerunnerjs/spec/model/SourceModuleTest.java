@@ -11,7 +11,7 @@ import org.junit.Test;
 public class SourceModuleTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private JsLib brjsLib, brjsThirdpartyLib, nodeJsLib;
+	private JsLib brjsLib, brjsThirdpartyLib, commonJsLib;
 	
 	@Before
 	public void initTestObjects() throws Exception {
@@ -21,7 +21,7 @@ public class SourceModuleTest extends SpecTest {
 			aspect = app.aspect("default");
 			brjsLib = app.jsLib("brjslib");
 			brjsThirdpartyLib = app.jsLib("thirdparty-lib");
-			nodeJsLib = app.jsLib("nodejs-lib");
+			commonJsLib = app.jsLib("commonjs-lib");
 	}
 	
 	@Test
@@ -61,11 +61,11 @@ public class SourceModuleTest extends SpecTest {
 	
 	@Ignore
 	@Test
-	public void nodeJsLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
-		given(nodeJsLib).containsPackageJsonWithMainSourceModule("lib/file1.js")
-			.and(nodeJsLib).containsFiles("lib/file1.js", "lib/file2.js");
-		then(nodeJsLib).hasSourceModules("nodeJsLib", "nodeJsLib/lib/file1", "nodeJsLib/lib/file2")
-			.and(nodeJsLib).hasAssetLocations(".")
-			.and(nodeJsLib).assetLocationHasNoDependencies(".");
+	public void commonJsLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
+		given(commonJsLib).containsPackageJsonWithMainSourceModule("lib/file1.js")
+			.and(commonJsLib).containsFiles("lib/file1.js", "lib/file2.js");
+		then(commonJsLib).hasSourceModules("commonJsLib", "commonJsLib/lib/file1", "commonJsLib/lib/file2")
+			.and(commonJsLib).hasAssetLocations(".")
+			.and(commonJsLib).assetLocationHasNoDependencies(".");
 	}
 }

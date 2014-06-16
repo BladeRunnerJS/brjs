@@ -85,7 +85,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void bundlesAreIncludedInTheRightOrder() throws Exception {
-		given(aspect).hasNodeJsPackageStyle("src/appns/node")
+		given(aspect).hasCommonJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
@@ -107,7 +107,7 @@ public class CompositeJsContentPluginTest extends SpecTest {
 	
 	@Test
 	public void i18nBundleIsNotIncluded() throws Exception {
-		given(aspect).hasNodeJsPackageStyle("src/appns/node")
+		given(aspect).hasCommonJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")
