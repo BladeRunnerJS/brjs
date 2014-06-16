@@ -27,7 +27,7 @@ public class TestCommandTest extends SpecTest
 		//TODO::have to create brjs first should remove when moved over to core
 		given(brjs).hasBeenCreated();
 		
-		given(brjs).hasCommands(new TestCommand());
+		given(brjs).hasCommandPlugins(new TestCommand());
 			app = brjs.app("myapp");
 			app.aspect("myaspect");
 			bladeset = app.bladeset("mybladeset");

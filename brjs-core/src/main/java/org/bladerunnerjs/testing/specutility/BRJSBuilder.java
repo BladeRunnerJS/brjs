@@ -46,7 +46,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 
-	public BuilderChainer hasCommands(CommandPlugin... commands)
+	public BuilderChainer hasCommandPlugins(CommandPlugin... commands)
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.pluginCommands);
@@ -59,7 +59,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasModelObservers(ModelObserverPlugin... modelObservers)
+	public BuilderChainer hasModelObserverPlugins(ModelObserverPlugin... modelObservers)
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.modelObservers);
@@ -102,7 +102,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasMinifiers(MinifierPlugin... minifyPlugins)
+	public BuilderChainer hasMinifierPlugins(MinifierPlugin... minifyPlugins)
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.minifiers);
@@ -115,7 +115,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer hasTagPlugins(TagHandlerPlugin... tagHandlers)
+	public BuilderChainer hasTagHandlerPlugins(TagHandlerPlugin... tagHandlers)
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.tagHandlers);
@@ -128,7 +128,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsCommands()
+	public BuilderChainer automaticallyFindsCommandPlugins()
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.pluginCommands);
@@ -158,7 +158,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsTagHandlers() 
+	public BuilderChainer automaticallyFindsTagHandlerPlugins() 
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.tagHandlers);
@@ -168,7 +168,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsAssetProducers() {
+	public BuilderChainer automaticallyFindsAssetPlugins() {
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.assetPlugins);
 		
@@ -177,7 +177,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsAssetLocationProducers() {
+	public BuilderChainer automaticallyFindsAssetLocationPlugins() {
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.assetLocationPlugins);
 		
@@ -186,17 +186,17 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsBundlers()
+	public BuilderChainer automaticallyFindsBundlerPlugins()
 	{
 		automaticallyFindsContentPlugins();
-		automaticallyFindsTagHandlers();
-		automaticallyFindsAssetProducers();
-		automaticallyFindsAssetLocationProducers();
+		automaticallyFindsTagHandlerPlugins();
+		automaticallyFindsAssetPlugins();
+		automaticallyFindsAssetLocationPlugins();
 		
 		return builderChainer;
 	}
 	
-	public BuilderChainer automaticallyFindsMinifiers() 
+	public BuilderChainer automaticallyFindsMinifierPlugins() 
 	{
 		verifyBrjsIsNotSet();
 		verifyPluginsUnitialized(specTest.pluginLocator.minifiers);
@@ -208,10 +208,10 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer automaticallyFindsAllPlugins() {
 		automaticallyFindsContentPlugins();
-		automaticallyFindsTagHandlers();
-		automaticallyFindsAssetProducers();
-		automaticallyFindsAssetLocationProducers();
-		automaticallyFindsCommands();
+		automaticallyFindsTagHandlerPlugins();
+		automaticallyFindsAssetPlugins();
+		automaticallyFindsAssetLocationPlugins();
+		automaticallyFindsCommandPlugins();
 		automaticallyFindsModelObservers();
 		
 		return builderChainer;

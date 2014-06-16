@@ -19,7 +19,7 @@ public class JsDocCommandTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasCommands(new JsDocCommand())
+		given(brjs).hasCommandPlugins(new JsDocCommand())
 			.and(brjs).hasBeenCreated();
 		app = brjs.app("app");
 		appLib = app.jsLib("lib");

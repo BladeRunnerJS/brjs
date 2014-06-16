@@ -53,8 +53,8 @@ public class BRJSStartupTest extends SpecTest {
 	@Test
 	public void pluginsThatHaveBeenFoundAreListed() {			
 		given(logging).enabled()
-			.and(brjs).hasCommands(passingCommandPlugin)
-			.and(brjs).hasModelObservers(passingModelObserverPlugin);
+			.and(brjs).hasCommandPlugins(passingCommandPlugin)
+			.and(brjs).hasModelObserverPlugins(passingModelObserverPlugin);
 		when(brjs).hasBeenCreated();
 		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).debugMessageReceived(PLUGIN_FOUND_MSG, passingModelObserverPlugin.getClass().getCanonicalName())
@@ -66,7 +66,7 @@ public class BRJSStartupTest extends SpecTest {
 	@Test
 	public void fatalErrorIsEmittedIfAnyOfTheModelObserverPluginsCantBeCreated() {
 		given(logging).enabled()
-			.and(brjs).hasModelObservers(failingModelObserverPlugin);
+			.and(brjs).hasModelObserverPlugins(failingModelObserverPlugin);
 		when(brjs).hasBeenCreated();
 		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 			.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLUGIN_ERROR_MSG, failingModelObserverPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
@@ -79,7 +79,7 @@ public class BRJSStartupTest extends SpecTest {
 	@Test
 	public void modelObserverExceptionsAreLoggedAsWarningsDuringNodeDiscovery() {
 		given(logging).enabled()
-			.and(brjs).hasModelObservers(failingEventObserverModelObserver);
+			.and(brjs).hasModelObserverPlugins(failingEventObserverModelObserver);
 		when(brjs).hasBeenCreated();
 			then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)
 //				.and(logging).errorMessageReceived(PluginLocatorUtils.Messages.INIT_PLGUIN_ERROR_MSG, failingModelObserverPlugin.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(pluginException))
@@ -90,7 +90,7 @@ public class BRJSStartupTest extends SpecTest {
 	@Test
 	public void fatalErrorIsEmittedIfAnyOfTheCommandPluginsCantBeCreated() throws Exception {
 		given(logging).enabled()
-			.and(brjs).hasCommands(failingCommandPlugin);
+			.and(brjs).hasCommandPlugins(failingCommandPlugin);
 		when(brjs).hasBeenCreated()
 			.and(brjs).runCommand("help", "failingCommand");
 		then(logging).infoMessageReceived(CREATING_PLUGINS_LOG_MSG)

@@ -36,7 +36,7 @@ public class AppServerTest extends SpecTest
 
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).hasModelObservers(new AppDeploymentObserverPlugin())
+		given(brjs).hasModelObserverPlugins(new AppDeploymentObserverPlugin())
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated()
 			.and(brjs.sdkLibsDir()).containsFile("locale-forwarder.js")

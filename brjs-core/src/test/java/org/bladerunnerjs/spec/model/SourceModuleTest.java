@@ -15,7 +15,7 @@ public class SourceModuleTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers()
+		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
