@@ -61,7 +61,7 @@ public class TokenisingServletFilter implements Filter
 		if (shouldProcessResponse(request))
 		{
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
-			String parentRequestPath = ((String) request.getAttribute("logicalRequestUri")).replaceAll("/[^/]*$", "");
+			String parentRequestPath = httpRequest.getRequestURI().replaceAll("/[^/]*$", "");
 			String hostIdentifier = httpRequest.getRequestURL().toString().replaceAll(contextPath + ".*$", "");
 			String requestUri = hostIdentifier + parentRequestPath;
 			ServletOutputStream out = response.getOutputStream();

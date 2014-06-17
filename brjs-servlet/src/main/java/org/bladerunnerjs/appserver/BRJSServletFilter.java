@@ -10,7 +10,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 public class BRJSServletFilter implements Filter {
 	private final List<Filter> filters = new ArrayList<Filter>();
@@ -36,13 +35,6 @@ public class BRJSServletFilter implements Filter {
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		
-		// TODO: confirm we no longer need the 'logicalRequestUri' attribute now that there are no redirect filters
-		if (httpRequest.getAttribute("logicalRequestUri") == null) {
-			httpRequest.setAttribute("logicalRequestUri", httpRequest.getRequestURI());
-		}
-		
 		new VirtualFilterChain(chain, filters).doFilter(request, response);
 	}
 }
