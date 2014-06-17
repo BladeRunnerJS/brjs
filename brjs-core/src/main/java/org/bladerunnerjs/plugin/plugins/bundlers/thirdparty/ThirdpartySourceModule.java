@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.BundlableNode;
@@ -20,6 +21,7 @@ import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 
@@ -40,7 +42,7 @@ public class ThirdpartySourceModule implements SourceModule
 			this.assetLocation = assetLocation;
 			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetLocation.dir());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
+			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 		}
 		catch (ConfigException e) {
 			throw new RuntimeException(e);
@@ -58,10 +60,10 @@ public class ThirdpartySourceModule implements SourceModule
 			boolean shouldDefineLibrary = hasPackageJson && !assetLocation.assetContainer().file(".no-define").isFile();
 			
 			
-			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getRequirePath());
+			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath());
 			String defineBlockBody = "module.exports = " + manifest.getExports();
 			String defineBlockFooter = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER;
-			String globaliseModuleContent = manifest.getExports() + " = require('" + getRequirePath() + "');\n";
+			String globaliseModuleContent = manifest.getExports() + " = require('" + getPrimaryRequirePath() + "');\n";
 			
 			//TODO: once we have proper node lib support remove this block and the 'else' block below
 			if (shouldDefineLibrary)
@@ -138,9 +140,9 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
+	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		Set<SourceModule> dependentLibs = new LinkedHashSet<SourceModule>();
+		Set<Asset> dependentLibs = new LinkedHashSet<Asset>();
 		
 		try 
 		{
@@ -151,7 +153,7 @@ public class ThirdpartySourceModule implements SourceModule
 				{
 					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
 				}
-				dependentLibs.addAll(dependentLib.sourceModules());
+				dependentLibs.addAll(dependentLib.linkedAssets());
 			}
 		}
 		catch (ConfigException ex)
@@ -159,7 +161,7 @@ public class ThirdpartySourceModule implements SourceModule
 			throw new ModelOperationException( ex );
 		}
 		
-		return new ArrayList<SourceModule>( dependentLibs );
+		return new ArrayList<Asset>( dependentLibs );
 	}
 
 	@Override
@@ -169,9 +171,9 @@ public class ThirdpartySourceModule implements SourceModule
 	}
 
 	@Override
-	public String getRequirePath()
+	public String getPrimaryRequirePath()
 	{
-		return assetLocation.dir().getName();
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 	
 	@Override
@@ -182,6 +184,21 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException
 	{
-		return getDependentSourceModules(bundlableNode);
+		List<SourceModule> result = new ArrayList<SourceModule>();
+		for(Asset dependentAsset : getDependentAssets(bundlableNode)){
+			if(dependentAsset instanceof SourceModule){
+				result.add((SourceModule)dependentAsset);
+			}
+		}
+		return result;
 	}
+	
+	@Override
+	public List<String> getRequirePaths() {
+		List<String> requirePaths = new ArrayList<String>();
+		requirePaths.add(assetLocation.dir().getName());
+		
+		return requirePaths;
+	}
+	
 }

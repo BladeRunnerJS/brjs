@@ -6,6 +6,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
+import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
@@ -22,6 +23,7 @@ public class XMLContentPluginTest extends SpecTest{
 	private StringBuffer response = new StringBuffer();
 	private Bladeset bladeset;
 	private Blade blade = null;
+	private Workbench workbench = null;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -35,6 +37,7 @@ public class XMLContentPluginTest extends SpecTest{
 		aspect = app.aspect("default");
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
+		workbench = blade.workbench();
 	}
 	
 	@Test
@@ -213,12 +216,68 @@ public class XMLContentPluginTest extends SpecTest{
 		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsTextOnce(xml( getProviderMapping("appns.bs.b1.DatProvider1")));
 	}
+	
+	
 
 	@Test
 	public void arbritaryXMLIsUnchangedWhenNoBundlerConfig() throws Exception {
 		given(aspect).containsResourceFileWithContents("gridDefinitions.xml", xml(getArbitraryXml()));
 		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsText(getArbitraryXml());
+	}
+	
+	@Test
+	public void xmlInBladeResourceIsBundledWhenReferencedByXMLInAspect() throws Exception {
+		String id = "appns.bs1.b1.gridname";
+		given(aspect).containsResourceFileWithContents("application.xml", xml(getReferencingXML(id)))
+			.and(blade).containsResourceFileWithContents("wibble.xml", xml(getReferencedXML(id)));
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(getReferencingXML(id))
+			.and(response).containsText(getReferencedXML(id));
+	}
+	
+	@Test
+	public void xmlInBladeResourceIsBundledWhenReferencedByAClass() throws Exception {
+		given(aspect).indexPageRequires("appns/Class")
+			.and(aspect).classRequires("appns/Class", "appns/bs1/b1/gridname")
+			.and(blade).containsResourceFileWithContents("wibble.xml", xml(getReferencedXML("appns.bs1.b1.gridname")));
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(getReferencedXML("appns.bs1.b1.gridname"));
+	}
+	
+	@Test
+	public void xmlInBladesetResourceIsBundledWhenReferencedByXMLInAspect() throws Exception {
+		String id = "appns.bs1.gridname";
+		given(aspect).containsResourceFileWithContents("application.xml", xml(getReferencingXML(id)))
+			.and(bladeset).containsResourceFileWithContents("wibble.xml", xml(getReferencedXML(id)))
+			.and(bladeset).hasClass("appns/bs/Class")
+			.and(aspect).indexPageRefersTo("appns.bs1.Class");
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(getReferencingXML(id))
+			.and(response).containsText(getReferencedXML(id));
+	}
+	
+	
+	@Test
+	public void xmlInBladeResourceIsBundledWhenReferencedByXMLInWorkbench() throws Exception {
+		String id = "appns.bs1.b1.gridname";
+		given(workbench).containsResourceFileWithContents("application.xml", xml(getReferencingXML(id)))
+			.and(blade).containsResourceFileWithContents("wibble.xml", xml(getReferencedXML(id)));
+		when(workbench).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(getReferencingXML(id))
+			.and(response).containsText(getReferencedXML(id));
+	}
+	
+	private String getReferencingXML(String id) {
+		String content = ""
+				+ "<a gridname='" + id + "'>content</a>";
+		return content;
+	}
+	
+	private String getReferencedXML(String id) {
+		String content = ""
+				+ "<b id='" + id + "'>othercontent</b>";
+		return content;
 	}
 	
 	private String getArbitraryXml() {

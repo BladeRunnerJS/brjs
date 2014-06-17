@@ -90,7 +90,9 @@ public class AppRequestHandler {
 			String indexPageContent = pageAccessor.getIndexPage(indexPage);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
-			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding())) {
+			
+			String browserCharacterEncoding = browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding();
+			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, browserCharacterEncoding)) {
 				browsableNode.filterIndexPage(indexPageContent, locale, version, writer, requestMode);
 			}
 			

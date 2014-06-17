@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.memoization.Getter;
 import org.bladerunnerjs.memoization.MemoizedValue;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
@@ -28,6 +29,7 @@ import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
@@ -47,25 +49,31 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	private SourceModulePatch patch;
 	
 	private MemoizedValue<ComputedValue> computedValue;
-	private String requirePath;
+	private List<String> requirePaths = new ArrayList<>();
 	
 	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
-		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
+		requirePaths.add(assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", ""));
+		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 		computedValue = new MemoizedValue<>("CommonJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {
 		try {
-			return bundlableNode.getSourceModules(assetLocation, requirePaths());
+			return bundlableNode.getLinkedAssets(assetLocation, requirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
 	}
+	
+	@Override
+	public List<String> getRequirePaths() {
+		return requirePaths;
+	}
+	
 	
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException {
@@ -91,15 +99,15 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public Reader getReader() throws IOException {
 		return new ConcatReader(new Reader[] {
-			new StringReader( String.format(COMMONJS_DEFINE_BLOCK_HEADER, getRequirePath()) ),
+			new StringReader( String.format(COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath()) ),
 			getUnalteredContentReader(),
 			new StringReader( COMMONJS_DEFINE_BLOCK_FOOTER )
 		});
 	}
 	
 	@Override
-	public String getRequirePath() {
-		return requirePath;
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 	
 	@Override

@@ -20,7 +20,7 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 
 public interface BundlableNode extends Node, AssetContainer {
 	AliasesFile aliasesFile();
-	SourceModule getSourceModule(String requirePath) throws RequirePathException;
+	LinkedAsset getLinkedAsset(String requirePath) throws RequirePathException;
 	List<AssetLocation> seedAssetLocations();
 	List<LinkedAsset> seedAssets();
 	
@@ -30,5 +30,5 @@ public interface BundlableNode extends Node, AssetContainer {
 	
 	void handleLogicalRequest(String logicalRequestPath, OutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 	void handleLogicalRequest(String logicalRequestPath, OutputStream os, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
-	List<SourceModule> getSourceModules(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
+	List<Asset> getLinkedAssets(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
 }

@@ -108,7 +108,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				{
 					if (sourceModule instanceof NamespacedJsSourceModule)
 					{
-						requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
+						requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getPrimaryRequirePath()));
 					}
 				}
 				requestPaths.add(contentPathParser.createRequest(GLOBALIZE_EXTRA_CLASSES_REQUEST));
@@ -137,7 +137,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			{
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
+					SourceModule jsModule =  (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
 				}
 			}
@@ -152,7 +152,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 					{
 						if (sourceModule instanceof NamespacedJsSourceModule)
 						{
-							contentBuffer.write("// " + sourceModule.getRequirePath() + "\n");
+							contentBuffer.write("// " + sourceModule.getPrimaryRequirePath() + "\n");
 							try (Reader reader = sourceModule.getReader()) { IOUtils.copy(reader, writer); }
 							contentBuffer.write("\n\n");
 							contentBuffer.flush();
@@ -213,14 +213,14 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		{
 			if (sourceModule instanceof NamespacedJsSourceModule)
 			{
-				List<String> packageList = Arrays.asList(sourceModule.getRequirePath().split("/"));
+				List<String> packageList = Arrays.asList(sourceModule.getPrimaryRequirePath().split("/"));
 				addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
 			}
 		}
 
 		for (SourceModule sourceModule : globalizedModules)
 		{
-			String namespacedName = sourceModule.getRequirePath().replace('/', '.');
+			String namespacedName = sourceModule.getPrimaryRequirePath().replace('/', '.');
 			namespacedName = (namespacedName.startsWith(".")) ? StringUtils.substringAfter(namespacedName, ".") : namespacedName;
 			List<String> packageList = Arrays.asList(namespacedName.split("\\."));
 			addPackageToStructure(packageStructure, packageList.subList(0, packageList.size() - 1));
@@ -271,8 +271,8 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		if (dependentSourceModule.isEncapsulatedModule() && !globalizedModules.contains(dependentSourceModule))
 		{
 			globalizedModules.add(dependentSourceModule);
-			String sourceModuleClassName = dependentSourceModule.getRequirePath().replaceAll("/", ".").replace("-", "_");
-			return sourceModuleClassName + " = require('" + dependentSourceModule.getRequirePath() + "');\n";
+			String sourceModuleClassName = dependentSourceModule.getPrimaryRequirePath().replaceAll("/", ".").replace("-", "_");
+			return sourceModuleClassName + " = require('" + dependentSourceModule.getPrimaryRequirePath() + "');\n";
 		}
 		return "";
 	}

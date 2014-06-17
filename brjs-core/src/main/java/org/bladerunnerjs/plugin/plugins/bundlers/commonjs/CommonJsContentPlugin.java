@@ -94,7 +94,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 			{
 				if (sourceModule instanceof CommonJsSourceModule)
 				{
-					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
+					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getPrimaryRequirePath()));
 				}
 			}
 		}
@@ -121,7 +121,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 			{
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
+					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
 				}
 			}
@@ -133,7 +133,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 					{
 						if (sourceModule instanceof CommonJsSourceModule)
 						{
-							writer.write("// " + sourceModule.getRequirePath() + "\n");
+							writer.write("// " + sourceModule.getPrimaryRequirePath() + "\n");
 							try (Reader reader = sourceModule.getReader()) { IOUtils.copy(reader, writer); }
 							writer.write("\n\n");
 						}

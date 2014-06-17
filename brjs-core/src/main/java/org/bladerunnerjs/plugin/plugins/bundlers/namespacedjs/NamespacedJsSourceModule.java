@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
@@ -19,6 +21,7 @@ import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.reader.factory.JsCommentAndCodeBlockStrippingReaderFactory;
 import org.bladerunnerjs.utility.reader.factory.JsCommentStrippingReaderFactory;
@@ -32,7 +35,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	private AssetLocation assetLocation;
 	private File assetFile;
-	private String requirePath;
+	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	private TrieBasedDependenciesCalculator trieBasedStaticDependenciesCalculator;
@@ -40,14 +43,14 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
-		requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
-		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getRequirePath());
+		requirePaths.add(assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", ""));
+		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 	}
 	
 	@Override
- 	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {		
+ 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			return bundlableNode.getSourceModules(assetLocation, getDependencyCalculator().getRequirePaths());
+			return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -83,18 +86,18 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		String defineBlockHeader = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER.replace("\n", "") + staticDependenciesRequireDefinition+"\n";
 		
 		Reader[] readers = new Reader[] { 
-				new StringReader( String.format(defineBlockHeader, getRequirePath()) ), 
+				new StringReader( String.format(defineBlockHeader, getPrimaryRequirePath()) ), 
 				getUnalteredContentReader(),
 				new StringReader( "\n" ),
-				new StringReader( "module.exports = " + getRequirePath().replaceAll("/", ".") + ";" ),
+				new StringReader( "module.exports = " + getPrimaryRequirePath().replaceAll("/", ".") + ";" ),
 				new StringReader(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER), 
 		};
 		return new ConcatReader( readers );
 	}
 	
 	@Override
-	public String getRequirePath() {
-		return requirePath;
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
 	}
 	
 	@Override
@@ -104,12 +107,20 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public List<SourceModule> getOrderDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {
+		
+		List<SourceModule> result = new ArrayList<SourceModule>();
 		try {
-			return bundlableNode.getSourceModules(assetLocation, getStaticDependencyCalculator().getRequirePaths());
+			
+			 List<Asset> assets = bundlableNode.getLinkedAssets(assetLocation, getStaticDependencyCalculator().getRequirePaths());
+			 for(Asset asset : assets){
+				 if(asset instanceof SourceModule)
+					 result.add((SourceModule)asset);
+			 }
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
 		}
+		return result;
 	}
 	
 	public String calculateStaticDependenciesRequireDefinition() throws ModelOperationException {
@@ -174,5 +185,9 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return trieBasedStaticDependenciesCalculator;
 	}
 	
+	@Override
+	public List<String> getRequirePaths() {
+		return requirePaths;
+	}
 	
 }

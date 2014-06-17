@@ -3,11 +3,13 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
 import org.bladerunnerjs.utility.reader.factory.JsAndXmlCommentStrippingReaderFactory;
@@ -43,9 +45,9 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 	
 	@Override
-	public List<SourceModule> getDependentSourceModules(BundlableNode bundlableNode) throws ModelOperationException {		
+	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException {		
 		try {
-			return bundlableNode.getSourceModules(assetLocation, getDependencyCalculator().getRequirePaths());
+			 return bundlableNode.getLinkedAssets(assetLocation, getDependencyCalculator().getRequirePaths());
 		}
 		catch (RequirePathException e) {
 			throw new ModelOperationException(e);
@@ -62,6 +64,8 @@ public class LinkedFileAsset implements LinkedAsset {
 	{
 		return assetFile.getParentFile();
 	}
+	
+	
 	
 	@Override
 	public String getAssetName() {
@@ -85,5 +89,14 @@ public class LinkedFileAsset implements LinkedAsset {
 		}
 		return trieBasedDependenciesCalculator;
 	}
+
+	@Override
+	public List<String> getRequirePaths() {
+		return new ArrayList<String>();
+	}
 	
+	@Override
+	public String getPrimaryRequirePath() {
+		return PrimaryRequirePathUtility.getPrimaryRequirePath(this);
+	}
 }
