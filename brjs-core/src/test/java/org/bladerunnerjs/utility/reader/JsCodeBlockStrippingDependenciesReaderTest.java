@@ -9,6 +9,7 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -267,6 +268,65 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 					"})()",
 					")()")
 			);
+	}
+	
+	@Test
+	public void largeSourceWithCodeBlocksAreStripped() throws IOException
+	{
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				zeroPad(4090),
+				"some content",
+				"{ more content }"),
+			lines(
+				zeroPad(4090),
+				"some content",
+				"{}")
+		);
+	}
+	
+	@Test
+	public void largeSourceWithCodeWithSelfExecutingFunctionsAreNotStripped() throws Exception {
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					zeroPad(4090),
+					"(function() {",
+					"(function() {",
+					"some code...",
+					"})()",
+					")()"),
+				lines(
+					zeroPad(4090),
+					"(function() {",
+					"(function() {",
+					"some code...",
+					"})()",
+					")()")
+			);
+	}
+	
+	@Ignore
+	@Test
+	public void functionsInInlineMapsInsideOfASelfExeuctingCodeBlockAreNotStripped() throws Exception {
+		stripCodeBlocksAndAssertEquals(
+				lines(
+					"(function() {",
+					"var someMap = {",
+					" key: some.function()",
+					"}",
+					")()"),
+				lines(
+					"(function() {",
+					"var someMap = {",
+					" key: some.function()",
+					"}",
+					")()")
+			);
+	}
+	
+	
+	private String zeroPad(int size) {
+		return StringUtils.leftPad("", size, '0')+"\n";
 	}
 	
 	private String lines(String... input)

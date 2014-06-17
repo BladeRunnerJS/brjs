@@ -41,7 +41,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	public List<AssetLocation> seedAssetLocations() {
 		List<AssetLocation> seedAssetLocations = new ArrayList<>();
 		
-		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+		for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
 			if(assetLocationPlugin.getAssetLocationDirectories(this).size() > 0) {
 				for(String seedAssetLocationName : assetLocationPlugin.getSeedAssetLocationDirectories(this)) {
 					AssetLocation seedAssetLocation = assetLocation(seedAssetLocationName);
@@ -161,9 +161,9 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public void handleLogicalRequest(String logicalRequestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public void handleLogicalRequest(String logicalRequestPath, OutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
-			BundleSetRequestHandler.handle(this.getBundleSet(), logicalRequestPath, os);
+			BundleSetRequestHandler.handle(this.getBundleSet(), logicalRequestPath, os, version);
 		}
 		catch (ModelOperationException e) {
 			throw new ContentProcessingException(e);
@@ -171,9 +171,9 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public void handleLogicalRequest(String logicalRequestPath, OutputStream os, BundleSetFilter bundleSetFilter) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public void handleLogicalRequest(String logicalRequestPath, OutputStream os, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
-			BundleSetRequestHandler.handle(new FilteredBundleSet(this.getBundleSet(), bundleSetFilter), logicalRequestPath, os);
+			BundleSetRequestHandler.handle(new FilteredBundleSet(this.getBundleSet(), bundleSetFilter), logicalRequestPath, os, version);
 		}
 		catch (ModelOperationException e) {
 			throw new ContentProcessingException(e);

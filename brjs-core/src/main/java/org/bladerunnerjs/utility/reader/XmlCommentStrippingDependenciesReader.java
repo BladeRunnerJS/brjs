@@ -3,6 +3,8 @@ package org.bladerunnerjs.utility.reader;
 import java.io.IOException;
 import java.io.Reader;
 
+import org.bladerunnerjs.utility.SizedStack;
+
 /*
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
  * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
@@ -19,7 +21,6 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 {
 	public static final String COMMENT_START = "<!--";
 	public static final String COMMENT_END = "-->";	
-	private static final int MIN_BUFFERED_CHARS = COMMENT_START.length();
 	
 	private enum CommentStripperState
 	{
@@ -30,6 +31,7 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 	
 	private final Reader sourceReader;
 	private final char[] sourceBuffer = new char[4096];
+	private final SizedStack<Character> lookbehindBuffer = new SizedStack<>( COMMENT_START.length() );
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private CommentStripperState state;
@@ -62,6 +64,7 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 			}
 			
 			nextChar = sourceBuffer[nextCharPos++];
+			lookbehindBuffer.push(nextChar);
 			
 			if (state == CommentStripperState.WITHIN_SOURCE) {
 				destBuffer[currentOffset++] = nextChar;
@@ -85,16 +88,12 @@ public class XmlCommentStrippingDependenciesReader extends Reader
 	
 	private boolean isCommentStart()
 	{
-		int startPos = Math.max(0, nextCharPos - MIN_BUFFERED_CHARS);
-		String commentPrefix = new String(sourceBuffer, startPos, nextCharPos - startPos);
-		return commentPrefix.contains(COMMENT_START);
+		return lookbehindBuffer.toString().contains(COMMENT_START);
 	}
 	
 	private boolean isCommentEnd()
 	{
-		int startPos = Math.max(0, nextCharPos - MIN_BUFFERED_CHARS);
-		String commentPrefix = new String(sourceBuffer, startPos, nextCharPos - startPos);
-		return commentPrefix.contains(COMMENT_END);
+		return lookbehindBuffer.toString().contains(COMMENT_END);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class BundleSetRequestHandler {
 		public static final String BUNDLER_IDENTIFIED_MSG = "Bundler '%s' identified as handler for request '%s'.";
 	}
 	
-	public static void handle(BundleSet bundleSet, String logicalRequestpath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public static void handle(BundleSet bundleSet, String logicalRequestpath, OutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		App app = bundlableNode.app();
 		Logger logger = app.root().logger(LoggerType.BUNDLER, BundleSetRequestHandler.class);
@@ -33,7 +33,7 @@ public class BundleSetRequestHandler {
 		String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 		logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getClass().getSimpleName(), name, logicalRequestpath);
 		
-		ContentPlugin contentProvider = app.root().plugins().contentProviderForLogicalPath(logicalRequestpath);
+		ContentPlugin contentProvider = app.root().plugins().contentPluginForLogicalPath(logicalRequestpath);
 		
 		if(contentProvider == null) {
 			throw new ResourceNotFoundException("No content provider could be found found the logical request path '" + logicalRequestpath + "'");
@@ -42,6 +42,6 @@ public class BundleSetRequestHandler {
 		logger.debug(Messages.BUNDLER_IDENTIFIED_MSG, contentProvider.getPluginClass().getSimpleName(), logicalRequestpath);
 		
 		ParsedContentPath contentPath = contentProvider.getContentPathParser().parse(logicalRequestpath);
-		contentProvider.writeContent(contentPath, bundleSet, os);
+		contentProvider.writeContent(contentPath, bundleSet, os, version);
 	}
 }

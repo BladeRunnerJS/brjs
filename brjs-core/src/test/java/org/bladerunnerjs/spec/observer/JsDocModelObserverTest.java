@@ -8,9 +8,9 @@ public class JsDocModelObserverTest extends SpecTest {
 	@Test 
 	public void runningJsDocCommandWithVerboseFlagCausesApiDocsToBeCreated() throws Exception {
 		given(testSdkDirectory).containsFileWithContents("apps/app1/src/MyClass.js", "// my class")
-			.and(brjs).hasModelObservers(new JsDocObserver());
+			.and(brjs).hasModelObserverPlugins(new JsDocObserver());
 		when(brjs).hasBeenCreated();
-		then(brjs).hasDir("generated/app/app1/jsdoc-toolkit")
-			.and(brjs.app("app1").storageDir("jsdoc-toolkit")).containsFileWithContents("index.html", "onload=\"generateDocs()\"");
+		then(brjs).hasDir("generated/app/app1/jsdoc")
+			.and(brjs.app("app1").storageDir("jsdoc")).containsFileWithContents("index.html", "onload=\"generateDocs()\"");
 	}
 }

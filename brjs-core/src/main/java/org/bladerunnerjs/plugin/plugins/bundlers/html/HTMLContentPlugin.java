@@ -58,7 +58,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		htmlAssetPlugin = brjs.plugins().assetProducer(HTMLAssetPlugin.class);
+		htmlAssetPlugin = brjs.plugins().assetPlugin(HTMLAssetPlugin.class);
 	}
 	
 	@Override
@@ -90,7 +90,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
 		identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);

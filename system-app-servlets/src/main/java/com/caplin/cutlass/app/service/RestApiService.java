@@ -59,7 +59,7 @@ public class RestApiService
 		StringBuilder response = new StringBuilder();
 		response.append("[");
 		
-		List<App> applications = brjs.apps();
+		List<App> applications = brjs.userApps();
 		response.append(joinListOfNodes( new ArrayList<NamedNode>(applications),", "));
 		
 		response.append("]");
@@ -71,7 +71,7 @@ public class RestApiService
 		StringBuilder response = new StringBuilder();
 		response.append("{");
 		
-		App app = brjs.app(appName);
+		App app = brjs.userApp(appName);
 		if (!app.dirExists())
 		{
 			throw new Exception("App " + app.getName() + " does not exist");
@@ -112,7 +112,7 @@ public class RestApiService
 	
 	public File getAppImageLocation(String app) throws Exception
 	{
-		File appPath = brjs.app(app).dir();
+		File appPath = brjs.userApp(app).dir();
 		File appImage = new File(appPath,"thumb.png"); 
 		if (appImage.exists())
 		{
@@ -139,12 +139,12 @@ public class RestApiService
 		}
 		File targetDir = destinationWar.getParentFile();
 		
-		App app = brjs.app(appName);
+		App app = brjs.userApp(appName);
 		if (!app.dirExists()) {
 			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
 		}
 		
-		app.build(targetDir, true);
+		app.buildWar(targetDir);
 		
 		File tempWar = new File(targetDir, appName + ".war");
 		FileUtils.moveFile(tempWar, destinationWar);

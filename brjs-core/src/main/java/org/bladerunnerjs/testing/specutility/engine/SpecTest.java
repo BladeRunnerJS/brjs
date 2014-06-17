@@ -68,6 +68,7 @@ import org.bladerunnerjs.testing.specutility.WorkbenchBuilder;
 import org.bladerunnerjs.testing.specutility.WorkbenchCommander;
 import org.bladerunnerjs.testing.specutility.WorkbenchVerifier;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
+import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
 import org.bladerunnerjs.testing.utility.MockPluginLocator;
 import org.bladerunnerjs.testing.utility.SpecTestDirObserver;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
@@ -99,6 +100,8 @@ public abstract class SpecTest
 	
 	public WebappTester webappTester;
 
+	public MockAppVersionGenerator appVersionGenerator;
+
 		
 	@Before
 	public void resetTestObjects()
@@ -112,6 +115,7 @@ public abstract class SpecTest
 		testSdkDirectory = createTestSdkDirectory();
 		pluginLocator = new MockPluginLocator();
 		webappTester = new WebappTester(testSdkDirectory);
+		appVersionGenerator = new MockAppVersionGenerator();
 	}
 	
 	@After
@@ -124,7 +128,7 @@ public abstract class SpecTest
 	
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return new BRJS(testSdkDirectory, pluginLocator, new PessimisticFileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output));
+		return new BRJS(testSdkDirectory, pluginLocator, new PessimisticFileModificationService(), new TestLoggerFactory(logging), new ConsoleStoreWriter(output), appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {

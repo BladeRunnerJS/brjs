@@ -2,6 +2,7 @@ package org.bladerunnerjs.testing.specutility;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -41,7 +42,7 @@ public class AssetContainerVerifier {
 			StringWriter sourceModuleContents = new StringWriter();
 			
 			assertEquals("Source module " + i + " differs from what's expected.", expectedSourceModule, actualSourceModule.getPrimaryRequirePath());
-			IOUtils.copy(actualSourceModule.getReader(), sourceModuleContents);
+			try (Reader reader = actualSourceModule.getReader()) { IOUtils.copy(reader, sourceModuleContents); }
 		}
 	}
 	

@@ -71,10 +71,10 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * @param contentPath The parsed content path created using the content path parser available from {@link #getContentPathParser}.
 	 * @param bundleSet The bundle-set for the bundlable node to which this request is related to.
 	 * @param os The output stream the content will be written to.
-	 * 
+	 * @param version TODO
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException;
+	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in development, for the given bundle-set and locale.

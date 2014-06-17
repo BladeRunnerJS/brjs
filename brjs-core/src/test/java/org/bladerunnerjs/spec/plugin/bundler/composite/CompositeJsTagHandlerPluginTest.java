@@ -24,8 +24,8 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -45,7 +45,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("../v/dev/node-js/module/appns/Class1.js", "../v/dev/aliasing/bundle.js");
+		then(pageResponse).containsRequests("../v/dev/app-version/version.js", "../v/dev/node-js/module/appns/Class1.js", "../v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	public void noRequestPathsAreGeneratedInDevIfThereAreNoClasses() throws Exception {
 		given(aspect).indexPageHasContent("<@js.bundle@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("../v/dev/aliasing/bundle.js");
+		then(pageResponse).containsRequests("../v/dev/app-version/version.js", "../v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
@@ -77,12 +77,12 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).indexPageHasContent("<@js.bundle prod-minifier='none'@/>");
 		when(aspect).indexPageLoadedInDev(pageResponse, "en_GB");
-		then(pageResponse).containsRequests("../v/dev/node-js/module/appns/Class1.js", "../v/dev/aliasing/bundle.js");
+		then(pageResponse).containsRequests("../v/dev/app-version/version.js", "../v/dev/node-js/module/appns/Class1.js", "../v/dev/aliasing/bundle.js");
 	}
 	
 	@Test
 	public void theAliasBlobRequestIsOutputLast() throws Exception {
-		given(aspect).hasNodeJsPackageStyle("src/appns/node")
+		given(aspect).hasCommonJsPackageStyle("src/appns/node")
 		.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 		.and(aspect).hasClass("appns/node/Class")
 		.and(aspect).hasClass("appns.namespaced.Class")
@@ -106,7 +106,7 @@ public class CompositeJsTagHandlerPluginTest extends SpecTest
 	
 	@Test
 	public void seperateScriptTagsAreGeneratedInTheCorrectOrder() throws Exception {
-		given(aspect).hasNodeJsPackageStyle("src/appns/node")
+		given(aspect).hasCommonJsPackageStyle("src/appns/node")
 			.and(aspect).hasNamespacedJsPackageStyle("src/appns/namespaced")
 			.and(aspect).hasClass("appns/node/Class")
 			.and(aspect).hasClass("appns.namespaced.Class")

@@ -18,7 +18,7 @@ public class BundlableNodeBuilder<N extends BundlableNode> extends AssetContaine
 	
 	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-		bundlableNode.handleLogicalRequest(requestPath, responseOutput);
+		bundlableNode.handleLogicalRequest(requestPath, responseOutput, bundlableNode.root().getAppVersionGenerator().getDevVersion());
 		
 		return builderChainer;
 	}

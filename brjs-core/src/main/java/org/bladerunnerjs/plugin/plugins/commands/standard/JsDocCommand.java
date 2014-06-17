@@ -22,7 +22,6 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.testing.utility.CommandRunner;
 import org.bladerunnerjs.utility.FileUtil;
 
 import com.martiansoftware.jsap.JSAP;
@@ -32,6 +31,8 @@ import com.martiansoftware.jsap.Switch;
 import com.martiansoftware.jsap.UnflaggedOption;
 
 public class JsDocCommand extends ArgsParsingCommandPlugin {
+	public static final String APP_STORAGE_DIR_NAME = "jsdoc";
+
 	public class Messages {
 		public static final String API_DOCS_GENERATED_MSG = "API docs correctly generated in '%s'";
 	}
@@ -54,7 +55,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	
 	@Override
 	public String getCommandName() {
-		return "jsdoc";
+		return APP_STORAGE_DIR_NAME;
 	}
 	
 	@Override
@@ -76,8 +77,8 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
-		File outputDir = app.storageDir("jsdoc-toolkit");
-		CommandRunner.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
+		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
+		CommandRunnerUtility.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
 		
 		try {
 			replaceBuildDateToken(new File(outputDir, "index.html"));

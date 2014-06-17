@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.commons.lang3.text.WordUtils;
 import org.bladerunnerjs.model.engine.NamedNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -49,6 +50,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	@Override
 	public void addTemplateTransformations(Map<String, String> transformations) throws ModelUpdateException
 	{
+		transformations.put("aspectTitle", WordUtils.capitalize(getName()) );
 	}
 	
 	@Override

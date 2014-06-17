@@ -21,8 +21,8 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 		
 			app = brjs.app("app1");
@@ -35,7 +35,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 		given(bladeset).hasClass("appns/bs/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.bs.Class1");
+		then(response).containsCommonJsClasses("appns.bs.Class1");
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class AspectBundlingOfBladesetSource extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.bs.Class1")
 			.and(bladeset).classRequires("appns/bs/Class1", "appns.bs.Class2");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.bs.Class1", "appns.bs.Class2");
+		then(response).containsCommonJsClasses("appns.bs.Class1", "appns.bs.Class2");
 	}
 	
 	@Test	// bladeset unhappy paths

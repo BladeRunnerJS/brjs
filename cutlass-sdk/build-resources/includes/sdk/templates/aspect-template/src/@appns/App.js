@@ -1,7 +1,8 @@
 'use strict';
 
 var App = function() {
-  // your app code goes here
+    var element = document.getElementById("hello-world");
+    element.innerHTML="Successfully loaded the application";
 };
 
 module.exports = App;

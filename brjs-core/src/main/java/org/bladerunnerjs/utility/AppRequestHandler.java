@@ -54,6 +54,8 @@ public class AppRequestHandler {
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
 		
+		String devVersion = app.root().getAppVersionGenerator().getDevVersion();
+		
 		switch(parsedContentPath.formName) {
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
@@ -61,19 +63,19 @@ public class AppRequestHandler {
 				break;
 			
 			case INDEX_PAGE_REQUEST:
-				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), "dev", pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
 				break;
 			
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), "dev", pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
 				break;
 			
 			case BUNDLE_REQUEST:
-				app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), os);
+				app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
 				break;
 			
 			case WORKBENCH_BUNDLE_REQUEST:
-				app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os);
+				app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
 				break;
 		}
 	}
@@ -148,7 +150,7 @@ public class AppRequestHandler {
 					.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
-					.and("version").hasForm("(dev|[0-9]+)")
+					.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
 					.and("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
 					.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 			

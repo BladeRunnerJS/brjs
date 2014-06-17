@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
 		try {
 			if (contentPath.formName.equals("bundle-request"))
@@ -78,7 +79,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 						if(sourceFile instanceof ThirdpartySourceModule)
 						{
 							writer.write("// " + sourceFile.getPrimaryRequirePath() + "\n");
-							IOUtils.copy(sourceFile.getReader(), writer);
+							try (Reader reader = sourceFile.getReader()) { IOUtils.copy(reader, writer); }
 							writer.write("\n\n");
 						}
 					}
@@ -110,7 +111,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 				{
 					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 					writer.write("// " + jsModule.getPrimaryRequirePath() + "\n");
-					IOUtils.copy(jsModule.getReader(), writer);
+					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
 					writer.write("\n\n");
 				}
 			}

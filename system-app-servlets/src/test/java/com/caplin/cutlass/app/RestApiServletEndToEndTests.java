@@ -87,8 +87,8 @@ public class RestApiServletEndToEndTests
 	{
 		createApp("newApp","appx");
 		
-		assertTrue( brjs.app("newApp").dirExists() );
-		assertTrue( brjs.app("newApp").aspect("default").assetLocation("src").file("appx").exists() );
+		assertTrue( brjs.userApp("newApp").dirExists() );
+		assertTrue( brjs.userApp("newApp").aspect("default").assetLocation("src").file("appx").exists() );
 	}
 	
 	@Ignore // this test has been disabled since it is incompatible with the Java7FileModificationService
@@ -183,8 +183,8 @@ public class RestApiServletEndToEndTests
 				"}";
 		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "POST", URL_BASE+"/apps/"+app, jsonBody);
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		assertTrue( brjs.app(app).dirExists() );
-		FileUtils.write(brjs.app(app).aspect("default").file("index.html"), "");
+		assertTrue( brjs.userApp(app).dirExists() );
+		FileUtils.write(brjs.userApp(app).aspect("default").file("index.html"), "");
 		if (releaseConnection)
 		{
 			RestApiServletTestUtils.getResponseTextFromResponse(response);
@@ -203,7 +203,7 @@ public class RestApiServletEndToEndTests
 				"}";
 		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "POST", URL_BASE+"/apps/"+app+"/"+bladeset, jsonBody);
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		assertTrue( brjs.app(app).bladeset(bladeset).dirExists() );
+		assertTrue( brjs.userApp(app).bladeset(bladeset).dirExists() );
 		if (releaseConnection)
 		{
 			RestApiServletTestUtils.getResponseTextFromResponse(response);
@@ -222,7 +222,7 @@ public class RestApiServletEndToEndTests
 				"}";
 		HttpResponse response = RestApiServletTestUtils.makeRequest(client, "POST", URL_BASE+"/apps/"+app+"/"+bladeset+"/"+blade, jsonBody);
 		assertEquals(200, response.getStatusLine().getStatusCode());
-		assertTrue( brjs.app(app).bladeset(bladeset).blade(blade).dirExists() );
+		assertTrue( brjs.userApp(app).bladeset(bladeset).blade(blade).dirExists() );
 		if (releaseConnection)
 		{
 			RestApiServletTestUtils.getResponseTextFromResponse(response);

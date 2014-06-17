@@ -334,8 +334,8 @@ public class RestApiServiceTest
 	{
 		File temporarySdk = FileUtility.createTemporarySdkInstall(new File(MORE_APPS_PATH));
 		setupService(temporarySdk);
-		App app1 = BRJSAccessor.root.app("app1");
-		File indexFile = new File(app1.storageDir("jsdoc-toolkit"), "output/index.html");
+		App app1 = BRJSAccessor.root.userApp("app1");
+		File indexFile = new File(app1.storageDir("jsdoc"), "output/index.html");
 		
 		assertFalse(indexFile.exists());
 		

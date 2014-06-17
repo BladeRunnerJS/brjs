@@ -91,7 +91,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			return assetLocationsMap.value(() -> {
 				Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
 				
-				for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+				for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
 					List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
 					
 					if(assetLocationDirectories.size() > 0) {

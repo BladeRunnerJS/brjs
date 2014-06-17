@@ -7,6 +7,7 @@
 	<alias 	name="br.xml-service" defaultClass="br.services.BRXmlResourceService">
 		<scenario name="dev" class="br.services.JSTDXmlResourceService" />
 	</alias>
+	<alias name="br.bundle-path-service" defaultClass="br.services.BRBundlePathService"/>
 
 	<alias name="br.date-picker" defaultClass="br.presenter.control.datefield.JQueryDatePickerControl" />
 	<alias name="br.toggle-switch" defaultClass="br.presenter.control.selectionfield.ToggleSwitchControl" />

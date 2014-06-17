@@ -24,14 +24,17 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
 public class CompositeJsContentPlugin extends AbstractContentPlugin {
+	public static final String PROD_BUNDLE_REQUEST = "prod-bundle-request";
+	public static final String DEV_BUNDLE_REQUEST = "dev-bundle-request";
+	
 	private ContentPathParser contentPathParser = (new ContentPathParserBuilder()).build();
 	private BRJS brjs;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
-			.accepts("js/dev/<minifier-setting>/bundle.js").as("dev-bundle-request")
-				.and("js/prod/<minifier-setting>/bundle.js").as("prod-bundle-request")
+			.accepts("js/dev/<minifier-setting>/bundle.js").as(DEV_BUNDLE_REQUEST)
+				.and("js/prod/<minifier-setting>/bundle.js").as(PROD_BUNDLE_REQUEST)
 			.where("minifier-setting").hasForm(ContentPathParserBuilder.NAME_TOKEN);
 		
 		contentPathParser = contentPathParserBuilder.build();
@@ -59,23 +62,23 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
-		return generateRequiredRequestPaths(bundleSet, "dev-bundle-request", locales);
+		return generateRequiredRequestPaths(bundleSet, DEV_BUNDLE_REQUEST, locales);
 	}
 	
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
-		return generateRequiredRequestPaths(bundleSet, "prod-bundle-request", locales);
+		return generateRequiredRequestPaths(bundleSet, PROD_BUNDLE_REQUEST, locales);
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os) throws ContentProcessingException {
-		if(contentPath.formName.equals("dev-bundle-request") || contentPath.formName.equals("prod-bundle-request")) {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException {
+		if(contentPath.formName.equals(DEV_BUNDLE_REQUEST) || contentPath.formName.equals(PROD_BUNDLE_REQUEST)) {
 			try {
 				String minifierSetting = contentPath.properties.get("minifier-setting");
-				MinifierPlugin minifierPlugin = brjs.plugins().minifier(minifierSetting);
+				MinifierPlugin minifierPlugin = brjs.plugins().minifierPlugin(minifierSetting);
 				
 				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet);
+					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, version);
 					minifierPlugin.minify(minifierSetting, inputSources, writer);
 				}
 			}
@@ -95,7 +98,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		if(bundleSet.getSourceModules().size() > 0) {
 			// TODO: we need to be able to determine which minifier is actually in use so we don't need to create lots of redundant bundles
 			try {
-				for(MinifierPlugin minifier : brjs.plugins().minifiers()) {
+				for(MinifierPlugin minifier : brjs.plugins().minifierPlugins()) {
 					for(String minifierSettingName : minifier.getSettingNames()) {
 						requestPaths.add(contentPathParser.createRequest(requestFormName, minifierSettingName));
 					}
@@ -109,14 +112,14 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		return requestPaths;
 	}
 	
-	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet) throws ContentProcessingException {
+	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet, String version) throws ContentProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {
 			String charsetName = brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			
-			for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
-				List<String> requestPaths = (contentPath.formName.equals("dev-bundle-request")) ? contentPlugin.getValidDevContentPaths(bundleSet, (String[]) null) :
+			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
+				List<String> requestPaths = (contentPath.formName.equals(DEV_BUNDLE_REQUEST)) ? contentPlugin.getValidDevContentPaths(bundleSet, (String[]) null) :
 					contentPlugin.getValidProdContentPaths(bundleSet, (String[]) null);
 				ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
 				
@@ -124,7 +127,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 					ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					
-					contentPlugin.writeContent(parsedContentPath, bundleSet, baos);
+					contentPlugin.writeContent(parsedContentPath, bundleSet, baos, version);
 					inputSources.add(new InputSource(requestPath, baos.toString(charsetName), contentPlugin, bundleSet));
 				}
 			}

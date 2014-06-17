@@ -1,5 +1,6 @@
 package org.bladerunnerjs.spec.bundling.aspect.resources;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Bladeset;
@@ -16,8 +17,8 @@ public class AspectBundlingOfXML extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 		
 			app = brjs.app("app1");
@@ -31,7 +32,7 @@ public class AspectBundlingOfXML extends SpecTest {
 		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.Class1");
+		then(response).containsCommonJsClasses("appns.Class1");
 	}
 
 	@Test
@@ -40,7 +41,7 @@ public class AspectBundlingOfXML extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).sourceResourceFileRefersTo("appns/config.xml", "appns.Class2");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.Class1", "appns.Class2");
+		then(response).containsCommonJsClasses("appns.Class1", "appns.Class2");
 	}
 	
 	@Test
@@ -49,7 +50,7 @@ public class AspectBundlingOfXML extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).sourceResourceFileRefersTo("appns/pkg/config.xml", "appns.Class2");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.Class1");
+		then(response).containsCommonJsClasses("appns.Class1");
 	}
 	
 	@Test
@@ -58,7 +59,7 @@ public class AspectBundlingOfXML extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.pkg.Class1")
 			.and(aspect).sourceResourceFileRefersTo("appns/config.xml", "appns.pkg.Class2");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.pkg.Class1", "appns.pkg.Class2");
+		then(response).containsCommonJsClasses("appns.pkg.Class1", "appns.pkg.Class2");
 	}
 	
 	@Test
@@ -66,7 +67,7 @@ public class AspectBundlingOfXML extends SpecTest {
 		given(aspect).hasClasses("appns/Class1")
 			.and(aspect).resourceFileRefersTo("config.xml", "appns.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.Class1");
+		then(response).containsCommonJsClasses("appns.Class1");
 	}
 	
 	@Test
@@ -78,7 +79,7 @@ public class AspectBundlingOfXML extends SpecTest {
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.Class1")
 			.and(aspect).resourceFileRefersTo("xml/dir1/config.xml", "appns.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.Class1");
+		then(response).containsCommonJsClasses("appns.Class1");
 	}
 	
 	@Test
@@ -96,8 +97,29 @@ public class AspectBundlingOfXML extends SpecTest {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
 			.and(aspect).resourceFileRefersTo("xml/config.xml", "appns.bs.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.bs.Class1");
+		then(response).containsCommonJsClasses("appns.bs.Class1");
 	}
 
 	
+	@Test
+	public void longFilesDontPreventCalculatingDependencies() throws Exception {
+		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
+			.and(aspect).containsResourceFileWithContents("xml/config.xml", zeroPad(4090)+"\n appns.bs.Class1\n"+zeroPad(4090)+"\n appns.bs.Class2");
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.bs.Class1", "appns.bs.Class2");
+	}
+	
+	@Test
+	public void commentsInLongFilesDontPreventCalculatingSubsequentDependencies() throws Exception {
+		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
+			.and(aspect).containsResourceFileWithContents("xml/config.xml", zeroPad(4090)+"\n appns.bs.Class1 <!-- some comment -->\n"+zeroPad(4090)+"\n appns.bs.Class2 ");
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.bs.Class1", "appns.bs.Class2");
+	}
+	
+	
+	
+	private String zeroPad(int size) {
+		return StringUtils.leftPad("", size, '0');
+	}
 }

@@ -3,6 +3,8 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +56,7 @@ public class BRJS extends AbstractBRJSRootNode
 		public static final String CLOSE_METHOD_NOT_INVOKED = "the BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 	}
 	
-	private final NodeList<App> apps = new NodeList<>(this, App.class, "apps", null);
+	private final NodeList<App> userApps = new NodeList<>(this, App.class, "apps", null);
 	private final NodeList<App> systemApps = new NodeList<>(this, App.class, "sdk/system-applications", null);
 	private final NodeItem<DirNode> sdkLibsDir = new NodeItem<>(this, DirNode.class, "sdk/libs/javascript");
 	private final NodeList<SdkJsLib> sdkLibs = new NodeList<>(this, SdkJsLib.class, "sdk/libs/javascript", null);
@@ -80,8 +82,10 @@ public class BRJS extends AbstractBRJSRootNode
 	private final FileModificationService fileModificationService;
 	private final IO io = new IO();
 	private boolean closed = false;
+	private AppVersionGenerator appVersionGenerator;
 	
-	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException
+	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
+			LoggerFactory loggerFactory, ConsoleWriter consoleWriter, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
@@ -103,14 +107,16 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		pluginAccessor = new PluginAccessor(this, pluginLocator);
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
+		
+		this.appVersionGenerator = appVersionGenerator;
 	}
 
 	public BRJS(File brjsDir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException {
-		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(loggerFactory), loggerFactory, consoleWriter);
+		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(loggerFactory), loggerFactory, consoleWriter, new TimestampAppVersionGenerator());
 	}
 	
 	public BRJS(File brjsDir, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
-		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
 	}
 	
 	public BRJS(File brjsDir, LogConfiguration logConfiguration) throws InvalidSdkDirectoryException
@@ -121,7 +127,7 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public BRJS(File brjsDir, LogConfiguration logConfigurator, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
 		// TODO: what was the logConfiguration parameter going to be used for?
-		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
+		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
 	}
 	
 	@Override
@@ -204,12 +210,36 @@ public class BRJS extends AbstractBRJSRootNode
 	
 	public List<App> apps()
 	{
-		return apps.list();
+		Set<String> addedApps = new HashSet<>();
+		List<App> allApps = new ArrayList<>(userApps.list());
+		allApps.addAll(systemApps.list());
+		List<App> apps = new ArrayList<>();
+		
+		for(App app : allApps) {
+			if(addedApps.add(app.getName())) {
+				apps.add(app);
+			}
+		}
+		
+		return apps;
 	}
 	
 	public App app(String appName)
 	{
-		return apps.item(appName);
+		App userApp = userApps.item(appName);
+		App systemApp = systemApps.item(appName);
+		
+		return(systemApp.dirExists()) ? systemApp : userApp;
+	}
+	
+	public List<App> userApps()
+	{
+		return userApps.list();
+	}
+	
+	public App userApp(String appName)
+	{
+		return userApps.item(appName);
 	}
 	
 	public List<App> systemApps()
@@ -363,5 +393,16 @@ public class BRJS extends AbstractBRJSRootNode
 		}
 		
 		return fileInfos.get(filePath);
+	}
+
+	public AppVersionGenerator getAppVersionGenerator()
+	{
+		return appVersionGenerator;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getClass().getSimpleName()+", dir: " + dir().getPath();
 	}
 }

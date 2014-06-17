@@ -21,8 +21,8 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			
 		app = brjs.app("app1");
@@ -71,7 +71,7 @@ public class AspectBundlingOfJsPatches extends SpecTest {
 			.and(aspect).hasReceivedRequest("js/dev/combined/bundle.js");
 		when(brjs).containsFileWithContents("js-patches/sdkLib/Class1.js", "require('sdkLib/Class2')")
     		.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
-    	then(response).containsNodeJsClasses("sdkLib.Class2");
+    	then(response).containsCommonJsClasses("sdkLib.Class2");
 	}
 	
 }

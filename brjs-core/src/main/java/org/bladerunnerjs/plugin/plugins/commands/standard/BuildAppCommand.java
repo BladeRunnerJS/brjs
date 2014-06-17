@@ -3,6 +3,7 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -23,7 +24,7 @@ import com.martiansoftware.jsap.UnflaggedOption;
 public class BuildAppCommand extends ArgsParsingCommandPlugin {
 
 	public class Messages {
-		public static final String APP_BUILT_CONSOLE_MSG = "Exported app '%s' to '%s'";
+		public static final String APP_BUILT_CONSOLE_MSG = "Built app '%s' available at '%s'";
 	}
 	
 	private BRJS brjs;
@@ -68,7 +69,14 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		File targetDir;
 		if (targetDirPath == null) 
 		{
-			targetDir = brjs.storageDir("exported-apps");
+			targetDir = brjs.storageDir("built-apps");
+			File appExportDir = new File(targetDir, appName);
+			File warExportFile = new File(targetDir, appName+".war");
+			if (warExport) {
+				FileUtils.deleteQuietly(warExportFile);
+			} else {
+				FileUtils.deleteQuietly(appExportDir);			
+			}
 			targetDir.mkdirs();
 		} 
 		else {
@@ -79,16 +87,21 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 			}
 		}
 		
-		File appExportDir = new File(targetDir, appName);
-		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		if(!targetDir.isDirectory()) throw new DirectoryDoesNotExistCommandException(targetDirPath, this);
-		if(appExportDir.isDirectory()) throw new DirectoryAlreadyExistsCommandException(appExportDir.getPath(), this);
 		
 		try {
-			app.build(targetDir, warExport);
-			
-			out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());
+			if (warExport) {
+				File warExportFile = new File(targetDir, appName+".war");
+				if(warExportFile.exists()) throw new DirectoryAlreadyExistsCommandException(warExportFile.getPath(), this);
+				app.buildWar(targetDir);
+				out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getCanonicalPath());
+			} else {
+				File appExportDir = new File(targetDir, appName);
+				if(appExportDir.exists()) throw new DirectoryAlreadyExistsCommandException(appExportDir.getPath(), this);			
+				app.build(targetDir);
+				out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());			
+			}
 		}
 		catch (ModelOperationException | IOException e) {
 			throw new CommandOperationException(e);

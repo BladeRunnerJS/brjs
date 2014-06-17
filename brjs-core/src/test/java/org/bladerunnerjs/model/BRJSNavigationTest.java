@@ -37,9 +37,9 @@ public class BRJSNavigationTest
 	}
 
 	@Test
-	public void apps()
+	public void userApps()
 	{
-		nodeTesterFactory.createSetTester(App.class, "apps", "app")
+		nodeTesterFactory.createSetTester(App.class, "userApps", "userApp")
 			.addChild("a1", "apps/a1")
 			.addChild("a2", "apps/a2")
 			.assertModelIsOK();

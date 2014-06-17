@@ -37,7 +37,6 @@ dependencies {
 
 	testRunner dependency('JsTestDriver')
 	testRunner dependency('validation-api')
-	testRunner dependency('bval-jsr303')
 	testRunner dependency('sjsxp')
 
 	testRunner project(path: ':brjs-logger')
@@ -394,7 +393,9 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 	   "**/js-test-driver/bundles/**/*",
 	   "**/libs/**/tests/**/*",
 	   "**/system-applications/**/tests/**/*",
-	   "*/sdk/libs/javascript/caplin/test/**",
+	   "*/sdk/libs/javascript/**/tests/**",
+	   "*/sdk/libs/javascript/thirdparty/**",
+	   "*/sdk/libs/javascript/br-libs/**",
 	   "*/sdk/run*",
 	   "**/node_modules/**",
 	   "*/apps/*/*",

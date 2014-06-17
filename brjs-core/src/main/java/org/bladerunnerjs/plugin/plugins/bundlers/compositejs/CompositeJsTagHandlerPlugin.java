@@ -20,7 +20,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
-		compositeJsBundlerPlugin = brjs.plugins().contentProvider("js");
+		compositeJsBundlerPlugin = brjs.plugins().contentPlugin("js");
 	}
 	
 	@Override
@@ -29,8 +29,8 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException {
-		writeTagContent(tagAttributes, true, bundleSet, locale, writer, "dev");
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException {
+		writeTagContent(tagAttributes, true, bundleSet, locale, writer, version);
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
 			
 			if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
-				for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
+				for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
 					List<String> contentPaths = (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet, (String[]) null) : contentPlugin.getValidProdContentPaths(bundleSet, (String[]) null);
 					
 					for(String contentPath : contentPaths) {
@@ -65,7 +65,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	private void writeScriptTag(boolean isDev, App app, Writer writer, String contentPath, String version) throws IOException, MalformedTokenException {
-		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
+		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
 		writer.write("<script type='text/javascript' src='" + requestPath + "'></script>\n");
 	}
 }

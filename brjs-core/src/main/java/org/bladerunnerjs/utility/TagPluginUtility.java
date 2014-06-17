@@ -25,7 +25,7 @@ public class TagPluginUtility {
 
 	private static final String NEW_LINE = String.format("%n");
 	private static final String TAG_START = "<@";
-	private static final String TAG_END = "@/>";
+	private static final String TAG_END = "@[ ]*/[ ]*>";
 	private static final String XML_TAG_START = "<";
 	private static final String XML_TAG_END = "/>";
 	private static final Pattern tagPattern = Pattern.compile(TAG_START+"([A-Za-z][A-Za-z0-9._-]+)([ ]+[^\\s=]+=[^\\s=]+)*[ ]*"+TAG_END);
@@ -33,7 +33,7 @@ public class TagPluginUtility {
 	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale, String version) throws IOException, NoTagHandlerFoundException, DocumentException
 	{
 		BRJS brjs = bundleSet.getBundlableNode().root();
-		List<TagHandlerPlugin> tagHandlerPlugins = brjs.plugins().tagHandlers();
+		List<TagHandlerPlugin> tagHandlerPlugins = brjs.plugins().tagHandlerPlugins();
 		
 		Matcher matcher = tagPattern.matcher(content);
 		StringBuffer result = new StringBuffer();
@@ -61,7 +61,7 @@ public class TagPluginUtility {
 	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String version, String tagContent) throws IOException, DocumentException, NoTagHandlerFoundException
 	{
 		String xmlContent = StringUtils.replaceOnce(tagContent, TAG_START, XML_TAG_START);
-		xmlContent = StringUtils.replaceOnce(xmlContent, TAG_END, XML_TAG_END);
+		xmlContent = xmlContent.replaceFirst(TAG_END, XML_TAG_END);
 		
 		StringReader xmlContentReader = new StringReader(xmlContent);
 		
@@ -97,7 +97,7 @@ public class TagPluginUtility {
 	{
 		if (requestMode == RequestMode.Dev)
 		{
-			tagHandler.writeDevTagContent(attributes, bundleSet, locale, writer);
+			tagHandler.writeDevTagContent(attributes, bundleSet, locale, writer, version);
 		}
 		else if (requestMode == RequestMode.Prod)
 		{

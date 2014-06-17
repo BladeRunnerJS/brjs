@@ -28,8 +28,8 @@ public class XMLContentPluginTest extends SpecTest{
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-		.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+		.and(brjs).automaticallyFindsMinifierPlugins()
 		.and(brjs).hasBeenCreated();
 		
 		brjsConf = brjs.conf();

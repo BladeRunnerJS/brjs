@@ -1,6 +1,7 @@
 package org.bladerunnerjs.appserver;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
@@ -108,10 +109,14 @@ public class BRJSDevServlet extends HttpServlet {
 		}
 		
 		private String getRequestPath(String requestPath) throws IOException, UnsupportedEncodingException, ServletException {
-			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-			servletContext.getRequestDispatcher(requestPath).include(request, responseWrapper);
-			
-			return IOUtils.toString(responseWrapper.getReader());
+			if (requestPath.endsWith(".jsp")) {
+    			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
+    			servletContext.getRequestDispatcher(requestPath).include(request, responseWrapper);
+    			
+    			return IOUtils.toString(responseWrapper.getReader());
+			}
+			File requestPathFile = new File(servletContext.getRealPath("/")+requestPath);
+			return IOUtils.toString( new FileInputStream(requestPathFile) );
 		}
 	}
 }

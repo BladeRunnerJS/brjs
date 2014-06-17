@@ -5,6 +5,8 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bladerunnerjs.utility.SizedStack;
+
 /*
  * Note: This class has a lot of code that is duplicated with other comment stripping readers. 
  * DO NOT try to refactor them to share a single superclass, it leads to performance overheads that have a massive impact whe bundling
@@ -21,10 +23,10 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 {
 	private static final String SELF_EXECUTING_FUNCTION_DEFINITION_REGEX = "^.*([\\(\\!\\~\\-\\+]|(new\\s+))function\\s*\\([^)]*\\)\\s*\\{$";
 	private static final Pattern SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN = Pattern.compile(SELF_EXECUTING_FUNCTION_DEFINITION_REGEX, Pattern.DOTALL);
-	private static final int MIN_BUFFERED_CHARS = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length(); // buffer the length of the function definition
 	
 	private final Reader sourceReader;
 	private final char[] sourceBuffer = new char[4096];
+	private final SizedStack<Character> lookbehindBuffer = new SizedStack<>( SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() ); // buffer the length of the function definition
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private int depthCount = 0;
@@ -55,6 +57,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 			}
 			
 			nextChar = sourceBuffer[nextCharPos++];
+			lookbehindBuffer.push(nextChar);
 			
 			if(depthCount == 0) {
 				destBuffer[currentOffset++] = nextChar;
@@ -86,9 +89,7 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	}
 	
 	private boolean isImmediatelyInvokingFunction() {
-		int startPos = Math.max(0, nextCharPos - MIN_BUFFERED_CHARS);
-		String functionPrefix = new String(sourceBuffer, startPos, nextCharPos - startPos);
-		Matcher immedidatelyInvokingFunctionMatcher = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher(functionPrefix);
+		Matcher immedidatelyInvokingFunctionMatcher = SELF_EXECUTING_FUNCTION_DEFINITION_REGEX_PATTERN.matcher( lookbehindBuffer.toString() );
 		
 		return immedidatelyInvokingFunctionMatcher.matches();
 	}

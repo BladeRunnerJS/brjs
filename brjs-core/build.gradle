@@ -15,6 +15,9 @@ buildscript {
 retrolambda {
 	javaVersion JavaVersion.VERSION_1_7
 }
+project.afterEvaluate {
+	compileTestJava.dependsOn compileRetrolambdaMain
+}
 
 sourceSets {
 	test {
@@ -39,7 +42,6 @@ dependencies {
 	compile project(":brjs-logger")
 	compile dependency('commons-io')
 	compile dependency('commons-lang3')
-	compile dependency('guava')
 	compile dependency('slf4j-api')
 	compile dependency('gson')
 	compile dependency('yamlbeans')
@@ -50,11 +52,11 @@ dependencies {
 	compile dependency('jta')
 	compile dependency('closure-compiler')
 	compile dependency('java-xmlbuilder')
-	compile dependency('xalan')
 	compile dependency('sjsxp')
 	compile dependency('dom4j')
 	compile dependency('utils')
 	compile dependency('jericho-html')
+	compile dependency('xalan')
 	
 	/* woodstox deps */
 	compile dependency('woodstox-core-asl')
@@ -62,18 +64,14 @@ dependencies {
 	compile dependency('msv-core')
 	compile dependency('trang')
 	
-	compileOnly dependency('servlet-api')
-	compileOnly dependency('junit')
-	compileOnly dependency('mockito-core')
-	compileOnly dependency('fluent-hc')
-	compileOnly dependency('httpclient')
-	compileOnly dependency('hamcrest-all')
+	/* dependencies for the spec test framework */
+	compile dependency('junit')
+	compile dependency('mockito-core')
+	compile dependency('fluent-hc')
+	compile dependency('httpclient')
+	compile dependency('hamcrest-all')
 	
-	testCompile dependency('junit')
-	testCompile dependency('mockito-core')
-	testCompile dependency('fluent-hc')
-	testCompile dependency('httpclient')
-	testCompile dependency('hamcrest-all')
+	compileOnly dependency('servlet-api')
 	
 	testRuntime project(path: ':brjs-logger-binding')
 	testRuntime dependency('jetty-jsp')

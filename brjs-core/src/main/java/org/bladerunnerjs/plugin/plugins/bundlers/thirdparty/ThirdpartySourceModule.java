@@ -20,7 +20,7 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.plugin.plugins.bundlers.nodejs.CommonJsSourceModule;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -60,9 +60,9 @@ public class ThirdpartySourceModule implements SourceModule
 			boolean shouldDefineLibrary = hasPackageJson && !assetLocation.assetContainer().file(".no-define").isFile();
 			
 			
-			String defineBlockHeader = String.format(CommonJsSourceModule.NODEJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath());
+			String defineBlockHeader = String.format(CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_HEADER, getPrimaryRequirePath());
 			String defineBlockBody = "module.exports = " + manifest.getExports();
-			String defineBlockFooter = CommonJsSourceModule.NODEJS_DEFINE_BLOCK_FOOTER;
+			String defineBlockFooter = CommonJsSourceModule.COMMONJS_DEFINE_BLOCK_FOOTER;
 			String globaliseModuleContent = manifest.getExports() + " = require('" + getPrimaryRequirePath() + "');\n";
 			
 			//TODO: once we have proper node lib support remove this block and the 'else' block below

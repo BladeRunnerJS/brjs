@@ -29,9 +29,9 @@ public class CreateLibraryCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new CreateLibraryCommand())
-			.and(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).hasCommandPlugins(new CreateLibraryCommand())
+			.and(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usesProductionTemplates();
 			app = brjs.app("app");
@@ -94,7 +94,6 @@ public class CreateLibraryCommandTest extends SpecTest {
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(lib).dirExists()
 			.and(lib).hasDir("src/lib")
-			.and(lib).hasDir("resources/lib")
 			.and(lib).hasDir("tests/test-unit/js-test-driver/")
 			.and(lib.dir()).containsFileWithContents("br-lib.conf", "requirePrefix: lib")
 			.and(lib).doesNotHaveFile("thirdparty-lib.manifest");

@@ -47,7 +47,7 @@ public class JsTestDriverBundleCreator
 			{
 				String bundlePath = StringUtils.substringAfterLast( requestedFile.getAbsolutePath(), BUNDLES_DIR_NAME+File.separator);
 				bundlePath = StringUtils.replace(bundlePath, "\\", "/");
-				bundlerHandler.createBundleFile(requestedFile, bundlePath);
+				bundlerHandler.createBundleFile(requestedFile, bundlePath, brjs.getAppVersionGenerator().getDevVersion());
 			}
 		}
 	}

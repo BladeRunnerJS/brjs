@@ -21,7 +21,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		VirtualProxyContentPlugin virtualProxyContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentProvider("i18n");
+		VirtualProxyContentPlugin virtualProxyContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentPlugin("i18n");
 		i18nContentPlugin = (I18nContentPlugin) virtualProxyContentPlugin.getUnderlyingPlugin();
 	}
 	
@@ -32,11 +32,11 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer) throws IOException
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException
 	{
 		try
 		{
-			writeTagContent(true, tagAttributes, bundleSet, locale, writer, "dev");
+			writeTagContent(true, tagAttributes, bundleSet, locale, writer, version);
 		}
 		catch (Exception ex)
 		{
@@ -67,7 +67,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 			contentPath = i18nContentPlugin.getContentPathParser().createRequest(I18nContentPlugin.LANGUAGE_BUNDLE, locale);				
 		}
 		App app = bundleSet.getBundlableNode().app();
-		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath) : app.createProdBundleRequest(contentPath, version);
+		String requestPath = (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version);
 		
 		writer.write("<script type=\"text/javascript\" src=\"" + requestPath + "\"></script>\n");
 	}
