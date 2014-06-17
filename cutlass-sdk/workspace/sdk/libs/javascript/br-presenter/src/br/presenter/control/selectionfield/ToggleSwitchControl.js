@@ -65,7 +65,7 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setOptions = f
 br.presenter.control.selectionfield.ToggleSwitchControl.prototype.setPresentationNode = function(oPresentationNode)
 {
 	if(!(oPresentationNode instanceof br.presenter.node.SelectionField)) {
-		throw new br.presenter.control.InvalidControlModelError("CaplinToggleSwitchControl", "SelectionField");
+		throw new br.presenter.control.InvalidControlModelError("ToggleSwitchControl", "SelectionField");
 	}
 
 	this.m_oPresentationNode = oPresentationNode;
@@ -126,7 +126,7 @@ br.presenter.control.selectionfield.ToggleSwitchControl.prototype._updateOptions
 	var oOptions = this.m_oPresentationNode.options;
 	var pNewOptions = oOptions.getOptions();
 	if(pNewOptions.length != 2) {
-		throw new br.presenter.control.InvalidControlModelError("CaplinToggleSwitchControl",
+		throw new br.presenter.control.InvalidControlModelError("ToggleSwitchControl",
 			"SelectionField (having exactly two elements)");
 	}
 

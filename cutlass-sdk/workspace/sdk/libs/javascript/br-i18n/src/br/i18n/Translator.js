@@ -20,7 +20,7 @@ var TEST_DATE_FORMAT_LONG = "D, d M, Y, h:i:s A";
  *
  * @name br.i18n.Translator
  * @class
- * The class within the <code>caplin.i18n</code> package that is responsible
+ * The class within the <code>br.I18N</code> package that is responsible
  * for translating localization tokens in the form of
  * <code>&#64;{key.name}</code> into translated text.
  */
@@ -228,7 +228,7 @@ Translator.prototype.formatDate = function(date, dateFormat) {
  * oTranslator.formatTime(102001);
  * </pre>
  *
- * @throws {caplin.core.Error} A LocalisedTime object could not be
+ * @throws {br.Errors} A LocalisedTime object could not be
  *         instantiated from: <code>vTime</code>.
  * @param {Variant} time An integer or string representing the time.
  * @returns A formatted time string.
@@ -253,7 +253,7 @@ Translator.prototype.formatTime = function(time) {
  * oTranslator.formatNumber(1000000);
  * </pre>
  *
- * @throws {caplin.core.Error} A LocalisedNumber object could not be
+ * @throws {br.Errors} A LocalisedNumber object could not be
  *         instantiated from: <code>vNumber</code>.
  * @param {Variant} number A number or a string representing the number.
  * @returns A formatted string representation of the number.

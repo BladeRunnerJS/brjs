@@ -17,9 +17,9 @@
  * <p>The <code>ServiceRegistry</code> is initialized as follows:</p>
  *
  * <ol>
- *	<li>The application invokes {@link caplin.core.ServiceRegistry.initializeServices} which
+ *	<li>The application invokes {@link br.ServiceRegistry.initializeServices} which
  *		causes all delayed readiness services to be created.</li>
- *	<li>Once {@link caplin.core.ServiceRegistry.initializeServices} has finished (once one of the
+ *	<li>Once {@link br.ServiceRegistry.initializeServices} has finished (once one of the
  *		call-backs fire), the application should then register any services that can't be created
  *		lazily using zero-arg constructors.</li>
  *	<li>The application can now start doing it's proper work.</li>
@@ -28,14 +28,14 @@
  * <p>Because blades aren't allowed to depend directly on classes in other blades, interface
  * definitions are instead created for particular pieces of functionality, and blades can choose
  * to register themselves as being providers of that functionality. The
- * <code>ServiceRegistry</code> and the {@link caplin.core.event.EventHub} are both useful in this
+ * <code>ServiceRegistry</code> and the {@link br.EventHub} are both useful in this
  * regard:
  *
  * <ul>
  *	<li>Many-To-One dependencies are resolved by having a single service instance available via
  *		the <code>ServiceRegistry</code>.</li>
  *	<li>Many-To-Many dependencies are resolved by having zero or more classes register with the
- *		{@link caplin.core.event.EventHub}.</li>
+ *		{@link br.EventHub}.</li>
  * </ul>
  * @module br/ServiceRegistry
  */
