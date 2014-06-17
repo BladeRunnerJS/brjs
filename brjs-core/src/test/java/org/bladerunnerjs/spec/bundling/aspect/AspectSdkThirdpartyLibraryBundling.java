@@ -26,8 +26,8 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 		
 			app = brjs.app("app1");
@@ -280,7 +280,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	}
 
 	
-	//TODO: remove this test when we have a NodeJS library plugin that reads the Package.json - also remove the check in ThirdpartySourceModule
+	//TODO: remove this test when we have a CommonJs library plugin that reads the Package.json - also remove the check in ThirdpartySourceModule
 	@Test
 	public void librariesAreNotWrappedIfPackageJsonExistsr() throws Exception {
 		given(thirdpartyLib).hasBeenCreated()

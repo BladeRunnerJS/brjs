@@ -28,9 +28,9 @@ public class WorkbenchDepsCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new WorkbenchDepsCommand())
-			.and(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
+		given(brjs).hasCommandPlugins(new WorkbenchDepsCommand())
+			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");

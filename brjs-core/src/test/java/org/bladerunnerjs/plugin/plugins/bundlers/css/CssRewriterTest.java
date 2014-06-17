@@ -16,8 +16,8 @@ public class CssRewriterTest extends SpecTest
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 		
 		App app = brjs.app("app1");

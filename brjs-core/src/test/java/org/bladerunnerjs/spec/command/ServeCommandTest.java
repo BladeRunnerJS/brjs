@@ -20,7 +20,7 @@ public class ServeCommandTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new ServeCommand())
+		given(brjs).hasCommandPlugins(new ServeCommand())
 			.and(brjs).hasBeenCreated()
 			.and(brjs).containsFolder("apps")
 			.and(brjs).containsFolder("sdk/system-applications");

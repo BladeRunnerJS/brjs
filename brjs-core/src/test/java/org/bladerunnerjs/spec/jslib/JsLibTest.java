@@ -22,7 +22,7 @@ public class JsLibTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationProducers()
+		given(brjs).automaticallyFindsAssetLocationPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			lib = app.jsLib("lib1");

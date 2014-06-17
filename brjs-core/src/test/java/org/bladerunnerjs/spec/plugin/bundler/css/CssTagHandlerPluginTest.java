@@ -28,7 +28,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers().and(brjs).automaticallyFindsMinifiers().and(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsBundlerPlugins().and(brjs).automaticallyFindsMinifierPlugins().and(brjs).hasBeenCreated();
 		app = brjs.app("app1");
 		appConf = app.appConf();
 		aspect = app.aspect("default");

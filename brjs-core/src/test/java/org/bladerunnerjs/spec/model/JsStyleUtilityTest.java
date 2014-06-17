@@ -22,7 +22,7 @@ public class JsStyleUtilityTest extends SpecTest {
 	}
 	
 	@Test
-	public void styleNameIsNodeJsByDefault() throws Exception {
+	public void styleNameIsCommonJsByDefault() throws Exception {
 		then(bladeset).jsStyleIs("node.js");
 	}
 	

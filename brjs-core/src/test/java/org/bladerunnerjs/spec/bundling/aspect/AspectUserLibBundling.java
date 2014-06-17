@@ -16,8 +16,8 @@ public class AspectUserLibBundling extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			
 			app = brjs.app("app1");
@@ -53,13 +53,13 @@ public class AspectUserLibBundling extends SpecTest {
 	
 	@Test
 	public void aspectBundlesContainUserLibsIfTheyAreRequiredInAClass() throws Exception {
-		given(userLib).hasNodeJsPackageStyle()
+		given(userLib).hasCommonJsPackageStyle()
 			.and(userLib).hasClass("userLib/Class1")
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).hasClass("appns/Class1")
 			.and(aspect).classRequires("appns/Class1", "userLib.Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("userLib.Class1");
+		then(response).containsCommonJsClasses("userLib.Class1");
 	}
 
 }

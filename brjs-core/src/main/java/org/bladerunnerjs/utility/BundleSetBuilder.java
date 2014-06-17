@@ -12,6 +12,7 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerType;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
@@ -63,7 +64,7 @@ public class BundleSetBuilder {
 			
 			
 			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases)) {
-				addSourceModule(bundlableNode.getSourceModule(aliasDefinition.getRequirePath()));
+				addSourceModule((SourceModule)bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
 			}
 		}
 		catch(RequirePathException e) {
@@ -75,7 +76,7 @@ public class BundleSetBuilder {
 		try {
 			if (!sourceModules.isEmpty())
 			{
-				bootstrapSourceModule = bundlableNode.getSourceModule(BOOTSTRAP_LIB_NAME);
+				bootstrapSourceModule = (SourceModule)bundlableNode.getLinkedAsset(BOOTSTRAP_LIB_NAME);
 				addSourceModule( bootstrapSourceModule );
 				addAllSourceModuleDependencies(bootstrapSourceModule, bootstrappingSourceModules);
 			}
@@ -105,7 +106,7 @@ public class BundleSetBuilder {
 	private void addLinkedAsset(LinkedAsset linkedAsset) throws ModelOperationException {
 		
 		if(linkedAssets.add(linkedAsset)) {
-			List<SourceModule> moduleDependencies = new ArrayList<>(linkedAsset.getDependentSourceModules(bundlableNode));
+			List<Asset> moduleDependencies = new ArrayList<>(linkedAsset.getDependentAssets(bundlableNode));
 			
 			if (linkedAsset instanceof SourceModule) {
 				moduleDependencies.addAll( ((SourceModule) linkedAsset).getOrderDependentSourceModules(bundlableNode) );
@@ -117,15 +118,20 @@ public class BundleSetBuilder {
 				logger.debug(Messages.FILE_HAS_NO_DEPENDENCIES_MSG, linkedAsset.getAssetPath());
 			}
 			else {
-				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), sourceFilePaths(moduleDependencies));
+				
+				logger.debug(Messages.FILE_DEPENDENCIES_MSG, linkedAsset.getAssetPath(), assetFilePaths(moduleDependencies));
 			}
 			
 			if (linkedAsset instanceof SourceModule) {
 				addSourceModule((SourceModule) linkedAsset);
 			}
 			
-			for(SourceModule sourceModule : moduleDependencies) {
-				addSourceModule(sourceModule);
+			for(Asset asset : moduleDependencies) {
+				if(asset instanceof SourceModule){
+					addSourceModule((SourceModule)asset);
+				}else{
+					addAssetLocation(asset.assetLocation());
+				}
 			}
 			
 			addAssetLocation(linkedAsset.assetLocation());
@@ -165,11 +171,12 @@ public class BundleSetBuilder {
 				// TODO: get rid of this guard once we remove the 'SERVICE!' hack
 				if (alias != null)
 				{
-					SourceModule sourceModule = bundlableNode.getSourceModule(alias.getRequirePath());
+					SourceModule sourceModule =  (SourceModule)bundlableNode.getLinkedAsset(alias.getRequirePath());
 					addSourceModule(sourceModule);
 					
 					if(alias.getInterfaceName() != null) {
-						addOrderDependentSourceModuleDependency(sourceModule, bundlableNode.getSourceModule(alias.getInterfaceRequirePath()));
+						LinkedAsset linkedAsset = bundlableNode.getLinkedAsset(alias.getInterfaceRequirePath());
+						addOrderDependentSourceModuleDependency(sourceModule, (SourceModule)linkedAsset);
 					}
 					
 					aliases.add(alias);
@@ -194,11 +201,11 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private String sourceFilePaths(List<SourceModule> sourceModules) {
+	private String assetFilePaths(List<Asset> assets) {
 		List<String> sourceFilePaths = new ArrayList<>();
 		
-		for(SourceModule sourceModule : sourceModules) {
-			sourceFilePaths.add(sourceModule.getAssetPath());
+		for(Asset asset : assets) {
+			sourceFilePaths.add(asset.getAssetPath());
 		}
 		
 		return "'" + Joiner.on("', '").join(sourceFilePaths) + "'";
@@ -218,10 +225,12 @@ public class BundleSetBuilder {
 		}
 		processedModules.add(sourceModule);
 		
-		for (SourceModule dependency : sourceModule.getDependentSourceModules(bundlableNode))
+		for (Asset asset : sourceModule.getDependentAssets(bundlableNode))
 		{
-			if (!sourceModules.contains(dependency)) {
-				addAllSourceModuleDependencies(dependency, sourceModules, processedModules);
+			if (!sourceModules.contains(asset)) {
+				if(asset instanceof SourceModule){
+					addAllSourceModuleDependencies((SourceModule)asset, sourceModules, processedModules);
+				}
 			}
 		}
 		sourceModules.add(sourceModule);

@@ -26,7 +26,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		VirtualProxyContentPlugin virtualProxyCssContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentProvider("css");
+		VirtualProxyContentPlugin virtualProxyCssContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentPlugin("css");
 		cssContentPlugin = (CssContentPlugin) virtualProxyCssContentPlugin.getUnderlyingPlugin();
 	}
 	

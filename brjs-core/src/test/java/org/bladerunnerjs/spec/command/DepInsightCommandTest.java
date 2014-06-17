@@ -23,9 +23,9 @@ public class DepInsightCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new DepInsightCommand())
-			.and(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
+		given(brjs).hasCommandPlugins(new DepInsightCommand())
+			.and(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");

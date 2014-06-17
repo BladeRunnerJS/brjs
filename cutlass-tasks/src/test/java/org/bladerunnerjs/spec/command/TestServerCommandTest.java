@@ -24,7 +24,7 @@ public class TestServerCommandTest extends SpecTest
 		//TODO: have to create brjs first should remove when moved over to core
 		given(brjs).hasBeenCreated();
 		
-		given(brjs).hasCommands(new TestServerCommand());
+		given(brjs).hasCommandPlugins(new TestServerCommand());
 			App app = brjs.app("myapp");
 			app.aspect("myaspect");
 			Bladeset bladeset = app.bladeset("mybladeset");

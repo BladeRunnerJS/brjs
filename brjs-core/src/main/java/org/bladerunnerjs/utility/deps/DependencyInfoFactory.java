@@ -1,5 +1,6 @@
 package org.bladerunnerjs.utility.deps;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.aliasing.AliasOverride;
 import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BundlableNode;
@@ -76,8 +78,10 @@ public class DependencyInfoFactory {
 				addAssetLocationDependencies(dependencyAdder, bundlableNode, dependencyInfo, assetLocation);
 			}
 			
-			for(SourceModule sourceModule : assetContainer.sourceModules()) {
-				addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, sourceModule);
+			for(LinkedAsset asset : assetContainer.linkedAssets()) {
+				if(asset instanceof SourceModule){
+					addSourceModuleDependencies(dependencyAdder, bundlableNode, dependencyInfo, (SourceModule)asset);
+				}
 			}
 		}
 		
@@ -89,16 +93,28 @@ public class DependencyInfoFactory {
 		
 		for(LinkedAsset seedAsset : bundlableNode.seedAssets()) {
 			dependencyInfo.seedAssets.add(seedAsset);
-			addDependencies(dependencyAdder, dependencyInfo, seedAsset, seedAsset.getDependentSourceModules(bundlableNode));
+			List<Asset>  assets = seedAsset.getDependentAssets(bundlableNode);
+			addDependencies(dependencyAdder, dependencyInfo, seedAsset, extractSourceModules(assets));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, seedAsset);
 		}
+	}
+	
+	private static List<SourceModule> extractSourceModules(List<Asset> assets){
+		List<SourceModule> results = new ArrayList<SourceModule>();
+		for(Asset asset : assets){
+			if(asset instanceof SourceModule){
+				results.add((SourceModule)asset);
+			}
+		}
+		return results;
 	}
 	
 	private static void addAssetLocationDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, AssetLocation assetLocation) throws ModelOperationException {
 		for(LinkedAsset resourceAsset : assetLocation.linkedAssets()) {
 			dependencyInfo.resourceAssets.add(resourceAsset);
-			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, resourceAsset.getDependentSourceModules(bundlableNode));
+			List<Asset>  assets = resourceAsset.getDependentAssets(bundlableNode);
+			addDependencies(dependencyAdder, dependencyInfo, resourceAsset, extractSourceModules(assets));
 			addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, resourceAsset);
 		}
 	}
@@ -106,12 +122,13 @@ public class DependencyInfoFactory {
 	private static void addSourceModuleDependencies(DependencyAdder dependencyAdder, BundlableNode bundlableNode,
 		DependencyInfo dependencyInfo, SourceModule sourceModule) throws ModelOperationException {
 		addOrderedDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getOrderDependentSourceModules(bundlableNode));
-		addDependencies(dependencyAdder, dependencyInfo, sourceModule, sourceModule.getDependentSourceModules(bundlableNode));
+		List<Asset>  assets = sourceModule.getDependentAssets(bundlableNode);
+		addDependencies(dependencyAdder, dependencyInfo, sourceModule, extractSourceModules(assets));
 		addInboundAliasDependencies(dependencyAdder, dependencyInfo, bundlableNode, sourceModule);
 		
 		for(AssetLocation assetLocation : sourceModule.assetLocations()) {
 			for(LinkedAsset assetLocationLinkedAsset : assetLocation.linkedAssets()) {
-				if((assetLocationLinkedAsset.getDependentSourceModules(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
+				if((assetLocationLinkedAsset.getDependentAssets(bundlableNode).size() > 0) || (assetLocationLinkedAsset.getAliasNames().size() > 0)) {
 					dependencyAdder.add(dependencyInfo, sourceModule, assetLocationLinkedAsset);
 				}
 				
@@ -182,7 +199,7 @@ public class DependencyInfoFactory {
 	private static void addOutboundAliasDependency(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, AliasDefinition alias) throws RequirePathException {
 		AliasAsset aliasAsset = new AliasAsset(alias);
 		dependencies.aliasAssets.put(alias.getName(), aliasAsset);
-		dependencyAdder.add(dependencies, aliasAsset, bundlableNode.getSourceModule(alias.getRequirePath()));
+		dependencyAdder.add(dependencies, aliasAsset, bundlableNode.getLinkedAsset(alias.getRequirePath()));
 	}
 	
 	private static void addInboundAliasDependencies(DependencyAdder dependencyAdder, DependencyInfo dependencies, BundlableNode bundlableNode, LinkedAsset linkedAsset) throws ModelOperationException {

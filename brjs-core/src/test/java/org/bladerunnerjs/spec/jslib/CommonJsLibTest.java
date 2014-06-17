@@ -8,19 +8,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class NodeJsLibTest extends SpecTest {
+public class CommonJsLibTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private JsLib sdkLib;
 	private StringBuffer response = new StringBuffer();
 	
-	//TODO: once we have a proper NodeJS library plugin remove the thirdparty-lib.manifest creation from these tests
+	//TODO: once we have a proper CommonJS library plugin remove the thirdparty-lib.manifest creation from these tests
 	
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -61,7 +61,7 @@ public class NodeJsLibTest extends SpecTest {
 	}
 	
 	// ---------------------------------------- //
-	//TODO: these tests wont be valid when we have proper node.js support
+	//TODO: these tests wont be valid when we have proper commmon.js support
 	@Test 
 	public void librariesWithEmptyObjectExportsDontCreateInvalidJS() throws Exception {
 		given(sdkLib).containsFileWithContents("lib.js", "module.exports = function() { };")

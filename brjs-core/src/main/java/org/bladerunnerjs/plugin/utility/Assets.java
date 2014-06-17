@@ -17,7 +17,7 @@ public class Assets {
 	public List<SourceModule> sourceModules = new ArrayList<>();
 	
 	public Assets(BRJS brjs) {
-		for(AssetPlugin assetPlugin : brjs.plugins().assetProducers()) {
+		for(AssetPlugin assetPlugin : brjs.plugins().assetPlugins()) {
 			pluginAssets.put(assetPlugin, new ArrayList<>());
 		}
 	}

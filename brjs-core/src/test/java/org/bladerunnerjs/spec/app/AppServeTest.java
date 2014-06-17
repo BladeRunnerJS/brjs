@@ -20,10 +20,10 @@ public class AppServeTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
+		given(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsContentPlugins()
-			.and(brjs).hasTagPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
+			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");

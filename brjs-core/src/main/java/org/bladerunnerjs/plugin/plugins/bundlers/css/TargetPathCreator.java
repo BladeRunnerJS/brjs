@@ -26,7 +26,7 @@ public class TargetPathCreator
 	
 	public TargetPathCreator(BRJS brjs) {
 		this.brjs = brjs;
-		cssResourceContentPathParser = brjs.plugins().contentProvider("cssresource").getContentPathParser();
+		cssResourceContentPathParser = brjs.plugins().contentPlugin("cssresource").getContentPathParser();
 	}
 	
 	public String getRelativeBundleRequestForImage(File imageFile) throws ContentProcessingException

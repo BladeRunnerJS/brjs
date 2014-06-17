@@ -31,7 +31,7 @@ public class AssetLocator {
 				Assets assets = new Assets(assetLocation.root());
 				
 				for(File assetFile : assetFiles) {
-					for(AssetPlugin assetPlugin : assetLocation.root().plugins().assetProducers()) {
+					for(AssetPlugin assetPlugin : assetLocation.root().plugins().assetPlugins()) {
 						if(assetPlugin.canHandleAsset(assetFile, assetLocation)) {
 							String assetFilePath = assetFile.getAbsolutePath();
 							

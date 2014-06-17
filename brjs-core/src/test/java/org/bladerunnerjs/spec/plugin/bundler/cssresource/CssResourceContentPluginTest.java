@@ -28,7 +28,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers()
+		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -37,7 +37,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			workbench = blade.workbench();
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			
-		cssResourcePlugin = brjs.plugins().contentProvider("cssresource");
+		cssResourcePlugin = brjs.plugins().contentPlugin("cssresource");
 		requestsList = new ArrayList<String>();
 	}
 	
