@@ -71,19 +71,19 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	
 	private Map<String, LinkedAsset> linkedAssetsMap() {
 		return linkedAssetMap.value(() -> {
-			Map<String, LinkedAsset> sourceModulesMap = new LinkedHashMap<>();
+			Map<String, LinkedAsset> linkedAssetsMap = new LinkedHashMap<>();
 			
 			for (AssetLocation assetLocation : assetLocations())
 			{
 				for(SourceModule sourceModule : assetLocation.sourceModules()) {
-					sourceModulesMap.put(sourceModule.getPrimaryRequirePath(), sourceModule);
+					linkedAssetsMap.put(sourceModule.getPrimaryRequirePath(), sourceModule);
 				}
 				for(LinkedAsset asset : assetLocation.linkedAssets()) {
-					sourceModulesMap.put(asset.getPrimaryRequirePath(), asset);
+					linkedAssetsMap.put(asset.getPrimaryRequirePath(), asset);
 				}
 			}
 			
-			return sourceModulesMap;
+			return linkedAssetsMap;
 		});
 	}
 	
