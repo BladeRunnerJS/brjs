@@ -322,7 +322,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img.png');}");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img.png\");}");
+		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/img.png');}");
 	}
 	
 	@Test
@@ -331,7 +331,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/style.css", "div {background:url('img/img.png');}");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/img/img.png\");}");
+		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/img/img.png');}");
 	}
 	
 	@Test
@@ -340,7 +340,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/img.png');}");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/wibble/img.png\");}");
+		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/wibble/img.png');}");
 	}
 
 	@Test
@@ -436,7 +436,7 @@ public class CssContentPluginTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.Class1")
 			.and(aspect).containsFileWithContents("themes/common/foo/style.css", "div {background:url('../wibble/image.with-my-super-cool-extension');}");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
-		then(requestResponse).containsText("div {background:url(\"../../cssresource/aspect_default/theme_common/wibble/image.with-my-super-cool-extension\");}");
+		then(requestResponse).containsText("div {background:url('../../cssresource/aspect_default/theme_common/wibble/image.with-my-super-cool-extension');}");
 	}
 	
 }
