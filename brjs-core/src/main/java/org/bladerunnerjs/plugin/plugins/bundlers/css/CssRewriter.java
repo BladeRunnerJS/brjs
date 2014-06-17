@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 public class CssRewriter {
 	
 	private static final String VALID_URI_CHARS = "[a-zA-Z0-9\\-\\._~:/\\?#\\[\\]@!$&\\(\\)\\*\\+,;=]+"; // all valid chars that can be in a URL
-	private static final String URL_PATTERN_START = "(\\([\\s]*['|\"]?)"; // start of the pattern - matches a ( followed by an optional ' or "
+	private static final String URL_PATTERN_START = "([Uu][Rr][lL][\\s]*\\([\\s]*['|\"]?)"; // start of the pattern - matches a ( followed by an optional ' or "
 	private static final String URL_PATTERN_END = "(['|\"]?[\\s]*\\))"; // end ot the pattern - matches an optional ' or " followed by a )
 	private static final String NEGATIVE_LOOKAHEADS = "(?![a-zA-Z]+://?"+VALID_URI_CHARS+")" +	// negative lookahead that prevents matching URLs with protocols
 														"(?!/.*)" +	// negative lookahead that prevents urls starting with a /

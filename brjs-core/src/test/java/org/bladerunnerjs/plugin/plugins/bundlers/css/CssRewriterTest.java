@@ -43,7 +43,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('image.png');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png');");
-		
 	}
 	
 	@Test
@@ -93,7 +92,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./image.png');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png');");
-		
 	}
 	
 	@Test
@@ -111,7 +109,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('dir1/dir2/dir3/image.png');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/dir1/dir2/dir3/image.png');");
-		
 	}
 	
 	@Test
@@ -120,7 +117,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./dir1/dir2/dir3/image.png');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/dir1/dir2/dir3/image.png');");
-		
 	}
 	
 	@Test
@@ -138,7 +134,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./image.png?arg=value');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png?arg=value');");
-		
 	}
 	
 	@Test
@@ -147,7 +142,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./image.png#arg');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png#arg');");
-		
 	}
 	
 	@Test
@@ -156,7 +150,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./image.png?arg=value#arg');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/image.png?arg=value#arg');");
-		
 	}
 	
 	@Test
@@ -165,7 +158,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('/some/absolute/url/image.png');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('/some/absolute/url/image.png');");
-		
 	}
 	
 	@Test
@@ -174,7 +166,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('http://my-domain.com/some/absolute/url/image.png');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('http://my-domain.com/some/absolute/url/image.png');");
-		
 	}
 	
 	@Test
@@ -183,7 +174,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('//my-domain.com/some/absolute/url/image.png');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('//my-domain.com/some/absolute/url/image.png');");
-		
 	}
 	
 	@Test
@@ -192,7 +182,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('data:image/gif;base64,R0lGODlhyAAiALM...DfD0QAADs=');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('data:image/gif;base64,R0lGODlhyAAiALM...DfD0QAADs=');");
-		
 	}
 	
 	@Test
@@ -201,7 +190,6 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('data:image/png;base64,iadsadasidsads...DfD0QAADs=');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('data:image/png;base64,iadsadasidsads...DfD0QAADs=');");
-		
 	}
 	
 	@Test
@@ -210,7 +198,24 @@ public class CssRewriterTest extends SpecTest
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('myProtocol://my-domain.com/some/absolute/url/image.png');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
 		then(response).containsText("background:url('myProtocol://my-domain.com/some/absolute/url/image.png');");
-		
 	}
 	
+	@Test
+	public void backgroundRgbValuesAreNotRewritten() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css", "background: rgba( 0,0,0,0.5 );");
+		when(aspect).requestReceived("css/common/bundle.css", response);
+		then(response).containsText("background: rgba( 0,0,0,0.5 );");
+	}
+	
+	@Test
+	public void backgroundImageWithMultipleImagesIsRewritten() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css", "background-image: url(flower.png), url(ball.png), url(grass.png);");
+		when(aspect).requestReceived("css/common/bundle.css", response);
+		then(response).containsText("background-image: " +
+				"url(../../cssresource/aspect_default/theme_common/flower.png), " +
+				"url(../../cssresource/aspect_default/theme_common/ball.png), " +
+				"url(../../cssresource/aspect_default/theme_common/grass.png);");
+	}
 }
