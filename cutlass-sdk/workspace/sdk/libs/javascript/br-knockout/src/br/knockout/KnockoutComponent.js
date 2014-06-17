@@ -57,22 +57,17 @@ KnockoutComponent.prototype.getElement = function() {
  * @type Element
  */
 KnockoutComponent.prototype._getTemplate = function(sTemplateId) {
-  var eTemplateHolder = document.createElement("div");
-  var eTemplateNode = ServiceRegistry.getService("br.html-service").getHTMLTemplate(sTemplateId);
+	var eTemplateHolder;
+	var eTemplateNode = ServiceRegistry.getService("br.html-service").getHTMLTemplate(sTemplateId);
 
-  if (!eTemplateNode) {
-    throw new KnockoutComponent.TemplateNotFoundError("Template with ID "+sTemplateId+" couldn't be found");
-  }
-  eTemplateHolder.innerHTML = eTemplateNode.innerHTML;
+	if (!eTemplateNode) {
+	    throw new KnockoutComponent.TemplateNotFoundError("Template with ID "+sTemplateId+" couldn't be found");
+	}
+  
+	eTemplateHolder = eTemplateNode.cloneNode(true);
+	eTemplateHolder.removeAttribute('id');
 
-  // The template service wraps elements in a div that isn't part of the template.
-  // Do not return that element, instead return the element representing the tempate.
-  var el = eTemplateHolder;
-  if( el.children.length === 1 ) {
-    el = el.children[ 0 ];
-  }
-
-  return el;
+	return eTemplateHolder;
 };
 
 module.exports = KnockoutComponent;
