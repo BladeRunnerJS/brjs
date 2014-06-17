@@ -84,7 +84,7 @@ public class XMLIdExtractor  {
 			case GOT_AN_ID_SINGLEQUOTE:
 				if(nextChar == '\'' ) {
 					state = OUTSIDE;
-					result.add(buffer.toString());
+					result.add(buffer.toString().replace('.', '/'));
 					buffer.delete(0, buffer.length());
 				}else{
 					buffer.append(nextChar);
@@ -93,7 +93,7 @@ public class XMLIdExtractor  {
 			case GOT_AN_ID_DOUBLEQUOTE:
 				if(nextChar == '"' ) {
 					state = OUTSIDE;
-					result.add(buffer.toString());
+					result.add(buffer.toString().replace('.', '/'));
 					buffer.delete(0, buffer.length());
 				}else{
 					buffer.append(nextChar);

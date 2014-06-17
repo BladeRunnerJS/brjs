@@ -236,6 +236,14 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(response).containsText(getReferencedXML(id));
 	}
 	
+	@Test
+	public void xmlInBladeResourceIsBundledWhenReferencedByAClass() throws Exception {
+		given(aspect).indexPageRequires("appns/Class")
+			.and(aspect).classRequires("appns/Class", "appns/bs1/b1/gridname")
+			.and(blade).containsResourceFileWithContents("wibble.xml", xml(getReferencedXML("appns.bs1.b1.gridname")));
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(getReferencedXML("appns.bs1.b1.gridname"));
+	}
 	
 	@Test
 	public void xmlInBladesetResourceIsBundledWhenReferencedByXMLInAspect() throws Exception {

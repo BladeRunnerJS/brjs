@@ -15,6 +15,6 @@ public class LinkedAssetReference implements AssetReference {
 	}
 	
 	public String getRequirePath() {
-		return asset.getAssetPath();
+		return asset.getPrimaryRequirePath();
 	}
 }

@@ -79,9 +79,8 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 					sourceModulesMap.put(sourceModule.getPrimaryRequirePath(), sourceModule);
 				}
 				for(LinkedAsset asset : assetLocation.linkedAssets()) {
-					sourceModulesMap.put(asset.getAssetPath(), asset);
+					sourceModulesMap.put(asset.getPrimaryRequirePath(), asset);
 				}
-				
 			}
 			
 			return sourceModulesMap;
