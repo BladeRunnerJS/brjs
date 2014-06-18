@@ -96,6 +96,8 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
+		/* The correct URL is /app/en/index.html but /app/default-aspect/index.html is a valid path on disk. 
+		 	All requests should go through the model so verify the invalid model request returns a 404 and is not served from disk. */
 	}
 	
 	@Test
