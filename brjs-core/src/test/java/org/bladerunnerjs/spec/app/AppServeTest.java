@@ -6,6 +6,7 @@ import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
+import org.bladerunnerjs.testing.utility.MockContentPlugin;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,6 +25,7 @@ public class AppServeTest extends SpecTest {
 			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).automaticallyFindsContentPlugins()
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement", false), new MockTagHandler("localeToken", "", "", true))
+			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			defaultAspect = app.aspect("default");
@@ -97,5 +99,13 @@ public class AppServeTest extends SpecTest {
 			.and(workbench).containsFileWithContents("src/appns/template.html", "<div id='template-id'>workbench template file</div>");
 		when(app).requestReceived("workbench/bs/b1/v/dev/html/bundle.html", response);
 		then(response).containsText("workbench template file");
+	}
+	
+	@Test
+	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
+	{
+		given(app).hasBeenPopulated();
+		when(app).requestReceived("static/mock-content-plugin/unversioned/url", response);
+		then(response).containsText(MockContentPlugin.class.getCanonicalName());
 	}
 }

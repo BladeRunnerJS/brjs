@@ -53,8 +53,8 @@ public class AspectBundlingOfCSS extends SpecTest {
  	public void bladeCssFilesAreBundledWhenReferencedInTheAspect() throws Exception {
 		given(blade).hasClass("appns/bs/b1/Class1")
 			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
-			.and(blade).containsFileWithContents("themes/standard/style.css", "ASPECT theme content");
+			.and(blade).containsFileWithContents("themes/standard/style.css", "BLADE theme content");
  		when(aspect).requestReceived("css/standard/bundle.css", response);
- 		then(response).containsText("ASPECT theme content");
+ 		then(response).containsText("BLADE theme content");
  	}
 }

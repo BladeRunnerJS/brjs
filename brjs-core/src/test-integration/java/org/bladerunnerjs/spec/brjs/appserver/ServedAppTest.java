@@ -80,6 +80,16 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/en/", "aspect index.html");
 	}
 	
+	@Ignore // Failure test case for #712
+	@Test
+	public void indexPageCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en", "aspect index.html");
+	}
+	
 	@Test
 	public void requestsForInvalidModelPathsThatDoExistOnDiskReturn404() throws Exception
 	{
@@ -177,5 +187,13 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/unbundled-resources/file.jsp", "3");
+	}
+
+	@Test
+	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/static/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName());
 	}
 }
