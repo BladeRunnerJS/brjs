@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
@@ -32,7 +31,7 @@ public class JsDocNodeObserver implements EventObserver
 	private final List<String> fileNames = Arrays.asList(new String[] {"generated-docs.html", "index.html", "swiffy.js"});
 	
 	public JsDocNodeObserver(BRJS brjs) {
-		logger = brjs.logger(LoggerType.OBSERVER, this.getClass());
+		logger = brjs.logger(this.getClass());
 	}
 	
 	@Override

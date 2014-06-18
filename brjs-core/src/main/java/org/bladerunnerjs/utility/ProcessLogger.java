@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 
 
@@ -18,7 +17,7 @@ public class ProcessLogger {
 	private boolean running = true;
 	
 	public ProcessLogger(BRJS brjs, Process process, String processName) throws IOException {
-		logger = brjs.logger(LoggerType.UTIL, ProcessLogger.class);
+		logger = brjs.logger(ProcessLogger.class);
 		processName = (processName == null) ? "" : processName;
 		
 		logProcessStream(processName, new InfoLogger(), process.getInputStream());

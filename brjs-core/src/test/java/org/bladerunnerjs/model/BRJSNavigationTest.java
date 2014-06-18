@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.File;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.DirNode;
@@ -140,7 +139,7 @@ public class BRJSNavigationTest
 	@Test
 	public void testGettingLoggerForClass() throws Exception
 	{
-		Logger logger = brjs.logger(LoggerType.BUNDLER, this.getClass());
-		assertEquals("brjs.bundler.BRJSNavigationTest", logger.getName());
+		Logger logger = brjs.logger(this.getClass());
+		assertEquals("org.bladerunnerjs.model.BRJSNavigationTest", logger.getName());
 	}
 }

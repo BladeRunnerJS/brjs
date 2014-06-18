@@ -13,7 +13,6 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.app.build.AppBuilder;
 import org.bladerunnerjs.model.app.build.WarAppBuilder;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -55,7 +54,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 	{
 		super(rootNode, parent, dir);
 		this.name = name;
-		logger = rootNode.logger(LoggerType.CORE, Node.class);
+		logger = rootNode.logger(Node.class);
 		appRequestHandler = new AppRequestHandler(this);
 	}
 	

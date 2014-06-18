@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 
 import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.CutlassConfig;
@@ -15,7 +14,7 @@ import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 public class IntegrationTestFinder
 {
 	
-	private Logger logger = BRJSAccessor.root.logger(LoggerType.UTIL, IntegrationTestFinder.class);
+	private Logger logger = BRJSAccessor.root.logger(IntegrationTestFinder.class);
 	
 	public List<File> findTestDirs(File root)
 	{

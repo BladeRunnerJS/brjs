@@ -11,7 +11,6 @@ import java.util.Set;
 import org.bladerunnerjs.aliasing.AliasDefinition;
 import org.bladerunnerjs.aliasing.AliasException;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
@@ -44,7 +43,7 @@ public class BundleSetBuilder {
 	
 	public BundleSetBuilder(BundlableNode bundlableNode) {
 		this.bundlableNode = bundlableNode;
-		logger = bundlableNode.root().logger(LoggerType.BUNDLER, BundleSetCreator.class);
+		logger = bundlableNode.root().logger(BundleSetCreator.class);
 	}
 	
 	public BundleSet createBundleSet() throws ModelOperationException {

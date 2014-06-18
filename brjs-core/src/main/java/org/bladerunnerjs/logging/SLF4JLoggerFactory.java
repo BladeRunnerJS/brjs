@@ -6,21 +6,21 @@ import java.util.Map;
 
 public class SLF4JLoggerFactory implements LoggerFactory
 {
-
 	private Map<String, Logger> loggers = new HashMap<String, Logger>();
-
-	public Logger getLogger(LoggerType type, Class<?> clazz)
+	
+	@Override
+	public Logger getLogger(Class<?> clazz)
 	{
-		String name = type.getTypedLoggerName(clazz);
-
+		String className = clazz.getName();
+		
 		Logger logger = null;
 		synchronized (loggers)
 		{
-			logger = loggers.get(name);
+			logger = loggers.get(className);
 			if (logger == null)
 			{
-				logger = new SLF4JLogger(org.slf4j.LoggerFactory.getLogger(name), name);
-				loggers.put(name, logger);
+				logger = new SLF4JLogger(org.slf4j.LoggerFactory.getLogger(className), className);
+				loggers.put(className, logger);
 			}
 		}
 		return logger;

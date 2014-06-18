@@ -14,7 +14,6 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.Blade;
@@ -51,7 +50,7 @@ public class RestApiService
 	public RestApiService(BRJS brjs)
 	{
 		this.brjs = brjs;
-		logger = brjs.logger(LoggerType.REST_API, RestApiService.class);
+		logger = brjs.logger(RestApiService.class);
 	}
 	
 	public String getApps()

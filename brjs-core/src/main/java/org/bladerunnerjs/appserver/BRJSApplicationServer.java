@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.Servlet;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.utility.ServerUtility;
@@ -51,7 +50,7 @@ public class BRJSApplicationServer implements ApplicationServer
 	{
 		this.brjs = brjs;
 		this.port = port;
-		logger = brjs.logger(LoggerType.APP_SERVER, ApplicationServer.class);
+		logger = brjs.logger(ApplicationServer.class);
 		
 		server = new Server();
 		SelectChannelConnector connector = new SelectChannelConnector();

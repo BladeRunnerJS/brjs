@@ -26,7 +26,6 @@ import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.test.BrowserNotFoundException;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
@@ -48,7 +47,7 @@ public class TestRunner {
 	}
 	
 	private BRJS brjs = BRJSAccessor.root;
-	private Logger logger = brjs.logger(LoggerType.COMMAND, TestRunner.class);
+	private Logger logger = brjs.logger(TestRunner.class);
 	public enum TestType {UTs, ATs, UTsAndATs, ITs, ALL};
 	
 	protected static final int DEFAULT_SLEEP_TIME = 500;

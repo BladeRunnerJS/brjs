@@ -3,7 +3,6 @@ package org.bladerunnerjs.utility;
 import java.io.OutputStream;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
@@ -26,7 +25,7 @@ public class BundleSetRequestHandler {
 	public static void handle(BundleSet bundleSet, String logicalRequestpath, OutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		App app = bundlableNode.app();
-		Logger logger = app.root().logger(LoggerType.BUNDLER, BundleSetRequestHandler.class);
+		Logger logger = app.root().logger(BundleSetRequestHandler.class);
 		
 		logger.debug(Messages.REQUEST_HANDLED_MSG, logicalRequestpath, app.getName());
 		

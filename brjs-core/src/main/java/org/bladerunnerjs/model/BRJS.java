@@ -17,7 +17,6 @@ import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -93,7 +92,7 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		this.fileModificationService = fileModificationService;
 		
-		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
+		logger = loggerFactory.getLogger(BRJS.class);
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
 		pluginLocator.createPlugins(this);
