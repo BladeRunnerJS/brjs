@@ -7,7 +7,7 @@
  *
  * @extends br.presenter.node.PresentationNode
  */
-br.presenter.node.Option = function(sValue, sLabel)
+br.presenter.node.Option = function(sValue, sLabel, bEnabled)
 {
 	/**
 	 * The value of the option.
@@ -19,6 +19,11 @@ br.presenter.node.Option = function(sValue, sLabel)
 	 * @type String
 	 */
 	this.label = new br.presenter.property.WritableProperty(sLabel);
+	/**
+	 * If option is enabled
+	 * @type String
+	 */
+	this.enabled = new br.presenter.property.WritableProperty(bEnabled === undefined ? true : bEnabled);
 };
 
 br.Core.extend(br.presenter.node.Option, br.presenter.node.PresentationNode);
