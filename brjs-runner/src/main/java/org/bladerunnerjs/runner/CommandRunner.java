@@ -103,9 +103,13 @@ public class CommandRunner {
 			
 			if(lastArg.equals("--verbose") || lastArg.equals("--debug")) {
 				args = ArrayUtils.subarray(args, 0, args.length - 1);
-			}
-			else {
-				getLoggerStore().setLogLevel(LogLevel.INFO);
+				
+				if(lastArg.equals("--verbose")) {
+					getLoggerStore().setLogLevel(LogLevel.INFO);
+				}
+				else if(lastArg.equals("--debug")) {
+					getLoggerStore().setLogLevel(LogLevel.DEBUG);
+				}
 			}
 		}
 		else {

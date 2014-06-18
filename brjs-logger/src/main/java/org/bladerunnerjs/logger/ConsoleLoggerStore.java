@@ -12,7 +12,7 @@ public class ConsoleLoggerStore implements ILoggerFactory
 {
 	private final Map<String, ConsoleLogger> loggers = new HashMap<>();
 	private List<String> whitelistedPackages = new ArrayList<>();
-	private LogLevel currentLogLevel = LogLevel.INFO;
+	private LogLevel currentLogLevel = LogLevel.WARN;
 	
 	{
 		whitelistedPackages.add("org.bladerunnerjs");
