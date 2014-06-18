@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.appserver.HttpServletResponseOutputStream;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
@@ -72,15 +73,20 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     			String relativeFilePath = contentPath.properties.get(FILE_PATH_REQUEST_FORM);
     			
     			File unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
-    			
+    			App app = bundleSet.getBundlableNode().app();
     			File requestedFile = new File(unbundledResourcesDir, relativeFilePath);
+    			String requestedFilePathRelativeToApp = RelativePathUtility.get(app.dir(), requestedFile);
+    			
     			if (!requestedFile.isFile())
     			{
-    				App app = bundleSet.getBundlableNode().app();
-    				String requestedFilePathRelativeToApp = RelativePathUtility.get(app.dir().getParentFile(), requestedFile);
-    				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToApp+"' does not exist or is not a file.");
+    				String requestedFilePathRelativeToRoot = RelativePathUtility.get(app.dir().getParentFile(), requestedFile);
+    				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
     			}
-				IOUtils.copy(new FileInputStream(requestedFile), os);
+    			if (os instanceof HttpServletResponseOutputStream) {
+    				((HttpServletResponseOutputStream) os).writeLocalUrlContents(requestedFilePathRelativeToApp);
+    			} else {
+    				IOUtils.copy(new FileInputStream(requestedFile), os);
+    			}
     		}
 		}
 		catch (IOException e)

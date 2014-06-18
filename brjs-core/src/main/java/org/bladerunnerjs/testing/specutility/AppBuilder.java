@@ -14,7 +14,6 @@ import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.SimplePageAccessor;
 
 
 public class AppBuilder extends NodeBuilder<App> {
@@ -70,7 +69,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException 
 	{
 		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-		app.handleLogicalRequest(requestPath, responseOutput, new SimplePageAccessor());
+		app.handleLogicalRequest(requestPath, responseOutput);
 		
 		return builderChainer;	
 	}

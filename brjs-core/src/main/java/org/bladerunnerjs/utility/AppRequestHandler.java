@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.appserver.HttpServletResponseOutputStream;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -49,7 +50,7 @@ public class AppRequestHandler {
 		return getContentPathParser().canParseRequest(requestPath);
 	}
 	
-	public void handleLogicalRequest(String requestPath, OutputStream os, PageAccessor pageAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public void handleLogicalRequest(String requestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		ParsedContentPath parsedContentPath = getContentPathParser().parse(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
@@ -63,11 +64,11 @@ public class AppRequestHandler {
 				break;
 			
 			case INDEX_PAGE_REQUEST:
-				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), devVersion, os, RequestMode.Dev);
 				break;
 			
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), devVersion, os, RequestMode.Dev);
 				break;
 			
 			case BUNDLE_REQUEST:
@@ -84,10 +85,19 @@ public class AppRequestHandler {
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
+	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
 		try {
 			File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
-			String indexPageContent = pageAccessor.getIndexPage(indexPage);
+			String indexPageContent = "";
+			if (os instanceof HttpServletResponseOutputStream) {
+				String pathRelativeToApp = RelativePathUtility.get(app.dir(), indexPage);
+				indexPageContent = ((HttpServletResponseOutputStream) os).getLocalUrlContents(pathRelativeToApp);
+			} else {
+				try (Reader fileReader = new FileReader(indexPage)) {
+					indexPageContent = IOUtils.toString(fileReader);
+				}
+			}
+			
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
 			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding())) {

@@ -14,7 +14,6 @@ import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.ValueCommand;
-import org.bladerunnerjs.utility.SimplePageAccessor;
 
 import static org.junit.Assert.*;
 
@@ -71,7 +70,7 @@ public class AppCommander extends NodeCommander<App> {
 		call(new Command() {
 			public void call() throws Exception {
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				app.handleLogicalRequest(requestPath, responseOutput, new SimplePageAccessor());
+				app.handleLogicalRequest(requestPath, responseOutput);
 				response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
 			}
 		});

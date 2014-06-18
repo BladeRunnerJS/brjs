@@ -23,8 +23,6 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtility;
-import org.bladerunnerjs.utility.PageAccessor;
-import org.bladerunnerjs.utility.SimplePageAccessor;
 import org.bladerunnerjs.utility.WebXmlCompiler;
 
 
@@ -45,7 +43,6 @@ public abstract class AbstractAppBuilder
 		try {
 			String[] locales = app.appConf().getLocales();
 			String version = app.root().getAppVersionGenerator().getProdVersion();
-			PageAccessor pageAcessor = new SimplePageAccessor();
 			
 			File appWebInf = app.file("WEB-INF");
 			if(appWebInf.exists()) {
@@ -73,7 +70,7 @@ public abstract class AbstractAppBuilder
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						appRequestHandler.writeIndexPage(aspect, locale, version, pageAcessor, os, RequestMode.Prod);
+						appRequestHandler.writeIndexPage(aspect, locale, version, os, RequestMode.Prod);
 					}
 				}
 				

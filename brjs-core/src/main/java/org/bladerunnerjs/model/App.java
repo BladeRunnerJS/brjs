@@ -31,7 +31,6 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
-import org.bladerunnerjs.utility.PageAccessor;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -282,8 +281,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return appRequestHandler.canHandleLogicalRequest(requestPath);
 	}
 	
-	public void handleLogicalRequest(String requestPath, OutputStream os, PageAccessor pageAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		appRequestHandler.handleLogicalRequest(requestPath, os, pageAccessor);
+	public void handleLogicalRequest(String requestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		appRequestHandler.handleLogicalRequest(requestPath, os);
 	}
 	
 	public String createDevBundleRequest(String contentPath, String version) throws MalformedTokenException {
