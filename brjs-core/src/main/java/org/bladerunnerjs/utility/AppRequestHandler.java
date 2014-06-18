@@ -2,6 +2,7 @@ package org.bladerunnerjs.utility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -18,8 +19,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.SdkJsLib;
-import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -134,10 +133,8 @@ public class AppRequestHandler
 	}
 
 	public void writeLocaleForwardingPage(OutputStream os) throws ContentProcessingException {
-		SdkJsLib localeForwarderLib = app.root().sdkLib("br-locale-forwarder");
-		SourceModule localeForwarderSourceModule = localeForwarderLib.sourceModule("br/LocaleForwarder");
 		try(Writer writer = new OutputStreamWriter(os, app.root().bladerunnerConf().getBrowserCharacterEncoding());
-				Reader reader = localeForwarderSourceModule.getReader()) {
+				Reader reader = new FileReader( app.root().localeForwarderUtil() ) ) {
 			writer.write("<head>\n");
 			writer.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			writer.write("<script type='text/javascript'>\n");

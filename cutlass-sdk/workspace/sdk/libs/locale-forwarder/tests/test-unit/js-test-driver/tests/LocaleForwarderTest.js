@@ -1,10 +1,4 @@
-require("br/test/GwtTestRunner").initialize();
-
 describe("locale-forwarder", function() {
-
-    var LocaleForwarder = require("br/LocaleForwarder")
-    getLocalizedPageUrl = LocaleForwarder.getLocalizedPageUrl;
-    getActiveLocale = LocaleForwarder.getActiveLocale;
 
     function locale(localeInfo) {
         var apps = {};
