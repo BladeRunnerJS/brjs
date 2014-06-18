@@ -25,7 +25,7 @@ public class ApplicationServerUtils
 	public class Messages
 	{
 
-		public static final String DEPLOYING_APP_MSG = "Deploying new app to app server '%s'";
+		public static final String DEPLOYING_APP_MSG = "Deploying new app to app server '%s'.";
 	}
 
 	static Map<App, WebAppContext> addAppContexts(BRJS brjs, ContextHandlerCollection contexts) throws Exception

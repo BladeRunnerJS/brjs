@@ -47,11 +47,11 @@ public class BRJS extends AbstractBRJSRootNode
 	public static final String PRODUCT_NAME = "BladeRunnerJS";
 	
 	public class Messages {
-		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "performing node discovery";
-		public static final String CREATING_PLUGINS_LOG_MSG = "creating plugins";
-		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "making plugins available via model";
-		public static final String PLUGIN_FOUND_MSG = "found plugin %s";
-		public static final String CLOSE_METHOD_NOT_INVOKED = "the BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
+		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "Performing node discovery.";
+		public static final String CREATING_PLUGINS_LOG_MSG = "Creating plugins.";
+		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "Making plugins available via model.";
+		public static final String PLUGIN_FOUND_MSG = "Found plugin '%s'.";
+		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 	}
 	
 	private final NodeList<App> userApps = new NodeList<>(this, App.class, "apps", null);
