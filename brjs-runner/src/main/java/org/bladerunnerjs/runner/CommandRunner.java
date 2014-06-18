@@ -11,8 +11,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.logger.RootConsoleLogger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.logger.LogLevel;
-import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
-import org.bladerunnerjs.logging.LogConfiguration;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -76,7 +74,7 @@ public class CommandRunner {
 			args = processGlobalCommandFlags(args);
 			
 			try {
-				brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
+				brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir));
 			}
 			catch(InvalidSdkDirectoryException e) {
 				throw new CommandOperationException(e);
@@ -108,11 +106,11 @@ public class CommandRunner {
 				setExplicitLogLevel(lastArg);
 			}
 			else {
-				setDefaultLogLevel();
+				getRootLogger().setLogLevel(LogLevel.INFO);
 			}
 		}
 		else {
-			setDefaultLogLevel();
+			getRootLogger().setLogLevel(LogLevel.INFO);
 		}
 		
 		return args;
@@ -126,13 +124,6 @@ public class CommandRunner {
 		if(levelFlag.equals("--debug")) {
 			rootLogger.setDebugMode(true);
 		}
-	}
-	
-	private void setDefaultLogLevel() {
-		LogConfiguration logConfigurator = new ConsoleLoggerConfigurator(getRootLogger());
-		logConfigurator.ammendProfile(LogLevel.INFO)
-			.pkg("org.hibernate").logsAt(LogLevel.WARN); // TODO: this is a plugin concern, so should be handled within the model
-		logConfigurator.setLogLevel(LogLevel.INFO);
 	}
 	
 	private void injectLegacyCommands(BRJS brjs) {

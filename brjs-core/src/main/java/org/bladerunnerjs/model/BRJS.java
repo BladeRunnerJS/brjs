@@ -15,7 +15,6 @@ import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.console.PrintStreamConsoleWriter;
-import org.bladerunnerjs.logging.LogConfiguration;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.logging.LoggerType;
@@ -119,15 +118,9 @@ public class BRJS extends AbstractBRJSRootNode
 		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
 	}
 	
-	public BRJS(File brjsDir, LogConfiguration logConfiguration) throws InvalidSdkDirectoryException
+	public BRJS(File brjsDir) throws InvalidSdkDirectoryException
 	{
-		// TODO: what was the logConfiguration parameter going to be used for?
 		this(brjsDir, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
-	}
-	
-	public BRJS(File brjsDir, LogConfiguration logConfigurator, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
-		// TODO: what was the logConfiguration parameter going to be used for?
-		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
 	}
 	
 	@Override
