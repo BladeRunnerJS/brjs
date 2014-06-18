@@ -69,7 +69,7 @@ public class BRJSCommander extends NodeCommander<BRJS> {
 	{
 		call(new Command() {
 			public void call() throws Exception {
-				brjs.apps();
+				brjs.userApps();
 			}
 		});
 		

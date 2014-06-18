@@ -48,7 +48,7 @@ public class AspectVerifier extends BundlableNodeVerifier<Aspect> {
 	}
 	
 	public VerifierChainer sourceModuleHasAssetLocation(String sourceModulePath, String assetLocationPath) throws Exception {
-		SourceModule sourceModule = aspect.getSourceModule(sourceModulePath);
+		SourceModule sourceModule = (SourceModule)aspect.getLinkedAsset(sourceModulePath);
 		AssetLocation assetLocation = aspect.assetLocation(assetLocationPath);
 		
 		assertEquals("Source module '" + sourceModulePath + "' did not have the asset location '" + assetLocationPath + "'.", assetLocation.dir().getPath(), sourceModule.assetLocation().dir().getPath());

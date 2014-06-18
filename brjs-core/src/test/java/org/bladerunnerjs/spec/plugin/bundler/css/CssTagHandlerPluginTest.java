@@ -28,7 +28,7 @@ public class CssTagHandlerPluginTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers().and(brjs).automaticallyFindsMinifiers().and(brjs).hasBeenCreated();
+		given(brjs).automaticallyFindsBundlerPlugins().and(brjs).automaticallyFindsMinifierPlugins().and(brjs).hasBeenCreated();
 		app = brjs.app("app1");
 		appConf = app.appConf();
 		aspect = app.aspect("default");
@@ -103,7 +103,20 @@ public class CssTagHandlerPluginTest extends SpecTest {
 				"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>",
 				"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard/bundle.css\"/>",
 				"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard_en/bundle.css\"/>");
-
+	}
+	
+	@Test
+	public void bladeThemeCssCanBeLoadedIfTheAspectDoesNotHaveThatTheme() throws Exception {
+		given(blade).containsFileWithContents("themes/newtheme/style.css", "BLADE NEWTHEME STYLING")
+			.and(blade).containsFileWithContents("themes/alternate/style.css", "BLADE ALTERNATE STYLING")
+			.and(blade).hasClass("appns/bs/b1/Class")
+			.and(aspect).indexPageHasContent(
+					"<@css.bundle theme=\"newtheme\"@/>\n" +
+					"require('appns/bs/b1/Class');");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsText(
+				"<link rel=\"stylesheet\" title=\"newtheme\" href=\"../v/dev/css/newtheme/bundle.css\"/>")
+			.and(response).doesNotContainText("alternate");
 	}
 	
 	@Test
@@ -214,6 +227,28 @@ public class CssTagHandlerPluginTest extends SpecTest {
 			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme2,theme3\"@/>");
 		when(aspect).indexPageLoadedInDev(response, "en");
 		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.INVALID_THEME_EXCEPTION, "theme2,theme3");	
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTheThemeIsNotAnAvailableTheme() throws Exception {
+		given(aspect).indexPageHasContent("<@css.bundle theme=\"theme\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme");	
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTheAlternateThemeIsNotAnAvailableTheme() throws Exception {
+		given(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme");	
+	}
+	
+	@Test
+	public void exceptionIsThrownIfTheSecondAlternateThemeIsNotAnAvailableTheme() throws Exception {
+		given(aspect).containsFile("themes/theme1/style.css")
+			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme1,theme2\"@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme2");	
 	}
 	
 }

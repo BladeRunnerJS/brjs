@@ -2,9 +2,7 @@ package org.bladerunnerjs.appserver;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bladerunnerjs.logging.LoggerType;
@@ -35,11 +33,7 @@ public class ApplicationServerUtils
 	{
 		Map<App, WebAppContext> contextMap = new HashMap<App, WebAppContext>();
 
-		List<App> deployApps = new ArrayList<>();
-		deployApps.addAll(brjs.systemApps());
-		deployApps.addAll(brjs.apps());
-
-		for (App app : deployApps)
+		for (App app : brjs.apps())
 		{
 			if (app.dirExists())
 			{

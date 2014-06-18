@@ -26,7 +26,7 @@ public class CreateBladeCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new CreateBladeCommand())
+		given(brjs).hasCommandPlugins(new CreateBladeCommand())
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			bladeset = app.bladeset("bladeset");

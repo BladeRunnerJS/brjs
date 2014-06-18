@@ -33,7 +33,7 @@ public class TagPluginUtility {
 	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale, String version) throws IOException, NoTagHandlerFoundException, DocumentException
 	{
 		BRJS brjs = bundleSet.getBundlableNode().root();
-		List<TagHandlerPlugin> tagHandlerPlugins = brjs.plugins().tagHandlers();
+		List<TagHandlerPlugin> tagHandlerPlugins = brjs.plugins().tagHandlerPlugins();
 		
 		Matcher matcher = tagPattern.matcher(content);
 		StringBuffer result = new StringBuffer();

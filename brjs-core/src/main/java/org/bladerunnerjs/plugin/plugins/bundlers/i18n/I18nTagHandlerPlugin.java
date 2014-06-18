@@ -21,7 +21,7 @@ public class I18nTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		VirtualProxyContentPlugin virtualProxyContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentProvider("i18n");
+		VirtualProxyContentPlugin virtualProxyContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentPlugin("i18n");
 		i18nContentPlugin = (I18nContentPlugin) virtualProxyContentPlugin.getUnderlyingPlugin();
 	}
 	

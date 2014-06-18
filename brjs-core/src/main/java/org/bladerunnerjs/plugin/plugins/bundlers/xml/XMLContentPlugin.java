@@ -46,7 +46,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs) 
 	{
 		this.brjs  = brjs;
-		xmlAssetPlugin = brjs.plugins().assetProducer(XMLAssetPlugin.class);
+		xmlAssetPlugin = brjs.plugins().assetPlugin(XMLAssetPlugin.class);
 	}
 
 	@Override

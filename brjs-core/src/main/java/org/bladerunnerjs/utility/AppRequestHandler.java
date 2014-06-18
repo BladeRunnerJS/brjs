@@ -34,6 +34,7 @@ public class AppRequestHandler
 
 	public static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
 	public static final String INDEX_PAGE_REQUEST = "index-page-request";
+	public static final String UNVERSIONED_BUNDLE_REQUEST = "unversioned-bundle-request";
 	public static final String BUNDLE_REQUEST = "bundle-request";
 	public static final String WORKBENCH_LOCALE_FORWARDING_REQUEST = "workbench-locale-forwarding-request";
 	public static final String WORKBENCH_INDEX_PAGE_REQUEST = "workbench-index-page-request";
@@ -75,7 +76,11 @@ public class AppRequestHandler
 			case WORKBENCH_INDEX_PAGE_REQUEST:
 				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
 				break;
-
+			
+			case UNVERSIONED_BUNDLE_REQUEST:
+				app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), os, devVersion);
+				break;
+				
 			case BUNDLE_REQUEST:
 				app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
 				break;
@@ -90,25 +95,23 @@ public class AppRequestHandler
 	{
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
-
-	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException
-	{
-		try
-		{
-			File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
+	
+	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
+		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
+		try {
 			String indexPageContent = pageAccessor.getIndexPage(indexPage);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-			try (Writer writer = new OutputStreamWriter(byteArrayOutputStream, browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding()))
-			{
+			
+			
+			String browserCharacterEncoding = browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding();
+			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, browserCharacterEncoding)) {
 				browsableNode.filterIndexPage(indexPageContent, locale, version, writer, requestMode);
 			}
 
 			os.write(byteArrayOutputStream.toByteArray());
 		}
-		catch (IOException | ConfigException | ModelOperationException e)
-		{
-			throw new ContentProcessingException(e);
+		catch (IOException | ConfigException | ModelOperationException e) {
+			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(browsableNode.root().dir(), indexPage));
 		}
 	}
 
@@ -154,9 +157,23 @@ public class AppRequestHandler
 	{
 		return contentPathParser.value(() -> {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
-			contentPathParserBuilder.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST).and("<aspect><locale>/").as(INDEX_PAGE_REQUEST).and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST).and("<aspect>workbench/<bladeset>/<blade>/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST).and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST).and("<aspect>workbench/<bladeset>/<blade>/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST).where("aspect").hasForm("((" + getAspectNames() + ")/)?").and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN).and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN).and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN).and("version").hasForm(app.root().getAppVersionGenerator().getVersionPattern())
-					.and("locale").hasForm("[a-z]{2}(_[A-Z]{2})?").and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
-
+			contentPathParserBuilder
+				// NOTE: <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
+				.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
+					.and("<aspect><locale>/").as(INDEX_PAGE_REQUEST)
+					.and("<aspect>static/<content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
+					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
+					.and("<aspect>workbench/<bladeset>/<blade>/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
+					.and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)
+					.and("<aspect>workbench/<bladeset>/<blade>/v/<version>/<content-path>").as(WORKBENCH_BUNDLE_REQUEST)
+				.where("aspect").hasForm("((" + getAspectNames() + ")/)?")
+					.and("workbench").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+					.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
+					.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
+					.and("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
+					.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
+			
 			return contentPathParserBuilder.build();
 		});
 	}

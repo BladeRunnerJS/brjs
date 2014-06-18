@@ -16,7 +16,7 @@ import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 
 public abstract class AbstractAssetContainer extends AbstractBRJSNode implements AssetContainer {
-	private final MemoizedValue<Map<String, SourceModule>> sourceModulesMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
+	private final MemoizedValue<Map<String, LinkedAsset>> linkedAssetMap = new MemoizedValue<>("AssetContainer.sourceModulesMap", this);
 	private final MemoizedValue<Map<String, AssetLocation>> assetLocationsMap = new MemoizedValue<>("AssetContainer.assetLocationsMap", this);
 	private final Map<String, AssetLocation> cachedAssetLocations = new TreeMap<>();
 	
@@ -36,13 +36,13 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 	}
 	
 	@Override
-	public Set<SourceModule> sourceModules() {
-		return new LinkedHashSet<SourceModule>(sourceModulesMap().values());
+	public Set<LinkedAsset> linkedAssets() {
+		return new LinkedHashSet<LinkedAsset>(linkedAssetsMap().values());
 	}
 	
 	@Override
-	public SourceModule sourceModule(String requirePath) {
-		return sourceModulesMap().get(requirePath);
+	public LinkedAsset linkedAsset(String requirePath) {
+		return linkedAssetsMap().get(requirePath);
 	}
 	
 	@Override
@@ -69,18 +69,21 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 		return assetLocationPaths;
 	}
 	
-	private Map<String, SourceModule> sourceModulesMap() {
-		return sourceModulesMap.value(() -> {
-			Map<String, SourceModule> sourceModulesMap = new LinkedHashMap<>();
+	private Map<String, LinkedAsset> linkedAssetsMap() {
+		return linkedAssetMap.value(() -> {
+			Map<String, LinkedAsset> linkedAssetsMap = new LinkedHashMap<>();
 			
 			for (AssetLocation assetLocation : assetLocations())
 			{
 				for(SourceModule sourceModule : assetLocation.sourceModules()) {
-					sourceModulesMap.put(sourceModule.getRequirePath(), sourceModule);
+					linkedAssetsMap.put(sourceModule.getPrimaryRequirePath(), sourceModule);
+				}
+				for(LinkedAsset asset : assetLocation.linkedAssets()) {
+					linkedAssetsMap.put(asset.getPrimaryRequirePath(), asset);
 				}
 			}
 			
-			return sourceModulesMap;
+			return linkedAssetsMap;
 		});
 	}
 	
@@ -88,7 +91,7 @@ public abstract class AbstractAssetContainer extends AbstractBRJSNode implements
 			return assetLocationsMap.value(() -> {
 				Map<String, AssetLocation> assetLocations = new LinkedHashMap<>();
 				
-				for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationProducers()) {
+				for(AssetLocationPlugin assetLocationPlugin : root().plugins().assetLocationPlugins()) {
 					List<String> assetLocationDirectories = assetLocationPlugin.getAssetLocationDirectories(this);
 					
 					if(assetLocationDirectories.size() > 0) {

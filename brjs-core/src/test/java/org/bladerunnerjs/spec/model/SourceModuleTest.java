@@ -11,24 +11,24 @@ import org.junit.Test;
 public class SourceModuleTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
-	private JsLib brjsLib, brjsThirdpartyLib, nodeJsLib;
+	private JsLib brjsLib, brjsThirdpartyLib, commonJsLib;
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers()
+		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			brjsLib = app.jsLib("brjslib");
 			brjsThirdpartyLib = app.jsLib("thirdparty-lib");
-			nodeJsLib = app.jsLib("nodejs-lib");
+			commonJsLib = app.jsLib("commonjs-lib");
 	}
 	
 	@Test
 	public void aspectSourceModulesAndAssetLocationsAreAsExpected() throws Exception {
 		given(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/pkg/Class3")
 			.and(aspect).containsFiles("resources/config1.xml", "resources/dir/config2.xml", "themes/theme1/style.css");
-		then(aspect).hasSourceModules("appns/Class1", "appns/Class2", "appns/pkg/Class3")
+		then(aspect).hasSourceModules("appns/Class1", "appns/Class2", "appns/pkg/Class3" )
 			.and(aspect).hasAssetLocations(".", "resources", "src", "src-test", "themes/theme1", "src/appns", "src/appns/pkg")
 			.and(aspect).sourceModuleHasAssetLocation("appns/Class1", "src/appns")
 			.and(aspect).sourceModuleHasAssetLocation("appns/pkg/Class3", "src/appns/pkg")
@@ -42,7 +42,7 @@ public class SourceModuleTest extends SpecTest {
 	public void brjsLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
 		given(brjsLib).hasClasses("brjslib/Class1", "brjslib/Class2", "brjslib/pkg/Class3")
 			.and(brjsLib).containsFiles("resources/config1.xml", "resources/dir/config2.xml", "themes/theme1/style.css");
-		then(brjsLib).hasSourceModules("brjslib/Class1", "brjslib/Class2", "brjslib/pkg/Class3")
+		then(brjsLib).hasSourceModules( "brjslib/Class1", "brjslib/Class2", "brjslib/pkg/Class3")
 			.and(brjsLib).hasAssetLocations(".", "resources", "src", "src-test", "themes/theme1", "src/brjslib", "src/brjslib/pkg" )
 			.and(brjsLib).assetLocationHasDependencies("resources", "themes/theme1")
 			.and(brjsLib).assetLocationHasDependencies("src", "resources")
@@ -61,11 +61,11 @@ public class SourceModuleTest extends SpecTest {
 	
 	@Ignore
 	@Test
-	public void nodeJsLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
-		given(nodeJsLib).containsPackageJsonWithMainSourceModule("lib/file1.js")
-			.and(nodeJsLib).containsFiles("lib/file1.js", "lib/file2.js");
-		then(nodeJsLib).hasSourceModules("nodeJsLib", "nodeJsLib/lib/file1", "nodeJsLib/lib/file2")
-			.and(nodeJsLib).hasAssetLocations(".")
-			.and(nodeJsLib).assetLocationHasNoDependencies(".");
+	public void commonJsLibrarySourceModulesAndAssetLocationsAreAsExpected() throws Exception {
+		given(commonJsLib).containsPackageJsonWithMainSourceModule("lib/file1.js")
+			.and(commonJsLib).containsFiles("lib/file1.js", "lib/file2.js");
+		then(commonJsLib).hasSourceModules("commonJsLib", "commonJsLib/lib/file1", "commonJsLib/lib/file2")
+			.and(commonJsLib).hasAssetLocations(".")
+			.and(commonJsLib).assetLocationHasNoDependencies(".");
 	}
 }

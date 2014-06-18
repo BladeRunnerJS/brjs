@@ -15,7 +15,7 @@ public class ConfFactory {
 	public static <CF extends AbstractYamlConfFile> CF createConfFile(BRJSNode node, Class<CF> confClass, File confFile) throws ConfigException {
 		CF conf = null;
 		// TODO: get rid of `node == null` guard once we delete non brjs-core code
-		String defaultFileCharacterEncoding = ((node == null) || confFile.getName().equals("bladerunner.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+		String defaultFileCharacterEncoding = ((node == null) || confFile.getName().equals("brjs.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		
 		if(confFile.exists()) {
 			conf = readConf(confFile, confClass, defaultFileCharacterEncoding);

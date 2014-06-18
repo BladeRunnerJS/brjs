@@ -29,8 +29,8 @@ public class BladeTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsAssetLocationProducers()
-			.and(brjs).automaticallyFindsAssetProducers()
+		given(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsAssetPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app");
 			aspect = app.aspect("default");
@@ -85,7 +85,7 @@ public class BladeTest extends SpecTest {
 	public void bladeHasClassNameTranformAddedDuringPopulation() throws Exception {
 		String expectedClassName = WordUtils.capitalize( blade1.getName() );
 		given(bladeTemplate).containsFolder("@blade")
-			.and(bladeTemplate).containsFileWithContents("@class-name.js", "function @class-name(){}");
+			.and(bladeTemplate).containsFileWithContents("@bladeTitle.js", "function @bladeTitle(){}");
 		when(blade1).populate();
 		then(blade1).hasDir(blade1.getName())
 			.and(blade1).fileHasContents(expectedClassName + ".js", "function " + expectedClassName + "(){}");
