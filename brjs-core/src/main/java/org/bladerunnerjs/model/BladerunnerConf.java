@@ -54,7 +54,7 @@ public class BladerunnerConf extends ConfFile<YamlBladerunnerConf> {
 	}
 	
 	public static File getConfigFilePath(BRJS brjs) {
-		return brjs.conf().file("bladerunner.conf");
+		return brjs.conf().file("brjs.conf");
 	}
 	
 }
