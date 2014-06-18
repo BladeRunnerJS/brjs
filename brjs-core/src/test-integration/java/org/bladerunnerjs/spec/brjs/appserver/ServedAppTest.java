@@ -95,7 +95,7 @@ public class ServedAppTest extends SpecTest
 		given(app).hasBeenPopulated()
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
-		then(appServer).requestCannotBeMadeFor("/apps/app/default-aspect/index.html");
+		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
 	}
 	
 	@Test
