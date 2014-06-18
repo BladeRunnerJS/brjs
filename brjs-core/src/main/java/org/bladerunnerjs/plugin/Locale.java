@@ -8,6 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Locale
 {
+	static class Messages {
+		public static final String INVALID_LOCALE_EXCEPTION = "The locale '%s' is not a valid locale. It must be in the format "+LANGUAGE_AND_COUNTRY_CODE_FORMAT.toString();
+	}
+	
 	public static final String LANGUAGE_CODE_FORMAT = "[a-z]{2}";
 	public static final String COUNTRY_CODE_FORMAT = "[A-Z]{2}";
 	public static final String LANGUAGE_AND_COUNTRY_CODE_FORMAT = LANGUAGE_CODE_FORMAT+"(_"+COUNTRY_CODE_FORMAT+")?";
@@ -130,7 +134,7 @@ public class Locale
 			return;
 		}
 		if (!LANGUAGE_AND_COUNTRY_CODE_PATTERN.matcher(toString()).matches()) {
-			throw new IllegalArgumentException("The locale "+toString()+" is invalid. It must be in the format "+LANGUAGE_AND_COUNTRY_CODE_FORMAT.toString());
+			throw new IllegalArgumentException( String.format(Messages.INVALID_LOCALE_EXCEPTION, toString()) );
 		}
 	}
 	

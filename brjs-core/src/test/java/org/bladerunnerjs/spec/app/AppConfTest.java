@@ -126,6 +126,7 @@ public class AppConfTest extends SpecTest {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("app.conf", "requirePrefix: app\nlocales: en, en_GB, 123, de");
 		when(app).appConf();
-		then(exceptions).verifyException(ConfigException.class, app.file("app.conf").getPath(), unquoted("'123' not a valid locale"));
+		then(exceptions).verifyException(IllegalArgumentException.class, unquoted("'123' is not a valid locale"))
+			.whereTopLevelExceptionIs(ConfigException.class, unquoted(app.file("app.conf").getPath()));
 	}
 }
