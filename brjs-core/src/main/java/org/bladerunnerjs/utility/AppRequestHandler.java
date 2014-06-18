@@ -85,8 +85,8 @@ public class AppRequestHandler {
 	}
 	
 	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
+		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 		try {
-			File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 			String indexPageContent = pageAccessor.getIndexPage(indexPage);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
@@ -99,7 +99,7 @@ public class AppRequestHandler {
 			os.write(byteArrayOutputStream.toByteArray());
 		}
 		catch (IOException | ConfigException | ModelOperationException e) {
-			throw new ContentProcessingException(e);
+			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(browsableNode.root().dir(), indexPage));
 		}
 	}
 
