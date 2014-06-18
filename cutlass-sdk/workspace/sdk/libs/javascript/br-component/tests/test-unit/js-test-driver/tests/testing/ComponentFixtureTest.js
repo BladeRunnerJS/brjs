@@ -21,7 +21,7 @@ ComponentFixtureTest.prototype.setUp = function()
 //	this.m_oMockComponent.stubs().onActivate();
 //
 //	var oThis = this;
-//	caplin.component.ComponentFactory.registerComponent("component", function(sXml){
+//	br.component.ComponentFactory.registerComponent("component", function(sXml){
 //		oThis.m_oMockComponent.expects(once()).setFrame(ANYTHING);
 //		oThis.m_sComponentXml = sXml;
 //		return oThis.m_oMockComponentInstance;
@@ -167,7 +167,7 @@ ComponentFixtureTest.prototype.test_componentOpenedIsSetOnTheViewFixture = funct
 //
 //ComponentFixtureTest.prototype.test_componentOpenedInvokesOnOpenCallback = function()
 //{
-//	var oComponentFixture = new caplin.component.testing.ComponentFixture("<component/>",
+//	var oComponentFixture = new br.component.testing.ComponentFixture("<component/>",
 //			this.m_oMockModelFixture.proxy());
 //	
 //	var bCallbackInvoked = false;

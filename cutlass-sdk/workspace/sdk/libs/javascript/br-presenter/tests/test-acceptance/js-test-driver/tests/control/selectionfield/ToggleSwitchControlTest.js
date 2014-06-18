@@ -84,7 +84,7 @@ describe("View to model interactions for toggle switch", function() {
 			
 	});
 	
-	// view interaction tests: these need to be performed because this is a caplin control, and is not tested elsewhere
+	// view interaction tests: these need to be performed because this is a brjs control, and is not tested elsewhere
 	
 	it("selects b when a is currently selected and b is clicked", function() {
 		given("demo.viewOpened = true");
