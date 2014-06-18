@@ -13,19 +13,19 @@ import org.bladerunnerjs.aliasing.AmbiguousAliasException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
-import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 
 public class AliasDefinitionsFile {
 	private final AliasDefinitionsData data = new AliasDefinitionsData();
 	private final AliasDefinitionsReader reader;
 	private final AliasDefinitionsWriter writer;
 	private final File file;
-	private final FileModifiedChecker fileModifiedChecker;
+	private final InfoFileModifiedChecker fileModifiedChecker;
 	
 	public AliasDefinitionsFile(AssetLocation assetLocation, File parent, String child) {
 		try {
 			file = new File(parent, child);
-			fileModifiedChecker = new FileModifiedChecker(file);
+			fileModifiedChecker = new InfoFileModifiedChecker(assetLocation.root().getFileInfo(file));
 			reader = new AliasDefinitionsReader(data, file, assetLocation);
 			writer = new AliasDefinitionsWriter(data, file, assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
@@ -41,7 +41,7 @@ public class AliasDefinitionsFile {
 	public List<String> aliasNames() throws ContentFileProcessingException {
 		List<String> aliasNames = new ArrayList<>();
 		
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
 			reader.read();
 		}
 		
@@ -69,7 +69,7 @@ public class AliasDefinitionsFile {
 	}
 	
 	public List<AliasDefinition> aliases() throws ContentFileProcessingException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
 			reader.read();
 		}
 		
@@ -81,7 +81,7 @@ public class AliasDefinitionsFile {
 	}
 	
 	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws ContentFileProcessingException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
 			reader.read();
 		}
 		
@@ -93,7 +93,7 @@ public class AliasDefinitionsFile {
 	}
 	
 	public Set<String> groupNames() throws ContentFileProcessingException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
 			reader.read();
 		}
 		
@@ -101,7 +101,7 @@ public class AliasDefinitionsFile {
 	}
 	
 	public List<AliasOverride> groupAliases(String groupName) throws ContentFileProcessingException {
-		if(fileModifiedChecker.fileModifiedSinceLastCheck()) {
+		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
 			reader.read();
 		}
 		
