@@ -228,10 +228,14 @@ createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
 createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
 createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
 
+createTestTask "testLocaleForwaderIE", "libs/locale-forwarder", "ALL", "ie"
+createTestTask "testLocaleForwaderChrome", "libs/locale-forwarder", "ALL", "chrome"
+createTestTask "testLocaleForwaderFirefox", "libs/locale-forwarder", "ALL", "firefox"
 
-task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome]
-task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox]
-task testIE, dependsOn: [testJsIE, testSystemAppsIE]
+
+task testIE, dependsOn: [testJsIE, testSystemAppsIE, testLocaleForwaderIE]
+task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome, testLocaleForwaderChrome]
+task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox, testLocaleForwaderFirefox]
 task test, dependsOn: testChrome
 
 
