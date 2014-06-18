@@ -68,14 +68,14 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			List<String> contentPaths = (isDev) ? cssContentPlugin.getValidDevContentPaths(bundleSet, locale) : cssContentPlugin.getValidProdContentPaths(bundleSet, locale);
 			
 			if (theme == null && alternateThemes.size() == 0) {
-				writeTagsForCommonTheme(isDev, app, writer, contentPaths, version);
+				writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
 			} else if (theme != null) {
-				writeTagsForCommonTheme(isDev, app, writer, contentPaths, version);
-				writeTagsForMainTheme(isDev, app, writer, contentPaths, theme, version);
+				writeTagsForCommonTheme(isDev, app, writer, contentPaths, version, locale);
+				writeTagsForMainTheme(isDev, app, writer, contentPaths, theme, version, locale);
 			}
 			
 			for (String alternateTheme : alternateThemes) {
-				writeTagsForAlternateTheme(isDev, app, writer, contentPaths, alternateTheme, version);
+				writeTagsForAlternateTheme(isDev, app, writer, contentPaths, alternateTheme, version, locale);
 			}
 		}
 		catch(MalformedTokenException | ContentProcessingException | MalformedRequestException e) {
@@ -83,19 +83,19 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 	
-	private void writeTagsForCommonTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String version) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void writeTagsForCommonTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String version, String locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		for(String contentPath : contentPaths) {
-			if (getThemeFromContentPath(contentPath).equals(COMMON_THEME_NAME)) {
+			if (localeMatches(contentPath, locale) && themeMatches(contentPath, COMMON_THEME_NAME)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
 				writer.write( String.format("<link rel=\"stylesheet\" href=\"%s\"/>\n", requestPath) );
 			}
 		}
 	}
 	
-	private void writeTagsForMainTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void writeTagsForMainTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version, String locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
-			if (getThemeFromContentPath(contentPath).equals(themeName)) {
+			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
 				writer.write( String.format("<link rel=\"stylesheet\" title=\"%s\" href=\"%s\"/>\n", themeName, requestPath) );
 				foundTheme = true;
@@ -106,10 +106,10 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 	
-	private void writeTagsForAlternateTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void writeTagsForAlternateTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version, String locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
-			if (getThemeFromContentPath(contentPath).equals(themeName)) {
+			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
 				writer.write( String.format("<link rel=\"alternate stylesheet\" title=\"%s\" href=\"%s\"/>\n", themeName, requestPath) );
 				foundTheme = true;
@@ -125,8 +125,29 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		return (isDev) ? app.createDevBundleRequest(contentPath, version) : app.createProdBundleRequest(contentPath, version); 
 	}
 	
-	private String getThemeFromContentPath(String contentPath) throws MalformedRequestException {
-		return cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("theme"); 
+	private boolean themeMatches(String contentPath, String themeName) throws MalformedRequestException {
+		String contentPathTheme = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("theme");
+		return contentPathTheme.equals(themeName);
+	}
+	
+	private boolean localeMatches(String contentPath, String locale) throws MalformedRequestException {
+		String contentPathLanguageCode = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("languageCode"); 
+		String contentPathCountryCode = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("countryCode");
+		if (contentPathLanguageCode == null && contentPathCountryCode == null) { 
+			return true; // non localised URL 
+		}
+		if (locale.contains("_")) {
+			// locale and country request
+			if (contentPathCountryCode == null) { 
+				return contentPathLanguageCode.equals( locale.split("_")[0] );
+			} else {
+				return (contentPathLanguageCode+"_"+contentPathCountryCode).equals(locale);
+			}
+		} else
+		{
+			// locale only request
+			return contentPathLanguageCode.equals(locale);			
+		}
 	}
 	
 }

@@ -251,4 +251,57 @@ public class CssTagHandlerPluginTest extends SpecTest {
 		then(exceptions).verifyFormattedException(IOException.class, CssTagHandlerPlugin.UNKNOWN_THEME_EXCEPTION, "theme2");	
 	}
 	
+	@Test
+	public void onlyRequestsForTheCurrentLocaleAndCommonThemeAreGenerated() throws Exception {
+		given(aspect).containsFiles("themes/common/style.css", 
+									"themes/common/style_en.css", 
+									"themes/common/style_de.css")
+			.and(app.appConf()).supportsLocales("en","de")
+			.and(aspect).indexPageHasContent("<@css.bundle@/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsText("css/common/bundle.css")
+			.and(response).containsText("css/common_en/bundle.css")
+			.and(response).doesNotContainText("_de");
+	}
+	
+	@Test
+	public void onlyRequestsForTheCurrentLocaleAndThemeAreGenerated() throws Exception {
+		given(aspect).containsFiles("themes/theme1/style.css", 
+									"themes/theme1/style_en.css", 
+									"themes/theme1/style_de.css")
+			.and(app.appConf()).supportsLocales("en","de")
+			.and(aspect).indexPageHasContent("<@css.bundle theme=\"theme1\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsText("css/theme1/bundle.css")
+			.and(response).containsText("css/theme1_en/bundle.css")
+			.and(response).doesNotContainText("_de");
+	}
+	
+	@Test
+	public void onlyRequestsForTheCurrentLocaleAndAlternateThemeAreGenerated() throws Exception {
+		given(aspect).containsFiles("themes/theme2/style.css", 
+									"themes/theme2/style_en.css", 
+									"themes/theme2/style_de.css")
+			.and(app.appConf()).supportsLocales("en","de")
+			.and(aspect).indexPageHasContent("<@css.bundle alternateTheme=\"theme2\" @/>");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsText("css/theme2/bundle.css")
+			.and(response).containsText("css/theme2_en/bundle.css")
+			.and(response).doesNotContainText("_de");
+	}
+	
+	@Test
+	public void requestsForTheLocaleAreMadeInAdditionToTheLanguageSpecificCss() throws Exception {
+		given(aspect).containsFiles("themes/common/style.css", 
+									"themes/common/style_en.css", 
+									"themes/common/style_en_GB.css", 
+									"themes/common/style_de.css")
+			.and(app.appConf()).supportsLocales("en", "en_GB","de")
+			.and(aspect).indexPageHasContent("<@css.bundle@/>");
+		when(aspect).indexPageLoadedInDev(response, "en_GB");
+		then(response).containsText("css/common/bundle.css")
+			.and(response).containsText("css/common_en/bundle.css")
+			.and(response).containsText("css/common_en_GB/bundle.css");
+	}
+	
 }
