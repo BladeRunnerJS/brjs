@@ -168,4 +168,12 @@ public class ServedAppTest extends SpecTest
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/en/", "User App");
 	}
+	
+	@Test
+	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/static/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName());
+	}
 }
