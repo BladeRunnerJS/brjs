@@ -3,6 +3,7 @@
  * 
  * @param {String} sValue The (logical) value of the option.
  * @param {String} sLabel The label that is displayed on the screen.
+ * @param {Boolean} bEnabled Is the option enabled or disabled (enabled by default).
  * @constructor
  *
  * @extends br.presenter.node.PresentationNode
