@@ -79,6 +79,16 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/en/", "aspect index.html");
 	}
 	
+	@Ignore // Failure test case for #712
+	@Test
+	public void indexPageCanBeAccessedWithoutEndingInForwardSlashAfterLocale() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/en", "aspect index.html");
+	}
+	
 	@Test
 	public void requestsForInvalidModelPathsThatDoExistOnDiskReturn404() throws Exception
 	{
@@ -86,6 +96,8 @@ public class ServedAppTest extends SpecTest
 			.and(aspect).containsFileWithContents("index.html", "aspect index.html")
 			.and(appServer).started();
 		then(appServer).requestCannotBeMadeFor("/app/default-aspect/index.html");
+		/* The correct URL is /app/en/index.html but /app/default-aspect/index.html is a valid path on disk. 
+		 	All requests should go through the model so verify the invalid model request returns a 404 and is not served from disk. */
 	}
 	
 	@Test
@@ -167,5 +179,13 @@ public class ServedAppTest extends SpecTest
 			.and(systemAspect).containsFileWithContents("index.html", "System App")
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/en/", "User App");
+	}
+	
+	@Test
+	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/static/mock-content-plugin/unversioned/url", MockContentPlugin.class.getCanonicalName());
 	}
 }

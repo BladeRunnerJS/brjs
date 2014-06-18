@@ -32,6 +32,7 @@ import com.google.common.base.Joiner;
 public class AppRequestHandler {
 	public static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
 	public static final String INDEX_PAGE_REQUEST = "index-page-request";
+	public static final String UNVERSIONED_BUNDLE_REQUEST = "unversioned-bundle-request";
 	public static final String BUNDLE_REQUEST = "bundle-request";
 	public static final String WORKBENCH_LOCALE_FORWARDING_REQUEST = "workbench-locale-forwarding-request";
 	public static final String WORKBENCH_INDEX_PAGE_REQUEST = "workbench-index-page-request";
@@ -70,6 +71,10 @@ public class AppRequestHandler {
 				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
 				break;
 			
+			case UNVERSIONED_BUNDLE_REQUEST:
+				app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), os, devVersion);
+				break;
+				
 			case BUNDLE_REQUEST:
 				app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
 				break;
@@ -140,8 +145,10 @@ public class AppRequestHandler {
 		return contentPathParser.value(() -> {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
+				// NOTE: <aspect> definition ends with a / - so <aspect>workbench == myAspect-workbench
 				.accepts("<aspect>").as(LOCALE_FORWARDING_REQUEST)
 					.and("<aspect><locale>/").as(INDEX_PAGE_REQUEST)
+					.and("<aspect>static/<content-path>").as(UNVERSIONED_BUNDLE_REQUEST)
 					.and("<aspect>v/<version>/<content-path>").as(BUNDLE_REQUEST)
 					.and("<aspect>workbench/<bladeset>/<blade>/").as(WORKBENCH_LOCALE_FORWARDING_REQUEST)
 					.and("<aspect>workbench/<bladeset>/<blade>/<locale>/").as(WORKBENCH_INDEX_PAGE_REQUEST)

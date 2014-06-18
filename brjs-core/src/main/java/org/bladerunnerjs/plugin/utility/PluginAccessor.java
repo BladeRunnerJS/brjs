@@ -61,7 +61,7 @@ public class PluginAccessor {
 	
 	public ContentPlugin contentPluginForLogicalPath(String logicalRequestpath)
 	{
-		String requestPrefix = logicalRequestpath.substring(0, logicalRequestpath.indexOf('/'));
+		String requestPrefix = logicalRequestpath.replaceFirst("^/", "").split("/")[0];
 		
 		return contentPlugin(requestPrefix);
 	}
