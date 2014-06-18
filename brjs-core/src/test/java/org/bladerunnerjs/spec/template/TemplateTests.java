@@ -128,7 +128,7 @@ public class TemplateTests extends SpecTest
 		when(brjs).runCommand("create-library", "app", "userlib");
 		then(userLib).hasFilesAndDirs(
 				Arrays.asList("br-lib.conf", 
-						"src/userlib/UserLib.js", 
+						"src/userlib/Userlib.js", 
 						"tests/test-unit/js-test-driver/jsTestDriver.conf", 
 						"tests/test-unit/js-test-driver/resources/aliases.xml",
 						"tests/test-unit/js-test-driver/tests/UserlibTest.js"),
