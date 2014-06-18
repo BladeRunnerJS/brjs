@@ -15,10 +15,9 @@ public class Locale
 	public static final String LANGUAGE_CODE_FORMAT = "[a-z]{2}";
 	public static final String COUNTRY_CODE_FORMAT = "[A-Z]{2}";
 	public static final String LANGUAGE_AND_COUNTRY_CODE_FORMAT = LANGUAGE_CODE_FORMAT+"(_"+COUNTRY_CODE_FORMAT+")?";
-	public static final String LOCALE_FILENAME_FORMAT = ".*_("+LANGUAGE_AND_COUNTRY_CODE_FORMAT+")\\.[\\S]+";
+	public static final String LOCALE_FILENAME_FORMAT = "("+LANGUAGE_AND_COUNTRY_CODE_FORMAT+")\\.[\\S]+";
 	
 	private static final Pattern LANGUAGE_AND_COUNTRY_CODE_PATTERN = Pattern.compile(LANGUAGE_AND_COUNTRY_CODE_FORMAT);
-	private static final Pattern LOCALE_FILENAME_PATTERN = Pattern.compile(LOCALE_FILENAME_FORMAT);
 	
 	private String languageCode = "";
 	private String countryCode = "";
@@ -43,9 +42,14 @@ public class Locale
 	}
 	
 	public static Locale createLocaleFromFilepath(String filePath) throws IllegalArgumentException {
+		return createLocaleFromFilepath("", filePath);
+	}
+	
+	public static Locale createLocaleFromFilepath(String prefix, String filePath) throws IllegalArgumentException {
 		filePath = filePath.replace("\\","/");
 		String filename = filePath.contains("/") ? StringUtils.substringAfterLast( filePath, "/" ) : filePath;
-		Matcher filenameMatcher = LOCALE_FILENAME_PATTERN.matcher(filename);
+		Pattern localeFilenamePattern = Pattern.compile(prefix+LOCALE_FILENAME_FORMAT);
+		Matcher filenameMatcher = localeFilenamePattern.matcher(filename);
 		if (!filenameMatcher.matches()) {
 			return new Locale();
 		}
@@ -111,10 +115,14 @@ public class Locale
 	}
 	
 	public String getLocaleFilePattern(String extension) {
+		return getLocaleFilePattern("",extension);
+	}
+	
+	public String getLocaleFilePattern(String prefix, String extension) {
 		String extensionRegex = (extension.startsWith(".")) ? extension : "\\."+extension;
 		if (hasLanguageCode()) {
 			// .*_en_GB.css
-			return ".*_("+toString()+")"+extensionRegex;
+			return prefix+"("+toString()+")"+extensionRegex;
 		} else {
 			/* a funky bit of regex magic so we can support filenames 
 			 * with an _ that dont have the format of a locale (e.g. style_sheet.css)

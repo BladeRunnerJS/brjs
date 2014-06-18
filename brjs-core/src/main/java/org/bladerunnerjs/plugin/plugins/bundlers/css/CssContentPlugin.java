@@ -87,7 +87,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			for(Asset cssAsset : cssAssets) {
 				String assetThemeName = getThemeName(cssAsset.assetLocation());
 				
-				if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(locale.getLocaleFilePattern(".css"))) {
+				if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(locale.getLocaleFilePattern(".*_", ".css"))) {
 					writeAsset(cssAsset, writer);
 				}
 			}
@@ -130,7 +130,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				AssetLocation cssAssetLocation = cssAsset.assetLocation();
 				String themeName = (cssAssetLocation instanceof ThemedAssetLocation) ? ((ThemedAssetLocation) cssAssetLocation).getThemeName() : "common";
 				
-				Locale assetLocale = Locale.createLocaleFromFilepath(cssAsset.getAssetName());
+				Locale assetLocale = Locale.createLocaleFromFilepath(".*_", cssAsset.getAssetName());
 				
 				if(assetLocale.isEmptyLocale()) {
 					contentPaths.add(contentPathParser.createRequest("simple-request", themeName));

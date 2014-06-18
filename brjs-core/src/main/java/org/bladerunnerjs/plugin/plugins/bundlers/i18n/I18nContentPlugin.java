@@ -92,13 +92,14 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	@Override
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
 	{
+		Locale locale = new Locale(contentPath.properties.get(LANGUAGE_PROPERTY_NAME), contentPath.properties.get(COUNTRY_PROPERTY_NAME));
 		if (contentPath.formName.equals(LANGUAGE_BUNDLE)) 
 		{
-			generateBundleForLocale(bundleSet, os, contentPath.properties.get(LANGUAGE_PROPERTY_NAME), "");
+			generateBundleForLocale(bundleSet, os, locale);
 		}
 		else if (contentPath.formName.equals(LANGUAGE_AND_LOCATION_BUNDLE)) 
 		{
-			generateBundleForLocale(bundleSet, os, contentPath.properties.get(LANGUAGE_PROPERTY_NAME), contentPath.properties.get(COUNTRY_PROPERTY_NAME));
+			generateBundleForLocale(bundleSet, os, locale);
 		} 
 		else
 		{
@@ -136,23 +137,21 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		return getValidDevContentPaths(bundleSet, locales);
 	}
 	
-	private void generateBundleForLocale(BundleSet bundleSet, OutputStream os, String language, String location) throws ContentProcessingException
+	private void generateBundleForLocale(BundleSet bundleSet, OutputStream os, Locale locale) throws ContentProcessingException
 	{
 		SortedMap<String,String> propertiesMap = new TreeMap<String,String>();
 		
 		for (Asset asset : getI18nAssetFiles(bundleSet))
 		{
-			addI18nProperties(propertiesMap, language, location, (I18nFileAsset) asset);
+			addI18nProperties(propertiesMap, locale, (I18nFileAsset) asset);
 		}
 
 		writePropertiesMapToOutput(propertiesMap, os);
 	}
 
-	private void addI18nProperties(Map<String,String> propertiesMap, String language, String location, I18nFileAsset i18nFile) throws ContentProcessingException
+	private void addI18nProperties(Map<String,String> propertiesMap, Locale locale, I18nFileAsset i18nFile) throws ContentProcessingException
 	{
-		if ( i18nFile.getLocaleLanguage().equals(language) && 
-				(i18nFile.getLocaleLocation().equals("") || i18nFile.getLocaleLocation().equals(location)) )
-		{
+		if (locale.isAbsoluteOrPartialMatch(i18nFile.getLocale())) {
 			try
 			{
 				propertiesMap.putAll( i18nFile.getLocaleProperties() );
@@ -198,11 +197,12 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			if (asset instanceof I18nFileAsset)
 			{
 				I18nFileAsset i18nAsset = (I18nFileAsset) asset;
-				if (i18nAsset.getLocaleLanguage().length() > 0 && i18nAsset.getLocaleLocation().length() > 0)
+				Locale assetLocale = i18nAsset.getLocale();
+				if (assetLocale.isCompleteLocale())
 				{
 					languageAndLocationAssets.add(i18nAsset);
 				}
-				else if (i18nAsset.getLocaleLanguage().length() > 0)
+				else if (!assetLocale.isEmptyLocale())
 				{
 					languageOnlyAssets.add(i18nAsset);
 				}
