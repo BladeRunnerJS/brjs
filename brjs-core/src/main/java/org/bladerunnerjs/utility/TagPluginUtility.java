@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -30,7 +31,7 @@ public class TagPluginUtility {
 	private static final String XML_TAG_END = "/>";
 	private static final Pattern tagPattern = Pattern.compile(TAG_START+"([A-Za-z][A-Za-z0-9._-]+)([ ]+[^\\s=]+=[^\\s=]+)*[ ]*"+TAG_END);
 	
-	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, String locale, String version) throws IOException, NoTagHandlerFoundException, DocumentException
+	public static void filterContent(String content, BundleSet bundleSet, Writer writer, RequestMode requestMode, Locale locale, String version) throws IOException, NoTagHandlerFoundException, DocumentException
 	{
 		BRJS brjs = bundleSet.getBundlableNode().root();
 		List<TagHandlerPlugin> tagHandlerPlugins = brjs.plugins().tagHandlerPlugins();
@@ -58,7 +59,7 @@ public class TagPluginUtility {
 		writer.flush();
 	}
 
-	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String version, String tagContent) throws IOException, DocumentException, NoTagHandlerFoundException
+	private static String handleTag(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, Locale locale, String version, String tagContent) throws IOException, DocumentException, NoTagHandlerFoundException
 	{
 		String xmlContent = StringUtils.replaceOnce(tagContent, TAG_START, XML_TAG_START);
 		xmlContent = xmlContent.replaceFirst(TAG_END, XML_TAG_END);
@@ -79,7 +80,7 @@ public class TagPluginUtility {
 		return handleTagXml(tagHandlerPlugins, bundleSet, requestMode, locale, version, root);
 	}
 
-	private static String handleTagXml(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, String locale, String version, Element element) throws NoTagHandlerFoundException, IOException
+	private static String handleTagXml(List<TagHandlerPlugin> tagHandlerPlugins, BundleSet bundleSet, RequestMode requestMode, Locale locale, String version, Element element) throws NoTagHandlerFoundException, IOException
 	{
 		StringWriter writer = new StringWriter();
 		
@@ -93,7 +94,7 @@ public class TagPluginUtility {
 		return writer.toString();
 	}
 
-	private static void writeTagContent(BundleSet bundleSet, RequestMode requestMode, String locale, String version, StringWriter writer, TagHandlerPlugin tagHandler, Map<String, String> attributes) throws IOException
+	private static void writeTagContent(BundleSet bundleSet, RequestMode requestMode, Locale locale, String version, StringWriter writer, TagHandlerPlugin tagHandler, Map<String, String> attributes) throws IOException
 	{
 		if (requestMode == RequestMode.Dev)
 		{

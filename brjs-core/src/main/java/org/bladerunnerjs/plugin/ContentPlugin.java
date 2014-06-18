@@ -84,7 +84,7 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * 
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException;
+	List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in production, for the given bundle-set and locale.
@@ -94,5 +94,5 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * 
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException;
+	List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException;
 }

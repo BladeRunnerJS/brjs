@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
@@ -36,12 +37,12 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	@Override
-	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException {
+	public void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
 		writeTagContent(true, writer, bundleSet, getTheme(tagAttributes), getAlternateThemes(tagAttributes), locale, version);
 	}
 	
 	@Override
-	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException {
+	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException {
 		writeTagContent(false, writer, bundleSet, getTheme(tagAttributes), getAlternateThemes(tagAttributes), locale, version);
 	}
 	
@@ -62,7 +63,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	}
 	
 	
-	private void writeTagContent(boolean isDev, Writer writer, BundleSet bundleSet, String theme, List<String> alternateThemes, String locale, String version) throws IOException {
+	private void writeTagContent(boolean isDev, Writer writer, BundleSet bundleSet, String theme, List<String> alternateThemes, Locale locale, String version) throws IOException {
 		try {
 			App app = bundleSet.getBundlableNode().app();
 			List<String> contentPaths = (isDev) ? cssContentPlugin.getValidDevContentPaths(bundleSet, locale) : cssContentPlugin.getValidProdContentPaths(bundleSet, locale);
@@ -83,7 +84,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 	
-	private void writeTagsForCommonTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String version, String locale) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void writeTagsForCommonTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, COMMON_THEME_NAME)) {
 				String requestPath = getRequestPath(isDev, app, contentPath, version);
@@ -92,7 +93,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 	
-	private void writeTagsForMainTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version, String locale) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void writeTagsForMainTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
@@ -106,7 +107,7 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		}
 	}
 	
-	private void writeTagsForAlternateTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version, String locale) throws IOException, MalformedTokenException, MalformedRequestException {
+	private void writeTagsForAlternateTheme(boolean isDev, App app, Writer writer, List<String> contentPaths, String themeName, String version, Locale locale) throws IOException, MalformedTokenException, MalformedRequestException {
 		boolean foundTheme = false;
 		for(String contentPath : contentPaths) {
 			if (localeMatches(contentPath, locale) && themeMatches(contentPath, themeName)) {
@@ -130,24 +131,11 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 		return contentPathTheme.equals(themeName);
 	}
 	
-	private boolean localeMatches(String contentPath, String locale) throws MalformedRequestException {
+	private boolean localeMatches(String contentPath, Locale locale) throws MalformedRequestException {
 		String contentPathLanguageCode = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("languageCode"); 
 		String contentPathCountryCode = cssContentPlugin.getContentPathParser().parse(contentPath).properties.get("countryCode");
-		if (contentPathLanguageCode == null && contentPathCountryCode == null) { 
-			return true; // non localised URL 
-		}
-		if (locale.contains("_")) {
-			// locale and country request
-			if (contentPathCountryCode == null) { 
-				return contentPathLanguageCode.equals( locale.split("_")[0] );
-			} else {
-				return (contentPathLanguageCode+"_"+contentPathCountryCode).equals(locale);
-			}
-		} else
-		{
-			// locale only request
-			return contentPathLanguageCode.equals(locale);			
-		}
+		Locale contentPathLocale = new Locale(contentPathLanguageCode, contentPathCountryCode);
+		return ( contentPathLocale.isEmptyLocale() || locale.isAbsoluteOrPartialMatch(contentPathLocale) );
 	}
 	
 }

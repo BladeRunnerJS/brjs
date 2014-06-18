@@ -21,6 +21,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.PageAccessor;
@@ -43,7 +44,7 @@ public abstract class AbstractAppBuilder
 		this.preBuild(app, targetDir);
 		
 		try {
-			String[] locales = app.appConf().getLocales();
+			Locale[] locales = app.appConf().getLocales();
 			String version = app.root().getAppVersionGenerator().getProdVersion();
 			PageAccessor pageAcessor = new SimplePageAccessor();
 			
@@ -67,9 +68,9 @@ public abstract class AbstractAppBuilder
 					appRequestHandler.writeLocaleForwardingPage(os);
 				}
 				
-				for(String locale : locales) {
+				for(Locale locale : locales) {
 					String indexPageName = (aspect.file("index.jsp").exists()) ? "index.jsp" : "index.html";
-					File localeIndexPageFile = new File(temporaryExportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale) + indexPageName);
+					File localeIndexPageFile = new File(temporaryExportDir, appRequestHandler.createRequest(INDEX_PAGE_REQUEST, aspectPrefix, locale.toString()) + indexPageName);
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {

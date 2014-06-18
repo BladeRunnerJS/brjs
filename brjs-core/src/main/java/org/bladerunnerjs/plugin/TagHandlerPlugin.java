@@ -40,11 +40,11 @@ public interface TagHandlerPlugin extends Plugin {
 	 * Writes out the generated content for the given tag, optimized for development.
 	 * @param version TODO
 	 */
-	void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException;
+	void writeDevTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException;
 	
 	/**
 	 * Writes out the generated content for the given tag, optimized for production.
 	 * @param version TODO
 	 */
-	void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, String locale, Writer writer, String version) throws IOException;
+	void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException;
 }

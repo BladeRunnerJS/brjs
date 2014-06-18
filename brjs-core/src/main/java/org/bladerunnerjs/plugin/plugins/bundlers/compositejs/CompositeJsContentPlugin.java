@@ -17,6 +17,7 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.InputSource;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -61,12 +62,12 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
 		return generateRequiredRequestPaths(bundleSet, DEV_BUNDLE_REQUEST, locales);
 	}
 	
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException {
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
 		return generateRequiredRequestPaths(bundleSet, PROD_BUNDLE_REQUEST, locales);
 	}
 	
@@ -92,7 +93,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
-	private List<String> generateRequiredRequestPaths(BundleSet bundleSet, String requestFormName, String[] locales) throws ContentProcessingException {
+	private List<String> generateRequiredRequestPaths(BundleSet bundleSet, String requestFormName, Locale... locales) throws ContentProcessingException {
 		List<String> requestPaths = new ArrayList<>();
 		
 		if(bundleSet.getSourceModules().size() > 0) {
@@ -119,8 +120,8 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 			String charsetName = brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			
 			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
-				List<String> requestPaths = (contentPath.formName.equals(DEV_BUNDLE_REQUEST)) ? contentPlugin.getValidDevContentPaths(bundleSet, (String[]) null) :
-					contentPlugin.getValidProdContentPaths(bundleSet, (String[]) null);
+				List<String> requestPaths = (contentPath.formName.equals(DEV_BUNDLE_REQUEST)) ? contentPlugin.getValidDevContentPaths(bundleSet) :
+					contentPlugin.getValidProdContentPaths(bundleSet);
 				ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
 				
 				for(String requestPath : requestPaths) {

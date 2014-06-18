@@ -25,6 +25,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.Locale;
 
 import com.google.common.base.Joiner;
 
@@ -64,11 +65,11 @@ public class AppRequestHandler {
 				break;
 			
 			case INDEX_PAGE_REQUEST:
-				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, pageAccessor, os, RequestMode.Dev);
 				break;
 			
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), devVersion, pageAccessor, os, RequestMode.Dev);
+				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), new Locale(pathProperties.get("locale")), devVersion, pageAccessor, os, RequestMode.Dev);
 				break;
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
@@ -89,7 +90,7 @@ public class AppRequestHandler {
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
+	public void writeIndexPage(BrowsableNode browsableNode, Locale locale, String version, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
 		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 		try {
 			String indexPageContent = pageAccessor.getIndexPage(indexPage);
@@ -158,7 +159,7 @@ public class AppRequestHandler {
 					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
-					.and("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
+					.and("locale").hasForm(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT)
 					.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 			
 			return contentPathParserBuilder.build();
