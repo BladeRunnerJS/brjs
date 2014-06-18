@@ -174,7 +174,7 @@ public class TestRunner {
 		boolean isVerbose;
 		
 		try {
-			LogLevel logLevel = StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger().getLogLevel();
+			LogLevel logLevel = StaticLoggerBinder.getSingleton().getLoggerFactory().getLogLevel();
 			isVerbose = (logLevel == LogLevel.DEBUG);
 		}
 		catch(NoSuchMethodError e) {

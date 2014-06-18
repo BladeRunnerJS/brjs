@@ -8,7 +8,7 @@ import java.io.PrintStream;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.bladerunnerjs.logger.RootConsoleLogger;
+import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
@@ -83,7 +83,7 @@ public class CommandRunner {
 			brjs.populate();
 			
 			injectLegacyCommands(brjs);
-			return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getRootLogger()), args);
+			return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);
@@ -101,29 +101,18 @@ public class CommandRunner {
 		if (args.length > 0) {
 			String lastArg = args[args.length - 1];
 			
-			if(lastArg.equals("--quiet") || lastArg.equals("--verbose") || lastArg.equals("--debug")) {
+			if(lastArg.equals("--verbose") || lastArg.equals("--debug")) {
 				args = ArrayUtils.subarray(args, 0, args.length - 1);
-				setExplicitLogLevel(lastArg);
 			}
 			else {
-				getRootLogger().setLogLevel(LogLevel.INFO);
+				getLoggerStore().setLogLevel(LogLevel.INFO);
 			}
 		}
 		else {
-			getRootLogger().setLogLevel(LogLevel.INFO);
+			getLoggerStore().setLogLevel(LogLevel.INFO);
 		}
 		
 		return args;
-	}
-	
-	private void setExplicitLogLevel(String levelFlag) {
-		RootConsoleLogger rootLogger = getRootLogger();
-		LogLevel logLevel = (levelFlag.equals("--quiet")) ? LogLevel.WARN : LogLevel.DEBUG;
-		rootLogger.setLogLevel(logLevel);
-		
-		if(levelFlag.equals("--debug")) {
-			rootLogger.setDebugMode(true);
-		}
 	}
 	
 	private void injectLegacyCommands(BRJS brjs) {
@@ -141,8 +130,8 @@ public class CommandRunner {
 		}
 	}
 	
-	private RootConsoleLogger getRootLogger() {
-		return StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger();
+	private ConsoleLoggerStore getLoggerStore() {
+		return StaticLoggerBinder.getSingleton().getLoggerFactory();
 	}
 	
 	class NoSdkArgumentException extends CommandOperationException {
