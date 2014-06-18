@@ -31,7 +31,7 @@ public class BRJSDevServletFilter implements Filter {
 			
 			try {
 				brjs = BRJSThreadSafeModelAccessor.aquireModel();
-				app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath(".")), App.class);
+				app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath("/")), App.class);
 			}
 			finally {
 				BRJSThreadSafeModelAccessor.releaseModel();
