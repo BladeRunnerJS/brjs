@@ -57,7 +57,7 @@ WorkbenchPanel.prototype.getComponentContainerId = function() {
 };
 
 /**
- * Adds a {@link cpalin.workbench.ui.WorkbenchComponent} to this panel.
+ * Adds a {@link br.workbench.ui.WorkbenchComponent} to this panel.
  *
  * @param {WorkbenchPanelComponent} oWorkbenchComponent The component to add.
  * @param {String} sTitle The title to display for the component.
