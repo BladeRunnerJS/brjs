@@ -6,6 +6,8 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -70,7 +72,8 @@ public class AppCommander extends NodeCommander<App> {
 		call(new Command() {
 			public void call() throws Exception {
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				app.handleLogicalRequest(requestPath, responseOutput);
+				ContentOutputStream contentOutputStream = new StaticContentOutputStream(app, responseOutput);
+				app.handleLogicalRequest(requestPath, contentOutputStream);
 				response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
 			}
 		});

@@ -116,6 +116,20 @@ public class AppBuildTest extends SpecTest {
 	}
 	
 	@Test
+	public void bundlesHaveExpectedContent() throws Exception
+	{
+		given(sdkLibsDir).containsFile("locale-forwarder.js")
+    		.and(app).hasBeenCreated()
+    		.and(defaultAspect).hasClass("appns/Class")
+    		.and(defaultAspect).containsFileWithContents("themes/common/style.css", "some app styling")
+    		.and(defaultAspect).indexPageRequires("appns/Class")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("app1/v/1234/js/prod/combined/bundle.js", "define('appns/Class'")
+			.and(targetDir).containsFileWithContents("app1/v/1234/css/common/bundle.css", "some app styling");
+	}
+	
+	@Test
 	public void jspsAreExportedAsSourceCode() throws Exception
 	{
 		given(sdkLibsDir).containsFile("locale-forwarder.js")
@@ -126,4 +140,5 @@ public class AppBuildTest extends SpecTest {
     		.and(app).hasBeenBuilt(targetDir);
 		then(targetDir).containsFileWithContents("app1/v/1234/unbundled-resources/file.jsp", "<%= 1 + 2 %>");
 	}
+	
 }

@@ -1,7 +1,6 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -162,7 +161,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public void handleLogicalRequest(String logicalRequestPath, OutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public void handleLogicalRequest(String logicalRequestPath, ContentOutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
 			BundleSetRequestHandler.handle(this.getBundleSet(), logicalRequestPath, os, version);
 		}
@@ -172,7 +171,7 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public void handleLogicalRequest(String logicalRequestPath, OutputStream os, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public void handleLogicalRequest(String logicalRequestPath, ContentOutputStream os, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
 			BundleSetRequestHandler.handle(new FilteredBundleSet(this.getBundleSet(), bundleSetFilter), logicalRequestPath, os, version);
 		}

@@ -1,42 +1,33 @@
 package org.bladerunnerjs.appserver;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.StaticContentOutputStream;
 
 
-public class HttpServletResponseOutputStream extends OutputStream
+public class ServletContentOutputStream extends StaticContentOutputStream
 {
 
-	private final ServletOutputStream responseOutputStream;
 	private final ServletContext servletContext;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 
-	public HttpServletResponseOutputStream(ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws IOException
+	public ServletContentOutputStream(App app, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
+		super( app, response.getOutputStream() );
 		this.servletContext = servletContext;
 		this.request = request;
 		this.response = response;
-		this.responseOutputStream = response.getOutputStream();
-	}
-
-	@Override
-	public void write(int b) throws IOException
-	{
-		responseOutputStream.write(b);
 	}
 	
+	@Override
 	public String getLocalUrlContents(String urlPath) throws IOException {		
 		try {
 			if (urlPath.endsWith(".jsp")) {
@@ -45,16 +36,14 @@ public class HttpServletResponseOutputStream extends OutputStream
     			servletContext.getRequestDispatcher(urlPath).include(request, responseWrapper);
     			return IOUtils.toString(responseWrapper.getReader());
     		} else {
-    			File requestPathFile = new File(servletContext.getRealPath("/")+urlPath);
-    			try (InputStream fileInput = new FileInputStream(requestPathFile)) {
-    				return IOUtils.toString(fileInput);
-    			}
+    			return super.getLocalUrlContents(urlPath);
     		}
 		} catch (ServletException ex) {
 			throw new IOException(ex);
 		}
 	}
 	
+	@Override
 	public void writeLocalUrlContents(String url) throws IOException {
 		IOUtils.write( getLocalUrlContents(url), this );
 	}

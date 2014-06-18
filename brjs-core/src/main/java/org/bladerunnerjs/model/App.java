@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -281,7 +280,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return appRequestHandler.canHandleLogicalRequest(requestPath);
 	}
 	
-	public void handleLogicalRequest(String requestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public void handleLogicalRequest(String requestPath, ContentOutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		appRequestHandler.handleLogicalRequest(requestPath, os);
 	}
 	

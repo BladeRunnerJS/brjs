@@ -14,7 +14,9 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -80,7 +82,7 @@ public abstract class AbstractAppBuilder
 							File bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
 							
 							bundleFile.getParentFile().mkdirs();
-							try(OutputStream os = new FileOutputStream(bundleFile)) {
+							try(ContentOutputStream os = new StaticContentOutputStream(app, bundleFile)) {
 								contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os, version);
 							}
 						}

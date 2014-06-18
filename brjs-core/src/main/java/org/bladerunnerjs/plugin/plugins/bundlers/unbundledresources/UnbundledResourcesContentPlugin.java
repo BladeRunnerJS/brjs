@@ -1,17 +1,14 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.unbundledresources;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.appserver.HttpServletResponseOutputStream;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -64,7 +61,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
 	{
 		try
 		{
@@ -82,11 +79,8 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     				String requestedFilePathRelativeToRoot = RelativePathUtility.get(app.dir().getParentFile(), requestedFile);
     				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
     			}
-    			if (os instanceof HttpServletResponseOutputStream) {
-    				((HttpServletResponseOutputStream) os).writeLocalUrlContents(requestedFilePathRelativeToApp);
-    			} else {
-    				IOUtils.copy(new FileInputStream(requestedFile), os);
-    			}
+				
+    			os.writeLocalUrlContents(requestedFilePathRelativeToApp);
     		}
 		}
 		catch (IOException e)

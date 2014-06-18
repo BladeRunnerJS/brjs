@@ -13,11 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.appserver.HttpServletResponseOutputStream;
+import org.bladerunnerjs.appserver.ServletContentOutputStream;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
+import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -50,7 +51,7 @@ public class AppRequestHandler {
 		return getContentPathParser().canParseRequest(requestPath);
 	}
 	
-	public void handleLogicalRequest(String requestPath, OutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public void handleLogicalRequest(String requestPath, ContentOutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		ParsedContentPath parsedContentPath = getContentPathParser().parse(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
@@ -89,9 +90,9 @@ public class AppRequestHandler {
 		try {
 			File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 			String indexPageContent = "";
-			if (os instanceof HttpServletResponseOutputStream) {
+			if (os instanceof ServletContentOutputStream) {
 				String pathRelativeToApp = RelativePathUtility.get(app.dir(), indexPage);
-				indexPageContent = ((HttpServletResponseOutputStream) os).getLocalUrlContents(pathRelativeToApp);
+				indexPageContent = ((ServletContentOutputStream) os).getLocalUrlContents(pathRelativeToApp);
 			} else {
 				try (Reader fileReader = new FileReader(indexPage)) {
 					indexPageContent = IOUtils.toString(fileReader);

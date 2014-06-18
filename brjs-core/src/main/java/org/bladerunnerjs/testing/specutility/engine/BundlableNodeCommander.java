@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.bladerunnerjs.model.BundlableNode;
+import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -22,8 +24,9 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-        		ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-        		bundlableNode.handleLogicalRequest(requestPath, responseOutput, bundlableNode.root().getAppVersionGenerator().getDevVersion());
+				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
+				ContentOutputStream contentOutputStream = new StaticContentOutputStream(bundlableNode.app(), responseOutput);
+        		bundlableNode.handleLogicalRequest(requestPath, contentOutputStream, bundlableNode.root().getAppVersionGenerator().getDevVersion());
         		response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
 			}
 		});

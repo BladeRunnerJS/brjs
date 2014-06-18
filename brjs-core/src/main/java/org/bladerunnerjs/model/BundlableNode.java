@@ -1,6 +1,5 @@
 package org.bladerunnerjs.model;
 
-import java.io.OutputStream;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -28,7 +27,7 @@ public interface BundlableNode extends Node, AssetContainer {
 	AliasDefinition getAlias(String aliasName) throws UnresolvableAliasException, AmbiguousAliasException, IncompleteAliasException, ContentFileProcessingException;
 	List<AliasDefinitionsFile> aliasDefinitionFiles();
 	
-	void handleLogicalRequest(String logicalRequestPath, OutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
-	void handleLogicalRequest(String logicalRequestPath, OutputStream os, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
+	void handleLogicalRequest(String logicalRequestPath, ContentOutputStream os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
+	void handleLogicalRequest(String logicalRequestPath, ContentOutputStream os, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException;
 	List<SourceModule> getSourceModules(AssetLocation assetLocation, List<String> requirePaths) throws RequirePathException;
 }
