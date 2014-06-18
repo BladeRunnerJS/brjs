@@ -76,6 +76,16 @@ PresenterComponentTest.prototype.test_getElementReturnsCorrectTemplate = functio
 	assertEquals('<div></div>', eTemplate.innerHTML.toLowerCase());
 };
 
+PresenterComponentTest.prototype.test_getElementReturnsTemplateWithAttributesPreserved = function()
+{
+	var oPresenterComponent = new br.presenter.component.PresenterComponent("presenter-template-with-attributes", new PresenterComponentTest.MockPresentationModel());
+	var eTemplate = oPresenterComponent.getElement();
+	assertEquals('<div></div>', eTemplate.innerHTML.toLowerCase());
+	assertEquals('my-class', eTemplate.getAttribute('class'));
+	assertEquals('custom-attribute', eTemplate.getAttribute('data-custom'));
+	assertEquals(null, eTemplate.getAttribute('id'));
+};
+
 PresenterComponentTest.prototype.test_presentationModelCanBePassedAsAClassName = function()
 {
 	var oPresenterComponent = new br.presenter.component.PresenterComponent("presenter-template", "PresenterComponentTest.MockPresentationModel");

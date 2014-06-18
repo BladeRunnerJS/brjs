@@ -32,7 +32,7 @@ public class BundleSetRequestHandler {
 		String name = (bundlableNode instanceof NamedNode) ? ((NamedNode) bundlableNode).getName() : "default";
 		logger.debug(Messages.CONTEXT_IDENTIFIED_MSG, bundlableNode.getClass().getSimpleName(), name, logicalRequestpath);
 		
-		ContentPlugin contentProvider = app.root().plugins().contentProviderForLogicalPath(logicalRequestpath);
+		ContentPlugin contentProvider = app.root().plugins().contentPluginForLogicalPath(logicalRequestpath);
 		
 		if(contentProvider == null) {
 			throw new ResourceNotFoundException("No content provider could be found found the logical request path '" + logicalRequestpath + "'");

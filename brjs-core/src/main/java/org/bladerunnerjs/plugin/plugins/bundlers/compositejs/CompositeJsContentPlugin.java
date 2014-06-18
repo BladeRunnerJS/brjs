@@ -76,7 +76,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		if(contentPath.formName.equals(DEV_BUNDLE_REQUEST) || contentPath.formName.equals(PROD_BUNDLE_REQUEST)) {
 			try {
 				String minifierSetting = contentPath.properties.get("minifier-setting");
-				MinifierPlugin minifierPlugin = brjs.plugins().minifier(minifierSetting);
+				MinifierPlugin minifierPlugin = brjs.plugins().minifierPlugin(minifierSetting);
 				
 				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, version);
@@ -99,7 +99,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		if(bundleSet.getSourceModules().size() > 0) {
 			// TODO: we need to be able to determine which minifier is actually in use so we don't need to create lots of redundant bundles
 			try {
-				for(MinifierPlugin minifier : brjs.plugins().minifiers()) {
+				for(MinifierPlugin minifier : brjs.plugins().minifierPlugins()) {
 					for(String minifierSettingName : minifier.getSettingNames()) {
 						requestPaths.add(contentPathParser.createRequest(requestFormName, minifierSettingName));
 					}
@@ -119,7 +119,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		try {
 			String charsetName = brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			
-			for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
+			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
 				List<String> requestPaths = (contentPath.formName.equals(DEV_BUNDLE_REQUEST)) ? contentPlugin.getValidDevContentPaths(bundleSet, (String[]) null) :
 					contentPlugin.getValidProdContentPaths(bundleSet, (String[]) null);
 				ContentPathParser contentPathParser = contentPlugin.getContentPathParser();

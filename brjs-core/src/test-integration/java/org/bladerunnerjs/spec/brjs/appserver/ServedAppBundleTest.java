@@ -19,7 +19,7 @@ public class ServedAppBundleTest extends SpecTest
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers()
+		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usesProductionTemplates();
 		

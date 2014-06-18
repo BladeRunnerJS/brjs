@@ -20,7 +20,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
-		compositeJsBundlerPlugin = brjs.plugins().contentProvider("js");
+		compositeJsBundlerPlugin = brjs.plugins().contentPlugin("js");
 	}
 	
 	@Override
@@ -44,7 +44,7 @@ public class CompositeJsTagHandlerPlugin extends AbstractTagHandlerPlugin {
 			String minifierSetting = (isDev) ? minifierSettings.devSetting() : minifierSettings.prodSetting();
 			
 			if(minifierSetting.equals(MinifierSetting.SEPARATE_JS_FILES)) {
-				for(ContentPlugin contentPlugin : brjs.plugins().contentProviders("text/javascript")) {
+				for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
 					List<String> contentPaths = (isDev) ? contentPlugin.getValidDevContentPaths(bundleSet, (String[]) null) : contentPlugin.getValidProdContentPaths(bundleSet, (String[]) null);
 					
 					for(String contentPath : contentPaths) {

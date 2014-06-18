@@ -38,6 +38,7 @@ public final class AppSdkJsLib implements JsLib {
 		return sdkJsLib.getName();
 	}
 	
+	
 	@Override
 	public boolean isValidName() {
 		return sdkJsLib.isValidName();
@@ -69,13 +70,13 @@ public final class AppSdkJsLib implements JsLib {
 	}
 	
 	@Override
-	public Set<SourceModule> sourceModules() {
-		return sdkJsLib.sourceModules();
+	public Set<LinkedAsset> linkedAssets() {
+		return sdkJsLib.linkedAssets();
 	}
 	
 	@Override
-	public SourceModule sourceModule(String requirePath) {
-		return sdkJsLib.sourceModule(requirePath);
+	public LinkedAsset linkedAsset(String requirePath) {
+		return sdkJsLib.linkedAsset(requirePath);
 	}
 	
 	@Override

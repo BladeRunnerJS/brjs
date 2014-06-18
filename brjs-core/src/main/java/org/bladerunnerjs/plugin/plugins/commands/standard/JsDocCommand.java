@@ -22,7 +22,6 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.testing.utility.CommandRunner;
 import org.bladerunnerjs.utility.FileUtil;
 
 import com.martiansoftware.jsap.JSAP;
@@ -79,7 +78,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
-		CommandRunner.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
+		CommandRunnerUtility.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
 		
 		try {
 			replaceBuildDateToken(new File(outputDir, "index.html"));

@@ -1,4 +1,4 @@
-package org.bladerunnerjs.spec.plugin.bundler.nodejs;
+package org.bladerunnerjs.spec.plugin.bundler.commonjs;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -7,7 +7,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NodeJsContentPluginTest extends SpecTest {
+public class CommonJsContentPluginTest extends SpecTest {
 	private App app;
 	private Aspect aspect;
 	private StringBuffer requestResponse = new StringBuffer();
@@ -16,8 +16,8 @@ public class NodeJsContentPluginTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");

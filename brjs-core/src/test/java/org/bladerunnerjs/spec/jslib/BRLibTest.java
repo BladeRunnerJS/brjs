@@ -20,8 +20,8 @@ public class BRLibTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -37,7 +37,7 @@ public class BRLibTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.bar.SdkClass");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("foo.bar.SdkClass");
+		then(response).containsCommonJsClasses("foo.bar.SdkClass");
 	}
 	
 	@Test
@@ -61,7 +61,7 @@ public class BRLibTest extends SpecTest {
 			.and(aspect).indexPageRefersTo("appns.AspectClass")
 			.and(aspect).classRequires("appns/AspectClass", "foo.Bar");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("foo.Bar");
+		then(response).containsCommonJsClasses("foo.Bar");
 	}
 	
 	@Test
@@ -71,7 +71,7 @@ public class BRLibTest extends SpecTest {
 			.and(sdkLib).hasClass("br/SdkClass")
 			.and(sdkLib).hasClass("anotherRootPkg/AnotherSdkClass");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("br.SdkClass", "anotherRootPkg.AnotherSdkClass");
+		then(response).containsCommonJsClasses("br.SdkClass", "anotherRootPkg.AnotherSdkClass");
 	}
 	
 	@Test

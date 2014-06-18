@@ -26,7 +26,7 @@ public class HelpCommandTest extends SpecTest
 	@Test
 	public void exceptionIsThrownIfThereAreTooManyArguments() throws Exception
 	{
-		given(brjs).hasCommands(command1)
+		given(brjs).hasCommandPlugins(command1)
 			.and(brjs).hasBeenCreated();
 		when(brjs).runCommand("help", "command1", "help");
 		then(exceptions).verifyException(ArgumentParsingException.class, unquoted("Unexpected argument: help"));
@@ -35,7 +35,7 @@ public class HelpCommandTest extends SpecTest
 	@Test
 	public void helpCommandListsAllPossibleCommands() throws Exception
 	{
-		given(brjs).hasCommands(command1, command2)
+		given(brjs).hasCommandPlugins(command1, command2)
 			.and(brjs).hasBeenCreated();
 		when(brjs).runCommand("help");
 		then(output).containsText(
@@ -55,7 +55,7 @@ public class HelpCommandTest extends SpecTest
 	@Test
 	public void exceptionIsThrownIfTheComandDoesntExist() throws Exception
 	{
-		given(brjs).hasCommands(command1)
+		given(brjs).hasCommandPlugins(command1)
 			.and(brjs).hasBeenCreated();
 		when(brjs).runCommand("help", "non-existent-command");
 		then(exceptions).verifyException(CommandArgumentsException.class, unquoted("Cannot show help, unknown command 'non-existent-command'"));
@@ -64,7 +64,7 @@ public class HelpCommandTest extends SpecTest
 	@Test
 	public void helpForSpecificCommandShowsUsage() throws Exception
 	{
-		given(brjs).hasCommands(command1)
+		given(brjs).hasCommandPlugins(command1)
 			.and(brjs).hasBeenCreated();
 		when(brjs).runCommand("help", "command1");
 		then(output).containsText(

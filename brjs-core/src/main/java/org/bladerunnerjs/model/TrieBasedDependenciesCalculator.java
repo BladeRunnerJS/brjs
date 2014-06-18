@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.utility.reader.AssetReaderFactory;
 import org.bladerunnerjs.utility.trie.AliasReference;
 import org.bladerunnerjs.utility.trie.AssetReference;
-import org.bladerunnerjs.utility.trie.SourceModuleReference;
+import org.bladerunnerjs.utility.trie.LinkedAssetReference;
 import org.bladerunnerjs.utility.trie.Trie;
 import org.bladerunnerjs.utility.trie.TrieFactory;
 
@@ -61,14 +61,13 @@ public class TrieBasedDependenciesCalculator
 					Trie<AssetReference> trie = trieFactory.createTrie();
 					
 					for(Object match : trie.getMatches(reader)) {
-						if (match instanceof SourceModuleReference) {
-							SourceModuleReference sourceModuleReference = (SourceModuleReference) match;
-							
-							if(!asset.getAssetPath().equals(sourceModuleReference.getAssetPath())) {
-								computedValue.requirePaths.add(sourceModuleReference.getRequirePath());
+						if (match instanceof LinkedAssetReference){
+							LinkedAssetReference reference = (LinkedAssetReference)match;
+							if(!asset.getAssetPath().equals(reference.getAssetPath())) {
+								computedValue.requirePaths.add(reference.getRequirePath());
 							}
 						}
-						else if (match instanceof AliasReference){
+						else if (match instanceof AliasReference) {
 							AliasReference aliasReference = (AliasReference) match;
 							String alias = aliasReference.getName();
 							if (alias.length() > 0)
@@ -76,8 +75,7 @@ public class TrieBasedDependenciesCalculator
 								computedValue.aliases.add(alias);							
 							}
 						}
-						else
-						{
+						else {
 							throw new RuntimeException("Unknown match type returned from Trie.");
 						}
 					}

@@ -78,7 +78,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
 						if(sourceFile instanceof ThirdpartySourceModule)
 						{
-							writer.write("// " + sourceFile.getRequirePath() + "\n");
+							writer.write("// " + sourceFile.getPrimaryRequirePath() + "\n");
 							try (Reader reader = sourceFile.getReader()) { IOUtils.copy(reader, writer); }
 							writer.write("\n\n");
 						}
@@ -109,8 +109,8 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 			else if(contentPath.formName.equals("single-module-request")) {
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) 
 				{
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
-					writer.write("// " + jsModule.getRequirePath() + "\n");
+					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
+					writer.write("// " + jsModule.getPrimaryRequirePath() + "\n");
 					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
 					writer.write("\n\n");
 				}
@@ -132,7 +132,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		try {
 			for(SourceModule sourceModule : bundleSet.getSourceModules()) {
 				if(sourceModule instanceof ThirdpartySourceModule) {
-					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getRequirePath()));
+					requestPaths.add(contentPathParser.createRequest("single-module-request", sourceModule.getPrimaryRequirePath()));
 				}
 			}
 		}

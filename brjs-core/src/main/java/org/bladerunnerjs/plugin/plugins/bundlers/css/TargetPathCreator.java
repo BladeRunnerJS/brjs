@@ -26,7 +26,7 @@ public class TargetPathCreator
 	
 	public TargetPathCreator(BRJS brjs) {
 		this.brjs = brjs;
-		cssResourceContentPathParser = brjs.plugins().contentProvider("cssresource").getContentPathParser();
+		cssResourceContentPathParser = brjs.plugins().contentPlugin("cssresource").getContentPathParser();
 	}
 	
 	public String getRelativeBundleRequestForImage(File imageFile) throws ContentProcessingException
@@ -63,11 +63,11 @@ public class TargetPathCreator
 		Node firstAncestorNode = brjs.locateFirstAncestorNode(imageFile);
 		AssetLocation assetLocation  = null;
 		AssetContainer assetContainer = null;
-		if(firstAncestorNode instanceof AssetLocation){
+		if (firstAncestorNode instanceof AssetLocation){
 			 assetLocation = (AssetLocation)firstAncestorNode;
 			 assetContainer = assetLocation.assetContainer();
-		}else{
-			assetContainer = (AssetContainer)firstAncestorNode;
+		} else {
+			throw new ContentProcessingException("Unable to calculate asset location for the path '"+RelativePathUtility.get(brjs.dir(), imageFile)+"'.");
 		}
 		String targetPath = null;
 		

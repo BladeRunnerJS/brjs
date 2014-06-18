@@ -59,7 +59,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		i18nAssetPlugin = brjs.plugins().assetProducer(I18nAssetPlugin.class);
+		i18nAssetPlugin = brjs.plugins().assetPlugin(I18nAssetPlugin.class);
 	}
 
 	@Override

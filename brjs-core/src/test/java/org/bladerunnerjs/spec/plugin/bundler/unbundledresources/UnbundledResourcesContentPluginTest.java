@@ -25,8 +25,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			appAspect = app.aspect("default");
@@ -34,7 +34,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
 			
-		unbundledResourcesPlugin = brjs.plugins().contentProvider("unbundled-resources");
+		unbundledResourcesPlugin = brjs.plugins().contentPlugin("unbundled-resources");
 		requestsList = new ArrayList<String>();
 	}
 	

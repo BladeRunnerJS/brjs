@@ -1,4 +1,4 @@
-package org.bladerunnerjs.plugin.plugins.bundlers.nodejs;
+package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -26,7 +26,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class NodeJsContentPlugin extends AbstractContentPlugin
+public class CommonJsContentPlugin extends AbstractContentPlugin
 {
 
 	private static final String SINGLE_MODULE_REQUEST = "single-module-request";
@@ -94,7 +94,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 			{
 				if (sourceModule instanceof CommonJsSourceModule)
 				{
-					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getRequirePath()));
+					requestPaths.add(contentPathParser.createRequest(SINGLE_MODULE_REQUEST, sourceModule.getPrimaryRequirePath()));
 				}
 			}
 		}
@@ -121,7 +121,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 			{
 				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 				{
-					SourceModule jsModule = bundleSet.getBundlableNode().getSourceModule(contentPath.properties.get("module"));
+					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
 				}
 			}
@@ -133,7 +133,7 @@ public class NodeJsContentPlugin extends AbstractContentPlugin
 					{
 						if (sourceModule instanceof CommonJsSourceModule)
 						{
-							writer.write("// " + sourceModule.getRequirePath() + "\n");
+							writer.write("// " + sourceModule.getPrimaryRequirePath() + "\n");
 							try (Reader reader = sourceModule.getReader()) { IOUtils.copy(reader, writer); }
 							writer.write("\n\n");
 						}

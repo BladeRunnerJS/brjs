@@ -50,7 +50,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
-		cssAssetPlugin = brjs.plugins().assetProducer(CssAssetPlugin.class);
+		cssAssetPlugin = brjs.plugins().assetPlugin(CssAssetPlugin.class);
 	}
 	
 	@Override

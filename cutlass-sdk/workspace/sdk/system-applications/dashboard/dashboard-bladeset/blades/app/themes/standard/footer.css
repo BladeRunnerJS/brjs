@@ -48,17 +48,6 @@
 .footer-logo a:hover{
 	color: #54b0cb; 
 }
-
-.caplin-logo-small {
-    background-image: url(img/caplin-logo-small.png);
-    background-position: 20px 12px;
-    background-repeat: no-repeat;
-    text-decoration:none;
-    display:block;
-    height:26px;
-    padding-top: 22px;
-}
-
 .footer-wrap{
 	bottom: 10px;
 	width: 100%;

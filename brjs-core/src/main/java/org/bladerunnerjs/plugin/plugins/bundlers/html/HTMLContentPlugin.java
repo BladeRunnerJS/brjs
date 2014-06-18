@@ -58,7 +58,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		htmlAssetPlugin = brjs.plugins().assetProducer(HTMLAssetPlugin.class);
+		htmlAssetPlugin = brjs.plugins().assetPlugin(HTMLAssetPlugin.class);
 	}
 	
 	@Override

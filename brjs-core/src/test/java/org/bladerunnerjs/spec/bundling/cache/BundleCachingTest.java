@@ -26,8 +26,8 @@ public class BundleCachingTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -49,7 +49,7 @@ public class BundleCachingTest extends SpecTest
 			.and(app).hasReceivedRequest("v/dev/js/dev/combined/bundle.js");
 		when(aspect).indexPageRefersTo("appns.Class2")
 			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
-		then(response).containsNodeJsClasses("appns.Class2")
+		then(response).containsCommonJsClasses("appns.Class2")
 			.and(response).doesNotContainText("appns.Class1");
 	}
 	
@@ -82,7 +82,7 @@ public class BundleCachingTest extends SpecTest
 		when(aspect).resourceFileRefersTo("html/view.html", "appns.Class2")
 			.and(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainText("appns.Class1")
-			.and(response).containsNodeJsClasses("appns.Class2");
+			.and(response).containsCommonJsClasses("appns.Class2");
 	}
 	
 	@Test

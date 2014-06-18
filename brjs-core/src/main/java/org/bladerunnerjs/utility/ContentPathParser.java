@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.eclipse.jetty.util.URIUtil;
 
 
 public class ContentPathParser
@@ -84,7 +85,14 @@ public class ContentPathParser
 
 					for (int gi = 0; gi < requestMatcher.groupCount() && gi < tokens.size(); ++gi)
 					{
-						contentPath.properties.put(tokens.get(gi), requestMatcher.group(gi + 1));
+						String property = requestMatcher.group(gi + 1);
+						try {
+							String decodedProperty = URIUtil.decodePath(property);
+							contentPath.properties.put(tokens.get(gi), decodedProperty);
+						} catch (Exception ex) {
+							/* TODO: investigate whether we need this - if the URL fails to decode should we really catch the exception? */ 
+							contentPath.properties.put(tokens.get(gi), property);							
+						}
 					}
 
 					return contentPath;

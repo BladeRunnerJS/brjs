@@ -29,9 +29,9 @@ public class CreateLibraryCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception
 	{
-		given(brjs).hasCommands(new CreateLibraryCommand())
-			.and(brjs).automaticallyFindsBundlers()
-			.and(brjs).automaticallyFindsMinifiers()
+		given(brjs).hasCommandPlugins(new CreateLibraryCommand())
+			.and(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated()
 			.and(brjs).usesProductionTemplates();
 			app = brjs.app("app");

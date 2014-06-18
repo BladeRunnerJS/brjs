@@ -28,7 +28,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 	
 	@Before
 	public void initTestObjects() throws Exception {
-		given(brjs).automaticallyFindsBundlers()
+		given(brjs).automaticallyFindsBundlerPlugins()
 			.and(brjs).hasBeenCreated();
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
@@ -37,7 +37,7 @@ public class CssResourceContentPluginTest extends SpecTest {
 			workbench = blade.workbench();
 			sdkJsLib = brjs.sdkLib("sdkLib");
 			
-		cssResourcePlugin = brjs.plugins().contentProvider("cssresource");
+		cssResourcePlugin = brjs.plugins().contentPlugin("cssresource");
 		requestsList = new ArrayList<String>();
 	}
 	
@@ -294,6 +294,16 @@ public class CssResourceContentPluginTest extends SpecTest {
 			.and(workbench).hasBeenCreated()
 			.and(sdkJsLib).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents");
 		when(workbench).requestReceived("cssresource/lib_sdkLib/resources/dir1/dir2/someFile.txt", response);
+		then(response).textEquals("someFile.txt contents");
+	}
+	
+	@Test
+	public void assetsCanHaveAEncodedSpaceInTheirPath() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(workbench).hasBeenCreated()
+			.and(sdkJsLib).containsResourceFileWithContents("some dir/another dir/someFile.txt", "someFile.txt contents");
+		when(workbench).requestReceived("cssresource/lib_sdkLib/resources/some%20dir/another%20dir/someFile.txt", response);
 		then(response).textEquals("someFile.txt contents");
 	}
 	
