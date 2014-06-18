@@ -20,4 +20,5 @@ OptionTest.prototype.test_Construction = function()
 	assertEquals("a1", "key", option.value.getValue());
 	assertEquals("a2", "label", option.label.getValue());
 	assertEquals("a3", "label", option.toString());
+	assertEquals("a4", true, option.enabled.getValue());
 };
