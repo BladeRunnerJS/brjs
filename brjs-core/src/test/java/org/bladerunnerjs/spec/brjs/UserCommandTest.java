@@ -20,8 +20,6 @@ public class UserCommandTest extends SpecTest {
 	public void messageIsDisplayedIfRunUserCommandIsInvokedWithANonExistentCommandName() {
 		when(brjs).runUserCommand("no-such-command");
 		then(output).containsText(
-			"BladeRunnerJS version: the-version, built: the-build-date",
-			"",
 			"No such command 'no-such-command'",
 			"--------",
 			"");
@@ -48,8 +46,6 @@ public class UserCommandTest extends SpecTest {
 	public void TEMP_usageIsDisplayedIfIncorrectArgumentsAreProvided() {
 		when(brjs).runUserCommand("create-blade");
 		then(output).containsText(
-			"BladeRunnerJS version: the-version, built: the-build-date",
-			"",
 			"Problem:",
 			"  Parameter '")
 		.and(output).containsText(
@@ -63,8 +59,6 @@ public class UserCommandTest extends SpecTest {
 	public void stackTraceIsDisplayedIfArgumentsAreInvalid() {
 		when(brjs).runUserCommand("explode");
 		then(output).containsText(
-			"BladeRunnerJS version: the-version, built: the-build-date",
-			"",
 			"Error:",
 			"  Bang!",
 			"",
