@@ -162,6 +162,24 @@ public class CssRewriterTest extends SpecTest
 		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some%20image.png');");
 	}
 	
+	@Ignore // failing - invalid css exception thrown
+	@Test
+	public void dollarSignCharactersInFilenamesAreEncoded() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./some$image.png');");
+		when(aspect).requestReceived("css/common/bundle.css", response);
+		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some%%%image.png');");
+	}
+	
+	@Ignore // failing - incorrectly encoded
+	@Test
+	public void regexCharactersInFilenamesAreEncoded() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./some(image.png');");
+		when(aspect).requestReceived("css/common/bundle.css", response);
+		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some%%%image.png');");
+	}
+	
 	@Test
 	public void absoluteUrlsAreNotRewritten() throws Exception
 	{
