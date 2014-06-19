@@ -1,5 +1,7 @@
 OptionsTest = TestCase("OptionsTest");
 
+require('br/test/ViewFixture');
+
 OptionsTest.prototype.setUp = function()
 {
 	this.m_oViewFixture = new br.test.ViewFixture("view.*");

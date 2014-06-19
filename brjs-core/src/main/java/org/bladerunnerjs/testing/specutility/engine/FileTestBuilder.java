@@ -36,4 +36,9 @@ public class FileTestBuilder extends SpecTestBuilder {
 		
 		return builderChainer;
 	}
+
+	public void isReadOnly()
+	{
+		file.setReadOnly();
+	}
 }
