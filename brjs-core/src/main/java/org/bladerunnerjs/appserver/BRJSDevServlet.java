@@ -1,6 +1,5 @@
 package org.bladerunnerjs.appserver;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletConfig;
@@ -43,7 +42,7 @@ public class BRJSDevServlet extends HttpServlet {
 		
 		try {
 			brjs = BRJSThreadSafeModelAccessor.aquireModel();
-			app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath("/")), App.class);
+			app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
 			
 			if(app == null) {
  				throw new ServletException("Unable to calculate app for Servlet. Context path for expected app was '" + servletContext.getRealPath("/") + "'.");

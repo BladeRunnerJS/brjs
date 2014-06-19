@@ -1,6 +1,5 @@
 package org.bladerunnerjs.appserver;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -31,10 +30,7 @@ public class BRJSDevServletFilter implements Filter {
 			
 			try {
 				brjs = BRJSThreadSafeModelAccessor.aquireModel();
-				app = brjs.locateAncestorNodeOfClass(new File(servletContext.getRealPath("/")), App.class);
-				if (app == null) {
-					throw new ServletException("Unable to calculate app for the servlet context file path '" + servletContext.getRealPath("/") + "'.");
-				}
+				app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
 			}
 			finally {
 				BRJSThreadSafeModelAccessor.releaseModel();
@@ -64,4 +60,5 @@ public class BRJSDevServletFilter implements Filter {
 			chain.doFilter(request, response);
 		}
 	}
+	
 }
