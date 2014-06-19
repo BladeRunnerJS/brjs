@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.SdkJsLib;
 
 import com.caplin.cutlass.util.FileUtility;
 
@@ -43,7 +44,8 @@ public class RestApiServletEndToEndTests
 		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
 		ServletModelAccessor.destroy();
 		brjs = ServletModelAccessor.initializeAndGetModel( sdkRoot );
-		FileUtils.write(brjs.sdkLibsDir().file("locale-forwarder.js"), "");
+		
+		FileUtils.write(brjs.localeForwarderUtil(), "");
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
 		server.start();

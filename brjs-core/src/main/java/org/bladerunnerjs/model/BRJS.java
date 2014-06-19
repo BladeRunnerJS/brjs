@@ -71,6 +71,9 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> apiDocs = new NodeItem<>(this, DirNode.class, "sdk/docs/jsdoc");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
+	private final NodeItem<DirNode> localeForwarderUtilDir = new NodeItem<>(this, DirNode.class, "sdk/libs/locale-forwarder");
+	private static final String LOCALE_FORWARDER_FILENAME = "LocaleForwarder.js";
+	
 	private WorkingDirNode workingDir;
 	private final Logger logger;
 	private final CommandList commandList;
@@ -291,6 +294,11 @@ public class BRJS extends AbstractBRJSRootNode
 	public DirNode appJars()
 	{
 		return appJars.item();
+	}
+	
+	public File localeForwarderUtil()
+	{
+		return localeForwarderUtilDir.item().file(LOCALE_FORWARDER_FILENAME);
 	}
 	
 	public DirNode conf()
