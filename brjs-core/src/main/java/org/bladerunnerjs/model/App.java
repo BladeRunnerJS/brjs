@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -30,7 +29,6 @@ import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.NameValidator;
-import org.bladerunnerjs.utility.PageAccessor;
 
 
 public class App extends AbstractBRJSNode implements NamedNode
@@ -281,8 +279,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return appRequestHandler.canHandleLogicalRequest(requestPath);
 	}
 	
-	public void handleLogicalRequest(String requestPath, OutputStream os, PageAccessor pageAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		appRequestHandler.handleLogicalRequest(requestPath, os, pageAccessor);
+	public void handleLogicalRequest(String requestPath, ContentOutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		appRequestHandler.handleLogicalRequest(requestPath, os);
 	}
 	
 	public String createDevBundleRequest(String contentPath, String version) throws MalformedTokenException {
@@ -297,7 +295,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		new AppBuilder().build(this, targetDir);
 	}
 	
-	public void buildWar(File targetDir) throws ModelOperationException {
-		new WarAppBuilder().build(this, targetDir);
+	public void buildWar(File targetFile) throws ModelOperationException {
+		new WarAppBuilder().build(this, targetFile);
 	}
 }

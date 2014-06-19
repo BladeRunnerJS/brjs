@@ -91,22 +91,16 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	private List<File> getFilesWithPaths(List<String> filePaths) throws ConfigException
 	{
 		List<File> foundFiles = new ArrayList<File>();
-		List<File> files = fileInfo.nestedFiles();
+		String assetLocationDirPath = assetLocationDir.getAbsolutePath();
 		
 		for (String filePath : filePaths)
 		{
-			boolean foundMatchingFilePath = false;
-			for (File f : files)
-			{
-				String relativePath = RelativePathUtility.get(assetLocationDir, f);
-				if ( relativePath.equals(filePath) )
-				{
-					foundFiles.add(f);
-					foundMatchingFilePath = true;
-				}
-			}
-			if (!foundMatchingFilePath)
-			{
+			String fullFilePath = assetLocationDirPath + File.separator + filePath;
+			File file = new File(fullFilePath);
+			
+			if(file.exists()){
+				foundFiles.add(file);
+			}else{
 				String relativeManifestPath = RelativePathUtility.get(assetLocation.assetContainer().root().dir(), assetLocation.file(LIBRARY_MANIFEST_FILENAME));
 				throw new ConfigException("Unable to find the file '" + filePath + "' required in the manifest at '" + relativeManifestPath + "'.");
 			}

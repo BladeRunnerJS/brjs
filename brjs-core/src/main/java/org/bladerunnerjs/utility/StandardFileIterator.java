@@ -109,6 +109,7 @@ public class StandardFileIterator implements FileIterator {
 	
 	private void updateIfChangeDetected() {
 		if(fileModificationChecker.hasChangedSinceLastCheck()) {
+			if (!dir.exists()) { return; }
 			filesAndDirs = Arrays.asList(dir.listFiles());
 			files = null;
 			dirs = null;

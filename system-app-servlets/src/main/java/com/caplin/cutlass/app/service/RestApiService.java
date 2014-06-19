@@ -136,17 +136,13 @@ public class RestApiService
 		{
 			destinationWar.delete();
 		}
-		File targetDir = destinationWar.getParentFile();
 		
 		App app = brjs.userApp(appName);
 		if (!app.dirExists()) {
 			throw new Exception("Unable to export, the app '" + appName + "' doesn't exist.");
 		}
 		
-		app.buildWar(targetDir);
-		
-		File tempWar = new File(targetDir, appName + ".war");
-		FileUtils.moveFile(tempWar, destinationWar);
+		app.buildWar(destinationWar);
 	}
 	
 	public void importBladeset(String sourceApp, Map<String,Map<String,List<String>>> bladesets, String targetApp) throws Exception

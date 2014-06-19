@@ -9,24 +9,19 @@ import org.bladerunnerjs.utility.FileUtility;
 
 public class AppBuilder extends AbstractAppBuilder {
 	
-	public void preBuild(App app, File targetDir) throws ModelOperationException {
-		File appExportDir = getAppExportDir(app, targetDir);
-		if(appExportDir.exists()) throw new ModelOperationException("'" + appExportDir.getPath() + "' already exists.");
+	public void preBuild(App app, File appBuildDir) throws ModelOperationException {
+		if(appBuildDir.exists()) throw new ModelOperationException("'" + appBuildDir.getPath() + "' already exists.");
 	}
 	
-	public void postBuild(File exportDir, App app, File targetDir) throws ModelOperationException {
+	public void postBuild(File exportDir, App app, File appBuildDir) throws ModelOperationException {
 		try
 		{
-			FileUtility.copyDirectoryIfExists(exportDir, getAppExportDir(app, targetDir));
+			FileUtility.copyDirectoryIfExists(exportDir, appBuildDir);
 		}
 		catch (IOException ex)
 		{
 			throw new ModelOperationException(ex);
 		}
-	}
-	
-	private File getAppExportDir(App app, File targetDir) {
-		return new File(targetDir, app.getName());
 	}
 	
 }
