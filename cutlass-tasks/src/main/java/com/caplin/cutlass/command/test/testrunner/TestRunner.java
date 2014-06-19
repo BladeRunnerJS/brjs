@@ -98,7 +98,7 @@ public class TestRunner {
 			if (testServerOnly)
 			{
 				noBrowserFlag = true;
-				logger.info("No browsers configured, you must manually launch your browser. To use a browser for testing, visit the URL http://localhost:%d/capture", portNumber);
+				logger.warn("No browsers configured, you must manually launch your browser. To use a browser for testing, visit the URL http://localhost:%d/capture", portNumber);
 			}
 			else
 			{
@@ -188,7 +188,7 @@ public class TestRunner {
 	private void displayTimeInfo()
 	{
 		long duration = execEndTime-execStartTime;
-		logger.info("\n");
+		logger.warn("\n");
 		if (getTestResultList().size() > 1)
 		{
 			printReport();
@@ -201,26 +201,26 @@ public class TestRunner {
 	}
 
 	private void printReport() {
-		logger.info("== Runner Report ==");
+		logger.warn("== Runner Report ==");
 		if(!getSuccess())
 		{
-			logger.info("- Tests Failed :");
+			logger.warn("- Tests Failed :");
 			List<TestRunResult> failedTests = getFailedTestList();
 			if (failedTests.size() > 0)
 			{
 				for (TestRunResult failedTest : failedTests)
 				{
-					logger.info("  " + getFriendlyTestPath(failedTest.getBaseDirectory(),
+					logger.warn("  " + getFriendlyTestPath(failedTest.getBaseDirectory(),
 						new File(failedTest.getTestDirectory(), "js-test-driver/jsTestDriver.conf")));
 				}
 			} else
 			{
-				logger.info("- Tests Failed");
+				logger.warn("- Tests Failed");
 			}
 		} else {
-			logger.info("- Tests Passed");
+			logger.warn("- Tests Passed");
 		}
-		logger.info("\n");
+		logger.warn("\n");
 	}
 	
 	private void convertResultsToHTML()
@@ -254,7 +254,7 @@ public class TestRunner {
 		transformer.setTodir(new File("../"+CutlassConfig.HTML_TEST_RESULTS_DIR));		
 		target.addTask(aggregator);
 		
-		logger.info("Writing HTML reports to " + "../"+CutlassConfig.HTML_TEST_RESULTS_DIR + ".");
+		logger.warn("Writing HTML reports to " + "../"+CutlassConfig.HTML_TEST_RESULTS_DIR + ".");
 		project.executeTarget("junitreport");
 	}
 	
@@ -357,8 +357,8 @@ public class TestRunner {
 	}
 	
 	private boolean runTest(File baseDirectory, File configFile, boolean resetServer) throws Exception  {
-		logger.info("\n");
-		logger.info("Testing " + getFriendlyTestPath(baseDirectory, configFile) + ":");
+		logger.warn("\n");
+		logger.warn("Testing " + getFriendlyTestPath(baseDirectory, configFile) + ":");
 		
 		try {
 			File testResultsDir = new File("../"+CutlassConfig.XML_TEST_RESULTS_DIR);
@@ -389,22 +389,22 @@ public class TestRunner {
 			Process process = runTime.exec(args);
 			childProcesses.add(process);
 			
-			ProcessLogger processLogger = new ProcessLogger(brjs, process, null);
+			ProcessLogger processLogger = new ProcessLogger(brjs, process, LogLevel.WARN, LogLevel.ERROR, null);
 			int exitCode = process.waitFor();
 			processLogger.waitFor();
 			
 			if(!childProcesses.remove(process)) {
-				logger.error("failed to remove runTest process from child processes list");
+				logger.error("Failed to remove runTest process from child processes list");
 			}
-			logger.debug("exit code is " + exitCode);
+			logger.debug("Exit code is " + exitCode);
 			if(exitCode != 0) {
-				logger.info("Tests Failed.");
+				logger.warn("Tests Failed.");
 				return false;
 			}
-			logger.info("Tests Passed.");
+			logger.warn("Tests Passed.");
 		}
 		catch(Exception e) {
-			logger.info("Unexpected Exception:\n%s", ExceptionUtils.getStackTrace(e));
+			logger.error("Unexpected Exception:\n%s", ExceptionUtils.getStackTrace(e));
 			return false;
 		}
 		
@@ -429,7 +429,7 @@ public class TestRunner {
 			classPath, jsTestDriverJar.getAbsolutePath().replaceAll("\\.jar$", ".conf"), portNumber, verboseFlag(), browserTimeout(), "INFO" );
 		logger.debug("Running command: " + CmdCreator.printCmd(args));
 		Process process = runTime.exec(args);
-		childLoggers.add(new ProcessLogger(brjs, process, "server"));
+		childLoggers.add(new ProcessLogger(brjs, process, LogLevel.INFO, LogLevel.ERROR, "server"));
 		childProcesses.add(process);
 		waitForServer(0);
 	}
@@ -444,7 +444,7 @@ public class TestRunner {
 			{
 				Process process = runTime.exec(args);
 				childProcesses.add(process);
-				childLoggers.add(new ProcessLogger(brjs, process, "browser #" + browserNo++));	
+				childLoggers.add(new ProcessLogger(brjs, process, LogLevel.DEBUG, LogLevel.INFO, "browser #" + browserNo++));
 			}
 			catch (IOException e)
 			{
@@ -489,13 +489,13 @@ public class TestRunner {
 			connection.setReadTimeout(SERVER_READ_TIMEOUT);
 			
 			try {
-				logger.debug("trying to connect to server...");
+				logger.debug("Trying to connect to server...");
 				connection.connect();
 				String pageData = IOUtils.toString((InputStream) connection.getContent(), connection.getContentEncoding());
-				logger.debug("server response code: : " + connection.getResponseCode());
+				logger.debug("Server response code: : " + connection.getResponseCode());
 				if(connection.getResponseCode() == 200) {
 					actualBrowserCount = getCapturedBrowerCount(pageData);
-					logger.debug("found " + actualBrowserCount + " connected browsers");
+					logger.debug("Found " + actualBrowserCount + " connected browsers");
 					if(actualBrowserCount == expectedBrowserCount) {
 						hasConnected = true;
 					}
@@ -503,7 +503,7 @@ public class TestRunner {
 				
 			}
 			catch (IOException e) {
-				logger.debug("connection resulted in exception: " + e.toString());
+				logger.debug("Connection resulted in exception: " + e.toString());
 			}
 			finally {
 				if(!hasConnected) {

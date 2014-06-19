@@ -20,6 +20,7 @@ public class ConsoleLoggerStore implements ILoggerFactory
 	
 	{
 		allWhitelistedPackages.add("org.bladerunnerjs");
+		allWhitelistedPackages.add("com.caplin.cutlass.command");
 	}
 	
 	@Override
@@ -43,6 +44,7 @@ public class ConsoleLoggerStore implements ILoggerFactory
 	public void setWhitelistedPackages(List<String> whitelistedPackages) {
 		allWhitelistedPackages = new ArrayList<>(whitelistedPackages);
 		allWhitelistedPackages.add("org.bladerunnerjs");
+		allWhitelistedPackages.add("com.caplin.cutlass.command");
 		
 		for(ConsoleLogger logger : loggers.values()) {
 			logger.setWhiteListedPackages(allWhitelistedPackages);
