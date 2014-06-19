@@ -63,6 +63,8 @@ public class CssRewriter {
 			
 			String parsedUrl = parseUrl(cssBasePath, relativePath);
 			String replacement = urlPrefix + parsedUrl + urlSuffix;
+			
+			replacement = replacement.replaceAll("\\$","\\\\\\$");
 			urlMatcher.appendReplacement(css, replacement);
 		}
 		urlMatcher.appendTail(css);
