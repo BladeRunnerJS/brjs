@@ -1,5 +1,6 @@
 package org.bladerunnerjs.logger;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,18 +12,21 @@ import org.slf4j.Logger;
 public class ConsoleLoggerStore implements ILoggerFactory
 {
 	private final Map<String, ConsoleLogger> loggers = new HashMap<>();
-	private List<String> whitelistedPackages = new ArrayList<>();
+	private List<String> allWhitelistedPackages = new ArrayList<>();
 	private LogLevel currentLogLevel = LogLevel.WARN;
+	private boolean logClassNames = false;
+	private PrintStream stdout;
+	private PrintStream stderr;
 	
 	{
-		whitelistedPackages.add("org.bladerunnerjs");
+		allWhitelistedPackages.add("org.bladerunnerjs");
 	}
 	
 	@Override
 	public Logger getLogger(String name) {
 		if(!loggers.containsKey(name)) {
 			loggers.put(name, new ConsoleLogger(name, this));
-			loggers.get(name).setWhiteListedPackages(whitelistedPackages);
+			loggers.get(name).setWhiteListedPackages(allWhitelistedPackages);
 		}
 		
 		return loggers.get(name);
@@ -37,11 +41,32 @@ public class ConsoleLoggerStore implements ILoggerFactory
 	}
 	
 	public void setWhitelistedPackages(List<String> whitelistedPackages) {
-		whitelistedPackages.add("org.bladerunnerjs");
-		this.whitelistedPackages = whitelistedPackages;
+		allWhitelistedPackages = new ArrayList<>(whitelistedPackages);
+		allWhitelistedPackages.add("org.bladerunnerjs");
 		
 		for(ConsoleLogger logger : loggers.values()) {
-			logger.setWhiteListedPackages(whitelistedPackages);
+			logger.setWhiteListedPackages(allWhitelistedPackages);
 		}
+	}
+	
+	public void setLogClassNames(boolean logClassNames) {
+		this.logClassNames  = logClassNames;
+	}
+	
+	public boolean getLogClassNames() {
+		return logClassNames;
+	}
+	
+	public void setOutputStreams(PrintStream stdout, PrintStream stderr) {
+		this.stdout = stdout;
+		this.stderr = stderr;
+	}
+	
+	public PrintStream getOutputStream() {
+		return stdout;
+	}
+	
+	public PrintStream getErrorStream() {
+		return stderr;
 	}
 }

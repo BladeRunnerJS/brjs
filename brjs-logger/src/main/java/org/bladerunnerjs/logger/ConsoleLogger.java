@@ -1,5 +1,6 @@
 package org.bladerunnerjs.logger;
 
+import java.io.PrintStream;
 import java.util.List;
 
 import org.bladerunnerjs.logger.LogLevel;
@@ -31,13 +32,20 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	
 	private void doLog(LogLevel logLevel, String message, Throwable throwable) {
 		if(enabled && (logLevel.ordinal() >= loggerStore.getLogLevel().ordinal())) {
-			System.out.println(message);
+			PrintStream outputStream = loggerStore.getOutputStream();
 			
-			if (throwable != null) {
-				throwable.printStackTrace(System.err);
+			if(loggerStore.getLogClassNames()) {
+				outputStream.println(className + ": " + message);
+			}
+			else {
+				outputStream.println(message);
 			}
 			
-			System.out.flush();
+			if (throwable != null) {
+				throwable.printStackTrace(loggerStore.getErrorStream());
+			}
+			
+			outputStream.flush();
 		}
 	}
 	

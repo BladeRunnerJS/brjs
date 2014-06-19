@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.naming.InvalidNameException;
 
@@ -27,9 +29,27 @@ import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.TestServerCommand;
 import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
+import com.martiansoftware.jsap.FlaggedOption;
+import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPException;
+import com.martiansoftware.jsap.JSAPResult;
+import com.martiansoftware.jsap.Switch;
 
 public class CommandRunner {
-
+	private static final JSAP argsParser = new JSAP();
+	
+	static {
+		try {
+			argsParser.registerParameter(new Switch("verbose").setShortFlag('v').setLongFlag("verbose").setDefault("false").setHelp("verbose level logging"));
+			argsParser.registerParameter(new Switch("debug").setShortFlag('d').setLongFlag("debug").setDefault("false").setHelp("debug level logging"));
+			argsParser.registerParameter(new FlaggedOption("log").setLongFlag("log").setDefault("").setHelp("The comma delimited list of packages to show messages from, or '*' to show everything"));
+			argsParser.registerParameter(new Switch("log-info").setLongFlag("log-info").setDefault("false").setHelp("show which class each log line comes from"));
+		}
+		catch (JSAPException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public static void main(String[] args) {
 		int exitCode = -1;
 		try 
@@ -98,27 +118,42 @@ public class CommandRunner {
 	}
 	
 	private String[] processGlobalCommandFlags(String[] args) {
-		if (args.length > 0) {
-			String lastArg = args[args.length - 1];
+		JSAPResult parsedArgs;
+		int i = 0;
+		while(i < args.length) {
+			parsedArgs = argsParser.parse(Arrays.copyOfRange(args, i, args.length));
 			
-			if(lastArg.equals("--verbose") || lastArg.equals("--debug")) {
-				args = ArrayUtils.subarray(args, 0, args.length - 1);
-				
-				if(lastArg.equals("--verbose")) {
-					getLoggerStore().setLogLevel(LogLevel.INFO);
-				}
-				else if(lastArg.equals("--debug")) {
-					getLoggerStore().setLogLevel(LogLevel.DEBUG);
-				}
+			if(parsedArgs.success()) {
+				args = Arrays.copyOfRange(args, 0, i);
+				processedParsedArgs(parsedArgs);
+				break;
 			}
-		}
-		else {
-			getLoggerStore().setLogLevel(LogLevel.INFO);
+			++i;
 		}
 		
 		return args;
 	}
 	
+	private void processedParsedArgs(JSAPResult parsedArgs) {
+		boolean isVerbose = parsedArgs.getBoolean("verbose");
+		boolean isDebug = parsedArgs.getBoolean("debug");
+		List<String> whitelistedPackages = Arrays.asList(parsedArgs.getString("log").split(","));
+		boolean logClassNames = parsedArgs.getBoolean("log-info");
+		
+		if(isDebug) {
+			getLoggerStore().setLogLevel(LogLevel.DEBUG);
+		}
+		else if(isVerbose) {
+			getLoggerStore().setLogLevel(LogLevel.INFO);
+		}
+		
+		if(logClassNames) {
+			getLoggerStore().setLogClassNames(true);
+		}
+		
+		getLoggerStore().setWhitelistedPackages(whitelistedPackages);
+	}
+
 	private void injectLegacyCommands(BRJS brjs) {
 		try {
 			CommandList commandList = brjs.plugins().commandList();
