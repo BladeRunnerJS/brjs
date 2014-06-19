@@ -2,7 +2,6 @@ package org.bladerunnerjs.spec.brjs.appserver;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.plugin.plugins.commands.standard.BuildAppCommand;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.utility.ServerUtility;
@@ -20,7 +19,6 @@ public class ServedWarTest extends SpecTest {
 	private StringBuffer brjsResponse = new StringBuffer();
 	private Aspect aspect;
 	private Aspect loginAspect;
-	private DirNode sdkLibsDir;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -32,12 +30,11 @@ public class ServedWarTest extends SpecTest {
 			app = brjs.app("app1");
 			aspect = app.aspect("default");
 			loginAspect = app.aspect("login");
-			sdkLibsDir = brjs.sdkLibsDir();
 	}
 	
 	@Test
 	public void exportedWarCanBeDeployedOnAnAppServer() throws Exception {
-		given(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "Locale Forwarder")
+		given(brjs).localeForwarderHasContents("Locale Forwarder")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(aspect).containsResourceFileWithContents("template.html", "<div id='template-id'>content</div>")
 			.and(brjs).hasProdVersion("1234")
@@ -54,7 +51,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void exportedWarIndexPageIsTheSameAsBrjsHosted() throws Exception {
-		given(sdkLibsDir).containsFile("locale-forwarder.js")
+		given(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
 			.and(warServer).hasWar("app1.war", "app")
@@ -66,7 +63,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void exportedWarJsBundleIsTheSameAsBrjsHosted() throws Exception {
-		given(sdkLibsDir).containsFile("locale-forwarder.js")
+		given(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(aspect).indexPageRequires("appns/Class")
 			.and(aspect).hasClass("appns/Class")
 			.and(brjs).hasProdVersion("APP.VERSION")
@@ -82,7 +79,7 @@ public class ServedWarTest extends SpecTest {
 	@Test
 	public void exportedWarCssBundleIsTheSameAsBrjsHosted() throws Exception {
 		given(aspect).containsResourceFileWithContents("style.css", "body { color: red; }")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(aspect).containsFileWithContents("index.html", "Hello World!")
 			.and(brjs).hasProdVersion("1234")
 			.and(app).hasBeenBuiltAsWar(brjs.dir())
@@ -95,7 +92,7 @@ public class ServedWarTest extends SpecTest {
 	
 	@Test
 	public void warCommandDoesntExportFilesFromAnotherAspect() throws Exception {
-		given(sdkLibsDir).containsFile("locale-forwarder.js")
+		given(brjs).localeForwarderHasContents("locale-forwarder.js")
 			.and(loginAspect).containsFileWithContents("index.html", "Hello World!")
 			.and(loginAspect).containsFileWithContents("themes/noir/images/file.gif", "** SOME GIF STUFF... **")
 			.and(brjs).hasProdVersion("1234")

@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.naming.InvalidNameException;
+
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.CommandPlugin;
@@ -308,6 +311,13 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	public BuilderChainer hasDevVersion(String version)
 	{
 		specTest.appVersionGenerator.setDevVersion(version);
+		
+		return builderChainer;
+	}
+
+	public BuilderChainer localeForwarderHasContents(String string) throws IOException, InvalidNameException, ModelUpdateException
+	{
+		FileUtils.write(brjs.localeForwarderUtil(), string);
 		
 		return builderChainer;
 	}
