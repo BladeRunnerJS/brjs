@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.appserver.ServletContentOutputStream;
 import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
@@ -91,18 +90,12 @@ public class AppRequestHandler {
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
+	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, ContentOutputStream os, RequestMode requestMode) throws ContentProcessingException {
 		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 		try {
 			String indexPageContent = "";
-			if (os instanceof ServletContentOutputStream) {
-				String pathRelativeToApp = RelativePathUtility.get(app.dir(), indexPage);
-				indexPageContent = ((ServletContentOutputStream) os).getLocalUrlContents(pathRelativeToApp);
-			} else {
-				try (Reader fileReader = new FileReader(indexPage)) {
-					indexPageContent = IOUtils.toString(fileReader);
-				}
-			}
+			String pathRelativeToApp = RelativePathUtility.get(app.dir(), indexPage);
+			indexPageContent = os.getLocalUrlContents(pathRelativeToApp);
 			
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			

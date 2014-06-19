@@ -72,7 +72,7 @@ public abstract class AbstractAppBuilder
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						appRequestHandler.writeIndexPage(aspect, locale, version, os, RequestMode.Prod);
+						appRequestHandler.writeIndexPage(aspect, locale, version, new StaticContentOutputStream(app, os), RequestMode.Prod);
 					}
 				}
 				
