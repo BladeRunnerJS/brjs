@@ -1,6 +1,6 @@
 package org.bladerunnerjs.runner;
 
-import static org.junit.Assert.*;
+import static org.bladerunnerjs.testing.utility.BRJSAssertions.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,9 +60,9 @@ public class CommandRunnerTest {
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
 		
 		String output = outputStream.toString("UTF-8");
-		assertTrue(output.contains("warn-level"));
-		assertFalse(output.contains("info-level"));
-		assertFalse(output.contains("debug-level"));
+		assertContains("warn-level", output);
+		assertDoesNotContain("info-level", output);
+		assertDoesNotContain("debug-level", output);
 	}
 	
 	@Test
@@ -71,9 +71,9 @@ public class CommandRunnerTest {
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--verbose"});
 		
 		String output = outputStream.toString("UTF-8");
-		assertTrue(output.contains("warn-level"));
-		assertTrue(output.contains("info-level"));
-		assertFalse(output.contains("debug-level"));
+		assertContains("warn-level", output);
+		assertContains("info-level", output);
+		assertDoesNotContain("debug-level", output);
 	}
 	
 	@Test
@@ -82,12 +82,11 @@ public class CommandRunnerTest {
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--debug"});
 		
 		String output = outputStream.toString("UTF-8");
-		assertTrue(output.contains("warn-level"));
-		assertTrue(output.contains("info-level"));
-		assertTrue(output.contains("debug-level"));
+		assertContains("warn-level", output);
+		assertContains("info-level", output);
+		assertContains("debug-level", output);
 	}
 	
-	// TODO: get this test working
 	@Ignore
 	@Test
 	public void externalCommandsDontShowAnyLogsEvenWhenDebugLoggingIsUsed() throws Exception {
@@ -95,9 +94,9 @@ public class CommandRunnerTest {
 		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--debug"});
 		
 		String output = outputStream.toString("UTF-8");
-		assertFalse(output.contains("warn-level"));
-		assertFalse(output.contains("info-level"));
-		assertFalse(output.contains("debug-level"));
+		assertDoesNotContain("warn-level", output);
+		assertDoesNotContain("info-level", output);
+		assertDoesNotContain("debug-level", output);
 	}
 	
 	// TODO: add tests for the other flags
