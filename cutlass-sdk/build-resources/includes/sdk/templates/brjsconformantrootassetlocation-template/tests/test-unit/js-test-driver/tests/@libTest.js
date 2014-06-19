@@ -1,6 +1,8 @@
 ExampleClassTest = TestCase("ExampleClassTest");
 
-ExampleClassTest.prototype.testSomething = function()
+var @lib = require("@libns/@lib");
+
+ExampleClassTest.prototype.testHelloWorldUtil = function()
 {
-	assertTrue(true);
+	assertEquals( "Hello World!", @lib.helloWorldUtil() );
 };

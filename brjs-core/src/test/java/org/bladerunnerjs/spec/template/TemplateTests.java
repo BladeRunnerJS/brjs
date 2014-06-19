@@ -133,7 +133,7 @@ public class TemplateTests extends SpecTest
 						"tests/test-unit/js-test-driver/resources/aliases.xml",
 						"tests/test-unit/js-test-driver/tests/UserlibTest.js"),
 				Arrays.asList("src", "tests", "tests/test-unit/js-test-driver/"))
-			.and(userLib).fileContentsContains("src/userlib/Userlib.js", "var Userlib = function()");
+			.and(userLib).fileContentsContains("src/userlib/Userlib.js", "var Userlib = {}");
 	}
 	
 	@Test
