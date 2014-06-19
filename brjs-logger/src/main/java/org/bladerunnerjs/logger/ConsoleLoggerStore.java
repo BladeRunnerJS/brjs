@@ -15,8 +15,8 @@ public class ConsoleLoggerStore implements ILoggerFactory
 	private List<String> allWhitelistedPackages = new ArrayList<>();
 	private LogLevel currentLogLevel = LogLevel.WARN;
 	private boolean logClassNames = false;
-	private PrintStream stdout;
-	private PrintStream stderr;
+	private PrintStream stdout = System.out;
+	private PrintStream stderr = System.err;
 	
 	{
 		allWhitelistedPackages.add("org.bladerunnerjs");
