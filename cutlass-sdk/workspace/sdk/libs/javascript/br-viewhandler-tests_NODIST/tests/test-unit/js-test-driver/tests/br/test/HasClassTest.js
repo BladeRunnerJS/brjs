@@ -1,4 +1,7 @@
+br.Core.thirdparty('jsunitextensions');
 HasClassTest = TestCase("HasClassTest");
+
+require('br/test/ViewFixture');
 
 HasClassTest.prototype.setUp = function()
 {

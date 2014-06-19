@@ -159,7 +159,7 @@ public class CommandRunner {
 		try {
 			CommandList commandList = brjs.plugins().commandList();
 			commandList.addCommand(new CheckCommand());
-			commandList.addCommand(new CopyBladesetCommand( brjs.root().dir() ));
+			commandList.addCommand(new CopyBladesetCommand( brjs.root().file("sdk") ));
 			commandList.addCommand(new ImportApplicationCommand( brjs ));
 			commandList.addCommand(new TestCommand());
 			commandList.addCommand(new TestServerCommand());

@@ -28,7 +28,7 @@ public class BladerunnerConfTest
 	@Test
 	public void valuesCanBeOverriddenByProvidingAValidFile()
 	{
-		BladerunnerConf.initialize(new File("src/test/resources/BladerunnerConfTest/bladerunner.conf"));
+		BladerunnerConf.initialize(new File("src/test/resources/BladerunnerConfTest/brjs.conf"));
 		
 		assertEquals(8080, BladerunnerConf.getJettyPort());
 		assertEquals("UTF-16", BladerunnerConf.getDefaultInputEncoding());
@@ -38,7 +38,7 @@ public class BladerunnerConfTest
 	@Test
 	public void valuesCanBePartiallyOverridden()
 	{
-		BladerunnerConf.initialize(new File("src/test/resources/BladerunnerConfTest/partial-bladerunner.conf"));
+		BladerunnerConf.initialize(new File("src/test/resources/BladerunnerConfTest/partial-brjs.conf"));
 		
 		assertEquals(7070, BladerunnerConf.getJettyPort());
 		assertEquals("UTF-16", BladerunnerConf.getDefaultInputEncoding());

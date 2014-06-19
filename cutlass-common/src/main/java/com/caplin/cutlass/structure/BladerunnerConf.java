@@ -25,7 +25,7 @@ public class BladerunnerConf
 	{
 		File sdkDir = new File(".").getAbsoluteFile().getParentFile();
 		File confDir = new File(sdkDir.getParentFile(), CutlassConfig.CONF_DIR);
-		initialize(new File(confDir, "bladerunner.conf"));
+		initialize(new File(confDir, "brjs.conf"));
 	}
 	
 	public BladerunnerConf()

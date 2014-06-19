@@ -1,4 +1,7 @@
+require("jsunitextensions");
 DoesNotHaveClassTest = TestCase("DoesNotHaveClassTest");
+
+require('br/test/ViewFixture');
 
 DoesNotHaveClassTest.prototype.setUp = function()
 {

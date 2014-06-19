@@ -6,5 +6,4 @@ var @lib = {}
 	return "Hello World!";
 }
 
-
-module.exports = @lib;
+window.@lib = @lib;

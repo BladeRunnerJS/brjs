@@ -155,6 +155,33 @@ public class CssRewriterTest extends SpecTest
 	}
 	
 	@Test
+	public void specialCharactersInFilenamesAreEncoded() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./some image.png');");
+		when(aspect).requestReceived("css/common/bundle.css", response);
+		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some%20image.png');");
+	}
+	
+	@Test
+	public void regexSpecialCharactersInFilenamesAreValid() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css", 
+				"background:url('./some$image.png');\n"+"background:url('./another(image.png');\n");
+		when(aspect).requestReceived("css/common/bundle.css", response);
+		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some$image.png');")
+			.and(response).containsText("background:url('../../cssresource/aspect_default/theme_common/another(image.png');");
+	}
+	
+	//TODO- this is fine here - but when the browser tries to access the url it is replaced with a special character: /?\ 
+	@Test
+	public void poundSignCharactersInFilenamesAreCorrectlyEncoded() throws Exception
+	{
+		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./some£image.png');");
+		when(aspect).requestReceived("css/common/bundle.css", response);
+		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some%C2%A3image.png');");
+	}
+	
+	@Test
 	public void absoluteUrlsAreNotRewritten() throws Exception
 	{
 		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('/some/absolute/url/image.png');");

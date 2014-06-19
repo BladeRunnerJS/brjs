@@ -2,20 +2,11 @@ package org.bladerunnerjs.appserver;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class StreamTokeniser
 {
 	public static final char tokenStart = '@';
 	public static final char tokenEnd = '@';
-	public static final String APP_VERSION_TOKEN = "APP.VERSION";
-	
-	private static final String VERSION_TIMESTAMP_PREFIX = "v_";
-	private static final String VERSION_TIMESTAMP_FORMAT = "yyyyMMddHHmmss";
-	
-	private static DateFormat dateFormat = new SimpleDateFormat(VERSION_TIMESTAMP_FORMAT);
 	
 	public StringBuffer replaceTokens(Reader input, JndiTokenFinder tokenFinder, String requestUri) throws IOException
 	{
@@ -121,29 +112,8 @@ public class StreamTokeniser
 	private String findTokenReplacement(String tokenName, JndiTokenFinder tokenFinder, String requestUri)
 	{
 		tokenName = tokenName.substring(1, tokenName.length() - 1);
-		String tokenReplacement = tokenFinder.findTokenValue(tokenName);
-		if (tokenName.toString().equals(APP_VERSION_TOKEN))
-		{
-			if (tokenReplacement == null)
-			{
-				tokenReplacement = VERSION_TIMESTAMP_PREFIX+getAppVersionTimestamp();
-			}
-			
-			if (!tokenReplacement.endsWith("/"))
-			{
-				tokenReplacement += "/";
-			}
-			
-			tokenReplacement = requestUri + "/" + tokenReplacement;
-		}
-		
+		String tokenReplacement = tokenFinder.findTokenValue(tokenName);		
 		return tokenReplacement;
-	}
-
-	public static String getAppVersionTimestamp()
-	{
-		Date now = new Date();
-		return dateFormat.format(now);
 	}
 	
 }

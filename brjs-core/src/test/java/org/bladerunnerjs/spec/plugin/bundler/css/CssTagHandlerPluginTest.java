@@ -103,7 +103,20 @@ public class CssTagHandlerPluginTest extends SpecTest {
 				"<link rel=\"stylesheet\" href=\"../v/dev/css/common_en/bundle.css\"/>",
 				"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard/bundle.css\"/>",
 				"<link rel=\"stylesheet\" title=\"standard\" href=\"../v/dev/css/standard_en/bundle.css\"/>");
-
+	}
+	
+	@Test
+	public void bladeThemeCssCanBeLoadedIfTheAspectDoesNotHaveThatTheme() throws Exception {
+		given(blade).containsFileWithContents("themes/newtheme/style.css", "BLADE NEWTHEME STYLING")
+			.and(blade).containsFileWithContents("themes/alternate/style.css", "BLADE ALTERNATE STYLING")
+			.and(blade).hasClass("appns/bs/b1/Class")
+			.and(aspect).indexPageHasContent(
+					"<@css.bundle theme=\"newtheme\"@/>\n" +
+					"require('appns/bs/b1/Class');");
+		when(aspect).indexPageLoadedInDev(response, "en");
+		then(response).containsText(
+				"<link rel=\"stylesheet\" title=\"newtheme\" href=\"../v/dev/css/newtheme/bundle.css\"/>")
+			.and(response).doesNotContainText("alternate");
 	}
 	
 	@Test

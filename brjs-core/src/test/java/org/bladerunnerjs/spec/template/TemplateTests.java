@@ -22,7 +22,7 @@ public class TemplateTests extends SpecTest
 	Bladeset bladeset;
 	Blade blade;
 	Workbench workbench;
-	private JsLib lib;
+	private JsLib userLib, thirdpartyLib;
 	
 	@Before
 	public void initTestObjects() throws Exception {		
@@ -38,7 +38,8 @@ public class TemplateTests extends SpecTest
 		bladeset = app.bladeset("bs");
 		blade = bladeset.blade("b1");
 		workbench = blade.workbench();
-		lib = app.jsLib("lib");
+		userLib = app.jsLib("userlib");
+		thirdpartyLib = app.jsLib("thirdpartyLib");
 	}
 	
 	@Test
@@ -124,19 +125,22 @@ public class TemplateTests extends SpecTest
 	@Test
 	public void brLibHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
-		when(brjs).runCommand("create-library", "app", "lib");
-		then(lib).hasFilesAndDirs(
-				Arrays.asList("br-lib.conf", "src/lib/Lib.js", "tests/test-unit/js-test-driver/jsTestDriver.conf", "tests/test-unit/js-test-driver/resources/aliases.xml", 
-							"tests/test-unit/js-test-driver/tests/LibTest.js"),
-				Arrays.asList("src", "tests", "tests/test-unit/js-test-driver/")
-		).and(lib).fileContentsContains("src/lib/Lib.js", "Lib = ");
+		when(brjs).runCommand("create-library", "app", "userlib");
+		then(userLib).hasFilesAndDirs(
+				Arrays.asList("br-lib.conf", 
+						"src/userlib/Userlib.js", 
+						"tests/test-unit/js-test-driver/jsTestDriver.conf", 
+						"tests/test-unit/js-test-driver/resources/aliases.xml",
+						"tests/test-unit/js-test-driver/tests/UserlibTest.js"),
+				Arrays.asList("src", "tests", "tests/test-unit/js-test-driver/"))
+			.and(userLib).fileContentsContains("src/userlib/Userlib.js", "var Userlib = {}");
 	}
 	
-	@Test
+	@Test //TODO: thrirdparty libraries should have an improved template - the template exists, but the command doesnt use it when creating thirdparty libraries
 	public void thirdpartyLibHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
-		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
-		then(lib).hasFilesAndDirs(
+		when(brjs).runCommand("create-library", "app", "thirdpartyLib", "-t", "thirdparty");
+		then(thirdpartyLib).hasFilesAndDirs(
 				Arrays.asList("thirdparty-lib.manifest"),
 				Arrays.asList()
 		);

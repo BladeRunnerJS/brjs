@@ -1,5 +1,7 @@
 ChildrenCountTest = TestCase("ChildrenCountTest");
 
+require('br/test/ViewFixture');
+
 ChildrenCountTest.prototype.setUp = function()
 {
 	this.m_oViewFixture = new br.test.ViewFixture("view.*");

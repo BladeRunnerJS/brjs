@@ -9,7 +9,6 @@ import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -305,7 +304,6 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 			);
 	}
 	
-	@Ignore
 	@Test
 	public void functionsInInlineMapsInsideOfASelfExeuctingCodeBlockAreNotStripped() throws Exception {
 		stripCodeBlocksAndAssertEquals(

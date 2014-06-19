@@ -17,7 +17,6 @@ import org.bladerunnerjs.utility.ServerUtility;
 
 public class ImportApplicationCommandUtility
 {
-	private Logger logger = BRJSAccessor.root.logger(ImportApplicationCommandUtility.class);
 	
 	public File createApplicationDirIfItDoesNotAlreadyExist(File sdkBaseDir, String applicationName) throws CommandOperationException
 	{
@@ -64,7 +63,11 @@ public class ImportApplicationCommandUtility
 		File newApplicationDirectoryWEBINFLibFolder = new File(applicationDir, "/WEB-INF/lib");
 		
 		FileUtility.copyDirectoryContents(installedSDKJavaApplicationLibFolder, newApplicationDirectoryWEBINFLibFolder);
-		logger.info("Successfully copied SDK application jars to '" + applicationDir.getName() + "/WEB-INF/lib'");
+		
+		if (BRJSAccessor.root != null) {
+			Logger logger = BRJSAccessor.root.logger(ImportApplicationCommandUtility.class);
+			logger.info("Successfully copied SDK application jars to '" + applicationDir.getName() + "/WEB-INF/lib'");
+		}
 	}
 
 	public String getCurrentApplicationName(File temporaryDirectoryForNewApplication) throws CommandOperationException
