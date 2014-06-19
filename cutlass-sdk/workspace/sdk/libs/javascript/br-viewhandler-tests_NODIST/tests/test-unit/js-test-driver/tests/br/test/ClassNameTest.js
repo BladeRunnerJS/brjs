@@ -1,5 +1,7 @@
 ClassNameTest = TestCase("ClassNameTest");
 
+require('br/test/ViewFixture');
+
 ClassNameTest.prototype.setUp = function()
 {
 	this.m_oViewFixture = new br.test.ViewFixture("view.*");

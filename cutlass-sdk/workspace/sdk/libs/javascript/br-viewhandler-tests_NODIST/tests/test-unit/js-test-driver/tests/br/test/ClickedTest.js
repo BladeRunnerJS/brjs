@@ -1,5 +1,7 @@
 br.Core.thirdparty("jquery");
 
+require('br/test/ViewFixture');
+
 ClickedTest = TestCase("ClickedTest");
 
 ClickedTest.prototype.setUp = function()

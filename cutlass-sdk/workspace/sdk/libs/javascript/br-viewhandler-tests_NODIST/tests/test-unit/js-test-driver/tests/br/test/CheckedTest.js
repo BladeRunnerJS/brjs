@@ -1,5 +1,7 @@
 CheckedTest = TestCase("CheckedTest");
 
+require('br/test/ViewFixture');
+
 CheckedTest.prototype.setUp = function()
 {
 	this.m_oViewFixture = new br.test.ViewFixture("view.*");
