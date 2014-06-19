@@ -5,9 +5,11 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.JsLib;
+import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 //TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'appns' when the default namespace is 'appns')?
@@ -18,10 +20,10 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	private Aspect otherAspect;
 	private Bladeset bladeset;
 	private Blade blade;
-	private JsLib thirdpartyLib, thirdpartyLib2, bootstrapLib, secondBootstrapLib;
+	private JsLib thirdpartyLib, thirdpartyLib2, bootstrapLib, secondBootstrapLib, thirdBootstrapLib, brLib;
 	private StringBuffer response = new StringBuffer();
 	private StringBuffer otherResponse = new StringBuffer();
-	private JsLib thirdBootstrapLib;
+	private TestPack brLibTests;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -40,6 +42,8 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			bootstrapLib = brjs.sdkLib("br-bootstrap");
 			secondBootstrapLib = brjs.sdkLib("secondBootstrapLib");
 			thirdBootstrapLib = brjs.sdkLib("thirdBootstrapLib");
+			brLib = brjs.sdkLib("brlib");
+			brLibTests = brLib.testType("unit").testTech("js-test-driver");
 	}
 	
 	// Bootstrap tests --
@@ -302,5 +306,15 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(otherAspect).requestReceived("js/dev/combined/bundle.js", otherResponse);
 		then(response).containsText("window.thirdpartyLib = { }")
 			.and(otherResponse).doesNotContainText("window.thirdpartyLib = { }");
+	}
+	
+	@Ignore
+	@Test
+	public void weDontBundleLibraryTestClasses() throws Exception {
+		given(brLib).hasBeenCreated()
+			.and(aspect).indexPageHasContent("'brlib/Class'")
+    		.and(brLibTests).hasTestClass("brlib/Class");
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).doesNotContainText("brlib/Class");
 	}
 }
