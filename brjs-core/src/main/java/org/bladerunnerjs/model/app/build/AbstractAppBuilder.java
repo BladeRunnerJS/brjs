@@ -31,16 +31,18 @@ import org.bladerunnerjs.utility.WebXmlCompiler;
 public abstract class AbstractAppBuilder
 {
 
-	abstract void preBuild(App app, File targetDir) throws ModelOperationException;
-	abstract void postBuild(File exportDir, App app, File targetDir) throws ModelOperationException;
+	abstract void preBuild(App app, File target) throws ModelOperationException;
+	abstract void postBuild(File exportDir, App app, File target) throws ModelOperationException;
 	
-	public void build(App app, File targetDir) throws ModelOperationException {
+	public void build(App app, File target) throws ModelOperationException {
+		File targetContainer = target.getParentFile();
+		
 		AppRequestHandler appRequestHandler = new AppRequestHandler(app);
 		
 		File temporaryExportDir = getTemporaryExportDir(app);
 		
-		if(!targetDir.isDirectory()) throw new ModelOperationException("'" + targetDir.getPath() + "' is not a directory.");
-		this.preBuild(app, targetDir);
+		if(!targetContainer.isDirectory()) throw new ModelOperationException("'" + targetContainer.getPath() + "' is not a directory.");
+		this.preBuild(app, target);
 		
 		try {
 			String[] locales = app.appConf().getLocales();
@@ -95,7 +97,7 @@ public abstract class AbstractAppBuilder
 			throw new ModelOperationException(e);
 		}
 		
-		this.postBuild(temporaryExportDir, app, targetDir);
+		this.postBuild(temporaryExportDir, app, target);
 		FileUtils.deleteQuietly(temporaryExportDir);
 	}
 	

@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.SdkJsLib;
 
 import com.caplin.cutlass.util.FileUtility;
 

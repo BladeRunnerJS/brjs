@@ -298,7 +298,7 @@ public class App extends AbstractBRJSNode implements NamedNode
 		new AppBuilder().build(this, targetDir);
 	}
 	
-	public void buildWar(File targetDir) throws ModelOperationException {
-		new WarAppBuilder().build(this, targetDir);
+	public void buildWar(File targetFile) throws ModelOperationException {
+		new WarAppBuilder().build(this, targetFile);
 	}
 }

@@ -35,13 +35,16 @@ public class AppBuilder extends NodeBuilder<App> {
 	}
 	
 	public BuilderChainer hasBeenBuilt(File targetDir) throws Exception {
-		app.build(targetDir);
+		File appExportDir = new File(targetDir, app.getName());
+		app.build( appExportDir );
 		
 		return builderChainer;
 	}
 	
 	public BuilderChainer hasBeenBuiltAsWar(File targetDir) throws Exception {
-		app.buildWar(targetDir);
+		File warExportFile = new File(targetDir, app.getName()+".war");
+		warExportFile.getParentFile().mkdir();
+		app.buildWar( warExportFile );
 		
 		return builderChainer;
 	}

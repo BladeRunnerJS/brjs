@@ -72,12 +72,16 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		boolean warExport = parsedArgs.getBoolean("war");
 		
 		App app = brjs.app(appName);
-		File targetDir;
+		
+		File targetDir = brjs.storageDir("built-apps");
+		File appExportDir;
+		File warExportFile;
+		
 		if (targetDirPath == null) 
 		{
-			targetDir = brjs.storageDir("built-apps");
-			File appExportDir = new File(targetDir, appName);
-			File warExportFile = new File(targetDir, appName+".war");
+			appExportDir = new File(targetDir, appName);
+			warExportFile = new File(targetDir, appName+".war");
+			
 			if (warExport && warExportFile.exists()) {
 				boolean deleted = FileUtils.deleteQuietly(warExportFile);
 				if (!deleted) {
@@ -101,6 +105,8 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 			{
 				targetDir = brjs.file("sdk/" + targetDirPath);
 			}
+			appExportDir = new File(targetDir, appName);
+			warExportFile = new File(targetDir, appName+".war");
 		}
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
@@ -108,14 +114,12 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		
 		try {
 			if (warExport) {
-				File warExportFile = new File(targetDir, appName+".war");
 				if(warExportFile.exists()) throw new DirectoryAlreadyExistsCommandException(warExportFile.getPath(), this);
-				app.buildWar(targetDir);
+				app.buildWar(warExportFile);
 				out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getCanonicalPath());
 			} else {
-				File appExportDir = new File(targetDir, appName);
 				if(appExportDir.exists()) throw new DirectoryAlreadyExistsCommandException(appExportDir.getPath(), this);			
-				app.build(targetDir);
+				app.build(appExportDir);
 				out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());			
 			}
 		}
