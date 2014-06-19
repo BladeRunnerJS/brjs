@@ -5,7 +5,6 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -239,17 +238,24 @@ public class CssRewriterTest extends SpecTest
 				"url(../../cssresource/aspect_default/theme_common/grass.png);");
 	}
 	
-	@Ignore
 	@Test
-	public void backgroundImageWithImageUrlAndAdditonalStyling() throws Exception
+	public void backgroundImageWithImageUrlAndAdditonalStylingIsRewritten() throws Exception
 	{
-		given(userLib).hasCommonJsPackageStyle().
-			and(userLib).containsFileWithContents("style.css", "background: url(close.png) no-repeat center center;").
-			and(userLib).containsFile("close.png").
-			and(userLib).containsFileWithContents("thirdparty-lib.manifest", "js: Class1.js \ncss: style.css \nexports: userLib").
-			and(aspect).indexPageHasContent("require('userLib/Class1');");
+		given(aspect).containsFileWithContents("themes/common/style.css", "background-image: url(flower.png) no-repeat center center;");
 		when(aspect).requestReceived("css/common/bundle.css", response);
-		then(response).containsText("background: url(../../cssresource/aspect_default/theme_common/close.png) no-repeat center center").
+		then(response).containsText("background-image: url(../../cssresource/aspect_default/theme_common/flower.png) no-repeat center center;");
+	}
+	
+	@Test
+	public void imagesInLibrariesAreRewritten() throws Exception
+	{
+		given(userLib).hasCommonJsPackageStyle()
+			.and(userLib).containsFileWithContents("style.css", "background: url(images/image.png);")
+			.and(userLib).containsFileWithContents("thirdparty-lib.manifest", "js: Class1.js \ncss: style.css \nexports: userLib")
+			.and(aspect).indexPageHasContent("require('userLib/Class1');");
+		when(aspect).requestReceived("css/common/bundle.css", response);
+		then(response).containsText("background: url(../../cssresource/lib_userLib/images/image.png);").
 			and(exceptions).verifyNoOutstandingExceptions();
 	}
+	
 }

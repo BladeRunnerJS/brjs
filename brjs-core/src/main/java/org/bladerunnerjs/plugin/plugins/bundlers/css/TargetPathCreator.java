@@ -36,11 +36,9 @@ public class TargetPathCreator
 	
 	public String getBundleRequestForImage(File imageFile) throws ContentProcessingException
 	{
-		String targetPath = null;
-		
 		try 
 		{
-			targetPath = getTargetPath(imageFile);
+			return getTargetPath(imageFile);
 		}
 		catch(ContentProcessingException bundlerProcessingException)
 		{
@@ -53,8 +51,6 @@ public class TargetPathCreator
 			cssImageReferenceException.setReferencedResourcePath(imageFile.getAbsolutePath());
 			throw cssImageReferenceException;
 		}
-		
-		return targetPath;
 	}
 	
 	private String getTargetPath(File imageFile) throws ContentProcessingException
@@ -67,7 +63,8 @@ public class TargetPathCreator
 			 assetLocation = (AssetLocation)firstAncestorNode;
 			 assetContainer = assetLocation.assetContainer();
 		} else {
-			throw new ContentProcessingException("Unable to calculate asset location for the path '"+RelativePathUtility.get(brjs.dir(), imageFile)+"'.");
+			assetContainer = (AssetContainer) firstAncestorNode;
+			assetLocation = assetContainer.assetLocation(".");
 		}
 		String targetPath = null;
 		
