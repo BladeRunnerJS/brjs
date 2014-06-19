@@ -136,7 +136,7 @@ public class TemplateTests extends SpecTest
 			.and(userLib).fileContentsContains("src/userlib/Userlib.js", "var Userlib = {}");
 	}
 	
-	@Test
+	@Test //TODO: thrirdparty libraries should have an improved template - the template exists, but the command doesnt use it when creating thirdparty libraries
 	public void thirdpartyLibHasCorrectTemplate() throws Exception {
 		given(brjs).commandHasBeenRun("create-app", "app", "appns");
 		when(brjs).runCommand("create-library", "app", "thirdpartyLib", "-t", "thirdparty");
