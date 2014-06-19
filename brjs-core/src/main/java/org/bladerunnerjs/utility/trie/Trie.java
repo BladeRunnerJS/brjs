@@ -176,7 +176,10 @@ public class Trie<T>
 			T previousValue = matcher.previousNode.getValue();
 			if (previousValue != null && (isDelimiter(prevChar) || isDelimiter(nextChar)))
 			{
-				matches.add( previousValue );
+				//TODO best data structure to make this efficient?
+				if(!matches.contains(previousValue)){
+					matches.add( previousValue );
+				}
 				reader.mark(readAheadLimit);
 			}
 			matcher.reset();
