@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
