@@ -1,12 +1,14 @@
 package org.bladerunnerjs.plugin;
 
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -46,13 +48,14 @@ public class InputSource {
 			if(source != filteredSource) {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ParsedContentPath contentPath = contentPlugin.getContentPathParser().parse(sourceMappingUrl);
+				ContentOutputStream contentOutputStream = new StaticContentOutputStream(bundleSet.getBundlableNode().app(), bos);
 				
-				contentPlugin.writeContent(contentPath, bundleSet, bos, version);
+				contentPlugin.writeContent(contentPath, bundleSet, contentOutputStream, version);
 				
 				sourceMap = bos.toString(bundleSet.getBundlableNode().root().bladerunnerConf().getBrowserCharacterEncoding());
 			}
 		}
-		catch(ConfigException | UnsupportedEncodingException e) {
+		catch(ConfigException | IOException e) {
 			throw new ContentProcessingException(e);
 		}
 		

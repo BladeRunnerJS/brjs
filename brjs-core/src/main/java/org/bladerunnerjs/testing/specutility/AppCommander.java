@@ -6,6 +6,8 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -14,7 +16,6 @@ import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.specutility.engine.ValueCommand;
-import org.bladerunnerjs.utility.SimplePageAccessor;
 
 import static org.junit.Assert.*;
 
@@ -71,7 +72,8 @@ public class AppCommander extends NodeCommander<App> {
 		call(new Command() {
 			public void call() throws Exception {
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				app.handleLogicalRequest(requestPath, responseOutput, new SimplePageAccessor());
+				ContentOutputStream contentOutputStream = new StaticContentOutputStream(app, responseOutput);
+				app.handleLogicalRequest(requestPath, contentOutputStream);
 				response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
 			}
 		});

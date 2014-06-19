@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.compositejs;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -10,7 +9,9 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
+import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -71,7 +72,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException {
 		if(contentPath.formName.equals(DEV_BUNDLE_REQUEST) || contentPath.formName.equals(PROD_BUNDLE_REQUEST)) {
 			try {
 				String minifierSetting = contentPath.properties.get("minifier-setting");
@@ -126,8 +127,10 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 				for(String requestPath : requestPaths) {
 					ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					// TODO: we might want to make this ContentOutputStream the same as the one passed in so other content plugins can write dynamic content
+					ContentOutputStream contentOutputStream = new StaticContentOutputStream(bundleSet.getBundlableNode().app(), baos);
 					
-					contentPlugin.writeContent(parsedContentPath, bundleSet, baos, version);
+					contentPlugin.writeContent(parsedContentPath, bundleSet, contentOutputStream, version);
 					inputSources.add(new InputSource(requestPath, baos.toString(charsetName), contentPlugin, bundleSet));
 				}
 			}

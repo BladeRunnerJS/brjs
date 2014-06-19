@@ -33,6 +33,7 @@ public class ServedAppTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsAssetLocationPlugins()
+			.and(brjs).automaticallyFindsContentPlugins()
 			.and(brjs).hasContentPlugins(new MockContentPlugin())
 			.and(brjs).hasTagHandlerPlugins(new MockTagHandler("tagToken", "dev replacement", "prod replacement"))
 			.and(brjs).hasBeenCreated()
@@ -181,6 +182,15 @@ public class ServedAppTest extends SpecTest
 		then(appServer).requestForUrlReturns("/app/en/", "User App");
 	}
 	
+	@Test
+	public void jspsAreParsed() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/v/123/unbundled-resources/file.jsp", "3");
+	}
+
 	@Test
 	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
 	{

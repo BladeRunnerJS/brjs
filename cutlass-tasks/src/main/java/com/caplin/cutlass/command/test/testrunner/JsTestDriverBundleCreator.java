@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -36,8 +37,8 @@ public class JsTestDriverBundleCreator
 		
 		File baseDirectory = getBaseDirectory(jsTestDriverConf, configMap);
 		
-		
-		BundlerHandler bundlerHandler = new BundlerHandler(brjs);
+		App app = brjs.locateAncestorNodeOfClass(jsTestDriverConf, App.class);
+		BundlerHandler bundlerHandler = new BundlerHandler(brjs, app);
 		
 		for (String resourceToLoad : getListOfResourcesToLoad(configMap))
 		{

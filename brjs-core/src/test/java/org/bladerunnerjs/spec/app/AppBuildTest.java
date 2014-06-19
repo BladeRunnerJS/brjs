@@ -111,4 +111,31 @@ public class AppBuildTest extends SpecTest {
 		then(targetDir).containsFile("app1/v/1234/js/prod/combined/bundle.js")
 			.and(targetDir).doesNotContainFile("app1/v/1234/node-js/bundle.js");
 	}
+	
+	@Test
+	public void bundlesHaveExpectedContent() throws Exception
+	{
+		given(brjs).localeForwarderHasContents("")
+    		.and(app).hasBeenCreated()
+    		.and(defaultAspect).hasClass("appns/Class")
+    		.and(defaultAspect).containsFileWithContents("themes/common/style.css", "some app styling")
+    		.and(defaultAspect).indexPageRequires("appns/Class")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("app1/v/1234/js/prod/combined/bundle.js", "define('appns/Class'")
+			.and(targetDir).containsFileWithContents("app1/v/1234/css/common/bundle.css", "some app styling");
+	}
+	
+	@Test
+	public void jspsAreExportedAsSourceCode() throws Exception
+	{
+		given(brjs).localeForwarderHasContents("")
+    		.and(app).hasBeenCreated()
+    		.and(defaultAspect).indexPageHasContent("")
+    		.and(defaultAspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= 1 + 2 %>")
+    		.and(brjs).hasProdVersion("1234")
+    		.and(app).hasBeenBuilt(targetDir);
+		then(targetDir).containsFileWithContents("app1/v/1234/unbundled-resources/file.jsp", "<%= 1 + 2 %>");
+	}
+	
 }
