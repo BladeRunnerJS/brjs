@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class CommandRunner {
 		try {
 			argsParser.registerParameter(new Switch("verbose").setShortFlag('v').setLongFlag("verbose").setDefault("false").setHelp("verbose level logging"));
 			argsParser.registerParameter(new Switch("debug").setShortFlag('d').setLongFlag("debug").setDefault("false").setHelp("debug level logging"));
-			argsParser.registerParameter(new FlaggedOption("log").setLongFlag("log").setDefault("").setHelp("The comma delimited list of packages to show messages from, or '*' to show everything"));
+			argsParser.registerParameter(new FlaggedOption("log").setLongFlag("log").setHelp("The comma delimited list of packages to show messages from, or '*' to show everything"));
 			argsParser.registerParameter(new Switch("log-info").setLongFlag("log-info").setDefault("false").setHelp("show which class each log line comes from"));
 		}
 		catch (JSAPException e) {
@@ -137,7 +138,7 @@ public class CommandRunner {
 	private void processedParsedArgs(JSAPResult parsedArgs) {
 		boolean isVerbose = parsedArgs.getBoolean("verbose");
 		boolean isDebug = parsedArgs.getBoolean("debug");
-		List<String> whitelistedPackages = Arrays.asList(parsedArgs.getString("log").split(","));
+		List<String> whitelistedPackages = (parsedArgs.getString("log") != null) ? Arrays.asList(parsedArgs.getString("log").split("\\s*,\\s*")) : new ArrayList<String>();
 		boolean logClassNames = parsedArgs.getBoolean("log-info");
 		
 		if(isDebug) {

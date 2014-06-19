@@ -23,6 +23,8 @@ public class ConsoleLogger extends MarkerIgnoringBase
 	}
 	
 	public void setWhiteListedPackages(List<String> whitelistedPackages) {
+		enabled = false;
+		
 		for(String whitelistedPackage : whitelistedPackages) {
 			if(whitelistedPackage.equals("*") || className.startsWith(whitelistedPackage)) {
 				enabled = true;

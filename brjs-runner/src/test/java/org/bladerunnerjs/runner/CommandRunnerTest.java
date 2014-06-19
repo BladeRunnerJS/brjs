@@ -15,7 +15,6 @@ import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
 import com.caplin.cutlass.util.FileUtility;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.impl.StaticLoggerBinder;
 
@@ -87,7 +86,6 @@ public class CommandRunnerTest {
 		assertContains("debug-level", output);
 	}
 	
-	@Ignore
 	@Test
 	public void externalCommandsDontShowAnyLogsEvenWhenDebugLoggingIsUsed() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
@@ -99,7 +97,47 @@ public class CommandRunnerTest {
 		assertDoesNotContain("debug-level", output);
 	}
 	
-	// TODO: add tests for the other flags
+	@Test
+	public void externalCommandsCanHaveTheirLoggingEnabled() throws Exception {
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--log", "org.other, org.external", "--verbose"});
+		
+		String output = outputStream.toString("UTF-8");
+		assertContains("warn-level", output);
+		assertContains("info-level", output);
+		assertDoesNotContain("debug-level", output);
+	}
+	
+	@Test
+	public void externalCommandsCanHaveTheirLoggingEnabledViaWildcard() throws Exception {
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--log", "*", "--verbose"});
+		
+		String output = outputStream.toString("UTF-8");
+		assertContains("warn-level", output);
+		assertContains("info-level", output);
+		assertDoesNotContain("debug-level", output);
+	}
+	
+	@Test
+	public void theClassResponsibleForEachLogLineCanBeDisplayed() throws Exception {
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--log-info"});
+		
+		String output = outputStream.toString("UTF-8");
+		assertContains("org.bladerunnerjs.runner.LogTestCommand: warn-level", output);
+	}
+	
+	@Test
+	public void nonLogArgumentsAreReceivedCorrectly() throws Exception {
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "arg1", "arg2", "--verbose"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "argX", "--verbose", "--log-info"});
+		
+		String output = outputStream.toString("UTF-8");
+		assertContains("arg1, arg2", output);
+		assertContains("argX", output);
+	}
 	
 	private File dirFile(String dirName) {
 		return new File(tempDir, dirName);

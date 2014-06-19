@@ -1,2 +1,3 @@
 org.bladerunnerjs.runner.LogTestCommand
+org.bladerunnerjs.runner.ArgTestCommand
 org.external.ExternalLogTestCommand
