@@ -9,17 +9,19 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.eclipse.jetty.util.URIUtil;
 
 public class CssRewriter {
 	
-	private static final String VALID_URI_CHARS = "[a-zA-Z0-9\\-\\._~:/\\?#\\[\\]@!$&\\(\\)\\*\\+,;=]+"; // all valid chars that can be in a URL
-	private static final String URL_PATTERN_START = "([Uu][Rr][lL][\\s]*\\([\\s]*['|\"]?)"; // start of the pattern - matches a ( followed by an optional ' or "
-	private static final String URL_PATTERN_END = "(['|\"]?[\\s]*\\))"; // end ot the pattern - matches an optional ' or " followed by a )
-	private static final String NEGATIVE_LOOKAHEADS = "(?![a-zA-Z]+://?"+VALID_URI_CHARS+")" +	// negative lookahead that prevents matching URLs with protocols
-														"(?!/.*)" +	// negative lookahead that prevents urls starting with a /
-														"(?!(data):[a-zA-Z]+/[a-zA-Z]+;)"; 	// negative lookahead that prevents matching URLs in the format of a data URI
-	
-	private static final Pattern URL_PATTERN = Pattern.compile(URL_PATTERN_START+NEGATIVE_LOOKAHEADS+"("+VALID_URI_CHARS+")"+URL_PATTERN_END);
+
+	private static final String URL_PATTERN_START = "(url[\\s]*\\([\\s]*['\"]?)"; // start of the pattern - matches a ( followed by an optional ' or "
+	private static final String URL_PATTERN_END = "(['\"]?[\\s]*\\))"; // end of the pattern - matches an optional ' or " followed by a )
+	private static final String PRE_PATTERN_NEGATIVE_LOOKAHEADS = 
+			"(?!['\"])" + // prevent matching a ' or " at the start of the URL (needed because the " and ' in the above regex are optional
+			"(?![a-zA-Z]+://)" +	// prevent matching URLs with protocols		
+			"(?!/)" +	// prevent matching urls starting with a /
+			"(?!data:[a-zA-Z]+/[a-zA-Z]+;)"; 	// prevent matching URLs in the format of a data URI
+	private static final Pattern URL_PATTERN = Pattern.compile(URL_PATTERN_START+PRE_PATTERN_NEGATIVE_LOOKAHEADS+"(.*?)"+URL_PATTERN_END, Pattern.CASE_INSENSITIVE);
 	private static final char[] postPathSymbols = new char[] { '?', '#' };
 	
 	private final Asset cssAsset;
@@ -55,12 +57,14 @@ public class CssRewriter {
 		
 		while (urlMatcher.find()) {
 			String urlPrefix = urlMatcher.group(1);
-			String relativePath = urlMatcher.group(3);
-			String urlSuffix = urlMatcher.group(4);
+			String relativePath = urlMatcher.group(2);
+			String urlSuffix = urlMatcher.group(3);
 		
 			
 			String parsedUrl = parseUrl(cssBasePath, relativePath);
 			String replacement = urlPrefix + parsedUrl + urlSuffix;
+			
+			replacement = replacement.replaceAll("\\$","\\\\\\$");
 			urlMatcher.appendReplacement(css, replacement);
 		}
 		urlMatcher.appendTail(css);
@@ -82,7 +86,7 @@ public class CssRewriter {
 		
 		File imageFile = new File(getCanonicalPath(cssBasePath.getPath() + "/" + relativePath));
 		String targetPath = targetPathCreator.getRelativeBundleRequestForImage(imageFile);
-		
+		targetPath = URIUtil.encodePath(targetPath);
 		return targetPath + ending;
 	}
 	

@@ -1,5 +1,7 @@
 IsVisibleTest = TestCase("IsVisibleTest");
 
+require('br/test/ViewFixture');
+
 IsVisibleTest.prototype.setUp = function()
 {
 	this.m_oViewFixture = new br.test.ViewFixture("view.*");

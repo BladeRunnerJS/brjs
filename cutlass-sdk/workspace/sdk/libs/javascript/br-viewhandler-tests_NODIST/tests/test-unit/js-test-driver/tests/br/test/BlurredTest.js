@@ -1,5 +1,7 @@
 BlurredTest = TestCase("BlurredTest");
 
+require('br/test/ViewFixture');
+
 BlurredTest.prototype.setUp = function()
 {
 	this.m_oViewFixture = new br.test.ViewFixture("view.*");

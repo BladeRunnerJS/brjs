@@ -1,6 +1,6 @@
 ExampleClassTest = TestCase("ExampleClassTest");
 
-var @lib = require("@libns/@lib");
+var @lib = require("@lib");
 
 ExampleClassTest.prototype.testHelloWorldUtil = function()
 {

@@ -54,17 +54,13 @@ public class BRJSHeaderFilter implements Filter {
 	}
 	
 	private void setCachingHeaders(HttpServletRequest request, LockedHeaderResponseWrapper responseWrapper) {
-		responseWrapper.forceSetHeader(LAST_MODIFIED, "");
-		
 		if(request.getRequestURI().matches("/v/[0-9]+/")) {
 			responseWrapper.forceSetHeader(CACHE_CONTROL, CACHE_CONTROL_ALLOW_CACHE);
 			responseWrapper.forceSetHeader(EXPIRES, getExpiresHeader());
 		}
 		else {
 			responseWrapper.forceSetHeader(CACHE_CONTROL, CACHE_CONTROL_NO_CACHE);
-			responseWrapper.forceSetHeader(EXPIRES, "");
 		}
-		responseWrapper.forceSetHeader(E_TAG, "");
 	}
 	
 	private String getExpiresHeader() {
