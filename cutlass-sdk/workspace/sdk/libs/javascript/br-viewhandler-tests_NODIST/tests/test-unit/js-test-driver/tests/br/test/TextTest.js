@@ -1,5 +1,7 @@
 TextTest = TestCase("TextTest");
 
+require('br/test/ViewFixture');
+
 TextTest.prototype.setUp = function()
 {
 	this.m_oViewFixture = new br.test.ViewFixture("view.*");
