@@ -4,6 +4,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
@@ -38,12 +39,20 @@ public class AppServeTest extends SpecTest {
 	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecified() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
 			.and(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "locale forwarding page");
-		when(app).requestReceived("", response);
-		then(response).containsText("locale forwarding page");
+		when(app).requestReceived("zz/", response);
+		then(exceptions).verifyException(ResourceNotFoundException.class, "zz");
 	}
 	
 	@Test
 	public void indexPageCanBeAccessed() throws Exception {
+		given(defaultAspect).indexPageHasContent("index page")
+			.and(sdkLibsDir).containsFile("locale-forwarder.js");
+		when(app).requestReceived("en/", response);
+		then(response).textEquals("index page");
+	}
+	
+	@Test
+	public void invalidLocalePagesThrowAnException() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
 			.and(sdkLibsDir).containsFile("locale-forwarder.js");
 		when(app).requestReceived("en/", response);
@@ -61,7 +70,8 @@ public class AppServeTest extends SpecTest {
 	@Test
 	public void localesCanBeUsedInTagHandlers() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@localeToken @/>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js");
+			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(app).hasSupportedLocales("en_GB");
 		when(app).requestReceived("en_GB/", response);
 		then(response).textEquals("- en_GB");
 	}

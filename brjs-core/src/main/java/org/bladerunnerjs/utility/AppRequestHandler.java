@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -90,9 +91,14 @@ public class AppRequestHandler {
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public void writeIndexPage(BrowsableNode browsableNode, Locale locale, String version, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException {
+	public void writeIndexPage(BrowsableNode browsableNode, Locale locale, String version, PageAccessor pageAccessor, OutputStream os, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
+		
 		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 		try {
+			if ( !Arrays.asList(app.appConf().getLocales()).contains(locale) ) {
+				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
+			}
+			
 			String indexPageContent = pageAccessor.getIndexPage(indexPage);
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
