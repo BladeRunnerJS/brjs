@@ -294,12 +294,13 @@ public class DepInsightCommandTest extends SpecTest {
 	
 	@Test
 	public void dependenciesCanBeShownForAnIncompleteAliasThatIsntUsedWithinTheApp() throws Exception {
-		given(aspect).hasClass("appns/TheInterface")
+		given(brjs.sdkLib("br")).hasClass("br/UnknownClass")
+			.and(aspect).hasClass("appns/TheInterface")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.TheInterface");
 		when(brjs).runCommand("dep-insight", "app", "appns.bs.b1.alias-ref", "--alias");
 		then(output).containsText(
 			"Alias 'appns.bs.b1.alias-ref' dependencies found:",
-			"    +--- 'default-aspect/src/appns/TheInterface.js'",
+			"    +--- '../../libs/javascript/br/src/br/UnknownClass.js'",
 			"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)");
 	}
 	

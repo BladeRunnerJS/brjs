@@ -4,6 +4,7 @@ import org.bladerunnerjs.aliasing.aliasdefinitions.AliasDefinitionsFile;
 import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.exception.command.ArgumentParsingException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
@@ -18,6 +19,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	Aspect aspect;
 	AliasesFile aliasesFile;
 	AliasDefinitionsFile bladeAliasDefinitionsFile;
+	SdkJsLib brLib;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -30,6 +32,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			aspect = app.aspect("default");
 			aliasesFile = aspect.aliasesFile();
 			bladeAliasDefinitionsFile = app.bladeset("bs").blade("b1").assetLocation("src").aliasDefinitionsFile();
+			brLib = brjs.sdkLib("br");
 	}
 	
 	@Test
@@ -238,7 +241,8 @@ public class ApplicationDepsCommandTest extends SpecTest {
 	
 	@Test
 	public void incompleteAliasedDependenciesAreCorrectlyDisplayed() throws Exception {
-		given(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
+		given(brLib).hasClass("br/UnknownClass")
+			.and(aspect).indexPageHasAliasReferences("appns.bs.b1.alias-ref")
 			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.alias-ref", null, "appns.Interface")
 			.and(aspect).hasClasses("appns/Class", "appns/Interface");
 		when(brjs).runCommand("app-deps", "app");
@@ -246,7 +250,7 @@ public class ApplicationDepsCommandTest extends SpecTest {
 			"Aspect 'default' dependencies found:",
 			"    +--- 'default-aspect/index.html' (seed file)",
 			"    |    \\--- 'alias!appns.bs.b1.alias-ref' (alias dep.)",
-			"    |    |    \\--- 'default-aspect/src/appns/Interface.js'");
+			"    |    |    \\--- '../../libs/javascript/br/src/br/UnknownClass.js'");
 	}
 	
 	@Test
