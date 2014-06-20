@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.plugins.brjsconformant.BRJSConformantAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyAssetLocationPlugin;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyTagHandlerPlugin;
@@ -185,7 +186,7 @@ public class TagPluginUtilityTest
 	private void filterAndAssert(String input, String expectedOutput, BundleSet bundleSet, RequestMode opMode, String locale) throws Exception
 	{
 		StringWriter writer = new StringWriter();
-		TagPluginUtility.filterContent(input, bundleSet, writer, opMode, locale, brjs.getAppVersionGenerator().getDevVersion());
+		TagPluginUtility.filterContent(input, bundleSet, writer, opMode, new Locale(locale), brjs.getAppVersionGenerator().getDevVersion());
 		assertEquals(expectedOutput, writer.toString());
 	}
 	

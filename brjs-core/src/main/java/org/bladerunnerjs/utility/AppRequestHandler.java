@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.Locale;
 
 import com.google.common.base.Joiner;
 
@@ -71,11 +73,11 @@ public class AppRequestHandler
 				break;
 
 			case INDEX_PAGE_REQUEST:
-				writeIndexPage(app.aspect(aspectName), pathProperties.get("locale"), devVersion, os, RequestMode.Dev);
+				writeIndexPage(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, os, RequestMode.Dev);
 				break;
 
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), pathProperties.get("locale"), devVersion, os, RequestMode.Dev);
+				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), new Locale(pathProperties.get("locale")), devVersion, os, RequestMode.Dev);
 				break;
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
@@ -97,9 +99,14 @@ public class AppRequestHandler
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, ContentOutputStream os, RequestMode requestMode) throws ContentProcessingException {
+	public void writeIndexPage(BrowsableNode browsableNode, Locale locale, String version, ContentOutputStream os, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
+		
 		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 		try {
+			if ( !Arrays.asList(app.appConf().getLocales()).contains(locale) ) {
+				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
+			}
+			
 			String pathRelativeToApp = RelativePathUtility.get(app.dir(), indexPage);
 			StringWriter indexPageContent = new StringWriter();
 			os.writeLocalUrlContentsToWriter(pathRelativeToApp, indexPageContent);
@@ -174,7 +181,7 @@ public class AppRequestHandler
 					.and("bladeset").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("blade").hasForm(ContentPathParserBuilder.NAME_TOKEN)
 					.and("version").hasForm( app.root().getAppVersionGenerator().getVersionPattern() )
-					.and("locale").hasForm("[a-z]{2}(_[A-Z]{2})?")
+					.and("locale").hasForm(Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT)
 					.and("content-path").hasForm(ContentPathParserBuilder.PATH_TOKEN);
 			
 			return contentPathParserBuilder.build();

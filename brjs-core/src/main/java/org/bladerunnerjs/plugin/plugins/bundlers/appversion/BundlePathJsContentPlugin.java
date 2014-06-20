@@ -15,6 +15,7 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
@@ -63,7 +64,7 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 			try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 			{
 				StringWriter bundlePathWriter = new StringWriter();
-				bundlePathTagHandler.writeDevTagContent(new HashMap<>(), bundleSet, "", bundlePathWriter, version);
+				bundlePathTagHandler.writeDevTagContent(new HashMap<>(), bundleSet, new Locale(""), bundlePathWriter, version);
 				writer.write( "window.$BRJS_BUNDLE_PATH = '"+bundlePathWriter.toString()+"';" );
 			}
 			catch (ConfigException | IOException ex)
@@ -78,13 +79,13 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
 		return getValidProdContentPaths(bundleSet, locales);
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
 		try
 		{

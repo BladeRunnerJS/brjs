@@ -24,13 +24,13 @@ public class ContentPluginCommander
 
 	public CommanderChainer getPossibleDevRequests(BundlableNode bundlableNode, List<String> requestsList) throws ContentProcessingException, ModelOperationException
 	{
-		requestsList.addAll( contentPlugin.getValidDevContentPaths(bundlableNode.getBundleSet(), new String[0]) );
+		requestsList.addAll( contentPlugin.getValidDevContentPaths(bundlableNode.getBundleSet()) );
 		return commanderChainer;
 	}
 
 	public CommanderChainer getPossibleProdRequests(BundlableNode bundlableNode, List<String> requestsList) throws ContentProcessingException, ModelOperationException
 	{
-		requestsList.addAll( contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet(), new String[0]) );
+		requestsList.addAll( contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet()) );
 		return commanderChainer;
 	}
 	

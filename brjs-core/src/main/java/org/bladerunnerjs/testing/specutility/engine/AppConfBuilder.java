@@ -1,8 +1,11 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
-import org.bladerunnerjs.model.AppConf;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.google.common.base.Joiner;
+import org.bladerunnerjs.model.AppConf;
+import org.bladerunnerjs.plugin.Locale;
+
 
 public class AppConfBuilder extends SpecTest {
 	private AppConf appConf;
@@ -21,7 +24,11 @@ public class AppConfBuilder extends SpecTest {
 	}
 	
 	public BuilderChainer supportsLocales(String... locales) throws Exception {
-		appConf.setLocales(Joiner.on(",").join(locales));
+		List<Locale> createdLocales = new ArrayList<Locale>();
+		for (String locale : locales) {
+			createdLocales.add( new Locale(locale) );
+		}
+		appConf.setLocales( createdLocales.toArray(new Locale[0]) );
 		appConf.write();
 		
 		return builderChainer;

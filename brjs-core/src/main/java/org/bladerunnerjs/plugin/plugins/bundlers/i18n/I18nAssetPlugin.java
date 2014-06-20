@@ -6,6 +6,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 
@@ -19,7 +20,7 @@ public class I18nAssetPlugin extends AbstractAssetPlugin
 	
 	@Override
 	public boolean canHandleAsset(File assetFile, AssetLocation assetLocation) {
-		return I18nFileAsset.I18N_PROPERTIES_FILE_REGEX_PATTERN.matcher(assetFile.getName()).matches();
+		return assetFile.getName().matches( Locale.LANGUAGE_AND_COUNTRY_CODE_FORMAT+"\\.properties" );
 	}
 	
 	@Override

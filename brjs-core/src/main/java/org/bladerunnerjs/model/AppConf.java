@@ -2,7 +2,9 @@ package org.bladerunnerjs.model;
 
 import java.io.File;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.yaml.YamlAppConf;
 
 public class AppConf extends ConfFile<YamlAppConf> {
@@ -25,17 +27,22 @@ public class AppConf extends ConfFile<YamlAppConf> {
 		verifyAndAutoWrite();
 	}
 	
-	public String[] getLocales() throws ConfigException {
+	public Locale[] getLocales() throws ConfigException {
 		reloadConfIfChanged();
-		return conf.locales.split("\\s*,\\s*");
+		String[] localeStrings = conf.locales.split("\\s*,\\s*");
+		Locale[] locales = new Locale[localeStrings.length];
+		for (int i = 0; i < localeStrings.length; i++) {
+			locales[i] = new Locale(localeStrings[i]);
+		}
+		return locales;
 	}
 	
-	public void setLocales(String locales) throws ConfigException {
-		conf.locales = locales;
+	public void setLocales(Locale[] locales) throws ConfigException {
+		conf.locales = StringUtils.join(locales,",");
 		verifyAndAutoWrite();
 	}
 	
-	public String getDefaultLocale() throws ConfigException {
+	public Locale getDefaultLocale() throws ConfigException {
 		return getLocales()[0];
 	}
 }

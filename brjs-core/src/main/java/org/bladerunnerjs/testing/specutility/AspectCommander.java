@@ -9,6 +9,7 @@ import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.testing.specutility.engine.BundlableNodeCommander;
 import org.bladerunnerjs.testing.specutility.engine.Command;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
@@ -36,7 +37,7 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer indexPageLoadedInDev(final StringBuffer pageResponse, final String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
 		call(new Command() {
 			public void call() throws Exception {
-				pageLoaded(pageResponse, locale, RequestMode.Dev);
+				pageLoaded(pageResponse, new Locale(locale), RequestMode.Dev);
 			}
 		});
 		
@@ -46,7 +47,7 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 	public CommanderChainer indexPageLoadedInProd(final StringBuffer pageResponse, final String locale) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException {
 		call(new Command() {
 			public void call() throws Exception {
-				pageLoaded(pageResponse, locale, RequestMode.Prod);
+				pageLoaded(pageResponse, new Locale(locale), RequestMode.Prod);
 			}
 		});
 		
@@ -63,7 +64,7 @@ public class AspectCommander extends BundlableNodeCommander<Aspect> {
 		return commanderChainer;
 	}
 	
-	private void pageLoaded(StringBuffer pageResponse, String locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException, RequirePathException {
+	private void pageLoaded(StringBuffer pageResponse, Locale locale, RequestMode opMode) throws ConfigException, IOException, ModelOperationException, NoTagHandlerFoundException, DocumentException, RequirePathException {
 		StringWriter writer = new StringWriter();	
 		
 		String version = (opMode == RequestMode.Dev) ? aspect.root().getAppVersionGenerator().getDevVersion() : aspect.root().getAppVersionGenerator().getProdVersion();

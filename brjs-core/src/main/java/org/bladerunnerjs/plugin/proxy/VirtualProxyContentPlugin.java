@@ -7,6 +7,7 @@ import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.utility.ContentPathParser;
 
 public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements ContentPlugin {
@@ -50,14 +51,14 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 
 	@Override
-	public List<String> getValidDevContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
 		initializePlugin();
 		return contentPlugin.getValidDevContentPaths(bundleSet, locales);
 	}
 
 	@Override
-	public List<String> getValidProdContentPaths(BundleSet bundleSet, String... locales) throws ContentProcessingException
+	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
 		initializePlugin();
 		return contentPlugin.getValidProdContentPaths(bundleSet, locales);
