@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,15 +100,15 @@ public class AppRequestHandler
 	public void writeIndexPage(BrowsableNode browsableNode, String locale, String version, ContentOutputStream os, RequestMode requestMode) throws ContentProcessingException {
 		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 		try {
-			String indexPageContent = "";
 			String pathRelativeToApp = RelativePathUtility.get(app.dir(), indexPage);
-			indexPageContent = os.getLocalUrlContents(pathRelativeToApp);
+			StringWriter indexPageContent = new StringWriter();
+			os.writeLocalUrlContentsToWriter(pathRelativeToApp, indexPageContent);
 			
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			
 			String browserCharacterEncoding = browsableNode.root().bladerunnerConf().getBrowserCharacterEncoding();
 			try (Writer writer =  new OutputStreamWriter(byteArrayOutputStream, browserCharacterEncoding)) {
-				browsableNode.filterIndexPage(indexPageContent, locale, version, writer, requestMode);
+				browsableNode.filterIndexPage(indexPageContent.toString(), locale, version, writer, requestMode);
 			}
 
 			os.write(byteArrayOutputStream.toByteArray());

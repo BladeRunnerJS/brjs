@@ -126,4 +126,13 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		}
 	}
 	
+	@Test //TODO: this test is a potentially a false positive - we don't have any way of testing binary data in the spec test framework
+	public void binaryDataCanBeUsedFromUnbundledResources() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(appAspect).containsBinaryFileWithContents("unbundled-resources/binary.data", (""+Math.PI).getBytes());
+		when(appAspect).requestReceived("unbundled-resources/binary.data", response);
+		then(response).textEquals(""+Math.PI);
+	}
+	
 }
