@@ -2,7 +2,11 @@ package org.bladerunnerjs.testing.specutility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.io.IOException;
+
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.JsLib;
@@ -12,6 +16,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.model.exception.template.TemplateInstallationException;
+import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.testing.specutility.engine.BuilderChainer;
 import org.bladerunnerjs.testing.specutility.engine.NodeBuilder;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
@@ -58,7 +63,11 @@ public class AppBuilder extends NodeBuilder<App> {
 
 	public BuilderChainer hasSupportedLocales(String locales) throws ConfigException
 	{
-		app.appConf().setLocales( locales );
+		List<Locale> createdLocales = new ArrayList<Locale>();
+		for (String locale : locales.split(",")) {
+			createdLocales.add( new Locale(locale) );
+		}
+		app.appConf().setLocales( createdLocales.toArray(new Locale[0]) );
 		
 		return builderChainer;
 	}

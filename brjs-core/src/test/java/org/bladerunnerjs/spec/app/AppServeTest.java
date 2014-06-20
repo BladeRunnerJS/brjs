@@ -3,6 +3,7 @@ package org.bladerunnerjs.spec.app;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.Workbench;
+import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.bladerunnerjs.testing.utility.MockContentPlugin;
@@ -40,6 +41,14 @@ public class AppServeTest extends SpecTest {
 	}
 	
 	@Test
+	public void exceptionIsThrownIfAnInvalidLocaleIsRequested() throws Exception {
+		given(defaultAspect).indexPageHasContent("index page")
+    		.and(brjs).localeForwarderHasContents("locale forwarding page");
+    	when(app).requestReceived("zz/", response);
+    	then(exceptions).verifyException(ResourceNotFoundException.class, "zz");
+	}
+	
+	@Test
 	public void indexPageCanBeAccessed() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
 			.and(brjs).localeForwarderHasContents("");
@@ -58,7 +67,8 @@ public class AppServeTest extends SpecTest {
 	@Test
 	public void localesCanBeUsedInTagHandlers() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@localeToken @/>")
-			.and(brjs).localeForwarderHasContents("");
+			.and(brjs).localeForwarderHasContents("")
+			.and(app).hasSupportedLocales("en_GB");
 		when(app).requestReceived("en_GB/", response);
 		then(response).textEquals("- en_GB");
 	}
