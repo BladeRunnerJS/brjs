@@ -92,7 +92,19 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 		List<AssetContainer> assetContainers = new ArrayList<>();
 		
 		assetContainers.add(this);
-		assetContainers.addAll(parent().getNonAspectAssetContainers());
+		
+		for(Bladeset bladeset : parent().bladesets()) {
+			assetContainers.add(bladeset);
+			
+			for(Blade blade : bladeset.blades()) {
+				assetContainers.add(blade);				
+			}
+		}
+		
+		for (JsLib jsLib : parent().jsLibs())
+		{
+			assetContainers.add( jsLib );			
+		}
 		
 		return assetContainers;
 	}

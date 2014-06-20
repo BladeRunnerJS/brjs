@@ -237,7 +237,7 @@ public class CssResourceContentPluginTest extends SpecTest {
     		.and(blade).hasBeenCreated()
 			.and(workbench).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
 			.and(workbench).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
-        when(cssResourcePlugin).getPossibleDevRequests(aspect, requestsList);
+        when(cssResourcePlugin).getPossibleDevRequests(workbench, requestsList);
         thenRequests(requestsList).entriesEqual(
         		"cssresource/bladeset_bs/blade_b1/workbench_resource/resources/dir1/dir2/someFile.txt",
         		"cssresource/bladeset_bs/blade_b1/workbench/theme_myTheme/dir1/dir2/someFile.txt"
@@ -245,7 +245,7 @@ public class CssResourceContentPluginTest extends SpecTest {
  	}
 	
 	@Test
-	public void assetsInABladeWorkbenchAreIncludedInPossibleProdRequests() throws Exception
+	public void assetsInABladeWorkbenchAreNotIncludedInPossibleProdAspectRequests() throws Exception
 	{
 		given(app).hasBeenCreated()
     		.and(bladeset).hasBeenCreated()
@@ -253,7 +253,7 @@ public class CssResourceContentPluginTest extends SpecTest {
     		.and(workbench).containsResourceFileWithContents("dir1/dir2/someFile.txt", "someFile.txt contents")
     		.and(workbench).containsFileWithContents("themes/myTheme/dir1/dir2/someFile.txt", "someFile.txt contents");
 		when(cssResourcePlugin).getPossibleProdRequests(aspect, requestsList);
-		thenRequests(requestsList).entriesEqual(
+		thenRequests(requestsList).entriesDoNotContain(
 				"cssresource/bladeset_bs/blade_b1/workbench_resource/resources/dir1/dir2/someFile.txt",
 				"cssresource/bladeset_bs/blade_b1/workbench/theme_myTheme/dir1/dir2/someFile.txt"
 		);
