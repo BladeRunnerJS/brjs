@@ -7,26 +7,27 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.exception.NamespaceException;
-import com.caplin.cutlass.testing.BRJSTestFactory;
-import com.caplin.cutlass.BRJSAccessor;
+import org.bladerunnerjs.model.BRJSModelAccessor;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
-public class NamespaceCalculatorTest
+public class NamespaceCalculatorTest extends TestModelAccessor
 {
 	
 	private static final String testBase = "src/test/resources/ExampleAppStructure";
 
 	@Before
 	public void setup() throws Exception {
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(testBase)));
+		BRJSModelAccessor.destroy();
+		BRJSModelAccessor.initializeModel(createModel(new File(testBase)));
 	}
 	
 	@Test
@@ -107,7 +108,8 @@ public class NamespaceCalculatorTest
 		FileUtility.copyDirectoryContents(testResourceFolder, tempDir);
 		File tempAppDir = new File(tempDir, APPLICATIONS_DIR + File.separator + "app1");
 		
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempAppDir));
+		BRJSModelAccessor.destroy();
+		BRJSModelAccessor.initializeModel(createModel(tempAppDir));
 		assertTrue(tempAppDir.exists());
 		
 		File svnDir = new File(tempAppDir, "a-aspect/src/.svn");
@@ -132,7 +134,8 @@ public class NamespaceCalculatorTest
 			FileUtility.copyDirectoryContents(testResourceFolder, tempDir);
 			File tempAppDir = new File(tempDir, APPLICATIONS_DIR + File.separator + "app1");
 			
-			BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempAppDir));
+			BRJSModelAccessor.destroy();
+			BRJSModelAccessor.initializeModel(createModel(tempAppDir));
 			assertTrue(tempAppDir.exists());
 			
 			File extraDir = new File(tempAppDir, "a-aspect/src/extraDir");

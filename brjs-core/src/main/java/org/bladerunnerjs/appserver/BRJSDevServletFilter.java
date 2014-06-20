@@ -1,5 +1,6 @@
 package org.bladerunnerjs.appserver;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BRJSModelAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 
@@ -26,7 +28,7 @@ public class BRJSDevServletFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		try {
 			servletContext = filterConfig.getServletContext();
-			BRJSModelAccessor.initializeModel(servletContext);
+			BRJSModelAccessor.initializeModel( new File(servletContext.getRealPath("/")) );
 			
 			try {
 				brjs = BRJSModelAccessor.aquireModel();

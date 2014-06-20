@@ -1,6 +1,6 @@
 package com.caplin.cutlass.command.test.testrunner;
 
-import org.bladerunnerjs.appserver.BRJSModelAccessor;
+import org.bladerunnerjs.model.BRJSModelAccessor;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.TestPack;

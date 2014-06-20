@@ -15,12 +15,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.bladerunnerjs.appserver.BRJSModelAccessor;
+import org.bladerunnerjs.model.BRJSModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 
 import com.caplin.cutlass.util.FileUtility;
 
 import org.bladerunnerjs.utility.ServerUtility;
+import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 import com.caplin.cutlass.app.servlet.RestApiServlet;
 
@@ -41,8 +42,8 @@ public class RestApiServletEndToEndTests
 	public void setup() throws Exception
 	{
 		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
-		BRJSModelAccessor.destroy();
-		brjs = BRJSModelAccessor.initializeModel( sdkRoot );
+		
+		brjs = BRJSModelAccessor.initializeModel( sdkRoot, new PessimisticFileModificationService() );
 		
 		FileUtils.write(brjs.localeForwarderUtil(), "");
 		

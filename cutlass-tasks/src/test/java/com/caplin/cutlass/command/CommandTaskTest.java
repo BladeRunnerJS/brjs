@@ -4,10 +4,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.CommandPlugin;
@@ -22,7 +24,7 @@ import org.bladerunnerjs.plugin.base.AbstractPlugin;
  * It should be extended by any tests that are testing a class that implements CommandTask
  * and the commandTask variable replaced with an instance of the class being tested.
  */
-public class CommandTaskTest
+public class CommandTaskTest extends TestModelAccessor
 {
 	protected CommandPlugin commandTask;
 	protected ConsoleWriter out;

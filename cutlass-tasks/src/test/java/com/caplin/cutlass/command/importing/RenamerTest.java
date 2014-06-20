@@ -12,16 +12,15 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.testing.BRJSTestFactory;
-
+import org.bladerunnerjs.model.BRJSModelAccessor;
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 
-public class RenamerTest
+public class RenamerTest extends TestModelAccessor
 {
 	private static final File TEST_BASE = new File("src/test/resources/Renamer");
 	private File appsDir;
@@ -33,7 +32,7 @@ public class RenamerTest
 		appsDir = createTempAppsDir(new File(TEST_BASE, CutlassConfig.APPLICATIONS_DIR));
 		applicationDir = new File(appsDir, "emptytrader");
 		
-		BRJSAccessor.initialize( BRJSTestFactory.createBRJS(appsDir.getParentFile()) );
+		BRJSModelAccessor.initializeModel( createModel(appsDir.getParentFile()) );
 	}
 	
 	@Test

@@ -1,5 +1,6 @@
 package org.bladerunnerjs.appserver;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletConfig;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BRJSModelAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -34,7 +36,7 @@ public class BRJSDevServlet extends HttpServlet {
 		servletContext = config.getServletContext();
 		
 		try {
-			BRJSModelAccessor.initializeModel(servletContext);
+			BRJSModelAccessor.initializeModel( new File(servletContext.getRealPath("/")) );
 		}
 		catch (InvalidSdkDirectoryException e) {
 			throw new ServletException(e);

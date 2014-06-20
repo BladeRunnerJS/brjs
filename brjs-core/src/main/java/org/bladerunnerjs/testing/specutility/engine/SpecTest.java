@@ -21,7 +21,7 @@ import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.NamedDirNode;
-import org.bladerunnerjs.model.SpecTestModelAccessor;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.engine.NamedNode;
@@ -80,7 +80,7 @@ import org.junit.After;
 import org.junit.Before;
 
 
-public abstract class SpecTest extends SpecTestModelAccessor
+public abstract class SpecTest extends TestModelAccessor
 {
 	public static final String HTTP_REQUEST_PREFIX = "http://localhost";
 	

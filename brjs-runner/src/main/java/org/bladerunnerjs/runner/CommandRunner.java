@@ -13,6 +13,7 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.BRJSModelAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -23,7 +24,6 @@ import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.command.check.CheckCommand;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
 import com.caplin.cutlass.command.importing.ImportApplicationCommand;
@@ -95,7 +95,7 @@ public class CommandRunner {
 			args = processGlobalCommandFlags(args);
 			
 			try {
-				brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir));
+				brjs = BRJSModelAccessor.initializeModel(sdkBaseDir);
 			}
 			catch(InvalidSdkDirectoryException e) {
 				throw new CommandOperationException(e);

@@ -10,17 +10,20 @@ import java.io.PrintStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.caplin.cutlass.util.FileUtility;
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.testing.BRJSTestFactory;
+
+import org.bladerunnerjs.model.BRJSModelAccessor;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
-public class CheckCommandTest
+public class CheckCommandTest extends TestModelAccessor
 {
 	private final File TWO_APPS_WITH_DIFF_JARS_AND_PATCHES = new File("src/test/resources/CheckCommandTest/two-apps-with-diff-jars-and-patches");
 	private final File SINGLE_CLEAN_APP = new File("src/test/resources/CheckCommandTest/single-clean-app");
@@ -42,7 +45,7 @@ public class CheckCommandTest
 	public void testCheckCommandWithTwoAppsAndPatchesFile() throws Exception
 	{
 		FileUtils.copyDirectory(TWO_APPS_WITH_DIFF_JARS_AND_PATCHES, tempDir);
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempDir, new PrintStream(byteStream)));
+		initModel(createModel(tempDir, new PrintStream(byteStream)));
 		CheckCommand checkCommand = new CheckCommand();
 		
 		checkCommand.doCommand( new String[] {""} );
@@ -57,7 +60,7 @@ public class CheckCommandTest
 	public void testCheckThatWeFindJsPatchFilesInRootDirAndAllSubDirectories() throws Exception
 	{
 		FileUtils.copyDirectory(TWO_APPS_WITH_DIFF_JARS_AND_PATCHES, tempDir);
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempDir, new PrintStream(byteStream)));
+		initModel(createModel(tempDir, new PrintStream(byteStream)));
 		CheckCommand checkCommand = new CheckCommand();
 		
 		checkCommand.doCommand( new String[] {""} );
@@ -75,8 +78,8 @@ public class CheckCommandTest
 	public void testCheckCommandWithSingleCleanApp() throws Exception
 	{
 		FileUtils.copyDirectory(SINGLE_CLEAN_APP, tempDir);
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempDir, new PrintStream(byteStream)));
-		BRJSAccessor.root.jsPatches().create();
+		initModel(createModel(tempDir, new PrintStream(byteStream)));
+		BRJSModelAccessor.root.jsPatches().create();
 		CheckCommand checkCommand = new CheckCommand();
 		
 		checkCommand.doCommand( new String[] {""} );
@@ -91,7 +94,7 @@ public class CheckCommandTest
 	public void testCheckCommandWhenOneAppOverridesThirdParty() throws Exception
 	{
 		FileUtils.copyDirectory(TWO_APPS_WITH_SDK_THIRDPARTY_LIB_OVERRIDE, tempDir);
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempDir, new PrintStream(byteStream)));
+		initModel(createModel(tempDir, new PrintStream(byteStream)));
 		CheckCommand checkCommand = new CheckCommand();
 		
 		assertTrue(new File(tempDir, APPLICATIONS_DIR + "/firstapp/libs/jQuery").exists());
@@ -113,7 +116,7 @@ public class CheckCommandTest
 	public void testCheckCommandWithNoSdkThirdparty() throws Exception
 	{
 		FileUtils.copyDirectory(SINGLE_APP_WITH_NO_SDK_THIRDPARTY, tempDir);
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(tempDir, new PrintStream(byteStream)));
+		initModel(createModel(tempDir, new PrintStream(byteStream)));
 		CheckCommand checkCommand = new CheckCommand();
 		
 		assertTrue(new File(tempDir, APPLICATIONS_DIR + "/firstapp/thirdparty-libraries/jQuery").exists());
@@ -124,6 +127,12 @@ public class CheckCommandTest
 		String messageString = byteStream.toString();
 		
 		assertTrue(messageString.contains("There are no thirdparty libraries present in the SDK."));		
+	}
+
+	private void initModel(BRJS createModel) throws InvalidSdkDirectoryException
+	{
+		BRJSModelAccessor.destroy();
+		BRJSModelAccessor.initializeModel(createModel);
 	}
 	
 	

@@ -5,12 +5,11 @@ import java.io.File;
 import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.TypedTestPack;
-import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BladesetNavigationTest
+public class BladesetNavigationTest extends TestModelAccessor
 {
 	private NodeTesterFactory<Bladeset> nodeTesterFactory;
 	private BRJS brjs;
@@ -19,7 +18,7 @@ public class BladesetNavigationTest
 	@Before
 	public void setup() throws Exception
 	{
-		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"));
+		brjs = createModel(new File("src/test/resources/BRJSTest"));
 		bladeset = brjs.app("a1").bladeset("bs1");
 		nodeTesterFactory = new NodeTesterFactory<>(bladeset, Bladeset.class);
 	}
