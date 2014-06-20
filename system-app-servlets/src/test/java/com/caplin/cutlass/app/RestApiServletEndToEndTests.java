@@ -15,7 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.bladerunnerjs.model.BRJSModelAccessor;
+import org.bladerunnerjs.model.StaticModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 
 import com.caplin.cutlass.util.FileUtility;
@@ -43,7 +43,7 @@ public class RestApiServletEndToEndTests
 	{
 		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
 		
-		brjs = BRJSModelAccessor.initializeModel( sdkRoot, new PessimisticFileModificationService() );
+		brjs = StaticModelAccessor.initializeModel( sdkRoot, new PessimisticFileModificationService() );
 		
 		FileUtils.write(brjs.localeForwarderUtil(), "");
 		
@@ -55,7 +55,7 @@ public class RestApiServletEndToEndTests
 	@After
 	public void tearDown() throws Exception
 	{
-		BRJSModelAccessor.destroy();
+		StaticModelAccessor.destroy();
 		
 		if (server != null)
 		{

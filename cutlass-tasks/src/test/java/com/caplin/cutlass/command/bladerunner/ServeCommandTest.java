@@ -14,7 +14,7 @@ import com.caplin.cutlass.command.CommandTaskTest;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.plugins.commands.standard.ServeCommand;
 
-import org.bladerunnerjs.model.BRJSModelAccessor;
+import org.bladerunnerjs.model.StaticModelAccessor;
 
 public class ServeCommandTest extends CommandTaskTest
 {
@@ -28,10 +28,10 @@ public class ServeCommandTest extends CommandTaskTest
 		when(mockAppServer.getPort()).thenReturn(1234);
 		File brjsDir = new File("src/test/resources/ServeCommandTest");
 		brjs = createModel(brjsDir);
-		BRJSModelAccessor.initializeModel(brjs);
+		StaticModelAccessor.initializeModel(brjs);
 		commandTask = new ServeCommand(mockAppServer);
 		commandTask.setBRJS(brjs);
-		out = BRJSModelAccessor.root.getConsoleWriter();
+		out = StaticModelAccessor.root.getConsoleWriter();
 	}
 
 	@Test

@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.BRJSModelAccessor;
+import org.bladerunnerjs.model.StaticModelAccessor;
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 
 public class TestRunnerTest extends TestModelAccessor {
@@ -32,7 +32,7 @@ public class TestRunnerTest extends TestModelAccessor {
 	public void beforeTest() throws Exception {
 		// we're cheekily using another tests sdk structure so the test can work
 		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/" + CutlassConfig.SDK_DIR);
-		BRJSModelAccessor.initializeModel(createModel(sdkBaseDir));
+		StaticModelAccessor.initializeModel(createModel(sdkBaseDir));
 		
 		config = TestRunnerConfiguration.getConfiguration(new File("src/test/resources/TestCommand/ct-runner-resources/test-runner.conf"), browserList("ff5"));
 		config.setOperatingSystem("OS1");

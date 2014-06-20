@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.bladerunnerjs.model.BRJSModelAccessor;
+import org.bladerunnerjs.model.StaticModelAccessor;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
@@ -18,7 +18,7 @@ import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
 public class TestRunnerConfiguration {
-	private Logger logger = BRJSModelAccessor.root.logger(TestRunnerConfiguration.class);
+	private Logger logger = StaticModelAccessor.root.logger(TestRunnerConfiguration.class);
 	private File relativeDir;
 	private String operatingSystem;
 	private String defaultBrowser;

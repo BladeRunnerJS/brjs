@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
-import org.bladerunnerjs.model.BRJSModelAccessor;
+import org.bladerunnerjs.model.StaticModelAccessor;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -64,8 +64,8 @@ public class ImportApplicationCommandUtility
 		
 		FileUtility.copyDirectoryContents(installedSDKJavaApplicationLibFolder, newApplicationDirectoryWEBINFLibFolder);
 		
-		if (BRJSModelAccessor.root != null) {
-			Logger logger = BRJSModelAccessor.root.logger(ImportApplicationCommandUtility.class);
+		if (StaticModelAccessor.root != null) {
+			Logger logger = StaticModelAccessor.root.logger(ImportApplicationCommandUtility.class);
 			logger.info("Successfully copied SDK application jars to '" + applicationDir.getName() + "/WEB-INF/lib'");
 		}
 	}

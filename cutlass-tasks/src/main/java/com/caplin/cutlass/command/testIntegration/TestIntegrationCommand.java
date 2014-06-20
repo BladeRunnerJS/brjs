@@ -15,7 +15,7 @@ import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
 
-import org.bladerunnerjs.model.BRJSModelAccessor;
+import org.bladerunnerjs.model.StaticModelAccessor;
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
 import com.caplin.cutlass.testIntegration.WebDriverProvider;
@@ -28,7 +28,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 	
 	public TestIntegrationCommand(File sdkBaseDir)
 	{
-		out = BRJSModelAccessor.root.getConsoleWriter();
+		out = StaticModelAccessor.root.getConsoleWriter();
 	}
 	
 	@Override
@@ -123,7 +123,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		out.println("Failed tests: " + testResult.getFailureCount());
 		out.println("Ignored tests: " + testResult.getIgnoreCount());
 		out.println("");
-		BRJSModelAccessor.root.getConsoleWriter().flush();
+		StaticModelAccessor.root.getConsoleWriter().flush();
 		if (testResult.getFailures().size() > 0)
 		{
 			out.println("- Failures -");

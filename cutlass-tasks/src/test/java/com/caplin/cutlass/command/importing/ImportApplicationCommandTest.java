@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 
-import org.bladerunnerjs.model.BRJSModelAccessor;
+import org.bladerunnerjs.model.StaticModelAccessor;
 
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -37,8 +37,8 @@ public class ImportApplicationCommandTest extends TestModelAccessor
 		
 		sdkBaseDir = new File(tempDir, "sdk-only/"+CutlassConfig.SDK_DIR);
 		brjs = createModel( sdkBaseDir.getParentFile() );
-		BRJSModelAccessor.destroy();
-		BRJSModelAccessor.initializeModel( brjs );
+		StaticModelAccessor.destroy();
+		StaticModelAccessor.initializeModel( brjs );
 		
 		applicationsDirectory = new File(sdkBaseDir.getParent(), CutlassConfig.APPLICATIONS_DIR);
 		
@@ -139,10 +139,10 @@ public class ImportApplicationCommandTest extends TestModelAccessor
 	@Test 
 	public void zippedApplicationWithParentFolderHasSpacesCanBeImported() throws Exception
 	{
-		BRJSModelAccessor.destroy();
+		StaticModelAccessor.destroy();
 		sdkBaseDir = new File(tempDir, "folder with spaces/" + CutlassConfig.SDK_DIR);
 		brjs = createModel(sdkBaseDir);
-		BRJSModelAccessor.initializeModel(brjs);
+		StaticModelAccessor.initializeModel(brjs);
 		
 		File applicationsDirectory = new File(sdkBaseDir.getParent(), CutlassConfig.APPLICATIONS_DIR);
 		File appDirectory = new File(applicationsDirectory, "novotrader");

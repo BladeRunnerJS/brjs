@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import com.caplin.cutlass.util.FileUtility;
 
-import org.bladerunnerjs.model.BRJSModelAccessor;
+import org.bladerunnerjs.model.StaticModelAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
@@ -79,7 +79,7 @@ public class CheckCommandTest extends TestModelAccessor
 	{
 		FileUtils.copyDirectory(SINGLE_CLEAN_APP, tempDir);
 		initModel(createModel(tempDir, new PrintStream(byteStream)));
-		BRJSModelAccessor.root.jsPatches().create();
+		StaticModelAccessor.root.jsPatches().create();
 		CheckCommand checkCommand = new CheckCommand();
 		
 		checkCommand.doCommand( new String[] {""} );
@@ -131,8 +131,8 @@ public class CheckCommandTest extends TestModelAccessor
 
 	private void initModel(BRJS createModel) throws InvalidSdkDirectoryException
 	{
-		BRJSModelAccessor.destroy();
-		BRJSModelAccessor.initializeModel(createModel);
+		StaticModelAccessor.destroy();
+		StaticModelAccessor.initializeModel(createModel);
 	}
 	
 	
