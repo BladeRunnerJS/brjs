@@ -43,7 +43,8 @@ public class RestApiServletEndToEndTests
 		File sdkRoot = FileUtility.createTemporarySdkInstall(new File("src/test/resources/RestApiServiceTest/no-apps"));
 		ServletModelAccessor.destroy();
 		brjs = ServletModelAccessor.initializeAndGetModel( sdkRoot );
-		FileUtils.write(brjs.sdkLibsDir().file("locale-forwarder.js"), "");
+		
+		FileUtils.write(brjs.localeForwarderUtil(), "");
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
 		server.start();

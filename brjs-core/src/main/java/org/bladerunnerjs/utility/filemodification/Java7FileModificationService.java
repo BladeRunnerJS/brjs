@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.logging.LoggerType;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	public static final String THREAD_IDENTIFIER = "file-modification-service";
@@ -24,7 +23,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	
 	public Java7FileModificationService(LoggerFactory loggerFactory) {
 		try {
-			logger = loggerFactory.getLogger(LoggerType.UTIL, getClass());
+			logger = loggerFactory.getLogger(getClass());
 			watchService = FileSystems.getDefault().newWatchService();
 		}
 		catch (IOException e) {

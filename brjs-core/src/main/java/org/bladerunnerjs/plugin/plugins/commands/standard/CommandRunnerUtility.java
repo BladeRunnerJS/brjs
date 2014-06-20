@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.utility.ProcessLogger;
@@ -17,7 +18,7 @@ public class CommandRunnerUtility {
 	public static void runCommand(BRJS brjs, List<String> command) throws CommandOperationException {
 		try {
 			Process process = runTime.exec(command.toArray(new String[0]));
-			ProcessLogger processLogger = new ProcessLogger(brjs, process, null);
+			ProcessLogger processLogger = new ProcessLogger(brjs, process, LogLevel.INFO, LogLevel.WARN, null);
 			int exitCode = waitForProcess(process, brjs.getConsoleWriter());
 			processLogger.waitFor();
 			

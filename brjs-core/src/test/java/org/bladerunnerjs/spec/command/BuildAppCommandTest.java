@@ -162,7 +162,7 @@ public class BuildAppCommandTest extends SpecTest {
 			.and(brjs.appJars()).containsFile("some-jar.jar")
 			.and(brjs).commandHasBeenRun("create-app", "app")
 			.and(aspect).containsFileWithContents("themes/standard/style.css", "ASPECT theme content")
-			.and(brjs.sdkLibsDir()).containsFileWithContents("locale-forwarder.js", "Locale Forwarder");
+			.and(brjs).localeForwarderHasContents("locale-forwarder.js");
 		when(brjs).runCommand("build-app", "app", "-w");
 		then(brjs).doesNotHaveDir("sdk/app")
 			.and(brjs).hasFile("generated/built-apps/app.war")

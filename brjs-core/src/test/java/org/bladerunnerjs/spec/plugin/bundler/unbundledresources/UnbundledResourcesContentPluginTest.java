@@ -112,4 +112,27 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		);
 	}
 	
+	@Test
+	public void jspsCanBeUsedInUnbundledResources() throws Exception
+	{
+		try {
+    		given(app).hasBeenPopulated()
+        		.and(appAspect).containsFileWithContents("unbundled-resources/file.jsp", "2 + 2 = <%= 2 + 2 %>")
+        		.and(brjs).hasDevVersion("1234")
+        		.and(brjs.applicationServer(appServerPort)).started();
+        	then(brjs.applicationServer(appServerPort)).requestForUrlReturns("/app1/v/123/unbundled-resources/file.jsp", "2 + 2 = 4");
+		} finally {
+			brjs.applicationServer().stop();
+		}
+	}
+	
+	@Test //TODO: this test is a potentially a false positive - we don't have any way of testing binary data in the spec test framework
+	public void binaryDataCanBeUsedFromUnbundledResources() throws Exception
+	{
+		given(app).hasBeenCreated()
+			.and(appAspect).containsBinaryFileWithContents("unbundled-resources/binary.data", (""+Math.PI).getBytes());
+		when(appAspect).requestReceived("unbundled-resources/binary.data", response);
+		then(response).textEquals(""+Math.PI);
+	}
+	
 }

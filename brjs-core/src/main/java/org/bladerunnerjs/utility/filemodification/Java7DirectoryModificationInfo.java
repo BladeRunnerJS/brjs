@@ -19,6 +19,13 @@ import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class Java7DirectoryModificationInfo implements WatchingFileModificationInfo {
+	// TODO: these messages need testing
+	public class Messages {
+		public static final String NEW_DIRECTORY_DETECTED_MESSAGE = "New directory detected '%s'.";
+		public static final String DIRECTORY_DELETED_DETECTED_MESSAGE = "Existing directory deletion detected '%s'.";
+		public static final String DIRECTORY_MODIFICATION_DETECTED_MESSAGE = "File modification within directory '%s' detected.";
+	}
+	
 	private final Java7FileModificationService fileModificationService;
 	private final File dir;
 	private final WatchKey watchKey;
@@ -96,8 +103,17 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 		for(WatchEvent<?> watchEvent : watchEvents) {
 			Path path = (Path) watchEvent.context();
 			File contextFile = new File(dir, path.toString());
+			String directoryPath = relativeDirPath + "/" + path;
 			
-			logger.debug("%s/%s (%s)", relativeDirPath, path, watchEvent.kind().name());
+			if(watchEvent.kind().equals(ENTRY_CREATE)) {
+				logger.debug(Messages.NEW_DIRECTORY_DETECTED_MESSAGE, directoryPath);
+			}
+			else if(watchEvent.kind().equals(ENTRY_DELETE)) {
+				logger.debug(Messages.DIRECTORY_DELETED_DETECTED_MESSAGE, directoryPath);
+			}
+			else if(watchEvent.kind().equals(ENTRY_MODIFY)) {
+				logger.debug(Messages.DIRECTORY_MODIFICATION_DETECTED_MESSAGE, directoryPath);
+			}
 			
 			if(!contextFile.isHidden()) {
 				filesUpdated = true;

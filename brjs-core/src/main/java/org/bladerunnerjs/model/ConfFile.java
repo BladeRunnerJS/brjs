@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.utility.FileModifiedChecker;
+import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 import org.bladerunnerjs.yaml.AbstractYamlConfFile;
 import org.bladerunnerjs.yaml.ConfFactory;
 
@@ -15,7 +15,7 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	private final BRJSNode node;
 	private final Class<CF> confClass;
 	private final File confFile;
-	private FileModifiedChecker fileModifiedChecker;
+	private InfoFileModifiedChecker fileModifiedChecker;
 	private boolean shouldAutoWriteOnSet = true;
 	private boolean hasUnwrittenChanges = false;
 	
@@ -23,9 +23,8 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		this.node = node;
 		this.confClass = confClass;
 		this.confFile = confFile;
+		fileModifiedChecker = new InfoFileModifiedChecker(node.root().getFileInfo(confFile));
 		this.conf = ConfFactory.createConfFile(node, confClass, confFile);
-		fileModifiedChecker = new FileModifiedChecker(confFile);
-		fileModifiedChecker.fileModifiedSinceLastCheck();
 	}
 	
 	public void write() throws ConfigException {
@@ -38,7 +37,8 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 	}
 	
 	protected void reloadConfIfChanged() throws ConfigException {
-		if (fileModifiedChecker.fileModifiedSinceLastCheck() && !hasUnwrittenChanges) {
+		
+		if (fileModifiedChecker.hasChangedSinceLastCheck() && !hasUnwrittenChanges) {
 			conf = ConfFactory.createConfFile(node, confClass, confFile);
 		}
 	}

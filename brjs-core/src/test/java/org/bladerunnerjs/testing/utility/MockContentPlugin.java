@@ -1,13 +1,12 @@
 package org.bladerunnerjs.testing.utility;
 
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
+import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -20,25 +19,26 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 public class MockContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
-	private List<String> prodRequestPaths = new ArrayList<>();
+	private List<String> requestPaths = new ArrayList<>();
 	
 	{
 		try {
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
-				.accepts("mock-content-plugin/").as("request")
+				.accepts("mock-content-plugin/file").as("request")
 				.and("mock-content-plugin/some/other/path/").as("long-request")
 				.and("/mock-content-plugin/unversioned/url").as("unversioned-request");
 			
 			contentPathParser = contentPathParserBuilder.build();
-			prodRequestPaths.add(contentPathParser.createRequest("request"));
-			prodRequestPaths.add(contentPathParser.createRequest("long-request"));
+			requestPaths.add(contentPathParser.createRequest("request"));
+			requestPaths.add(contentPathParser.createRequest("long-request"));
+			requestPaths.add(contentPathParser.createRequest("unversioned-request"));
 		}
 		catch(MalformedTokenException e) {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
@@ -51,7 +51,7 @@ public class MockContentPlugin extends AbstractContentPlugin
 
 	@Override
 	public String getCompositeGroupName() {
-		return "some/mime";
+		return null;
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class MockContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, OutputStream os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
 	{
 		PrintWriter out = new PrintWriter(os);
 		out.print(this.getClass().getCanonicalName());
@@ -81,13 +81,13 @@ public class MockContentPlugin extends AbstractContentPlugin
 	@Override
 	public List<String> getValidDevContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
-		return Arrays.asList();
+		return requestPaths;
 	}
 
 	@Override
 	public List<String> getValidProdContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException
 	{
-		return Arrays.asList();
+		return requestPaths;
 	}
 
 }

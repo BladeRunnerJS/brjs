@@ -11,7 +11,6 @@ import java.util.Map;
 import com.caplin.cutlass.BRJSAccessor;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.test.NoBrowsersDefinedException;
 
 import com.caplin.cutlass.CutlassConfig;
@@ -19,7 +18,7 @@ import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 
 public class TestRunnerConfiguration {
-	private Logger logger = BRJSAccessor.root.logger(LoggerType.UTIL, TestRunnerConfiguration.class);
+	private Logger logger = BRJSAccessor.root.logger(TestRunnerConfiguration.class);
 	private File relativeDir;
 	private String operatingSystem;
 	private String defaultBrowser;

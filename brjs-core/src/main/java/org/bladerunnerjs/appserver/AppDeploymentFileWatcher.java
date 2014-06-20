@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FileInfo;
@@ -38,7 +37,7 @@ public class AppDeploymentFileWatcher extends Thread
 	// TODO: replace this with file watcher - recusive watching info here http://docs.oracle.com/javase/tutorial/essential/io/examples/WatchDir.java
 	public AppDeploymentFileWatcher(BRJS brjs, BRJSApplicationServer appServer, File... rootWatchDirs)
 	{
-		logger = brjs.logger(LoggerType.APP_SERVER, this.getClass());
+		logger = brjs.logger(this.getClass());
 		
 		this.appServer = appServer;
 		this.brjs = brjs;

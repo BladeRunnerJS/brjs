@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -49,7 +50,8 @@ public class ContentPathParser
 			
 			validateRequestToken(token, arg);
 			
-			requestForm = requestForm.replaceAll("<" + token + ">", arg);
+			// use StringUtils so we dont do a regex replace incase 'arg' contains $ which causes it to fail
+			requestForm = StringUtils.replace(requestForm, "<" + token + ">", arg);
 		}
 		
 		return requestForm;

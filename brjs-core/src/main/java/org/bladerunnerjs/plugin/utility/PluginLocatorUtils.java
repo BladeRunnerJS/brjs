@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.Plugin;
 
@@ -31,7 +30,7 @@ public class PluginLocatorUtils
 			} 
 			catch (Throwable ex)
 			{
-				brjs.logger(LoggerType.UTIL, PluginLocatorUtils.class).error(Messages.INIT_PLUGIN_ERROR_MSG, p.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(ex));
+				brjs.logger(PluginLocatorUtils.class).error(Messages.INIT_PLUGIN_ERROR_MSG, p.getClass().getCanonicalName(), ExceptionUtils.getStackTrace(ex));
 			}
 		}
 		return plugins;

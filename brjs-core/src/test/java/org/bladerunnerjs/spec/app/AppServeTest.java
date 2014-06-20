@@ -2,7 +2,6 @@ package org.bladerunnerjs.spec.app;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
-import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.spec.brjs.appserver.MockTagHandler;
@@ -17,7 +16,6 @@ public class AppServeTest extends SpecTest {
 	private Aspect alternateAspect;
 	private Workbench workbench;
 	private StringBuffer response = new StringBuffer();
-	private DirNode sdkLibsDir;
 	
 	@Before
 	public void initTestObjects() throws Exception
@@ -32,29 +30,28 @@ public class AppServeTest extends SpecTest {
 			defaultAspect = app.aspect("default");
 			alternateAspect = app.aspect("alternate");
 			workbench = app.bladeset("bs").blade("b1").workbench();
-			sdkLibsDir = brjs.sdkLibsDir();
 	}
 	
 	@Test
 	public void localeForwardingPageIsReturnedIfNoLocaleIsSpecified() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
-			.and(sdkLibsDir).containsFileWithContents("locale-forwarder.js", "locale forwarding page");
-		when(app).requestReceived("zz/", response);
-		then(exceptions).verifyException(ResourceNotFoundException.class, "zz");
+			.and(brjs).localeForwarderHasContents("locale forwarding page");
+		when(app).requestReceived("", response);
+		then(response).containsText("locale forwarding page");
+	}
+	
+	@Test
+	public void exceptionIsThrownIfAnInvalidLocaleIsRequested() throws Exception {
+		given(defaultAspect).indexPageHasContent("index page")
+    		.and(brjs).localeForwarderHasContents("locale forwarding page");
+    	when(app).requestReceived("zz/", response);
+    	then(exceptions).verifyException(ResourceNotFoundException.class, "zz");
 	}
 	
 	@Test
 	public void indexPageCanBeAccessed() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js");
-		when(app).requestReceived("en/", response);
-		then(response).textEquals("index page");
-	}
-	
-	@Test
-	public void invalidLocalePagesThrowAnException() throws Exception {
-		given(defaultAspect).indexPageHasContent("index page")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js");
+			.and(brjs).localeForwarderHasContents("");
 		when(app).requestReceived("en/", response);
 		then(response).textEquals("index page");
 	}
@@ -62,7 +59,7 @@ public class AppServeTest extends SpecTest {
 	@Test
 	public void tagsWithinIndexPagesAreProcessed() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@tagToken @/>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js");
+			.and(brjs).localeForwarderHasContents("");
 		when(app).requestReceived("en/", response);
 		then(response).textEquals("dev replacement");
 	}
@@ -70,7 +67,7 @@ public class AppServeTest extends SpecTest {
 	@Test
 	public void localesCanBeUsedInTagHandlers() throws Exception {
 		given(defaultAspect).indexPageHasContent("<@localeToken @/>")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js")
+			.and(brjs).localeForwarderHasContents("")
 			.and(app).hasSupportedLocales("en_GB");
 		when(app).requestReceived("en_GB/", response);
 		then(response).textEquals("- en_GB");
@@ -79,7 +76,7 @@ public class AppServeTest extends SpecTest {
 	@Test
 	public void workbenchPageCanBeAccessed() throws Exception {
 		given(workbench).indexPageHasContent("workbench index page")
-			.and(sdkLibsDir).containsFile("locale-forwarder.js");
+			.and(brjs).localeForwarderHasContents("");
 		when(app).requestReceived("workbench/bs/b1/en/", response);
 		then(response).textEquals("workbench index page");
 	}

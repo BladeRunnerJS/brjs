@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.StandardFileInfo;
@@ -85,7 +84,7 @@ public class MockRootNode implements RootNode
 	}
 
 	@Override
-	public Logger logger(LoggerType type, Class<?> clazz)
+	public Logger logger(Class<?> clazz)
 	{
 		return new Logger()
 		{

@@ -1,7 +1,10 @@
 "use strict";
 
-var @lib = function()
-{
-};
+var @lib = {}
+
+@lib.helloWorldUtil = function() {
+	return "Hello World!";
+}
+
 
 module.exports = @lib;

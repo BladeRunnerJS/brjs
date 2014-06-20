@@ -18,7 +18,6 @@ import com.google.javascript.jscomp.SourceFile;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.MinifierPlugin;
@@ -49,7 +48,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	@Override
 	public void setBRJS(BRJS brjs) 
 	{
-		logger = brjs.logger(LoggerType.MINIFIER, this.getClass());
+		logger = brjs.logger(this.getClass());
 	}
 	
 	@Override

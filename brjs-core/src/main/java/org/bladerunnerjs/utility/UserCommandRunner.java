@@ -10,20 +10,12 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.plugin.plugins.commands.core.HelpCommand;
-import org.bladerunnerjs.plugin.plugins.commands.core.VersionCommand;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class UserCommandRunner {
 	
 	public static int run(BRJS brjs, CommandList commandList, LogLevelAccessor logLevelAccessor, String args[]) throws CommandOperationException {
-		ConsoleWriter out = brjs.getConsoleWriter();
-		
-		if (!CommandRunner.extractCommandFromArgs(args).equals(new VersionCommand().getCommandName())) {
-			out.println(brjs.versionInfo().toString());
-			out.println("");
-		}
-		
-		return doRunCommand(brjs, args, out);
+		return doRunCommand(brjs, args, brjs.getConsoleWriter());
 	}
 
 	private static int doRunCommand(BRJS brjs, String[] args, ConsoleWriter out) throws CommandOperationException

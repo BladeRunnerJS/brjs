@@ -2,6 +2,8 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
@@ -14,6 +16,7 @@ import org.bladerunnerjs.model.exception.command.DirectoryAlreadyExistsCommandEx
 import org.bladerunnerjs.model.exception.command.DirectoryDoesNotExistCommandException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -25,6 +28,8 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 
 	public class Messages {
 		public static final String APP_BUILT_CONSOLE_MSG = "Built app '%s' available at '%s'";
+		public static final String UNABLE_TO_DELETE_BULIT_APP_EXCEPTION = "Unable to automatically delete a previously built app at %s, possibly because its being used by another process. "+
+						"The app will be exported to %s instead.";
 	}
 	
 	private BRJS brjs;
@@ -66,16 +71,30 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		boolean warExport = parsedArgs.getBoolean("war");
 		
 		App app = brjs.app(appName);
-		File targetDir;
+		
+		File targetDir = brjs.storageDir("built-apps");
+		File appExportDir;
+		File warExportFile;
+		
 		if (targetDirPath == null) 
 		{
-			targetDir = brjs.storageDir("built-apps");
-			File appExportDir = new File(targetDir, appName);
-			File warExportFile = new File(targetDir, appName+".war");
-			if (warExport) {
-				FileUtils.deleteQuietly(warExportFile);
-			} else {
-				FileUtils.deleteQuietly(appExportDir);			
+			appExportDir = new File(targetDir, appName);
+			warExportFile = new File(targetDir, appName+".war");
+			
+			if (warExport && warExportFile.exists()) {
+				boolean deleted = FileUtils.deleteQuietly(warExportFile);
+				if (!deleted) {
+					File oldWarExportFile = warExportFile;
+					warExportFile = new File(targetDir, appName+"_"+getBuiltAppTimestamp()+".war");
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(app.dir(), oldWarExportFile), RelativePathUtility.get(app.dir(), warExportFile)); 
+				}
+			} else if (!warExport && appExportDir.exists()){
+				boolean deleted = FileUtils.deleteQuietly(appExportDir);			
+				if (!deleted) {
+					File oldAppExportDir = appExportDir;
+					appExportDir = new File(targetDir, appName+"_"+getBuiltAppTimestamp());
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(app.dir(), oldAppExportDir), RelativePathUtility.get(app.dir(), appExportDir));
+				}
 			}
 			targetDir.mkdirs();
 		} 
@@ -85,6 +104,8 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 			{
 				targetDir = brjs.file("sdk/" + targetDirPath);
 			}
+			appExportDir = new File(targetDir, appName);
+			warExportFile = new File(targetDir, appName+".war");
 		}
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
@@ -92,14 +113,12 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		
 		try {
 			if (warExport) {
-				File warExportFile = new File(targetDir, appName+".war");
 				if(warExportFile.exists()) throw new DirectoryAlreadyExistsCommandException(warExportFile.getPath(), this);
-				app.buildWar(targetDir);
+				app.buildWar(warExportFile);
 				out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getCanonicalPath());
 			} else {
-				File appExportDir = new File(targetDir, appName);
 				if(appExportDir.exists()) throw new DirectoryAlreadyExistsCommandException(appExportDir.getPath(), this);			
-				app.build(targetDir);
+				app.build(appExportDir);
 				out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());			
 			}
 		}
@@ -108,5 +127,11 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 		}
 		
 		return 0;
+	}
+	
+	private String getBuiltAppTimestamp() {
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhmmss");
+		return sdf.format(date);
 	}
 }
