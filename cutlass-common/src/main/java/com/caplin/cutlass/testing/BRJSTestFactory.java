@@ -8,6 +8,7 @@ import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.testing.utility.MockAppVersionGenerator;
+import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationService;
 
 

@@ -7,7 +7,6 @@ import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.console.ConsoleWriter;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -87,14 +86,14 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 				if (!deleted) {
 					File oldWarExportFile = warExportFile;
 					warExportFile = new File(targetDir, appName+"_"+getBuiltAppTimestamp()+".war");
-					brjs.logger(LoggerType.COMMAND, this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(app.dir(), oldWarExportFile), RelativePathUtility.get(app.dir(), warExportFile)); 
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(app.dir(), oldWarExportFile), RelativePathUtility.get(app.dir(), warExportFile)); 
 				}
 			} else if (!warExport && appExportDir.exists()){
 				boolean deleted = FileUtils.deleteQuietly(appExportDir);			
 				if (!deleted) {
 					File oldAppExportDir = appExportDir;
 					appExportDir = new File(targetDir, appName+"_"+getBuiltAppTimestamp());
-					brjs.logger(LoggerType.COMMAND, this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(app.dir(), oldAppExportDir), RelativePathUtility.get(app.dir(), appExportDir));
+					brjs.logger(this.getClass()).warn( Messages.UNABLE_TO_DELETE_BULIT_APP_EXCEPTION, RelativePathUtility.get(app.dir(), oldAppExportDir), RelativePathUtility.get(app.dir(), appExportDir));
 				}
 			}
 			targetDir.mkdirs();

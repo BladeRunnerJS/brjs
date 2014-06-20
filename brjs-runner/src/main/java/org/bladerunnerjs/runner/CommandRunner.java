@@ -4,15 +4,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.bladerunnerjs.logger.RootConsoleLogger;
+import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.logger.LogLevel;
-import org.bladerunnerjs.logging.ConsoleLoggerConfigurator;
-import org.bladerunnerjs.logging.LogConfiguration;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -29,9 +30,27 @@ import com.caplin.cutlass.command.importing.ImportApplicationCommand;
 import com.caplin.cutlass.command.test.TestCommand;
 import com.caplin.cutlass.command.test.TestServerCommand;
 import com.caplin.cutlass.command.testIntegration.TestIntegrationCommand;
+import com.martiansoftware.jsap.FlaggedOption;
+import com.martiansoftware.jsap.JSAP;
+import com.martiansoftware.jsap.JSAPException;
+import com.martiansoftware.jsap.JSAPResult;
+import com.martiansoftware.jsap.Switch;
 
 public class CommandRunner {
-
+	private static final JSAP argsParser = new JSAP();
+	
+	static {
+		try {
+			argsParser.registerParameter(new Switch("verbose").setShortFlag('v').setLongFlag("verbose").setDefault("false").setHelp("verbose level logging"));
+			argsParser.registerParameter(new Switch("debug").setShortFlag('d').setLongFlag("debug").setDefault("false").setHelp("debug level logging"));
+			argsParser.registerParameter(new FlaggedOption("log").setLongFlag("log").setHelp("the comma delimited list of packages to show messages from, or '*' to show everything"));
+			argsParser.registerParameter(new Switch("log-info").setLongFlag("log-info").setDefault("false").setHelp("show which class each log line comes from"));
+		}
+		catch (JSAPException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	public static void main(String[] args) {
 		int exitCode = -1;
 		try 
@@ -76,7 +95,7 @@ public class CommandRunner {
 			args = processGlobalCommandFlags(args);
 			
 			try {
-				brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir, new ConsoleLoggerConfigurator(getRootLogger())));
+				brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir));
 			}
 			catch(InvalidSdkDirectoryException e) {
 				throw new CommandOperationException(e);
@@ -85,7 +104,7 @@ public class CommandRunner {
 			brjs.populate();
 			
 			injectLegacyCommands(brjs);
-			return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getRootLogger()), args);
+			return brjs.runUserCommand(new CommandConsoleLogLevelAccessor(getLoggerStore()), args);
 		}
 		catch(IOException e) {
 			throw new RuntimeException(e);
@@ -100,41 +119,42 @@ public class CommandRunner {
 	}
 	
 	private String[] processGlobalCommandFlags(String[] args) {
-		if (args.length > 0) {
-			String lastArg = args[args.length - 1];
+		JSAPResult parsedArgs;
+		int i = 0;
+		while(i < args.length) {
+			parsedArgs = argsParser.parse(Arrays.copyOfRange(args, i, args.length));
 			
-			if(lastArg.equals("--quiet") || lastArg.equals("--verbose") || lastArg.equals("--debug")) {
-				args = ArrayUtils.subarray(args, 0, args.length - 1);
-				setExplicitLogLevel(lastArg);
+			if(parsedArgs.success()) {
+				args = Arrays.copyOfRange(args, 0, i);
+				processedParsedArgs(parsedArgs);
+				break;
 			}
-			else {
-				setDefaultLogLevel();
-			}
-		}
-		else {
-			setDefaultLogLevel();
+			++i;
 		}
 		
 		return args;
 	}
 	
-	private void setExplicitLogLevel(String levelFlag) {
-		RootConsoleLogger rootLogger = getRootLogger();
-		LogLevel logLevel = (levelFlag.equals("--quiet")) ? LogLevel.WARN : LogLevel.DEBUG;
-		rootLogger.setLogLevel(logLevel);
+	private void processedParsedArgs(JSAPResult parsedArgs) {
+		boolean isVerbose = parsedArgs.getBoolean("verbose");
+		boolean isDebug = parsedArgs.getBoolean("debug");
+		List<String> whitelistedPackages = (parsedArgs.getString("log") != null) ? Arrays.asList(parsedArgs.getString("log").split("\\s*,\\s*")) : new ArrayList<String>();
+		boolean logClassNames = parsedArgs.getBoolean("log-info");
 		
-		if(levelFlag.equals("--debug")) {
-			rootLogger.setDebugMode(true);
+		if(isDebug) {
+			getLoggerStore().setLogLevel(LogLevel.DEBUG);
 		}
+		else if(isVerbose) {
+			getLoggerStore().setLogLevel(LogLevel.INFO);
+		}
+		
+		if(logClassNames) {
+			getLoggerStore().setLogClassNames(true);
+		}
+		
+		getLoggerStore().setWhitelistedPackages(whitelistedPackages);
 	}
-	
-	private void setDefaultLogLevel() {
-		LogConfiguration logConfigurator = new ConsoleLoggerConfigurator(getRootLogger());
-		logConfigurator.ammendProfile(LogLevel.INFO)
-			.pkg("org.hibernate").logsAt(LogLevel.WARN); // TODO: this is a plugin concern, so should be handled within the model
-		logConfigurator.setLogLevel(LogLevel.INFO);
-	}
-	
+
 	private void injectLegacyCommands(BRJS brjs) {
 		try {
 			CommandList commandList = brjs.plugins().commandList();
@@ -150,8 +170,8 @@ public class CommandRunner {
 		}
 	}
 	
-	private RootConsoleLogger getRootLogger() {
-		return StaticLoggerBinder.getSingleton().getLoggerFactory().getRootLogger();
+	private ConsoleLoggerStore getLoggerStore() {
+		return StaticLoggerBinder.getSingleton().getLoggerFactory();
 	}
 	
 	class NoSdkArgumentException extends CommandOperationException {

@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 
 
@@ -16,9 +16,13 @@ public class ProcessLogger {
 	private Logger logger;
 	private int childThreads = 2;
 	private boolean running = true;
+	private final LogLevel standardOutLogLevel;
+	private final LogLevel standardErrorLogLevel;
 	
-	public ProcessLogger(BRJS brjs, Process process, String processName) throws IOException {
-		logger = brjs.logger(LoggerType.UTIL, ProcessLogger.class);
+	public ProcessLogger(BRJS brjs, Process process, LogLevel standardOutLogLevel, LogLevel standardErrorLogLevel, String processName) throws IOException {
+		logger = brjs.logger(ProcessLogger.class);
+		this.standardOutLogLevel = standardOutLogLevel;
+		this.standardErrorLogLevel = standardErrorLogLevel;
 		processName = (processName == null) ? "" : processName;
 		
 		logProcessStream(processName, new InfoLogger(), process.getInputStream());
@@ -85,14 +89,38 @@ public class ProcessLogger {
 	private class InfoLogger implements StreamLogger {
 		@Override
 		public void log(String message, Object... params) {
-			logger.info(message, params);
+			logMessage(standardOutLogLevel, message, params);
 		}
 	}
 	
 	private class ErrorLogger implements StreamLogger {
 		@Override
 		public void log(String message, Object... params) {
-			logger.warn(message, params);
+			logMessage(standardErrorLogLevel, message, params);
+		}
+	}
+	
+	private void logMessage(LogLevel logLevel, String message, Object[] params) {
+		switch(logLevel) {
+			case FATAL:
+				logger.fatal(message, params);
+				break;
+			
+			case ERROR:
+				logger.error(message, params);
+				break;
+			
+			case WARN:
+				logger.warn(message, params);
+				break;
+			
+			case INFO:
+				logger.info(message, params);
+				break;
+			
+			case DEBUG:
+				logger.debug(message, params);
+				break;
 		}
 	}
 }

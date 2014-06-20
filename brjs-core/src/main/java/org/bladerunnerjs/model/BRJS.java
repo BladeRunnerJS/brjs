@@ -15,10 +15,8 @@ import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.console.PrintStreamConsoleWriter;
-import org.bladerunnerjs.logging.LogConfiguration;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
@@ -49,11 +47,11 @@ public class BRJS extends AbstractBRJSRootNode
 	public static final String PRODUCT_NAME = "BladeRunnerJS";
 	
 	public class Messages {
-		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "performing node discovery";
-		public static final String CREATING_PLUGINS_LOG_MSG = "creating plugins";
-		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "making plugins available via model";
-		public static final String PLUGIN_FOUND_MSG = "found plugin %s";
-		public static final String CLOSE_METHOD_NOT_INVOKED = "the BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
+		public static final String PERFORMING_NODE_DISCOVERY_LOG_MSG = "Performing node discovery.";
+		public static final String CREATING_PLUGINS_LOG_MSG = "Creating plugins.";
+		public static final String MAKING_PLUGINS_AVAILABLE_VIA_MODEL_LOG_MSG = "Making plugins available via model.";
+		public static final String PLUGIN_FOUND_MSG = "Found plugin '%s'.";
+		public static final String CLOSE_METHOD_NOT_INVOKED = "The BRJS.close() method was not manually invoked, which causes resource leaks that can lead to failure.";
 	}
 	
 	private final NodeList<App> userApps = new NodeList<>(this, App.class, "apps", null);
@@ -97,7 +95,7 @@ public class BRJS extends AbstractBRJSRootNode
 		
 		this.fileModificationService = fileModificationService;
 		
-		logger = loggerFactory.getLogger(LoggerType.CORE, BRJS.class);
+		logger = loggerFactory.getLogger(BRJS.class);
 		
 		logger.info(Messages.CREATING_PLUGINS_LOG_MSG);
 		pluginLocator.createPlugins(this);
@@ -122,15 +120,9 @@ public class BRJS extends AbstractBRJSRootNode
 		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
 	}
 	
-	public BRJS(File brjsDir, LogConfiguration logConfiguration) throws InvalidSdkDirectoryException
+	public BRJS(File brjsDir) throws InvalidSdkDirectoryException
 	{
-		// TODO: what was the logConfiguration parameter going to be used for?
 		this(brjsDir, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
-	}
-	
-	public BRJS(File brjsDir, LogConfiguration logConfigurator, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
-		// TODO: what was the logConfiguration parameter going to be used for?
-		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
 	}
 	
 	@Override

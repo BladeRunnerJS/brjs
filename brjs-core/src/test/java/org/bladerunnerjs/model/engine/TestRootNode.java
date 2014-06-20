@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
-import org.bladerunnerjs.testing.utility.MockLoggerFactory;
+import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.filemodification.PessimisticFileModificationInfo;
 
 
@@ -25,7 +25,7 @@ public final class TestRootNode extends AbstractRootNode
 	
 	public TestRootNode(File dir) throws InvalidSdkDirectoryException
 	{
-		this(dir, new MockLoggerFactory());
+		this(dir, new StubLoggerFactory());
 	}
 	
 	public TestRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException

@@ -47,9 +47,10 @@ public class HelpCommandTest extends SpecTest
 			"  version      :Displays the BladeRunnerJS version     ",
 			"",
 			"Supported flags:",
-			"  --quiet",
 			"  --verbose",
-			"  --debug");
+			"  --debug",
+			"  --log <log-packages> (the comma delimited list of packages to show messages from, or '*' to show everything)",
+			"  --log-info (show which class each log line comes from)");
 	}
 	
 	@Test

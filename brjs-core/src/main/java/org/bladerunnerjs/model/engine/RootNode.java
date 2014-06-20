@@ -4,14 +4,13 @@ import java.io.File;
 
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 
 public interface RootNode extends Node {
-	Logger logger(LoggerType type, Class<?> classRef);	
+	Logger logger(Class<?> classRef);	
 	ConsoleWriter getConsoleWriter();
 	void setConsoleWriter(ConsoleWriter consoleWriter);
 	boolean isRootDir(File dir);

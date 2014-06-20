@@ -7,7 +7,6 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 
 
@@ -26,7 +25,7 @@ public class TypedPluginCreator<I>
 	{
 		List<I> objectList = new ArrayList<I>();
 
-		Logger logger = brjs.logger(LoggerType.CORE, BRJSPluginLocator.class);
+		Logger logger = brjs.logger(BRJSPluginLocator.class);
 
 		ServiceLoader<I> loader = ServiceLoader.load(iFace);
 		try
