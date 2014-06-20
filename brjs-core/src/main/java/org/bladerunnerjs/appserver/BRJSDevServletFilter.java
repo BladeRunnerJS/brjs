@@ -26,14 +26,14 @@ public class BRJSDevServletFilter implements Filter {
 	public void init(FilterConfig filterConfig) throws ServletException {
 		try {
 			servletContext = filterConfig.getServletContext();
-			BRJSThreadSafeModelAccessor.initializeModel(servletContext);
+			BRJSModelAccessor.initializeModel(servletContext);
 			
 			try {
-				brjs = BRJSThreadSafeModelAccessor.aquireModel();
+				brjs = BRJSModelAccessor.aquireModel();
 				app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
 			}
 			finally {
-				BRJSThreadSafeModelAccessor.releaseModel();
+				BRJSModelAccessor.releaseModel();
 			}
 		}
 		catch (InvalidSdkDirectoryException e) {
@@ -43,7 +43,7 @@ public class BRJSDevServletFilter implements Filter {
 	
 	@Override
 	public void destroy() {
-		BRJSThreadSafeModelAccessor.destroy();
+		BRJSModelAccessor.destroy();
 	}
 	
 	@Override

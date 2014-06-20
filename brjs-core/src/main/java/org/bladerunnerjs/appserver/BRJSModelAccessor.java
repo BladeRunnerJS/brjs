@@ -14,26 +14,28 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
  * WARNING: Do not use this class. Any plugins that should have a reference to the BRJS instance will be provided it in the setBRJS() method. 
  *
  */
-public class BRJSThreadSafeModelAccessor {
+public class BRJSModelAccessor {
 	// TODO: change back to `private` once the other ServletModelAccessor class has been deleted
 	// Note: this should be the only static state within 'brjs-core'
 	protected static BRJS model;
 	private static final ReentrantLock lock = new ReentrantLock();
 	
-	public static synchronized void initializeModel(ServletContext servletContext) throws InvalidSdkDirectoryException {
-		initializeModel( new File(servletContext.getRealPath("/")) );
+	public static synchronized BRJS initializeModel(ServletContext servletContext) throws InvalidSdkDirectoryException {
+		return initializeModel( new File(servletContext.getRealPath("/")) );
 	}
 	
-	public static synchronized void initializeModel(File path) throws InvalidSdkDirectoryException {
+	public static synchronized BRJS initializeModel(File path) throws InvalidSdkDirectoryException {
 		if(model == null) {
 			model = new BRJS(path);
 		}
+		return model;
 	}
 	
-	public static synchronized void initializeModel(BRJS brjs) {
+	public static synchronized BRJS initializeModel(BRJS brjs) {
 		if(model == null) {
 			model = brjs;
 		}
+		return model;
 	}
 	
 	public static synchronized void destroy() {

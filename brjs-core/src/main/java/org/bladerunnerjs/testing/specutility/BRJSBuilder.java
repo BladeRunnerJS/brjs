@@ -7,7 +7,7 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
+import org.bladerunnerjs.appserver.BRJSModelAccessor;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
@@ -254,8 +254,8 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 
 	public BuilderChainer usedForServletModel()
 	{
-		BRJSThreadSafeModelAccessor.destroy();
-		BRJSThreadSafeModelAccessor.initializeModel(brjs);
+		BRJSModelAccessor.destroy();
+		BRJSModelAccessor.initializeModel(brjs);
 		return builderChainer;
 	}
 	

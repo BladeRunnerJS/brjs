@@ -34,14 +34,14 @@ public class BRJSDevServlet extends HttpServlet {
 		servletContext = config.getServletContext();
 		
 		try {
-			BRJSThreadSafeModelAccessor.initializeModel(servletContext);
+			BRJSModelAccessor.initializeModel(servletContext);
 		}
 		catch (InvalidSdkDirectoryException e) {
 			throw new ServletException(e);
 		}
 		
 		try {
-			brjs = BRJSThreadSafeModelAccessor.aquireModel();
+			brjs = BRJSModelAccessor.aquireModel();
 			app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
 			
 			if(app == null) {
@@ -49,13 +49,13 @@ public class BRJSDevServlet extends HttpServlet {
  			}
 		}
 		finally {
-			BRJSThreadSafeModelAccessor.releaseModel();
+			BRJSModelAccessor.releaseModel();
 		}
 	}
 	
 	@Override
 	public void destroy() {
-		BRJSThreadSafeModelAccessor.destroy();
+		BRJSModelAccessor.destroy();
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class BRJSDevServlet extends HttpServlet {
 		}
 		
 		try {
-			BRJSThreadSafeModelAccessor.aquireModel();
+			BRJSModelAccessor.aquireModel();
 			ServletContentOutputStream os = new ServletContentOutputStream(app, servletContext, request, response);
 			app.handleLogicalRequest(requestPath, os);
 		}
@@ -79,7 +79,7 @@ public class BRJSDevServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 		finally {
-			BRJSThreadSafeModelAccessor.releaseModel();
+			BRJSModelAccessor.releaseModel();
 		}
 	}
 	
