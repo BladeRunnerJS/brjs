@@ -1,4 +1,4 @@
-package org.bladerunnerjs.testing.utility;
+package org.bladerunnerjs.spec.brjs;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 
-public class MockContentPlugin extends AbstractContentPlugin
+public class MockContentPluginWithIncorrectContentPaths extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
 	private List<String> requestPaths = new ArrayList<>();
@@ -25,13 +25,11 @@ public class MockContentPlugin extends AbstractContentPlugin
 			ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 			contentPathParserBuilder
 				.accepts("mock-content-plugin/file").as("request")
-				.and("mock-content-plugin/some/other/path/").as("long-request")
-				.and("/mock-content-plugin/unversioned/url").as("unversioned-request");
+				.and("mock-content-plugin/file/some/other/path/").as("nested-request");
 			
 			contentPathParser = contentPathParserBuilder.build();
 			requestPaths.add(contentPathParser.createRequest("request"));
-			requestPaths.add(contentPathParser.createRequest("long-request"));
-			requestPaths.add(contentPathParser.createRequest("unversioned-request"));
+			requestPaths.add(contentPathParser.createRequest("nested-request"));
 		}
 		catch(MalformedTokenException e) {
 			throw new RuntimeException(e);

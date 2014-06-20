@@ -5,7 +5,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import javax.servlet.ServletContext;
 
-import org.bladerunnerjs.logging.NullLogConfigurator;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 
@@ -27,7 +26,7 @@ public class BRJSThreadSafeModelAccessor {
 	
 	public static synchronized void initializeModel(File path) throws InvalidSdkDirectoryException {
 		if(model == null) {
-			model = new BRJS(path, new NullLogConfigurator());
+			model = new BRJS(path);
 		}
 	}
 	

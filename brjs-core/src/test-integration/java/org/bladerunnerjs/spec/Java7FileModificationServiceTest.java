@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.testing.utility.MockLoggerFactory;
+import org.bladerunnerjs.testing.utility.StubLoggerFactory;
 import org.bladerunnerjs.utility.FileUtility;
 import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModifiedChecker;
@@ -20,7 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class Java7FileModificationServiceTest {
-	private final Java7FileModificationService fileModificationService = new Java7FileModificationService(new MockLoggerFactory());
+	private final Java7FileModificationService fileModificationService = new Java7FileModificationService(new StubLoggerFactory());
 	private final Map<String, FileModifiedChecker> watches = new HashMap<>();
 	private File tempDir;
 	

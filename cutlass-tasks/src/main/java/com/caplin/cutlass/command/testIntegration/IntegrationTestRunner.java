@@ -6,14 +6,13 @@ import java.util.List;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 
 import com.caplin.cutlass.BRJSAccessor;
 
 
 public class IntegrationTestRunner
 {
-	private Logger logger = BRJSAccessor.root.logger(LoggerType.COMMAND, IntegrationTestRunner.class);
+	private Logger logger = BRJSAccessor.root.logger(IntegrationTestRunner.class);
 	
 	public Result runTests(File runnerConf, List<Class<?>> classes) throws Exception {
 		logger.info("Running tests '" + classes.toString() + "'");

@@ -9,7 +9,6 @@ import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
@@ -53,9 +52,9 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	}
 	
 	@Override
-	public Logger logger(LoggerType type, Class<?> clazz)
+	public Logger logger(Class<?> clazz)
 	{
-		return loggerFactory.getLogger(type, clazz);
+		return loggerFactory.getLogger(clazz);
 	}
 	
 	@Override

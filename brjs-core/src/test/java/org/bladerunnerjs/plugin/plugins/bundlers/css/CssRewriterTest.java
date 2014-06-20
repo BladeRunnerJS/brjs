@@ -182,9 +182,9 @@ public class CssRewriterTest extends SpecTest
 	@Test
 	public void poundSignCharactersInFilenamesAreCorrectlyEncoded() throws Exception
 	{
-		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./some$image.png');");
+		given(aspect).containsFileWithContents("themes/common/style.css", "background:url('./some£image.png');");
 		when(aspect).requestReceived("css/common/bundle.css", response);
-		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some$image.png');");
+		then(response).containsText("background:url('../../cssresource/aspect_default/theme_common/some%C2%A3image.png');");
 	}
 	
 	@Test

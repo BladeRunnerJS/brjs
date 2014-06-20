@@ -1,6 +1,7 @@
 package org.bladerunnerjs.appserver;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -28,24 +29,19 @@ public class ServletContentOutputStream extends StaticContentOutputStream
 	}
 	
 	@Override
-	public String getLocalUrlContents(String urlPath) throws IOException {		
+	public void writeLocalUrlContentsToAnotherStream(String urlPath, OutputStream output) throws IOException {		
 		try {
 			if (urlPath.endsWith(".jsp")) {
 				urlPath = (!urlPath.startsWith("/")) ? "/"+urlPath : urlPath;
     			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
     			servletContext.getRequestDispatcher(urlPath).include(request, responseWrapper);
-    			return IOUtils.toString(responseWrapper.getReader());
+    			IOUtils.copy(responseWrapper.getReader(), output);
     		} else {
-    			return super.getLocalUrlContents(urlPath);
+    			super.writeLocalUrlContentsToAnotherStream(urlPath, output);
     		}
 		} catch (ServletException ex) {
 			throw new IOException(ex);
 		}
-	}
-	
-	@Override
-	public void writeLocalUrlContents(String url) throws IOException {
-		IOUtils.write( getLocalUrlContents(url), this );
 	}
 	
 }

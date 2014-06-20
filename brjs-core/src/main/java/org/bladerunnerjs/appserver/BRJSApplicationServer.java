@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.Servlet;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.utility.ServerUtility;
@@ -31,12 +30,12 @@ public class BRJSApplicationServer implements ApplicationServer
 	}
 	
 	public class Messages {
-		public static final String SERVER_STARTING_LOG_MSG = "%s server starting";
-		public static final String SERVER_STOPPING_LOG_MSG = "%s server stopping";
+		public static final String SERVER_STARTING_LOG_MSG = "%s server starting.";
+		public static final String SERVER_STOPPING_LOG_MSG = "%s server stopping.";
 		public static final String PORT_ALREADY_BOUND_EXCEPTION_MSG = "Port '%s' is already bound. Either another instance of %s is running or another server is using this port.";
-		public static final String SERVER_STARTED_LOG_MESSAGE = "Application server started on port %s";
-		public static final String SERVER_STOPPED_LOG_MESSAGE = "Application server running on port %s stopped";
-		public static final String ERROR_CREATING_DEPLOYMENT_WATCHER = "Error creating app deployment watcher. New apps will not be automatically deployed";	// TODO This message is not used anywhere
+		public static final String SERVER_STARTED_LOG_MESSAGE = "Application server started on port %s.";
+		public static final String SERVER_STOPPED_LOG_MESSAGE = "Application server running on port %s stopped.";
+		public static final String ERROR_CREATING_DEPLOYMENT_WATCHER = "Error creating app deployment watcher. New apps will not be automatically deployed.";	// TODO This message is not used anywhere
 	}
 	
 	private BRJS brjs;
@@ -51,7 +50,7 @@ public class BRJSApplicationServer implements ApplicationServer
 	{
 		this.brjs = brjs;
 		this.port = port;
-		logger = brjs.logger(LoggerType.APP_SERVER, ApplicationServer.class);
+		logger = brjs.logger(ApplicationServer.class);
 		
 		server = new Server();
 		SelectChannelConnector connector = new SelectChannelConnector();

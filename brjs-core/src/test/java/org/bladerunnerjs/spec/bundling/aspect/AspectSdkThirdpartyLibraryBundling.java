@@ -9,7 +9,6 @@ import org.bladerunnerjs.model.TestPack;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 //TODO: why don't we get a namespace exception when we define classes outside of the namespace (e.g. 'appns' when the default namespace is 'appns')?
@@ -308,9 +307,8 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			.and(otherResponse).doesNotContainText("window.thirdpartyLib = { }");
 	}
 	
-	@Ignore
 	@Test
-	public void weDontBundleLibraryTestClasses() throws Exception {
+	public void weDontIncludeLibraryTestClassesInAnAspectBundle() throws Exception {
 		given(brLib).hasBeenCreated()
 			.and(aspect).indexPageHasContent("'brlib/Class'")
     		.and(brLibTests).hasTestClass("brlib/Class");

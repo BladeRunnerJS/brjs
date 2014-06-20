@@ -8,7 +8,6 @@ import java.io.StringReader;
 import java.util.TreeMap;
 import java.util.Map;
 
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -53,7 +52,7 @@ public class SourceModulePatch
 		{
     		if (patchFile.isFile())
     		{
-    			brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
+    			brjs.logger(SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
     			try
     			{
     				reader = new BufferedReader(new UnicodeReader(patchFile, brjs.bladerunnerConf().getDefaultFileCharacterEncoding()));
@@ -65,7 +64,7 @@ public class SourceModulePatch
     		}
     		else
     		{
-				brjs.logger(LoggerType.CORE, SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
+				brjs.logger(SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile));
 				reader = new StringReader("");
     		}
 		}

@@ -1,11 +1,13 @@
 package org.bladerunnerjs.model;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.ContentOutputStream;
@@ -29,16 +31,24 @@ public class StaticContentOutputStream extends ContentOutputStream
 	}
 	
 	@Override
-	public String getLocalUrlContents(String urlPath) throws IOException {		
+	public void writeLocalUrlContentsToWriter(String urlPath, Writer writer) throws IOException {		
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		writeLocalUrlContentsToAnotherStream(urlPath, output);
+		writer.write(output.toString());
+		writer.flush();
+	}
+	
+	@Override
+	public void writeLocalUrlContentsToAnotherStream(String urlPath, OutputStream output) throws IOException {		
 		File requestPathFile = app.file(urlPath);
 		try (InputStream fileInput = new FileInputStream(requestPathFile)) {
-			return IOUtils.toString(fileInput);
+			IOUtils.copy(fileInput, output);
 		}
 	}
 	
 	@Override
 	public void writeLocalUrlContents(String url) throws IOException {
-		IOUtils.write( getLocalUrlContents(url), this );
+		writeLocalUrlContentsToAnotherStream( url, this );
 	}
 	
 }

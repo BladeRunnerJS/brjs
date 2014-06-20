@@ -8,7 +8,6 @@ import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
 
 import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.logging.LoggerType;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.Plugin;
 
@@ -37,7 +36,7 @@ public class PluginLoader
 		}
 		
 		
-		Logger logger = brjs.logger(LoggerType.CORE, BRJSPluginLocator.class);
+		Logger logger = brjs.logger(BRJSPluginLocator.class);
 		List<P> objectList = new ArrayList<P>();
 		
 		try

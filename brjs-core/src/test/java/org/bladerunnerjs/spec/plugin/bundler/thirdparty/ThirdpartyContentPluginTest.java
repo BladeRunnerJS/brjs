@@ -11,7 +11,7 @@ import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BRJSThirdpartyContentPluginTest extends SpecTest {
+public class ThirdpartyContentPluginTest extends SpecTest {
 	
 	private App app;
 	private Aspect aspect;
