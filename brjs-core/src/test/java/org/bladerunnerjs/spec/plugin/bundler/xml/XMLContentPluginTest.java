@@ -195,6 +195,14 @@ public class XMLContentPluginTest extends SpecTest{
 		then(response).containsText(rootElem(alternateMergeElem("id1", "Class1"), alternateMergeElem("id2", "Class2")));
 	}
 	
+	@Test public void mergingAnonymousElemsIsSupported() throws Exception {
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
+			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElem("Class1")))
+			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem("Class2")));
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(rootElem(anonymousMergeElem("Class1"), anonymousMergeElem("Class2")));
+	}
+	
 	@Test public void documentsWithDifferentRootElementsAreKeptApart() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(templateElem(mergeElem("id1"))))
@@ -315,7 +323,7 @@ public class XMLContentPluginTest extends SpecTest{
 		 + "<bundleConfig xmlns=\"http://schema.caplin.com/CaplinTrader/bundleConfig\">"
 			+ "<resource rootElement=\"rootElem\""
 			+ "	 templateElements=\"templateElem1, templateElem2\""
-			+ "	 mergeElements=\"mergeElem, alternateMergeElem@custom-id\"/>"
+			+ "	 mergeElements=\"mergeElem, alternateMergeElem@custom-id, anonymousMergeElem\"/>"
 			+ "<resource rootElement=\"rootElem2\""
 			+ "	 templateElements=\"templateElem1\""
 			+ "	 mergeElements=\"mergeElem\"/>"
@@ -373,6 +381,10 @@ public class XMLContentPluginTest extends SpecTest{
 	
 	private String alternateMergeElem(String id, String className){
 		return "<alternateMergeElem custom-id=\"" + id + "\" className=\"" + className + "\"></alternateMergeElem>";
+	}
+	
+	private String anonymousMergeElem(String className){
+		return "<anonymousMergeElem className=\"" + className + "\"></anonymousMergeElem>";
 	}
 	
 	private String arbitraryElem() {
