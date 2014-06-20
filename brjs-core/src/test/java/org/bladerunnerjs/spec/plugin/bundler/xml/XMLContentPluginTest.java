@@ -41,19 +41,19 @@ public class XMLContentPluginTest extends SpecTest{
 	
 	@Test
 	public void ifThereAreNoXmlFilesThenNoRequestsWillBeGenerated() throws Exception {
-		then(aspect).prodAndDevRequestsForContentPluginsAre("xml");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("xml");
 	}
 	
 	@Test
 	public void ifThereAreXmlFilesButNoBundleConfigThenNoRequestsWillBeGenerated() throws Exception {
 		given(aspect).containsResourceFile("config.xml");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("xml");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("xml");
 	}
 	
 	@Test
 	public void ifThereIsABundleConfigButNoXmlFilesThenNoRequestsWillBeGenerated() throws Exception {
 		given(brjsConf).containsFile("bundleConfig.xml");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("xml");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("xml");
 	}
 	
 	@Test

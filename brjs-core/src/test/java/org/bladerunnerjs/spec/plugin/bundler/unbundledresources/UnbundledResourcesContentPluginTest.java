@@ -41,7 +41,7 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 	@Test
 	public void ifThereAreNoFilesInUnbundledResourcesThenNoRequestsWillBeGenerated() throws Exception {
 		given(appAspect).indexPageHasContent("index page");
-		then(appAspect).prodAndDevRequestsForContentPluginsAre("unbundled-resources");
+		then(appAspect).prodAndDevRequestsForContentPluginsAreEmpty("unbundled-resources");
 	}
 	
 	@Test
