@@ -64,11 +64,9 @@ public abstract class AbstractJsLib extends AbstractAssetContainer implements Js
 	@Override
 	public String getName()
 	{
-		AdhocTimer.enter("AbstractJsLib.getName()", false);
 		if(name == null){
 			 name = dir().getName();
 		}
-		AdhocTimer.exit("AbstractJsLib.getName()", false);
 		return name;
 	}
 	
