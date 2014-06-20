@@ -1,5 +1,6 @@
 package org.bladerunnerjs.model.app.build;
 
+import static org.bladerunnerjs.utility.AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.BUNDLE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.INDEX_PAGE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.LOCALE_FORWARDING_REQUEST;
@@ -81,7 +82,12 @@ public abstract class AbstractAppBuilder
 				for(ContentPlugin contentPlugin : app.root().plugins().contentPlugins()) {
 					if(contentPlugin.getCompositeGroupName() == null) {
 						for(String contentPath : contentPlugin.getValidProdContentPaths(bundleSet, locales)) {
-							File bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));
+							File bundleFile;
+							if (contentPath.startsWith("/")) {
+								bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(UNVERSIONED_BUNDLE_REQUEST, aspectPrefix, contentPath));								
+							} else {
+								bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));																
+							}
 							
 							bundleFile.getParentFile().mkdirs();
 							try(ContentOutputStream os = new StaticContentOutputStream(app, bundleFile)) {
