@@ -29,6 +29,7 @@ import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
+import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
@@ -54,7 +55,13 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	public CommonJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
-		requirePaths.add(assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", ""));
+		
+		String locationPath = assetLocation.dir().getAbsolutePath();
+		String assetPath = assetFile.getAbsolutePath();
+		//the -3 removes the .js suffix
+		String requirePath = assetLocation.requirePrefix() + assetPath.substring(locationPath.length() , (assetPath.length() - 3));
+		requirePaths.add(requirePath);
+		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 		computedValue = new MemoizedValue<>("CommonJsSourceModule.computedValue", assetLocation.root(), assetFile, patch.getPatchFile(), BladerunnerConf.getConfigFilePath(assetLocation.root()));
 	}
