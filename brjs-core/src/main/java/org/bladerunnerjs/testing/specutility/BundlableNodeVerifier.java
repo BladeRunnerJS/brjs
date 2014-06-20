@@ -19,7 +19,17 @@ public class BundlableNodeVerifier<T extends BundlableNode> extends NodeVerifier
 		this.bundlableNode = bundlableNode;
 	}
 	
+	public void prodAndDevRequestsForContentPluginsAreEmpty(String contentPluginPrefix) throws Exception {
+		verifyProdAndDevRequestsForContentPluginsAre(contentPluginPrefix);
+	}
+	
 	public void prodAndDevRequestsForContentPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
+		if(expectedRequests.length == 0) throw new RuntimeException("Use prodAndDevRequestsForContentPluginsAreEmpty() if there are no expected requests");
+		
+		verifyProdAndDevRequestsForContentPluginsAre(contentPluginPrefix, expectedRequests);
+	}
+	
+	private void verifyProdAndDevRequestsForContentPluginsAre(String contentPluginPrefix, String... expectedRequests) throws Exception {
 		ContentPlugin contentPlugin = bundlableNode.root().plugins().contentPlugin(contentPluginPrefix);
 		List<String> actualDevRequests = contentPlugin.getValidDevContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());
 		List<String> actualProdRequests = contentPlugin.getValidProdContentPaths(bundlableNode.getBundleSet(), bundlableNode.app().appConf().getLocales());

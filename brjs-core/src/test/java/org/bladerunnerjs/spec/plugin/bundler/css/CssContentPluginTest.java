@@ -49,14 +49,14 @@ public class CssContentPluginTest extends SpecTest {
 	@Test
 	public void ifThereAreNoCssFilesThenNoRequestsWillBeGenerated() throws Exception {
 		given(aspect).indexPageHasContent("index page");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("css");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("css");
 	}
 	
 	@Test
 	public void onlyCssFilesAreValid() throws Exception {
 		given(commonTheme).containsFile("style.style")
 		.and(aspect).indexPageHasContent("index page");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("css");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("css");
 	}
 	
 	@Test

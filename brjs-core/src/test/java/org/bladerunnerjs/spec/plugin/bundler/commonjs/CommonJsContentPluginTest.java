@@ -27,7 +27,7 @@ public class CommonJsContentPluginTest extends SpecTest {
 	@Test
 	public void ifThereAreNoJsFilesThenNoRequestsWillBeGenerated() throws Exception {
 		given(aspect).indexPageHasContent("index page");
-		then(aspect).prodAndDevRequestsForContentPluginsAre("node-js");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("node-js");
 	}
 	
 	@Test

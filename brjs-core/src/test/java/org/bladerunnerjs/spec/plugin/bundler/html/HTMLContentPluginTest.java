@@ -34,7 +34,7 @@ public class HTMLContentPluginTest extends SpecTest
 	
 	@Test
 	public void ifThereAreNoHtmlFilesThenNoRequestsWillBeGenerated() throws Exception {
-		then(aspect).prodAndDevRequestsForContentPluginsAre("html");
+		then(aspect).prodAndDevRequestsForContentPluginsAreEmpty("html");
 	}
 	
 	@Test
