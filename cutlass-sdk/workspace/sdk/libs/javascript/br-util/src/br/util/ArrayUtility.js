@@ -40,7 +40,7 @@ br.util.ArrayUtility.inArray = function(pArray, vValueToFind)
  * Removes the first example of the specified item in the specified array, or does nothing if the item is not found.
  * 
  * <p>Since this method uses the built-in <code>indexOf</code> which does work with <code>NaN</code>, it will
- * not work if called with NaN and will throw an ArgumentError.  If you need to remove <code>NaN</code>, you'll
+ * not work if called with NaN and will throw an InvalidParametersError.  If you need to remove <code>NaN</code>, you'll
  * have to loop over the array and then splice it out.</p>
  *
  * @param {Array} pArray The Array from which to remove the specified item.  May not be null or undefined.
