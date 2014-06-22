@@ -42,7 +42,6 @@ public class BRJSHeaderFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
 		LockedHeaderResponseWrapper responseWrapper = new LockedHeaderResponseWrapper(response, LOCKED_HEADERS);
 		
-		response.setCharacterEncoding("UTF-8");
 		setCachingHeaders(request, responseWrapper);
 		
 		chain.doFilter(request, responseWrapper);
@@ -54,7 +53,7 @@ public class BRJSHeaderFilter implements Filter {
 	}
 	
 	private void setCachingHeaders(HttpServletRequest request, LockedHeaderResponseWrapper responseWrapper) {
-		if(request.getRequestURI().matches("/v/[0-9]+/")) {
+		if (request.getRequestURI().matches("/v/[0-9]+/")) {
 			responseWrapper.forceSetHeader(CACHE_CONTROL, CACHE_CONTROL_ALLOW_CACHE);
 			responseWrapper.forceSetHeader(EXPIRES, getExpiresHeader());
 		}
