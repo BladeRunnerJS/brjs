@@ -25,6 +25,6 @@ public class BRJSVerifier extends NodeVerifier<BRJS> {
 		for (App app : brjs.apps()) {
 			existingAppNames.add( app.getName() );
 		}
-		Assert.assertEquals( StringUtils.join(apps, ", "), StringUtils.join(brjs.apps(), ", "));
+		Assert.assertEquals( StringUtils.join(apps, ", "), StringUtils.join(existingAppNames, ", "));
 	}
 }

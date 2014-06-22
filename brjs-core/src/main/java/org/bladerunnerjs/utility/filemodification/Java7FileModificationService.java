@@ -11,6 +11,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.events.NodeReadyEvent;
+import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.plugin.EventObserver;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	public static final String THREAD_IDENTIFIER = "file-modification-service";
@@ -41,6 +45,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		try {
 			this.rootDir = rootDir;
 			watchDirectory(rootDir.getCanonicalFile(), null, new Date().getTime());
+			brjs.addObserver( NodeReadyEvent.class, new FileModificationServiceNodeReadyObserver() );
 			new Thread(this).start();
 		}
 		catch (IOException e) {
@@ -106,5 +111,18 @@ public class Java7FileModificationService implements FileModificationService, Ru
 
 	public Logger getLogger() {
 		return logger;
+	}
+	
+	
+	
+	private class FileModificationServiceNodeReadyObserver implements EventObserver {
+
+		@Override
+		public void onEventEmitted(Event event, Node node)
+		{
+			FileModificationInfo fileModificationInfo = getModificationInfo(node.root().dir());
+			fileModificationInfo.resetLastModified();
+		}
+		
 	}
 }
