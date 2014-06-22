@@ -1,4 +1,4 @@
-package org.bladerunnerjs.appserver;
+package org.bladerunnerjs.appserver.filter;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -16,6 +16,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.bladerunnerjs.appserver.util.LockedHeaderResponseWrapper;
 
 public class BRJSHeaderFilter implements Filter {
 	private static final String E_TAG = "ETag";

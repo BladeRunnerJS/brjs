@@ -1,4 +1,4 @@
-package org.bladerunnerjs.appserver;
+package org.bladerunnerjs.appserver.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
