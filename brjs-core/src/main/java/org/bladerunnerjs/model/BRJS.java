@@ -87,7 +87,7 @@ public class BRJS extends AbstractBRJSRootNode
 		super(brjsDir, loggerFactory, consoleWriter);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		
-		fileModificationService.setRootDir(dir);
+		fileModificationService.initialise(this, dir);
 		
 		this.fileModificationService = fileModificationService;
 		

@@ -21,7 +21,6 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.slf4j.impl.StaticLoggerBinder;
 
 import com.caplin.cutlass.command.check.CheckCommand;
@@ -157,13 +156,12 @@ public class CommandRunner {
 
 	private void injectLegacyCommands(BRJS brjs) {
 		try {
-			CommandList commandList = brjs.plugins().commandList();
-			commandList.addCommand(new CheckCommand());
-			commandList.addCommand(new CopyBladesetCommand( brjs.root().file("sdk") ));
-			commandList.addCommand(new ImportApplicationCommand( brjs ));
-			commandList.addCommand(new TestCommand());
-			commandList.addCommand(new TestServerCommand());
-			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
+			brjs.plugins().addCommandPlugin(new CheckCommand());
+			brjs.plugins().addCommandPlugin(new CopyBladesetCommand( brjs.root().file("sdk") ));
+			brjs.plugins().addCommandPlugin(new ImportApplicationCommand( brjs ));
+			brjs.plugins().addCommandPlugin(new TestCommand());
+			brjs.plugins().addCommandPlugin(new TestServerCommand());
+			brjs.plugins().addCommandPlugin(new TestIntegrationCommand( brjs.root().dir() ));
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

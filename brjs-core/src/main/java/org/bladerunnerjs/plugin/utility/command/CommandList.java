@@ -33,7 +33,7 @@ public class CommandList
 		coreCommands.add(versionCommand);
 	}
 	
-	public CommandPlugin lookupTask(String commandName)
+	public CommandPlugin lookupCommand(String commandName)
 	{
 		for (CommandPlugin task : getAllTasks())
 		{
@@ -69,26 +69,6 @@ public class CommandList
 	public List<CommandPlugin> getPluginCommands(Predicate<CommandPlugin> commandFilter)
 	{
 		return new ArrayList<CommandPlugin>( Collections2.filter(getPluginCommands(), commandFilter) );
-	}
-	
-	public int getLongestCommandName()
-	{
-		int longestCommandName = 0;
-		for (CommandPlugin task : getAllTasks())
-		{
-			longestCommandName = Math.max( longestCommandName, task.getCommandName().length());
-		}
-		return longestCommandName;
-	}
-	
-	public int getLongestCommandDescription()
-	{
-		int longestCommandDescription = 0;
-		for (CommandPlugin task : getAllTasks())
-		{
-			longestCommandDescription = Math.max( longestCommandDescription, task.getCommandDescription().length() );
-		}
-		return longestCommandDescription;
 	}
 
 	private List<CommandPlugin> getAllTasks()

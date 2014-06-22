@@ -25,14 +25,14 @@ public class WatchingDirectoryObserverTest extends SpecTest
 	@Test
 	public void observerReturnsTrueOnFirstCheck() throws Exception {
 		given(app).hasBeenCreated()
-			.and(observer).isObservingDir(app.dir());
+			.and(observer).isObservingDir(app.dir(), brjs);
 		then(observer).detectsChanges();
 	}
 	
 	@Test
 	public void observerReturnsTrueIfFilesHaveBeenAdded() throws Exception {
 		given(app).hasBeenCreated()
-			.and(observer).isObservingDir(app.dir())
+			.and(observer).isObservingDir(app.dir(), brjs)
 			.and(observer).hasDetectedChanges();
 		when(app).fileCreated("someFile.txt");
 		then(observer).willEventuallyDetectChanges();
@@ -42,7 +42,7 @@ public class WatchingDirectoryObserverTest extends SpecTest
 	public void observerReturnsTrueIfFilesHaveBeenDeleted() throws Exception {
 		given(app).hasBeenCreated()
 			.and(app).containsFile("someFile.txt")
-			.and(observer).isObservingDir(app.dir())
+			.and(observer).isObservingDir(app.dir(), brjs)
 			.and(observer).hasDetectedChanges();
 		when(app).fileDeleted("someFile.txt");
 		then(observer).willEventuallyDetectChanges();
@@ -52,7 +52,7 @@ public class WatchingDirectoryObserverTest extends SpecTest
 	public void observerReturnsTrueIfFilesHaveChanged() throws Exception {
 		given(app).hasBeenCreated()
 			.and(app).containsFileWithContents("someFile.txt", "initial file contents")
-			.and(observer).isObservingDir(app.dir())
+			.and(observer).isObservingDir(app.dir(), brjs)
 			.and(observer).hasDetectedChanges();
 		when(app).fileContentsChangeTo("someFile.txt", "some new file contents");
 		then(observer).willEventuallyDetectChanges();
@@ -62,7 +62,7 @@ public class WatchingDirectoryObserverTest extends SpecTest
 	@Test
 	public void observerIgnoresDotFiles() throws Exception {
 		given(app).hasBeenCreated()
-			.and(observer).isObservingDir(app.dir())
+			.and(observer).isObservingDir(app.dir(), brjs)
 			.and(observer).hasDetectedChanges();
 		when(app).fileCreated(".someFile");
 		then(observer).doesntDetectChanges();

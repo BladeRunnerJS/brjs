@@ -19,6 +19,7 @@ import org.bladerunnerjs.plugin.TagHandlerPlugin;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 
 public class PluginAccessor {
+	
 	private final CommandList commandList;
 	private final List<ContentPlugin> contentPlugins;
 	private final List<TagHandlerPlugin> tagHandlerPlugins;
@@ -51,12 +52,24 @@ public class PluginAccessor {
 		return plugins;
 	}
 	
-	public CommandList commandList() {
-		return commandList;
-	}
-	
 	public List<CommandPlugin> commandPlugins() {
 		return commandList.getPluginCommands();
+	}
+	
+	public CommandPlugin commandPlugin(String commandName) {
+		return commandList.lookupCommand(commandName);
+	}
+	
+	public List<CommandPlugin> getCoreCommandPlugins() {
+		return commandList.getCoreCommands();
+	}
+	
+	public List<CommandPlugin> getNonCoreCommandPlugins() {
+		return commandList.getPluginCommands();
+	}
+	
+	public void addCommandPlugin(CommandPlugin commandPlugin) {
+		commandList.addCommand(commandPlugin);
 	}
 	
 	public ContentPlugin contentPluginForLogicalPath(String logicalRequestpath)
@@ -132,6 +145,10 @@ public class PluginAccessor {
 	
 	public List<ModelObserverPlugin> modelObserverPlugins() {
 		return modelObserverPlugins;
+	}
+	
+	public void addModelObserverPlugin(ModelObserverPlugin modelObserver) {
+		modelObserverPlugins.add(modelObserver);
 	}
 	
 	public List<AssetPlugin> assetPlugins() {
