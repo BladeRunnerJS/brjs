@@ -104,7 +104,7 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 	{		
 		int commandNameSize = getLongestCommandName() + 5;
 		int commandDescSize = getLongestCommandDescription() + 5;
-		return "  %-"+commandNameSize+"s:%-"+commandDescSize+"s";
+		return "  %-"+commandNameSize+"s: %-"+commandDescSize+"s";
 	}
 	
 	
@@ -115,6 +115,10 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 		{
 			longestCommandName = Math.max( longestCommandName, commandPlugin.getCommandName().length());
 		}
+		for (CommandPlugin commandPlugin : brjs.plugins().getCoreCommandPlugins())
+		{
+			longestCommandName = Math.max( longestCommandName, commandPlugin.getCommandName().length());
+		}
 		return longestCommandName;
 	}
 	
@@ -122,6 +126,10 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 	{
 		int longestCommandDescription = 0;
 		for (CommandPlugin commandPlugin : brjs.plugins().commandPlugins())
+		{
+			longestCommandDescription = Math.max( longestCommandDescription, commandPlugin.getCommandDescription().length());
+		}
+		for (CommandPlugin commandPlugin : brjs.plugins().getCoreCommandPlugins())
 		{
 			longestCommandDescription = Math.max( longestCommandDescription, commandPlugin.getCommandDescription().length());
 		}
