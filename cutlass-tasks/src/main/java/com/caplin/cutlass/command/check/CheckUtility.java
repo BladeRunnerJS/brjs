@@ -24,7 +24,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.SdkJsLib;
 
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.structure.CutlassDirectoryLocator;
 import com.caplin.cutlass.structure.model.path.AppPath;
 import com.caplin.cutlass.structure.model.path.SdkPath;
@@ -157,7 +157,7 @@ public class CheckUtility
 	
 	public StringBuilder checkThatWeHaveNothingInPatchesDirectory(StringBuilder messageToShowUser)
 	{
-		File patchesDirectory = StaticModelAccessor.root.jsPatches().dir();
+		File patchesDirectory = ThreadSafeStaticBRJSAccessor.root.jsPatches().dir();
 		
 		if(patchesDirectory.exists())
 		{

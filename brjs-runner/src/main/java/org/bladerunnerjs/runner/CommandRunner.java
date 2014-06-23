@@ -13,7 +13,7 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -94,7 +94,7 @@ public class CommandRunner {
 			args = processGlobalCommandFlags(args);
 			
 			try {
-				brjs = StaticModelAccessor.initializeModel(sdkBaseDir);
+				brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
 			}
 			catch(InvalidSdkDirectoryException e) {
 				throw new CommandOperationException(e);

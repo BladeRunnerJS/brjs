@@ -35,7 +35,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.caplin.cutlass.app.service.RestApiService;
 
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -105,7 +105,7 @@ public class RestApiServlet extends HttpServlet
 			context = config.getServletContext();
 			
 			File contextDir = new File( context.getRealPath("/") );
-			brjs = StaticModelAccessor.initializeModel( contextDir, new PessimisticFileModificationService() );
+			brjs = ThreadSafeStaticBRJSAccessor.initializeModel( contextDir, new PessimisticFileModificationService() );
 			
 			if (apiService == null) { apiService = new RestApiService(brjs); };
 			logger = brjs.logger(this.getClass());
@@ -118,7 +118,7 @@ public class RestApiServlet extends HttpServlet
 	@Override
 	public void destroy()
 	{
-		StaticModelAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.destroy();
 	}
 	
 	@Override

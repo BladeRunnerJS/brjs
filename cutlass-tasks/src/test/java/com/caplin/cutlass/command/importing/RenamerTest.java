@@ -16,7 +16,7 @@ import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 
@@ -32,7 +32,7 @@ public class RenamerTest extends TestModelAccessor
 		appsDir = createTempAppsDir(new File(TEST_BASE, CutlassConfig.APPLICATIONS_DIR));
 		applicationDir = new File(appsDir, "emptytrader");
 		
-		StaticModelAccessor.initializeModel( createModel(appsDir.getParentFile()) );
+		ThreadSafeStaticBRJSAccessor.initializeModel( createModel(appsDir.getParentFile()) );
 	}
 	
 	@Test

@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
@@ -25,7 +25,7 @@ public class IntegrationTestFinderTest extends TestModelAccessor
 	public void setup() throws Exception
 	{
 		BRJS brjs = createModel(new File(TEST_ROOT));
-		StaticModelAccessor.initializeModel(brjs);
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		testFinder = new IntegrationTestFinder();
 	}
 	

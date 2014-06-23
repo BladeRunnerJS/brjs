@@ -16,7 +16,7 @@ import com.caplin.cutlass.CutlassConfig;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.conf.TestRunnerConfiguration;
 
 public class ConfigurationTest extends TestModelAccessor {
@@ -30,7 +30,7 @@ public class ConfigurationTest extends TestModelAccessor {
 	public void beforeTest() throws Exception {
 		// we're cheekily using another tests sdk structure so the test can work
 		File sdkBaseDir = new File("src/test/resources/AnalyseApplicationCommandTest/structure-tests/" + CutlassConfig.SDK_DIR);
-		StaticModelAccessor.initializeModel(createModel(sdkBaseDir));
+		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(sdkBaseDir));
 				
 		config = TestRunnerConfiguration.getConfiguration(new File("src/test/resources/TestCommand/test-runner.conf"), browserList("browser1"));
 		config.setOperatingSystem("OS1");

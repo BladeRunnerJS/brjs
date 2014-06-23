@@ -20,7 +20,7 @@ import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
  *
  */
 // Note: this should be the only static state within 'brjs-core'
-public class StaticModelAccessor {
+public class ThreadSafeStaticBRJSAccessor {
 	
 	private static BRJS model;
 	private static final ReentrantLock lock = new ReentrantLock();

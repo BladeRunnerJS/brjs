@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -36,14 +36,14 @@ public class BRJSDevServlet extends HttpServlet {
 		servletContext = config.getServletContext();
 		
 		try {
-			StaticModelAccessor.initializeModel( new File(servletContext.getRealPath("/")) );
+			ThreadSafeStaticBRJSAccessor.initializeModel( new File(servletContext.getRealPath("/")) );
 		}
 		catch (InvalidSdkDirectoryException e) {
 			throw new ServletException(e);
 		}
 		
 		try {
-			brjs = StaticModelAccessor.aquireModel();
+			brjs = ThreadSafeStaticBRJSAccessor.aquireModel();
 			app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
 			
 			if(app == null) {
@@ -51,13 +51,13 @@ public class BRJSDevServlet extends HttpServlet {
  			}
 		}
 		finally {
-			StaticModelAccessor.releaseModel();
+			ThreadSafeStaticBRJSAccessor.releaseModel();
 		}
 	}
 	
 	@Override
 	public void destroy() {
-		StaticModelAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.destroy();
 	}
 	
 	@Override
@@ -73,7 +73,7 @@ public class BRJSDevServlet extends HttpServlet {
 		}
 		
 		try {
-			StaticModelAccessor.aquireModel();
+			ThreadSafeStaticBRJSAccessor.aquireModel();
 			ServletContentOutputStream os = new ServletContentOutputStream(app, servletContext, request, response);
 			app.handleLogicalRequest(requestPath, os);
 		}
@@ -81,7 +81,7 @@ public class BRJSDevServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 		finally {
-			StaticModelAccessor.releaseModel();
+			ThreadSafeStaticBRJSAccessor.releaseModel();
 		}
 	}
 	

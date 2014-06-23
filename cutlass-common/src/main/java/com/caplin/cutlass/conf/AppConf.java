@@ -2,7 +2,7 @@ package com.caplin.cutlass.conf;
 
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.yaml.YamlAppConf;
 
 import com.esotericsoftware.yamlbeans.YamlException;
@@ -30,7 +30,7 @@ public class AppConf
 	
 	public static AppConf getConf(File applicationDirectory) throws FileNotFoundException, YamlException, IOException, ConfigException
 	{
-		App app = StaticModelAccessor.root.locateAncestorNodeOfClass(applicationDirectory, App.class);
+		App app = ThreadSafeStaticBRJSAccessor.root.locateAncestorNodeOfClass(applicationDirectory, App.class);
 		
 		org.bladerunnerjs.model.AppConf appConf;
 		if (app == null)

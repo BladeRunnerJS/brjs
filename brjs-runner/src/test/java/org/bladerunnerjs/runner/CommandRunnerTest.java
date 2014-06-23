@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.runner.CommandRunner;
@@ -31,7 +31,7 @@ public class CommandRunnerTest {
 		StaticLoggerBinder.getSingleton().getLoggerFactory().setOutputStreams(new PrintStream(outputStream), new PrintStream(errorStream));
 		commandRunner = new CommandRunner();
 		tempDir = FileUtility.createTemporaryDirectory(getClass().getSimpleName());
-		StaticModelAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.destroy();
 	}
 	
 	@Test(expected=NoSdkArgumentException.class)

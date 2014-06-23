@@ -14,7 +14,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 
 import com.caplin.cutlass.util.FileUtility;
 
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
@@ -34,8 +34,8 @@ public class CopyBladesetCommandTest extends TestModelAccessor
 		FileUtils.copyDirectory(testDirectory.getAbsoluteFile(), tempDir);
 		
 		tempSdkBaseDir = new File(tempDir, SDK_DIR);
-		StaticModelAccessor.destroy();
-		StaticModelAccessor.initializeModel(createModel(tempSdkBaseDir));
+		ThreadSafeStaticBRJSAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(tempSdkBaseDir));
 		
 		copyBladesetCommand = new CopyBladesetCommand(tempSdkBaseDir);
 		

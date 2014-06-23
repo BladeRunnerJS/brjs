@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.exception.NamespaceException;
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
@@ -26,8 +26,8 @@ public class NamespaceCalculatorTest extends TestModelAccessor
 
 	@Before
 	public void setup() throws Exception {
-		StaticModelAccessor.destroy();
-		StaticModelAccessor.initializeModel(createModel(new File(testBase)));
+		ThreadSafeStaticBRJSAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(new File(testBase)));
 	}
 	
 	@Test
@@ -108,8 +108,8 @@ public class NamespaceCalculatorTest extends TestModelAccessor
 		FileUtility.copyDirectoryContents(testResourceFolder, tempDir);
 		File tempAppDir = new File(tempDir, APPLICATIONS_DIR + File.separator + "app1");
 		
-		StaticModelAccessor.destroy();
-		StaticModelAccessor.initializeModel(createModel(tempAppDir));
+		ThreadSafeStaticBRJSAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(tempAppDir));
 		assertTrue(tempAppDir.exists());
 		
 		File svnDir = new File(tempAppDir, "a-aspect/src/.svn");
@@ -134,8 +134,8 @@ public class NamespaceCalculatorTest extends TestModelAccessor
 			FileUtility.copyDirectoryContents(testResourceFolder, tempDir);
 			File tempAppDir = new File(tempDir, APPLICATIONS_DIR + File.separator + "app1");
 			
-			StaticModelAccessor.destroy();
-			StaticModelAccessor.initializeModel(createModel(tempAppDir));
+			ThreadSafeStaticBRJSAccessor.destroy();
+			ThreadSafeStaticBRJSAccessor.initializeModel(createModel(tempAppDir));
 			assertTrue(tempAppDir.exists());
 			
 			File extraDir = new File(tempAppDir, "a-aspect/src/extraDir");

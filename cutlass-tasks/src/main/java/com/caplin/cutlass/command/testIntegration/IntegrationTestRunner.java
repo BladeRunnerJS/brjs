@@ -7,12 +7,12 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.bladerunnerjs.logging.Logger;
 
-import org.bladerunnerjs.model.StaticModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 
 public class IntegrationTestRunner
 {
-	private Logger logger = StaticModelAccessor.root.logger(IntegrationTestRunner.class);
+	private Logger logger = ThreadSafeStaticBRJSAccessor.root.logger(IntegrationTestRunner.class);
 	
 	public Result runTests(File runnerConf, List<Class<?>> classes) throws Exception {
 		logger.info("Running tests '" + classes.toString() + "'");
