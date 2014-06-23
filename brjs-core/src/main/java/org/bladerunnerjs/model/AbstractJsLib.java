@@ -13,7 +13,6 @@ import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.RootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.NameValidator;
 import org.bladerunnerjs.utility.NamespaceUtility;
 import org.bladerunnerjs.utility.TestRunner;

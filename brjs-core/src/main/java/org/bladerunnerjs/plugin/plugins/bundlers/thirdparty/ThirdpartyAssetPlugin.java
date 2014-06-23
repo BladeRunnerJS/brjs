@@ -5,8 +5,6 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.ThirdpartyLibManifest;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.plugin.base.AbstractAssetPlugin;
 
 public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
