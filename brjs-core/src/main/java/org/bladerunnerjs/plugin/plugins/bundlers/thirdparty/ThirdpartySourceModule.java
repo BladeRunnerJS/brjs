@@ -31,18 +31,19 @@ import com.Ostermiller.util.ConcatReader;
 public class ThirdpartySourceModule implements SourceModule
 {
 
-	private AssetLocation assetLocation;
+	private ThirdpartyAssetLocation assetLocation;
 	private ThirdpartyLibManifest manifest;
 	private String assetPath;
 	private SourceModulePatch patch;
 	private String defaultFileCharacterEncoding;
 	
-	public ThirdpartySourceModule(AssetLocation assetLocation) {
+	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
 			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetLocation.dir());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
+			manifest = assetLocation.getManifest();
 		}
 		catch (ConfigException e) {
 			throw new RuntimeException(e);
@@ -131,14 +132,6 @@ public class ThirdpartySourceModule implements SourceModule
 		return assetPath;
 	}
 	
-	public void initManifest(ThirdpartyLibManifest manifest)
-	{
-		if (this.manifest == null)
-		{
-			this.manifest= manifest;
-		}
-	}
-
 	@Override
 	public List<Asset> getDependentAssets(BundlableNode bundlableNode) throws ModelOperationException
 	{

@@ -21,15 +21,7 @@ public class ThirdpartyAssetPlugin extends AbstractAssetPlugin {
 	
 	@Override
 	public Asset createAsset(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
-		try {
-			ThirdpartyLibManifest manifest = new ThirdpartyLibManifest(assetLocation);
-			ThirdpartySourceModule sourceModule = new ThirdpartySourceModule(assetLocation);
-			sourceModule.initManifest(manifest);
-			
-			return sourceModule;
-		}
-		catch(ConfigException e) {
-			throw new AssetFileInstantationException(e);
-		}
+		ThirdpartySourceModule sourceModule = new ThirdpartySourceModule((ThirdpartyAssetLocation)assetLocation);
+		return sourceModule;
 	}
 }
