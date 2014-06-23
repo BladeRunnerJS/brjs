@@ -100,7 +100,7 @@ public class AliasesFile {
 		}
 		
 		if((aliasDefinition.getClassName() == null)) {
-			throw new IncompleteAliasException(file, aliasDefinition.getName());
+			aliasDefinition = new AliasDefinition(aliasDefinition.getName(), "br.UnknownClass", aliasDefinition.getInterfaceName());
 		}
 		
 		return aliasDefinition;

@@ -108,10 +108,10 @@ public class AliasModelTest extends SpecTest {
 	}
 	
 	@Test
-	public void usedAliasDefinitionsMustBeMadeConcrete() throws Exception {
+	public void unspecifiedAliasDefinitionsPointToTheUnknownClass() throws Exception {
 		given(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", null, "TheInterface");
 		when(aspect).retrievesAlias("appns.bs.b1.the-alias");
-		then(exceptions).verifyException(IncompleteAliasException.class, "appns.bs.b1.the-alias");
+		then(aspect).hasAlias("appns.bs.b1.the-alias", "br.UnknownClass", "TheInterface");
 	}
 	
 	@Test
