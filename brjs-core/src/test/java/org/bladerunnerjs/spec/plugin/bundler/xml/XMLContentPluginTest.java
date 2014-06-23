@@ -197,18 +197,32 @@ public class XMLContentPluginTest extends SpecTest{
 	
 	@Test public void mergingAnonymousElemsIsSupported() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
-			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElem("Class1")))
-			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem("Class2")));
+			.and(blade).hasClass("appns/bs/b1/Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+			.and(blade).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElem("Class1")))
+			.and(blade).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem("Class2")));
 		when(aspect).requestReceived("xml/bundle.xml", response);
 		then(response).containsText(rootElem(anonymousMergeElem("Class1"), anonymousMergeElem("Class2")));
 	}
 	
 	@Test public void mergingAnonymousElemsWhereOneHasAnIDIsSupported() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
-			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElemWithID("ID1", "Class1")))
-			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem("Class2")));
+			.and(blade).hasClass("appns/bs/b1/Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+			.and(blade).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElemWithID("appns.bs.b1.ID1", "Class1")))
+			.and(blade).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem("Class2")));
 		when(aspect).requestReceived("xml/bundle.xml", response);
-		then(response).containsText(rootElem(anonymousMergeElemWithID("ID1", "Class1"), anonymousMergeElem("Class2")));
+		then(response).containsText(rootElem(anonymousMergeElemWithID("appns.bs.b1.ID1", "Class1"), anonymousMergeElem("Class2")));
+	}
+	
+	@Test public void mergingAnonymousElemsWhereOneHasAnIDAndBothDontHaveClassesIsSupported() throws Exception {
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
+			.and(blade).hasClass("appns/bs/b1/Class1")
+			.and(aspect).indexPageRefersTo("appns.bs.b1.Class1")
+			.and(blade).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElemWithID("appns.bs.b1.ID1", null)))
+			.and(blade).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem(null)));
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(rootElem(anonymousMergeElemWithID("appns.bs.b1.ID1", null), anonymousMergeElem(null)));
 	}
 	
 	@Test public void documentsWithDifferentRootElementsAreKeptApart() throws Exception {
@@ -392,11 +406,17 @@ public class XMLContentPluginTest extends SpecTest{
 	}
 	
 	private String anonymousMergeElemWithID(String id, String className){
-		return "<anonymousMergeElem id=\"" + id + "\" className=\"" + className + "\"></anonymousMergeElem>";
+		if (className != null) {
+			return "<anonymousMergeElem id=\"" + id + "\" className=\"" + className + "\"></anonymousMergeElem>";
+		}
+		return "<anonymousMergeElem id=\"" + id + "\"></anonymousMergeElem>";
 	}
 	
 	private String anonymousMergeElem(String className){
-		return "<anonymousMergeElem className=\"" + className + "\"></anonymousMergeElem>";
+		if (className != null) {
+			return "<anonymousMergeElem className=\"" + className + "\"></anonymousMergeElem>";
+		}
+		return "<anonymousMergeElem></anonymousMergeElem>";		
 	}
 	
 	private String arbitraryElem() {
