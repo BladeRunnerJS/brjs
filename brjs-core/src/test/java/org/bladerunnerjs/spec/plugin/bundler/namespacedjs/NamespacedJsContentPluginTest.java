@@ -364,7 +364,6 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 	@Test
 	public void staticDependenciesAreRequiredAtTheTopOfTheModuleDefinition() throws Exception {
 		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
-			.and(aspect).hasCommonJsPackageStyle("src/appns/commonjs")
 			.and(aspect).hasClasses("appns.namespacedjs.Class1", "appns.namespacedjs.Class2")
 			.and(aspect).classStaticallyDependsOn("appns.namespacedjs.Class1", "appns.namespacedjs.Class2")
 			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1");
@@ -374,6 +373,18 @@ public class NamespacedJsContentPluginTest extends SpecTest {
 				"appns.namespacedjs.Class1 = function()",
 				"module.exports = appns.namespacedjs.Class1;");
 	}
+	
+	@Test
+	public void requiredStaticDependenciesOnlyIncludeSourceModules() throws Exception {
+		given(aspect).hasNamespacedJsPackageStyle("src/appns/namespacedjs")
+			.and(aspect).hasClasses("appns.namespacedjs.Class1")
+			.and(aspect).containsResourceFileWithContents("file.xml", "<rootElem xmlns=\"http://schema.acme.org/schema\"><elem id='appns.namespacedjs.SomeId'/</rootElem>")
+			.and(aspect).classStaticallyDependsOn("appns.namespacedjs.Class1", "appns.namespacedjs.SomeId")
+			.and(aspect).indexPageRefersTo("appns.namespacedjs.Class1");
+		when(aspect).requestReceived("namespaced-js/bundle.js", requestResponse);
+		then(requestResponse).doesNotContainText("requireAll");
+	}
+	
 	
 	@Test
 	public void packageDefinitionsIncludesClassesNotDirectlyUsedByANamespacedClass() throws Exception {

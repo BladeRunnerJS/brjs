@@ -1,5 +1,6 @@
 package org.bladerunnerjs.utility.trie;
 
+import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.LinkedAsset;
 
 public class LinkedAssetReference implements AssetReference {
@@ -16,5 +17,9 @@ public class LinkedAssetReference implements AssetReference {
 	
 	public String getRequirePath() {
 		return asset.getPrimaryRequirePath();
+	}
+	
+	public Class<? extends Asset> getAssetClass() {
+		return asset.getClass();
 	}
 }

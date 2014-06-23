@@ -21,7 +21,6 @@ import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.reader.factory.JsCommentAndCodeBlockStrippingReaderFactory;
@@ -128,7 +127,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	}
 	
 	public String calculateStaticDependenciesRequireDefinition() throws ModelOperationException {
-		List<String> staticDependencyRequirePaths = getStaticDependencyCalculator().getRequirePaths();
+		List<String> staticDependencyRequirePaths = getStaticDependencyCalculator().getRequirePaths(SourceModule.class);
 		if (staticDependencyRequirePaths.isEmpty()) {
 			return "";
 		}
