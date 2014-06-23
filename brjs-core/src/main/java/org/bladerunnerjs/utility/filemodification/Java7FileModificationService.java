@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.events.NodeReadyEvent;
@@ -120,8 +122,11 @@ public class Java7FileModificationService implements FileModificationService, Ru
 		@Override
 		public void onEventEmitted(Event event, Node node)
 		{
-			FileModificationInfo fileModificationInfo = getModificationInfo(node.root().dir());
-			fileModificationInfo.resetLastModified();
+			if (node instanceof App || node instanceof AssetContainer) {
+    			File resetLastModifiedForFile = node.parentNode().dir();
+				FileModificationInfo fileModificationInfo = getModificationInfo(resetLastModifiedForFile);
+    			fileModificationInfo.resetLastModified();
+			}
 		}
 		
 	}
