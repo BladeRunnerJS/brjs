@@ -203,6 +203,14 @@ public class XMLContentPluginTest extends SpecTest{
 		then(response).containsText(rootElem(anonymousMergeElem("Class1"), anonymousMergeElem("Class2")));
 	}
 	
+	@Test public void mergingAnonymousElemsWhereOneHasAnIDIsSupported() throws Exception {
+		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
+			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(anonymousMergeElemWithID("ID1", "Class1")))
+			.and(aspect).containsResourceFileWithContents("config2.xml", rootElem(anonymousMergeElem("Class2")));
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(rootElem(anonymousMergeElemWithID("ID1", "Class1"), anonymousMergeElem("Class2")));
+	}
+	
 	@Test public void documentsWithDifferentRootElementsAreKeptApart() throws Exception {
 		given(brjs).hasConfigurationFileWithContent("bundleConfig.xml", bundleConfig())
 			.and(aspect).containsResourceFileWithContents("config1.xml", rootElem(templateElem(mergeElem("id1"))))
@@ -381,6 +389,10 @@ public class XMLContentPluginTest extends SpecTest{
 	
 	private String alternateMergeElem(String id, String className){
 		return "<alternateMergeElem custom-id=\"" + id + "\" className=\"" + className + "\"></alternateMergeElem>";
+	}
+	
+	private String anonymousMergeElemWithID(String id, String className){
+		return "<anonymousMergeElem id=\"" + id + "\" className=\"" + className + "\"></anonymousMergeElem>";
 	}
 	
 	private String anonymousMergeElem(String className){
