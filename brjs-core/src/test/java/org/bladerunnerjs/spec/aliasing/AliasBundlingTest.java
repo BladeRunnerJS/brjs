@@ -295,4 +295,14 @@ public class AliasBundlingTest extends SpecTest {
 		then(response).containsCommonJsClasses("appns.pkg1.Class1", "appns.pkg1.pkg2.Class2", "appns.pkg1.pkg2.pkg3.Class3");
 	}
 	
+	@Test
+	public void unknownClassRepresntingAbstractAliasesIsSetAsANullClass() throws Exception {
+		given(aspect).hasClasses("appns/TheInterface")
+			.and(bladeAliasDefinitionsFile).hasAlias("appns.bs.b1.the-alias", null, "appns/TheInterface")
+			.and(aspect).indexPageHasContent("br.AliasRegistry('appns.bs.b1.the-alias');")
+			.and(brLib).hasClasses("br/UnknownClass", "br/AliasRegistry");
+		when(aspect).requestReceived("aliasing/bundle.js", response);			
+		then(response).containsText("require('br/AliasRegistry').setAliasData({'appns.bs.b1.the-alias':{'interface':appns/TheInterface,'interfaceName':'appns/TheInterface'}});");
+	}
+	
 }

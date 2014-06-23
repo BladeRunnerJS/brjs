@@ -17,6 +17,8 @@ import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
 import org.bladerunnerjs.utility.FileModifiedChecker;
 
 public class AliasesFile {
+	public static final String BR_UNKNOWN_CLASS_NAME = "br.UnknownClass";
+	
 	private final AliasesData data = new AliasesData();
 	private final AliasesReader reader;
 	private final AliasesWriter writer;
@@ -100,7 +102,7 @@ public class AliasesFile {
 		}
 		
 		if((aliasDefinition.getClassName() == null)) {
-			aliasDefinition = new AliasDefinition(aliasDefinition.getName(), "br.UnknownClass", aliasDefinition.getInterfaceName());
+			aliasDefinition = new AliasDefinition(aliasDefinition.getName(), BR_UNKNOWN_CLASS_NAME, aliasDefinition.getInterfaceName());
 		}
 		
 		return aliasDefinition;

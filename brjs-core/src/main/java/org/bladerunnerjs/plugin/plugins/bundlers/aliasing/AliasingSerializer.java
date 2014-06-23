@@ -1,6 +1,7 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.aliasing;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
+import org.bladerunnerjs.aliasing.aliases.AliasesFile;
 import org.bladerunnerjs.model.BundleSet;
 
 public class AliasingSerializer {
@@ -23,14 +24,16 @@ public class AliasingSerializer {
 			
 			jsonData.append("'" + aliasDefinition.getName() + "':{");
 			
-			if(aliasDefinition.getClassName() != null)
+			boolean classesInfoWritten = false;
+			if(aliasDefinition.getClassName() != null && !aliasDefinition.getClassName().equals(AliasesFile.BR_UNKNOWN_CLASS_NAME))
 			{
 				jsonData.append("'class':require('" + aliasDefinition.getRequirePath() + "'),'className':'" + aliasDefinition.getClassName() + "'");
+				classesInfoWritten = true;
 			}
 			
 			if(aliasDefinition.getInterfaceName() != null)
 			{
-				if(aliasDefinition.getClassName() != null)
+				if(classesInfoWritten)
 				{
 					jsonData.append(",");
 				}
