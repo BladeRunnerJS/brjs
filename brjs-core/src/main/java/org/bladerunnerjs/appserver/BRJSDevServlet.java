@@ -45,10 +45,6 @@ public class BRJSDevServlet extends HttpServlet {
 		try {
 			brjs = ThreadSafeStaticBRJSAccessor.aquireModel();
 			app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
-			
-			if(app == null) {
- 				throw new ServletException("Unable to calculate app for Servlet. Context path for expected app was '" + servletContext.getRealPath("/") + "'.");
- 			}
 		}
 		finally {
 			ThreadSafeStaticBRJSAccessor.releaseModel();

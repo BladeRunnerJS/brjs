@@ -20,8 +20,10 @@ public class ServedAppBundleTest extends SpecTest
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).automaticallyFindsBundlerPlugins()
+			.and(brjs).automaticallyFindsMinifierPlugins()
 			.and(brjs).hasBeenCreated()
-			.and(brjs).usesProductionTemplates();
+			.and(brjs).usesProductionTemplates()
+			.and(brjs).usedForServletModel();
 		
 		// generate the app structure
 		App app = brjs.app("app");
