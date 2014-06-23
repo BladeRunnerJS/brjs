@@ -36,9 +36,12 @@ public class AdhocTimer {
 		}
 	}
 	
-	
 	public static void dump(){
-		System.out.println("==== Dump START ====");
+		AdhocTimer.dump("Dump Start");
+	}
+	
+	public static void dump(String msg){
+		System.out.println("==== " + msg + " ====");
 		
 		Set<Entry<String, FuncDetail>> entrySet = funcDetails.entrySet();
 		for(Entry<String, FuncDetail> entry : entrySet){
