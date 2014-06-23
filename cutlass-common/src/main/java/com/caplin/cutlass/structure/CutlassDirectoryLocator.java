@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.caplin.cutlass.util.FileUtility;
 import com.caplin.cutlass.CutlassConfig;
-import com.caplin.cutlass.BRJSAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.structure.model.Node;
 import com.caplin.cutlass.structure.model.NodeType;
 import com.caplin.cutlass.structure.model.SdkModel;
@@ -486,7 +486,7 @@ public class CutlassDirectoryLocator
 			}
 			else
 			{
-				BRJSAccessor.root.logger(CutlassDirectoryLocator.class).info("Could not find thirdparty directory at '" + sdkThirdpartyDir.getPath() + "'.");
+				ThreadSafeStaticBRJSAccessor.root.logger(CutlassDirectoryLocator.class).info("Could not find thirdparty directory at '" + sdkThirdpartyDir.getPath() + "'.");
 				return null;
 			}
 		}

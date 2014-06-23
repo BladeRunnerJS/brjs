@@ -1,6 +1,6 @@
 package com.caplin.cutlass.command.test.testrunner;
 
-import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.TestPack;
@@ -28,13 +28,13 @@ public class BundlerHandlerTest extends BundlerHandlerSpecTest
 			aspect = app.aspect("default");
 			aspectTestPack = aspect.testType("unit").testTech("techy");
 			
-			BRJSThreadSafeModelAccessor.initializeModel(brjs);
+			ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 	}
 	
 	@After
 	public void tearDownThreadSafeModelAccessor()
 	{
-		BRJSThreadSafeModelAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.destroy();
 	}
 	
 	

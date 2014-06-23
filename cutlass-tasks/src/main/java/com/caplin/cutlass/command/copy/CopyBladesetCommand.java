@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.caplin.cutlass.BRJSAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
@@ -30,7 +30,7 @@ public class CopyBladesetCommand extends AbstractCommandPlugin implements Legacy
 	public CopyBladesetCommand(File sdkBaseDir)
 	{
 		this.sdkBaseDir = sdkBaseDir;
-		out = BRJSAccessor.root.getConsoleWriter();
+		out = ThreadSafeStaticBRJSAccessor.root.getConsoleWriter();
 	}
 	
 	@Override

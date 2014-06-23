@@ -1,5 +1,6 @@
 package org.bladerunnerjs.appserver;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletConfig;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -34,28 +36,24 @@ public class BRJSDevServlet extends HttpServlet {
 		servletContext = config.getServletContext();
 		
 		try {
-			BRJSThreadSafeModelAccessor.initializeModel(servletContext);
+			ThreadSafeStaticBRJSAccessor.initializeModel( new File(servletContext.getRealPath("/")) );
 		}
 		catch (InvalidSdkDirectoryException e) {
 			throw new ServletException(e);
 		}
 		
 		try {
-			brjs = BRJSThreadSafeModelAccessor.aquireModel();
+			brjs = ThreadSafeStaticBRJSAccessor.aquireModel();
 			app = BRJSServletUtils.localeAppForContext(brjs, servletContext);
-			
-			if(app == null) {
- 				throw new ServletException("Unable to calculate app for Servlet. Context path for expected app was '" + servletContext.getRealPath("/") + "'.");
- 			}
 		}
 		finally {
-			BRJSThreadSafeModelAccessor.releaseModel();
+			ThreadSafeStaticBRJSAccessor.releaseModel();
 		}
 	}
 	
 	@Override
 	public void destroy() {
-		BRJSThreadSafeModelAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.destroy();
 	}
 	
 	@Override
@@ -71,7 +69,7 @@ public class BRJSDevServlet extends HttpServlet {
 		}
 		
 		try {
-			BRJSThreadSafeModelAccessor.aquireModel();
+			ThreadSafeStaticBRJSAccessor.aquireModel();
 			ServletContentOutputStream os = new ServletContentOutputStream(app, servletContext, request, response);
 			app.handleLogicalRequest(requestPath, os);
 		}
@@ -79,7 +77,7 @@ public class BRJSDevServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 		finally {
-			BRJSThreadSafeModelAccessor.releaseModel();
+			ThreadSafeStaticBRJSAccessor.releaseModel();
 		}
 	}
 	

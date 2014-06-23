@@ -8,7 +8,7 @@ import javax.naming.InvalidNameException;
 
 import com.caplin.cutlass.command.test.testrunner.TestRunner.TestType;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
-import com.caplin.cutlass.BRJSAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import org.bladerunnerjs.model.DirNode;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -161,7 +161,7 @@ public class TestRunnerController
 
 	private File getResultsDir() throws CommandOperationException
 	{
-		DirNode testResults = BRJSAccessor.root.testResults();
+		DirNode testResults = ThreadSafeStaticBRJSAccessor.root.testResults();
 		
 		if(!testResults.dirExists())
 		{

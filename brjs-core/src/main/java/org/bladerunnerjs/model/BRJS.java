@@ -14,10 +14,8 @@ import javax.naming.InvalidNameException;
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
 import org.bladerunnerjs.console.ConsoleWriter;
-import org.bladerunnerjs.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
-import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.engine.NodeItem;
 import org.bladerunnerjs.model.engine.NodeList;
@@ -29,7 +27,6 @@ import org.bladerunnerjs.model.exception.command.NoSuchCommandException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.PluginLocator;
 import org.bladerunnerjs.plugin.plugins.commands.standard.InvalidBundlableNodeException;
-import org.bladerunnerjs.plugin.utility.BRJSPluginLocator;
 import org.bladerunnerjs.plugin.utility.PluginAccessor;
 import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.bladerunnerjs.utility.CommandRunner;
@@ -39,7 +36,6 @@ import org.bladerunnerjs.utility.UserCommandRunner;
 import org.bladerunnerjs.utility.VersionInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationInfo;
 import org.bladerunnerjs.utility.filemodification.FileModificationService;
-import org.bladerunnerjs.utility.filemodification.Java7FileModificationService;
 
 
 public class BRJS extends AbstractBRJSRootNode
@@ -85,13 +81,13 @@ public class BRJS extends AbstractBRJSRootNode
 	private boolean closed = false;
 	private AppVersionGenerator appVersionGenerator;
 	
-	public BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
+	BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
 			LoggerFactory loggerFactory, ConsoleWriter consoleWriter, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
 		super(brjsDir, loggerFactory, consoleWriter);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		
-		fileModificationService.setRootDir(dir);
+		fileModificationService.initialise(this, dir);
 		
 		this.fileModificationService = fileModificationService;
 		
@@ -110,19 +106,6 @@ public class BRJS extends AbstractBRJSRootNode
 		commandList = new CommandList(this, pluginLocator.getCommandPlugins());
 		
 		this.appVersionGenerator = appVersionGenerator;
-	}
-
-	public BRJS(File brjsDir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException {
-		this(brjsDir, new BRJSPluginLocator(), new Java7FileModificationService(loggerFactory), loggerFactory, consoleWriter, new TimestampAppVersionGenerator());
-	}
-	
-	public BRJS(File brjsDir, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
-		this(brjsDir, new BRJSPluginLocator(), fileModificationService, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out), new TimestampAppVersionGenerator());
-	}
-	
-	public BRJS(File brjsDir) throws InvalidSdkDirectoryException
-	{
-		this(brjsDir, new SLF4JLoggerFactory(), new PrintStreamConsoleWriter(System.out));
 	}
 	
 	@Override

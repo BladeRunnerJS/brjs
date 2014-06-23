@@ -40,11 +40,11 @@ public class HelpCommandTest extends SpecTest
 		when(brjs).runCommand("help");
 		then(output).containsText(
 			"Possible commands:",
-			"  command1     :Command #1 description.                ",
-			"  command2     :Command #2 description.                ",
+			"  command1     : Command #1 description.                ",
+			"  command2     : Command #2 description.                ",
 			"  -----",
-			"  help         :Prints this list of commands           ",
-			"  version      :Displays the BladeRunnerJS version     ",
+			"  help         : Prints this list of commands           ",
+			"  version      : Displays the BladeRunnerJS version     ",
 			"",
 			"Supported flags:",
 			"  --verbose",

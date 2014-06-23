@@ -7,12 +7,12 @@ import java.io.File;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.plugin.utilClasses.AnotherTestInterface;
 import org.bladerunnerjs.plugin.utilClasses.ClassImplementingNestedInterface;
 import org.bladerunnerjs.plugin.utilClasses.MyTestInterface;
 import org.bladerunnerjs.plugin.utilClasses.MyTestInterfaceImplementer;
 import org.bladerunnerjs.plugin.utility.PluginLoader;
-import org.bladerunnerjs.testing.utility.BRJSTestFactory;
 import org.bladerunnerjs.testing.utility.LogMessageStore;
 import org.bladerunnerjs.testing.utility.TestLoggerFactory;
 import org.junit.Before;
@@ -20,7 +20,7 @@ import org.junit.Test;
 
 
 
-public class PluginLoaderTest
+public class PluginLoaderTest extends TestModelAccessor
 {
 
 	private BRJS brjs;
@@ -30,7 +30,7 @@ public class PluginLoaderTest
 	public void setup() throws Exception
 	{
 		logStore = new LogMessageStore(true);
-		brjs = BRJSTestFactory.createBRJS(new File("src/test/resources/BRJSTest"), new TestLoggerFactory(logStore));
+		brjs = createModel(new File("src/test/resources/BRJSTest"), new TestLoggerFactory(logStore));
 	}
 
 	@Test

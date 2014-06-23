@@ -201,6 +201,12 @@ public class AppTest extends SpecTest {
 			.and(globalOverriddenNonBRLib).hasBeenCreated()
 			.and(appOverriddenNonBRLib).hasBeenCreated();
 		then(app).libWithNameIs("overridden-lib", appOverriddenNonBRLib);
-	}	
+	}
 	
+	@Test
+	public void appIsAvailableImmediatelyAfterCreationSinceFileModificationServiceListensForReadyEvent() throws Exception {
+		given(brjs).hasBeenAuthenticallyCreated();
+		when(brjs.app("app1")).populate();
+		then(brjs).hasApps("app1");
+	}
 }

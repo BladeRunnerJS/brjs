@@ -13,6 +13,7 @@ import javax.naming.InvalidNameException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.logger.ConsoleLoggerStore;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.model.engine.AbstractRootNode;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -20,10 +21,8 @@ import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
-import org.bladerunnerjs.plugin.utility.command.CommandList;
 import org.slf4j.impl.StaticLoggerBinder;
 
-import com.caplin.cutlass.BRJSAccessor;
 import com.caplin.cutlass.command.check.CheckCommand;
 import com.caplin.cutlass.command.copy.CopyBladesetCommand;
 import com.caplin.cutlass.command.importing.ImportApplicationCommand;
@@ -95,7 +94,7 @@ public class CommandRunner {
 			args = processGlobalCommandFlags(args);
 			
 			try {
-				brjs = BRJSAccessor.initialize(new BRJS(sdkBaseDir));
+				brjs = ThreadSafeStaticBRJSAccessor.initializeModel(sdkBaseDir);
 			}
 			catch(InvalidSdkDirectoryException e) {
 				throw new CommandOperationException(e);
@@ -157,13 +156,12 @@ public class CommandRunner {
 
 	private void injectLegacyCommands(BRJS brjs) {
 		try {
-			CommandList commandList = brjs.plugins().commandList();
-			commandList.addCommand(new CheckCommand());
-			commandList.addCommand(new CopyBladesetCommand( brjs.root().file("sdk") ));
-			commandList.addCommand(new ImportApplicationCommand( brjs ));
-			commandList.addCommand(new TestCommand());
-			commandList.addCommand(new TestServerCommand());
-			commandList.addCommand(new TestIntegrationCommand( brjs.root().dir() ));
+			brjs.plugins().addCommandPlugin(new CheckCommand());
+			brjs.plugins().addCommandPlugin(new CopyBladesetCommand( brjs.root().file("sdk") ));
+			brjs.plugins().addCommandPlugin(new ImportApplicationCommand( brjs ));
+			brjs.plugins().addCommandPlugin(new TestCommand());
+			brjs.plugins().addCommandPlugin(new TestServerCommand());
+			brjs.plugins().addCommandPlugin(new TestIntegrationCommand( brjs.root().dir() ));
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

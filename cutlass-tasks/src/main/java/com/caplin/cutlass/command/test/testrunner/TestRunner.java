@@ -22,7 +22,7 @@ import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
 
-import com.caplin.cutlass.BRJSAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import org.bladerunnerjs.logger.LogLevel;
 import org.bladerunnerjs.logging.Logger;
@@ -46,7 +46,7 @@ public class TestRunner {
 		public static final String SERVER_STOP_INSTRUCTION_MESSAGE = "Press Ctrl + C to stop the server";
 	}
 	
-	private BRJS brjs = BRJSAccessor.root;
+	private BRJS brjs = ThreadSafeStaticBRJSAccessor.root;
 	private Logger logger = brjs.logger(TestRunner.class);
 	public enum TestType {UTs, ATs, UTsAndATs, ITs, ALL};
 	

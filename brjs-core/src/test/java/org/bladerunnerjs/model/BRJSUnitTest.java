@@ -3,14 +3,14 @@ package org.bladerunnerjs.model;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import org.bladerunnerjs.testing.utility.BRJSTestFactory;
+
 import org.bladerunnerjs.utility.FileUtility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class BRJSUnitTest
+public class BRJSUnitTest extends TestModelAccessor 
 {
 	private BRJS brjs;
 	
@@ -20,7 +20,7 @@ public class BRJSUnitTest
 		File rootDir = FileUtility.createTemporaryDirectory( this.getClass().getCanonicalName() );
 		new File(rootDir, "sdk").mkdir();
 		
-		brjs = BRJSTestFactory.createBRJS(rootDir);
+		brjs = createModel(rootDir);
 	}
 	
 	@After

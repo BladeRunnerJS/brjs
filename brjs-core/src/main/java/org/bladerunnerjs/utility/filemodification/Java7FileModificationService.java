@@ -10,6 +10,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
+import org.bladerunnerjs.model.App;
+import org.bladerunnerjs.model.AssetContainer;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.engine.Node;
+import org.bladerunnerjs.model.events.NodeReadyEvent;
+import org.bladerunnerjs.plugin.Event;
+import org.bladerunnerjs.plugin.EventObserver;
 
 public class Java7FileModificationService implements FileModificationService, Runnable {
 	public static final String THREAD_IDENTIFIER = "file-modification-service";
@@ -36,10 +43,11 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	}
 	
 	@Override
-	public void setRootDir(File rootDir) {
+	public void initialise(BRJS brjs, File rootDir) {
 		try {
 			this.rootDir = rootDir;
 			watchDirectory(rootDir.getCanonicalFile(), null, new Date().getTime());
+			brjs.addObserver( NodeReadyEvent.class, new FileModificationServiceNodeReadyObserver() );
 			new Thread(this).start();
 		}
 		catch (IOException e) {
@@ -105,5 +113,21 @@ public class Java7FileModificationService implements FileModificationService, Ru
 
 	public Logger getLogger() {
 		return logger;
+	}
+	
+	
+	
+	private class FileModificationServiceNodeReadyObserver implements EventObserver {
+
+		@Override
+		public void onEventEmitted(Event event, Node node)
+		{
+			if (node instanceof App || node instanceof AssetContainer) {
+    			File resetLastModifiedForFile = node.parentNode().dir();
+				FileModificationInfo fileModificationInfo = getModificationInfo(resetLastModifiedForFile);
+    			fileModificationInfo.resetLastModified();
+			}
+		}
+		
 	}
 }

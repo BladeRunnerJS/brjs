@@ -8,19 +8,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.caplin.cutlass.util.FileUtility;
-import com.caplin.cutlass.BRJSAccessor;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import com.caplin.cutlass.structure.model.SdkModel;
-import com.caplin.cutlass.testing.BRJSTestFactory;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 import static com.caplin.cutlass.CutlassConfig.SDK_DIR;
 
-public class CutlassDirectoryLocatorTest
+public class CutlassDirectoryLocatorTest extends TestModelAccessor
 {
 
 	private static final List<File> EMPTY_FILE_LIST = new ArrayList<File>();
@@ -32,7 +32,7 @@ public class CutlassDirectoryLocatorTest
 	@Before
 	public void setUp() throws Exception
 	{
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(testBase)));
+		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(new File(testBase)));
 	}
 	
 	@After
@@ -482,7 +482,7 @@ public class CutlassDirectoryLocatorTest
 	public void testDirectoryLocatorHasKnowledgeOfPerforceStructure() throws Exception
 	{
 		String testBase = "src/test/resources/PerforceStructureTest";
-		BRJSAccessor.initialize(BRJSTestFactory.createBRJS(new File(testBase)));
+		ThreadSafeStaticBRJSAccessor.initializeModel(createModel(new File(testBase)));
 		assertEquals(new File(testBase + "/cutlass-libraries"), getRootDir(new File(testBase + "/cutlass-libraries")));
 		assertEquals(new File(testBase + "/cutlass-libraries"), getRootDir(new File(testBase + "/cutlass-libraries/sdk/libs/javascript/caplin/src/caplin/alerts/empty.txt")));
 		assertEquals(new File(testBase + "/cutlass-libraries/" + SDK_DIR), SdkModel.getSdkPath(new File(testBase + "/cutlass-libraries/sdk/libs/javascript/caplin/src/caplin/alerts/empty.txt")).getDir());

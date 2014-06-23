@@ -7,15 +7,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.TestModelAccessor;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.caplin.cutlass.BRJSAccessor;
-import com.caplin.cutlass.testing.BRJSTestFactory;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 
 import static com.caplin.cutlass.CutlassConfig.APPLICATIONS_DIR;
 
-public class IntegrationTestFinderTest
+public class IntegrationTestFinderTest extends TestModelAccessor
 {
 
 	private static final String TEST_ROOT = "src/test/resources/TestIntegrationCommand";
@@ -24,8 +24,8 @@ public class IntegrationTestFinderTest
 	@Before
 	public void setup() throws Exception
 	{
-		BRJS brjs = BRJSTestFactory.createBRJS(new File(TEST_ROOT));
-		BRJSAccessor.initialize(brjs);
+		BRJS brjs = createModel(new File(TEST_ROOT));
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		testFinder = new IntegrationTestFinder();
 	}
 	

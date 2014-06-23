@@ -57,20 +57,20 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 
 	private void getHelpCommandResponse()
 	{
-		List<CommandPlugin> coreCommands = brjs.plugins().commandList().getCoreCommands();
-		List<CommandPlugin> extraCommands = brjs.plugins().commandList().getPluginCommands();
+		List<CommandPlugin> coreCommands = brjs.plugins().getCoreCommandPlugins();
+		List<CommandPlugin> extraCommands = brjs.plugins().getNonCoreCommandPlugins();
 		
 		out.println("Possible commands:");
 		for (CommandPlugin command : extraCommands)
 		{
-			out.println( getHelpMessageFormatString(brjs), command.getCommandName(), command.getCommandDescription() );
+			out.println( getHelpMessageFormatString(), command.getCommandName(), command.getCommandDescription() );
 		}
 		
 		out.println("  -----");
 		
 		for (CommandPlugin command : coreCommands)
 		{
-			out.println( getHelpMessageFormatString(brjs), command.getCommandName(), command.getCommandDescription() );
+			out.println( getHelpMessageFormatString(), command.getCommandName(), command.getCommandDescription() );
 		}
 		out.println();
 		
@@ -84,7 +84,7 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 
 	private void getHelpForSpecificCommand(String commandName) throws CommandArgumentsException
 	{
-		CommandPlugin command = brjs.plugins().commandList().lookupTask(commandName);
+		CommandPlugin command = brjs.plugins().commandPlugin(commandName);
 		
 		if(command == null) throw new CommandArgumentsException("Cannot show help, unknown command '" + commandName + "'", this);
 		
@@ -100,10 +100,39 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 		out.println("  " + command.getCommandHelp());
 	}
 	
-	public static String getHelpMessageFormatString(BRJS brjs)
+	public String getHelpMessageFormatString()
 	{		
-		int commandNameSize = brjs.plugins().commandList().getLongestCommandName() + 5;
-		int commandDescSize = brjs.plugins().commandList().getLongestCommandDescription() + 5;
-		return "  %-"+commandNameSize+"s:%-"+commandDescSize+"s";
+		int commandNameSize = getLongestCommandName() + 5;
+		int commandDescSize = getLongestCommandDescription() + 5;
+		return "  %-"+commandNameSize+"s: %-"+commandDescSize+"s";
+	}
+	
+	
+	private int getLongestCommandName()
+	{
+		int longestCommandName = 0;
+		for (CommandPlugin commandPlugin : brjs.plugins().commandPlugins())
+		{
+			longestCommandName = Math.max( longestCommandName, commandPlugin.getCommandName().length());
+		}
+		for (CommandPlugin commandPlugin : brjs.plugins().getCoreCommandPlugins())
+		{
+			longestCommandName = Math.max( longestCommandName, commandPlugin.getCommandName().length());
+		}
+		return longestCommandName;
+	}
+	
+	private int getLongestCommandDescription()
+	{
+		int longestCommandDescription = 0;
+		for (CommandPlugin commandPlugin : brjs.plugins().commandPlugins())
+		{
+			longestCommandDescription = Math.max( longestCommandDescription, commandPlugin.getCommandDescription().length());
+		}
+		for (CommandPlugin commandPlugin : brjs.plugins().getCoreCommandPlugins())
+		{
+			longestCommandDescription = Math.max( longestCommandDescription, commandPlugin.getCommandDescription().length());
+		}
+		return longestCommandDescription;
 	}
 }

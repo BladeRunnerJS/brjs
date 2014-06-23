@@ -7,8 +7,9 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.appserver.BRJSThreadSafeModelAccessor;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
 import org.bladerunnerjs.plugin.AssetLocationPlugin;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -252,10 +253,10 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 		return hasBeenAuthenticallyCreated();
 	}
 
-	public BuilderChainer usedForServletModel()
+	public BuilderChainer usedForServletModel() throws InvalidSdkDirectoryException
 	{
-		BRJSThreadSafeModelAccessor.destroy();
-		BRJSThreadSafeModelAccessor.initializeModel(brjs);
+		ThreadSafeStaticBRJSAccessor.destroy();
+		ThreadSafeStaticBRJSAccessor.initializeModel(brjs);
 		return builderChainer;
 	}
 	
