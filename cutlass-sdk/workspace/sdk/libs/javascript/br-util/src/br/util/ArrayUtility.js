@@ -20,7 +20,9 @@ br.util.ArrayUtility = {}
  */
 br.util.ArrayUtility.inArray = function(pArray, vValueToFind)
 {
-	if (!Array.isArray(pArray)) throw new br.util.Error("TypeError", "ArrayUtility.inArray: IllegalArgument, ("+pArray+") is not an array.");
+	if (!Array.isArray(pArray)) {
+		throw new br.Errors.InvalidParametersError("ArrayUtility.inArray: "+pArray+" is not an array.");
+	}
 
 	// this is only true for NaN.
 	if (vValueToFind !== vValueToFind) {
@@ -38,7 +40,7 @@ br.util.ArrayUtility.inArray = function(pArray, vValueToFind)
  * Removes the first example of the specified item in the specified array, or does nothing if the item is not found.
  * 
  * <p>Since this method uses the built-in <code>indexOf</code> which does work with <code>NaN</code>, it will
- * not work if called with NaN and will throw an ArgumentError.  If you need to remove <code>NaN</code>, you'll
+ * not work if called with NaN and will throw an InvalidParametersError.  If you need to remove <code>NaN</code>, you'll
  * have to loop over the array and then splice it out.</p>
  *
  * @param {Array} pArray The Array from which to remove the specified item.  May not be null or undefined.
@@ -47,7 +49,14 @@ br.util.ArrayUtility.inArray = function(pArray, vValueToFind)
  */
 br.util.ArrayUtility.removeItem = function(pArray, vValueToRemove)
 {
-	if (vValueToRemove !== vValueToRemove)  throw new br.util.Error("ArgumentError", "ArrayUtility.removeItem: IllegalArgument, this method cannot remove NaN from an array.");
+	if (!Array.isArray(pArray)) {
+		throw new br.Errors.InvalidParametersError("ArrayUtility.removeItem: "+pArray+" is not an array.");
+	}
+
+	if (vValueToRemove !== vValueToRemove) {
+		throw new br.Errors.InvalidParametersError("ArrayUtility.removeItem: this method cannot remove NaN from an array.");
+	}
+
 	var nItemPosition = pArray.indexOf(vValueToRemove);
 	
 	if(nItemPosition >= 0)
