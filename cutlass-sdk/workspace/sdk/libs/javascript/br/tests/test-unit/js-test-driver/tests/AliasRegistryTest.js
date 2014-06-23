@@ -164,4 +164,15 @@
 		);
 	};
 
+	AliasRegistryTest["test Null class can be set for abstract aliases"] = function()
+	{
+		aliasRegistry= new AliasRegistry();
+		aliasRegistry.setAliasData({
+			"some.alias1": {
+				"interface":Alias1Interface,
+				"interfaceName":"Alias1Interface"
+			}  });
+		assertTrue(aliasRegistry.isAlias("some.alias1"));
+	};
+
 })();
