@@ -169,12 +169,6 @@ AliasRegistry.prototype.setAliasData = function setAliasData(unverifiedAliasData
 
 function ensureAliasDataHasBeenSet() {
 	if (this._isAliasDataSet !== true) {
-		// TODO: the bundler should just require AliasRegistry and initialize this stuff itself.
-		var global = Function("return this")();
-		if (global.caplin && global.caplin.__aliasData) {
-			exports.setAliasData(global.caplin.__aliasData);
-			return;
-		}
 		throw new Errors.IllegalStateError("Alias data has not been set.");
 	}
 }
