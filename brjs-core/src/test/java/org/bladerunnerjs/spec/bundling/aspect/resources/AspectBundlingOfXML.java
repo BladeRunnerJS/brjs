@@ -90,6 +90,13 @@ public class AspectBundlingOfXML extends SpecTest {
 		then(response).doesNotContainClasses("appns.Class1");
 	}
 	
+	@Test
+	public void xmlContentIsNotIgnoredAfterComments() throws Exception {
+		given(aspect).hasClasses("appns/Class1")
+			.and(aspect).resourceFileRefersTo("xml/config.xml", "<!-- appns.ClassDoesNotExist -->\n appns.Class1");
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.Class1");
+	}
 	
 	// Bladeset XML
 	@Test
@@ -100,7 +107,6 @@ public class AspectBundlingOfXML extends SpecTest {
 		then(response).containsCommonJsClasses("appns.bs.Class1");
 	}
 
-	
 	@Test
 	public void longFilesDontPreventCalculatingDependencies() throws Exception {
 		given(bladeset).hasClasses("appns/bs/Class1", "appns/bs/Class2")
@@ -116,8 +122,6 @@ public class AspectBundlingOfXML extends SpecTest {
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).containsCommonJsClasses("appns.bs.Class1", "appns.bs.Class2");
 	}
-	
-	
 	
 	private String zeroPad(int size) {
 		return StringUtils.leftPad("", size, '0');
