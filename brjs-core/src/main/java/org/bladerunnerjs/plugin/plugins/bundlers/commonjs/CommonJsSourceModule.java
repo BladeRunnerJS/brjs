@@ -56,10 +56,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
 		
-		String locationPath = assetLocation.dir().getAbsolutePath();
-		String assetPath = assetFile.getAbsolutePath();
-		//the -3 removes the .js suffix
-		String requirePath = assetLocation.requirePrefix() + assetPath.substring(locationPath.length() , (assetPath.length() - 3));
+		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
