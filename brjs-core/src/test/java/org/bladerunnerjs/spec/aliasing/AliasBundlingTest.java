@@ -270,7 +270,7 @@ public class AliasBundlingTest extends SpecTest {
 	}
 	
 	@Test
-	public void aliasesDefinedInMultipleLocationsDontCauseATryException() throws Exception {
+	public void aliasesDefinedInMultipleLocationsDontCauseATrieException() throws Exception {
 		given(brLib).hasClasses("br/Class1")
 			.and(brLibAliasDefinitionsFile).hasAlias("br.alias", "br.Class1")
 			.and(aspect).hasClass("appns/Class1")
@@ -280,6 +280,19 @@ public class AliasBundlingTest extends SpecTest {
 			.and(worbenchAliasesFile).hasAlias("br.alias", "appns/bs/b1/Class1");
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(exceptions).verifyNoOutstandingExceptions();
+	}
+	
+	
+	@Test
+	public void multipleAliasDefinitionsCanBeInAnAssetContainer() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(aspect).hasClasses("appns/pkg1/Class1", "appns/pkg1/pkg2/Class2", "appns/pkg1/pkg2/pkg3/Class3")
+			.and(aspect.assetLocation("src/appns/pkg1").aliasDefinitionsFile()).hasAlias("appns.alias1", "appns.pkg1.Class1")
+			.and(aspect.assetLocation("src/appns/pkg1/pkg2").aliasDefinitionsFile()).hasAlias("appns.alias2", "appns.pkg1.pkg2.Class2")
+			.and(aspect.assetLocation("src/appns/pkg1/pkg2/pkg3").aliasDefinitionsFile()).hasAlias("appns.alias3", "appns.pkg1.pkg2.pkg3.Class3")
+			.and(aspect).indexPageHasAliasReferences("appns.alias1 appns.alias2 appns.alias3");	
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.pkg1.Class1", "appns.pkg1.pkg2.Class2", "appns.pkg1.pkg2.pkg3.Class3");
 	}
 	
 }

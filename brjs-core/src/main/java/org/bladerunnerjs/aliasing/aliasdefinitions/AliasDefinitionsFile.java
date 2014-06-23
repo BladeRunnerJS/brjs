@@ -17,8 +17,8 @@ import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 
 public class AliasDefinitionsFile {
 	private final AliasDefinitionsData data = new AliasDefinitionsData();
-	private final AliasDefinitionsReader reader;
-	private final AliasDefinitionsWriter writer;
+	private final AliasDefinitionsReader aliasDefinitionsReader;
+	private final AliasDefinitionsWriter aliasDefinitionsWriter;
 	private final File file;
 	private final InfoFileModifiedChecker fileModifiedChecker;
 	
@@ -26,8 +26,8 @@ public class AliasDefinitionsFile {
 		try {
 			file = new File(parent, child);
 			fileModifiedChecker = new InfoFileModifiedChecker(assetLocation.root().getFileInfo(file));
-			reader = new AliasDefinitionsReader(data, file, assetLocation);
-			writer = new AliasDefinitionsWriter(data, file, assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding());
+			aliasDefinitionsReader = new AliasDefinitionsReader(data, file, assetLocation);
+			aliasDefinitionsWriter = new AliasDefinitionsWriter(data, file, assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -42,7 +42,7 @@ public class AliasDefinitionsFile {
 		List<String> aliasNames = new ArrayList<>();
 		
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			reader.read();
+			aliasDefinitionsReader.read();
 		}
 		
 		for(AliasDefinition aliasDefinition : data.aliasDefinitions) {
@@ -70,7 +70,7 @@ public class AliasDefinitionsFile {
 	
 	public List<AliasDefinition> aliases() throws ContentFileProcessingException {
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			reader.read();
+			aliasDefinitionsReader.read();
 		}
 		
 		return data.aliasDefinitions;
@@ -82,7 +82,7 @@ public class AliasDefinitionsFile {
 	
 	public Map<String, AliasOverride> scenarioAliases(AliasDefinition alias) throws ContentFileProcessingException {
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			reader.read();
+			aliasDefinitionsReader.read();
 		}
 		
 		return data.scenarioAliases.get(alias.getName());
@@ -94,7 +94,7 @@ public class AliasDefinitionsFile {
 	
 	public Set<String> groupNames() throws ContentFileProcessingException {
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			reader.read();
+			aliasDefinitionsReader.read();
 		}
 		
 		return data.groupAliases.keySet();
@@ -102,7 +102,7 @@ public class AliasDefinitionsFile {
 	
 	public List<AliasOverride> groupAliases(String groupName) throws ContentFileProcessingException {
 		if(fileModifiedChecker.hasChangedSinceLastCheck()) {
-			reader.read();
+			aliasDefinitionsReader.read();
 		}
 		
 		return ((data.groupAliases.containsKey(groupName)) ? data.groupAliases.get(groupName) : new ArrayList<AliasOverride>());
@@ -156,6 +156,6 @@ public class AliasDefinitionsFile {
 	}
 	
 	public void write() throws IOException {
-		writer.write();
+		aliasDefinitionsWriter.write();
 	}
 }
