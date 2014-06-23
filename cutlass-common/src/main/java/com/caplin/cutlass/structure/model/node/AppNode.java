@@ -42,7 +42,7 @@ public class AppNode extends Node
 	public void calculateChildNodes()
 	{
 		getThirdpartyLibrariesNode();
-		getUserLibrariesNode();
+		NodeUtility.updateNodes(this, nodes, NodeType.LIB, new BasicNameCalculator(), userLibDir);
 		getAspectNodes();
 		getBladesetNodes();
 	}
@@ -69,11 +69,6 @@ public class AppNode extends Node
 	{
 		return (List<BladesetNode>)(List<?>) NodeUtility.updateNodesFromDirListing(this, bladesetNodes, NodeType.BLADESET, new SuffixNameCalculator(CutlassConfig.BLADESET_SUFFIX), 
 				getDir(), CutlassConfig.BLADESET_SUFFIX);
-	}
-	
-	public UserLibNode getUserLibrariesNode()
-	{
-		return (UserLibNode) NodeUtility.updateNodes(this, nodes, NodeType.LIB, new BasicNameCalculator(), userLibDir);
 	}
 
 }

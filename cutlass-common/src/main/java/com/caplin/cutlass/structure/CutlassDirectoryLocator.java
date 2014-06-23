@@ -49,32 +49,6 @@ public class CutlassDirectoryLocator
 				return ScopeLevel.UNKNOWN_SCOPE;
 		}
 	}
-
-	public static File getScopePath(File fullRequestPath)
-	{
-		ScopeLevel requestScope = getScope(fullRequestPath);
-
-		switch (requestScope)
-		{
-			case APP_SCOPE:
-				return getParentApp(fullRequestPath);
-			case ASPECT_SCOPE:
-				return getParentAppAspect(fullRequestPath);
-			case BLADESET_SCOPE:
-				return getParentBladeset(fullRequestPath);
-			case BLADE_SCOPE:
-				return getParentBlade(fullRequestPath);
-			case WORKBENCH_SCOPE:
-				return getParentWorkbench(fullRequestPath);
-			case SDK_SCOPE:
-				return SdkModel.getSdkPath(fullRequestPath).getDir();
-			case LIB_SCOPE:
-				return SdkModel.getUserLibsPath(fullRequestPath).getDir();
-			case UNKNOWN_SCOPE:
-			default:
-				return null;
-		}
-	}
 	
 	public static File getDatabaseRootDir(File location)
 	{
