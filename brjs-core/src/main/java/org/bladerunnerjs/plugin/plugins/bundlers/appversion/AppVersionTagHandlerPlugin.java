@@ -10,13 +10,13 @@ import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
 
 
-public class BundlePathTagHandlerPlugin extends AbstractTagHandlerPlugin
+public class AppVersionTagHandlerPlugin extends AbstractTagHandlerPlugin
 {
 
 	@Override
 	public String getTagName()
 	{
-		return "bundle.path";
+		return "app.version";
 	}
 
 	@Override
@@ -28,17 +28,7 @@ public class BundlePathTagHandlerPlugin extends AbstractTagHandlerPlugin
 	@Override
 	public void writeProdTagContent(Map<String, String> tagAttributes, BundleSet bundleSet, Locale locale, Writer writer, String version) throws IOException
 	{
-		boolean includeVersion = true;
-		if (tagAttributes.containsKey("version")) {
-			String versionAttribute = tagAttributes.get("version");
-			includeVersion = versionAttribute.toLowerCase().equals("yes") || Boolean.parseBoolean(versionAttribute);
-		}
-		
-		if (includeVersion) {
-			writer.write("../v/"+version+"/");			
-		} else {
-			writer.write("../v/");
-		}
+		writer.write(version);		
 	}
 
 	@Override

@@ -28,7 +28,21 @@ public class BundlePathJsContentPluginTest extends SpecTest {
 	public void appVersionContentIsIncluded() throws Exception {
 		given(brjs).hasDevVersion("dev");
 		when(aspect).requestReceived("app-version/version.js", requestResponse);
-		then(requestResponse).containsTextOnce( "window.$BRJS_BUNDLE_PATH = '../v/dev';" );
+		then(requestResponse).containsTextOnce( "window.$BRJS_APP_VERSION = 'dev';" );
+	}
+	
+	@Test
+	public void bundlePathContentIsIncluded() throws Exception {
+		given(brjs).hasDevVersion("dev");
+		when(aspect).requestReceived("app-version/version.js", requestResponse);
+		then(requestResponse).containsTextOnce( "window.$BRJS_BUNDLE_PATH = '../v/dev/';" );
+	}
+	
+	@Test
+	public void unversionedBundlePathContentIsIncluded() throws Exception {
+		given(brjs).hasDevVersion("dev");
+		when(aspect).requestReceived("app-version/version.js", requestResponse);
+		then(requestResponse).containsTextOnce( "window.$BRJS_UNVERSIONED_BUNDLE_PATH = '../v/';" );
 	}
 	
 	@Test
@@ -42,7 +56,9 @@ public class BundlePathJsContentPluginTest extends SpecTest {
 		when(aspect).requestReceived("js/dev/combined/bundle.js", requestResponse);
 		then(requestResponse).containsOrderedTextFragments(
 				"// br-bootstrap",
-				"window.$BRJS_BUNDLE_PATH = '../v/dev';",
+				"window.$BRJS_APP_VERSION = 'dev';",
+				"window.$BRJS_BUNDLE_PATH = '../v/dev/';",
+				"window.$BRJS_UNVERSIONED_BUNDLE_PATH = '../v/';",
 				"appns/Class" );
 	}
 	
