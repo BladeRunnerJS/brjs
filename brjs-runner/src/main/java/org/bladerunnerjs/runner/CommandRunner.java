@@ -42,7 +42,7 @@ public class CommandRunner {
 		try {
 			argsParser.registerParameter(new Switch("verbose").setShortFlag('v').setLongFlag("verbose").setDefault("false").setHelp("verbose level logging"));
 			argsParser.registerParameter(new Switch("debug").setShortFlag('d').setLongFlag("debug").setDefault("false").setHelp("debug level logging"));
-			argsParser.registerParameter(new FlaggedOption("log").setLongFlag("log").setHelp("the comma delimited list of packages to show messages from, or '*' to show everything"));
+			argsParser.registerParameter(new FlaggedOption("pkg").setLongFlag("package").setHelp("the comma delimited list of packages to show messages from, or '*' to show everything"));
 			argsParser.registerParameter(new Switch("show-pkg").setLongFlag("show-package").setDefault("false").setHelp("show which class each log line comes from"));
 		}
 		catch (JSAPException e) {
@@ -137,7 +137,7 @@ public class CommandRunner {
 	private void processedParsedArgs(JSAPResult parsedArgs) {
 		boolean isVerbose = parsedArgs.getBoolean("verbose");
 		boolean isDebug = parsedArgs.getBoolean("debug");
-		List<String> whitelistedPackages = (parsedArgs.getString("log") != null) ? Arrays.asList(parsedArgs.getString("log").split("\\s*,\\s*")) : new ArrayList<String>();
+		List<String> whitelistedPackages = (parsedArgs.getString("pkg") != null) ? Arrays.asList(parsedArgs.getString("pkg").split("\\s*,\\s*")) : new ArrayList<String>();
 		boolean logClassNames = parsedArgs.getBoolean("show-pkg");
 		
 		if(isDebug) {
