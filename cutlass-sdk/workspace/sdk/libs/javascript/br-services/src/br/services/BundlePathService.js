@@ -1,3 +1,5 @@
+"use strict";
+
 var Errors = require('br/Errors');
 
 /**
@@ -10,10 +12,17 @@ var Errors = require('br/Errors');
 function BundlePathService() {};
 
 /**
- * Returns the version for the App
+ * Returns the path to versioned bundles.
  */
 BundlePathService.prototype.getBundlePath = function(bundlePath) {
 	throw new Errors.UnimplementedInterfaceError("BundlePathService.getBundlePath(bundlePath) has not been implemented.");
+};
+
+/**
+* Returns the path to unversioned bundles.
+*/
+BundlePathService.prototype.getUnversionedBundlePath = function(bundlePath) {
+	throw new Errors.UnimplementedInterfaceError("BundlePathService.getUnversionedBundlePath(bundlePath) has not been implemented.");
 };
 
 module.exports = BundlePathService;
