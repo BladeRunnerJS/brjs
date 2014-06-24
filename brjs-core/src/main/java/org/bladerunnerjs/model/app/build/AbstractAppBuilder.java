@@ -68,7 +68,7 @@ public abstract class AbstractAppBuilder
 				
 				localeForwardingFile.getParentFile().mkdirs();
 				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
-					appRequestHandler.writeLocaleForwardingPage(os);
+					appRequestHandler.writeLocaleForwardingPage(os, version);
 				}
 				
 				for(Locale locale : locales) {

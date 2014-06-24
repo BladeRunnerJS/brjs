@@ -1,4 +1,8 @@
-function getUserAcceptedLocales() {
+"use strict";
+
+var LocaleUtility = window.LocaleUtility = {}
+
+LocaleUtility.getBrowserAcceptedLocales = function() {
 	var userAcceptedLocales;
 
 	if(navigator.languages) {
@@ -14,7 +18,7 @@ function getUserAcceptedLocales() {
 	return userAcceptedLocales;
 }
 
-function getCookie(name) {
+LocaleUtility.getCookie = function(name) {
 	var nameEQ = name + "=";
 	var ca = document.cookie.split(';');
 	for(var i=0;i < ca.length;i++) {
@@ -25,7 +29,7 @@ function getCookie(name) {
 	return null;
 }
 
-function getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales) {
+LocaleUtility.getFirstMatchingLocale = function(appSupportedLocales, userAcceptedLocales) {
 	var firstMatchingLocale;
 
 	for(var i = 0, l = userAcceptedLocales.length; i < l; ++i) {
@@ -40,14 +44,14 @@ function getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales) {
 	return firstMatchingLocale;
 }
 
-function getActiveLocale(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
+LocaleUtility.getActiveLocale = function(userPreferredLocale, userAcceptedLocales, appSupportedLocales) {
 	var activeLocale;
 
 	if(appSupportedLocales[userPreferredLocale]) {
 		activeLocale = userPreferredLocale;
 	}
 	else {
-		var firstMatchingLocale = getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales);
+		var firstMatchingLocale = LocaleUtility.getFirstMatchingLocale(appSupportedLocales, userAcceptedLocales);
 
 		if(firstMatchingLocale) {
 			activeLocale = firstMatchingLocale;
@@ -63,7 +67,7 @@ function getActiveLocale(userPreferredLocale, userAcceptedLocales, appSupportedL
 	return activeLocale;
 }
 
-function getLocalizedPageUrl(pageUrl, locale) {
+LocaleUtility.getLocalizedPageUrl = function(pageUrl, locale) {
 	var urlParser = document.createElement('a');
 	urlParser.href = pageUrl;
 
@@ -76,9 +80,4 @@ function getLocalizedPageUrl(pageUrl, locale) {
 	var queryString = urlParser.search;
 
 	return protocol+"//"+host+url+locale+"/"+queryString+anchor;
-}
-
-function forwardToLocalePage() {
-	// The localeCookieName token is replaced before serving the content to the browser. The value of localeCookieName is set in app.conf.
-	window.location = getLocalizedPageUrl(window.location.href, getActiveLocale(getCookie("@localeCookieName@"), getUserAcceptedLocales(), $appSupportedLocales));
 }

@@ -1,5 +1,10 @@
 describe("locale-forwarder", function() {
 
+	require("jasmine")
+
+	var getLocalizedPageUrl = require("br-locale-utility").getLocalizedPageUrl;
+	var getActiveLocale = require("br-locale-utility").getActiveLocale;
+
     function locale(localeInfo) {
         var apps = {};
         for(var i = 0, l = localeInfo.app.length; i < l; ++i) {

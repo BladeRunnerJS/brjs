@@ -22,6 +22,7 @@ import org.bladerunnerjs.model.BrowsableNode;
 import org.bladerunnerjs.model.ContentOutputStream;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -29,6 +30,7 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.Locale;
+import org.bladerunnerjs.plugin.plugins.bundlers.appversion.BundlePathJsContentPlugin;
 
 import com.google.common.base.Joiner;
 
@@ -36,6 +38,9 @@ import com.google.common.base.Joiner;
 public class AppRequestHandler
 {
 
+	private static final String BR_LOCALE_UTILITY_LIBNAME = "br-locale-utility";
+	private static final String BR_LOCALE_UTILITY_FILENAME = "LocaleUtility.js";
+	
 	public static final String LOCALE_FORWARDING_REQUEST = "locale-forwarding-request";
 	public static final String INDEX_PAGE_REQUEST = "index-page-request";
 	public static final String UNVERSIONED_BUNDLE_REQUEST = "unversioned-bundle-request";
@@ -69,7 +74,7 @@ public class AppRequestHandler
 		{
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
-				writeLocaleForwardingPage(os);
+				writeLocaleForwardingPage(os, devVersion);
 				break;
 
 			case INDEX_PAGE_REQUEST:
@@ -145,17 +150,24 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public void writeLocaleForwardingPage(OutputStream os) throws ContentProcessingException {
+	public void writeLocaleForwardingPage(OutputStream os, String version) throws ContentProcessingException {
+		SdkJsLib localeForwarderLib = app.root().sdkLib(BR_LOCALE_UTILITY_LIBNAME);
 		try(Writer writer = new OutputStreamWriter(os, app.root().bladerunnerConf().getBrowserCharacterEncoding());
-				Reader reader = new FileReader( app.root().localeForwarderFile() ) ) {
+				Reader localeForwarderReader = new FileReader( localeForwarderLib.file(BR_LOCALE_UTILITY_FILENAME) ) ) {
+			
 			writer.write("<head>\n");
 			writer.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			writer.write("<script type='text/javascript'>\n");
-			writer.write("var $appSupportedLocales = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n");
 			
-			StringWriter localeForwarderBuffer = new StringWriter();
-			IOUtils.copy(reader, localeForwarderBuffer);
-			IOUtils.write( localeForwarderBuffer.toString().replace("@localeCookieName@", app.appConf().getLocaleCookieName()) , writer );
+			IOUtils.write(BundlePathJsContentPlugin.getBundlePathJsData(app, version), writer);
+			writer.write("\n");
+			IOUtils.copy(localeForwarderReader, writer);
+			writer.write("\n");			
+			writer.write("function forwardToLocalePage() {\n");
+			writer.write("	var localeCookie = LocaleUtility.getCookie(window.$BRJS_LOCALE_COOKIE_NAME);\n");
+			writer.write("	var activeLocale = LocaleUtility.getActiveLocale( localeCookie, LocaleUtility.getBrowserAcceptedLocales(), window.$BRJS_APP_LOCALES );\n");
+			writer.write("	window.location = LocaleUtility.getLocalizedPageUrl( window.location.href, activeLocale );\n");
+			writer.write("}\n");
 			
 			writer.write("\n</script>\n");
 			writer.write("</head>\n");

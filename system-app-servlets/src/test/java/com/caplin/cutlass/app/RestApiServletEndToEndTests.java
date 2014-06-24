@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.BRJS;
 
@@ -45,7 +46,8 @@ public class RestApiServletEndToEndTests
 		
 		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot, new PessimisticFileModificationService() );
 		
-		FileUtils.write(brjs.localeForwarderFile(), "");
+		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
+		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), "");
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
 		server.start();

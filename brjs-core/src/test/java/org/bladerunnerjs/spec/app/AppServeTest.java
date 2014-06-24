@@ -41,17 +41,6 @@ public class AppServeTest extends SpecTest {
 	}
 	
 	@Test
-	public void localeForwardingPageReplacesLocaleKey() throws Exception {
-		given(defaultAspect).indexPageHasContent("index page")
-			.and(app).hasLocaleCookieName("app.locale")
-			.and(brjs).localeForwarderHasContents("@localeCookieName@");
-		when(app).requestReceived("", response);
-		then(response).containsText("app.locale")
-			.and(response).doesNotContainText("BRJS.LOCALE")
-			.and(response).doesNotContainText("@localeCookieName@");
-	}
-	
-	@Test
 	public void exceptionIsThrownIfAnInvalidLocaleIsRequested() throws Exception {
 		given(defaultAspect).indexPageHasContent("index page")
     		.and(brjs).localeForwarderHasContents("locale forwarding page");

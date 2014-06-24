@@ -8,6 +8,7 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.SdkJsLib;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
 import org.bladerunnerjs.model.exception.modelupdate.ModelUpdateException;
@@ -318,7 +319,8 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 
 	public BuilderChainer localeForwarderHasContents(String string) throws IOException, InvalidNameException, ModelUpdateException
 	{
-		FileUtils.write(brjs.localeForwarderFile(), string);
+		SdkJsLib localeForwarderLib = brjs.sdkLib("br-locale-utility");
+		FileUtils.write(localeForwarderLib.file("LocaleUtility.js"), string);
 		
 		return builderChainer;
 	}
