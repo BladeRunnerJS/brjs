@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.Workbench;
 import org.bladerunnerjs.model.exception.UnresolvableRequirePathException;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -303,6 +304,25 @@ public class AliasBundlingTest extends SpecTest {
 			.and(brLib).hasClasses("br/UnknownClass", "br/AliasRegistry");
 		when(aspect).requestReceived("aliasing/bundle.js", response);			
 		then(response).containsText("require('br/AliasRegistry').setAliasData({'appns.bs.b1.the-alias':{'interface':appns/TheInterface,'interfaceName':'appns/TheInterface'}});");
+	}
+	
+	@Test @Ignore
+	public void multipleAliasDefinitionsCanBeInsideResourcesFolderAndSubfolders() throws Exception {
+		given(appConf).hasRequirePrefix("appns")
+			.and(logging).echoEnabled()
+			.and(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/Class3")
+			.and(aspect.assetLocation("resources").aliasDefinitionsFile()).hasAlias("appns.alias1", "appns.Class1")
+			.and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml",
+					"<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" +
+						"<alias defaultClass=\"appns.Class2\" name=\"appns.alias2\"/>\n" +
+					"</aliasDefinitions>")
+			.and(aspect).containsFileWithContents("resources/subfolder/subfolder/aliasDefinitions.xml",
+					"<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" +
+							"<alias defaultClass=\"appns.Class3\" name=\"appns.alias3\"/>\n" +
+						"</aliasDefinitions>")
+			.and(aspect).indexPageHasAliasReferences("appns.alias1 appns.alias2 appns.alias3");	
+		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
+		then(response).containsCommonJsClasses("appns.Class1", "appns.Class2", "appns.Class3");
 	}
 	
 }
