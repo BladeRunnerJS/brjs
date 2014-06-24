@@ -6,7 +6,7 @@ setupPage = function() {
 	if (testHtml == null) {
 		//TODO: go back to using the service registry when we can correctly bundle new style javascript classes.
 		//testHtml = require("br/ServiceRegistry").getService("br.html-service").getHTMLTemplate("testWrapper");
-		var BRHtmlResourceService = require("br/services/BRHtmlResourceService");
+		var BRHtmlResourceService = require("br/services/html/BRHtmlResourceService");
 		testHtml = new BRHtmlResourceService("/test/bundles/html.bundle").getHTMLTemplate("testWrapper");
 
 		jQuery('body').empty();

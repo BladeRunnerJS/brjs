@@ -64,5 +64,5 @@ var assertTemplateContentsMatch = (function(){
 
 BRHtmlResourceServiceTest.getService = function(sUrl)
 {
-	return new br.services.BRHtmlResourceService(sUrl);
+	return new br.services.html.BRHtmlResourceService(sUrl);
 };

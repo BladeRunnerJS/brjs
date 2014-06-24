@@ -2,7 +2,7 @@ BRXmlResourceServiceTest = TestCase("BRXmlResourceServiceTest");
 
 BRXmlResourceServiceTest.prototype.test_getXmlResource = function()
 {
-	var oXmlResourceService = new br.services.BRXmlResourceService("/test/unbundled-xml/testAppConfigValid.xml");
+	var oXmlResourceService = new br.services.xml.BRXmlResourceService("/test/unbundled-xml/testAppConfigValid.xml");
 	assertEquals(1, oXmlResourceService.getXmlDocument("gridDefinitions").length);
 	assertEquals(1, oXmlResourceService.getXmlDocument("rendererDefinitions").length);
 };
@@ -12,7 +12,7 @@ BRXmlResourceServiceTest.prototype.test_getMalformedXml = function()
 	var error = null;
 	try
 	{
-		new br.services.BRXmlResourceService("/test/unbundled-xml/testAppConfigMalformed.xml");
+		new br.services.xml.BRXmlResourceService("/test/unbundled-xml/testAppConfigMalformed.xml");
 	}
 	catch(e)
 	{
@@ -29,7 +29,7 @@ BRXmlResourceServiceTest.prototype.test_getMissingXml = function()
 	var error = null;
 	try
 	{
-		new br.services.BRXmlResourceService("/test/unbundled-xml/missing.xml");
+		new br.services.xml.BRXmlResourceService("/test/unbundled-xml/missing.xml");
 	}
 	catch(e)
 	{

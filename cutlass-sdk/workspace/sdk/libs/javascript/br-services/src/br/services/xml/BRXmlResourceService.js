@@ -6,7 +6,7 @@ var File = require('br/core/File');
 var i18n = require('br/I18n');
 
 /**
- * @name br.services.BRXmlResourceService
+ * @name br.services.xml.BRXmlResourceService
  * @constructor
  * @class This class provides access to XML documents loaded via the XML
  *        bundler.

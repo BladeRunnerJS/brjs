@@ -4,7 +4,7 @@ var HtmlResourceService = require('br/services/HtmlResourceService');
 var i18n = require('br/I18n');
 
 /**
- * @name br.services.BRHtmlResourceService
+ * @name br.services.html.BRHtmlResourceService
  * @class
  * @constructor
  * This class provides access to HTML templates loaded via the HTML bundler.

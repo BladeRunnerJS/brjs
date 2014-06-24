@@ -1,16 +1,16 @@
 <aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
-	<alias name="br.html-service" defaultClass="br.services.BRHtmlResourceService">
-		<scenario name="dev" class="br.services.JSTDHtmlResourceService" />
+	<alias name="br.html-service" defaultClass="br.services.html.BRHtmlResourceService">
+		<scenario name="dev" class="br.services.html.JSTDHtmlResourceService" />
 	</alias>
 	<alias name="br.event-hub" defaultClass="br.EventHub"/>
-	<alias name="br.xml-service" defaultClass="br.services.BRXmlResourceService">
-		<scenario name="dev" class="br.services.JSTDXmlResourceService" />
+	<alias name="br.xml-service" defaultClass="br.services.xml.BRXmlResourceService">
+		<scenario name="dev" class="br.services.xml.JSTDXmlResourceService" />
 	</alias>
-	<alias name="br.bundle-path-service" defaultClass="br.services.BRBundlePathService">
-		<scenario name="dev" class="br.services.JSTDBundlePathService" />
+	<alias name="br.bundle-path-service" defaultClass="br.services.bundlepath.BRBundlePathService">
+		<scenario name="dev" class="br.services.bundlepath.JSTDBundlePathService" />
 	</alias>
-	<alias name="br.app-version-service" defaultClass="br.services.BRAppVersionService">
-		<scenario name="dev" class="br.services.JSTDAppVersionService" />
+	<alias name="br.app-version-service" defaultClass="br.services.appversion.BRAppVersionService">
+		<scenario name="dev" class="br.services.appversion.JSTDAppVersionService" />
 	</alias>
 
 	<!-- TODO: remove these aliases from presenter once the new style classes can be brought out of thirdparty -->

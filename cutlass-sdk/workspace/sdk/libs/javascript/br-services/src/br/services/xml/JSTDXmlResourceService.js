@@ -4,14 +4,14 @@ var br = require('br/Core');
 var BRXmlResourceService = require('./BRXmlResourceService');
 
 /**
- * @name br.services.JSTDXmlResourceService
+ * @name br.services.xml.JSTDXmlResourceService
  * @constructor
  * @class
  * This class provides access to XML documents loaded via the XML bundler for testing purposes.
  *
  * @param {String} sUrl A URL to load XML from.
  *
- * @implements br.services.BRXmlResourceService
+ * @implements br.services.xml.BRXmlResourceService
  */
 function JSTDXmlResourceService(sUrl) {
 	var sDefaultUrl = (window.jstestdriver) ? "/test/bundles/xml.bundle" : null;
