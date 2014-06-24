@@ -10,7 +10,6 @@ configurations {
 		exclude module: 'jetty-all-server'
 		extendsFrom application
 	}
-	jsLibsAndDocs
 	testRunner
 	javadocs
 	srcJars
@@ -239,7 +238,35 @@ task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox, testLocaleFo
 task test, dependsOn: testChrome
 
 
-assemble.dependsOn = [assembleSdk, copyBrowsers]
+task createSdkJsDocs, dependsOn: assembleSdk, {
+	def jsDocTmpAppName = "jsdoc-tmp-app"
+	doFirst {
+		delete file("workspace/apps/${jsDocTmpAppName}")
+		exec {
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["create-app", jsDocTmpAppName]
+			workingDir file("workspace/sdk")
+		}
+		exec {
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["jsdoc", jsDocTmpAppName]
+			workingDir file("workspace/sdk")
+		}
+		copy {
+			from "workspace/generated/app/${jsDocTmpAppName}/jsdoc/"
+			into "workspace/sdk/docs/jsdoc"
+		}
+		copy {
+			from "build-resources/jsdocs/"
+			into "workspace/sdk/docs/jsdoc"
+		}
+	}
+	doLast {
+		delete file("workspace/apps/${jsDocTmpAppName}")
+	}
+}
+
+
+
+assemble.dependsOn = [assembleSdk, copyBrowsers, createSdkJsDocs]
 
 task check, dependsOn: test, {}
 task build, dependsOn: check, {}
@@ -269,33 +296,6 @@ createTestTask "exampleAppsTestJsFirefox", "../apps/", "ALL", "firefox"
 exampleAppsTestJsFirefox.dependsOn extractExampleApps
 
 task exampleAppsTestJs, dependsOn: [exampleAppsTestJsChrome, exampleAppsTestJsFirefox], {}
-
-ext.jsDocTmpAppName = "jsdoc-tmp"
-task cleanJsDocTmpApp, {
-	outputs.upToDateWhen { false }
-	doFirst {
-		delete file("workspace/apps/${jsDocTmpAppName}")
-	}
-}
-
-task createJsDocTmpApp, dependsOn: cleanJsDocTmpApp, {
-	doFirst {
-		exec {
-			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["create-app", jsDocTmpAppName]
-			workingDir file("workspace/sdk")
-		}
-	}
-}
-
-task createSdkJsDocs, dependsOn: createJsDocTmpApp, {
-	doFirst {
-		exec {
-			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["jsdoc", jsDocTmpAppName]
-			workingDir file("workspace/sdk")
-		}
-	}
-}
-
 
 /*
 
@@ -443,7 +443,7 @@ task cleanWorkspaceFiles {
 }
 
 clean {
-	dependsOn = [cleanWorkspaceFiles, cleanJsDocTmpApp]
+	dependsOn = [cleanWorkspaceFiles]
 }
 
 

@@ -34,7 +34,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	public static final String APP_STORAGE_DIR_NAME = "jsdoc";
 
 	public class Messages {
-		public static final String API_DOCS_GENERATED_MSG = "API docs correctly generated in '%s'";
+		public static final String API_DOCS_GENERATED_MSG = "API docs successfully generated in '%s'";
 	}
 	
 	private BRJS brjs;
