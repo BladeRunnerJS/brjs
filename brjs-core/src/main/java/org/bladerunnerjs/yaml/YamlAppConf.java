@@ -19,8 +19,6 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	@NotEmpty
 	public String locales;
 	
-	@NotNull
-	@NotEmpty
 	public String localeCookieName;
 	
 	@Override
