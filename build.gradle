@@ -198,7 +198,7 @@ task generateReleaseNotes, {
 		def includeIssueLabels = ["bug", "feature", "enhancement", "experience"]
 		def issueIncludeLabelsString = includeIssueLabels.join(", ").replaceAll(/^(.*),(.*)$/,'$1 or$2'); /* regex replaces the last ',' with 'or' */	
 		
-		def excludeIssueLabels = ["invalid", "duplicate"]
+		def excludeIssueLabels = ["invalid", "duplicate", "wont-fix"]
 		
 		List<Issue> issues = new ArrayList<Issue>();
 		milestoneIds.each { milestoneId ->

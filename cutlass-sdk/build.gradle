@@ -212,32 +212,24 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 def brLibsPathRelativeToSdk = "libs/javascript"
 def brlibsPath = "workspace/sdk/${brLibsPathRelativeToSdk}"
 
-createTestTask "testJsChrome", brLibsPathRelativeToSdk, "ALL", "chrome"
-createTestTask "testJsFirefox", brLibsPathRelativeToSdk, "ALL", "firefox"
+createTestTask "testLocaleForwaderIE", "libs/locale-forwarder", "ALL", "ie"
+createTestTask "testLocaleForwaderChrome", "libs/locale-forwarder", "ALL", "chrome"
+createTestTask "testLocaleForwaderFirefox", "libs/locale-forwarder", "ALL", "firefox"
 
-/* run each test on it's own in IE due to unreliability in CI */
-task testJsIE, {}
-file(brlibsPath).listFiles().each { libDir ->
-	if (libDir.isDirectory() && fileTree(dir:"${libDir.absolutePath}/tests").getFiles().size() > 0) {
-		def libDirName = libDir.name
-		def taskName = "testJs${ libDirName.capitalize() }AllIE"
-		createTestTask taskName, "${brLibsPathRelativeToSdk}/${libDirName}", "ALL", "ie"
-		testJsIE.dependsOn taskName
-	}
-}
+createTestTask "testJsChrome", brLibsPathRelativeToSdk, "ALL", "chrome"
+	testJsChrome.dependsOn testLocaleForwaderChrome
+createTestTask "testJsFirefox", brLibsPathRelativeToSdk, "ALL", "firefox"
+	testJsFirefox.dependsOn testLocaleForwaderFirefox
+createTestTask "testJsIE", brLibsPathRelativeToSdk, "ALL", "ie"
+	testJsIE.dependsOn testLocaleForwaderIE
 
 createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
 createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
 createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
 
-createTestTask "testLocaleForwaderIE", "libs/locale-forwarder", "ALL", "ie"
-createTestTask "testLocaleForwaderChrome", "libs/locale-forwarder", "ALL", "chrome"
-createTestTask "testLocaleForwaderFirefox", "libs/locale-forwarder", "ALL", "firefox"
-
-
-task testIE, dependsOn: [testJsIE, testSystemAppsIE, testLocaleForwaderIE]
-task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome, testLocaleForwaderChrome]
-task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox, testLocaleForwaderFirefox]
+task testIE, dependsOn: [testJsIE, testSystemAppsIE]
+task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome]
+task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox]
 task test, dependsOn: testChrome
 
 
