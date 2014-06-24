@@ -43,7 +43,7 @@ brjs.dashboard.app.model.app.AppDetailScreen.prototype.importBladesFromApp = fun
 
 brjs.dashboard.app.model.app.AppDetailScreen.prototype.showJsDocs = function()
 {
-	window.location = "/dashboard-services/appjsdoc/" + this.appName.getValue() + "/jsdoc-toolkit/index.html";
+	window.location = "/dashboard-services/appjsdoc/" + this.appName.getValue() + "/jsdoc/index.html";
 };
 
 brjs.dashboard.app.model.app.AppDetailScreen.prototype.launchApp = function()
