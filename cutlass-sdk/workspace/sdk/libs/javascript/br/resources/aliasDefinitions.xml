@@ -1,5 +1,4 @@
 <aliasDefinitions xmlns="http://schema.caplin.com/CaplinTrader/aliasDefinitions">
-	<!-- TODO: remove these aliases from presenter once the new style classes can be brought out of thirdparty -->
 	<alias name="br.html-service" defaultClass="br.services.BRHtmlResourceService">
 		<scenario name="dev" class="br.services.JSTDHtmlResourceService" />
 	</alias>
@@ -7,9 +6,14 @@
 	<alias name="br.xml-service" defaultClass="br.services.BRXmlResourceService">
 		<scenario name="dev" class="br.services.JSTDXmlResourceService" />
 	</alias>
-	<alias name="br.bundle-path-service" defaultClass="br.services.BRBundlePathService"/>
-	<alias name="br.app-version-service" defaultClass="br.services.BRAppVersionService"/>
+	<alias name="br.bundle-path-service" defaultClass="br.services.BRBundlePathService">
+		<scenario name="dev" class="br.services.JSTDBundlePathService" />
+	</alias>
+	<alias name="br.app-version-service" defaultClass="br.services.BRAppVersionService">
+		<scenario name="dev" class="br.services.JSTDAppVersionService" />
+	</alias>
 
+	<!-- TODO: remove these aliases from presenter once the new style classes can be brought out of thirdparty -->
 	<alias name="br.date-picker" defaultClass="br.presenter.control.datefield.JQueryDatePickerControl" />
 	<alias name="br.toggle-switch" defaultClass="br.presenter.control.selectionfield.ToggleSwitchControl" />
 	<alias name="br.combo-box" defaultClass="br.presenter.control.selectionfield.ExtJsComboBoxControl" />
