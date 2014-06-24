@@ -27,6 +27,9 @@ function getBundlePath(prefix, bundlePath) {
 		while(bundlePath.charAt(0) === '/') {
 			bundlePath = bundlePath.substr(1);
 		}
+		while(prefix.charAt(0) === '/') {
+			prefix = prefix.substr(1);
+		}
 		return prefix + "/" + bundlePath
 	}
 	return prefix;
