@@ -18,7 +18,7 @@
 			function getAppName() 
 			{
 				var initialIndex = window.location.pathname.indexOf("jsdoc/") + 6;
-				var lastIndex = window.location.pathname.indexOf("/jsdoc-toolkit");
+				var lastIndex = window.location.pathname.indexOf("/jsdoc");
 				return window.location.pathname.substring(initialIndex, lastIndex);
 			}
 
@@ -32,7 +32,7 @@
 			
 			function generateDocs()
 			{
-				window.location = "/dashboard-services/appjsdoc/" + getAppName() + "/jsdoc-toolkit/generated-docs.html";
+				window.location = "/dashboard-services/appjsdoc/" + getAppName() + "/jsdoc/generated-docs.html";
 			};
 			
 		</script>

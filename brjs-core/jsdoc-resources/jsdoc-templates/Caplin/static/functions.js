@@ -1,5 +1,5 @@
 $(function () {
-	
+
 	makeLocalLinksHashLinks("#flex-con");
 
 	$(window).bind('hashchange', function() {
@@ -15,14 +15,14 @@ $(function () {
 			"icons" : false
 		}
 	});
-
+	$("#api_tree").on( "loaded.jstree", openTopLevelNavNodes );
 
 	if (window.location.hash != "")
 	{
 		loadUrlFromHash(window.location.hash);
 	}
 
-});	
+});
 
 function getParentNavClassIdFromUrl(href)
 {
@@ -34,6 +34,9 @@ function getParentNavClassIdFromUrl(href)
 function getNavClassIdFromUrl(href)
 {
 	var classPage = href.substring(href.lastIndexOf("/")+1);
+	if (classPage.indexOf("#") != 0) {
+		classPage = classPage.substring(classPage.indexOf("#")+1)
+	}
 	var className = classPage.substring(0, classPage.lastIndexOf(".html"));
 	classId = "nav_"+className.replace(/\./g,'_');
 	return classId;
@@ -48,11 +51,12 @@ function loadUrlFromHash(href)
 	}
 	$("#api_content_wrapper").load(href + " #api_content", function() {
 		changeTitleForCurrentPage();
+		openTopLevelNavNodes();
 		markCurrentClassInNav();
 		openIndexNodeForCurrentClass();
 		makeLocalLinksHashLinks("#api_content");
 		scollToAnchor();
-	});	
+	});
 }
 
 function changeTitleForCurrentPage()
@@ -76,13 +80,18 @@ function markCurrentClassInNav()
 function openIndexNodeForCurrentClass()
 {
 	var classId = getParentNavClassIdFromUrl(window.location.href);
-	$("#api_tree").jstree("open_node", $("#"+classId) )
+	$("#api_tree").jstree("open_node", $("#"+classId) );
+}
+
+function openTopLevelNavNodes()
+{
+	$("#api_tree").jstree("open_node", $(".classDepth1") );
 }
 
 function makeLocalLinksHashLinks(rootQuerySelector)
 {
 	$(rootQuerySelector+' a').each(function() {
-	
+
 		var href = $(this).attr("href");
 		if (href)
 		{
