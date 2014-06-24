@@ -271,7 +271,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return appJars.item();
 	}
 	
-	public File localeForwarderUtil()
+	public File localeForwarderFile()
 	{
 		return localeForwarderUtilDir.item().file(LOCALE_FORWARDER_FILENAME);
 	}

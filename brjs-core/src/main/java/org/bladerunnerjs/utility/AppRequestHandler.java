@@ -147,13 +147,16 @@ public class AppRequestHandler
 
 	public void writeLocaleForwardingPage(OutputStream os) throws ContentProcessingException {
 		try(Writer writer = new OutputStreamWriter(os, app.root().bladerunnerConf().getBrowserCharacterEncoding());
-				Reader reader = new FileReader( app.root().localeForwarderUtil() ) ) {
+				Reader reader = new FileReader( app.root().localeForwarderFile() ) ) {
 			writer.write("<head>\n");
 			writer.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			writer.write("<script type='text/javascript'>\n");
 			writer.write("var $appSupportedLocales = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n");
-			writer.write("var define = function(requirePath, definition) { definition(null, window, null); }\n");
-			IOUtils.copy(reader, writer);
+			
+			StringWriter localeForwarderBuffer = new StringWriter();
+			IOUtils.copy(reader, localeForwarderBuffer);
+			IOUtils.write( localeForwarderBuffer.toString().replace("@localeCookieName@", app.appConf().getLocaleCookieName()) , writer );
+			
 			writer.write("\n</script>\n");
 			writer.write("</head>\n");
 			writer.write("<body onload='forwardToLocalePage()'></body>\n");

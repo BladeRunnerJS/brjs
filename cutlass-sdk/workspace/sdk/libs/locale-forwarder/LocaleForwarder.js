@@ -79,5 +79,6 @@ function getLocalizedPageUrl(pageUrl, locale) {
 }
 
 function forwardToLocalePage() {
-	window.location = getLocalizedPageUrl(window.location.href, getActiveLocale(getCookie("BRJS.LOCALE"), getUserAcceptedLocales(), $appSupportedLocales));
+	// The localeCookieName token is replaced before serving the content to the browser. The value of localeCookieName is set in app.conf.
+	window.location = getLocalizedPageUrl(window.location.href, getActiveLocale(getCookie("@localeCookieName@"), getUserAcceptedLocales(), $appSupportedLocales));
 }

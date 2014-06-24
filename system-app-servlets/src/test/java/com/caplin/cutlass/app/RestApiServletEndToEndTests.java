@@ -45,7 +45,7 @@ public class RestApiServletEndToEndTests
 		
 		brjs = ThreadSafeStaticBRJSAccessor.initializeModel( sdkRoot, new PessimisticFileModificationService() );
 		
-		FileUtils.write(brjs.localeForwarderUtil(), "");
+		FileUtils.write(brjs.localeForwarderFile(), "");
 		
 		server = RestApiServletTestUtils.createServer(CONTEXT_ROOT, HTTP_PORT, new RestApiServlet(), sdkRoot);
 		server.start();

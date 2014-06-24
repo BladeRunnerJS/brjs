@@ -45,4 +45,13 @@ public class AppConf extends ConfFile<YamlAppConf> {
 	public Locale getDefaultLocale() throws ConfigException {
 		return getLocales()[0];
 	}
+	
+	public String getLocaleCookieName() throws ConfigException {
+		return conf.localeCookieName;
+	}
+	
+	public void setLocaleCookieName(String cookieName) throws ConfigException {
+		conf.localeCookieName = cookieName;
+		verifyAndAutoWrite();
+	}
 }

@@ -31,7 +31,7 @@ public class AppConfTest extends SpecTest {
 	public void appConfWillHaveSensibleDefaultsIfItDoesntAlreadyExist() throws Exception {
 		given(app).hasBeenCreated();
 		when(app).appConf().write();
-		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: appns");
+		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: appns");
 	}
 	
 	@Ignore
@@ -46,14 +46,14 @@ public class AppConfTest extends SpecTest {
 	public void updateLocaleInAppConf() throws Exception {
 		given(app).hasBeenPopulated("appx");
 		when(app).appConf().setLocales("de").write();
-		then(app).fileHasContents("app.conf", "locales: de\nrequirePrefix: appx");
+		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: de\nrequirePrefix: appx");
 	}
 	
 	@Test
 	public void updateAppNamespaceInAppConf() throws Exception {
 		given(app).hasBeenPopulated("appx");
 		when(app).appConf().setAppNamespace("newns").write();
-		then(app).fileHasContents("app.conf", "locales: en\nrequirePrefix: newns");
+		then(app).fileHasContents("app.conf", "localeCookieName: BRJS.LOCALE\nlocales: en\nrequirePrefix: newns");
 	}
 	
 	@Test

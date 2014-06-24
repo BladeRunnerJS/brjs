@@ -2,7 +2,6 @@ package org.bladerunnerjs.testing.specutility;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
@@ -85,5 +84,12 @@ public class AppBuilder extends NodeBuilder<App> {
 		app.handleLogicalRequest(requestPath, responseOutput);
 		
 		return builderChainer;	
+	}
+
+	public BuilderChainer hasLocaleCookieName(String cookieName) throws ConfigException
+	{
+		app.appConf().setLocaleCookieName(cookieName);
+		
+		return builderChainer;
 	}
 }

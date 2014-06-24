@@ -19,10 +19,15 @@ public class YamlAppConf extends AbstractYamlConfFile {
 	@NotEmpty
 	public String locales;
 	
+	@NotNull
+	@NotEmpty
+	public String localeCookieName;
+	
 	@Override
 	public void initialize() {
 		requirePrefix = getDefault(requirePrefix, "appns");
 		locales = getDefault(locales, "en");
+		localeCookieName = getDefault(localeCookieName, "BRJS.LOCALE");
 	}
 	
 	@Override
