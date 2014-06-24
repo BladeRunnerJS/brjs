@@ -308,9 +308,7 @@ public class AliasBundlingTest extends SpecTest {
 	
 	@Test @Ignore
 	public void multipleAliasDefinitionsCanBeInsideResourcesFolderAndSubfolders() throws Exception {
-		given(appConf).hasRequirePrefix("appns")
-			.and(logging).echoEnabled()
-			.and(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/Class3")
+		given(aspect).hasClasses("appns/Class1", "appns/Class2", "appns/Class3")
 			.and(aspect.assetLocation("resources").aliasDefinitionsFile()).hasAlias("appns.alias1", "appns.Class1")
 			.and(aspect).containsFileWithContents("resources/subfolder/aliasDefinitions.xml",
 					"<?xml version=\"1.0\" encoding=\"UTF-8\"?><aliasDefinitions xmlns=\"http://schema.caplin.com/CaplinTrader/aliasDefinitions\">\n" +
