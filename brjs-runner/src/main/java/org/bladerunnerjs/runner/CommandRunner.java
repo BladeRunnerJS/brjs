@@ -42,8 +42,8 @@ public class CommandRunner {
 		try {
 			argsParser.registerParameter(new Switch("verbose").setShortFlag('v').setLongFlag("verbose").setDefault("false").setHelp("verbose level logging"));
 			argsParser.registerParameter(new Switch("debug").setShortFlag('d').setLongFlag("debug").setDefault("false").setHelp("debug level logging"));
-			argsParser.registerParameter(new FlaggedOption("pkg").setLongFlag("package").setHelp("the comma delimited list of packages to show messages from, or '*' to show everything"));
-			argsParser.registerParameter(new Switch("show-pkg").setLongFlag("show-package").setDefault("false").setHelp("show which class each log line comes from"));
+			argsParser.registerParameter(new FlaggedOption("pkg").setLongFlag("pkg").setHelp("the comma delimited list of packages to show messages from, or '*' to show everything"));
+			argsParser.registerParameter(new Switch("show-pkg").setLongFlag("show-pkg").setDefault("false").setHelp("show which class each log line comes from"));
 		}
 		catch (JSAPException e) {
 			throw new RuntimeException(e);

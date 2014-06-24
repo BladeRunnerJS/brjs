@@ -103,7 +103,7 @@ public class CommandRunnerTest {
 	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabled() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--log", "org.other, org.external", "--verbose"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "org.other, org.external", "--verbose"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("warn-level", output);
@@ -114,7 +114,7 @@ public class CommandRunnerTest {
 	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabledViaWildcard() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--log", "*", "--verbose"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "*", "--verbose"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("warn-level", output);
@@ -125,7 +125,7 @@ public class CommandRunnerTest {
 	@Test
 	public void theClassResponsibleForEachLogLineCanBeDisplayed() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--log-info"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--show-pkg"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("org.bladerunnerjs.runner.LogTestCommand: warn-level", output);
