@@ -392,6 +392,10 @@ h2 .classname-split {
 	float: right;
 }
 
-#sdk_info_panel{
+#sdk_info_panel {
 	font-size: 11px;
+	margin-bottom:10px;
+}
+#sdk_info_panel p {
+	margin: 5px 0;
 }

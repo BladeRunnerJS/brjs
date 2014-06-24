@@ -82,6 +82,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		
 		try {
 			replaceBuildDateToken(new File(outputDir, "index.html"));
+			replaceVersionToken(new File(outputDir, "index.html"));
 		}
 		catch(IOException | ConfigException e) {
 			throw new CommandOperationException(e);
@@ -169,6 +170,13 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		Date date = new Date();
 		
 		String resultFileContent = fileContent.replace("@buildDate@", dateFormat.format(date));
+		fileUtil.writeStringToFile(indexFile, resultFileContent);
+	}
+	
+	private void replaceVersionToken(File indexFile) throws IOException, ConfigException {
+		String fileContent = fileUtil.readFileToString(indexFile);
+		
+		String resultFileContent = fileContent.replace("@sdkVersion@", brjs.versionInfo().getVersionNumber());
 		fileUtil.writeStringToFile(indexFile, resultFileContent);
 	}
 }
