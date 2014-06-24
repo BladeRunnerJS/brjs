@@ -124,10 +124,13 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		into "sdk/libs/java/system"
 	}
 	from (configurations.javadocs.collect { zipTree(it) }) {
-		into "sdk/docs"
+		eachFile {
+			it.path = it.path.replaceFirst("(javadoc)/","")
+		}
+		into "sdk/docs/java"
 	}
 	from (configurations.srcJars.collect { it } ) {
-		into "sdk/docs/src"
+		into "sdk/docs"
 	}
 	from (configurations.application)
 	{
@@ -252,11 +255,11 @@ task createSdkJsDocs, dependsOn: assembleSdk, {
 		}
 		copy {
 			from "workspace/generated/app/${jsDocTmpAppName}/jsdoc/"
-			into "workspace/sdk/docs/jsdoc"
+			into "workspace/sdk/docs/js"
 		}
 		copy {
 			from "build-resources/jsdocs/"
-			into "workspace/sdk/docs/jsdoc"
+			into "workspace/sdk/docs/js"
 		}
 	}
 	doLast {
@@ -377,8 +380,10 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
 		"*/sdk/templates/*/*",
 		"*/sdk/templates/*/tests/*",
-        "*/sdk/docs/javadoc/*",
-		"*/sdk/docs/javadoc/**/*",
+        "*/sdk/docs/java/*",
+		"*/sdk/docs/java/**/*",
+		"*/sdk/docs/js/*",
+		"*/sdk/docs/js/**/*",
 		"*/README.txt",
 		"*/LICENSE",
 		"*/apps/apps.txt",
