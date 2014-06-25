@@ -76,8 +76,8 @@ public class CreateBladesetCommandTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-bladeset", "app", "bladeset");
 		then(bladeset).dirExists()
-			.and(output).containsLine(BLADESET_CREATE_SUCCESS_CONSOLE_MSG, "bladeset")
-			.and(output).containsLine(BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
+			.and(logging).containsFormattedConsoleMessage(BLADESET_CREATE_SUCCESS_CONSOLE_MSG, "bladeset")
+			.and(logging).containsFormattedConsoleMessage(BLADESET_PATH_CONSOLE_MSG, bladeset.dir().getPath());
 	}
 	
 	@Test

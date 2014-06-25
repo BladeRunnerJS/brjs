@@ -49,4 +49,16 @@ public class TestLogger implements Logger
 	{
 		logStore.addDebug(name, message, params);
 	}
+
+	@Override
+	public void println(String message, Object... params)
+	{
+		console(message+"\n", params);
+	}
+
+	@Override
+	public void console(String message, Object... params)
+	{
+		logStore.addConsole(name, message, params);		
+	}
 }

@@ -2,7 +2,6 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.IO;
@@ -119,18 +118,17 @@ public class MockRootNode implements RootNode
 			public void debug(String message, Object... params)
 			{
 			}
+
+			@Override
+			public void println(String message, Object... params)
+			{
+			}
+
+			@Override
+			public void console(String message, Object... params)
+			{	
+			}
 		};
-	}
-
-	@Override
-	public ConsoleWriter getConsoleWriter()
-	{
-		return null;
-	}
-
-	@Override
-	public void setConsoleWriter(ConsoleWriter consoleWriter)
-	{
 	}
 
 	@Override

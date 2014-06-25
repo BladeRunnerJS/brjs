@@ -1,18 +1,15 @@
 package com.caplin.cutlass.app.service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -259,15 +256,10 @@ public class RestApiService
 	}
 	
 	private OutputStream doCommand(CommandPlugin command, String[] args) throws Exception
-	{
-		OutputStream out = new ByteArrayOutputStream();
-		ConsoleWriter oldConsoleWriter = brjs.getConsoleWriter();
-		brjs.setConsoleWriter( new PrintStream(out) );
-		
+	{	
 		command.doCommand(args);
 		
-		brjs.setConsoleWriter( oldConsoleWriter );
-		return out;
+		return null;
 	}
 	
 	private File getLatestReleaseNoteFile() 

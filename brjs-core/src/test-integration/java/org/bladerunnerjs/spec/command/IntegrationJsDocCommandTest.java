@@ -31,7 +31,7 @@ public class IntegrationJsDocCommandTest extends SpecTest {
 			.and(appLib).containsFileWithContents("src/MyClass.js", "/** @constructor */MyClass = function() {};");
 		when(brjs).runCommand("jsdoc", "app", "-v");
 		then(jsdocOutputDir).containsFile("MyClass.html")
-			.and(output).containsLine(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
+			.and(logging).containsFormattedConsoleMessage(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
 	}
 	
 	@Test 
@@ -40,6 +40,6 @@ public class IntegrationJsDocCommandTest extends SpecTest {
 			.and(appLib).containsFileWithContents("src/MyClass.js", "/** @constructor */MyClass = function() {};");
 		when(brjs).runCommand("jsdoc", "app");
 		then(jsdocOutputDir).containsFile("MyClass.html")
-			.and(output).containsLine(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
+			.and(logging).containsFormattedConsoleMessage(API_DOCS_GENERATED_MSG, jsdocOutputDir.getPath());
 	}
 }

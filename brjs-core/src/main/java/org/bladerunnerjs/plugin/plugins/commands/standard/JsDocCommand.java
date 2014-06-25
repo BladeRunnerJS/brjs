@@ -13,7 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
@@ -38,14 +38,14 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	private BRJS brjs;
-	private ConsoleWriter out;
 	private FileUtil fileUtil;
+	private Logger logger;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {	
 		try {
 			this.brjs = brjs;
-			out = brjs.getConsoleWriter();
+			this.logger = brjs.logger(this.getClass());
 			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
@@ -88,7 +88,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			throw new CommandOperationException(e);
 		}
 		
-		out.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
+		logger.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
 		
 		return 0;
 	}

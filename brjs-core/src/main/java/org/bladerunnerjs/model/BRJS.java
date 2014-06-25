@@ -13,7 +13,6 @@ import javax.naming.InvalidNameException;
 
 import org.bladerunnerjs.appserver.ApplicationServer;
 import org.bladerunnerjs.appserver.BRJSApplicationServer;
-import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.engine.Node;
@@ -79,9 +78,9 @@ public class BRJS extends AbstractBRJSRootNode
 	private AppVersionGenerator appVersionGenerator;
 	
 	BRJS(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
-			LoggerFactory loggerFactory, ConsoleWriter consoleWriter, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
+			LoggerFactory loggerFactory, AppVersionGenerator appVersionGenerator) throws InvalidSdkDirectoryException
 	{
-		super(brjsDir, loggerFactory, consoleWriter);
+		super(brjsDir, loggerFactory);
 		this.workingDir = new WorkingDirNode(this, brjsDir);
 		
 		fileModificationService.initialise(this, dir);

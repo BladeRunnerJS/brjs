@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin.plugins.commands.core;
 
 import java.util.List;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -17,8 +17,8 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 public class HelpCommand extends ArgsParsingCommandPlugin
 {
-	private ConsoleWriter out;
 	private BRJS brjs;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -29,7 +29,7 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		this.out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -60,26 +60,26 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 		List<CommandPlugin> coreCommands = brjs.plugins().getCoreCommandPlugins();
 		List<CommandPlugin> extraCommands = brjs.plugins().getNonCoreCommandPlugins();
 		
-		out.println("Possible commands:");
+		logger.println("Possible commands:");
 		for (CommandPlugin command : extraCommands)
 		{
-			out.println( getHelpMessageFormatString(), command.getCommandName(), command.getCommandDescription() );
+			logger.println( getHelpMessageFormatString(), command.getCommandName(), command.getCommandDescription() );
 		}
 		
-		out.println("  -----");
+		logger.println("  -----");
 		
 		for (CommandPlugin command : coreCommands)
 		{
-			out.println( getHelpMessageFormatString(), command.getCommandName(), command.getCommandDescription() );
+			logger.println( getHelpMessageFormatString(), command.getCommandName(), command.getCommandDescription() );
 		}
-		out.println();
+		logger.println("");
 		
 		// TODO: should get the arg parser to display help?
-		out.println("Supported flags:");
-		out.println("  --verbose");
-		out.println("  --debug");
-		out.println("  --log <log-packages> (the comma delimited list of packages to show messages from, or '*' to show everything)");
-		out.println("  --log-info (show which class each log line comes from)");
+		logger.println("Supported flags:");
+		logger.println("  --verbose");
+		logger.println("  --debug");
+		logger.println("  --log <log-packages> (the comma delimited list of packages to show messages from, or '*' to show everything)");
+		logger.println("  --log-info (show which class each log line comes from)");
 	}
 
 	private void getHelpForSpecificCommand(String commandName) throws CommandArgumentsException
@@ -88,16 +88,16 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 		
 		if(command == null) throw new CommandArgumentsException("Cannot show help, unknown command '" + commandName + "'", this);
 		
-		out.println("Description:");
-		out.println("  " + command.getCommandDescription());
-		out.println();
+		logger.println("Description:");
+		logger.println("  " + command.getCommandDescription());
+		logger.println("");
 		
-		out.println("Usage:");
-		out.println("  brjs " + command.getCommandName() + " " + command.getCommandUsage());
-		out.println();
+		logger.println("Usage:");
+		logger.println("  brjs " + command.getCommandName() + " " + command.getCommandUsage());
+		logger.println("");
 		
-		out.println("Help:");
-		out.println("  " + command.getCommandHelp());
+		logger.println("Help:");
+		logger.println("  " + command.getCommandHelp());
 	}
 	
 	public String getHelpMessageFormatString()

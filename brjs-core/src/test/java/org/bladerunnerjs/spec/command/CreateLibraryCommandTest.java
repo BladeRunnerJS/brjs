@@ -84,8 +84,8 @@ public class CreateLibraryCommandTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib");
 		then(lib).dirExists()
-			.and(output).containsLine( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
-			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, lib.dir() );
+			.and(logging).containsFormattedConsoleMessage( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
+			.and(logging).containsFormattedConsoleMessage( LIBRARY_PATH_CONSOLE_MSG, lib.dir() );
 	}
 	
 	@Test
@@ -114,8 +114,8 @@ public class CreateLibraryCommandTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib", "-t", "thirdparty");
 		then( app.jsLib("lib") ).dirExists()
-			.and(output).containsLine( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
-			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, app.appJsLib("lib").dir() );
+			.and(logging).containsFormattedConsoleMessage( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
+			.and(logging).containsFormattedConsoleMessage( LIBRARY_PATH_CONSOLE_MSG, app.appJsLib("lib").dir() );
 	}
 	
 	@Test
@@ -123,8 +123,8 @@ public class CreateLibraryCommandTest extends SpecTest {
 		given(app).hasBeenCreated();
 		when(brjs).runCommand("create-library", "app", "lib", "--type", "thirdparty");
 		then( app.jsLib("lib") ).dirExists()
-			.and(output).containsLine( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
-			.and(output).containsLine( LIBRARY_PATH_CONSOLE_MSG, app.jsLib("lib").dir() );
+			.and(logging).containsFormattedConsoleMessage( LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, "lib" )
+			.and(logging).containsFormattedConsoleMessage( LIBRARY_PATH_CONSOLE_MSG, app.jsLib("lib").dir() );
 	}
 	
 	@Test

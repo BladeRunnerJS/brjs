@@ -33,5 +33,17 @@ public class MockLogger implements Logger {
 	public void debug(String message, Object... params) {
 		// do nothing
 	}
+
+	@Override
+	public void println(String message, Object... params)
+	{
+		// do nothing
+	}
+
+	@Override
+	public void console(String message, Object... params)
+	{
+		// do nothing
+	}
 	
 }

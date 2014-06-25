@@ -38,7 +38,7 @@ public class HelpCommandTest extends SpecTest
 		given(brjs).hasCommandPlugins(command1, command2)
 			.and(brjs).hasBeenCreated();
 		when(brjs).runCommand("help");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Possible commands:",
 			"  command1     : Command #1 description.                ",
 			"  command2     : Command #2 description.                ",
@@ -68,7 +68,7 @@ public class HelpCommandTest extends SpecTest
 		given(brjs).hasCommandPlugins(command1)
 			.and(brjs).hasBeenCreated();
 		when(brjs).runCommand("help", "command1");
-		then(output).containsText(
+		then(logging).containsConsoleText(
 			"Description:",
 			"  Command #1 description.",
 			"",

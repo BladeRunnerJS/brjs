@@ -6,7 +6,7 @@ import java.io.IOException;
 import javax.naming.InvalidNameException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
@@ -44,7 +44,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 	private static final String LIBRARY_TYPE = "type";
 	
 	private BRJS brjs;
-	private ConsoleWriter out;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -57,7 +57,7 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{	
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -111,8 +111,8 @@ public class CreateLibraryCommand extends ArgsParsingCommandPlugin
 			throw new CommandOperationException("Cannot create library '" + library.dir().getPath() + "'", e);
 		}
 		
-		out.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
-		out.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
+		logger.println(Messages.LIBRARY_CREATE_SUCCESS_CONSOLE_MSG, libraryName);
+		logger.println(Messages.LIBRARY_PATH_CONSOLE_MSG, library.dir().getPath());
 		
 		return 0;
 	}

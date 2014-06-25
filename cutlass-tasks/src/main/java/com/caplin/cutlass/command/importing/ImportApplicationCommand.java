@@ -3,7 +3,7 @@ package com.caplin.cutlass.command.importing;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -22,13 +22,13 @@ public class ImportApplicationCommand extends AbstractCommandPlugin implements L
 {
 	private final File sdkBaseDir;
 	private final int jettyPort;
-	private ConsoleWriter out;
+	private Logger logger;
 	
 	public ImportApplicationCommand(BRJS brjs) throws ConfigException
 	{
 		this.sdkBaseDir = new File( brjs.root().dir(), CutlassConfig.SDK_DIR);
 		this.jettyPort = brjs.bladerunnerConf().getJettyPort();
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 		setBRJS(brjs);
 	}
 	
@@ -99,8 +99,8 @@ public class ImportApplicationCommand extends AbstractCommandPlugin implements L
 			
 			importApplicationCommandUtility.createAutoDeployFileForApp(newApplicationDirectory, jettyPort);
 			
-			out.println("Successfully imported '" + new File(applicationZip).getName() + "' as new application '" + newApplicationName + "'");
-			out.println(" " + newApplicationDirectory.getAbsolutePath());
+			logger.println("Successfully imported '" + new File(applicationZip).getName() + "' as new application '" + newApplicationName + "'");
+			logger.println(" " + newApplicationDirectory.getAbsolutePath());
 		}
 		catch (CommandOperationException e)
 		{
