@@ -158,14 +158,15 @@ public class AppRequestHandler
 			writer.write("<head>\n");
 			writer.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			writer.write("<script type='text/javascript'>\n");
-			
 			IOUtils.write(BundlePathJsContentPlugin.getBundlePathJsData(app, version), writer);
 			writer.write("\n");
 			IOUtils.copy(localeForwarderReader, writer);
 			writer.write("\n");			
 			writer.write("function forwardToLocalePage() {\n");
 			writer.write("	var localeCookie = LocaleUtility.getCookie(window.$BRJS_LOCALE_COOKIE_NAME);\n");
-			writer.write("	var activeLocale = LocaleUtility.getActiveLocale( localeCookie, LocaleUtility.getBrowserAcceptedLocales(), window.$BRJS_APP_LOCALES );\n");
+			writer.write("	var browserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales();\n");
+			writer.write("	var appLocales = window.$BRJS_APP_LOCALES;\n");
+			writer.write("	var activeLocale = LocaleUtility.getActiveLocale( localeCookie, browserAcceptedLocales, appLocales );\n");
 			writer.write("	window.location = LocaleUtility.getLocalizedPageUrl( window.location.href, activeLocale );\n");
 			writer.write("}\n");
 			
