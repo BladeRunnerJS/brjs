@@ -40,7 +40,7 @@ public class CommandRunner {
 	
 	static {
 		try {
-			argsParser.registerParameter(new Switch("verbose").setShortFlag('v').setLongFlag("verbose").setDefault("false").setHelp("verbose level logging"));
+			argsParser.registerParameter(new Switch("info").setShortFlag('i').setLongFlag("info").setDefault("false").setHelp("info level logging"));
 			argsParser.registerParameter(new Switch("debug").setShortFlag('d').setLongFlag("debug").setDefault("false").setHelp("debug level logging"));
 			argsParser.registerParameter(new FlaggedOption("pkg").setLongFlag("pkg").setHelp("the comma delimited list of packages to show messages from, or '*' to show everything"));
 			argsParser.registerParameter(new Switch("show-pkg").setLongFlag("show-pkg").setDefault("false").setHelp("show which class each log line comes from"));
@@ -135,7 +135,7 @@ public class CommandRunner {
 	}
 	
 	private void processedParsedArgs(JSAPResult parsedArgs) {
-		boolean isVerbose = parsedArgs.getBoolean("verbose");
+		boolean isInfo = parsedArgs.getBoolean("info");
 		boolean isDebug = parsedArgs.getBoolean("debug");
 		List<String> whitelistedPackages = (parsedArgs.getString("pkg") != null) ? Arrays.asList(parsedArgs.getString("pkg").split("\\s*,\\s*")) : new ArrayList<String>();
 		boolean logClassNames = parsedArgs.getBoolean("show-pkg");
@@ -143,7 +143,7 @@ public class CommandRunner {
 		if(isDebug) {
 			getLoggerStore().setLogLevel(LogLevel.DEBUG);
 		}
-		else if(isVerbose) {
+		else if(isInfo) {
 			getLoggerStore().setLogLevel(LogLevel.INFO);
 		}
 		
