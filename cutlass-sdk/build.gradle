@@ -195,7 +195,7 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 }
 
 def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
-	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, {
+	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, dependsOn: assemble, {
 		description = "Run ${taskTestType} for ${taskTestDir} using ${browser}"
 		dependsOn = [assemble, copyBrowsers]
 		inputs.dir file("workspace/apps/")
@@ -208,10 +208,10 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 	}
 }
 
-
-createTestTask "testJsChrome", "workspace/sdk/libs/javascript", "ALL", "chrome"
-createTestTask "testJsFirefox", "workspace/sdk/libs/javascript", "ALL", "firefox"
-createTestTask "testJsIE", "workspace/sdk/libs/javascript", "ALL", "ie"
+// "libs/javascript" is relative to the sdk directory
+createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
+createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
+createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
 
 createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
 createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
