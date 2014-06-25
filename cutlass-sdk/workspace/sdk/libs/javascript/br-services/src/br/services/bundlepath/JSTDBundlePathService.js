@@ -17,16 +17,13 @@ JSTDBundlePathService.prototype.getUnversionedBundlePath = function(bundlePath) 
 function getBundlePath(prefix, bundlePath) {
 	if (bundlePath != undefined) {
 		/* make sure there are no leading /s that might mess up the generated path */
-		while(bundlePath.charAt(0) === '/') {
-			bundlePath = bundlePath.substr(1);
-		}
-		while(prefix.charAt(0) === '/') {
-			prefix = prefix.substr(1);
-		}
+		bundlePath = bundlePath.replace(/^\/|\/$/g, '');
+		prefix = prefix.replace(/^\/|\/$/g, '');
 		return prefix + "/" + bundlePath
 	}
 	return prefix;
 }
+
 
 br.implement(JSTDBundlePathService, BundlePathService);
 
