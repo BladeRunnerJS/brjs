@@ -39,7 +39,11 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	public TrieNode<T> getNextNode(char character)
 	{
 		for (TrieNode<T> trieNode : children) {
-			if (trieNode.getChar() == character) {
+			char trieChar = trieNode.getChar();
+			if (trieChar == character) {
+				return trieNode;
+			}
+			if(trieChar == '/' && character == '.'){
 				return trieNode;
 			}
 		}

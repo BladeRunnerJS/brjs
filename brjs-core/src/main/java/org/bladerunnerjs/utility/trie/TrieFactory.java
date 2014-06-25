@@ -56,7 +56,6 @@ public class TrieFactory {
 							
 							for(String requirePath : requirePaths) {
 								addToTrie(trie, requirePath, new LinkedAssetReference(asset));
-								addToTrie(trie, requirePath.replaceAll("/", "."), new LinkedAssetReference(asset));
 							}
 						}
 						

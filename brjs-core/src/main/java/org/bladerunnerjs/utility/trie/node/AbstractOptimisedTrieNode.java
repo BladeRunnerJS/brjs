@@ -59,7 +59,14 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 	
 	protected static final <T> TrieNode<T> getNextNode(TrieNode<T>[] children, char character) {
 		for (TrieNode<T> trieNode : children) {
-			if (trieNode != null && trieNode.getChar() == character) {
+			if (trieNode == null){
+				return null;
+			}
+			char trieChar = trieNode.getChar();
+			if(trieChar == character) {
+				return trieNode;
+			}
+			if(trieChar == '/' && character == '.'){
 				return trieNode;
 			}
 		}
