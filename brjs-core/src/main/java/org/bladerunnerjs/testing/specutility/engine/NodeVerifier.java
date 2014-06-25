@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
 import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
@@ -21,11 +21,11 @@ import org.bladerunnerjs.utility.RelativePathUtility;
 public abstract class NodeVerifier<N extends Node> {
 	protected final VerifierChainer verifierChainer;
 	private final N node;
-	private final FileUtil fileUtil;
+	private final EncodedFileUtil fileUtil;
 	
 	public NodeVerifier(SpecTest specTest, N node) {
 		this.node = node;
-		fileUtil = new FileUtil(specTest.getActiveCharacterEncoding());
+		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
 		verifierChainer = new VerifierChainer(specTest);
 	}
 	

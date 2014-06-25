@@ -10,8 +10,9 @@ import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
+
 import com.caplin.cutlass.CutlassConfig;
 import com.caplin.cutlass.util.FileUtility;
 
@@ -42,7 +43,7 @@ public class ImportApplicationCommandUtilityTest
 	@After
 	public void tearDown() throws Exception
 	{
-		FileUtility.deleteDirAndContents(tempDir);
+		FileUtils.deleteDirectory(tempDir);
 	}
 	
 	@Test (expected=CommandOperationException.class)

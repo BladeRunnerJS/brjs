@@ -9,10 +9,10 @@ import java.io.Reader;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-public class FileUtil {
+public class EncodedFileUtil {
 	private final String characterEncoding;
 	
-	public FileUtil(String characterEncoding) {
+	public EncodedFileUtil(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
 	

@@ -3,18 +3,18 @@ package org.bladerunnerjs.testing.specutility.engine;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.testing.specutility.engine.CommanderChainer;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 
 
 public abstract class NodeCommander<N extends Node> extends ModelCommander {
 	protected final CommanderChainer commanderChainer;
 	private final N node;
-	protected final FileUtil fileUtil;
+	protected final EncodedFileUtil fileUtil;
 	
 	public NodeCommander(SpecTest specTest, N node) {
 		super(specTest);
 		this.node = node;
-		fileUtil = new FileUtil(specTest.getActiveCharacterEncoding());
+		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
 		commanderChainer = new CommanderChainer(specTest);
 	}
 	

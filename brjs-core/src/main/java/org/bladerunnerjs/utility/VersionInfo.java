@@ -12,13 +12,13 @@ import com.google.gson.JsonParser;
 public class VersionInfo
 {
 	private final BRJS brjs;
-	private final FileUtil fileUtil;
+	private final EncodedFileUtil fileUtil;
 	
 	public VersionInfo(BRJS brjs)
 	{
 		try {
 			this.brjs = brjs;
-			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+			fileUtil = new EncodedFileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

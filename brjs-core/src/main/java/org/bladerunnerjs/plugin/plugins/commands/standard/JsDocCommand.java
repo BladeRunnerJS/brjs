@@ -22,7 +22,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -38,7 +38,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	private BRJS brjs;
-	private FileUtil fileUtil;
+	private EncodedFileUtil fileUtil;
 	private Logger logger;
 	
 	@Override
@@ -46,7 +46,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		try {
 			this.brjs = brjs;
 			this.logger = brjs.logger(this.getClass());
-			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+			fileUtil = new EncodedFileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

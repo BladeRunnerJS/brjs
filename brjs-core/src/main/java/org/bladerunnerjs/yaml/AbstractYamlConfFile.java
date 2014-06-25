@@ -10,7 +10,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BRJSNode;
 import org.bladerunnerjs.model.exception.ConfigException;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.esotericsoftware.yamlbeans.YamlWriter;
 import com.google.common.base.Joiner;
@@ -18,7 +18,7 @@ import com.google.common.base.Joiner;
 public abstract class AbstractYamlConfFile implements YamlConfFile {
 	protected BRJSNode node;
 	private File confFile;
-	private FileUtil fileUtil;
+	private EncodedFileUtil fileUtil;
 	
 	public void setNode(BRJSNode node) {
 		this.node = node;
@@ -30,7 +30,7 @@ public abstract class AbstractYamlConfFile implements YamlConfFile {
 		try {
 			// TODO: get rid of `node == null` guard once we delete no brjs-core code
 			String fileEncoding = ((node == null) || confFile.getName().equals("brjs.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			fileUtil = new FileUtil(fileEncoding);
+			fileUtil = new EncodedFileUtil(fileEncoding);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
