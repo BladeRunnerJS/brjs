@@ -23,6 +23,7 @@ public class CssContentPluginTest extends SpecTest {
 	private File mainTheme;
 	private File bladeMainTheme;
 	private JsLib nonConformantLib;
+	private JsLib nonConformantLib2;
 	private BladerunnerConf bladerunnerConf;
 	private StringBuffer requestResponse = new StringBuffer();
 	private Workbench workbench;
@@ -39,6 +40,7 @@ public class CssContentPluginTest extends SpecTest {
 			commonTheme = aspect.file("themes/common");
 			mainTheme = aspect.file("themes/main");
 			nonConformantLib = app.jsLib("non-conformant-lib");
+			nonConformantLib2 = app.jsLib("non-conformant-lib2");
 			bladerunnerConf = brjs.bladerunnerConf();
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
@@ -180,6 +182,17 @@ public class CssContentPluginTest extends SpecTest {
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
 		then(requestResponse).containsText("style1.css")
 			.and(requestResponse).doesNotContainText("style2.css");
+	}
+
+	@Test
+	public void cssFilesForTransitivelyDependantLibrariesAppearInTheCommonTheme() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRequires(nonConformantLib2)
+			.and(nonConformantLib2).containsFileWithContents("thirdparty-lib.manifest", "depends: non-conformant-lib\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFile("style1.css");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("style1.css");
 	}
 
 	@Test
