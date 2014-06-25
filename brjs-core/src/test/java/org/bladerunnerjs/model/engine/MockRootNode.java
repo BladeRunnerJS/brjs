@@ -95,11 +95,6 @@ public class MockRootNode implements RootNode
 			}
 
 			@Override
-			public void fatal(String message, Object... params)
-			{
-			}
-
-			@Override
 			public void error(String message, Object... params)
 			{
 			}

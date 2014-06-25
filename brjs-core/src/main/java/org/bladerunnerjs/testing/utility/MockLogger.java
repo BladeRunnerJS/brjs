@@ -9,12 +9,6 @@ public class MockLogger implements Logger {
 	}
 	
 	@Override
-	public void fatal(String message, Object... params)
-	{
-		// do nothing
-	}
-	
-	@Override
 	public void error(String message, Object... params) {
 		// do nothing
 	}

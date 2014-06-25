@@ -2,9 +2,6 @@ package org.bladerunnerjs.logging;
 
 import java.util.IllegalFormatException;
 
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
-
 public class SLF4JLogger implements Logger
 {
 	private final org.slf4j.Logger slf4jLogger;
@@ -14,16 +11,6 @@ public class SLF4JLogger implements Logger
 	{
 		this.slf4jLogger = slf4jLogger;
 		this.name = name;
-	}
-
-	@Override
-	public void fatal(String message, Object... params)
-	{
-		if (slf4jLogger.isErrorEnabled())
-		{
-			Marker FATAL = MarkerFactory.getMarker("FATAL");
-			slf4jLogger.error(FATAL, getFormattedString(message, params) );
-		}
 	}
 	
 	@Override

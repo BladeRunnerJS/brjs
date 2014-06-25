@@ -21,12 +21,6 @@ public class TestLogger implements Logger
 	}
 
 	@Override
-	public void fatal(String message, Object... params)
-	{
-		logStore.addFatal(name, message, params);
-	}
-
-	@Override
 	public void error(String message, Object... params)
 	{
 		logStore.addError(name, message, params);
