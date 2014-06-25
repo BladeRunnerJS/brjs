@@ -9,12 +9,11 @@ import java.util.List;
 
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetFileInstantationException;
+import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.AssetLocationUtility;
 import org.bladerunnerjs.model.AugmentedContentSourceModule;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.LinkedFileAsset;
-import org.bladerunnerjs.model.LinkedAsset;
-import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.SourceModulePatch;
 import org.bladerunnerjs.model.TrieBasedDependenciesCalculator;
@@ -35,6 +34,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	private AssetLocation assetLocation;
 	private File assetFile;
+	private LinkedFileAsset linkedFileAsset;
 	private List<String> requirePaths = new ArrayList<>();
 	private SourceModulePatch patch;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
@@ -43,6 +43,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	public NamespacedJsSourceModule(File assetFile, AssetLocation assetLocation) throws AssetFileInstantationException {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
+		this.linkedFileAsset =  new LinkedFileAsset(assetFile, assetLocation);
 		
 		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
@@ -68,7 +69,7 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public Reader getUnalteredContentReader() throws IOException {
 		return new ConcatReader( new Reader[] {
-				getLinkedAsset().getReader(), 
+				linkedFileAsset.getReader(), 
 				patch.getReader()
 		});
 	}
@@ -145,17 +146,17 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	@Override
 	public File dir()
 	{
-		return getLinkedAsset().dir();
+		return linkedFileAsset.dir();
 	}
 	
 	@Override
 	public String getAssetName() {
-		return getLinkedAsset().getAssetName();
+		return linkedFileAsset.getAssetName();
 	}
 	
 	@Override
 	public String getAssetPath() {
-		return getLinkedAsset().getAssetPath();
+		return linkedFileAsset.getAssetPath();
 	}
 	
 	@Override
@@ -169,10 +170,6 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 		return AssetLocationUtility.getAllDependentAssetLocations(assetLocation);
 	}
 	
-	
-	private LinkedAsset getLinkedAsset() {
-		return new LinkedFileAsset(assetFile, assetLocation);
-	}
 	
 	private TrieBasedDependenciesCalculator getDependencyCalculator() {
 		if (trieBasedDependenciesCalculator == null) {

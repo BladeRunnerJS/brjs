@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -92,7 +93,7 @@ public class LinkedFileAsset implements LinkedAsset {
 
 	@Override
 	public List<String> getRequirePaths() {
-		return new ArrayList<String>();
+		return Collections.<String>emptyList();
 	}
 	
 	@Override
