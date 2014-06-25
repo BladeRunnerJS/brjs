@@ -61,7 +61,7 @@ public class JsDocNodeObserver implements EventObserver
 						}
 					}
 					
-					logger.println(Messages.CREATED_JSDOC_FOR_APP_LOG_MSG, app.getName());
+					logger.info(Messages.CREATED_JSDOC_FOR_APP_LOG_MSG, app.getName());
 				}
 			}
 			catch (IOException e) {
