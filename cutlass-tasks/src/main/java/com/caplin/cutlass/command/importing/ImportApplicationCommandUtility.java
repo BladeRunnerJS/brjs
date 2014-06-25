@@ -66,7 +66,7 @@ public class ImportApplicationCommandUtility
 		
 		if (ThreadSafeStaticBRJSAccessor.root != null) {
 			Logger logger = ThreadSafeStaticBRJSAccessor.root.logger(ImportApplicationCommandUtility.class);
-			logger.info("Successfully copied SDK application jars to '" + applicationDir.getName() + "/WEB-INF/lib'");
+			logger.println("Successfully copied SDK application jars to '" + applicationDir.getName() + "/WEB-INF/lib'");
 		}
 	}
 
