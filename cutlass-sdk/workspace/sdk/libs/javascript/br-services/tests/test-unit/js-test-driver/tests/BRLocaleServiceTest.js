@@ -2,6 +2,8 @@ BRLocaleServiceTest = TestCase("BRLocaleServiceTest");
 
 var BRLocaleService = require("br/services/locale/BRLocaleService");
 
+//TODO: find a better way to test this instead of passing in functions
+
 BRLocaleServiceTest.prototype.test_getActiveLocaleWhenCookieSet = function()
 {
 	var getCookieFn = function(){ return "de" }
@@ -41,4 +43,21 @@ BRLocaleServiceTest.prototype.test_getPageLocale = function()
 	var localeService = new BRLocaleService( null, null, null, urlAccessorFn );
 	
 	assertEquals("en_GB", localeService.getPageLocale());
+};
+
+BRLocaleServiceTest.prototype.test_getAndSetLocaleCookie = function()
+{	
+	var cookieName = "locale.key."+new Date().getTime();
+	window.$BRJS_LOCALE_COOKIE_NAME = cookieName; //TODO: find a better way to do this
+	
+	var getBrowserLocalesFn = function(){ return ['en'] }
+	var appLocales = {'en' : true, 'de' : true}
+	
+	var localeService = new BRLocaleService( null, getBrowserLocalesFn, appLocales );
+	
+	debugger;
+	
+	assertEquals("en", localeService.getLocale());
+	localeService.setLocaleCookie( "de", 1 );
+	assertEquals("de", localeService.getLocale());
 };

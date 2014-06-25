@@ -29,6 +29,17 @@ LocaleUtility.getCookie = function(name) {
 	return null;
 }
 
+LocaleUtility.setCookie = function(name, value, days, path) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    path = (path) ? path : "/";
+    document.cookie = name+"="+value+expires+"; path="+path;
+}
+
 LocaleUtility.getFirstMatchingLocale = function(appSupportedLocales, userAcceptedLocales) {
 	var firstMatchingLocale;
 

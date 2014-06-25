@@ -14,8 +14,8 @@ function LocaleService() {};
 /**
 * Sets the locale cookie
 */
-LocaleService.prototype.setLocaleCookie = function() {
-	throw new Errors.UnimplementedInterfaceError("LocaleService.setLocaleCookie() has not been implemented.");
+LocaleService.prototype.setLocaleCookie = function(locale, days) {
+	throw new Errors.UnimplementedInterfaceError("LocaleService.setLocaleCookie(locale) has not been implemented.");
 };
 
 /**
