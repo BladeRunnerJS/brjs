@@ -70,7 +70,7 @@ public class CommandRunnerTest {
 	@Test
 	public void verboseLogLinesCanBeEnabled() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--verbose"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test", "--info"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("warn-level", output);
@@ -103,7 +103,7 @@ public class CommandRunnerTest {
 	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabled() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "org.other, org.external", "--verbose"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "org.other, org.external", "--info"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("warn-level", output);
@@ -114,7 +114,7 @@ public class CommandRunnerTest {
 	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabledViaWildcard() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "*", "--verbose"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "*", "--info"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("warn-level", output);

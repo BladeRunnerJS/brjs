@@ -12,6 +12,7 @@
 	<alias name="br.app-version-service" defaultClass="br.services.appversion.BRAppVersionService">
 		<scenario name="dev" class="br.services.appversion.JSTDAppVersionService" />
 	</alias>
+	<alias name="br.locale-service" defaultClass="br.services.locale.BRLocaleService" />
 
 	<!-- TODO: remove these aliases from presenter once the new style classes can be brought out of thirdparty -->
 	<alias name="br.date-picker" defaultClass="br.presenter.control.datefield.JQueryDatePickerControl" />
