@@ -10,12 +10,12 @@ var LocaleService = require('br/services/LocaleService');
 * @class
 * @interface
 */
-function BRLocaleService() {
-	this.localeUtility = require("br-locale-utility");
-};
-
 function BRLocaleService( localeUtility ) {
-	this.localeUtility = localeUtility;
+	if (localeUtility) {
+		this.localeUtility = localeUtility;
+	} else {
+		this.localeUtility = require("br-locale-utility");
+	}
 };
 
 
@@ -41,9 +41,9 @@ BRLocaleService.prototype.setLocaleCookie = function(locale, days) {
 * Gets the current locale preference
 */
 BRLocaleService.prototype.getLocale = function() {
-	var localeCookieValue = this.localeUtility.getCookieValue( window.$BRJS_LOCALE_COOKIE_NAME );
+	var localeCookieValue = this.localeUtility.getCookie( window.$BRJS_LOCALE_COOKIE_NAME );
 	var browserLocales = this.localeUtility.getBrowserAcceptedLocales();
-	var appLocales = this.localeUtility.getAppLocales();
+	var appLocales = window.$BRJS_APP_LOCALES;
 	return LocaleUtility.getActiveLocale( localeCookieValue, browserLocales, appLocales );
 };
 
