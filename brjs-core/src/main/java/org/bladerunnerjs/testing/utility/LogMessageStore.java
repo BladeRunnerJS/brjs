@@ -116,7 +116,7 @@ public class LogMessageStore
 	
 	public void verifyConsoleLogMessages(String... messages)
 	{
-		String acutalConsoleMessages = StringUtils.join(consoleMessages, "");
+		String acutalConsoleMessages = StringUtils.join(consoleMessages, "\n");
 		String expectedMessages = StringUtils.join(messages, "\n");
 		if ( !acutalConsoleMessages.contains(expectedMessages) ) {
 			assertEquals("console messages didnt contain expected text", expectedMessages, acutalConsoleMessages);
@@ -125,7 +125,7 @@ public class LogMessageStore
 	
 	public void verifyConsoleLogDoesNotContain(String... messages)
 	{
-		String acutalConsoleMessages = StringUtils.join(consoleMessages, "");
+		String acutalConsoleMessages = StringUtils.join(consoleMessages, "\n");
 		for (String message : messages) {
 			if ( acutalConsoleMessages.contains(message) ) {
 				assertEquals("console messages contain unexpected text", message, acutalConsoleMessages);

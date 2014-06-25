@@ -16,15 +16,19 @@ import org.bladerunnerjs.runner.CommandRunner.NoSdkArgumentException;
 
 import com.caplin.cutlass.util.FileUtility;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.impl.StaticLoggerBinder;
 
 public class CommandRunnerTest {
 	private CommandRunner commandRunner;
+	private ByteArrayOutputStream systemOutputStream = new ByteArrayOutputStream();
 	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 	private ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
 	private File tempDir;
+	
+	private PrintStream oldSysOut;
 	
 	@Before
 	public void setUp() throws IOException, InvalidSdkDirectoryException {
@@ -32,7 +36,15 @@ public class CommandRunnerTest {
 		commandRunner = new CommandRunner();
 		tempDir = FileUtility.createTemporaryDirectory(getClass().getSimpleName());
 		ThreadSafeStaticBRJSAccessor.destroy();
+		oldSysOut = System.out;
+		System.setOut( new PrintStream(systemOutputStream) );
 	}
+	
+	@After
+	public void tearDown() {
+		System.setOut( oldSysOut );		
+	}
+	
 	
 	@Test(expected=NoSdkArgumentException.class)
 	public void anExceptionIsThrownIfNoSdkDirectoryIsProvided() throws Exception {
@@ -65,6 +77,15 @@ public class CommandRunnerTest {
 		assertContains("warn-level", output);
 		assertDoesNotContain("info-level", output);
 		assertDoesNotContain("debug-level", output);
+	}
+	
+	@Test
+	public void consoleLoggingIsAlwaysVisible() throws Exception {
+		dirFile("valid-sdk-directory/sdk").mkdirs();
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "log-test"});
+		
+		String output = systemOutputStream.toString("UTF-8");
+		assertContains("console-level", output);
 	}
 	
 	@Test

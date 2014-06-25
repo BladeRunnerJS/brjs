@@ -91,7 +91,7 @@ public class SLF4JLogger implements Logger
 	@Override
 	public void console(String message, Object... params)
 	{
-		System.out.print( getFormattedString(message, params) );
+		println(message, params);
 	}
 
 }
