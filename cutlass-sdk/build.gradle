@@ -357,7 +357,6 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/libs/java/application/**",
 		"*/sdk/libs/javascript/*/src/**",
 		"*/sdk/libs/javascript/*/resources/**",
-		"*/sdk/libs/locale-forwarder/**",
 		"*/sdk/system-applications/*/*",
 		"*/sdk/system-applications/*/WEB-INF/lib/*",
 		"*/sdk/templates/*/*",
@@ -406,7 +405,6 @@ task cleanWorkspaceFiles {
 				exclude(name: 'sdk/system-applications/**/*')
 				exclude(name: 'apps/**/*')
 				exclude(name: 'sdk/libs/javascript/**/*')
-				exclude(name: 'sdk/libs/locale-forwarder/**/*')
 			}
 		}
 		ant.delete(includeemptydirs: 'true') {
