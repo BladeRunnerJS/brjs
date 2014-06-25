@@ -1,10 +1,12 @@
 package com.caplin.cutlass.app.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -257,14 +259,42 @@ public class RestApiService
 	
 	private OutputStream doCommand(CommandPlugin command, String[] args) throws Exception
 	{	
-		command.doCommand(args);
+		ByteArrayOutputStream commandOutput = new ByteArrayOutputStream();
 		
-		return null;
+		PrintStream oldSysOut = System.out;
+		System.setOut( new MultiOutputPrintStream(System.out, new PrintStream(commandOutput)) );
+		
+		try {
+			command.doCommand(args);
+		} finally {
+			System.setOut(oldSysOut);
+		}
+		
+		return commandOutput;
 	}
 	
 	private File getLatestReleaseNoteFile() 
 	{
 		return new File( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) , "docs/release-notes/latest.html");
+	}
+
+	
+	
+	private class MultiOutputPrintStream extends PrintStream {
+		private PrintStream secondary;
+
+		MultiOutputPrintStream(PrintStream primary, PrintStream secondary) {
+			super(primary);
+			this.secondary = secondary;
+		}
+		public void write(byte buf[], int off, int len) {
+			super.write(buf, off, len);
+			secondary.write(buf, off, len);
+		}
+		public void flush() {
+			super.flush();
+			secondary.flush();
+		}
 	}
 	
 }
