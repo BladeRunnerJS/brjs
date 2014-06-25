@@ -16,6 +16,7 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.BundleSetCreator;
+import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.LinkedAsset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.SourceModule;
@@ -52,8 +53,14 @@ public class BundleSetBuilder {
 		
 		if (bundlableNode instanceof Workbench) {
 			for ( AssetLocation assetLocation : bundlableNode.app().aspect("default").seedAssetLocations() ) {
-				addUncopedAssetLocation( assetLocation );				
+				addUnscopedAssetLocation( assetLocation );				
 			}
+		}
+		
+		List<SourceModule> bootstrappingSourceModules = new ArrayList<SourceModule>();
+		if (!sourceModules.isEmpty())
+		{
+			addBootstrapAndDependencies(bootstrappingSourceModules);
 		}
 		
 		try {
@@ -61,27 +68,12 @@ public class BundleSetBuilder {
 			resourceLocationList.addAll(assetLocations);
 			orderAssetLocations(bundlableNode, resourceLocationList);
 			
-			
 			for(AliasDefinition aliasDefinition : new ArrayList<>(activeAliases)) {
 				addSourceModule((SourceModule)bundlableNode.getLinkedAsset(aliasDefinition.getRequirePath()));
 			}
 		}
 		catch(RequirePathException e) {
 			throw new ModelOperationException(e);
-		}
-		
-		SourceModule bootstrapSourceModule = null;
-		List<SourceModule> bootstrappingSourceModules = new ArrayList<SourceModule>();
-		try {
-			if (!sourceModules.isEmpty())
-			{
-				bootstrapSourceModule = (SourceModule)bundlableNode.getLinkedAsset(BOOTSTRAP_LIB_NAME);
-				addSourceModule( bootstrapSourceModule );
-				addAllSourceModuleDependencies(bootstrapSourceModule, bootstrappingSourceModules);
-			}
-		}
-		catch(RequirePathException e) {
-			// do nothing: 'bootstrap' is only an implicit dependency if it exists 
 		}
 		
 		List<SourceModule> orderedSourceModules = new SourceModuleDependencyOrderCalculator(bundlableNode, bootstrappingSourceModules, sourceModules, orderDependentSourceModuleDependencies).getOrderedSourceModules();
@@ -140,7 +132,7 @@ public class BundleSetBuilder {
 	
 	private void addAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
 		
-		if(assetLocations.add(assetLocation)) {
+		if (assetLocations.add(assetLocation)) {
 			for(LinkedAsset resourceSeedFile : assetLocation.linkedAssets()) {
 				addLinkedAsset(resourceSeedFile);
 			}
@@ -151,7 +143,7 @@ public class BundleSetBuilder {
 		}
 	}
 	
-	private void addUncopedAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
+	private void addUnscopedAssetLocation(AssetLocation assetLocation) throws ModelOperationException {
 		if (assetLocation == null) { return; }
 		if (assetLocations.add(assetLocation)) {			
 			for(AssetLocation dependentAssetLocation : assetLocation.dependentAssetLocations()) {
@@ -250,6 +242,20 @@ public class BundleSetBuilder {
 			}
 			unorderedAssetLocations.removeAll(assetLocationsForThisContainer);
 			unorderedAssetLocations.addAll(0, assetLocationsForThisContainer);
+		}
+	}
+	
+	private void addBootstrapAndDependencies(List<SourceModule> bootstrappingSourceModules) throws ModelOperationException
+	{
+		JsLib boostrapLib = bundlableNode.app().jsLib(BOOTSTRAP_LIB_NAME);
+		for (Asset asset : boostrapLib.linkedAssets()) {
+			if (asset instanceof SourceModule) {
+				addSourceModule( (SourceModule) asset );
+				addAllSourceModuleDependencies( (SourceModule) asset, bootstrappingSourceModules );						
+			}
+		}
+		for (AssetLocation assetLocation : boostrapLib.assetLocations()) {
+			addUnscopedAssetLocation(assetLocation);					
 		}
 	}
 	

@@ -141,7 +141,7 @@ public class ThirdpartySourceModule implements SourceModule
 		{
 			for (String dependentLibName : manifest.getDepends())
 			{
-				JsLib dependentLib = assetLocation.assetContainer().app().jsLib(dependentLibName);
+				JsLib dependentLib = bundlableNode.app().jsLib(dependentLibName);
 				if (!dependentLib.dirExists())
 				{
 					throw new ConfigException(String.format("Library '%s' depends on the library '%s', which doesn't exist.", dir().getName(), dependentLibName)) ;
