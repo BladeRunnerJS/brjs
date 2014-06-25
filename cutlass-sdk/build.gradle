@@ -209,19 +209,9 @@ def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
 }
 
 
-def brLibsPathRelativeToSdk = "libs/javascript"
-def brlibsPath = "workspace/sdk/${brLibsPathRelativeToSdk}"
-
-createTestTask "testLocaleForwaderIE", "libs/locale-forwarder", "ALL", "ie"
-createTestTask "testLocaleForwaderChrome", "libs/locale-forwarder", "ALL", "chrome"
-createTestTask "testLocaleForwaderFirefox", "libs/locale-forwarder", "ALL", "firefox"
-
-createTestTask "testJsChrome", brLibsPathRelativeToSdk, "ALL", "chrome"
-	testJsChrome.dependsOn testLocaleForwaderChrome
-createTestTask "testJsFirefox", brLibsPathRelativeToSdk, "ALL", "firefox"
-	testJsFirefox.dependsOn testLocaleForwaderFirefox
-createTestTask "testJsIE", brLibsPathRelativeToSdk, "ALL", "ie"
-	testJsIE.dependsOn testLocaleForwaderIE
+createTestTask "testJsChrome", "workspace/sdk/libs/javascript", "ALL", "chrome"
+createTestTask "testJsFirefox", "workspace/sdk/libs/javascript", "ALL", "firefox"
+createTestTask "testJsIE", "workspace/sdk/libs/javascript", "ALL", "ie"
 
 createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
 createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
