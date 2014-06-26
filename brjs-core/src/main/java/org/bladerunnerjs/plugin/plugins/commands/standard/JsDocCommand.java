@@ -1,18 +1,14 @@
 package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -93,7 +89,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		return 0;
 	}
 	
-	private List<String> generateCommand(App app, boolean isVerbose, File outputDir) {
+	private List<String> generateCommand(App app, boolean isVerbose, File outputDir) throws CommandOperationException {
 		List<String> command = new ArrayList<>();
 		
 		try {
@@ -117,50 +113,22 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			command.add("-d=" + outputDir.getAbsolutePath());
 			command.add((isVerbose) ? "-v" : "-q");
 		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
+		catch (IOException ex) {
+			throw new CommandOperationException(ex);
 		}
 		
 		return command;
 	}
 	
-	private File installJsdocToolkit() {
+	private File installJsdocToolkit() throws IOException {
 		File installDir = brjs.storageDir("jsdoc-toolkit/install");
 		
 		if(!installDir.exists()) {
 			installDir.mkdirs();
-			
-			try (InputStream jsdocZipStream = getClass().getClassLoader().getResourceAsStream("org/bladerunnerjs/core/plugin/command/standard/jsdoc-resources.zip")) {
-				unzipInputStream(jsdocZipStream, installDir);
-			}
-			catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+			FileUtils.copyDirectory(brjs.template("jsdoc").dir(), installDir);
 		}
 		
 		return installDir;
-	}
-	
-	private void unzipInputStream(InputStream zipArchiveInputStream, File targetDir) {
-		try (ZipInputStream zipEntryInputStream = new ZipInputStream(zipArchiveInputStream)) {
-			ZipEntry entry;
-			
-			while ((entry = zipEntryInputStream.getNextEntry()) != null) {
-				File targetFile = new File(targetDir, entry.getName());
-				
-				if(entry.isDirectory()) {
-					targetFile.mkdirs();
-				}
-				else {
-					try (FileOutputStream targetFileOutputStream = new FileOutputStream(targetFile)) {
-						IOUtils.copy(zipEntryInputStream, targetFileOutputStream);
-					}
-				}
-			}
-		}
-		catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 	
 	private void replaceBuildDateToken(File indexFile) throws IOException, ConfigException {
