@@ -22,6 +22,6 @@ Getting Started
 Thirdparty Licenses
 -------------------
 
- -  Portions of the Caplin Software utilize or include third party software and other copyrighted
-    material. Acknowledgements, licensing terms and disclaimers for such material are contained in
-    the "licenses" directory, and your use of such material is governed by their respective terms.
+ -  BladeRunnerJS is comprised of several other Thirdparty libraries, both Java and JavaScript.
+    Licenses for these Thirdparty libraries can be found alongside the library and your use of 
+	them is governed by their respective terms.

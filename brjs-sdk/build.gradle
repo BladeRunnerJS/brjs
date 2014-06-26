@@ -174,12 +174,6 @@ task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.
 		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
 	}
 
-	from ("${includesDir}/licenses")
-	{
-		into "licenses"
-	}
-
-
 	doFirst {
 		delete file("workspace/sdk/libs/java")
 		delete file("workspace/sdk/docs")
@@ -314,7 +308,7 @@ task distZip, type:Zip, dependsOn: [assemble], {
 	baseName = "BladeRunnerJS"
 	from "workspace/"
 	into "BladeRunnerJS/"
-	include "licenses/**", "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
+	include "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
 	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**", "**/*_NODIST/*"
 }
 build.dependsOn distZip
@@ -367,10 +361,7 @@ task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, de
 		"*/sdk/docs/js/**/*",
 		"*/README.txt",
 		"*/LICENSE",
-		"*/apps/apps.txt",
-		"*/licenses/java.html",
-		"*/licenses/javascript.html",
-		"*/licenses/Third Party Legal Notice.pdf",
+		"*/apps/apps.txt"
 	]
 	bannedPaths = [
 	   "**/.p4ignore",
