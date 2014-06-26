@@ -1,6 +1,13 @@
-br.Core.thirdparty("jquery");
+'use strict';
+
+require('jquery');
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
+ * @name br.test.viewhandler.Width
  * @class
  * <code>Width ViewFixtureHandler</code> can be used to get width of a view element.
  * Example usage:
@@ -10,19 +17,16 @@ br.Core.thirdparty("jquery");
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.Width = function()
-{
+function Width() {
+}
+br.implement(Width, ViewFixtureHandler);
+
+Width.prototype.set = function(eElement) {
+	throw new Errors.InvalidTestError("The width attribute for a element cannot be set directly and should be set via the viewModel.");
 };
 
-br.Core.implement(br.test.viewhandler.Width, br.test.viewhandler.ViewFixtureHandler);
-
-
-br.test.viewhandler.Width.prototype.set = function(eElement)
-{
-	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The width attribute for a element cannot be set directly and should be set via the viewModel.");
-};
-
-br.test.viewhandler.Width.prototype.get = function(eElement)
-{
+Width.prototype.get = function(eElement) {
 	return jQuery(eElement).width();
 };
+
+module.exports = Width;

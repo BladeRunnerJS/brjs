@@ -1,6 +1,13 @@
-br.Core.thirdparty("jquery");
+'use strict';
+
+require('jquery');
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
+ * @name br.test.viewhandler.TopMarginWidth
  * @class
  * <code>TopMarginWidth ViewFixtureHandler</code> can be used to test the top margin width of an element.
  * Example usage:
@@ -11,22 +18,20 @@ br.Core.thirdparty("jquery");
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.TopMarginWidth = function()
-{
+function TopMarginWidth() {
+}
+br.implement(TopMarginWidth, ViewFixtureHandler);
+
+TopMarginWidth.prototype.set = function(eElement) {
+	throw new Errors.InvalidTestError("TopMarginWidth can't be used in a Given or When clause.");
 };
 
-br.Core.implement(br.test.viewhandler.TopMarginWidth, br.test.viewhandler.ViewFixtureHandler);
-
-br.test.viewhandler.TopMarginWidth.prototype.set = function(eElement)
-{
-	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "TopMarginWidth can't be used in a Given or When clause.");
-};
-
-br.test.viewhandler.TopMarginWidth.prototype.get = function(eElement)
-{ 
+TopMarginWidth.prototype.get = function(eElement) { 
 	var sMargin = jQuery(eElement)[0].style.margin;
 	
 	pWidthValues = /\d+/.exec(sMargin);
 	
 	return parseInt(pWidthValues);
 };
+
+module.exports = TopMarginWidth;

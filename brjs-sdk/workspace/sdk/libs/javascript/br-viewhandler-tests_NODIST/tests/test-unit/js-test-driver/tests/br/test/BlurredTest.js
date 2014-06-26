@@ -1,10 +1,12 @@
 BlurredTest = TestCase("BlurredTest");
 
 require('br/test/ViewFixture');
+var Errors = require('br/Errors');
+var ViewFixture = require('br/test/ViewFixture');
 
 BlurredTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new br.test.ViewFixture("view.*");
+	this.m_oViewFixture = new ViewFixture("view.*");
 	this.m_eElement = this.getElement();
 	document.body.appendChild(this.m_eElement);
 	this.m_oViewFixture.setViewElement(this.m_eElement);
@@ -65,10 +67,10 @@ BlurredTest.prototype.test_cannotGetBlurredOnNonFocusableElements = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doThen("view.(form).blurred", true);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doThen("view.(div p).blurred", true);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };
 
 BlurredTest.prototype.test_cannotSetBlurredOnNonFocusableElements = function()
@@ -76,10 +78,10 @@ BlurredTest.prototype.test_cannotSetBlurredOnNonFocusableElements = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(form).blurred", true);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(div p).blurred", false);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };
 
 BlurredTest.prototype.test_cannotSetBlurredOnDisabledElements = function()
@@ -87,5 +89,5 @@ BlurredTest.prototype.test_cannotSetBlurredOnDisabledElements = function()
 	var _self = this;
 	assertException(function() {
 		_self.m_oViewFixture.doWhen("view.(#the-form select[disabled]).blurred", false);
-	}, br.Errors.INVALID_TEST);
+	}, Errors.INVALID_TEST);
 };
