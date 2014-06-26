@@ -52,7 +52,7 @@ public class SourceModulePatch
 		{
     		if (patchFile.isFile())
     		{
-    			brjs.logger(SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile, assetLocation.root()));
+    			brjs.logger(SourceModulePatch.class).debug(PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(assetLocation.root(), brjs.dir(), patchFile));
     			try
     			{
     				reader = new BufferedReader(new UnicodeReader(patchFile, brjs.bladerunnerConf().getDefaultFileCharacterEncoding()));
@@ -64,7 +64,7 @@ public class SourceModulePatch
     		}
     		else
     		{
-				brjs.logger(SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(brjs.dir(), patchFile,assetLocation.root()));
+				brjs.logger(SourceModulePatch.class).debug(NO_PATCH_APPLIED_MESSAGE, requirePath, RelativePathUtility.get(assetLocation.root(), brjs.dir(),patchFile));
 				reader = new StringReader("");
     		}
 		}

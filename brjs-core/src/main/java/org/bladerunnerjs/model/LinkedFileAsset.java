@@ -34,7 +34,7 @@ public class LinkedFileAsset implements LinkedAsset {
 			app = assetLocation.assetContainer().app();
 			this.assetFile = assetFile;
 			modificationChecker = new InfoFileModifiedChecker(assetLocation.root().getFileInfo(assetFile));
-			assetPath = RelativePathUtility.get(app.dir(), assetFile, app.root());
+			assetPath = RelativePathUtility.get(app.root(), app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {

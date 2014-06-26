@@ -37,7 +37,7 @@ public class I18nFileAsset implements Asset
 		try {
 			this.assetLocation = assetLocation;
 			this.assetFile = assetFile;
-			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile, assetLocation.root());
+			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			locale = Locale.createLocaleFromFilepath(getAssetName());
 		}

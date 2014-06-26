@@ -22,7 +22,7 @@ public class FileAsset implements Asset {
 			this.file = assetFile;
 			this.assetLocation = assetLocation;
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), file, assetLocation.root());
+			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), file);
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);

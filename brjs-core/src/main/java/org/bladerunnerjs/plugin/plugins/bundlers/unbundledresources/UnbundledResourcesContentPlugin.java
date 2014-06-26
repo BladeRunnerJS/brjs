@@ -73,11 +73,11 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     			File unbundledResourcesDir = bundleSet.getBundlableNode().file(UNBUNDLED_RESOURCES_DIRNAME);
     			App app = bundleSet.getBundlableNode().app();
     			File requestedFile = new File(unbundledResourcesDir, relativeFilePath);
-    			String requestedFilePathRelativeToApp = RelativePathUtility.get(app.dir(), requestedFile, app.root());
+    			String requestedFilePathRelativeToApp = RelativePathUtility.get(app.root(), app.dir(), requestedFile);
     			
     			if (!requestedFile.isFile())
     			{
-    				String requestedFilePathRelativeToRoot = RelativePathUtility.get(app.dir().getParentFile(), requestedFile, brjs);
+    				String requestedFilePathRelativeToRoot = RelativePathUtility.get(brjs, app.dir().getParentFile(), requestedFile);
     				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
     			}
 				
@@ -118,7 +118,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 		{
 			for (File file : brjs.getFileInfo(unbundledResourcesDir).nestedFiles())
 			{
-    			String relativePath = RelativePathUtility.get(unbundledResourcesDir, file, brjs);
+    			String relativePath = RelativePathUtility.get(brjs, unbundledResourcesDir, file);
     			String calculatedPath = contentPathParser.createRequest(UNBUNDLED_RESOURCES_REQUEST, relativePath);
     			requestPaths.add(calculatedPath);
 			}

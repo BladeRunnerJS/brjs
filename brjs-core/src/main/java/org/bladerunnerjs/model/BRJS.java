@@ -164,7 +164,7 @@ public class BRJS extends AbstractBRJSRootNode
 			node = node.parentNode();
 		}
 		
-		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(dir(), file, this) );
+		if (bundlableNode == null) throw new InvalidBundlableNodeException( RelativePathUtility.get(this, dir(), file) );
 		
 		return bundlableNode;
 	}

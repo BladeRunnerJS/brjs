@@ -312,6 +312,6 @@ public abstract class AbstractNode implements Node
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName()+", dir: " + RelativePathUtility.get(root().dir(), dir(), (BRJS)root());
+		return getClass().getSimpleName()+", dir: " + RelativePathUtility.get((BRJS)root(), root().dir(), dir());
 	}
 }

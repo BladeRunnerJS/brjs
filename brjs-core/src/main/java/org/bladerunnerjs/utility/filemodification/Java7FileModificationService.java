@@ -27,6 +27,8 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	private boolean running = true;
 	private File rootDir;
 	private final Logger logger;
+
+	private BRJS brjs;
 	
 	public Java7FileModificationService(LoggerFactory loggerFactory) {
 		try {
@@ -45,6 +47,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	@Override
 	public void initialise(BRJS brjs, File rootDir) {
 		try {
+			this.brjs = brjs;
 			this.rootDir = rootDir;
 			watchDirectory(rootDir.getCanonicalFile(), null, new Date().getTime());
 			brjs.addObserver( NodeReadyEvent.class, new FileModificationServiceNodeReadyObserver() );
@@ -100,7 +103,7 @@ public class Java7FileModificationService implements FileModificationService, Ru
 	
 	void watchDirectory(File file, WatchingFileModificationInfo parentModificationInfo, long lastModified) {
 		ProxyFileModificationInfo proxyFMI = getModificationInfo(file);
-		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(this, watchService, file, parentModificationInfo) :
+		WatchingFileModificationInfo fileModificationInfo = (file.isDirectory()) ? new Java7DirectoryModificationInfo(brjs, this, watchService, file, parentModificationInfo) :
 			new Java7FileModificationInfo(parentModificationInfo, file);
 		proxyFMI.setFileModificationInfo(fileModificationInfo);
 		

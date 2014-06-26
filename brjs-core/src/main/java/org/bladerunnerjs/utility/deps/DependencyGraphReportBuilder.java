@@ -33,7 +33,7 @@ public class DependencyGraphReportBuilder {
 	public static String createReport(BundlableNode bundlableNode, boolean showAllDependencies) throws ModelOperationException {
 		fixIncompleteAliases(bundlableNode);
 		
-		return "Bundle '" + RelativePathUtility.get(bundlableNode.root().dir(), bundlableNode.dir(),bundlableNode.root()) + "' dependencies found:\n" +
+		return "Bundle '" + RelativePathUtility.get(bundlableNode.root(), bundlableNode.root().dir(),bundlableNode.dir()) + "' dependencies found:\n" +
 			new DependencyGraphReportBuilder(bundlableNode.seedAssets(), DependencyInfoFactory.buildForwardDependencyMap(bundlableNode), showAllDependencies).createReport();
 	}
 	
