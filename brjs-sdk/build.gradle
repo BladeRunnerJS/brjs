@@ -411,9 +411,11 @@ task cleanWorkspaceFiles {
 			fileset(dir: 'workspace/sdk/system-applications') {
     			include(name: '**/WEB-INF/lib/brjs-*.jar')
     		}
+		}
+		if (file('workspace/apps').exists()) {
 			fileset(dir: 'workspace/apps') {
-    			include(name: '**/WEB-INF/lib/brjs-*.jar')
-    		}
+				include(name: '**/WEB-INF/lib/brjs-*.jar')
+			}
 		}
 	}
 }
