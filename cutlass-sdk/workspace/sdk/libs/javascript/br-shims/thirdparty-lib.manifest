@@ -1,2 +1,2 @@
-depends: br-ie8-shim, html5shiv, es5-shim, normalize
+depends: br-ie8-shim, html5shiv, es5-shim
 exports: null
