@@ -68,12 +68,10 @@ public class NamespacedJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public Reader getUnalteredContentReader() throws IOException {
-		Reader patchReader = patch.getReader();
-		Reader assetReader = linkedFileAsset.getReader();
-		if(patchReader == null){
-			return assetReader;
-		}else{
-			return new ConcatReader( new Reader[] { assetReader,patchReader});
+		if (patch.patchAvailable()){
+			return new ConcatReader( new Reader[] { linkedFileAsset.getReader(), patch.getReader() });
+		} else {
+			return linkedFileAsset.getReader();
 		}
 	}
 	

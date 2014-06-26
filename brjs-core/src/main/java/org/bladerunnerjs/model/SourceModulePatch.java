@@ -40,13 +40,17 @@ public class SourceModulePatch
 		return patchFile;
 	}
 	
+	public boolean patchAvailable() {
+		return patchFile.isFile() && assetLocation.assetContainer() instanceof JsLib;
+	}
+	
 	public Reader getReader()
 	{
 		Reader reader;
 		
-		if ( (!patchFile.exists()) || !(assetLocation.assetContainer() instanceof JsLib) )
+		if ( !(assetLocation.assetContainer() instanceof JsLib) )
 		{
-			return null;
+			reader = new StringReader("");
 		}
 		else
 		{
@@ -73,7 +77,7 @@ public class SourceModulePatch
 	}
 	
 	
-	/*----- static methods for getting patches so we can caches them -----*/
+	/*----- static methods for getting patches so we can cache them -----*/
 	
 	public static SourceModulePatch getPatchForRequirePath(AssetLocation assetLocation, String requirePath)
 	{
