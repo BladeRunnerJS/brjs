@@ -303,12 +303,12 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 					File assetLocationParentDir = assetLocation.dir().getParentFile();
 					//TODO: this is wrong, it relies on knowledge of the app structure which should be in the model. How do we tell if an asset location is inside 'themes'
 					if (assetLocation instanceof ThemedAssetLocation && assetLocationParentDir.getName().equals("themes")) {
-						String assetPath = RelativePathUtility.get(assetLocation.dir(), file);
+						String assetPath = RelativePathUtility.get(assetLocation.dir(), file, container.root());
 						String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetLocation.getThemeName(), assetPath } );
 						String request = contentPathParser.createRequest(themeRequestName, createRequestArgs);
 						contentPaths.add(request );
 					} else{
-						String assetPath = RelativePathUtility.get(container.dir(), file);
+						String assetPath = RelativePathUtility.get(container.dir(), file, container.root());
 						String[] createRequestArgs = ArrayUtils.addAll( requestArgs, new String[] { assetPath } );
 						contentPaths.add( contentPathParser.createRequest(resourcesRequestName, createRequestArgs) );
 					}

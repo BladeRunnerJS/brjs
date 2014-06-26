@@ -34,7 +34,7 @@ public abstract class TheAbstractAssetLocation extends InstantiatedBRJSNode impl
 		emptyAssets = new Assets(root());
 		this.assetContainer = (AssetContainer) parent;
 		this.dependentAssetLocations.addAll( Arrays.asList(dependentAssetLocations) );
-		relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir());
+		relativeRequirePath = RelativePathUtility.get(assetContainer.dir(), dir(), root());
 	}
 	
 	protected abstract List<File> getCandidateFiles();

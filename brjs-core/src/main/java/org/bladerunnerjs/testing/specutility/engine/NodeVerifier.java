@@ -1,6 +1,10 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,9 +14,9 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.engine.Node;
 import org.bladerunnerjs.model.exception.PropertiesException;
-import org.bladerunnerjs.testing.specutility.engine.VerifierChainer;
 import org.bladerunnerjs.utility.FileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
@@ -150,7 +154,7 @@ public abstract class NodeVerifier<N extends Node> {
 		fileAndDirPaths.addAll(files);
 		
 		for (File foundFile : recursivelyFoundFiles) {
-			String relativePath = RelativePathUtility.get(node.dir(), foundFile);
+			String relativePath = RelativePathUtility.get(node.dir(), foundFile, (BRJS)node.root());
 			if (foundFile.isFile()) {
 				assertFoundFileIsExpected(relativePath, fileAndDirPaths);
 			} else if (foundFile.isDirectory()) {

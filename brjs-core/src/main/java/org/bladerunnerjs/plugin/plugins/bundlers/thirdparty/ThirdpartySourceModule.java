@@ -41,7 +41,7 @@ public class ThirdpartySourceModule implements SourceModule
 	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
-			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetLocation.dir());
+			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetLocation.dir(), assetLocation.root());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 			manifest = assetLocation.getManifest();

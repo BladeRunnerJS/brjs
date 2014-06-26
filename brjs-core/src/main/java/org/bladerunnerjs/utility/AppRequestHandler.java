@@ -112,7 +112,7 @@ public class AppRequestHandler
 				throw new ResourceNotFoundException("The locale '"+locale+"' is not a valid locale for this app.");
 			}
 			
-			String pathRelativeToApp = RelativePathUtility.get(app.dir(), indexPage);
+			String pathRelativeToApp = RelativePathUtility.get(app.dir(), indexPage, app.root());
 			StringWriter indexPageContent = new StringWriter();
 			os.writeLocalUrlContentsToWriter(pathRelativeToApp, indexPageContent);
 			
@@ -126,7 +126,7 @@ public class AppRequestHandler
 			os.write(byteArrayOutputStream.toByteArray());
 		}
 		catch (IOException | ConfigException | ModelOperationException e) {
-			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(browsableNode.root().dir(), indexPage));
+			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(browsableNode.root().dir(), indexPage,browsableNode.root()));
 		}
 	}
 

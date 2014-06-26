@@ -54,7 +54,7 @@ public class AssetContainerVerifier {
 		int i = 0;
 		for(AssetLocation actualAssetLocation : actualAssetLocations) {
 			String expectedAssetLocation = expectedAssetLocations[i++];
-			String actualDependentAssetLocationPath = RelativePathUtility.get(assetContainer.dir(), actualAssetLocation.dir());
+			String actualDependentAssetLocationPath = RelativePathUtility.get(assetContainer.dir(), actualAssetLocation.dir(), assetContainer.root());
 			
 			if(actualDependentAssetLocationPath.equals("")) {
 				actualDependentAssetLocationPath = ".";
@@ -84,7 +84,7 @@ public class AssetContainerVerifier {
 		int i = 0;
 		for(AssetLocation actualDependentAssetLocation : actualDependentAssetLocations) {
 			String expectedAssetLocationDependency = expectedAssetLocationDependencies[i++];
-			String actualDependentAssetLocationPath =  RelativePathUtility.get(assetContainer.dir(), actualDependentAssetLocation.dir());
+			String actualDependentAssetLocationPath =  RelativePathUtility.get(assetContainer.dir(), actualDependentAssetLocation.dir(), assetContainer.root());
 			
 			assertEquals(expectedAssetLocationDependency, actualDependentAssetLocationPath);
 		}
@@ -104,7 +104,7 @@ public class AssetContainerVerifier {
 		List<String> assetLocationPaths = new ArrayList<>();
 		
 		for(AssetLocation assetLocation : assetLocations) {
-			assetLocationPaths.add(RelativePathUtility.get(assetLocation.assetContainer().dir(), assetLocation.dir()));
+			assetLocationPaths.add(RelativePathUtility.get(assetLocation.assetContainer().dir(), assetLocation.dir(), assetContainer.root()));
 		}
 		
 		return Joiner.on(", ").join(assetLocationPaths);

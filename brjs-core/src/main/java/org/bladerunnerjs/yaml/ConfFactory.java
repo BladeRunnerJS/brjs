@@ -17,6 +17,11 @@ public class ConfFactory {
 		// TODO: get rid of `node == null` guard once we delete non brjs-core code
 		String defaultFileCharacterEncoding = ((node == null) || confFile.getName().equals("brjs.conf")) ? "UTF-8" : node.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		
+		String absoluteFile = confFile.getAbsolutePath();
+//		System.out.println(absoluteFile);
+		if(absoluteFile.equals("/Users/jamest/Documents/Code/brjs/cutlass-sdk/workspace/sdk/libs/javascript/br/br-lib.conf")){
+//			System.out.println(absoluteFile);
+		}
 		if(confFile.exists()) {
 			conf = readConf(confFile, confClass, defaultFileCharacterEncoding);
 		}

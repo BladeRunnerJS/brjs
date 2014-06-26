@@ -12,6 +12,7 @@ import javax.naming.InvalidNameException;
 
 import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.PluginProperties;
 import org.bladerunnerjs.model.events.NodeCreatedEvent;
@@ -311,6 +312,6 @@ public abstract class AbstractNode implements Node
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName()+", dir: " + RelativePathUtility.get(root().dir(), dir());
+		return getClass().getSimpleName()+", dir: " + RelativePathUtility.get(root().dir(), dir(), (BRJS)root());
 	}
 }

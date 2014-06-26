@@ -102,7 +102,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 			if(file.exists()){
 				foundFiles.add(file);
 			}else{
-				String relativeManifestPath = RelativePathUtility.get(assetLocation.assetContainer().root().dir(), assetLocation.file(LIBRARY_MANIFEST_FILENAME));
+				String relativeManifestPath = RelativePathUtility.get(assetLocation.assetContainer().root().dir(), assetLocation.file(LIBRARY_MANIFEST_FILENAME), assetLocation.root());
 				throw new ConfigException("Unable to find the file '" + filePath + "' required in the manifest at '" + relativeManifestPath + "'.");
 			}
 		}
