@@ -155,8 +155,8 @@ public class CommandRunnerTest {
 	@Test
 	public void nonLogArgumentsAreReceivedCorrectly() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "arg1", "arg2", "--verbose"});
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "argX", "--verbose", "--log-info"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "arg1", "arg2", "--info"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "arg-test", "argX", "--info", "--show-pkg"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("arg1, arg2", output);

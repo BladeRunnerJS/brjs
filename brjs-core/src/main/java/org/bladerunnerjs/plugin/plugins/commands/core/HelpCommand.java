@@ -76,10 +76,10 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 		
 		// TODO: should get the arg parser to display help?
 		logger.println("Supported flags:");
-		logger.println("  --verbose");
+		logger.println("  --info");
 		logger.println("  --debug");
-		logger.println("  --log <log-packages> (the comma delimited list of packages to show messages from, or '*' to show everything)");
-		logger.println("  --log-info (show which class each log line comes from)");
+		logger.println("  --pkg <log-packages> (the comma delimited list of packages to show messages from, or '*' to show everything)");
+		logger.println("  --show-pkg (show which class each log line comes from)");
 	}
 
 	private void getHelpForSpecificCommand(String commandName) throws CommandArgumentsException
