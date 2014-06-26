@@ -32,6 +32,7 @@ import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.NamespaceUtility;
+import org.bladerunnerjs.utility.ServedAppMetadataUtility;
 
 
 public class HTMLContentPlugin extends AbstractContentPlugin
@@ -104,7 +105,14 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 					
 					try(Reader reader = htmlAsset.getReader()) {
 						writer.write("\n<!-- " + htmlAsset.getAssetName() + " -->\n");
-						IOUtils.copy(reader, writer);
+						
+						String htmlContent = IOUtils.toString(reader);
+						String bundlePath = ServedAppMetadataUtility.getVersionedBundlePath(version);
+						String unversionedBundlePath = ServedAppMetadataUtility.getUnversionedBundlePath();
+						String xmlBundlePathToken = ServedAppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
+						String xmlUnversionedBundlePathToken = ServedAppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
+						writer.write( htmlContent.replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath) );
+						
 						writer.flush();
 					}
 				}

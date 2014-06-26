@@ -8,6 +8,9 @@ import com.google.common.base.Joiner;
 
 public class ServedAppMetadataUtility
 {
+	
+	public static final String XML_BUNDLE_PATH_TOKEN = "@bundlePath@";
+	public static final String XML_UNVERSIONED_BUNDLE_PATH_TOKEN = "@unversionedBundlePath@";
 
 	public static String getBundlePathJsData(App app, String version) throws ConfigException {
 		return "window.$BRJS_APP_VERSION = '"+version+"';\n" +
@@ -22,7 +25,7 @@ public class ServedAppMetadataUtility
 	}
 	
 	public static String getUnversionedBundlePath() {
-		return "../v/";
+		return "../";
 	}
 	
 }

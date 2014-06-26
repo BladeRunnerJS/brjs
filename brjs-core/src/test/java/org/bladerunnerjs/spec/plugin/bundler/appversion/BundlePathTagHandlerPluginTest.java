@@ -63,7 +63,7 @@ public class BundlePathTagHandlerPluginTest extends SpecTest
 		given(brjs).hasDevVersion("dev")
 			.and(aspect).indexPageHasContent("<@bundle.path version='no' @/>");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
-		then(response).containsText( "../v/" )
+		then(response).containsText( "../" )
 			.and(response).doesNotContainText("dev");
 	}
 	
@@ -72,7 +72,7 @@ public class BundlePathTagHandlerPluginTest extends SpecTest
 		given(brjs).hasDevVersion("dev")
 			.and(aspect).indexPageHasContent("<@bundle.path version='false' @/>");
 		when(aspect).indexPageLoadedInDev(response, "en_GB");
-		then(response).containsText( "../v/" )
+		then(response).containsText( "../" )
 			.and(response).doesNotContainText("dev");
 	}
 	
@@ -81,7 +81,7 @@ public class BundlePathTagHandlerPluginTest extends SpecTest
 		given(brjs).hasProdVersion("1234")
 			.and(aspect).indexPageHasContent("<@bundle.path version='no' @/>");
 		when(aspect).indexPageLoadedInProd(response, "en_GB");
-		then(response).containsText( "../v/" )
+		then(response).containsText( "../" )
 			.and(response).doesNotContainText("1234");
 	}
 	
