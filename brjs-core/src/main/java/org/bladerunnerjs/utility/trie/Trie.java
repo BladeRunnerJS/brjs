@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.bladerunnerjs.utility.trie.exception.EmptyTrieKeyException;
@@ -26,6 +28,7 @@ public class Trie<T>
 	private TrieNode<T> root = new BasicRootTrieNode<>();
 	private int readAheadLimit = 1;
 	private boolean trieOptimized = false;
+	private Map<String, TrieNode<T>> trieLookup = new HashMap<String, TrieNode<T>>();
 	
 	private int largestChildList = 0;
 	
@@ -53,11 +56,12 @@ public class Trie<T>
 		}
 		
 		node.setValue(value);
+		trieLookup.put(key, node);
 		readAheadLimit = Math.max(readAheadLimit, key.length() + 1);
 	}
 	
 	public boolean containsKey(String key) {
-		return (get(key) == null) ? false : true;
+		return (trieLookup.get(key) != null);
 	}
 	
 	public T get(String key)
