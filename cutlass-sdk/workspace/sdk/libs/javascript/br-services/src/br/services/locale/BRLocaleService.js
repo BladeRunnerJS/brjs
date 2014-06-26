@@ -23,17 +23,12 @@ function BRLocaleService( localeUtility ) {
 * Sets the locale cookie
 */
 BRLocaleService.prototype.setLocaleCookie = function(locale, days) {
-	var localePath = "";
 	var pageUrl = this.localeUtility.getWindowUrl().replace(/^\/|\/$/g, '');
-	var pageUrlSplit = pageUrl.split("/");
-	for (var i = 0; i < pageUrlSplit.length - 1; i++) {
-		localePath += pageUrlSplit[i];
-	}
-	if (pageUrlSplit.length > 1) {
-		localePath += "/";
-	} else {
-		localePath = "/";
-	}
+	var lastSlashIndex = pageUrl.lastIndexOf("/");
+	var localePath = pageUrl.substring(0, lastSlashIndex);
+	if (localePath.charAt(0) != '/') {
+		localePath = "/"+localePath;
+	} 
 	this.localeUtility.setCookie( window.$BRJS_LOCALE_COOKIE_NAME, locale, days, localePath );
 };
 

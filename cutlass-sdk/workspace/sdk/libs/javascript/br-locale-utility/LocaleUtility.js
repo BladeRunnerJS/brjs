@@ -38,8 +38,8 @@ LocaleUtility.setCookie = function(name, value, days, path) {
     var expires = "";
     if (days) {
         var date = new Date();
-        date.setTime(date.getTime()+(days*24*60*60*1000));
-        var expires = "; expires="+date.toGMTString();
+        var expiresDate = new Date( date.getTime()+(days*24*60*60*1000) );
+        var expires = "; expires="+expiresDate.toGMTString();
     }
     path = (path) ? path : "/";
     document.cookie = name+"="+value+expires+"; path="+path;
@@ -84,7 +84,7 @@ LocaleUtility.getActiveLocale = function(userPreferredLocale, userAcceptedLocale
 }
 
 LocaleUtility.getWindowUrl = function() {
-	return window.location.href;
+	return window.location.pathname;
 }
 
 LocaleUtility.getLocalizedPageUrl = function(pageUrl, locale) {

@@ -42,7 +42,7 @@ BRLocaleServiceTest.prototype.test_getAndSetLocaleCookie = function()
 	window.$BRJS_LOCALE_COOKIE_NAME = "locale.key."+new Date().getTime(); 
 	window.$BRJS_APP_LOCALES = {'en' : true, 'de' : true}; 
 	
-	var localeService = new BRLocaleService( );
+	var localeService = new BRLocaleService();
 	
 	assertEquals("en", localeService.getLocale());
 	localeService.setLocaleCookie( "de", 1 );
