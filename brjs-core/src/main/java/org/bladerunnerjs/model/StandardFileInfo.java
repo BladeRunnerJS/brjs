@@ -55,7 +55,6 @@ public class StandardFileInfo implements FileInfo {
 	
 	@Override
 	public String canonicalPath() {
-		
 		return canonicalPath;
 	}
 	

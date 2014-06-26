@@ -24,7 +24,6 @@ public class ConfFile<CF extends AbstractYamlConfFile> {
 		this.confClass = confClass;
 		this.confFile = confFile;
 		fileModifiedChecker = new InfoFileModifiedChecker(node.root().getFileInfo(confFile));
-//		fileModifiedChecker.hasChangedSinceLastCheck();
 		this.conf = ConfFactory.createConfFile(node, confClass, confFile);
 	}
 	
