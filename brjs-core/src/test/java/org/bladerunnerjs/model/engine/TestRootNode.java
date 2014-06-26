@@ -30,7 +30,7 @@ public final class TestRootNode extends AbstractRootNode
 	
 	public TestRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{
-		super(dir, loggerFactory, null);
+		super(dir, loggerFactory);
 		
 		multiLocationChildNodes.addAlternateLocation("set-secondary-location", "^child-");
 		multiLocationChildNodes.addAdditionalNamedLocation("X", "set-single-item-location");

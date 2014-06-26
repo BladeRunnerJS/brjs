@@ -97,7 +97,7 @@ public abstract class AbstractAppBuilder
 							}
 						}
 					} else {
-						app.root().logger(this.getClass()).info("The content plugin '%s' is part of a composite content plugin so no files will be generated. " + 
+						app.root().logger(this.getClass()).warn("The content plugin '%s' is part of a composite content plugin so no files will be generated. " + 
 								"If content bundles should be generated for this content plugin, you should set it's composite group name to null.", contentPlugin.getClass().getSimpleName());
 					}
 				}

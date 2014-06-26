@@ -13,7 +13,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.JsLib;
@@ -22,7 +22,7 @@ import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -38,15 +38,15 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	private BRJS brjs;
-	private ConsoleWriter out;
-	private FileUtil fileUtil;
+	private EncodedFileUtil fileUtil;
+	private Logger logger;
 	
 	@Override
 	public void setBRJS(BRJS brjs) {	
 		try {
 			this.brjs = brjs;
-			out = brjs.getConsoleWriter();
-			fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+			this.logger = brjs.logger(this.getClass());
+			fileUtil = new EncodedFileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
@@ -88,7 +88,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 			throw new CommandOperationException(e);
 		}
 		
-		out.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
+		logger.println(Messages.API_DOCS_GENERATED_MSG, outputDir.getPath());
 		
 		return 0;
 	}

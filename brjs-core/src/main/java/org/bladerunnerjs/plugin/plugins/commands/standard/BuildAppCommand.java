@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -33,7 +33,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	private BRJS brjs;
-	private ConsoleWriter out;
+	private Logger logger;
 	
 	private class Parameters {
 		public static final String APP_NAME = "app-name";
@@ -50,7 +50,7 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 	@Override
 	public void setBRJS(BRJS brjs) {
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -115,11 +115,11 @@ public class BuildAppCommand extends ArgsParsingCommandPlugin {
 			if (warExport) {
 				if(warExportFile.exists()) throw new DirectoryAlreadyExistsCommandException(warExportFile.getPath(), this);
 				app.buildWar(warExportFile);
-				out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getCanonicalPath());
+				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, warExportFile.getCanonicalPath());
 			} else {
 				if(appExportDir.exists()) throw new DirectoryAlreadyExistsCommandException(appExportDir.getPath(), this);			
 				app.build(appExportDir);
-				out.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());			
+				logger.println(Messages.APP_BUILT_CONSOLE_MSG, appName, appExportDir.getCanonicalPath());
 			}
 		}
 		catch (ModelOperationException | IOException e) {

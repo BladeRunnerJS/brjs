@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
-
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
-
-import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -25,12 +23,12 @@ import org.bladerunnerjs.utility.NameValidator;
 public class CopyBladesetCommand extends AbstractCommandPlugin implements LegacyCommandPlugin
 {
 	private final File sdkBaseDir;
-	private ConsoleWriter out;
+	private Logger logger;
 	
 	public CopyBladesetCommand(File sdkBaseDir)
 	{
 		this.sdkBaseDir = sdkBaseDir;
-		out = ThreadSafeStaticBRJSAccessor.root.getConsoleWriter();
+		this.logger = ThreadSafeStaticBRJSAccessor.root.logger(this.getClass());
 	}
 	
 	@Override
@@ -107,7 +105,7 @@ public class CopyBladesetCommand extends AbstractCommandPlugin implements Legacy
 		try
 		{
 			Renamer.renameBladeset(targetBladesetDirectory, sourceApplicationNamespace + "." + sourceBladesetName, targetApplicationNamespace + "." + targetBladesetName);
-			out.println("Successfully copied " + sourceApplicationName + "/" + sourceBladesetName +
+			logger.println("Successfully copied " + sourceApplicationName + "/" + sourceBladesetName +
 						" to " + targetApplicationName + "/" + targetBladesetName);
 		}
 		catch (IOException e)

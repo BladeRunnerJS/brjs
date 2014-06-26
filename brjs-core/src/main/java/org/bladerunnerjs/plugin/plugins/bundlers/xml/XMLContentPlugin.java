@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,10 +23,12 @@ import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+import org.bladerunnerjs.utility.ServedAppMetadataUtility;
 
 
 public class XMLContentPlugin extends AbstractContentPlugin
 {
+	
 	private ContentPathParser contentPathParser;
 	private BRJS brjs = null;
 	private AssetPlugin xmlAssetPlugin;
@@ -89,12 +92,20 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		try{
 			String outputEncoding = brjs.bladerunnerConf().getBrowserCharacterEncoding();
 			Writer output = new OutputStreamWriter(os, outputEncoding);
-		
-			if(config.isbundleConfigAvailable()){
-				bundleWriter.writeBundle(xmlAssets, output);
-			}else{
-				bundleWriter.concatenateBundle(xmlAssets, output);
+			StringWriter bufferedOutput = new StringWriter();
+			
+			if (config.isbundleConfigAvailable()){
+				bundleWriter.writeBundle(xmlAssets, bufferedOutput);
+			} else {
+				bundleWriter.concatenateBundle(xmlAssets, bufferedOutput);
 			}
+			
+			String bundlePath = ServedAppMetadataUtility.getVersionedBundlePath(version);
+			String unversionedBundlePath = ServedAppMetadataUtility.getUnversionedBundlePath();
+			String xmlBundlePathToken = ServedAppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
+			String xmlUnversionedBundlePathToken = ServedAppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
+			output.write( bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath) );
+			
 			output.flush();
 		}
 		catch( IOException | ConfigException |  XMLStreamException  e) {

@@ -38,4 +38,9 @@ public class LogMessage
 	{
 		return "\"" + message + "\" with params [" + Joiner.on(", ").join(params) + "]";
 	}
+
+	public String getFormattedMessage()
+	{
+		return String.format(message, params);
+	}
 }

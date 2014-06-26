@@ -9,13 +9,13 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.plugin.base.AbstractPlugin;
-
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
+
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 import com.caplin.cutlass.conf.TestRunnerConfLocator;
 import com.caplin.cutlass.testIntegration.WebDriverProvider;
@@ -24,11 +24,11 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 {
 	private static final String URL_FLAG = "--url";
 	private static final String NO_WORKBENCH_FLAG = "--no-workbench";
-	private ConsoleWriter out;
+	private Logger logger;
 	
 	public TestIntegrationCommand(File sdkBaseDir)
 	{
-		out = ThreadSafeStaticBRJSAccessor.root.getConsoleWriter();
+		this.logger = ThreadSafeStaticBRJSAccessor.root.logger(this.getClass());
 	}
 	
 	@Override
@@ -68,9 +68,9 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 				
 		TestCompiler testCompiler = new TestCompiler();
 		
-		out.println("Running integration tests in " + testRoot.getPath());
-		out.println("Running integration tests using root URL: " + WebDriverProvider.getBaseUrl(""));
-		out.println("");
+		logger.println("Running integration tests in " + testRoot.getPath());
+		logger.println("Running integration tests using root URL: " + WebDriverProvider.getBaseUrl(""));
+		logger.println("");
 		
 		File classesRoot = null;
 		try
@@ -91,7 +91,7 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 		{
 			throw new CommandOperationException("No tests found.");
 		}
-		out.println("Found tests in " + testContainerDirs.size() + " location(s).");
+		logger.println("Found tests in " + testContainerDirs.size() + " location(s).");
 		
 		List<File> classDirs = testCompiler.compileTestDirs(testContainerDirs);
 		
@@ -117,26 +117,25 @@ public class TestIntegrationCommand extends AbstractPlugin implements LegacyComm
 	
 	private void printTestReport(Result testResult) 
 	{
-		out.println("");
-		out.println("== Test report ==");
-		out.println("Tests run: " + testResult.getRunCount());
-		out.println("Failed tests: " + testResult.getFailureCount());
-		out.println("Ignored tests: " + testResult.getIgnoreCount());
-		out.println("");
-		ThreadSafeStaticBRJSAccessor.root.getConsoleWriter().flush();
+		logger.println("");
+		logger.println("== Test report ==");
+		logger.println("Tests run: " + testResult.getRunCount());
+		logger.println("Failed tests: " + testResult.getFailureCount());
+		logger.println("Ignored tests: " + testResult.getIgnoreCount());
+		logger.println("");
 		if (testResult.getFailures().size() > 0)
 		{
-			out.println("- Failures -");
+			logger.println("- Failures -");
 			for (Failure fail : testResult.getFailures())
 			{
-				out.println("");
-				out.println("--------------------------------");
-				out.println(fail.getDescription().toString());
-				out.println(fail.getException().toString());
-				out.println(fail.getTrace());
-				out.println("--------------------------------");
-				out.println("");
-				out.println("");
+				logger.println("");
+				logger.println("--------------------------------");
+				logger.println(fail.getDescription().toString());
+				logger.println(fail.getException().toString());
+				logger.println(fail.getTrace());
+				logger.println("--------------------------------");
+				logger.println("");
+				logger.println("");
 			}
 		}
 		System.out.flush();

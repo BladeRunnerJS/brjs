@@ -340,6 +340,21 @@ public class XMLContentPluginTest extends SpecTest{
 			.and(response).containsText(elem(id));
 	}
 	
+	@Test public void bundlePathTagIsReplacedForDev() throws Exception {
+		given(brjs).hasDevVersion("dev")
+			.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@ @unversionedBundlePath@"));
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText(bundleElem("\n",templateElem("../v/dev/ ../")));
+	}
+	
+	@Test public void bundlePathTagIsReplacedForProd() throws Exception {
+		given(brjs).hasProdVersion("1234")
+		.and(aspect).containsResourceFileWithContents("config.xml", templateElem("@bundlePath@ @unversionedBundlePath@"));
+		when(aspect).requestReceivedInProd("xml/bundle.xml", response);
+		then(response).containsText(bundleElem("\n", templateElem("../v/1234/ ../")));
+	}
+	
+	
 	private String bundleConfig(){
 		String content = "<?xml version=\"1.0\"?> "
 		 + "<bundleConfig xmlns=\"http://schema.caplin.com/CaplinTrader/bundleConfig\">"

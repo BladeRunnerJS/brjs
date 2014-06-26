@@ -158,4 +158,20 @@ public class HTMLContentPluginTest extends SpecTest
 		then(exceptions).verifyException(NamespaceException.class, "appns.bs.badnamespace.view", "appns.bs.b1.some.pkg.*");
 	}
 	
+	@Test
+	public void bundlePathTagIsReplacedForDev() throws Exception {
+		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='some.id'>@bundlePath@ @unversionedBundlePath@</div>")
+			.and(brjs).hasDevVersion("dev");
+		when(aspect).requestReceived("html/bundle.html", response);
+		then(response).containsText("../v/dev/ ../");
+	}
+	
+	@Test
+	public void bundlePathTagIsReplacedForProd() throws Exception {
+		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='some.id'>@bundlePath@ @unversionedBundlePath@</div>")
+		.and(brjs).hasProdVersion("1234");
+		when(aspect).requestReceivedInProd("html/bundle.html", response);
+		then(response).containsText("../v/1234/ ../");
+	}
+	
 }

@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import javax.naming.InvalidNameException;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BRJS;
@@ -26,8 +26,8 @@ public class CreateAspectCommand extends ArgsParsingCommandPlugin
 		public static final String ASPECT_PATH_CONSOLE_MSG = "  %s";
 	}
 	
-	private ConsoleWriter out;
 	private BRJS brjs;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -39,7 +39,7 @@ public class CreateAspectCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -75,8 +75,8 @@ public class CreateAspectCommand extends ArgsParsingCommandPlugin
 			throw new CommandOperationException("Cannot create aspect '" + aspect.dir().getPath() + "'", e);
 		}
 		
-		out.println(Messages.ASPECT_CREATE_SUCCESS_CONSOLE_MSG, aspectName);
-		out.println(Messages.ASPECT_PATH_CONSOLE_MSG, aspect.dir().getPath());
+		logger.println(Messages.ASPECT_CREATE_SUCCESS_CONSOLE_MSG, aspectName);
+		logger.println(Messages.ASPECT_PATH_CONSOLE_MSG, aspect.dir().getPath());
 		
 		return 0;
 	}

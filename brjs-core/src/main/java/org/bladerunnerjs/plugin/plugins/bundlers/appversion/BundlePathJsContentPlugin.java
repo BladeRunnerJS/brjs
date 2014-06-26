@@ -6,7 +6,6 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentOutputStream;
@@ -20,8 +19,7 @@ import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.compositejs.CompositeJsContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
-
-import com.google.common.base.Joiner;
+import org.bladerunnerjs.utility.ServedAppMetadataUtility;
 
 
 public class BundlePathJsContentPlugin extends AbstractContentPlugin
@@ -62,7 +60,7 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 		{
 			try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
 			{
-				writer.write( getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
+				writer.write( ServedAppMetadataUtility.getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
 			}
 			catch (ConfigException | IOException ex)
 			{
@@ -107,13 +105,5 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 				CompositeJsContentPlugin.class.getCanonicalName()
 		);
 	}
-
 	
-	public static String getBundlePathJsData(App app, String version) throws ConfigException {
-		return "window.$BRJS_APP_VERSION = '"+version+"';\n" +
-		"window.$BRJS_BUNDLE_PATH = '../v/"+version+"/';\n" +
-		"window.$BRJS_UNVERSIONED_BUNDLE_PATH = '../v/';\n" +
-		"window.$BRJS_LOCALE_COOKIE_NAME = '"+app.appConf().getLocaleCookieName()+"';\n" +
-		"window.$BRJS_APP_LOCALES = {'" + Joiner.on("':true, '").join(app.appConf().getLocales()) + "':true};\n";
-	}
 }

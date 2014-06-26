@@ -11,7 +11,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 import com.caplin.cutlass.command.LegacyCommandPlugin;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.ThreadSafeStaticBRJSAccessor;
@@ -23,11 +23,11 @@ import org.bladerunnerjs.plugin.base.AbstractPlugin;
 public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 {
 	private FileFilter CAPLIN_JAR_FILE_NAME_FILTER = new AndFileFilter(new PrefixFileFilter("brjs-"), new SuffixFileFilter(".jar"));
-	private ConsoleWriter out;
+	private Logger logger;
 	
 	public CheckCommand()
 	{
-		out = ThreadSafeStaticBRJSAccessor.root.getConsoleWriter();
+		this.logger = ThreadSafeStaticBRJSAccessor.root.logger(this.getClass());
 	}
 	
 	@Override
@@ -81,7 +81,7 @@ public class CheckCommand extends AbstractPlugin implements LegacyCommandPlugin
 		
 		checkUtility.checkThatWeHaveNothingInPatchesDirectory(messageToShowUser);
 		
-		out.println(messageToShowUser.toString());
+		logger.println(messageToShowUser.toString());
 		return 0;
 	}
 }

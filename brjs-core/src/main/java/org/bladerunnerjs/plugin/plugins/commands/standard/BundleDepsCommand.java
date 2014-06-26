@@ -2,7 +2,7 @@ package org.bladerunnerjs.plugin.plugins.commands.standard;
 
 import java.io.File;
 
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.exception.ModelOperationException;
@@ -21,8 +21,8 @@ import com.martiansoftware.jsap.UnflaggedOption;
 
 public class BundleDepsCommand extends ArgsParsingCommandPlugin
 {
-	private ConsoleWriter out;
 	private BRJS brjs;
+	private Logger logger;
 	
 	@Override
 	protected void configureArgsParser(JSAP argsParser) throws JSAPException {
@@ -34,7 +34,7 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 	public void setBRJS(BRJS brjs)
 	{
 		this.brjs = brjs;
-		out = brjs.getConsoleWriter();
+		this.logger = brjs.logger(this.getClass());
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class BundleDepsCommand extends ArgsParsingCommandPlugin
 		
 		try {
 			BundlableNode bundlableNode = brjs.locateFirstBundlableAncestorNode(bundlableDir);
-			out.println(DependencyGraphReportBuilder.createReport(bundlableNode, showAllDependencies));
+			logger.println(DependencyGraphReportBuilder.createReport(bundlableNode, showAllDependencies));
 		}
 		catch (ModelOperationException e) {
 			throw new CommandOperationException(e);

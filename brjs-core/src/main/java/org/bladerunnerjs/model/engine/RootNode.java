@@ -2,7 +2,6 @@ package org.bladerunnerjs.model.engine;
 
 import java.io.File;
 
-import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.IO;
 import org.bladerunnerjs.model.FileInfo;
@@ -11,8 +10,6 @@ import org.bladerunnerjs.model.exception.NodeAlreadyRegisteredException;
 
 public interface RootNode extends Node {
 	Logger logger(Class<?> classRef);	
-	ConsoleWriter getConsoleWriter();
-	void setConsoleWriter(ConsoleWriter consoleWriter);
 	boolean isRootDir(File dir);
 	Node locateFirstAncestorNode(File file);
 	<N extends Node> N locateAncestorNodeOfClass(File file, Class<N> nodeClass);

@@ -37,9 +37,9 @@ public class FileUtilityTest
 	{
 		if(unwaredFolder.exists())
 		{
-			FileUtility.deleteDirContent(unwaredFolder);
+			FileUtils.deleteDirectory(unwaredFolder);
 		}
-		FileUtility.deleteDirAndContents(tempDir);
+		FileUtils.deleteDirectory(tempDir);
 		
 		assertTrue(!tempDir.exists());
 		

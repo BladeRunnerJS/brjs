@@ -95,8 +95,8 @@ public class ExportApplicationCommand extends ArgsParsingCommandPlugin
 			throw new CommandOperationException("Could not create application zip for application '" + appName + "'", e);  
 		}
 
-		logger.info("Successfully exported application '" + appName + "'");
-		logger.info(" " + destinationZipLocation.getAbsolutePath());
+		logger.println("Successfully exported application '" + appName + "'");
+		logger.println(" " + destinationZipLocation.getAbsolutePath());
 		
 		return 0;
 	}

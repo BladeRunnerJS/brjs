@@ -24,7 +24,7 @@ import org.junit.Test;
 public class TemplateUtilityTest extends TestModelAccessor
 {
 	private BRJS brjs;
-	private FileUtil fileUtil;
+	private EncodedFileUtil fileUtil;
 	
 	@Before
 	public void setUp() throws Exception
@@ -32,7 +32,7 @@ public class TemplateUtilityTest extends TestModelAccessor
 		File tempDir = FileUtility.createTemporaryDirectory("TemplateUtilityTest");
 		FileUtils.copyDirectory(new File("src/test/resources/TemplateUtilityTest"), tempDir);
 		brjs = createModel(tempDir);
-		fileUtil = new FileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
+		fileUtil = new EncodedFileUtil(brjs.bladerunnerConf().getDefaultFileCharacterEncoding());
 	}
 	
 	@After

@@ -22,6 +22,7 @@ public class CssContentPluginTest extends SpecTest {
 	private File commonTheme;
 	private File mainTheme;
 	private File bladeMainTheme;
+	private JsLib brBoostrapLib;
 	private JsLib nonConformantLib;
 	private JsLib nonConformantLib2;
 	private BladerunnerConf bladerunnerConf;
@@ -39,6 +40,7 @@ public class CssContentPluginTest extends SpecTest {
 			aspect = app.aspect("default");
 			commonTheme = aspect.file("themes/common");
 			mainTheme = aspect.file("themes/main");
+			brBoostrapLib = brjs.sdkLib("br-bootstrap");
 			nonConformantLib = app.jsLib("non-conformant-lib");
 			nonConformantLib2 = app.jsLib("non-conformant-lib2");
 			bladerunnerConf = brjs.bladerunnerConf();
@@ -185,10 +187,30 @@ public class CssContentPluginTest extends SpecTest {
 	}
 
 	@Test
-	public void cssFilesForTransitivelyDependantLibrariesAppearInTheCommonTheme() throws Exception {
-		given(aspect).hasClass("appns/Class1")
-			.and(aspect).indexPageRequires(nonConformantLib2)
+	public void cssFilesForTransitivelyDependantThirdpartyLibrariesAppearInTheCommonTheme() throws Exception {
+		given(aspect).indexPageRequires(nonConformantLib2)
 			.and(nonConformantLib2).containsFileWithContents("thirdparty-lib.manifest", "depends: non-conformant-lib\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFile("style1.css");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("style1.css");
+	}
+	
+	@Test
+	public void cssFilesForDependenciesOfBoostrapAppearInTheCommonTheme() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRequires("appns/Class1")
+			.and(brBoostrapLib).containsFileWithContents("thirdparty-lib.manifest", "depends: non-conformant-lib\n"+"exports: lib")
+			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
+			.and(nonConformantLib).containsFile("style1.css");
+		when(aspect).requestReceived("css/common/bundle.css", requestResponse);
+		then(requestResponse).containsText("style1.css");
+	}
+	
+	@Test
+	public void cssFilesForDependantThirdpartyLibrariesAppearInTheCommonTheme() throws Exception {
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRequires(nonConformantLib)
 			.and(nonConformantLib).containsFileWithContents("thirdparty-lib.manifest", "css: style1.css\n"+"exports: lib")
 			.and(nonConformantLib).containsFile("style1.css");
 		when(aspect).requestReceived("css/common/bundle.css", requestResponse);

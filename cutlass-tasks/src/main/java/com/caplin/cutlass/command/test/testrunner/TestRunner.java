@@ -129,8 +129,8 @@ public class TestRunner {
 			
 			try {
 				Thread.sleep(DEFAULT_SLEEP_TIME); // slight pause before we display message in case there is any browser output
-				logger.info("Server running on port " + config.getPortNumber() + ", " + Messages.SERVER_STOP_INSTRUCTION_MESSAGE);
-				logger.info("");
+				logger.println("Server running on port " + config.getPortNumber() + ", " + Messages.SERVER_STOP_INSTRUCTION_MESSAGE);
+				logger.println("");
 				
 				while(System.in.available() == 0) {
 					Thread.sleep(DEFAULT_SLEEP_TIME);
@@ -680,6 +680,6 @@ public class TestRunner {
 	}
 
 	public void showExceptionInConsole(Exception ex) {
-		logger.info("ERROR: " + ex.toString());
+		logger.error("ERROR: " + ex.toString());
 	}
 }

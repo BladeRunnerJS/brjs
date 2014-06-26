@@ -8,6 +8,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
+import org.bladerunnerjs.utility.ServedAppMetadataUtility;
 
 
 public class BundlePathTagHandlerPlugin extends AbstractTagHandlerPlugin
@@ -35,9 +36,9 @@ public class BundlePathTagHandlerPlugin extends AbstractTagHandlerPlugin
 		}
 		
 		if (includeVersion) {
-			writer.write("../v/"+version+"/");			
+			writer.write( ServedAppMetadataUtility.getVersionedBundlePath(version) );
 		} else {
-			writer.write("../v/");
+			writer.write( ServedAppMetadataUtility.getUnversionedBundlePath() );
 		}
 	}
 

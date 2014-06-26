@@ -3,8 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.bladerunnerjs.console.ConsoleWriter;
-import org.bladerunnerjs.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.logging.SLF4JLoggerFactory;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -29,26 +27,24 @@ public class ThreadSafeStaticBRJSAccessor {
 	public static BRJS root;
 	
 	public static synchronized BRJS initializeModel(File brjsDir) throws InvalidSdkDirectoryException {
-		ConsoleWriter consoleWriter = new PrintStreamConsoleWriter(System.out);
 		PluginLocator pluginLocator = new BRJSPluginLocator();
 		LoggerFactory loggerFactory = new SLF4JLoggerFactory();
 		AppVersionGenerator versionGenerator = new TimestampAppVersionGenerator();
 		FileModificationService fileModificationService = new Java7FileModificationService(loggerFactory);
-		return initializeModel(brjsDir, pluginLocator, fileModificationService, loggerFactory, consoleWriter, versionGenerator); 
+		return initializeModel(brjsDir, pluginLocator, fileModificationService, loggerFactory, versionGenerator); 
 	}
 	
 	public static synchronized BRJS initializeModel(File brjsDir, FileModificationService fileModificationService) throws InvalidSdkDirectoryException {
-		ConsoleWriter consoleWriter = new PrintStreamConsoleWriter(System.out);
 		PluginLocator pluginLocator = new BRJSPluginLocator();
 		LoggerFactory loggerFactory = new SLF4JLoggerFactory();
 		AppVersionGenerator versionGenerator = new TimestampAppVersionGenerator();
-		return initializeModel(brjsDir, pluginLocator, fileModificationService, loggerFactory, consoleWriter, versionGenerator); 
+		return initializeModel(brjsDir, pluginLocator, fileModificationService, loggerFactory, versionGenerator); 
 	}
 	
 	public static synchronized BRJS initializeModel(File brjsDir, PluginLocator pluginLocator, FileModificationService fileModificationService, 
-				LoggerFactory loggerFactory, ConsoleWriter consoleWriter, AppVersionGenerator versionGenerator) throws InvalidSdkDirectoryException {
+				LoggerFactory loggerFactory, AppVersionGenerator versionGenerator) throws InvalidSdkDirectoryException {
 		if (model == null) {
-			model = new BRJS(brjsDir, pluginLocator, fileModificationService, loggerFactory, consoleWriter, versionGenerator);
+			model = new BRJS(brjsDir, pluginLocator, fileModificationService, loggerFactory, versionGenerator);
 			root = model;
 		}
 		return model;

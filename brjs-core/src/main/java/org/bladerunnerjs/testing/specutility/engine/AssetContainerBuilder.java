@@ -7,21 +7,21 @@ import org.bladerunnerjs.model.AssetContainer;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs.NamespacedJsContentPlugin;
-import org.bladerunnerjs.utility.FileUtil;
+import org.bladerunnerjs.utility.EncodedFileUtil;
 import org.bladerunnerjs.utility.JsStyleUtility;
 
 
 public abstract class AssetContainerBuilder<N extends AssetContainer> extends NodeBuilder<N>
 {
 	private AssetContainer node;
-	protected FileUtil fileUtil;
+	protected EncodedFileUtil fileUtil;
 	
 	public AssetContainerBuilder(SpecTest specTest, N node)
 	{
 		super(specTest, node);
 		
 		this.node = node;
-		fileUtil = new FileUtil(specTest.getActiveCharacterEncoding());
+		fileUtil = new EncodedFileUtil(specTest.getActiveCharacterEncoding());
 	}
 	
 	public BuilderChainer hasPackageStyle(String packagePath, String jsStyle) {

@@ -19,7 +19,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 	private Aspect otherAspect;
 	private Bladeset bladeset;
 	private Blade blade;
-	private JsLib thirdpartyLib, thirdpartyLib2, bootstrapLib, secondBootstrapLib, thirdBootstrapLib, brLib;
+	private JsLib appThirdpartyLib, thirdpartyLib, thirdpartyLib2, bootstrapLib, secondBootstrapLib, thirdBootstrapLib, brLib;
 	private StringBuffer response = new StringBuffer();
 	private StringBuffer otherResponse = new StringBuffer();
 	private TestPack brLibTests;
@@ -36,6 +36,7 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 			otherAspect = app.aspect("other");
 			bladeset = app.bladeset("bs");
 			blade = bladeset.blade("b1");
+			appThirdpartyLib = app.appJsLib("thirdparty-lib1");
 			thirdpartyLib = brjs.sdkLib("thirdparty-lib1");
 			thirdpartyLib2 = brjs.sdkLib("thirdparty-lib2");
 			bootstrapLib = brjs.sdkLib("br-bootstrap");
@@ -315,4 +316,26 @@ public class AspectSdkThirdpartyLibraryBundling extends SpecTest {
 		when(aspect).requestReceived("js/dev/combined/bundle.js", response);
 		then(response).doesNotContainText("brlib/Class");
 	}
+	
+	@Test
+	public void transitiveDependenciesOfBootstrapCanBeOverriddenByAppLibraries() throws Exception {
+		StringBuffer jsResponse = new StringBuffer();   StringBuffer cssResponse = new StringBuffer();
+		given(aspect).hasClass("appns/Class1")
+			.and(aspect).indexPageRequires("appns/Class1")
+			.and(bootstrapLib).containsFileWithContents("thirdparty-lib.manifest", "depends: thirdparty-lib1\n"+"exports: lib")
+			.and(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: lib")
+			.and(thirdpartyLib).containsFile("style.css")
+			.and(thirdpartyLib).containsFile("script.js")
+    		.and(appThirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "exports: lib")
+    		.and(appThirdpartyLib).containsFile("overridden.css")
+    		.and(appThirdpartyLib).containsFile("overridden.js");
+		when(aspect).requestReceived("css/common/bundle.css", cssResponse)
+			.and(aspect).requestReceived("js/dev/combined/bundle.js", jsResponse);
+		then(cssResponse).containsText("overridden.css")
+			.and(cssResponse).doesNotContainText("style.css")
+			.and(jsResponse).containsText("overridden.js")
+			.and(jsResponse).doesNotContainText("script.js");
+	}
+    
+	
 }

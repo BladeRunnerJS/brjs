@@ -30,7 +30,6 @@ import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
 import org.bladerunnerjs.plugin.Locale;
-import org.bladerunnerjs.plugin.plugins.bundlers.appversion.BundlePathJsContentPlugin;
 
 import com.google.common.base.Joiner;
 
@@ -158,7 +157,7 @@ public class AppRequestHandler
 			writer.write("<head>\n");
 			writer.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
 			writer.write("<script type='text/javascript'>\n");
-			IOUtils.write(BundlePathJsContentPlugin.getBundlePathJsData(app, version), writer);
+			IOUtils.write(ServedAppMetadataUtility.getBundlePathJsData(app, version), writer);
 			writer.write("\n");
 			IOUtils.copy(localeForwarderReader, writer);
 			writer.write("\n");			

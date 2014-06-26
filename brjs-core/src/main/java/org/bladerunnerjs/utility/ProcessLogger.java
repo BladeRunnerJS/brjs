@@ -101,11 +101,7 @@ public class ProcessLogger {
 	}
 	
 	private void logMessage(LogLevel logLevel, String message, Object[] params) {
-		switch(logLevel) {
-			case FATAL:
-				logger.fatal(message, params);
-				break;
-			
+		switch(logLevel) {			
 			case ERROR:
 				logger.error(message, params);
 				break;

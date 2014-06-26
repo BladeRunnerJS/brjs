@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.bladerunnerjs.console.ConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -259,20 +258,43 @@ public class RestApiService
 	}
 	
 	private OutputStream doCommand(CommandPlugin command, String[] args) throws Exception
-	{
-		OutputStream out = new ByteArrayOutputStream();
-		ConsoleWriter oldConsoleWriter = brjs.getConsoleWriter();
-		brjs.setConsoleWriter( new PrintStream(out) );
+	{	
+		ByteArrayOutputStream commandOutput = new ByteArrayOutputStream();
 		
-		command.doCommand(args);
+		PrintStream oldSysOut = System.out;
+		System.setOut( new MultiOutputPrintStream(System.out, new PrintStream(commandOutput)) );
 		
-		brjs.setConsoleWriter( oldConsoleWriter );
-		return out;
+		try {
+			command.doCommand(args);
+		} finally {
+			System.setOut(oldSysOut);
+		}
+		
+		return commandOutput;
 	}
 	
 	private File getLatestReleaseNoteFile() 
 	{
 		return new File( new File(brjs.root().dir(), CutlassConfig.SDK_DIR) , "docs/release-notes/latest.html");
+	}
+
+	
+	
+	private class MultiOutputPrintStream extends PrintStream {
+		private PrintStream secondary;
+
+		MultiOutputPrintStream(PrintStream primary, PrintStream secondary) {
+			super(primary);
+			this.secondary = secondary;
+		}
+		public void write(byte buf[], int off, int len) {
+			super.write(buf, off, len);
+			secondary.write(buf, off, len);
+		}
+		public void flush() {
+			super.flush();
+			secondary.flush();
+		}
 	}
 	
 }

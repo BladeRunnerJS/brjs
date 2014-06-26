@@ -7,7 +7,7 @@ import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.bladerunnerjs.console.ConsoleWriter;
+import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.TestModelAccessor;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
@@ -27,7 +27,6 @@ import org.bladerunnerjs.plugin.base.AbstractPlugin;
 public class CommandTaskTest extends TestModelAccessor
 {
 	protected CommandPlugin commandTask;
-	protected ConsoleWriter out;
 	
 	@Before
 	public void setup() throws Exception
@@ -43,6 +42,8 @@ public class CommandTaskTest extends TestModelAccessor
 
 	private class DummyCommandTask extends AbstractPlugin implements LegacyCommandPlugin
 	{
+		private Logger logger;
+
 		public DummyCommandTask(File sdkBaseDir, String commandName)
 		{
 		}
@@ -50,6 +51,7 @@ public class CommandTaskTest extends TestModelAccessor
 		@Override
 		public void setBRJS(BRJS brjs)
 		{
+			this.logger = brjs.logger(this.getClass());
 		}
 		
 		@Override
@@ -78,7 +80,7 @@ public class CommandTaskTest extends TestModelAccessor
 		@Override
 		public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException
 		{
-			out.println("DummyCommandTask.doCommand");
+			logger.println("DummyCommandTask.doCommand");
 			return 0;
 		}
 	}

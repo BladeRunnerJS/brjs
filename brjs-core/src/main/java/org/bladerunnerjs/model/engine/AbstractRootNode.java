@@ -1,12 +1,9 @@
 package org.bladerunnerjs.model.engine;
 
 import java.io.File;
-import java.io.PrintStream;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.bladerunnerjs.console.ConsoleWriter;
-import org.bladerunnerjs.console.PrintStreamConsoleWriter;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.logging.LoggerFactory;
 import org.bladerunnerjs.model.exception.InvalidSdkDirectoryException;
@@ -20,9 +17,8 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	
 	private Map<String, Node> nodeCache = new TreeMap<>();
 	private LoggerFactory loggerFactory;
-	private ConsoleWriter consoleWriter;
 	
-	public AbstractRootNode(File dir, LoggerFactory loggerFactory, ConsoleWriter consoleWriter) throws InvalidSdkDirectoryException
+	public AbstractRootNode(File dir, LoggerFactory loggerFactory) throws InvalidSdkDirectoryException
 	{
 		super();
 		
@@ -38,7 +34,6 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 		
 		this.dir = new File(getNormalizedPath(rootDir));
 		this.loggerFactory = loggerFactory;
-		this.consoleWriter = consoleWriter;
 		
 		try
 		{
@@ -55,23 +50,6 @@ public abstract class AbstractRootNode extends AbstractNode implements RootNode
 	public Logger logger(Class<?> clazz)
 	{
 		return loggerFactory.getLogger(clazz);
-	}
-	
-	@Override
-	public ConsoleWriter getConsoleWriter()
-	{
-		return consoleWriter;
-	}
-	
-	@Override
-	public void setConsoleWriter(ConsoleWriter consoleWriter)
-	{
-		this.consoleWriter = consoleWriter;
-	}
-	
-	public void setConsoleWriter(PrintStream printStream)
-	{
-		this.consoleWriter = new PrintStreamConsoleWriter(printStream);
 	}
 	
 	@Override

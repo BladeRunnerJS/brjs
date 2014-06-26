@@ -3,9 +3,9 @@ package org.bladerunnerjs.model.app.build;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.exception.ModelOperationException;
-import org.bladerunnerjs.utility.FileUtility;
 
 public class AppBuilder extends AbstractAppBuilder {
 	
@@ -16,7 +16,7 @@ public class AppBuilder extends AbstractAppBuilder {
 	public void postBuild(File exportDir, App app, File appBuildDir) throws ModelOperationException {
 		try
 		{
-			FileUtility.copyDirectoryIfExists(exportDir, appBuildDir);
+			FileUtils.copyDirectory(exportDir, appBuildDir);
 		}
 		catch (IOException ex)
 		{

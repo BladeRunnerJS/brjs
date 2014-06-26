@@ -88,7 +88,6 @@ public abstract class SpecTest extends TestModelAccessor
 	private String activeClientCharacterEncoding = "UTF-8";
 	
 	public LogMessageStore logging;
-	public ConsoleMessageStore output;
 	public List<Throwable> exceptions;
 	public boolean catchAndVerifyExceptions = true;
 	public EventObserver observer;
@@ -108,7 +107,6 @@ public abstract class SpecTest extends TestModelAccessor
 		appServerPort = ServerUtility.getTestPort();
 		
 		logging = new LogMessageStore();
-		output = new ConsoleMessageStore();
 		exceptions = new ArrayList<>();
 		observer = mock(EventObserver.class);
 		testSdkDirectory = createTestSdkDirectory();
@@ -127,11 +125,11 @@ public abstract class SpecTest extends TestModelAccessor
 	
 	public BRJS createModel() throws InvalidSdkDirectoryException 
 	{	
-		return super.createModel(testSdkDirectory, pluginLocator, logging, output, appVersionGenerator);
+		return super.createModel(testSdkDirectory, pluginLocator, logging, appVersionGenerator);
 	}
 	
 	public BRJS createNonTestModel() throws InvalidSdkDirectoryException {
-		return super.createNonTestModel(testSdkDirectory, logging, output);
+		return super.createNonTestModel(testSdkDirectory, logging);
 	}
 	
 	public String getActiveCharacterEncoding() {
@@ -177,9 +175,6 @@ public abstract class SpecTest extends TestModelAccessor
 	// logging
 	public LoggerBuilder given(LogMessageStore logStore) { return new LoggerBuilder(this, logStore); }
 	public LoggerVerifier then(LogMessageStore logStore) { return new LoggerVerifier(this, logStore); }
-	
-	// console
-	public ConsoleWriterVerifier then(ConsoleMessageStore consoleMessageStore) { return new ConsoleWriterVerifier(this, consoleMessageStore); }
 	
 	// node observer
 	public NodeObserverBuilder given(EventObserver observer) { return new NodeObserverBuilder(this, observer); }

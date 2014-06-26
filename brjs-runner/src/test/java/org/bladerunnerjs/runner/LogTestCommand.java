@@ -38,6 +38,7 @@ public class LogTestCommand extends AbstractCommandPlugin {
 	public int doCommand(String... args) throws CommandArgumentsException, CommandOperationException {
 		logger.warn("warn-level");
 		logger.info("info-level");
+		logger.console("console-level");
 		logger.debug("debug-level");
 		return 0;
 	}
