@@ -401,29 +401,20 @@ task cleanWorkspaceFiles {
 	doFirst {
 		ant.delete(includeemptydirs: 'true') {
 			fileset(dir: 'workspace') {
-				include(name: '**/*')
-				exclude(name: 'sdk/system-applications/**/*')
-				exclude(name: 'apps/**/*')
-				exclude(name: 'sdk/libs/javascript/**/*')
+				exclude(name: 'sdk/system-applications/')
+				exclude(name: 'apps/')
+				exclude(name: 'sdk/libs/javascript/')
 			}
-		}
-		ant.delete(includeemptydirs: 'true') {
 			fileset(dir: 'workspace') {
 				include(name: '**/test-*/**/bundles/')
 			}
-		}
-    	ant.delete(includeemptydirs: 'true') {
-    		fileset(dir: 'workspace/sdk/system-applications') {
+			fileset(dir: 'workspace/sdk/system-applications') {
     			include(name: '**/WEB-INF/lib/brjs-*.jar')
     		}
-    	}
-    	if (file('workspace/apps').exists()) {
-        	ant.delete(includeemptydirs: 'true') {
-        		fileset(dir: 'workspace/apps') {
-        			include(name: '**/WEB-INF/lib/brjs-*.jar')
-        		}
-        	}
-    	}
+			fileset(dir: 'workspace/apps') {
+    			include(name: '**/WEB-INF/lib/brjs-*.jar')
+    		}
+		}
 	}
 }
 
