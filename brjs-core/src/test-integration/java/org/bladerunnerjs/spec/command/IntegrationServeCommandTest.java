@@ -52,8 +52,8 @@ public class IntegrationServeCommandTest extends SpecTest
 		when(brjs).runThreadedCommand("serve");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, appServerPort)
-			.and(logging).warnMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + appServerPort +"/")
-			.and(logging).warnMessageReceived("\t" + SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
+			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + appServerPort +"/")
+			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
 			.and(appServer).requestIsRedirected("/","/dashboard");
 	}
 	
@@ -76,8 +76,8 @@ public class IntegrationServeCommandTest extends SpecTest
 		when(brjs).runThreadedCommand("serve", "-p", "7777");
 		then(logging).infoMessageReceived(SERVER_STARTING_LOG_MSG, "BladeRunnerJS")
 			.and(logging).infoMessageReceived(SERVER_STARTED_LOG_MESSAGE, "7777")
-			.and(logging).warnMessageReceived("\n\t" + SERVER_STARTUP_MESSAGE + "7777/")
-			.and(logging).warnMessageReceived("\t" + SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
+			.and(logging).containsFormattedConsoleMessage(SERVER_STARTUP_MESSAGE + "7777/")
+			.and(logging).containsFormattedConsoleMessage(SERVER_STOP_INSTRUCTION_MESSAGE + "\n")
 			.and(appServer).requestIsRedirected("/","/dashboard");
 	}
 	

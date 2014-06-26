@@ -80,8 +80,9 @@ public class ServeCommand extends ArgsParsingCommandPlugin
 			
 			appServer.start();
 			
-			logger.warn("\n\t" + Messages.SERVER_STARTUP_MESSAGE + appServer.getPort() + "/");
-			logger.warn("\t" + Messages.SERVER_STOP_INSTRUCTION_MESSAGE + "\n");
+			logger.println("\n");
+			logger.println(Messages.SERVER_STARTUP_MESSAGE + appServer.getPort() + "/");
+			logger.println(Messages.SERVER_STOP_INSTRUCTION_MESSAGE + "\n");
 			
 			appServer.join();
 		}
