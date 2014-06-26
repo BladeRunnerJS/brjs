@@ -1,12 +1,12 @@
-[submodule "cutlass-sdk/workspace/sdk/libs/javascript/fell"]
-	path = cutlass-sdk/workspace/sdk/libs/javascript/fell
+[submodule "brjs-sdk/workspace/sdk/libs/javascript/fell"]
+	path = brjs-sdk/workspace/sdk/libs/javascript/fell
 	url = https://github.com/BladeRunnerJS/fell.git
-[submodule "cutlass-sdk/workspace/sdk/libs/javascript/emitr"]
-	path = cutlass-sdk/workspace/sdk/libs/javascript/emitr
+[submodule "brjs-sdk/workspace/sdk/libs/javascript/emitr"]
+	path = brjs-sdk/workspace/sdk/libs/javascript/emitr
 	url = https://github.com/BladeRunnerJS/emitr.git
-[submodule "cutlass-sdk/workspace/sdk/libs/javascript/topiarist"]
-	path = cutlass-sdk/workspace/sdk/libs/javascript/topiarist
+[submodule "brjs-sdk/workspace/sdk/libs/javascript/topiarist"]
+	path = brjs-sdk/workspace/sdk/libs/javascript/topiarist
 	url = https://github.com/BladeRunnerJS/topiarist.git
-[submodule "cutlass-sdk/workspace/sdk/libs/javascript/browser-modules"]
-	path = cutlass-sdk/workspace/sdk/libs/javascript/browser-modules
+[submodule "brjs-sdk/workspace/sdk/libs/javascript/browser-modules"]
+	path = brjs-sdk/workspace/sdk/libs/javascript/browser-modules
 	url = https://github.com/BladeRunnerJS/browser-modules.git
