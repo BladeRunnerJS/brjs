@@ -17,9 +17,11 @@ public class RelativePathUtility {
 	}
 	
 	
-	public static String get(File basePath, File childPath, BRJS brjs) {
+	public static String get(File base, File child, BRJS brjs) {
 		try {
-			String relativePath = RelativePath.getRelativePath(brjs.getFileInfo(basePath).canonicalPath(), brjs.getFileInfo(childPath).canonicalPath() );
+			String basePath = brjs.getFileInfo(base).canonicalPath();
+			String childPath = brjs.getFileInfo(child).canonicalPath();
+			String relativePath = RelativePath.getRelativePath(basePath, childPath );
 			return relativePath;
 		}
 		catch (Exception e) {

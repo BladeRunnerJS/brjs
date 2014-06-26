@@ -13,17 +13,15 @@ public class RelativePath {
 /**
      * Calculates the relative path between two files.
      * <p>
-     * Implementation note:<br/> This function may throw an IOException if an I/O error occurs
+     * Implementation note: This function may throw an IOException if an I/O error occurs
      * because its use of the canonical pathname may require filesystem queries.
      * </p>
      *
-     * @param fromFile the <code>File</code> to calculate the path from
-     * @param toFile the <code>File</code> to calculate the path to
+     * @param fromFileCanonicalPath the <code>File</code> to calculate the path from
+     * @param toFileCanonicalPath the <code>File</code> to calculate the path to
      * @return the relative path between the files
      * @throws Exception for undocumented reasons
-     * @see File#getCanonicalPath()
      *
-     * @since Ant 1.7
      */
     public static String getRelativePath(String fromFileCanonicalPath, String toFileCanonicalPath) throws Exception {
 
@@ -52,7 +50,7 @@ public class RelativePath {
             // Do nothing
         }
 
-        List relativePathStack = new ArrayList();
+        List<String> relativePathStack = new ArrayList<String>();
 
         // if "from" part is longer, fill it up with ".."
         // to reach path which is equal to both paths
@@ -90,10 +88,8 @@ public class RelativePath {
      *
      * @param pathStack <code>List</code> of <code>String</code>s to be concatenated as a path.
      * @return <code>String</code>, never <code>null</code>
-     *
-     * @since Ant 1.7
      */
-    public static String getPath(List pathStack) {
+    public static String getPath(List<String> pathStack) {
         // can safely use '/' because Windows understands '/' as separator
         return getPath(pathStack, '/');
     }
@@ -103,13 +99,11 @@ public class RelativePath {
      * @param pathStack <code>List</code> of <code>String</code>s to be concated as a path.
      * @param separatorChar <code>char</code> to be used as separator between names in path
      * @return <code>String</code>, never <code>null</code>
-     *
-     * @since Ant 1.7
      */
-    public static String getPath(final List pathStack, final char separatorChar) {
+    public static String getPath(final List<String> pathStack, final char separatorChar) {
         final StringBuffer buffer = new StringBuffer();
 
-        final Iterator iter = pathStack.iterator();
+        final Iterator<String> iter = pathStack.iterator();
         if (iter.hasNext()) {
             buffer.append(iter.next());
         }
