@@ -46,7 +46,7 @@ public class SourceModulePatch
 		
 		if ( (!patchFile.exists()) || !(assetLocation.assetContainer() instanceof JsLib) )
 		{
-			reader = new StringReader("");
+			return null;
 		}
 		else
 		{

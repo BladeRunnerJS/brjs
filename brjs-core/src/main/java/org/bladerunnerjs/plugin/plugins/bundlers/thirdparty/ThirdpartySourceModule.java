@@ -94,8 +94,10 @@ public class ThirdpartySourceModule implements SourceModule
 					fileReaders.add( new StringReader( globaliseModuleContent ) );
 				}
 			}
-			
-			fileReaders.add(patch.getReader());
+			Reader patchReader = patch.getReader();
+			if(patchReader != null){
+				fileReaders.add(patchReader);
+			}
 		}
 		catch (ConfigException e)
 		{
