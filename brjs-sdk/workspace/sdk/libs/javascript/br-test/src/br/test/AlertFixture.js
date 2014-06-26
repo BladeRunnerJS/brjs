@@ -2,7 +2,7 @@
 
 var br = require('br/Core');
 var Errors = require('br/Errors');
-var Fixture('br/test/Fixture');
+var Fixture = require('br/test/Fixture');
 
 /**
  * @name br.test.AlertFixture

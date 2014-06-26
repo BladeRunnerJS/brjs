@@ -8,7 +8,7 @@ var ViewFixture = require('br/test/ViewFixture');
 /** @private */
 function TestFixture(gwtTestRunner) {
 	this.m_oGwtTestRunner = gwtTestRunner;
-};
+}
 br.inherit(TestFixture, Fixture);
 
 TestFixture.prototype.canHandleExactMatch = function() {

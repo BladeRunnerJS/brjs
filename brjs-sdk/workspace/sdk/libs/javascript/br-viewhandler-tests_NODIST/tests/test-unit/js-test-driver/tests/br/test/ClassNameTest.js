@@ -2,9 +2,11 @@ ClassNameTest = TestCase("ClassNameTest");
 
 require('br/test/ViewFixture');
 
+var ViewFixture = require('br/test/ViewFixture');
+
 ClassNameTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new br.test.ViewFixture("view.*");
+	this.m_oViewFixture = new ViewFixture("view.*");
 	this.m_oViewFixture.setViewElement(this.getElement());
 };
 

@@ -73,7 +73,7 @@ GwtTestRunner.THEN_PHASE = 4;
  */
 GwtTestRunner.initialize = function() {
 	if (!window.fixtures) {
-		window.fixtures = GwtTestRunner.createTestMethod(br.test.GwtTestRunner, "initializeTest");
+		window.fixtures = GwtTestRunner.createTestMethod(GwtTestRunner, "initializeTest");
 	}
 };
 
@@ -155,15 +155,17 @@ GwtTestRunner.createProxyItFunction = function(fOrigItFunction) {
 // *** FixtureRegistry Interface ***
 
 GwtTestRunner.prototype.addFixture = function(sScope, oFixture) {
+	var SubFixtureRegistry = require('br/test/SubFixtureRegistry');
+
 	this.m_pFixtures.push({scopeMatcher:new RegExp("^" + sScope + "(\\..+|$)"), scopeLength:sScope.length + 1, fixture:oFixture});
-	oFixture.addSubFixtures(new br.test.SubFixtureRegistry(this, sScope));
+	oFixture.addSubFixtures(new SubFixtureRegistry(this, sScope));
 };
 
 // *** Public Methods ***
 
 /** @private */
 GwtTestRunner.initializeTest = function(sFixtureFactoryClass) {
-	var oTestRunner = new br.test.GwtTestRunner(sFixtureFactoryClass);
+	var oTestRunner = new GwtTestRunner(sFixtureFactoryClass);
 
 	beforeEach(this.createTestMethod(oTestRunner, "startTest"));
 	afterEach(this.createTestMethod(oTestRunner, "endTest"));
@@ -173,12 +175,12 @@ GwtTestRunner.initializeTest = function(sFixtureFactoryClass) {
 GwtTestRunner.prototype.startTest = function() {
 	require("br/ServiceRegistry").clear();
 
-	given = this.m_fDoGiven;
-	when = this.m_fDoWhen;
-	then = this.m_fDoThen;
-	and = this.m_fDoAnd;
-	startingContinuesFrom = this.m_fStartingContinuesFrom;
-	finishedContinuesFrom = this.m_fFinishedContinuesFrom;
+	window.given = this.m_fDoGiven;
+	window.when = this.m_fDoWhen;
+	window.then = this.m_fDoThen;
+	window.and = this.m_fDoAnd;
+	window.startingContinuesFrom = this.m_fStartingContinuesFrom;
+	window.finishedContinuesFrom = this.m_fFinishedContinuesFrom;
 
 	this.m_bTestFailed = false;
 	this.m_nTestPhase = GwtTestRunner.INIT_PHASE;
@@ -245,7 +247,7 @@ GwtTestRunner.prototype.startingContinuesFrom = function(description) {
 	var fTest = GwtTestRunner.m_mTests[sSuiteNamespacedTestName];
 
 	if (!fTest) {
-		throw new Errors.CustomError(br.Errors.INVALID_TEST, "attempt to continue from a test that doesn't exist: '" + sSuiteNamespacedTestName + "'");
+		throw new Errors.InvalidTestError("attempt to continue from a test that doesn't exist: '" + sSuiteNamespacedTestName + "'");
 	}
 
 	this.currentSuiteName = fTest.suiteName;
@@ -260,7 +262,6 @@ GwtTestRunner.prototype.finishedContinuesFrom = function() {
 
 /** @private */
 GwtTestRunner.prototype.doGiven = function(sStatement) {
-	var TimeUtility = TimeUtility;
 	try {
 		TimeUtility.captureTimerFunctions();
 
@@ -277,7 +278,6 @@ GwtTestRunner.prototype.doGiven = function(sStatement) {
 
 /** @private */
 GwtTestRunner.prototype.doWhen = function(sStatement) {
-	var TimeUtility = TimeUtility;
 	try {
 		TimeUtility.captureTimerFunctions();
 
@@ -294,7 +294,6 @@ GwtTestRunner.prototype.doWhen = function(sStatement) {
 
 /** @private */
 GwtTestRunner.prototype.doThen = function(sStatement) {
-	var TimeUtility = TimeUtility;
 
 	try {
 		TimeUtility.captureTimerFunctions();

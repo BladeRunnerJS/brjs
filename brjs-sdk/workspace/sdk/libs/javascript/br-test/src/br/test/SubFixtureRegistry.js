@@ -1,7 +1,7 @@
 'use strict';
 
 var br = require('br/Core');
-var FixtureRegistry = require('br/test/FixtureRegistry';)
+var FixtureRegistry = require('br/test/FixtureRegistry');
 
 /**
  * @name br.test.SubFixtureRegistry

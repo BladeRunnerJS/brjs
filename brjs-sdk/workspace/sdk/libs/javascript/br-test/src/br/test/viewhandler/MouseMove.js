@@ -1,4 +1,12 @@
+'use strict';
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+var Utils = require('br/test/Utils');
+
 /**
+ * @name br.test.viewhandler.MouseMove
  * @class
  * <code>MouseMove ViewFixtureHandler</code> can be used to trigger <code>mousemove</code> event for a view element.
  * Example usage:
@@ -8,19 +16,16 @@
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.MouseMove = function()
-{
+function MouseMove() {
+}
+br.implement(MouseMove, ViewFixtureHandler);
+
+MouseMove.prototype.set = function(eElement, mValues) {
+	Utils.fireMouseEvent(eElement, 'mousemove', mValues);
 };
 
-br.Core.implement(br.test.viewhandler.MouseMove, br.test.viewhandler.ViewFixtureHandler);
-
-
-br.test.viewhandler.MouseMove.prototype.set = function(eElement, mValues)
-{
-	br.test.Utils.fireMouseEvent(eElement, 'mousemove', mValues);
+MouseMove.prototype.get = function(eElement) {
+	throw new Errors.InvalidTestError("The mouseMove event cannot be used in a doGiven or doThen");
 };
 
-br.test.viewhandler.MouseMove.prototype.get = function(eElement)
-{
-	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The mouseMove event cannot be used in a doGiven or doThen");
-};
+module.exports = MouseMove;

@@ -44,49 +44,89 @@ var Fixture = require('br/test/Fixture');
  * Constructs a <code>br.test.ViewFixture</code>.
  * @param {String} viewSelector (optional) CSS selector to identify the parent view element for this fixture
  */
-br.test.ViewFixture = function(viewSelector) {
+function ViewFixture(viewSelector) {
 	this.m_sViewSelector = viewSelector || null;
 
+	var Blurred = require('br/test/viewhandler/Blurred');
+	var Checked = require('br/test/viewhandler/Checked');
+	var ChildrenCount = require('br/test/viewhandler/ChildrenCount');
+	var ClassName = require('br/test/viewhandler/ClassName');
+	var Clicked = require('br/test/viewhandler/Clicked');
+	var BackgroundImage = require('br/test/viewhandler/BackgroundImage');
+	var DoesNotHaveClass = require('br/test/viewhandler/DoesNotHaveClass');
+	var Enabled = require('br/test/viewhandler/Enabled');
+	var FocusIn = require('br/test/viewhandler/FocusIn');
+	var FocusOut = require('br/test/viewhandler/FocusOut');
+	var Focused = require('br/test/viewhandler/Focused');
+	var HasClass = require('br/test/viewhandler/HasClass');
+	var Height = require('br/test/viewhandler/Height');
+	var IsVisible = require('br/test/viewhandler/IsVisible');
+	var MouseDown = require('br/test/viewhandler/MouseDown');
+	var MouseMove = require('br/test/viewhandler/MouseMove');
+	var MouseOut = require('br/test/viewhandler/MouseOut');
+	var MouseOver = require('br/test/viewhandler/MouseOver');
+	var MouseUp = require('br/test/viewhandler/MouseUp');
+	var OnKeyUp = require('br/test/viewhandler/OnKeyUp');
+	var Options = require('br/test/viewhandler/Options');
+	var Readonly = require('br/test/viewhandler/Readonly');
+	var RightClicked = require('br/test/viewhandler/RightClicked');
+	var ScrolledHorizontal = require('br/test/viewhandler/ScrolledHorizontal');
+	var ScrolledVertical = require('br/test/viewhandler/ScrolledVertical');
+	var Selected = require('br/test/viewhandler/Selected');
+	var Text = require('br/test/viewhandler/Text');
+	var TypedValue = require('br/test/viewhandler/TypedValue');
+	var Value = require('br/test/viewhandler/Value');
+	var Width = require('br/test/viewhandler/Width');
+	var BorderWidth = require('br/test/viewhandler/BorderWidth');
+	var BorderColor = require('br/test/viewhandler/BorderColor');
+	var TopMarginWidth = require('br/test/viewhandler/TopMarginWidth');
+	var BottomMarginWidth = require('br/test/viewhandler/BottomMarginWidth');
+	var RightMarginWidth = require('br/test/viewhandler/RightMarginWidth');
+	var LeftMarginWidth = require('br/test/viewhandler/LeftMarginWidth');
+	var Color = require('br/test/viewhandler/Color');
+	var OnKeyDown = require('br/test/viewhandler/OnKeyDown');
+	var Top = require('br/test/viewhandler/Top');
+
 	this.m_mViewHandlers = {
-		blurred: new require('br/test/viewhandler/Blurred')(),
-		checked: new require('br/test/viewhandler/Checked')(),
-		childrenCount: new require('br/test/viewhandler/ChildrenCount')(),
-		className: new require('br/test/viewhandler/ClassName')(),
-		clicked: new require('br/test/viewhandler/Clicked')(),
-		backgroundImage: new require('br/test/viewhandler/BackgroundImage')(),
-		doesNotHaveClass: new require('br/test/viewhandler/DoesNotHaveClass')(),
-		enabled: new require('br/test/viewhandler/Enabled')(),
-		focusIn: new require('br/test/viewhandler/FocusIn')(),
-		focusOut: new require('br/test/viewhandler/FocusOut')(),
-		focused: new require('br/test/viewhandler/Focused')(),
-		hasClass: new require('br/test/viewhandler/HasClass')(),
-		height: new require('br/test/viewhandler/Height')(),
-		isVisible: new require('br/test/viewhandler/IsVisible')(),
-		mouseDown: new require('br/test/viewhandler/MouseDown')(),
-		mouseMove: new require('br/test/viewhandler/MouseMove')(),
-		mouseOut: new require('br/test/viewhandler/MouseOut')(),
-		mouseOver: new require('br/test/viewhandler/MouseOver')(),
-		mouseUp: new require('br/test/viewhandler/MouseUp')(),
-		onKeyUp: new require('br/test/viewhandler/OnKeyUp')(),
-		options: new require('br/test/viewhandler/Options')(),
-		readonly: new require('br/test/viewhandler/Readonly')(),
-		rightClicked: new require('br/test/viewhandler/RightClicked')(),
-		scrolledHorizontal: new require('br/test/viewhandler/ScrolledHorizontal')(),
-		scrolledVertical: new require('br/test/viewhandler/ScrolledVertical')(),
-		selected: new require('br/test/viewhandler/Selected')(),
-		text: new require('br/test/viewhandler/Text')(),
-		typedValue: new require('br/test/viewhandler/TypedValue')(),
-		value: new require('br/test/viewhandler/Value')(),
-		width: new require('br/test/viewhandler/Width')(),
-		borderWidth: new require('br/test/viewhandler/BorderWidth')(),
-		borderColor: new require('br/test/viewhandler/BorderColor')(),
-		topMarginWidth: new require('br/test/viewhandler/TopMarginWidth')(),
-		bottomMarginWidth: new require('br/test/viewhandler/BottomMarginWidth')(),
-		rightMarginWidth: new require('br/test/viewhandler/RightMarginWidth')(),
-		leftMarginWidth: new require('br/test/viewhandler/LeftMarginWidth')(),
-		color: new require('br/test/viewhandler/Color')(),
-		onKeyDown: new require('br/test/viewhandler/OnKeyDown')(),
-		top: new require('br/test/viewhandler/Top')()
+		blurred: new Blurred(),
+		checked: new Checked(),
+		childrenCount: new ChildrenCount(),
+		className: new ClassName(),
+		clicked: new Clicked(),
+		backgroundImage: new BackgroundImage(),
+		doesNotHaveClass: new DoesNotHaveClass(),
+		enabled: new Enabled(),
+		focusIn: new FocusIn(),
+		focusOut: new FocusOut(),
+		focused: new Focused(),
+		hasClass: new HasClass(),
+		height: new Height(),
+		isVisible: new IsVisible(),
+		mouseDown: new MouseDown(),
+		mouseMove: new MouseMove(),
+		mouseOut: new MouseOut(),
+		mouseOver: new MouseOver(),
+		mouseUp: new MouseUp(),
+		onKeyUp: new OnKeyUp(),
+		options: new Options(),
+		readonly: new Readonly(),
+		rightClicked: new RightClicked(),
+		scrolledHorizontal: new ScrolledHorizontal(),
+		scrolledVertical: new ScrolledVertical(),
+		selected: new Selected(),
+		text: new Text(),
+		typedValue: new TypedValue(),
+		value: new Value(),
+		width: new Width(),
+		borderWidth: new BorderWidth(),
+		borderColor: new BorderColor(),
+		topMarginWidth: new TopMarginWidth(),
+		bottomMarginWidth: new BottomMarginWidth(),
+		rightMarginWidth: new RightMarginWidth(),
+		leftMarginWidth: new LeftMarginWidth(),
+		color: new Color(),
+		onKeyDown: new OnKeyDown(),
+		top: new Top()
 	};
 }
 br.inherit(ViewFixture, Fixture);
@@ -138,8 +178,10 @@ ViewFixture.prototype.addViewHandlers = function(viewHandlersMap) {
 };
 
 ViewFixture.prototype.setViewElement = function(viewElement) {
+	var BlurHandler = require('br/test/viewhandler/BlurHandler');
+
 	this.m_eViewElement = viewElement;
-	this.m_oBlurHandler = new require('br/test/viewhandler/BlurHandler')(viewElement);
+	this.m_oBlurHandler = new BlurHandler(viewElement);
 };
 
 ViewFixture.prototype.getViewElement = function() {

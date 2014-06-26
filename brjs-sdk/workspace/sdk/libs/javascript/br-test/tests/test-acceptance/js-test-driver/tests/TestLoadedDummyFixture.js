@@ -1,10 +1,12 @@
-
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var Fixture = require('br/test/Fixture');
 
 TestLoadedDummyFixture = function()
 {
 	
 };
-br.Core.inherit(TestLoadedDummyFixture, br.test.Fixture);
+br.inherit(TestLoadedDummyFixture, Fixture);
 
 
 TestLoadedDummyFixture.prototype.canHandleProperty = function()
@@ -24,7 +26,7 @@ TestLoadedDummyFixture.prototype.doGiven = function(sProperty, vValue)
 
 TestLoadedDummyFixture.prototype.doWhen = function(sProperty, vValue)
 {
-	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "TestLoadedDummyFixture can't be used in a When.");
+	throw new Errors.InvalidTestError("TestLoadedDummyFixture can't be used in a When.");
 };
 
 TestLoadedDummyFixture.prototype.doThen = function(sProperty, vValue) {
