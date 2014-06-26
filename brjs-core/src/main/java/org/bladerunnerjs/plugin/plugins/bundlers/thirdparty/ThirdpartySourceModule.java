@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +36,8 @@ public class ThirdpartySourceModule implements SourceModule
 	private String assetPath;
 	private SourceModulePatch patch;
 	private String defaultFileCharacterEncoding;
+	
+	private final List<String> emptyAliasNames = new ArrayList<String>();
 	
 	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
 		try {
@@ -163,7 +164,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException
 	{
-		return Collections.<String>emptyList();
+		return emptyAliasNames;
 	}
 
 	@Override

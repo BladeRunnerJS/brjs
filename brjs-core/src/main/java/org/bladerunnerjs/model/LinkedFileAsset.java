@@ -3,7 +3,7 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -27,6 +27,8 @@ public class LinkedFileAsset implements LinkedAsset {
 	private String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
 	private InfoFileModifiedChecker modificationChecker;
+	
+	private final List<String> emptyRequirePaths = new ArrayList<String>();
 	
 	public LinkedFileAsset(File assetFile, AssetLocation assetLocation) {
 		try {
@@ -98,7 +100,7 @@ public class LinkedFileAsset implements LinkedAsset {
 
 	@Override
 	public List<String> getRequirePaths() {
-		return Collections.<String>emptyList();
+		return emptyRequirePaths;
 	}
 	
 	@Override

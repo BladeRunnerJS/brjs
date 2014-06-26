@@ -3,7 +3,7 @@ package org.bladerunnerjs.utility.deps;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.aliasing.AliasDefinition;
@@ -16,6 +16,8 @@ import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 
 public class AliasAsset implements LinkedAsset {
 	private final AliasDefinition alias;
+	
+	private final List<String> emptyRequirePaths = new ArrayList<String>();
 	
 	public AliasAsset(AliasDefinition alias) {
 		this.alias = alias;
@@ -58,7 +60,7 @@ public class AliasAsset implements LinkedAsset {
 	
 	@Override
 	public List<String> getRequirePaths() {
-		return Collections.<String>emptyList();
+		return emptyRequirePaths;
 	}
 	
 	@Override

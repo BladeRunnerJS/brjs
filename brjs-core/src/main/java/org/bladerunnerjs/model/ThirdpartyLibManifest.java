@@ -3,7 +3,6 @@ package org.bladerunnerjs.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -18,6 +17,8 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	private final FileInfo fileInfo;
 	private final File assetLocationDir;
 	private final AssetLocation assetLocation;
+	
+	private final List<String> emptyStringList = new ArrayList<String>();
 	
 	public ThirdpartyLibManifest(AssetLocation assetLocation) throws ConfigException {
 		super(assetLocation, ThirdpartyLibYamlManifest.class, assetLocation.file(LIBRARY_MANIFEST_FILENAME));
@@ -65,7 +66,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 		{
 			return Arrays.asList(value.split(commaWithOptionalSpacesSeparator));
 		}
-		return  Collections.<String>emptyList();
+		return emptyStringList;
 	}
 	
 	private List<File> getFilesForConfigPaths(List<String> configPaths, String fileExtension) throws ConfigException
