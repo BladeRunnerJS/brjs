@@ -404,8 +404,10 @@ task cleanWorkspaceFiles {
     		}
 		}
 		if (file('workspace/apps').exists()) {
-			fileset(dir: 'workspace/apps') {
-				include(name: '**/WEB-INF/lib/brjs-*.jar')
+			ant.delete(includeemptydirs: 'true') {
+    			fileset(dir: 'workspace/apps') {
+    				include(name: '**/WEB-INF/lib/brjs-*.jar')
+    			}
 			}
 		}
 	}
