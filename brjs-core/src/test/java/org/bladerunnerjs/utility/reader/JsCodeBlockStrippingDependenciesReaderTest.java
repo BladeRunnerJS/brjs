@@ -129,14 +129,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	public void selfExecutingFunctionsAtTheStartOfAClassAreNotStripped() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
-				lines(
-					"(function() {",
-					"some code...",
-					"})()"),
-				lines(
-					"(function() {",
-					"some code...",
-					"})()")
+			lines(
+				"(function() {",
+				"some code...",
+				"})()"),
+			lines(
+				"(function() {",
+				"some code...",
+				"})()")
 			);
 	}
 	
@@ -144,14 +144,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	public void selfExecutingFunctionsPrefixedByASemicolonAtTheStartOfAClassAreNotStripped() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
-				lines(
-					";(function() {",
-					"some code...",
-					"})()"),
-				lines(
-					";(function() {",
-					"some code...",
-					"})()")
+			lines(
+				";(function() {",
+				"some code...",
+				"})()"),
+			lines(
+				";(function() {",
+				"some code...",
+				"})()")
 			);
 	}
 	
@@ -159,18 +159,18 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	public void codeBlocksInSelfExecutingFunctionsAreStripped() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
-				lines(
-					"(function() {",
-					"some code...",
-					"function() {",
-					"  inner code block...",
-					"}",
-					")()"),
-				lines(
-					"(function() {",
-					"some code...",
-					"function() {}",
-					")()")
+			lines(
+				"(function() {",
+				"some code...",
+				"function() {",
+				"  inner code block...",
+				"}",
+				")()"),
+			lines(
+				"(function() {",
+				"some code...",
+				"function() {}",
+				")()")
 			);
 	}
 	
@@ -178,16 +178,16 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	public void selfExecutingFunctionsCanAppearAnywhereInTheClass() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
-				lines(
-					"some code...",
-					"(function() {",
-					"some more code...",
-					"})()"),
-				lines(
-					"some code...",
-					"(function() {",
-					"some more code...",
-					"})()")
+			lines(
+				"some code...",
+				"(function() {",
+				"some more code...",
+				"})()"),
+			lines(
+				"some code...",
+				"(function() {",
+				"some more code...",
+				"})()")
 			);
 	}
 	
@@ -239,14 +239,14 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	public void alternativeSelfExecutingFunctionFormatsAreSupported() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
-				lines(
-					"new function() {",
-					"some code...",
-					"}"),
-				lines(
-					"new function() {",
-					"some code...",
-					"}")
+			lines(
+				"new function() {",
+				"some code...",
+				"}"),
+			lines(
+				"new function() {",
+				"some code...",
+				"}")
 			);
 	}
 	
@@ -254,18 +254,18 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	public void selfExecutingFunctionsCanBeImmediatelyWithinAnotherSelefExecutingFunction() throws IOException
 	{
 		stripCodeBlocksAndAssertEquals(
-				lines(
-					"(function() {",
-					"(function() {",
-					"some code...",
-					"})()",
-					")()"),
-				lines(
-					"(function() {",
-					"(function() {",
-					"some code...",
-					"})()",
-					")()")
+			lines(
+				"(function() {",
+				"(function() {",
+				"some code...",
+				"})()",
+				")()"),
+			lines(
+				"(function() {",
+				"(function() {",
+				"some code...",
+				"})()",
+				")()")
 			);
 	}
 	
@@ -287,38 +287,38 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 	@Test
 	public void largeSourceWithCodeWithSelfExecutingFunctionsAreNotStripped() throws Exception {
 		stripCodeBlocksAndAssertEquals(
-				lines(
-					zeroPad(4090),
-					"(function() {",
-					"(function() {",
-					"some code...",
-					"})()",
-					")()"),
-				lines(
-					zeroPad(4090),
-					"(function() {",
-					"(function() {",
-					"some code...",
-					"})()",
-					")()")
+			lines(
+				zeroPad(4090),
+				"(function() {",
+				"(function() {",
+				"some code...",
+				"})()",
+				")()"),
+			lines(
+				zeroPad(4090),
+				"(function() {",
+				"(function() {",
+				"some code...",
+				"})()",
+				")()")
 			);
 	}
 	
 	@Test
 	public void functionsInInlineMapsInsideOfASelfExeuctingCodeBlockAreNotStripped() throws Exception {
 		stripCodeBlocksAndAssertEquals(
-				lines(
-					"(function() {",
-					"var someMap = {",
-					" key: some.function()",
-					"}",
-					")()"),
-				lines(
-					"(function() {",
-					"var someMap = {",
-					" key: some.function()",
-					"}",
-					")()")
+			lines(
+				"(function() {",
+				"var someMap = {",
+				" key: some.function()",
+				"}",
+				")()"),
+			lines(
+				"(function() {",
+				"var someMap = {",
+				" key: some.function()",
+				"}",
+				")()")
 			);
 	}
 	
