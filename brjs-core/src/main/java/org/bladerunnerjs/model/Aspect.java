@@ -34,7 +34,7 @@ public final class Aspect extends AbstractBrowsableNode implements TestableNode,
 	}
 	
 	@Override
-	public File[] scopeFiles() {
+	public File[] memoizedScopeFiles() {
 		if(scopeFiles == null) {
 			scopeFiles = new File[] {app().dir(), root().sdkLibsDir().dir(), root().file("js-patches"), BladerunnerConf.getConfigFilePath(root()), app().file("app.conf")};
 		}

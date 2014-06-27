@@ -32,8 +32,8 @@ public final class Blade extends AbstractComponent implements NamedNode
 	}
 	
 	@Override
-	public File[] scopeFiles() {
-		return parent().scopeFiles();
+	public File[] memoizedScopeFiles() {
+		return parent().memoizedScopeFiles();
 	}
 	
 	@Override

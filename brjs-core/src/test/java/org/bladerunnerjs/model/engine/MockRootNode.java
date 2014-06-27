@@ -37,7 +37,7 @@ public class MockRootNode implements RootNode
 	}
 	
 	@Override
-	public File[] scopeFiles()
+	public File[] memoizedScopeFiles()
 	{
 		return null;
 	}

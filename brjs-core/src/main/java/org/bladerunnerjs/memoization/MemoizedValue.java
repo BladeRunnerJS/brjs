@@ -24,7 +24,7 @@ public class MemoizedValue<T extends Object> {
 	private static final String RECOMPUTING_LOG_MSG = "Recomputing '%s'.";
 	
 	public MemoizedValue(String valueIdentifier, Node node) {
-		this(valueIdentifier, node.root(), node.scopeFiles());
+		this(valueIdentifier, node.root(), node.memoizedScopeFiles());
 	}
 	
 	public MemoizedValue(String valueIdentifier, RootNode rootNode, File... watchItems) {

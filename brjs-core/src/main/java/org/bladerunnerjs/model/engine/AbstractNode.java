@@ -78,7 +78,7 @@ public abstract class AbstractNode implements Node
 	}
 	
 	@Override
-	public File[] scopeFiles()
+	public File[] memoizedScopeFiles()
 	{
 		return scopeFiles;
 	}
