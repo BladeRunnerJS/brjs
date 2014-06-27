@@ -104,11 +104,20 @@ public class AspectBundlingOfHTML extends SpecTest {
     	then(response).containsText("<some-xml/>");
 	}
 	
-	@Test @Ignore
+	@Test
 	public void bladeResourcesAreLoadedEvenIfTheBladesetHasNoSource() throws Exception {
-		given(blade).containsResourceFileWithContents("file.xml", "<some-xml/>");
-    	when(app).requestReceived("/default-aspect/bundle.xml", response);
-    	then(response).containsText("<some-xml/>");
+		given(blade).containsResourceFileWithContents("file.xml", "<some-xml id='appns.bs.b1.someId'></some-xml>")
+			.and(aspect).indexPageHasContent("appns.bs.b1.someId");
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText("<some-xml id='appns.bs.b1.someId'></some-xml>");
+	}
+	
+	@Test
+	public void bladeResourcesAreLoadedEvenIfTheBladesetHasNoSourceAndSecondaryIdIsUsed() throws Exception {
+		given(blade).containsResourceFileWithContents("file.xml", "<some-xml id='appns.bs.b1.someId'></some-xml><some-xml id='appns.bs.b1.anotherId'></some-xml>")
+			.and(aspect).indexPageHasContent("appns.bs.b1.anotherId");
+		when(aspect).requestReceived("xml/bundle.xml", response);
+		then(response).containsText("<some-xml id='appns.bs.b1.someId'></some-xml><some-xml id='appns.bs.b1.anotherId'></some-xml>");
 	}
 	
 }
