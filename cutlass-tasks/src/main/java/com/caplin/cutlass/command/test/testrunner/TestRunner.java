@@ -378,7 +378,7 @@ public class TestRunner {
 			if (resetServer) { baseCmd = baseCmd + " --reset"; }
 								
 			/*
-			 *  TODO: (PCTCUT-361) the test results dir is relative to the working dir - which wont always be cutlass-sdk
+			 *  TODO: (PCTCUT-361) the test results dir is relative to the working dir - which wont always be brjs-sdk
 			 *  - needs to be relative but dynamically calculated  - convertResultsToHTML() method may also need changing
 			 */
 			
@@ -555,7 +555,7 @@ public class TestRunner {
 	}
 	
 	private String verboseFlag() {
-		return (verbose) ? "--verbose" : "";
+		return (verbose) ? "--info" : "";
 	}
 	
 	private String getClassPath(File testRunnnerDependencies) {

@@ -46,7 +46,7 @@ public class TemplateTests extends SpecTest
 	public void brjsHasCorrectTemplate() throws Exception {
 		when(brjs).populate();
 		then(brjs).hasFilesAndDirs(
-				Arrays.asList("conf/bundleConfig.xml", "conf/test-runner.conf", "conf/users.properties"),
+				Arrays.asList("conf/test-runner.conf", "conf/users.properties"),
 				Arrays.asList("apps", "conf", "sdk")
 		);
 	}

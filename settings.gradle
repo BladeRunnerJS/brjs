@@ -1,6 +1,6 @@
 include "cutlass-tasks",
 		"cutlass-common",
-		"cutlass-sdk",
+		"brjs-sdk",
 		"system-app-servlets",
 		"brjs-core",
 		"brjs-servlet",

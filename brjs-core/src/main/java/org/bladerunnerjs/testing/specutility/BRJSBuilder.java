@@ -297,7 +297,7 @@ public class BRJSBuilder extends NodeBuilder<BRJS> {
 	
 	public BuilderChainer usesProductionTemplates() throws IOException {
 		verifyBrjsIsSet();
-		File templateDir = new File("../cutlass-sdk/build-resources/includes/sdk/templates");
+		File templateDir = new File("../brjs-sdk/build-resources/includes/sdk/templates");
 		FileUtils.copyDirectory(templateDir, brjs.template("template").dir().getParentFile());
 		
 		return builderChainer;

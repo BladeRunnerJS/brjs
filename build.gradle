@@ -258,9 +258,9 @@ task generateReleaseNotes, {
 }
 
 
-task githubRelease, dependsOn:[generateReleaseNotes, ':cutlass-sdk:distZip', build], {
+task githubRelease, dependsOn:[generateReleaseNotes, ':brjs-sdk:distZip', build], {
 	doLast {
-		def cutlassSdkProject = project(':cutlass-sdk')
+		def cutlassSdkProject = project(':brjs-sdk')
 		def brjsZipPattern = "**/BladeRunnerJS-${projectBuildVersion}.zip"
 		def brjsZip = fileTree(dir:cutlassSdkProject.buildDir, include:brjsZipPattern).singleFile
 

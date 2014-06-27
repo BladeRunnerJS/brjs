@@ -100,10 +100,3 @@ artifacts {
 	javadocs javadocZip
 	srcJar sourcesJar
 }
-
-task zipJsDocResources, type:Zip, dependsOn: processResources, {
-	from "jsdoc-resources"
-	archiveName "jsdoc-resources.zip"
-	destinationDir = file("${sourceSets.main.output.resourcesDir}/org/bladerunnerjs/core/plugin/command/standard/")
-}
-classes.dependsOn zipJsDocResources

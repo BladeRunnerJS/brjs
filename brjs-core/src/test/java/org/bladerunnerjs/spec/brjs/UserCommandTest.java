@@ -67,5 +67,5 @@ public class UserCommandTest extends SpecTest {
 			.and(exceptions).verifyException(CommandOperationException.class);
 	}
 	
-	// TODO: add some tests around the --verbose and --debug flags
+	// TODO: add some tests around the --info and --debug flags
 }

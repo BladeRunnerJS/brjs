@@ -19,7 +19,8 @@ public class IntegrationJsDocCommandTest extends SpecTest {
 	@Before
 	public void initTestObjects() throws Exception {
 		given(brjs).hasCommandPlugins(new JsDocCommand())
-			.and(brjs).hasBeenCreated();
+			.and(brjs).hasBeenCreated()
+			.and(brjs).usesProductionTemplates();
 		app = brjs.app("app");
 		appLib = app.jsLib("lib");
 		jsdocOutputDir = app.storageDir("jsdoc");

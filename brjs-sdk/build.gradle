@@ -1,0 +1,439 @@
+import org.apache.tools.ant.filters.*
+
+apply plugin: 'maven'
+
+
+configurations {
+	system
+	application
+	systemAppServlets {
+		exclude module: 'jetty-all-server'
+		extendsFrom application
+	}
+	testRunner
+	javadocs
+	srcJars
+
+	browsers_dep
+	browsers_webdriver
+}
+
+dependencies {
+	system project(path: ':cutlass-tasks')
+	system project(path: ':brjs-runner')
+	system project(path: ':brjs-logger')
+	system project(":brjs-logger-binding")
+	system dependency('selenium-java')
+	system dependency('jetty-jsp')
+
+	application project(path: ':brjs-servlet')
+
+	javadocs project(path: ':brjs-core', configuration:'javadocs')
+
+	srcJars project(path: ':brjs-core', configuration:'srcJar')
+
+	systemAppServlets (project(path: ':system-app-servlets'))
+
+	testRunner dependency('JsTestDriver')
+	testRunner dependency('validation-api')
+	testRunner dependency('sjsxp')
+
+	testRunner project(path: ':brjs-logger')
+	testRunner project(path: ':brjs-logger-binding')
+	testRunner files('build-resources/JsTestDriver.conf')
+
+	browsers_dep dependency('chrome-stable')
+	browsers_dep dependency('firefox-stable')
+
+	browsers_webdriver dependency('firefox-webdriver')
+}
+
+
+def browserRootDir = buildDir.path+"/browsers"
+def browserProfileDir = "${browserRootDir}/profile"
+task copyBrowsers(type: Sync) {
+	description "Copies all browser dependencies into " + relativePath(browserRootDir) + "."
+	from { configurations.browsers_dep.collect { browser -> zipTree(browser) } }
+	from { configurations.browsers_webdriver.collect { browser -> zipTree(browser) } }
+	into browserRootDir
+	doLast {
+		//TODO: this should probabaly be done in a task listener
+		if (file(browserProfileDir).exists()) {
+			delete browserProfileDir
+		}
+		file(browserProfileDir).mkdirs();
+		file(browserProfileDir + "/chrome").mkdir();
+			/* prevent chrome asking to set default search engine */
+			file(browserProfileDir + "/chrome/First Run").createNewFile();
+		file(browserProfileDir + "/chromium").mkdir();
+			/* prevent chromium asking to set default search engine */
+			file(browserProfileDir + "/chromium/First Run").createNewFile();
+		file(browserProfileDir + "/firefox").mkdir();
+			file(browserProfileDir + "/firefox/prefs.js").createNewFile();
+			file(browserProfileDir + "/firefox/prefs.js").text = "user_pref(\"browser.shell.checkDefaultBrowser\", false);\nuser_pref(\"browser.sessionstore.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.max_resumed_crashes\", -1);\nuser_pref(\"toolkit.startup.recent_crashes\", -1);\n";
+		}
+}
+
+task assembleSdk, type: Copy, dependsOn: [configurations.system, configurations.application, configurations.systemAppServlets, configurations.testRunner, configurations.javadocs, configurations.srcJars], {
+	def includesDir = "build-resources/includes"
+
+	destinationDir file("${projectDir.path}/workspace")
+
+	inputs.property "sdkVersion", buildVersion
+	inputs.property "buildHostname", buildHostname
+
+	from ("${includesDir}")
+	{
+		include "LICENSE"
+		include "README.txt"
+	}
+
+	from ("${includesDir}/apps")
+	{
+		into "apps"
+	}
+
+	from ("${includesDir}/conf")
+	{
+		into "conf"
+	}
+	from ("build-resources")
+	{
+		into "conf"
+		include "test-runner.conf"
+	}
+
+	from ("${includesDir}/sdk") {
+		into "sdk"
+		exclude "version.txt"
+	}
+
+	from ("${includesDir}/sdk") {
+		into "sdk"
+		include "version.txt"
+		filter( ReplaceTokens, tokens: [
+			sdkVersion:buildVersion,
+			buildDate:buildDate,
+			distType:"bladerunner",
+			buildHostname:buildHostname
+		] )
+	}
+
+	from (configurations.system)
+	{
+		into "sdk/libs/java/system"
+	}
+	from (configurations.javadocs.collect { zipTree(it) }) {
+		eachFile {
+			it.path = it.path.replaceFirst("(javadoc)/","")
+		}
+		into "sdk/docs/java"
+	}
+	from (configurations.srcJars.collect { it } ) {
+		into "sdk/docs"
+	}
+	from (configurations.application)
+	{
+		into "sdk/libs/java/application"
+		rename { String fileName ->
+    		if ( !fileName.startsWith("brjs-") )
+    		{
+    			fileName = "brjs-"+fileName
+    		}
+		}
+	}
+	file("workspace/sdk/system-applications").listFiles().each {
+		if (it.isDirectory()) {
+			into ("sdk/system-applications/${it.name}/WEB-INF/lib") {
+				from configurations.systemAppServlets
+				rename { String fileName ->
+					if ( !fileName.startsWith("brjs-") )
+					{
+						fileName = "brjs-"+fileName
+					}
+				}
+			}
+		}
+	}
+	file("workspace/apps").listFiles().each {
+		if (it.isDirectory()) {
+			into ("apps/${it.name}/WEB-INF/lib") {
+				from configurations.systemAppServlets
+				rename { String fileName ->
+					if ( !fileName.startsWith("brjs-") )
+					{
+						fileName = "brjs-"+fileName
+					}
+				}
+			}
+		}
+	}
+	from (configurations.testRunner)
+	{
+		into "sdk/libs/java/testRunner"
+		rename 'JsTestDriver-(.*).jar', 'JsTestDriver.jar'
+	}
+
+	doFirst {
+		delete file("workspace/sdk/libs/java")
+		delete file("workspace/sdk/docs")
+		fileTree(dir:"workspace/sdk/system-applications", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+		fileTree(dir:"apps", include:"*/WEB-INF/lib/brjs-*").each { delete it }
+	}
+	doLast {
+		ant {
+			fixcrlf(srcdir:"workspace", includes:"**/brjs", eol:"lf" )
+			fixcrlf(srcdir:"workspace", includes:"**/brjs.cmd", eol:"crlf" )
+		}
+	}
+}
+
+def createTestTask = { taskName, taskTestDir, taskTestType, browser ->
+	task taskName, type: com.caplin.gradle.tasks.RunJstdTests, dependsOn: assemble, {
+		description = "Run ${taskTestType} for ${taskTestDir} using ${browser}"
+		dependsOn = [assemble, copyBrowsers]
+		inputs.dir file("workspace/apps/")
+    	inputs.dir file("workspace/sdk/")
+    	inputs.dir file("workspace/conf/")
+		workingDir = "workspace/sdk"
+		testType = taskTestType
+		browsers = browser
+		testDir = taskTestDir
+	}
+}
+
+// "libs/javascript" is relative to the sdk directory
+createTestTask "testJsChrome", "libs/javascript", "ALL", "chrome"
+createTestTask "testJsFirefox", "libs/javascript", "ALL", "firefox"
+createTestTask "testJsIE", "libs/javascript", "ALL", "ie"
+
+createTestTask "testSystemAppsIE", "system-applications", "ALL", "ie"
+createTestTask "testSystemAppsChrome", "system-applications", "ALL", "chrome"
+createTestTask "testSystemAppsFirefox", "system-applications", "ALL", "firefox"
+
+task testIE, dependsOn: [testJsIE, testSystemAppsIE]
+task testChrome, dependsOn:[testJsChrome, testSystemAppsChrome]
+task testFirefox, dependsOn: [testJsFirefox, testSystemAppsFirefox]
+task test, dependsOn: testChrome
+
+
+task createSdkJsDocs, dependsOn: assembleSdk, {
+	def jsDocTmpAppName = "jsdoc-tmp-app"
+	doFirst {
+		delete file("workspace/apps/${jsDocTmpAppName}")
+		exec {
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["create-app", jsDocTmpAppName]
+			workingDir file("workspace/sdk")
+		}
+		exec {
+			commandLine org.bladerunnerjs.OSCalculator.getOSSpecificCommand("brjs") + ["jsdoc", jsDocTmpAppName]
+			workingDir file("workspace/sdk")
+		}
+		copy {
+			from "workspace/generated/app/${jsDocTmpAppName}/jsdoc/"
+			into "workspace/sdk/docs/js"
+		}
+		copy {
+			from "build-resources/jsdocs/"
+			into "workspace/sdk/docs/js"
+		}
+	}
+	doLast {
+		delete file("workspace/apps/${jsDocTmpAppName}")
+	}
+}
+
+
+
+assemble.dependsOn = [assembleSdk, copyBrowsers, createSdkJsDocs]
+
+task check, dependsOn: test, {}
+task build, dependsOn: check, {}
+
+
+task downloadExampleApps, {
+	outputs.dir file("${buildDir}/brjs-example-apps.zip")
+	doFirst {
+		if (!buildDir.isDirectory()) { buildDir.mkdir() }
+		ant.get(src: "https://github.com/BladeRunnerJS/brjstodo-getting-started/archive/master.zip", dest: "${buildDir}/brjs-example-apps.zip")
+	}
+}
+
+task extractExampleApps, type:Copy, dependsOn:downloadExampleApps, {
+	from zipTree( tasks.downloadExampleApps.outputs.files.singleFile )
+	into "workspace/apps/example-app-brjs-todo"   // Temporarily changing to explicit folder
+	includeEmptyDirs = false
+	eachFile {
+		it.path = it.path.replaceFirst("[A-Za-z0-9-_]+/","")
+		if (it.path.startsWith(".git")) { exclude it }
+	}
+}
+
+createTestTask "exampleAppsTestJsChrome", "../apps/", "ALL", "chrome"
+exampleAppsTestJsChrome.dependsOn extractExampleApps
+createTestTask "exampleAppsTestJsFirefox", "../apps/", "ALL", "firefox"
+exampleAppsTestJsFirefox.dependsOn extractExampleApps
+
+task exampleAppsTestJs, dependsOn: [exampleAppsTestJsChrome, exampleAppsTestJsFirefox], {}
+
+/*
+
+TODO: add task to publish JS and Java docs
+
+Steps:
+- create the docs (done)
+- clone the docs repo (brjs-api-docs?)
+- copy over docs
+ - suggested folder structure:
+    /v0.x
+      /js
+	 	 /java
+    /v0.y
+			/js
+			/java
+- git push - using same API key used to create the release
+
+Thoughts:
+- can we do this all via the github API?
+- can we use the API key?
+- we might need a note about the automated deployment and how to raise an issue
+
+*/
+
+
+
+ext.explodedSdkDir = "${project.buildDir}/exploded"
+
+task distZip, type:Zip, dependsOn: [assemble], {
+	baseName = "BladeRunnerJS"
+	from "workspace/"
+	into "BladeRunnerJS/"
+	include "sdk/**", "sdk/**", "apps/apps.txt", "LICENSE", "README.txt"
+	exclude "**/.gitignore", "**/.p4ignore", "**/libs/**/tests/*", "**/system-applications/**/tests/*", "**/bundles/*", "**/javascript/caplin/test/*", "**/node_modules/**", "**/*_NODIST/*"
+}
+build.dependsOn distZip
+distZip.mustRunAfter test
+
+gradle.taskGraph.whenReady { taskGraph ->
+	if (taskGraph.hasTask(distZip)) {
+		gradle.addBuildListener(new DistZipPathLogger(project.buildVersion, distZip.archivePath.getPath()))
+	}
+}
+
+
+task explodeSdk, type:Sync, dependsOn: distZip, {
+	from files(distZip).collect { zipTree(it) }
+	into explodedSdkDir
+}
+
+
+task checkVersionTxt, dependsOn: explodeSdk, {
+	doFirst {
+		def versionFile = project.file("${explodedSdkDir}/BladeRunnerJS/sdk/version.txt");
+		if (versionFile.text.contains("@"))
+		{
+			throw new GradleException("version.txt (${versionFile.getAbsolutePath()}) contains an unfiltered token.")
+		}
+	}
+}
+check.dependsOn checkVersionTxt
+
+
+task checkSdkStructure, type:com.caplin.gradle.tasks.CheckDirectoryStructure, dependsOn: explodeSdk, {
+	checkRoot = file(explodedSdkDir)
+	expectedPaths = [
+		"*/sdk/**",
+		"*/sdk/brjs",
+		"*/sdk/brjs.cmd",
+		"*/sdk/version.txt",
+		"*/sdk/libs/java/testRunner/*",
+		"*/sdk/libs/java/system/*",
+		"*/sdk/libs/java/application/**",
+		"*/sdk/libs/javascript/*/src/**",
+		"*/sdk/libs/javascript/*/resources/**",
+		"*/sdk/system-applications/*/*",
+		"*/sdk/system-applications/*/WEB-INF/lib/*",
+		"*/sdk/templates/*/*",
+		"*/sdk/templates/*/tests/*",
+        "*/sdk/docs/java/*",
+		"*/sdk/docs/java/**/*",
+		"*/sdk/docs/js/*",
+		"*/sdk/docs/js/**/*",
+		"*/README.txt",
+		"*/LICENSE",
+		"*/apps/apps.txt"
+	]
+	bannedPaths = [
+	   "**/.p4ignore",
+	   "**/.gitignore",
+	   "**/empty.txt",
+	   "**/system-applications/dashboard/WEB-INF/lib/*xom-*",
+	   "**/libs/java/application/xom-*",
+	   "**/libs/java/application/*bladerunner.jar",
+	   "**/libs/java/application/servlet-api-*",
+	   "**/libs/java/system/bladerunner-*-servlets*",
+	   "**/js-test-driver/bundles/**/*",
+	   "**/libs/**/tests/**/*",
+	   "**/system-applications/**/tests/**/*",
+	   "*/sdk/libs/javascript/**/tests/**",
+	   "*/sdk/libs/javascript/thirdparty/**",
+	   "*/sdk/libs/javascript/br-libs/**",
+	   "*/sdk/run*",
+	   "**/node_modules/**",
+	   "*/apps/*/*",
+	   "**/*_NODIST/**"
+	]
+}
+check.dependsOn checkSdkStructure
+
+
+task cleanWorkspaceFiles {
+	outputs.upToDateWhen { false }
+	doFirst {
+		ant.delete(includeemptydirs: 'true') {
+			fileset(dir: 'workspace') {
+				exclude(name: 'sdk/system-applications/')
+				exclude(name: 'apps/')
+				exclude(name: 'sdk/libs/javascript/')
+			}
+			fileset(dir: 'workspace') {
+				include(name: '**/test-*/**/bundles/')
+			}
+			fileset(dir: 'workspace/sdk/system-applications') {
+    			include(name: '**/WEB-INF/lib/brjs-*.jar')
+    		}
+		}
+		if (file('workspace/apps').exists()) {
+			ant.delete(includeemptydirs: 'true') {
+    			fileset(dir: 'workspace/apps') {
+    				include(name: '**/WEB-INF/lib/brjs-*.jar')
+    			}
+			}
+		}
+	}
+}
+
+clean {
+	dependsOn = [cleanWorkspaceFiles]
+}
+
+
+
+// util class
+class DistZipPathLogger extends BuildAdapter {
+	String buildVersion
+	String archivePath
+	public DistZipPathLogger(String buildVersion, String archivePath) {
+		this.buildVersion = buildVersion
+		this.archivePath = archivePath
+	}
+	void buildFinished(BuildResult result) {
+		if (!result.failure) {
+    		println ""
+    		println "----"
+    		println "BladeRunnerJS ${buildVersion} built and zipped to ${archivePath}"
+    		println "----"
+    		println ""
+		}
+	}
+}

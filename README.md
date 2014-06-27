@@ -52,9 +52,9 @@ If you install Java using the Windows installer than it places a 'java' executab
 
 From the root `brjs` source directory:
 
-    $ ./gradlew cutlass-sdk:distZip
+    $ ./gradlew brjs-sdk:distZip
     
-The built zip file will be found in `BRJS_ROOT/cutlass-sdk/build/distributions/` in the format `BladeRunner-VERSION.zip`.
+The built zip file will be found in `BRJS_ROOT/brjs-sdk/build/distributions/` in the format `BladeRunner-VERSION.zip`.
 
 ### More information    
 
