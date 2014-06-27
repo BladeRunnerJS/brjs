@@ -1,8 +1,12 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.StaticContentOutputStream;
@@ -27,7 +31,14 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
 				ContentPluginOutput contentOutputStream = new StaticContentOutputStream(bundlableNode.app(), responseOutput);
         		bundlableNode.handleLogicalRequest(requestPath, contentOutputStream, bundlableNode.root().getAppVersionGenerator().getDevVersion());
-        		response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
+        		Reader reader = contentOutputStream.getReader();
+        		if( reader == null){
+        			response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
+        		}else{
+        			Writer writer = new StringWriter();
+        			IOUtils.copy(reader, writer);
+        			response.append(writer.toString());
+        		}
 			}
 		});
 		

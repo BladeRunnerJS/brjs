@@ -4,24 +4,27 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.io.SequenceInputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.ReaderInputStream;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.ConfigException;
+import org.bladerunnerjs.plugin.InputSource;
+import org.bladerunnerjs.plugin.MinifierPlugin;
+import org.bladerunnerjs.plugin.base.AbstractMinifierPlugin;
+
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
-
-import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.InputSource;
-import org.bladerunnerjs.plugin.MinifierPlugin;
-import org.bladerunnerjs.plugin.base.AbstractMinifierPlugin;
 
 
 public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements MinifierPlugin {
@@ -38,6 +41,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	private Logger logger;
 	
 	private List<String> settingNames = new ArrayList<>();
+	private BRJS brjs;
 	
 	{
 		settingNames.add(CLOSURE_WHITESPACE);
@@ -48,6 +52,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	@Override
 	public void setBRJS(BRJS brjs) 
 	{
+		this.brjs = brjs;
 		logger = brjs.logger(this.getClass());
 	}
 	
@@ -92,10 +97,21 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	
 	private InputStream getSingleInputStreamForInputSources(List<InputSource> inputSources)
 	{
+		String encoding;
+		try {
+			encoding = brjs.bladerunnerConf().getDefaultFileCharacterEncoding();
+		} catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
 		Vector<InputStream> inputStreams = new Vector<InputStream>();
 		for (InputSource inputSource : inputSources)
 		{
-			inputStreams.add( IOUtils.toInputStream(inputSource.getSource()) );
+			Reader reader = inputSource.getReader();
+			if(reader == null){
+				inputStreams.add( IOUtils.toInputStream(inputSource.getSource()) );
+			}else{
+				inputStreams.add( new ReaderInputStream(reader, encoding)) ;
+			}
 		}
 		return new SequenceInputStream( inputStreams.elements() );
 	}

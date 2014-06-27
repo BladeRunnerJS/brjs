@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -18,12 +17,12 @@ import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -31,7 +30,6 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 public class ThirdpartyContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
-	private BRJS brjs;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -48,7 +46,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.brjs = brjs;	
 	}
 	
 	@Override
@@ -71,6 +68,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	@Override
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
 	{
+		AdhocTimer.enter("ThirdpartyContentPlugin.writeContent: " + contentPath.formName, false);
 		try {
 			if (contentPath.formName.equals("bundle-request"))
 			{
@@ -123,6 +121,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		catch(RequirePathException  | IOException ex) {
 			throw new ContentProcessingException(ex);
 		}
+		AdhocTimer.exit("ThirdpartyContentPlugin.writeContent: " + contentPath.formName, false);
 	}
 
 	@Override

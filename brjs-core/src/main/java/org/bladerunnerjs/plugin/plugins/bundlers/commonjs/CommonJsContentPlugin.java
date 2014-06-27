@@ -1,21 +1,18 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -23,8 +20,11 @@ import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin;
 import org.bladerunnerjs.plugin.utility.InstanceFinder;
+import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+
+import com.Ostermiller.util.ConcatReader;
 
 
 public class CommonJsContentPlugin extends AbstractContentPlugin
@@ -114,32 +114,32 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
 	{
+		AdhocTimer.enter("CommonJsContentPlugin.writeContent: " + contentPath.formName, false);
 		try
 		{
 			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
-				try (Writer writer = os.getWriter())
-				{
-					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
-				}
+				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
+				output.setReader(jsModule.getReader());
+				
 			}
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
 			{
-				try (Writer writer = os.getWriter())
+				List<Reader> readerList = new ArrayList<Reader>();
+				for (SourceModule sourceModule : bundleSet.getSourceModules())
 				{
-					for (SourceModule sourceModule : bundleSet.getSourceModules())
+					if (sourceModule instanceof CommonJsSourceModule)
 					{
-						if (sourceModule instanceof CommonJsSourceModule)
-						{
-							writer.write("// " + sourceModule.getPrimaryRequirePath() + "\n");
-							try (Reader reader = sourceModule.getReader()) { IOUtils.copy(reader, writer); }
-							writer.write("\n\n");
-						}
+						readerList.add(new StringReader("// " + sourceModule.getPrimaryRequirePath() + "\n"));
+						readerList.add(sourceModule.getReader());
+						readerList.add(new StringReader("\n\n"));
 					}
 				}
+				Reader[] readers = new Reader[readerList.size()];
+				readerList.toArray(readers);
+				output.setReader(new ConcatReader(readers));
 			}
 			else
 			{
@@ -150,5 +150,6 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 		{
 			throw new ContentProcessingException(e);
 		}
+		AdhocTimer.exit("CommonJsContentPlugin.writeContent: " + contentPath.formName, false);
 	}
 }

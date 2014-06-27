@@ -1,10 +1,12 @@
 package org.bladerunnerjs.plugin.plugins.minifiers;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.MinifierPlugin;
@@ -30,7 +32,12 @@ public class ConcatentatingMinifierPlugin extends AbstractMinifierPlugin impleme
 	@Override
 	public void minify(String settingName, List<InputSource> inputSources, Writer writer) throws IOException {
 		for(InputSource inputSource : inputSources) {
-			writer.write(inputSource.getSource());
+			Reader reader = inputSource.getReader();
+			if(reader == null){
+				writer.write(inputSource.getSource());
+			}else{
+				IOUtils.copy(reader, writer);
+			}
 			writer.write("\n\n");
 		}
 	}
