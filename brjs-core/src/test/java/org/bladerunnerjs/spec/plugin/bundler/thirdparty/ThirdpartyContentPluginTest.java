@@ -224,4 +224,15 @@ public class ThirdpartyContentPluginTest extends SpecTest {
 		then(exceptions).verifyException(ConfigException.class, "thirdparty-lib", "invalid-lib");
 	}
 	
+	@Test
+	public void allSettingsAreOptional() throws Exception
+	{
+		given(thirdpartyLib).containsFileWithContents("thirdparty-lib.manifest", "")
+    		.and(thirdpartyLib).containsFiles("file1.js")
+    		.and(aspect).indexPageHasContent("<@thirdparty.bundle@/>\n" + "require('"+thirdpartyLib.getName()+"')");
+    	when(aspect).requestReceived("thirdparty/thirdparty-lib/bundle.js", pageResponse);
+    	then(pageResponse).containsText("file1.js")
+    		.and(exceptions).verifyNoOutstandingExceptions();
+	}
+	
 }
