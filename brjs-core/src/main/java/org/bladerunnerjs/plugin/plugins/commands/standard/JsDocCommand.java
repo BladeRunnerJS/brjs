@@ -95,7 +95,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		try {
 			File jsdocToolkitInstallDir = installJsdocToolkit();
 			File jsDocToolkitDir = new File(jsdocToolkitInstallDir, "jsdoc-toolkit");
-			File jsDocTemplatesDir = new File(jsdocToolkitInstallDir, "jsdoc-templates/Caplin");
+			File jsDocTemplatesDir = new File(jsdocToolkitInstallDir, "jsdoc-template");
 			List<String> libraryPaths = new ArrayList<>();
 			
 			for (JsLib jsLib : app.jsLibs()) {
@@ -121,7 +121,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	}
 	
 	private File installJsdocToolkit() throws IOException {
-		File installDir = brjs.storageDir("jsdoc-toolkit/install");
+		File installDir = brjs.storageDir("jsdoc-toolkit-install");
 		
 		if(!installDir.exists()) {
 			installDir.mkdirs();
