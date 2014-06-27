@@ -49,7 +49,7 @@ public class HelpCommandTest extends SpecTest
 			"Supported flags:",
 			"  --info",
 			"  --debug",
-			"  --pkg <log-packages> (the comma delimited list of packages to show messages from, or '*' to show everything)",
+			"  --pkg <log-packages> (the comma delimited list of packages to show messages from, or 'ALL' to show everything)",
 			"  --show-pkg (show which class each log line comes from)");
 	}
 	
