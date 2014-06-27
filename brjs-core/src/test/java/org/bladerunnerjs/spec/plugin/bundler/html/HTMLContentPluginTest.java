@@ -160,18 +160,18 @@ public class HTMLContentPluginTest extends SpecTest
 	
 	@Test
 	public void bundlePathTagIsReplacedForDev() throws Exception {
-		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='some.id'>@bundlePath@ @unversionedBundlePath@</div>")
+		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='some.id'>@bundlePath@/some/path @unversionedBundlePath@/some/path</div>")
 			.and(brjs).hasDevVersion("dev");
 		when(aspect).requestReceived("html/bundle.html", response);
-		then(response).containsText("../v/dev/ ../");
+		then(response).containsText("../v/dev/some/path ../some/path");
 	}
 	
 	@Test
 	public void bundlePathTagIsReplacedForProd() throws Exception {
-		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='some.id'>@bundlePath@ @unversionedBundlePath@</div>")
+		given(aspect).containsResourceFileWithContents("html/view.html", "<div id='some.id'>@bundlePath@/some/path @unversionedBundlePath@/some/path</div>")
 		.and(brjs).hasProdVersion("1234");
 		when(aspect).requestReceivedInProd("html/bundle.html", response);
-		then(response).containsText("../v/1234/ ../");
+		then(response).containsText("../v/1234/some/path ../some/path");
 	}
 	
 }
