@@ -70,10 +70,10 @@ public class AspectBundlingOfHTML extends SpecTest {
 			.and(aspect).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(aspect).requestReceived("html/bundle.html", response);
 		then(response).containsOrderedTextFragments(
-				"<!-- aspect.html -->",
-				"<div id='appns.aspect-view'></div>",
 				"<!-- workbench.html -->",
-				"<div id='br.workbench-view'></div>");
+				"<div id='br.workbench-view'></div>",
+				"<!-- aspect.html -->",
+				"<div id='appns.aspect-view'></div>");
 	}
 	
 	

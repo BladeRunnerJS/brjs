@@ -57,7 +57,7 @@ public class XmlBundleWriter
 			XMLStreamWriter xmlWriter = outputFactory.createXMLStreamWriter(writer);
 			writeBundleInternal(resourceReaders, xmlWriter);
 		}
-		catch(   XmlSiblingReaderException | XMLStreamException e) {
+		catch (XmlSiblingReaderException | XMLStreamException e) {
 			throw new ContentProcessingException(e, "Error while bundling XML assets '" );
 		}	
 		finally

@@ -168,8 +168,9 @@ public class WorkbenchBundlingTest extends SpecTest {
 			.and(workbench).containsResourceFileWithContents("workbench-view.html", "<div id='appns.bs.b1.workbench-view'></div>")
 			.and(workbench).indexPageRefersTo("br.workbench.ui.Workbench");
 		when(workbench).requestReceived("html/bundle.html", response);
-		then(response).containsOrderedTextFragments("<div id='appns.bs.b1.workbench-view'></div>",
-													"<div id='br.tree-view'></div>");
+		then(response).containsOrderedTextFragments("<div id='br.tree-view'></div>",
+													"<div id='appns.bs.b1.workbench-view'></div>");
+													
 	}
 	
 	@Test
