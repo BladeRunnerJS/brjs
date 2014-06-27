@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin.plugins.commands.core;
 
 import java.util.List;
 
+import org.bladerunnerjs.logger.ConsoleLogger;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
@@ -78,7 +79,7 @@ public class HelpCommand extends ArgsParsingCommandPlugin
 		logger.println("Supported flags:");
 		logger.println("  --info");
 		logger.println("  --debug");
-		logger.println("  --pkg <log-packages> (the comma delimited list of packages to show messages from, or '*' to show everything)");
+		logger.println("  --pkg <log-packages> (the comma delimited list of packages to show messages from, or '"+ConsoleLogger.LOG_ALL_PACKAGES_PACKAGE_NAME+"' to show everything)");
 		logger.println("  --show-pkg (show which class each log line comes from)");
 	}
 

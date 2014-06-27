@@ -10,6 +10,8 @@ import org.slf4j.helpers.MessageFormatter;
 
 public class ConsoleLogger extends MarkerIgnoringBase
 {
+	public static final String LOG_ALL_PACKAGES_PACKAGE_NAME = "ALL";
+	
 	private static final long serialVersionUID = 1L;
 	
 	private final String className;
@@ -26,7 +28,7 @@ public class ConsoleLogger extends MarkerIgnoringBase
 		enabled = false;
 		
 		for(String whitelistedPackage : whitelistedPackages) {
-			if(whitelistedPackage.equals("*") || className.startsWith(whitelistedPackage)) {
+			if(whitelistedPackage.toUpperCase().equals(LOG_ALL_PACKAGES_PACKAGE_NAME) || className.startsWith(whitelistedPackage)) {
 				enabled = true;
 			}
 		}
