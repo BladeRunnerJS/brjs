@@ -30,7 +30,8 @@ public class StandardFileInfo implements FileInfo {
 		try {
 			canonicalPath = file.getCanonicalPath();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			brjs.logger(this.getClass()).warn("Unable to calculate canonical path for path '%s'.", file.getPath());
+			canonicalPath = file.getAbsolutePath();
 		}
 		
 	}
