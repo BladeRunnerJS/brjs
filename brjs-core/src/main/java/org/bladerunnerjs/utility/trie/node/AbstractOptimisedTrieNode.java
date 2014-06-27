@@ -6,13 +6,13 @@ import java.util.List;
 public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 {
 	
-	private List<Character> seperators;
-	private char primarySeperator;
+	private List<Character> separators;
+	private char primarySeparator;
 
 	public AbstractOptimisedTrieNode(char primarySeperator, List<Character> seperators)
 	{
-		this.seperators = seperators;
-		this.primarySeperator = primarySeperator;
+		this.separators = seperators;
+		this.primarySeparator = primarySeperator;
 	}
 	
 	@Override
@@ -78,7 +78,7 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 			if(trieChar == character) {
 				return trieNode;
 			}
-			if (trieChar == primarySeperator && seperators.contains(trieChar)) {
+			if (trieChar == primarySeparator && separators.contains(character)) {
 				return trieNode;
 			}
 		}
