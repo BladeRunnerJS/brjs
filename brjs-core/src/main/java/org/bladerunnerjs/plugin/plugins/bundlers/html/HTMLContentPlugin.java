@@ -19,7 +19,7 @@ import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -92,13 +92,13 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
 	{
 		identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
 		
 		// TODO: try removing the @SuppressWarnings once we upgrade past Eclipse Kepler, as the need for this appears to be a bug
-		try (@SuppressWarnings("resource") Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
+		try (@SuppressWarnings("resource") Writer writer = os.getWriter()) {
 			for(Asset htmlAsset : htmlAssets){
 				try {
 					validateSourceHtml(htmlAsset);
@@ -121,7 +121,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 				}
 			}
 		}
-		catch( IOException | ConfigException e) {
+		catch( IOException  e) {
 			throw new ContentProcessingException(e);
 		}
 	}

@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -76,13 +76,13 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException {
 		String theme = contentPath.properties.get("theme");
 		String languageCode = contentPath.properties.get("languageCode");
 		String countryCode = contentPath.properties.get("countryCode");
 		Locale locale = new Locale(languageCode, countryCode);
 		
-		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
+		try(Writer writer = os.getWriter()) {
 			List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
 			for(Asset cssAsset : cssAssets) {
 				String assetThemeName = getThemeName(cssAsset.assetLocation());
@@ -92,7 +92,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				}
 			}
 		}
-		catch (IOException | ConfigException e) {
+		catch (IOException  e) {
 			throw new ContentProcessingException(e);
 		}
 	}

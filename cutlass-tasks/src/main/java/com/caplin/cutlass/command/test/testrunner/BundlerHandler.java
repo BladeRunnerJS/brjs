@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -51,7 +51,7 @@ public class BundlerHandler
 		{
 			throw new IllegalArgumentException("Invalid bundlePath - it should not contain '\', only '/' as a seperator");
 		}
-		ContentOutputStream outputStream = createBundleOutputStream(bundleFile);
+		ContentPluginOutput outputStream = createBundleOutputStream(bundleFile);
 		String modelRequestPath = getModelRequestPath(bundlePath);
 		handleBundleRequest(bundleFile, modelRequestPath, outputStream, version);
 	}
@@ -89,7 +89,7 @@ public class BundlerHandler
 		return null;
 	}
 
-	private void handleBundleRequest(File bundleFile, String brjsRequestPath, ContentOutputStream outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
+	private void handleBundleRequest(File bundleFile, String brjsRequestPath, ContentPluginOutput outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
 	{
 		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
 		if (bundlableNode == null)
@@ -100,7 +100,7 @@ public class BundlerHandler
 		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter(), version);
 	}
 	
-	private ContentOutputStream createBundleOutputStream(File bundlerFile) throws IOException
+	private ContentPluginOutput createBundleOutputStream(File bundlerFile) throws IOException
 	{
 		bundlerFile.getParentFile().mkdirs();
 		

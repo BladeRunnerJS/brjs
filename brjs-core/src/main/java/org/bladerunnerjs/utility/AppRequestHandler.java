@@ -19,7 +19,7 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.SdkJsLib;
@@ -62,7 +62,7 @@ public class AppRequestHandler
 		return getContentPathParser().canParseRequest(requestPath);
 	}
 	
-	public void handleLogicalRequest(String requestPath, ContentOutputStream os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public void handleLogicalRequest(String requestPath, ContentPluginOutput os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		ParsedContentPath parsedContentPath = getContentPathParser().parse(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
@@ -103,7 +103,7 @@ public class AppRequestHandler
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public void writeIndexPage(BrowsableNode browsableNode, Locale locale, String version, ContentOutputStream os, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
+	public void writeIndexPage(BrowsableNode browsableNode, Locale locale, String version, ContentPluginOutput os, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
 		
 		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 		try {
@@ -122,7 +122,7 @@ public class AppRequestHandler
 				browsableNode.filterIndexPage(indexPageContent.toString(), locale, version, writer, requestMode);
 			}
 
-			os.write(byteArrayOutputStream.toByteArray());
+			os.getOutputStream().write(byteArrayOutputStream.toByteArray());
 		}
 		catch (IOException | ConfigException | ModelOperationException e) {
 			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(browsableNode.root(), browsableNode.root().dir(),indexPage));
@@ -149,9 +149,9 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public void writeLocaleForwardingPage(OutputStream os, String version) throws ContentProcessingException {
+	public void writeLocaleForwardingPage(ContentPluginOutput os, String version) throws ContentProcessingException {
 		SdkJsLib localeForwarderLib = app.root().sdkLib(BR_LOCALE_UTILITY_LIBNAME);
-		try(Writer writer = new OutputStreamWriter(os, app.root().bladerunnerConf().getBrowserCharacterEncoding());
+		try(Writer writer = os.getWriter();
 				Reader localeForwarderReader = new FileReader( localeForwarderLib.file(BR_LOCALE_UTILITY_FILENAME) ) ) {
 			
 			writer.write("<head>\n");

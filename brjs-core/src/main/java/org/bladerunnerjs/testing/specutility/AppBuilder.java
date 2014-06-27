@@ -7,7 +7,7 @@ import java.util.List;
 import java.io.IOException;
 
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -80,7 +80,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	
 	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException 
 	{
-		ContentOutputStream responseOutput = new StaticContentOutputStream(app, new ByteArrayOutputStream());
+		ContentPluginOutput responseOutput = new StaticContentOutputStream(app, new ByteArrayOutputStream());
 		app.handleLogicalRequest(requestPath, responseOutput);
 		
 		return builderChainer;	

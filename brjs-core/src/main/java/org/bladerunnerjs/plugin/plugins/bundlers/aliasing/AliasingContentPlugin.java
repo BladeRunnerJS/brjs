@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -69,13 +69,13 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException {
 		try {
 			if (contentPath.formName.equals("aliasing-request")) {
 				boolean aliasRegistryLoaded = bundleSet.getSourceModules().contains(bundleSet.getBundlableNode().getLinkedAsset("br/AliasRegistry"));
 				
 				if(aliasRegistryLoaded) {
-					try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
+					try (Writer writer = os.getWriter()) {
 						String aliasData = AliasingSerializer.createJson(bundleSet);
 						writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
 					}
@@ -88,7 +88,7 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 		catch (RequirePathException e) {
 			// do nothing: if 'br/AliasRegistry' doesn't exist then we definitely need to configure it
 		}
-		catch(IOException | ConfigException e) {
+		catch(IOException e) {
 			throw new ContentProcessingException(e);
 		}
 	}

@@ -44,11 +44,9 @@ public class DashboardLoadingTest extends SpecTest
 		StringBuffer response = new StringBuffer();
 		long startTime, endTime;
 		
-		AdhocTimer.init();
 		startTime = new Date().getTime();
 		when(dashboard).requestReceived(requestPath, response);
 		endTime = new Date().getTime();
-		AdhocTimer.dump();
 		System.out.println("Cold Request: " + (endTime - startTime) + " ms");
 		
 		touchFile(dashboard.aspect("default").file("index.html"));

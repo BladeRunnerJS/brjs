@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin;
 import java.util.List;
 
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -74,7 +74,7 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * @param version TODO
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException;
+	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in development, for the given bundle-set and locale.

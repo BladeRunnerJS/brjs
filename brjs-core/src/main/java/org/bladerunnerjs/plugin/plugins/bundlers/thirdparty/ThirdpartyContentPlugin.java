@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
@@ -69,12 +69,12 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
 	{
 		try {
 			if (contentPath.formName.equals("bundle-request"))
 			{
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) 
+				try (Writer writer = os.getWriter()) 
 				{
 					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
 						if(sourceFile instanceof ThirdpartySourceModule)
@@ -105,10 +105,10 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					throw new ContentProcessingException("File '" + file.getAbsolutePath() + "' doesn't exist.");
 				}
 				
-				IOUtils.copy(new FileInputStream(file), os);
+				IOUtils.copy(new FileInputStream(file), os.getOutputStream());
 			}
 			else if(contentPath.formName.equals("single-module-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) 
+				try (Writer writer = os.getWriter()) 
 				{
 					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 					writer.write("// " + jsModule.getPrimaryRequirePath() + "\n");
@@ -120,7 +120,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
-		catch(RequirePathException | ConfigException | IOException ex) {
+		catch(RequirePathException  | IOException ex) {
 			throw new ContentProcessingException(ex);
 		}
 	}

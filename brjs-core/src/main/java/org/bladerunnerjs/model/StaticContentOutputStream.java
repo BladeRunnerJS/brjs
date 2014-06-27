@@ -10,23 +10,32 @@ import java.io.OutputStream;
 import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.exception.ConfigException;
 
 
-public class StaticContentOutputStream extends ContentOutputStream
+public class StaticContentOutputStream extends ContentPluginOutput
 {
 
 	private App app;
 
-	public StaticContentOutputStream(App app, OutputStream outputStream) throws IOException
+	public StaticContentOutputStream(App app, OutputStream outputStream)
 	{
-		super(outputStream);
+		super(outputStream, getEncoding(app));
 		this.app = app;
+	}
+	
+	private static String getEncoding(App app){
+		try {
+			return app.root().bladerunnerConf().getBrowserCharacterEncoding();
+		} catch (ConfigException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public StaticContentOutputStream(App app, File file) throws IOException
 	{
-		super( new FileOutputStream(file) );
+		super( new FileOutputStream(file),getEncoding(app) );
 		this.app = app;
 	}
 	
@@ -48,7 +57,7 @@ public class StaticContentOutputStream extends ContentOutputStream
 	
 	@Override
 	public void writeLocalUrlContents(String url) throws IOException {
-		writeLocalUrlContentsToAnotherStream( url, this );
+		writeLocalUrlContentsToAnotherStream( url, this.getOutputStream() );
 	}
 	
 }

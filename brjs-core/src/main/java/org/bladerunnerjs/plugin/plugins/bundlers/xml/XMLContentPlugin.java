@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -82,7 +82,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
 	{
 		//TODO not parse the config on every execution
 		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
@@ -90,8 +90,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
 
 		try{
-			String outputEncoding = brjs.bladerunnerConf().getBrowserCharacterEncoding();
-			Writer output = new OutputStreamWriter(os, outputEncoding);
+			Writer output = os.getWriter();
 			StringWriter bufferedOutput = new StringWriter();
 			
 			if (config.isbundleConfigAvailable()){
@@ -108,7 +107,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 			
 			output.flush();
 		}
-		catch( IOException | ConfigException |  XMLStreamException  e) {
+		catch( IOException  |  XMLStreamException  e) {
 			throw new ContentProcessingException(e, "Error while processing XML assets '" );
 		}	
 	}

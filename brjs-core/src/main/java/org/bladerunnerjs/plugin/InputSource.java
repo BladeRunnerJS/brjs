@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -48,7 +48,7 @@ public class InputSource {
 			if(source != filteredSource) {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ParsedContentPath contentPath = contentPlugin.getContentPathParser().parse(sourceMappingUrl);
-				ContentOutputStream contentOutputStream = new StaticContentOutputStream(bundleSet.getBundlableNode().app(), bos);
+				ContentPluginOutput contentOutputStream = new StaticContentOutputStream(bundleSet.getBundlableNode().app(), bos);
 				
 				contentPlugin.writeContent(contentPath, bundleSet, contentOutputStream, version);
 				

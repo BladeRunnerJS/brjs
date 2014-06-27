@@ -17,7 +17,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -130,13 +130,13 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
 	{
 		try
 		{
 			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
+				try (Writer writer = os.getWriter())
 				{
 					SourceModule jsModule =  (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
 					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
@@ -144,7 +144,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			}
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
 			{
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
+				try (Writer writer = os.getWriter())
 				{
 					StringWriter contentBuffer = new StringWriter();
 
@@ -176,7 +176,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			}
 			else if (contentPath.formName.equals(PACKAGE_DEFINITIONS_REQUEST))
 			{
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
+				try (Writer writer = os.getWriter())
 				{
 					// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
 					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
@@ -188,7 +188,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			}
 			else if (contentPath.formName.equals(GLOBALIZE_EXTRA_CLASSES_REQUEST))
 			{
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
+				try (Writer writer = os.getWriter())
 				{
 					// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
 					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
@@ -200,7 +200,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
-		catch (ConfigException | IOException | RequirePathException e)
+		catch ( IOException | RequirePathException e)
 		{
 			throw new ContentProcessingException(e);
 		}

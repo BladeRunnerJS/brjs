@@ -2,16 +2,42 @@ package org.bladerunnerjs.model;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 
-public abstract class ContentOutputStream extends OutputStream
+public abstract class ContentPluginOutput
 {
-	
 	private OutputStream outputStream;
-
-	public ContentOutputStream(OutputStream outputStream) {
+	private Reader reader;
+	private Writer writer;
+	
+	public ContentPluginOutput(OutputStream outputStream, String encoding) {
 		this.outputStream = outputStream;
+		try {
+			writer = new OutputStreamWriter(outputStream, encoding);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	public OutputStream getOutputStream() {
+		return outputStream;
+	}
+
+	public Reader getReader() {
+		return reader;
+	}
+
+	public void setReader(Reader reader) {
+		this.reader = reader;
+	}
+
+	public Writer getWriter() {
+		return writer;
 	}
 	
 	/**
@@ -30,9 +56,5 @@ public abstract class ContentOutputStream extends OutputStream
 	 */
 	public abstract void writeLocalUrlContents(String url) throws IOException;
 	
-	@Override
-	public void write(int b) throws IOException
-	{
-		outputStream.write(b);
-	}
+	
 }

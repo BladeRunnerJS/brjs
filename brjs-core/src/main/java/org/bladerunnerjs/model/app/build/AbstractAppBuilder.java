@@ -1,9 +1,9 @@
 package org.bladerunnerjs.model.app.build;
 
-import static org.bladerunnerjs.utility.AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.BUNDLE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.INDEX_PAGE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.LOCALE_FORWARDING_REQUEST;
+import static org.bladerunnerjs.utility.AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,7 +15,7 @@ import org.apache.commons.io.FileUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.StaticContentOutputStream;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -68,8 +68,12 @@ public abstract class AbstractAppBuilder
 				File localeForwardingFile = new File(temporaryExportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
 				
 				localeForwardingFile.getParentFile().mkdirs();
+				String encoding = app.root().bladerunnerConf().getDefaultFileCharacterEncoding();
+				
+				OutputStream stream = new  FileOutputStream(localeForwardingFile);
+				ContentPluginOutput output = new StaticContentOutputStream(app, stream);
 				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
-					appRequestHandler.writeLocaleForwardingPage(os, version);
+					appRequestHandler.writeLocaleForwardingPage(output, version);
 				}
 				
 				for(Locale locale : locales) {
@@ -93,9 +97,9 @@ public abstract class AbstractAppBuilder
 							}
 							
 							bundleFile.getParentFile().mkdirs();
-							try(ContentOutputStream os = new StaticContentOutputStream(app, bundleFile)) {
-								contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os, version);
-							}
+							ContentPluginOutput os = new StaticContentOutputStream(app, bundleFile);
+							contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os, version);
+						
 						}
 					} else {
 						ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;

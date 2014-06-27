@@ -17,7 +17,7 @@ import org.bladerunnerjs.model.Blade;
 import org.bladerunnerjs.model.Bladeset;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.FileInfo;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
@@ -127,7 +127,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException {
 		
 		BundlableNode bundlableNode = bundleSet.getBundlableNode();
 		String theme = contentPath.properties.get("theme");
@@ -202,7 +202,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		
 		try(InputStream input = new FileInputStream(resourceFile);)
 		{
-			IOUtils.copy(input, os);
+			IOUtils.copy(input, os.getOutputStream());
 		}
 		catch(IOException e) {
 			throw new ContentProcessingException(e);
@@ -211,7 +211,7 @@ public class CssResourceContentPlugin extends AbstractContentPlugin {
 		{
 			// TODO: see if we can remove this flush() since there doesn't seem to be any particular reason for it
 			try {
-				os.flush();
+				os.getOutputStream().flush();
 			}
 			catch (IOException e) {
 				throw new ContentProcessingException(e);
