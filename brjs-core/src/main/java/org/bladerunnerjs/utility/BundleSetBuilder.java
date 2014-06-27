@@ -241,7 +241,7 @@ public class BundleSetBuilder {
 				}
 			}
 			unorderedAssetLocations.removeAll(assetLocationsForThisContainer);
-			unorderedAssetLocations.addAll(0, assetLocationsForThisContainer);
+			unorderedAssetLocations.addAll(assetLocationsForThisContainer);
 		}
 	}
 	
