@@ -39,7 +39,7 @@ public class TrieFactory {
 		return trie.value(new Getter<ModelOperationException>() {
 			@Override
 			public Object get() throws RuntimeException, ModelOperationException {
-				Trie<AssetReference> trie = new Trie<AssetReference>();
+				Trie<AssetReference> trie = new Trie<AssetReference>( '/', new Character[]{'.', '/'} );
 				
 				for (AssetContainer assetContainer : assetContainer.scopeAssetContainers()) {
 					try {

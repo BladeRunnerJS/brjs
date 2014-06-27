@@ -25,12 +25,25 @@ public class Trie<T>
 
 	private static final char[] DELIMETERS = " \t\r\n.,;(){}<>[]+-*/'\"\\\"\'\\'".toCharArray();
 	
-	private TrieNode<T> root = new BasicRootTrieNode<>();
+	private TrieNode<T> root;
 	private int readAheadLimit = 1;
 	private boolean trieOptimized = false;
 	private Map<String, TrieNode<T>> trieLookup = new HashMap<String, TrieNode<T>>();
+	private List<Character> seperators;
+	private char primarySeperator;
 	
 	private int largestChildList = 0;
+
+	
+	public Trie() {
+		this('\u0000');
+	}
+	
+	public Trie(char primarySeperator, Character... seperators) {
+		this.primarySeperator = primarySeperator;
+		this.seperators = Arrays.asList(seperators);
+		root = new BasicRootTrieNode<>(primarySeperator, this.seperators);
+	}
 	
 	public void add(String key, T value) throws EmptyTrieKeyException, TrieKeyAlreadyExistsException, TrieLockedException {
 		if (trieOptimized) {
@@ -130,14 +143,14 @@ public class Trie<T>
 			}
 			
 			if (trieNode == root) {
-				return new OptimisedTrieRootNode<>(optimisedTrieNodeChildren);
+				return new OptimisedTrieRootNode<>(optimisedTrieNodeChildren, primarySeperator, seperators);
 			} else if (trieNodeValue != null) {
-				return new OptimisedTrieTrunkLeafNode<T>(trieNodeChar, trieNodeValue, optimisedTrieNodeChildren);
+				return new OptimisedTrieTrunkLeafNode<T>(trieNodeChar, trieNodeValue, optimisedTrieNodeChildren, primarySeperator, seperators);
 			} else {
-				return new OptimisedTrieTrunkNode<>(trieNodeChar, optimisedTrieNodeChildren);
+				return new OptimisedTrieTrunkNode<>(trieNodeChar, optimisedTrieNodeChildren, primarySeperator, seperators);
 			}
 		} else {
-			return new OptimisedTrieLeafNode<T>(trieNodeChar, trieNodeValue);
+			return new OptimisedTrieLeafNode<T>(trieNodeChar, trieNodeValue, primarySeperator, seperators);
 		}
 	}
 	
