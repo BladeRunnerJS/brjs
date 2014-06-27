@@ -322,6 +322,26 @@ public class JsCodeBlockStrippingDependenciesReaderTest
 			);
 	}
 	
+	@Test
+	public void constructorsInInlineMapsInsideOfASelfExeuctingCodeBlockAreNotStripped() throws Exception {
+		stripCodeBlocksAndAssertEquals(
+			lines(
+				"(function() {",
+				"var someMap = {",
+				" key: new some.Class()",
+				" key: new (some.Class())",
+				"}",
+				")()"),
+			lines(
+				"(function() {",
+				"var someMap = {",
+				" key: new some.Class()",
+				" key: new (some.Class())",
+				"}",
+				")()")
+			);
+	}
+	
 	
 	private String zeroPad(int size) {
 		return StringUtils.leftPad("", size, '0')+"\n";

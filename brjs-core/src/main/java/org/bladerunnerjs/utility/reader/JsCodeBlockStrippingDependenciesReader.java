@@ -29,7 +29,8 @@ public class JsCodeBlockStrippingDependenciesReader extends Reader
 	
 	private final Reader sourceReader;
 	private final char[] sourceBuffer = new char[4096];
-	private final SizedStack<Character> lookbehindBuffer = new SizedStack<>( SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() ); // buffer the length of the function definition
+	// buffer the length of the function definition + 10 to allow for things like new(<IIFE>) etc.
+	private final SizedStack<Character> lookbehindBuffer = new SizedStack<>( SELF_EXECUTING_FUNCTION_DEFINITION_REGEX.length() + 10); 
 	private int nextCharPos = 0;
 	private int lastCharPos = 0;
 	private int depthCount = 0;
