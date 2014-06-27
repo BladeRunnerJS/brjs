@@ -135,7 +135,7 @@ public class CommandRunnerTest {
 	@Test
 	public void externalCommandsCanHaveTheirLoggingEnabledViaWildcard() throws Exception {
 		dirFile("valid-sdk-directory/sdk").mkdirs();
-		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "*", "--info"});
+		commandRunner.run(new String[] {dir("valid-sdk-directory"), "external-log-test", "--pkg", "ALL", "--info"});
 		
 		String output = outputStream.toString("UTF-8");
 		assertContains("warn-level", output);
