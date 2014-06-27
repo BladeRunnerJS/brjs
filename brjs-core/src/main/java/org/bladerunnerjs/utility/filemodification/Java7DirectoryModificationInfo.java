@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.utility.RelativePathUtility;
 
 public class Java7DirectoryModificationInfo implements WatchingFileModificationInfo {
@@ -36,12 +37,12 @@ public class Java7DirectoryModificationInfo implements WatchingFileModificationI
 	private Set<WatchingFileModificationInfo> children = new LinkedHashSet<>();
 	private Logger logger;
 	
-	public Java7DirectoryModificationInfo(Java7FileModificationService fileModificationService, WatchService watchService, File dir, WatchingFileModificationInfo parentModificationInfo) {
+	public Java7DirectoryModificationInfo(BRJS brjs, Java7FileModificationService fileModificationService, WatchService watchService, File dir, WatchingFileModificationInfo parentModificationInfo) {
 		try {
 			this.fileModificationService = fileModificationService;
 			this.dir = dir;
 			this.parentModificationInfo = parentModificationInfo;
-			relativeDirPath = RelativePathUtility.get(fileModificationService.getRootDir(), dir);
+			relativeDirPath = RelativePathUtility.get(brjs, fileModificationService.getRootDir(), dir);
 			logger = fileModificationService.getLogger();
 			
 			if(parentModificationInfo != null) {

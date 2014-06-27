@@ -1,6 +1,7 @@
 package org.bladerunnerjs.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.IOFileFilter;
@@ -17,6 +18,7 @@ public class StandardFileInfo implements FileInfo {
 	private final FileModifiedChecker existsChecker;
 	private boolean isDirectory;
 	private boolean exists;
+	private String canonicalPath = null;
 	
 	public StandardFileInfo(File file, BRJS brjs, FileModificationInfo fileModificationInfo) {
 		this.fileModificationInfo = fileModificationInfo;
@@ -24,6 +26,13 @@ public class StandardFileInfo implements FileInfo {
 		this.file = file;
 		isDirectoryChecker = new InfoFileModifiedChecker(fileModificationInfo);
 		existsChecker = new InfoFileModifiedChecker(fileModificationInfo);
+		
+		try {
+			canonicalPath = file.getCanonicalPath();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 	
 	@Override
@@ -42,6 +51,11 @@ public class StandardFileInfo implements FileInfo {
 		}
 		
 		return exists;
+	}
+	
+	@Override
+	public String canonicalPath() {
+		return canonicalPath;
 	}
 	
 	@Override

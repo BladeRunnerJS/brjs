@@ -55,7 +55,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		this.assetLocation = assetLocation;
 		this.assetFile = assetFile;
 		
-		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
+		String requirePath = assetLocation.requirePrefix() + "/" + RelativePathUtility.get(assetLocation.root(), assetLocation.dir(), assetFile).replaceAll("\\.js$", "");
 		requirePaths.add(requirePath);
 		
 		patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
@@ -88,10 +88,12 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 		try
 		{
 			String defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
-			return new ConcatReader( new Reader[] {
-					new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding)),
-					patch.getReader(),
-			});
+			Reader assetReader = new BufferedReader(new UnicodeReader(assetFile, defaultFileCharacterEncoding));
+			if (patch.patchAvailable()){
+				return new ConcatReader( new Reader[] { assetReader, patch.getReader() });
+			} else {
+				return assetReader;
+			}
 		}
 		catch (ConfigException ex)
 		{
@@ -135,7 +137,7 @@ public class CommonJsSourceModule implements AugmentedContentSourceModule {
 	
 	@Override
 	public String getAssetPath() {
-		return RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetFile);
+		return RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetFile);
 	}
 	
 	private List<String> requirePaths() throws ModelOperationException {

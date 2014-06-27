@@ -10,16 +10,20 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	private final char nodeChar;
 	private List<TrieNode<T>> children = new LinkedList<>();
 	private int size = 0;
+	private List<Character> seperators;
+	private char primarySeperator;
 	
-	public BasicTrieNode(char nodeChar)
+	public BasicTrieNode(char nodeChar, char primarySeperator, List<Character> seperators)
 	{
-		this(nodeChar, null);
+		this(nodeChar, null, primarySeperator, seperators);
 	}
 	
-	public BasicTrieNode(char nodeChar, T value)
+	public BasicTrieNode(char nodeChar, T value, char primarySeperator, List<Character> seperators)
 	{
 		this.nodeChar = nodeChar;
 		this.value = value;
+		this.primarySeperator = primarySeperator;
+		this.seperators = seperators;
 	}
 	
 	@Override
@@ -29,7 +33,7 @@ public class BasicTrieNode<T> implements TrieNode<T>
 		if (node != null) {
 			return node;
 		}
-		node = new BasicTrieNode<T>(character);
+		node = new BasicTrieNode<T>(character, primarySeperator, seperators);
 		children.add( node );
 		size++;
 		return node;
@@ -39,7 +43,11 @@ public class BasicTrieNode<T> implements TrieNode<T>
 	public TrieNode<T> getNextNode(char character)
 	{
 		for (TrieNode<T> trieNode : children) {
-			if (trieNode.getChar() == character) {
+			char trieChar = trieNode.getChar();
+			if (trieChar == character) {
+				return trieNode;
+			}
+			if (trieChar == primarySeperator && seperators.contains(trieChar)) {
 				return trieNode;
 			}
 		}

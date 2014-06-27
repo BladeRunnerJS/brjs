@@ -18,6 +18,8 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 	private final File assetLocationDir;
 	private final AssetLocation assetLocation;
 	
+	private final List<String> emptyStringList = new ArrayList<String>();
+	
 	public ThirdpartyLibManifest(AssetLocation assetLocation) throws ConfigException {
 		super(assetLocation, ThirdpartyLibYamlManifest.class, assetLocation.file(LIBRARY_MANIFEST_FILENAME));
 		fileInfo = assetLocation.root().getFileInfo(assetLocation.dir());
@@ -64,7 +66,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 		{
 			return Arrays.asList(value.split(commaWithOptionalSpacesSeparator));
 		}
-		return new ArrayList<String>();
+		return emptyStringList;
 	}
 	
 	private List<File> getFilesForConfigPaths(List<String> configPaths, String fileExtension) throws ConfigException
@@ -101,7 +103,7 @@ public class ThirdpartyLibManifest extends ConfFile<ThirdpartyLibYamlManifest>
 			if(file.exists()){
 				foundFiles.add(file);
 			}else{
-				String relativeManifestPath = RelativePathUtility.get(assetLocation.assetContainer().root().dir(), assetLocation.file(LIBRARY_MANIFEST_FILENAME));
+				String relativeManifestPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().root().dir(), assetLocation.file(LIBRARY_MANIFEST_FILENAME));
 				throw new ConfigException("Unable to find the file '" + filePath + "' required in the manifest at '" + relativeManifestPath + "'.");
 			}
 		}

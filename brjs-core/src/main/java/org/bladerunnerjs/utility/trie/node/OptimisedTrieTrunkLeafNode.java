@@ -1,5 +1,7 @@
 package org.bladerunnerjs.utility.trie.node;
 
+import java.util.List;
+
 
 public class OptimisedTrieTrunkLeafNode<T> extends AbstractOptimisedTrieNode<T>
 {
@@ -8,8 +10,9 @@ public class OptimisedTrieTrunkLeafNode<T> extends AbstractOptimisedTrieNode<T>
  	private T value;
 	private TrieNode<T>[] children;
  	
- 	public OptimisedTrieTrunkLeafNode(char character, T value, TrieNode<T>[] children)
+ 	public OptimisedTrieTrunkLeafNode(char character, T value, TrieNode<T>[] children, char primarySeperator, List<Character> seperators)
  	{
+ 		super(primarySeperator, seperators);
  		this.character = character;
  		this.children = children;
  	}

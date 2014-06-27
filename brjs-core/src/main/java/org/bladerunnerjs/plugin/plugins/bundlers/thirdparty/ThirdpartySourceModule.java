@@ -37,10 +37,12 @@ public class ThirdpartySourceModule implements SourceModule
 	private SourceModulePatch patch;
 	private String defaultFileCharacterEncoding;
 	
+	private final List<String> emptyAliasNames = new ArrayList<String>();
+	
 	public ThirdpartySourceModule(ThirdpartyAssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
-			assetPath = RelativePathUtility.get(assetLocation.assetContainer().app().dir(), assetLocation.dir());
+			assetPath = RelativePathUtility.get(assetLocation.root(), assetLocation.assetContainer().app().dir(), assetLocation.dir());
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 			patch = SourceModulePatch.getPatchForRequirePath(assetLocation, getPrimaryRequirePath());
 			manifest = assetLocation.getManifest();
@@ -94,7 +96,9 @@ public class ThirdpartySourceModule implements SourceModule
 				}
 			}
 			
-			fileReaders.add(patch.getReader());
+			if (patch.patchAvailable()){
+				fileReaders.add(patch.getReader());
+			}
 		}
 		catch (ConfigException e)
 		{
@@ -160,7 +164,7 @@ public class ThirdpartySourceModule implements SourceModule
 	@Override
 	public List<String> getAliasNames() throws ModelOperationException
 	{
-		return new ArrayList<String>();
+		return emptyAliasNames;
 	}
 
 	@Override

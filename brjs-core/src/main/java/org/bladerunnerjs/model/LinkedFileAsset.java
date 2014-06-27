@@ -12,6 +12,7 @@ import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 import org.bladerunnerjs.utility.RelativePathUtility;
 import org.bladerunnerjs.utility.UnicodeReader;
+import org.bladerunnerjs.utility.filemodification.InfoFileModifiedChecker;
 import org.bladerunnerjs.utility.reader.factory.JsAndXmlCommentStrippingReaderFactory;
 
 /**
@@ -25,18 +26,26 @@ public class LinkedFileAsset implements LinkedAsset {
 	private String assetPath;
 	private String defaultFileCharacterEncoding;
 	private TrieBasedDependenciesCalculator trieBasedDependenciesCalculator;
+	private InfoFileModifiedChecker modificationChecker;
+	
+	private final List<String> emptyRequirePaths = new ArrayList<String>();
 	
 	public LinkedFileAsset(File assetFile, AssetLocation assetLocation) {
 		try {
 			this.assetLocation = assetLocation;
 			app = assetLocation.assetContainer().app();
 			this.assetFile = assetFile;
-			assetPath = RelativePathUtility.get(app.dir(), assetFile);
+			modificationChecker = new InfoFileModifiedChecker(assetLocation.root().getFileInfo(assetFile));
+			assetPath = RelativePathUtility.get(app.root(), app.dir(), assetFile);
 			defaultFileCharacterEncoding = assetLocation.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 		}
 		catch(ConfigException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public boolean haveFileContentsChanged()  {
+		return modificationChecker.hasChangedSinceLastCheck();
 	}
 	
 	@Override
@@ -66,7 +75,6 @@ public class LinkedFileAsset implements LinkedAsset {
 	}
 	
 	
-	
 	@Override
 	public String getAssetName() {
 		return assetFile.getName();
@@ -92,7 +100,7 @@ public class LinkedFileAsset implements LinkedAsset {
 
 	@Override
 	public List<String> getRequirePaths() {
-		return new ArrayList<String>();
+		return emptyRequirePaths;
 	}
 	
 	@Override

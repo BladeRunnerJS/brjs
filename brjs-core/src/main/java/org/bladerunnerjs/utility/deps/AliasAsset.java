@@ -17,6 +17,8 @@ import org.bladerunnerjs.utility.PrimaryRequirePathUtility;
 public class AliasAsset implements LinkedAsset {
 	private final AliasDefinition alias;
 	
+	private final List<String> emptyRequirePaths = new ArrayList<String>();
+	
 	public AliasAsset(AliasDefinition alias) {
 		this.alias = alias;
 	}
@@ -58,7 +60,7 @@ public class AliasAsset implements LinkedAsset {
 	
 	@Override
 	public List<String> getRequirePaths() {
-		return new ArrayList<String>();
+		return emptyRequirePaths;
 	}
 	
 	@Override

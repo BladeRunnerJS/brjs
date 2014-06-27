@@ -1,8 +1,20 @@
 package org.bladerunnerjs.utility.trie.node;
 
+import java.util.List;
+
 
 public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 {
+	
+	private List<Character> seperators;
+	private char primarySeperator;
+
+	public AbstractOptimisedTrieNode(char primarySeperator, List<Character> seperators)
+	{
+		this.seperators = seperators;
+		this.primarySeperator = primarySeperator;
+	}
+	
 	@Override
 	public TrieNode<T> getNextNode(char character)
 	{
@@ -57,9 +69,16 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 		throw new RuntimeException("This is an optimised TrieNode and doesn't support this method.");
 	}
 	
-	protected static final <T> TrieNode<T> getNextNode(TrieNode<T>[] children, char character) {
+	protected final TrieNode<T> getNextNode(TrieNode<T>[] children, char character) {
 		for (TrieNode<T> trieNode : children) {
-			if (trieNode != null && trieNode.getChar() == character) {
+			if (trieNode == null){
+				return null;
+			}
+			char trieChar = trieNode.getChar();
+			if(trieChar == character) {
+				return trieNode;
+			}
+			if (trieChar == primarySeperator && seperators.contains(trieChar)) {
 				return trieNode;
 			}
 		}
