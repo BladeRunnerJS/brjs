@@ -126,13 +126,18 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 				ContentPathParser contentPathParser = contentPlugin.getContentPathParser();
 				
 				for(String requestPath : requestPaths) {
+					
 					ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					// TODO: we might want to make this ContentOutputStream the same as the one passed in so other content plugins can write dynamic content
-					ContentPluginOutput contentOutputStream = new StaticContentOutputStream(bundleSet.getBundlableNode().app(), baos);
+					ContentPluginOutput pluginOutput = new StaticContentOutputStream(bundleSet.getBundlableNode().app(), baos);
 					
-					contentPlugin.writeContent(parsedContentPath, bundleSet, contentOutputStream, version);
-					inputSources.add(new InputSource(requestPath, baos.toString(charsetName), contentPlugin, bundleSet));
+					contentPlugin.writeContent(parsedContentPath, bundleSet, pluginOutput, version);
+
+					InputSource source = new InputSource(requestPath, baos.toString(charsetName), contentPlugin, bundleSet);
+					source.setReader(pluginOutput.getReader());
+					inputSources.add(source);
+					
 				}
 			}
 		}

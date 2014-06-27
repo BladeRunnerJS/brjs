@@ -2,6 +2,7 @@ package org.bladerunnerjs.plugin;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +24,8 @@ public class InputSource {
 	private final String filteredSource;
 	private final ContentPlugin contentPlugin;
 	private BundleSet bundleSet;
+
+	private Reader reader;
 	
 	public InputSource(String requestName, String source, ContentPlugin contentPlugin, BundleSet bundleSet) {
 		this.requestName = requestName;
@@ -71,5 +74,13 @@ public class InputSource {
 		}
 		
 		return sourceMappingUrl;
+	}
+
+	public void setReader(Reader reader) {
+		this.reader = reader;
+	}
+	
+	public Reader getReader(){
+		return reader;
 	}
 }
