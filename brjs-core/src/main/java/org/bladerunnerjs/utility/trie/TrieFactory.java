@@ -56,6 +56,11 @@ public class TrieFactory {
 							
 							for(String requirePath : requirePaths) {
 								addToTrie(trie, requirePath, new LinkedAssetReference(asset));
+/*
+ * TODO: investigate why removing this causes CT dependency issues 
+ * (see comment in AbstractOptimisedNode and BasicTrieNode too)
+ */
+								addToTrie(trie, requirePath.replace('/', '.'), new LinkedAssetReference(asset));
 							}
 						}
 						

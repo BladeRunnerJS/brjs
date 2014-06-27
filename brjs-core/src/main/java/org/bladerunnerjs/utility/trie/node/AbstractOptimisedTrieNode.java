@@ -6,7 +6,9 @@ import java.util.List;
 public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 {
 	
+	@SuppressWarnings("unused")
 	private List<Character> separators;
+	@SuppressWarnings("unused")
 	private char primarySeparator;
 
 	public AbstractOptimisedTrieNode(char primarySeperator, List<Character> seperators)
@@ -78,9 +80,13 @@ public abstract class AbstractOptimisedTrieNode<T> implements TrieNode<T>
 			if(trieChar == character) {
 				return trieNode;
 			}
-			if (trieChar == primarySeparator && separators.contains(character)) {
-				return trieNode;
-			}
+/*
+ * TODO: investigate why this causes CT dependency issues 
+ * (see comment in BasicTrieNode and TrieFactory too)
+ */
+//			if (trieChar == primarySeparator && separators.contains(character)) {
+//				return trieNode;
+//			}
 		}
 		return null;
 	}
