@@ -1,9 +1,10 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +23,18 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+
+import com.Ostermiller.util.ConcatReader;
 
 
 public class ThirdpartyContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
+	private BRJS brjs;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -46,6 +51,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		this.brjs = brjs;
 	}
 	
 	@Override
@@ -66,23 +72,25 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
 	{
 		AdhocTimer.enter("ThirdpartyContentPlugin.writeContent: " + contentPath.formName, false);
 		try {
 			if (contentPath.formName.equals("bundle-request"))
 			{
-				try (Writer writer = os.getWriter()) 
+				List<Reader> readerList = new ArrayList<Reader>();
+				for(SourceModule sourceFile : bundleSet.getSourceModules()) 
 				{
-					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
-						if(sourceFile instanceof ThirdpartySourceModule)
-						{
-							writer.write("// " + sourceFile.getPrimaryRequirePath() + "\n");
-							try (Reader reader = sourceFile.getReader()) { IOUtils.copy(reader, writer); }
-							writer.write("\n\n");
-						}
+					if(sourceFile instanceof ThirdpartySourceModule)
+					{
+						readerList.add(new StringReader("// " + sourceFile.getPrimaryRequirePath() + "\n"));
+						readerList.add(sourceFile.getReader());
+						readerList.add(new StringReader("\n\n"));
 					}
 				}
+				Reader[] readers = new Reader[readerList.size()];
+				readerList.toArray(readers);
+				output.setReader(new ConcatReader(readers));
 			}
 			else if(contentPath.formName.equals("file-request")) {
 				String libName = contentPath.properties.get("module");
@@ -103,16 +111,16 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					throw new ContentProcessingException("File '" + file.getAbsolutePath() + "' doesn't exist.");
 				}
 				
-				IOUtils.copy(new FileInputStream(file), os.getOutputStream());
+				output.setReader(new FileReader(file));
 			}
 			else if(contentPath.formName.equals("single-module-request")) {
-				try (Writer writer = os.getWriter()) 
-				{
-					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-					writer.write("// " + jsModule.getPrimaryRequirePath() + "\n");
-					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
-					writer.write("\n\n");
-				}
+				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
+				output.setReader(new ConcatReader(new Reader[]{
+					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
+					jsModule.getReader(),
+					new StringReader("\n\n")
+				}));
+					
 			}
 			else {
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
