@@ -1,9 +1,7 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +13,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -82,7 +79,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
 	{
 		//TODO not parse the config on every execution
 		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
@@ -90,7 +87,6 @@ public class XMLContentPlugin extends AbstractContentPlugin
 		List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
 
 		try{
-			Writer output = os.getWriter();
 			StringWriter bufferedOutput = new StringWriter();
 			
 			if (config.isbundleConfigAvailable()){
@@ -103,13 +99,13 @@ public class XMLContentPlugin extends AbstractContentPlugin
 			String unversionedBundlePath = ServedAppMetadataUtility.getUnversionedBundlePath();
 			String xmlBundlePathToken = ServedAppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
 			String xmlUnversionedBundlePathToken = ServedAppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
-			output.write( bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath) );
-			
-			output.flush();
+			//Can we do a streaming replacement rather than buffer into  string?
+			String result = bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath);
+			output.setReader(new StringReader(result));
 		}
-		catch( IOException  |  XMLStreamException  e) {
+		catch(    XMLStreamException  e) {
 			throw new ContentProcessingException(e, "Error while processing XML assets '" );
-		}	
+		}
 	}
 	
 	private List<String> getValidContentPaths(BundleSet bundleSet) throws ContentProcessingException {
