@@ -7,11 +7,15 @@ import static org.bladerunnerjs.utility.AppRequestHandler.UNVERSIONED_BUNDLE_REQ
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.text.ParseException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundleSet;
@@ -99,6 +103,13 @@ public abstract class AbstractAppBuilder
 							bundleFile.getParentFile().mkdirs();
 							ContentPluginOutput os = new StaticContentOutputStream(app, bundleFile);
 							contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os, version);
+							Reader reader = os.getReader();
+							if(reader != null){
+								Writer writer = new FileWriter(bundleFile);
+								IOUtils.copy(reader, writer);
+								writer.flush();
+								writer.close();
+							}
 						
 						}
 					} else {

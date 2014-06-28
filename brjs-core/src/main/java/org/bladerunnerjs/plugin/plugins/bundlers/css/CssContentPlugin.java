@@ -1,7 +1,8 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +23,11 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
+import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+
+import com.Ostermiller.util.ConcatReader;
 
 public class CssContentPlugin extends AbstractContentPlugin {
 	
@@ -76,25 +80,36 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException {
+	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException {
+		AdhocTimer.enter("CSSContentPlugin.writeContent: " + contentPath.formName, false);
+		
 		String theme = contentPath.properties.get("theme");
 		String languageCode = contentPath.properties.get("languageCode");
 		String countryCode = contentPath.properties.get("countryCode");
 		Locale locale = new Locale(languageCode, countryCode);
-		
-		try(Writer writer = os.getWriter()) {
-			List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
-			for(Asset cssAsset : cssAssets) {
-				String assetThemeName = getThemeName(cssAsset.assetLocation());
+
+		List<Reader> readerList = new ArrayList<Reader>();
+		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
+		for(Asset cssAsset : cssAssets) {
+			String assetThemeName = getThemeName(cssAsset.assetLocation());
+			
+			if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(locale.getLocaleFilePattern(".*_", ".css"))) {
+				CssRewriter processor = new CssRewriter(cssAsset);
 				
-				if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(locale.getLocaleFilePattern(".*_", ".css"))) {
-					writeAsset(cssAsset, writer);
+				try {
+					String css = processor.getFileContents();
+					readerList.add(new StringReader(css));
+				} catch (IOException e) {
+					throw new ContentProcessingException(e);
 				}
+				readerList.add(new StringReader("\n"));
 			}
 		}
-		catch (IOException  e) {
-			throw new ContentProcessingException(e);
-		}
+		Reader[] readers = new Reader[readerList.size()];
+		readerList.toArray(readers);
+		output.setReader(new ConcatReader(readers));
+		
+		AdhocTimer.exit("CSSContentPlugin.writeContent: " + contentPath.formName, false);
 	}
 	
 	private String getThemeName(AssetLocation cssAssetLocation) {
@@ -107,17 +122,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		}
 		
 		return themeName;
-	}
-	
-	private void writeAsset(Asset cssAsset, Writer writer) throws ContentProcessingException {
-		try {
-			CssRewriter processor = new CssRewriter(cssAsset);
-			writer.append(processor.getFileContents());
-			writer.write("\n");
-		}
-		catch (IOException e) {
-			throw new ContentProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
-		}
 	}
 	
 	private List<String> getValidContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {
