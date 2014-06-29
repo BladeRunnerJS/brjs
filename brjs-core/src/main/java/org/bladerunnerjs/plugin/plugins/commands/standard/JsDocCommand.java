@@ -8,17 +8,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.command.CommandArgumentsException;
 import org.bladerunnerjs.model.exception.command.CommandOperationException;
 import org.bladerunnerjs.model.exception.command.NodeDoesNotExistException;
 import org.bladerunnerjs.plugin.utility.command.ArgsParsingCommandPlugin;
 import org.bladerunnerjs.utility.EncodedFileUtil;
+import org.bladerunnerjs.utility.RelativePathUtility;
 
 import com.martiansoftware.jsap.JSAP;
 import com.martiansoftware.jsap.JSAPException;
@@ -74,7 +73,7 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
-		CommandRunnerUtility.runCommand(brjs, generateCommand(app, isVerbose, outputDir));
+		runCommand(app, isVerbose, outputDir);
 		
 		try {
 			replaceBuildDateToken(new File(outputDir, "index.html"));
@@ -89,35 +88,32 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		return 0;
 	}
 	
-	private List<String> generateCommand(App app, boolean isVerbose, File outputDir) throws CommandOperationException {
-		List<String> command = new ArrayList<>();
+	private void runCommand(App app, boolean isVerbose, File outputDir) throws CommandOperationException {
+		List<String> commandArgs = new ArrayList<>();
 		
 		File jsdocToolkitInstallDir = getSystemOrUserConfPath(brjs, brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
 		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
 		File jsDocTemplatesDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-template");
 		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
 		
-		List<String> libraryPaths = new ArrayList<>();
-		for (JsLib jsLib : app.jsLibs()) {
-			libraryPaths.add(jsLib.dir().getAbsolutePath());
-		}
-		
-		command.add(jsDocToolkitDir+"/jsdoc");
-		command.addAll(libraryPaths);
-		command.add("-c"); // set the config file
-			command.add(jsDocConfFile.getAbsolutePath());
-		command.add("-t");
-			command.add(jsDocTemplatesDir.getAbsolutePath()); // the JsDoc template to use
-		command.add("-d");
-			command.add(outputDir.getAbsolutePath()); // the output dir
+		commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), jsDocToolkitDir)+"/jsdoc");
+		commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), app.dir()) ); // add the app dir, libraries are included via jsdoc-conf.json
+		commandArgs.add("-c"); // set the config file
+			commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), jsDocConfFile) );
+		commandArgs.add("-t"); // the JsDoc template to use
+			commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), jsDocTemplatesDir) ); 
+		commandArgs.add("-d"); // the output dir
+			commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), outputDir) ); 
 		if (isVerbose) {
-			command.add("--verbose");			
+			commandArgs.add("--verbose");			
 		}
 		
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		processBuilder.directory( brjs.dir() );
+		processBuilder.command(commandArgs);
 		
-		System.err.println(StringUtils.join(command, ""));
+		CommandRunnerUtility.runCommand(brjs, processBuilder);
 		
-		return command;
 	}
 	
 	private File getSystemOrUserConfPath(BRJS brjs, File systemDirBase, String dirName) {
