@@ -1,8 +1,5 @@
 br.Core.thirdparty("extjs");
 
-/**
- * 
- */
 br.presenter.workbench.ui.PresentationModelTree = function(oPresentationModel)
 {
 	if (!oPresentationModel)
@@ -12,7 +9,7 @@ br.presenter.workbench.ui.PresentationModelTree = function(oPresentationModel)
 	this.m_PresentationModel = oPresentationModel;
 	var oTree = this._buildTree(this.m_PresentationModel);
 	this.m_oTreeSearcher = new br.presenter.workbench.ui.TreeSearcher(this.m_oRootNode);
-	
+
 	this.m_eElement = document.createElement("div");
 	oTree.render(this.m_eElement);
 };
@@ -33,7 +30,7 @@ br.presenter.workbench.ui.PresentationModelTree.prototype._buildTree = function(
 {
 	var oTree = new Ext.tree.TreePanel({});
 	this.m_oRootNode = new Ext.tree.TreeNode({text : "Presentation Model", expanded: true});
-	
+
 	this._buildNodes(this.m_oRootNode, oPresentationModel, true);
 
 	oTree.setRootNode(this.m_oRootNode);
@@ -58,9 +55,9 @@ br.presenter.workbench.ui.PresentationModelTree.prototype._buildNodes = function
 				var oChild = new Ext.tree.TreeNode({text : sNodeLabel, expanded: true});
 				oTreeNode.appendChild(oChild);
 				this._createListeners(vItem, oChild, sKey);
-				
+
 			}
-			
+
 			if (vItem instanceof br.presenter.node.PresentationNode)
 			{
 				if (vItem instanceof br.presenter.node.Field || vItem instanceof br.presenter.node.SelectionField)
@@ -88,7 +85,7 @@ br.presenter.workbench.ui.PresentationModelTree.prototype._createListeners = fun
 		{
 			_onChange : function() {
 				var sNodeLabel = sKey;
-				if (oProperty.getValue() !== undefined) 
+				if (oProperty.getValue() !== undefined)
 				{
 					sNodeLabel += ":" + oProperty.getValue();
 				}

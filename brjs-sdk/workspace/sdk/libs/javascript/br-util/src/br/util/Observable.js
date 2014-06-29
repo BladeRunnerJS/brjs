@@ -1,6 +1,6 @@
 /**
  * Constructs a new <code>Observable</code>.
- * 
+ *
  * @class
  * An <code>Observable</code> is a generic implementation of the Observer design pattern that
  * allows an object that wants to notify other objects (the observers) of events that it raises to
@@ -13,17 +13,17 @@
  * {
  *	this.m_oObservable = new br.util.Observable();
  * }
- * 
+ *
  * RecordDataProvider.prototype.addListener = function(oListener)
  * {
  *	this.m_oObservable.addObserver(oListener);
  * };
- * 
+ *
  * RecordDataProvider.prototype.removeListener = function(oListener)
  * {
  *	this.m_oObservable.removeObserver(oListener);
  * };
- * 
+ *
  * RecordDataProvider.prototype.processRecordUpdate = function(sRecordName, mRecordDataMap)
  * {
  *	this.m_oObservable.notifyObservers("recordUpdated", [ sRecordName, mRecordDataMap ]);
@@ -33,7 +33,7 @@
 br.util.Observable = function() {
 	/**
 	 * The observers that have been registered with this <code>Observable</code>.
-	 * 
+	 *
 	 * @type Array
 	 * @private
 	 */
@@ -56,7 +56,7 @@ br.util.Observable.prototype.getCount = function() {
  * {@link br.util.Observable#addUniqueObserver} method should be used for this behaviour. If an
  * observer is added multiple times it will receive every notification once for each time it has
  * been registered.
- * 
+ *
  * @param {Object} oObserver The object to be added as an observer.
  * @throws {Error} if the specified observer is not an <code>Object</code>,
  *		 or if it is a native JavaScript <code>String</code>, <code>Number</code>,
@@ -77,7 +77,7 @@ br.util.Observable.prototype.addObserver = function(oObserver) {
  * {@link br.util.Observable#notifyObservers} is invoked. This method prevents a observer that
  * has already been added to an <code>Observable</code> from being added again. The
  * {@link br.util.Observable#addObserver} method should be used if duplicates are allowed.
- * 
+ *
  * @param {Object} oObserver The object to be added as an observer.
  * @type boolean
  * @return <code>true</code> if the observer was successfully added or <code>false</code> if it
@@ -96,7 +96,7 @@ br.util.Observable.prototype.addUniqueObserver = function(oObserver) {
 
 /**
  * Gets the index of the specified observer within the <code>m_pObservers</code> array.
- * 
+ *
  * @param {Object} oObserver The observer the index is required for.
  * @type int
  * @return The index of the observer within the <code>m_pObservers</code> array or <code>-1</code> if the observer has not been
@@ -117,7 +117,7 @@ br.util.Observable.prototype._getObserverIndex = function(oObserver) {
 /**
  * Removes the specified observer from the list of registered observers. It will no longer be
  * notified of any events that are raised on this <code>Observable</code>.
- * 
+ *
  * @param {Object} oObserver The observer to be removed.
  * @type boolean
  * @return <code>true</code> if the observer has been removed, otherwise <code>false</code>, which
@@ -143,7 +143,7 @@ br.util.Observable.prototype.removeAllObservers = function() {
 
 /**
  * Gets a list of all the observers that have been registered with this <code>Observable</code>.
- * 
+ *
  * @type Array
  * @return A list of the observers that have been registered.
  * @private
@@ -186,12 +186,12 @@ br.util.Observable.prototype.notifyObservers = function(sMethodName, pParameters
 /**
  * Invokes the specified method with specified parameters on each of the observers that have been
  * added to this <code>Observable</code>. Please note that this method does not attempt to
- * catch any exceptions that may be thrown by the caller.  
+ * catch any exceptions that may be thrown by the caller.
  * It is recommended that before adding an observer to the <code>Observable</code>, it should be
  * tested to ensure it conforms to the expected interface, and if not it should be rejected.
  *
  * @param {String} sMethodName The method to be invoked on each of the registered observers.
- * @param {...} (Optional) Additional parameters are passed to the observer
+ * @param {...*} Additional (optional) parameters are passed to the observer
  */
 br.util.Observable.prototype.notify = function(sMethodName) {
 	this.notifyObservers(sMethodName, Array.prototype.slice.call(arguments, 1));
@@ -201,9 +201,9 @@ br.util.Observable.prototype.notify = function(sMethodName) {
  * Invokes the specified method with a specified array of parameters on each of the observers that have been
  * added to this <code>Observable</code>. This method wraps each call to the observer in a
  * <code>try..catch</code> block so that if any observer throws an exception it will get caught and
- * the execution will continue to the remaining observers. When exceptions occur, they are wrapped in 
+ * the execution will continue to the remaining observers. When exceptions occur, they are wrapped in
  * {@link br.util.Observable.FailedNotification} and an array of these are returned to the caller.
- * 
+ *
  * @param {String} sMethodName The method to be invoked on each of the registered observers.
  * @param {Array} pParameters An array of the parameters to be passed into the specified method.
  *		The first element of the array will be the first parameter in the callback method, the
@@ -212,7 +212,7 @@ br.util.Observable.prototype.notify = function(sMethodName) {
  * than returned. If no exceptions occur then nothing will be thrown and the method will return normally.
  * @return {Array} The list of <code>br.util.Observable.FailedNotification</code>s that occured or an empty
  * array if no exceptions occurred.
- * 
+ *
  * @see br.util.Observable#notifyObservers to notify without guarding against exceptions
  */
 br.util.Observable.prototype.notifyObserversWithTryCatch = function(sMethodName, pParameters, bThrowExceptions) {
@@ -240,12 +240,12 @@ br.util.Observable.prototype.notifyObserversWithTryCatch = function(sMethodName,
 /**
  * Constructs a new <code>Observable.FailedNotification</code> with the specified observer, method
  * name and exception.
- * 
+ *
  * @param {Object} oObserver The observer that threw the exception whilst processing a
  *		notification.
  * @param {String} sMethodName The name of the method that was invoked.
  * @param {Object} oException The exception that was thrown.
- * 
+ *
  * @class
  * Represents all the information about why a particular observer failed to process a particular
  * event successfully. These are returned by the {@link br.util.Observable#notifyObserversWithTryCatch}
@@ -259,7 +259,7 @@ br.util.Observable.FailedNotification = function(oObserver, sMethodName, oExcept
 
 /**
  * Gets the observer that threw the exception.
- * 
+ *
  * @type Object
  * @return The observer.
  */
@@ -269,7 +269,7 @@ br.util.Observable.FailedNotification.prototype.getObserver = function() {
 
 /**
  * Gets the name of the method that was invoked.
- * 
+ *
  * @type String
  * @return The method name.
  */
@@ -279,7 +279,7 @@ br.util.Observable.FailedNotification.prototype.getMethodName = function() {
 
 /**
  * Gets the exception that was thrown.
- * 
+ *
  * @type String
  * @return The exception.
  */
