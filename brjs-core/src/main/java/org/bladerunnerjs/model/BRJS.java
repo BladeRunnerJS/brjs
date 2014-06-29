@@ -225,7 +225,7 @@ public class BRJS extends AbstractBRJSRootNode
 		return systemApps.item(appName);
 	}
 	
-	public DirNode sdkLibsDir()
+	public DirNode sdkJsLibsDir()
 	{
 		return sdkLibsDir.item();
 	}

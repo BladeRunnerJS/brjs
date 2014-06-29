@@ -1,28 +1,44 @@
 /*global env: true, expect: true, runs: true, waits: true */
-/*jshint evil: true */
 var fs = require('jsdoc/fs');
-var path = require('path');
+var path = require('jsdoc/path');
 var util = require('util');
+
+var jsdoc = {
+    augment: require('jsdoc/augment'),
+    borrow: require('jsdoc/borrow'),
+    schema: require('jsdoc/schema'),
+    src: {
+        handlers: require('jsdoc/src/handlers'),
+        parser: require('jsdoc/src/parser')
+    },
+    util: {
+        runtime: require('jsdoc/util/runtime')
+    }
+};
 
 var hasOwnProp = Object.prototype.hasOwnProperty;
 
-var myGlobal = require('jsdoc/util/global');
-
-var jasmineAll = myGlobal.jasmineAll = require('test/lib/jasmine');
-var jasmine = myGlobal.jasmine = jasmineAll.jasmine;
-
-// due to scoping issues, requiring this file doesn't work
-eval( fs.readFileSync(__dirname + '/test/async-callback.js', 'utf8') );
-
-var jasmineNode = require('test/reporter').jasmineNode;
-
-// set up jasmine's global functions
-['spyOn', 'it', 'xit', 'expect', 'runs', 'waitsFor', 'beforeEach', 'afterEach', 'describe',
-    'xdescribe'].forEach(function(item) {
-    myGlobal[item] = jasmineAll[item];
-});
+var jasmineAll = require('./lib/jasmine');
+var jasmine = jasmineAll.jasmine;
+var jasmineNode = ( require('./reporter') )(jasmine);
 
 var reporter = null;
+
+jasmine.parseResults = [];
+
+// use the requested parser, or default to Esprima (on Node.js) or Rhino (on Rhino)
+jasmine.jsParser = (function() {
+    var parser = jsdoc.util.runtime.isRhino() ? 'rhino' : 'esprima';
+
+    if (env.opts.query && env.opts.query.parser) {
+        parser = env.opts.query.parser;
+        // remove this so the config tests don't complain
+        delete env.opts.query;
+    }
+
+    return parser;
+})();
+
 jasmine.initialize = function(done, verbose) {
     var jasmineEnv = jasmine.getEnv();
 
@@ -34,7 +50,6 @@ jasmine.initialize = function(done, verbose) {
     }
 
     var reporterOpts = {
-        print: util.print,
         color: env.opts.nocolor === true ? false : true,
         onComplete: done
     };
@@ -50,10 +65,17 @@ jasmine.initialize = function(done, verbose) {
     return jasmineEnv;
 };
 
+jasmine.createParser = function(type) {
+    return jsdoc.src.parser.createParser(type || jasmine.jsParser);
+};
+
+function capitalize(str) {
+    return str[0].toUpperCase() + str.slice(1);
+}
+
 /**
- * Execute the specs in the specified folder. Helpers in each folder will be
- * added to the environment.  Helpers in parent directories will be available to child
- * directories.
+ * Execute the specs in the specified folder.
+ *
  * @param {string} folder The folder in which the specs are to be found.
  * @param {function?} done Callback function to execute when finished.
  * @param {object} opts Options for executing the specs.
@@ -75,8 +97,8 @@ jasmine.executeSpecsInFolder = function(folder, done, opts) {
     for (var i = 0, len = specsList.length; i < len; ++i) {
         filename = specsList[i];
         require(filename.path().replace(/\\/g, '/').
-            replace(new RegExp('^' + __dirname + '/'), "").
-            replace(/\.\w+$/, ""));
+            replace(new RegExp('^' + env.dirname + '/test'), './').
+            replace(/\.\w+$/, ''));
     }
 
     // Run Jasmine
@@ -109,21 +131,30 @@ jasmine.asyncSpecDone = function() {
     jasmine.asyncSpecWait.done = true;
 };
 
-jasmine.getDocSetFromFile = function(filename, parser) {
-    var sourceCode = fs.readFileSync(__dirname + '/' + filename, 'utf8'),
-        testParser = parser || new (require('jsdoc/src/parser')).Parser(),
-        indexAll = require('jsdoc/borrow').indexAll,
-        doclets;
+jasmine.getDocSetFromFile = function(filename, parser, validate) {
+    var doclets;
+    var validationResult;
 
-    require('jsdoc/src/handlers').attachTo(testParser);
+    var sourceCode = fs.readFileSync( path.join(env.dirname, filename), 'utf8' );
+    var testParser = parser || jasmine.createParser();
+
+    jsdoc.src.handlers.attachTo(testParser);
 
     doclets = testParser.parse('javascript:' + sourceCode);
-    indexAll(doclets);
+    jsdoc.borrow.indexAll(doclets);
 
-    require('jsdoc/augment').addInherited(doclets);
+    jsdoc.augment.addInherited(doclets);
 
     // test assume borrows have not yet been resolved
     // require('jsdoc/borrow').resolveBorrows(doclets);
+
+    // store the parse results for later validation
+    if (validate !== false) {
+        jasmine.parseResults.push({
+            filename: filename,
+            doclets: doclets
+        });
+    }
 
     return {
         doclets: doclets,
@@ -135,8 +166,13 @@ jasmine.getDocSetFromFile = function(filename, parser) {
     };
 };
 
-for (var key in jasmine) {
-    if ( hasOwnProp.call(jasmine, key) ) {
-        exports[key] = jasmine[key];
-    }
-}
+// set up jasmine's global functions
+Object.keys(jasmine).forEach(function(key) {
+    exports[key] = global[key] = jasmine[key];
+});
+global.jasmine = jasmine;
+require('./async-callback');
+['spyOn', 'it', 'xit', 'expect', 'runs', 'waitsFor', 'beforeEach', 'afterEach', 'describe',
+    'xdescribe'].forEach(function(item) {
+    global[item] = jasmineAll[item];
+});

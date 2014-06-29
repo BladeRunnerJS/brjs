@@ -8,15 +8,18 @@
 /**
     @module jsdoc/tutorial/resolver
  */
+'use strict';
 
-var tutorial = require('jsdoc/tutorial'),
-    fs = require('jsdoc/fs'),
-    error = require('jsdoc/util/error'),
-    path = require('path'),
-    hasOwnProp = Object.prototype.hasOwnProperty,
-    conf = {},
-    tutorials = {},
-    finder = /^(.*)\.(x(?:ht)?ml|html?|md|markdown|json)$/i;
+var logger = require('jsdoc/util/logger');
+var fs = require('jsdoc/fs');
+var path = require('path');
+var tutorial = require('jsdoc/tutorial');
+
+var hasOwnProp = Object.prototype.hasOwnProperty;
+
+var conf = {};
+var finder = /^(.*)\.(x(?:ht)?ml|html?|md|markdown|json)$/i;
+var tutorials = {};
 
 /** checks if `conf` is the metadata for a single tutorial.
  * A tutorial's metadata has a property 'title' and/or a property 'children'.
@@ -60,7 +63,7 @@ function addTutorialConf(name, meta) {
         }
         // check if the tutorial has already been defined...
         if (hasOwnProp.call(conf, name)) {
-            error.handle(new Error("Tutorial " + name + "'s metadata is defined multiple times, only the first will be used."));
+            logger.warn('Metadata for the tutorial %s is defined more than once. Only the first definition will be used.', name );
         } else {
             conf[name] = meta;
         }
@@ -78,7 +81,7 @@ function addTutorialConf(name, meta) {
  */
 exports.addTutorial = function(current) {
     if (hasOwnProp.call(tutorials, current.name)) {
-        error.handle(new Error("Tutorial with name " + current.name + " exists more than once, not adding (same name, different file extensions?)"));
+        logger.warn('The tutorial %s is defined more than once. Only the first definition will be used.', current.name);
     } else {
         tutorials[current.name] = current;
 
@@ -178,7 +181,7 @@ exports.resolve = function() {
             if (item.children) {
                 item.children.forEach(function(child) {
                     if (!hasOwnProp.call(tutorials, child)) {
-                        error.handle( new Error("Missing child tutorial: " + child) );
+                        logger.error('Missing child tutorial: %s', child);
                     }
                     else {
                         tutorials[child].setParent(current);

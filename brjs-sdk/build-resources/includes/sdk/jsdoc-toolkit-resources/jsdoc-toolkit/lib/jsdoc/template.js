@@ -4,11 +4,11 @@
  * @author <a href="mailto:matthewkastor@gmail.com">Matthew Christopher Kastor-Inare III</a>
  * @license Apache License 2.0 - See file 'LICENSE.md' in this project.
  */
+'use strict';
 
 var _ = require('underscore'),
     fs = require('jsdoc/fs'),
     path = require('path');
-
 
 /**
     @module jsdoc/template
@@ -37,21 +37,21 @@ exports.Template = function(path) {
     @return {function} Returns template closure.
  */
 exports.Template.prototype.load = function(file) {
-    var _path = path.join(this.path, file);
-    return _.template(fs.readFileSync(_path, 'utf8'), null, this.settings);
+    return _.template(fs.readFileSync(file, 'utf8'), null, this.settings);
 };
-
 
 /**
     Renders template using given data.
-    
+
     This is low-level function, for rendering full templates use {@link Template.render()}.
-    
+
     @param {string} file - Template filename.
     @param {object} data - Template variables (doesn't have to be object, but passing variables dictionary is best way and most common use).
     @return {string} Rendered template.
  */
 exports.Template.prototype.partial = function(file, data) {
+    file = path.resolve(this.path, file);
+
     // load template into cache
     if (!(file in this.cache)) {
         this.cache[file] = this.load(file);
@@ -63,9 +63,9 @@ exports.Template.prototype.partial = function(file, data) {
 
 /**
     Renders template with given data.
-    
+
     This method automaticaly applies layout if set.
-    
+
     @param {string} file - Template filename.
     @param {object} data - Template variables (doesn't have to be object, but passing variables dictionary is best way and most common use).
     @return {string} Rendered template.

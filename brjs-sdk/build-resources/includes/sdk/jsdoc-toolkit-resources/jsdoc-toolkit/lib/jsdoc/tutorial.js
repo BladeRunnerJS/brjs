@@ -3,6 +3,7 @@
     @author Rafał Wrzeszcz <rafal.wrzeszcz@wrzasq.pl>
     @license Apache License 2.0 - See file 'LICENSE.md' in this project.
  */
+'use strict';
 
 var markdown = require('jsdoc/util/markdown');
 
@@ -13,7 +14,7 @@ var markdown = require('jsdoc/util/markdown');
  */
 function removeChild(parent, child) {
     var index = parent.children.indexOf(child);
-    if (index != -1) {
+    if (index !== -1) {
         parent.children.splice(index, 1);
     }
 }

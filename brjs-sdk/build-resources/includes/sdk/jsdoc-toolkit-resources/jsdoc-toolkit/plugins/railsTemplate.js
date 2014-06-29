@@ -3,7 +3,7 @@
     @module plugins/railsTemplate
     @author Jannon Frank <jannon@jannon.net>
  */
-
+'use strict';
 
 exports.handlers = {
     /**
@@ -14,7 +14,7 @@ exports.handlers = {
      */
     beforeParse: function(e) {
         if (e.filename.match(/\.erb$/)) {
-            e.source = e.source.replace(/<%.*%>/g, "");
+            e.source = e.source.replace(/<%.*%>/g, '');
         }
     }
 };

@@ -5,6 +5,8 @@
  * @see https://github.com/joyent/node/blob/f105f2f2/lib/querystring.js
  * @license MIT
  */
+'use strict';
+
 var QueryString = exports;
 
 // If obj.hasOwnProperty has been overridden, then calling
@@ -14,11 +16,9 @@ function hasOwnProp(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-
 QueryString.unescape = function(s) {
   return decodeURIComponent(s);
 };
-
 
 QueryString.escape = function(str) {
   return encodeURIComponent(str);
@@ -39,7 +39,6 @@ var stringifyPrimitive = function(v) {
       return '';
   }
 };
-
 
 QueryString.stringify = QueryString.encode = function(obj, sep, eq, name) {
   sep = sep || '&';

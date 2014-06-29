@@ -3,50 +3,83 @@
     @module jsdoc/name
     @requires jsdoc/tag/dictionary
     @author Michael Mathews <micmath@gmail.com>
-	@license Apache License 2.0 - See file 'LICENSE.md' in this project.
+    @license Apache License 2.0 - See file 'LICENSE.md' in this project.
  */
+'use strict';
 
-var jsdoc = {
-    tagDictionary: require('jsdoc/tag/dictionary')
+var _ = require('underscore');
+
+// Longname used for doclets whose actual longname cannot be identified.
+var ANONYMOUS_LONGNAME = exports.ANONYMOUS_LONGNAME = '<anonymous>';
+// Longname used for doclets in global scope.
+var GLOBAL_LONGNAME = exports.GLOBAL_LONGNAME = '<global>';
+var INNER = exports.INNER = '~';
+var INSTANCE = exports.INSTANCE = '#';
+var MODULE_PREFIX = exports.MODULE_PREFIX = 'module:';
+// Scope identifiers.
+var SCOPE_NAMES = exports.SCOPE_NAMES = {
+    global: 'global',
+    inner: 'inner',
+    instance: 'instance',
+    'static': 'static'
 };
+var STATIC = exports.STATIC = '.';
+var scopeToPunc = exports.scopeToPunc = {
+    'inner': INNER,
+    'instance': INSTANCE,
+    'static': STATIC
+};
+var puncToScope = exports.puncToScope = _.invert(scopeToPunc);
 
-var puncToScope = { '.': 'static', '~': 'inner', '#': 'instance' },
-    scopeToPunc = { 'static': '.', 'inner': '~', 'instance': '#' };
+var DEFAULT_SCOPE = SCOPE_NAMES.static;
+var REGEXP_SCOPE_PUNC = '([' + INNER + INSTANCE + STATIC + '])';
 
-var DEFAULT_SCOPE = 'static';
+function nameIsLongname(name, memberof) {
+    var regexp = new RegExp('^' + memberof + REGEXP_SCOPE_PUNC);
+
+    return regexp.test(name);
+}
+
+function prototypeToPunc(name) {
+    return name.replace(/(?:^|\.)prototype\.?/g, INSTANCE);
+}
 
 /**
     Resolves the longname, memberof, variation and name values of the given doclet.
     @param {module:jsdoc/doclet.Doclet} doclet
  */
 exports.resolve = function(doclet) {
-    var name = doclet.name ? String(doclet.name) : '',
-        memberof = doclet.memberof || '',
-        about = {},
-        parentDoc;
+    var about = {};
+    var leadingScope = new RegExp('^' + REGEXP_SCOPE_PUNC);
+    var memberof = doclet.memberof || '';
+    var name = doclet.name ? String(doclet.name) : '';
+    var trailingScope = new RegExp(REGEXP_SCOPE_PUNC + '$');
+
+    var parentDoc;
 
     // change MyClass.prototype.instanceMethod to MyClass#instanceMethod
     // (but not in function params, which lack doclet.kind)
+    // TODO: check for specific doclet.kind values (probably function, class, and module)
     if (name && doclet.kind) {
-        name = name.replace(/(?:^|\.)prototype\.?/g, '#');
+        name = prototypeToPunc(name);
     }
     doclet.name = name;
-    
+
     // member of a var in an outer scope?
     if (name && !memberof && doclet.meta.code && doclet.meta.code.funcscope) {
-        name = doclet.longname = doclet.meta.code.funcscope + '~' + name;
+        name = doclet.longname = doclet.meta.code.funcscope + INNER + name;
     }
 
     if (memberof || doclet.forceMemberof) { // @memberof tag given
-        memberof = ('' || memberof).replace(/\.prototype\.?/g, '#');
-        
-        // the name is a fullname, like @name foo.bar, @memberof foo
-        if (name && name.indexOf(memberof) === 0 && name !== memberof) {
+        memberof = prototypeToPunc(memberof);
+
+        // the name is a complete longname, like @name foo.bar, @memberof foo
+        if (name && nameIsLongname(name, memberof) && name !== memberof) {
             about = exports.shorten(name, (doclet.forceMemberof ? memberof : undefined));
         }
         // the name and memberof are identical and refer to a module,
         // like @name module:foo, @memberof module:foo (probably a member like 'var exports')
-        else if (name && name === memberof && name.indexOf('module:') === 0) {
+        else if (name && name === memberof && name.indexOf(MODULE_PREFIX) === 0) {
             about = exports.shorten(name, (doclet.forceMemberof ? memberof : undefined));
         }
         // the name and memberof are identical, like @name foo, @memberof foo
@@ -56,7 +89,7 @@ exports.resolve = function(doclet) {
             about = exports.shorten(name, (doclet.forceMemberof ? memberof : undefined));
         }
         // like @memberof foo# or @memberof foo~
-        else if (name && /([#.~])$/.test(memberof) ) {
+        else if (name && trailingScope.test(memberof) ) {
             about = exports.shorten(memberof + name, (doclet.forceMemberof ? memberof : undefined));
         }
         else if (name && doclet.scope) {
@@ -65,27 +98,27 @@ exports.resolve = function(doclet) {
         }
     }
     else { // no @memberof
-         about = exports.shorten(name);
+        about = exports.shorten(name);
     }
-        
+
     if (about.name) {
         doclet.name = about.name;
     }
-    
+
     if (about.memberof) {
         doclet.setMemberof(about.memberof);
     }
-    
-    if (about.longname && !doclet.longname) {
+
+    if (about.longname && (!doclet.longname || doclet.longname === doclet.name)) {
         doclet.setLongname(about.longname);
     }
-    
+
     if (doclet.scope === 'global') { // via @global tag?
         doclet.setLongname(doclet.name);
         delete doclet.memberof;
     }
     else if (about.scope) {
-        if (about.memberof === '<global>') { // via @memberof <global> ?
+        if (about.memberof === GLOBAL_LONGNAME) { // via @memberof <global> ?
             doclet.scope = 'global';
         }
         else {
@@ -94,7 +127,7 @@ exports.resolve = function(doclet) {
     }
     else {
         if (doclet.name && doclet.memberof && !doclet.longname) {
-            if ( /^([#.~])/.test(doclet.name) ) {
+            if ( leadingScope.test(doclet.name) ) {
                 doclet.scope = puncToScope[RegExp.$1];
                 doclet.name = doclet.name.substr(1);
             }
@@ -109,29 +142,17 @@ exports.resolve = function(doclet) {
     if (about.variation) {
         doclet.variation = about.variation;
     }
-};
 
-/**
-    @inner
-    @memberof module:jsdoc/name
-    @param {string} name
-    @param {string} kind
-    @returns {string} The name with unsafe names enclosed in quotes.
- */
-function quoteUnsafe(name, kind) { // docspaced names may have unsafe characters which need to be quoted by us
-    if ( (jsdoc.tagDictionary.lookUp(kind).setsDocletDocspace) && /[^$_a-zA-Z0-9\/]/.test(name) ) {
-        if (!/^[a-z_$-\/]+:\"/i.test(name)) {
-            return '"' + name.replace(/\"/g, '"') + '"';
-        }
+    // if we never found a longname, just use an empty string
+    if (!doclet.longname) {
+        doclet.longname = '';
     }
-    
-    return name;
-}
+};
 
 // TODO: make this a private method, or remove it if possible
 RegExp.escape = RegExp.escape || function(str) {
-    var specials = new RegExp("[.*+?|()\\[\\]{}\\\\]", "g"); // .*+?|()[]{}\
-    return str.replace(specials, "\\$&");
+    var specials = new RegExp('[.*+?|()\\[\\]{}\\\\]', 'g'); // .*+?|()[]{}\
+    return str.replace(specials, '\\$&');
 };
 
 /**
@@ -146,9 +167,9 @@ exports.applyNamespace = function(longname, ns) {
     longname = nameParts.longname;
 
     if ( !/^[a-zA-Z]+?:.+$/i.test(name) ) {
-        longname = longname.replace( new RegExp(RegExp.escape(name)+'$'), ns + ':' + name );
+        longname = longname.replace( new RegExp(RegExp.escape(name) + '$'), ns + ':' + name );
     }
-    
+
     return longname;
 };
 
@@ -162,7 +183,7 @@ exports.applyNamespace = function(longname, ns) {
 exports.shorten = function(longname, forcedMemberof) {
     // quoted strings in a longname are atomic, convert to tokens
     var atoms = [], token;
-    
+
     // handle quoted names like foo["bar"] or foo['bar']
     longname = longname.replace(/(\[?["'].+?["']\]?)/g, function($) {
         var dot = '';
@@ -170,21 +191,21 @@ exports.shorten = function(longname, forcedMemberof) {
             dot = '.';
             $ = $.replace( /^\[/g, '' ).replace( /\]$/g, '' );
         }
-        
+
         token = '@{' + atoms.length + '}@';
         atoms.push($);
 
         return dot + token; // foo["bar"] => foo.@{1}@
     });
-    
+
     var name = '',
         scope = '', // ., ~, or #
         memberof =  '',
         parts,
         variation;
-    
-    longname = longname.replace( /\.prototype\.?/g, '#' );
-         
+
+    longname = prototypeToPunc(longname);
+
     if (typeof forcedMemberof !== 'undefined') {
         name = longname.substr(forcedMemberof.length);
         parts = forcedMemberof.match(/^(.*?)([#.~]?)$/);
@@ -193,28 +214,28 @@ exports.shorten = function(longname, forcedMemberof) {
         if (parts[2]) { scope = parts[2]; }
     }
     else {
-        parts = longname?
-                (longname.match( /^(:?(.+)([#.~]))?(.+?)$/ ) || []).reverse()
-                : [''];
-        
+        parts = longname ?
+                (longname.match( /^(:?(.+)([#.~]))?(.+?)$/ ) || []).reverse() :
+                [''];
+
         name = parts[0] || ''; // ensure name is always initialised to avoid error being thrown when calling replace on undefined [gh-24]
         scope = parts[1] || ''; // ., ~, or #
         memberof = parts[2] || '';
     }
-    
+
     // like /** @name foo.bar(2) */
     if ( /(.+)\(([^)]+)\)$/.test(name) ) {
         name = RegExp.$1;
         variation = RegExp.$2;
     }
-    
+
     //// restore quoted strings back again
     var i = atoms.length;
     while (i--) {
-        longname = longname.replace('@{'+i+'}@', atoms[i]);
-        memberof = memberof.replace('@{'+i+'}@', atoms[i]);
-        scope    = scope.replace('@{'+i+'}@', atoms[i]);
-        name     = name.replace('@{'+i+'}@', atoms[i]);
+        longname = longname.replace('@{' + i + '}@', atoms[i]);
+        memberof = memberof.replace('@{' + i + '}@', atoms[i]);
+        scope = scope.replace('@{' + i + '}@', atoms[i]);
+        name = name.replace('@{' + i + '}@', atoms[i]);
     }
 
     ////

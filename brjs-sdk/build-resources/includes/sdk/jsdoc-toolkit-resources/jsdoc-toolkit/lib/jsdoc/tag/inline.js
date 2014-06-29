@@ -1,9 +1,10 @@
 /**
  * @module jsdoc/tag/inline
- * 
+ *
  * @author Jeff Williams <jeffrey.l.williams@gmail.com>
  * @license Apache License 2.0 - See file 'LICENSE.md' in this project.
  */
+'use strict';
 
 /**
  * Information about an inline tag that was found within a string.
@@ -65,12 +66,7 @@ function regExpFactory(tagName, prefix, suffix) {
  * cases.
  */
 exports.isInlineTag = function(string, tagName) {
-    try {
-        return regExpFactory(tagName, '^', '$').test(string);
-    }
-    catch(e) {
-        return false;
-    }
+    return regExpFactory(tagName, '^', '$').test(string);
 };
 
 /**
@@ -94,7 +90,7 @@ exports.replaceInlineTags = function(string, replacers) {
         };
         tagInfo.push(matchedTag);
 
-        return replacer.call(this, string, matchedTag);
+        return replacer(string, matchedTag);
     }
 
     string = string || '';
@@ -106,7 +102,7 @@ exports.replaceInlineTags = function(string, replacers) {
             string = replaceMatch(replacers[replacer], replacer, matches[0], matches[1]);
         }
     });
-    
+
     return {
         tags: tagInfo,
         newString: string.trim()

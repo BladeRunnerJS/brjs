@@ -1,11 +1,11 @@
-/*global Packages: true */
-
 /**
  * Partial Rhino shim for Node.js' `fs` module.
  * @see http://nodejs.org/api/fs.html
  */
+'use strict';
 
 var path = require('path');
+var util = require('util');
 
 var asyncify = path._asyncify;
 
@@ -24,7 +24,12 @@ function checkEncoding(enc, name) {
     return enc;
 }
 
-exports.readFileSync = function(filename, encoding) {
+// provide an error that's consistent with Node.js
+function errorFactory(filepath) {
+    return new Error( util.format("ENOENT, no such file or directory '%s'", filepath) );
+}
+
+exports.readFileSync = function readFileSync(filename, encoding) {
     encoding = checkEncoding(encoding, 'fs.readFile[Sync]');
 
     return readFile(filename, encoding);
@@ -35,132 +40,105 @@ exports.readFile = asyncify(exports.readFileSync);
 exports.existsSync = path.existsSync;
 exports.exists = path.exists;
 
-var statSync = exports.statSync = function(_path) {
+var statSync = exports.statSync = function statSync(_path) {
     var f = new java.io.File(_path);
+    if (!f) {
+        throw errorFactory(_path);
+    }
+
     return {
-        isFile: function() {
+        isFile: function isFile() {
             return f.isFile();
         },
-        isDirectory: function() {
+        isDirectory: function isDirectory() {
             return f.isDirectory();
+        },
+        isSymlink: function isSymlink() {
+            // java.io.File resolves symlinks
+            return false;
         }
     };
 };
 exports.stat = asyncify(statSync);
 
-var readdirSync = exports.readdirSync = function(_path) {
+// java.io.File resolves symlinks, so we can alias `lstat` to `stat`
+var lstatSync = exports.lstatSync = statSync;
+exports.lstat = asyncify(lstatSync);
+
+var readdirSync = exports.readdirSync = function readdirSync(_path) {
     var dir;
     var files;
 
     dir = new java.io.File(_path);
     if (!dir.directory) {
-        throw new Error("ENOENT, no such file or directory '" + _path + "'");
+        throw errorFactory(_path);
     }
 
-    files = dir.list();
-
-    // Convert files to Javascript strings so they play nice with node modules
-    files = files.map(function(fileName) {
-        return String(fileName);
-    });
+    files = dir.list()
+        .map(function(fileName) {
+            return String(fileName);
+        });
 
     return files;
 };
 exports.readdir = asyncify(readdirSync);
 
 // JSDoc extension to `fs` module
-var ls = exports.ls = function(dir, recurse, _allFiles, _path) {
-    var files,
-        file;
+var toDir = exports.toDir = function toDir(_path) {
+    var f = new java.io.File( path.resolve(global.env.pwd, _path) );
 
-    if (typeof _path === 'undefined') { // initially
-        _allFiles = [];
-        _path = [dir];
-    }
-
-    if (_path.length === 0) { return _allFiles; }
-    if (typeof recurse === 'undefined') { recurse = 1; }
-
-    if ( statSync(dir).isFile(dir) ) {
-        files = [dir];
-    }
-    else {
-        files = readdirSync(dir);
-    }
-
-    for (var f = 0, lenf = files.length; f < lenf; f++) {
-        file = String(files[f]);
-
-        if (file.match(/^\.[^\.\/\\]/)) { continue; } // skip dot files
-
-        if ((new java.io.File(_path.join('/') + '/' + file)).list()) { // it's a directory
-            _path.push(file);
-
-            if (_path.length - 1 < recurse) {
-                ls(_path.join('/'), recurse, _allFiles, _path);
-            }
-            _path.pop();
-        }
-        else { // it's a file
-            _allFiles.push(
-                path.normalize(_path.join('/') + '/' + file)
-            );
-        }
-    }
-
-    return _allFiles;
-};
-
-// JSDoc extension to `fs` module
-var toDir = exports.toDir = function(_path) {
-    var f = new java.io.File(_path);
-
-    if (f.isDirectory()){
+    if ( f.isDirectory() ){
        return _path;
     } else {
         return path.dirname(_path);
     }
 };
 
-var mkdirSync = exports.mkdirSync = function(_path) {
+var mkdirSync = exports.mkdirSync = function mkdirSync(_path) {
     var dir_path = toDir(_path);
-    (new java.io.File(dir_path)).mkdir();
+    ( new java.io.File(dir_path) ).mkdir();
 };
 exports.mkdir = asyncify(mkdirSync);
 
 // JSDoc extension to `fs` module
-exports.mkPath = function(/**Array*/ _path) {
-    if (_path.constructor == Array) { _path = _path.join(''); }
+exports.mkPath = function mkPath(_path) {
+    if ( Array.isArray(_path) ) {
+        _path = _path.join('');
+    }
 
-    (new java.io.File(_path)).mkdirs();
+    ( new java.io.File(path.resolve(global.env.pwd, _path)) ).mkdirs();
 };
 
 // JSDoc extension to `fs` module
-exports.copyFileSync = function(inFile, outDir, fileName) {
-    if (fileName == null){fileName = path.basename(inFile);}
+exports.copyFileSync = function copyFileSync(inFile, outDir, fileName) {
+    if (fileName === undefined || fileName === null) {
+        fileName = path.basename(inFile);
+    }
 
     outDir = toDir(outDir);
 
     inFile = new java.io.File(inFile);
-    var outFile = new java.io.File(outDir+'/'+fileName);
+    var outFile = new java.io.File(outDir + '/' + fileName);
 
-    var bis = new Packages.java.io.BufferedInputStream(new Packages.java.io.FileInputStream(inFile), 4096);
-    var bos = new Packages.java.io.BufferedOutputStream(new Packages.java.io.FileOutputStream(outFile), 4096);
-    var theChar;
-    while ((theChar = bis.read()) != -1) {
+    var bis = new java.io.BufferedInputStream(new java.io.FileInputStream(inFile), 4096);
+    var bos = new java.io.BufferedOutputStream(new java.io.FileOutputStream(outFile), 4096);
+    var theChar = bis.read();
+    while (theChar !== -1) {
         bos.write(theChar);
+        theChar = bis.read();
     }
+
     bos.close();
     bis.close();
 };
 exports.copyFile = asyncify(exports.copyFileSync);
 
-exports.writeFileSync = function(filename, data, encoding) {
+exports.writeFileSync = function writeFileSync(filename, data, encoding) {
     encoding = checkEncoding(encoding, 'fs.writeFile[Sync]');
 
-    var out = new Packages.java.io.PrintWriter(
-        new Packages.java.io.OutputStreamWriter(
-            new Packages.java.io.FileOutputStream(filename),
+    var out = new java.io.PrintWriter(
+        new java.io.OutputStreamWriter(
+            new java.io.FileOutputStream(filename),
             encoding
         )
     );
@@ -174,3 +152,13 @@ exports.writeFileSync = function(filename, data, encoding) {
     }
 };
 exports.writeFile = asyncify(exports.writeFileSync);
+
+exports.rmdirSync = function rmdirSync(_path) {
+    throw new Error('not implemented');
+};
+exports.rmdir = asyncify(exports.rmdirSync);
+
+exports.unlinkSync = function unlinkSync(_path) {
+    throw new Error('not implemented');
+};
+exports.unlink = asyncify(exports.unlinkSync);

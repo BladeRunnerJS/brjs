@@ -2,6 +2,7 @@
 /**
  * @module jsdoc/util/templateHelper
  */
+'use strict';
 
 var dictionary = require('jsdoc/tag/dictionary');
 var util = require('util');
@@ -24,7 +25,7 @@ exports.setTutorials = function(root) {
 
 exports.globalName = 'global';
 exports.fileExtension = '.html';
-exports.scopeToPunc = { 'static': '.', 'inner': '~', 'instance': '#' };
+exports.scopeToPunc = require('jsdoc/name').scopeToPunc;
 
 function getNamespace(kind) {
     if (dictionary.isNamespace(kind)) {
@@ -55,6 +56,7 @@ function cleanseFilename(str) {
     str = str || '';
 
     // allow for namespace prefix
+    // TODO: use prefixes in jsdoc/doclet
     return str.replace(/^(event|module|external|package):/, '$1-')
         // use - instead of ~ to denote 'inner'
         .replace(/~/g, '-')
@@ -65,7 +67,8 @@ function cleanseFilename(str) {
 }
 
 var htmlsafe = exports.htmlsafe = function(str) {
-    return str.replace(/</g, '&lt;');
+    return str.replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;');
 };
 
 /**
@@ -82,7 +85,7 @@ var htmlsafe = exports.htmlsafe = function(str) {
 var getUniqueFilename = exports.getUniqueFilename = function(str) {
     // allow for namespace prefix
     var basename = cleanseFilename(str);
-    
+
     // if the basename includes characters that we can't use in a filepath, remove everything up to
     // and including the last bad character
     var regexp = /[^$a-z0-9._\-](?=[$a-z0-9._\-]*$)/i;
@@ -121,7 +124,7 @@ function parseType(longname) {
     }
     catch (e) {
         err = new Error('unable to parse ' + longname + ': ' + e.message);
-        require('jsdoc/util/error').handle(err);
+        require('jsdoc/util/logger').error(err);
         return longname;
     }
 }
@@ -136,6 +139,11 @@ function stringifyType(parsedType, cssClass, linkMap) {
 
 function hasUrlPrefix(text) {
     return (/^(http|ftp)s?:\/\//).test(text);
+}
+
+function isComplexTypeExpression(expr) {
+    // record types, type unions, and type applications all count as "complex"
+    return expr.search(/[{(|]/) !== -1 || expr.search(/</) > 0;
 }
 
 /**
@@ -182,7 +190,7 @@ function buildLink(longname, linkText, options) {
     }
     // handle complex type expressions that may require multiple links
     // (but skip anything that looks like an inline tag)
-    else if (longname && longname.search(/[<{(]/) !== -1 && /\{\@.+\}/.test(longname) === false) {
+    else if (longname && isComplexTypeExpression(longname) && /\{\@.+\}/.test(longname) === false) {
         parsedType = parseType(longname);
         return stringifyType(parsedType, options.cssClass, options.linkMap);
     }
@@ -282,8 +290,8 @@ var tutorialToUrl = exports.tutorialToUrl = function(tutorial) {
     var node = tutorials.getByName(tutorial);
     // no such tutorial
     if (!node) {
-        require('jsdoc/util/error').handle( new Error('No such tutorial: '+tutorial) );
-        return;
+        require('jsdoc/util/logger').error( new Error('No such tutorial: ' + tutorial) );
+        return null;
     }
 
     var url;
@@ -314,8 +322,8 @@ var tutorialToUrl = exports.tutorialToUrl = function(tutorial) {
  */
 var toTutorial = exports.toTutorial = function(tutorial, content, missingOpts) {
     if (!tutorial) {
-        require('jsdoc/util/error').handle( new Error('Missing required parameter: tutorial') );
-        return;
+        require('jsdoc/util/logger').error( new Error('Missing required parameter: tutorial') );
+        return null;
     }
 
     var node = tutorials.getByName(tutorial);
@@ -324,7 +332,7 @@ var toTutorial = exports.toTutorial = function(tutorial, content, missingOpts) {
         missingOpts = missingOpts || {};
         var tag = missingOpts.tag;
         var classname = missingOpts.classname;
-        
+
         var link = tutorial;
         if (missingOpts.prefix) {
             link = missingOpts.prefix + link;
@@ -432,17 +440,19 @@ var find = exports.find = function(data, spec) {
 };
 
 /**
- * Check whether a symbol is a function and is the only symbol exported by a module (as in
+ * Check whether a symbol is the only symbol exported by a module (as in
  * `module.exports = function() {};`).
  *
  * @private
  * @param {module:jsdoc/doclet.Doclet} doclet - The doclet for the symbol.
- * @return {boolean} `true` if the symbol is a function and is the only symbol exported by a module;
- * otherwise, `false`.
+ * @return {boolean} `true` if the symbol is the only symbol exported by a module; otherwise,
+ * `false`.
  */
-function isModuleFunction(doclet) {
+function isModuleExports(doclet) {
+    var MODULE_PREFIX = require('jsdoc/name').MODULE_PREFIX;
+
     return doclet.longname && doclet.longname === doclet.name &&
-        doclet.longname.indexOf('module:') === 0 && doclet.kind === 'function';
+        doclet.longname.indexOf(MODULE_PREFIX) === 0 && doclet.kind !== 'module';
 }
 
 /**
@@ -475,9 +485,9 @@ exports.getMembers = function(data) {
 
     // functions that are also modules (as in "module.exports = function() {};") are not globals
     members.globals = members.globals.filter(function(doclet) {
-        return !isModuleFunction(doclet);
+        return !isModuleExports(doclet);
     });
- 
+
     return members;
 };
 
@@ -489,29 +499,36 @@ exports.getMembers = function(data) {
  */
 exports.getAttribs = function(d) {
     var attribs = [];
-    
+
     if (d.virtual) {
-        attribs.push('virtual');
+        attribs.push('abstract');
     }
-    
+
     if (d.access && d.access !== 'public') {
         attribs.push(d.access);
     }
-    
+
     if (d.scope && d.scope !== 'instance' && d.scope !== 'global') {
-        if (d.kind == 'function' || d.kind == 'member' || d.kind == 'constant') {
+        if (d.kind === 'function' || d.kind === 'member' || d.kind === 'constant') {
             attribs.push(d.scope);
         }
     }
-    
+
     if (d.readonly === true) {
-        if (d.kind == 'member') {
+        if (d.kind === 'member') {
             attribs.push('readonly');
         }
     }
-    
+
     if (d.kind === 'constant') {
         attribs.push('constant');
+    }
+
+    if (d.nullable === true) {
+        attribs.push('nullable');
+    }
+    else if (d.nullable === false) {
+        attribs.push('non-null');
     }
 
     return attribs;
@@ -526,11 +543,11 @@ exports.getAttribs = function(d) {
  */
 exports.getSignatureTypes = function(d, cssClass) {
     var types = [];
-    
+
     if (d.type && d.type.names) {
         types = d.type.names;
     }
-    
+
     if (types && types.length) {
         types = types.map(function(t) {
             return linkto(t, htmlsafe(t), cssClass);
@@ -578,7 +595,7 @@ exports.getSignatureParams = function(d, optClass) {
  */
 exports.getSignatureReturns = function(d, cssClass) {
     var returnTypes = [];
-    
+
     if (d.returns) {
         d.returns.forEach(function(r) {
             if (r && r.type && r.type.names) {
@@ -588,7 +605,7 @@ exports.getSignatureReturns = function(d, cssClass) {
             }
         });
     }
-    
+
     if (returnTypes && returnTypes.length) {
         returnTypes = returnTypes.map(function(r) {
             return linkto(r, htmlsafe(r), cssClass);
@@ -710,8 +727,9 @@ exports.createLink = function(doclet) {
     var fakeContainer;
 
     var url = '';
+    var INSTANCE = exports.scopeToPunc.instance;
     var longname = doclet.longname;
-    
+
     // handle doclets in which doclet.longname implies that the doclet gets its own HTML file, but
     // doclet.kind says otherwise. this happens due to mistagged JSDoc (for example, a module that
     // somehow has doclet.kind set to `member`).
@@ -724,7 +742,7 @@ exports.createLink = function(doclet) {
     }
 
     // the doclet gets its own HTML file
-    if ( containers.indexOf(doclet.kind) !== -1 || isModuleFunction(doclet) ) {
+    if ( containers.indexOf(doclet.kind) !== -1 || isModuleExports(doclet) ) {
         filename = getFilename(longname);
     }
     // mistagged version of a doclet that gets its own HTML file
@@ -743,7 +761,7 @@ exports.createLink = function(doclet) {
         fragment = getNamespace(doclet.kind) + (doclet.name || '');
     }
 
-    url = fragment ? (filename + '#' + fragment) : filename;
-    
+    url = fragment ? (filename + INSTANCE + fragment) : filename;
+
     return url;
 };

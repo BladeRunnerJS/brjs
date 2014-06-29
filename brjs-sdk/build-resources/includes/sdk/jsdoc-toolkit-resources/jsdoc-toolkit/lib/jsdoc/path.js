@@ -1,12 +1,13 @@
+/*global env: true */
 /**
  * Extended version of the standard `path` module.
  * @module jsdoc/path
  */
+'use strict';
 
 var fs = require('fs');
 var path = require('path');
-var vm = require('jsdoc/util/vm');
-
+var runtime = require('jsdoc/util/runtime');
 
 function prefixReducer(previousPath, current) {
     var currentPath = [];
@@ -16,7 +17,7 @@ function prefixReducer(previousPath, current) {
         return currentPath;
     }
 
-    currentPath = path.resolve( process.cwd(), path.dirname(current) ).split(path.sep) || [];
+    currentPath = path.resolve(global.env.pwd, current).split(path.sep) || [];
 
     if (previousPath && currentPath.length) {
         // remove chunks that exceed the previous path's length
@@ -40,6 +41,7 @@ function prefixReducer(previousPath, current) {
  *
  * For example, assuming that the current working directory is `/Users/jsdoc`:
  *
+ * + For the single path `foo/bar/baz/qux.js`, the common prefix is `foo/bar/baz/`.
  * + For paths `foo/bar/baz/qux.js`, `foo/bar/baz/quux.js`, and `foo/bar/baz.js`, the common prefix
  * is `/Users/jsdoc/foo/bar/`.
  * + For paths `../jsdoc/foo/bar/baz/qux/quux/test.js`, `/Users/jsdoc/foo/bar/bazzy.js`, and
@@ -51,47 +53,42 @@ function prefixReducer(previousPath, current) {
  * @return {string} The common prefix, or an empty string if there is no common prefix.
  */
 exports.commonPrefix = function(paths) {
-    var common;
+    var segments;
+
+    var prefix = '';
 
     paths = paths || [];
-    common = paths.reduce(prefixReducer, undefined) || [];
 
-    // if there's anything left (other than a placeholder for a leading slash), add a placeholder
-    // for a trailing slash
-    if ( common.length && (common.length > 1 || common[0] !== '') ) {
-        common.push('');
+    // if there's only one path, its resolved dirname (plus a trailing slash) is the common prefix
+    if (paths.length === 1) {
+        prefix = path.resolve(global.env.pwd, paths[0]);
+        if ( path.extname(prefix) ) {
+            prefix = path.dirname(prefix);
+        }
+
+        prefix += path.sep;
+    }
+    else {
+        segments = paths.reduce(prefixReducer, undefined) || [];
+
+        // if there's anything left (other than a placeholder for a leading slash), add a
+        // placeholder for a trailing slash
+        if ( segments.length && (segments.length > 1 || segments[0] !== '') ) {
+            segments.push('');
+        }
+
+        prefix = segments.join(path.sep);
     }
 
-    return common.join(path.sep);
+    return prefix;
 };
-
-// TODO: do we need this?
-/**
- * If required by the current VM, convert a path to a URI that meets the operating system's
- * requirements. Otherwise, return the original path.
- * @function
- * @private
- * @param {string} path The path to convert.
- * @return {string} A URI that meets the operating system's requirements, or the original path.
- */
-var pathToUri = vm.getModule('jsdoc').pathToUri;
-
-// TODO: do we need this? if so, any way to stop exporting it?
-/**
- * If required by the current VM, convert a URI to a path that meets the operating system's
- * requirements. Otherwise, assume the "URI" is really a path, and return the original path.
- * @function
- * @private
- * @param {string} uri The URI to convert.
- * @return {string} A path that meets the operating system's requirements.
- */
-exports._uriToPath = vm.getModule('jsdoc').uriToPath;
 
 /**
  * Retrieve the fully qualified path to the requested resource.
  *
- * If the resource path is specified as a relative path, JSDoc searches for the path in the current
- * working directory, then in the JSDoc directory.
+ * If the resource path is specified as a relative path, JSDoc searches for the path in the
+ * directory where the JSDoc configuration file is located, then in the current working directory,
+ * and finally in the JSDoc directory.
  *
  * If the resource path is specified as a fully qualified path, JSDoc uses the path as-is.
  *
@@ -102,7 +99,7 @@ exports._uriToPath = vm.getModule('jsdoc').uriToPath;
  * Includes the filename if one was provided.
  */
 exports.getResourcePath = function(filepath, filename) {
-    var result;
+    var result = null;
 
     function pathExists(_path) {
         try {
@@ -115,20 +112,18 @@ exports.getResourcePath = function(filepath, filename) {
         return true;
     }
 
-    // first, try resolving it relative to the current working directory (or just normalize it
-    // if it's an absolute path)
-    result = path.resolve(filepath);
-    if ( !pathExists(result) ) {
-        // next, try resolving it relative to the JSDoc directory
-        result = path.resolve(__dirname, filepath);
-        if ( !pathExists(result) ) {
-            result = null;
+    // absolute paths are normalized by path.resolve on the first pass
+    [path.dirname(global.env.opts.configure || ''), env.pwd, env.dirname].forEach(function(_path) {
+        if (!result && _path) {
+            _path = path.resolve(_path, filepath);
+            if ( pathExists(_path) ) {
+                result = _path;
+            }
         }
-    }
+    });
 
     if (result) {
         result = filename ? path.join(result, filename) : result;
-        result = pathToUri(result);
     }
 
     return result;

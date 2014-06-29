@@ -1,17 +1,20 @@
 /**
  * @module jsdoc/tag/type
- * 
+ *
  * @author Michael Mathews <micmath@gmail.com>
  * @author Jeff Williams <jeffrey.l.williams@gmail.com>
  * @license Apache License 2.0 - See file 'LICENSE.md' in this project.
  */
+'use strict';
 
+var catharsis = require('catharsis');
 var jsdoc = {
     name: require('jsdoc/name'),
     tag: {
         inline: require('jsdoc/tag/inline')
     }
 };
+var util = require('util');
 
 /**
  * Information about a type expression extracted from tag text.
@@ -36,8 +39,6 @@ function unescapeBraces(text) {
  * @return {module:jsdoc/tag/type.TypeExpressionInfo} The type expression and updated tag text.
  */
  function extractTypeExpression(string) {
-    string = string || '';
-
     var completeExpression;
     var count = 0;
     var position = 0;
@@ -98,7 +99,7 @@ function getTagInfo(tagValue, canHaveName, canHaveType) {
         typeExpression = expressionAndText.expression;
         text = expressionAndText.newString;
     }
-    
+
     if (canHaveName) {
         nameAndDescription = jsdoc.name.splitName(text);
         name = nameAndDescription.name;
@@ -109,11 +110,11 @@ function getTagInfo(tagValue, canHaveName, canHaveType) {
     if (canHaveType) {
         typeOverride = jsdoc.tag.inline.extractInlineTag(text, 'type');
         if (typeOverride.tags && typeOverride.tags[0]) {
-            typeExpression = typeOverride.tags[0].text || typeExpression;
+            typeExpression = typeOverride.tags[0].text;
         }
         text = typeOverride.newString;
     }
-    
+
     return {
         name: name,
         typeExpression: typeExpression,
@@ -145,7 +146,7 @@ function getTagInfo(tagValue, canHaveName, canHaveType) {
 /**
  * Extract JSDoc-style type information from the name specified in the tag info, including the
  * member name; whether the member is optional; and the default value of the member.
- * 
+ *
  * @private
  * @param {module:jsdoc/tag/type.TagInfo} tagInfo - Information contained in the tag.
  * @return {module:jsdoc/tag/type.TagInfo} Updated information from the tag.
@@ -155,24 +156,25 @@ function parseName(tagInfo) {
     if ( /^\[\s*(.+?)\s*\]$/.test(tagInfo.name) ) {
         tagInfo.name = RegExp.$1;
         tagInfo.optional = true;
-        
+
         // like 'foo=bar' or 'foo = bar'
         if ( /^(.+?)\s*=\s*(.+)$/.test(tagInfo.name) ) {
             tagInfo.name = RegExp.$1;
             tagInfo.defaultvalue = RegExp.$2;
         }
     }
-    
+
     return tagInfo;
 }
 
 /** @private */
-function getTypeStrings(parsedType) {
+function getTypeStrings(parsedType, isOutermostType) {
+    var applications;
+    var typeString;
+
     var types = [];
 
-    var catharsis = require('catharsis');
     var TYPES = catharsis.Types;
-    var util = require('util');
 
     switch(parsedType.type) {
         case TYPES.AllLiteral:
@@ -191,7 +193,19 @@ function getTypeStrings(parsedType) {
             types.push('Object');
             break;
         case TYPES.TypeApplication:
-            types.push( catharsis.stringify(parsedType) );
+            // if this is the outermost type, we strip the modifiers; otherwise, we keep them
+            if (isOutermostType) {
+                applications = parsedType.applications.map(function(application) {
+                    return getTypeStrings(application);
+                }).join(', ');
+                typeString = util.format( '%s.<%s>', getTypeStrings(parsedType.expression),
+                    applications );
+
+                types.push(typeString);
+            }
+            else {
+                types.push( catharsis.stringify(parsedType) );
+            }
             break;
         case TYPES.TypeUnion:
             parsedType.elements.forEach(function(element) {
@@ -222,9 +236,6 @@ function getTypeStrings(parsedType) {
  * @return {module:jsdoc/tag/type.TagInfo} Updated information from the tag.
  */
 function parseTypeExpression(tagInfo) {
-    var catharsis = require('catharsis');
-    var util = require('util');
-
     var errorMessage;
     var parsedType;
 
@@ -232,30 +243,28 @@ function parseTypeExpression(tagInfo) {
     if (!tagInfo.typeExpression) {
         return tagInfo;
     }
-    
+
     try {
         parsedType = catharsis.parse(tagInfo.typeExpression, {jsdoc: true});
     }
     catch (e) {
         // always re-throw so the caller has a chance to report which file was bad
-        throw new Error( util.format('unable to parse the type expression "%s": %s',
-            tagInfo.typeExpression, e.message) );
+        throw new Error( util.format('Invalid type expression "%s": %s', tagInfo.typeExpression,
+            e.message) );
     }
 
-    if (parsedType) {
-        tagInfo.type = tagInfo.type.concat( getTypeStrings(parsedType) );
+    tagInfo.type = tagInfo.type.concat( getTypeStrings(parsedType, true) );
 
-        // Catharsis and JSDoc use the same names for 'optional' and 'nullable'...
-        ['optional', 'nullable'].forEach(function(key) {
-            if (parsedType[key] !== null && parsedType[key] !== undefined) {
-                tagInfo[key] = parsedType[key];
-            }
-        });
-
-        // ...but not 'variable'.
-        if (parsedType.repeatable !== null && parsedType.repeatable !== undefined) {
-            tagInfo.variable = parsedType.repeatable;
+    // Catharsis and JSDoc use the same names for 'optional' and 'nullable'...
+    ['optional', 'nullable'].forEach(function(key) {
+        if (parsedType[key] !== null && parsedType[key] !== undefined) {
+            tagInfo[key] = parsedType[key];
         }
+    });
+
+    // ...but not 'variable'.
+    if (parsedType.repeatable !== null && parsedType.repeatable !== undefined) {
+        tagInfo.variable = parsedType.repeatable;
     }
 
     return tagInfo;
@@ -277,10 +286,10 @@ var typeParsers = [parseName, parseTypeExpression];
  */
 exports.parse = function(tagValue, canHaveName, canHaveType) {
     if (typeof tagValue !== 'string') { tagValue = ''; }
-    
+
     var tagInfo = getTagInfo(tagValue, canHaveName, canHaveType);
     tagInfo.type = tagInfo.type || [];
-    
+
     typeParsers.forEach(function(parser) {
         tagInfo = parser.call(this, tagInfo);
     });

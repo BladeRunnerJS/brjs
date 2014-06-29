@@ -3,6 +3,7 @@
  * @see https://github.com/substack/node-browserify
  * @license MIT
  */
+'use strict';
 
 if (!process.EventEmitter) {
   process.EventEmitter = function () {};
@@ -29,7 +30,6 @@ EventEmitter.prototype.setMaxListeners = function(n) {
   }
   this._events.maxListeners = n;
 };
-
 
 EventEmitter.prototype.emit = function(type) {
   var args;

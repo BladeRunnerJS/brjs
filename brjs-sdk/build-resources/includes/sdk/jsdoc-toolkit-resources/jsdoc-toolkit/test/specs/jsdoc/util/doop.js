@@ -1,13 +1,13 @@
-/*global describe: true, it: true */
+/*global describe: true, expect: true, it: true */
 describe('jsdoc/util/doop', function() {
     var doop = require('jsdoc/util/doop');
 
     it('should exist', function() {
         expect(doop).toBeDefined();
-        expect(typeof doop).toBe('object');
+        expect(typeof doop).toBe('function');
     });
 
-    it('should export a doop function', function() {
+    it('should export a doop function for backwards compatibility', function() {
         expect(doop.doop).toBeDefined();
         expect(typeof doop.doop).toBe('function');
     });
@@ -38,10 +38,18 @@ describe('jsdoc/util/doop', function() {
 
         it("should return a clone of an object", function() {
             var inp = {a:1, b:2, 'asdf-fdsa': 3};
-                out = doop.doop(inp);
+            var out = doop.doop(inp);
             // toEqual is a comparison on properties; toBe is === comparison.
             expect(inp).toEqual(out);
             expect(inp).not.toBe(out);
+        });
+
+        it("should return an object with the same prototype as the original object", function() {
+            function Foo() {}
+
+            var foo = new Foo();
+            var bar = doop(foo);
+            expect( Object.getPrototypeOf(foo) ).toBe( Object.getPrototypeOf(bar) );
         });
 
         // checks that a === b if it's not an object or array (or it's af function);
@@ -49,10 +57,11 @@ describe('jsdoc/util/doop', function() {
         function compareForEquality(a, b) {
             if (a instanceof Object && a.constructor != Function) {
                 // if it's an object and not a function, it should clone.
-                var keys = Object.keys(a);
-                expect(Object.keys(a)).toEqual(Object.keys(b));
-                for (var i = 0; i < keys.length; ++i) {
-                    compareForEquality(a[keys[i]], b[keys[i]]);
+                var keysA = Object.keys(a).sort();
+                var keysB = Object.keys(b).sort();
+                expect(keysA).toEqual(keysB);
+                for (var i = 0; i < keysA.length; ++i) {
+                    compareForEquality(a[keysA[i]], b[keysB[i]]);
                 }
             } else {
                 // otherwise, it should be exactly equal.
@@ -62,7 +71,7 @@ describe('jsdoc/util/doop', function() {
 
         it("should clone recursively", function() {
             var inp = {a:1, b:2, 'asdf-fdsa': {a: 'fdsa', b: [1,2,3]}};
-                out = doop.doop(inp);
+            var out = doop.doop(inp);
             // toEqual is a comparison on properties; toBe is === comparison.
             expect(inp).toEqual(out);
             expect(inp).not.toBe(out);

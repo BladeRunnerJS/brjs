@@ -1,13 +1,15 @@
+/*global env: true */
 /**
     @module jsdoc/src/scanner
     @requires module:fs
-    
+
     @author Michael Mathews <micmath@gmail.com>
     @license Apache License 2.0 - See file 'LICENSE.md' in this project.
  */
-
+'use strict';
 
 var fs = require('jsdoc/fs');
+var logger = require('jsdoc/util/logger');
 var path = require('jsdoc/path');
 
 /**
@@ -24,33 +26,43 @@ exports.Scanner.prototype = Object.create( require('events').EventEmitter.protot
     @fires sourceFileFound
  */
 exports.Scanner.prototype.scan = function(searchPaths, depth, filter) {
-    var pwd = process.env.PWD,
-        filePaths = [],
-        self = this;
+    var currentFile;
+    var isFile;
+
+    var filePaths = [];
+    var pwd = env.pwd;
+    var self = this;
 
     searchPaths = searchPaths || [];
     depth = depth || 1;
 
     searchPaths.forEach(function($) {
-        var filepath = decodeURIComponent($);
-        if ( fs.statSync(filepath).isFile() ) {
-            filePaths.push( path.resolve(pwd, filepath) );
+        var filepath = path.resolve( pwd, decodeURIComponent($) );
+
+        try {
+            currentFile = fs.statSync(filepath);
+        }
+        catch (e) {
+            logger.error('Unable to find the source file or directory %s', filepath);
+            return;
+        }
+
+        if ( currentFile.isFile() ) {
+            filePaths.push(filepath);
         }
         else {
-            filePaths = filePaths.concat( fs.ls(filepath, depth).map(function(item) {
-                return path.resolve(pwd, item);
-            }) );
+            filePaths = filePaths.concat( fs.ls(filepath, depth) );
         }
     });
-    
+
     filePaths = filePaths.filter(function($) {
         return filter.isIncluded($);
     });
-    
+
     filePaths = filePaths.filter(function($) {
         var e = { fileName: $ };
         self.emit('sourceFileFound', e);
-        
+
         return !e.defaultPrevented;
     });
 

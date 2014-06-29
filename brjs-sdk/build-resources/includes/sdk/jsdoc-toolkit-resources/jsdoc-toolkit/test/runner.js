@@ -1,4 +1,4 @@
-/*global env: true */
+/*global env: true, jasmine: true */
 /*
  * Test Steps:
  * 1. Get Jasmine
@@ -7,18 +7,14 @@
  * 4. Run Jasmine on each directory
  */
 var fs = require('jsdoc/fs');
-var jasmine = require('test/jasmine-jsdoc');
+var logger = require('jsdoc/util/logger');
 var path = require('path');
 
 fs.existsSync = fs.existsSync || path.existsSync;
 
-var hasOwnProp = Object.prototype.hasOwnProperty;
+require( path.join(env.dirname, 'test/jasmine-jsdoc') );
 
-for (var key in jasmine) {
-    if (hasOwnProp.call(jasmine, key)) {
-        this[key] = jasmine[key];
-    }
-}
+var hasOwnProp = Object.prototype.hasOwnProperty;
 
 var opts = {
     verbose: env.opts.verbose || false,
@@ -32,26 +28,38 @@ if (match instanceof Array) {
 }
 opts.matcher = new RegExp("(" + match + ")\\.(" + extensions + ")$", 'i');
 
-var specFolders = ['test/specs', 'plugins/test/specs'];
+var specFolders = [
+    path.join(env.dirname, 'test/specs'),
+    path.join(env.dirname, 'plugins/test/specs')
+];
 
 var failedCount = 0;
 var index = 0;
 
+var testsCompleteCallback;
 var onComplete;
 
-function runNextFolder() {
+var runNextFolder = module.exports = function(callback) {
+    testsCompleteCallback = testsCompleteCallback || callback;
+
+    // silence the logger while we run the tests
+    logger.setLevel(logger.LEVELS.SILENT);
+
     if (index < specFolders.length) {
         jasmine.executeSpecsInFolder(specFolders[index], onComplete, opts);
     }
-}
+    else {
+        process.nextTick(function() {
+            testsCompleteCallback(failedCount);
+        });
+    }
+};
 
 onComplete = function(runner, log) {
     if (runner.results().failedCount !== 0) {
         failedCount += runner.results().failedCount;
     }
+
     index++;
     runNextFolder();
 };
-
-runNextFolder();
-process.exit(failedCount);

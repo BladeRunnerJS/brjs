@@ -1,56 +1,137 @@
-/*global env: true, Packages: true */
+/*global env, Packages */
+/*eslint no-script-url:0 */
 /**
  * @module jsdoc/src/parser
- * @requires fs
- * @requires events
  */
+'use strict';
 
-var Token = Packages.org.mozilla.javascript.Token;
+var jsdoc = {
+    doclet: require('jsdoc/doclet'),
+    name: require('jsdoc/name'),
+    src: {
+        astnode: require('jsdoc/src/astnode'),
+        syntax: require('jsdoc/src/syntax')
+    }
+};
+var logger = require('jsdoc/util/logger');
+var util = require('util');
+
 var hasOwnProp = Object.prototype.hasOwnProperty;
+var Syntax = jsdoc.src.syntax.Syntax;
 
+// Prefix for JavaScript strings that were provided in lieu of a filename.
+var SCHEMA = 'javascript:';
+// TODO: docs
+var PARSERS = exports.PARSERS = {
+    esprima: 'jsdoc/src/parser',
+    rhino: 'rhino/jsdoc/src/parser'
+};
+
+// TODO: docs
+// TODO: not currently used
+function makeGlobalDoclet(globalScope) {
+    var doclet = new jsdoc.doclet.Doclet('/** Auto-generated doclet for global scope */', {});
+
+    if (globalScope) {
+        // TODO: handle global aliases
+        Object.keys(globalScope.ownedVariables).forEach(function(variable) {
+            doclet.meta.vars = doclet.meta.vars || {};
+            doclet.meta.vars[variable] = null;
+        });
+    }
+
+    return doclet;
+}
+
+// TODO: docs
+exports.createParser = function(type) {
+    var path = require('jsdoc/path');
+    var runtime = require('jsdoc/util/runtime');
+
+    var modulePath;
+
+    if (!type) {
+        type = runtime.isRhino() ? 'rhino' : 'esprima';
+    }
+
+    if (PARSERS[type]) {
+        modulePath = PARSERS[type];
+    }
+    else {
+        modulePath = path.join( path.getResourcePath(path.dirname(type)), path.basename(type) );
+    }
+
+    try {
+        return new ( require(modulePath) ).Parser();
+    }
+    catch (e) {
+        logger.fatal('Unable to create the parser type "' + type + '": ' + e);
+    }
+};
+
+// TODO: docs
 /**
  * @class
- * @mixes module:events
+ * @mixes module:events.EventEmitter
  *
  * @example <caption>Create a new parser.</caption>
  * var jsdocParser = new (require('jsdoc/src/parser').Parser)();
  */
-exports.Parser = function() {
-    this._currentSourceName = '';
-    this._resultBuffer = [];
-    this._comments = {
-        original: [],
-        modified: []
-    };
-    //Initialize a global ref to store global members
-    this.refs = {
-        __global__: {
-            meta: {}
-        }
-    };
-    this._visitors = [];
-};
-exports.Parser.prototype = Object.create( require('events').EventEmitter.prototype );
+var Parser = exports.Parser = function(builderInstance, visitorInstance, walkerInstance) {
+    this.clear();
 
+    this._astBuilder = builderInstance || new (require('jsdoc/src/astbuilder')).AstBuilder();
+    this._visitor = visitorInstance || new (require('jsdoc/src/visitor')).Visitor(this);
+    this._walker = walkerInstance || new (require('jsdoc/src/walker')).Walker();
+
+    Object.defineProperties(this, {
+        astBuilder: {
+            get: function() {
+                return this._astBuilder;
+            }
+        },
+        visitor: {
+            get: function() {
+                return this._visitor;
+            }
+        },
+        walker: {
+            get: function() {
+                return this._walker;
+            }
+        }
+    });
+};
+util.inherits(Parser, require('events').EventEmitter);
+
+// TODO: docs
+Parser.prototype.clear = function() {
+    this._resultBuffer = [];
+    this.refs = {};
+    this.refs[jsdoc.src.astnode.GLOBAL_NODE_ID] = {};
+    this.refs[jsdoc.src.astnode.GLOBAL_NODE_ID].meta = {};
+};
+
+// TODO: update docs
 /**
  * Parse the given source files for JSDoc comments.
  * @param {Array.<string>} sourceFiles An array of filepaths to the JavaScript sources.
  * @param {string} [encoding=utf8]
  *
- * @fires jsdocCommentFound
- * @fires symbolFound
- * @fires newDoclet
- * @fires fileBegin
- * @fires fileComplete
+ * @fires module:jsdoc/src/parser.Parser.parseBegin
+ * @fires module:jsdoc/src/parser.Parser.fileBegin
+ * @fires module:jsdoc/src/parser.Parser.jsdocCommentFound
+ * @fires module:jsdoc/src/parser.Parser.symbolFound
+ * @fires module:jsdoc/src/parser.Parser.newDoclet
+ * @fires module:jsdoc/src/parser.Parser.fileComplete
+ * @fires module:jsdoc/src/parser.Parser.parseComplete
  *
  * @example <caption>Parse two source files.</caption>
  * var myFiles = ['file1.js', 'file2.js'];
  * var docs = jsdocParser.parse(myFiles);
  */
-exports.Parser.prototype.parse = function(sourceFiles, encoding) {
+Parser.prototype.parse = function(sourceFiles, encoding) {
     encoding = encoding || env.conf.encoding || 'utf8';
-
-    const SCHEMA = 'javascript:';
 
     var filename = '';
     var sourceCode = '';
@@ -62,6 +143,7 @@ exports.Parser.prototype.parse = function(sourceFiles, encoding) {
     }
 
     e.sourcefiles = sourceFiles;
+    logger.debug('Parsing source files: %j', sourceFiles);
 
     this.emit('parseBegin', e);
 
@@ -78,9 +160,7 @@ exports.Parser.prototype.parse = function(sourceFiles, encoding) {
                 sourceCode = require('jsdoc/fs').readFileSync(filename, encoding);
             }
             catch(e) {
-                console.log('FILE READ ERROR: in module:jsdoc/parser.parseFiles: "' + filename +
-                    '" ' + e);
-                continue;
+                logger.error('Unable to read and parse the source file %s: %s', filename, e);
             }
         }
 
@@ -94,462 +174,62 @@ exports.Parser.prototype.parse = function(sourceFiles, encoding) {
         sourcefiles: parsedFiles,
         doclets: this._resultBuffer
     });
+    logger.debug('Finished parsing source files.');
 
     return this._resultBuffer;
 };
 
-exports.Parser.prototype.fireProcessingComplete = function(doclets) {
+// TODO: docs
+Parser.prototype.fireProcessingComplete = function(doclets) {
     this.emit('processingComplete', { doclets: doclets });
 };
 
-/**
- * @returns {Array<Doclet>} The accumulated results of any calls to parse.
- */
-exports.Parser.prototype.results = function() {
+// TODO: docs
+Parser.prototype.results = function() {
     return this._resultBuffer;
 };
 
+// TODO: update docs
 /**
  * @param {Object} o The parse result to add to the result buffer.
  */
-exports.Parser.prototype.addResult = function(o) {
+Parser.prototype.addResult = function(o) {
     this._resultBuffer.push(o);
 };
 
-/**
- * Empty any accumulated results of calls to parse.
- */
-exports.Parser.prototype.clear = function() {
-    this._currentSourceName = '';
-    this._resultBuffer = [];
-    this._comments = {
-        original: [],
-        modified: []
-    };
+// TODO: docs
+Parser.prototype.addAstNodeVisitor = function(visitor) {
+    this._visitor.addAstNodeVisitor(visitor);
 };
 
-/**
- * Adds a node visitor to use in parsing
- */
-exports.Parser.prototype.addNodeVisitor = function(visitor) {
-    this._visitors.push(visitor);
+// TODO: docs
+Parser.prototype.getAstNodeVisitors = function() {
+    return this._visitor.getAstNodeVisitors();
 };
 
-/**
- * Get the node visitors used in parsing
- */
-exports.Parser.prototype.getVisitors = function() {
-    return this._visitors;
-};
-
+// TODO: docs
 function pretreat(code) {
     return code
         // comment out hashbang at the top of the file, like: #!/usr/bin/env node
-        .replace(/^(\#\![\S \t]+\n)/, '// $1')
+        .replace(/^(\#\![\S \t]+\r?\n)/, '// $1')
 
-        // make starbangstar comments look like real jsdoc comments
+        // to support code minifiers that preserve /*! comments, treat /*!* as equivalent to /**
         .replace(/\/\*\!\*/g, '/**')
-
         // merge adjacent doclets
-        .replace(/\*\/\/\*\*+/g, '@also')
-        // make lent object literals documentable by giving them a dummy name
-        // like return @lends {
-        .replace(/(\/\*\*[^\*\/]*?[\*\s]*@lends\s(?:[^\*]|\*(?!\/))*\*\/\s*)\{/g, '$1 ____ = {')
-        // like @lends return {
-        .replace(/(\/\*\*[^\*\/]*?@lends\b[^\*\/]*?\*\/)(\s*)return(\s*)\{/g,
-            '$2$3 return $1 ____ = {');
+        .replace(/\*\/\/\*\*+/g, '@also');
 }
-
-var tkn = {
-    NAMEDFUNCTIONSTATEMENT: -1001
-};
-exports.Parser.tkn = tkn;
 
 /** @private */
-function parserFactory() {
-    var cx = Packages.org.mozilla.javascript.Context.getCurrentContext();
-
-    var ce = new Packages.org.mozilla.javascript.CompilerEnvirons();
-    ce.setRecordingComments(true);
-    ce.setRecordingLocalJsDocComments(true);
-    ce.setLanguageVersion(180);
-
-    ce.initFromContext(cx);
-    return new Packages.org.mozilla.javascript.Parser(ce, ce.getErrorReporter());
-}
-
-/** @private
-    @memberof module:src/parser.Parser
-*/
-function getTypeName(node) {
-    var type = '';
-
-    if (node) {
-        type = '' + Packages.org.mozilla.javascript.Token.typeToName(node.getType());
-    }
-
-    return type;
-}
-
-/** @private
-    @memberof module:src/parser.Parser
-*/
-function nodeToString(node) {
-    var str;
-
-    if (!node) {
-        return;
-    }
-
-    if (node.type === Token.GETPROP) {
-        str = [nodeToString(node.target), node.property.string].join('.');
-    }
-    else if (node.type === Token.VAR) {
-        str = nodeToString(node.target);
-    }
-    else if (node.type === Token.NAME) {
-        str = node.string;
-    }
-    else if (node.type === Token.STRING) {
-        str = node.value;
-    }
-    else if (node.type === Token.NUMBER) {
-        str = node.value;
-    }
-    else if (node.type === Token.THIS) {
-        str = 'this';
-    }
-    else if (node.type === Token.GETELEM) {
-        str = node.toSource(); // like: Foo['Bar']
-    }
-    else if (node.type === Token.NEG || node.type === Token.TRUE || node.type === Token.FALSE) {
-        str = node.toSource(); // like -1
-    }
-    else {
-        str = getTypeName(node);
-    }
-
-    return '' + str;
-}
-
-/**
- * Attempts to find the name and type of the given node.
- * @private
- * @memberof module:src/parser.Parser
- */
-function aboutNode(node) {
-    var about = {};
-
-    if (node.type == Token.FUNCTION || node.type == tkn.NAMEDFUNCTIONSTATEMENT) {
-        about.name = node.type == tkn.NAMEDFUNCTIONSTATEMENT? '' : '' + node.name;
-        about.type = 'function';
-        about.node = node;
-    }
-    else if (node.type == Token.VAR || node.type == Token.LET || node.type == Token.CONST) {
-        about.name = nodeToString(node.target);
-        if (node.initializer) {  // like var i = 0;
-            about.node = node.initializer;
-            about.value = nodeToString(about.node);
-            about.type = getTypeName(node.initializer);
-            if (about.type === 'FUNCTION' && about.node.name) {
-                about.node.type = tkn.NAMEDFUNCTIONSTATEMENT;
-            }
-        }
-        else { // like var i;
-            about.node = node.target;
-            about.value = nodeToString(about.node);
-            about.type = 'undefined';
-        }
-    }
-    else if (node.type === Token.ASSIGN || node.type === Token.COLON ||
-             node.type === Token.GET || node.type === Token.SET) {
-        about.name = nodeToString(node.left);
-        if (node.type === Token.COLON) {
-
-             // objlit keys with unsafe variable-name characters must be quoted
-            if (!/^[$_a-z][$_a-z0-9]*$/i.test(about.name) ) {
-                about.name = '"'+about.name.replace(/"/g, '\\"')+'"';
-            }
-        }
-        about.node = node.right;
-        about.value = nodeToString(about.node);
-
-        // Getter and setter functions should be treated as properties
-        if (node.type === Token.GET || node.type === Token.SET) {
-            about.type = getTypeName(node);
-        } else {
-            about.type = getTypeName(node.right);
-        }
-
-        if (about.type === 'FUNCTION' && about.node.name) {
-            about.node.type = tkn.NAMEDFUNCTIONSTATEMENT;
-        }
-    }
-    else if (node.type === Token.GETPROP) {
-        about.node = node;
-        about.name = nodeToString(about.node);
-        about.type = getTypeName(node);
-    }
-    else {
-        // type 39 (NAME)
-        var string = nodeToString(node);
-        if (string) {
-            about.name = string;
-        }
-    }
-
-    // get names of the formal parameters declared for this function
-    if (about.node && about.node.getParamCount) {
-        var paramCount = about.node.getParamCount();
-        if (typeof paramCount === 'number') {
-            about.node.flattenSymbolTable(true);
-            var paramNames = [];
-            for (var i = 0, l = paramCount; i < l; i++) {
-                paramNames.push( '' + about.node.getParamOrVarName(i) );
-            }
-            about.paramnames = paramNames;
-        }
-    }
-
-    return about;
-}
-
-/** @private
-    @memberof module:src/parser.Parser
-*/
-function isValidJsdoc(commentSrc) {
-    /*** ignore comments that start with many stars ***/
-    return commentSrc && commentSrc.indexOf('/***') !== 0;
-}
-
-/** @private
- * @memberof module:src/parser.Parser
- */
-function makeVarsFinisher(funcDoc) {
-    return function(e) {
-        //no need to evaluate all things related to funcDoc again, just use it
-        if (funcDoc && e.doclet && e.doclet.alias) {
-            funcDoc.meta.vars[e.code.name] = e.doclet.longname;
-        }
-    };
-}
-
-/** @private
- * @memberof module:src/parser.Parser
- * @param {string} name Full symbol name.
- * @return {string} Basename.
- */
-function getBasename(name) {
-    if (name !== undefined) {
-        return name.replace(/^([$a-z_][$a-z_0-9]*).*?$/i, '$1');
-    }
-    return name;
-}
-
-/** @private
- * @memberof module:src/parser.Parser
- * @param {object} node
- * @return {Array.<number>} Start and end lines.
- */
-function getRange(node) {
-    var range = [];
-    
-    range[0] = parseInt(String(node.getAbsolutePosition()), 10);
-    range[1] = range[0] + parseInt(String(node.getLength()), 10);
-    
-    return range;
-}
-
-/** @private
- * @memberof module:src/parser.Parser
- */
-exports.Parser.prototype._makeEvent = function(node, extras) {
-    extras = extras || {};
-    
-    // fill in default values as needed. if we're overriding a property, don't execute the default
-    // code for that property, since it might blow up.
-    var result = {
-        id: extras.id || 'astnode' + node.hashCode(),
-        comment: extras.comment || String(node.getJsDoc() || '@undocumented'),
-        lineno: extras.lineno || node.left.getLineno(),
-        range: extras.range || getRange(node),
-        filename: extras.filename || this._currentSourceName,
-        astnode: extras.astnode || node,
-        code: extras.code || aboutNode(node),
-        event: extras.event || 'symbolFound',
-        finishers: extras.finishers || [this.addDocletRef]
-    };
-
-    // use the modified version of the comment
-    var idx = this._comments.original.indexOf(result.comment);
-    if (idx !== -1) {
-        result.comment = this._comments.modified[idx];
-    }
-
-    // make sure the result includes extras that don't have default values
-    for (var prop in extras) {
-        if ( hasOwnProp.call(extras, prop) ) {
-            result[prop] = extras[prop];
-        }
-    }
-    
-    return result;
-};
-
-/** @private
- * @memberof module:src/parser.Parser
- */
-exports.Parser.prototype._trackVars = function(node, e) {
-    // keep track of vars in a function or global scope
-    var func = '__global__';
-    var funcDoc = null;
-
-    if (node.enclosingFunction) {
-        func = 'astnode' + node.enclosingFunction.hashCode();
-    }
-
-    funcDoc = this.refs[func];
-    if (funcDoc) {
-        funcDoc.meta.vars = funcDoc.meta.vars || {};
-        funcDoc.meta.vars[e.code.name] = false;
-        e.finishers.push(makeVarsFinisher(funcDoc));
-    }
-};
-
-/** @private */
-exports.Parser.prototype._visitComment = function(comment) {
-    var e;
-    var original = String( comment.toSource() );
-    var modified;
-
-    if ( original && isValidJsdoc(original) ) {
-        this._comments.original.push(original);
-
-        e = {
-            comment: original,
-            lineno: comment.getLineno(),
-            filename: this._currentSourceName,
-            range: getRange(comment)
-        };
-
-        this.emit('jsdocCommentFound', e, this);
-
-        if (e.comment !== original) {
-            modified = e.comment;
-        }
-
-        this._comments.modified.push(modified || original);
-    }
-
-    return true;
-};
-
-/** @private */
-exports.Parser.prototype._visitNode = function(node) {
-    var e,
-        extras,
-        basename,
-        func,
-        funcDoc,
-        i,
-        l;
-
-    if (node.type === Token.ASSIGN) {
-        e = this._makeEvent(node);
-
-        basename = getBasename(e.code.name);
-
-        if (basename !== 'this') {
-            e.code.funcscope = this.resolveVar(node, basename);
-        }
-    }
-    else if (node.type === Token.COLON) { // assignment within an object literal
-        extras = {
-            comment: String(node.left.getJsDoc() || '@undocumented'),
-            finishers: [this.addDocletRef, this.resolveEnum]
-        };
-        e = this._makeEvent(node, extras);
-    }
-    else if (node.type === Token.GET || node.type === Token.SET) { // assignment within an object literal
-        extras = {
-            comment: String(node.left.getJsDoc() || '@undocumented')
-        };
-        e = this._makeEvent(node, extras);
-    }
-    else if (node.type === Token.GETPROP) { // like 'obj.prop' in '/** @typedef {string} */ obj.prop;'
-        // this COULD be a Closure Compiler-style typedef, but it's probably not; to avoid filling
-        // the parse results with junk, only fire an event if there's a JSDoc comment attached
-        extras = {
-            lineno: node.getLineno()
-        };
-        if ( node.getJsDoc() ) {
-            e = this._makeEvent(node, extras);
-        }
-    }
-    else if (node.type == Token.VAR || node.type == Token.LET || node.type == Token.CONST) {
-
-        if (node.variables) {
-            return true; // we'll get each var separately on future visits
-        }
-
-        if (node.parent.variables.toArray()[0] === node) { // like /** blah */ var a=1, b=2, c=3;
-            // the first var assignment gets any jsDoc before the whole var series
-            if (typeof node.setJsDoc !== 'undefined') { node.setJsDoc( node.parent.getJsDoc() ); }
-        }
-
-        extras = {
-            lineno: node.getLineno()
-        };
-        e = this._makeEvent(node, extras);
-
-        this._trackVars(node, e);
-    }
-    else if (node.type == Token.FUNCTION || node.type == tkn.NAMEDFUNCTIONSTATEMENT) {
-        extras = {
-            lineno: node.getLineno()
-        };
-        e = this._makeEvent(node, extras);
-
-        e.code.name = (node.type == tkn.NAMEDFUNCTIONSTATEMENT)? '' : String(node.name) || '';
-
-        this._trackVars(node, e);
-
-        basename = getBasename(e.code.name);
-        e.code.funcscope = this.resolveVar(node, basename);
-    }
-
-    if (!e) {
-        e = {
-            finishers: []
-        };
-    }
-
-    for (i = 0, l = this._visitors.length; i < l; i++) {
-        this._visitors[i].visitNode(node, e, this, this._currentSourceName);
-        if (e.stopPropagation) { break; }
-    }
-
-    if (!e.preventDefault && isValidJsdoc(e.comment)) {
-        this.emit(e.event, e, this);
-    }
-
-    for (i = 0, l = e.finishers.length; i < l; i++) {
-        e.finishers[i].call(this, e);
-    }
-
-    return true;
-};
-
-/** @private */
-exports.Parser.prototype._parseSourceCode = function(sourceCode, sourceName) {
-    var NodeVisitor = Packages.org.mozilla.javascript.ast.NodeVisitor;
-    
+Parser.prototype._parseSourceCode = function(sourceCode, sourceName) {
     var ast;
+    var globalScope;
+
     var e = {
         filename: sourceName
     };
 
     this.emit('fileBegin', e);
+    logger.printInfo('Parsing %s ...', sourceName);
 
     if (!e.defaultPrevented) {
         e = {
@@ -558,239 +238,263 @@ exports.Parser.prototype._parseSourceCode = function(sourceCode, sourceName) {
         };
         this.emit('beforeParse', e);
         sourceCode = e.source;
-        this._currentSourceName = sourceName = e.filename;
+        sourceName = e.filename;
 
         sourceCode = pretreat(e.source);
 
-        ast = parserFactory().parse(sourceCode, sourceName, 1);
+        ast = this._astBuilder.build(sourceCode, sourceName);
+        if (ast) {
+            this._walker.recurse(sourceName, ast, this._visitor);
+        }
 
-        ast.visitComments(
-            new NodeVisitor({
-                visit: this._visitComment.bind(this)
-            })
-        );
-
-        ast.visit(
-            new NodeVisitor({
-                visit: this._visitNode.bind(this)
-            })
-        );
     }
 
     this.emit('fileComplete', e);
-
-    this._currentSourceName = '';
+    logger.info('complete.');
 };
 
+// TODO: docs
+Parser.prototype.addDocletRef = function(e) {
+    var node;
+
+    if (e && e.code && e.code.node) {
+        node = e.code.node;
+        // allow lookup from value => doclet
+        if (e.doclet) {
+            this.refs[node.nodeId] = e.doclet;
+        }
+        // keep references to undocumented anonymous functions, too, as they might have scoped vars
+        else if (
+            (node.type === Syntax.FunctionDeclaration || node.type === Syntax.FunctionExpression) &&
+            !this.refs[node.nodeId] ) {
+            this.refs[node.nodeId] = {
+                longname: jsdoc.name.ANONYMOUS_LONGNAME,
+                meta: {
+                    code: e.code
+                }
+            };
+        }
+    }
+};
+
+// TODO: docs
+Parser.prototype._getDoclet = function(id) {
+    if ( hasOwnProp.call(this.refs, id) ) {
+        return this.refs[id];
+    }
+
+    return null;
+};
+
+// TODO: docs
+/**
+ * @param {string} name - The symbol's longname.
+ * @return {string} The symbol's basename.
+ */
+Parser.prototype.getBasename = function(name) {
+    if (name !== undefined) {
+        return name.replace(/^([$a-z_][$a-z_0-9]*).*?$/i, '$1');
+    }
+};
+
+// TODO: docs
+function definedInScope(doclet, basename) {
+    return !!doclet && !!doclet.meta && !!doclet.meta.vars && !!basename &&
+        hasOwnProp.call(doclet.meta.vars, basename);
+}
+
+// TODO: docs
 /**
  * Given a node, determine what the node is a member of.
- * @param {astnode} node
+ * @param {node} node
  * @returns {string} The long name of the node that this is a member of.
  */
-exports.Parser.prototype.astnodeToMemberof = function(node) {
-    var id,
-        doclet,
-        alias;
+Parser.prototype.astnodeToMemberof = function(node) {
+    var basename;
+    var doclet;
+    var scope;
 
-    if (node.type === Token.VAR || node.type === Token.FUNCTION ||
-        node.type == tkn.NAMEDFUNCTIONSTATEMENT) {
-        if (node.enclosingFunction) { // an inner var or func
-            id = 'astnode' + node.enclosingFunction.hashCode();
-            doclet = this.refs[id];
-            if (!doclet) {
-                return '<anonymous>~';
-            }
-            return (doclet.longname || doclet.name) +  '~';
+    var result = '';
+    var type = node.type;
+
+    if ( (type === Syntax.FunctionDeclaration || type === Syntax.FunctionExpression ||
+        type === Syntax.VariableDeclarator) && node.enclosingScope ) {
+        doclet = this._getDoclet(node.enclosingScope.nodeId);
+
+        if (!doclet) {
+            result = jsdoc.name.ANONYMOUS_LONGNAME + jsdoc.name.INNER;
+       }
+        else {
+            result = (doclet.longname || doclet.name) + jsdoc.name.INNER;
         }
     }
     else {
         // check local references for aliases
-        var scope = node,
-            basename = getBasename(nodeToString(node.left));
-        while(scope.enclosingFunction) {
-            id = 'astnode' + scope.enclosingFunction.hashCode();
-            doclet = this.refs[id];
-            if (doclet && doclet.meta.vars && basename in doclet.meta.vars) {
-                alias = hasOwnProp.call(doclet.meta.vars, basename) ?
-                    doclet.meta.vars[basename] : false;
-                if (alias !== false) {
-                    return [alias, basename];
-                }
-            }
-            // move up
-            scope = scope.enclosingFunction;
-        }
-        // First check to see if we have a global scope alias
-        doclet = this.refs.__global__;
-        if ( doclet && doclet.meta.vars && hasOwnProp.call(doclet.meta.vars, basename) ) {
-            alias = doclet.meta.vars[basename];
-            if (alias !== false) {
-                return [alias, basename];
-            }
-        }
+        scope = node;
+        basename = this.getBasename( jsdoc.src.astnode.nodeToString(node) );
 
-        id = 'astnode' + node.parent.hashCode();
-        doclet = this.refs[id];
-        if (!doclet) {
-            return ''; // global?
-        }
-        return doclet.longname || doclet.name;
-    }
-};
-
-/**
- * Resolve what "this" refers to relative to a node.
- * @param {astnode} node - The "this" node
- * @returns {string} The longname of the enclosing node.
- */
-exports.Parser.prototype.resolveThis = function(node) {
-    var memberof = {};
-    var parent;
-
-    if (node.type !== Token.COLON && node.enclosingFunction) {
-        // get documentation for the enclosing function
-        memberof.id = 'astnode' + node.enclosingFunction.hashCode();
-        memberof.doclet = this.refs[memberof.id];
-
-        if (!memberof.doclet) {
-            return '<anonymous>'; // TODO handle global this?
-        }
-
-        if (memberof.doclet['this']) {
-            return memberof.doclet['this'];
-        }
-        // like: Foo.constructor = function(n) { /** blah */ this.name = n; }
-        else if (memberof.doclet.kind === 'function' && memberof.doclet.memberof) {
-            return memberof.doclet.memberof;
-        }
-        // walk up to the closest class we can find
-        else if (memberof.doclet.kind === 'class' || memberof.doclet.kind === 'module') {
-            return memberof.doclet.longname || memberof.doclet.name;
-        }
-        else {
-            if (node.enclosingFunction){
-                // memberof.doclet.meta.code.val
-                return this.resolveThis(node.enclosingFunction);
+        // walk up the scope chain until we find the scope in which the node is defined
+        while (scope.enclosingScope) {
+            doclet = this._getDoclet(scope.enclosingScope.nodeId);
+            if ( doclet && definedInScope(doclet, basename) ) {
+                result = [doclet.meta.vars[basename], basename];
+                break;
             }
             else {
-                return ''; // TODO handle global this?
+                // move up
+                scope = scope.enclosingScope;
             }
+        }
+
+        // do we know that it's a global?
+        doclet = this.refs[jsdoc.src.astnode.GLOBAL_NODE_ID];
+        if ( doclet && definedInScope(doclet, basename) ) {
+            result = [doclet.meta.vars[basename], basename];
+        }
+
+        // have we seen the node's parent? if so, use that
+        else if (node.parent) {
+            doclet = this._getDoclet(node.parent.nodeId);
+
+            // set the result if we found a doclet. (if we didn't, the AST node may describe a
+            // global symbol.)
+            if (doclet) {
+                result = doclet.longname || doclet.name;
+            }
+        }
+    }
+
+    return result;
+};
+
+// TODO: docs
+/**
+ * Resolve what "this" refers to relative to a node.
+ * @param {node} node - The "this" node
+ * @returns {string} The longname of the enclosing node.
+ */
+Parser.prototype.resolveThis = function(node) {
+    var doclet;
+    var result;
+
+    // In general, if there's an enclosing scope, we use the enclosing scope to resolve `this`.
+    // For object properties, we use the node's parent (the object) instead. This is a consequence
+    // of the source-rewriting hackery that we use to support the `@lends` tag.
+    if (node.type !== Syntax.Property && node.enclosingScope) {
+        doclet = this._getDoclet(node.enclosingScope.nodeId);
+
+        if (!doclet) {
+            result = jsdoc.name.ANONYMOUS_LONGNAME; // TODO handle global this?
+        }
+        else if (doclet['this']) {
+            result = doclet['this'];
+        }
+        // like: Foo.constructor = function(n) { /** blah */ this.name = n; }
+        else if (doclet.kind === 'function' && doclet.memberof) {
+            result = doclet.memberof;
+        }
+        // like: var foo = function(n) { /** blah */ this.bar = n; }
+        else if ( doclet.kind === 'member' && jsdoc.src.astnode.isAssignment(node) ) {
+            result = doclet.longname || doclet.name;
+        }
+        // walk up to the closest class we can find
+        else if (doclet.kind === 'class' || doclet.kind === 'module') {
+            result = doclet.longname || doclet.name;
+        }
+        else if (node.enclosingScope) {
+            result = this.resolveThis(node.enclosingScope);
         }
     }
     else if (node.parent) {
-        if (node.parent.type === Token.COLON) {
-            parent = node.parent.parent;
+        doclet = this.refs[node.parent.nodeId];
+
+        // TODO: is this behavior correct? when do we get here?
+        if (!doclet) {
+            result = ''; // global?
         }
         else {
-            parent = node.parent;
+            result = doclet.longname || doclet.name;
         }
-
-        memberof.id = 'astnode' + parent.hashCode();
-        memberof.doclet = this.refs[memberof.id];
-
-        if (!memberof.doclet) {
-            return ''; // global?
-        }
-
-        return memberof.doclet.longname || memberof.doclet.name;
     }
+    // TODO: is this behavior correct? when do we get here?
     else {
-        return ''; // global?
+        result = ''; // global?
     }
+
+    return result;
 };
 
+// TODO: docs
 /**
  * Given 'var foo = { x: 1 }', find foo from x.
  */
-exports.Parser.prototype.resolvePropertyParent = function(node) {
-    var memberof = {};
-    var parent;
+Parser.prototype.resolvePropertyParent = function(node) {
+    var doclet;
 
-    if (node.parent && node.parent.type === Token.COLON) {
-        parent = node.parent.parent;
-    }
-    else {
-        parent = node.parent;
+    if (node.parent) {
+        doclet = this._getDoclet(node.parent.nodeId);
     }
 
-    if (parent) {
-        memberof.id = 'astnode' + parent.hashCode();
-        memberof.doclet = this.refs[memberof.id];
-
-        if (memberof.doclet) {
-            return memberof;
-        }
-    }
+    return doclet;
 };
 
+// TODO docs
 /**
  * Resolve what function a var is limited to.
  * @param {astnode} node
  * @param {string} basename The leftmost name in the long name: in foo.bar.zip the basename is foo.
  */
-exports.Parser.prototype.resolveVar = function(node, basename) {
+Parser.prototype.resolveVar = function(node, basename) {
     var doclet;
-    var enclosingFunction = node.enclosingFunction;
+    var result;
 
-    if (!enclosingFunction) {
-        return ''; // global
+    var scope = node.enclosingScope;
+
+    if (!scope) {
+        result = ''; // global
+    }
+    else {
+        doclet = this._getDoclet(scope.nodeId);
+        if ( definedInScope(doclet, basename) ) {
+            result = doclet.longname;
+        }
+        else {
+            result = this.resolveVar(scope, basename);
+        }
     }
 
-    doclet = this.refs['astnode'+enclosingFunction.hashCode()];
-    if (doclet && doclet.meta.vars && basename in doclet.meta.vars) {
-        return doclet.longname;
-    }
-
-    return this.resolveVar(enclosingFunction, basename);
+    return result;
 };
 
-exports.Parser.prototype.addDocletRef = function(e) {
-    var node = e.code.node;
-    // allow lookup from value => doclet
-    if (e.doclet) {
-        this.refs['astnode' + node.hashCode()] = e.doclet;
-    }
-    // keep references to undocumented anonymous functions, too, as they might have scoped vars
-    else if ((node.type == Token.FUNCTION || node.type == tkn.NAMEDFUNCTIONSTATEMENT) &&
-        !this.refs['astnode' + node.hashCode()]) {
-        this.refs['astnode' + node.hashCode()] = {
-            longname: '<anonymous>',
-            meta: {
-                code: e.code
-            }
-        };
-    }
-};
+// TODO: docs
+Parser.prototype.resolveEnum = function(e) {
+    var doclet = this.resolvePropertyParent(e.code.node.parent);
 
-exports.Parser.prototype.resolveEnum = function(e) {
-    var parent = this.resolvePropertyParent(e.code.node);
-
-    if (parent && parent.doclet.isEnum) {
-        if (!parent.doclet.properties) {
-            parent.doclet.properties = [];
+    if (doclet && doclet.isEnum) {
+        if (!doclet.properties) {
+            doclet.properties = [];
         }
 
         // members of an enum inherit the enum's type
-        if (parent.doclet.type && !e.doclet.type) {
-            e.doclet.type = parent.doclet.type;
-
+        if (doclet.type && !e.doclet.type) {
+            e.doclet.type = doclet.type;
         }
 
         delete e.doclet.undocumented;
         e.doclet.defaultvalue = e.doclet.meta.code.value;
 
-        // add the doclet to the parent's properties
-        // use a copy of the doclet to avoid circular references
-        parent.doclet.properties.push( require('jsdoc/util/doop').doop(e.doclet) );
+        // add a copy of the doclet to the parent's properties
+        doclet.properties.push( require('jsdoc/util/doop').doop(e.doclet) );
     }
 };
 
+// TODO: document other events
 /**
-    Fired whenever the parser encounters a JSDoc comment in the current source code.
-    @event jsdocCommentFound
-    @memberof module:jsdoc/src/parser.Parser
-    @param {event} e
-    @param {string} e.comment The text content of the JSDoc comment
-    @param {number} e.lineno The line number associated with the found comment.
-    @param {string} e.filename The file name associated with the found comment.
-*/
+ * Fired once for each JSDoc comment in the current source code.
+ * @event jsdocCommentFound
+ * @memberof module:jsdoc/src/parser.Parser
+ * @param {event} e
+ * @param {string} e.comment The text content of the JSDoc comment
+ * @param {number} e.lineno The line number associated with the found comment.
+ * @param {string} e.filename The file name associated with the found comment.
+ */

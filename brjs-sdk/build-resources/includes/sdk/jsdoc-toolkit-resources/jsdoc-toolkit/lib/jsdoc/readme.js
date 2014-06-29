@@ -6,9 +6,10 @@
  * @author Michael Mathews <micmath@gmail.com>
  * @author Ben Blank <ben.blank@gmail.com>
  */
+'use strict';
 
 var fs = require('jsdoc/fs'),
-	markdown = require('jsdoc/util/markdown');
+    markdown = require('jsdoc/util/markdown');
 
 /**
  * @class
@@ -18,7 +19,7 @@ var fs = require('jsdoc/fs'),
 function ReadMe(path) {
     var content = fs.readFileSync(path, env.opts.encoding),
         parse = markdown.getParser();
-    
+
     this.html = parse(content);
 }
 

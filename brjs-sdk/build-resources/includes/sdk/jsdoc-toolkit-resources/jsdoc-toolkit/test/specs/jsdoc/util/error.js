@@ -1,53 +1,38 @@
-/*global describe: true, env: true, it: true */
-describe("jsdoc/util/error", function() {
-	var error = require('jsdoc/util/error'),
-		handle = error.handle;
+/*global beforeEach, describe, expect, it, spyOn */
+'use strict';
 
-	it("should exist", function() {
-		expect(error).toBeDefined();
-		expect(typeof error).toEqual("object");
-	});
+describe('jsdoc/util/error', function() {
+    var error = require('jsdoc/util/error');
+    var handle = error.handle;
+    var logger = require('jsdoc/util/logger');
 
-	it("should export a 'handle' function", function() {
-		expect(handle).toBeDefined();
-		expect(typeof handle).toEqual("function");
-	});
+    it('should exist', function() {
+        expect(error).toBeDefined();
+        expect(typeof error).toBe('object');
+    });
 
-	describe("handle", function() {
-		/*jshint evil: true */
-		var lenient = !!env.opts.lenient;
+    it('should export a "handle" function', function() {
+        expect(handle).toBeDefined();
+        expect(typeof handle).toBe('function');
+    });
 
-		function handleError() {
-			handle( new Error("foo") );
-		}
+    describe('handle', function() {
+        it('should not throw', function() {
+            expect(handle).not.toThrow();
+        });
 
-		function handleObject() {
-			handle( { foo: "bar", baz: "qux"} );
-		}
+        it('should log messages with logger.error()', function() {
+            spyOn(logger, 'error');
+            handle('test');
 
-		afterEach(function() {
-			env.opts.lenient = lenient;
-		});
+            expect(logger.error).toHaveBeenCalled();
+        });
 
-		it("should re-throw errors by default", function() {
-			expect(handleError).toThrow();
-		});
+        it('should use special formatting for Error instances', function() {
+            spyOn(logger, 'error');
+            handle( new Error('Oh no!') );
 
-		it("should re-throw errors if lenient mode is not enabled", function() {
-			env.opts.lenient = false;
-
-			expect(handleError).toThrow();
-		});
-
-		it("should not re-throw errors if lenient mode is enabled", function() {
-			env.opts.lenient = true;
-            spyOn(console, 'log');
-
-			expect(handleError).not.toThrow();
-		});
-
-		it("should still work if the 'e' param is not an instanceof Error", function() {
-			expect(handleObject).toThrow();
-		});
-	});
+            expect(logger.error).toHaveBeenCalledWith('Error: Oh no!');
+        });
+    });
 });

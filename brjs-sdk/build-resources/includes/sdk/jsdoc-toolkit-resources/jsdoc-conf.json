@@ -5,12 +5,12 @@
     "source": {
         "includePattern": ".+\\.js(doc)?$",
         "include": [
-        	"sdk/libs/javascript",
+    		"sdk/libs/javascript"
         ],
-    	"exclude": [ 
+    	"exclude": [
     		"sdk/libs/javascript/es5-shim", 
-    		"sdk/libs/javascript/es5-extjs",
-    		"sdk/libs/javascript/es5-html5shiv",
+    		"sdk/libs/javascript/extjs",
+    		"sdk/libs/javascript/html5shiv",
     		"sdk/libs/javascript/jasmine",
     		"sdk/libs/javascript/jquery",
     		"sdk/libs/javascript/jqueryplugins",
@@ -24,12 +24,11 @@
     		"sdk/libs/javascript/mock4js",
     		"sdk/libs/javascript/momentjs",
     		"sdk/libs/javascript/openajax",
-    		"sdk/libs/javascript/zeroclipboard",
+    		"sdk/libs/javascript/zeroclipboard"
     	],
-        "excludePattern": "((^|\\/|\\\\)_)|(^test(s)?$)(^spec$)(^bundles$)"
+        "excludePattern": "(^|\\/|\\\\)_|[\\\\|//]test(s)?[\\\\|//]|[\\\\|//]spec[\\\\|//]|[\\\\|//]bundles[\\\\|//]"
     },
     "encoding": "utf8",
-    "recurse": true,
     "plugins": [],
     "templates": {
         "cleverLinks": false,

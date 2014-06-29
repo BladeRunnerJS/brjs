@@ -4,7 +4,8 @@ JSDoc 3 is free software, licensed under the Apache License, Version 2.0 (the
 "License"). Commercial and non-commercial use are permitted in compliance with
 the License.
 
-Copyright (c) 2011-2012 Michael Mathews <micmath@gmail.com>
+Copyright (c) 2011-2014 Michael Mathews <micmath@gmail.com> and the
+[contributors to JSDoc](https://github.com/jsdoc3/jsdoc/graphs/contributors).
 All rights reserved.
 
 You may obtain a copy of the License at:
@@ -20,11 +21,10 @@ As stated in Section 7, "Disclaimer of Warranty," of the License:
 > conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
 > PARTICULAR PURPOSE. You are solely responsible for determining the
 > appropriateness of using or redistributing the Work and assume any risks
-> associated with Your exercise of mpermissions under this License.
+> associated with Your exercise of permissions under this License.
 
 The source code for JSDoc 3 is available at:
 https://github.com/jsdoc3/jsdoc
-
 
 # Third-Party Software #
 
@@ -55,6 +55,18 @@ license, which is reproduced below:
 > OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 > SOFTWARE.
 
+## Acorn ##
+
+Portions of the Acorn source code are incorporated into the following files:
+
+- `lib/jsdoc/src/walker.js`
+
+Acorn is distributed under the MIT license, which is reproduced above.
+
+Copyright (C) 2012 Marijn Haverbeke <marijnh@gmail.com>.
+
+The source code for Acorn is available at:
+https://github.com/marijnh/acorn
 
 ## Async.js ##
 
@@ -65,7 +77,6 @@ Copyright (c) 2010 Caolan McMahon.
 The source code for Async.js is available at:
 https://github.com/caolan/async
 
-
 ## Catharsis ##
 
 Catharsis is distributed under the MIT license, which is reproduced above.
@@ -75,16 +86,44 @@ Copyright (c) 2012-2013 Jeff Williams.
 The source code for Catharsis is available at:
 https://github.com/hegemonic/catharsis
 
-
 ## crypto-browserify ##
 
-License information for crypto-browserify is not available. It is assumed that
-the package is distributed under the MIT license or a similar open source
-license.
+crypto-browserify is distributed under the MIT license, which is reproduced
+above.
+
+Copyright (c) 2013 Dominic Tarr.
 
 The source code for crypto-browserify is available at:
 https://github.com/dominictarr/crypto-browserify
 
+## Esprima ##
+
+Esprima is distributed under the BSD 2-clause license:
+
+> Redistribution and use in source and binary forms, with or without
+> modification, are permitted provided that the following conditions are met:
+>
+> - Redistributions of source code must retain the above copyright notice,
+>   this list of conditions and the following disclaimer.
+> - Redistributions in binary form must reproduce the above copyright notice,
+>   this list of conditions and the following disclaimer in the documentation
+>   and/or other materials provided with the distribution.
+>
+> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+> AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+> IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+> ARE DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+> DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+> (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+> LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+> ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+> (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+> THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Copyright (c) 2011-2013 Ariya Hidayat and other Esprima contributors.
+
+The source code for Esprima is available at:
+https://github.com/ariya/esprima
 
 ## github-flavored-markdown ##
 
@@ -124,7 +163,6 @@ github-flavored-markdown is distributed under the BSD 3-clause license:
 The source code for github-flavored-markdown is available at:
 https://github.com/hegemonic/github-flavored-markdown
 
-
 ## Google Code Prettify ##
 
 Google Code Prettify is distributed under the Apache License 2.0, which is
@@ -135,7 +173,6 @@ Copyright (c) 2006 Google Inc.
 The source code for Google Code Prettify is available at:
 https://code.google.com/p/google-code-prettify/
 
-
 ## Jasmine ##
 
 Jasmine is distributed under the MIT license, which is reproduced above.
@@ -144,7 +181,6 @@ Copyright (c) 2008-2011 Pivotal Labs.
 
 The source code for Jasmine is available at:
 https://github.com/pivotal/jasmine
-
 
 ## jasmine-node ##
 
@@ -155,7 +191,6 @@ Copyright (c) 2010 Adam Abrons and Misko Hevery (http://getangular.com).
 The source code for jasmine-node is available at:
 https://github.com/mhevery/jasmine-node
 
-
 ## js2xmlparser ##
 
 js2xmlparser is distributed under the MIT license, which is reproduced above.
@@ -164,7 +199,6 @@ Copyright (c) 2012 Michael Kourlas.
 
 The source code for js2xmlparser is available at:
 https://github.com/michaelkourlas/node-js2xmlparser
-
 
 ## JSHint ##
 
@@ -198,7 +232,6 @@ modified MIT license:
 The source code for JSHint is available at:
 https://github.com/jshint/jshint
 
-
 ## Node.js ##
 
 Portions of the Node.js source code are incorporated into the following files:
@@ -215,6 +248,19 @@ Copyright Joyent, Inc. and other Node contributors. All rights reserved.
 The source code for Node.js is available at:
 https://github.com/joyent/node
 
+## node-browser-builtins ##
+
+Portions of the node-browser-builtins source code are incorporated into the
+following files:
+
+- `rhino/assert.js`
+- `rhino/rhino-shim.js`
+
+node-browser-builtins is distributed under the MIT license, which is reproduced
+above.
+
+The source code for node-browser-builtins is available at:
+https://github.com/alexgorbatchev/node-browser-builtins
 
 ## node-browserify ##
 
@@ -228,56 +274,23 @@ node-browserify is distributed under the MIT license, which is reproduced above.
 The source code for node-browserify is available at:
 https://github.com/substack/node-browserify
 
+## Requizzle ##
 
-## TaffyDB ##
+Requizzle is distributed under the MIT license, which is reproduced above.
 
-TaffyDB is distributed under a modified BSD license:
+Copyright (c) 2014 Google Inc. All rights reserved.
+Copyright (c) 2012-2013 Johannes Ewald.
 
-> All rights reserved.
->
-> Redistribution and use of this software in source and binary forms, with or
-> without modification, are permitted provided that the following condition is
-> met:
->
-> Redistributions of source code must retain the above copyright notice, this
-> list of conditions and the following disclaimer.
->
-> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-> AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-> IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-> ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
-> LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-> CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-> INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-> CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-> ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-> POSSIBILITY OF SUCH DAMAGE.
-
-The source code for TaffyDB is available at:
-https://github.com/hegemonic/taffydb
-
-
-## Tomorrow Theme for Google Code Prettify ##
-
-License information for the Tomorrow Theme for Google Code Prettify is not
-available. It is assumed that the package is distributed under an open source
-license that is compatible with the Apache License 2.0.
-
-Copyright (c) Yoshihide Jimbo.
-
-The source code for the Tomorrow Theme is available at:
-https://github.com/jmblog/color-themes-for-google-code-prettify
-
+The source code for Requizzle is available at:
+https://github.com/hegemonic/requizzle
 
 ## Rhino ##
 
 Rhino is distributed under the following licenses:
 
-### MPL/GPL License ###
-The majority of the source code for Rhino is available under a MPL 1.1/GPL 2.0
-license. JSDoc 3 uses the source code under the MPL 1.1 license, which is
-included in this distribution.
+### MPL 2.0 License ###
+The majority of the source code for Rhino is available under the Mozilla Public
+License (MPL) 2.0, which is included in this distribution.
 
 ### License for portions of the Rhino debugger ###
 Additionally, some files are available under the BSD 3-clause license:
@@ -309,18 +322,64 @@ Additionally, some files are available under the BSD 3-clause license:
 
 ### Source Code ###
 The source code for Rhino is available at:
-https://github.com/hegemonic/rhino
+https://github.com/jsdoc3/rhino
 
+## TaffyDB ##
+
+TaffyDB is distributed under a modified BSD license:
+
+> All rights reserved.
+>
+> Redistribution and use of this software in source and binary forms, with or
+> without modification, are permitted provided that the following condition is
+> met:
+>
+> Redistributions of source code must retain the above copyright notice, this
+> list of conditions and the following disclaimer.
+>
+> THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+> AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+> IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+> ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+> LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+> CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+> SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+> INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+> CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+> ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+> POSSIBILITY OF SUCH DAMAGE.
+
+The source code for TaffyDB is available at:
+https://github.com/hegemonic/taffydb
+
+## Tomorrow Theme for Google Code Prettify ##
+
+License information for the Tomorrow Theme for Google Code Prettify is not
+available. It is assumed that the package is distributed under an open source
+license that is compatible with the Apache License 2.0.
+
+Copyright (c) Yoshihide Jimbo.
+
+The source code for the Tomorrow Theme is available at:
+https://github.com/jmblog/color-themes-for-google-code-prettify
+
+## tv4 ##
+
+tv4 is in the public domain. It is also distributed under the MIT license, which
+is reproduced above.
+
+The source code for tv4 is available at:
+https://github.com/geraintluff/tv4
 
 ## Underscore.js ##
 
 Underscore.js is distributed under the MIT license, which is reproduced above.
 
-Copyright (c) 2009-2012 Jeremy Ashkenas, DocumentCloud.
+Copyright (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative
+Reporters & Editors.
 
 The source code for Underscore.js is available at:
-https://github.com/documentcloud/underscore
-
+https://github.com/jashkenas/underscore
 
 ## wrench-js ##
 

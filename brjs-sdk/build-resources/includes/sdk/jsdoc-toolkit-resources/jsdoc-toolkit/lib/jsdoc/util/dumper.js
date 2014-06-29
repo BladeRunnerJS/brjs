@@ -1,59 +1,92 @@
+/*global Set */
 /**
  * Recursively print out all names and values in a data structure.
  * @module jsdoc/util/dumper
  * @author Michael Mathews <micmath@gmail.com>
  * @license Apache License 2.0 - See file 'LICENSE.md' in this project.
  */
+'use strict';
 
 var util = require('util');
+var setDefined = typeof Set !== 'undefined';
 
-var seenItems = [];
-function seen(object) {
-    if (seenItems.indexOf(object) !== -1) {
-        return true;
+function ObjectWalker() {
+    if (setDefined) {
+        this.seenItems = new Set();
+    } else {
+        this.seenItems = [];
     }
-
-    return false;
 }
+
+ObjectWalker.prototype.seen = function(object) {
+    var result;
+    if (setDefined) {
+        result =  this.seenItems.has(object);
+    } else {
+        result = object.hasBeenSeenByWalkerDumper;
+    }
+    return result;
+};
+
+ObjectWalker.prototype.markAsSeen = function(object) {
+    if (setDefined) {
+        this.seenItems.add(object);
+    } else {
+        object.hasBeenSeenByWalkerDumper = true;
+        this.seenItems.push(object);
+    }
+};
+
+ObjectWalker.prototype.cleanSeenFlag = function() {
+    if (setDefined) {
+        this.seenItems = new Set();
+    } else {
+        this.seenItems.forEach(function(object) {
+            delete object.hasBeenSeenByWalkerDumper;
+        });
+    }
+};
 
 // some objects are unwalkable, like Java native objects
-function isUnwalkable(o) {
+ObjectWalker.prototype.isUnwalkable = function(o) {
     return (o && typeof o === 'object' && typeof o.constructor === 'undefined');
-}
+};
 
-function isFunction(o) {
+ObjectWalker.prototype.isFunction = function(o) {
     return (o && typeof o === 'function' || o instanceof Function);
-}
+};
 
-function isObject(o) {
+ObjectWalker.prototype.isObject = function(o) {
     return o && o instanceof Object ||
         (o && typeof o.constructor !== 'undefined' && o.constructor.name === 'Object');
-}
+};
 
-function checkCircularRefs(o, func) {
-    if ( seen(o) ) {
+ObjectWalker.prototype.checkCircularRefs = function(o, func) {
+    if ( this.seen(o) ) {
         return '<CircularRef>';
     }
     else {
-        seenItems.push(o);
-        return func.call(this, o);
+        this.markAsSeen(o);
+        return func(o);
     }
-}
+};
 
-function walk(o) {
+ObjectWalker.prototype.walk = function(o) {
     var result;
 
-    if ( isUnwalkable(o) ) {
+    var self = this;
+
+    if ( this.isUnwalkable(o) ) {
         result = '<Object>';
     }
     else if ( o === undefined ) {
-        result = 'undefined';
+        result = null;
     }
     else if ( Array.isArray(o) ) {
-        result = checkCircularRefs(o, function(arr) {
+        result = this.checkCircularRefs(o, function(arr) {
             var newArray = [];
             arr.forEach(function(item) {
-                newArray.push( walk(item) );
+                newArray.push( self.walk(item) );
             });
 
             return newArray;
@@ -65,14 +98,18 @@ function walk(o) {
     else if ( util.isDate(o) ) {
         result = '<Date ' + o.toUTCString() + '>';
     }
-    else if ( isFunction(o) ) {
+    else if ( util.isError(o) ) {
+        result = { message: o.message };
+    }
+    else if ( this.isFunction(o) ) {
         result = '<Function' + (o.name ? ' ' + o.name : '') + '>';
     }
-    else if ( isObject(o) && o !== null ) {
-        result = checkCircularRefs(o, function(obj) {
+    else if ( this.isObject(o) && o !== null ) {
+        result = this.checkCircularRefs(o, function(obj) {
             var newObj = {};
             Object.keys(obj).forEach(function(key) {
-                newObj[key] = walk(obj[key]);
+                if (!setDefined && key === 'hasBeenSeenByWalkerDumper') { return; }
+                newObj[key] = self.walk(obj[key]);
             });
 
             return newObj;
@@ -82,13 +119,17 @@ function walk(o) {
     else {
         result = o;
     }
-   
+
     return result;
-}
+};
 
 /**
  * @param {*} object
  */
 exports.dump = function(object) {
-    return JSON.stringify(walk(object), null, 4);
+    var walker = new ObjectWalker();
+    var result = JSON.stringify(walker.walk(object), null, 4);
+    walker.cleanSeenFlag();
+
+    return result;
 };

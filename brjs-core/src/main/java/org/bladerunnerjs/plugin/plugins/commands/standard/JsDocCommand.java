@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -67,13 +68,12 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	@Override
 	protected int doCommand(JSAPResult parsedArgs) throws CommandArgumentsException, CommandOperationException {
 		String appName = parsedArgs.getString("app-name");
-		boolean isVerbose = parsedArgs.getBoolean("verbose-flag");
 		App app = brjs.app(appName);
 		
 		if(!app.dirExists()) throw new NodeDoesNotExistException(app, this);
 		
 		File outputDir = app.storageDir(APP_STORAGE_DIR_NAME);
-		runCommand(app, isVerbose, outputDir);
+		runCommand(app, outputDir);
 		
 		try {
 			replaceBuildDateToken(new File(outputDir, "index.html"));
@@ -88,28 +88,33 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		return 0;
 	}
 	
-	private void runCommand(App app, boolean isVerbose, File outputDir) throws CommandOperationException {
+	private void runCommand(App app, File outputDir) throws CommandOperationException {
 		List<String> commandArgs = new ArrayList<>();
 		
+		File workingDir = brjs.dir();
 		File jsdocToolkitInstallDir = getSystemOrUserConfPath(brjs, brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
 		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
 		File jsDocTemplatesDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-template");
 		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
 		
-		commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), jsDocToolkitDir)+"/jsdoc");
-		commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), app.dir()) ); // add the app dir, libraries are included via jsdoc-conf.json
-		commandArgs.add("-c"); // set the config file
-			commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), jsDocConfFile) );
-		commandArgs.add("-t"); // the JsDoc template to use
-			commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), jsDocTemplatesDir) ); 
-		commandArgs.add("-d"); // the output dir
-			commandArgs.add( RelativePathUtility.get(brjs, brjs.dir(), outputDir) ); 
-		if (isVerbose) {
-			commandArgs.add("--verbose");			
-		}
+		commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocToolkitDir)+"/jsdoc");
 		
+		commandArgs.add( RelativePathUtility.get(brjs, workingDir, app.dir())+"/" ); // add the app dir
+		// sdk/libs/javascript is added via config file so dirs can be optionally ignored
+		commandArgs.add("-c"); // set the config file
+			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocConfFile) );
+		commandArgs.add("-r"); // recurse into dirs
+		commandArgs.add("-l"); // be lenient (dont blow up on invalid @ args)
+		commandArgs.add("-t"); // the JsDoc template to use
+			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocTemplatesDir) ); 
+		commandArgs.add("-d"); // the output dir
+			commandArgs.add( RelativePathUtility.get(brjs, workingDir, outputDir) ); 
+		
+		logger.info("running command: " + StringUtils.join(commandArgs, " "));
+		logger.info("working directory: " + workingDir);
+			
 		ProcessBuilder processBuilder = new ProcessBuilder();
-		processBuilder.directory( brjs.dir() );
+		processBuilder.directory( workingDir );
 		processBuilder.command(commandArgs);
 		
 		CommandRunnerUtility.runCommand(brjs, processBuilder);

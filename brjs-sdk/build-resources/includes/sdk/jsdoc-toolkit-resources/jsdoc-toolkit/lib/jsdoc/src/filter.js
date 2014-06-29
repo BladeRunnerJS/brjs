@@ -1,13 +1,25 @@
+/*global env: true */
 /**
-	@module jsdoc/src/filter
-	
-	@author Michael Mathews <micmath@gmail.com>
-	@license Apache License 2.0 - See file 'LICENSE.md' in this project.
+    @module jsdoc/src/filter
+
+    @author Michael Mathews <micmath@gmail.com>
+    @license Apache License 2.0 - See file 'LICENSE.md' in this project.
  */
+'use strict';
 
 var path = require('jsdoc/path');
 
-var pwd = process.env.PWD;
+var pwd = env.pwd;
+
+function makeRegExp(config) {
+    var regExp = null;
+
+    if (config) {
+        regExp = (typeof config === 'string') ? new RegExp(config) : config;
+    }
+
+    return regExp;
+}
 
 /**
     @constructor
@@ -22,12 +34,8 @@ exports.Filter = function(opts) {
             return path.resolve(pwd, $);
         }) :
         null;
-    this.includePattern = opts.includePattern?
-                            typeof opts.includePattern === 'string'? new RegExp(opts.includePattern) : opts.includePattern
-                            : null;
-    this.excludePattern = opts.excludePattern?
-                            typeof opts.excludePattern === 'string'? new RegExp(opts.excludePattern) : opts.excludePattern
-                            : null;
+    this.includePattern = makeRegExp(opts.includePattern);
+    this.excludePattern = makeRegExp(opts.excludePattern);
 };
 
 /**
@@ -35,19 +43,25 @@ exports.Filter = function(opts) {
     @returns {boolean} Should the given file be included?
  */
 exports.Filter.prototype.isIncluded = function(filepath) {
+    var included = true;
+
     filepath = path.resolve(pwd, filepath);
 
     if ( this.includePattern && !this.includePattern.test(filepath) ) {
-        return false;
+        included = false;
     }
-    
+
     if ( this.excludePattern && this.excludePattern.test(filepath) ) {
-        return false;
+        included = false;
     }
-    
-    if ( this.exclude && this.exclude.indexOf(filepath) > -1 ) {
-        return false;
+
+    if (this.exclude) {
+        this.exclude.forEach(function(exclude) {
+            if ( filepath.indexOf(exclude) === 0 ) {
+                included = false;
+            }
+        });
     }
-    
-    return true;
+
+    return included;
 };

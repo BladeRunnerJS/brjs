@@ -1,10 +1,14 @@
-/*global afterEach: true, beforeEach: true, describe: true, expect: true, env: true, it: true,
-jasmine: true, spyOn: true, xdescribe: true */
+/*global afterEach, beforeEach, describe, expect, env, it, jasmine, spyOn */
+/*eslint quotes:0 */
+'use strict';
+
 var hasOwnProp = Object.prototype.hasOwnProperty;
 
 describe("jsdoc/util/templateHelper", function() {
     var helper = require('jsdoc/util/templateHelper'),
         doclet = require('jsdoc/doclet'),
+        doop = require('jsdoc/util/doop'),
+        logger = require('jsdoc/util/logger'),
         resolver = require('jsdoc/tutorial/resolver'),
         taffy = require('taffydb').taffy;
     helper.registerLink('test', 'path/to/test.html');
@@ -129,29 +133,21 @@ describe("jsdoc/util/templateHelper", function() {
         expect(typeof helper.createLink).toBe("function");
     });
 
-
     describe("setTutorials", function() {
         // used in tutorialToUrl, toTutorial.
         it("setting tutorials to null causes all tutorial lookups to fail", function() {
             // bit of a dodgy test but the best I can manage. setTutorials doesn't do much.
             helper.setTutorials(null);
             // should throw error: no 'getByName' in tutorials.
-            expect(function () { return helper.tutorialToUrl('asdf'); }).toThrow('Cannot call method "getByName" of null');
+            expect(function () { return helper.tutorialToUrl('asdf'); }).toThrow();
         });
 
         it("setting tutorials to the root tutorial object lets lookups work", function() {
-            var lenient = !!env.opts.lenient;
-            spyOn(console, 'log');
-
-            // tutorial doesn't exist, we want to muffle that error
-            env.opts.lenient = true;
-
             helper.setTutorials(resolver.root);
             spyOn(resolver.root, 'getByName');
             helper.tutorialToUrl('asdf');
-            expect(resolver.root.getByName).toHaveBeenCalled();
 
-            env.opts.lenient = lenient;
+            expect(resolver.root.getByName).toHaveBeenCalled();
         });
     });
 
@@ -265,7 +261,7 @@ describe("jsdoc/util/templateHelper", function() {
             var link = helper.linkto('linktoTest', 'link text');
             expect(link).toBe('<a href="test.html">link text</a>');
         });
-        
+
         it('includes a "class" attribute in the link if a class is specified', function() {
             var link = helper.linkto('linktoTest', 'link text', 'myclass');
             expect(link).toBe('<a href="test.html" class="myclass">link text</a>');
@@ -300,6 +296,20 @@ describe("jsdoc/util/templateHelper", function() {
                 '<a href="fakeclass.html">LinktoFakeClass</a>)>');
         });
 
+        it('works correctly with type unions that are not enclosed in parentheses', function() {
+            var link = helper.linkto('linktoTest|LinktoFakeClass', 'link text');
+            expect(link).toBe('(<a href="test.html">linktoTest</a>|' +
+                '<a href="fakeclass.html">LinktoFakeClass</a>)');
+        });
+
+        it('does not try to parse a longname starting with <anonymous> as a type application',
+            function() {
+            spyOn(logger, 'error');
+
+            helper.linkto('<anonymous>~foo');
+            expect(logger.error).not.toHaveBeenCalled();
+        });
+
         it('returns a link when a URL is specified', function() {
             var link = helper.linkto('http://example.com');
             expect(link).toBe('<a href="http://example.com">http://example.com</a>');
@@ -327,7 +337,7 @@ describe("jsdoc/util/templateHelper", function() {
             function getLink() {
                 link = helper.linkto(text);
             }
-            
+
             // make sure we're not trying to parse the inline link as a type expression
             expect(getLink).not.toThrow();
             // linkto doesn't process {@link} tags
@@ -336,11 +346,20 @@ describe("jsdoc/util/templateHelper", function() {
     });
 
     describe("htmlsafe", function() {
-        // turns < into &lt; (doesn't do > or &amp etc...)
         it('should convert all occurences of < to &lt;', function() {
             var inp = '<h1>Potentially dangerous.</h1>',
                 out = helper.htmlsafe(inp);
             expect(out).toBe('&lt;h1>Potentially dangerous.&lt;/h1>');
+        });
+
+        it('should convert all occurrences of & to &amp;', function() {
+            var input = 'foo && bar & baz;';
+            expect( helper.htmlsafe(input) ).toBe('foo &amp;&amp; bar &amp; baz;');
+        });
+
+        it('should not double-convert ampersands', function() {
+            var input = '<h1>Foo & Friends</h1>';
+            expect( helper.htmlsafe(input) ).toBe('&lt;h1>Foo &amp; Friends&lt;/h1>');
         });
     });
 
@@ -385,31 +404,35 @@ describe("jsdoc/util/templateHelper", function() {
         // instead parse a file from fixtures and verify it?
         var classes = [
             {kind: 'class'}, // global
-            {kind: 'class', memberof: 'SomeNamespace'}, // not global
+            {kind: 'class', memberof: 'SomeNamespace'} // not global
         ];
         var externals = [
-            {kind: 'external'},
+            {kind: 'external'}
         ];
         var events = [
-            {kind: 'event'},
+            {kind: 'event'}
         ];
         var mixins = [
-            {kind: 'mixin'},
+            {kind: 'mixin'}
         ];
         var modules = [
-            {kind: 'module'},
+            {kind: 'module'}
         ];
         var namespaces = [
-            {kind: 'namespace'},
+            {kind: 'namespace'}
         ];
-        var misc = [
-            {kind: 'function'}, // global
-            {kind: 'member'}, // global
-            {kind: 'constant'}, // global
-            {kind: 'typedef'}, // global
-            {kind: 'constant', memberof: 'module:one/two'}, // not global
-            {kind: 'function', name: 'module:foo', longname: 'module:foo'} // not global
+        var miscGlobal = [
+            {kind: 'function'},
+            {kind: 'member'},
+            {kind: 'constant'},
+            {kind: 'typedef'}
         ];
+        var miscNonGlobal = [
+            {kind: 'constant', memberof: 'module:one/two'},
+            {kind: 'function', name: 'module:foo', longname: 'module:foo'},
+            {kind: 'member', name: 'module:bar', longname: 'module:bar'}
+        ];
+        var misc = miscGlobal.concat(miscNonGlobal);
         var array = classes.concat(externals.concat(events.concat(mixins.concat(modules.concat(namespaces.concat(misc))))));
         var data = taffy(array);
         var members = helper.getMembers(data);
@@ -469,7 +492,7 @@ describe("jsdoc/util/templateHelper", function() {
         });
 
         it("globals are detected", function() {
-            compareObjectArrays(misc.slice(0, -2), members.globals);
+            compareObjectArrays(miscGlobal, members.globals);
         });
     });
 
@@ -493,11 +516,9 @@ describe("jsdoc/util/templateHelper", function() {
                     if (tests[src]) {
                         expect(attribs).toContain(tests[src]);
                     } else {
-                        if (whatNotToContain !== undefined) {
-                            if (Array.isArray(whatNotToContain)) {
-                                for (var i = 0; i < whatNotToContain.length; ++i) {
-                                    expect(attribs).not.toContain(whatNotToContain[i]);
-                                }
+                        if (Array.isArray(whatNotToContain)) {
+                            for (var i = 0; i < whatNotToContain.length; ++i) {
+                                expect(attribs).not.toContain(whatNotToContain[i]);
                             }
                         } else {
                             expect(attribs.length).toBe(0);
@@ -509,7 +530,7 @@ describe("jsdoc/util/templateHelper", function() {
 
         it('should detect if a doclet is virtual', function() {
             var tests = {
-                'My constant. \n @virtual': 'virtual',
+                'My constant. \n @virtual': 'abstract',
                 'asdf': false
             };
             doTests(tests);
@@ -557,7 +578,7 @@ describe("jsdoc/util/templateHelper", function() {
                 'asdf': false,
                 '@name Fdsa#foo\n@readonly': 'readonly',
                 // kind is not 'member'.
-                '@const asdf\n@readonly': false,
+                '@const asdf\n@readonly': 'constant',
                 '@function asdf\n@readonly': false,
                 '@function Asdf#bar\n@readonly': false
             };
@@ -677,7 +698,7 @@ describe("jsdoc/util/templateHelper", function() {
 
     describe("getSignatureReturns", function() {
         // retrieves links to types that the member can return.
-        
+
         it("returns a value with correctly escaped HTML", function() {
             var mockDoclet = {
                 returns: [
@@ -738,23 +759,6 @@ describe("jsdoc/util/templateHelper", function() {
             expect(returns).toContain('number');
 
             delete helper.longnameToUrl.MyClass;
-        });
-
-        it("doesn't throw an error in lenient mode if a 'returns' item has no value", function() {
-            function getReturns() {
-                return helper.getSignatureReturns(doc);
-            }
-
-            var doc;
-            var lenient = !!env.opts.lenient;
-
-            env.opts.lenient = true;
-            spyOn(console, 'log');
-            doc = new doclet.Doclet('/** @function myFunction\n@returns */', {});
-
-            expect(getReturns).not.toThrow();
-
-            env.opts.lenient = lenient;
         });
     });
 
@@ -822,13 +826,13 @@ describe("jsdoc/util/templateHelper", function() {
     });
 
     describe("addEventListeners", function() {
-        var doclets = taffy(jasmine.getDocSetFromFile('test/fixtures/listenstag.js').doclets),
+        var doclets = ( taffy(doop(jasmine.getDocSetFromFile('test/fixtures/listenstag.js').doclets)) ),
             ev = helper.find(doclets, {longname: 'module:myModule.event:MyEvent'})[0],
             ev2 = helper.find(doclets, {longname: 'module:myModule~Events.event:Event2'})[0],
             ev3 = helper.find(doclets, {longname: 'module:myModule#event:Event3'})[0];
-       
+
         helper.addEventListeners(doclets);
-        
+
         it("adds a 'listeners' array to events with the longnames of the listeners", function() {
             expect(Array.isArray(ev.listeners)).toBe(true);
             expect(Array.isArray(ev2.listeners)).toBe(true);
@@ -851,6 +855,11 @@ describe("jsdoc/util/templateHelper", function() {
     });
 
     describe("prune", function() {
+        var priv = !!env.opts.private;
+
+        afterEach(function() {
+            env.opts.private = priv;
+        });
 
         var array = [
             // keep
@@ -878,23 +887,19 @@ describe("jsdoc/util/templateHelper", function() {
         });
 
         it('should prune private members if env.opts.private is falsy', function() {
-            var priv = !!env.opts.private;
+            var pruned;
 
             env.opts.private = false;
-            var pruned = helper.prune( taffy(arrayPrivate) )().get();
+            pruned = helper.prune( taffy(arrayPrivate) )().get();
             compareObjectArrays([], pruned);
-
-            env.opts.private = !!priv;
         });
 
         it('should not prune private members if env.opts.private is truthy', function() {
-            var priv = !!env.opts.private;
+            var pruned;
 
             env.opts.private = true;
-            var pruned = helper.prune( taffy(arrayPrivate) )().get();
+            pruned = helper.prune( taffy(arrayPrivate) )().get();
             compareObjectArrays(arrayPrivate, pruned);
-
-            env.opts.private = !!priv;
         });
     });
 
@@ -918,46 +923,34 @@ describe("jsdoc/util/templateHelper", function() {
     });
 
     describe("tutorialToUrl", function() {
-        var lenient = !!env.opts.lenient;
-
         function missingTutorial() {
             var url = helper.tutorialToUrl("be-a-perfect-person-in-just-three-days");
         }
 
         beforeEach(function() {
-            spyOn(console, 'log');
+            spyOn(logger, 'error');
             helper.setTutorials(resolver.root);
         });
 
         afterEach(function() {
             helper.setTutorials(null);
-            env.opts.lenient = lenient;
         });
 
-        it('throws an exception if the tutorial is missing and the lenient option is not enabled', function() {
-            env.opts.lenient = false;
-            expect(missingTutorial).toThrow();
-        });
-        
-        it('does not throw an exception if the tutorial is missing and the lenient option is enabled', function() {
-            env.opts.lenient = true;
+        it('logs an error if the tutorial is missing', function() {
+            helper.tutorialToUrl('be-a-perfect-person-in-just-three-days');
 
-            expect(missingTutorial).not.toThrow();
+            expect(logger.error).toHaveBeenCalled();
         });
 
-        it("does not return a tutorial if its name is a reserved JS keyword and it doesn't exist", function() {
-            env.opts.lenient = false;
-            expect(function () { helper.tutorialToUrl('prototype'); }).toThrow();
+        it("logs an error if the tutorial's name is a reserved JS keyword and it doesn't exist", function() {
+            helper.tutorialToUrl('prototype');
+
+            expect(logger.error).toHaveBeenCalled();
         });
 
         it("creates links to tutorials if they exist", function() {
-            // NOTE: we have to set lenient = true here because otherwise JSDoc will
-            // cry when trying to resolve the same set of tutorials twice (once
-            // for the tutorials tests, and once here).
-            env.opts.lenient = true;
-
             // load the tutorials we already have for the tutorials tests
-            resolver.load(__dirname + "/test/tutorials/tutorials");
+            resolver.load(env.dirname + "/test/tutorials/tutorials");
             resolver.resolve();
 
             var url = helper.tutorialToUrl('test');
@@ -977,32 +970,19 @@ describe("jsdoc/util/templateHelper", function() {
     });
 
     describe("toTutorial", function() {
-        var lenient = !!env.opts.lenient;
-
-        function missingParam() {
-            helper.toTutorial();
-        }
-
-        afterEach(function() {
-            env.opts.lenient = lenient;
-            helper.setTutorials(null);
-        });
-
         beforeEach(function () {
+            spyOn(logger, 'error');
             helper.setTutorials(resolver.root);
         });
 
-        it('throws an exception if the first param is missing and the lenient option is not enabled', function() {
-            env.opts.lenient = false;
-
-            expect(missingParam).toThrow();
+        afterEach(function() {
+            helper.setTutorials(null);
         });
-        
-        it('does not throw an exception if the first param is missing and the lenient option is enabled', function() {
-            spyOn(console, 'log');
-            env.opts.lenient = true;
 
-            expect(missingParam).not.toThrow();
+        it('logs an error if the first param is missing', function() {
+            helper.toTutorial();
+
+            expect(logger.error).toHaveBeenCalled();
         });
 
         // missing tutorials
@@ -1038,16 +1018,9 @@ describe("jsdoc/util/templateHelper", function() {
 
         // now we do non-missing tutorials.
         it("returns a link to the tutorial if not missing", function() {
-            // NOTE: we have to set lenient = true here because otherwise JSDoc will
-            // cry when trying to resolve the same set of tutorials twice (once
-            // for the tutorials tests, and once here).
-            env.opts.lenient = true;
-            spyOn(console, 'log');
-
             // load the tutorials we already have for the tutorials tests
-            resolver.load(__dirname + "/test/tutorials/tutorials");
+            resolver.load(env.dirname + "/test/tutorials/tutorials");
             resolver.resolve();
-
 
             var link = helper.toTutorial('constructor', 'The Constructor tutorial');
             expect(link).toBe('<a href="' + helper.tutorialToUrl('constructor') + '">The Constructor tutorial</a>');
@@ -1208,14 +1181,12 @@ describe("jsdoc/util/templateHelper", function() {
             expect(output).toBe('This is a <a href="path/to/test.html">test</a>.');
         });
 
-
         it('should normalize additional newlines to spaces', function() {
             var input = 'This is a {@link\ntest\ntest\n\ntest}.',
                 output = helper.resolveLinks(input);
 
             expect(output).toBe('This is a <a href="path/to/test.html">test test</a>.');
         });
-
 
         it('should allow tabs between link tag and content', function() {
             var input = 'This is a {@link\ttest}.',

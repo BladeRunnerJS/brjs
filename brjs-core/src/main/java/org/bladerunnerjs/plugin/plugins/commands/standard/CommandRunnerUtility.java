@@ -22,7 +22,7 @@ public class CommandRunnerUtility {
 			processLogger.waitFor();
 			
 			if(exitCode != 0) throw new CommandOperationException("Error while running command '" + 
-					StringUtils.join(processBuilder.command(), ", ") + "' (" + exitCode + ")");
+					StringUtils.join(processBuilder.command(), " ") + "' (" + exitCode + ")");
 		}
 		catch(IOException | InterruptedException e) {
 			throw new CommandOperationException(e);

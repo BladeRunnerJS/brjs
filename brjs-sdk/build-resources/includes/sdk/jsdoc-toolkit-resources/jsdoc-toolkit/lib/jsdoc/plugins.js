@@ -3,43 +3,51 @@
  * Utility functions to support the JSDoc plugin framework.
  * @module jsdoc/plugins
  */
+'use strict';
 
-var error = require('jsdoc/util/error');
+var logger = require('jsdoc/util/logger');
 var path = require('jsdoc/path');
 
-exports.installPlugins = function(plugins, p) {
+function addHandlers(handlers, parser) {
+    Object.keys(handlers).forEach(function(eventName) {
+        parser.on(eventName, handlers[eventName]);
+    });
+}
+
+exports.installPlugins = function(plugins, parser) {
     var dictionary = require('jsdoc/tag/dictionary');
-    var parser = p;
 
     var eventName;
     var plugin;
-    var pluginPath;
 
     for (var i = 0, l = plugins.length; i < l; i++) {
-        pluginPath = path.getResourcePath(path.dirname(plugins[i]), path.basename(plugins[i]));
-        if (!pluginPath) {
-            error.handle(new Error('Unable to find the plugin "' + plugins[i] + '"'));
+        plugin = require(plugins[i]);
+
+        // allow user-defined plugins to...
+        //...register event handlers
+        if (plugin.handlers) {
+            addHandlers(plugin.handlers, parser);
         }
-        else {
-            plugin = require(pluginPath);
 
-            // allow user-defined plugins to...
-            //...register event handlers
-            if (plugin.handlers) {
-                Object.keys(plugin.handlers).forEach(function(eventName) {
-                    parser.on(eventName, plugin.handlers[eventName]);
-                });
+        //...define tags
+        if (plugin.defineTags) {
+            plugin.defineTags(dictionary);
+        }
+
+        //...add a Rhino node visitor (deprecated in JSDoc 3.3)
+        if (plugin.nodeVisitor) {
+            if ( !parser.addNodeVisitor ) {
+                logger.error('Unable to add the Rhino node visitor from %s, because JSDoc ' +
+                    'is not using the Rhino JavaScript parser.', plugins[i]);
             }
-
-            //...define tags
-            if (plugin.defineTags) {
-                plugin.defineTags(dictionary);
-            }
-
-            //...add a node visitor
-            if (plugin.nodeVisitor) {
+            else {
                 parser.addNodeVisitor(plugin.nodeVisitor);
             }
+        }
+
+        //...add a Mozilla Parser API node visitor
+        if (plugin.astNodeVisitor) {
+            parser.addAstNodeVisitor(plugin.astNodeVisitor);
         }
     }
 };

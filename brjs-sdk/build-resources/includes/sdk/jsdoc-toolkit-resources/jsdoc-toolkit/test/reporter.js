@@ -1,11 +1,7 @@
-(function() {
-    //
-    // Imports
-    //
+module.exports = function(jasmine) {
+    var util = require('util');
 
-    if (!jasmineNode) {
-        var jasmineNode = {};
-    }
+    var jasmineNode = {};
 
     //
     // Helpers
@@ -38,7 +34,7 @@
     };
 
     jasmineNode.TerminalReporter = function(config) {
-        this.print_ = config.print || print;
+        this.print_ = config.print || function (str) { process.stdout.write(util.format(str)); };
         this.color_ = config.color ? jasmineNode.ANSIColors : jasmineNode.NoColors;
 
         this.started_ = false;
@@ -106,9 +102,9 @@
             var specs = runner.specs();
             var specCount = specs.length;
 
-            var message = "\n\nFinished in "
-                    + ((new Date().getTime() - this.startedAt.getTime()) / 1000)
-                    + " seconds";
+            var message = "\n\nFinished in " +
+                ((new Date().getTime() - this.startedAt.getTime()) / 1000) +
+                " seconds";
             this.printLine_(message);
 
             // This is what jasmine-html.js has
@@ -127,7 +123,7 @@
                 return;
             }
 
-            var indent = '  ', failure;
+            var indent = '  ', failure, failures;
             this.printLine_('\n');
 
             this.print_('Failures:');
@@ -158,10 +154,10 @@
         reportSpecResults : function(spec) {
             var result = spec.results();
             var msg = '';
-            if (result.passed()) {
+            if (result.skipped) {
+                msg = this.stringWithColor_('-', this.color_.ignore());
+            } else if (result.passed()) {
                 msg = this.stringWithColor_('.', this.color_.pass());
-                // } else if (result.skipped) { TODO: Research why "result.skipped" returns false when "xit" is called on a spec?
-                // msg = (colors) ? (ansi.yellow + '*' + ansi.none) : '*';
             } else {
                 msg = this.stringWithColor_('F', this.color_.fail());
                 this.addFailureToFailures_(spec);
@@ -292,8 +288,5 @@
     // Inherit from TerminalReporter
     jasmineNode.TerminalVerboseReporter.prototype.__proto__ = jasmineNode.TerminalReporter.prototype;
 
-    //
-    // Exports
-    //
-    exports.jasmineNode = jasmineNode;
-})();
+    return jasmineNode;
+};

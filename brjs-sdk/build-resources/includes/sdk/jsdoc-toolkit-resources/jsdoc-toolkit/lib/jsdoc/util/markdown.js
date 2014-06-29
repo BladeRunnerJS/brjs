@@ -1,4 +1,4 @@
-/*global env: true */
+/*global env */
 
 /**
  * Provides access to Markdown-related functions.
@@ -6,6 +6,9 @@
  * @author Michael Mathews <micmath@gmail.com>
  * @author Ben Blank <ben.blank@gmail.com>
  */
+'use strict';
+
+var util = require('util');
 
 /**
  * Enumeration of Markdown parsers that are available.
@@ -17,16 +20,16 @@ var parserNames = {
      *
      * @deprecated Replaced by "marked," as markdown-js does not support inline HTML.
      */
-    evilstreak: "marked",
+    evilstreak: 'marked',
     /**
      * The "GitHub-flavored Markdown" parser.
      * @deprecated Replaced by "marked."
      */
-    gfm: "marked",
+    gfm: 'marked',
     /**
      * The "[Marked](https://github.com/chjj/marked)" parser.
      */
-    marked: "marked"
+    marked: 'marked'
 };
 
 /**
@@ -44,6 +47,38 @@ function escapeUnderscores(source) {
 }
 
 /**
+ * Escape HTTP/HTTPS URLs so that they are not automatically converted to HTML links.
+ *
+ * @param {string} source - The source text to escape.
+ * @return {string} The source text with escape characters added to HTTP/HTTPS URLs.
+ */
+function escapeUrls(source) {
+    return source.replace(/(https?)\:\/\//g, '$1:\\/\\/');
+}
+
+/**
+ * Unescape HTTP/HTTPS URLs after Markdown parsing is complete.
+ *
+ * @param {string} source - The source text to unescape.
+ * @return {string} The source text with escape characters removed from HTTP/HTTPS URLs.
+ */
+function unescapeUrls(source) {
+    return source.replace(/(https?)\:\\\/\\\//g, '$1://');
+}
+
+/**
+ * Escape characters in text within a code block.
+ *
+ * @param {string} source - The source text to escape.
+ * @return {string} The escaped source text.
+ */
+function escapeCode(source) {
+    return source.replace(/</g, '&lt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+/**
  * Retrieve a function that accepts a single parameter containing Markdown source. The function uses
  * the specified parser to transform the Markdown source to HTML, then returns the HTML as a string.
  *
@@ -52,26 +87,51 @@ function escapeUnderscores(source) {
  * @param {Object} [conf] Configuration for the selected parser, if any.
  * @returns {Function} A function that accepts Markdown source, feeds it to the selected parser, and
  * returns the resulting HTML.
- * @throws {Error} If the name does not correspond to a known parser.
  */
 function getParseFunction(parserName, conf) {
+    var logger = require('jsdoc/util/logger');
     var marked = require('marked');
+
+    var markedRenderer;
     var parserFunction;
 
     conf = conf || {};
 
     if (parserName === parserNames.marked) {
+        // Marked generates an "id" attribute for headers; this custom renderer suppresses it
+        markedRenderer = new marked.Renderer();
+
+        markedRenderer.heading = function(text, level) {
+            return util.format('<h%s>%s</h%s>', level, text, level);
+        };
+
+        // Allow prettyprint to work on inline code samples
+        markedRenderer.code = function(code, language) {
+            var langClass = language ? ' lang-' + language : '';
+
+            return util.format( '<pre class="prettyprint source%s"><code>%s</code></pre>',
+                langClass, escapeCode(code) );
+        };
+
         parserFunction = function(source) {
+            var result;
+
             source = escapeUnderscores(source);
-            return marked(source)
+            source = escapeUrls(source);
+
+            result = marked(source, { renderer: markedRenderer })
                 .replace(/\s+$/, '')
                 .replace(/&#39;/g, "'");
+            result = unescapeUrls(result);
+
+            return result;
         };
         parserFunction._parser = parserNames.marked;
         return parserFunction;
     }
     else {
-        throw new Error("unknown Markdown parser: '" + parserName + "'");
+        logger.error('Unrecognized Markdown parser "%s". Markdown support is disabled.',
+            parserName);
     }
 }
 
@@ -80,9 +140,9 @@ function getParseFunction(parserName, conf) {
  * `env.conf.markdown` property. The parsing function accepts a single parameter containing Markdown
  * source. The function uses the parser specified in `conf.json` to transform the Markdown source to
  * HTML, then returns the HTML as a string.
- * @returns {Function} A function that accepts Markdown source, feeds it to the selected parser, and
+ *
+ * @returns {function} A function that accepts Markdown source, feeds it to the selected parser, and
  * returns the resulting HTML.
- * @throws {Error} If the value of `env.conf.markdown.parser` does not correspond to a known parser.
  */
 exports.getParser = function() {
     var conf = env.conf.markdown;

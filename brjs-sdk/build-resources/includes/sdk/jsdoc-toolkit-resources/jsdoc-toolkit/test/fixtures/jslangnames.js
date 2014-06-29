@@ -1,4 +1,3 @@
-
 /** @namespace */
 var constructor = {
     /** document me */
@@ -6,19 +5,19 @@ var constructor = {
 };
 
 /** @namespace */
-var prototye = {
+var prototype = {
     /** document me */
     valueOf: function(){}
-}
-
-/** 
-    This is Object
-    @namespace Object
-*/
+};
 
 /**
-    This is Object.hasOwnProperty
-    @method Object.hasOwnProperty
+ * This is Object
+ * @namespace Object
+ */
+
+/**
+ * This is Object.hasOwnProperty
+ * @method Object.hasOwnProperty
  */
 
 // NOTE: you can't document a prototype of an object in JSDoc -- seriously, you just can't
