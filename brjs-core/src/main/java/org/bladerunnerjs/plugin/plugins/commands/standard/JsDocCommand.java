@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.logging.Logger;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -92,43 +92,40 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 	private List<String> generateCommand(App app, boolean isVerbose, File outputDir) throws CommandOperationException {
 		List<String> command = new ArrayList<>();
 		
-		try {
-			File jsdocToolkitInstallDir = installJsdocToolkit();
-			File jsDocToolkitDir = new File(jsdocToolkitInstallDir, "jsdoc-toolkit");
-			File jsDocTemplatesDir = new File(jsdocToolkitInstallDir, "jsdoc-template");
-			List<String> libraryPaths = new ArrayList<>();
-			
-			for (JsLib jsLib : app.jsLibs()) {
-				libraryPaths.add(jsLib.file("src").getCanonicalFile().getAbsolutePath());
-			}
-			
-			// See <https://code.google.com/p/jsdoc-toolkit/wiki/CmdlineOptions>
-			command.add("java");
-			command.add("-jar");
-			command.add(new File(jsDocToolkitDir, "jsrun.jar").getAbsolutePath());
-			command.add(new File(jsDocToolkitDir, "app/run.js").getAbsolutePath());
-			command.addAll(libraryPaths);
-			command.add("-r=20");
-			command.add("-t=" + jsDocTemplatesDir.getAbsolutePath());
-			command.add("-d=" + outputDir.getAbsolutePath());
-			command.add((isVerbose) ? "-v" : "-q");
+		File jsdocToolkitInstallDir = getSystemOrUserConfPath(brjs, brjs.sdkRoot().dir(), "jsdoc-toolkit-resources");
+		File jsDocToolkitDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-toolkit");
+		File jsDocTemplatesDir = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-template");
+		File jsDocConfFile = getSystemOrUserConfPath(brjs, jsdocToolkitInstallDir, "jsdoc-conf.json");
+		
+		List<String> libraryPaths = new ArrayList<>();
+		for (JsLib jsLib : app.jsLibs()) {
+			libraryPaths.add(jsLib.dir().getAbsolutePath());
 		}
-		catch (IOException ex) {
-			throw new CommandOperationException(ex);
+		
+		command.add(jsDocToolkitDir+"/jsdoc");
+		command.addAll(libraryPaths);
+		command.add("-c"); // set the config file
+			command.add(jsDocConfFile.getAbsolutePath());
+		command.add("-t");
+			command.add(jsDocTemplatesDir.getAbsolutePath()); // the JsDoc template to use
+		command.add("-d");
+			command.add(outputDir.getAbsolutePath()); // the output dir
+		if (isVerbose) {
+			command.add("--verbose");			
 		}
+		
+		
+		System.err.println(StringUtils.join(command, ""));
 		
 		return command;
 	}
 	
-	private File installJsdocToolkit() throws IOException {
-		File installDir = brjs.storageDir("jsdoc-toolkit-install");
-		
-		if(!installDir.exists()) {
-			installDir.mkdirs();
-			FileUtils.copyDirectory(brjs.template("jsdoc").dir(), installDir);
+	private File getSystemOrUserConfPath(BRJS brjs, File systemDirBase, String dirName) {
+		File userConfDir = brjs.conf().file(dirName);
+		if (userConfDir.exists()) {
+			return userConfDir;
 		}
-		
-		return installDir;
+		return new File(systemDirBase, dirName);
 	}
 	
 	private void replaceBuildDateToken(File indexFile) throws IOException, ConfigException {
