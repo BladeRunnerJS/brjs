@@ -1,6 +1,6 @@
 "use strict";
 
-/*
+/**
 * @module br/services/LocaleService
 */
 

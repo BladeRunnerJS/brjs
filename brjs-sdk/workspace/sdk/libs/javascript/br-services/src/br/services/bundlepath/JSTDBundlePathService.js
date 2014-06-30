@@ -1,7 +1,7 @@
 "use strict";
 
 /**
-* @module br/services/appversion/JSTDBundlePathService
+* @module br/services/bundlepath/JSTDBundlePathService
 */
 
 var br = require('br/Core');
