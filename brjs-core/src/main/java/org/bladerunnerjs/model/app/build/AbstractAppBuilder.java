@@ -108,7 +108,6 @@ public abstract class AbstractAppBuilder
 								Writer writer = new FileWriter(bundleFile);
 								IOUtils.copy(reader, writer);
 								writer.flush();
-								writer.close();
 							}
 						
 						}

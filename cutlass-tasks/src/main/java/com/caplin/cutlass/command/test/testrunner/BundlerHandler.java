@@ -2,9 +2,12 @@ package com.caplin.cutlass.command.test.testrunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -51,9 +54,16 @@ public class BundlerHandler
 		{
 			throw new IllegalArgumentException("Invalid bundlePath - it should not contain '\', only '/' as a seperator");
 		}
-		ContentPluginOutput outputStream = createBundleOutputStream(bundleFile);
+		ContentPluginOutput output= createBundleOutputStream(bundleFile);
 		String modelRequestPath = getModelRequestPath(bundlePath);
-		handleBundleRequest(bundleFile, modelRequestPath, outputStream, version);
+		handleBundleRequest(bundleFile, modelRequestPath, output, version);
+		Reader reader = output.getReader();
+		if(reader != null){
+			IOUtils.copy(reader, output.getWriter());
+			output.getWriter().flush();
+		}
+		
+		
 	}
 
 	private String getModelRequestPath(String bundlerPath)

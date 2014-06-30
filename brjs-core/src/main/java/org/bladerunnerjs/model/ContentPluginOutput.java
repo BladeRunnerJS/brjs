@@ -7,6 +7,8 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import org.apache.commons.io.IOUtils;
+
 
 public abstract class ContentPluginOutput
 {
@@ -38,6 +40,18 @@ public abstract class ContentPluginOutput
 
 	public Writer getWriter() {
 		return writer;
+	}
+	
+	public void flush() {
+		if(reader == null){
+			return;
+		}
+		try {
+			IOUtils.copy(reader, writer);
+			writer.flush();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
