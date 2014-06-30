@@ -1,39 +1,33 @@
 /**
  * @private
- * @constructor
- * @param {br.presenter.validator.ValidationResultListener} oValidationResultListener The listener object interested in the result of the validations
- * @param {int} nValidators Total number of validators that <code>oValidationResultListener</code> will run
  */
 br.presenter.property.ValidationResultCollator = function(oValidationResultListener, nValidators)
 {
 	/** @private */
 	this.m_oValidationResultListener = oValidationResultListener;
-	
+
 	/** @private */
 	this.m_pValidationResults = [];
-	
+
 	/** @private */
 	this.m_bReceivedValidationError = false;
-	
+
 	/** @private */
 	this.m_nValidators = nValidators;
 };
 
 /**
  * @private
- * @param {int} nValidatorIndex
- * @type br.presenter.validator.ValidationResult
  */
 br.presenter.property.ValidationResultCollator.prototype.createValidationResult = function(nValidatorIndex)
 {
 	var oValidationResultReceiver = new br.presenter.property.ValidationResultCollator.ValidationResultReceiver(this, nValidatorIndex);
-	
+
 	return new br.presenter.validator.ValidationResult(oValidationResultReceiver);
 };
 
 /**
  * @private
- * Prevent any outstanding validation events being fired.
  */
 br.presenter.property.ValidationResultCollator.prototype.cancelValidationResults = function()
 {
@@ -42,8 +36,6 @@ br.presenter.property.ValidationResultCollator.prototype.cancelValidationResults
 
 /**
  * @private
- * @param {br.presenter.validator.ValidationResult} oValidationResult
- * @param {int} nValidatorIndex
  */
 br.presenter.property.ValidationResultCollator.prototype._onNextValidationResultReceived = function(oValidationResult, nValidatorIndex)
 {
@@ -75,10 +67,6 @@ br.presenter.property.ValidationResultCollator.prototype._onNextValidationResult
 
 /**
  * @private
- * @constructor
- * @param {br.presenter.property.ValidationResultCollator} oCollator
- * @param {int} nValidatorIndex
- * @implements br.presenter.validator.ValidationResultListener
  */
 br.presenter.property.ValidationResultCollator.ValidationResultReceiver = function(oCollator, nValidatorIndex)
 {
@@ -89,7 +77,6 @@ br.Core.implement(br.presenter.property.ValidationResultCollator.ValidationResul
 
 /**
  * @private
- * @see br.presenter.validator.ValidationResultListener#onValidationResultReceived
  */
 br.presenter.property.ValidationResultCollator.ValidationResultReceiver.prototype.onValidationResultReceived = function(oValidationResult)
 {

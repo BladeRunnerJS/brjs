@@ -104,7 +104,6 @@ public class JsDocCommand extends ArgsParsingCommandPlugin {
 		commandArgs.add("-c"); // set the config file
 			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocConfFile) );
 		commandArgs.add("-r"); // recurse into dirs
-		commandArgs.add("-l"); // be lenient (dont blow up on invalid @ args)
 		commandArgs.add("-t"); // the JsDoc template to use
 			commandArgs.add( RelativePathUtility.get(brjs, workingDir, jsDocTemplatesDir) ); 
 		commandArgs.add("-d"); // the output dir

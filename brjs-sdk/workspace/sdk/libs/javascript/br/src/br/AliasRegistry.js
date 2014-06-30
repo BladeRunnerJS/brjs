@@ -1,4 +1,3 @@
-/** @module br/AliasRegistry */
 "use strict";
 
 /**
@@ -26,6 +25,7 @@
  * makes it a good candidate for creating SPI type, auto-discovery mechanisms.</p>
  *
  * @module br/AliasRegistry
+ * @exports AliasRegistry
  * @requires br
  * @requires br/Errors
  */
@@ -33,7 +33,7 @@ var br = require('br/Core');
 var Errors = require('./Errors');
 
 /**
- * @name br.AliasRegistry
+ * @class
  */
 var AliasRegistry = function()
 {

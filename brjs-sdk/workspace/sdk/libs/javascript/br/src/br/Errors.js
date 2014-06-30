@@ -1,10 +1,16 @@
 "use strict";
 
 var br = require('br/Core');
-/** @module br/Errors */
+/**
+ *@module br/Errors
+ */
 
 /**
- * Constructs a new <code>Errors</code> of the provided type.
+ * Constructs a new <code>Error</code> of the provided type.
+ *
+ * <code>br/Errors</code> extends the built in <code>Errors</code> and allows the
+ * error type to be specified in the constructor. The <code>name</code>
+ * property is set to the specified type.
  *
  * @param {String} type The error type to be thrown.
  * @param {String} message A human-readable description of the error.
@@ -13,9 +19,6 @@ var br = require('br/Core');
  *
  * @name br.Errors
  * @class
- * <code>br/Errors</code> extends the built in <code>Errors</code> and allows the
- * error type to be specified in the constructor. The <code>name</code>
- * property is set to the specified type.
  */
 function CustomError(type, message, fileName, lineNumber) {
 	this.name = type || "";

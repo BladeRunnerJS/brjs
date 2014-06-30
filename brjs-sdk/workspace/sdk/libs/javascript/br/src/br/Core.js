@@ -1,3 +1,5 @@
+"use strict";
+
 var topiarist = require('topiarist');
 topiarist.exportTo(exports);
 

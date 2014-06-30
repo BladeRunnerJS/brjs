@@ -87,10 +87,6 @@ Translator.prototype.tokenExists = function(token) {
 
 /**
  * @private
- *
- * <p>Change the translation list for testing i18n purposes</p>
- *
- * @param {Map} messages
  */
 Translator.prototype._setMessages = function(messages) {
 	this.messages = messages;

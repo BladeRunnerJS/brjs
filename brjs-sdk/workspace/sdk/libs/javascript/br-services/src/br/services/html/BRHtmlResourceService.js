@@ -4,13 +4,13 @@ var HtmlResourceService = require('br/services/HtmlResourceService');
 var i18n = require('br/I18n');
 
 /**
- * @name br.services.html.BRHtmlResourceService
- * @class
- * @constructor
- * This class provides access to HTML templates loaded via the HTML bundler.
+ * Provides access to HTML templates loaded via the HTML bundler.
  * This is the default HtmlResourceService in BladeRunnerJS
  *
- *  @param {String} url A URL to load HTML from.
+ * @class
+ * @constructor
+ *
+ * @param {String} url A URL to load HTML from.
  *
  * @implements br.services.HtmlResourceService
  */
