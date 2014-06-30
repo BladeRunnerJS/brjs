@@ -1,3 +1,9 @@
+"use strict";
+
+/**
+* @module br/services/html/BRHtmlResourceService
+*/
+
 var br = require('br/Core');
 var File = require('br/core/File');
 var HtmlResourceService = require('br/services/HtmlResourceService');
@@ -6,13 +12,10 @@ var i18n = require('br/I18n');
 /**
  * Provides access to HTML templates loaded via the HTML bundler.
  * This is the default HtmlResourceService in BladeRunnerJS
- *
+ * @alias module:br/services/html/BRHtmlResourceService
  * @class
- * @constructor
- *
  * @param {String} url A URL to load HTML from.
- *
- * @implements br.services.HtmlResourceService
+ * @implements module:br/services/HtmlResourceService
  */
 function BRHtmlResourceService(url) {
 	var ServiceRegistry = require("br/ServiceRegistry");

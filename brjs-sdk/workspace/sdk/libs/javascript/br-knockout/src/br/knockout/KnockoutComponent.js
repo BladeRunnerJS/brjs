@@ -20,7 +20,7 @@ var ServiceRegistry = require('br/ServiceRegistry');
 *
 * @class
 * @alias module:br/knockout/KnockoutComponent
-* @extends br/component/Component
+* @extends module:br/component/Component
 */
 function KnockoutComponent(sTemplateId, vPresentationModel) {
   this.m_sTemplateId = sTemplateId;
@@ -46,9 +46,6 @@ br.extend(KnockoutComponent.TemplateNotFoundError, Errors.CustomError);
 
 // *********************** Component Interface ***********************
 
-/**
-*
-*/
 KnockoutComponent.prototype.setDisplayFrame = function(frame) {
   this.m_oFrame = frame;
 
