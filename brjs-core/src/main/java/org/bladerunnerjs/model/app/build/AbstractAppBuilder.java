@@ -29,6 +29,7 @@ import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 import org.bladerunnerjs.utility.AppRequestHandler;
 import org.bladerunnerjs.utility.FileUtility;
+import org.bladerunnerjs.utility.ServedAppMetadataUtility;
 import org.bladerunnerjs.utility.WebXmlCompiler;
 
 
@@ -59,6 +60,9 @@ public abstract class AbstractAppBuilder
 				File exportedWebXml = new File(exportedWebInf, "web.xml");
 				if (exportedWebXml.isFile()) {
 					WebXmlCompiler.compile(exportedWebXml);					
+					String webXmlContents = FileUtils.readFileToString(exportedWebXml);
+					webXmlContents = webXmlContents.replace(ServedAppMetadataUtility.APP_VERSION_TOKEN, version);
+					FileUtils.writeStringToFile(exportedWebXml, webXmlContents, false);
 				}
 			}
 			
