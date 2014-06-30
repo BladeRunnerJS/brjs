@@ -74,7 +74,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	@Override
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
 	{
-		AdhocTimer.enter("ThirdpartyContentPlugin.writeContent: " + contentPath.formName, false);
 		try {
 			if (contentPath.formName.equals("bundle-request"))
 			{
@@ -129,7 +128,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 		catch(RequirePathException  | IOException ex) {
 			throw new ContentProcessingException(ex);
 		}
-		AdhocTimer.exit("ThirdpartyContentPlugin.writeContent: " + contentPath.formName, false);
 	}
 
 	@Override

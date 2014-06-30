@@ -116,7 +116,6 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
 	{
-		AdhocTimer.enter("CommonJsContentPlugin.writeContent: " + contentPath.formName, false);
 		try
 		{
 			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
@@ -150,6 +149,5 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 		{
 			throw new ContentProcessingException(e);
 		}
-		AdhocTimer.exit("CommonJsContentPlugin.writeContent: " + contentPath.formName, false);
 	}
 }

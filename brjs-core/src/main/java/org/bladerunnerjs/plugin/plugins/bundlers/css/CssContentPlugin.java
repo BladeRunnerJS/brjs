@@ -81,7 +81,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException {
-		AdhocTimer.enter("CSSContentPlugin.writeContent: " + contentPath.formName, false);
 		
 		String theme = contentPath.properties.get("theme");
 		String languageCode = contentPath.properties.get("languageCode");
@@ -109,7 +108,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		readerList.toArray(readers);
 		output.setReader(new ConcatReader(readers));
 		
-		AdhocTimer.exit("CSSContentPlugin.writeContent: " + contentPath.formName, false);
 	}
 	
 	private String getThemeName(AssetLocation cssAssetLocation) {

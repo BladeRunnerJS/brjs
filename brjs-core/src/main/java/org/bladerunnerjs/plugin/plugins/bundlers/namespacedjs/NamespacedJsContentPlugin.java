@@ -129,7 +129,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
 	{
-		AdhocTimer.enter("NamespacedJsContentPlugin.writeContent: " + contentPath.formName, false);
 		try
 		{
 			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
@@ -205,7 +204,6 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 		{
 			throw new ContentProcessingException(e);
 		}
-		AdhocTimer.exit("NamespacedJsContentPlugin.writeContent: " + contentPath.formName, false);
 	}
 
 	private Map<String, Map<String, ?>> createPackageStructureForCaplinJsClasses(BundleSet bundleSet, List<SourceModule> globalizedModules)

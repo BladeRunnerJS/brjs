@@ -100,7 +100,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
 	{
-		AdhocTimer.enter("HTMLContentPlugin.writeContent: " + contentPath.formName, false);
 		identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
 		
@@ -131,7 +130,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 		readerList.toArray(readers);
 		output.setReader(new ConcatReader(readers));
 		
-		AdhocTimer.exit("HTMLContentPlugin.writeContent: " + contentPath.formName, false);
 	}
 	
 	private List<String> getValidContentPaths(BundleSet bundleSet) {
