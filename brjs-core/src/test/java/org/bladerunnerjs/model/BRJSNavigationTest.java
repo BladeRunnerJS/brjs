@@ -124,20 +124,6 @@ public class BRJSNavigationTest extends TestModelAccessor
 	}
 	
 	@Test
-	public void logs()
-	{
-		nodeTesterFactory.createItemTester(DirNode.class, "logs", "sdk/log")
-			.assertModelIsOK();
-	}
-	
-	@Test
-	public void apiDocs()
-	{
-		nodeTesterFactory.createItemTester(DirNode.class, "apiDocs", "sdk/docs/jsdoc")
-			.assertModelIsOK();
-	}
-	
-	@Test
 	public void testGettingLoggerForClass() throws Exception
 	{
 		Logger logger = brjs.logger(this.getClass());

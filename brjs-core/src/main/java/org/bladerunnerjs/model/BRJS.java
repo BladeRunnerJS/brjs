@@ -60,8 +60,6 @@ public class BRJS extends AbstractBRJSRootNode
 	private final NodeItem<DirNode> systemJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/system");
 	private final NodeItem<DirNode> testJars = new NodeItem<>(this, DirNode.class, "sdk/libs/java/testRunner");
 	private final NodeItem<DirNode> userJars = new NodeItem<>(this, DirNode.class, "conf/java");
-	private final NodeItem<DirNode> logs = new NodeItem<>(this, DirNode.class, "sdk/log");
-	private final NodeItem<DirNode> apiDocs = new NodeItem<>(this, DirNode.class, "sdk/docs/jsdoc");
 	private final NodeItem<DirNode> testResults = new NodeItem<>(this, DirNode.class, "sdk/test-results");
 	
 	private WorkingDirNode workingDir;
@@ -285,16 +283,6 @@ public class BRJS extends AbstractBRJSRootNode
 	public DirNode userJars()
 	{
 		return userJars.item();
-	}
-	
-	public DirNode logs()
-	{
-		return logs.item();
-	}
-	
-	public DirNode apiDocs()
-	{
-		return apiDocs.item();
 	}
 	
 	public VersionInfo versionInfo()
