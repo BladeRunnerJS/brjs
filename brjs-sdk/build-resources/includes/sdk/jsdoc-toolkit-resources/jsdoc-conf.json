@@ -21,7 +21,6 @@
             "sdk/libs/javascript/jstestdriverextensions",
             "sdk/libs/javascript/jsunitextensions",
             "sdk/libs/javascript/ko",
-            "sdk/libs/javascript/log4js",
             "sdk/libs/javascript/mock4js",
             "sdk/libs/javascript/momentjs",
             "sdk/libs/javascript/openajax",
