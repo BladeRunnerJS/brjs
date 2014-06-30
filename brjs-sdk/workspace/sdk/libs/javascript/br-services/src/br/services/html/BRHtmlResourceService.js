@@ -26,7 +26,7 @@ function BRHtmlResourceService(url) {
 	this.element = document.createElement("div");
 	this.element.style.display = "none";
 
-	this._loadHtml();
+	this._htmlLoaded = false;
 }
 
 /**
@@ -38,6 +38,10 @@ function BRHtmlResourceService(url) {
  * @returns {HTMLElement}
  */
 BRHtmlResourceService.prototype.getHTMLTemplate = function (templateId) {
+	if (this._htmlLoaded === false) {
+		this._loadHtml();
+	}
+
 	var template = null;
 	if (this.templates[templateId]) {
 		template = this.templates[templateId]
@@ -68,6 +72,8 @@ BRHtmlResourceService.prototype._loadHtml = function () {
 	}
 
 	document.body.removeChild(this.element);
+
+	this._htmlLoaded = true;
 };
 
 /**

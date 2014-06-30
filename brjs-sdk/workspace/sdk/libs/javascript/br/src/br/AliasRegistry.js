@@ -98,6 +98,10 @@ AliasRegistry.prototype.getClass = function getClass(aliasName) {
 		throw new Errors.IllegalStateError("No class has been found for alias '" + aliasName +"'");
 	}
 
+	if (typeof this._aliasData[aliasName]["class"] === 'undefined') {
+		this._aliasData[aliasName]["class"] = require(this._aliasData[aliasName].requirePath);
+	}
+
 	return this._aliasData[aliasName]["class"];
 };
 
@@ -114,14 +118,14 @@ AliasRegistry.prototype.isAlias = function isAlias(aliasName) {
 
 /**
  * Returns whether the given alias has been assigned a value &mdash; i.e. whether an alias has a
- * class value.
+ * requirePath value.
  *
  * @param {String} aliasName alias name.
  * @type boolean
  */
 AliasRegistry.prototype.isAliasAssigned = function isAliasAssigned(aliasName) {
 	ensureAliasDataHasBeenSet.call(this);
-	return this.isAlias(aliasName) && this._aliasData[aliasName]["class"] !== undefined;
+	return this.isAlias(aliasName) && this._aliasData[aliasName]["requirePath"] !== undefined;
 };
 
 /**
@@ -136,6 +140,8 @@ AliasRegistry.prototype.setAliasData = function setAliasData(unverifiedAliasData
 
 	this._isAliasDataSet = true;
 	this._aliasData = unverifiedAliasData;
+
+return; // TODO the check bellow when interface is set will fail as we don't require the class at this point, move the logic to getClass
 
 	var aliases = this.getAllAliases();
 	var incorrectAliases = [];

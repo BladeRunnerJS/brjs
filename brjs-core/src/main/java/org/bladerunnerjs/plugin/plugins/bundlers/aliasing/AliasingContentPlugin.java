@@ -77,7 +77,7 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 				if(aliasRegistryLoaded) {
 					try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
 						String aliasData = AliasingSerializer.createJson(bundleSet);
-						writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
+						//writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
 					}
 				}
 			}
