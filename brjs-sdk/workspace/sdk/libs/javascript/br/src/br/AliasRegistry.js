@@ -32,6 +32,7 @@ var Errors = require('./Errors');
 
 /**
 * @class
+* @alias module:br/AliasRegistry
 */
 var AliasRegistry = function()
 {
