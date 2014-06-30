@@ -5,27 +5,31 @@
     "source": {
         "includePattern": ".+\\.js(doc)?$",
         "include": [
-    		"sdk/libs/javascript"
+            "sdk/libs/javascript"
         ],
-    	"exclude": [
-    		"sdk/libs/javascript/es5-shim", 
-    		"sdk/libs/javascript/extjs",
-    		"sdk/libs/javascript/html5shiv",
-    		"sdk/libs/javascript/jasmine",
-    		"sdk/libs/javascript/jquery",
-    		"sdk/libs/javascript/jqueryplugins",
-    		"sdk/libs/javascript/jshamcrest",
-    		"sdk/libs/javascript/jsmockito",
-    		"sdk/libs/javascript/jstd",
-    		"sdk/libs/javascript/jstestdriverextensions",
-    		"sdk/libs/javascript/jsunitextensions",
-    		"sdk/libs/javascript/ko",
-    		"sdk/libs/javascript/log4js",
-    		"sdk/libs/javascript/mock4js",
-    		"sdk/libs/javascript/momentjs",
-    		"sdk/libs/javascript/openajax",
-    		"sdk/libs/javascript/zeroclipboard"
-    	],
+        "exclude": [
+            "sdk/libs/javascript/es5-shim",
+            "sdk/libs/javascript/br-ie8-shim",
+            "sdk/libs/javascript/extjs",
+            "sdk/libs/javascript/html5shiv",
+            "sdk/libs/javascript/jasmine",
+            "sdk/libs/javascript/jquery",
+            "sdk/libs/javascript/jqueryplugins",
+            "sdk/libs/javascript/jshamcrest",
+            "sdk/libs/javascript/jsmockito",
+            "sdk/libs/javascript/jstd",
+            "sdk/libs/javascript/jstestdriverextensions",
+            "sdk/libs/javascript/jsunitextensions",
+            "sdk/libs/javascript/ko",
+            "sdk/libs/javascript/log4js",
+            "sdk/libs/javascript/mock4js",
+            "sdk/libs/javascript/momentjs",
+            "sdk/libs/javascript/openajax",
+            "sdk/libs/javascript/zeroclipboard",
+            "sdk/libs/javascript/fell",
+            "sdk/libs/javascript/topiarist",
+            "sdk/libs/javascript/emitr"
+        ],
         "excludePattern": "(^|\\/|\\\\)_|[\\\\|//]test(s)?[\\\\|//]|[\\\\|//]spec[\\\\|//]|[\\\\|//]bundles[\\\\|//]"
     },
     "encoding": "utf8",

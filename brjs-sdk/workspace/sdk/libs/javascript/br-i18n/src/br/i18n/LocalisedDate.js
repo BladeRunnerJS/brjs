@@ -1,7 +1,6 @@
 "use strict";
 
 var moment = require('momentjs');
-
 var i18n = require('br/I18n');
 
 /**
