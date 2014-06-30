@@ -1,40 +1,38 @@
 "use strict";
 
 /**
- * The <code>AliasRegistry</code> is provides access to the aliases used within
- * the application.
- *
- * <p>An alias is simply an alternate logical name for a class, such that specifying
- * this logical name in your source code, whether it be Javascript, HTML or CSS, will
- * cause the class to be bundled and sent to the browser. It is therefore, at it's
- * simplest, a mechanism for ensuring that all the code your app needs, and no more,
- * is bundled and sent to the browser. Though class dependencies are usually specified
- * by directly referring to other classes, there are times when this is
- * inappropriate:</p>
- *
- * <ol>
- *   <li>We sometimes need a level of indirection, so that dependencies can be expressed
- *    without knowing the concrete class that will end up being used (e.g. services).</li>
- *   <li>It is sometimes useful to specify components declaratively, where it would be confusing
- *    to have to refer to the classes that provide some feature, rather than talking in terms
- *    of the feature itself.</li>
- * </ol>
- *
- * <p>Another useful facet of aliases is that they can be used to automatically
- * discover all of the classes which implement a particular interface, which
- * makes it a good candidate for creating SPI type, auto-discovery mechanisms.</p>
- *
- * @module br/AliasRegistry
- * @exports AliasRegistry
- * @requires br
- * @requires br/Errors
- */
+* The <code>AliasRegistry</code> is provides access to the aliases used within
+* the application.
+*
+* <p>An alias is simply an alternate logical name for a class, such that specifying
+* this logical name in your source code, whether it be Javascript, HTML or CSS, will
+* cause the class to be bundled and sent to the browser. It is therefore, at it's
+* simplest, a mechanism for ensuring that all the code your app needs, and no more,
+* is bundled and sent to the browser. Though class dependencies are usually specified
+* by directly referring to other classes, there are times when this is
+* inappropriate:</p>
+*
+* <ol>
+*   <li>We sometimes need a level of indirection, so that dependencies can be expressed
+*    without knowing the concrete class that will end up being used (e.g. services).</li>
+*   <li>It is sometimes useful to specify components declaratively, where it would be confusing
+*    to have to refer to the classes that provide some feature, rather than talking in terms
+*    of the feature itself.</li>
+* </ol>
+*
+* <p>Another useful facet of aliases is that they can be used to automatically
+* discover all of the classes which implement a particular interface, which
+* makes it a good candidate for creating SPI type, auto-discovery mechanisms.</p>
+*
+* @module br/AliasRegistry
+*/
+
 var br = require('br/Core');
 var Errors = require('./Errors');
 
 /**
- * @class
- */
+* @class
+*/
 var AliasRegistry = function()
 {
 	this._aliasData = null;
@@ -42,26 +40,26 @@ var AliasRegistry = function()
 }
 
 /**
- * Returns an array containing the names of all aliases in use within the application.
- *
- * @type Array
- */
+* Returns an array containing the names of all aliases in use within the application.
+*
+* @type Array
+*/
 AliasRegistry.prototype.getAllAliases = function getAllAliases() {
 	ensureAliasDataHasBeenSet.call(this);
 	return Object.keys(this._aliasData);
 };
 
 /**
- * Returns a filtered subset of the aliases provided by
- * {@link module:br/AliasRegistry.getAllAliases}.
- *
- * <p>An alias is considered to be associated with an interface if the XML configuration for that
- * alias specifically mentions the given interface, or if the class the alias points to happens to
- * implement the given interface.</p>
- *
- * @param {function} interface the interface being used to filter the aliases by.
- * @type Array
- */
+* Returns a filtered subset of the aliases provided by
+* {@link module:br/AliasRegistry.getAllAliases}.
+*
+* <p>An alias is considered to be associated with an interface if the XML configuration for that
+* alias specifically mentions the given interface, or if the class the alias points to happens to
+* implement the given interface.</p>
+*
+* @param {function} interface the interface being used to filter the aliases by.
+* @type Array
+*/
 AliasRegistry.prototype.getAliasesByInterface = function getAliasesByInterface(protocol) {
 	ensureAliasDataHasBeenSet.call(this);
 	var allAliases = this.getAllAliases();
@@ -102,33 +100,33 @@ AliasRegistry.prototype.getClass = function getClass(aliasName) {
 };
 
 /**
- * Returns whether the given alias is defined.
- *
- * @param {String} aliasName alias name.
- * @type boolean
- */
+* Returns whether the given alias is defined.
+*
+* @param {String} aliasName alias name.
+* @type boolean
+*/
 AliasRegistry.prototype.isAlias = function isAlias(aliasName) {
 	ensureAliasDataHasBeenSet.call(this);
 	return aliasName in this._aliasData;
 };
 
 /**
- * Returns whether the given alias has been assigned a value &mdash; i.e. whether an alias has a
- * class value.
- *
- * @param {String} aliasName alias name.
- * @type boolean
- */
+* Returns whether the given alias has been assigned a value &mdash; i.e. whether an alias has a
+* class value.
+*
+* @param {String} aliasName alias name.
+* @type boolean
+*/
 AliasRegistry.prototype.isAliasAssigned = function isAliasAssigned(aliasName) {
 	ensureAliasDataHasBeenSet.call(this);
 	return this.isAlias(aliasName) && this._aliasData[aliasName]["class"] !== undefined;
 };
 
 /**
- * Sets the alias data.
- *
- * If the alias data is inconsistent, this will throw Errors.
- */
+* Sets the alias data.
+*
+* If the alias data is inconsistent, this will throw Errors.
+*/
 AliasRegistry.prototype.setAliasData = function setAliasData(unverifiedAliasData) {
 	if (this._isAliasDataSet === true) {
 		throw new Errors.IllegalStateError("Alias data has already been set; unable to set again.");
@@ -167,11 +165,13 @@ AliasRegistry.prototype.setAliasData = function setAliasData(unverifiedAliasData
 	}
 };
 
+/**
+* @private
+*/
 function ensureAliasDataHasBeenSet() {
 	if (this._isAliasDataSet !== true) {
 		throw new Errors.IllegalStateError("Alias data has not been set.");
 	}
 }
-
 
 module.exports = new AliasRegistry();

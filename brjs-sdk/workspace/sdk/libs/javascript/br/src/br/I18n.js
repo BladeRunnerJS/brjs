@@ -1,5 +1,12 @@
 "use strict";
 
+/**
+* Returns a {@link module:br/i18n/I18N} object that provides
+* access to i18n properties and functions.
+* @module br/i18n
+* @exports module:br/i18n/I18N
+*/
+
 var Translator = require('br/i18n/Translator');
 var I18N = require('br/i18n/I18N');
 
