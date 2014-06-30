@@ -1,5 +1,7 @@
 brjs.dashboard.app.DashboardApp = function(oDashboardService, oPageUrlService, oWindowOpenerService, eDisplayElement, oLocalStorage, oBrowserDetector)
 {
+	require('testlib/Testlib').helloWorldUtil();
+
 	this.m_oDashboardService = oDashboardService;
 	this.m_oPageUrlService = oPageUrlService;
 	this.m_oWindowOpenerService = oWindowOpenerService;

@@ -27,7 +27,7 @@ public class AliasingSerializer {
 			boolean classesInfoWritten = false;
 			if(aliasDefinition.getClassName() != null && !aliasDefinition.getClassName().equals(AliasesFile.BR_UNKNOWN_CLASS_NAME))
 			{
-				jsonData.append("'class':require('" + aliasDefinition.getRequirePath() + "'),'className':'" + aliasDefinition.getClassName() + "'");
+				jsonData.append("'requirePath':'" + aliasDefinition.getRequirePath() + "','className':'" + aliasDefinition.getClassName() + "'");
 				classesInfoWritten = true;
 			}
 			

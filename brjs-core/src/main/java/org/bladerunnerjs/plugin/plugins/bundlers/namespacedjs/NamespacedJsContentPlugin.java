@@ -281,7 +281,9 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	private String getGlobalizedClassesContent(BundleSet bundleSet, List<SourceModule> processedGlobalizedSourceModules)
 	{		
 		StringBuffer output = new StringBuffer();
-		
+
+		output.append("require('br/AliasRegistry').setAliasData({'br.bundle-path-service':{'requirePath':'br/services/bundlepath/BRBundlePathService','className':'br.services.bundlepath.BRBundlePathService'},'br.html-service':{'requirePath':'br/services/html/BRHtmlResourceService','className':'br.services.html.BRHtmlResourceService'}});");
+
 		List<SourceModule> allSourceModules = bundleSet.getSourceModules();
 
 		List<Predicate<SourceModule>> sourceModuleOrderingFilters = new LinkedList<>();
