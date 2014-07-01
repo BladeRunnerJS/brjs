@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.testing.specutility.engine.SpecTest;
-import org.bladerunnerjs.utility.AdhocTimer;
 import org.junit.Before;
 import org.junit.Test;
 

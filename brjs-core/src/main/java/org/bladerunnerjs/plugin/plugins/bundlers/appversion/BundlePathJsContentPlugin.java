@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.appversion;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +26,6 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 
 	private static final String APP_VERSION_REQUEST = "app-version-request";
 	private ContentPathParser contentPathParser;
-	private BRJS brjs;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -95,7 +93,6 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.brjs = brjs;
 	}
 	
 	@Override

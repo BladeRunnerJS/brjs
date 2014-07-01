@@ -5,11 +5,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
@@ -23,8 +21,6 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -34,7 +30,6 @@ import com.Ostermiller.util.ConcatReader;
 public class ThirdpartyContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
-	private BRJS brjs;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -51,7 +46,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.brjs = brjs;
 	}
 	
 	@Override

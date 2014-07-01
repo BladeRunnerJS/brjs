@@ -26,7 +26,6 @@ import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
 import org.bladerunnerjs.plugin.utility.InstanceFinder;
-import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 

@@ -3,7 +3,6 @@ package com.caplin.cutlass.command.test.testrunner;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 

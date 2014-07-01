@@ -1,10 +1,8 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.html;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.TreeMap;
@@ -22,8 +20,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ContentFileProcessingException;
@@ -31,8 +27,6 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsSourceModule;
-import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 import org.bladerunnerjs.utility.NamespaceUtility;
@@ -47,7 +41,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	private Map<String, Asset> identifiers = new TreeMap<String, Asset>();
 	private final List<String> requestPaths = new ArrayList<>();
 	
-	private BRJS brjs;
 	private AssetPlugin htmlAssetPlugin;
 	
 	{
@@ -65,7 +58,6 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.brjs = brjs;
 		htmlAssetPlugin = brjs.plugins().assetPlugin(HTMLAssetPlugin.class);
 	}
 	

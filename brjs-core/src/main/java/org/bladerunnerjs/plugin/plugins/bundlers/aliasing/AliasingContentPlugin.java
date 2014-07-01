@@ -1,7 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.aliasing;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +10,6 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -24,7 +22,6 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 public class AliasingContentPlugin extends AbstractContentPlugin {
 	private final ContentPathParser contentPathParser;
-	private BRJS brjs;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -35,7 +32,6 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
 	}
 	
 	@Override

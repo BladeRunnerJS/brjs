@@ -2,7 +2,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.compositejs;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;

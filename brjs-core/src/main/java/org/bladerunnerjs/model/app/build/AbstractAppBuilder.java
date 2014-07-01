@@ -76,7 +76,6 @@ public abstract class AbstractAppBuilder
 				File localeForwardingFile = new File(temporaryExportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
 				
 				localeForwardingFile.getParentFile().mkdirs();
-				String encoding = app.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 				
 				OutputStream stream = new  FileOutputStream(localeForwardingFile);
 				ContentPluginOutput output = new StaticContentPluginOutput(app, stream);

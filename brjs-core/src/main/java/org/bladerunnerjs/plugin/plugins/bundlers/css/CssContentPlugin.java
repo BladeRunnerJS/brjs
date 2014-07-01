@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.css;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -23,7 +22,6 @@ import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.AssetPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
-import org.bladerunnerjs.utility.AdhocTimer;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
@@ -32,7 +30,6 @@ import com.Ostermiller.util.ConcatReader;
 public class CssContentPlugin extends AbstractContentPlugin {
 	
 	private final ContentPathParser contentPathParser;
-	private BRJS brjs;
 	private AssetPlugin cssAssetPlugin;
 	
 	{
@@ -50,7 +47,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
 		cssAssetPlugin = brjs.plugins().assetPlugin(CssAssetPlugin.class);
 	}
 	
