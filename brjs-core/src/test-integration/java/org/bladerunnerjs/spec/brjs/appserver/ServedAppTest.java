@@ -190,6 +190,15 @@ public class ServedAppTest extends SpecTest
 			.and(appServer).started();
 		then(appServer).requestForUrlReturns("/app/v/123/unbundled-resources/file.jsp", "3");
 	}
+	
+	@Test
+	public void jspsCanHaveQueryStrings() throws Exception
+	{
+		given(app).hasBeenPopulated()
+			.and(aspect).containsFileWithContents("unbundled-resources/file.jsp", "<%= request.getParameter(\"query\") + \" \" + request.getParameter(\"debug\")  %>")
+			.and(appServer).started();
+		then(appServer).requestForUrlReturns("/app/v/123/unbundled-resources/file.jsp?query=1337&debug=true", "1337 true");
+	}
 
 	@Test
 	public void contentPluginsCanDefineNonVersionedUrls() throws Exception
