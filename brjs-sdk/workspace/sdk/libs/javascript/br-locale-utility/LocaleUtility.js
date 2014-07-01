@@ -35,14 +35,14 @@ LocaleUtility.getCookie = function(name) {
 }
 
 LocaleUtility.setCookie = function(name, value, days, path) {
-    var expires = "";
-    if (days) {
-        var date = new Date();
-        var expiresDate = new Date( date.getTime()+(days*24*60*60*1000) );
-        var expires = "; expires="+expiresDate.toGMTString();
-    }
-    path = (path) ? path : "/";
-    document.cookie = name+"="+value+expires+"; path="+path;
+	var expires = "";
+	if (days) {
+		var date = new Date();
+		var expiresDate = new Date( date.getTime()+(days*24*60*60*1000) );
+		var expires = "; expires="+expiresDate.toGMTString();
+	}
+	path = (path) ? path : "/";
+	document.cookie = name+"="+value+expires+"; path="+path;
 }
 
 LocaleUtility.getFirstMatchingLocale = function(appSupportedLocales, userAcceptedLocales) {
