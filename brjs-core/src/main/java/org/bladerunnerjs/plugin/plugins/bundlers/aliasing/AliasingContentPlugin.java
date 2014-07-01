@@ -1,17 +1,15 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.aliasing;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -24,7 +22,6 @@ import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
 public class AliasingContentPlugin extends AbstractContentPlugin {
 	private final ContentPathParser contentPathParser;
-	private BRJS brjs;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -35,7 +32,6 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
 	}
 	
 	@Override
@@ -69,16 +65,14 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException {
+	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		try {
 			if (contentPath.formName.equals("aliasing-request")) {
 				boolean aliasRegistryLoaded = bundleSet.getSourceModules().contains(bundleSet.getBundlableNode().getLinkedAsset("br/AliasRegistry"));
 				
 				if(aliasRegistryLoaded) {
-					try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-						String aliasData = AliasingSerializer.createJson(bundleSet);
-						writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
-					}
+					String aliasData = AliasingSerializer.createJson(bundleSet);
+					return new StringReader("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
 				}
 			}
 			else {
@@ -88,9 +82,7 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 		catch (RequirePathException e) {
 			// do nothing: if 'br/AliasRegistry' doesn't exist then we definitely need to configure it
 		}
-		catch(IOException | ConfigException e) {
-			throw new ContentProcessingException(e);
-		}
+		return new StringReader("");
 	}
 	
 	private List<String> getValidRequestPaths() throws ContentProcessingException {

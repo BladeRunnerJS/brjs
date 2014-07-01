@@ -1,16 +1,19 @@
 package com.caplin.cutlass.command.test.testrunner;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.ContentOutputStream;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -51,9 +54,11 @@ public class BundlerHandler
 		{
 			throw new IllegalArgumentException("Invalid bundlePath - it should not contain '\', only '/' as a seperator");
 		}
-		ContentOutputStream outputStream = createBundleOutputStream(bundleFile);
+		
+		bundleFile.getParentFile().mkdirs();
 		String modelRequestPath = getModelRequestPath(bundlePath);
-		handleBundleRequest(bundleFile, modelRequestPath, outputStream, version);
+		Reader reader = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentAccessor(app), version);
+		IOUtils.copy(reader, new FileOutputStream(bundleFile));
 	}
 
 	private String getModelRequestPath(String bundlerPath)
@@ -89,7 +94,7 @@ public class BundlerHandler
 		return null;
 	}
 
-	private void handleBundleRequest(File bundleFile, String brjsRequestPath, ContentOutputStream outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
+	private Reader handleBundleRequest(File bundleFile, String brjsRequestPath, UrlContentAccessor outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
 	{
 		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
 		if (bundlableNode == null)
@@ -97,15 +102,7 @@ public class BundlerHandler
 			throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundle file: " + bundleFile.getAbsolutePath());
 		}
 		
-		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter(), version);
+		return bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter(), version);
 	}
-	
-	private ContentOutputStream createBundleOutputStream(File bundlerFile) throws IOException
-	{
-		bundlerFile.getParentFile().mkdirs();
-		
-		return new StaticContentOutputStream(app, bundlerFile);
-	}
-	
 	
 }

@@ -1,8 +1,8 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.css;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.AssetLocation;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.ThemedAssetLocation;
 import org.bladerunnerjs.model.exception.ConfigException;
@@ -25,10 +25,11 @@ import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
+import com.Ostermiller.util.ConcatReader;
+
 public class CssContentPlugin extends AbstractContentPlugin {
 	
 	private final ContentPathParser contentPathParser;
-	private BRJS brjs;
 	private AssetPlugin cssAssetPlugin;
 	
 	{
@@ -46,7 +47,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
-		this.brjs = brjs;
 		cssAssetPlugin = brjs.plugins().assetPlugin(CssAssetPlugin.class);
 	}
 	
@@ -76,27 +76,32 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException {
+	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException {
+		
 		String theme = contentPath.properties.get("theme");
 		String languageCode = contentPath.properties.get("languageCode");
 		String countryCode = contentPath.properties.get("countryCode");
 		Locale locale = new Locale(languageCode, countryCode);
-		
-		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
+
+		List<Reader> readerList = new ArrayList<Reader>();
+		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
+		for(Asset cssAsset : cssAssets) {
+			String assetThemeName = getThemeName(cssAsset.assetLocation());
 			
-			List<Asset> cssAssets = getCssAssets(bundleSet, cssAssetPlugin);
-			
-			for(Asset cssAsset : cssAssets) {
-				String assetThemeName = getThemeName(cssAsset.assetLocation());
+			if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(locale.getLocaleFilePattern(".*_", ".css"))) {
+				CssRewriter processor = new CssRewriter(cssAsset);
 				
-				if(assetThemeName.equals(theme) && cssAsset.getAssetName().matches(locale.getLocaleFilePattern(".*_", ".css"))) {
-					writeAsset(cssAsset, writer);
+				try {
+					String css = processor.getFileContents();
+					readerList.add(new StringReader(css));
+				} catch (IOException e) {
+					throw new ContentProcessingException(e);
 				}
+				readerList.add(new StringReader("\n"));
 			}
 		}
-		catch (IOException | ConfigException e) {
-			throw new ContentProcessingException(e);
-		}
+		
+		return new ConcatReader( readerList.toArray(new Reader[0]) );
 	}
 	
 	// protected so the CT CSS plugin that uses a different CSS ordering can override it
@@ -116,17 +121,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		}
 		
 		return themeName;
-	}
-	
-	private void writeAsset(Asset cssAsset, Writer writer) throws ContentProcessingException {
-		try {
-			CssRewriter processor = new CssRewriter(cssAsset);
-			writer.append(processor.getFileContents());
-			writer.write("\n");
-		}
-		catch (IOException e) {
-			throw new ContentProcessingException(e, "Error while bundling asset '" + cssAsset.getAssetPath() + "'.");
-		}
 	}
 	
 	private List<String> getValidContentPaths(BundleSet bundleSet, Locale... locales) throws ContentProcessingException {

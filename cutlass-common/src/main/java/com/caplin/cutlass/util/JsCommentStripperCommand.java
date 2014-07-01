@@ -3,11 +3,11 @@ package com.caplin.cutlass.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Reader;
-import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.utility.reader.JsCommentStrippingReader;
@@ -39,10 +39,10 @@ public class JsCommentStripperCommand
 			{
 				processedFile.getParentFile().mkdirs();
 				
-				try(Reader fileReader = new JsCommentStrippingReader(new BufferedReader(new FileReader(sourceFile)), true);
-					Writer fileWriter = new FileWriter(processedFile))
+				try (Reader fileReader = new JsCommentStrippingReader(new BufferedReader(new FileReader(sourceFile)), true);
+					OutputStream fileOutputStream = new FileOutputStream(processedFile))
 				{
-					IOUtils.copy(fileReader, fileWriter);
+					IOUtils.copy(fileReader, fileOutputStream);
 				}
 				catch(IOException e)
 				{

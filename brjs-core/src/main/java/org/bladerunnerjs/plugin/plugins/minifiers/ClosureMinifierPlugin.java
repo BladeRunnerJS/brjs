@@ -4,24 +4,28 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.io.SequenceInputStream;
-import java.io.Writer;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.io.input.ReaderInputStream;
+import org.bladerunnerjs.logging.Logger;
+import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
+import org.bladerunnerjs.plugin.InputSource;
+import org.bladerunnerjs.plugin.MinifierPlugin;
+import org.bladerunnerjs.plugin.base.AbstractMinifierPlugin;
+
+import com.Ostermiller.util.ConcatReader;
 import com.google.javascript.jscomp.CompilationLevel;
 import com.google.javascript.jscomp.Compiler;
 import com.google.javascript.jscomp.CompilerOptions;
 import com.google.javascript.jscomp.Result;
 import com.google.javascript.jscomp.SourceFile;
-
-import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.logging.Logger;
-import org.bladerunnerjs.model.BRJS;
-import org.bladerunnerjs.plugin.InputSource;
-import org.bladerunnerjs.plugin.MinifierPlugin;
-import org.bladerunnerjs.plugin.base.AbstractMinifierPlugin;
 
 
 public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements MinifierPlugin {
@@ -59,7 +63,7 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 	/* using ClosureCompiler API in Java taken from http://blog.bolinfest.com/2009/11/calling-closure-compiler-from-java.html 
 	 * 	and https://code.google.com/p/closure-compiler/wiki/FAQ#How_do_I_call_Closure_Compiler_from_the_Java_API? */
 	@Override
-	public void minify(String settingName, List<InputSource> inputSources, Writer writer) throws IOException {
+	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException {
 		ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
 		
 		Compiler compiler = new Compiler( new PrintStream(errorStream) );
@@ -69,33 +73,47 @@ public class ClosureMinifierPlugin extends AbstractMinifierPlugin implements Min
 		
 		/* we have to use an extern, so create a dummy one */
 		SourceFile extern = SourceFile.fromCode("externs.js", "function alert(x) {}");
-		SourceFile input = SourceFile.fromInputStream( "input.js", getSingleInputStreamForInputSources(inputSources) );
+		SourceFile input;
+		try
+		{
+			input = SourceFile.fromInputStream( "input.js", getSingleInputStreamForInputSources(inputSources) );
+		}
+		catch (IOException ex)
+		{
+			throw new ContentProcessingException(ex);
+		}
+		
+		List<Reader> readers = new LinkedList<>();
 		
 		Result result = compiler.compile(extern, input, options);
 		if (result.success)
 		{
 			logger.debug(Messages.OUTPUT_FROM_MINIFIER, errorStream.toString());
-			writer.write(compiler.toSource());
+			readers.add( new StringReader(compiler.toSource()) );
 		}
 		else
 		{
 			logger.error(Messages.ERROR_WHILE_BUNDLING_MSG, errorStream.toString());
-			writer.write( String.format(Messages.ERROR_WHILE_BUNDLING_MSG, errorStream.toString()) );
-		}		
+			readers.add( new StringReader(String.format(Messages.ERROR_WHILE_BUNDLING_MSG, errorStream.toString())) );
+		}
+		
+		return new ConcatReader( readers.toArray(new Reader[0]) );
 	}
 	
 	@Override
-	public void generateSourceMap(String minifierLevel, List<InputSource> inputSources, Writer writer) throws IOException {
+	public Reader generateSourceMap(String minifierLevel, List<InputSource> inputSources) throws ContentProcessingException {
 		// TODO: implement this method
+		return new StringReader("");
 	}
 	
 	
-	private InputStream getSingleInputStreamForInputSources(List<InputSource> inputSources)
+	private InputStream getSingleInputStreamForInputSources(List<InputSource> inputSources) throws ContentProcessingException
 	{
 		Vector<InputStream> inputStreams = new Vector<InputStream>();
 		for (InputSource inputSource : inputSources)
 		{
-			inputStreams.add( IOUtils.toInputStream(inputSource.getSource()) );
+			Reader reader = inputSource.getContentPluginReader();
+			inputStreams.add( new ReaderInputStream(reader) );
 		}
 		return new SequenceInputStream( inputStreams.elements() );
 	}

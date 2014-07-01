@@ -1,11 +1,12 @@
 package org.bladerunnerjs.testing.utility;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 import org.bladerunnerjs.plugin.base.AbstractMinifierPlugin;
@@ -26,13 +27,15 @@ public class MockMinifierPlugin extends AbstractMinifierPlugin implements Minifi
 	}
 
 	@Override
-	public void minify(String settingName, List<InputSource> inputSources, Writer writer) throws IOException
+	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException
 	{
+		return new StringReader("");
 	}
 
 	@Override
-	public void generateSourceMap(String minifierLevel, List<InputSource> inputSources, Writer writer) throws IOException
+	public Reader generateSourceMap(String minifierLevel, List<InputSource> inputSources) throws ContentProcessingException
 	{
+		return new StringReader("");
 	}
 
 }

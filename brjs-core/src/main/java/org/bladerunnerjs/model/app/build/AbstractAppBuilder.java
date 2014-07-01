@@ -1,23 +1,26 @@
 package org.bladerunnerjs.model.app.build;
 
-import static org.bladerunnerjs.utility.AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.BUNDLE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.INDEX_PAGE_REQUEST;
 import static org.bladerunnerjs.utility.AppRequestHandler.LOCALE_FORWARDING_REQUEST;
+import static org.bladerunnerjs.utility.AppRequestHandler.UNVERSIONED_BUNDLE_REQUEST;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.text.ParseException;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
+import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -52,6 +55,7 @@ public abstract class AbstractAppBuilder
 		try {
 			Locale[] locales = app.appConf().getLocales();
 			String version = app.root().getAppVersionGenerator().getProdVersion();
+			UrlContentAccessor contentPluginUtility = new StaticContentAccessor(app);
 			
 			File appWebInf = app.file("WEB-INF");
 			if(appWebInf.exists()) {
@@ -72,8 +76,9 @@ public abstract class AbstractAppBuilder
 				File localeForwardingFile = new File(temporaryExportDir, appRequestHandler.createRequest(LOCALE_FORWARDING_REQUEST, aspectPrefix) + "index.html");
 				
 				localeForwardingFile.getParentFile().mkdirs();
-				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
-					appRequestHandler.writeLocaleForwardingPage(os, version);
+				
+				try (OutputStream os = new FileOutputStream(localeForwardingFile)) {
+					IOUtils.copy(appRequestHandler.getLocaleForwardingPageReader(contentPluginUtility, version), os);
 				}
 				
 				for(Locale locale : locales) {
@@ -82,7 +87,7 @@ public abstract class AbstractAppBuilder
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						appRequestHandler.writeIndexPage(aspect, locale, version, new StaticContentOutputStream(app, os), RequestMode.Prod);
+						IOUtils.copy(appRequestHandler.getIndexPageReader(aspect, locale, version, contentPluginUtility, RequestMode.Prod), os);
 					}
 				}
 				
@@ -96,10 +101,12 @@ public abstract class AbstractAppBuilder
 								bundleFile = new File(temporaryExportDir, appRequestHandler.createRequest(BUNDLE_REQUEST, aspectPrefix, version, contentPath));																
 							}
 							
+							ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
+							Reader contentReader = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);							
 							bundleFile.getParentFile().mkdirs();
-							try(ContentOutputStream os = new StaticContentOutputStream(app, bundleFile)) {
-								contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os, version);
-							}
+							bundleFile.createNewFile();
+							OutputStream output = new FileOutputStream(bundleFile);
+							IOUtils.copy(contentReader, output);
 						}
 					} else {
 						ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;
