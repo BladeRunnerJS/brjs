@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.io.Writer;
 
 
-public abstract class ContentPluginUtility
+public abstract class UrlContentAccessor
 {
 	
 	/**

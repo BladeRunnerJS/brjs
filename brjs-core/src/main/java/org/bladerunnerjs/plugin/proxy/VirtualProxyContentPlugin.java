@@ -4,7 +4,7 @@ import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginUtility;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.ContentPlugin;
@@ -46,9 +46,9 @@ public class VirtualProxyContentPlugin extends VirtualProxyPlugin implements Con
 	}
 	
 	@Override
-	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility os, String version) throws ContentProcessingException {
+	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		initializePlugin();
-		return contentPlugin.writeContent(contentPath, bundleSet, os, version);
+		return contentPlugin.handleRequest(contentPath, bundleSet, contentAccessor, version);
 	}
 
 	@Override

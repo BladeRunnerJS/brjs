@@ -280,8 +280,8 @@ public class App extends AbstractBRJSNode implements NamedNode
 		return appRequestHandler.canHandleLogicalRequest(requestPath);
 	}
 	
-	public Reader handleLogicalRequest(String requestPath, ContentPluginUtility os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
-		return appRequestHandler.handleLogicalRequest(requestPath, os);
+	public Reader handleLogicalRequest(String requestPath, UrlContentAccessor contentAccessor) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+		return appRequestHandler.handleLogicalRequest(requestPath, contentAccessor);
 	}
 	
 	public String createDevBundleRequest(String contentPath, String version) throws MalformedTokenException {

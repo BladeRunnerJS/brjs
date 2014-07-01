@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginUtility;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -68,12 +68,12 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility os, String version) throws ContentProcessingException {
+	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		if (contentPath.formName.equals(DEV_BUNDLE_REQUEST) || contentPath.formName.equals(PROD_BUNDLE_REQUEST)) {
 			String minifierSetting = contentPath.properties.get("minifier-setting");
 			MinifierPlugin minifierPlugin = brjs.plugins().minifierPlugin(minifierSetting);
 			
-			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, os, version);
+			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, contentAccessor, version);
 			return minifierPlugin.minify(minifierSetting, inputSources);
 		}
 		else {
@@ -101,7 +101,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		return requestPaths;
 	}
 	
-	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility os, String version) throws ContentProcessingException {
+	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {
@@ -112,7 +112,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 				
 				for(String requestPath : requestPaths) {
 					ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
-					inputSources.add( new InputSource(parsedContentPath, contentPlugin, bundleSet, os, version) );
+					inputSources.add( new InputSource(parsedContentPath, contentPlugin, bundleSet, contentAccessor, version) );
 				}
 			}
 		}

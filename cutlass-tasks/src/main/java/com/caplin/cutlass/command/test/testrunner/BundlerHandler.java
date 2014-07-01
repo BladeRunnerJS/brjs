@@ -12,8 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.ContentPluginUtility;
-import org.bladerunnerjs.model.StaticContentPluginUtility;
+import org.bladerunnerjs.model.UrlContentAccessor;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -57,7 +57,7 @@ public class BundlerHandler
 		
 		bundleFile.getParentFile().mkdirs();
 		String modelRequestPath = getModelRequestPath(bundlePath);
-		Reader reader = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentPluginUtility(app), version);
+		Reader reader = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentAccessor(app), version);
 		IOUtils.copy(reader, new FileOutputStream(bundleFile));
 	}
 
@@ -94,7 +94,7 @@ public class BundlerHandler
 		return null;
 	}
 
-	private Reader handleBundleRequest(File bundleFile, String brjsRequestPath, ContentPluginUtility outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
+	private Reader handleBundleRequest(File bundleFile, String brjsRequestPath, UrlContentAccessor outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
 	{
 		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
 		if (bundlableNode == null)

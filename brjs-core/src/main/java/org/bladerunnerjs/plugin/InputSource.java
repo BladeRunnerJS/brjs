@@ -3,7 +3,7 @@ package org.bladerunnerjs.plugin;
 import java.io.Reader;
 
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginUtility;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 
@@ -14,10 +14,10 @@ public class InputSource {
 	private ParsedContentPath parsedContentPath;
 	private final ContentPlugin contentPlugin;
 	private BundleSet bundleSet;
-	private ContentPluginUtility contentPluginUtility;
+	private UrlContentAccessor contentPluginUtility;
 	private String version;
 	
-	public InputSource(ParsedContentPath parsedContentPath, ContentPlugin contentPlugin, BundleSet bundleSet, ContentPluginUtility contentPluginUtility, String version) {
+	public InputSource(ParsedContentPath parsedContentPath, ContentPlugin contentPlugin, BundleSet bundleSet, UrlContentAccessor contentPluginUtility, String version) {
 		this.parsedContentPath = parsedContentPath;
 		this.contentPlugin = contentPlugin;
 		this.bundleSet = bundleSet;
@@ -26,7 +26,7 @@ public class InputSource {
 	}
 	
 	public Reader getContentPluginReader() throws ContentProcessingException {
-		return contentPlugin.writeContent(parsedContentPath, bundleSet, contentPluginUtility, version);
+		return contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);
 	}
 	
 	

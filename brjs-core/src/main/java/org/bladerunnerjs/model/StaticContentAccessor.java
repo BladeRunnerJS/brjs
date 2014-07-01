@@ -9,15 +9,15 @@ import java.io.OutputStream;
 import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
-import org.bladerunnerjs.model.ContentPluginUtility;
+import org.bladerunnerjs.model.UrlContentAccessor;
 
 
-public class StaticContentPluginUtility extends ContentPluginUtility
+public class StaticContentAccessor extends UrlContentAccessor
 {
 
 	private App app;
 
-	public StaticContentPluginUtility(App app)
+	public StaticContentAccessor(App app)
 	{
 		this.app = app;
 	}

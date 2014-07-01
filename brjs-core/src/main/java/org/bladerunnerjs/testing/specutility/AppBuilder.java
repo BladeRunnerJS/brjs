@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.StaticContentPluginUtility;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -78,7 +78,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	
 	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException 
 	{
-		app.handleLogicalRequest(requestPath, new StaticContentPluginUtility(app));
+		app.handleLogicalRequest(requestPath, new StaticContentAccessor(app));
 		
 		return builderChainer;	
 	}

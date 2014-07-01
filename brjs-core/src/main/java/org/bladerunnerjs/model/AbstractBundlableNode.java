@@ -161,9 +161,9 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public Reader handleLogicalRequest(String logicalRequestPath, ContentPluginUtility os, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public Reader handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
-			return BundleSetRequestHandler.handle(this.getBundleSet(), logicalRequestPath, os, version);
+			return BundleSetRequestHandler.handle(this.getBundleSet(), logicalRequestPath, contentAccessor, version);
 		}
 		catch (ModelOperationException e) {
 			throw new ContentProcessingException(e);
@@ -171,9 +171,9 @@ public abstract class AbstractBundlableNode extends AbstractAssetContainer imple
 	}
 	
 	@Override
-	public Reader handleLogicalRequest(String logicalRequestPath, ContentPluginUtility os, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public Reader handleLogicalRequest(String logicalRequestPath, UrlContentAccessor contentAccessor, BundleSetFilter bundleSetFilter, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		try {
-			return BundleSetRequestHandler.handle(new FilteredBundleSet(this.getBundleSet(), bundleSetFilter), logicalRequestPath, os, version);
+			return BundleSetRequestHandler.handle(new FilteredBundleSet(this.getBundleSet(), bundleSetFilter), logicalRequestPath, contentAccessor, version);
 		}
 		catch (ModelOperationException e) {
 			throw new ContentProcessingException(e);

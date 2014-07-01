@@ -17,10 +17,10 @@ import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginUtility;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.StaticContentPluginUtility;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -55,7 +55,7 @@ public abstract class AbstractAppBuilder
 		try {
 			Locale[] locales = app.appConf().getLocales();
 			String version = app.root().getAppVersionGenerator().getProdVersion();
-			ContentPluginUtility contentPluginUtility = new StaticContentPluginUtility(app);
+			UrlContentAccessor contentPluginUtility = new StaticContentAccessor(app);
 			
 			File appWebInf = app.file("WEB-INF");
 			if(appWebInf.exists()) {
@@ -102,7 +102,7 @@ public abstract class AbstractAppBuilder
 							}
 							
 							ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
-							Reader contentReader = contentPlugin.writeContent(parsedContentPath, bundleSet, contentPluginUtility, version);							
+							Reader contentReader = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);							
 							bundleFile.getParentFile().mkdirs();
 							bundleFile.createNewFile();
 							OutputStream output = new FileOutputStream(bundleFile);
