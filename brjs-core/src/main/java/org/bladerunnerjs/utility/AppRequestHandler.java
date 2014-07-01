@@ -108,8 +108,8 @@ public class AppRequestHandler
 			}
 			
 			String pathRelativeToApp = RelativePathUtility.get(app.root(), app.dir(), indexPage);
-			StringWriter indexPageContent = new StringWriter();
-			contentAccessor.writeLocalUrlContentsToWriter(pathRelativeToApp, indexPageContent);
+			ByteArrayOutputStream indexPageContent = new ByteArrayOutputStream();
+			contentAccessor.writeLocalUrlContentsToOutputStream(pathRelativeToApp, indexPageContent);
 			
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			

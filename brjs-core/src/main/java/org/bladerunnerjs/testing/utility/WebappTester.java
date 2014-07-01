@@ -42,6 +42,7 @@ public class WebappTester
 	
 	private File filePathBase;
 	private int statusCode;
+	private String statusText;
 	
 	private HttpResponse httpResponse;
 	private String response;
@@ -95,6 +96,7 @@ public class WebappTester
 		
 		httpResponse = httpClient.execute( get );
 		statusCode = httpResponse.getStatusLine().getStatusCode();
+		statusText = httpResponse.getStatusLine().getReasonPhrase();
 		response = EntityUtils.toString(httpResponse.getEntity());
 		contentType = ContentType.getOrDefault(httpResponse.getEntity()).getMimeType();
 		Charset charset = ContentType.getOrDefault(httpResponse.getEntity()).getCharset();
@@ -170,6 +172,12 @@ public class WebappTester
 	public WebappTester responseIs(String response)
 	{
 		assertEquals("response wasnt the same", response, this.response);
+		return this;
+	}
+	
+	public WebappTester statusTextIs(String statusText)
+	{
+		assertEquals("response wasnt the same", statusText, this.statusText);
 		return this;
 	}
 	

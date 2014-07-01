@@ -34,7 +34,7 @@ public class ServletContentAccessor extends StaticContentAccessor
 			if (urlPath.endsWith(".jsp")) {
 				urlPath = (!urlPath.startsWith("/")) ? "/"+urlPath : urlPath;
     			CharResponseWrapper responseWrapper = new CharResponseWrapper(response);
-    			servletContext.getRequestDispatcher(urlPath).include(request, responseWrapper);
+    			servletContext.getRequestDispatcher(urlPath).forward(request, responseWrapper);
     			IOUtils.copy(responseWrapper.getReader(), output);
     		} else {
     			super.writeLocalUrlContentsToOutputStream(urlPath, output);

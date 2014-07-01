@@ -58,6 +58,14 @@ public class AppServerVerifier
 		return verifierChainer;		
 	}
 	
+	public VerifierChainer requestForUrlHasResponseCode(String urlPath, int statusCode) throws ClientProtocolException, IOException
+	{
+		String url = getUrl(urlPath);
+		specTest.webappTester.whenRequestMadeTo(url,false).statusCodeIs(statusCode);
+		
+		return verifierChainer;
+	}
+	
 	public VerifierChainer requestForUrlContains(String urlPath, String contains) throws ClientProtocolException, IOException
 	{
 		String url = getUrl(urlPath);
