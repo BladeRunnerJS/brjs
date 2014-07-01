@@ -1,15 +1,19 @@
+
+var BRHtmlResourceService = require('br/services/html/BRHtmlResourceService');
+var ServiceRegistry = require('br/ServiceRegistry');
+
 BRHtmlResourceServiceTest = TestCase("BRHtmlResourceServiceTest");
 
 BRHtmlResourceServiceTest.prototype.test_scriptTagsAreParsedByTheBrowser = function()
 {
-	var oService = br.ServiceRegistry.getService("br.html-service");
+	var oService = ServiceRegistry.getService("br.html-service");
 	var eTemplate = oService.getHTMLTemplate('br.services.testing-template');
 	assertEquals(eTemplate.innerHTML.toLowerCase(), "<div>script</div>");
 };
 
 BRHtmlResourceServiceTest.prototype.test_templatesInBundle = function()
 {
-	var oService = br.ServiceRegistry.getService("br.html-service");
+	var oService = ServiceRegistry.getService("br.html-service");
 	assertEquals(oService.getHTMLTemplate("br.services.template1").innerHTML.toLowerCase(), "some html1");
 	assertEquals(oService.getHTMLTemplate("br.services.template2").innerHTML.toLowerCase(), "some html2");
 };
@@ -51,7 +55,7 @@ BRHtmlResourceServiceTest.prototype.test_loadHTMLFilesDoesNotExist = function()
  * 
  */
 var assertTemplateContentsMatch = (function(){
-	var oService = br.ServiceRegistry.getService("br.html-service");
+	var oService = ServiceRegistry.getService("br.html-service");
 	var tempDiv = document.createElement("div"); // Needed as you cannot call innerHTML on a document fragment.
 	return function assertTemplateContentsMatch(templateId, expected) {
 		var templateDocFrag = oService.getHTMLTemplate(templateId);
@@ -64,5 +68,5 @@ var assertTemplateContentsMatch = (function(){
 
 BRHtmlResourceServiceTest.getService = function(sUrl)
 {
-	return new br.services.html.BRHtmlResourceService(sUrl);
+	return new BRHtmlResourceService(sUrl);
 };
