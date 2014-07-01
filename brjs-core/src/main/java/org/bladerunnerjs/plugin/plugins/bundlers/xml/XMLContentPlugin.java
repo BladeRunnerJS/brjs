@@ -83,7 +83,6 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	@Override
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
 	{
-		//TODO not parse the config on every execution
 		XmlBundleWriter bundleWriter = new XmlBundleWriter(xmlBundlerConfig);
 		List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
 
@@ -100,7 +99,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 			String unversionedBundlePath = ServedAppMetadataUtility.getUnversionedBundlePath();
 			String xmlBundlePathToken = ServedAppMetadataUtility.XML_BUNDLE_PATH_TOKEN;
 			String xmlUnversionedBundlePathToken = ServedAppMetadataUtility.XML_UNVERSIONED_BUNDLE_PATH_TOKEN;
-			//Can we do a streaming replacement rather than buffer into  string?
+			//TODO: Can we do a streaming replacement rather than buffer into  string?
 			String result = bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath);
 			output.setReader(new StringReader(result));
 		}
