@@ -1,6 +1,13 @@
-br.Core.thirdparty("jquery");
+'use strict';
+
+require('jquery');
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
 
 /**
+ * @name br.test.viewhandler.FocusOut
  * @class
  * <code>FocusOut ViewFixtureHandler</code> can be used to trigger <code>focusout</code> on a view element.
  * Example usage:
@@ -10,19 +17,16 @@ br.Core.thirdparty("jquery");
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.FocusOut = function()
-{
-};
+function FocusOut() {
+}
+br.implement(FocusOut, ViewFixtureHandler);
 
-br.Core.implement(br.test.viewhandler.FocusOut, br.test.viewhandler.ViewFixtureHandler);
-
-
-br.test.viewhandler.FocusOut.prototype.set = function(eElement)
-{
+FocusOut.prototype.set = function(eElement) {
 	jQuery(eElement).trigger('focusout');
 };
 
-br.test.viewhandler.FocusOut.prototype.get = function(eElement)
-{
-	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The focusOut event cannot be used in a doGiven or doThen");
+FocusOut.prototype.get = function(eElement) {
+	throw new Errors.InvalidTestError("The focusOut event cannot be used in a doGiven or doThen");
 };
+
+module.exports = FocusOut;

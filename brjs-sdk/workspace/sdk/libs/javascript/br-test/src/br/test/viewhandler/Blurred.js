@@ -1,6 +1,14 @@
-br.Core.thirdparty("jquery");
+'use strict';
+
+require('jquery');
+
+var br = require('br/Core');
+var Errors = require('br/Errors');
+var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+var Focused = require('br/test/viewhandler/Focused');
 
 /**
+ * @name br/test.viewhandler.Blurred
  * @class
  * <code>Blurred ViewFixtureHandler</code> can be used to trigger <code>blur</code> or <code>focus</code> events on the view element.
  * Example usage:
@@ -11,49 +19,39 @@ br.Core.thirdparty("jquery");
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-br.test.viewhandler.Blurred = function()
-{
-};
+function Blurred() {
+}
+br.implement(Blurred, ViewFixtureHandler);
 
-br.Core.implement(br.test.viewhandler.Blurred, br.test.viewhandler.ViewFixtureHandler);
-
-br.test.viewhandler.Blurred.prototype.set = function(eElement, vValue)
-{
-	if( !br.test.viewhandler.Focused.isFocusableElement(eElement) || eElement.disabled )
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'blurred' property is not available on non-focusable or disabled elements.");
+Blurred.prototype.set = function(eElement, vValue) {
+	if ( !Focused.isFocusableElement(eElement) || eElement.disabled ) {
+		throw new Errors.InvalidTestError("The 'blurred' property is not available on non-focusable or disabled elements.");
 	}
 	
-	if(vValue === true)
-	{
+	if (vValue === true) {
 		eElement.blur();
 		jQuery(eElement).trigger("blur");
 		
-		if(eElement.tagName.toLowerCase() == "input")
+		if (eElement.tagName.toLowerCase() == "input")
 		{
 			jQuery(eElement).trigger("change");
 		}
-	}
-	else if(vValue === false)
-	{
+	} else if (vValue === false) {
 		eElement.focus();
-	}
-	else
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'blurred' property only takes boolean values.");
+	} else {
+		throw new Errors.InvalidTestError("The 'blurred' property only takes boolean values.");
 	}
 };
 
-br.test.viewhandler.Blurred.prototype.get = function(eElement)
-{
-	if(!br.test.viewhandler.Focused.isFocusableElement(eElement))
-	{
-		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The 'blurred' property is not available on non-focusable elements.");
+Blurred.prototype.get = function(eElement) {
+	if (!Focused.isFocusableElement(eElement)) {
+		throw new Errors.InvalidTestError("The 'blurred' property is not available on non-focusable elements.");
 	}
 
-	if(eElement === document.activeElement)
-	{
+	if (eElement === document.activeElement) {
 		return false;
 	}
 	return true;
 };
+
+module.exports = Blurred;

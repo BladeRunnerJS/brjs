@@ -1,4 +1,4 @@
-br.Core.thirdparty("jquery");
+require("jquery");
 
 eventsLog = [];
 logEvent = function(e) {
