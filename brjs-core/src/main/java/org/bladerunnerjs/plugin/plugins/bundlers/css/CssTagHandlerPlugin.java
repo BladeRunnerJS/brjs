@@ -12,12 +12,12 @@ import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractTagHandlerPlugin;
-import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
 
 public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
-	private CssContentPlugin cssContentPlugin;
+	private ContentPlugin cssContentPlugin;
 	
 	private static String COMMON_THEME_NAME = "common";
 	private static String THEME_ATTRIBUTE = "theme";
@@ -26,13 +26,12 @@ public class CssTagHandlerPlugin extends AbstractTagHandlerPlugin {
 	public static String INVALID_THEME_EXCEPTION = String.format("The attribute '%s' should only contain a single theme and cannot contain spaces.", THEME_ATTRIBUTE);
 	
 	@Override
-	public void setBRJS(BRJS brjs) {
-	
-		String contentPluginRequirePrefix = getContentPluginRequirePrefix();
-		VirtualProxyContentPlugin virtualProxyCssContentPlugin = (VirtualProxyContentPlugin) brjs.plugins().contentPlugin(contentPluginRequirePrefix);
-		cssContentPlugin = (CssContentPlugin) virtualProxyCssContentPlugin.getUnderlyingPlugin();
+	public void setBRJS(BRJS brjs)
+	{
+		cssContentPlugin = brjs.plugins().contentPlugin( getContentPluginRequirePrefix() );
 	}
 	
+	// protected so the CT CSS plugin that uses a different CSS ordering can override it
 	protected String getContentPluginRequirePrefix(){
 		return "css";
 	}

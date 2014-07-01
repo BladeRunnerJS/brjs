@@ -32,10 +32,6 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	private AssetPlugin cssAssetPlugin;
 	
 	{
-		contentPathParser = createContentPathParser();
-	}
-	
-	protected ContentPathParser createContentPathParser(){
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
 			.accepts("css/<theme>/bundle.css").as("simple-request")
@@ -45,8 +41,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				.and("languageCode").hasForm(Locale.LANGUAGE_CODE_FORMAT)
 				.and("countryCode").hasForm(Locale.COUNTRY_CODE_FORMAT);
 		
-		ContentPathParser result =  contentPathParserBuilder.build();
-		return result;
+		contentPathParser =  contentPathParserBuilder.build();
 	}
 	
 	@Override
@@ -104,6 +99,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		}
 	}
 	
+	// protected so the CT CSS plugin that uses a different CSS ordering can override it
 	protected List<Asset> getCssAssets(BundleSet bundleSet, AssetPlugin cssAssetPlugin){
 		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
 		return cssAssets;
