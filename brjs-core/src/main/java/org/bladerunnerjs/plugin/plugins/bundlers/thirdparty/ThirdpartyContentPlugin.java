@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
@@ -66,7 +66,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
+	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility output, String version) throws ContentProcessingException
 	{
 		try {
 			if (contentPath.formName.equals("bundle-request"))
@@ -81,9 +81,8 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 						readerList.add(new StringReader("\n\n"));
 					}
 				}
-				Reader[] readers = new Reader[readerList.size()];
-				readerList.toArray(readers);
-				output.setReader(new ConcatReader(readers));
+				
+				return new ConcatReader( readerList.toArray(new Reader[0]) );
 			}
 			else if(contentPath.formName.equals("file-request")) {
 				String libName = contentPath.properties.get("module");
@@ -104,15 +103,15 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					throw new ContentProcessingException("File '" + file.getAbsolutePath() + "' doesn't exist.");
 				}
 				
-				output.setReader(new FileReader(file));
+				return new FileReader(file);
 			}
 			else if(contentPath.formName.equals("single-module-request")) {
 				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-				output.setReader(new ConcatReader(new Reader[]{
+				return new ConcatReader(new Reader[]{
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
 					jsModule.getReader(),
 					new StringReader("\n\n")
-				}));
+				});
 					
 			}
 			else {

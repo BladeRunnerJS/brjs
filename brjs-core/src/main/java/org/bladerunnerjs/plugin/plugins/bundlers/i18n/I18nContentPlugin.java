@@ -1,9 +1,8 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -16,9 +15,8 @@ import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.AssetPlugin;
@@ -41,7 +39,6 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	private AssetPlugin i18nAssetPlugin = null;
 	
 	private ContentPathParser contentPathParser;
-	private BRJS brjs;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -58,7 +55,6 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.brjs = brjs;
 		i18nAssetPlugin = brjs.plugins().assetPlugin(I18nAssetPlugin.class);
 	}
 
@@ -91,16 +87,16 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
+	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility os, String version) throws ContentProcessingException
 	{
 		Locale locale = new Locale(contentPath.properties.get(LANGUAGE_PROPERTY_NAME), contentPath.properties.get(COUNTRY_PROPERTY_NAME));
 		if (contentPath.formName.equals(LANGUAGE_BUNDLE)) 
 		{
-			generateBundleForLocale(bundleSet, os.getOutputStream(), locale);
+			return generateBundleForLocale(bundleSet, locale);
 		}
 		else if (contentPath.formName.equals(LANGUAGE_AND_LOCATION_BUNDLE)) 
 		{
-			generateBundleForLocale(bundleSet, os.getOutputStream(), locale);
+			return generateBundleForLocale(bundleSet, locale);
 		} 
 		else
 		{
@@ -138,7 +134,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		return getValidDevContentPaths(bundleSet, locales);
 	}
 	
-	private void generateBundleForLocale(BundleSet bundleSet, OutputStream os, Locale locale) throws ContentProcessingException
+	private Reader generateBundleForLocale(BundleSet bundleSet, Locale locale) throws ContentProcessingException
 	{
 		SortedMap<String,String> propertiesMap = new TreeMap<String,String>();
 		
@@ -147,7 +143,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			addI18nProperties(propertiesMap, locale, (I18nFileAsset) asset);
 		}
 
-		writePropertiesMapToOutput(propertiesMap, os);
+		return getReaderForProperties(propertiesMap);
 	}
 
 	private void addI18nProperties(Map<String,String> propertiesMap, Locale locale, I18nFileAsset i18nFile) throws ContentProcessingException
@@ -164,26 +160,16 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		}
 	}
 	
-	private void writePropertiesMapToOutput(Map<String, String> propertiesMap, OutputStream os) throws ContentProcessingException
+	private Reader getReaderForProperties(Map<String, String> propertiesMap) throws ContentProcessingException
 	{
-		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-			StringBuilder output = new StringBuilder();
-			
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			String jsonProperties = gson.toJson(propertiesMap);
-			/* Replace doubly escaped newlines - GSON does the right thing and escapes newlines twice 
-			 * since otherwise when they are decoded from JSON they become literal newlines. 
-			 * Since thats actually what we want we undo the double escaping here. 
-			 */
-			jsonProperties = jsonProperties.replace("\\\\n", "\\n").replace("\\\\r", "\\r");
-			output.append("window._brjsI18nProperties = [" + jsonProperties + "];");
-			
-			writer.write(output.toString());
-			writer.flush();
-		}
-		catch (IOException | ConfigException e) {
-			throw new ContentProcessingException(e);
-		}
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String jsonProperties = gson.toJson(propertiesMap);
+		/* Replace doubly escaped newlines - GSON does the right thing and escapes newlines twice 
+		 * since otherwise when they are decoded from JSON they become literal newlines. 
+		 * Since thats actually what we want we undo the double escaping here. 
+		 */
+		jsonProperties = jsonProperties.replace("\\\\n", "\\n").replace("\\\\r", "\\r");
+		return new StringReader( "window._brjsI18nProperties = [" + jsonProperties + "];" );
 	}
 	
 	private List<I18nFileAsset> getI18nAssetFiles(BundleSet bundleSet)

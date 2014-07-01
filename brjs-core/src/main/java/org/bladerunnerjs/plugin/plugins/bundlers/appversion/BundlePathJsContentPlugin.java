@@ -1,13 +1,13 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.appversion;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -52,15 +52,15 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
+	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility os, String version) throws ContentProcessingException
 	{
 		if (contentPath.formName.equals(APP_VERSION_REQUEST))
 		{
-			try (Writer writer = os.getWriter())
+			try
 			{
-				writer.write( ServedAppMetadataUtility.getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
+				return new StringReader( ServedAppMetadataUtility.getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
 			}
-			catch (ConfigException | IOException ex)
+			catch (ConfigException ex)
 			{
 				throw new ContentProcessingException(ex);
 			}

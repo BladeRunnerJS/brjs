@@ -1,12 +1,13 @@
 package org.bladerunnerjs.spec.brjs;
 
-import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -67,11 +68,9 @@ public class MockContentPluginWithIncorrectRequestPrefix extends AbstractContent
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException
+	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility os, String version) throws ContentProcessingException
 	{
-		PrintWriter out = new PrintWriter(os.getWriter());
-		out.print(this.getClass().getCanonicalName());
-		out.flush();
+		return new StringReader( this.getClass().getCanonicalName() );
 	}
 
 	@Override

@@ -1,9 +1,10 @@
 package org.bladerunnerjs.plugin;
 
+import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -66,7 +67,7 @@ public interface ContentPlugin extends OrderedPlugin {
 	ContentPathParser getContentPathParser();
 	
 	/**
-	 * Write content for the given request.
+	 * Get a reader for the content generated for the given request.
 	 * 
 	 * @param contentPath The parsed content path created using the content path parser available from {@link #getContentPathParser}.
 	 * @param bundleSet The bundle-set for the bundlable node to which this request is related to.
@@ -74,7 +75,7 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * @param version TODO
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException;
+	Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility os, String version) throws ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in development, for the given bundle-set and locale.

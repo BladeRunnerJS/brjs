@@ -1,6 +1,7 @@
 package com.caplin.cutlass.command.test.testrunner;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
@@ -11,8 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.ContentPluginOutput;
-import org.bladerunnerjs.model.StaticContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
+import org.bladerunnerjs.model.StaticContentPluginUtility;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -53,16 +54,11 @@ public class BundlerHandler
 		{
 			throw new IllegalArgumentException("Invalid bundlePath - it should not contain '\', only '/' as a seperator");
 		}
-		ContentPluginOutput output= createBundleOutputStream(bundleFile);
+		
+		bundleFile.getParentFile().mkdirs();
 		String modelRequestPath = getModelRequestPath(bundlePath);
-		handleBundleRequest(bundleFile, modelRequestPath, output, version);
-		Reader reader = output.getReader();
-		if(reader != null){
-			IOUtils.copy(reader, output.getWriter());
-			output.getWriter().flush();
-		}
-		
-		
+		Reader reader = handleBundleRequest(bundleFile, modelRequestPath, new StaticContentPluginUtility(app), version);
+		IOUtils.copy(reader, new FileOutputStream(bundleFile));
 	}
 
 	private String getModelRequestPath(String bundlerPath)
@@ -98,7 +94,7 @@ public class BundlerHandler
 		return null;
 	}
 
-	private void handleBundleRequest(File bundleFile, String brjsRequestPath, ContentPluginOutput outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
+	private Reader handleBundleRequest(File bundleFile, String brjsRequestPath, ContentPluginUtility outputStream, String version) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException 
 	{
 		BundlableNode bundlableNode = brjs.locateAncestorNodeOfClass(bundleFile, BundlableNode.class);
 		if (bundlableNode == null)
@@ -106,15 +102,7 @@ public class BundlerHandler
 			throw new ResourceNotFoundException("Unable to calculate bundlable node for the bundle file: " + bundleFile.getAbsolutePath());
 		}
 		
-		bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter(), version);
+		return bundlableNode.handleLogicalRequest(brjsRequestPath, outputStream, new NoTestModuleBundleSourceFilter(), version);
 	}
-	
-	private ContentPluginOutput createBundleOutputStream(File bundlerFile) throws IOException
-	{
-		bundlerFile.getParentFile().mkdirs();
-		
-		return new StaticContentPluginOutput(app, bundlerFile);
-	}
-	
 	
 }

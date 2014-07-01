@@ -1,15 +1,11 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.ContentPluginOutput;
-import org.bladerunnerjs.model.StaticContentPluginOutput;
+import org.bladerunnerjs.model.StaticContentPluginUtility;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -28,18 +24,8 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				ContentPluginOutput contentOutputStream = new StaticContentPluginOutput(bundlableNode.app(), responseOutput);
-        		bundlableNode.handleLogicalRequest(requestPath, contentOutputStream, bundlableNode.root().getAppVersionGenerator().getDevVersion());
-        		
-        		Reader reader = contentOutputStream.getReader();
-				if (reader != null){
-					StringWriter writer = new StringWriter();
-					IOUtils.copy(reader, writer);
-					response.append(writer.toString());
-				} else {
-					response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
-				}
+				Reader reader = bundlableNode.handleLogicalRequest(requestPath, new StaticContentPluginUtility(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getDevVersion());        		
+				response.append( IOUtils.toString(reader) );
 			}
 		});
 		
@@ -49,17 +35,8 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 	public CommanderChainer requestReceivedInProd(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
- 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				ContentPluginOutput contentOutputStream = new StaticContentPluginOutput(bundlableNode.app(), responseOutput);
-        		bundlableNode.handleLogicalRequest(requestPath, contentOutputStream, bundlableNode.root().getAppVersionGenerator().getProdVersion());
-        		Reader reader = contentOutputStream.getReader();
-        		if( reader == null){
-        			response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
-        		}else{
-        			Writer writer = new StringWriter();
-        			IOUtils.copy(reader, writer);
-        			response.append(writer.toString());
-        		}
+				Reader reader = bundlableNode.handleLogicalRequest(requestPath, new StaticContentPluginUtility(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getProdVersion());
+        		response.append( IOUtils.toString(reader) );
 			}
 		});
 		

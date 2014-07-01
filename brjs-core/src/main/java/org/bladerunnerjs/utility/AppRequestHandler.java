@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import org.bladerunnerjs.memoization.MemoizedValue;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BrowsableNode;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.RequestMode;
 import org.bladerunnerjs.model.SdkJsLib;
@@ -61,7 +62,7 @@ public class AppRequestHandler
 		return getContentPathParser().canParseRequest(requestPath);
 	}
 	
-	public void handleLogicalRequest(String requestPath, ContentPluginOutput os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
+	public Reader handleLogicalRequest(String requestPath, ContentPluginUtility os) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException {
 		ParsedContentPath parsedContentPath = getContentPathParser().parse(requestPath);
 		Map<String, String> pathProperties = parsedContentPath.properties;
 		String aspectName = getAspectName(requestPath, pathProperties);
@@ -72,29 +73,25 @@ public class AppRequestHandler
 		{
 			case LOCALE_FORWARDING_REQUEST:
 			case WORKBENCH_LOCALE_FORWARDING_REQUEST:
-				writeLocaleForwardingPage(os, devVersion);
-				break;
+				return getLocaleForwardingPageReader(os, devVersion);
 
 			case INDEX_PAGE_REQUEST:
-				writeIndexPage(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, os, RequestMode.Dev);
-				break;
+				return getIndexPageReader(app.aspect(aspectName), new Locale(pathProperties.get("locale")), devVersion, os, RequestMode.Dev);
 
 			case WORKBENCH_INDEX_PAGE_REQUEST:
-				writeIndexPage(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), new Locale(pathProperties.get("locale")), devVersion, os, RequestMode.Dev);
-				break;
+				return getIndexPageReader(app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench(), new Locale(pathProperties.get("locale")), devVersion, os, RequestMode.Dev);
 			
 			case UNVERSIONED_BUNDLE_REQUEST:
-				app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), os, devVersion);
-				break;
+				return app.aspect(aspectName).handleLogicalRequest("/"+pathProperties.get("content-path"), os, devVersion);
 				
 			case BUNDLE_REQUEST:
-				app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
-				break;
+				return app.aspect(aspectName).handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
 
 			case WORKBENCH_BUNDLE_REQUEST:
-				app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
-				break;
+				return app.bladeset(pathProperties.get("bladeset")).blade(pathProperties.get("blade")).workbench().handleLogicalRequest(pathProperties.get("content-path"), os, devVersion);
 		}
+		
+		throw new ContentProcessingException("unknown request form '" + parsedContentPath.formName + "'.");
 	}
 
 	public String createRequest(String requestFormName, String... args) throws MalformedTokenException
@@ -102,7 +99,7 @@ public class AppRequestHandler
 		return getContentPathParser().createRequest(requestFormName, args);
 	}
 	
-	public void writeIndexPage(BrowsableNode browsableNode, Locale locale, String version, ContentPluginOutput os, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
+	public Reader getIndexPageReader(BrowsableNode browsableNode, Locale locale, String version, ContentPluginUtility os, RequestMode requestMode) throws ContentProcessingException, ResourceNotFoundException {
 		
 		File indexPage = (browsableNode.file("index.jsp").exists()) ? browsableNode.file("index.jsp") : browsableNode.file("index.html");
 		try {
@@ -121,7 +118,7 @@ public class AppRequestHandler
 				browsableNode.filterIndexPage(indexPageContent.toString(), locale, version, writer, requestMode);
 			}
 
-			os.getOutputStream().write(byteArrayOutputStream.toByteArray());
+			return new StringReader( byteArrayOutputStream.toString() );
 		}
 		catch (IOException | ConfigException | ModelOperationException e) {
 			throw new ContentProcessingException(e, "Error when trying to write the index page for " + RelativePathUtility.get(browsableNode.root(), browsableNode.root().dir(),indexPage));
@@ -148,29 +145,32 @@ public class AppRequestHandler
 		return aspectName;
 	}
 
-	public void writeLocaleForwardingPage(ContentPluginOutput os, String version) throws ContentProcessingException {
+	public Reader getLocaleForwardingPageReader(ContentPluginUtility os, String version) throws ContentProcessingException {
+		StringWriter localeForwardingPage = new StringWriter();
+		
 		SdkJsLib localeForwarderLib = app.root().sdkLib(BR_LOCALE_UTILITY_LIBNAME);
-		try(Writer writer = os.getWriter();
-				Reader localeForwarderReader = new FileReader( localeForwarderLib.file(BR_LOCALE_UTILITY_FILENAME) ) ) {
+		try (Reader localeForwarderReader = new FileReader( localeForwarderLib.file(BR_LOCALE_UTILITY_FILENAME) ) ) {
 			
-			writer.write("<head>\n");
-			writer.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
-			writer.write("<script type='text/javascript'>\n");
-			IOUtils.write(ServedAppMetadataUtility.getBundlePathJsData(app, version), writer);
-			writer.write("\n");
-			IOUtils.copy(localeForwarderReader, writer);
-			writer.write("\n");			
-			writer.write("function forwardToLocalePage() {\n");
-			writer.write("	var localeCookie = LocaleUtility.getCookie(window.$BRJS_LOCALE_COOKIE_NAME);\n");
-			writer.write("	var browserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales();\n");
-			writer.write("	var appLocales = window.$BRJS_APP_LOCALES;\n");
-			writer.write("	var activeLocale = LocaleUtility.getActiveLocale( localeCookie, browserAcceptedLocales, appLocales );\n");
-			writer.write("	window.location = LocaleUtility.getLocalizedPageUrl( window.location.href, activeLocale );\n");
-			writer.write("}\n");
+			localeForwardingPage.write("<head>\n");
+			localeForwardingPage.write("<noscript><meta http-equiv='refresh' content='0; url=" + app.appConf().getDefaultLocale() + "/'></noscript>\n");
+			localeForwardingPage.write("<script type='text/javascript'>\n");
+			IOUtils.write(ServedAppMetadataUtility.getBundlePathJsData(app, version), localeForwardingPage);
+			localeForwardingPage.write("\n");
+			IOUtils.copy(localeForwarderReader, localeForwardingPage);
+			localeForwardingPage.write("\n");			
+			localeForwardingPage.write("function forwardToLocalePage() {\n");
+			localeForwardingPage.write("	var localeCookie = LocaleUtility.getCookie(window.$BRJS_LOCALE_COOKIE_NAME);\n");
+			localeForwardingPage.write("	var browserAcceptedLocales = LocaleUtility.getBrowserAcceptedLocales();\n");
+			localeForwardingPage.write("	var appLocales = window.$BRJS_APP_LOCALES;\n");
+			localeForwardingPage.write("	var activeLocale = LocaleUtility.getActiveLocale( localeCookie, browserAcceptedLocales, appLocales );\n");
+			localeForwardingPage.write("	window.location = LocaleUtility.getLocalizedPageUrl( window.location.href, activeLocale );\n");
+			localeForwardingPage.write("}\n");
 			
-			writer.write("\n</script>\n");
-			writer.write("</head>\n");
-			writer.write("<body onload='forwardToLocalePage()'></body>\n");
+			localeForwardingPage.write("\n</script>\n");
+			localeForwardingPage.write("</head>\n");
+			localeForwardingPage.write("<body onload='forwardToLocalePage()'></body>\n");
+			
+			return new StringReader( localeForwardingPage.toString() );
 		}
 		catch (IOException | ConfigException e) {
 			throw new ContentProcessingException(e);

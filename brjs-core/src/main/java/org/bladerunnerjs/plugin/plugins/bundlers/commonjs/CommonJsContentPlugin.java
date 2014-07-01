@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -111,14 +111,14 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
+	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility output, String version) throws ContentProcessingException
 	{
 		try
 		{
 			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
 				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-				output.setReader(jsModule.getReader());
+				return jsModule.getReader();
 				
 			}
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
@@ -133,9 +133,7 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 						readerList.add(new StringReader("\n\n"));
 					}
 				}
-				Reader[] readers = new Reader[readerList.size()];
-				readerList.toArray(readers);
-				output.setReader(new ConcatReader(readers));
+				return new ConcatReader( readerList.toArray(new Reader[0]) );
 			}
 			else
 			{

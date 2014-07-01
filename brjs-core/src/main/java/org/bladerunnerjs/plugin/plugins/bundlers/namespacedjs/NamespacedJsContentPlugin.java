@@ -14,7 +14,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
@@ -125,15 +125,14 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
+	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility output, String version) throws ContentProcessingException
 	{
 		try
 		{
 			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
 				SourceModule jsModule =  (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-				output.setReader(jsModule.getReader());
-
+				return jsModule.getReader();
 			}
 
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
@@ -164,13 +163,9 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				String content = contentBuffer.toString();
 				readerList.add(new StringReader(content));
 				readerList.add(new StringReader("\n"));
+				readerList.add(new StringReader(globalizedClasses));				
 				
-				
-				readerList.add(new StringReader(globalizedClasses));
-				
-				Reader[] readers = new Reader[readerList.size()];
-				readerList.toArray(readers);
-				output.setReader(new ConcatReader(readers));
+				return new ConcatReader( readerList.toArray(new Reader[0]) );
 			}
 			else if (contentPath.formName.equals(PACKAGE_DEFINITIONS_REQUEST))
 			{
@@ -178,15 +173,14 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
 				getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
 				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules);
-				output.setReader(getPackageStructureReader(packageStructure));
+				return getPackageStructureReader(packageStructure);
 			}
 			else if (contentPath.formName.equals(GLOBALIZE_EXTRA_CLASSES_REQUEST))
 			{
 				// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
-				output.setReader(new StringReader(getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules)));
+				return new StringReader(getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules));
 			}
-
 			else
 			{
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
@@ -247,18 +241,17 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 
 	private Reader getPackageStructureReader(Map<String, Map<String, ?>> packageStructure) 
 	{
-		Reader reader = null;
 		if (packageStructure.size() > 0)
 		{
 			Gson gson = new GsonBuilder().create();
-			reader = new ConcatReader(new Reader[]{
+			return new ConcatReader(new Reader[]{
 				new StringReader("// package definition block\n"),	
 				new StringReader("mergePackageBlock(window, "),	
 				new StringReader(gson.toJson(packageStructure)),
 				new StringReader(");\n")	
 			});
 		}
-		return reader;
+		return new StringReader("");
 	}
 
 	private String getGlobalizedNonNamespaceSourceModuleContent(SourceModule dependentSourceModule, List<SourceModule> globalizedModules)

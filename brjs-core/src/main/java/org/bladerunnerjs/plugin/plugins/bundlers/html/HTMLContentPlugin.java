@@ -18,7 +18,7 @@ import org.bladerunnerjs.aliasing.NamespaceException;
 import org.bladerunnerjs.model.Asset;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -90,7 +90,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
+	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility output, String version) throws ContentProcessingException
 	{
 		identifiers = new TreeMap<String, Asset>();
 		List<Asset> htmlAssets = bundleSet.getResourceFiles(htmlAssetPlugin);
@@ -118,10 +118,7 @@ public class HTMLContentPlugin extends AbstractContentPlugin
 			}
 		}
 		
-		Reader[] readers = new Reader[readerList.size()];
-		readerList.toArray(readers);
-		output.setReader(new ConcatReader(readers));
-		
+		return new ConcatReader( readerList.toArray(new Reader[0]) );		
 	}
 	
 	private List<String> getValidContentPaths(BundleSet bundleSet) {

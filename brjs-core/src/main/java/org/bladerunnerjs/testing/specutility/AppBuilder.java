@@ -1,15 +1,13 @@
 package org.bladerunnerjs.testing.specutility;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
 
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.JsLib;
-import org.bladerunnerjs.model.StaticContentPluginOutput;
+import org.bladerunnerjs.model.StaticContentPluginUtility;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -80,8 +78,7 @@ public class AppBuilder extends NodeBuilder<App> {
 	
 	public BuilderChainer hasReceivedRequest(String requestPath) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, IOException 
 	{
-		ContentPluginOutput responseOutput = new StaticContentPluginOutput(app, new ByteArrayOutputStream());
-		app.handleLogicalRequest(requestPath, responseOutput);
+		app.handleLogicalRequest(requestPath, new StaticContentPluginUtility(app));
 		
 		return builderChainer;	
 	}

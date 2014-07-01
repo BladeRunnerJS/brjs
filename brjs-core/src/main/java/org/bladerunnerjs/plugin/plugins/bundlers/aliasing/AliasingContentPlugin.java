@@ -1,14 +1,14 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.aliasing;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentPluginOutput;
+import org.bladerunnerjs.model.ContentPluginUtility;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -65,16 +65,14 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput os, String version) throws ContentProcessingException {
+	public Reader writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginUtility os, String version) throws ContentProcessingException {
 		try {
 			if (contentPath.formName.equals("aliasing-request")) {
 				boolean aliasRegistryLoaded = bundleSet.getSourceModules().contains(bundleSet.getBundlableNode().getLinkedAsset("br/AliasRegistry"));
 				
 				if(aliasRegistryLoaded) {
-					try (Writer writer = os.getWriter()) {
-						String aliasData = AliasingSerializer.createJson(bundleSet);
-						writer.write("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
-					}
+					String aliasData = AliasingSerializer.createJson(bundleSet);
+					return new StringReader("require('br/AliasRegistry').setAliasData(" + aliasData + ");\n");
 				}
 			}
 			else {
@@ -84,9 +82,7 @@ public class AliasingContentPlugin extends AbstractContentPlugin {
 		catch (RequirePathException e) {
 			// do nothing: if 'br/AliasRegistry' doesn't exist then we definitely need to configure it
 		}
-		catch(IOException e) {
-			throw new ContentProcessingException(e);
-		}
+		return new StringReader("");
 	}
 	
 	private List<String> getValidRequestPaths() throws ContentProcessingException {
