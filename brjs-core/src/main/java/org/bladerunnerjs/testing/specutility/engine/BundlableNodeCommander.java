@@ -31,14 +31,15 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
 				ContentPluginOutput contentOutputStream = new StaticContentOutputStream(bundlableNode.app(), responseOutput);
         		bundlableNode.handleLogicalRequest(requestPath, contentOutputStream, bundlableNode.root().getAppVersionGenerator().getDevVersion());
+        		
         		Reader reader = contentOutputStream.getReader();
-        		if( reader == null){
-        			response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
-        		}else{
-        			Writer writer = new StringWriter();
-        			IOUtils.copy(reader, writer);
-        			response.append(writer.toString());
-        		}
+				if (reader != null){
+					StringWriter writer = new StringWriter();
+					IOUtils.copy(reader, writer);
+					response.append(writer.toString());
+				} else {
+					response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
+				}
 			}
 		});
 		

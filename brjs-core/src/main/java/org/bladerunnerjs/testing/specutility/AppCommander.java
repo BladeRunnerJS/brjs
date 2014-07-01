@@ -77,12 +77,14 @@ public class AppCommander extends NodeCommander<App> {
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
 				ContentPluginOutput contentOutputStream = new StaticContentOutputStream(app, responseOutput);
 				app.handleLogicalRequest(requestPath, contentOutputStream);
-				response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
+				
 				Reader reader = contentOutputStream.getReader();
-				if(reader != null){
+				if (reader != null){
 					StringWriter writer = new StringWriter();
 					IOUtils.copy(reader, writer);
 					response.append(writer.toString());
+				} else {
+					response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
 				}
 			}
 		});
