@@ -1,9 +1,9 @@
 package org.bladerunnerjs.plugin.proxy;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.Reader;
 import java.util.List;
 
+import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.InputSource;
 import org.bladerunnerjs.plugin.MinifierPlugin;
 
@@ -21,14 +21,14 @@ public class VirtualProxyMinifierPlugin extends VirtualProxyPlugin implements Mi
 	}
 	
 	@Override
-	public void minify(String settingName, List<InputSource> inputSources, Writer writer) throws IOException {
+	public Reader minify(String settingName, List<InputSource> inputSources) throws ContentProcessingException {
 		initializePlugin();
-		minifierPlugin.minify(settingName, inputSources, writer);
+		return minifierPlugin.minify(settingName, inputSources);
 	}
 	
 	@Override
-	public void generateSourceMap(String minifierLevel, List<InputSource> inputSources, Writer writer) throws IOException {
+	public Reader generateSourceMap(String minifierLevel, List<InputSource> inputSources) throws ContentProcessingException {
 		initializePlugin();
-		minifierPlugin.generateSourceMap(minifierLevel, inputSources, writer);
+		return minifierPlugin.generateSourceMap(minifierLevel, inputSources);
 	}
 }

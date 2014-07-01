@@ -10,26 +10,26 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentAccessor;
 
 
-public class ServletContentOutputStream extends StaticContentOutputStream
+public class ServletContentAccessor extends StaticContentAccessor
 {
 
 	private final ServletContext servletContext;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 
-	public ServletContentOutputStream(App app, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws IOException
+	public ServletContentAccessor(App app, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
-		super( app, response.getOutputStream() );
+		super( app );
 		this.servletContext = servletContext;
 		this.request = request;
 		this.response = response;
 	}
 	
 	@Override
-	public void writeLocalUrlContentsToAnotherStream(String urlPath, OutputStream output) throws IOException {		
+	public void writeLocalUrlContentsToOutputStream(String urlPath, OutputStream output) throws IOException {		
 		try {
 			if (urlPath.endsWith(".jsp")) {
 				urlPath = (!urlPath.startsWith("/")) ? "/"+urlPath : urlPath;
@@ -37,7 +37,7 @@ public class ServletContentOutputStream extends StaticContentOutputStream
     			servletContext.getRequestDispatcher(urlPath).include(request, responseWrapper);
     			IOUtils.copy(responseWrapper.getReader(), output);
     		} else {
-    			super.writeLocalUrlContentsToAnotherStream(urlPath, output);
+    			super.writeLocalUrlContentsToOutputStream(urlPath, output);
     		}
 		} catch (ServletException ex) {
 			throw new IOException(ex);

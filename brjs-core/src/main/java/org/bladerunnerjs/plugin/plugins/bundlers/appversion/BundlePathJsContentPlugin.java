@@ -1,14 +1,13 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.appversion;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -27,7 +26,6 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 
 	private static final String APP_VERSION_REQUEST = "app-version-request";
 	private ContentPathParser contentPathParser;
-	private BRJS brjs;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -54,15 +52,15 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
 	{
 		if (contentPath.formName.equals(APP_VERSION_REQUEST))
 		{
-			try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
+			try
 			{
-				writer.write( ServedAppMetadataUtility.getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
+				return new StringReader( ServedAppMetadataUtility.getBundlePathJsData(bundleSet.getBundlableNode().app(), version) );
 			}
-			catch (ConfigException | IOException ex)
+			catch (ConfigException ex)
 			{
 				throw new ContentProcessingException(ex);
 			}
@@ -95,7 +93,6 @@ public class BundlePathJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.brjs = brjs;
 	}
 	
 	@Override

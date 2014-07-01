@@ -1,14 +1,17 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.unbundledresources;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -62,7 +65,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
 	{
 		try
 		{
@@ -81,8 +84,13 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
     				throw new ContentProcessingException("The requested unbundled resource at '"+requestedFilePathRelativeToRoot+"' does not exist or is not a file.");
     			}
 				
-    			os.writeLocalUrlContents(requestedFilePathRelativeToApp);
+    			ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+    			contentAccessor.writeLocalUrlContentsToOutputStream(requestedFilePathRelativeToApp, outputBuffer);
+    			return new StringReader( outputBuffer.toString() );
     		}
+			else {
+				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
+			}
 		}
 		catch (IOException e)
 		{

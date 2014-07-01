@@ -1,21 +1,18 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.commonjs;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -25,6 +22,8 @@ import org.bladerunnerjs.plugin.plugins.bundlers.i18n.I18nContentPlugin;
 import org.bladerunnerjs.plugin.utility.InstanceFinder;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
+
+import com.Ostermiller.util.ConcatReader;
 
 
 public class CommonJsContentPlugin extends AbstractContentPlugin
@@ -38,7 +37,6 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
-	private BRJS brjs;
 
 	{
 		try
@@ -58,7 +56,6 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.brjs = brjs;
 	}
 
 	@Override
@@ -114,39 +111,36 @@ public class CommonJsContentPlugin extends AbstractContentPlugin
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
 		try
 		{
 			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
-				{
-					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
-				}
+				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
+				return jsModule.getReader();
+				
 			}
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
 			{
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding()))
+				List<Reader> readerList = new ArrayList<Reader>();
+				for (SourceModule sourceModule : bundleSet.getSourceModules())
 				{
-					for (SourceModule sourceModule : bundleSet.getSourceModules())
+					if (sourceModule instanceof CommonJsSourceModule)
 					{
-						if (sourceModule instanceof CommonJsSourceModule)
-						{
-							writer.write("// " + sourceModule.getPrimaryRequirePath() + "\n");
-							try (Reader reader = sourceModule.getReader()) { IOUtils.copy(reader, writer); }
-							writer.write("\n\n");
-						}
+						readerList.add(new StringReader("// " + sourceModule.getPrimaryRequirePath() + "\n"));
+						readerList.add(sourceModule.getReader());
+						readerList.add(new StringReader("\n\n"));
 					}
 				}
+				return new ConcatReader( readerList.toArray(new Reader[0]) );
 			}
 			else
 			{
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
-		catch (ConfigException | IOException | RequirePathException e)
+		catch (  IOException | RequirePathException e)
 		{
 			throw new ContentProcessingException(e);
 		}

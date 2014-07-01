@@ -1,24 +1,21 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.thirdparty;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Writer;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.JsLib;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.SourceModule;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -27,11 +24,12 @@ import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
+import com.Ostermiller.util.ConcatReader;
+
 
 public class ThirdpartyContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
-	private BRJS brjs;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -48,7 +46,6 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
-		this.brjs = brjs;	
 	}
 	
 	@Override
@@ -69,22 +66,23 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException
+	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
 		try {
 			if (contentPath.formName.equals("bundle-request"))
 			{
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) 
+				List<Reader> readerList = new ArrayList<Reader>();
+				for(SourceModule sourceFile : bundleSet.getSourceModules()) 
 				{
-					for(SourceModule sourceFile : bundleSet.getSourceModules()) {
-						if(sourceFile instanceof ThirdpartySourceModule)
-						{
-							writer.write("// " + sourceFile.getPrimaryRequirePath() + "\n");
-							try (Reader reader = sourceFile.getReader()) { IOUtils.copy(reader, writer); }
-							writer.write("\n\n");
-						}
+					if(sourceFile instanceof ThirdpartySourceModule)
+					{
+						readerList.add(new StringReader("// " + sourceFile.getPrimaryRequirePath() + "\n"));
+						readerList.add(sourceFile.getReader());
+						readerList.add(new StringReader("\n\n"));
 					}
 				}
+				
+				return new ConcatReader( readerList.toArray(new Reader[0]) );
 			}
 			else if(contentPath.formName.equals("file-request")) {
 				String libName = contentPath.properties.get("module");
@@ -105,22 +103,22 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					throw new ContentProcessingException("File '" + file.getAbsolutePath() + "' doesn't exist.");
 				}
 				
-				IOUtils.copy(new FileInputStream(file), os);
+				return new FileReader(file);
 			}
 			else if(contentPath.formName.equals("single-module-request")) {
-				try (Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) 
-				{
-					SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-					writer.write("// " + jsModule.getPrimaryRequirePath() + "\n");
-					try (Reader reader = jsModule.getReader()) { IOUtils.copy(reader, writer); }
-					writer.write("\n\n");
-				}
+				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
+				return new ConcatReader(new Reader[]{
+					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
+					jsModule.getReader(),
+					new StringReader("\n\n")
+				});
+					
 			}
 			else {
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
 			}
 		}
-		catch(RequirePathException | ConfigException | IOException ex) {
+		catch(RequirePathException  | IOException ex) {
 			throw new ContentProcessingException(ex);
 		}
 	}

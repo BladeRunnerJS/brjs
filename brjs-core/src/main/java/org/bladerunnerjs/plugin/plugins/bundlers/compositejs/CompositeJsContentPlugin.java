@@ -1,18 +1,13 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.compositejs;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
-import org.bladerunnerjs.model.ContentOutputStream;
+import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.StaticContentOutputStream;
-import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
@@ -73,21 +68,13 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentOutputStream os, String version) throws ContentProcessingException {
-		if(contentPath.formName.equals(DEV_BUNDLE_REQUEST) || contentPath.formName.equals(PROD_BUNDLE_REQUEST)) {
-			try {
-				String minifierSetting = contentPath.properties.get("minifier-setting");
-				MinifierPlugin minifierPlugin = brjs.plugins().minifierPlugin(minifierSetting);
-				
-				try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-					List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, version);
-					minifierPlugin.minify(minifierSetting, inputSources, writer);
-				}
-			}
-			catch(IOException | ConfigException e) {
-				throw new ContentProcessingException(e);
-			}
+	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
+		if (contentPath.formName.equals(DEV_BUNDLE_REQUEST) || contentPath.formName.equals(PROD_BUNDLE_REQUEST)) {
+			String minifierSetting = contentPath.properties.get("minifier-setting");
+			MinifierPlugin minifierPlugin = brjs.plugins().minifierPlugin(minifierSetting);
 			
+			List<InputSource> inputSources = getInputSourcesFromOtherBundlers(contentPath, bundleSet, contentAccessor, version);
+			return minifierPlugin.minify(minifierSetting, inputSources);
 		}
 		else {
 			throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");
@@ -114,12 +101,10 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 		return requestPaths;
 	}
 	
-	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet, String version) throws ContentProcessingException {
+	private List<InputSource> getInputSourcesFromOtherBundlers(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException {
 		List<InputSource> inputSources = new ArrayList<>();
 		
 		try {
-			String charsetName = brjs.bladerunnerConf().getBrowserCharacterEncoding();
-			
 			for(ContentPlugin contentPlugin : brjs.plugins().contentPlugins("text/javascript")) {
 				List<String> requestPaths = (contentPath.formName.equals(DEV_BUNDLE_REQUEST)) ? contentPlugin.getValidDevContentPaths(bundleSet) :
 					contentPlugin.getValidProdContentPaths(bundleSet);
@@ -127,16 +112,11 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 				
 				for(String requestPath : requestPaths) {
 					ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					// TODO: we might want to make this ContentOutputStream the same as the one passed in so other content plugins can write dynamic content
-					ContentOutputStream contentOutputStream = new StaticContentOutputStream(bundleSet.getBundlableNode().app(), baos);
-					
-					contentPlugin.writeContent(parsedContentPath, bundleSet, contentOutputStream, version);
-					inputSources.add(new InputSource(requestPath, baos.toString(charsetName), contentPlugin, bundleSet));
+					inputSources.add( new InputSource(parsedContentPath, contentPlugin, bundleSet, contentAccessor, version) );
 				}
 			}
 		}
-		catch(ConfigException | IOException | MalformedRequestException e) {
+		catch (MalformedRequestException e) {
 			throw new ContentProcessingException(e);
 		}
 		

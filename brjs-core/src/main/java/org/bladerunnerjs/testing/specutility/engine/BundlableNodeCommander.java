@@ -1,11 +1,11 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
-import java.io.ByteArrayOutputStream;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BundlableNode;
-import org.bladerunnerjs.model.ContentOutputStream;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -24,10 +24,8 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				ContentOutputStream contentOutputStream = new StaticContentOutputStream(bundlableNode.app(), responseOutput);
-        		bundlableNode.handleLogicalRequest(requestPath, contentOutputStream, bundlableNode.root().getAppVersionGenerator().getDevVersion());
-        		response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
+				Reader reader = bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getDevVersion());        		
+				response.append( IOUtils.toString(reader) );
 			}
 		});
 		
@@ -37,10 +35,8 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 	public CommanderChainer requestReceivedInProd(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				ContentOutputStream contentOutputStream = new StaticContentOutputStream(bundlableNode.app(), responseOutput);
-        		bundlableNode.handleLogicalRequest(requestPath, contentOutputStream, bundlableNode.root().getAppVersionGenerator().getProdVersion());
-        		response.append(responseOutput.toString(specTest.getActiveClientCharacterEncoding()));
+				Reader reader = bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getProdVersion());
+        		response.append( IOUtils.toString(reader) );
 			}
 		});
 		
