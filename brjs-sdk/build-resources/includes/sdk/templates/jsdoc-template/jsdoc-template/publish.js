@@ -121,6 +121,7 @@ function publish(symbolSet) {
 	IO.copyFile(publish.conf.staticDir+"/style-overrides.css", publish.conf.outDir+"/static");
 	IO.copyFile(publish.conf.staticDir+"/tree.css", publish.conf.outDir+"/static");
 	IO.copyFile(publish.conf.staticDir+"/regenerateDocs.css", publish.conf.outDir+"/static");
+	IO.copyFile(publish.conf.staticDir+"/hosted-docs.css", publish.conf.outDir+"/static");
 
 	IO.copyFile(publish.conf.staticDir+"/d.gif", publish.conf.outDir+"/static");
 	IO.copyFile(publish.conf.staticDir+"/d.png", publish.conf.outDir+"/static");

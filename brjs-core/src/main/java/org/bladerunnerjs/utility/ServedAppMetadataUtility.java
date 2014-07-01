@@ -8,7 +8,7 @@ import com.google.common.base.Joiner;
 
 public class ServedAppMetadataUtility
 {
-	
+	public static final String APP_VERSION_TOKEN = "@appVersion@";
 	public static final String XML_BUNDLE_PATH_TOKEN = "@bundlePath@";
 	public static final String XML_UNVERSIONED_BUNDLE_PATH_TOKEN = "@unversionedBundlePath@";
 

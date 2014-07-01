@@ -30,6 +30,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	private BRJS brjs = null;
 	private AssetPlugin xmlAssetPlugin;
 	private final List<String> requestPaths = new ArrayList<>();
+	private XmlBundlerConfig xmlBundlerConfig;
 	
 	{
 		try {
@@ -48,6 +49,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	{
 		this.brjs  = brjs;
 		xmlAssetPlugin = brjs.plugins().assetPlugin(XMLAssetPlugin.class);
+		xmlBundlerConfig = new XmlBundlerConfig(brjs);
 	}
 
 	@Override
@@ -82,14 +84,13 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	public void writeContent(ParsedContentPath contentPath, BundleSet bundleSet, ContentPluginOutput output, String version) throws ContentProcessingException
 	{
 		//TODO not parse the config on every execution
-		XmlBundlerConfig config = new XmlBundlerConfig(brjs);
-		XmlBundleWriter bundleWriter = new XmlBundleWriter(config);
+		XmlBundleWriter bundleWriter = new XmlBundleWriter(xmlBundlerConfig);
 		List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
 
 		try{
 			StringWriter bufferedOutput = new StringWriter();
 			
-			if (config.isbundleConfigAvailable()){
+			if (xmlBundlerConfig.isbundleConfigAvailable()){
 				bundleWriter.writeBundle(xmlAssets, bufferedOutput);
 			} else {
 				bundleWriter.concatenateBundle(xmlAssets, bufferedOutput);
