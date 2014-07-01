@@ -9,7 +9,7 @@ import java.io.Writer;
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ContentPluginOutput;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentPluginOutput;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -29,7 +29,7 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 		call(new Command() {
 			public void call() throws Exception {
 				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				ContentPluginOutput contentOutputStream = new StaticContentOutputStream(bundlableNode.app(), responseOutput);
+				ContentPluginOutput contentOutputStream = new StaticContentPluginOutput(bundlableNode.app(), responseOutput);
         		bundlableNode.handleLogicalRequest(requestPath, contentOutputStream, bundlableNode.root().getAppVersionGenerator().getDevVersion());
         		
         		Reader reader = contentOutputStream.getReader();
@@ -50,7 +50,7 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 		call(new Command() {
 			public void call() throws Exception {
  				ByteArrayOutputStream responseOutput = new ByteArrayOutputStream();
-				ContentPluginOutput contentOutputStream = new StaticContentOutputStream(bundlableNode.app(), responseOutput);
+				ContentPluginOutput contentOutputStream = new StaticContentPluginOutput(bundlableNode.app(), responseOutput);
         		bundlableNode.handleLogicalRequest(requestPath, contentOutputStream, bundlableNode.root().getAppVersionGenerator().getProdVersion());
         		Reader reader = contentOutputStream.getReader();
         		if( reader == null){

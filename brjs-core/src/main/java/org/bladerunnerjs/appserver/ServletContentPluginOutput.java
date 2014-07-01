@@ -10,17 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentPluginOutput;
 
 
-public class ServletContentOutputStream extends StaticContentOutputStream
+public class ServletContentPluginOutput extends StaticContentPluginOutput
 {
 
 	private final ServletContext servletContext;
 	private final HttpServletRequest request;
 	private final HttpServletResponse response;
 
-	public ServletContentOutputStream(App app, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws IOException
+	public ServletContentPluginOutput(App app, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
 		super( app, response.getOutputStream() );
 		this.servletContext = servletContext;

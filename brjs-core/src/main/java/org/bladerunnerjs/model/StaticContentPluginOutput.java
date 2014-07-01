@@ -14,12 +14,12 @@ import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.exception.ConfigException;
 
 
-public class StaticContentOutputStream extends ContentPluginOutput
+public class StaticContentPluginOutput extends ContentPluginOutput
 {
 
 	private App app;
 
-	public StaticContentOutputStream(App app, OutputStream outputStream)
+	public StaticContentPluginOutput(App app, OutputStream outputStream)
 	{
 		super(outputStream, getEncoding(app));
 		this.app = app;
@@ -33,7 +33,7 @@ public class StaticContentOutputStream extends ContentPluginOutput
 		}
 	}
 	
-	public StaticContentOutputStream(App app, File file) throws IOException
+	public StaticContentPluginOutput(App app, File file) throws IOException
 	{
 		super( new FileOutputStream(file),getEncoding(app) );
 		this.app = app;

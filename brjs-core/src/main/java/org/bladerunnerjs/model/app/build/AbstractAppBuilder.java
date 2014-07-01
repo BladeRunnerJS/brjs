@@ -21,7 +21,7 @@ import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.RequestMode;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentPluginOutput;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.ModelOperationException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
@@ -79,7 +79,7 @@ public abstract class AbstractAppBuilder
 				String encoding = app.root().bladerunnerConf().getDefaultFileCharacterEncoding();
 				
 				OutputStream stream = new  FileOutputStream(localeForwardingFile);
-				ContentPluginOutput output = new StaticContentOutputStream(app, stream);
+				ContentPluginOutput output = new StaticContentPluginOutput(app, stream);
 				try(OutputStream os = new FileOutputStream(localeForwardingFile)) {
 					appRequestHandler.writeLocaleForwardingPage(output, version);
 				}
@@ -90,7 +90,7 @@ public abstract class AbstractAppBuilder
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						appRequestHandler.writeIndexPage(aspect, locale, version, new StaticContentOutputStream(app, os), RequestMode.Prod);
+						appRequestHandler.writeIndexPage(aspect, locale, version, new StaticContentPluginOutput(app, os), RequestMode.Prod);
 					}
 				}
 				
@@ -105,7 +105,7 @@ public abstract class AbstractAppBuilder
 							}
 							
 							bundleFile.getParentFile().mkdirs();
-							ContentPluginOutput os = new StaticContentOutputStream(app, bundleFile);
+							ContentPluginOutput os = new StaticContentPluginOutput(app, bundleFile);
 							contentPlugin.writeContent(contentPlugin.getContentPathParser().parse(contentPath), bundleSet, os, version);
 							Reader reader = os.getReader();
 							if(reader != null){

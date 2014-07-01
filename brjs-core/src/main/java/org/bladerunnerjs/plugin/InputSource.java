@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentPluginOutput;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -51,7 +51,7 @@ public class InputSource {
 			if(source != filteredSource) {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ParsedContentPath contentPath = contentPlugin.getContentPathParser().parse(sourceMappingUrl);
-				ContentPluginOutput contentOutputStream = new StaticContentOutputStream(bundleSet.getBundlableNode().app(), bos);
+				ContentPluginOutput contentOutputStream = new StaticContentPluginOutput(bundleSet.getBundlableNode().app(), bos);
 				
 				contentPlugin.writeContent(contentPath, bundleSet, contentOutputStream, version);
 				

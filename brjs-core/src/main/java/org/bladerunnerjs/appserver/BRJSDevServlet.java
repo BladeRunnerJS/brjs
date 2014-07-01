@@ -70,7 +70,7 @@ public class BRJSDevServlet extends HttpServlet {
 		
 		try {
 			ThreadSafeStaticBRJSAccessor.aquireModel();
-			ServletContentOutputStream os = new ServletContentOutputStream(app, servletContext, request, response);
+			ServletContentPluginOutput os = new ServletContentPluginOutput(app, servletContext, request, response);
 			app.handleLogicalRequest(requestPath, os);
 		}
 		catch (MalformedRequestException | ResourceNotFoundException | ContentProcessingException e) {

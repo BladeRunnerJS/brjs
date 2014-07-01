@@ -11,7 +11,7 @@ import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundleSet;
 import org.bladerunnerjs.model.ContentPluginOutput;
 import org.bladerunnerjs.model.ParsedContentPath;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentPluginOutput;
 import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
@@ -130,7 +130,7 @@ public class CompositeJsContentPlugin extends AbstractContentPlugin {
 					ParsedContentPath parsedContentPath = contentPathParser.parse(requestPath);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					// TODO: we might want to make this ContentOutputStream the same as the one passed in so other content plugins can write dynamic content
-					ContentPluginOutput pluginOutput = new StaticContentOutputStream(bundleSet.getBundlableNode().app(), baos);
+					ContentPluginOutput pluginOutput = new StaticContentPluginOutput(bundleSet.getBundlableNode().app(), baos);
 					
 					contentPlugin.writeContent(parsedContentPath, bundleSet, pluginOutput, version);
 

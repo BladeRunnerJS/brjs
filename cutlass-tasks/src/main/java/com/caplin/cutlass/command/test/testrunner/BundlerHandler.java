@@ -13,7 +13,7 @@ import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.BRJS;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.ContentPluginOutput;
-import org.bladerunnerjs.model.StaticContentOutputStream;
+import org.bladerunnerjs.model.StaticContentPluginOutput;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
@@ -114,7 +114,7 @@ public class BundlerHandler
 	{
 		bundlerFile.getParentFile().mkdirs();
 		
-		return new StaticContentOutputStream(app, bundlerFile);
+		return new StaticContentPluginOutput(app, bundlerFile);
 	}
 	
 	
