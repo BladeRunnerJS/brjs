@@ -32,6 +32,10 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	private AssetPlugin cssAssetPlugin;
 	
 	{
+		contentPathParser = createContentPathParser();
+	}
+	
+	protected ContentPathParser createContentPathParser(){
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
 		contentPathParserBuilder
 			.accepts("css/<theme>/bundle.css").as("simple-request")
@@ -41,7 +45,8 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				.and("languageCode").hasForm(Locale.LANGUAGE_CODE_FORMAT)
 				.and("countryCode").hasForm(Locale.COUNTRY_CODE_FORMAT);
 		
-		contentPathParser = contentPathParserBuilder.build();
+		ContentPathParser result =  contentPathParserBuilder.build();
+		return result;
 	}
 	
 	@Override
@@ -83,7 +88,9 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		Locale locale = new Locale(languageCode, countryCode);
 		
 		try(Writer writer = new OutputStreamWriter(os, brjs.bladerunnerConf().getBrowserCharacterEncoding())) {
-			List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
+			
+			List<Asset> cssAssets = getCssAssets(bundleSet, cssAssetPlugin);
+			
 			for(Asset cssAsset : cssAssets) {
 				String assetThemeName = getThemeName(cssAsset.assetLocation());
 				
@@ -96,6 +103,12 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			throw new ContentProcessingException(e);
 		}
 	}
+	
+	protected List<Asset> getCssAssets(BundleSet bundleSet, AssetPlugin cssAssetPlugin){
+		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
+		return cssAssets;
+	}
+	
 	
 	private String getThemeName(AssetLocation cssAssetLocation) {
 		String themeName;
@@ -133,14 +146,14 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				Locale assetLocale = Locale.createLocaleFromFilepath(".*_", cssAsset.getAssetName());
 				
 				if(assetLocale.isEmptyLocale()) {
-					contentPaths.add(contentPathParser.createRequest("simple-request", themeName));
+					contentPaths.add(getContentPathParser().createRequest("simple-request", themeName));
 				}
 				else {
 					if(supportedLocales.contains(assetLocale)) {
 						if (!assetLocale.isCompleteLocale()) {
-							contentPaths.add(contentPathParser.createRequest("language-request", themeName, assetLocale.getLanguageCode()));
+							contentPaths.add(getContentPathParser().createRequest("language-request", themeName, assetLocale.getLanguageCode()));
 						} else {
-							contentPaths.add(contentPathParser.createRequest("locale-request", themeName, assetLocale.getLanguageCode(), assetLocale.getCountryCode()));
+							contentPaths.add(getContentPathParser().createRequest("locale-request", themeName, assetLocale.getLanguageCode(), assetLocale.getCountryCode()));
 						}
 					}
 				}
