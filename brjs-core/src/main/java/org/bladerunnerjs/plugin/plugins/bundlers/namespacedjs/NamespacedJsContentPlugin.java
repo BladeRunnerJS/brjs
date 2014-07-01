@@ -3,7 +3,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.namespacedjs;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -175,23 +174,17 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 			}
 			else if (contentPath.formName.equals(PACKAGE_DEFINITIONS_REQUEST))
 			{
-				try (Writer writer = output.getWriter())
-				{
-					// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
-					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
-					getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
-					Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules);
-					output.setReader(getPackageStructureReader(packageStructure));
-				}
+				// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
+				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
+				getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
+				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules);
+				output.setReader(getPackageStructureReader(packageStructure));
 			}
 			else if (contentPath.formName.equals(GLOBALIZE_EXTRA_CLASSES_REQUEST))
 			{
-				try (Writer writer = output.getWriter())
-				{
-					// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
-					List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
-					output.setReader(new StringReader(getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules)));
-				}
+				// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
+				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
+				output.setReader(new StringReader(getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules)));
 			}
 
 			else
