@@ -42,7 +42,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				.and("languageCode").hasForm(Locale.LANGUAGE_CODE_FORMAT)
 				.and("countryCode").hasForm(Locale.COUNTRY_CODE_FORMAT);
 		
-		contentPathParser = contentPathParserBuilder.build();
+		contentPathParser =  contentPathParserBuilder.build();
 	}
 	
 	@Override
@@ -104,6 +104,13 @@ public class CssContentPlugin extends AbstractContentPlugin {
 		return new ConcatReader( readerList.toArray(new Reader[0]) );
 	}
 	
+	// protected so the CT CSS plugin that uses a different CSS ordering can override it
+	protected List<Asset> getCssAssets(BundleSet bundleSet, AssetPlugin cssAssetPlugin){
+		List<Asset> cssAssets = bundleSet.getResourceFiles(cssAssetPlugin);
+		return cssAssets;
+	}
+	
+	
 	private String getThemeName(AssetLocation cssAssetLocation) {
 		String themeName;
 		
@@ -129,14 +136,14 @@ public class CssContentPlugin extends AbstractContentPlugin {
 				Locale assetLocale = Locale.createLocaleFromFilepath(".*_", cssAsset.getAssetName());
 				
 				if(assetLocale.isEmptyLocale()) {
-					contentPaths.add(contentPathParser.createRequest("simple-request", themeName));
+					contentPaths.add(getContentPathParser().createRequest("simple-request", themeName));
 				}
 				else {
 					if(supportedLocales.contains(assetLocale)) {
 						if (!assetLocale.isCompleteLocale()) {
-							contentPaths.add(contentPathParser.createRequest("language-request", themeName, assetLocale.getLanguageCode()));
+							contentPaths.add(getContentPathParser().createRequest("language-request", themeName, assetLocale.getLanguageCode()));
 						} else {
-							contentPaths.add(contentPathParser.createRequest("locale-request", themeName, assetLocale.getLanguageCode(), assetLocale.getCountryCode()));
+							contentPaths.add(getContentPathParser().createRequest("locale-request", themeName, assetLocale.getLanguageCode(), assetLocale.getCountryCode()));
 						}
 					}
 				}
