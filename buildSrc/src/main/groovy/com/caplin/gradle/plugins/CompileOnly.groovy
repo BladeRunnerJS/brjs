@@ -11,7 +11,7 @@ class CompileOnly implements Plugin<Project>
 
 	void apply(Project project)
 	{
-		if (project.plugins.hasPlugin(JavaPlugin.class)) 
+		if (project.plugins.hasPlugin(JavaPlugin.class))
 		{
     		project.configurations {
     			compileOnly
@@ -28,8 +28,8 @@ class CompileOnly implements Plugin<Project>
     		project.afterEvaluate {
 				if (project.plugins.hasPlugin(EclipsePlugin.class))
 				{
-					project.eclipse.classpath.plusConfigurations += project.configurations.compileOnly
-					project.eclipse.classpath.plusConfigurations += project.configurations.testCompileOnly
+					project.eclipse.classpath.plusConfigurations += [ project.configurations.compileOnly ]
+					project.eclipse.classpath.plusConfigurations += [ project.configurations.testCompileOnly ]
 				}
 				if (project.plugins.hasPlugin('idea'))
 				{
@@ -42,5 +42,5 @@ class CompileOnly implements Plugin<Project>
     		}
 		}
 	}
-	
+
 }
