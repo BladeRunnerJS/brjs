@@ -1,6 +1,8 @@
 package org.bladerunnerjs.spec.plugin.bundler.unbundledresources;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,8 @@ import org.junit.Test;
 
 public class UnbundledResourcesContentPluginTest extends SpecTest {
 	private StringBuffer response = new StringBuffer();
+	private OutputStream binaryResponse;
+	private File binaryResponseFile;
 	private List<String> requestsList;
 	private ContentPlugin unbundledResourcesPlugin;
 	private App app;
@@ -34,6 +38,8 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 			sysapp = brjs.systemApp("sysapp");
 			sysappAspect = sysapp.aspect("default");
 			
+		binaryResponseFile = File.createTempFile("CssResourceContentPluginTest", "tmp");
+		binaryResponse = new FileOutputStream(binaryResponseFile);
 		unbundledResourcesPlugin = brjs.plugins().contentPlugin("unbundled-resources");
 		requestsList = new ArrayList<String>();
 	}
@@ -126,13 +132,14 @@ public class UnbundledResourcesContentPluginTest extends SpecTest {
 		}
 	}
 	
-	@Test //TODO: this test is a potentially a false positive - we don't have any way of testing binary data in the spec test framework
-	public void binaryDataCanBeUsedFromUnbundledResources() throws Exception
+	@Test
+	public void imagesArentCorrupt() throws Exception
 	{
 		given(app).hasBeenCreated()
-			.and(appAspect).containsBinaryFileWithContents("unbundled-resources/binary.data", (""+Math.PI).getBytes());
-		when(appAspect).requestReceived("unbundled-resources/binary.data", response);
-		then(response).textEquals(""+Math.PI);
+    		.and(appAspect).hasBeenCreated()
+    		.and(appAspect).containsFileCopiedFrom("unbundled-resources/br-logo.png", "src/test/resources/br-logo.png");
+    	when(appAspect).requestReceived("unbundled-resources/br-logo.png", binaryResponse);
+    	then(binaryResponseFile).sameAsFile("src/test/resources/br-logo.png");
 	}
 	
 }
