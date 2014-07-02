@@ -1,11 +1,8 @@
-'use stric';
-
 /**
- * @name br.util.ListenerFactory
  * Construct a new <code>ListenerFactory</code> that can create listeners for the given event, on the given interface.
  * 
- * @param {Function} interfaceFunc The listener interface that objects created with this factory will implement.
- * @param {String} eventName The particular event on the listener interface that will be proxied through.
+ * @param {Function} fInterface The listener interface that objects created with this factory will implement.
+ * @param {String} sEvent The particular event on the listener interface that will be proxied through.
  * 
  * @class
  * Utility class for creating listener objects that re-route incoming events to a method of your choice.
@@ -18,31 +15,31 @@
  *	 &mdash; this is only possible using proxy listeners like this.</li>
  * </ul>
  */
-function ListenerFactory(interfaceFunc, eventName) {
-	if(!(interfaceFunc.prototype[eventName] instanceof Function)) {
-		throw new TypeError("'" + eventName + "' was not a valid call-back method on the given interface");
+br.util.ListenerFactory = function(fInterface, sEvent) {
+	if(!(fInterface.prototype[sEvent] instanceof Function)) {
+		throw new TypeError("'" + sEvent + "' was not a valid call-back method on the given interface");
 	}
-
-	this.m_fInterface = interfaceFunc;
-	this.m_sEvent = eventName;
-}
+	
+	/** @private */
+	this.m_fInterface = fInterface;
+	
+	/** @private */
+	this.m_sEvent = sEvent;
+};
 
 /**
  * Returns a listener that will forward received events through to the given method on the given object.
  * 
- * @param {Object} target The object that will be invoked when events are received.
- * @param {String} methodName The name of the method to invoke on the target object.
+ * @param {Object} oTarget The object that will be invoked when events are received.
+ * @param {String} sMethod The name of the method to invoke on the target object.
  * @type Object
  */
-ListenerFactory.prototype.createListener = function(target, methodName) {
-	if(!target[methodName] || !(target[methodName] instanceof Function)) {
-		throw new TypeError("No such method '" + methodName + "' on the target object.");
+br.util.ListenerFactory.prototype.createListener = function(oTarget, sMethod) {
+	if(!oTarget[sMethod] || !(oTarget[sMethod] instanceof Function)) {
+		throw new TypeError("No such method '" + sMethod + "' on the target object.");
 	}
-
-	var listenerProxy = new this.m_fInterface();
-	listenerProxy[this.m_sEvent] = target[methodName].bind(target);
-
-	return listenerProxy;
+	var oListenerProxy = new this.m_fInterface();
+	oListenerProxy[this.m_sEvent] = oTarget[sMethod].bind(oTarget);
+	
+	return oListenerProxy;
 };
-
-module.exports = ListenerFactory;

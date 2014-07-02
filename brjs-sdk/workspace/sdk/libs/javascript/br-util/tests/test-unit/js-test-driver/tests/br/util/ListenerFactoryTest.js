@@ -1,8 +1,6 @@
-require('mock4js');
+br.Core.thirdparty('mock4js');
 
-var ListenerFactory = require('br/util/ListenerFactory');
-
-var ListenerFactoryTest = TestCase("ListenerFactoryTest");
+ListenerFactoryTest = TestCase("ListenerFactoryTest");
 
 ListenerFactoryTest.prototype.setUp = function()
 {
@@ -25,7 +23,7 @@ ListenerFactoryTest.prototype.test_creatingAFactoryForAnEventThatDoesntExistCaus
 {
 	var oThis = this;
 	assertException("1a", function() {
-		new ListenerFactory(oThis.m_fListenerInterface, "no-such-event");
+		new br.util.ListenerFactory(oThis.m_fListenerInterface, "no-such-event");
 	}, "TypeError");
 };
 
@@ -33,14 +31,14 @@ ListenerFactoryTest.prototype.test_creatingAListenerWithANonExistentMethodOnTheT
 {
 	var oThis = this;
 	assertException("Non-existent target method causes exception", function() {
-		var oFactory = new ListenerFactory(oThis.m_fListenerInterface, "onEvent1");
+		var oFactory = new br.util.ListenerFactory(oThis.m_fListenerInterface, "onEvent1");
 		oFactory.createListener(new oThis.m_fTargetClass(), "no-such-method");
 	}, "TypeError");
 };
 
 ListenerFactoryTest.prototype.test_createdListenersAreOfTheRightType = function()
 {
-	var oListenerFactory = new ListenerFactory(this.m_fListenerInterface, "onEvent1");
+	var oListenerFactory = new br.util.ListenerFactory(this.m_fListenerInterface, "onEvent1");
 	var oListener = oListenerFactory.createListener(new this.m_fTargetClass(), "targetMethod");
 	
 	assertTrue("1a", oListener instanceof this.m_fListenerInterface);
@@ -49,7 +47,7 @@ ListenerFactoryTest.prototype.test_createdListenersAreOfTheRightType = function(
 ListenerFactoryTest.prototype.test_invokingTheSpecifiedEventCausesItToBeProxiedThrough = function()
 {
 	var oTargetMock = mock(this.m_fTargetClass);
-	var oListenerFactory = new ListenerFactory(this.m_fListenerInterface, "onEvent1");
+	var oListenerFactory = new br.util.ListenerFactory(this.m_fListenerInterface, "onEvent1");
 	var oListener = oListenerFactory.createListener(oTargetMock.proxy(), "targetMethod");
 	
 	oTargetMock.expects(once()).targetMethod("abc");
@@ -59,7 +57,7 @@ ListenerFactoryTest.prototype.test_invokingTheSpecifiedEventCausesItToBeProxiedT
 ListenerFactoryTest.prototype.test_invokingOneOfTheOtherEventsHasNoEffect = function()
 {
 	var oTargetMock = mock(this.m_fTargetClass);
-	var oListenerFactory = new ListenerFactory(this.m_fListenerInterface, "onEvent1");
+	var oListenerFactory = new br.util.ListenerFactory(this.m_fListenerInterface, "onEvent1");
 	var oListener = oListenerFactory.createListener(oTargetMock.proxy(), "targetMethod");
 	
 	oTargetMock.expects(never()).targetMethod();

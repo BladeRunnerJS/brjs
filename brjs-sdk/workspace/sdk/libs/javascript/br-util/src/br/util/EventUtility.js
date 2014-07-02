@@ -1,19 +1,23 @@
-'use strict';
-
 var Errors = require("br/Errors");
-var MapFactory = require('br/util/MapFactory');
 
-function EventUtility() {
-}
+br.util.EventUtility = function()
+{
+};
 
-/** @private */
-EventUtility.UNIQUE_ID = 1;
+/**
+ * @private
+ */
+br.util.EventUtility.UNIQUE_ID = 1;
 
-/** @private */
-EventUtility.m_mEvents = undefined;
+/**
+ * @private
+ */
+br.util.EventUtility.m_mEvents = undefined;
 
-/** @private */
-EventUtility.m_bUnloadListenerAdded = false;
+/**
+ * @private
+ */
+br.util.EventUtility.m_bUnloadListenerAdded = false;
 
 /**
  * Registers the specified event function to a particular event using the provided DOM element.
@@ -31,31 +35,41 @@ EventUtility.m_bUnloadListenerAdded = false;
  *		 the newly added event listener or NULL if the event listener could not be added for any reason.
  * @type int
  */
-EventUtility.addEventListener = function(oTargetElem, sEvent, fEventListener, bDirectAttachedEvent, bUseCapture) {
-	EventUtility._initMap();
-
-	if (sEvent.match(/^on/)) {
+br.util.EventUtility.addEventListener = function(oTargetElem, sEvent, fEventListener, bDirectAttachedEvent, bUseCapture)
+{
+	br.util.EventUtility._initMap();
+	
+	if (sEvent.match(/^on/))
+	{
 		throw new Errors.IllegalStateError("events should be given without the on prefix");
 	}
 	var bSuccess = false;
 
 	// set up the event
-	if (bDirectAttachedEvent) {
+	if (bDirectAttachedEvent)
+	{
 		oTargetElem["on" + sEvent] = fEventListener;
 		bSuccess = true;
-	} else if (oTargetElem.addEventListener) {
+	}
+	else if (oTargetElem.addEventListener)
+	{
 		oTargetElem.addEventListener(sEvent, fEventListener, bUseCapture||false);
 		bSuccess = true;
-	} else {
+	}
+	else
+	{
 		bSuccess = oTargetElem.attachEvent("on" + sEvent, fEventListener);
 	}
 
-	if (bSuccess) {
+	if (bSuccess)
+	{
 		// store a reference to the event for unload removal
-		var nUniqueListenerId = EventUtility.UNIQUE_ID++;
-		EventUtility.m_mEvents[nUniqueListenerId] = {"elem":oTargetElem, "event":sEvent, "listener":fEventListener, "isDirect":bDirectAttachedEvent};
+		var nUniqueListenerId = br.util.EventUtility.UNIQUE_ID++;
+		br.util.EventUtility.m_mEvents[nUniqueListenerId] = {"elem":oTargetElem, "event":sEvent, "listener":fEventListener, "isDirect":bDirectAttachedEvent};
 		return nUniqueListenerId;
-	} else {
+	}
+	else
+	{
 		return null;
 	}
 };
@@ -65,25 +79,31 @@ EventUtility.addEventListener = function(oTargetElem, sEvent, fEventListener, bD
  *
  * @param {int} nUniqueListenerId The event Listener Id that was returned by the method {@link #addEventListener}.
  */
-EventUtility.removeEventListener = function(nUniqueListenerId)
+br.util.EventUtility.removeEventListener = function(nUniqueListenerId)
 {
-	EventUtility._initMap();
+	br.util.EventUtility._initMap();
 	
-	EventUtility._registerUnloadListener();
-	var oEvent = EventUtility.m_mEvents[nUniqueListenerId];
-	if (!oEvent) {
+	br.util.EventUtility._registerUnloadListener();
+	var oEvent = br.util.EventUtility.m_mEvents[nUniqueListenerId];
+	if (!oEvent)
+	{
 		return;
 	}
 	
-	if (oEvent.isDirect) {
+	if (oEvent.isDirect)
+	{
 		oEvent.elem["on" + oEvent.event] = null;
-	} else if (oEvent.elem.removeEventListener) {
+	}
+	else if (oEvent.elem.removeEventListener)
+	{
 		oEvent.elem.removeEventListener(oEvent.event, oEvent.listener, false);
-	} else {
+	}
+	else
+	{
 		oEvent.elem.detachEvent("on" + oEvent.event, oEvent.listener);
 	}
 
-	EventUtility.m_mEvents = MapFactory.removeItem(EventUtility.m_mEvents, nUniqueListenerId);
+	br.util.EventUtility.m_mEvents = br.util.MapFactory.removeItem(br.util.EventUtility.m_mEvents, nUniqueListenerId);
 };
 
 /**
@@ -95,10 +115,11 @@ EventUtility.removeEventListener = function(nUniqueListenerId)
  * @param {Event} oEvent Event passed to your event handler. Note that event handlers are not wrapped
  *				so you need to do something like <code>oEvent = oEvent || window.event;</code>
  */
-EventUtility.stopPropagation = function(oEvent)
+br.util.EventUtility.stopPropagation = function(oEvent)
 {
 	oEvent.cancelBubble = true;
-	if (oEvent.stopPropagation) {
+	if (oEvent.stopPropagation)
+	{
 		oEvent.stopPropagation();
 	}
 };
@@ -112,33 +133,43 @@ EventUtility.stopPropagation = function(oEvent)
  * @type boolean
  * @returns Always returns false
  */
-EventUtility.preventDefault = function(oEvent)
+br.util.EventUtility.preventDefault = function(oEvent)
 {
 	oEvent.returnValue = false;
-	if (oEvent.preventDefault) {
+	if (oEvent.preventDefault)
+	{
 		oEvent.preventDefault();
 	}
 	return false;
 };
 
-/** @private */
-EventUtility._initMap = function()
+/**
+ * @private
+ */
+br.util.EventUtility._initMap = function()
 {
-	if (EventUtility.m_mEvents === undefined) {
-		EventUtility.m_mEvents = MapFactory.createMap();
+	if (br.util.EventUtility.m_mEvents === undefined)
+	{
+		br.util.EventUtility.m_mEvents = br.util.MapFactory.createMap();
 	}
 };
 
-/** @private */
-EventUtility._registerUnloadListener = function()
+/**
+ * @private
+ */
+br.util.EventUtility._registerUnloadListener = function()
 {
-	if (!EventUtility.m_bUnloadListenerAdded) {
-		if (window.addEventListener) {
-			window.addEventListener("unload", EventUtility._handlePageUnload, false);
-		} else {
-			window.attachEvent("onunload", EventUtility._handlePageUnload);
+	if (!br.util.EventUtility.m_bUnloadListenerAdded)
+	{
+		if (window.addEventListener)
+		{
+			window.addEventListener("unload", br.util.EventUtility._handlePageUnload, false);
 		}
-		EventUtility.m_bUnloadListenerAdded = true;
+		else
+		{
+			window.attachEvent("onunload", br.util.EventUtility._handlePageUnload);
+		}
+		br.util.EventUtility.m_bUnloadListenerAdded = true;
 	}
 };
 
@@ -148,23 +179,25 @@ EventUtility._registerUnloadListener = function()
  *
  * @private
  */
-EventUtility._handlePageUnload = function()
+br.util.EventUtility._handlePageUnload = function()
 {
-	EventUtility._initMap();
+	br.util.EventUtility._initMap();
 	
 	// remove all the event handler registered with addEventListener()
-	for (var nUniqueListenerId in EventUtility.m_mEvents) {
-		EventUtility.removeEventListener(nUniqueListenerId);
+	for (nUniqueListenerId in br.util.EventUtility.m_mEvents)
+	{
+		br.util.EventUtility.removeEventListener(nUniqueListenerId);
 	}
 
 	// remove the unload event listener that caused this callback
-	if (window.removeEventListener) {
-		window.removeEventListener("unload", EventUtility._handlePageUnload, false);
-	} else {
-		window.detachEvent("onunload", EventUtility._handlePageUnload);
+	if (window.removeEventListener)
+	{
+		window.removeEventListener("unload", br.util.EventUtility._handlePageUnload, false);
+	}
+	else
+	{
+		window.detachEvent("onunload", br.util.EventUtility._handlePageUnload);
 	}
 
-	EventUtility.m_mEvents = MapFactory.createMap();
+	br.util.EventUtility.m_mEvents = br.util.MapFactory.createMap();
 };
-
-module.exports = EventUtility;
