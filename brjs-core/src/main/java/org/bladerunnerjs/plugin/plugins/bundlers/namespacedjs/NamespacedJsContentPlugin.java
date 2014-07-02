@@ -20,6 +20,8 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.commonjs.CommonJsContentPlugin;
@@ -47,6 +49,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 
 	private ContentPathParser contentPathParser;
 	private List<String> prodRequestPaths = new ArrayList<>();
+	private BRJS brjs;
 
 	{
 		try
@@ -66,6 +69,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		this.brjs = brjs;
 	}
 
 	@Override
@@ -125,14 +129,14 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
 		try
 		{
 			if (contentPath.formName.equals(SINGLE_MODULE_REQUEST))
 			{
 				SourceModule jsModule =  (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-				return jsModule.getReader();
+				return new CharResponseContent(brjs, jsModule.getReader());
 			}
 
 			else if (contentPath.formName.equals(BUNDLE_REQUEST))
@@ -165,7 +169,7 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				readerList.add(new StringReader("\n"));
 				readerList.add(new StringReader(globalizedClasses));				
 				
-				return new ConcatReader( readerList.toArray(new Reader[0]) );
+				return new CharResponseContent( brjs, readerList );
 			}
 			else if (contentPath.formName.equals(PACKAGE_DEFINITIONS_REQUEST))
 			{
@@ -173,13 +177,13 @@ public class NamespacedJsContentPlugin extends AbstractContentPlugin
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
 				getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules);
 				Map<String, Map<String, ?>> packageStructure = createPackageStructureForCaplinJsClasses(bundleSet, processedGlobalizedSourceModules);
-				return getPackageStructureReader(packageStructure);
+				return new CharResponseContent(brjs, getPackageStructureReader(packageStructure) );
 			}
 			else if (contentPath.formName.equals(GLOBALIZE_EXTRA_CLASSES_REQUEST))
 			{
 				// call globalizeExtraClasses here so it pushes more classes onto processedGlobalizedSourceModules so we create the package structure for these classes
 				List<SourceModule> processedGlobalizedSourceModules = new ArrayList<SourceModule>();
-				return new StringReader(getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules));
+				return new CharResponseContent(brjs, getGlobalizedClassesContent(bundleSet, processedGlobalizedSourceModules));
 			}
 			else
 			{

@@ -1,8 +1,6 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.i18n;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -20,6 +18,8 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.plugin.plugins.bundlers.thirdparty.ThirdpartyContentPlugin;
@@ -87,7 +87,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
 	{
 		Locale locale = new Locale(contentPath.properties.get(LANGUAGE_PROPERTY_NAME), contentPath.properties.get(COUNTRY_PROPERTY_NAME));
 		if (contentPath.formName.equals(LANGUAGE_BUNDLE)) 
@@ -134,7 +134,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		return getValidDevContentPaths(bundleSet, locales);
 	}
 	
-	private Reader generateBundleForLocale(BundleSet bundleSet, Locale locale) throws ContentProcessingException
+	private ResponseContent generateBundleForLocale(BundleSet bundleSet, Locale locale) throws ContentProcessingException
 	{
 		SortedMap<String,String> propertiesMap = new TreeMap<String,String>();
 		
@@ -143,7 +143,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 			addI18nProperties(propertiesMap, locale, (I18nFileAsset) asset);
 		}
 
-		return getReaderForProperties(propertiesMap);
+		return getReaderForProperties(bundleSet.getBundlableNode().root(), propertiesMap);
 	}
 
 	private void addI18nProperties(Map<String,String> propertiesMap, Locale locale, I18nFileAsset i18nFile) throws ContentProcessingException
@@ -160,7 +160,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		}
 	}
 	
-	private Reader getReaderForProperties(Map<String, String> propertiesMap) throws ContentProcessingException
+	private ResponseContent getReaderForProperties(BRJS brjs, Map<String, String> propertiesMap) throws ContentProcessingException
 	{
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String jsonProperties = gson.toJson(propertiesMap);
@@ -169,7 +169,7 @@ public class I18nContentPlugin extends AbstractContentPlugin
 		 * Since thats actually what we want we undo the double escaping here. 
 		 */
 		jsonProperties = jsonProperties.replace("\\\\n", "\\n").replace("\\\\r", "\\r");
-		return new StringReader( "window._brjsI18nProperties = [" + jsonProperties + "];" );
+		return new CharResponseContent( brjs, "window._brjsI18nProperties = [" + jsonProperties + "];" );
 	}
 	
 	private List<I18nFileAsset> getI18nAssetFiles(BundleSet bundleSet)

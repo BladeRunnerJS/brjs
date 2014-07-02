@@ -1,15 +1,15 @@
 package org.bladerunnerjs.testing.specutility.engine;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.BundlableNode;
 import org.bladerunnerjs.model.StaticContentAccessor;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 
 
 public abstract class BundlableNodeCommander<N extends BundlableNode> extends NodeCommander<N>
@@ -25,8 +25,10 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 	public CommanderChainer requestReceived(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				Reader reader = bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getDevVersion());        		
-				response.append( IOUtils.toString(reader) );
+				ResponseContent content = bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getDevVersion());        		
+				ByteArrayOutputStream pluginContent = new ByteArrayOutputStream();
+        		content.write(pluginContent);
+        		response.append(pluginContent);
 			}
 		});
 		
@@ -36,8 +38,8 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 	public CommanderChainer requestReceived(final String requestPath, final OutputStream response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				Reader reader = bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getDevVersion());        		
-				IOUtils.copy(reader, response);
+				ResponseContent content = bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getDevVersion());
+        		content.write(response);
 			}
 		});
 		
@@ -47,8 +49,10 @@ public abstract class BundlableNodeCommander<N extends BundlableNode> extends No
 	public CommanderChainer requestReceivedInProd(final String requestPath, final StringBuffer response) throws MalformedRequestException, ResourceNotFoundException, ContentProcessingException, UnsupportedEncodingException {
 		call(new Command() {
 			public void call() throws Exception {
-				Reader reader = bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getProdVersion());
-        		response.append( IOUtils.toString(reader) );
+				ResponseContent content = bundlableNode.handleLogicalRequest(requestPath, new StaticContentAccessor(bundlableNode.app()), bundlableNode.root().getAppVersionGenerator().getProdVersion());
+        		ByteArrayOutputStream pluginContent = new ByteArrayOutputStream();
+        		content.write(pluginContent);
+        		response.append(pluginContent);
 			}
 		});
 		

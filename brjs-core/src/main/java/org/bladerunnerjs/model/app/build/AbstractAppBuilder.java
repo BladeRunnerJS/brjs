@@ -9,11 +9,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.text.ParseException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.bladerunnerjs.model.App;
 import org.bladerunnerjs.model.Aspect;
 import org.bladerunnerjs.model.BundleSet;
@@ -27,6 +25,7 @@ import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedRequestException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.model.exception.request.ResourceNotFoundException;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.ContentPlugin;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.proxy.VirtualProxyContentPlugin;
@@ -78,7 +77,8 @@ public abstract class AbstractAppBuilder
 				localeForwardingFile.getParentFile().mkdirs();
 				
 				try (OutputStream os = new FileOutputStream(localeForwardingFile)) {
-					IOUtils.copy(appRequestHandler.getLocaleForwardingPageReader(contentPluginUtility, version), os);
+					ResponseContent content = appRequestHandler.getLocaleForwardingPageContent(app.root(), contentPluginUtility, version);
+					content.write(os);
 				}
 				
 				for(Locale locale : locales) {
@@ -87,7 +87,8 @@ public abstract class AbstractAppBuilder
 					
 					localeIndexPageFile.getParentFile().mkdirs();
 					try(OutputStream os = new FileOutputStream(localeIndexPageFile)) {
-						IOUtils.copy(appRequestHandler.getIndexPageReader(aspect, locale, version, contentPluginUtility, RequestMode.Prod), os);
+						ResponseContent content = appRequestHandler.getIndexPageContent(aspect, locale, version, contentPluginUtility, RequestMode.Prod);
+						content.write(os);
 					}
 				}
 				
@@ -102,11 +103,10 @@ public abstract class AbstractAppBuilder
 							}
 							
 							ParsedContentPath parsedContentPath = contentPlugin.getContentPathParser().parse(contentPath);
-							Reader contentReader = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);							
+							ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);
 							bundleFile.getParentFile().mkdirs();
 							bundleFile.createNewFile();
-							OutputStream output = new FileOutputStream(bundleFile);
-							IOUtils.copy(contentReader, output);
+							pluginContent.write( new FileOutputStream(bundleFile) );
 						}
 					} else {
 						ContentPlugin plugin = (contentPlugin instanceof VirtualProxyContentPlugin) ? (ContentPlugin) ((VirtualProxyContentPlugin) contentPlugin).getUnderlyingPlugin() : contentPlugin;

@@ -19,17 +19,18 @@ import org.bladerunnerjs.model.SourceModule;
 import org.bladerunnerjs.model.exception.RequirePathException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-import com.Ostermiller.util.ConcatReader;
-
 
 public class ThirdpartyContentPlugin extends AbstractContentPlugin
 {
 	private ContentPathParser contentPathParser;
+	private BRJS brjs;
 
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -46,6 +47,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	@Override
 	public void setBRJS(BRJS brjs)
 	{
+		this.brjs = brjs;
 	}
 	
 	@Override
@@ -66,7 +68,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
 		try {
 			if (contentPath.formName.equals("bundle-request"))
@@ -82,7 +84,7 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					}
 				}
 				
-				return new ConcatReader( readerList.toArray(new Reader[0]) );
+				return new CharResponseContent( brjs, readerList );
 			}
 			else if(contentPath.formName.equals("file-request")) {
 				String libName = contentPath.properties.get("module");
@@ -103,15 +105,15 @@ public class ThirdpartyContentPlugin extends AbstractContentPlugin
 					throw new ContentProcessingException("File '" + file.getAbsolutePath() + "' doesn't exist.");
 				}
 				
-				return new FileReader(file);
+				return new CharResponseContent(brjs, new FileReader(file));
 			}
 			else if(contentPath.formName.equals("single-module-request")) {
 				SourceModule jsModule = (SourceModule)bundleSet.getBundlableNode().getLinkedAsset(contentPath.properties.get("module"));
-				return new ConcatReader(new Reader[]{
+				return new CharResponseContent(brjs, 
 					new StringReader("// " + jsModule.getPrimaryRequirePath() + "\n"),
 					jsModule.getReader(),
 					new StringReader("\n\n")
-				});
+				);
 					
 			}
 			else {

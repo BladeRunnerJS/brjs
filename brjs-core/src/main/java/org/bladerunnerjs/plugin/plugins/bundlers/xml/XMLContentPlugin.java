@@ -1,7 +1,5 @@
 package org.bladerunnerjs.plugin.plugins.bundlers.xml;
 
-import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +15,8 @@ import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -82,7 +82,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException
 	{
 		XmlBundleWriter bundleWriter = new XmlBundleWriter(xmlBundlerConfig);
 		List<Asset> xmlAssets = bundleSet.getResourceFiles(xmlAssetPlugin);
@@ -103,7 +103,7 @@ public class XMLContentPlugin extends AbstractContentPlugin
 			//TODO: Can we do a streaming replacement rather than buffer into  string?
 			String result = bufferedOutput.toString().replace(xmlBundlePathToken, bundlePath).replace(xmlUnversionedBundlePathToken, unversionedBundlePath);
 			
-			return new StringReader(result);
+			return new CharResponseContent(brjs, result);
 		}
 		catch(    XMLStreamException  e) {
 			throw new ContentProcessingException(e, "Error while processing XML assets '" );

@@ -20,17 +20,19 @@ import org.bladerunnerjs.model.exception.ConfigException;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
 import org.bladerunnerjs.plugin.AssetPlugin;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
 import org.bladerunnerjs.utility.ContentPathParserBuilder;
 
-import com.Ostermiller.util.ConcatReader;
 
 public class CssContentPlugin extends AbstractContentPlugin {
 	
 	private final ContentPathParser contentPathParser;
 	private AssetPlugin cssAssetPlugin;
+	private BRJS brjs;
 	
 	{
 		ContentPathParserBuilder contentPathParserBuilder = new ContentPathParserBuilder();
@@ -47,6 +49,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	
 	@Override
 	public void setBRJS(BRJS brjs) {
+		this.brjs = brjs;
 		cssAssetPlugin = brjs.plugins().assetPlugin(CssAssetPlugin.class);
 	}
 	
@@ -76,7 +79,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 	}
 	
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException {
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor output, String version) throws ContentProcessingException {
 		
 		String theme = contentPath.properties.get("theme");
 		String languageCode = contentPath.properties.get("languageCode");
@@ -101,7 +104,7 @@ public class CssContentPlugin extends AbstractContentPlugin {
 			}
 		}
 		
-		return new ConcatReader( readerList.toArray(new Reader[0]) );
+		return new CharResponseContent( brjs, readerList.toArray(new Reader[0]) );
 	}
 	
 	// protected so the CT CSS plugin that uses a different CSS ordering can override it

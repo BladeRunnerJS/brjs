@@ -1,6 +1,5 @@
 package org.bladerunnerjs.plugin;
 
-import java.io.Reader;
 import java.util.List;
 
 import org.bladerunnerjs.model.BundleSet;
@@ -75,7 +74,7 @@ public interface ContentPlugin extends OrderedPlugin {
 	 * @param version TODO
 	 * @throws ContentProcessingException if a problem is encountered.
 	 */
-	Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException;
+	ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException;
 	
 	/**
 	 * Returns the list of valid content paths, when in development, for the given bundle-set and locale.

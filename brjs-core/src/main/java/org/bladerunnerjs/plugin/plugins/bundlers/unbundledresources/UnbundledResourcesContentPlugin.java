@@ -3,8 +3,6 @@ package org.bladerunnerjs.plugin.plugins.bundlers.unbundledresources;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +13,8 @@ import org.bladerunnerjs.model.UrlContentAccessor;
 import org.bladerunnerjs.model.ParsedContentPath;
 import org.bladerunnerjs.model.exception.request.ContentProcessingException;
 import org.bladerunnerjs.model.exception.request.MalformedTokenException;
+import org.bladerunnerjs.plugin.CharResponseContent;
+import org.bladerunnerjs.plugin.ResponseContent;
 import org.bladerunnerjs.plugin.Locale;
 import org.bladerunnerjs.plugin.base.AbstractContentPlugin;
 import org.bladerunnerjs.utility.ContentPathParser;
@@ -65,7 +65,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 	}
 
 	@Override
-	public Reader handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
+	public ResponseContent handleRequest(ParsedContentPath contentPath, BundleSet bundleSet, UrlContentAccessor contentAccessor, String version) throws ContentProcessingException
 	{
 		try
 		{
@@ -86,7 +86,7 @@ public class UnbundledResourcesContentPlugin extends AbstractContentPlugin
 				
     			ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
     			contentAccessor.handleRequest(requestedFilePathRelativeToApp, outputBuffer);
-    			return new StringReader( outputBuffer.toString() );
+    			return new CharResponseContent( brjs, outputBuffer.toString() );
     		}
 			else {
 				throw new ContentProcessingException("unknown request form '" + contentPath.formName + "'.");

@@ -26,7 +26,11 @@ public class InputSource {
 	}
 	
 	public Reader getContentPluginReader() throws ContentProcessingException {
-		return contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);
+		ResponseContent pluginContent = contentPlugin.handleRequest(parsedContentPath, bundleSet, contentPluginUtility, version);
+		if (pluginContent instanceof CharResponseContent) {
+			return ((CharResponseContent) pluginContent).getReader();
+		}
+		throw new RuntimeException("Minifies only support content plugins that return an instance of '"+CharResponseContent.class.getSimpleName()+"'.");
 	}
 	
 	
