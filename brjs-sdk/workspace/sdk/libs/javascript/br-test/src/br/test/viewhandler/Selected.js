@@ -1,13 +1,6 @@
-'use strict';
-
-require('jquery');
-
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
+br.Core.thirdparty("jquery");
 
 /**
- * @name br.test.viewhandler.Selected
  * @class
  * <code>Selected ViewFixtureHandler</code> can be used to get or set <code>selected</code>
  * property of an OPTION view element.
@@ -18,28 +11,32 @@ var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-function Selected(){
-}
-br.implement(Selected, ViewFixtureHandler);
+br.test.viewhandler.Selected = function(){
+};
 
-Selected.prototype.get = function(eElement) {
-	if (eElement.selected === undefined) {
-		throw new Errors.InvalidTestError("Only Option elements have the 'selected' property.");
+br.Core.implement(br.test.viewhandler.Selected, br.test.viewhandler.ViewFixtureHandler);
+
+br.test.viewhandler.Selected.prototype.get = function(eElement)
+{
+	if (eElement.selected === undefined)
+	{
+		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Only Option elements have the 'selected' property.");
 	}
 	return eElement.selected;
 };
 
-Selected.prototype.set = function(eElement, vValue) {
-	if (eElement.selected === undefined) {
-		throw new Errors.InvalidTestError("Only Option elements have their 'selected' property set.");
+br.test.viewhandler.Selected.prototype.set = function(eElement, vValue)
+{
+	if (eElement.selected === undefined)
+	{
+		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "Only Option elements have their 'selected' property set.");
 	}
-	if (!(vValue === true || vValue === false)) {
-		throw new Errors.InvalidTestError("the 'selected' property can only be set to true or false.");
+	if (!(vValue === true || vValue === false))
+	{
+		throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "the 'selected' property can only be set to true or false.");
 	}
 	if (eElement.selected != vValue) {
 		eElement.selected = vValue;
 		jQuery(eElement).parent('select').trigger("change");
 	}
 };
-
-module.exports = Selected;

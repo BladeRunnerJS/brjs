@@ -1,11 +1,10 @@
 CheckedTest = TestCase("CheckedTest");
 
-var Errors = require('br/Errors');
-var ViewFixture = require('br/test/ViewFixture');
+require('br/test/ViewFixture');
 
 CheckedTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new ViewFixture("view.*");
+	this.m_oViewFixture = new br.test.ViewFixture("view.*");
 	this.m_eElement = this.getElement();
 	document.body.appendChild(this.m_eElement);
 	this.m_oViewFixture.setViewElement(this.m_eElement);
@@ -74,44 +73,44 @@ CheckedTest.prototype.test_cannotGetCheckedStatusOfUncheckableElement = function
 	var _self = this;
 	assertException(function () {
 		_self.m_oViewFixture.doThen("view.(.uncheckable).checked", false);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 };
 
 CheckedTest.prototype.test_cannotSetCheckedStatusOfUncheckableElement = function() {
 	var _self = this;
 	assertException(function () {
 		_self.m_oViewFixture.doWhen("view.(.uncheckable).checked", false);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException(function () {
 		_self.m_oViewFixture.doWhen("view.(.uncheckable).checked", true);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 };
 
 CheckedTest.prototype.test_cannotSetCheckedStatusToNonBooleanValue = function() {
 	var _self = this;
 	assertException("1a", function () {
 		_self.m_oViewFixture.doWhen("view.(input#hobby1).checked", 1);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException("1b", function () {
 		_self.m_oViewFixture.doWhen("view.(input#hobby1).checked", 0);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException("1c", function () {
 		_self.m_oViewFixture.doWhen("view.(input#hobby2).checked", "false");
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException("1d", function () {
 		_self.m_oViewFixture.doWhen("view.(input#hobby2).checked", "on");
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 
 	assertException("2a", function () {
 		_self.m_oViewFixture.doWhen("view.(input#gender-m).checked", 1);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException("2b", function () {
 		_self.m_oViewFixture.doWhen("view.(input#gender-m).checked", "true");
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException("2c", function () {
 		_self.m_oViewFixture.doWhen("view.(input#gender-f).checked", 0);
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 	assertException("2d", function () {
 		_self.m_oViewFixture.doWhen("view.(input#gender-f).checked", "off");
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 };

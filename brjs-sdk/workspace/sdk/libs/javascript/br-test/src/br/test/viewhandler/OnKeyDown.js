@@ -1,25 +1,19 @@
-'use strict';
-
-var br = require('br/Core');
-var Errors = require('br/Errors');
-var ViewFixtureHandler = require('br/test/viewhandler/ViewFixtureHandler');
-var Utils = require('br/test/Utils');
-
 /**
- * @name br.test.viewhandler.OnKeyDown
  * @constructor
  * @implements br.test.viewhandler.ViewFixtureHandler
  */
-function OnKeyDown() {
-}
-br.implement(OnKeyDown, ViewFixtureHandler);
-
-OnKeyDown.prototype.set = function(eElement, mValues) {
-	Utils.fireKeyEvent(eElement, "keydown", mValues, null);
+br.test.viewhandler.OnKeyDown = function()
+{
 };
 
-OnKeyDown.prototype.get = function(eElement) {
-	throw new Errors.InvalidTestError("The keyDown event cannot be used in a doGiven or doThen");
+br.Core.implement(br.test.viewhandler.OnKeyDown, br.test.viewhandler.ViewFixtureHandler);
+
+br.test.viewhandler.OnKeyDown.prototype.set = function(eElement, mValues)
+{
+	br.test.Utils.fireKeyEvent(eElement, "keydown", mValues, null);
 };
 
-module.exports = OnKeyDown;
+br.test.viewhandler.OnKeyDown.prototype.get = function(eElement)
+{
+	throw new br.Errors.CustomError(br.Errors.INVALID_TEST, "The keyDown event cannot be used in a doGiven or doThen");
+};

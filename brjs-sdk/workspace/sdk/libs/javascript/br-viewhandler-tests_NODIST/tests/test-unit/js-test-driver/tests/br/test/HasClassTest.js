@@ -1,12 +1,11 @@
-require('jsunitextensions');
+br.Core.thirdparty('jsunitextensions');
 HasClassTest = TestCase("HasClassTest");
 
-var Errors = require('br/Errors');
-var ViewFixture = require('br/test/ViewFixture');
+require('br/test/ViewFixture');
 
 HasClassTest.prototype.setUp = function()
 {
-	this.m_oViewFixture = new ViewFixture("view.*");
+	this.m_oViewFixture = new br.test.ViewFixture("view.*");
 	this.m_oViewFixture.setViewElement(this.getElement());
 };
 
@@ -45,5 +44,5 @@ HasClassTest.prototype.test_cannotSetHasClass = function()
 	var self = this;
 	assertException(function() {
 		self.m_oViewFixture.doWhen("view.(#single-div).hasClass", "never-applied-class");
-	}, Errors.INVALID_TEST);
+	}, br.Errors.INVALID_TEST);
 };
